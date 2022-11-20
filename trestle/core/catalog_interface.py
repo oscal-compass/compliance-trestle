@@ -25,10 +25,10 @@ import trestle.core.generic_oscal as generic
 import trestle.oscal.catalog as cat
 from trestle.common.err import TrestleError
 from trestle.common.file_utils import prune_empty_dirs
-from trestle.common.list_utils import as_filtered_list, as_list, delete_item_from_list, get_item_from_list, none_if_empty  # noqa E501
+from trestle.common.list_utils import as_filtered_list, as_list, delete_item_from_list, deep_set, get_item_from_list, none_if_empty, set_or_pop  # noqa E501
 from trestle.common.model_utils import ModelUtils
 from trestle.core.control_context import ContextPurpose, ControlContext
-from trestle.core.control_interface import ControlInterface, ParameterRep
+from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlInterface, ParameterRep
 from trestle.core.control_reader import ControlReader
 from trestle.core.control_writer import ControlWriter
 from trestle.oscal import common
@@ -82,6 +82,33 @@ class CatalogInterface():
         self._control_dict = self._create_control_dict() if catalog else None
         self.loose_param_dict: Dict[str, common.Parameter] = {param.id: param
                                                               for param in as_list(catalog.params)} if catalog else {}
+        self._control_comp_dicts: Dict[str, CompDict] = {}
+        self._control_set_params: Dict[str, comp.SetParameter] = {}
+
+    def add_comp_info(self, control_id: str, comp_name: str, label: str, comp_info: ComponentImpInfo) -> None:
+        """Add comp_info for a control."""
+        deep_set(self._control_comp_dicts, [control_id, comp_name, label], comp_info)
+
+    def get_comp_info(self, control_id: str) -> Dict[str, CompDict]:
+        """Get all comp_dicts for this control."""
+        return self._control_comp_dicts.get(control_id, {})
+
+    def clear_comp_dicts(self) -> None:
+        """Clear the control component dicts."""
+        self._control_comp_dicts = {}
+
+    def add_comp_set_param(self, control_id: str, comp_name: str, set_param: comp.SetParameter) -> None:
+        """Add component setparam for control with overwrite."""
+        deep_set(self._control_set_params, [control_id, comp_name, set_param.param_id], set_param)
+
+    def get_control_set_params(self, control_id: str) -> List[comp.SetParameter]:
+        """Add setparam value for control with overwrite."""
+        param_dict = self._control_set_params.get(control_id, {})
+        return list(param_dict.values())
+
+    def clear_set_params(self) -> None:
+        """Clear the control set params."""
+        self._control_set_params = {}
 
     def _generate_group_id(self, group: cat.Group) -> str:
         """Generate sequential group ids."""
@@ -451,6 +478,15 @@ class CatalogInterface():
         """Return the path into the markdown directory for this control based only on the groups."""
         return self._control_dict[control_id].group_path
 
+    def get_control_file_path(self, md_root: pathlib.Path, control_id: str) -> Optional[pathlib.Path]:
+        """Get the path to the control from the given root."""
+        if control_id not in self._control_dict:
+            return None
+        path = md_root
+        for item in self.get_control_path(control_id):
+            path = path / item
+        return path / f'{control_id}.md'
+
     def get_full_control_path(self, control_id: str) -> List[str]:
         """Return the path to the control including groups and sub-controls."""
         return self._control_dict[control_id].control_path
@@ -656,32 +692,20 @@ class CatalogInterface():
         writer = ControlWriter()
         writer.write_control_for_editing(context, control, group_dir, group_title, part_id_map, found_control_alters)
 
+    # FIXME typing
     @staticmethod
     def _get_all_rules_params_and_vals(context: ControlContext) -> None:
         """Get rules, params, vals from the control implementation and defined component."""
-        # rules are defined in the control_imp itself
+        # rules are defined in the comonent and control_imp
         # but they are linked to controls via the imp_reqs
         # param values may be set both by the control_imp and the imp_req
-        context.rules_dict = {}
-        context.rules_params_dict = {}
-        context.rules_param_vals = {}
-        current_component = ControlInterface.get_component_by_name(context.comp_def, context.comp_name)
-        for item in [current_component, context.control_implementation]:
-            context.rules_dict.update(ControlInterface.get_rules_dict_from_item(item))
-            context.rules_params_dict.update(ControlInterface.get_params_dict_from_item(item))
-        # only the control_imp has set_params
-        context.rules_param_vals.update(
-            ControlInterface.get_param_vals_from_control_imp(context.control_implementation)
-        )
-        new_dict = {}
-        for key, val in context.rules_params_dict.items():
-            rule = context.rules_dict.get(key, None)
-            rule_name = rule['name'] if rule else 'Unknown'
-            # rebuild the dict so it has desired order in yaml header
-            new_dict[key] = {
-                'name': val['name'], 'description': val['description'], 'rule-id': rule_name, 'options': val['options']
-            }
-        context.rules_params_dict = new_dict
+        rules_dict = {}
+        rules_params_dict = {}
+        for item in [context.component, context.control_implementation]:
+            rules_dict.update(ControlInterface.get_rules_dict_from_item(item))
+            rules_params_dict.update(ControlInterface.get_params_dict_from_item(item))
+        set_params = ControlInterface.get_set_params_from_item(context.control_implementation)
+        return rules_dict, rules_params_dict, set_params
 
     @staticmethod
     def _prune_controls(md_path: pathlib.Path, written_controls: Set[str]):
@@ -770,24 +794,94 @@ class CatalogInterface():
 
             self._write_control_into_dir(new_context, control, part_id_map, found_control_alters)
 
+    @staticmethod
+    def _read_comp_info_from_md(control_file_path: pathlib.Path,
+                                context: ControlContext) -> Tuple[Dict[str, Any], CompDict]:
+        if control_file_path.exists():
+            comp_dict = {}
+            md_header = ControlReader.read_control_info_from_md(control_file_path, comp_dict, context)
+        return md_header, comp_dict
+
+    # FIXME typing
+    def _merge_header_and_comp_dict(self, control, md_header, comp_dict, context) -> None:
+        """
+        Merge the header and the comp_dict.
+
+        x-trestle-comp-def-rules:
+        - name: XCCDF
+            description: The XCCDF must be compliant
+        x-trestle-rules-params:
+        - name: foo_length
+            description: minimum_foo_length
+            rule-id: XCCDF
+            options: '["6", "9"]'
+        x-trestle-comp-def-param-vals:
+        quantity_available: '500'
+        foo_length: '6'
+        x-trestle-global:
+        profile-title: NIST Special Publication 800-53 Revision 5 MODERATE IMPACT BASELINE
+        x-trestle-set-params:
+        ac-1_prm_1:
+            values: Param_1_value_in_catalog
+        ac-1_prm_2:
+            values:
+        ac-1_prm_3:
+            values:
+        ac-1_prm_4:
+            values:
+        ac-1_prm_5:
+            values:
+        ac-1_prm_6:
+            values:
+        ac-1_prm_7:
+            values:
+        ---
+        """
+        # Below was copied here and needs to be hooked in to generate header content
+        params_dict, rules_list = ControlReader._add_component_to_dict(context, control, comp_dict)
+        all_params = []
+        if params_dict:
+            if not set(params_dict.keys()).issuperset(rules_list):
+                raise TrestleError(f'Control {control.id} has a parameter assigned to a rule that is not defined.')
+            if context.rules_dict:
+                all_params.extend(
+                    [
+                        {
+                            context.rules_dict[id_]['name']: context.rules_params_dict[id_]
+                            for id_ in context.rules_params_dict.keys()
+                        }
+                    ]
+                )
+        if context.rules_dict:
+            rule_ids = [id_ for id_ in context.rules_dict.keys() if context.rules_dict[id_]['name'] in rules_list]
+            control_rules = [context.rules_dict[id_] for id_ in rule_ids]
+            set_or_pop(context.yaml_header, const.COMP_DEF_RULES_TAG, control_rules)
+            all_params.extend([context.rules_params_dict[id_] for id_ in rule_ids if id_ in context.rules_params_dict])
+        if all_params:
+            context.yaml_header[const.RULES_PARAMS_TAG] = all_params
+        if context.rules_param_vals:
+            context.yaml_header[const.COMP_DEF_RULES_PARAM_VALS_TAG] = context.rules_param_vals
+
     def write_catalog_as_ssp_markdown(self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]]) -> None:
         """
         Write out the catalog as component markdown.
 
-        For each compdef:
-            For each comp:
-                Load top level rules
+        In memory:
+        for each compdef:
+            for each comp:
+                load top level rules
                 for each control_imp:
-                    Load rules params values
-                    For each imp_req (bound to 1 control):
-                        Load control level rules and status
-                        Load part level rules
-                        If rules apply then write out control and add to list written out
-                        If control exists, read it and insert content
-
+                    load set-params
+                    for each imp_req (bound to 1 control):
+                        load set-params
+                        load control level rules and status
+                        load part level rules and status
+                        add as compinfo to control comp_dict
 
         """
-        written_controls = set()
+        # first load all information from memory for all comps and all controls
+        context.rules_dict = {}
+        context.rules_params_dict = {}
         for comp_def_name in context.comp_def_name_list:
             context.comp_def, _ = ModelUtils.load_top_level_model(
                 context.trestle_root,
@@ -799,22 +893,63 @@ class CatalogInterface():
                 context.comp_name = component.title
                 # get top level rule info applying to all controls
                 comp_rules_dict, comp_rules_params_dict = ControlInterface.get_rules_and_params_dict_from_item(component)  # noqa E501
+                context.rules_dict.update(comp_rules_dict)
+                context.rules_params_dict.update(comp_rules_params_dict)
                 for control_imp in as_list(component.control_implementations):
                     control_imp_rules_dict, control_imp_rules_params_dict = ControlInterface.get_rules_and_params_dict_from_item(control_imp)  # noqa E501
-                    rules_dict = comp_rules_dict
-                    rules_dict.update(control_imp_rules_dict)
-                    rules_params_dict = comp_rules_params_dict
-                    rules_params_dict.update(control_imp_rules_params_dict)
+                    context.rules_dict.update(control_imp_rules_dict)
+                    context.rules_params_dict.update(control_imp_rules_params_dict)
+                    ci_set_params = ControlInterface.get_set_params_from_item(control_imp)
                     for imp_req in as_list(control_imp.implemented_requirements):
+                        control_part_id_map = part_id_map.get(imp_req.control_id, {})
                         control_rules = ControlInterface.get_rule_list_for_item(imp_req)
                         if control_rules:
-                            new_context = ControlContext.clone(context)
-                            new_context.rules_dict = rules_dict
-                            new_context.rules_params_dict = rules_params_dict
-                            control = self.get_control(imp_req.control_id)
-                            self._write_control_into_dir(new_context, control, part_id_map, [])
-                            written_controls.add(control.id)
-        CatalogInterface._prune_controls(context.md_root, written_controls)
+                            status = ControlInterface.get_status_from_props(imp_req)
+                            comp_info = ComponentImpInfo(imp_req.description, control_rules, status)
+                            self.add_comp_info(imp_req.control_id, context.comp_name, '', comp_info)
+                            set_params = copy.deepcopy(ci_set_params)
+                            set_params.update(ControlInterface.get_set_params_from_item(imp_req))
+                            for set_param in set_params.values():
+                                self.add_comp_set_param(imp_req.control_id, context.comp_name, set_param)
+                            for statement in as_list(imp_req.statements):
+                                rule_list = ControlInterface.get_rule_list_for_item(statement)
+                                if rule_list:
+                                    status = ControlInterface.get_status_from_props(statement)
+                                    if statement.statement_id not in control_part_id_map:
+                                        label = statement.statement_id
+                                        logger.warning(
+                                            f'No statement label found for statement id {label}.  Defaulting to {label}.'  # noqa E501
+                                        )
+                                    else:
+                                        label = control_part_id_map[statement.statement_id]
+                                    comp_info = ComponentImpInfo(statement.description, rule_list, status)
+                                    self.add_comp_info(imp_req.control_id, context.comp_name, label, comp_info)
+
+        # now have all rules in context.rules_dict and all rules_params in context.rules_params_dict
+        # all set-params per component for each control are in the cat interface
+        # all comp-infos by control and part are in the cat interface
+        #
+        # can now write out catalog and pull from the markdown:
+        # header for param values to set during assem
+        # prose and status for This System
+        # status for all parts that still have rules
+
+        for control_id, _ in self._control_comp_dicts.items():
+            control_file_path = self.get_control_file_path(context.md_root, control_id)
+            if not control_file_path:
+                logger.warning(f'Control {control_id} referenced by component is not in the resolved catalog.')
+                continue
+            control_file_path.parent.mkdir(exist_ok=True, parents=True)
+            md_header, comp_dict = CatalogInterface._read_comp_info_from_md(control_file_path, context)
+            control = self.get_control(control_id)
+            _, group_title, _ = self.get_group_info_by_control(control_id)
+            self._merge_header_and_comp_dict(control, md_header, comp_dict, context)
+            control_writer = ControlWriter()
+            control_writer.write_control_for_editing(
+                context, control, control_file_path.parent, group_title, part_id_map, []
+            )
+
+        pass
 
     def write_catalog_as_component_markdown(
         self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]]
@@ -827,9 +962,6 @@ class CatalogInterface():
             if set_param.param_id in new_context.rules_param_vals:
                 values = ', '.join([v.__root__ for v in as_list(set_param.values)])
                 new_context.rules_param_vals[set_param.param_id] = values
-
-        # get the rule information for the current control implementation being written out in this context
-        CatalogInterface._get_all_rules_params_and_vals(context)
 
         control_ids_in_comp_imp = [
             imp_req.control_id for imp_req in as_list(context.control_implementation.implemented_requirements)

@@ -218,8 +218,10 @@ def test_profile_generate_assemble(
 
         assert fc.files_unchanged()
 
+        # change officer to new value in md
         edit_files(ac1_path, True, guid_dict)
 
+        # assemble based on set_parameters_flag
         test_args = f'trestle author profile-assemble -n {prof_name} -m {md_name} -o {assembled_prof_name}'.split()
         if set_parameters_flag:
             test_args.append('-sp')
@@ -247,8 +249,10 @@ def test_profile_generate_assemble(
 
         assert fc.files_unchanged()
 
+        # change officer to new value in md
         edit_files(ac1_path, True, guid_dict)
 
+        # assemble based on set_parameters_flag
         if dir_exists:
             assembled_prof_dir.mkdir()
         assert ProfileAssemble.assemble_profile(
@@ -309,6 +313,7 @@ def test_profile_generate_assemble(
 
     fc = test_utils.FileChecker(ac_path)
 
+    # generate md from assembled profile.  md should not change value of new value back to officer ever
     profile_generate = ProfileGenerate()
     profile_generate.generate_markdown(
         tmp_trestle_dir, assem_prof_path, markdown_path, {}, False, all_sections_dict, ['NeededExtra']
@@ -502,6 +507,7 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatc
     assert profile_assemble._run(test_args) == 1
 
     # succed if allowed sections has all
+    # FIXME short names not handled right
     test_args.allowed_sections = 'expevid,implgdn,NeededExtra'
     assert profile_assemble._run(test_args) == 0
 
@@ -517,16 +523,16 @@ def test_profile_overwrite(tmp_trestle_dir: pathlib.Path) -> None:
 
     # generate the markdown and assemble
     profile_generate = ProfileGenerate()
-    profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, {}, False, all_sections_dict, None)
+    profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, {}, False, all_sections_dict, [])
 
     assert ProfileAssemble.assemble_profile(
-        tmp_trestle_dir, prof_name, md_name, prof_name, True, False, None, None, None, None
+        tmp_trestle_dir, prof_name, md_name, prof_name, True, False, None, {}, [], None
     ) == 0
 
     # note the file timestamp, then regenerate and assemble again
     orig_time = profile_path.stat().st_mtime
 
-    profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, {}, False, all_sections_dict, None)
+    profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, {}, False, all_sections_dict, [])
 
     assert ProfileAssemble.assemble_profile(
         tmp_trestle_dir, prof_name, md_name, prof_name, True, False, None, {}, [], None
@@ -539,7 +545,7 @@ def test_profile_overwrite(tmp_trestle_dir: pathlib.Path) -> None:
 
     # now generate again but with different section title, causing change in generated profile markdown
     new_sections = {'implgdn': 'Different Title'}
-    profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, {}, False, new_sections, None)
+    profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, {}, False, new_sections, [])
 
     assert ProfileAssemble.assemble_profile(
         tmp_trestle_dir, prof_name, md_name, prof_name, True, False, None, {}, [], None
@@ -583,13 +589,13 @@ def test_profile_alter_props(tmp_trestle_dir: pathlib.Path) -> None:
     # generate markdown twice and confirm no changes
     profile_generate = ProfileGenerate()
     assert profile_generate.generate_markdown(
-        tmp_trestle_dir, profile_path, markdown_path, {}, False, sections, None
+        tmp_trestle_dir, profile_path, markdown_path, {}, False, sections, []
     ) == 0
 
     fc = test_utils.FileChecker(ac1_path.parent)
 
     assert profile_generate.generate_markdown(
-        tmp_trestle_dir, profile_path, markdown_path, {}, False, sections, None
+        tmp_trestle_dir, profile_path, markdown_path, {}, False, sections, []
     ) == 0
 
     assert fc.files_unchanged()
@@ -705,7 +711,7 @@ More evidence
 
     # Confirm that changed prose in the markdown is retained on new profile-generate
     assert test_utils.substitute_text_in_file(ac1_path, 'More evidence', 'Updated evidence')
-    assert profile_generate.generate_markdown(tmp_trestle_dir, prof_path, markdown_path, {}, False, sections, None) == 0
+    assert profile_generate.generate_markdown(tmp_trestle_dir, prof_path, markdown_path, {}, False, sections, []) == 0
     assert ProfileAssemble.assemble_profile(
         tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, None, sections, [], None
     ) == 0
@@ -717,7 +723,7 @@ More evidence
     fresh_md_path = tmp_trestle_dir / fresh_md_name
     fresh_assem_prof_name = 'fresh_assem'
     fresh_assem_prof_path = tmp_trestle_dir / 'profiles' / fresh_assem_prof_name / 'profile.json'
-    assert profile_generate.generate_markdown(tmp_trestle_dir, prof_path, fresh_md_path, {}, False, sections, None) == 0
+    assert profile_generate.generate_markdown(tmp_trestle_dir, prof_path, fresh_md_path, {}, False, sections, []) == 0
     assert ProfileAssemble.assemble_profile(
         tmp_trestle_dir, prof_name, fresh_md_name, fresh_assem_prof_name, True, False, None, sections, [], None
     ) == 0

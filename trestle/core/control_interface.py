@@ -428,13 +428,14 @@ class ControlInterface:
         return rules_dict, params_dict
 
     @staticmethod
-    def get_param_vals_from_control_imp(control_imp: comp.ControlImplementation) -> Dict[str, str]:
-        """Get param values from set_parameters in control implementation."""
-        param_dict = {
-            set_param.param_id: ControlInterface._setparam_values_as_str(set_param)
-            for set_param in as_list(control_imp.set_parameters)
+    def get_set_params_from_item(
+        item: Union[comp.ControlImplementation, comp.ImplementedRequirement]
+    ) -> Dict[str, comp.SetParameter]:
+        """Get set params that have values from control implementation or imp req."""
+        return {
+            set_param.param_id: set_param
+            for set_param in as_filtered_list(item.set_parameters, lambda i: i.values)
         }
-        return {key: val for key, val in param_dict.items() if val}
 
     @staticmethod
     def merge_props(dest: Optional[List[common.Property]],

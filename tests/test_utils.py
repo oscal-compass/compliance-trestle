@@ -391,7 +391,7 @@ def setup_for_ssp(
     tmp_trestle_dir: pathlib.Path,
     prof_name: str,
     output_name: str,
-    compdefs: str,
+    compdefs: str = 'compdefs',
     import_nist_cat: bool = True
 ) -> Tuple[argparse.Namespace, str, pathlib.Path]:
     """Create the markdown ssp content from catalog and profile."""

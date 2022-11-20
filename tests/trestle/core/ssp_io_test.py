@@ -17,10 +17,8 @@ from typing import Tuple
 
 from _pytest.monkeypatch import MonkeyPatch
 
-from tests.test_utils import delete_line_in_file, execute_command_and_assert, setup_for_ssp
-from tests.trestle.core.commands.author.ssp_test import insert_prose
+from tests.test_utils import execute_command_and_assert, setup_for_ssp
 
-from trestle.common import file_utils
 from trestle.common.const import CONTROL_ORIGINATION, IMPLEMENTATION_STATUS, STATUS_INHERITED, STATUS_PLANNED
 from trestle.core import profile_resolver
 from trestle.core.commands.author.ssp import SSPGenerate
@@ -91,15 +89,6 @@ def test_ssp_get_control_response(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
     args, _, _ = setup_for_ssp(True, True, tmp_trestle_dir, prof_name, ssp_name, compdef_name)
     ssp_cmd = SSPGenerate()
     assert ssp_cmd._run(args) == 0
-    ac1_path = tmp_trestle_dir / 'my_ssp/ac/ac-1.md'
-
-    # set responses
-    assert insert_prose(tmp_trestle_dir, 'ac-1_smt.b', 'This is a response')
-    assert insert_prose(tmp_trestle_dir, 'ac-1_smt.c', 'This is also a response.')
-    assert insert_prose(tmp_trestle_dir, 'ac-1_smt.a', 'This is a response.')
-    assert delete_line_in_file(ac1_path, 'Add control implementation description here')
-    assert delete_line_in_file(ac1_path, 'Add control implementation description here')
-    assert delete_line_in_file(ac1_path, 'Add control implementation description here')
 
     command_ssp_assem = 'trestle author ssp-assemble -m my_ssp -o ssp_json'
     execute_command_and_assert(command_ssp_assem, 0, monkeypatch)
@@ -120,35 +109,11 @@ def test_ssp_get_control_response(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
     tree = MarkdownNode.build_tree_from_markdown(md_text.split('\n'))
 
     assert tree.get_node_for_key('## Implementation for part a.')
-    assert tree.get_node_for_key('## Implementation for part c.')
-    assert len(list(tree.get_all_headers_for_level(2))) == 3
 
     md_text = ssp_io.get_control_response('ac-1', 1, False)
     tree = MarkdownNode.build_tree_from_markdown(md_text.split('\n'))
 
     assert tree.get_node_for_key('## Implementation for part a.')
-    assert tree.get_node_for_key('## Implementation for part c.')
-    assert len(list(tree.get_all_headers_for_level(2))) == 3
-
-    # insert some responses by component
-    assert file_utils.insert_text_in_file(ac1_path, 'Implementation for part a.', '### foo comp\n')
-    assert file_utils.insert_text_in_file(ac1_path, 'a response', '### bar comp\nstuff for other response\n')
-    execute_command_and_assert(command_ssp_assem, 0, monkeypatch)
-    ssp_obj, _ = fetcher.get_oscal(True)
-    resolved_catalog = profile_resolver.ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, profile_path)
-    ssp_io = SSPMarkdownWriter(tmp_trestle_dir)
-    ssp_io.set_catalog(resolved_catalog)
-    ssp_io.set_ssp(ssp_obj)
-
-    # component titles should not be there
-    md_text = ssp_io.get_control_response('ac-1', 2, False, False)
-    assert 'foo' not in md_text
-    assert 'bar' not in md_text
-
-    # component titles should be there
-    md_text = ssp_io.get_control_response('ac-1', 2, False, True)
-    assert 'foo' in md_text
-    assert 'bar' in md_text
 
 
 def test_writers(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:

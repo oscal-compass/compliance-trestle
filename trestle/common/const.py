@@ -403,6 +403,8 @@ STATUS_PROMPT = f'<!-- For implementation status enter one of: {STATUS_IMPLEMENT
 
 RULES_WARNING = '<!-- Note that the list of rules under ### Rules: is read-only and changes will not be captured after assembly to JSON -->'  # noqa E501
 
+THIS_SYSTEM_PROMPT = '<!-- Enter the response and status for This System here.  The responses per component follow, each with the component name as header -->'  # noqa E501
+
 RESPONSIBLE_ROLE = 'responsible-role'
 
 RESPONSIBLE_ROLES = 'responsible-roles'

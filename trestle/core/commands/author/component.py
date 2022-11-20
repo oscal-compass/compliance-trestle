@@ -101,6 +101,7 @@ class ComponentGenerate(AuthorCommonCommand):
         """Create markdown for the component using its source profiles."""
         logger.debug(f'Creating markdown for component {component.title}.')
         context.comp_name = component.title
+        context.component = component
         context.uri_name_map = {}
         name_index = 1
         for control_imp in as_list(component.control_implementations):

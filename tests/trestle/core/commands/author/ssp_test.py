@@ -15,7 +15,6 @@
 
 import argparse
 import pathlib
-from typing import List
 
 from _pytest.monkeypatch import MonkeyPatch
 
@@ -67,30 +66,18 @@ def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_la
 @pytest.mark.parametrize('specify_sections', [False, True])
 def test_ssp_generate(import_cat, specify_sections, tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator."""
-    args, _, _ = setup_for_ssp(True, False, tmp_trestle_dir, prof_name, ssp_name, import_cat)
+    args, _, _ = setup_for_ssp(True, False, tmp_trestle_dir, prof_name, ssp_name, 'compdefs', import_cat)
     if specify_sections:
         args.allowed_sections = 'implgdn,expevid'
 
     ssp_cmd = SSPGenerate()
     # run the command for happy path
     assert ssp_cmd._run(args) == 0
-    ac_dir = tmp_trestle_dir / (ssp_name + '/ac')
+    md_dir = tmp_trestle_dir / ssp_name
+    ac_dir = md_dir / 'ac'
     ac_1 = ac_dir / 'ac-1.md'
-    ac_2 = ac_dir / 'ac-2.md'
     assert ac_1.exists()
-    assert ac_2.exists()
-    assert ac_1.stat().st_size > 1000
-    assert ac_2.stat().st_size > 2000
-
-    assert test_utils.confirm_text_in_file(ac_1, '## Control', '## Control Guidance') != specify_sections
-    md_api = MarkdownAPI()
-    _, tree = md_api.processor.process_markdown(ac_1)
-    # if sections specified then Control Guidance does not appear
-    rc = 11 if specify_sections else 12
-    assert tree.get_count_of_subnodes() == rc
-    _, tree = md_api.processor.process_markdown(ac_2)
-    rc = 29 if specify_sections else 30
-    assert tree.get_count_of_subnodes() == rc
+    assert ssp_cmd._run(args) == 0
 
 
 def test_ssp_failures(tmp_trestle_dir: pathlib.Path) -> None:
@@ -544,70 +531,6 @@ def test_ssp_assemble_header_metadata(tmp_trestle_dir: pathlib.Path, monkeypatch
     # read the assembled ssp and confirm roles are in metadata
     ssp, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
     assert len(ssp.metadata.roles) == 2
-
-
-def test_ssp_generate_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
-    """Test repeat generate with various controls including statement with no parts."""
-    cat_name = 'complex_cat'
-    prof_name = 'my_prof'
-    ssp_name = 'my_ssp'
-    catalog = test_utils.generate_complex_catalog()
-    ModelUtils.save_top_level_model(catalog, tmp_trestle_dir, cat_name, FileContentType.JSON)
-    test_utils.create_profile_in_trestle_dir(tmp_trestle_dir, cat_name, prof_name)
-
-    ssp_generate = f'trestle author ssp-generate -p {prof_name} -o {ssp_name}'
-    test_utils.execute_command_and_assert(ssp_generate, 0, monkeypatch)
-
-    # insert implementation text into the high level statement of a control that has no sub-parts
-    control_path = tmp_trestle_dir / ssp_name / 'test-1.md'
-    file_utils.insert_text_in_file(control_path, 'control test-1', '\nHello there')
-
-    control_a1_path = tmp_trestle_dir / ssp_name / 'a-1.md'
-    file_utils.insert_text_in_file(control_a1_path, const.SSP_ADD_IMPLEMENTATION_PREFIX, 'Text with prompt removed')
-    test_utils.delete_line_in_file(control_a1_path, const.SSP_ADD_IMPLEMENTATION_PREFIX)
-
-    ssp_generate = f'trestle author ssp-generate -p {prof_name} -o {ssp_name}'
-    test_utils.execute_command_and_assert(ssp_generate, 0, monkeypatch)
-
-    # confirm the added text is still there
-    assert test_utils.confirm_text_in_file(control_path, 'control test-1', 'Hello there')
-    # confirm added text in a1 is there
-    assert test_utils.confirm_text_in_file(control_a1_path, '## Implementation', 'Text with prompt removed')
-    # confirm prompt is not there
-    assert not test_utils.confirm_text_in_file(
-        control_a1_path, '## Implementation', const.SSP_ADD_IMPLEMENTATION_PREFIX
-    )
-
-
-def test_ssp_generate_tutorial(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
-    """Test the ssp generator with the nist tutorial catalog and profile."""
-    catalog = cat.Catalog.oscal_read(test_utils.JSON_TEST_DATA_PATH / 'nist_tutorial_catalog.json')
-    ModelUtils.save_top_level_model(catalog, tmp_trestle_dir, 'nist_tutorial_catalog', FileContentType.JSON)
-    profile = prof.Profile.oscal_read(test_utils.JSON_TEST_DATA_PATH / 'nist_tutorial_profile.json')
-    ModelUtils.save_top_level_model(profile, tmp_trestle_dir, 'nist_tutorial_profile', FileContentType.JSON)
-    ssp_generate = 'trestle author ssp-generate -p nist_tutorial_profile -o ssp_md'
-    test_utils.execute_command_and_assert(ssp_generate, 0, monkeypatch)
-
-    ssp_assem = SSPAssemble()
-    args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir,
-        output='ssp_json',
-        markdown='ssp_md',
-        verbose=0,
-        name=None,
-        version=None,
-        regenerate=False
-    )
-    assert ssp_assem._run(args) == 0
-    json_ssp: ossp.SystemSecurityPlan
-    json_ssp, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, 'ssp_json', ossp.SystemSecurityPlan)
-    comp_def = json_ssp.system_implementation.components[0]
-    assert comp_def.title == 'This System'
-    assert comp_def.status.state == ossp.State1.other
-    imp_reqs: List[ossp.ImplementedRequirement] = json_ssp.control_implementation.implemented_requirements
-    assert len(imp_reqs) == 2
-    assert imp_reqs[0].control_id == 's1.1.1'
-    assert imp_reqs[1].control_id == 's2.1.2'
 
 
 def test_ssp_force_overwrite(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
