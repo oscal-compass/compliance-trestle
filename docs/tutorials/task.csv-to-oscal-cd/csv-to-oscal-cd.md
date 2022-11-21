@@ -144,8 +144,8 @@ An example output [json-file](component-definition.json).
 <td>Resource_Instance_Type
 <td>String
 <td>optional
-<td>not used
-<td>
-<td>
+<td>A textual label that uniquely identifies the resource's type, to differentiate between resources. For example DB2 vs. Object Storage.
+<td>component.control-implementation.prop["Resource_Instance_Type"]
+<td>DB2
 
 </table>
