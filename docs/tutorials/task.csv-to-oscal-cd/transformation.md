@@ -10,6 +10,8 @@ There are 2 short steps shown below.
 The first is a one-time check/set-up of your environment.
 The second is a one-command transformation from `.csv` to `component-definition.json`.
 
+Details on the expected contents of the `csv` file can be found [here](csv-to-oscal-cd.md).
+
 ## *Step 1: Install trestle in a Python virtual environment*
 
 Follow the instructions [here](https://ibm.github.io/compliance-trestle/python_trestle_setup/) to install trestle in a virtual environment.
