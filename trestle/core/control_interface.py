@@ -17,7 +17,7 @@ from __future__ import annotations
 import logging
 import pathlib
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple, Union
 
@@ -52,7 +52,11 @@ class ComponentImpInfo:
 
     prose: str
     rules: List[str]
-    status: common.ImplementationStatus = common.ImplementationStatus(state=const.STATUS_PLANNED)
+    # the lambda is needed to prevent a mutable from being used as a default
+    # without the lambda it would break python 3.11 and is a bug either way
+    status: common.ImplementationStatus = field(
+        default_factory=lambda: common.ImplementationStatus(state=const.STATUS_PLANNED)
+    )
 
 
 # provide name for this type

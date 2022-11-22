@@ -19,7 +19,7 @@ from typing import Any, Dict, List, Optional
 
 import trestle.oscal.catalog as cat
 from trestle.common import const
-from trestle.common.list_utils import as_list, merge_dicts, set_or_pop
+from trestle.common.list_utils import as_dict, as_list, merge_dicts, set_or_pop
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlInterface, PartInfo
 from trestle.core.control_reader import ControlReader
@@ -462,36 +462,39 @@ class ControlWriter():
             logger.debug(f'Not writing out control {control.id} since it is marked Withdrawn.')
             return
 
-        # get control content from memory (json)
-        comp_dict, memory_header = ControlReader.read_control_info_from_memory(control, context)
-
         control_file = dest_path / (control.id + const.MARKDOWN_FILE_EXT)
         # read the existing markdown header and content if it exists
         # add to the comp_dict coming from memory
+        comp_dict = {}
         md_header = ControlReader.read_control_info_from_md(control_file, comp_dict, context)
 
         # begin adding info to the md file
         self._md_file = MDWriter(control_file)
         self._sections_dict = context.sections_dict
 
-        merged_header = ControlWriter._merge_headers(memory_header, md_header, context)
+        context.merged_header = ControlWriter._merge_headers(context.merged_header, md_header, context)
         # if the control has an explicitly defined sort-id and there is none in the yaml_header, then insert it
         # in the yaml header and allow overwrite_header_values to control whether it overwrites an existing one
         # in the markdown header
-        context.yaml_header = context.yaml_header if context.yaml_header else {}
+        context.yaml_header = as_dict(context.yaml_header)
         sort_id = ControlInterface.get_sort_id(control, True)
         if sort_id and const.SORT_ID not in context.yaml_header:
             context.yaml_header[const.SORT_ID] = sort_id
-        ControlInterface.merge_dicts_deep(merged_header, context.yaml_header, context.overwrite_header_values)
+        if not context.purpose == ContextPurpose.PROFILE:
+            ControlInterface.merge_dicts_deep(
+                context.merged_header, context.yaml_header, context.overwrite_header_values
+            )
         # the global contents are special and get overwritten on generate
-        set_or_pop(merged_header, const.TRESTLE_GLOBAL_TAG, context.yaml_header.get(const.TRESTLE_GLOBAL_TAG, None))
+        set_or_pop(
+            context.merged_header, const.TRESTLE_GLOBAL_TAG, context.yaml_header.get(const.TRESTLE_GLOBAL_TAG, None)
+        )
 
         # merge any provided sections with sections in the header, with priority to the one from context (e.g. CLI)
-        header_sections_dict = merged_header.get(const.SECTIONS_TAG, {})
+        header_sections_dict = context.merged_header.get(const.SECTIONS_TAG, {})
         merged_sections_dict = merge_dicts(header_sections_dict, context.sections_dict)
         set_or_pop(merged_sections_dict, const.SECTIONS_TAG, merged_sections_dict)
         if context.purpose == ContextPurpose.COMPONENT:
-            merged_header.pop(const.SORT_ID, None)
+            context.merged_header.pop(const.SORT_ID, None)
 
         # now begin filling in content from the control in memory
         self._add_control_statement(control, group_title)
@@ -503,17 +506,17 @@ class ControlWriter():
 
         # prompt responses for imp reqs using special format if comp_def mode
         if context.prompt_responses:
-            self._add_implementation_response_prompts(control, comp_dict, context)
+            self._add_implementation_response_prompts(control, context.comp_dict, context)
 
         # for profile generate
         # add sections corresponding to added parts in the profile
         added_sections: List[str] = []
         if context.purpose == ContextPurpose.PROFILE:
             added_sections = self._add_additional_content(
-                control, context.profile, merged_header, part_id_map, found_alters
+                control, context.profile, context.merged_header, part_id_map, found_alters
             )
 
-        self._add_yaml_header(merged_header)
+        self._add_yaml_header(context.merged_header)
 
         if context.required_sections:
             self._prompt_required_sections(context.required_sections, added_sections)

@@ -119,19 +119,13 @@ def test_ssp_generate_no_header(tmp_trestle_dir: pathlib.Path) -> None:
     assert ssp_cmd._run(args) == 0
     ac_dir = tmp_trestle_dir / (ssp_name + '/ac')
     ac_1 = ac_dir / 'ac-1.md'
-    ac_2 = ac_dir / 'ac-2.md'
     assert ac_1.exists()
-    assert ac_2.exists()
     assert ac_1.stat().st_size > 1000
-    assert ac_2.stat().st_size > 2000
 
     md_api = MarkdownAPI()
     header, tree = md_api.processor.process_markdown(ac_1)
     assert tree is not None
     assert header[const.SORT_ID] == 'ac-01'
-    header, tree = md_api.processor.process_markdown(ac_2)
-    assert tree is not None
-    assert header[const.SORT_ID] == 'ac-02'
 
 
 def test_ssp_generate_fail_statement_section(tmp_trestle_dir: pathlib.Path) -> None:

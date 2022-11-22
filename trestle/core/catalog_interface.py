@@ -25,7 +25,7 @@ import trestle.core.generic_oscal as generic
 import trestle.oscal.catalog as cat
 from trestle.common.err import TrestleError
 from trestle.common.file_utils import prune_empty_dirs
-from trestle.common.list_utils import as_filtered_list, as_list, delete_item_from_list, deep_set, get_item_from_list, none_if_empty, set_or_pop  # noqa E501
+from trestle.common.list_utils import as_dict, as_filtered_list, as_list, delete_item_from_list, deep_set, get_item_from_list, none_if_empty, set_or_pop  # noqa E501
 from trestle.common.model_utils import ModelUtils
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlInterface, ParameterRep
@@ -89,8 +89,8 @@ class CatalogInterface():
         """Add comp_info for a control."""
         deep_set(self._control_comp_dicts, [control_id, comp_name, label], comp_info)
 
-    def get_comp_info(self, control_id: str) -> Dict[str, CompDict]:
-        """Get all comp_dicts for this control."""
+    def get_comp_info(self, control_id: str) -> CompDict:
+        """Get comp_dict for this control."""
         return self._control_comp_dicts.get(control_id, {})
 
     def clear_comp_dicts(self) -> None:
@@ -104,7 +104,11 @@ class CatalogInterface():
     def get_control_set_params(self, control_id: str) -> List[comp.SetParameter]:
         """Add setparam value for control with overwrite."""
         param_dict = self._control_set_params.get(control_id, {})
-        return list(param_dict.values())
+        dict_list = list(param_dict.values())
+        set_params = []
+        for d in dict_list:
+            set_params.append(list(d.values())[0])
+        return set_params
 
     def clear_set_params(self) -> None:
         """Clear the control set params."""
@@ -729,12 +733,13 @@ class CatalogInterface():
         for control in self.get_all_controls_from_catalog(True):
             # here we do special handling of how set-parameters merge with the yaml header
             new_context = ControlContext.clone(context)
+            new_context.merged_header = {}
             if new_context.inherited_props:
                 inherited_props = new_context.inherited_props.get(control.id, None)
                 if inherited_props:
                     # build set in order of list so that duplicates will have final value stick, then convert to list
                     unique_props = list({prop['name']: prop for prop in inherited_props}.values())
-                    new_context.yaml_header[const.TRESTLE_INHERITED_PROPS_TAG] = unique_props
+                    new_context.merged_header[const.TRESTLE_INHERITED_PROPS_TAG] = unique_props
             # get all params and vals for this control from the resolved profile catalog with block adds in effect
             control_param_dict = ControlInterface.get_control_param_dict(control, False)
             set_param_dict: Dict[str, str] = {}
@@ -769,6 +774,7 @@ class CatalogInterface():
             if set_param_dict:
                 if const.SET_PARAMS_TAG not in new_context.yaml_header:
                     new_context.yaml_header[const.SET_PARAMS_TAG] = {}
+                # FIXME is this intended behavior
                 if new_context.overwrite_header_values:
                     # update the control params with new values
                     for key, value in new_context.yaml_header[const.SET_PARAMS_TAG].items():
@@ -780,15 +786,15 @@ class CatalogInterface():
                     for key, value in new_context.yaml_header[const.SET_PARAMS_TAG].items():
                         if key in control_param_dict and key not in set_param_dict:
                             set_param_dict[key] = value
-                new_context.yaml_header[const.SET_PARAMS_TAG] = set_param_dict
-            elif const.SET_PARAMS_TAG in new_context.yaml_header:
+                new_context.merged_header[const.SET_PARAMS_TAG] = set_param_dict
+            elif const.SET_PARAMS_TAG in new_context.merged_header:
                 # need to cull any params that are not in control
                 pop_list: List[str] = []
-                for key in new_context.yaml_header[const.SET_PARAMS_TAG].keys():
+                for key in new_context.merged_header[const.SET_PARAMS_TAG].keys():
                     if key not in control_param_dict:
                         pop_list.append(key)
                 for pop in pop_list:
-                    new_context.yaml_header[const.SET_PARAMS_TAG].pop(pop)
+                    new_context.merged_header[const.SET_PARAMS_TAG].pop(pop)
 
             found_control_alters = [alter for alter in found_alters if alter.control_id == control.id]
 
@@ -797,13 +803,55 @@ class CatalogInterface():
     @staticmethod
     def _read_comp_info_from_md(control_file_path: pathlib.Path,
                                 context: ControlContext) -> Tuple[Dict[str, Any], CompDict]:
+        comp_dict = {}
+        md_header = {}
         if control_file_path.exists():
-            comp_dict = {}
             md_header = ControlReader.read_control_info_from_md(control_file_path, comp_dict, context)
         return md_header, comp_dict
 
-    # FIXME typing
-    def _merge_header_and_comp_dict(self, control, md_header, comp_dict, context) -> None:
+    def _get_control_memory_info(self, control_id: str, context) -> Dict[str, Any]:
+        # set COMP_DEF_RULES_TAG, RULES_PARAMS_TAG, COMP_DEF_RULES_PARAM_VALS_TAG, SET_PARAMS_TAG
+        header = {}
+        rule_names_list: List[str] = []
+        context.comp_dict = self.get_comp_info(control_id)
+        for _, value in context.comp_dict.items():
+            for comp_info in value.values():
+                rule_names_list.extend(as_list(comp_info.rules))
+        if rule_names_list:
+            rules = []
+            rule_ids = []
+            for key, value in context.rules_dict.items():
+                if value['name'] in rule_names_list:
+                    rule_ids.append(key)
+                    rules.append(value)
+            header[const.COMP_DEF_RULES_TAG] = rules
+            rules_params = []
+            rules_param_names = []
+            for key, value in as_dict(context.rules_params_dict).items():
+                if key in as_list(rule_ids):
+                    rules_params.append(value)
+                    rules_param_names.append(value['name'])
+            set_or_pop(header, const.RULES_PARAMS_TAG, rules_params)
+            # go through all set_params and put in rules param list if name matches
+            control_set_params = []
+            rules_set_params = []
+            # get dict of name: set_param
+            all_set_params = self.get_control_set_params(control_id)
+            for set_param in all_set_params:
+                values = ', '.join([v.__root__ for v in as_list(set_param.values)])
+                param_dict = {set_param.param_id: values}
+                if set_param.param_id in rules_param_names:
+                    rules_set_params.append(param_dict)
+                else:
+                    control_set_params.append(param_dict)
+            set_or_pop(header, const.COMP_DEF_RULES_PARAM_VALS_TAG, rules_set_params)
+            set_or_pop(header, const.SET_PARAMS_TAG, control_set_params)
+
+        return header, context.comp_dict
+
+    def _merge_header_and_comp_dict(
+        self, control: cat.Control, control_file_path: pathlib.Path, context: ControlContext
+    ) -> None:
         """
         Merge the header and the comp_dict.
 
@@ -836,31 +884,44 @@ class CatalogInterface():
         ac-1_prm_7:
             values:
         ---
+
+        # now have all rules in context.rules_dict and all rules_params in context.rules_params_dict
+        # all set-params per component for each control are in the cat interface
+        # all comp-infos by control and part are in the cat interface
+        #
+        # can now write out catalog and pull from the markdown:
+        # header for param values to set during assem
+        # prose and status for This System
+        # status for all parts that still have rules
+
+        set COMP_DEF_RULES_TAG, RULES_PARAMS_TAG, COMP_DEF_RULES_PARAM_VALS_TAG, SET_PARAMS_TAG
+
         """
-        # Below was copied here and needs to be hooked in to generate header content
-        params_dict, rules_list = ControlReader._add_component_to_dict(context, control, comp_dict)
-        all_params = []
-        if params_dict:
-            if not set(params_dict.keys()).issuperset(rules_list):
-                raise TrestleError(f'Control {control.id} has a parameter assigned to a rule that is not defined.')
-            if context.rules_dict:
-                all_params.extend(
-                    [
-                        {
-                            context.rules_dict[id_]['name']: context.rules_params_dict[id_]
-                            for id_ in context.rules_params_dict.keys()
-                        }
-                    ]
-                )
-        if context.rules_dict:
-            rule_ids = [id_ for id_ in context.rules_dict.keys() if context.rules_dict[id_]['name'] in rules_list]
-            control_rules = [context.rules_dict[id_] for id_ in rule_ids]
-            set_or_pop(context.yaml_header, const.COMP_DEF_RULES_TAG, control_rules)
-            all_params.extend([context.rules_params_dict[id_] for id_ in rule_ids if id_ in context.rules_params_dict])
-        if all_params:
-            context.yaml_header[const.RULES_PARAMS_TAG] = all_params
-        if context.rules_param_vals:
-            context.yaml_header[const.COMP_DEF_RULES_PARAM_VALS_TAG] = context.rules_param_vals
+        memory_header, memory_comp_dict = self._get_control_memory_info(control.id, context)
+        md_header, md_comp_dict = self._read_comp_info_from_md(control_file_path, context)
+        # get select info from md and update the memory comp_dict
+        if const.SSP_MAIN_COMP_NAME in md_comp_dict:
+            sys_memory_dict = memory_comp_dict.get(const.SSP_MAIN_COMP_NAME, {})
+            sys_md_dict = md_comp_dict[const.SSP_MAIN_COMP_NAME]
+            # for This System the md completely replaces what is in memory
+            # but only for items that are in memory, which means they have rules
+            for label, comp_info in memory_comp_dict.items():
+                if label in sys_md_dict:
+                    sys_memory_dict[label] = comp_info
+            md_comp_dict.pop(const.SSP_MAIN_COMP_NAME)
+        for comp_name, md_label_dict in md_comp_dict.items():
+            memory_label_dict = memory_comp_dict.get(comp_name, None)
+            if not memory_label_dict:
+                continue
+            for label, comp_info in md_label_dict.items():
+                if label in memory_label_dict:
+                    memory_label_dict[label].status = comp_info.status
+
+        memory_rules_param_vals = memory_header.get(const.COMP_DEF_RULES_PARAM_VALS_TAG, {})
+        md_rules_param_vals = md_header.get(const.COMP_DEF_RULES_PARAM_VALS_TAG, {})
+        ControlInterface.merge_dicts_deep(memory_rules_param_vals, md_rules_param_vals, True)
+        set_or_pop(memory_header, const.COMP_DEF_RULES_PARAM_VALS_TAG, memory_rules_param_vals)
+        context.merged_header = memory_header
 
     def write_catalog_as_ssp_markdown(self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]]) -> None:
         """
@@ -940,16 +1001,14 @@ class CatalogInterface():
                 logger.warning(f'Control {control_id} referenced by component is not in the resolved catalog.')
                 continue
             control_file_path.parent.mkdir(exist_ok=True, parents=True)
-            md_header, comp_dict = CatalogInterface._read_comp_info_from_md(control_file_path, context)
             control = self.get_control(control_id)
             _, group_title, _ = self.get_group_info_by_control(control_id)
-            self._merge_header_and_comp_dict(control, md_header, comp_dict, context)
+            # merge the md_header and md_comp_dict with info in cat_interface for this control
+            self._merge_header_and_comp_dict(control, control_file_path, context)
             control_writer = ControlWriter()
             control_writer.write_control_for_editing(
                 context, control, control_file_path.parent, group_title, part_id_map, []
             )
-
-        pass
 
     def write_catalog_as_component_markdown(
         self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]]

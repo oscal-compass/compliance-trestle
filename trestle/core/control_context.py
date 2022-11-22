@@ -21,6 +21,7 @@ from enum import Enum
 from typing import Any, Dict, List, Optional
 
 from trestle.common.list_utils import as_dict
+from trestle.core.control_interface import CompDict
 from trestle.oscal import component as comp
 from trestle.oscal import profile as prof
 
@@ -60,6 +61,8 @@ class ControlContext:
     rules_param_vals: Optional[List[Dict[str, str]]] = None
     control_implementation: Optional[comp.ControlImplementation] = None
     uri_name_map: Optional[Dict[str, str]] = None
+    comp_dict: Optional[CompDict] = None
+    merged_header: Optional[Dict[str, Any]] = None
 
     @classmethod
     def generate(
@@ -85,7 +88,9 @@ class ControlContext:
         rules_params_dict: Optional[Dict[str, Dict[str, Any]]] = None,
         rules_param_vals: Optional[List[Dict[str, str]]] = None,
         control_implementation: Optional[comp.ControlImplementation] = None,
-        uri_name_map: Optional[Dict[str, str]] = None
+        uri_name_map: Optional[Dict[str, str]] = None,
+        comp_dict: Optional[CompDict] = None,
+        merged_header: Optional[Dict[str, Any]] = None
     ) -> ControlContext:
         """Generate control context of the needed type."""
         context = cls(
@@ -110,10 +115,12 @@ class ControlContext:
             rules_params_dict=rules_params_dict,
             rules_param_vals=rules_param_vals,
             control_implementation=control_implementation,
-            uri_name_map=uri_name_map
+            uri_name_map=uri_name_map,
+            comp_dict=comp_dict
         )
         context.yaml_header = as_dict(yaml_header)
         context.sections_dict = as_dict(sections_dict)
+        context.merged_header = as_dict(merged_header)
         # catalog generate always sets params
         if to_markdown:
             context.set_parameters = True
@@ -144,6 +151,8 @@ class ControlContext:
             rules_params_dict=copy.deepcopy(context.rules_params_dict),
             rules_param_vals=context.rules_param_vals,
             control_implementation=copy.deepcopy(context.control_implementation),
-            uri_name_map=context.uri_name_map
+            uri_name_map=context.uri_name_map,
+            comp_dict=copy.deepcopy(context.comp_dict),
+            merged_header=copy.deepcopy(context.merged_header)
         )
         return new_context

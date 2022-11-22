@@ -5,6 +5,6 @@ responsible-roles:
 - Customer
 x-trestle-set-params:
   ac-1_prm_5:
+    label: meetings cancelled
     profile-values: no meetings
     values:
-    label: meetings cancelled

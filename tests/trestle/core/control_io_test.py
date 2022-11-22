@@ -22,11 +22,9 @@ import pytest
 
 import tests.test_utils as test_utils
 
-import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
 import trestle.oscal.component as comp
 import trestle.oscal.profile as prof
-import trestle.oscal.ssp as ossp
 from trestle.common import const
 from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
@@ -307,47 +305,6 @@ def test_merge_dicts_deep_empty() -> None:
     assert dest['foo'] is None
     ControlInterface.merge_dicts_deep(dest, src, True)
     assert dest['foo'] == 'fancy value'
-
-
-def test_control_with_components(tmp_path: pathlib.Path) -> None:
-    """Test loading and parsing of implementated reqs with components."""
-    control_path = pathlib.Path('tests/data/author/controls/control_with_components.md').resolve()
-    control, _ = ControlReader.read_control(control_path, False)
-    context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_path, tmp_path)
-    comp_dict, _ = ControlReader.read_control_info_from_memory(control, context)
-    _ = ControlReader.read_control_info_from_md(control_path, comp_dict, context)
-    assert len(comp_dict.keys()) == 3
-    assert len(comp_dict['This System'].keys()) == 4
-    assert len(comp_dict['Trestle Component'].keys()) == 1
-    assert len(comp_dict['Fancy Thing'].keys()) == 2
-    assert comp_dict['Fancy Thing']['a.'].prose == 'Text for fancy thing component'
-
-    # need to build the needed components so they can be referenced by the imp_req
-    new_comp_dict = {}
-    for comp_name in comp_dict.keys():
-        comp = gens.generate_sample_model(ossp.SystemComponent)
-        comp.title = comp_name
-        new_comp_dict[comp_name] = comp
-
-    # confirm that the header content was inserted into the props of the imp_req
-    sort_id, imp_req = ControlReader.read_implemented_requirement(control_path, new_comp_dict, context)
-    assert len(imp_req.props) == 12
-    assert len(imp_req.statements) == 4
-    assert len(imp_req.statements[1].by_components) == 3
-
-
-@pytest.mark.parametrize(
-    'md_file', ['control_with_bad_system_comp.md', 'control_with_double_comp.md', 'control_with_bad_component.md']
-)
-def test_control_bad_components(md_file: str, tmp_path: pathlib.Path) -> None:
-    """Test loading of imp reqs for control with bad components."""
-    control_path = pathlib.Path('tests/data/author/controls/') / md_file
-    control, _ = ControlReader.read_control(control_path, False)
-    context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_path, tmp_path)
-    with pytest.raises(TrestleError):
-        # FIXME confirm correct failure reason
-        comp_dict, _ = ControlReader.read_control_info_from_memory(control, context)
-        _ = ControlReader.read_control_info_from_md(control_path, comp_dict, context)
 
 
 def test_get_control_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
