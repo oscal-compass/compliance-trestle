@@ -153,7 +153,7 @@ class SSPGenerate(AuthorCommonCommand):
                 raise TrestleError(f'Unable to overwrite contents of {md_path}: {e}')
 
         context = ControlContext.generate(ContextPurpose.SSP, True, trestle_root, md_path)
-        context.yaml_header = yaml_header
+        context.cli_yaml_header = yaml_header
         context.sections_dict = sections_dict
         context.prompt_responses = True
         context.overwrite_header_values = overwrite_header_values

@@ -479,17 +479,19 @@ class ControlWriter():
         # if the control has an explicitly defined sort-id and there is none in the yaml_header, then insert it
         # in the yaml header and allow overwrite_header_values to control whether it overwrites an existing one
         # in the markdown header
-        context.yaml_header = as_dict(context.yaml_header)
+        context.cli_yaml_header = as_dict(context.cli_yaml_header)
         sort_id = ControlInterface.get_sort_id(control, True)
-        if sort_id and const.SORT_ID not in context.yaml_header:
-            context.yaml_header[const.SORT_ID] = sort_id
+        if sort_id and const.SORT_ID not in context.cli_yaml_header:
+            context.cli_yaml_header[const.SORT_ID] = sort_id
         if not context.purpose == ContextPurpose.PROFILE:
             ControlInterface.merge_dicts_deep(
-                context.merged_header, context.yaml_header, context.overwrite_header_values
+                context.merged_header, context.cli_yaml_header, context.overwrite_header_values
             )
         # the global contents are special and get overwritten on generate
         set_or_pop(
-            context.merged_header, const.TRESTLE_GLOBAL_TAG, context.yaml_header.get(const.TRESTLE_GLOBAL_TAG, None)
+            context.merged_header,
+            const.TRESTLE_GLOBAL_TAG,
+            context.cli_yaml_header.get(const.TRESTLE_GLOBAL_TAG, None)
         )
 
         # merge any provided sections with sections in the header, with priority to the one from context (e.g. CLI)

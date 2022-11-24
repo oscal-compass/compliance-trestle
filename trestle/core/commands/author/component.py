@@ -119,10 +119,10 @@ class ComponentGenerate(AuthorCommonCommand):
                 local_catalog_api = cat_api_dict[source_profile_uri]
             # insert the profile title (from title of resolved catalog) into the yaml header so it appears in md
             # different controls in the final catalog may have different profile titles if from different control_imps
-            context.yaml_header = {}
-            context.yaml_header[const.TRESTLE_GLOBAL_TAG] = {}
+            context.cli_yaml_header = {}
+            context.cli_yaml_header[const.TRESTLE_GLOBAL_TAG] = {}
             profile_title = local_catalog_api._catalog_interface.get_catalog_title()
-            context.yaml_header[const.TRESTLE_GLOBAL_TAG][const.PROFILE_TITLE] = profile_title
+            context.cli_yaml_header[const.TRESTLE_GLOBAL_TAG][const.PROFILE_TITLE] = profile_title
             sub_dir_name = context.uri_name_map[source_profile_uri]
             context.md_root = markdown_dir_path / sub_dir_name
             part_id_map = local_catalog_api._catalog_interface.get_statement_part_id_map(False

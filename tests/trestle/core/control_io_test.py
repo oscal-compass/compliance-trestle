@@ -367,7 +367,7 @@ def test_write_control_header_params(overwrite_header_values, tmp_path: pathlib.
     orig_control_read, group_title = ControlReader.read_control(control_path, True)
     assert group_title == 'Access Control'
     context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_path, tmp_path)
-    context.yaml_header = header
+    context.cli_yaml_header = header
     context.overwrite_header_values = overwrite_header_values
     control_writer = ControlWriter()
     control_writer.write_control_for_editing(context, orig_control_read, tmp_path, group_title, {}, [])

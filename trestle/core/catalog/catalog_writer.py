@@ -26,6 +26,7 @@ from trestle.common.model_utils import ModelUtils
 from trestle.core.control_context import ControlContext
 from trestle.core.control_interface import ComponentImpInfo, ControlInterface, ParameterRep
 from trestle.core.control_writer import ControlWriter
+from trestle.oscal import common
 from trestle.oscal import component as comp
 from trestle.oscal import profile as prof
 
@@ -50,66 +51,26 @@ class CatalogWriter():
         """Write out the catalog as profile markdown."""
         # Get the list of params for this profile from its set_params
         # this is just from the set_params
-        full_param_dict = CatalogInterface._get_full_profile_param_dict(context.profile)
+        profile_set_param_dict = CatalogInterface._get_full_profile_param_dict(context.profile)
 
         # write out the controls
         for control in self._catalog_interface.get_all_controls_from_catalog(True):
             # here we do special handling of how set-parameters merge with the yaml header
             new_context = ControlContext.clone(context)
             new_context.merged_header = {}
-            if new_context.inherited_props:
-                inherited_props = new_context.inherited_props.get(control.id, None)
-                if inherited_props:
-                    # build set in order of list so that duplicates will have final value stick, then convert to list
-                    unique_props = list({prop['name']: prop for prop in inherited_props}.values())
-                    new_context.merged_header[const.TRESTLE_INHERITED_PROPS_TAG] = unique_props
+
+            new_context = self._add_inherited_props_to_header(new_context, control.id)
+
             # get all params and vals for this control from the resolved profile catalog with block adds in effect
             control_param_dict = ControlInterface.get_control_param_dict(control, False)
-            set_param_dict: Dict[str, str] = {}
-            for param_id, param_dict in control_param_dict.items():
-                # if the param is in the full_param_dict, load its contents first and mark as profile-values
-                display_name = ''
-                if param_id in full_param_dict:
-                    # get the param from the profile set_param
-                    param = full_param_dict[param_id]
-                    display_name, _ = CatalogInterface._get_display_name_and_ns(param)
-                    # assign its contents to the dict
-                    new_dict = ModelUtils.parameter_to_dict(param, True)
-                    if const.VALUES in new_dict:
-                        new_dict[const.PROFILE_VALUES] = new_dict[const.VALUES]
-                        new_dict.pop(const.VALUES)
-                    # then insert the original, incoming values as values
-                    if param_id in control_param_dict:
-                        orig_param = control_param_dict[param_id]
-                        orig_dict = ModelUtils.parameter_to_dict(orig_param, True)
-                        # pull only the values from the actual control dict
-                        # all the other elements are from the profile set_param
-                        new_dict[const.VALUES] = orig_dict.get(const.VALUES, None)
-                else:
-                    # if the profile doesnt change this param at all, show it in the header with values
-                    tmp_dict = ModelUtils.parameter_to_dict(param_dict, True)
-                    values = tmp_dict.get('values', None)
-                    new_dict = {'id': param_id, 'values': values}
-                new_dict.pop('id', None)
-                if display_name:
-                    new_dict[const.DISPLAY_NAME] = display_name
-                set_param_dict[param_id] = new_dict
+
+            set_param_dict = self._construct_set_parameters_dict(profile_set_param_dict, control_param_dict)
+
             if set_param_dict:
-                if const.SET_PARAMS_TAG not in new_context.yaml_header:
-                    new_context.yaml_header[const.SET_PARAMS_TAG] = {}
-                # FIXME is this intended behavior
-                if new_context.overwrite_header_values:
-                    # update the control params with new values
-                    for key, value in new_context.yaml_header[const.SET_PARAMS_TAG].items():
-                        if key in control_param_dict:
-                            set_param_dict[key] = value
-                else:
-                    # update the control params with any values in yaml header not set in control
-                    # need to maintain order in the set_param_dict
-                    for key, value in new_context.yaml_header[const.SET_PARAMS_TAG].items():
-                        if key in control_param_dict and key not in set_param_dict:
-                            set_param_dict[key] = value
-                new_context.merged_header[const.SET_PARAMS_TAG] = set_param_dict
+                new_context = self._add_set_params_from_cli_yaml_header_to_header(
+                    new_context, set_param_dict, control_param_dict
+                )
+
             elif const.SET_PARAMS_TAG in new_context.merged_header:
                 # need to cull any params that are not in control
                 pop_list: List[str] = []
@@ -122,6 +83,95 @@ class CatalogWriter():
             found_control_alters = [alter for alter in md_alters if alter.control_id == control.id]
 
             self._write_control_into_dir(new_context, control, part_id_map, found_control_alters)
+
+    def _add_inherited_props_to_header(self, context: ControlContext, control_id: str) -> ControlContext:
+        """Add inherited props to the merged header under inherited tag."""
+        if context.inherited_props:
+            inherited_props = context.inherited_props.get(control_id, None)
+            if inherited_props:
+                # build set in order of list so that duplicates will have final value stick, then convert to list
+                unique_props = list({prop['name']: prop for prop in inherited_props}.values())
+                context.merged_header[const.TRESTLE_INHERITED_PROPS_TAG] = unique_props
+
+        return context
+
+    def _add_set_params_from_cli_yaml_header_to_header(
+        self, context: ControlContext, set_param_dict: Dict[str, str], control_param_dict: Dict[str, common.Parameter]
+    ):
+        """
+        Add set parameters from the provided cli yaml header to the merged header.
+
+        If overwrite-header-value flag is given
+            - Set-parameters in set_param_dict will be overwritten with those in cli yaml header
+            - No new params from the cli yaml header will be added <- TODO: Is this correct?
+        If ohv flag is NOT given :
+            - Set-parameters from the cli yaml header will be added
+            - Will not overwrite params that are already in set_param_dict
+        """
+        if const.SET_PARAMS_TAG not in context.cli_yaml_header:
+            context.cli_yaml_header[const.SET_PARAMS_TAG] = {}
+
+        if context.cli_yaml_header:
+            # FIXME is this intended behavior
+            if context.overwrite_header_values:
+                # update the control params with new values
+                for key, value in context.cli_yaml_header[const.SET_PARAMS_TAG].items():
+                    if key in control_param_dict:
+                        set_param_dict[key] = value
+            else:
+                # update the control params with any values in yaml header not set in control
+                # need to maintain order in the set_param_dict
+                for key, value in context.cli_yaml_header[const.SET_PARAMS_TAG].items():
+                    if key in control_param_dict and key not in set_param_dict:
+                        set_param_dict[key] = value
+        context.merged_header[const.SET_PARAMS_TAG] = set_param_dict
+
+        return context
+
+    def _construct_set_parameters_dict(self, profile_set_param_dict, control_param_dict) -> Dict[str, str]:
+        """
+        Build set-parameters dictionary from the given profile.modify.set-parameters and control.params.
+
+        Resulting dictionary will have:
+        - All parameters from the control where:
+            - If control_param in profile.modify.set_params:
+                - Display name (if exists) - from profile
+                - Profile-values - from profile
+                - Values - from control
+            - If control_param is not in profile.modify.set_params:
+                - Values - from control
+        """
+        set_param_dict: Dict[str, str] = {}
+        for param_id, param_dict in control_param_dict.items():
+            # if the param is in the full_param_dict, load its contents first and mark as profile-values
+            display_name = ''
+            if param_id in profile_set_param_dict:
+                # get the param from the profile set_param
+                param = profile_set_param_dict[param_id]
+                display_name, _ = CatalogInterface._get_display_name_and_ns(param)
+                # assign its contents to the dict
+                new_dict = ModelUtils.parameter_to_dict(param, True)
+                if const.VALUES in new_dict:
+                    new_dict[const.PROFILE_VALUES] = new_dict[const.VALUES]
+                    new_dict.pop(const.VALUES)
+                # then insert the original, incoming values as values
+                if param_id in control_param_dict:
+                    orig_param = control_param_dict[param_id]
+                    orig_dict = ModelUtils.parameter_to_dict(orig_param, True)
+                    # pull only the values from the actual control dict
+                    # all the other elements are from the profile set_param
+                    new_dict[const.VALUES] = orig_dict.get(const.VALUES, None)
+            else:
+                # if the profile doesnt change this param at all, show it in the header with values
+                tmp_dict = ModelUtils.parameter_to_dict(param_dict, True)
+                values = tmp_dict.get('values', None)
+                new_dict = {'id': param_id, 'values': values}
+            new_dict.pop('id', None)
+            if display_name:
+                new_dict[const.DISPLAY_NAME] = display_name
+            set_param_dict[param_id] = new_dict
+
+        return set_param_dict
 
     def write_catalog_as_ssp_markdown(self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]]) -> None:
         """
@@ -243,9 +293,9 @@ class CatalogWriter():
                             _update_values(set_param)
 
                 if control_param_dict:
-                    new_context.yaml_header[const.PARAM_VALUES_TAG] = {}
+                    new_context.cli_yaml_header[const.PARAM_VALUES_TAG] = {}
                     for key, param in control_param_dict.items():
-                        new_context.yaml_header[const.PARAM_VALUES_TAG][key] = none_if_empty(
+                        new_context.cli_yaml_header[const.PARAM_VALUES_TAG][key] = none_if_empty(
                             ControlInterface.param_to_str(param, ParameterRep.VALUE_OR_EMPTY_STRING)
                         )
 
@@ -266,28 +316,28 @@ class CatalogWriter():
                 new_dict = {'values': values}
                 set_param_dict[param_id] = new_dict
             if set_param_dict:
-                if const.SET_PARAMS_TAG not in new_context.yaml_header:
-                    new_context.yaml_header[const.SET_PARAMS_TAG] = {}
+                if const.SET_PARAMS_TAG not in new_context.cli_yaml_header:
+                    new_context.cli_yaml_header[const.SET_PARAMS_TAG] = {}
                 if new_context.overwrite_header_values:
                     # update the control params with new values
-                    for key, value in new_context.yaml_header[const.SET_PARAMS_TAG].items():
+                    for key, value in new_context.cli_yaml_header[const.SET_PARAMS_TAG].items():
                         if key in control_param_dict:
                             set_param_dict[key] = value
                 else:
                     # update the control params with any values in yaml header not set in control
                     # need to maintain order in the set_param_dict
-                    for key, value in new_context.yaml_header[const.SET_PARAMS_TAG].items():
+                    for key, value in new_context.cli_yaml_header[const.SET_PARAMS_TAG].items():
                         if key in control_param_dict and key not in set_param_dict:
                             set_param_dict[key] = value
-                new_context.yaml_header[const.SET_PARAMS_TAG] = set_param_dict
-            elif const.SET_PARAMS_TAG in new_context.yaml_header:
+                new_context.cli_yaml_header[const.SET_PARAMS_TAG] = set_param_dict
+            elif const.SET_PARAMS_TAG in new_context.cli_yaml_header:
                 # need to cull any params that are not in control
                 pop_list: List[str] = []
-                for key in new_context.yaml_header[const.SET_PARAMS_TAG].keys():
+                for key in new_context.cli_yaml_header[const.SET_PARAMS_TAG].keys():
                     if key not in control_param_dict:
                         pop_list.append(key)
                 for pop in pop_list:
-                    new_context.yaml_header[const.SET_PARAMS_TAG].pop(pop)
+                    new_context.cli_yaml_header[const.SET_PARAMS_TAG].pop(pop)
 
             self._write_control_into_dir(new_context, control, part_id_map, [])
 

@@ -145,7 +145,7 @@ class ProfileGenerate(AuthorCommonCommand):
             deep_set(yaml_header, [const.TRESTLE_GLOBAL_TAG, const.PROFILE_TITLE], profile.metadata.title)
 
             context = ControlContext.generate(ContextPurpose.PROFILE, True, trestle_root, markdown_path)
-            context.yaml_header = yaml_header
+            context.cli_yaml_header = yaml_header
             context.sections_dict = sections_dict
             context.profile = profile
             context.overwrite_header_values = overwrite_header_values

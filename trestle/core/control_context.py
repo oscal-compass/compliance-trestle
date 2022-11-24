@@ -46,7 +46,7 @@ class ControlContext:
     prompt_responses: bool
     overwrite_header_values: bool
     set_parameters_flag: bool
-    yaml_header: Optional[Dict[Any, Any]] = None
+    cli_yaml_header: Optional[Dict[Any, Any]] = None
     sections_dict: Optional[Dict[str, str]] = None
     profile: Optional[prof.Profile] = None
     required_sections: Optional[List[str]] = None
@@ -74,7 +74,7 @@ class ControlContext:
         prompt_responses=False,
         overwrite_header_values=False,
         set_parameters_flag=False,
-        yaml_header: Optional[Dict[Any, Any]] = None,
+        cli_yaml_header: Optional[Dict[Any, Any]] = None,
         sections_dict: Optional[Dict[str, str]] = None,
         profile: Optional[prof.Profile] = None,
         required_sections: Optional[List[str]] = None,
@@ -101,7 +101,7 @@ class ControlContext:
             prompt_responses,
             overwrite_header_values,
             set_parameters_flag,
-            yaml_header=yaml_header,
+            cli_yaml_header=cli_yaml_header,
             sections_dict=sections_dict,
             profile=profile,
             required_sections=required_sections,
@@ -118,7 +118,7 @@ class ControlContext:
             uri_name_map=uri_name_map,
             comp_dict=comp_dict
         )
-        context.yaml_header = as_dict(yaml_header)
+        context.cli_yaml_header = as_dict(cli_yaml_header)
         context.sections_dict = as_dict(sections_dict)
         context.merged_header = as_dict(merged_header)
         # catalog generate always sets params
@@ -137,7 +137,7 @@ class ControlContext:
             context.prompt_responses,
             context.overwrite_header_values,
             context.set_parameters_flag,
-            yaml_header=copy.deepcopy(context.yaml_header),
+            cli_yaml_header=copy.deepcopy(context.cli_yaml_header),
             sections_dict=copy.deepcopy(context.sections_dict),
             profile=context.profile,
             required_sections=context.required_sections,
