@@ -31,8 +31,9 @@ from trestle.cli import Trestle
 from trestle.common import const, file_utils
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog.catalog_api import CatalogAPI
+from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.catalog.catalog_merger import CatalogMerger
-from trestle.core.commands.author.catalog import CatalogAssemble, CatalogGenerate, CatalogInterface
+from trestle.core.commands.author.catalog import CatalogAssemble, CatalogGenerate
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.control_context import ContextPurpose, ControlContext

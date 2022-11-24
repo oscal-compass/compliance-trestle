@@ -132,7 +132,8 @@ class ComponentGenerate(AuthorCommonCommand):
             # otherwise the full catalog will be written in subsets by control_imp
             # if an imp_req has a set param also in the control_imp. the imp_req value is used for the control
             # TODO-Katya: Writer shouldnt be accessed here, this is temporary as context should come from api
-            cat_api_dict[source_profile_uri]._writer.write_catalog_as_markdown(context, part_id_map)
+            # TODO-Katya: Confirm fix below by Frank is as intended
+            cat_api_dict[source_profile_uri].write_catalog_as_markdown(context, part_id_map)
         return CmdReturnCodes.SUCCESS.value
 
 

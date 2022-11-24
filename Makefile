@@ -30,10 +30,10 @@ install:
 	python -m pip install  --upgrade pip setuptools
 	python -m pip install . --upgrade --upgrade-strategy eager
 
-code-format: pre-commit-update
+code-format:
 	pre-commit run yapf --all-files
 
-code-lint: pre-commit-update
+code-lint:
 	pre-commit run flake8 --all-files
 
 code-typing:
