@@ -30,6 +30,8 @@ from tests import test_utils
 from trestle.cli import Trestle
 from trestle.common import const, file_utils
 from trestle.common.model_utils import ModelUtils
+from trestle.core.catalog.catalog_api import CatalogAPI
+from trestle.core.catalog.catalog_merger import CatalogMerger
 from trestle.core.commands.author.catalog import CatalogAssemble, CatalogGenerate, CatalogInterface
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.commands.import_ import ImportCmd
@@ -310,16 +312,16 @@ def test_catalog_interface_merge_controls(replace_params: bool, sample_catalog_r
     """Test merging of controls."""
     control_a = sample_catalog_rich_controls.groups[0].controls[0]
     control_b = copy.deepcopy(control_a)
-    CatalogInterface.merge_controls(control_a, control_b, replace_params)
+    CatalogMerger.merge_controls(control_a, control_b, replace_params)
     assert control_a == control_b
     control_b.params[0].values = [ParameterValue(__root__='new value')]
-    CatalogInterface.merge_controls(control_a, control_b, replace_params)
+    CatalogMerger.merge_controls(control_a, control_b, replace_params)
     if replace_params:
         assert control_a.params[0].values[0].__root__ == 'new value'
     else:
         assert control_a.params[0].values[0].__root__ == 'param_0_val'
     control_b.params = control_b.params[:1]
-    CatalogInterface.merge_controls(control_a, control_b, replace_params)
+    CatalogMerger.merge_controls(control_a, control_b, replace_params)
     assert len(control_a.params) == 1 if replace_params else 2
 
 
@@ -389,9 +391,9 @@ def test_catalog_generate_withdrawn(tmp_path: pathlib.Path, sample_catalog_rich_
     if not control_b.props:
         control_b.props = []
     control_b.props.append(Property(name='status', value='Withdrawn'))
-    catalog_interface = CatalogInterface(sample_catalog_rich_controls)
     context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_path, tmp_path)
-    catalog_interface.write_catalog_as_markdown(context, catalog_interface.get_statement_part_id_map(False))
+    catalog_api = CatalogAPI(catalog=sample_catalog_rich_controls, context=context)
+    catalog_api.write_catalog_as_markdown()
     # confirm that the first control was written out but not the second
     path_a = tmp_path / group_id / (control_a.id + '.md')
     assert path_a.exists()

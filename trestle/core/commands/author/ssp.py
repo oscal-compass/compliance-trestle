@@ -31,7 +31,8 @@ from trestle.common.err import TrestleError, handle_generic_command_exception
 from trestle.common.list_utils import as_list, comma_colon_sep_to_dict, comma_sep_to_list, none_if_empty
 from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
-from trestle.core.catalog_interface import CatalogInterface
+from trestle.core.catalog.catalog_api import CatalogAPI
+from trestle.core.catalog.catalog_reader import CatalogReader
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.cmd_utils import clear_folder
 from trestle.core.commands.common.return_codes import CmdReturnCodes
@@ -164,15 +165,15 @@ class SSPGenerate(AuthorCommonCommand):
         resolved_catalog = profile_resolver.get_resolved_profile_catalog(
             trestle_root, profile_path, show_value_warnings=True
         )
-        catalog_interface = CatalogInterface(resolved_catalog)
+        catalog_api = CatalogAPI(catalog=resolved_catalog, context=context)
         # add any existing sections from the controls but only have short names
-        control_section_short_names = catalog_interface.get_sections()
+        control_section_short_names = catalog_api._catalog_interface.get_sections()
         for short_name in control_section_short_names:
             if short_name not in sections_dict:
                 sections_dict[short_name] = short_name
         logger.debug(f'ssp sections dict: {sections_dict}')
 
-        catalog_interface.write_catalog_as_markdown(context, catalog_interface.get_statement_part_id_map(False))
+        catalog_api.write_catalog_as_markdown()
 
         return CmdReturnCodes.SUCCESS.value
 
@@ -291,7 +292,7 @@ class SSPAssemble(AuthorCommonCommand):
                 for component in ssp.system_implementation.components:
                     comp_dict[component.title] = generic.GenericComponent.from_system_component(component)
                 # read the new imp reqs from markdown and have them reference existing components
-                imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, comp_dict, context)
+                imp_reqs = CatalogReader.read_catalog_imp_reqs(md_path, comp_dict, context)
                 new_imp_reqs = []
                 for imp_req in imp_reqs:
                     new_imp_reqs.append(imp_req.as_ssp())
@@ -301,7 +302,7 @@ class SSPAssemble(AuthorCommonCommand):
                 # create a sample ssp to hold all the parts
                 ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
                 # load the imp_reqs from markdown and create components as needed, referenced by ### headers
-                imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, comp_dict, context)
+                imp_reqs = CatalogReader.read_catalog_imp_reqs(md_path, comp_dict, context)
                 new_imp_reqs = []
                 for imp_req in imp_reqs:
                     new_imp_reqs.append(imp_req.as_ssp())
@@ -471,7 +472,7 @@ class SSPFilter(AuthorCommonCommand):
         if profile_name:
             prof_resolver = ProfileResolver()
             catalog = prof_resolver.get_resolved_profile_catalog(trestle_root, profile_path, show_value_warnings=True)
-            catalog_interface = CatalogInterface(catalog)
+            catalog_api = CatalogAPI(catalog=catalog)
 
             # The input ssp should reference a superset of the controls referenced by the profile
             # Need to cull references in the ssp to controls not in the profile
@@ -481,7 +482,7 @@ class SSPFilter(AuthorCommonCommand):
 
             new_set_params: List[ossp.SetParameter] = []
             for set_param in as_list(control_imp.set_parameters):
-                control = catalog_interface.get_control_by_param_id(set_param.param_id)
+                control = catalog_api._catalog_interface.get_control_by_param_id(set_param.param_id)
                 if control is not None:
                     new_set_params.append(set_param)
                     ssp_control_ids.add(control.id)
@@ -489,14 +490,14 @@ class SSPFilter(AuthorCommonCommand):
 
             new_imp_requirements: List[ossp.ImplementedRequirement] = []
             for imp_requirement in as_list(control_imp.implemented_requirements):
-                control = catalog_interface.get_control(imp_requirement.control_id)
+                control = catalog_api._catalog_interface.get_control(imp_requirement.control_id)
                 if control is not None:
                     new_imp_requirements.append(imp_requirement)
                     ssp_control_ids.add(control.id)
             control_imp.implemented_requirements = new_imp_requirements
 
             # make sure all controls in the profile have implemented reqs in the final ssp
-            if not ssp_control_ids.issuperset(catalog_interface.get_control_ids()):
+            if not ssp_control_ids.issuperset(catalog_api._catalog_interface.get_control_ids()):
                 raise TrestleError('Unable to filter the ssp because the profile references controls not in it.')
 
             ssp.control_implementation = control_imp

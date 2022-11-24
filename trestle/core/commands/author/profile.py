@@ -31,7 +31,7 @@ from trestle.common.err import TrestleError, TrestleNotFoundError, handle_generi
 from trestle.common.list_utils import as_filtered_list, as_list, comma_sep_to_list, comma_colon_sep_to_dict, deep_set, none_if_empty  # noqa E501
 from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
-from trestle.core.catalog_interface import CatalogInterface
+from trestle.core.catalog.catalog_api import CatalogAPI
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.cmd_utils import clear_folder
 from trestle.core.commands.common.return_codes import CmdReturnCodes
@@ -144,8 +144,6 @@ class ProfileGenerate(AuthorCommonCommand):
             )
             deep_set(yaml_header, [const.TRESTLE_GLOBAL_TAG, const.PROFILE_TITLE], profile.metadata.title)
 
-            catalog_interface = CatalogInterface(catalog)
-            part_id_map = catalog_interface.get_statement_part_id_map(False)
             context = ControlContext.generate(ContextPurpose.PROFILE, True, trestle_root, markdown_path)
             context.yaml_header = yaml_header
             context.sections_dict = sections_dict
@@ -154,7 +152,8 @@ class ProfileGenerate(AuthorCommonCommand):
             context.set_parameters_flag = True
             context.required_sections = required_sections
             context.inherited_props = inherited_props
-            catalog_interface.write_catalog_as_markdown(context, part_id_map)
+            catalog_api = CatalogAPI(catalog=catalog, context=context)
+            catalog_api.write_catalog_as_markdown()
 
         except TrestleNotFoundError as e:
             raise TrestleError(f'Profile {profile_path} not found, error {e}')
@@ -337,20 +336,19 @@ class ProfileAssemble(AuthorCommonCommand):
         new_content_type = FileContentType.path_to_content_type(parent_prof_path)
 
         catalog = ProfileResolver.get_resolved_profile_catalog(trestle_root, parent_prof_path)
-        catalog_interface = CatalogInterface(catalog)
-        label_map = catalog_interface.get_statement_part_id_map(True)
+
+        context = ControlContext.generate(
+            ContextPurpose.PROFILE, to_markdown=False, trestle_root=trestle_root, md_root=md_dir
+        )
+        context.sections_dict = sections_dict
+        context.required_sections = required_sections
 
         # load the editable sections of the markdown and create Adds for them
         # then overwrite the Adds in the existing profile with the new ones
         # keep track if any changes were made
-        md_dir = trestle_root / md_name
-        found_alters, param_dict, param_map = CatalogInterface.read_additional_content(
-            md_dir,
-            required_sections,
-            label_map,
-            sections_dict,
-            False
-        )
+        catalog_api = CatalogAPI(catalog=catalog, context=context)
+        found_alters, param_dict, param_map = catalog_api.read_additional_content_from_md(label_as_key=True)
+
         # technically if allowed sections is [] it means no sections are allowed
         if allowed_sections is not None:
             for bad_part in [

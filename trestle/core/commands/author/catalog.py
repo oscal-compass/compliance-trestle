@@ -29,7 +29,7 @@ from trestle.common import file_utils
 from trestle.common.err import TrestleError, TrestleNotFoundError, handle_generic_command_exception
 from trestle.common.load_validate import load_validate_model_name, load_validate_model_path
 from trestle.common.model_utils import ModelUtils
-from trestle.core.catalog_interface import CatalogInterface
+from trestle.core.catalog.catalog_api import CatalogAPI
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.cmd_utils import clear_folder
 from trestle.core.commands.common.return_codes import CmdReturnCodes
@@ -105,7 +105,6 @@ class CatalogGenerate(AuthorCommonCommand):
         """Generate markdown for the controls in the catalog."""
         try:
             catalog = load_validate_model_path(trestle_root, catalog_path)
-            catalog_interface = CatalogInterface(catalog)
             context = ControlContext.generate(
                 ContextPurpose.CATALOG,
                 True,
@@ -115,7 +114,8 @@ class CatalogGenerate(AuthorCommonCommand):
                 overwrite_header_values=overwrite_header_values,
                 set_parameters_flag=True
             )
-            catalog_interface.write_catalog_as_markdown(context, catalog_interface.get_statement_part_id_map(False))
+            catalog_api = CatalogAPI(catalog=catalog, context=context)
+            catalog_api.write_catalog_as_markdown()
 
         except TrestleNotFoundError as e:
             raise TrestleError(f'Catalog {catalog_path} not found for load: {e}')
@@ -195,13 +195,11 @@ class CatalogAssemble(AuthorCommonCommand):
             raise TrestleError(f'Markdown directory {md_name} does not exist.')
 
         # assemble the markdown controls into fresh md_catalog
-        md_catalog_interface = CatalogInterface()
+        catalog_api_from_md = CatalogAPI(catalog=None)
         try:
-            md_catalog = md_catalog_interface.read_catalog_from_markdown(md_dir, set_parameters_flag)
+            md_catalog = catalog_api_from_md.read_catalog_from_markdown(md_dir, set_parameters_flag)
         except Exception as e:
             raise TrestleError(f'Error reading catalog from markdown {md_dir}: {e}')
-        if md_catalog_interface.get_count_of_controls_in_catalog(True) == 0:
-            raise TrestleError(f'No controls were loaded from markdown {md_dir}.  No catalog created.')
 
         # this is None if it doesn't exist yet
         assem_cat_path = ModelUtils.full_path_for_top_level_model(trestle_root, assem_cat_name, Catalog)
@@ -220,10 +218,10 @@ class CatalogAssemble(AuthorCommonCommand):
         logger.debug(f'parent_cat_name is {parent_cat_name}')
         if parent_cat_name:
             parent_cat, parent_cat_path = load_validate_model_name(trestle_root, parent_cat_name, Catalog)
-            parent_cat_interface = CatalogInterface(parent_cat)
+            parent_cat_api = CatalogAPI(catalog=parent_cat)
             # merge the just-read md catalog into the original json
-            parent_cat_interface.merge_catalog(md_catalog, set_parameters_flag)
-            md_catalog = parent_cat_interface.get_catalog()
+            parent_cat_api.merge_catalog(md_catalog, set_parameters_flag)
+            md_catalog = parent_cat_api._catalog_interface.get_catalog()
             new_content_type = FileContentType.path_to_content_type(parent_cat_path)
 
         if version:

@@ -36,7 +36,7 @@ from trestle.common import file_utils
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import comma_colon_sep_to_dict, comma_sep_to_list
 from trestle.common.model_utils import ModelUtils
-from trestle.core.catalog_interface import CatalogInterface
+from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.commands.author.profile import ProfileAssemble, ProfileGenerate
 from trestle.core.control_interface import ControlInterface
 from trestle.core.markdown.markdown_api import MarkdownAPI

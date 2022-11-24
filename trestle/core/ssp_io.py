@@ -19,8 +19,8 @@ from typing import Dict, List, Optional
 from trestle.common.const import CONTROL_ORIGINATION, IMPLEMENTATION_STATUS, SSP_MAIN_COMP_NAME
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list
-from trestle.core import catalog_interface
-from trestle.core.catalog_interface import CatalogInterface
+from trestle.core.catalog import catalog_interface
+from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.docs_control_writer import DocsControlWriter
 from trestle.core.markdown.markdown_node import MarkdownNode
 from trestle.core.markdown.md_writer import MDWriter

@@ -34,7 +34,7 @@ from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import AliasMode
 from trestle.core import generators
 from trestle.core.base_model import OscalBaseModel
-from trestle.core.catalog_interface import CatalogInterface
+from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.commands.href import HrefCmd
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.models.file_content_type import FileContentType
