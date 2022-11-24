@@ -62,13 +62,9 @@ def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_la
     return False
 
 
-@pytest.mark.parametrize('import_cat', [False, True])
-@pytest.mark.parametrize('specify_sections', [False, True])
-def test_ssp_generate(import_cat, specify_sections, tmp_trestle_dir: pathlib.Path) -> None:
+def test_ssp_generate(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator."""
-    args, _, _ = setup_for_ssp(True, False, tmp_trestle_dir, prof_name, ssp_name, 'compdefs', import_cat)
-    if specify_sections:
-        args.allowed_sections = 'implgdn,expevid'
+    args, _, _ = setup_for_ssp(tmp_trestle_dir, 'comp_prof', ssp_name)
 
     ssp_cmd = SSPGenerate()
     # run the command for happy path

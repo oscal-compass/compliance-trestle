@@ -20,6 +20,7 @@ from typing import Dict, List
 import trestle.common.const as const
 import trestle.oscal.catalog as cat
 from trestle.core.catalog.catalog_interface import CatalogInterface
+from trestle.core.catalog.catalog_merger import CatalogMerger
 from trestle.common.list_utils import as_dict, as_filtered_list, as_list, delete_item_from_list, deep_set, get_item_from_list, none_if_empty, set_or_pop  # noqa E501
 from trestle.common.model_utils import ModelUtils
 from trestle.core.control_context import ControlContext
@@ -198,7 +199,8 @@ class CatalogWriter():
         # prose and status for This System
         # status for all parts that still have rules
 
-        for control_id, _ in self._catalog_interface._control_comp_dicts.items():
+        catalog_merger = CatalogMerger(self._catalog_interface)
+        for control_id, context.comp_dict in self._catalog_interface._control_comp_dicts.items():
             control_file_path = self._catalog_interface.get_control_file_path(context.md_root, control_id)
             if not control_file_path:
                 logger.warning(f'Control {control_id} referenced by component is not in the resolved catalog.')
@@ -207,7 +209,7 @@ class CatalogWriter():
             control = self._catalog_interface.get_control(control_id)
             _, group_title, _ = self._catalog_interface.get_group_info_by_control(control_id)
             # merge the md_header and md_comp_dict with info in cat_interface for this control
-            self._catalog_interface._merge_header_and_comp_dict(control, control_file_path, context)
+            catalog_merger._merge_header_and_comp_dict(control, control_file_path, context)
             control_writer = ControlWriter()
             control_writer.write_control_for_editing(
                 context, control, control_file_path.parent, group_title, part_id_map, []

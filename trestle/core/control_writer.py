@@ -199,9 +199,12 @@ class ControlWriter():
                         part_label = ControlInterface.get_label(prt)
                         part_label = prt.id.split('.')[-1] if not part_label else part_label
                         # only write out part if rules apply to it
-                        if part_label not in comp_dict[context.comp_name]:
-                            continue
-                        if not comp_dict[context.comp_name][part_label].rules:
+                        rules_apply = False
+                        for _, dic in comp_dict.items():
+                            if part_label in dic and dic[part_label].rules:
+                                rules_apply = True
+                                break
+                        if not rules_apply:
                             continue
                         if not did_write_part:
                             self._md_file.new_line(const.SSP_MD_LEAVE_BLANK_TEXT)

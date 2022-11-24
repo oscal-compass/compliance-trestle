@@ -156,8 +156,8 @@
             "implemented-requirements": [
               {
                 "uuid": "ca5ea4c5-ba51-4b1d-932a-5606891b7486",
-                "control-id": "ac-3",
-                "description": "imp req prose for ac-1 from comp aa",
+                "control-id": "ac-6.7",
+                "description": "imp req prose for ac-7 from comp ba",
                 "props": [
                   {
                     "name": "Rule_Id",
@@ -166,7 +166,7 @@
                   {
                     "name": "implementation-status",
                     "value": "implemented",
-                    "remarks": "ac3 imp req status"
+                    "remarks": "ac7 imp req status"
                   }
                 ],
                 "responsible-roles": [
@@ -192,7 +192,7 @@
                 ],
                 "statements": [
                   {
-                    "statement-id": "ac-3_smt.a",
+                    "statement-id": "ac-6.7_smt.a",
                     "uuid": "2652b814-2a6b-4b6d-a0ae-8bc7a007219f",
                     "description": "statement prose for part a. from comp ba",
                     "props": [

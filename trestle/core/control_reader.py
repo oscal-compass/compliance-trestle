@@ -473,7 +473,7 @@ class ControlReader():
                         prose = ControlReader._handle_empty_prose(statement.description, statement.statement_id)
                         sub_comp_dict[label] = ComponentImpInfo(prose=prose, status=status, rules=rules_list)
             if sub_comp_dict:
-                comp_dict[context.comp_name] = sub_comp_dict
+                comp_dict[component.title] = sub_comp_dict
         return params_dict, sorted(all_rules)
 
     @staticmethod

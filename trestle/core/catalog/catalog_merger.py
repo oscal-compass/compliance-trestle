@@ -172,6 +172,11 @@ class CatalogMerger():
 
         memory_rules_param_vals = memory_header.get(const.COMP_DEF_RULES_PARAM_VALS_TAG, {})
         md_rules_param_vals = md_header.get(const.COMP_DEF_RULES_PARAM_VALS_TAG, {})
-        ControlInterface.merge_dicts_deep(memory_rules_param_vals, md_rules_param_vals, True)
-        set_or_pop(memory_header, const.COMP_DEF_RULES_PARAM_VALS_TAG, memory_rules_param_vals)
+        # FIXME these are lists of dicts
+        memory_dict = {key: value for param_val in memory_rules_param_vals for key, value in param_val.items()}
+        md_dict = {key: value for param_val in md_rules_param_vals for key, value in param_val.items()}
+        ControlInterface.merge_dicts_deep(memory_dict, md_dict, True)
+        new_vals = [{key: value for key, value in memory_dict.items()}]
+
+        set_or_pop(memory_header, const.COMP_DEF_RULES_PARAM_VALS_TAG, new_vals)
         context.merged_header = memory_header

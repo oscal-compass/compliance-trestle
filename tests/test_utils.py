@@ -401,13 +401,14 @@ def setup_for_ssp(tmp_trestle_dir: pathlib.Path, prof_name: str,
     comp_names = 'comp_def_a,comp_def_b'
     for comp_name in comp_names.split(','):
         load_from_json(tmp_trestle_dir, comp_name, comp_name, comp.ComponentDefinition)
-    for prof_name in 'comp_prof,comp_prof_aa,comp_prof_ab,comp_prof_ba,comp_prof_bb':
+    for prof_name in 'comp_prof,comp_prof_aa,comp_prof_ab,comp_prof_ba,comp_prof_bb'.split(','):
         load_from_json(tmp_trestle_dir, prof_name, prof_name, prof.Profile)
+    load_from_json(tmp_trestle_dir, 'simplified_nist_catalog', 'simplified_nist_catalog', cat.Catalog)
     yaml_path = None
     sections = ''
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
-        profile=prof_name,
+        profile='comp_prof',
         compdefs=comp_names,
         output=output_name,
         verbose=0,
