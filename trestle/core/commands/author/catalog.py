@@ -110,7 +110,7 @@ class CatalogGenerate(AuthorCommonCommand):
                 True,
                 trestle_root,
                 markdown_path,
-                yaml_header=yaml_header,
+                cli_yaml_header=yaml_header,
                 overwrite_header_values=overwrite_header_values,
                 set_parameters_flag=True
             )
