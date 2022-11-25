@@ -21,7 +21,7 @@ from typing import Any, Callable, Dict, Iterator, List, Optional, Set, Tuple
 import trestle.common.const as const
 import trestle.oscal.catalog as cat
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import as_dict, as_filtered_list, as_list, delete_item_from_list, deep_set, get_item_from_list, none_if_empty, set_or_pop  # noqa E501
+from trestle.common.list_utils import as_dict, as_filtered_list, as_list, delete_item_from_list, deep_append, deep_set, get_item_from_list, none_if_empty, set_or_pop  # noqa E501
 from trestle.core.control_context import ControlContext
 from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlInterface
 from trestle.oscal import common
@@ -75,8 +75,10 @@ class CatalogInterface():
         self._control_dict = self._create_control_dict() if catalog else None
         self.loose_param_dict: Dict[str, common.Parameter] = {param.id: param
                                                               for param in as_list(catalog.params)} if catalog else {}
+        # map control id to CompDict
         self._control_comp_dicts: Dict[str, CompDict] = {}
-        self._control_set_params: Dict[str, comp.SetParameter] = {}
+        # map control id to dict containing set parameters by component
+        self._control_comp_set_params: Dict[str, Dict[str, comp.SetParameter]] = {}
 
     def add_comp_info(self, control_id: str, comp_name: str, label: str, comp_info: ComponentImpInfo) -> None:
         """Add comp_info for a control."""
@@ -92,20 +94,15 @@ class CatalogInterface():
 
     def add_comp_set_param(self, control_id: str, comp_name: str, set_param: comp.SetParameter) -> None:
         """Add component setparam for control with overwrite."""
-        deep_set(self._control_set_params, [control_id, comp_name, set_param.param_id], set_param)
+        deep_append(self._control_comp_set_params, [control_id, comp_name], set_param)
 
-    def get_control_set_params(self, control_id: str) -> List[comp.SetParameter]:
-        """Add setparam value for control with overwrite."""
-        param_dict = self._control_set_params.get(control_id, {})
-        dict_list = list(param_dict.values())
-        set_params = []
-        for d in dict_list:
-            set_params.append(list(d.values())[0])
-        return set_params
+    def get_control_comp_set_params(self, control_id: str) -> Dict[str, List[comp.SetParameter]]:
+        """Get dict of setparams list per component."""
+        return self._control_comp_set_params.get(control_id, {})
 
     def clear_set_params(self) -> None:
         """Clear the control set params."""
-        self._control_set_params = {}
+        self._control_comp_set_params = {}
 
     def _generate_group_id(self, group: cat.Group) -> str:
         """Generate sequential group ids."""
@@ -706,27 +703,27 @@ class CatalogInterface():
                     rule_ids.append(key)
                     rules.append(value)
             header[const.COMP_DEF_RULES_TAG] = rules
-            rules_params = []
+            rules_params = {}
             rules_param_names = []
-            for key, value in as_dict(context.rules_params_dict).items():
-                if key in as_list(rule_ids):
-                    rules_params.append(value)
-                    rules_param_names.append(value['name'])
+            for comp_name, rules_params_dict in as_dict(context.rules_params_dict).items():
+                for rule_id, rules_param in rules_params_dict.items():
+                    if rule_id in as_list(rule_ids):
+                        rules_param_names.append(rules_param['name'])
+                        deep_set(rules_params, [comp_name], rules_param)
             set_or_pop(header, const.RULES_PARAMS_TAG, rules_params)
             # go through all set_params and put in rules param list if name matches
-            control_set_params = []
-            rules_set_params = []
+            control_comp_set_params = {}
+            rules_set_params = {}
             # get dict of name: set_param
-            all_set_params = self.get_control_set_params(control_id)
-            for set_param in all_set_params:
-                values = ', '.join([v.__root__ for v in as_list(set_param.values)])
-                param_dict = {set_param.param_id: values}
-                if set_param.param_id in rules_param_names:
-                    rules_set_params.append(param_dict)
-                else:
-                    control_set_params.append(param_dict)
+            all_set_params = self.get_control_comp_set_params(control_id)
+            for comp_name, param_list in all_set_params.items():
+                for param in param_list:
+                    param_vals = [value.__root__ for value in as_list(param.values)]
+                    if comp_name not in rules_set_params:
+                        rules_set_params[comp_name] = {}
+                    rules_set_params[comp_name].update({'name': param.param_id, 'values': param_vals})
             set_or_pop(header, const.COMP_DEF_RULES_PARAM_VALS_TAG, rules_set_params)
-            set_or_pop(header, const.SET_PARAMS_TAG, control_set_params)
+            set_or_pop(header, const.SET_PARAMS_TAG, control_comp_set_params)
 
         return header, context.comp_dict
 

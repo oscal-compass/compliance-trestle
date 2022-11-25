@@ -209,7 +209,9 @@ class CatalogWriter():
                 for control_imp in as_list(component.control_implementations):
                     control_imp_rules_dict, control_imp_rules_params_dict = ControlInterface.get_rules_and_params_dict_from_item(control_imp)  # noqa E501
                     context.rules_dict.update(control_imp_rules_dict)
-                    context.rules_params_dict.update(control_imp_rules_params_dict)
+                    comp_rules_params_dict = context.rules_params_dict.get(context.comp_name, {})
+                    comp_rules_params_dict.update(control_imp_rules_params_dict)
+                    context.rules_params_dict[context.comp_name] = comp_rules_params_dict
                     ci_set_params = ControlInterface.get_set_params_from_item(control_imp)
                     for imp_req in as_list(control_imp.implemented_requirements):
                         control_part_id_map = part_id_map.get(imp_req.control_id, {})
@@ -249,6 +251,7 @@ class CatalogWriter():
         # prose and status for This System
         # status for all parts that still have rules
 
+        profile_set_param_dict = CatalogInterface._get_full_profile_param_dict(context.profile)
         catalog_merger = CatalogMerger(self._catalog_interface)
         for control_id, context.comp_dict in self._catalog_interface._control_comp_dicts.items():
             control_file_path = self._catalog_interface.get_control_file_path(context.md_root, control_id)
@@ -258,11 +261,29 @@ class CatalogWriter():
             control_file_path.parent.mkdir(exist_ok=True, parents=True)
             control = self._catalog_interface.get_control(control_id)
             _, group_title, _ = self._catalog_interface.get_group_info_by_control(control_id)
+            control_param_dict = ControlInterface.get_control_param_dict(control, False)
+            set_param_dict = self._construct_set_parameters_dict(profile_set_param_dict, control_param_dict)
+            new_context = ControlContext.clone(context)
+
+            if set_param_dict:
+                new_context = self._add_set_params_from_cli_yaml_header_to_header(
+                    new_context, set_param_dict, control_param_dict
+                )
+
+            elif const.SET_PARAMS_TAG in new_context.merged_header:
+                # need to cull any params that are not in control
+                pop_list: List[str] = []
+                for key in new_context.merged_header[const.SET_PARAMS_TAG].keys():
+                    if key not in control_param_dict:
+                        pop_list.append(key)
+                for pop in pop_list:
+                    new_context.merged_header[const.SET_PARAMS_TAG].pop(pop)
+
             # merge the md_header and md_comp_dict with info in cat_interface for this control
-            catalog_merger._merge_header_and_comp_dict(control, control_file_path, context)
+            catalog_merger._merge_header_and_comp_dict(control, control_file_path, new_context)
             control_writer = ControlWriter()
             control_writer.write_control_for_editing(
-                context, control, control_file_path.parent, group_title, part_id_map, []
+                new_context, control, control_file_path.parent, group_title, part_id_map, []
             )
 
     def write_catalog_as_component_markdown(
@@ -273,7 +294,7 @@ class CatalogWriter():
         def _update_values(set_param: comp.SetParameter) -> None:
             if set_param.param_id in control_param_dict:
                 control_param_dict[set_param.param_id].values = set_param.values
-            if set_param.param_id in new_context.rules_param_vals:
+            if set_param.param_id in as_list(new_context.rules_param_vals):
                 values = ', '.join([v.__root__ for v in as_list(set_param.values)])
                 new_context.rules_param_vals[set_param.param_id] = values
 
@@ -283,6 +304,7 @@ class CatalogWriter():
 
         for control in self._catalog_interface.get_all_controls_from_catalog(True):
             if control.id in control_ids_in_comp_imp:
+                context.comp_dict = self._catalog_interface.get_comp_info(control.id)
                 new_context = ControlContext.clone(context)
                 control_param_dict = ControlInterface.get_control_param_dict(control, False)
                 for set_param in as_list(new_context.control_implementation.set_parameters):

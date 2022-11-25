@@ -153,12 +153,34 @@ def deep_set(dic: Dict[str, Any], path: List[str], value: Any, pop_if_none: bool
 def deep_get(dic: Dict[str, Any], path: List[str], default: Any = None) -> Any:
     """Get value from deep in dictionary."""
     if not path:
-        raise TrestleError('Error getting value in deep set with empty path.')
+        raise TrestleError('Error getting value in deep get with empty path.')
     for node in path[:-1]:
         if node not in dic:
             return default
         dic = dic[node]
     return dic.get(path[-1], default)
+
+
+def deep_update(dic: Dict[str, Any], path: List[str], dic_value: Dict[str, Any]) -> None:
+    """Update the dict based on path."""
+    if not path:
+        raise TrestleError('Error updating value in deep update with empty path.')
+    for node in path:
+        dic[node] = dic.get(node, {})
+        dic = dic[node]
+    dic.update(dic_value)
+
+
+def deep_append(dic: Dict[str, Any], path: List[str], value: Any) -> None:
+    """Append to list in dict."""
+    if not path:
+        raise TrestleError('Error appending value in deep append with empty path.')
+    for node in path[:-1]:
+        dic[node] = dic.get(node, {})
+        dic = dic[node]
+    if path[-1] not in dic:
+        dic[path[-1]] = []
+    dic[path[-1]].append(value)
 
 
 def set_or_pop(dic: Dict[str, Any], key: str, value: Any) -> None:

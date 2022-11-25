@@ -159,11 +159,12 @@ class SSPGenerate(AuthorCommonCommand):
         context.overwrite_header_values = overwrite_header_values
         context.allowed_sections = allowed_sections
         context.comp_def_name_list = compdef_name_list
+        context.profile = prof.Profile.oscal_read(profile_path)
 
         profile_resolver = ProfileResolver()
         # in ssp context we want to see missing value warnings
         resolved_catalog = profile_resolver.get_resolved_profile_catalog(
-            trestle_root, profile_path, show_value_warnings=True
+            trestle_root, profile_path, block_params=True, show_value_warnings=True
         )
         catalog_api = CatalogAPI(catalog=resolved_catalog, context=context)
         # add any existing sections from the controls but only have short names
