@@ -497,7 +497,7 @@ class ControlWriter():
         # merge any provided sections with sections in the header, with priority to the one from context (e.g. CLI)
         header_sections_dict = context.merged_header.get(const.SECTIONS_TAG, {})
         merged_sections_dict = merge_dicts(header_sections_dict, context.sections_dict)
-        set_or_pop(merged_sections_dict, const.SECTIONS_TAG, merged_sections_dict)
+        set_or_pop(context.merged_header, const.SECTIONS_TAG, merged_sections_dict)
         if context.purpose == ContextPurpose.COMPONENT:
             context.merged_header.pop(const.SORT_ID, None)
 

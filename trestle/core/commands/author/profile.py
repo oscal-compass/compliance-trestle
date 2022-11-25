@@ -351,11 +351,8 @@ class ProfileAssemble(AuthorCommonCommand):
 
         # technically if allowed sections is [] it means no sections are allowed
         if allowed_sections is not None:
-            for bad_part in [
-                    part for alter in found_alters for add in as_list(alter.adds)
-                    # FIXME make sure a.name is correct version.  it is implementation_guidance instead of implgdn here
-                    for part in as_filtered_list(add.parts, lambda a: a.name not in allowed_sections)
-            ]:
+            for bad_part in [part for alter in found_alters for add in as_list(alter.adds)
+                             for part in as_filtered_list(add.parts, lambda a: a.name not in allowed_sections)]:
                 raise TrestleError(f'Profile has alter with name {bad_part.name} not in allowed sections.')
 
         ProfileAssemble._replace_alter_adds(parent_prof, found_alters)
