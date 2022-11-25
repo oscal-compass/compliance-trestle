@@ -51,13 +51,18 @@ class CatalogAPI():
         self._merger = CatalogMerger(self._catalog_interface)
         self._context = context
 
-    def write_catalog_as_markdown(self) -> None:
+    def update_context(self, context: ControlContext):
+        """Update current context."""
+        if not context:
+            raise TrestleError('ControlContext cannot be empty.')
+        self._context = context
+
+    def write_catalog_as_markdown(self, label_as_key=False) -> None:
         """
         Write out the catalog controls from dict as markdown files to the specified directory.
 
         Args:
-            context: The context of the catalog markdown creation.
-            part_id_map: Mapping of part_id to label for all controls
+            label_as_key: Whether to use label_as_key for part_id to label map
 
         Returns:
             None
@@ -65,7 +70,7 @@ class CatalogAPI():
         # create the directory in which to write the control markdown files
         self._context.md_root.mkdir(exist_ok=True, parents=True)
 
-        part_id_map = self._catalog_interface.get_statement_part_id_map(label_as_key=False)
+        part_id_map = self._catalog_interface.get_statement_part_id_map(label_as_key=label_as_key)
 
         if self._context.purpose == ContextPurpose.PROFILE:
             found_alters, _, _ = self.read_additional_content_from_md(label_as_key=True)
