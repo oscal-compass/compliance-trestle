@@ -125,13 +125,11 @@ class ComponentGenerate(AuthorCommonCommand):
             context.cli_yaml_header[const.TRESTLE_GLOBAL_TAG][const.PROFILE_TITLE] = profile_title
             sub_dir_name = context.uri_name_map[source_profile_uri]
             context.md_root = markdown_dir_path / sub_dir_name
-            cat_api_dict[source_profile_uri]._context = context
             # write controls corresponding to this source catalog
             # if two controlimps load the same control, the second one will merge into the first
             # otherwise the full catalog will be written in subsets by control_imp
             # if an imp_req has a set param also in the control_imp. the imp_req value is used for the control
-            # TODO-Katya: Writer shouldnt be accessed here, this is temporary as context should come from api
-            # TODO-Katya: Confirm fix below by Frank is as intended
+            cat_api_dict[source_profile_uri].update_context(context)
             cat_api_dict[source_profile_uri].write_catalog_as_markdown()
         return CmdReturnCodes.SUCCESS.value
 
