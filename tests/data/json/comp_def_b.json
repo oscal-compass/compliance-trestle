@@ -66,8 +66,8 @@
       {
         "uuid": "8220b305-0271-45f9-8a21-40ab6f197f73",
         "type": "Service",
-        "title": "comp_aa",
-        "description": "comp aa",
+        "title": "comp_ba",
+        "description": "comp ba",
         "props":[
           {
             "name": "Rule_Id",
@@ -86,7 +86,7 @@
         "control-implementations": [
           {
             "uuid": "76e89b67-3d6b-463d-90df-ec56a46c6069",
-            "source": "trestle://profiles/comp_prof_aa/profile.json",
+            "source": "trestle://profiles/comp_prof_ba/profile.json",
             "description": "trestle comp prof ba",
             "props": [
               {

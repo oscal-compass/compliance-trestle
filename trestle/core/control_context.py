@@ -56,7 +56,7 @@ class ControlContext:
     component: Optional[comp.DefinedComponent] = None
     comp_def_name_list: Optional[List[str]] = None
     inherited_props: Optional[Dict[str, Any]] = None
-    rules_dict: Optional[Dict[str, Dict[str, str]]] = None
+    rules_dict: Optional[Dict[str, Dict[str, Any]]] = None
     rules_params_dict: Optional[Dict[str, Dict[str, Any]]] = None
     rules_param_vals: Optional[List[Dict[str, str]]] = None
     control_implementation: Optional[comp.ControlImplementation] = None
@@ -84,7 +84,7 @@ class ControlContext:
         component: Optional[comp.DefinedComponent] = None,
         comp_def_name_list: Optional[List[str]] = None,
         inherited_props: Optional[Dict[str, Any]] = None,
-        rules_dict: Optional[Dict[str, Dict[str, str]]] = None,
+        rules_dict: Optional[Dict[str, Dict[str, Any]]] = None,
         rules_params_dict: Optional[Dict[str, Dict[str, Any]]] = None,
         rules_param_vals: Optional[List[Dict[str, str]]] = None,
         control_implementation: Optional[comp.ControlImplementation] = None,

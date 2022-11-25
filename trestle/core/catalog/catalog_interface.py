@@ -21,8 +21,7 @@ from typing import Any, Callable, Dict, Iterator, List, Optional, Set, Tuple
 import trestle.common.const as const
 import trestle.oscal.catalog as cat
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import as_dict, as_filtered_list, as_list, delete_item_from_list, deep_append, deep_set, get_item_from_list, none_if_empty, set_or_pop  # noqa E501
-from trestle.core.control_context import ControlContext
+from trestle.common.list_utils import as_dict, as_filtered_list, as_list, delete_item_from_list, deep_append, deep_get, deep_set, get_item_from_list, none_if_empty, set_or_pop  # noqa E501
 from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlInterface
 from trestle.oscal import common
 from trestle.oscal import component as comp
@@ -667,21 +666,6 @@ class CatalogInterface():
                 return prop.value, ns
         return None, None
 
-    # FIXME typing
-    @staticmethod
-    def _get_all_rules_params_and_vals(context: ControlContext) -> None:
-        """Get rules, params, vals from the control implementation and defined component."""
-        # rules are defined in the comonent and control_imp
-        # but they are linked to controls via the imp_reqs
-        # param values may be set both by the control_imp and the imp_req
-        rules_dict = {}
-        rules_params_dict = {}
-        for item in [context.component, context.control_implementation]:
-            rules_dict.update(ControlInterface.get_rules_dict_from_item(item))
-            rules_params_dict.update(ControlInterface.get_params_dict_from_item(item))
-        set_params = ControlInterface.get_set_params_from_item(context.control_implementation)
-        return rules_dict, rules_params_dict, set_params
-
     @staticmethod
     def _prune_controls(md_path: pathlib.Path, written_controls: Set[str]):
         """Search directory and remove any controls that were not written out."""
@@ -692,36 +676,51 @@ class CatalogInterface():
         header = {}
         rule_names_list: List[str] = []
         context.comp_dict = self.get_comp_info(control_id)
+        # find the rule names that are needed by the control
         for _, value in context.comp_dict.items():
             for comp_info in value.values():
                 rule_names_list.extend(as_list(comp_info.rules))
         if rule_names_list:
-            rules = []
-            rule_ids = []
-            for key, value in context.rules_dict.items():
-                if value['name'] in rule_names_list:
-                    rule_ids.append(key)
-                    rules.append(value)
-            header[const.COMP_DEF_RULES_TAG] = rules
+            header_rules_dict = {}
+            rule_ids = {}
+            param_id_rule_name_map = {}
+            rule_id_rule_name_map = {}
+            # only include rules needed by control in the header
+            for comp_name, rules_dict in context.rules_dict.items():
+                for rule_id, rule_dict in rules_dict.items():
+                    if rule_dict['name'] in rule_names_list:
+                        deep_append(rule_ids, [comp_name], rule_id)
+                        deep_append(header_rules_dict, [comp_name], rule_dict)
+                        deep_set(rule_id_rule_name_map, [comp_name, rule_id], rule_dict['name'])
+            set_or_pop(header, const.COMP_DEF_RULES_TAG, header_rules_dict)
             rules_params = {}
             rules_param_names = []
             for comp_name, rules_params_dict in as_dict(context.rules_params_dict).items():
                 for rule_id, rules_param in rules_params_dict.items():
-                    if rule_id in as_list(rule_ids):
+                    if rule_id in rule_ids.get(comp_name, []):
                         rules_param_names.append(rules_param['name'])
                         deep_set(rules_params, [comp_name], rules_param)
+                        deep_set(
+                            param_id_rule_name_map, [comp_name, rules_param['name']],
+                            rule_id_rule_name_map[comp_name][rule_id]
+                        )
             set_or_pop(header, const.RULES_PARAMS_TAG, rules_params)
             # go through all set_params and put in rules param list if name matches
             control_comp_set_params = {}
             rules_set_params = {}
-            # get dict of name: set_param
             all_set_params = self.get_control_comp_set_params(control_id)
             for comp_name, param_list in all_set_params.items():
                 for param in param_list:
                     param_vals = [value.__root__ for value in as_list(param.values)]
                     if comp_name not in rules_set_params:
                         rules_set_params[comp_name] = {}
-                    rules_set_params[comp_name].update({'name': param.param_id, 'values': param_vals})
+                    rule_name = deep_get(param_id_rule_name_map, [comp_name, param.param_id], None)
+                    if rule_name:
+                        rules_set_params[comp_name].update(
+                            {
+                                'rule_name': rule_name, 'name': param.param_id, 'values': param_vals
+                            }
+                        )
             set_or_pop(header, const.COMP_DEF_RULES_PARAM_VALS_TAG, rules_set_params)
             set_or_pop(header, const.SET_PARAMS_TAG, control_comp_set_params)
 

@@ -204,11 +204,11 @@ class CatalogWriter():
                 context.comp_name = component.title
                 # get top level rule info applying to all controls
                 comp_rules_dict, comp_rules_params_dict = ControlInterface.get_rules_and_params_dict_from_item(component)  # noqa E501
-                context.rules_dict.update(comp_rules_dict)
+                context.rules_dict[context.comp_name] = comp_rules_dict
                 context.rules_params_dict.update(comp_rules_params_dict)
                 for control_imp in as_list(component.control_implementations):
                     control_imp_rules_dict, control_imp_rules_params_dict = ControlInterface.get_rules_and_params_dict_from_item(control_imp)  # noqa E501
-                    context.rules_dict.update(control_imp_rules_dict)
+                    context.rules_dict[context.comp_name].update(control_imp_rules_dict)
                     comp_rules_params_dict = context.rules_params_dict.get(context.comp_name, {})
                     comp_rules_params_dict.update(control_imp_rules_params_dict)
                     context.rules_params_dict[context.comp_name] = comp_rules_params_dict
