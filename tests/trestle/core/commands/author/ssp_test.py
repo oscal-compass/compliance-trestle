@@ -35,7 +35,7 @@ from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 
-prof_name = 'main_profile'
+prof_name = 'comp_prof'
 ssp_name = 'my_ssp'
 cat_name = 'nist_cat'
 
@@ -92,7 +92,6 @@ def test_ssp_failures(tmp_trestle_dir: pathlib.Path) -> None:
         profile=prof_name,
         output=ssp_name,
         verbose=0,
-        sections=None,
         yaml_header=str(yaml_path),
         overwrite_header_values=False
     )
@@ -103,7 +102,6 @@ def test_ssp_failures(tmp_trestle_dir: pathlib.Path) -> None:
         trestle_root=tmp_trestle_dir,
         profile='foo',
         output=ssp_name,
-        sections=None,
         verbose=0,
         overwrite_header_values=False,
         yaml_header=None
@@ -113,9 +111,8 @@ def test_ssp_failures(tmp_trestle_dir: pathlib.Path) -> None:
 
 def test_ssp_generate_no_header(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator with no yaml header."""
-    args, _, _ = setup_for_ssp(False, False, tmp_trestle_dir, prof_name, ssp_name)
+    args, _, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
     ssp_cmd = SSPGenerate()
-    args.sections = None
     # run the command for happy path
     assert ssp_cmd._run(args) == 0
     ac_dir = tmp_trestle_dir / (ssp_name + '/ac')
@@ -126,27 +123,14 @@ def test_ssp_generate_no_header(tmp_trestle_dir: pathlib.Path) -> None:
     md_api = MarkdownAPI()
     header, tree = md_api.processor.process_markdown(ac_1)
     assert tree is not None
-    assert header[const.SORT_ID] == 'ac-01'
-
-
-def test_ssp_generate_fail_statement_section(tmp_trestle_dir: pathlib.Path) -> None:
-    """
-    Test the ssp generator fails if const.STATEMENT is provided.
-
-    Also checking code where not label is provided.
-    """
-    args, _, _ = setup_for_ssp(False, False, tmp_trestle_dir, prof_name, ssp_name)
-    args.sections = const.STATEMENT
-    ssp_cmd = SSPGenerate()
-    # run the command for happy path
-    assert ssp_cmd._run(args) > 0
+    assert header[const.TRESTLE_GLOBAL_TAG][const.SORT_ID] == 'ac-01'
 
 
 @pytest.mark.parametrize('load_yaml_header', [False, True])
 def test_ssp_generate_header_edit(load_yaml_header: bool, tmp_trestle_dir: pathlib.Path) -> None:
     """Test ssp generate does not overwrite header edits."""
     # always start by creating the markdown with the yaml header
-    args, sections, yaml_path = setup_for_ssp(True, False, tmp_trestle_dir, prof_name, ssp_name)
+    args, sections, yaml_path = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
     ssp_cmd = SSPGenerate()
     assert ssp_cmd._run(args) == 0
 
@@ -326,7 +310,7 @@ def test_ssp_generate_bad_name(tmp_trestle_dir: pathlib.Path) -> None:
 
 def test_ssp_generate_resolved_catalog(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator to create a resolved profile catalog."""
-    _, _, _ = setup_for_ssp(False, True, tmp_trestle_dir, prof_name, ssp_name)
+    _, _, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
     profile_path = tmp_trestle_dir / f'profiles/{prof_name}/profile.json'
     new_catalog_dir = tmp_trestle_dir / f'catalogs/{prof_name}_resolved_catalog'
     new_catalog_dir.mkdir(parents=True, exist_ok=True)
@@ -336,7 +320,7 @@ def test_ssp_generate_resolved_catalog(tmp_trestle_dir: pathlib.Path) -> None:
     resolved_catalog = profile_resolver.get_resolved_profile_catalog(tmp_trestle_dir, profile_path)
     assert resolved_catalog
     # FIXME this should test with a more complex catalog
-    assert len(resolved_catalog.groups) == 1
+    assert len(resolved_catalog.groups) == 2
 
     resolved_catalog.oscal_write(new_catalog_path)
 

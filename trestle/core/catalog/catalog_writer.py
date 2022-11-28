@@ -305,6 +305,49 @@ class CatalogWriter():
             imp_req.control_id for imp_req in as_list(context.control_implementation.implemented_requirements)
         ]
 
+        context.rules_dict = {}
+        context.rules_params_dict = {}
+
+        # get top level rule info applying to all controls
+        comp_rules_dict, comp_rules_params_dict = ControlInterface.get_rules_and_params_dict_from_item(context.component)  # noqa E501
+        context.rules_dict[context.comp_name] = comp_rules_dict
+        context.rules_params_dict.update(comp_rules_params_dict)
+        for control_imp in as_list(context.component.control_implementations):
+            control_imp_rules_dict, control_imp_rules_params_dict = ControlInterface.get_rules_and_params_dict_from_item(control_imp)  # noqa E501
+            context.rules_dict[context.comp_name].update(control_imp_rules_dict)
+            comp_rules_params_dict = context.rules_params_dict.get(context.comp_name, {})
+            comp_rules_params_dict.update(control_imp_rules_params_dict)
+            context.rules_params_dict[context.comp_name] = comp_rules_params_dict
+            ci_set_params = ControlInterface.get_set_params_from_item(control_imp)
+            for imp_req in as_list(control_imp.implemented_requirements):
+                control_part_id_map = part_id_map.get(imp_req.control_id, {})
+                control_rules = ControlInterface.get_rule_list_for_item(imp_req)
+                if control_rules:
+                    status = ControlInterface.get_status_from_props(imp_req)
+                    comp_info = ComponentImpInfo(imp_req.description, control_rules, status)
+                    self._catalog_interface.add_comp_info(imp_req.control_id, context.comp_name, '', comp_info)
+                    set_params = copy.deepcopy(ci_set_params)
+                    set_params.update(ControlInterface.get_set_params_from_item(imp_req))
+                    for set_param in set_params.values():
+                        self._catalog_interface.add_comp_set_param(imp_req.control_id, context.comp_name, set_param)
+                    for statement in as_list(imp_req.statements):
+                        rule_list = ControlInterface.get_rule_list_for_item(statement)
+                        if rule_list:
+                            status = ControlInterface.get_status_from_props(statement)
+                            if statement.statement_id not in control_part_id_map:
+                                label = statement.statement_id
+                                logger.warning(
+                                    f'No statement label found for statement id {label}.  Defaulting to {label}.'  # noqa E501
+                                )
+                            else:
+                                label = control_part_id_map[statement.statement_id]
+                            comp_info = ComponentImpInfo(statement.description, rule_list, status)
+                            self._catalog_interface.add_comp_info(
+                                imp_req.control_id, context.comp_name, label, comp_info
+                            )
+
+        catalog_merger = CatalogMerger(self._catalog_interface)
+
         for control in self._catalog_interface.get_all_controls_from_catalog(True):
             if control.id in control_ids_in_comp_imp:
                 context.comp_dict = self._catalog_interface.get_comp_info(control.id)
@@ -318,11 +361,14 @@ class CatalogWriter():
                             _update_values(set_param)
 
                 if control_param_dict:
-                    new_context.cli_yaml_header[const.PARAM_VALUES_TAG] = {}
+                    new_context.merged_header[const.PARAM_VALUES_TAG] = {}
                     for key, param in control_param_dict.items():
-                        new_context.cli_yaml_header[const.PARAM_VALUES_TAG][key] = none_if_empty(
+                        new_context.merged_header[const.PARAM_VALUES_TAG][key] = none_if_empty(
                             ControlInterface.param_to_str(param, ParameterRep.VALUE_OR_EMPTY_STRING)
                         )
+                # merge the md_header and md_comp_dict with info in cat_interface for this control
+                control_file_path = self._catalog_interface.get_control_file_path(context.md_root, control.id)
+                catalog_merger._merge_header_and_comp_dict(control, control_file_path, new_context)
 
                 self._write_control_into_dir(new_context, control, part_id_map, [])
 
