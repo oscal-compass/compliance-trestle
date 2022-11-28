@@ -45,7 +45,8 @@ case_3 = 'indent end abrupt'
 case_4 = 'no items'
 
 control_text = """---
-sort-id: xy-09
+x-trestle-global:
+  sort-id: xy-09
 ---
 
 # xy-9 - \[My Group Title\] Fancy Control

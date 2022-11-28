@@ -21,7 +21,7 @@ from _pytest.monkeypatch import MonkeyPatch
 import pytest
 
 from tests import test_utils
-from tests.test_utils import delete_line_in_file, setup_for_ssp
+from tests.test_utils import FileChecker, delete_line_in_file, setup_for_ssp
 
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
@@ -73,7 +73,12 @@ def test_ssp_generate(tmp_trestle_dir: pathlib.Path) -> None:
     ac_dir = md_dir / 'ac'
     ac_1 = ac_dir / 'ac-1.md'
     assert ac_1.exists()
+
+    fc = FileChecker(md_dir)
+
     assert ssp_cmd._run(args) == 0
+
+    assert fc.files_unchanged()
 
 
 def test_ssp_failures(tmp_trestle_dir: pathlib.Path) -> None:

@@ -24,7 +24,7 @@ import trestle.oscal.catalog as cat
 from trestle.common import const
 from trestle.common.common_types import TypeWithProps
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import as_list, delete_list_from_list, merge_dicts, none_if_empty
+from trestle.common.list_utils import as_list, deep_get, delete_list_from_list, merge_dicts, none_if_empty
 from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import spaces_and_caps_to_snake
 from trestle.core import generators as gens
@@ -375,24 +375,12 @@ class ControlReader():
                     )
                 comp_name = node.key.split(' ', 1)[1].strip()
                 simp_comp_name = ControlReader.simplify_name(comp_name)
-                if simp_comp_name == ControlReader.simplify_name(const.SSP_MAIN_COMP_NAME) and not component_mode:
-                    raise TrestleError(
-                        f'Response in control {control_id} has {const.SSP_MAIN_COMP_NAME} as a component heading.  '
-                        'Instead, place all response prose for the default component at the top of the section, '
-                        'with no ### component_name heading.  It will be entered as prose for the default system '
-                        'component.'
-                    )
                 if simp_comp_name in comp_list:
                     raise TrestleError(
                         f'Control {control_id} has a section with two component headings for {comp_name}.  '
                         'Please combine the sections so there is only one heading for each component in a '
                         'statement.'
                     )
-                comp_list.append(simp_comp_name)
-                comp_name = ControlReader._comp_name_in_dict(comp_name, comp_dict)
-            elif node.key.startswith('## What is the solution'):
-                comp_name = const.SSP_MAIN_COMP_NAME
-                simp_comp_name = ControlReader.simplify_name(comp_name)
                 comp_list.append(simp_comp_name)
                 comp_name = ControlReader._comp_name_in_dict(comp_name, comp_dict)
 
@@ -990,7 +978,8 @@ class ControlReader():
                     # if display_name is in list of properties, set its namespace
                     ControlReader._update_display_prop_namespace(param)
                     control.params.append(param)
-        if const.SORT_ID in yaml_header:
+        sort_id = deep_get(yaml_header, [const.TRESTLE_GLOBAL_TAG, const.SORT_ID], None)
+        if sort_id:
             control.props = control.props if control.props else []
-            control.props.append(common.Property(name=const.SORT_ID, value=yaml_header[const.SORT_ID]))
+            control.props.append(common.Property(name=const.SORT_ID, value=sort_id))
         return control, group_title

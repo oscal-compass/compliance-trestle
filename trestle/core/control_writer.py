@@ -19,7 +19,7 @@ from typing import Any, Dict, List, Optional
 
 import trestle.oscal.catalog as cat
 from trestle.common import const
-from trestle.common.list_utils import as_dict, as_list, merge_dicts, set_or_pop
+from trestle.common.list_utils import as_dict, as_list, deep_set, merge_dicts, set_or_pop
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlInterface, PartInfo
 from trestle.core.control_reader import ControlReader
@@ -152,25 +152,34 @@ class ControlWriter():
             return False
         self._md_file.new_paraline(const.STATUS_PROMPT)
         self._md_file.new_paraline(const.RULES_WARNING)
+        # do special handling for This System
         if context.purpose == ContextPurpose.SSP:
-            self._md_file.new_paraline(const.THIS_SYSTEM_PROMPT)
             self._md_file.new_paragraph()
-            self._md_file.new_header(3, context.comp_name)
+            self._md_file.new_header(3, const.SSP_MAIN_COMP_NAME)
             self._md_file.new_paragraph()
+            prose = f'{const.SSP_ADD_THIS_SYSTEM_IMPLEMENTATION_FOR_CONTROL_TEXT} {control_id}'
+            status = ImplementationStatus(state=const.STATUS_PLANNED)
+            if const.SSP_MAIN_COMP_NAME in comp_dict:
+                comp_info = list(comp_dict[const.SSP_MAIN_COMP_NAME].values())[0]
+                prose = comp_info.prose
+                status = comp_info.status
+            self._md_file.new_paraline(prose)
+            self._insert_status(status, 4)
         did_write = True
-        level = 3
-        for comp_info in [dic[''] for dic in comp_dict.values() if '' in dic]:
-            # is this control-level guidance for this component
-            # create new heading for this component and add guidance
-            prose = comp_info.prose if comp_info.prose != control_id else ''
-            # only write out the prompt first time
-            if not self._md_file.exists() and not prose:
-                prose = f'{const.SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT} {control_id}'
-            if prose:
-                self._md_file.new_paraline(prose)
-            self._insert_rules(comp_info.rules, level)
-            self._insert_status(comp_info.status, level)
-            did_write = True
+        for comp_name, dic in comp_dict.items():
+            for comp_info in [val for key, val in dic.items() if key == '']:
+                # is this control-level guidance for this component
+                # create new heading for this component and add guidance
+                self._md_file.new_header(3, comp_name)
+                prose = comp_info.prose if comp_info.prose != control_id else ''
+                # only write out the prompt first time
+                if not self._md_file.exists() and not prose:
+                    prose = f'{const.SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT} {control_id}'
+                if prose:
+                    self._md_file.new_paraline(prose)
+                self._insert_rules(comp_info.rules, 4)
+                self._insert_status(comp_info.status, 4)
+                did_write = True
         return did_write
 
     def _add_implementation_response_prompts(
@@ -480,9 +489,6 @@ class ControlWriter():
         # in the yaml header and allow overwrite_header_values to control whether it overwrites an existing one
         # in the markdown header
         context.cli_yaml_header = as_dict(context.cli_yaml_header)
-        sort_id = ControlInterface.get_sort_id(control, True)
-        if sort_id and const.SORT_ID not in context.cli_yaml_header:
-            context.cli_yaml_header[const.SORT_ID] = sort_id
         if not context.purpose == ContextPurpose.PROFILE:
             ControlInterface.merge_dicts_deep(
                 context.merged_header, context.cli_yaml_header, context.overwrite_header_values
@@ -493,13 +499,14 @@ class ControlWriter():
             const.TRESTLE_GLOBAL_TAG,
             context.cli_yaml_header.get(const.TRESTLE_GLOBAL_TAG, None)
         )
+        sort_id = ControlInterface.get_sort_id(control, True)
+        if sort_id:
+            deep_set(context.merged_header, [const.TRESTLE_GLOBAL_TAG, const.SORT_ID], sort_id)
 
         # merge any provided sections with sections in the header, with priority to the one from context (e.g. CLI)
         header_sections_dict = context.merged_header.get(const.SECTIONS_TAG, {})
         merged_sections_dict = merge_dicts(header_sections_dict, context.sections_dict)
         set_or_pop(context.merged_header, const.SECTIONS_TAG, merged_sections_dict)
-        if context.purpose == ContextPurpose.COMPONENT:
-            context.merged_header.pop(const.SORT_ID, None)
 
         # now begin filling in content from the control in memory
         self._add_control_statement(control, group_title)

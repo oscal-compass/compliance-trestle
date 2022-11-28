@@ -28,7 +28,7 @@ import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
 from trestle.common import const, file_utils, log
 from trestle.common.err import TrestleError, handle_generic_command_exception
-from trestle.common.list_utils import as_list, comma_colon_sep_to_dict, comma_sep_to_list, none_if_empty
+from trestle.common.list_utils import as_list, comma_sep_to_list, none_if_empty
 from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog.catalog_api import CatalogAPI
@@ -66,14 +66,6 @@ class SSPGenerate(AuthorCommonCommand):
             action='store_true',
             default=False
         )
-        sections_help_str = (
-            'Comma separated list of section:alias pairs.  Provides mapping of short names to long for markdown.'
-        )
-        self.add_argument('-s', '--sections', help=sections_help_str, required=False, type=str)
-        allowed_sections_help_str = (
-            'Comma separated list of section short names to include in the markdown.  Others will not appear.'
-        )
-        self.add_argument('-as', '--allowed-sections', help=allowed_sections_help_str, required=False, type=str)
 
     def _run(self, args: argparse.Namespace) -> int:
         try:
@@ -93,11 +85,6 @@ class SSPGenerate(AuthorCommonCommand):
                 except YAMLError as e:
                     raise TrestleError(f'YAML error loading yaml header {args.yaml_header} for ssp generation: {e}')
 
-            sections_dict = comma_colon_sep_to_dict(args.sections)
-            if const.STATEMENT in sections_dict:
-                raise TrestleError('Statement is not allowed as a section name.')
-            allowed_sections = comma_sep_to_list(args.allowed_sections)
-
             compdef_name_list = comma_sep_to_list(args.compdefs)
 
             md_path = trestle_root / args.output
@@ -108,8 +95,6 @@ class SSPGenerate(AuthorCommonCommand):
                 compdef_name_list,
                 md_path,
                 yaml_header,
-                sections_dict,
-                allowed_sections,
                 args.overwrite_header_values,
                 args.force_overwrite
             )
@@ -124,8 +109,6 @@ class SSPGenerate(AuthorCommonCommand):
         compdef_name_list: List[str],
         md_path: pathlib.Path,
         yaml_header: Dict[str, Any],
-        sections_dict: Dict[str, str],
-        allowed_sections: List[str],
         overwrite_header_values: bool,
         force_overwrite: bool
     ) -> int:
@@ -154,25 +137,24 @@ class SSPGenerate(AuthorCommonCommand):
 
         context = ControlContext.generate(ContextPurpose.SSP, True, trestle_root, md_path)
         context.cli_yaml_header = yaml_header
-        context.sections_dict = sections_dict
+        context.sections_dict = {}
         context.prompt_responses = True
         context.overwrite_header_values = overwrite_header_values
-        context.allowed_sections = allowed_sections
+        context.allowed_sections = []
         context.comp_def_name_list = compdef_name_list
         context.profile = prof.Profile.oscal_read(profile_path)
 
         profile_resolver = ProfileResolver()
         # in ssp context we want to see missing value warnings
         resolved_catalog = profile_resolver.get_resolved_profile_catalog(
-            trestle_root, profile_path, block_params=True, show_value_warnings=True
+            trestle_root, profile_path, block_params=False, show_value_warnings=True
         )
+
         catalog_api = CatalogAPI(catalog=resolved_catalog, context=context)
-        # add any existing sections from the controls but only have short names
-        control_section_short_names = catalog_api._catalog_interface.get_sections()
-        for short_name in control_section_short_names:
-            if short_name not in sections_dict:
-                sections_dict[short_name] = short_name
-        logger.debug(f'ssp sections dict: {sections_dict}')
+
+        context.cli_yaml_header[const.TRESTLE_GLOBAL_TAG] = {}
+        profile_title = catalog_api._catalog_interface.get_catalog_title()
+        context.cli_yaml_header[const.TRESTLE_GLOBAL_TAG][const.PROFILE_TITLE] = profile_title
 
         catalog_api.write_catalog_as_markdown()
 

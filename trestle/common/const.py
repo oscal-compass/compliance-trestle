@@ -256,6 +256,8 @@ TABLE_OF_PARAMS_PART = 'table_of_parameters'
 # extracts standalone uuid's from anywhere in string
 UUID_REGEX = r'(?:^|[0-9A-Za-f])([0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12})(?:$|[^0-9A-Za-z])'  # noqa FS003 E501
 
+SSP_MAIN_COMP_NAME = 'This System'
+
 SSP_MD_HRULE_LINE = '______________________________________________________________________'
 
 SSP_MD_IMPLEMENTATION_QUESTION = 'What is the solution and how is it implemented?'
@@ -271,6 +273,8 @@ SSP_ADD_IMPLEMENTATION_FOR_STATEMENT_TEXT = SSP_ADD_IMPLEMENTATION_PREFIX + STAT
 SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT = SSP_ADD_IMPLEMENTATION_PREFIX + 'item'
 
 SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT = SSP_ADD_IMPLEMENTATION_PREFIX + 'control'
+
+SSP_ADD_THIS_SYSTEM_IMPLEMENTATION_FOR_CONTROL_TEXT = f'Add implementation prose for the main {SSP_MAIN_COMP_NAME} component for control'  # noqa E501
 
 SSP_SYSTEM_CONTROL_IMPLEMENTATION_TEXT = 'This is the control implementation for the system.'
 
@@ -317,8 +321,6 @@ FILTER_EXCLUDE_COMPONENTS = 'filter-exclude-components'
 GENERATE_RESOLVED_CATALOG = 'generate-resolved-catalog'
 
 TRANSFORM_TYPES = [FILTER_BY_PROFILE, FILTER_BY_COMPONENTS, FILTER_EXCLUDE_COMPONENTS, GENERATE_RESOLVED_CATALOG]
-
-SSP_MAIN_COMP_NAME = 'This System'
 
 TRESTLE_TAG = 'x-trestle-'
 
@@ -403,7 +405,7 @@ STATUS_PROMPT = f'<!-- For implementation status enter one of: {STATUS_IMPLEMENT
 
 RULES_WARNING = '<!-- Note that the list of rules under ### Rules: is read-only and changes will not be captured after assembly to JSON -->'  # noqa E501
 
-THIS_SYSTEM_PROMPT = '<!-- Enter the response and status for This System here.  The responses per component follow, each with the component name as header -->'  # noqa E501
+THIS_SYSTEM_PROMPT = '### ' + SSP_MAIN_COMP_NAME
 
 RESPONSIBLE_ROLE = 'responsible-role'
 

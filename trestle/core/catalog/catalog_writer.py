@@ -23,7 +23,7 @@ from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.catalog.catalog_merger import CatalogMerger
 from trestle.common.list_utils import as_dict, as_filtered_list, as_list, delete_item_from_list, deep_set, get_item_from_list, none_if_empty, set_or_pop  # noqa E501
 from trestle.common.model_utils import ModelUtils
-from trestle.core.control_context import ControlContext
+from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_interface import ComponentImpInfo, ControlInterface, ParameterRep
 from trestle.core.control_writer import ControlWriter
 from trestle.oscal import common
@@ -64,7 +64,7 @@ class CatalogWriter():
             # get all params and vals for this control from the resolved profile catalog with block adds in effect
             control_param_dict = ControlInterface.get_control_param_dict(control, False)
 
-            set_param_dict = self._construct_set_parameters_dict(profile_set_param_dict, control_param_dict)
+            set_param_dict = self._construct_set_parameters_dict(profile_set_param_dict, control_param_dict, context)
 
             if set_param_dict:
                 new_context = self._add_set_params_from_cli_yaml_header_to_header(
@@ -128,7 +128,9 @@ class CatalogWriter():
 
         return context
 
-    def _construct_set_parameters_dict(self, profile_set_param_dict, control_param_dict) -> Dict[str, str]:
+    # FIXME typing
+    def _construct_set_parameters_dict(self, profile_set_param_dict, control_param_dict,
+                                       context: ControlContext) -> Dict[str, str]:
         """
         Build set-parameters dictionary from the given profile.modify.set-parameters and control.params.
 
@@ -152,8 +154,9 @@ class CatalogWriter():
                 # assign its contents to the dict
                 new_dict = ModelUtils.parameter_to_dict(param, True)
                 if const.VALUES in new_dict:
-                    new_dict[const.PROFILE_VALUES] = new_dict[const.VALUES]
-                    new_dict.pop(const.VALUES)
+                    if context.purpose == ContextPurpose.PROFILE:
+                        new_dict[const.PROFILE_VALUES] = new_dict[const.VALUES]
+                        new_dict.pop(const.VALUES)
                 # then insert the original, incoming values as values
                 if param_id in control_param_dict:
                     orig_param = control_param_dict[param_id]
@@ -262,7 +265,7 @@ class CatalogWriter():
             control = self._catalog_interface.get_control(control_id)
             _, group_title, _ = self._catalog_interface.get_group_info_by_control(control_id)
             control_param_dict = ControlInterface.get_control_param_dict(control, False)
-            set_param_dict = self._construct_set_parameters_dict(profile_set_param_dict, control_param_dict)
+            set_param_dict = self._construct_set_parameters_dict(profile_set_param_dict, control_param_dict, context)
             new_context = ControlContext.clone(context)
 
             if set_param_dict:
