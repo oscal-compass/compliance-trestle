@@ -58,6 +58,14 @@ def _validate1(tmp_path: pathlib.Path):
         ],
         [
             2,
+            'Resource_Instance_Type',
+            'public-cloud',
+            rs0,
+            None,
+            None,
+        ],
+        [
+            3,
             'Private_Reference_Id',
             '300000100',
             rs0,
@@ -65,7 +73,7 @@ def _validate1(tmp_path: pathlib.Path):
             None,
         ],
         [
-            3,
+            4,
             'Rule_Id',
             'xccdf_org.ssgproject.content_rule_api_server_basic_auth',
             rs1,
