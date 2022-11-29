@@ -21,7 +21,7 @@ from _pytest.monkeypatch import MonkeyPatch
 import pytest
 
 from tests import test_utils
-from tests.test_utils import FileChecker, delete_line_in_file, setup_for_ssp
+from tests.test_utils import FileChecker, setup_for_ssp
 
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
@@ -40,20 +40,13 @@ ssp_name = 'my_ssp'
 cat_name = 'nist_cat'
 
 
-def insert_prose(trestle_dir: pathlib.Path, statement_id: str, prose: str) -> bool:
-    """Insert response prose in for a statement of a control."""
-    control_dir = trestle_dir / ssp_name / statement_id.split('-')[0]
-    md_file = control_dir / (statement_id.split('_')[0] + '.md')
-
-    return file_utils.insert_text_in_file(md_file, f'for item {statement_id}', prose)
-
-
 def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_label: str, seek_str: str) -> bool:
     """Confirm the text is present in the control markdown in the correct part."""
     control_dir = trestle_dir / ssp_name / control_id.split('-')[0]
     md_file = control_dir / f'{control_id}.md'
     context = ControlContext.generate(ContextPurpose.SSP, False, trestle_dir, trestle_dir)
-    comp_dict, _ = ControlReader.read_all_implementation_prose_and_header(None, md_file, context)
+    comp_dict = {}
+    _ = ControlReader.read_control_info_from_md(md_file, comp_dict, context)
     for label_dict in comp_dict.values():
         if part_label in label_dict:
             prose = label_dict[part_label].prose
@@ -172,32 +165,32 @@ def test_ssp_generate_header_edit(load_yaml_header: bool, tmp_trestle_dir: pathl
 
 def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     """Test ssp assemble from cli."""
-    gen_args, _, _ = setup_for_ssp(True, True, tmp_trestle_dir, prof_name, ssp_name)
+    gen_args, _, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
 
     # first create the markdown
     ssp_gen = SSPGenerate()
     assert ssp_gen._run(gen_args) == 0
-    acme_string = 'Do the ACME requirements'
     new_version = '1.2.3'
 
-    prose_a = 'Hello there\n  How are you\n line with more text\n\ndouble line'
-    prose_b = 'This is fun\nline with *bold* text\n\n### ACME Component\n\n' + acme_string
+    prose_sys = 'My response for This System'
+    prose_aa = 'My response for comp aa'
+    prose_aa_a = 'My response for comp aa part a.'
 
     # edit it a bit
     ac_1_path = tmp_trestle_dir / ssp_name / 'ac/ac-1.md'
-    assert insert_prose(tmp_trestle_dir, 'ac-1_smt.a', prose_a)
-    assert insert_prose(tmp_trestle_dir, 'ac-1_smt.b', prose_b)
-    assert delete_line_in_file(ac_1_path, 'Add control implementation description')
-    assert delete_line_in_file(ac_1_path, 'Add control implementation description')
+    assert test_utils.substitute_text_in_file(
+        ac_1_path, 'Add implementation prose for the main This System component for control ac-1', prose_sys
+    )
+    assert test_utils.substitute_text_in_file(ac_1_path, 'imp req prose for ac-1 from comp aa', prose_aa)
+    assert test_utils.substitute_text_in_file(ac_1_path, 'statement prose for part a. from comp aa', prose_aa_a)
 
-    # special handling for ac-2.1 because it has no statement sub-parts
-    add_prompt = 'Add control implementation description here for control ac-2.1'
-    add_response = 'My statement level prose'
-    ac_21_path = tmp_trestle_dir / ssp_name / 'ac/ac-2.1.md'
-    assert test_utils.substitute_text_in_file(ac_21_path, add_prompt, add_response)
+    add_prompt = 'statement prose for part a. from comp ba'
+    ac_67_path = tmp_trestle_dir / ssp_name / 'ac/ac-6.7.md'
+    assert test_utils.substitute_text_in_file(ac_67_path, add_prompt, prose_aa_a)
 
     # generate markdown again on top of previous markdown to make sure it is not removed
     ssp_gen = SSPGenerate()
+    # FIXME this overwrites
     assert ssp_gen._run(gen_args) == 0
 
     # now assemble the edited controls into json ssp
@@ -215,21 +208,19 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
 
     orig_ssp, orig_ssp_path = ModelUtils.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     orig_uuid = orig_ssp.uuid
-    assert len(orig_ssp.system_implementation.components) == 2
+    assert len(orig_ssp.system_implementation.components) == 5
     assert orig_ssp.metadata.version.__root__ == new_version
     assert ModelUtils.model_age(orig_ssp) < test_utils.NEW_MODEL_AGE_SECONDS
     imp_reqs = orig_ssp.control_implementation.implemented_requirements
-    imp_req = next((i_req for i_req in imp_reqs if i_req.control_id == 'ac-2.1'), None)
-    assert imp_req.statements[0].by_components[0].description == add_response
+    imp_req = next((i_req for i_req in imp_reqs if i_req.control_id == 'ac-6.7'), None)
+    assert imp_req.statements[1].by_components[0].description == prose_aa_a
 
     orig_file_creation = orig_ssp_path.stat().st_mtime
 
     # now write it back out and confirm text is still there
     assert ssp_gen._run(gen_args) == 0
-    assert confirm_control_contains(tmp_trestle_dir, 'ac-1', 'a.', 'Hello there')
-    assert confirm_control_contains(tmp_trestle_dir, 'ac-1', 'a.', 'line with more text')
-    assert confirm_control_contains(tmp_trestle_dir, 'ac-1', 'b.', 'This is fun')
-    assert test_utils.confirm_text_in_file(ac_21_path, const.SSP_MD_IMPLEMENTATION_QUESTION, add_response)
+    assert confirm_control_contains(tmp_trestle_dir, 'ac-1', 'a.', prose_aa_a)
+    assert test_utils.confirm_text_in_file(ac_1_path, const.SSP_MD_IMPLEMENTATION_QUESTION, prose_sys)
 
     # now assemble it again but don't regen uuid's and don't change version
     args = argparse.Namespace(
@@ -249,23 +240,8 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     repeat_ssp, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     assert orig_ssp.control_implementation == repeat_ssp.control_implementation
     assert orig_ssp.system_implementation == repeat_ssp.system_implementation
-    assert len(repeat_ssp.system_implementation.components) == 2
+    assert len(repeat_ssp.system_implementation.components) == 5
     assert repeat_ssp.metadata.version.__root__ == new_version
-
-    found_it = False
-    for imp_req in repeat_ssp.control_implementation.implemented_requirements:
-        if imp_req.control_id == 'ac-1':
-            statements = imp_req.statements
-            assert len(statements) == 4
-            for statement in statements:
-                for by_component in statement.by_components:
-                    if by_component.description == acme_string:
-                        found_it = True
-                        assert len(statement.by_components) == 2
-                        break
-        if found_it:
-            break
-    assert found_it
 
     # assemble it again but regen uuid's
     # this should not regen uuid's because the file is not written out if only difference is uuid's

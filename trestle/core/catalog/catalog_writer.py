@@ -254,6 +254,10 @@ class CatalogWriter():
         # prose and status for This System
         # status for all parts that still have rules
 
+        # remove items left after above loop
+        context.component = None
+        context.comp_name = None
+
         profile_set_param_dict = CatalogInterface._get_full_profile_param_dict(context.profile)
         catalog_merger = CatalogMerger(self._catalog_interface)
         for control_id, context.comp_dict in self._catalog_interface._control_comp_dicts.items():

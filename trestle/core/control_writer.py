@@ -167,18 +167,22 @@ class ControlWriter():
             self._insert_status(status, 4)
         did_write = True
         for comp_name, dic in comp_dict.items():
+            # This System already handled
+            if comp_name == const.SSP_MAIN_COMP_NAME:
+                continue
             for comp_info in [val for key, val in dic.items() if key == '']:
-                # is this control-level guidance for this component
-                # create new heading for this component and add guidance
-                self._md_file.new_header(3, comp_name)
+                # don't output component name for component markdown since only one component
+                if not context.purpose == ContextPurpose.COMPONENT:
+                    self._md_file.new_header(3, comp_name)
                 prose = comp_info.prose if comp_info.prose != control_id else ''
                 # only write out the prompt first time
                 if not self._md_file.exists() and not prose:
                     prose = f'{const.SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT} {control_id}'
                 if prose:
                     self._md_file.new_paraline(prose)
-                self._insert_rules(comp_info.rules, 4)
-                self._insert_status(comp_info.status, 4)
+                level = 3 if context.purpose == ContextPurpose.COMPONENT else 4
+                self._insert_rules(comp_info.rules, level)
+                self._insert_status(comp_info.status, level)
                 did_write = True
         return did_write
 
@@ -225,12 +229,13 @@ class ControlWriter():
                             self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT} {prt.id}')
                         wrote_label_content = False
                         for comp_name, dic in comp_dict.items():
+                            if comp_name == const.SSP_MAIN_COMP_NAME:
+                                continue
                             if part_label in dic:
-                                if comp_name != const.SSP_MAIN_COMP_NAME:
-                                    # insert the component name for ssp but not for comp_def
-                                    # because there should only be one component in generated comp_def markdown
-                                    if not context.purpose == ContextPurpose.COMPONENT:
-                                        self._md_file.new_header(level=3, title=comp_name)
+                                # insert the component name for ssp but not for comp_def
+                                # because there should only be one component in generated comp_def markdown
+                                if not context.purpose == ContextPurpose.COMPONENT:
+                                    self._md_file.new_header(level=3, title=comp_name)
                             self._insert_comp_info(part_label, dic, context)
                             wrote_label_content = True
                         if not wrote_label_content:
@@ -479,6 +484,9 @@ class ControlWriter():
         # add to the comp_dict coming from memory
         comp_dict = {}
         md_header = ControlReader.read_control_info_from_md(control_file, comp_dict, context)
+        # replace the memory comp_dict with the md one if control exists
+        if comp_dict:
+            context.comp_dict = comp_dict
 
         # begin adding info to the md file
         self._md_file = MDWriter(control_file)

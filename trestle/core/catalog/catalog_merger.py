@@ -154,23 +154,20 @@ class CatalogMerger():
         # FIXME confirm this merge behavior
         ControlInterface.merge_dicts_deep(memory_header, context.merged_header, True)
         md_header, md_comp_dict = CatalogReader._read_comp_info_from_md(control_file_path, context)
-        # get select info from md and update the memory comp_dict
+        # md content replaces memory content but unless memory has no rules for it and the content is removed
+        # but This System doesn't require rules, so its content is always kept
+
+        # go through the just-read md_comp_dict and update the memory dict with contents in md
         if const.SSP_MAIN_COMP_NAME in md_comp_dict:
-            sys_memory_dict = memory_comp_dict.get(const.SSP_MAIN_COMP_NAME, {})
-            sys_md_dict = md_comp_dict[const.SSP_MAIN_COMP_NAME]
-            # for This System the md completely replaces what is in memory
-            # but only for items that are in memory, which means they have rules
-            for label, comp_info in memory_comp_dict.items():
-                if label in sys_md_dict:
-                    sys_memory_dict[label] = comp_info
-            md_comp_dict.pop(const.SSP_MAIN_COMP_NAME)
+            memory_comp_dict[const.SSP_MAIN_COMP_NAME] = md_comp_dict[const.SSP_MAIN_COMP_NAME]
         for comp_name, md_label_dict in md_comp_dict.items():
             memory_label_dict = memory_comp_dict.get(comp_name, None)
-            if not memory_label_dict:
-                continue
-            for label, comp_info in md_label_dict.items():
-                if label in memory_label_dict:
-                    memory_label_dict[label].status = comp_info.status
+            if comp_name != const.SSP_MAIN_COMP_NAME:
+                if not memory_label_dict:
+                    continue
+                for label, comp_info in md_label_dict.items():
+                    if label in memory_label_dict:
+                        memory_label_dict[label] = comp_info
 
         memory_rules_param_vals = memory_header.get(const.COMP_DEF_RULES_PARAM_VALS_TAG, {})
         md_rules_param_vals = md_header.get(const.COMP_DEF_RULES_PARAM_VALS_TAG, {})

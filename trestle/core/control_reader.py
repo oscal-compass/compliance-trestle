@@ -351,7 +351,7 @@ class ControlReader():
 
     @staticmethod
     def _add_node_to_dict(
-        comp_name: str,
+        comp_name: Optional[str],
         label: str,
         comp_dict: CompDict,
         node: MarkdownNode,
@@ -359,7 +359,12 @@ class ControlReader():
         comp_list: List[str],
         context: ControlContext
     ) -> None:
-        """Extract the label, prose, possible component name - along with implementation status."""
+        """
+        Extract the label, prose, possible component name - along with implementation status.
+
+        In component mode there is only one component and its name is not in markdown.
+        In ssp mode there are many components in each md file.
+        """
         component_mode = context.purpose == ContextPurpose.COMPONENT
         # for ssp, ### marks component name but for component it is ##
         # if it is a header, make sure it has correct format
@@ -566,34 +571,31 @@ class ControlReader():
 
     @staticmethod
     def read_control_info_from_md(control_file: pathlib.Path, comp_dict: CompDict,
-                                  context: ControlContext) -> Tuple[CompDict, Dict[str, List[str]]]:
+                                  context: ControlContext) -> Dict[str, List[str]]:
         """
         Find all labels and associated implementation prose in the markdown for this control.
 
         Args:
-            control: optional control used for finding statement labels
-            comp_dict: component dictionary
             control_file: path to the control markdown file
+            comp_dict: component dictionary
             context: context of the control usage
 
         Returns:
-            Dictionary by comp_name of Dictionaries of part labels and corresponding prose read from the markdown file.
-            Also returns the yaml header as dict in second part of tuple.
-            This does not generate components - it only tracks component names and associated responses.
-
-        Notes:
-            If a component is provided, any implementation prose for a control will be added.
-            In addition, the implemented requirement will be queried for a
-            property corresponding to implementation status and included if available.
+            The yaml header as dict in second part of tuple.
+            Adds to the passed in comp_dict.
         """
         yaml_header = {}
 
         if not control_file.exists():
             return yaml_header
         # if the file exists, load the contents but do not use prose from comp_dict
+        # for non ssp or component mode just use empty string for comp
+        comp_name = ''
         try:
             control_id = control_file.stem
-            comp_name = context.comp_name if context.comp_name else const.SSP_MAIN_COMP_NAME
+            if context.purpose == ContextPurpose.COMPONENT:
+                comp_name = context.comp_name if context.comp_name else const.SSP_MAIN_COMP_NAME
+
             md_api = MarkdownAPI()
             yaml_header, control_md = md_api.processor.process_markdown(control_file)
 

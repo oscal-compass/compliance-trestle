@@ -157,7 +157,7 @@
               {
                 "uuid": "ca5ea4c5-ba51-4b1d-932a-5606891b7486",
                 "control-id": "ac-6.7",
-                "description": "imp req prose for ac-7 from comp ba",
+                "description": "imp req prose for ac-6.7 from comp ba",
                 "props": [
                   {
                     "name": "Rule_Id",
@@ -166,7 +166,7 @@
                   {
                     "name": "implementation-status",
                     "value": "implemented",
-                    "remarks": "ac7 imp req status"
+                    "remarks": "ac6.7 imp req status"
                   }
                 ],
                 "responsible-roles": [

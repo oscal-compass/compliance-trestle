@@ -78,11 +78,9 @@ def setup_component_generate(trestle_root: pathlib.Path) -> Tuple[pathlib.Path, 
 
 def check_common_contents(header: Dict[str, Any]) -> None:
     """Check common features of controls markdown."""
-    params = header[const.RULES_PARAMS_TAG]
+    params = header[const.RULES_PARAMS_TAG]['OSCO']
     assert len(params) == 1
-    assert params[0] == {
-        'name': 'foo_length', 'description': 'minimum_foo_length', 'rule-id': 'XCCDF', 'options': '["6", "9"]'
-    }
+    assert params[0] == {'name': 'foo_length', 'description': 'minimum_foo_length', 'options': '["6", "9"]'}
     assert header[const.TRESTLE_GLOBAL_TAG][
         const.PROFILE_TITLE] == 'NIST Special Publication 800-53 Revision 5 MODERATE IMPACT BASELINE'  # noqa E501
 
@@ -96,13 +94,14 @@ def check_ac1_contents(ac1_path: pathlib.Path) -> None:
     markdown_processor = MarkdownProcessor()
     header, _ = markdown_processor.read_markdown_wo_processing(ac1_path)
     assert header[const.PARAM_VALUES_TAG]['ac-1_prm_1'] == 'Param_1_value_in_catalog'
-    rules = header[const.COMP_DEF_RULES_TAG]
+    rules = header[const.COMP_DEF_RULES_TAG]['OSCO']
     assert len(rules) == 2
     assert rules[0] == {'name': 'TopRule', 'description': 'Top level rule'}
     assert rules[1] == {'name': 'XCCDF', 'description': 'The XCCDF must be compliant'}
-    vals = header[const.COMP_DEF_RULES_PARAM_VALS_TAG]
-    assert len(vals) == 2
-    assert vals['quantity_available'] == '500'
+    vals = header[const.COMP_DEF_RULES_PARAM_VALS_TAG]['OSCO']
+    assert len(vals) == 1
+    assert vals[0]['name'] == 'foo_length'
+    assert vals[0]['values'] == ['6']
     check_common_contents(header)
 
 
@@ -113,7 +112,7 @@ def check_ac5_contents(ac5_path: pathlib.Path) -> None:
     assert test_utils.confirm_text_in_file(
         ac5_path, '### Implementation Status: partial', '### Implementation Status Remarks: this is my remark'
     )
-    rules = header[const.COMP_DEF_RULES_TAG]
+    rules = header[const.COMP_DEF_RULES_TAG]['OSCO']
     assert len(rules) == 2
     assert rules[0] == {'name': 'XCCDF', 'description': 'The XCCDF must be compliant'}
     assert rules[1] == {'name': 'FancyXtraRule', 'description': 'This is a fancy extra rule'}
