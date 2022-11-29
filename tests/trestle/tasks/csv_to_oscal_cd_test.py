@@ -39,7 +39,7 @@ def _validate1(tmp_path: pathlib.Path):
     cl = 'scc_class'
     rs0 = 'rule_set_000'
     rs1 = 'rule_set_001'
-    cr_props = [
+    cd_props = [
         [
             0,
             'Rule_Id',
@@ -95,15 +95,15 @@ def _validate1(tmp_path: pathlib.Path):
     assert len(cd.components) == 1
     assert len(cd.components[0].control_implementations) == 2
     # control implementations props
-    for prop in cr_props:
+    for prop in cd_props:
         index = prop[0]
-        assert cd.components[0].control_implementations[0].props[index].name == prop[1]
-        assert cd.components[0].control_implementations[0].props[index].value == prop[2]
-        assert cd.components[0].control_implementations[0].props[index].remarks.__root__ == prop[3]
+        assert cd.components[0].props[index].name == prop[1]
+        assert cd.components[0].props[index].value == prop[2]
+        assert cd.components[0].props[index].remarks.__root__ == prop[3]
         if prop[4] is not None:
-            assert cd.components[0].control_implementations[0].props[index].ns == prop[4]
+            assert cd.components[0].props[index].ns == prop[4]
         if prop[5] is not None:
-            assert cd.components[0].control_implementations[0].props[index].class_ == prop[5]
+            assert cd.components[0].props[index].class_ == prop[5]
     # implemented requirements props
     for prop in ir_props:
         index = prop[0]
@@ -123,7 +123,7 @@ def _validate2(tmp_path: pathlib.Path):
     cl = 'scc_class'
     rs0 = 'rule_set_0'
     rs1 = 'rule_set_1'
-    cr_props = [
+    cd_props = [
         [
             0,
             'Rule_Id',
@@ -189,15 +189,15 @@ def _validate2(tmp_path: pathlib.Path):
     assert len(cd.components) == 1
     assert len(cd.components[0].control_implementations) == 1
     # control implementations props
-    for prop in cr_props:
+    for prop in cd_props:
         index = prop[0]
-        assert cd.components[0].control_implementations[0].props[index].name == prop[1]
-        assert cd.components[0].control_implementations[0].props[index].value == prop[2]
-        assert cd.components[0].control_implementations[0].props[index].remarks.__root__ == prop[3]
+        assert cd.components[0].props[index].name == prop[1]
+        assert cd.components[0].props[index].value == prop[2]
+        assert cd.components[0].props[index].remarks.__root__ == prop[3]
         if prop[4] is not None:
-            assert cd.components[0].control_implementations[0].props[index].ns == prop[4]
+            assert cd.components[0].props[index].ns == prop[4]
         if prop[5] is not None:
-            assert cd.components[0].control_implementations[0].props[index].class_ == prop[5]
+            assert cd.components[0].props[index].class_ == prop[5]
     # set parameters
     for param in set_params:
         index = param[0]
