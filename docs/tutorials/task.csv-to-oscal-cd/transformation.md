@@ -154,7 +154,7 @@ The below table represents the expectations of trestle task `csv-to-oscal-cd` fo
 <td>Resource_Instance_Type
 <td>String
 <td>optional
-<td>A textual label that uniquely identifies the resource's type, to differentiate between resources. For example DB2 vs. Object Storage.
+<td>A textual label that uniquely identifies a resource (component) type from the resource instance id. This text is part of all instance ids of a particular resource at runtime. For example the text 'db2' is part of all instance ids of resource DB2.
 <td>component.control-implementation.prop["Resource_Instance_Type"]
 <td>DB2
 
