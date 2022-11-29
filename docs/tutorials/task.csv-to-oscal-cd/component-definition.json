@@ -1,108 +1,108 @@
 {
   "component-definition": {
-    "uuid": "f3762033-f4b2-4551-b96a-f1e1039d1534",
+    "uuid": "a0ab1f67-8804-489e-9dac-8a035ec27b5c",
     "metadata": {
       "title": "ocp4-sample",
-      "last-modified": "2022-11-28T16:30:09+00:00",
+      "last-modified": "2022-11-18T15:58:52+00:00",
       "version": "1.0",
       "oscal-version": "1.0.2"
     },
     "components": [
       {
-        "uuid": "52ca21a9-4740-4def-aca2-f232359e1496",
+        "uuid": "005c4943-2fdf-4f3c-9816-95e40a47fa0b",
         "type": "Service",
         "title": "OSCO",
         "description": "",
-        "props": [
-          {
-            "name": "Rule_Id",
-            "value": "content_rule_api_server_anonymous_auth",
-            "remarks": "rule_set_0"
-          },
-          {
-            "name": "Rule_Description",
-            "value": "Ensure that the --anonymous-auth argument is set to false",
-            "remarks": "rule_set_0"
-          },
-          {
-            "name": "Check_Id",
-            "value": "xccdf_org.ssgproject.content_rule_api_server_anonymous_auth",
-            "remarks": "rule_set_0"
-          },
-          {
-            "name": "Check_Description",
-            "value": "Ensure that the --anonymous-auth argument is set to false",
-            "remarks": "rule_set_0"
-          },
-          {
-            "name": "Rule_Id",
-            "value": "content_rule_api_server_basic_auth",
-            "remarks": "rule_set_1"
-          },
-          {
-            "name": "Rule_Description",
-            "value": "Ensure that the --basic-auth-file argument is not set",
-            "remarks": "rule_set_1"
-          },
-          {
-            "name": "Check_Id",
-            "value": "xccdf_org.ssgproject.content_rule_api_server_basic_auth",
-            "remarks": "rule_set_1"
-          },
-          {
-            "name": "Check_Description",
-            "value": "Ensure that the --basic-auth-file argument is not set",
-            "remarks": "rule_set_1"
-          },
-          {
-            "name": "Rule_Id",
-            "value": "content_rule_api_server_token_auth",
-            "remarks": "rule_set_2"
-          },
-          {
-            "name": "Rule_Description",
-            "value": "Ensure that the --token-auth-file parameter is not set",
-            "remarks": "rule_set_2"
-          },
-          {
-            "name": "Check_Id",
-            "value": "xccdf_org.ssgproject.content_rule_api_server_token_auth",
-            "remarks": "rule_set_2"
-          },
-          {
-            "name": "Check_Description",
-            "value": "Ensure that the --token-auth-file parameter is not set",
-            "remarks": "rule_set_2"
-          },
-          {
-            "name": "Rule_Id",
-            "value": "content_rule_api_server_https_for_kubelet_conn",
-            "remarks": "rule_set_3"
-          },
-          {
-            "name": "Rule_Description",
-            "value": "Ensure that the --kubelet-https argument is set to true",
-            "remarks": "rule_set_3"
-          },
-          {
-            "name": "Check_Id",
-            "value": "xccdf_org.ssgproject.content_rule_api_server_https_for_kubelet_conn",
-            "remarks": "rule_set_3"
-          },
-          {
-            "name": "Check_Description",
-            "value": "Ensure that the --kubelet-https argument is set to true",
-            "remarks": "rule_set_3"
-          }
-        ],
         "control-implementations": [
           {
-            "uuid": "b5d228ca-3bc6-4d23-84bc-4f461bdaf16f",
+            "uuid": "1a534121-1452-48dc-aa3a-7070bb6e3dc9",
             "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
             "description": "ocp4",
+            "props": [
+              {
+                "name": "Rule_Id",
+                "value": "content_rule_api_server_anonymous_auth",
+                "remarks": "rule_set_0"
+              },
+              {
+                "name": "Rule_Description",
+                "value": "Ensure that the --anonymous-auth argument is set to false",
+                "remarks": "rule_set_0"
+              },
+              {
+                "name": "Check_Id",
+                "value": "xccdf_org.ssgproject.content_rule_api_server_anonymous_auth",
+                "remarks": "rule_set_0"
+              },
+              {
+                "name": "Check_Description",
+                "value": "Ensure that the --anonymous-auth argument is set to false",
+                "remarks": "rule_set_0"
+              },
+              {
+                "name": "Rule_Id",
+                "value": "content_rule_api_server_basic_auth",
+                "remarks": "rule_set_1"
+              },
+              {
+                "name": "Rule_Description",
+                "value": "Ensure that the --basic-auth-file argument is not set",
+                "remarks": "rule_set_1"
+              },
+              {
+                "name": "Check_Id",
+                "value": "xccdf_org.ssgproject.content_rule_api_server_basic_auth",
+                "remarks": "rule_set_1"
+              },
+              {
+                "name": "Check_Description",
+                "value": "Ensure that the --basic-auth-file argument is not set",
+                "remarks": "rule_set_1"
+              },
+              {
+                "name": "Rule_Id",
+                "value": "content_rule_api_server_token_auth",
+                "remarks": "rule_set_2"
+              },
+              {
+                "name": "Rule_Description",
+                "value": "Ensure that the --token-auth-file parameter is not set",
+                "remarks": "rule_set_2"
+              },
+              {
+                "name": "Check_Id",
+                "value": "xccdf_org.ssgproject.content_rule_api_server_token_auth",
+                "remarks": "rule_set_2"
+              },
+              {
+                "name": "Check_Description",
+                "value": "Ensure that the --token-auth-file parameter is not set",
+                "remarks": "rule_set_2"
+              },
+              {
+                "name": "Rule_Id",
+                "value": "content_rule_api_server_https_for_kubelet_conn",
+                "remarks": "rule_set_3"
+              },
+              {
+                "name": "Rule_Description",
+                "value": "Ensure that the --kubelet-https argument is set to true",
+                "remarks": "rule_set_3"
+              },
+              {
+                "name": "Check_Id",
+                "value": "xccdf_org.ssgproject.content_rule_api_server_https_for_kubelet_conn",
+                "remarks": "rule_set_3"
+              },
+              {
+                "name": "Check_Description",
+                "value": "Ensure that the --kubelet-https argument is set to true",
+                "remarks": "rule_set_3"
+              }
+            ],
             "implemented-requirements": [
               {
-                "uuid": "2da47418-95d8-4ba3-bcd2-2c38ff5c8cdb",
+                "uuid": "705bba7f-d095-45e3-a90a-c55a6565f3c2",
                 "control-id": "CIS-1.2.1",
                 "description": "",
                 "props": [
@@ -113,7 +113,7 @@
                 ]
               },
               {
-                "uuid": "697bdc4d-b80f-4db5-b1a9-6f7735dc736e",
+                "uuid": "9f4442df-5d25-4c1b-af89-4a4a43d8ebba",
                 "control-id": "CIS-1.2.2",
                 "description": "",
                 "props": [
@@ -124,7 +124,7 @@
                 ]
               },
               {
-                "uuid": "a59873ec-6d49-4777-bda5-5e83b0e9bc00",
+                "uuid": "1f15348c-af22-4409-bb0e-cc96a99b9492",
                 "control-id": "CIS-1.2.3",
                 "description": "",
                 "props": [
@@ -135,7 +135,7 @@
                 ]
               },
               {
-                "uuid": "00eb13fb-08e1-4b57-b461-b152ffd528a6",
+                "uuid": "32f2de53-00ae-4b13-8fbe-952972775b7d",
                 "control-id": "CIS-1.2.4",
                 "description": "",
                 "props": [
