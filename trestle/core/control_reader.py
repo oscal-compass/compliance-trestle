@@ -34,6 +34,7 @@ from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.markdown.markdown_processor import MarkdownNode
 from trestle.oscal import common
 from trestle.oscal import profile as prof
+from trestle.oscal import ssp as ossp
 
 logger = logging.getLogger(__name__)
 
@@ -398,7 +399,7 @@ class ControlReader():
             else:
                 # create new entry with prose
                 comp_dict[comp_name][label] = ComponentImpInfo(prose=prose, rules=[])
-        else:
+        elif comp_name:
             comp_dict[comp_name] = {label: ComponentImpInfo(prose=prose, rules=[])}
 
         # build list of subnodes that get handled specially so they aren't processed here
@@ -661,6 +662,14 @@ class ControlReader():
         # create a new implemented requirement linked to the control id to hold the statements
         imp_req: generic.GenericImplementedRequirement = generic.GenericImplementedRequirement.generate()
         imp_req.control_id = control_id
+
+        imp_req.set_parameters = []
+        for param_id, param_dict in header.get(const.SET_PARAMS_TAG, {}).items():
+            if const.SSP_VALUES in param_dict:
+                values = [common.Value(__root__=value) for value in param_dict[const.SSP_VALUES]]
+                set_param = ossp.SetParameter(param_id=param_id, values=values)
+                imp_req.set_parameters.append(set_param)
+        imp_req.set_parameters = none_if_empty(imp_req.set_parameters)
 
         raw_comp_dict = {ControlReader.simplify_name(key): value for key, value in comp_dict.items()}
         raw_avail_comps = {ControlReader.simplify_name(key): value for key, value in avail_comps.items()}

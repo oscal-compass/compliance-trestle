@@ -190,8 +190,11 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
 
     # generate markdown again on top of previous markdown to make sure it is not removed
     ssp_gen = SSPGenerate()
-    # FIXME this overwrites
     assert ssp_gen._run(gen_args) == 0
+
+    assert test_utils.replace_line_in_file_after_tag(
+        ac_1_path, 'ac-1_prm_2:', '    values:\n    ssp-values:\n      - my ssp val\n'
+    )
 
     # now assemble the edited controls into json ssp
     ssp_assemble = SSPAssemble()
@@ -214,6 +217,9 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     imp_reqs = orig_ssp.control_implementation.implemented_requirements
     imp_req = next((i_req for i_req in imp_reqs if i_req.control_id == 'ac-6.7'), None)
     assert imp_req.statements[1].by_components[0].description == prose_aa_a
+
+    assert imp_reqs[0].set_parameters[0].param_id == 'ac-1_prm_2'
+    assert imp_reqs[0].set_parameters[0].values[0].__root__ == 'my ssp val'
 
     orig_file_creation = orig_ssp_path.stat().st_mtime
 
