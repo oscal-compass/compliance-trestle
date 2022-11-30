@@ -473,6 +473,8 @@ TRESTLE_INHERITED_PROPS_TRACKER = 'trestle_inherited_props_tracker'
 
 RULE_ID = 'Rule_Id'
 
+RULE_NAME = 'rule_name'
+
 RULE_DESCRIPTION = 'Rule_Description'
 
 PARAMETER_ID = 'Parameter_Id'

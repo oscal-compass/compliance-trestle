@@ -189,9 +189,9 @@ class SSPAssemble(AuthorCommonCommand):
         """
         id_map: Dict[str, Dict[str, ossp.Statement]] = {}
         control_map: Dict[str, ossp.ImplementedRequirement] = {}
-        for imp_req in ssp.control_implementation.implemented_requirements:
+        for imp_req in as_list(ssp.control_implementation.implemented_requirements):
             control_map[imp_req.control_id] = imp_req
-            for statement in imp_req.statements:
+            for statement in as_list(imp_req.statements):
                 for by_comp in statement.by_components:
                     id_ = statement.statement_id
                     if id_ not in id_map:
