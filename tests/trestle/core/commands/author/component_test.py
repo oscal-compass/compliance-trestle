@@ -15,19 +15,19 @@
 
 import pathlib
 import shutil
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, List, Tuple
 
 from _pytest.monkeypatch import MonkeyPatch
 
 from tests import test_utils
 
 import trestle.core.generic_oscal as generic
+import trestle.oscal.catalog as cat
 import trestle.oscal.component as comp
+import trestle.oscal.profile as prof
 from trestle.common import const, file_utils
-from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.commands.href import HrefCmd
-from trestle.core.control_interface import ControlInterface
 from trestle.core.markdown.markdown_processor import MarkdownProcessor
 
 md_path = 'md_comp'
@@ -54,7 +54,7 @@ def load_file(trestle_root: pathlib.Path, source_name: str, dest_name: str, sour
     shutil.copy(item_orig_path, item_new_path)
 
 
-def setup_component_generate(trestle_root: pathlib.Path) -> Tuple[pathlib.Path, pathlib.Path, pathlib.Path]:
+def setup_component_generate_old(trestle_root: pathlib.Path) -> Tuple[pathlib.Path, pathlib.Path, pathlib.Path]:
     """Set up files for profile generate."""
     comp_name = 'test_comp'
     cat_name = 'nist_cat'
@@ -76,6 +76,18 @@ def setup_component_generate(trestle_root: pathlib.Path) -> Tuple[pathlib.Path, 
     return comp_name, prof_name, cat_name
 
 
+def setup_component_generate(tmp_trestle_dir: pathlib.Path) -> List[str]:
+    """Create the compdef, profile and catalog content component-generate."""
+    comp_names = 'comp_def_a,comp_def_b'
+    for comp_name in comp_names.split(','):
+        test_utils.load_from_json(tmp_trestle_dir, comp_name, comp_name, comp.ComponentDefinition)
+    for prof_name in 'comp_prof,comp_prof_aa,comp_prof_ab,comp_prof_ba,comp_prof_bb'.split(','):
+        test_utils.load_from_json(tmp_trestle_dir, prof_name, prof_name, prof.Profile)
+    test_utils.load_from_json(tmp_trestle_dir, 'simplified_nist_catalog', 'simplified_nist_catalog', cat.Catalog)
+
+    return comp_names
+
+
 def check_common_contents(header: Dict[str, Any]) -> None:
     """Check common features of controls markdown."""
     params = header[const.RULES_PARAMS_TAG]['OSCO']
@@ -89,12 +101,11 @@ def check_ac1_contents(ac1_path: pathlib.Path) -> None:
     """Check the contents of ac-1 md."""
     assert test_utils.confirm_text_in_file(ac1_path, 'enter one of:', 'set to 644')
     assert test_utils.confirm_text_in_file(ac1_path, 'set to 644', 'Status: implemented')
-    assert test_utils.confirm_text_in_file(ac1_path, 'Status: implemented', 'ac1 remark')
     assert not test_utils.confirm_text_in_file(ac1_path, 'ac-1_smt.c', 'Status: planned')
     markdown_processor = MarkdownProcessor()
     header, _ = markdown_processor.read_markdown_wo_processing(ac1_path)
     assert header[const.PARAM_VALUES_TAG]['ac-1_prm_1'] == 'Param_1_value_in_catalog'
-    rules = header[const.COMP_DEF_RULES_TAG]['OSCO']
+    rules = header[const.COMP_DEF_RULES_TAG]['comp_aa']
     assert len(rules) == 2
     assert rules[0] == {'name': 'TopRule', 'description': 'Top level rule'}
     assert rules[1] == {'name': 'XCCDF', 'description': 'The XCCDF must be compliant'}
@@ -105,14 +116,11 @@ def check_ac1_contents(ac1_path: pathlib.Path) -> None:
     check_common_contents(header)
 
 
-def check_ac5_contents(ac5_path: pathlib.Path) -> None:
-    """Check the contents of ac-5 md."""
+def check_at1_contents(at1_path: pathlib.Path) -> None:
+    """Check the contents of at-1 md."""
     markdown_processor = MarkdownProcessor()
-    header, _ = markdown_processor.read_markdown_wo_processing(ac5_path)
-    assert test_utils.confirm_text_in_file(
-        ac5_path, '### Implementation Status: partial', '### Implementation Status Remarks: this is my remark'
-    )
-    rules = header[const.COMP_DEF_RULES_TAG]['OSCO']
+    header, _ = markdown_processor.read_markdown_wo_processing(at1_path)
+    rules = header[const.COMP_DEF_RULES_TAG]['comp_ab']
     assert len(rules) == 2
     assert rules[0] == {'name': 'XCCDF', 'description': 'The XCCDF must be compliant'}
     assert rules[1] == {'name': 'FancyXtraRule', 'description': 'This is a fancy extra rule'}
@@ -121,21 +129,17 @@ def check_ac5_contents(ac5_path: pathlib.Path) -> None:
 
 def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test component generate."""
-    comp_name, _, _ = setup_component_generate(tmp_trestle_dir)
-    prof_title = 'nist_prof'
-    md_root = tmp_trestle_dir / f'{md_path}/OSCO/{prof_title}'
-    ac1_path = md_root / 'ac/ac-1.md'
-    ac5_path = md_root / 'ac/ac-5.md'
+    comp_names = setup_component_generate(tmp_trestle_dir)
+    comp_name = comp_names.split(',')[0]
+    ac1_path = tmp_trestle_dir / 'md_comp/comp_aa/comp_prof_aa/ac/ac-1.md'
 
     generate_cmd = f'trestle author component-generate -n {comp_name} -o {md_path}'
 
     # generate the md first time
     test_utils.execute_command_and_assert(generate_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
     check_ac1_contents(ac1_path)
-    check_ac5_contents(ac5_path)
-    assert (tmp_trestle_dir / 'md_comp/OSCO/source_001/s2/s2.1/s2.1.1.md').exists()
 
-    file_checker = test_utils.FileChecker(tmp_trestle_dir / md_path)
+    file_checker = test_utils.FileChecker(tmp_trestle_dir / tmp_trestle_dir)
 
     # generate again but force use of source in comp_def to load profile rather than command line
     generate_cmd = f'trestle author component-generate -n {comp_name} -o {md_path}'
@@ -144,47 +148,6 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
 
     # all files should be the same
     assert file_checker.files_unchanged()
-
-    # make edits to status and remarks and control level prose
-    assert test_utils.substitute_text_in_file(ac1_path, '644', '567')
-    control_prose = '567 or more restrictive'
-    assert test_utils.confirm_text_in_file(ac1_path, 'after assembly to JSON', control_prose)
-    assert test_utils.substitute_text_in_file(ac5_path, 'Status: partial', 'Status: implemented')
-    assert test_utils.confirm_text_in_file(ac5_path, 'garbage collection', 'Status: implemented')
-    assert test_utils.substitute_text_in_file(ac5_path, 'my remark', 'my new remark')
-    assert test_utils.confirm_text_in_file(ac5_path, 'garbage collection', 'my new remark')
-
-    assemble_cmd = f'trestle author component-assemble -n {comp_name} -o assem_comp -m {md_path}'
-    test_utils.execute_command_and_assert(assemble_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
-
-    # confirm assembled model is as expected
-    assem_comp_def, orig_comp_def_path = ModelUtils.load_top_level_model(
-        tmp_trestle_dir,
-        'assem_comp',
-        comp.ComponentDefinition
-    )
-    component = ControlInterface.get_component_by_name(assem_comp_def, 'OSCO')
-    imp_reqs = ControlInterface.get_control_imp_reqs(component.control_implementations[1], 'ac-5')
-    new_status = ControlInterface.get_status_from_props(imp_reqs[0])
-    assert new_status.state == 'implemented'
-    assert new_status.remarks.__root__ == 'this is my new remark'
-    imp_reqs = ControlInterface.get_control_imp_reqs(component.control_implementations[0], 'ac-1')
-    assert control_prose in imp_reqs[0].description
-
-    orig_uuid = assem_comp_def.uuid
-
-    orig_file_creation = orig_comp_def_path.stat().st_mtime
-
-    # confirm repeat assemble doesn't generate new file since no changes
-    test_utils.execute_command_and_assert(assemble_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
-    assert orig_comp_def_path.stat().st_mtime == orig_file_creation
-
-    # force overwrite of output, regenerate, and new version
-    assemble_cmd = f'trestle author component-assemble -o assem_comp -m {md_path} -r -vn 1.2.3'
-    test_utils.execute_command_and_assert(assemble_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
-    assem_comp_def, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, 'assem_comp', comp.ComponentDefinition)
-    assert assem_comp_def.uuid != orig_uuid
-    assert assem_comp_def.metadata.version.__root__ == '1.2.3'
 
 
 def test_generic_oscal() -> None:

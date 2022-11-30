@@ -15,6 +15,7 @@
 from __future__ import annotations
 
 import copy
+import logging
 from typing import List, Optional
 from uuid import uuid4
 
@@ -27,6 +28,8 @@ from trestle.common.list_utils import as_list
 from trestle.core.control_interface import ControlInterface
 from trestle.core.trestle_base_model import TrestleBaseModel
 from trestle.oscal import common
+
+logger = logging.getLogger(__name__)
 
 
 class GenericByComponent(TrestleBaseModel):
@@ -191,9 +194,10 @@ class GenericComponent(TrestleBaseModel):
         """Convert to SystemComponent."""
         class_dict = copy.deepcopy(self.__dict__)
         class_dict.pop('control_implementations', None)
-        status_str = self.status.state if self.status else 'other'
+        status_str = self.status.state if self.status else const.STATUS_OPERATIONAL
         if status_str not in ['under-development', 'operational', 'disposition', 'other']:
-            status_str = 'other'
+            logger.warning(f'Component status {status_str} not recognized.  Setting to {const.STATUS_OPERATIONAL}')
+            status_str = const.STATUS_OPERATIONAL
         class_dict['status'] = ossp.Status(state=ossp.State1(status_str), remarks=self.status.remarks)
         return ossp.SystemComponent(**class_dict)
 

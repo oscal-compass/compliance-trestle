@@ -260,7 +260,9 @@ class CatalogWriter():
 
         profile_set_param_dict = CatalogInterface._get_full_profile_param_dict(context.profile)
         catalog_merger = CatalogMerger(self._catalog_interface)
-        for control_id, context.comp_dict in self._catalog_interface._control_comp_dicts.items():
+        for control in self._catalog_interface.get_all_controls_from_dict():
+            control_id = control.id
+            context.comp_dict = self._catalog_interface._control_comp_dicts.get(control_id, {})
             control_file_path = self._catalog_interface.get_control_file_path(context.md_root, control_id)
             if not control_file_path:
                 logger.warning(f'Control {control_id} referenced by component is not in the resolved catalog.')

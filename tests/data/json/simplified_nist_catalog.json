@@ -5008,7 +5008,7 @@
                         "value": "b."
                       }
                     ],
-                    "prose": "Designate an {{ insert: param, at-1_prm_3 }} to manage the development, documentation, and dissemination of the awareness and training policy and procedures; and"
+                    "prose": "Designate an {{ insert: param, at-1_prm_1 }} to manage the development, documentation, and dissemination of the awareness and training policy and procedures; and"
                   }
                 ]
               },
@@ -5102,7 +5102,7 @@
                         "value": "b."
                       }
                     ],
-                    "prose": "Employ the following techniques to increase the security and privacy awareness of system users {{ insert: param, at-2_prm_3 }};"
+                    "prose": "Employ the following techniques to increase the security and privacy awareness of system users {{ insert: param, at-2_prm_1 }};"
                   }
                 ]
               },

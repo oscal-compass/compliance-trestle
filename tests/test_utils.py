@@ -396,8 +396,8 @@ def load_from_json(
 
 
 def setup_for_ssp(tmp_trestle_dir: pathlib.Path, prof_name: str,
-                  output_name: str) -> Tuple[argparse.Namespace, str, pathlib.Path]:
-    """Create the markdown ssp content from catalog and profile."""
+                  output_name: str) -> Tuple[argparse.Namespace, pathlib.Path]:
+    """Create the comp_def, profile and catalog content needed for ssp-generate."""
     comp_names = 'comp_def_a,comp_def_b'
     for comp_name in comp_names.split(','):
         load_from_json(tmp_trestle_dir, comp_name, comp_name, comp.ComponentDefinition)
@@ -405,21 +405,19 @@ def setup_for_ssp(tmp_trestle_dir: pathlib.Path, prof_name: str,
         load_from_json(tmp_trestle_dir, prof_name, prof_name, prof.Profile)
     load_from_json(tmp_trestle_dir, 'simplified_nist_catalog', 'simplified_nist_catalog', cat.Catalog)
     yaml_path = None
-    sections = ''
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
         profile='comp_prof',
         compdefs=comp_names,
         output=output_name,
         verbose=0,
-        sections=sections,
         overwrite_header_values=False,
         yaml_header=yaml_path,
         allowed_sections=None,
         force_overwrite=None
     )
 
-    return args, sections, yaml_path
+    return args, yaml_path
 
 
 def make_file_hidden(file_path: pathlib.Path, if_dot=False) -> None:

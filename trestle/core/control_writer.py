@@ -112,10 +112,7 @@ class ControlWriter():
 
     def _insert_status(self, status: ImplementationStatus, level: int) -> None:
         self._md_file.new_header(level=level, title=f'{const.IMPLEMENTATION_STATUS_HEADER}: {status.state}')
-        if status.remarks and status.remarks.__root__:
-            self._md_file.new_header(
-                level=level, title=f'{const.IMPLEMENTATION_STATUS_REMARKS_HEADER}: {status.remarks.__root__}'
-            )
+        # this used to output remarks also
 
     def _insert_rules(self, rules: List[str], level: int) -> None:
         if rules:

@@ -27,7 +27,7 @@ from trestle.core.markdown.markdown_node import MarkdownNode
 
 def setup_ssp(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch):
     """Prepare repository for docs generation."""
-    args, _, _ = setup_for_ssp(True, True, tmp_trestle_dir, 'main_profile', 'my_ssp')
+    args, _ = setup_for_ssp(tmp_trestle_dir, 'main_profile', 'my_ssp')
     ssp_cmd = SSPGenerate()
     assert ssp_cmd._run(args) == 0
 
@@ -44,7 +44,7 @@ def test_jinja_ssp_output(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.P
     """Test Jinja SSP output."""
     input_template = 'ssp_template.md.jinja'
     setup_ssp(testdata_dir, tmp_trestle_dir, monkeypatch)
-    command_import = f'trestle author jinja -i {input_template} -o output_file.md -ssp ssp_json -p main_profile'
+    command_import = f'trestle author jinja -i {input_template} -o output_file.md -ssp ssp_json -p comp_prof'
     execute_command_and_assert(command_import, 0, monkeypatch)
 
     with open('output_file.md') as test_output:
@@ -65,7 +65,7 @@ def test_jinja_lookup_table(
     luk_table = 'lookup_table.yaml'
     setup_ssp(testdata_dir, tmp_trestle_dir, monkeypatch)
     command_import = f'trestle author jinja -i {input_template} -o output_file.md ' \
-                     f'-lut {luk_table} -ssp ssp_json -p main_profile -elp lut.prefix'  # noqa: N400
+                     f'-lut {luk_table} -ssp ssp_json -p comp_prof -elp lut.prefix'  # noqa: N400
     execute_command_and_assert(command_import, 0, monkeypatch)
 
     with open('output_file.md') as test_output:
@@ -156,7 +156,7 @@ def test_jinja_profile_docs(
 
     setup_ssp(testdata_dir, tmp_trestle_dir, monkeypatch)
 
-    command_import = f'trestle author jinja -i {input_template} -o controls -p test_profile_a --docs-profile'
+    command_import = f'trestle author jinja -i {input_template} -o controls -p comp_prof --docs-profile'
     execute_command_and_assert(command_import, 0, monkeypatch)
 
     for md_control in (tmp_trestle_dir / 'controls' / 'ac').iterdir():
@@ -170,6 +170,7 @@ def test_jinja_profile_docs(
             assert node2
             node3 = tree.get_node_for_key('## Control Expected Evidence Header')
             # ac-3 and ac-3.3 do not have this part
+            # FIXME this logic needs reworking for new test data
             assert not node3 if 'ac-3' in md_control.name else node3
 
             if tree.get_node_for_key('# AC-1 - Policy and Procedures'):
@@ -185,9 +186,10 @@ def test_jinja_profile_docs_with_group_title(
 
     setup_ssp(testdata_dir, tmp_trestle_dir, monkeypatch)
 
-    command_import = f'trestle author jinja -i {input_template} -o controls -p test_profile_a --docs-profile'
+    command_import = f'trestle author jinja -i {input_template} -o controls -p comp_prof --docs-profile'
     execute_command_and_assert(command_import, 0, monkeypatch)
 
+    # FIXME work with new test data
     md_control = tmp_trestle_dir / 'controls' / 'ac' / 'ac-2.md'
     with open(md_control) as md_file:
         contents = md_file.read()
@@ -216,9 +218,10 @@ def test_jinja_profile_docs_with_selected_sections(
 
     setup_ssp(testdata_dir, tmp_trestle_dir, monkeypatch)
 
-    command_import = f'trestle author jinja -i {input_template} -o controls -p test_profile_a --docs-profile'
+    command_import = f'trestle author jinja -i {input_template} -o controls -p comp_prof --docs-profile'
     execute_command_and_assert(command_import, 0, monkeypatch)
 
+    # FIXME work with new test data
     md_control = tmp_trestle_dir / 'controls' / 'ac' / 'ac-1.md'
     with open(md_control) as md_file:
         contents = md_file.read()
