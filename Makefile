@@ -79,7 +79,7 @@ docs-validate:: docs-automation
 docs-serve: docs-automation
 	mkdocs serve	
 
-mdformat: pre-commit-update
+mdformat:
 	pre-commit run mdformat --all-files
 
 simplified-catalog:

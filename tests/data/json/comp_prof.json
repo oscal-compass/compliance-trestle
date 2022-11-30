@@ -35,6 +35,13 @@
           "param-id": "ac-1_prm_1",
           "values": [
             "comp_prof val 1"
+          ],
+          "props": [
+            {
+              "name": "display-name",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal",
+              "value": "AC-1 (a) (1)"
+            }
           ]
         }
       ]

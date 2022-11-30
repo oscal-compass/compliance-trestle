@@ -96,7 +96,20 @@ def test_params_formatting(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.
 
     setup_ssp(testdata_dir, tmp_trestle_dir, monkeypatch)
 
-    command_md_gen = f'trestle author jinja -pf *.* -i {input_template} -o output.md -ssp ssp_json -p main_profile'
+    command_md_gen = f'trestle author jinja -pf *.* -i {input_template} -o output.md -ssp ssp_json -p comp_prof'
+    execute_command_and_assert(command_md_gen, 0, monkeypatch)
+
+    with open('output.md') as test_output:
+        output = test_output.read()
+        tree = MarkdownNode.build_tree_from_markdown(output.split('\n'))
+        assert tree
+        parent = tree.get_node_for_key('### AC-1 - Policy and Procedures')
+        child1 = parent.get_node_for_key('#### AC-1 Summary information')
+        assert child1
+        child2 = parent.get_node_for_key('#### Control Statement')
+        assert '*[Assignment: organization-defined official]*' in child2.content.raw_text
+
+    command_md_gen = f'trestle author jinja -pf Prefix:. -i {input_template} -o output.md -ssp ssp_json -p comp_prof'
     execute_command_and_assert(command_md_gen, 0, monkeypatch)
 
     with open('output.md') as test_output:
@@ -106,46 +119,8 @@ def test_params_formatting(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.
         parent = tree.get_node_for_key('### AC-1 - Policy and Procedures')
         child1 = parent.get_node_for_key('#### AC-1 Summary information')
         child2 = parent.get_node_for_key('#### Control Statement')
-        for i in range(0, len(child1.content.tables)):
-            if i >= 2:
-                cells = child1.content.tables[i].split('|')
-                if len(cells) < 2:
-                    continue
-                value = cells[2].strip()
-                # parameter values now do not appear in the prose
-                if value == 'Param_1_value_in_catalog':
-                    continue
-                is_found = False
-                for line in child2.content.text:
-                    if value in line:
-                        is_found = True
-                        break
-                assert is_found
-
-    command_md_gen = f'trestle author jinja -pf Prefix:. -i {input_template} -o output.md -ssp ssp_json -p main_profile'
-    execute_command_and_assert(command_md_gen, 0, monkeypatch)
-
-    with open('output.md') as test_output:
-        output = test_output.read()
-        tree = MarkdownNode.build_tree_from_markdown(output.split('\n'))
-        assert tree
-        parent = tree.get_node_for_key('### AC-1 - Policy and Procedures')
-        child1 = parent.get_node_for_key('#### AC-1 Summary information')
-        child2 = parent.get_node_for_key('#### Control Statement')
-        for i in range(2, len(child1.content.tables)):
-            cells = child1.content.tables[i].split('|')
-            if len(cells) < 2:
-                continue
-            value = cells[2].strip()
-            # parameter values now do not appear in the prose
-            if value == 'Param_1_value_in_catalog':
-                continue
-            is_found = False
-            for line in child2.content.text:
-                if 'Prefix:' in line and value in line:
-                    is_found = True
-                    break
-            assert is_found
+        assert child1
+        assert 'Prefix:[Assignment: organization-defined official]' in child2.content.raw_text
 
 
 def test_jinja_profile_docs(
@@ -168,14 +143,12 @@ def test_jinja_profile_docs(
             assert node1
             node2 = tree.get_node_for_key('## Statement Header')
             assert node2
-            node3 = tree.get_node_for_key('## Control Expected Evidence Header')
-            # ac-3 and ac-3.3 do not have this part
-            # FIXME this logic needs reworking for new test data
-            assert not node3 if 'ac-3' in md_control.name else node3
+            if md_control.name == 'ac-1.md':
+                node3 = tree.get_node_for_key('## Implementation Guidance')
+                assert node3
 
-            if tree.get_node_for_key('# AC-1 - Policy and Procedures'):
                 node4 = tree.get_node_for_key('# AC-1 - Policy and Procedures')
-                assert node4.get_node_for_key('## Control Objective Header')
+                assert node4.get_node_for_key('## Implementation Guidance')
 
 
 def test_jinja_profile_docs_with_group_title(
@@ -189,25 +162,23 @@ def test_jinja_profile_docs_with_group_title(
     command_import = f'trestle author jinja -i {input_template} -o controls -p comp_prof --docs-profile'
     execute_command_and_assert(command_import, 0, monkeypatch)
 
-    # FIXME work with new test data
-    md_control = tmp_trestle_dir / 'controls' / 'ac' / 'ac-2.md'
+    md_control = tmp_trestle_dir / 'controls' / 'ac' / 'ac-1.md'
     with open(md_control) as md_file:
         contents = md_file.read()
         tree = MarkdownNode.build_tree_from_markdown(contents.split('\n'))
         assert tree
         node1 = tree.get_node_for_key('# Control Page')
         assert node1
-        node2 = tree.get_node_for_key('# AC-2 - \\[Access Control\\] Account Management')
+        node2 = tree.get_node_for_key('# AC-1 - \\[Access Control\\] Policy and Procedures')
         assert node2
-        assert '{: #ac-2}' in node2.content.raw_text  # noqa: FS003 - not f string but tag
+        assert '{: #ac-1}' in node2.content.raw_text  # noqa: FS003 - not f string but tag
         assert node2.content.text[1] == ''  # assert new line after tag
         node3 = tree.get_node_for_key('## Table of Control Parameters')
         assert node3
         assert '{: #table-of-control-parameters}' in node3.content.raw_text  # noqa: FS003 - not f string but tag
-        assert '{: #"Parameters for AC-2" caption-side="top"}' in node3.content.raw_text  # noqa: FS003 - not f string
-        assert 'AC-2 (a) (1)' in node3.content.tables[2]
-        assert 'AC-2 (a) (5)' in node3.content.tables[6]
-        assert 'ac-2_prm_3' in node3.content.tables[4]
+        assert '{: #"Parameters for AC-1" caption-side="top"}' in node3.content.raw_text  # noqa: FS003 - not f string
+        assert 'AC-1 (a) (1)' in node3.content.tables[2]
+        assert 'ac-1_prm_3' in node3.content.tables[4]
 
 
 def test_jinja_profile_docs_with_selected_sections(
@@ -221,7 +192,6 @@ def test_jinja_profile_docs_with_selected_sections(
     command_import = f'trestle author jinja -i {input_template} -o controls -p comp_prof --docs-profile'
     execute_command_and_assert(command_import, 0, monkeypatch)
 
-    # FIXME work with new test data
     md_control = tmp_trestle_dir / 'controls' / 'ac' / 'ac-1.md'
     with open(md_control) as md_file:
         contents = md_file.read()
@@ -229,10 +199,10 @@ def test_jinja_profile_docs_with_selected_sections(
         assert tree
         node1 = tree.get_node_for_key('# Control Page')
         assert node1
-        node2 = tree.get_node_for_key('## Control Objective Header')
+        node2 = tree.get_node_for_key('## Control Statement Header')
         assert node2
-        assert '{: #control-objective-header}' in node2.content.raw_text  # noqa: FS003 - not f string but tag
-        assert len(tree.content.subnodes_keys) == 2
+        assert '{: #control-statement-header}' in node2.content.raw_text  # noqa: FS003 - not f string but tag
+        assert len(tree.content.subnodes_keys) == 3
 
 
 def test_jinja_profile_docs_with_selected_sections_and_multiple_parts(
