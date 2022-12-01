@@ -218,11 +218,15 @@ class CatalogWriter():
                     ci_set_params = ControlInterface.get_set_params_from_item(control_imp)
                     for imp_req in as_list(control_imp.implemented_requirements):
                         control_part_id_map = part_id_map.get(imp_req.control_id, {})
-                        control_rules = ControlInterface.get_rule_list_for_item(imp_req)
-                        if control_rules:
-                            status = ControlInterface.get_status_from_props(imp_req)
-                            comp_info = ComponentImpInfo(imp_req.description, control_rules, status)
-                            self._catalog_interface.add_comp_info(imp_req.control_id, context.comp_name, '', comp_info)
+                        # find if any rules apply to this control, including in statements
+                        control_rules, statement_rules = ControlInterface.get_rule_list_for_imp_req(imp_req)
+                        if control_rules or statement_rules:
+                            if control_rules:
+                                status = ControlInterface.get_status_from_props(imp_req)
+                                comp_info = ComponentImpInfo(imp_req.description, control_rules, status)
+                                self._catalog_interface.add_comp_info(
+                                    imp_req.control_id, context.comp_name, '', comp_info
+                                )
                             set_params = copy.deepcopy(ci_set_params)
                             set_params.update(ControlInterface.get_set_params_from_item(imp_req))
                             for set_param in set_params.values():
@@ -327,11 +331,12 @@ class CatalogWriter():
             ci_set_params = ControlInterface.get_set_params_from_item(control_imp)
             for imp_req in as_list(control_imp.implemented_requirements):
                 control_part_id_map = part_id_map.get(imp_req.control_id, {})
-                control_rules = ControlInterface.get_rule_list_for_item(imp_req)
-                if control_rules:
-                    status = ControlInterface.get_status_from_props(imp_req)
-                    comp_info = ComponentImpInfo(imp_req.description, control_rules, status)
-                    self._catalog_interface.add_comp_info(imp_req.control_id, context.comp_name, '', comp_info)
+                control_rules, statement_rules = ControlInterface.get_rule_list_for_imp_req(imp_req)
+                if control_rules or statement_rules:
+                    if control_rules:
+                        status = ControlInterface.get_status_from_props(imp_req)
+                        comp_info = ComponentImpInfo(imp_req.description, control_rules, status)
+                        self._catalog_interface.add_comp_info(imp_req.control_id, context.comp_name, '', comp_info)
                     set_params = copy.deepcopy(ci_set_params)
                     set_params.update(ControlInterface.get_set_params_from_item(imp_req))
                     for set_param in set_params.values():

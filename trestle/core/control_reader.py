@@ -456,7 +456,7 @@ class ControlReader():
                     # add top level control guidance with no statement id
                     prose = ControlReader._handle_empty_prose(imp_req.description, control.id)
                     params_dict.update(ControlInterface.get_params_dict_from_item(imp_req))
-                    rules_list = ControlInterface.get_rule_list_for_item(imp_req)
+                    rules_list = ControlInterface.get_rule_list_for_imp_req(imp_req)
                     all_rules.update(rules_list)
                     status = ControlInterface.get_status_from_props(imp_req)
                     sub_comp_dict[''] = ComponentImpInfo(prose=prose, status=status, rules=rules_list)
@@ -675,6 +675,8 @@ class ControlReader():
         raw_comp_dict = {ControlReader.simplify_name(key): value for key, value in comp_dict.items()}
         raw_avail_comps = {ControlReader.simplify_name(key): value for key, value in avail_comps.items()}
 
+        comp_name_uuid_map = {raw_comp.title: raw_comp.uuid for raw_comp in raw_avail_comps.values()}
+
         imp_req.set_parameters = []
         imp_req.statements = []
         imp_req.by_components = []
@@ -707,6 +709,7 @@ class ControlReader():
                 component.title = comp_name
                 avail_comps[comp_name] = component
                 raw_avail_comps[raw_comp_name] = component
+                comp_name_uuid_map[comp_name] = component.uuid
             # now create statements to hold the by-components and assign the statement id
             for label, comp_info in raw_comp_dict[raw_comp_name].items():
                 if context.purpose == ContextPurpose.COMPONENT:
@@ -755,33 +758,44 @@ class ControlReader():
             if simp_comp_name not in raw_avail_comps:
                 raw_avail_comps[simp_comp_name] = generic.GenericComponent.generate()
             component = raw_avail_comps[simp_comp_name]
+            comp_uuid = component.uuid
             for param_dict in param_dict_list:
+                rule_name = param_dict[const.RULE_NAME]
+                values = [common.Value(__root__=value) for value in param_dict.get(const.VALUES, [])]
+                # if there are user ssp values, overwrite the compdef values
                 if const.SSP_VALUES in param_dict and comp_name in comp_dict:
-                    rule_name = param_dict[const.RULE_NAME]
                     values = [common.Value(__root__=value) for value in param_dict[const.SSP_VALUES]]
-                    set_param = ossp.SetParameter(param_id=param_dict['name'], values=values)
-                    for label in ControlReader._get_labels_with_rule(comp_dict[comp_name], rule_name):
-                        # if not associated with a statement part
-                        if label == '':
-                            if not imp_req.by_components:
-                                imp_req.by_components.append(generic.GenericByComponent.generate())
-                            by_comp = imp_req.by_components[0]
-                            by_comp.set_parameters = as_list(by_comp.set_parameters)
-                            by_comp.set_parameters.append(set_param)
-                        # associated with part so need to put by_comp in statement
-                        else:
-                            clean_label = label.strip('.')
-                            statement_part_id = ControlInterface.strip_to_make_ncname(f'{statement_id}.{clean_label}')
-                            statement = statement_map.get(statement_part_id, None)
-                            if not statement:
-                                logger.warning(f'imp_req has no statement part {statement_part_id}')
-                                statement = ossp.Statement(
-                                    statement_id=f'{control_id}_{param_id}',
-                                    description=f'param for rule {rule_name} and part {label}',
-                                    uuid=str(uuid4())
-                                )
-                                statement_map[statement_part_id] = statement
-                            statement.by_components = as_list(statement.by_components)
+                set_param = ossp.SetParameter(param_id=param_dict['name'], values=values)
+                for label in ControlReader._get_labels_with_rule(comp_dict[comp_name], rule_name):
+                    # if not associated with a statement part put in imp_reqs by_comps directly, matching comp_uuid
+                    if label == '':
+                        if not imp_req.by_components:
+                            imp_req.by_components = []
+                        by_comp = next((bc for bc in imp_req.by_components if bc.component_uuid == comp_uuid), None)
+                        if not by_comp:
+                            by_comp = generic.GenericByComponent.generate()
+                            by_comp.component_uuid = comp_uuid
+                            imp_req.by_components.append(by_comp)
+                        by_comp.set_parameters = as_list(by_comp.set_parameters)
+                        by_comp.set_parameters.append(set_param)
+                    # associated with part so need to put by_comp in statement
+                    else:
+                        clean_label = label.strip('.')
+                        statement_part_id = ControlInterface.strip_to_make_ncname(f'{statement_id}.{clean_label}')
+                        statement = statement_map.get(statement_part_id, None)
+                        if not statement:
+                            logger.warning(f'imp_req has no statement part {statement_part_id}')
+                            statement = ossp.Statement(
+                                statement_id=f'{control_id}_{param_id}',
+                                description=f'param for rule {rule_name} and part {label}',
+                                uuid=str(uuid4())
+                            )
+                            statement_map[statement_part_id] = statement
+                        by_comp = generic.GenericByComponent.generate()
+                        by_comp.component_uuid = comp_uuid
+                        by_comp.set_parameters = [set_param]
+                        statement.by_components = as_list(statement.by_components)
+                        statement.by_components.append(by_comp)
         imp_req.by_components = none_if_empty(imp_req.by_components)
         imp_req.statements = list(statement_map.values())
         imp_req.set_parameters = none_if_empty(imp_req.set_parameters)
