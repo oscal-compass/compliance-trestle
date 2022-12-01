@@ -90,29 +90,32 @@ def setup_component_generate(tmp_trestle_dir: pathlib.Path) -> List[str]:
 
 def check_common_contents(header: Dict[str, Any]) -> None:
     """Check common features of controls markdown."""
-    params = header[const.RULES_PARAMS_TAG]['OSCO']
+    params = header[const.RULES_PARAMS_TAG]['comp_aa']
     assert len(params) == 1
-    assert params[0] == {'name': 'foo_length', 'description': 'minimum_foo_length', 'options': '["6", "9"]'}
-    assert header[const.TRESTLE_GLOBAL_TAG][
-        const.PROFILE_TITLE] == 'NIST Special Publication 800-53 Revision 5 MODERATE IMPACT BASELINE'  # noqa E501
+    assert params[0] == {
+        'name': 'shared_param_1',
+        'description': 'shared param 1 in aa',
+        'options': '["shared_param_1_aa_opt_1", "shared_param_1_aa_opt_2"]'
+    }
+    assert header[const.TRESTLE_GLOBAL_TAG][const.PROFILE_TITLE] == 'comp prof aa'
 
 
 def check_ac1_contents(ac1_path: pathlib.Path) -> None:
     """Check the contents of ac-1 md."""
-    assert test_utils.confirm_text_in_file(ac1_path, 'enter one of:', 'set to 644')
-    assert test_utils.confirm_text_in_file(ac1_path, 'set to 644', 'Status: implemented')
-    assert not test_utils.confirm_text_in_file(ac1_path, 'ac-1_smt.c', 'Status: planned')
+    assert test_utils.confirm_text_in_file(ac1_path, 'enter one of:', 'ac-1 from comp aa')
+    assert test_utils.confirm_text_in_file(ac1_path, 'ac-1 from comp aa', 'Status: implemented')
+    assert test_utils.confirm_text_in_file(ac1_path, '- comp_rule_aa_1', 'Status: partial')
     markdown_processor = MarkdownProcessor()
     header, _ = markdown_processor.read_markdown_wo_processing(ac1_path)
-    assert header[const.PARAM_VALUES_TAG]['ac-1_prm_1'] == 'Param_1_value_in_catalog'
+    assert header[const.PARAM_VALUES_TAG]['ac-1_prm_1'] == 'prof_aa val 1'
     rules = header[const.COMP_DEF_RULES_TAG]['comp_aa']
     assert len(rules) == 2
-    assert rules[0] == {'name': 'TopRule', 'description': 'Top level rule'}
-    assert rules[1] == {'name': 'XCCDF', 'description': 'The XCCDF must be compliant'}
-    vals = header[const.COMP_DEF_RULES_PARAM_VALS_TAG]['OSCO']
+    assert rules[0] == {'name': 'top_shared_rule_1', 'description': 'top shared rule 1 in aa'}
+    assert rules[1] == {'name': 'comp_rule_aa_1', 'description': 'comp rule aa 1'}
+    vals = header[const.COMP_DEF_RULES_PARAM_VALS_TAG]['comp_aa']
     assert len(vals) == 1
-    assert vals[0]['name'] == 'foo_length'
-    assert vals[0]['values'] == ['6']
+    assert vals[0]['name'] == 'shared_param_1'
+    assert vals[0]['values'] == ['shared_param_1_aa_opt_1']
     check_common_contents(header)
 
 
