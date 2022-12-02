@@ -799,7 +799,7 @@ class ControlReader():
                         statement.by_components = as_list(statement.by_components)
                         statement.by_components.append(by_comp)
         imp_req.by_components = none_if_empty(imp_req.by_components)
-        imp_req.statements = list(statement_map.values())
+        imp_req.statements = none_if_empty(list(statement_map.values()))
         imp_req.set_parameters = none_if_empty(imp_req.set_parameters)
 
         ControlReader._insert_header_content(imp_req, header, control_id)
