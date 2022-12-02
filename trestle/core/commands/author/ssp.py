@@ -430,7 +430,7 @@ class SSPFilter(AuthorCommonCommand):
                     new_by_comps: List[ossp.ByComponent] = []
                     # by_comps is optional
                     for by_comp in as_list(imp_req.by_components):
-                        if by_comp.component.uuid in comp_uuids:
+                        if by_comp.component_uuid in comp_uuids:
                             new_by_comps.append(by_comp)
                     imp_req.by_components = none_if_empty(new_by_comps)
                     new_imp_reqs.append(imp_req)

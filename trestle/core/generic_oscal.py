@@ -70,7 +70,7 @@ class GenericByComponent(TrestleBaseModel):
     def generate() -> GenericByComponent:
         """Generate instance of generic ByComponent."""
         uuid = str(uuid4())
-        return GenericByComponent(component_uuid=const.SAMPLE_UUID_STR, uuid=uuid, description=const.REPLACE_ME)
+        return GenericByComponent(component_uuid=const.SAMPLE_UUID_STR, uuid=uuid, description='')
 
 
 class GenericStatement(TrestleBaseModel):
@@ -110,7 +110,7 @@ class GenericStatement(TrestleBaseModel):
     def generate() -> GenericStatement:
         """Generate instance of GenericStatement."""
         uuid = str(uuid4())
-        return GenericStatement(statement_id=const.REPLACE_ME, uuid=uuid, description=const.REPLACE_ME)
+        return GenericStatement(statement_id=const.REPLACE_ME, uuid=uuid, description='')
 
     def as_comp_def(self) -> List[comp.Statement]:
         """Represent in comp_def form."""
@@ -217,9 +217,7 @@ class GenericComponent(TrestleBaseModel):
         """Generate instance of GenericComponent."""
         uuid = str(uuid4())
         status = common.ImplementationStatus(state=const.STATUS_PLANNED)
-        return GenericComponent(
-            uuid=uuid, type=const.REPLACE_ME, title=const.REPLACE_ME, description=const.REPLACE_ME, status=status
-        )
+        return GenericComponent(uuid=uuid, type=const.REPLACE_ME, title='', description='', status=status)
 
 
 class GenericSetParameter(TrestleBaseModel):
@@ -280,7 +278,7 @@ class GenericImplementedRequirement(TrestleBaseModel):
     def generate() -> GenericImplementedRequirement:
         """Generate instance of this class."""
         uuid = str(uuid4())
-        class_dict = {'uuid': uuid, 'control-id': const.REPLACE_ME, 'description': const.REPLACE_ME}
+        class_dict = {'uuid': uuid, 'control-id': const.REPLACE_ME, 'description': ''}
         return GenericImplementedRequirement(**class_dict)
 
     def as_comp_def(self) -> comp.ImplementedRequirement:
@@ -347,7 +345,7 @@ class GenericControlImplementation(TrestleBaseModel):
             'uuid': uuid,
             'control-id': const.REPLACE_ME,
             'source': const.REPLACE_ME,
-            'description': const.REPLACE_ME,
+            'description': '',
             'implemented-requirements': imp_reqs
         }
         return GenericControlImplementation(**class_dict)

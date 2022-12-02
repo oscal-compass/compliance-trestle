@@ -395,8 +395,10 @@ def load_from_json(
     shutil.copy2(src_path, dst_path)
 
 
-def setup_for_ssp(tmp_trestle_dir: pathlib.Path, prof_name: str,
-                  output_name: str) -> Tuple[argparse.Namespace, pathlib.Path]:
+def setup_for_ssp(tmp_trestle_dir: pathlib.Path,
+                  prof_name: str,
+                  output_name: str,
+                  use_yaml: bool = False) -> Tuple[argparse.Namespace, pathlib.Path]:
     """Create the comp_def, profile and catalog content needed for ssp-generate."""
     comp_names = 'comp_def_a,comp_def_b'
     for comp_name in comp_names.split(','):
@@ -404,7 +406,7 @@ def setup_for_ssp(tmp_trestle_dir: pathlib.Path, prof_name: str,
     for prof_name in 'comp_prof,comp_prof_aa,comp_prof_ab,comp_prof_ba,comp_prof_bb'.split(','):
         load_from_json(tmp_trestle_dir, prof_name, prof_name, prof.Profile)
     load_from_json(tmp_trestle_dir, 'simplified_nist_catalog', 'simplified_nist_catalog', cat.Catalog)
-    yaml_path = None
+    yaml_path = YAML_TEST_DATA_PATH / 'good_simple.yaml' if use_yaml else None
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
         profile='comp_prof',
