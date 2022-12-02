@@ -67,7 +67,12 @@ nav:
     - core:
       - all_validator: api_reference/trestle.core.all_validator.md
       - base_model: api_reference/trestle.core.base_model.md
-      - catalog_interface: api_reference/trestle.core.catalog_interface.md
+      - catalog:
+        - catalog_api: api_reference/trestle.core.catalog.catalog_api.md
+        - catalog_interface: api_reference/trestle.core.catalog.catalog_interface.md
+        - catalog_merger: api_reference/trestle.core.catalog.catalog_merger.md
+        - catalog_reader: api_reference/trestle.core.catalog.catalog_reader.md
+        - catalog_writer: api_reference/trestle.core.catalog.catalog_writer.md
       - catalog_validator: api_reference/trestle.core.catalog_validator.md
       - commands:
         - add: api_reference/trestle.core.commands.add.md
