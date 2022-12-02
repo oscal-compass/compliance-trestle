@@ -22,6 +22,7 @@ from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import trestle.oscal.catalog as cat
+import trestle.oscal.ssp as ossp
 from trestle.common import const
 from trestle.common.common_types import TypeWithParts, TypeWithProps
 from trestle.common.err import TrestleError
@@ -383,8 +384,17 @@ class ControlInterface:
 
     @staticmethod
     def get_rule_list_for_item(item: TypeWithProps) -> List[str]:
-        """Get the list of rules applying to this item."""
+        """Get the list of rules applying to this item from its top level props."""
         return [prop.value for prop in as_filtered_list(item.props, lambda p: p.name == const.RULE_ID)]
+
+    @staticmethod
+    def get_rule_list_for_imp_req(imp_req: ossp.ImplementedRequirement) -> Tuple[List[str], List[str]]:
+        """Get the list of rules applying to an imp_req as two lists."""
+        comp_rules = ControlInterface.get_rule_list_for_item(imp_req)
+        statement_rules = set()
+        for statement in as_list(imp_req.statements):
+            statement_rules.update(ControlInterface.get_rule_list_for_item(statement))
+        return comp_rules, list(statement_rules)
 
     @staticmethod
     def get_params_dict_from_item(item: TypeWithProps) -> Dict[str, Dict[str, str]]:

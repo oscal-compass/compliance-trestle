@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Provide interface to catalog allowing queries and operations at control level."""
+"""Main entrypoint to interact with catalog in memory."""
 
 import logging
 import pathlib
