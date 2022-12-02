@@ -147,7 +147,7 @@ class SSPGenerate(AuthorCommonCommand):
         profile_resolver = ProfileResolver()
         # in ssp context we want to see missing value warnings
         resolved_catalog = profile_resolver.get_resolved_profile_catalog(
-            trestle_root, profile_path, block_params=False, show_value_warnings=True
+            trestle_root, profile_path, block_params=False, params_format='[.]', show_value_warnings=True
         )
 
         catalog_api = CatalogAPI(catalog=resolved_catalog, context=context)
