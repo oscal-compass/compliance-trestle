@@ -750,6 +750,7 @@ class ControlReader():
                     statement_map[statement_part_id] = statement
                 statement.by_components = as_list(statement.by_components)
                 statement.by_components.append(by_comp)
+                statement.description = comp_info.prose
 
         imp_req.statements = list(statement_map.values())
 
@@ -794,7 +795,7 @@ class ControlReader():
                         by_comp = generic.GenericByComponent.generate()
                         by_comp.component_uuid = comp_uuid
                         by_comp.set_parameters = [set_param]
-                        by_comp.prose = comp_info.prose
+                        by_comp.description = comp_info.prose
                         statement.by_components = as_list(statement.by_components)
                         statement.by_components.append(by_comp)
         imp_req.by_components = none_if_empty(imp_req.by_components)
