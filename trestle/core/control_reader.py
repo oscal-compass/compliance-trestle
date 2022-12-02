@@ -718,6 +718,7 @@ class ControlReader():
                         continue
                     # if there is a statement label create by_comp - otherwise assign status and prose to imp_req
                     # create a new by-component to add to this statement
+                    # ssp imp_reqs don't have description
                     if not label:
                         imp_req.description = ControlReader._handle_empty_prose(comp_info.prose, control_id)
                         ControlInterface.insert_status_in_props(imp_req, comp_info.status)
@@ -775,6 +776,7 @@ class ControlReader():
                         if not by_comp:
                             by_comp = generic.GenericByComponent.generate()
                             by_comp.component_uuid = comp_uuid
+                            by_comp.description = comp_info.prose
                             imp_req.by_components.append(by_comp)
                         by_comp.set_parameters = as_list(by_comp.set_parameters)
                         by_comp.set_parameters.append(set_param)
@@ -786,14 +788,13 @@ class ControlReader():
                         if not statement:
                             logger.warning(f'imp_req has no statement part {statement_part_id}')
                             statement = ossp.Statement(
-                                statement_id=f'{control_id}_{param_id}',
-                                description=f'param for rule {rule_name} and part {label}',
-                                uuid=str(uuid4())
+                                statement_id=f'{control_id}_{param_id}', description=comp_info.prose, uuid=str(uuid4())
                             )
                             statement_map[statement_part_id] = statement
                         by_comp = generic.GenericByComponent.generate()
                         by_comp.component_uuid = comp_uuid
                         by_comp.set_parameters = [set_param]
+                        by_comp.prose = comp_info.prose
                         statement.by_components = as_list(statement.by_components)
                         statement.by_components.append(by_comp)
         imp_req.by_components = none_if_empty(imp_req.by_components)
