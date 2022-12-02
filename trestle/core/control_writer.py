@@ -155,7 +155,7 @@ class ControlWriter():
             self._md_file.new_paragraph()
             self._md_file.new_header(3, const.SSP_MAIN_COMP_NAME)
             self._md_file.new_paragraph()
-            prose = f'{const.SSP_ADD_THIS_SYSTEM_IMPLEMENTATION_FOR_CONTROL_TEXT} {control_id} -->'
+            prose = f'{const.SSP_ADD_THIS_SYSTEM_IMPLEMENTATION_FOR_CONTROL_TEXT}: {control_id} -->'
             status = ImplementationStatus(state=const.STATUS_PLANNED)
             if const.SSP_MAIN_COMP_NAME in comp_dict:
                 comp_info = list(comp_dict[const.SSP_MAIN_COMP_NAME].values())[0]
@@ -176,7 +176,7 @@ class ControlWriter():
                 prose = comp_info.prose if comp_info.prose != control_id else ''
                 # only write out the prompt first time
                 if not self._md_file.exists() and not prose:
-                    prose = f'{const.SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT} {control_id} -->'
+                    prose = f'{const.SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT}: {control_id} -->'
                 if prose:
                     self._md_file.new_paraline(prose)
                 level = 3 if context.purpose == ContextPurpose.COMPONENT else 4
@@ -234,7 +234,7 @@ class ControlWriter():
                                 if context.purpose != ContextPurpose.COMPONENT:
                                     self._md_file.new_header(level=3, title=comp_name)
                             if not self._has_prose(part_label, comp_dict):
-                                self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT} {prt.id}')
+                                self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT} {prt.id} -->')
                             self._insert_comp_info(part_label, dic, context)
                             wrote_label_content = True
                         if not wrote_label_content:
@@ -244,7 +244,7 @@ class ControlWriter():
                         did_write_part = True
         # if we loaded nothing for this control yet then it must need a fresh prompt for the control statement
         if not comp_dict and not did_write_part:
-            self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT} {control.id} -->')
+            self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT}: {control.id} -->')
             if context.purpose in [ContextPurpose.COMPONENT, ContextPurpose.SSP]:
                 status = ControlInterface.get_status_from_props(control)
                 self._insert_status(status, 3)

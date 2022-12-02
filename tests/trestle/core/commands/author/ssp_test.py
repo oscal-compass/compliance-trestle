@@ -171,7 +171,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     # edit it a bit
     ac_1_path = tmp_trestle_dir / ssp_name / 'ac/ac-1.md'
     assert test_utils.substitute_text_in_file(
-        ac_1_path, '<!-- Add implementation prose for the main This System component for control ac-1 -->', prose_sys
+        ac_1_path, '<!-- Add implementation prose for the main This System component for control: ac-1 -->', prose_sys
     )
     assert test_utils.substitute_text_in_file(ac_1_path, 'imp req prose for ac-1 from comp aa', prose_aa)
     assert test_utils.substitute_text_in_file(ac_1_path, 'statement prose for part a. from comp aa', prose_aa_a)
@@ -508,7 +508,7 @@ def test_ssp_force_overwrite(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyP
     header, tree = md_api.processor.process_markdown(ac_1)
 
     assert tree
-    old_value = '<!-- Add implementation prose for the main This System component for control ac-1 -->'
+    old_value = '<!-- Add implementation prose for the main This System component for control: ac-1 -->'
     assert old_value in tree.content.raw_text
     tree.content.raw_text = tree.content.raw_text.replace(old_value, 'Custom control implementation')
     md_api.write_markdown_with_header(ac_1, header, tree.content.raw_text)
