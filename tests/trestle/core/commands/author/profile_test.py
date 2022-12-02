@@ -144,7 +144,10 @@ all_sections_dict = {
 def edit_files(control_path: pathlib.Path, change_parameters: bool, guid_dict: Dict[str, str]) -> None:
     """Edit the files to show assemble worked."""
     assert control_path.exists()
-    assert file_utils.insert_text_in_file(control_path, None, guid_dict['text'])
+    # need to insert guidance above needed extra since it is added last
+    # if detailed logs text is not found just put it at end of file
+    if not file_utils.insert_text_in_file(control_path, 'Detailed logs.', guid_dict['text']):
+        assert file_utils.insert_text_in_file(control_path, None, guid_dict['text'])
     if control_path.stem == 'ac-1':
         assert test_utils.replace_line_in_file_after_tag(
             control_path, 'prop with ns', '    ns: https://my_new_namespace\n'
@@ -326,6 +329,7 @@ def test_profile_generate_assemble(
         assert test_utils.delete_line_in_file(ac_1_path, 'profile-values: weekly')
 
     ac_21_path.unlink()
+    # order of sections changes
     assert fc.files_unchanged()
 
 
@@ -472,7 +476,7 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatc
         overwrite_header_values=False,
         yaml_header=None,
         sections='NeededExtra:Needed Extra,implgdn:Implementation Guidance,expevid:Expected Evidence',
-        required_sections='NeededExtra',
+        required_sections=None,
         force_overwrite=False
     )
     profile_generate = ProfileGenerate()
@@ -494,7 +498,7 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatc
         sections=None,
         force_overwrite=False
     )
-    # fail since required section not filled in
+    # fail since required section not present
     profile_assemble = ProfileAssemble()
     assert profile_assemble._run(test_args) == 1
 

@@ -821,6 +821,8 @@ class ControlReader():
             part = common.Part(id=id_, name=part_name, prose=prose, title=part_title)
             part.parts = ControlReader._add_sub_parts(part.id, subnode)
             control_parts.append(part)
+            # for required sections, only count them as found if they contain prose
+            # if not (part_name in required_sections_list and not prose):
             found_sections.append(part_name)
             return True
         return False

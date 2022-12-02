@@ -154,11 +154,12 @@ class ControlWriter():
             self._md_file.new_paragraph()
             self._md_file.new_header(3, const.SSP_MAIN_COMP_NAME)
             self._md_file.new_paragraph()
-            prose = f'{const.SSP_ADD_THIS_SYSTEM_IMPLEMENTATION_FOR_CONTROL_TEXT} {control_id}'
+            prose = f'{const.SSP_ADD_THIS_SYSTEM_IMPLEMENTATION_FOR_CONTROL_TEXT} {control_id} -->'
             status = ImplementationStatus(state=const.STATUS_PLANNED)
             if const.SSP_MAIN_COMP_NAME in comp_dict:
                 comp_info = list(comp_dict[const.SSP_MAIN_COMP_NAME].values())[0]
-                prose = comp_info.prose
+                if comp_info.prose:
+                    prose = comp_info.prose
                 status = comp_info.status
             self._md_file.new_paraline(prose)
             self._insert_status(status, 4)
@@ -174,7 +175,7 @@ class ControlWriter():
                 prose = comp_info.prose if comp_info.prose != control_id else ''
                 # only write out the prompt first time
                 if not self._md_file.exists() and not prose:
-                    prose = f'{const.SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT} {control_id}'
+                    prose = f'{const.SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT} {control_id} -->'
                 if prose:
                     self._md_file.new_paraline(prose)
                 level = 3 if context.purpose == ContextPurpose.COMPONENT else 4
@@ -242,7 +243,7 @@ class ControlWriter():
                         did_write_part = True
         # if we loaded nothing for this control yet then it must need a fresh prompt for the control statement
         if not comp_dict and not did_write_part:
-            self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT} {control.id}')
+            self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT} {control.id} -->')
             if context.purpose in [ContextPurpose.COMPONENT, ContextPurpose.SSP]:
                 status = ControlInterface.get_status_from_props(control)
                 self._insert_status(status, 3)
@@ -428,7 +429,7 @@ class ControlWriter():
         for section in missing_sections:
             section_title = self._sections_dict.get(section, section)
             self._md_file.new_header(2, f'Control {section_title}')
-            self._md_file.new_line(f'{const.PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT}: {section_title}')
+            self._md_file.new_line(f'{const.PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT}: {section_title} -->')
 
     @staticmethod
     def _merge_headers(memory_header: Dict[str, Any], md_header: Dict[str, Any],
