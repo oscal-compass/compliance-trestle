@@ -152,6 +152,10 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
     # all files should be the same
     assert file_checker.files_unchanged()
 
+    # FIXME need to check correct assembly
+    assemble_cmd = f'trestle author component-assemble -m {md_path} -n {comp_name} -o assem_comp'
+    test_utils.execute_command_and_assert(assemble_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
+
 
 def test_generic_oscal() -> None:
     """Test generic oscal conversions."""

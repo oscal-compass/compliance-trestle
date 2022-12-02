@@ -372,7 +372,7 @@ class CatalogInterface():
             for control in cat_controls:
                 yield control
 
-    def get_all_controls_from_dict(self) -> Iterator[cat.Control]:
+    def get_all_controls_from_dict(self) -> List[cat.Control]:
         """Yield individual controls from the dict."""
         return [handle.control for handle in self._control_dict.values()]
 
@@ -597,9 +597,8 @@ class CatalogInterface():
 
     def _find_string_in_part(self, control_id: str, part: common.Part, seek_str: str) -> List[str]:
         hits: List[str] = []
-        if part.prose:
-            if part.prose.find(seek_str) >= 0:
-                hits.append((control_id, part.prose))
+        if part.prose and part.prose.find(seek_str) >= 0:
+            hits.append((control_id, part.prose))
         if part.parts:
             for sub_part in part.parts:
                 hits.extend(self._find_string_in_part(control_id, sub_part, seek_str))
@@ -671,7 +670,7 @@ class CatalogInterface():
         """Search directory and remove any controls that were not written out."""
         pass
 
-    def _get_control_memory_info(self, control_id: str, context) -> Dict[str, Any]:
+    def _get_control_memory_info(self, control_id: str, context) -> Tuple[Dict[str, Any], CompDict]:
         # set COMP_DEF_RULES_TAG, RULES_PARAMS_TAG, COMP_DEF_RULES_PARAM_VALS_TAG, SET_PARAMS_TAG
         header = {}
         rule_names_list: List[str] = []

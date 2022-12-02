@@ -170,7 +170,7 @@ class ControlWriter():
                 continue
             for comp_info in [val for key, val in dic.items() if key == '']:
                 # don't output component name for component markdown since only one component
-                if not context.purpose == ContextPurpose.COMPONENT:
+                if context.purpose != ContextPurpose.COMPONENT:
                     self._md_file.new_header(3, comp_name)
                 prose = comp_info.prose if comp_info.prose != control_id else ''
                 # only write out the prompt first time
@@ -232,7 +232,7 @@ class ControlWriter():
                             if part_label in dic:
                                 # insert the component name for ssp but not for comp_def
                                 # because there should only be one component in generated comp_def markdown
-                                if not context.purpose == ContextPurpose.COMPONENT:
+                                if context.purpose != ContextPurpose.COMPONENT:
                                     self._md_file.new_header(level=3, title=comp_name)
                             self._insert_comp_info(part_label, dic, context)
                             wrote_label_content = True
@@ -495,7 +495,7 @@ class ControlWriter():
         # in the yaml header and allow overwrite_header_values to control whether it overwrites an existing one
         # in the markdown header
         context.cli_yaml_header = as_dict(context.cli_yaml_header)
-        if not context.purpose == ContextPurpose.PROFILE:
+        if context.purpose != ContextPurpose.PROFILE:
             ControlInterface.merge_dicts_deep(
                 context.merged_header, context.cli_yaml_header, context.overwrite_header_values
             )
