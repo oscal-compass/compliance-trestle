@@ -137,7 +137,8 @@ class ControlWriter():
             if context.purpose in [ContextPurpose.COMPONENT, ContextPurpose.SSP] and not info.rules:
                 return
             self._md_file.new_paragraph()
-            self._md_file.new_line(info.prose)
+            if info.prose:
+                self._md_file.new_line(info.prose)
             self._insert_rules(info.rules, level)
             self._insert_status(info.status, level)
         else:
@@ -223,8 +224,6 @@ class ControlWriter():
                             self._md_file._add_line_raw('')
                         self._md_file.new_hr()
                         self._md_file.new_header(level=2, title=f'Implementation for part {part_label}')
-                        if not self._has_prose(part_label, comp_dict):
-                            self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT} {prt.id}')
                         wrote_label_content = False
                         for comp_name, dic in comp_dict.items():
                             if comp_name == const.SSP_MAIN_COMP_NAME:
@@ -234,6 +233,8 @@ class ControlWriter():
                                 # because there should only be one component in generated comp_def markdown
                                 if context.purpose != ContextPurpose.COMPONENT:
                                     self._md_file.new_header(level=3, title=comp_name)
+                            if not self._has_prose(part_label, comp_dict):
+                                self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT} {prt.id}')
                             self._insert_comp_info(part_label, dic, context)
                             wrote_label_content = True
                         if not wrote_label_content:

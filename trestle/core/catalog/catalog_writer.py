@@ -309,7 +309,8 @@ class CatalogWriter():
                 control_param_dict[set_param.param_id].values = set_param.values
             if set_param.param_id in as_list(new_context.rules_param_vals):
                 values = ', '.join([v.__root__ for v in as_list(set_param.values)])
-                new_context.rules_param_vals[set_param.param_id] = values
+                if values:
+                    new_context.rules_param_vals[set_param.param_id] = values
 
         control_ids_in_comp_imp = [
             imp_req.control_id for imp_req in as_list(context.control_implementation.implemented_requirements)

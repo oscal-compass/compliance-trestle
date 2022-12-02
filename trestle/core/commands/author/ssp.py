@@ -314,7 +314,8 @@ class SSPAssemble(AuthorCommonCommand):
             for comp in comp_dict.values():
                 # need to skip the component corresponding to statement level prose
                 if comp.title:
-                    component_list.append(comp.as_system_component())
+                    # force status to be operational since if we have no info
+                    component_list.append(comp.as_system_component(const.STATUS_OPERATIONAL))
             if ssp.system_implementation.components:
                 # reconstruct list with same order as existing, but add/remove components as needed
                 new_list: List[ossp.SystemComponent] = []

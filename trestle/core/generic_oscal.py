@@ -190,11 +190,12 @@ class GenericComponent(TrestleBaseModel):
         class_dict['status'] = status
         return cls(**class_dict)
 
-    def as_system_component(self) -> ossp.SystemComponent:
+    def as_system_component(self, status_override: str = '') -> ossp.SystemComponent:
         """Convert to SystemComponent."""
         class_dict = copy.deepcopy(self.__dict__)
         class_dict.pop('control_implementations', None)
         status_str = self.status.state if self.status else const.STATUS_OPERATIONAL
+        status_str = status_override if status_override else status_str
         if status_str not in ['under-development', 'operational', 'disposition', 'other']:
             logger.warning(f'Component status {status_str} not recognized.  Setting to {const.STATUS_OPERATIONAL}')
             status_str = const.STATUS_OPERATIONAL
