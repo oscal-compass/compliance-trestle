@@ -710,16 +710,13 @@ class CatalogInterface():
             all_set_params = self.get_control_comp_set_params(control_id)
             for comp_name, param_list in all_set_params.items():
                 for param in param_list:
-                    param_vals = [value.__root__ for value in as_list(param.values)]
-                    if comp_name not in rules_set_params:
-                        rules_set_params[comp_name] = []
+                    param_vals = none_if_empty([value.__root__ for value in as_list(param.values)])
                     rule_name = deep_get(param_id_rule_name_map, [comp_name, param.param_id], None)
                     if rule_name:
-                        rules_set_params[comp_name].append(
-                            {
-                                'rule_name': rule_name, 'name': param.param_id, 'values': param_vals
-                            }
-                        )
+                        param_dict = {'rule_name': rule_name, 'name': param.param_id}
+                        if param_vals:
+                            param_dict['values'] = param_vals
+                        deep_append(rules_set_params, [comp_name], param_dict)
             set_or_pop(header, const.COMP_DEF_RULES_PARAM_VALS_TAG, rules_set_params)
             set_or_pop(header, const.SET_PARAMS_TAG, control_comp_set_params)
 
