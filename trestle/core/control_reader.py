@@ -707,6 +707,8 @@ class ControlReader():
                 # here is where we create a new component on the fly as needed
                 component = generic.GenericComponent.generate()
                 component.title = comp_name
+                if comp_name == const.SSP_MAIN_COMP_NAME:
+                    component.type = 'this-system'
                 avail_comps[comp_name] = component
                 raw_avail_comps[raw_comp_name] = component
                 comp_name_uuid_map[comp_name] = component.uuid
@@ -754,15 +756,21 @@ class ControlReader():
 
         imp_req.statements = list(statement_map.values())
 
+        rules_params_dict = header.get(const.RULES_PARAMS_TAG, {})
+
         # add bycomps either at imp_req level or in statements for all places rule applies
         for comp_name, param_dict_list in header.get(const.COMP_DEF_RULES_PARAM_VALS_TAG, {}).items():
             simp_comp_name = ControlReader.simplify_name(comp_name)
             if simp_comp_name not in raw_avail_comps:
                 raw_avail_comps[simp_comp_name] = generic.GenericComponent.generate()
+                if comp_name == const.SSP_MAIN_COMP_NAME:
+                    raw_avail_comps[simp_comp_name].type = 'this-system'
             component = raw_avail_comps[simp_comp_name]
             comp_uuid = component.uuid
             for param_dict in param_dict_list:
-                rule_name = param_dict[const.RULE_NAME]
+                param_name = param_dict['name']
+                param_list = rules_params_dict.get(comp_name, {})
+                rule_name = next((rp for rp in param_list if rp['name'] == param_name), 'unknown_rule_name')
                 values = [common.Value(__root__=value) for value in param_dict.get(const.VALUES, [])]
                 # if there are user ssp values, overwrite the compdef values
                 if const.SSP_VALUES in param_dict and comp_name in comp_dict:

@@ -115,6 +115,14 @@ def test_deep_set_get() -> None:
     list_utils.deep_set(d, path, 'hi')
     assert d['foo']['bar'] == 'hi'
     assert list_utils.deep_get(d, ['foo', 'car'], 'there') == 'there'
+    # set the value to None normally so that it is popped
+    list_utils.deep_set(d, path, None)
+    assert d['foo'] == {}
+    # set it back
+    list_utils.deep_set(d, path, 'hi')
+    # now set pop_if_none False and the value should be set to None without popping
+    list_utils.deep_set(d, path, None, False)
+    assert d['foo']['bar'] is None
     path = []
     with pytest.raises(TrestleError):
         list_utils.deep_set(d, path, 'nope')

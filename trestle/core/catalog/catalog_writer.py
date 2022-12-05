@@ -21,7 +21,7 @@ import trestle.common.const as const
 import trestle.oscal.catalog as cat
 from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.catalog.catalog_merger import CatalogMerger
-from trestle.common.list_utils import as_dict, as_filtered_list, as_list, delete_item_from_list, deep_set, get_item_from_list, none_if_empty, set_or_pop  # noqa E501
+from trestle.common.list_utils import as_dict, as_filtered_list, as_list, delete_item_from_list, deep_get, deep_set, get_item_from_list, none_if_empty, set_or_pop  # noqa E501
 from trestle.common.model_utils import ModelUtils
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_interface import ComponentImpInfo, ControlInterface, ParameterRep
@@ -176,6 +176,15 @@ class CatalogWriter():
 
         return set_param_dict
 
+    @staticmethod
+    def _fixup_param_dicts(context: ControlContext) -> None:
+        """Merge info in the rules params dict and the rules param vals dict."""
+        for comp_name, comp_dict in context.rules_params_dict.items():
+            rules_dict = context.rules_dict.get(comp_name, {})
+            for rule_id, param_dict in comp_dict.items():
+                rule_name = deep_get(rules_dict, [rule_id, 'name'], 'unknown_rule_name')
+                param_dict[const.RULE_NAME] = rule_name
+
     def write_catalog_as_ssp_markdown(self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]]) -> None:
         """
         Write out the catalog as component markdown.
@@ -258,6 +267,8 @@ class CatalogWriter():
         # prose and status for This System
         # status for all parts that still have rules
 
+        CatalogWriter._fixup_param_dicts(context)
+
         # remove items left after above loop
         context.component = None
         context.comp_name = None
@@ -292,8 +303,14 @@ class CatalogWriter():
                 for pop in pop_list:
                     new_context.merged_header[const.SET_PARAMS_TAG].pop(pop)
 
-            # merge the md_header and md_comp_dict with info in cat_interface for this control
+            # merge the md_header and md_comp_dict with info in cat_interface for this control in new_context
             catalog_merger._merge_header_and_comp_dict(control, control_file_path, new_context)
+
+            if const.COMP_DEF_RULES_PARAM_VALS_TAG in new_context.merged_header:
+                for _, param_list in new_context.merged_header[const.COMP_DEF_RULES_PARAM_VALS_TAG].items():
+                    for param_dict in param_list:
+                        param_dict.pop(const.RULE_NAME, None)
+
             control_writer = ControlWriter()
             control_writer.write_control_for_editing(
                 new_context, control, control_file_path.parent, group_title, part_id_map, []

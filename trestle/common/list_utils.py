@@ -31,9 +31,8 @@ def comma_sep_to_list(string_or_none: Optional[str]) -> List[str]:
 
 
 def comma_colon_sep_to_dict(string_or_none: Optional[str]) -> Dict[str, str]:
-    """Convert optional comma and colong sep list to dict."""
+    """Convert optional comma and colon-sep list to dict."""
     entries = comma_sep_to_list(string_or_none)
-    # this is awkward to do with dict comprehension so using loop
     dic = {}
     for entry in entries:
         # if more than one colon include any colons in the value after the first one
