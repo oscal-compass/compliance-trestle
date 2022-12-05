@@ -90,7 +90,7 @@ def test_comma_sep_to_list() -> None:
     """Test comma sep to list."""
     assert list_utils.comma_sep_to_list(None) == []
     assert list_utils.comma_sep_to_list('a') == ['a']
-    assert list_utils.comma_sep_to_list('') == ['']
+    assert list_utils.comma_sep_to_list('') == []
     assert list_utils.comma_sep_to_list(' ab , c d,  ef  ') == ['ab', 'c d', 'ef']
 
 
@@ -98,8 +98,8 @@ def test_comma_colon_sep_to_dict() -> None:
     """Test comma colon sep to dict."""
     assert list_utils.comma_colon_sep_to_dict(None) == {}
     assert list_utils.comma_colon_sep_to_dict('a') == {'a': 'a'}
-    assert list_utils.comma_colon_sep_to_dict('') == {'': ''}
-    assert list_utils.comma_colon_sep_to_dict('  ') == {'': ''}
+    assert list_utils.comma_colon_sep_to_dict('') == {}
+    assert list_utils.comma_colon_sep_to_dict('  ') == {}
     assert list_utils.comma_colon_sep_to_dict(' ab: cd ,de:fg, h , i : j k, m: n : op ') == {
         'ab': 'cd', 'de': 'fg', 'h': 'h', 'i': 'j k', 'm': 'n : op'
     }

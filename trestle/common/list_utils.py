@@ -27,7 +27,8 @@ def as_list(list_or_none: Optional[List[TG]]) -> List[TG]:
 
 def comma_sep_to_list(string_or_none: Optional[str]) -> List[str]:
     """Convert optional comma-sep string to list of stings and strip."""
-    return list(map(str.strip, string_or_none.split(','))) if string_or_none is not None else []
+    string_or_none = string_or_none.strip() if string_or_none else None
+    return list(map(str.strip, string_or_none.split(','))) if string_or_none else []
 
 
 def comma_colon_sep_to_dict(string_or_none: Optional[str]) -> Dict[str, str]:
