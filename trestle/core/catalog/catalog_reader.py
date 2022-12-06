@@ -147,8 +147,8 @@ class CatalogReader():
     @staticmethod
     def _read_comp_info_from_md(control_file_path: pathlib.Path,
                                 context: ControlContext) -> Tuple[Dict[str, Any], CompDict]:
-        comp_dict = {}
         md_header = {}
+        comp_dict = {}
         if control_file_path.exists():
-            md_header = ControlReader.read_control_info_from_md(control_file_path, comp_dict, context)
+            md_header, comp_dict = ControlReader.read_control_info_from_md(control_file_path, context)
         return md_header, comp_dict

@@ -108,47 +108,15 @@ class CatalogMerger():
         """
         Merge the header and the comp_dict.
 
-        x-trestle-comp-def-rules:
-        - name: XCCDF
-            description: The XCCDF must be compliant
-        x-trestle-rules-params:
-        - name: foo_length
-            description: minimum_foo_length
-            rule-id: XCCDF
-            options: '["6", "9"]'
-        x-trestle-comp-def-param-vals:
-        quantity_available: '500'
-        foo_length: '6'
-        x-trestle-global:
-        profile-title: NIST Special Publication 800-53 Revision 5 MODERATE IMPACT BASELINE
-        x-trestle-set-params:
-        ac-1_prm_1:
-            values: Param_1_value_in_catalog
-        ac-1_prm_2:
-            values:
-        ac-1_prm_3:
-            values:
-        ac-1_prm_4:
-            values:
-        ac-1_prm_5:
-            values:
-        ac-1_prm_6:
-            values:
-        ac-1_prm_7:
-            values:
-        ---
+        Notes:
+            now have all rules in context.rules_dict and all rules_params in context.rules_params_dict
+            all set-params per component for each control are in the cat interface
+            all comp-infos by control and part are in the cat interface
 
-        # now have all rules in context.rules_dict and all rules_params in context.rules_params_dict
-        # all set-params per component for each control are in the cat interface
-        # all comp-infos by control and part are in the cat interface
-        #
-        # can now write out catalog and pull from the markdown:
-        # header for param values to set during assem
-        # prose and status for This System
-        # status for all parts that still have rules
-
-        set COMP_DEF_RULES_TAG, RULES_PARAMS_TAG, COMP_DEF_RULES_PARAM_VALS_TAG, SET_PARAMS_TAG
-
+            can now write out catalog and pull from the markdown:
+            header for param values to set during assem
+            prose and status for This System
+            status for all parts that still have rules
         """
         memory_header, memory_comp_dict = self._catalog_interface._get_control_memory_info(control.id, context)
         # FIXME confirm this merge behavior

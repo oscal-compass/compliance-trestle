@@ -22,6 +22,7 @@ import trestle.common.const as const
 import trestle.oscal.catalog as cat
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_dict, as_filtered_list, as_list, delete_item_from_list, deep_append, deep_get, deep_set, get_item_from_list, none_if_empty, set_or_pop  # noqa E501
+from trestle.core.control_context import ControlContext
 from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlInterface
 from trestle.oscal import common
 from trestle.oscal import component as comp
@@ -670,13 +671,13 @@ class CatalogInterface():
         """Search directory and remove any controls that were not written out."""
         pass
 
-    def _get_control_memory_info(self, control_id: str, context) -> Tuple[Dict[str, Any], CompDict]:
-        # set COMP_DEF_RULES_TAG, RULES_PARAMS_TAG, COMP_DEF_RULES_PARAM_VALS_TAG, SET_PARAMS_TAG
+    def _get_control_memory_info(self, control_id: str, context: ControlContext) -> Tuple[Dict[str, Any], CompDict]:
+        """Build the rule info for the control into the header."""
         header = {}
         rule_names_list: List[str] = []
-        context.comp_dict = self.get_comp_info(control_id)
+        comp_dict = self.get_comp_info(control_id)
         # find the rule names that are needed by the control
-        for _, value in context.comp_dict.items():
+        for _, value in comp_dict.items():
             for comp_info in value.values():
                 rule_names_list.extend(as_list(comp_info.rules))
         if rule_names_list:
@@ -720,7 +721,7 @@ class CatalogInterface():
             set_or_pop(header, const.COMP_DEF_RULES_PARAM_VALS_TAG, rules_set_params)
             set_or_pop(header, const.SET_PARAMS_TAG, control_comp_set_params)
 
-        return header, context.comp_dict
+        return header, comp_dict
 
     @staticmethod
     def _get_group_ids_and_dirs(md_path: pathlib.Path) -> Dict[str, pathlib.Path]:

@@ -480,9 +480,7 @@ class ControlWriter():
 
         control_file = dest_path / (control.id + const.MARKDOWN_FILE_EXT)
         # read the existing markdown header and content if it exists
-        # add to the comp_dict coming from memory
-        comp_dict = {}
-        md_header = ControlReader.read_control_info_from_md(control_file, comp_dict, context)
+        md_header, comp_dict = ControlReader.read_control_info_from_md(control_file, context)
         # replace the memory comp_dict with the md one if control exists
         if comp_dict:
             context.comp_dict = comp_dict

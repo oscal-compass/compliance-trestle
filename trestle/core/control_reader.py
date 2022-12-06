@@ -572,14 +572,13 @@ class ControlReader():
         return split_header[4].strip()
 
     @staticmethod
-    def read_control_info_from_md(control_file: pathlib.Path, comp_dict: CompDict,
-                                  context: ControlContext) -> Dict[str, List[str]]:
+    def read_control_info_from_md(control_file: pathlib.Path,
+                                  context: ControlContext) -> Tuple[Dict[str, List[str]], CompDict]:
         """
         Find all labels and associated implementation prose in the markdown for this control.
 
         Args:
             control_file: path to the control markdown file
-            comp_dict: component dictionary
             context: context of the control usage
 
         Returns:
@@ -587,9 +586,10 @@ class ControlReader():
             Adds to the passed in comp_dict.
         """
         yaml_header = {}
+        comp_dict = {}
 
         if not control_file.exists():
-            return yaml_header
+            return yaml_header, comp_dict
         # if the file exists, load the contents but do not use prose from comp_dict
         # for non ssp or component mode just use empty string for comp
         comp_name = ''
@@ -627,7 +627,7 @@ class ControlReader():
 
         except TrestleError as e:
             raise TrestleError(f'Error occurred reading {control_file}: {e}')
-        return yaml_header
+        return yaml_header, comp_dict
 
     @staticmethod
     def _handle_empty_prose(prose: str, id_: str) -> str:
@@ -664,8 +664,7 @@ class ControlReader():
             statement_map keeps track of statements that may have several by_component responses.
         """
         control_id = control_file.stem
-        comp_dict = {}
-        header = ControlReader.read_control_info_from_md(control_file, comp_dict, context)
+        header, comp_dict = ControlReader.read_control_info_from_md(control_file, context)
 
         statement_map: Dict[str, generic.GenericStatement] = {}
         # create a new implemented requirement linked to the control id to hold the statements

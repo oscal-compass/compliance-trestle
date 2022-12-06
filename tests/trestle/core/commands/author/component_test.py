@@ -15,7 +15,7 @@
 
 import pathlib
 import shutil
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List
 
 from _pytest.monkeypatch import MonkeyPatch
 
@@ -27,7 +27,6 @@ import trestle.oscal.component as comp
 import trestle.oscal.profile as prof
 from trestle.common import const, file_utils
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.commands.href import HrefCmd
 from trestle.core.markdown.markdown_processor import MarkdownProcessor
 
 md_path = 'md_comp'
@@ -52,28 +51,6 @@ def load_file(trestle_root: pathlib.Path, source_name: str, dest_name: str, sour
     item_dir.mkdir(exist_ok=True, parents=True)
     item_new_path = item_dir / f'{source_type}.json'
     shutil.copy(item_orig_path, item_new_path)
-
-
-def setup_component_generate_old(trestle_root: pathlib.Path) -> Tuple[pathlib.Path, pathlib.Path, pathlib.Path]:
-    """Set up files for profile generate."""
-    comp_name = 'test_comp'
-    cat_name = 'nist_cat'
-    prof_name = 'nist_prof'
-    load_file(trestle_root, 'comp_def.json', comp_name, 'component-definition')
-    load_file(trestle_root, test_utils.SIMPLIFIED_NIST_CATALOG_NAME, cat_name, 'catalog')
-    load_file(trestle_root, test_utils.SIMPLIFIED_NIST_PROFILE_NAME, prof_name, 'profile')
-    new_href = 'trestle://catalogs/nist_cat/catalog.json'
-    assert HrefCmd.change_import_href(trestle_root, prof_name, new_href, 0) == 0
-    simp_cat_dir = trestle_root / 'simp_cat_dir'
-    simp_cat_dir.mkdir()
-    simp_cat_path = simp_cat_dir / 'catalog.json'
-    # need to place the catalog in an arbitrary file path so it forces creation of a source_001 md subdirectory
-    # this means changing the source line in the component json file to point to it
-    shutil.copyfile(test_utils.JSON_TEST_DATA_PATH / 'simple_catalog_no_parts.json', simp_cat_path)
-    comp_path = trestle_root / 'component-definitions/test_comp/component-definition.json'
-    new_source = f'            "source": "{simp_cat_path.as_uri()}",\n'
-    test_utils.replace_line_in_file_after_tag(comp_path, '99999', new_source)
-    return comp_name, prof_name, cat_name
 
 
 def setup_component_generate(tmp_trestle_dir: pathlib.Path) -> List[str]:
@@ -142,7 +119,7 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
     test_utils.execute_command_and_assert(generate_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
     check_ac1_contents(ac1_path)
 
-    file_checker = test_utils.FileChecker(tmp_trestle_dir / tmp_trestle_dir)
+    file_checker = test_utils.FileChecker(tmp_trestle_dir / md_path)
 
     # generate again but force use of source in comp_def to load profile rather than command line
     generate_cmd = f'trestle author component-generate -n {comp_name} -o {md_path}'

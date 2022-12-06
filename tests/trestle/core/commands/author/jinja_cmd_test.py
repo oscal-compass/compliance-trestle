@@ -27,7 +27,7 @@ from trestle.core.markdown.markdown_node import MarkdownNode
 
 def setup_ssp(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch):
     """Prepare repository for docs generation."""
-    args, _ = setup_for_ssp(tmp_trestle_dir, 'main_profile', 'my_ssp')
+    args, _ = setup_for_ssp(tmp_trestle_dir, 'comp_prof', 'my_ssp')
     ssp_cmd = SSPGenerate()
     assert ssp_cmd._run(args) == 0
 

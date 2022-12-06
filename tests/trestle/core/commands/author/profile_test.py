@@ -511,7 +511,6 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatc
     assert profile_assemble._run(test_args) == 1
 
     # succed if allowed sections has all
-    # FIXME short names not handled right
     test_args.allowed_sections = 'expevid,implgdn,NeededExtra'
     assert profile_assemble._run(test_args) == 0
 

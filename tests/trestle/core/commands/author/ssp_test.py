@@ -42,8 +42,7 @@ def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_la
     control_dir = trestle_dir / ssp_name / control_id.split('-')[0]
     md_file = control_dir / f'{control_id}.md'
     context = ControlContext.generate(ContextPurpose.SSP, False, trestle_dir, trestle_dir)
-    comp_dict = {}
-    _ = ControlReader.read_control_info_from_md(md_file, comp_dict, context)
+    _, comp_dict = ControlReader.read_control_info_from_md(md_file, context)
     for label_dict in comp_dict.values():
         if part_label in label_dict:
             prose = label_dict[part_label].prose
@@ -54,7 +53,7 @@ def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_la
 
 def test_ssp_generate(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator."""
-    args, _ = setup_for_ssp(tmp_trestle_dir, 'comp_prof', ssp_name)
+    args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
 
     ssp_cmd = SSPGenerate()
     # run the command for happy path
@@ -476,7 +475,7 @@ def test_ssp_bad_control_id(tmp_trestle_dir: pathlib.Path) -> None:
 
 def test_ssp_assemble_header_metadata(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test parsing of metadata from yaml header."""
-    args, _ = setup_for_ssp(tmp_trestle_dir, 'comp_prof', ssp_name)
+    args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
     header_path = test_utils.YAML_TEST_DATA_PATH / 'header_with_metadata.yaml'
     args.yaml_header = header_path
     ssp_cmd = SSPGenerate()
@@ -493,7 +492,7 @@ def test_ssp_assemble_header_metadata(tmp_trestle_dir: pathlib.Path, monkeypatch
 
 def test_ssp_force_overwrite(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test ssp generate with force-overwrite."""
-    args, _ = setup_for_ssp(tmp_trestle_dir, 'comp_prof', ssp_name)
+    args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
 
     ssp_cmd = SSPGenerate()
     assert ssp_cmd._run(args) == 0
