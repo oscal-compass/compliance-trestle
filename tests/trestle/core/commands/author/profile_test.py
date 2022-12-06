@@ -396,8 +396,8 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
         assert set_params[2].values[0].__root__ == 'new value'
         assert profile.metadata.version.__root__ == new_version
         if ohv:
-            assert set_params[3].values[0].__root__ == 'no meetings'
-            assert set_params[3].label == 'meetings cancelled'
+            assert set_params[3].values[0].__root__ == 'no meetings from cli yaml'
+            assert set_params[3].label == 'meetings cancelled from cli yaml'
         else:
             assert set_params[3].values[0].__root__ == 'all meetings'
             assert set_params[3].label is None

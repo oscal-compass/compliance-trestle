@@ -25,7 +25,7 @@ import trestle.core.generic_oscal as generic
 import trestle.oscal.catalog as cat
 import trestle.oscal.component as comp
 import trestle.oscal.profile as prof
-from trestle.common import const, file_utils
+from trestle.common import const, file_utils, model_utils
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.markdown.markdown_processor import MarkdownProcessor
 
@@ -113,6 +113,10 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
     comp_name = comp_names.split(',')[0]
     ac1_path = tmp_trestle_dir / 'md_comp/comp_aa/comp_prof_aa/ac/ac-1.md'
 
+    orig_component, _ = model_utils.ModelUtils.load_top_level_model(
+        tmp_trestle_dir, comp_name, comp.ComponentDefinition
+    )
+
     generate_cmd = f'trestle author component-generate -n {comp_name} -o {md_path}'
 
     # generate the md first time
@@ -121,17 +125,22 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
 
     file_checker = test_utils.FileChecker(tmp_trestle_dir / md_path)
 
-    # generate again but force use of source in comp_def to load profile rather than command line
     generate_cmd = f'trestle author component-generate -n {comp_name} -o {md_path}'
-    # confirm it overwrites existing md properly
+    # confirm it overwrites existing md identically
     test_utils.execute_command_and_assert(generate_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
 
     # all files should be the same
     assert file_checker.files_unchanged()
 
-    # FIXME need to check correct assembly
-    assemble_cmd = f'trestle author component-assemble -m {md_path} -n {comp_name} -o assem_comp'
+    assem_name = 'assem_comp'
+
+    # confirm assembled is identical except for uuids
+    assemble_cmd = f'trestle author component-assemble -m {md_path} -n {comp_name} -o {assem_name}'
     test_utils.execute_command_and_assert(assemble_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
+    assem_component, _ = model_utils.ModelUtils.load_top_level_model(
+        tmp_trestle_dir, assem_name, comp.ComponentDefinition
+    )
+    assert model_utils.ModelUtils.models_are_equivalent(orig_component, assem_component, True)
 
 
 def test_generic_oscal() -> None:

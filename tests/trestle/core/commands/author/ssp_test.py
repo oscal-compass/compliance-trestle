@@ -51,6 +51,21 @@ def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_la
     return False
 
 
+part_a_text = """## Implementation for part a.
+
+### comp_aa
+
+statement prose for part a. from comp aa
+
+#### Rules:
+
+  - comp_rule_aa_1
+
+#### Implementation Status: partial
+
+______________________________________________________________________"""
+
+
 def test_ssp_generate(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator."""
     args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
@@ -62,6 +77,16 @@ def test_ssp_generate(tmp_trestle_dir: pathlib.Path) -> None:
     ac_dir = md_dir / 'ac'
     ac_1 = ac_dir / 'ac-1.md'
     assert ac_1.exists()
+
+    md_api = MarkdownAPI()
+    header, tree = md_api.processor.process_markdown(ac_1)
+    assert header[const.TRESTLE_GLOBAL_TAG][const.SORT_ID] == 'ac-01'
+    assert header[const.COMP_DEF_RULES_PARAM_VALS_TAG]['comp_aa'][0] == {
+        'name': 'shared_param_1', 'values': ['shared_param_1_aa_opt_1']
+    }
+
+    node = tree.get_node_for_key('## Implementation for part a.')
+    assert node.content.raw_text == part_a_text
 
     fc = FileChecker(md_dir)
 
@@ -98,21 +123,22 @@ def test_ssp_failures(tmp_trestle_dir: pathlib.Path) -> None:
     assert ssp_cmd._run(args) == 1
 
 
-def test_ssp_generate_no_header(tmp_trestle_dir: pathlib.Path) -> None:
-    """Test the ssp generator with no yaml header."""
-    args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
+def test_ssp_generate_with_yaml_header(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test the ssp generator with yaml header."""
+    args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name, True)
     ssp_cmd = SSPGenerate()
-    # run the command for happy path
     assert ssp_cmd._run(args) == 0
     ac_dir = tmp_trestle_dir / (ssp_name + '/ac')
     ac_1 = ac_dir / 'ac-1.md'
     assert ac_1.exists()
     assert ac_1.stat().st_size > 1000
 
+    # confirm content from the cli yaml header is now in the header
     md_api = MarkdownAPI()
     header, tree = md_api.processor.process_markdown(ac_1)
     assert tree is not None
     assert header[const.TRESTLE_GLOBAL_TAG][const.SORT_ID] == 'ac-01'
+    assert header['control-origination'][0] == 'Service Provider Corporate'
 
 
 def test_ssp_generate_header_edit(tmp_trestle_dir: pathlib.Path) -> None:
@@ -120,6 +146,11 @@ def test_ssp_generate_header_edit(tmp_trestle_dir: pathlib.Path) -> None:
     # always start by creating the markdown with the yaml header
     args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name, True)
     ssp_cmd = SSPGenerate()
+
+    cli_yaml_header = args.yaml_header
+    args.yaml_header = None
+
+    # first generate with no yaml header
     assert ssp_cmd._run(args) == 0
 
     ac_dir = tmp_trestle_dir / (ssp_name + '/ac')
@@ -128,30 +159,56 @@ def test_ssp_generate_header_edit(tmp_trestle_dir: pathlib.Path) -> None:
     md_api = MarkdownAPI()
     header, tree = md_api.processor.process_markdown(ac_1)
     assert tree is not None
-    # confirm info from the yaml header was loaded
-    assert len(header['control-origination']) == 2
+    # confirm info from the yaml header is not present
+    assert 'control-origination' not in header
+    assert 'label' not in header['x-trestle-set-params']['ac-1_prm_5']
+
+    # generate again with header but do not overwrite header values
+    args.yaml_header = cli_yaml_header
+    assert ssp_cmd._run(args) == 0
+
+    # confirm new items were added from yaml but not when the same key was alread present (values not updated)
+    header, tree = md_api.processor.process_markdown(ac_1)
+    assert 'control-origination' in header
+    assert header['x-trestle-set-params']['ac-1_prm_5']['values'] is None
+    assert header['x-trestle-set-params']['ac-1_prm_5']['label'] == 'meetings cancelled from cli yaml'
+
+    # generate again with header and DO overwrite header values
+    args.overwrite_header_values = True
+    assert ssp_cmd._run(args) == 0
+
+    # confirm values was now changed
+    header, tree = md_api.processor.process_markdown(ac_1)
+    assert 'control-origination' in header
+    assert header['x-trestle-set-params']['ac-1_prm_5']['values'] == 'new values from cli yaml'
+    assert header['x-trestle-set-params']['ac-1_prm_5']['label'] == 'meetings cancelled from cli yaml'
 
     # edit the header by adding a list item and removing a value
     assert file_utils.insert_text_in_file(ac_1, 'System Specific', '  - My new edits\n')
     assert test_utils.delete_line_in_file(ac_1, 'Corporate')
-
-    # FIXME confirm the logic for overwrite is working
-    # if the yaml header is not written out, the new header should be the one currently in the control
-    # if the yaml header is written out, it is merged with the current header giving priority to current header
-    # so if not written out, the header should have one item added and another deleted due to edits in this test
-    # if written out, it should just have the one added item because the deleted one will be put back in
 
     # tell it not to add the yaml header
     args.yaml_header = None
 
     assert ssp_cmd._run(args) == 0
     header, tree = md_api.processor.process_markdown(ac_1)
-    assert tree is not None
 
     co = header['control-origination']
     assert co[0] == 'Service Provider System Specific'
     assert co[1] == 'My new edits'
     assert len(co) == 2
+
+    # tell it to add the yaml header but not overwrite header values
+    args.yaml_header = cli_yaml_header
+    args.overwrite_header_values
+
+    assert ssp_cmd._run(args) == 0
+    header, tree = md_api.processor.process_markdown(ac_1)
+
+    # confirm the extra list item from the cli yaml header is added to the list
+    co = header['control-origination']
+    assert co[2] == 'Service Provider Corporate'
+    assert len(co) == 3
 
 
 def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:

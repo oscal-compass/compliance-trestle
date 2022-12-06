@@ -165,8 +165,7 @@
                   },
                   {
                     "name": "implementation-status",
-                    "value": "implemented",
-                    "remarks": "ac6.7 imp req status"
+                    "value": "implemented"
                   }
                 ],
                 "responsible-roles": [
@@ -300,8 +299,7 @@
                   },
                   {
                     "name": "implementation-status",
-                    "value": "implemented",
-                    "remarks": "at2 imp req status"
+                    "value": "implemented"
                   }
                 ],
                 "responsible-roles": [

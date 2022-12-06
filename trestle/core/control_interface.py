@@ -521,6 +521,7 @@ class ControlInterface:
                 # if they are both dicts, recurse
                 if isinstance(dest[key], dict) and isinstance(src[key], dict):
                     ControlInterface.merge_dicts_deep(dest[key], src[key], overwrite_header_values)
+                # if they are both lists, add any item that is not already in the list
                 elif isinstance(dest[key], list) and isinstance(src[key], list):
                     for item in src[key]:
                         if item not in dest[key]:

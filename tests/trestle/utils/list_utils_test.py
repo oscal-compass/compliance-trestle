@@ -128,3 +128,17 @@ def test_deep_set_get() -> None:
         list_utils.deep_set(d, path, 'nope')
     with pytest.raises(TrestleError):
         list_utils.deep_get(d, path, 'nope')
+
+
+def test_deep_update() -> None:
+    """Test deep update."""
+    d = {}
+    path = ['foo', 'bar']
+    list_utils.deep_set(d, path, {'a': 'b'})
+    assert d['foo']['bar'] == {'a': 'b'}
+    list_utils.deep_update(d, path, {'c': 'd'})
+    assert d['foo']['bar'] == {'a': 'b', 'c': 'd'}
+    with pytest.raises(TrestleError):
+        list_utils.deep_update(d, [], {'x': 'y'})
+    list_utils.deep_update(d, ['foo'], {'x': 'y'})
+    assert d['foo'] == {'bar': {'a': 'b', 'c': 'd'}, 'x': 'y'}
