@@ -168,7 +168,9 @@ class ControlWriter():
             self._md_file.new_paraline(prose)
             self._insert_status(status, 4)
         did_write = True
-        for comp_name, dic in comp_dict.items():
+        sorted_comp_names = sorted(comp_dict.keys())
+        for comp_name in sorted_comp_names:
+            dic = comp_dict[comp_name]
             # This System already handled
             if comp_name == const.SSP_MAIN_COMP_NAME:
                 continue
@@ -226,7 +228,9 @@ class ControlWriter():
                         self._md_file.new_hr()
                         self._md_file.new_header(level=2, title=f'Implementation for part {part_label}')
                         wrote_label_content = False
-                        for comp_name, dic in comp_dict.items():
+                        sorted_comp_names = sorted(comp_dict.keys())
+                        for comp_name in sorted_comp_names:
+                            dic = comp_dict[comp_name]
                             if comp_name == const.SSP_MAIN_COMP_NAME:
                                 continue
                             if part_label in dic:
@@ -234,8 +238,8 @@ class ControlWriter():
                                 # because there should only be one component in generated comp_def markdown
                                 if context.purpose != ContextPurpose.COMPONENT:
                                     self._md_file.new_header(level=3, title=comp_name)
-                            self._insert_comp_info(part_label, dic, context)
-                            wrote_label_content = True
+                                self._insert_comp_info(part_label, dic, context)
+                                wrote_label_content = True
                         if not wrote_label_content:
                             level = 3 if context.purpose == ContextPurpose.COMPONENT else 4
                             self._insert_status(ImplementationStatus(state=const.STATUS_PLANNED), level)
