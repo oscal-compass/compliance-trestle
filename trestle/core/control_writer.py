@@ -139,6 +139,9 @@ class ControlWriter():
             self._md_file.new_paragraph()
             if info.prose:
                 self._md_file.new_line(info.prose)
+            else:
+                self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT} {part_label} -->')
+
             self._insert_rules(info.rules, level)
             self._insert_status(info.status, level)
         else:
@@ -174,11 +177,9 @@ class ControlWriter():
                 if context.purpose != ContextPurpose.COMPONENT:
                     self._md_file.new_header(3, comp_name)
                 prose = comp_info.prose if comp_info.prose != control_id else ''
-                # only write out the prompt first time
-                if not self._md_file.exists() and not prose:
+                if not prose:
                     prose = f'{const.SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT}: {control_id} -->'
-                if prose:
-                    self._md_file.new_paraline(prose)
+                self._md_file.new_paraline(prose)
                 level = 3 if context.purpose == ContextPurpose.COMPONENT else 4
                 self._insert_rules(comp_info.rules, level)
                 self._insert_status(comp_info.status, level)
@@ -233,8 +234,6 @@ class ControlWriter():
                                 # because there should only be one component in generated comp_def markdown
                                 if context.purpose != ContextPurpose.COMPONENT:
                                     self._md_file.new_header(level=3, title=comp_name)
-                            if not self._has_prose(part_label, comp_dict):
-                                self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT} {prt.id} -->')
                             self._insert_comp_info(part_label, dic, context)
                             wrote_label_content = True
                         if not wrote_label_content:

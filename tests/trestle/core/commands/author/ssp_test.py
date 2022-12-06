@@ -63,6 +63,16 @@ statement prose for part a. from comp aa
 
 #### Implementation Status: partial
 
+### comp_ab
+
+<!-- Add control implementation description here for item a. -->
+
+#### Rules:
+
+  - comp_rule_ab_1
+
+#### Implementation Status: partial
+
 ______________________________________________________________________"""
 
 
@@ -89,6 +99,10 @@ def test_ssp_generate(tmp_trestle_dir: pathlib.Path) -> None:
     assert node.content.raw_text == part_a_text
 
     fc = FileChecker(md_dir)
+
+    assert ssp_cmd._run(args) == 0
+
+    assert fc.files_unchanged()
 
     assert ssp_cmd._run(args) == 0
 
@@ -401,7 +415,7 @@ also do the bar stuff
     ssp: ossp.SystemSecurityPlan
     ssp, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
     # confirm all by_comps are there for this system, foo, bar
-    assert len(ssp.control_implementation.implemented_requirements[0].statements[0].by_components) == 3
+    assert len(ssp.control_implementation.implemented_requirements[0].statements[0].by_components) == 4
 
     # get the original uuid
     orig_uuid = ssp.uuid
@@ -440,7 +454,7 @@ also do the bar stuff
     assert len(ssp.control_implementation.implemented_requirements) == 2
 
     # confirm there are three by_comps for: this system, foo, bar
-    assert len(ssp.control_implementation.implemented_requirements[0].statements[0].by_components) == 3
+    assert len(ssp.control_implementation.implemented_requirements[0].statements[0].by_components) == 4
 
     # confirm uuid was not regenerated
     assert ssp.uuid == orig_uuid

@@ -573,7 +573,7 @@ class FileChecker:
         self._file_dict: Dict[pathlib.Path, str] = {}
         for file in self._root_dir.rglob('*'):
             if not file.is_dir():
-                self._file_dict[file] = file.read_text()
+                self._file_dict[file] = file.read_text(encoding=const.FILE_ENCODING)
 
     def files_unchanged(self) -> bool:
         """Check if any files have changed."""
@@ -584,7 +584,7 @@ class FileChecker:
                     logger.error(f'Test file {file} is a new file that was not there originally.')
                     return False
                 old_text = self._file_dict[file]
-                new_text = file.read_text()
+                new_text = file.read_text(encoding=const.FILE_ENCODING)
                 if old_text != new_text:
                     logger.error(f'Test file {file} has changed contents:')
                     differ = difflib.Differ()

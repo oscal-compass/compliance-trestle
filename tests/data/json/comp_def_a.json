@@ -290,6 +290,59 @@
             "implemented-requirements": [
               {
                 "uuid": "ca5ea4c5-ba51-4b1d-932a-5606891b7486",
+                "control-id": "ac-1",
+                "description": "",
+                "props": [
+                  {
+                    "name": "Rule_Id",
+                    "value": "top_shared_rule_1"
+                  },
+                  {
+                    "name": "implementation-status",
+                    "value": "implemented"
+                  }
+                ],
+                "responsible-roles": [
+                  {
+                    "role-id": "prepared-by",
+                    "party-uuids": [
+                      "ce1f379a-fcdd-485a-a7b7-6f02c0763dd2"
+                    ]
+                  },
+                  {
+                    "role-id": "prepared-for",
+                    "party-uuids": [
+                      "481856b6-16e4-4993-a3ed-2fb242ce235b",
+                      "2dc8b17f-daca-44a1-8a1d-c290120ea5e2"
+                    ]
+                  },
+                  {
+                    "role-id": "content-approver",
+                    "party-uuids": [
+                      "ce1f379a-fcdd-485a-a7b7-6f02c0763dd2"
+                    ]
+                  }
+                ],
+                "statements": [
+                  {
+                    "statement-id": "ac-1_smt.a",
+                    "uuid": "2652b814-2a6b-4b6d-a0ae-8bc7a007219f",
+                    "description": "",
+                    "props": [
+                      {
+                        "name": "Rule_Id",
+                        "value": "comp_rule_ab_1"
+                      },
+                      {
+                        "name": "implementation-status",
+                        "value": "partial"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "uuid": "ca5ea4c5-ba51-4b1d-932a-5606891b7486",
                 "control-id": "at-1",
                 "description": "imp req prose for at-1 from comp ab",
                 "props": [
