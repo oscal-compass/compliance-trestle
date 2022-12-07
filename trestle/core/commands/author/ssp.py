@@ -40,6 +40,7 @@ from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_reader import ControlReader
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
+from trestle.core.remote.cache import FetcherFactory
 
 logger = logging.getLogger(__name__)
 
@@ -137,12 +138,14 @@ class SSPGenerate(AuthorCommonCommand):
 
         context = ControlContext.generate(ContextPurpose.SSP, True, trestle_root, md_path)
         context.cli_yaml_header = yaml_header
-        context.sections_dict = {}
+        context.sections_dict = None
         context.prompt_responses = True
         context.overwrite_header_values = overwrite_header_values
-        context.allowed_sections = []
+        context.allowed_sections = None
         context.comp_def_name_list = compdef_name_list
-        context.profile = prof.Profile.oscal_read(profile_path)
+        # this will raise exception if problem loading profile
+        fetcher = FetcherFactory.get_fetcher(trestle_root, str(profile_path))
+        context.profile, _ = fetcher.get_oscal()
 
         profile_resolver = ProfileResolver()
         # in ssp context we want to see missing value warnings

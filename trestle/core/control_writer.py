@@ -153,6 +153,7 @@ class ControlWriter():
             return False
         self._md_file.new_paraline(const.STATUS_PROMPT)
         self._md_file.new_paraline(const.RULES_WARNING)
+        did_write = False
         # do special handling for This System
         if context.purpose == ContextPurpose.SSP:
             self._md_file.new_paragraph()
@@ -167,7 +168,7 @@ class ControlWriter():
                 status = comp_info.status
             self._md_file.new_paraline(prose)
             self._insert_status(status, 4)
-        did_write = True
+            did_write = True
         sorted_comp_names = sorted(comp_dict.keys())
         for comp_name in sorted_comp_names:
             dic = comp_dict[comp_name]

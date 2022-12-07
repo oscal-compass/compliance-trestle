@@ -517,11 +517,13 @@ also do the bar stuff
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 1
 
-    # now filter the ssp through test_profile_b to force error because b references controls not in the ssp
+    # now filter the ssp through comp_prof_bad to force error because it references a control not in the ssp
+    bad_prof = 'comp_prof_bad'
+    test_utils.load_from_json(tmp_trestle_dir, bad_prof, bad_prof, prof.Profile)
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
         name=ssp_name,
-        profile='comp_prof_bb',
+        profile=bad_prof,
         output=filtered_name,
         verbose=0,
         regenerate=True,
@@ -529,8 +531,7 @@ also do the bar stuff
         components=None
     )
     ssp_filter = SSPFilter()
-    # FIXME
-    # FIXME assert ssp_filter._run(args) == 1
+    assert ssp_filter._run(args) == 1
 
 
 def test_ssp_bad_control_id(tmp_trestle_dir: pathlib.Path) -> None:
@@ -565,13 +566,13 @@ def test_ssp_force_overwrite(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyP
     """Test ssp generate with force-overwrite."""
     args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
 
+    # confirm that setting force_overwrite with empty dir does not fail on generate
+    args.force_overwrite = True
     ssp_cmd = SSPGenerate()
     assert ssp_cmd._run(args) == 0
     fc = test_utils.FileChecker(tmp_trestle_dir / 'my_ssp/')
 
-    md_dir = tmp_trestle_dir / ssp_name
-    ac_dir = md_dir / 'ac'
-    ac_1 = ac_dir / 'ac-1.md'
+    ac_1 = tmp_trestle_dir / ssp_name / 'ac' / 'ac-1.md'
     assert ac_1.exists()
 
     md_api = MarkdownAPI()
@@ -583,13 +584,15 @@ def test_ssp_force_overwrite(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyP
     tree.content.raw_text = tree.content.raw_text.replace(old_value, 'Custom control implementation')
     md_api.write_markdown_with_header(ac_1, header, tree.content.raw_text)
 
+    # re-run without force overwrite and confirm edits still there
+    args.force_overwrite = False
     assert ssp_cmd._run(args) == 0
 
     header, tree = md_api.processor.process_markdown(ac_1)
     assert 'Custom control implementation' in tree.content.raw_text
 
+    # run again with overwrite and confirm edits are gone
     args.force_overwrite = True
-
     assert ssp_cmd._run(args) == 0
 
     header, tree = md_api.processor.process_markdown(ac_1)

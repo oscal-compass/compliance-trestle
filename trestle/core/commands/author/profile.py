@@ -118,7 +118,7 @@ class ProfileGenerate(AuthorCommonCommand):
         yaml_header: dict,
         overwrite_header_values: bool,
         sections_dict: Optional[Dict[str, str]],
-        required_sections: List[str]
+        required_sections: Optional[List[str]]
     ) -> int:
         """Generate markdown for the controls in the profile.
 

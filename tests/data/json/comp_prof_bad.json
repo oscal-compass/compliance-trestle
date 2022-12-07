@@ -1,0 +1,37 @@
+{
+  "profile": {
+    "uuid": "A0000000-0000-4000-8000-000000000014",
+    "metadata": {
+      "title": "comp prof bad",
+      "last-modified": "2021-01-01T00:00:00.000+00:00",
+      "version": "2021-01-01",
+      "oscal-version": "1.0.0"
+    },
+    "imports": [
+      {
+        "href": "trestle://catalogs/simplified_nist_catalog/catalog.json",
+        "include-controls": [
+          {
+            "with-ids": [
+              "ac-1",
+              "ac-2.2"
+            ]
+          }
+        ]
+      }
+    ],
+    "merge": {
+      "as-is": true
+    },
+    "modify": {
+      "set-parameters": [
+        {
+          "param-id": "ac-1_prm_1",
+          "values": [
+            "prof_aa val 1"
+          ]
+        }
+      ]
+    }
+  }
+}
