@@ -677,7 +677,7 @@ class CatalogInterface():
                 )  # noqa E501
                 control_file.unlink()
                 deleted_controls.append(control_file.stem)
-        return deleted_controls
+        return sorted(deleted_controls)
 
     def _get_control_memory_info(self, control_id: str, context: ControlContext) -> Tuple[Dict[str, Any], CompDict]:
         """Build the rule info for the control into the header."""

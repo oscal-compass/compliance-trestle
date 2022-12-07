@@ -609,7 +609,7 @@ def test_prune_written_controls(tmp_trestle_dir: pathlib.Path, monkeypatch: Monk
 
     catalog_interface = CatalogInterface(catalog)
     control_ids = set(catalog_interface.get_control_ids())
-    controls_to_delete = ['ac-1', 'ac-2.9', 'at-2.1']
+    controls_to_delete = sorted(['ac-1', 'ac-2.9', 'at-2.1'])
     id_subset = control_ids - set(controls_to_delete)
 
     assert CatalogInterface._prune_controls(md_path, id_subset) == controls_to_delete
