@@ -679,6 +679,25 @@ class CatalogInterface():
                 deleted_controls.append(control_file.stem)
         return sorted(deleted_controls)
 
+    def _extend_rules_param_list(
+        self, control_id: str, header: Dict[str, Any], param_id_rule_name_map: Dict[str, str]
+    ) -> None:
+        """Go through all set_params and put in rules param list if name matches."""
+        control_comp_set_params = {}
+        rules_set_params = {}
+        all_set_params = self.get_control_comp_set_params(control_id)
+        for comp_name, param_list in all_set_params.items():
+            for param in param_list:
+                param_vals = none_if_empty([value.__root__ for value in as_list(param.values)])
+                rule_name = deep_get(param_id_rule_name_map, [comp_name, param.param_id], None)
+                if rule_name:
+                    param_dict = {'rule_name': rule_name, 'name': param.param_id}
+                    if param_vals:
+                        param_dict['values'] = param_vals
+                    deep_append(rules_set_params, [comp_name], param_dict)
+        set_or_pop(header, const.COMP_DEF_RULES_PARAM_VALS_TAG, rules_set_params)
+        set_or_pop(header, const.SET_PARAMS_TAG, control_comp_set_params)
+
     def _get_control_memory_info(self, control_id: str, context: ControlContext) -> Tuple[Dict[str, Any], CompDict]:
         """Build the rule info for the control into the header."""
         header = {}
@@ -713,21 +732,8 @@ class CatalogInterface():
                             rule_id_rule_name_map[comp_name][rule_id]
                         )
             set_or_pop(header, const.RULES_PARAMS_TAG, rules_params)
-            # go through all set_params and put in rules param list if name matches
-            control_comp_set_params = {}
-            rules_set_params = {}
-            all_set_params = self.get_control_comp_set_params(control_id)
-            for comp_name, param_list in all_set_params.items():
-                for param in param_list:
-                    param_vals = none_if_empty([value.__root__ for value in as_list(param.values)])
-                    rule_name = deep_get(param_id_rule_name_map, [comp_name, param.param_id], None)
-                    if rule_name:
-                        param_dict = {'rule_name': rule_name, 'name': param.param_id}
-                        if param_vals:
-                            param_dict['values'] = param_vals
-                        deep_append(rules_set_params, [comp_name], param_dict)
-            set_or_pop(header, const.COMP_DEF_RULES_PARAM_VALS_TAG, rules_set_params)
-            set_or_pop(header, const.SET_PARAMS_TAG, control_comp_set_params)
+
+            self._extend_rules_param_list(control_id, header, param_id_rule_name_map)
 
         return header, comp_dict
 
