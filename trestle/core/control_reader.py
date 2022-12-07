@@ -737,7 +737,6 @@ class ControlReader():
                     continue
                 statement_id = ControlInterface.create_statement_id(control_id)
                 # control level response has '' as label
-                # FIXME confusion between ssp and comp_def possible
                 if label in ['', const.STATEMENT]:
                     statement_part_id = statement_id
                 else:

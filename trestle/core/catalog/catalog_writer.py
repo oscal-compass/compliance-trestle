@@ -15,7 +15,7 @@
 
 import copy
 import logging
-from typing import Dict, List
+from typing import Any, Dict, List
 
 import trestle.common.const as const
 import trestle.oscal.catalog as cat
@@ -128,9 +128,12 @@ class CatalogWriter():
 
         return context
 
-    # FIXME typing
-    def _construct_set_parameters_dict(self, profile_set_param_dict, control_param_dict,
-                                       context: ControlContext) -> Dict[str, str]:
+    def _construct_set_parameters_dict(
+        self,
+        profile_set_param_dict: Dict[str, common.Parameter],
+        control_param_dict: Dict[str, Dict[str, Any]],
+        context: ControlContext
+    ) -> Dict[str, Dict[str, Any]]:
         """
         Build set-parameters dictionary from the given profile.modify.set-parameters and control.params.
 
@@ -143,7 +146,7 @@ class CatalogWriter():
             - If control_param is not in profile.modify.set_params:
                 - Values - from control
         """
-        set_param_dict: Dict[str, str] = {}
+        set_param_dict: Dict[str, Dict[str, Any]] = {}
         for param_id, param_dict in control_param_dict.items():
             # if the param is in the full_param_dict, load its contents first and mark as profile-values
             display_name = ''
