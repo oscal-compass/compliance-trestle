@@ -595,3 +595,21 @@ def test_catalog_force_overwrite(tmp_trestle_dir: pathlib.Path, monkeypatch: Mon
     catalog_generate = 'trestle author catalog-generate -n my_catalog -o md_catalog --force-overwrite'
     test_utils.execute_command_and_assert(catalog_generate, 0, monkeypatch)
     assert fc.files_unchanged()
+
+
+def test_prune_written_controls(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test pruning of written controls."""
+    catalog = cat.Catalog.oscal_read(test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME)
+    ModelUtils.save_top_level_model(catalog, tmp_trestle_dir, 'my_catalog', FileContentType.JSON)
+
+    catalog_generate = 'trestle author catalog-generate -n my_catalog -o md_catalog'
+    test_utils.execute_command_and_assert(catalog_generate, 0, monkeypatch)
+
+    md_path = tmp_trestle_dir / 'md_catalog'
+
+    catalog_interface = CatalogInterface(catalog)
+    control_ids = set(catalog_interface.get_control_ids())
+    controls_to_delete = ['ac-1', 'ac-2.9', 'at-2.1']
+    id_subset = control_ids - set(controls_to_delete)
+
+    assert CatalogInterface._prune_controls(md_path, id_subset) == controls_to_delete

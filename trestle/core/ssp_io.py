@@ -32,7 +32,11 @@ logger = logging.getLogger(__name__)
 
 
 class SSPMarkdownWriter():
-    """Class to write control responses as markdown."""
+    """
+    Class to write control responses as markdown.
+
+    Functions in this class are mainly used by jinja and not by the trestle code itself.
+    """
 
     def __init__(self, trestle_root: pathlib.Path) -> None:
         """Initialize the class."""

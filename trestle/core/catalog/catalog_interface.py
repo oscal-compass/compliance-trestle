@@ -667,9 +667,17 @@ class CatalogInterface():
         return None, None
 
     @staticmethod
-    def _prune_controls(md_path: pathlib.Path, written_controls: Set[str]):
+    def _prune_controls(md_path: pathlib.Path, written_controls: Set[str]) -> List[str]:
         """Search directory and remove any controls that were not written out."""
-        pass
+        deleted_controls = []
+        for control_file in md_path.rglob('*.md'):
+            if control_file.stem not in written_controls:
+                logger.debug(
+                    f'Existing control markdown {control_file} deleted since it was not written out during generate'
+                )  # noqa E501
+                control_file.unlink()
+                deleted_controls.append(control_file.stem)
+        return deleted_controls
 
     def _get_control_memory_info(self, control_id: str, context: ControlContext) -> Tuple[Dict[str, Any], CompDict]:
         """Build the rule info for the control into the header."""
