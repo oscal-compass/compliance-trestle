@@ -168,7 +168,7 @@ class SSPGenerate(AuthorCommonCommand):
         if profile_in_trestle_dir:
             profile_header['trestle-name'] = profile_name_or_href
 
-        context.cli_yaml_header[const.TRESTLE_GLOBAL_TAG][const.MAIN_PROFILE_HEADING] = profile_header
+        context.cli_yaml_header[const.TRESTLE_GLOBAL_TAG][const.MAIN_PROFILE] = profile_header
 
         catalog_api.write_catalog_as_markdown()
 

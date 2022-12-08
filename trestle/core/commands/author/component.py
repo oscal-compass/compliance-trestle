@@ -27,7 +27,7 @@ import trestle.oscal.common as com
 import trestle.oscal.component as comp
 from trestle.common import file_utils
 from trestle.common.err import TrestleError, handle_generic_command_exception
-from trestle.common.list_utils import as_list
+from trestle.common.list_utils import as_list, deep_get
 from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog.catalog_api import CatalogAPI
@@ -121,8 +121,11 @@ class ComponentGenerate(AuthorCommonCommand):
             # different controls in the final catalog may have different profile titles if from different control_imps
             context.cli_yaml_header = {}
             context.cli_yaml_header[const.TRESTLE_GLOBAL_TAG] = {}
+
             profile_title = local_catalog_api._catalog_interface.get_catalog_title()
-            context.cli_yaml_header[const.TRESTLE_GLOBAL_TAG][const.PROFILE_TITLE] = profile_title
+            profile_header = {'title': profile_title, 'href': source_profile_uri}
+            context.cli_yaml_header[const.TRESTLE_GLOBAL_TAG][const.MAIN_PROFILE] = profile_header
+
             sub_dir_name = context.uri_name_map[source_profile_uri]
             context.md_root = markdown_dir_path / sub_dir_name
             # write controls corresponding to this source catalog
@@ -280,8 +283,10 @@ class ComponentAssemble(AuthorCommonCommand):
         markdown_api = MarkdownAPI()
         for md_file in md_files:
             header, _ = markdown_api.processor.read_markdown_wo_processing(md_file)
-            if const.TRESTLE_GLOBAL_TAG in header and const.PROFILE_TITLE in header[const.TRESTLE_GLOBAL_TAG]:
-                return header[const.TRESTLE_GLOBAL_TAG][const.PROFILE_TITLE]
+            prof_title = deep_get(header, [const.TRESTLE_GLOBAL_TAG, const.MAIN_PROFILE, const.TITLE])
+            # return first one found
+            if prof_title:
+                return prof_title
         logger.warning(f'Cannot find profile title in markdown headers of directory {md_dir}')
         return ''
 

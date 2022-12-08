@@ -74,7 +74,9 @@ def check_common_contents(header: Dict[str, Any]) -> None:
         'description': 'shared param 1 in aa',
         'options': '["shared_param_1_aa_opt_1", "shared_param_1_aa_opt_2"]'
     }
-    assert header[const.TRESTLE_GLOBAL_TAG][const.PROFILE_TITLE] == 'comp prof aa'
+    assert header[const.TRESTLE_GLOBAL_TAG][const.MAIN_PROFILE]['title'] == 'comp prof aa'
+    assert header[const.TRESTLE_GLOBAL_TAG][const.MAIN_PROFILE
+                                            ]['href'] == 'trestle://profiles/comp_prof_aa/profile.json'  # noqa E501
 
 
 def check_ac1_contents(ac1_path: pathlib.Path) -> None:
