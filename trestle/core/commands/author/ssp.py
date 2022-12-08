@@ -51,7 +51,7 @@ class SSPGenerate(AuthorCommonCommand):
     name = 'ssp-generate'
 
     def _init_arguments(self) -> None:
-        file_help_str = 'Name of the profile model in the trestle workspace'
+        file_help_str = 'Main profile href, or name of the profile model in the trestle workspace'
         self.add_argument('-p', '--profile', help=file_help_str, required=True, type=str)
         self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
         self.add_argument('-cd', '--compdefs', help=const.HELP_COMPDEFS, required=True, type=str)
@@ -75,8 +75,6 @@ class SSPGenerate(AuthorCommonCommand):
             if not file_utils.is_directory_name_allowed(args.output):
                 raise TrestleError(f'{args.output} is not an allowed directory name')
 
-            profile_path = trestle_root / f'profiles/{args.profile}/profile.json'
-
             yaml_header: dict = {}
             if args.yaml_header:
                 try:
@@ -92,7 +90,7 @@ class SSPGenerate(AuthorCommonCommand):
 
             return self._generate_ssp_markdown(
                 trestle_root,
-                profile_path,
+                args.profile,
                 compdef_name_list,
                 md_path,
                 yaml_header,
@@ -106,7 +104,7 @@ class SSPGenerate(AuthorCommonCommand):
     def _generate_ssp_markdown(
         self,
         trestle_root: pathlib.Path,
-        profile_path: pathlib.Path,
+        profile_name_or_href: str,
         compdef_name_list: List[str],
         md_path: pathlib.Path,
         yaml_header: Dict[str, Any],
@@ -143,9 +141,19 @@ class SSPGenerate(AuthorCommonCommand):
         context.overwrite_header_values = overwrite_header_values
         context.allowed_sections = None
         context.comp_def_name_list = compdef_name_list
-        # this will raise exception if problem loading profile
-        fetcher = FetcherFactory.get_fetcher(trestle_root, str(profile_path))
-        context.profile, _ = fetcher.get_oscal()
+
+        # if file not recognized as URI form, assume it represents name of file in trestle directory
+        profile_in_trestle_dir = '://' not in profile_name_or_href
+        profile_href = profile_name_or_href
+        if profile_in_trestle_dir:
+            local_path = f'profiles/{profile_name_or_href}/profile.json'
+            profile_href = const.TRESTLE_HREF_HEADING + local_path
+            profile_path = trestle_root / local_path
+            _, _, context.profile = ModelUtils.load_distributed(profile_path, trestle_root)
+        else:
+            fetcher = FetcherFactory.get_fetcher(trestle_root, profile_href)
+            context.profile: prof.Profile = fetcher.get_oscal(profile_path)
+            profile_path = profile_href
 
         profile_resolver = ProfileResolver()
         # in ssp context we want to see missing value warnings
@@ -156,8 +164,11 @@ class SSPGenerate(AuthorCommonCommand):
         catalog_api = CatalogAPI(catalog=resolved_catalog, context=context)
 
         context.cli_yaml_header[const.TRESTLE_GLOBAL_TAG] = {}
-        profile_title = catalog_api._catalog_interface.get_catalog_title()
-        context.cli_yaml_header[const.TRESTLE_GLOBAL_TAG][const.PROFILE_TITLE] = profile_title
+        profile_header = {'title': context.profile.metadata.title, 'href': profile_href}
+        if profile_in_trestle_dir:
+            profile_header['trestle-name'] = profile_name_or_href
+
+        context.cli_yaml_header[const.TRESTLE_GLOBAL_TAG][const.MAIN_PROFILE_HEADING] = profile_header
 
         catalog_api.write_catalog_as_markdown()
 
@@ -178,6 +189,7 @@ class SSPAssemble(AuthorCommonCommand):
         file_help_str = 'Name of the input markdown file directory'
         self.add_argument('-m', '--markdown', help=file_help_str, required=True, type=str)
         output_help_str = 'Name of the output generated json SSP'
+        self.add_argument('-cd', '--compdefs', help=const.HELP_COMPDEFS, required=False, type=str)
         self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
         self.add_argument('-r', '--regenerate', action='store_true', help=const.HELP_REGENERATE)
         self.add_argument('-vn', '--version', help=const.HELP_VERSION, required=False, type=str)
