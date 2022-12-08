@@ -28,7 +28,7 @@ from trestle.common.const import RESOLUTION_SOURCE
 from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.core import generators as gens
-from trestle.core.catalog_interface import CatalogInterface
+from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.control_interface import ControlInterface, ParameterRep
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver

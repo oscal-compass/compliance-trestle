@@ -17,11 +17,12 @@ from __future__ import annotations
 import logging
 import pathlib
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import trestle.oscal.catalog as cat
+import trestle.oscal.ssp as ossp
 from trestle.common import const
 from trestle.common.common_types import TypeWithParts, TypeWithProps
 from trestle.common.err import TrestleError
@@ -52,7 +53,11 @@ class ComponentImpInfo:
 
     prose: str
     rules: List[str]
-    status: common.ImplementationStatus = common.ImplementationStatus(state=const.STATUS_PLANNED)
+    # the lambda is needed to prevent a mutable from being used as a default
+    # without the lambda it would break python 3.11 and is a bug either way
+    status: common.ImplementationStatus = field(
+        default_factory=lambda: common.ImplementationStatus(state=const.STATUS_PLANNED)
+    )
 
 
 # provide name for this type
@@ -360,7 +365,7 @@ class ControlInterface:
     def get_rules_dict_from_item(item: TypeWithProps) -> Dict[str, Dict[str, str]]:
         """Get all rules found in this items props."""
         # rules is dict containing rule_id and description
-        rules = {}
+        rules_dict = {}
         name = ''
         desc = ''
         id_ = ''
@@ -373,14 +378,23 @@ class ControlInterface:
             # grab each pair in case there are multiple pairs
             # then clear and look for new pair
             if name and desc:
-                rules[id_] = {'name': name, 'description': desc}
+                rules_dict[id_] = {'name': name, 'description': desc}
                 name = desc = id_ = ''
-        return rules
+        return rules_dict
 
     @staticmethod
     def get_rule_list_for_item(item: TypeWithProps) -> List[str]:
-        """Get the list of rules applying to this item."""
+        """Get the list of rules applying to this item from its top level props."""
         return [prop.value for prop in as_filtered_list(item.props, lambda p: p.name == const.RULE_ID)]
+
+    @staticmethod
+    def get_rule_list_for_imp_req(imp_req: ossp.ImplementedRequirement) -> Tuple[List[str], List[str]]:
+        """Get the list of rules applying to an imp_req as two lists."""
+        comp_rules = ControlInterface.get_rule_list_for_item(imp_req)
+        statement_rules = set()
+        for statement in as_list(imp_req.statements):
+            statement_rules.update(ControlInterface.get_rule_list_for_item(statement))
+        return comp_rules, list(statement_rules)
 
     @staticmethod
     def get_params_dict_from_item(item: TypeWithProps) -> Dict[str, Dict[str, str]]:
@@ -419,13 +433,23 @@ class ControlInterface:
         return new_params
 
     @staticmethod
-    def get_param_vals_from_control_imp(control_imp: comp.ControlImplementation) -> Dict[str, str]:
-        """Get param values from set_parameters in control implementation."""
-        param_dict = {
-            set_param.param_id: ControlInterface._setparam_values_as_str(set_param)
-            for set_param in as_list(control_imp.set_parameters)
+    def get_rules_and_params_dict_from_item(
+        item: TypeWithProps
+    ) -> Tuple[Dict[str, Dict[str, str]], Dict[str, Dict[str, str]]]:
+        """Get the rule dict and params dict from item with props."""
+        rules_dict = ControlInterface.get_rules_dict_from_item(item)
+        params_dict = ControlInterface.get_params_dict_from_item(item)
+        return rules_dict, params_dict
+
+    @staticmethod
+    def get_set_params_from_item(
+        item: Union[comp.ControlImplementation, comp.ImplementedRequirement]
+    ) -> Dict[str, comp.SetParameter]:
+        """Get set params that have values from control implementation or imp req."""
+        return {
+            set_param.param_id: set_param
+            for set_param in as_filtered_list(item.set_parameters, lambda i: i.values)
         }
-        return {key: val for key, val in param_dict.items() if val}
 
     @staticmethod
     def merge_props(dest: Optional[List[common.Property]],
@@ -497,6 +521,7 @@ class ControlInterface:
                 # if they are both dicts, recurse
                 if isinstance(dest[key], dict) and isinstance(src[key], dict):
                     ControlInterface.merge_dicts_deep(dest[key], src[key], overwrite_header_values)
+                # if they are both lists, add any item that is not already in the list
                 elif isinstance(dest[key], list) and isinstance(src[key], list):
                     for item in src[key]:
                         if item not in dest[key]:

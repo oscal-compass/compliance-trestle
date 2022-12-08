@@ -30,7 +30,8 @@ from trestle.common.err import TrestleError, handle_generic_command_exception
 from trestle.common.list_utils import as_list
 from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
-from trestle.core.catalog_interface import CatalogInterface
+from trestle.core.catalog.catalog_api import CatalogAPI
+from trestle.core.catalog.catalog_reader import CatalogReader
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_context import ContextPurpose, ControlContext
@@ -76,9 +77,8 @@ class ComponentGenerate(AuthorCommonCommand):
         context.comp_def = component_def
 
         rc = CmdReturnCodes.SUCCESS.value
-        cat_interface_dict: Dict[str, CatalogInterface] = {}
         for component in as_list(component_def.components):
-            rc = self.component_generate_by_name(context, component, md_path / component.title, cat_interface_dict)
+            rc = self.component_generate_by_name(context, component, md_path / component.title)
             if rc != CmdReturnCodes.SUCCESS.value:
                 break
         return rc
@@ -92,21 +92,19 @@ class ComponentGenerate(AuthorCommonCommand):
         return ''
 
     def component_generate_by_name(
-        self,
-        context: ControlContext,
-        component: comp.DefinedComponent,
-        markdown_dir_path: pathlib.Path,
-        cat_interface_dict: Dict[str, CatalogInterface]
+        self, context: ControlContext, component: comp.DefinedComponent, markdown_dir_path: pathlib.Path
     ) -> int:
         """Create markdown for the component using its source profiles."""
         logger.debug(f'Creating markdown for component {component.title}.')
         context.comp_name = component.title
+        context.component = component
         context.uri_name_map = {}
+        cat_api_dict: Dict[str, CatalogAPI] = {}
         name_index = 1
         for control_imp in as_list(component.control_implementations):
             context.control_implementation = control_imp
             source_profile_uri = control_imp.source
-            if source_profile_uri not in cat_interface_dict:
+            if source_profile_uri not in cat_api_dict:
                 name = ComponentGenerate._get_name_from_uri(source_profile_uri)
                 if not name:
                     name = f'source_{name_index:03d}'
@@ -115,24 +113,24 @@ class ComponentGenerate(AuthorCommonCommand):
                 resolved_catalog = ProfileResolver.get_resolved_profile_catalog(
                     context.trestle_root, source_profile_uri
                 )
-                local_catalog_interface = CatalogInterface(resolved_catalog)
-                cat_interface_dict[source_profile_uri] = local_catalog_interface
+                local_catalog_api = CatalogAPI(resolved_catalog)
+                cat_api_dict[source_profile_uri] = local_catalog_api
             else:
-                local_catalog_interface = cat_interface_dict[source_profile_uri]
+                local_catalog_api = cat_api_dict[source_profile_uri]
             # insert the profile title (from title of resolved catalog) into the yaml header so it appears in md
             # different controls in the final catalog may have different profile titles if from different control_imps
-            context.yaml_header = {}
-            context.yaml_header[const.TRESTLE_GLOBAL_TAG] = {}
-            profile_title = local_catalog_interface.get_catalog_title()
-            context.yaml_header[const.TRESTLE_GLOBAL_TAG][const.PROFILE_TITLE] = profile_title
+            context.cli_yaml_header = {}
+            context.cli_yaml_header[const.TRESTLE_GLOBAL_TAG] = {}
+            profile_title = local_catalog_api._catalog_interface.get_catalog_title()
+            context.cli_yaml_header[const.TRESTLE_GLOBAL_TAG][const.PROFILE_TITLE] = profile_title
             sub_dir_name = context.uri_name_map[source_profile_uri]
             context.md_root = markdown_dir_path / sub_dir_name
-            part_id_map = local_catalog_interface.get_statement_part_id_map(False) if local_catalog_interface else {}
             # write controls corresponding to this source catalog
             # if two controlimps load the same control, the second one will merge into the first
             # otherwise the full catalog will be written in subsets by control_imp
             # if an imp_req has a set param also in the control_imp. the imp_req value is used for the control
-            cat_interface_dict[source_profile_uri].write_catalog_as_markdown(context, part_id_map)
+            cat_api_dict[source_profile_uri].update_context(context)
+            cat_api_dict[source_profile_uri].write_catalog_as_markdown()
         return CmdReturnCodes.SUCCESS.value
 
 
@@ -297,11 +295,10 @@ class ComponentAssemble(AuthorCommonCommand):
         source_dirs = [sub_dir.name for sub_dir in sub_dirs if sub_dir.is_dir()]
         generic_comp = generic.GenericComponent.from_defined_component(component)
         avail_comps = {component.title: generic_comp}
-        cat_interface = CatalogInterface()
         for source_dir in source_dirs:
             profile_title = ComponentAssemble._get_profile_title_from_dir(md_path / source_dir)
             # context has defined component and comp_name
-            imp_reqs = cat_interface.read_catalog_imp_reqs(md_path / source_dir, avail_comps, context)
+            imp_reqs = CatalogReader.read_catalog_imp_reqs(md_path / source_dir, avail_comps, context)
             # the imp_reqs need to be inserted into the correct control_implementation
             for imp_req in imp_reqs:
                 comp_imp_req = imp_req.as_comp_def()

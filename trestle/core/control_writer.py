@@ -19,7 +19,7 @@ from typing import Any, Dict, List, Optional
 
 import trestle.oscal.catalog as cat
 from trestle.common import const
-from trestle.common.list_utils import as_list, merge_dicts
+from trestle.common.list_utils import as_dict, as_list, deep_set, merge_dicts, set_or_pop
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlInterface, PartInfo
 from trestle.core.control_reader import ControlReader
@@ -112,10 +112,7 @@ class ControlWriter():
 
     def _insert_status(self, status: ImplementationStatus, level: int) -> None:
         self._md_file.new_header(level=level, title=f'{const.IMPLEMENTATION_STATUS_HEADER}: {status.state}')
-        if status.remarks and status.remarks.__root__:
-            self._md_file.new_header(
-                level=level, title=f'{const.IMPLEMENTATION_STATUS_REMARKS_HEADER}: {status.remarks.__root__}'
-            )
+        # this used to output remarks also
 
     def _insert_rules(self, rules: List[str], level: int) -> None:
         if rules:
@@ -130,44 +127,70 @@ class ControlWriter():
                 return True
         return False
 
-    def _insert_comp_info(self, part_label: str, comp_info: Dict[str, ComponentImpInfo], comp_def_format: bool) -> None:
+    def _insert_comp_info(
+        self, part_label: str, comp_info: Dict[str, ComponentImpInfo], context: ControlContext
+    ) -> None:
         """Insert prose and status from the component info."""
-        level = 3 if comp_def_format else 4
+        level = 3 if context.purpose == ContextPurpose.COMPONENT else 4
         if part_label in comp_info:
             info = comp_info[part_label]
-            if comp_def_format and not info.rules:
+            if context.purpose in [ContextPurpose.COMPONENT, ContextPurpose.SSP] and not info.rules:
                 return
             self._md_file.new_paragraph()
-            self._md_file.new_line(info.prose)
+            if info.prose:
+                self._md_file.new_line(info.prose)
+            else:
+                self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT} {part_label} -->')
+
             self._insert_rules(info.rules, level)
             self._insert_status(info.status, level)
         else:
             self._insert_status(ImplementationStatus(state=const.STATUS_PLANNED), level)
 
-    def _add_component_control_prompts(self, control_id: str, comp_dict: CompDict, comp_def_format=False) -> bool:
+    def _add_component_control_prompts(self, control_id: str, comp_dict: CompDict, context: ControlContext) -> bool:
         """Add prompts to the markdown for the control itself, per component."""
-        if comp_def_format:
-            self._md_file.new_paraline(const.STATUS_PROMPT)
-            self._md_file.new_paraline(const.RULES_WARNING)
-            self._md_file.new_paragraph()
+        if context.purpose not in [ContextPurpose.COMPONENT, ContextPurpose.SSP]:
+            return False
+        self._md_file.new_paraline(const.STATUS_PROMPT)
+        self._md_file.new_paraline(const.RULES_WARNING)
         did_write = False
-        level = 3
-        for comp_info in [dic[''] for dic in comp_dict.values() if '' in dic]:
-            # is this control-level guidance for this component
-            # create new heading for this component and add guidance
-            prose = comp_info.prose if comp_info.prose != control_id else ''
-            # only write out the prompt first time
-            if not self._md_file.exists() and not prose:
-                prose = f'{const.SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT} {control_id}'
-            if prose:
-                self._md_file.new_paraline(prose)
-            self._insert_rules(comp_info.rules, level)
-            self._insert_status(comp_info.status, level)
+        # do special handling for This System
+        if context.purpose == ContextPurpose.SSP:
+            self._md_file.new_paragraph()
+            self._md_file.new_header(3, const.SSP_MAIN_COMP_NAME)
+            self._md_file.new_paragraph()
+            prose = f'{const.SSP_ADD_THIS_SYSTEM_IMPLEMENTATION_FOR_CONTROL_TEXT}: {control_id} -->'
+            status = ImplementationStatus(state=const.STATUS_PLANNED)
+            if const.SSP_MAIN_COMP_NAME in comp_dict:
+                comp_info = list(comp_dict[const.SSP_MAIN_COMP_NAME].values())[0]
+                if comp_info.prose:
+                    prose = comp_info.prose
+                status = comp_info.status
+            self._md_file.new_paraline(prose)
+            self._insert_status(status, 4)
             did_write = True
+        sorted_comp_names = sorted(comp_dict.keys())
+        for comp_name in sorted_comp_names:
+            dic = comp_dict[comp_name]
+            # This System already handled
+            if comp_name == const.SSP_MAIN_COMP_NAME:
+                continue
+            for comp_info in [val for key, val in dic.items() if key == '']:
+                # don't output component name for component markdown since only one component
+                if context.purpose != ContextPurpose.COMPONENT:
+                    self._md_file.new_header(3, comp_name)
+                prose = comp_info.prose if comp_info.prose != control_id else ''
+                if not prose:
+                    prose = f'{const.SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT}: {control_id} -->'
+                self._md_file.new_paraline(prose)
+                level = 3 if context.purpose == ContextPurpose.COMPONENT else 4
+                self._insert_rules(comp_info.rules, level)
+                self._insert_status(comp_info.status, level)
+                did_write = True
         return did_write
 
     def _add_implementation_response_prompts(
-        self, control: cat.Control, comp_dict: CompDict, comp_def_format=False
+        self, control: cat.Control, comp_dict: CompDict, context: ControlContext
     ) -> None:
         """Add the response request text for all parts to the markdown along with the header."""
         self._md_file.new_hr()
@@ -176,7 +199,7 @@ class ControlWriter():
         self._md_file.new_header(level=2, title=f'{const.SSP_MD_IMPLEMENTATION_QUESTION}')
 
         # write out control level prose and status
-        did_write_part = self._add_component_control_prompts(control.id, comp_dict, comp_def_format)
+        did_write_part = self._add_component_control_prompts(control.id, comp_dict, context)
 
         # if the control has no parts written out then enter implementation in the top level entry
         # but if it does have parts written out, leave top level blank and provide details in the parts
@@ -191,39 +214,42 @@ class ControlWriter():
                         # if no label guess the label from the sub-part id
                         part_label = ControlInterface.get_label(prt)
                         part_label = prt.id.split('.')[-1] if not part_label else part_label
-                        # for comp def only write out part if rules apply to it
-                        if comp_def_format:
-                            # for comp_def there is only one component in the comp_dict
-                            dic = list(comp_dict.values())[0]
-                            if (part_label not in dic) or (not dic[part_label].rules):
-                                continue
+                        # only write out part if rules apply to it
+                        rules_apply = False
+                        for _, dic in comp_dict.items():
+                            if part_label in dic and dic[part_label].rules:
+                                rules_apply = True
+                                break
+                        if not rules_apply:
+                            continue
                         if not did_write_part:
                             self._md_file.new_line(const.SSP_MD_LEAVE_BLANK_TEXT)
                             # insert extra line to make mdformat happy
                             self._md_file._add_line_raw('')
                         self._md_file.new_hr()
                         self._md_file.new_header(level=2, title=f'Implementation for part {part_label}')
-                        if not self._has_prose(part_label, comp_dict):
-                            self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT} {prt.id}')
                         wrote_label_content = False
-                        for comp_name, dic in comp_dict.items():
+                        sorted_comp_names = sorted(comp_dict.keys())
+                        for comp_name in sorted_comp_names:
+                            dic = comp_dict[comp_name]
+                            if comp_name == const.SSP_MAIN_COMP_NAME:
+                                continue
                             if part_label in dic:
-                                if comp_name != const.SSP_MAIN_COMP_NAME:
-                                    # insert the component name for ssp but not for comp_def
-                                    # because there should only be one component in generated comp_def markdown
-                                    if not comp_def_format:
-                                        self._md_file.new_header(level=3, title=comp_name)
-                            self._insert_comp_info(part_label, dic, comp_def_format)
-                            wrote_label_content = True
+                                # insert the component name for ssp but not for comp_def
+                                # because there should only be one component in generated comp_def markdown
+                                if context.purpose != ContextPurpose.COMPONENT:
+                                    self._md_file.new_header(level=3, title=comp_name)
+                                self._insert_comp_info(part_label, dic, context)
+                                wrote_label_content = True
                         if not wrote_label_content:
-                            level = 3 if comp_def_format else 4
+                            level = 3 if context.purpose == ContextPurpose.COMPONENT else 4
                             self._insert_status(ImplementationStatus(state=const.STATUS_PLANNED), level)
                         self._md_file.new_paragraph()
                         did_write_part = True
         # if we loaded nothing for this control yet then it must need a fresh prompt for the control statement
         if not comp_dict and not did_write_part:
-            self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT} {control.id}')
-            if comp_def_format:
+            self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT}: {control.id} -->')
+            if context.purpose in [ContextPurpose.COMPONENT, ContextPurpose.SSP]:
                 status = ControlInterface.get_status_from_props(control)
                 self._insert_status(status, 3)
         if not did_write_part:
@@ -232,7 +258,7 @@ class ControlWriter():
                 if part_label in dic:
                     if comp_name != const.SSP_MAIN_COMP_NAME:
                         self._md_file.new_header(level=3, title=comp_name)
-                    self._insert_comp_info(part_label, dic, comp_def_format)
+                    self._insert_comp_info(part_label, dic, context)
         self._md_file.new_hr()
 
     def _dump_subpart_infos(self, level: int, part: Dict[str, Any]) -> None:
@@ -408,7 +434,18 @@ class ControlWriter():
         for section in missing_sections:
             section_title = self._sections_dict.get(section, section)
             self._md_file.new_header(2, f'Control {section_title}')
-            self._md_file.new_line(f'{const.PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT}: {section_title}')
+            self._md_file.new_line(f'{const.PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT}: {section_title} -->')
+
+    @staticmethod
+    def _merge_headers(memory_header: Dict[str, Any], md_header: Dict[str, Any],
+                       context: ControlContext) -> Dict[str, Any]:
+        if context.purpose == ContextPurpose.PROFILE:
+            merged_header = copy.deepcopy(memory_header)
+            ControlInterface.merge_dicts_deep(merged_header, md_header, True)
+        else:
+            merged_header = copy.deepcopy(md_header)
+            ControlInterface.merge_dicts_deep(merged_header, memory_header, True)
+        return merged_header
 
     def write_control_for_editing(
         self,
@@ -444,39 +481,43 @@ class ControlWriter():
         if ControlInterface.is_withdrawn(control):
             logger.debug(f'Not writing out control {control.id} since it is marked Withdrawn.')
             return
+
         control_file = dest_path / (control.id + const.MARKDOWN_FILE_EXT)
-        # first read the existing markdown header and content if it exists
-        comp_dict, header = ControlReader.read_all_implementation_prose_and_header(control, control_file, context)
-        # only write control for component markdown if rules apply to it
-        if (context.purpose == ContextPurpose.COMPONENT and context.to_markdown
-                and const.COMP_DEF_RULES_TAG not in header):
-            return
+        # read the existing markdown header and content if it exists
+        md_header, comp_dict = ControlReader.read_control_info_from_md(control_file, context)
+        # replace the memory comp_dict with the md one if control exists
+        if comp_dict:
+            context.comp_dict = comp_dict
+
+        # begin adding info to the md file
         self._md_file = MDWriter(control_file)
         self._sections_dict = context.sections_dict
 
-        merged_header = copy.deepcopy(header)
+        context.merged_header = ControlWriter._merge_headers(context.merged_header, md_header, context)
         # if the control has an explicitly defined sort-id and there is none in the yaml_header, then insert it
         # in the yaml header and allow overwrite_header_values to control whether it overwrites an existing one
         # in the markdown header
-        context.yaml_header = context.yaml_header if context.yaml_header else {}
-        sort_id = ControlInterface.get_sort_id(control, True)
-        if sort_id and const.SORT_ID not in context.yaml_header:
-            context.yaml_header[const.SORT_ID] = sort_id
-        ControlInterface.merge_dicts_deep(merged_header, context.yaml_header, context.overwrite_header_values)
+        context.cli_yaml_header = as_dict(context.cli_yaml_header)
+        if context.purpose != ContextPurpose.PROFILE:
+            ControlInterface.merge_dicts_deep(
+                context.merged_header, context.cli_yaml_header, context.overwrite_header_values
+            )
         # the global contents are special and get overwritten on generate
-        global_contents = context.yaml_header.get(const.TRESTLE_GLOBAL_TAG, None)
-        if global_contents:
-            merged_header[const.TRESTLE_GLOBAL_TAG] = global_contents
+        set_or_pop(
+            context.merged_header,
+            const.TRESTLE_GLOBAL_TAG,
+            context.cli_yaml_header.get(const.TRESTLE_GLOBAL_TAG, None)
+        )
+        sort_id = ControlInterface.get_sort_id(control, True)
+        if sort_id:
+            deep_set(context.merged_header, [const.TRESTLE_GLOBAL_TAG, const.SORT_ID], sort_id)
 
         # merge any provided sections with sections in the header, with priority to the one from context (e.g. CLI)
-        header_sections_dict = merged_header.get(const.SECTIONS_TAG, {})
+        header_sections_dict = context.merged_header.get(const.SECTIONS_TAG, {})
         merged_sections_dict = merge_dicts(header_sections_dict, context.sections_dict)
-        if merged_sections_dict:
-            merged_header[const.SECTIONS_TAG] = merged_sections_dict
+        set_or_pop(context.merged_header, const.SECTIONS_TAG, merged_sections_dict)
 
-        if context.purpose == ContextPurpose.COMPONENT and const.SORT_ID in merged_header:
-            del merged_header[const.SORT_ID]
-
+        # now begin filling in content from the control in memory
         self._add_control_statement(control, group_title)
 
         self._add_control_objective(control)
@@ -486,17 +527,17 @@ class ControlWriter():
 
         # prompt responses for imp reqs using special format if comp_def mode
         if context.prompt_responses:
-            self._add_implementation_response_prompts(control, comp_dict, context.comp_def is not None)
+            self._add_implementation_response_prompts(control, context.comp_dict, context)
 
-        # only used for profile-generate
+        # for profile generate
         # add sections corresponding to added parts in the profile
         added_sections: List[str] = []
-        if context.additional_content:
+        if context.purpose == ContextPurpose.PROFILE:
             added_sections = self._add_additional_content(
-                control, context.profile, merged_header, part_id_map, found_alters
+                control, context.profile, context.merged_header, part_id_map, found_alters
             )
 
-        self._add_yaml_header(merged_header)
+        self._add_yaml_header(context.merged_header)
 
         if context.required_sections:
             self._prompt_required_sections(context.required_sections, added_sections)

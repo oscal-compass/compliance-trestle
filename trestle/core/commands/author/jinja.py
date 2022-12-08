@@ -30,7 +30,7 @@ from trestle.common import const, log
 from trestle.common.err import TrestleIncorrectArgsError, handle_generic_command_exception
 from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
-from trestle.core.catalog_interface import CatalogInterface
+from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_interface import ControlInterface, ParameterRep
