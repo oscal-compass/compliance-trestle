@@ -29,7 +29,7 @@ import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
 from trestle.common import const, file_utils, log
 from trestle.common.err import TrestleError, handle_generic_command_exception
-from trestle.common.list_utils import as_list, comma_sep_to_list, none_if_empty
+from trestle.common.list_utils import as_list, comma_sep_to_list, deep_set, none_if_empty
 from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog.catalog_api import CatalogAPI
@@ -204,6 +204,7 @@ class SSPAssemble(AuthorCommonCommand):
         When the statement was loaded it had access to the current components so the uuids should match.
         """
         id_map: Dict[str, Dict[str, ossp.Statement]] = {}
+        by_comp_map: Dict[str, Dict[str, ossp.ByComponent]] = {}
         control_map: Dict[str, ossp.ImplementedRequirement] = {}
         # go through existing ssp and create map of existing statements by statement id and component uuid
         for imp_req in as_list(ssp.control_implementation.implemented_requirements):
@@ -211,14 +212,18 @@ class SSPAssemble(AuthorCommonCommand):
             for statement in as_list(imp_req.statements):
                 for by_comp in statement.by_components:
                     id_ = statement.statement_id
-                    if id_ not in id_map:
-                        id_map[id_] = {}
-                    id_map[id_][by_comp.component_uuid] = statement
+                    deep_set(id_map, [id_, by_comp.component_uuid], statement)
+            for by_comp in as_list(imp_req.by_components):
+                deep_set(by_comp_map, [imp_req.control_id, by_comp.component_uuid], by_comp)
 
         # now go through provided imp_reqs and update the uuid refs
         for imp_req in imp_reqs:
+            control_by_comp_map = by_comp_map.get(imp_req.control_id, {})
             if imp_req.control_id in control_map:
                 imp_req.uuid = control_map[imp_req.control_id].uuid
+            for by_comp in as_list(imp_req.by_components):
+                if by_comp.component_uuid in control_by_comp_map:
+                    by_comp.uuid = control_by_comp_map[by_comp.component_uuid].uuid
             for statement in as_list(imp_req.statements):
                 id_ = statement.statement_id
                 # for each statement id match the statement per component to the original
@@ -236,10 +241,6 @@ class SSPAssemble(AuthorCommonCommand):
         changed = ssp.control_implementation.implemented_requirements != imp_reqs
         ssp.control_implementation.implemented_requirements = imp_reqs
         return changed
-
-    def _merge_comp_defs(self, ssp: ossp.SystemSecurityPlan, comp_def_names: List[str]) -> bool:
-        """Merge the comp def rules and other info into the ssp."""
-        return True
 
     def _generate_roles_in_metadata(self, ssp: ossp.SystemSecurityPlan) -> bool:
         """Find all roles referenced by imp reqs and create role in metadata as needed."""

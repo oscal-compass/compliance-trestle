@@ -290,7 +290,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert imp_reqs[0].set_parameters[0].param_id == 'ac-1_prm_2'
     assert imp_reqs[0].set_parameters[0].values[0].__root__ == 'my ssp val'
 
-    # FIXME orig_file_creation = orig_ssp_path.stat().st_mtime
+    orig_file_creation = orig_ssp_path.stat().st_mtime
 
     # now write it back out and confirm text is still there
     assert ssp_gen._run(gen_args) == 0
@@ -311,8 +311,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert ssp_assemble._run(args) == 0
 
     # confirm the file was not written out since no change
-    # FIXME fails
-    # FIXME assert orig_ssp_path.stat().st_mtime == orig_file_creation
+    assert orig_ssp_path.stat().st_mtime == orig_file_creation
 
     repeat_ssp, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     assert len(repeat_ssp.system_implementation.components) == 5
@@ -331,10 +330,9 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
         compdefs=args_compdefs
     )
     assert ssp_assemble._run(args) == 0
-    # FIXME fails
-    # FIXME assert orig_uuid == test_utils.get_model_uuid(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+    assert orig_uuid == test_utils.get_model_uuid(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     # confirm the file was not written out since no change
-    # FIXME assert orig_ssp_path.stat().st_mtime == orig_file_creation
+    assert orig_ssp_path.stat().st_mtime == orig_file_creation
 
     # assemble it again but give new version and regen uuid's
     args = argparse.Namespace(
@@ -350,8 +348,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert ssp_assemble._run(args) == 0
     assert orig_uuid != test_utils.get_model_uuid(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     # confirm the file was not written out since no change
-    # FIXME fails
-    # FIXME assert orig_ssp_path.stat().st_mtime > orig_file_creation
+    assert orig_ssp_path.stat().st_mtime > orig_file_creation
 
 
 def test_ssp_generate_bad_name(tmp_trestle_dir: pathlib.Path) -> None:
