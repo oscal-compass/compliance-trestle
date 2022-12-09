@@ -64,7 +64,7 @@
     },
     "components": [
       {
-        "uuid": "8220b305-0271-45f9-8a21-40ab6f197f73",
+        "uuid": "8220b305-0271-45f9-8a21-40ab6f197f75",
         "type": "Service",
         "title": "comp_ba",
         "description": "comp ba",
@@ -212,7 +212,7 @@
         ]
       },
       {
-        "uuid": "8220b305-0271-45f9-8a21-40ab6f197f73",
+        "uuid": "8220b305-0271-45f9-8a21-40ab6f197f76",
         "type": "Service",
         "title": "comp_bb",
         "description": "comp bb",

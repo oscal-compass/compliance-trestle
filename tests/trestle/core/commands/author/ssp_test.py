@@ -228,6 +228,7 @@ def test_ssp_generate_header_edit(tmp_trestle_dir: pathlib.Path) -> None:
 def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     """Test ssp assemble from cli."""
     gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
+    args_compdefs = gen_args.compdefs
 
     # first create the markdown
     ssp_gen = SSPGenerate()
@@ -272,7 +273,8 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
         verbose=0,
         regenerate=False,
         version=new_version,
-        name=None
+        name=None,
+        compdefs=args_compdefs
     )
     assert ssp_assemble._run(args) == 0
 
@@ -303,7 +305,8 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
         verbose=0,
         regenerate=False,
         name=None,
-        version=None
+        version=None,
+        compdefs=args_compdefs
     )
     assert ssp_assemble._run(args) == 0
 
@@ -324,7 +327,8 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
         verbose=0,
         regenerate=True,
         name=None,
-        version=None
+        version=None,
+        compdefs=args_compdefs
     )
     assert ssp_assemble._run(args) == 0
     # FIXME fails
@@ -340,7 +344,8 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
         verbose=0,
         regenerate=True,
         name=None,
-        version='new version to force write'
+        version='new version to force write',
+        compdefs=args_compdefs
     )
     assert ssp_assemble._run(args) == 0
     assert orig_uuid != test_utils.get_model_uuid(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
@@ -407,7 +412,8 @@ also do the bar stuff
         verbose=0,
         name=None,
         version=None,
-        regenerate=False
+        regenerate=False,
+        compdefs=gen_args.compdefs
     )
     assert ssp_assemble._run(args) == 0
 
