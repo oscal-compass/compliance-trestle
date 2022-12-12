@@ -35,6 +35,7 @@ from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog.catalog_api import CatalogAPI
 from trestle.core.catalog.catalog_reader import CatalogReader
 from trestle.core.commands.author.common import AuthorCommonCommand
+from trestle.core.commands.author.component import ComponentAssemble
 from trestle.core.commands.common.cmd_utils import clear_folder
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_context import ContextPurpose, ControlContext
@@ -55,7 +56,7 @@ class SSPGenerate(AuthorCommonCommand):
         file_help_str = 'Main profile href, or name of the profile model in the trestle workspace'
         self.add_argument('-p', '--profile', help=file_help_str, required=True, type=str)
         self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
-        self.add_argument('-cd', '--compdefs', help=const.HELP_COMPDEFS, required=True, type=str)
+        self.add_argument('-cd', '--compdefs', help=const.HELP_COMPDEFS, required=False, type=str)
         self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
         self.add_argument(
             '-fo', '--force-overwrite', help=const.HELP_FO_OUTPUT, required=False, action='store_true', default=False
@@ -166,10 +167,8 @@ class SSPGenerate(AuthorCommonCommand):
 
         context.cli_yaml_header[const.TRESTLE_GLOBAL_TAG] = {}
         profile_header = {'title': context.profile.metadata.title, 'href': profile_href}
-        if profile_in_trestle_dir:
-            profile_header['trestle-name'] = profile_name_or_href
 
-        context.cli_yaml_header[const.TRESTLE_GLOBAL_TAG][const.MAIN_PROFILE] = profile_header
+        context.cli_yaml_header[const.TRESTLE_GLOBAL_TAG][const.PROFILE] = profile_header
 
         catalog_api.write_catalog_as_markdown()
 
@@ -365,6 +364,10 @@ class SSPAssemble(AuthorCommonCommand):
             elif component_list:
                 ssp.system_implementation.components = component_list
             self._generate_roles_in_metadata(ssp)
+
+            _, profile_href = ComponentAssemble._get_profile_title_and_href_from_dir(md_path)
+
+            ssp.import_profile.href = profile_href
 
             if args.version:
                 ssp.metadata.version = com.Version(__root__=args.version)

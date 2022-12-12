@@ -81,7 +81,6 @@ def test_ssp_generate(tmp_trestle_dir: pathlib.Path) -> None:
     args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
 
     ssp_cmd = SSPGenerate()
-    # run the command for happy path
     assert ssp_cmd._run(args) == 0
     md_dir = tmp_trestle_dir / ssp_name
     ac_dir = md_dir / 'ac'
@@ -103,6 +102,36 @@ def test_ssp_generate(tmp_trestle_dir: pathlib.Path) -> None:
     assert ssp_cmd._run(args) == 0
 
     assert fc.files_unchanged()
+
+    assert ssp_cmd._run(args) == 0
+
+    assert fc.files_unchanged()
+
+
+def test_ssp_generate_no_cds(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test the ssp generator with no comp defs."""
+    args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
+
+    args.compdefs = None
+    ssp_cmd = SSPGenerate()
+    assert ssp_cmd._run(args) == 0
+    md_dir = tmp_trestle_dir / ssp_name
+    ac_1 = md_dir / 'ac/ac-1.md'
+    assert ac_1.exists()
+    at_2 = md_dir / 'at/at-2.md'
+    assert at_2.exists()
+
+    md_api = MarkdownAPI()
+    header, tree = md_api.processor.process_markdown(ac_1)
+    assert header[const.TRESTLE_GLOBAL_TAG][const.SORT_ID] == 'ac-01'
+
+    node = tree.get_node_for_key(const.SSP_MD_IMPLEMENTATION_QUESTION, False)
+    assert len(node.subnodes) == 1
+    assert len(node.subnodes[0].subnodes) == 1
+    assert node.subnodes[0].key == '### This System'
+    assert node.subnodes[0].subnodes[0].key == '#### Implementation Status: planned'
+
+    fc = FileChecker(md_dir)
 
     assert ssp_cmd._run(args) == 0
 

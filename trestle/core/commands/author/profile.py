@@ -142,7 +142,7 @@ class ProfileGenerate(AuthorCommonCommand):
             catalog, inherited_props = ProfileResolver().get_resolved_profile_catalog_and_inherited_props(
                 trestle_root, profile_path, True, True, None, ParameterRep.LEAVE_MOUSTACHE
             )
-            deep_set(yaml_header, [const.TRESTLE_GLOBAL_TAG, const.MAIN_PROFILE, const.TITLE], profile.metadata.title)
+            deep_set(yaml_header, [const.TRESTLE_GLOBAL_TAG, const.PROFILE, const.TITLE], profile.metadata.title)
 
             context = ControlContext.generate(ContextPurpose.PROFILE, True, trestle_root, markdown_path)
             context.cli_yaml_header = yaml_header

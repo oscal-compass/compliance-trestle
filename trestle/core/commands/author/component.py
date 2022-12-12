@@ -17,7 +17,7 @@ import argparse
 import logging
 import pathlib
 import shutil
-from typing import Dict, Optional
+from typing import Dict, Optional, Tuple
 from uuid import uuid4
 
 import trestle.common.const as const
@@ -124,7 +124,7 @@ class ComponentGenerate(AuthorCommonCommand):
 
             profile_title = local_catalog_api._catalog_interface.get_catalog_title()
             profile_header = {'title': profile_title, 'href': source_profile_uri}
-            context.cli_yaml_header[const.TRESTLE_GLOBAL_TAG][const.MAIN_PROFILE] = profile_header
+            context.cli_yaml_header[const.TRESTLE_GLOBAL_TAG][const.PROFILE] = profile_header
 
             sub_dir_name = context.uri_name_map[source_profile_uri]
             context.md_root = markdown_dir_path / sub_dir_name
@@ -277,18 +277,19 @@ class ComponentAssemble(AuthorCommonCommand):
             ComponentAssemble._update_component_with_markdown(md_dir, component, context)
 
     @staticmethod
-    def _get_profile_title_from_dir(md_dir: pathlib.Path) -> str:
-        """Get profile title from yaml header of first md file found in dir."""
+    def _get_profile_title_and_href_from_dir(md_dir: pathlib.Path) -> Tuple[str, str]:
+        """Get profile title and href from yaml header of first md file found in dir that has info."""
         md_files = md_dir.rglob('*.md')
         markdown_api = MarkdownAPI()
         for md_file in md_files:
             header, _ = markdown_api.processor.read_markdown_wo_processing(md_file)
-            prof_title = deep_get(header, [const.TRESTLE_GLOBAL_TAG, const.MAIN_PROFILE, const.TITLE])
+            prof_title = deep_get(header, [const.TRESTLE_GLOBAL_TAG, const.PROFILE, const.TITLE])
+            profile_href = deep_get(header, [const.TRESTLE_GLOBAL_TAG, const.PROFILE, const.HREF], 'unknown_href')
             # return first one found
             if prof_title:
-                return prof_title
-        logger.warning(f'Cannot find profile title in markdown headers of directory {md_dir}')
-        return ''
+                return prof_title, profile_href
+        logger.warning(f'Cannot find profile title and href in markdown headers of directory {md_dir}')
+        return 'unknown_title', 'unknown_href'
 
     @staticmethod
     def _update_component_with_markdown(
@@ -301,7 +302,7 @@ class ComponentAssemble(AuthorCommonCommand):
         generic_comp = generic.GenericComponent.from_defined_component(component)
         avail_comps = {component.title: generic_comp}
         for source_dir in source_dirs:
-            profile_title = ComponentAssemble._get_profile_title_from_dir(md_path / source_dir)
+            profile_title, _ = ComponentAssemble._get_profile_title_and_href_from_dir(md_path / source_dir)
             # context has defined component and comp_name
             imp_reqs = CatalogReader.read_catalog_imp_reqs(md_path / source_dir, avail_comps, context)
             # the imp_reqs need to be inserted into the correct control_implementation

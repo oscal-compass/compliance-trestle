@@ -691,7 +691,7 @@ class CatalogInterface():
                 param_vals = none_if_empty([value.__root__ for value in as_list(param.values)])
                 rule_name = deep_get(param_id_rule_name_map, [comp_name, param.param_id], None)
                 if rule_name:
-                    param_dict = {'rule_name': rule_name, 'name': param.param_id}
+                    param_dict = {'rule-id': rule_name, 'name': param.param_id}
                     if param_vals:
                         param_dict['values'] = param_vals
                     deep_append(rules_set_params, [comp_name], param_dict)

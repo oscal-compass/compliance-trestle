@@ -167,7 +167,7 @@ class GenericComponent(TrestleBaseModel):
     links: Optional[List[common.Link]] = Field(None)
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
     protocols: Optional[List[common.Protocol]] = Field(None)
-    # ssp does not have
+    # ssp does not have a list of ci's but it does have one ci
     control_implementations: Optional[List[GenericControlImplementation]] = Field(None, alias='control-implementations')
     remarks: Optional[common.Remarks] = None
     # ssp has
@@ -187,6 +187,11 @@ class GenericComponent(TrestleBaseModel):
         """Convert defined component to generic."""
         status = ControlInterface.get_status_from_props(def_comp)
         class_dict = copy.deepcopy(def_comp.__dict__)
+        if 'control_implementations' in class_dict:
+            new_cis = []
+            for ci in class_dict['control_implementations']:
+                new_cis.append(GenericControlImplementation.from_component_ci(ci))
+            class_dict['control_implementations'] = new_cis
         class_dict['status'] = status
         return cls(**class_dict)
 
@@ -282,6 +287,13 @@ class GenericImplementedRequirement(TrestleBaseModel):
         class_dict = {'uuid': uuid, 'control-id': const.REPLACE_ME, 'description': ''}
         return GenericImplementedRequirement(**class_dict)
 
+    @classmethod
+    def from_comp_def(cls, imp_req: comp.ImplementedRequirement) -> GenericImplementedRequirement:
+        """Convert component form of imp req to generic."""
+        class_dict = copy.deepcopy(imp_req.__dict__)
+        class_dict['control-id'] = class_dict.pop('control_id', None)
+        return cls(**class_dict)
+
     def as_comp_def(self) -> comp.ImplementedRequirement:
         """Convert to defined component form."""
         class_dict = copy.deepcopy(self.__dict__)
@@ -350,6 +362,18 @@ class GenericControlImplementation(TrestleBaseModel):
             'implemented-requirements': imp_reqs
         }
         return GenericControlImplementation(**class_dict)
+
+    @classmethod
+    def from_component_ci(cls, control_imp: comp.ControlImplementation) -> GenericControlImplementation:
+        """Convert component control imp to generic."""
+        class_dict = copy.deepcopy(control_imp.__dict__)
+        if 'implemented_requirements' in class_dict:
+            new_irs = []
+            for ir in class_dict['implemented_requirements']:
+                new_ir = GenericImplementedRequirement.from_comp_def(ir)
+                new_irs.append(new_ir)
+            class_dict['implemented-requirements'] = new_irs
+        return cls(**class_dict)
 
     def as_ssp(self) -> ossp.ControlImplementation:
         """Represent in ssp form."""

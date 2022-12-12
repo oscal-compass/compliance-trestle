@@ -186,7 +186,7 @@ class CatalogWriter():
             rules_dict = context.rules_dict.get(comp_name, {})
             for rule_id, param_dict in comp_dict.items():
                 rule_name = deep_get(rules_dict, [rule_id, 'name'], 'unknown_rule_name')
-                param_dict[const.RULE_NAME] = rule_name
+                param_dict[const.HEADER_RULE_ID] = rule_name
 
     def write_catalog_as_ssp_markdown(self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]]) -> None:
         """
@@ -312,7 +312,7 @@ class CatalogWriter():
             if const.COMP_DEF_RULES_PARAM_VALS_TAG in new_context.merged_header:
                 for _, param_list in new_context.merged_header[const.COMP_DEF_RULES_PARAM_VALS_TAG].items():
                     for param_dict in param_list:
-                        param_dict.pop(const.RULE_NAME, None)
+                        param_dict.pop(const.HEADER_RULE_ID, None)
 
             control_writer = ControlWriter()
             control_writer.write_control_for_editing(
