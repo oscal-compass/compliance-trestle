@@ -191,7 +191,8 @@ class GenericComponent(TrestleBaseModel):
             new_cis = []
             for ci in class_dict['control_implementations']:
                 new_cis.append(GenericControlImplementation.from_component_ci(ci))
-            class_dict['control_implementations'] = new_cis
+            class_dict['control-implementations'] = new_cis
+            class_dict.pop('control_implementations', None)
         class_dict['status'] = status
         return cls(**class_dict)
 
@@ -373,6 +374,7 @@ class GenericControlImplementation(TrestleBaseModel):
                 new_ir = GenericImplementedRequirement.from_comp_def(ir)
                 new_irs.append(new_ir)
             class_dict['implemented-requirements'] = new_irs
+            class_dict.pop('implemented_requirements', None)
         return cls(**class_dict)
 
     def as_ssp(self) -> ossp.ControlImplementation:
@@ -385,4 +387,8 @@ class GenericControlImplementation(TrestleBaseModel):
             class_dict.pop(prop, None)
         if imp_reqs:
             class_dict['implemented-requirements'] = imp_reqs
+            class_dict.pop('implemented_requirements', None)
         return ossp.ControlImplementation(**class_dict)
+
+
+GenericComponent.update_forward_refs()

@@ -475,7 +475,7 @@ class ControlReader():
     def _insert_header_content(
         imp_req: generic.GenericImplementedRequirement, header: Dict[str, Any], control_id: str
     ) -> None:
-        """Insert yaml header content into the imp_req and its by_comps."""
+        """Insert yaml header content into the imp_req and its by_comps as props."""
         dict_ = header.get(const.TRESTLE_PROPS_TAG, {})
         # if an attribute is in the dict but it is None, need to make sure we get empty list anyway
         control_orig = as_list(dict_.get(const.CONTROL_ORIGINATION, []))
@@ -499,7 +499,7 @@ class ControlReader():
                     raise TrestleError(f'The yaml header for control {control_id} has unexpected content: {co}')
             else:
                 raise TrestleError(f'The yaml header for control {control_id} has unexpected content: {co}')
-        # FIXME this needs reworking
+        # TODO Update Fedramp content when Fedramp use case defined
         for status in imp_status:
             if isinstance(status, str):
                 props.append(

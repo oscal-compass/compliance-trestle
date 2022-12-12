@@ -196,7 +196,7 @@ class SSPAssemble(AuthorCommonCommand):
 
     def _merge_imp_reqs(self, ssp: ossp.SystemSecurityPlan, imp_reqs: List[ossp.ImplementedRequirement]) -> bool:
         """
-        Merge the new imp_reqs into the ssp and optionally regenerate uuids.
+        Merge the new imp_reqs into the ssp.
 
         If a statement has same id and same by_comp uuid as ssp, use the ssp version with new description.
         Otherwise just insert the statement.
@@ -205,7 +205,10 @@ class SSPAssemble(AuthorCommonCommand):
         id_map: Dict[str, Dict[str, ossp.Statement]] = {}
         by_comp_map: Dict[str, Dict[str, ossp.ByComponent]] = {}
         control_map: Dict[str, ossp.ImplementedRequirement] = {}
+        component_uuid_map: Dict[str, str] = {}
         # go through existing ssp and create map of existing statements by statement id and component uuid
+        for component in as_list(ssp.system_implementation.components):
+            component_uuid_map[component.title] = component.uuid
         for imp_req in as_list(ssp.control_implementation.implemented_requirements):
             control_map[imp_req.control_id] = imp_req
             for statement in as_list(imp_req.statements):
@@ -223,6 +226,8 @@ class SSPAssemble(AuthorCommonCommand):
             for by_comp in as_list(imp_req.by_components):
                 if by_comp.component_uuid in control_by_comp_map:
                     by_comp.uuid = control_by_comp_map[by_comp.component_uuid].uuid
+                else:
+                    pass
             for statement in as_list(imp_req.statements):
                 id_ = statement.statement_id
                 # for each statement id match the statement per component to the original
@@ -240,6 +245,27 @@ class SSPAssemble(AuthorCommonCommand):
         changed = ssp.control_implementation.implemented_requirements != imp_reqs
         ssp.control_implementation.implemented_requirements = imp_reqs
         return changed
+
+    def _merge_comp_defs(self, ssp: ossp.SystemSecurityPlan,
+                         comp_dict: Dict[str, generic.GenericComponent]) -> Dict[str, List[ossp.SetParameter]]:
+        """Merge the original comp defs into the ssp."""
+        all_ci_props: List[com.Property] = []
+        all_comps: List[ossp.SystemComponent] = []
+        set_params_dict: Dict[str, List[ossp.SetParameter]] = {}
+        for comp_name, gen_comp in comp_dict.items():
+            all_ci_props.extend(as_list(gen_comp.props))
+            set_params: List[ossp.SetParameter] = []
+            for ci in as_list(gen_comp.control_implementations):
+                all_ci_props.extend(as_list(ci.props))
+                for sp in as_list(ci.set_parameters):
+                    set_params.append(ossp.SetParameter(sp.param_id, sp.values, sp.remarks))
+            all_comps.append(gen_comp.as_system_component())
+            if set_params:
+                set_params_dict[comp_name] = set_params
+
+        ssp.system_implementation.props = none_if_empty(all_ci_props)
+        ssp.system_implementation.components = none_if_empty(all_comps)
+        return set_params_dict
 
     def _generate_roles_in_metadata(self, ssp: ossp.SystemSecurityPlan) -> bool:
         """Find all roles referenced by imp reqs and create role in metadata as needed."""
@@ -269,6 +295,13 @@ class SSPAssemble(AuthorCommonCommand):
                 comp_dict[def_comp.title] = gen_def_comp
         return comp_dict
 
+    @staticmethod
+    def _get_this_system_as_gen_comp(ssp: ossp.SystemSecurityPlan) -> Optional[generic.GenericComponent]:
+        for component in as_list(ssp.system_implementation.components):
+            if component.title == 'This System':
+                return generic.GenericComponent.from_defined_component(component)
+        return None
+
     def _run(self, args: argparse.Namespace) -> int:
         try:
             log.set_log_level_from_args(args)
@@ -283,6 +316,9 @@ class SSPAssemble(AuthorCommonCommand):
                 orig_ssp_name = args.name
             new_ssp_name = args.output
 
+            # load all original comp defs
+            # only additions from markdown will be imp_req prose and status
+            # and param vals
             comp_dict = SSPAssemble._build_comp_dict_from_comp_defs(trestle_root, args.compdefs)
 
             new_file_content_type = FileContentType.JSON
@@ -303,23 +339,28 @@ class SSPAssemble(AuthorCommonCommand):
 
             context = ControlContext.generate(ContextPurpose.SSP, True, trestle_root, md_path)
 
-            # need to load imp_reqs from markdown but need component first
+            # if ssp already exists use it as container for new content
             if orig_ssp_path:
                 # load the existing json ssp
                 _, _, ssp = ModelUtils.load_distributed(orig_ssp_path, trestle_root)
-                for component in ssp.system_implementation.components:
-                    comp_dict[component.title] = generic.GenericComponent.from_system_component(component)
                 # read the new imp reqs from markdown and have them reference existing components
+                # this will generate a new This System component that needs to have uuid set to the existing one
+                sys_comp = SSPAssemble._get_this_system_as_gen_comp(ssp)
+                if sys_comp:
+                    comp_dict['This System'] = sys_comp
+
                 imp_reqs = CatalogReader.read_catalog_imp_reqs(md_path, comp_dict, context)
                 new_imp_reqs = []
                 for imp_req in imp_reqs:
                     new_imp_reqs.append(imp_req.as_ssp())
+                # FIXME use set params dict
+                self._merge_comp_defs(ssp, comp_dict)
                 self._merge_imp_reqs(ssp, new_imp_reqs)
                 new_file_content_type = FileContentType.path_to_content_type(orig_ssp_path)
             else:
                 # create a sample ssp to hold all the parts
                 ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
-                # load the imp_reqs from markdown and create components as needed, referenced by ### headers
+                # load the imp_reqs from markdown and link to original comp defs
                 imp_reqs = CatalogReader.read_catalog_imp_reqs(md_path, comp_dict, context)
                 new_imp_reqs = []
                 for imp_req in imp_reqs:
@@ -338,31 +379,15 @@ class SSPAssemble(AuthorCommonCommand):
                 ssp.control_implementation = control_imp
                 ssp.system_implementation = system_imp
 
-                # we don't have access to the original profile so we don't know the href
+                # FIXME use set params dict
+                self._merge_comp_defs(ssp, comp_dict)
+                self._merge_imp_reqs(ssp, new_imp_reqs)
                 import_profile: ossp.ImportProfile = gens.generate_sample_model(ossp.ImportProfile)
                 import_profile.href = 'REPLACE_ME'
                 ssp.import_profile = import_profile
 
             # now that we know the complete list of needed components, add them to the sys_imp
             # TODO if the ssp already existed then components may need to be removed if not ref'd by imp_reqs
-            component_list: List[ossp.SystemComponent] = []
-            for comp_ in comp_dict.values():
-                # need to skip the component corresponding to statement level prose
-                if comp_.title:
-                    # force status to be operational since if we have no info
-                    component_list.append(comp_.as_system_component(const.STATUS_OPERATIONAL))
-            if ssp.system_implementation.components:
-                # reconstruct list with same order as existing, but add/remove components as needed
-                new_list: List[ossp.SystemComponent] = []
-                for comp_ in ssp.system_implementation.components:
-                    if comp_ in component_list:
-                        new_list.append(comp_)
-                for comp_ in component_list:
-                    if comp_ not in new_list:
-                        new_list.append(comp_)
-                ssp.system_implementation.components = new_list
-            elif component_list:
-                ssp.system_implementation.components = component_list
             self._generate_roles_in_metadata(ssp)
 
             _, profile_href = ComponentAssemble._get_profile_title_and_href_from_dir(md_path)
