@@ -17,7 +17,7 @@ import pathlib
 import re
 import string
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 from uuid import uuid4
 
 import trestle.core.generic_oscal as generic
@@ -432,46 +432,6 @@ class ControlReader():
             ControlReader._add_node_to_dict(comp_name, label, comp_dict, subnode, control_id, comp_list, context)
 
     @staticmethod
-    def _get_statement_label(control: Optional[cat.Control], statement_id: str) -> str:
-        if control:
-            for part in as_list(control.parts):
-                if part.name == const.STATEMENT:
-                    for sub_part in as_list(part.parts):
-                        if sub_part.name == 'item' and sub_part.id == statement_id:
-                            return ControlInterface.get_label(sub_part)
-        return ''
-
-    @staticmethod
-    def _add_component_to_dict(context: ControlContext, control: Optional[cat.Control],
-                               comp_dict: CompDict) -> Tuple[Dict[str, Dict[str, str]], List[str]]:
-        """Add imp_reqs for this control and this component to the component dictionary."""
-        params_dict: Dict[str, Dict[str, str]] = {}
-        all_rules: Set[str] = set()
-        sub_comp_dict: Dict[str, ComponentImpInfo] = {}
-        if control:
-            component = context.component
-            for control_imp in as_list(component.control_implementations):
-                for imp_req in ControlInterface.get_control_imp_reqs(control_imp, control.id):
-                    # if description is same as control id regard it as not having prose
-                    # add top level control guidance with no statement id
-                    prose = ControlReader._handle_empty_prose(imp_req.description, control.id)
-                    params_dict.update(ControlInterface.get_params_dict_from_item(imp_req))
-                    rules_list = ControlInterface.get_rule_list_for_imp_req(imp_req)
-                    all_rules.update(rules_list)
-                    status = ControlInterface.get_status_from_props(imp_req)
-                    sub_comp_dict[''] = ComponentImpInfo(prose=prose, status=status, rules=rules_list)
-                    for statement in as_list(imp_req.statements):
-                        rules_list = ControlInterface.get_rule_list_for_item(statement)
-                        all_rules.update(rules_list)
-                        status = ControlInterface.get_status_from_props(statement)
-                        label = ControlReader._get_statement_label(control, statement.statement_id)
-                        prose = ControlReader._handle_empty_prose(statement.description, statement.statement_id)
-                        sub_comp_dict[label] = ComponentImpInfo(prose=prose, status=status, rules=rules_list)
-            if sub_comp_dict:
-                comp_dict[component.title] = sub_comp_dict
-        return params_dict, sorted(all_rules)
-
-    @staticmethod
     def _insert_header_content(
         imp_req: generic.GenericImplementedRequirement, header: Dict[str, Any], control_id: str
     ) -> None:
@@ -674,8 +634,6 @@ class ControlReader():
         raw_comp_dict = {ControlReader.simplify_name(key): value for key, value in comp_dict.items()}
         raw_avail_comps = {ControlReader.simplify_name(key): value for key, value in avail_comps.items()}
 
-        comp_name_uuid_map = {raw_comp.title: raw_comp.uuid for raw_comp in raw_avail_comps.values()}
-
         imp_req.set_parameters = []
         imp_req.statements = []
         imp_req.by_components = []
@@ -691,15 +649,6 @@ class ControlReader():
         for comp_name in comp_dict.keys():
             component: Optional[generic.GenericComponent] = None
             raw_comp_name = ControlReader.simplify_name(comp_name)
-            if raw_comp_name == ControlReader.simplify_name(const.SSP_MD_IMPLEMENTATION_QUESTION):
-                comp_info: ComponentImpInfo = list(raw_comp_dict[raw_comp_name].items())[0][1]
-                if context.purpose == ContextPurpose.COMPONENT and not comp_info.rules:
-                    logger.debug(f'Control {control_id} not written to md because it has no rules associated.')
-                    continue
-                imp_req.description = ControlReader._handle_empty_prose(comp_info.prose, control_id)
-                if comp_info.status:
-                    ControlInterface.insert_status_in_props(imp_req, comp_info.status)
-                continue
             if raw_comp_name in raw_avail_comps:
                 component = raw_avail_comps[raw_comp_name]
             else:
@@ -707,10 +656,9 @@ class ControlReader():
                 component = generic.GenericComponent.generate()
                 component.title = comp_name
                 if comp_name == const.SSP_MAIN_COMP_NAME:
-                    component.type = 'this-system'
+                    component.type = const.THIS_SYSTEM_AS_KEY
                 avail_comps[comp_name] = component
                 raw_avail_comps[raw_comp_name] = component
-                comp_name_uuid_map[comp_name] = component.uuid
             # now create statements to hold the by-components and assign the statement id
             for label, comp_info in raw_comp_dict[raw_comp_name].items():
                 if context.purpose == ContextPurpose.COMPONENT:
@@ -762,13 +710,13 @@ class ControlReader():
             if simp_comp_name not in raw_avail_comps:
                 raw_avail_comps[simp_comp_name] = generic.GenericComponent.generate()
                 if comp_name == const.SSP_MAIN_COMP_NAME:
-                    raw_avail_comps[simp_comp_name].type = 'this-system'
+                    raw_avail_comps[simp_comp_name].type = const.THIS_SYSTEM_AS_KEY
             component = raw_avail_comps[simp_comp_name]
             comp_uuid = component.uuid
             for param_dict in param_dict_list:
                 param_name = param_dict['name']
                 param_list = rules_params_dict.get(comp_name, {})
-                rule_name = next((rp for rp in param_list if rp['name'] == param_name), 'unknown_rule_name')
+                rule_name = next((rp['rule-id'] for rp in param_list if rp['name'] == param_name), 'unknown_rule_name')
                 values = [common.Value(__root__=value) for value in param_dict.get(const.VALUES, [])]
                 # if there are user ssp values, overwrite the compdef values
                 if const.SSP_VALUES in param_dict and comp_name in comp_dict:

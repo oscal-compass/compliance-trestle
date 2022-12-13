@@ -288,9 +288,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
         ac_1_path, 'ac-1_prm_2:', '    values:\n    ssp-values:\n      - my ssp val\n'
     )
     assert test_utils.replace_line_in_file_after_tag(
-        ac_1_path,
-        '- shared_param_1_aa_opt_1',
-        '      ssp-values:\n        - shared_param_1_aa_opt_2\nx-trestle-set-params:\n'
+        ac_1_path, '- shared_param_1_aa_opt_1', '      ssp-values:\n        - shared_param_1_aa_opt_2\n  comp_ab:\n'
     )
 
     # now assemble the edited controls into json ssp

@@ -20,7 +20,7 @@ from typing import Any, Dict, List, Tuple
 import trestle.common.const as const
 import trestle.core.generic_oscal as generic
 import trestle.oscal.catalog as cat
-from trestle.common.list_utils import as_dict, as_filtered_list, as_list, delete_item_from_list, deep_set, get_item_from_list, none_if_empty, set_or_pop  # noqa E501
+from trestle.common.list_utils import none_if_empty
 from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.control_context import ControlContext
 from trestle.core.control_interface import CompDict, ControlInterface

@@ -258,6 +258,8 @@ UUID_REGEX = r'(?:^|[0-9A-Za-f])([0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[
 
 SSP_MAIN_COMP_NAME = 'This System'
 
+THIS_SYSTEM_AS_KEY = 'this-system'
+
 SSP_MD_HRULE_LINE = '______________________________________________________________________'
 
 SSP_MD_IMPLEMENTATION_QUESTION = 'What is the solution and how is it implemented?'

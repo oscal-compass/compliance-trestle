@@ -72,7 +72,8 @@ def check_common_contents(header: Dict[str, Any]) -> None:
     assert params[0] == {
         'name': 'shared_param_1',
         'description': 'shared param 1 in aa',
-        'options': '["shared_param_1_aa_opt_1", "shared_param_1_aa_opt_2"]'
+        'options': '["shared_param_1_aa_opt_1", "shared_param_1_aa_opt_2"]',
+        'rule-id': 'top_shared_rule_1'
     }
     assert header[const.TRESTLE_GLOBAL_TAG][const.PROFILE]['title'] == 'comp prof aa'
     assert header[const.TRESTLE_GLOBAL_TAG][const.PROFILE

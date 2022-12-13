@@ -298,7 +298,7 @@ class SSPAssemble(AuthorCommonCommand):
     @staticmethod
     def _get_this_system_as_gen_comp(ssp: ossp.SystemSecurityPlan) -> Optional[generic.GenericComponent]:
         for component in as_list(ssp.system_implementation.components):
-            if component.title == 'This System':
+            if component.title == const.SSP_MAIN_COMP_NAME:
                 return generic.GenericComponent.from_defined_component(component)
         return None
 
@@ -343,12 +343,12 @@ class SSPAssemble(AuthorCommonCommand):
             if orig_ssp_path:
                 # load the existing json ssp
                 _, _, ssp = ModelUtils.load_distributed(orig_ssp_path, trestle_root)
-                # read the new imp reqs from markdown and have them reference existing components
-                # this will generate a new This System component that needs to have uuid set to the existing one
+                # add the This System comp to the comp dict so its uuid is known
                 sys_comp = SSPAssemble._get_this_system_as_gen_comp(ssp)
                 if sys_comp:
-                    comp_dict['This System'] = sys_comp
+                    comp_dict[const.SSP_MAIN_COMP_NAME] = sys_comp
 
+                # read the new imp reqs from markdown and have them reference existing components
                 imp_reqs = CatalogReader.read_catalog_imp_reqs(md_path, comp_dict, context)
                 new_imp_reqs = []
                 for imp_req in imp_reqs:

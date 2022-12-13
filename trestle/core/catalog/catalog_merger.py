@@ -139,7 +139,21 @@ class CatalogMerger():
 
         memory_rules_param_vals = memory_header.get(const.COMP_DEF_RULES_PARAM_VALS_TAG, {})
         md_rules_param_vals = md_header.get(const.COMP_DEF_RULES_PARAM_VALS_TAG, {})
-        ControlInterface.merge_dicts_deep(memory_rules_param_vals, md_rules_param_vals, True)
+        for comp_name, val_list in md_rules_param_vals.items():
+            val_dict = {val['name']: val for val in val_list}
+            if comp_name not in memory_rules_param_vals:
+                memory_rules_param_vals[comp_name] = val_list
+            else:
+                # merge the lists with priority to md
+                new_list = []
+                mem_list = memory_rules_param_vals[comp_name]
+                mem_names = [mem['name'] for mem in mem_list]
+                for val in mem_list:
+                    new_list.append(val_dict.get(val['name'], val))
+                for key, val in val_dict.items():
+                    if key not in mem_names:
+                        new_list.append(val)
+                memory_rules_param_vals[comp_name] = new_list
 
         set_or_pop(memory_header, const.COMP_DEF_RULES_PARAM_VALS_TAG, memory_rules_param_vals)
         context.merged_header = memory_header
