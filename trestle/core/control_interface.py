@@ -509,7 +509,13 @@ class ControlInterface:
             dest.parts = new_parts
 
     @staticmethod
-    def merge_dicts_deep(dest: Dict[Any, Any], src: Dict[Any, Any], overwrite_header_values: bool) -> None:
+    def merge_dicts_deep(
+        dest: Dict[Any, Any],
+        src: Dict[Any, Any],
+        overwrite_header_values: bool,
+        depth: int = 0,
+        level: int = 0
+    ) -> None:
         """
         Merge dict src into dest.
 
@@ -518,9 +524,13 @@ class ControlInterface:
         """
         for key in src.keys():
             if key in dest:
+                if depth and level == depth:
+                    if overwrite_header_values:
+                        dest[key] = src[key]
+                    continue
                 # if they are both dicts, recurse
                 if isinstance(dest[key], dict) and isinstance(src[key], dict):
-                    ControlInterface.merge_dicts_deep(dest[key], src[key], overwrite_header_values)
+                    ControlInterface.merge_dicts_deep(dest[key], src[key], overwrite_header_values, depth, level + 1)
                 # if they are both lists, add any item that is not already in the list
                 elif isinstance(dest[key], list) and isinstance(src[key], list):
                     for item in src[key]:
@@ -844,14 +854,6 @@ class ControlInterface:
             if sub_comp.title == comp_name:
                 return sub_comp
         return None
-
-    @staticmethod
-    def get_control_imp_reqs(control_imp: Optional[comp.ControlImplementation],
-                             control_id: str) -> List[comp.ImplementedRequirement]:
-        """Get the imp_reqs for this control from the control implementation."""
-        if control_imp is None:
-            return []
-        return as_filtered_list(control_imp.implemented_requirements, lambda imp_req: imp_req.control_id == control_id)
 
     @staticmethod
     def get_status_from_props(item: TypeWithProps) -> common.ImplementationStatus:

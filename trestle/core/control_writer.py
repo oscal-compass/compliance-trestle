@@ -439,12 +439,8 @@ class ControlWriter():
     @staticmethod
     def _merge_headers(memory_header: Dict[str, Any], md_header: Dict[str, Any],
                        context: ControlContext) -> Dict[str, Any]:
-        if context.purpose == ContextPurpose.PROFILE:
-            merged_header = copy.deepcopy(memory_header)
-            ControlInterface.merge_dicts_deep(merged_header, md_header, True)
-        else:
-            merged_header = copy.deepcopy(md_header)
-            ControlInterface.merge_dicts_deep(merged_header, memory_header, True)
+        merged_header = copy.deepcopy(md_header)
+        ControlInterface.merge_dicts_deep(merged_header, memory_header, False, 1)
         return merged_header
 
     def write_control_for_editing(
