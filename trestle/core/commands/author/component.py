@@ -304,7 +304,7 @@ class ComponentAssemble(AuthorCommonCommand):
         for source_dir in source_dirs:
             profile_title, _ = ComponentAssemble._get_profile_title_and_href_from_dir(md_path / source_dir)
             # context has defined component and comp_name
-            imp_reqs = CatalogReader.read_catalog_imp_reqs(md_path / source_dir, avail_comps, context)
+            imp_reqs = CatalogReader.read_catalog_imp_reqs(md_path / source_dir, avail_comps, {}, context)
             # the imp_reqs need to be inserted into the correct control_implementation
             for imp_req in imp_reqs:
                 comp_imp_req = imp_req.as_comp_def()

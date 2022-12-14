@@ -205,61 +205,7 @@ class CatalogWriter():
                         add as compinfo to control comp_dict
 
         """
-        # first load all information from memory for all comps and all controls
-        context.rules_dict = {}
-        context.rules_params_dict = {}
-        for comp_def_name in context.comp_def_name_list:
-            context.comp_def, _ = ModelUtils.load_top_level_model(
-                context.trestle_root,
-                comp_def_name,
-                comp.ComponentDefinition
-            )
-            for component in as_list(context.comp_def.components):
-                context.component = component
-                context.comp_name = component.title
-                # get top level rule info applying to all controls
-                comp_rules_dict, comp_rules_params_dict = ControlInterface.get_rules_and_params_dict_from_item(component)  # noqa E501
-                context.rules_dict[context.comp_name] = comp_rules_dict
-                context.rules_params_dict.update(comp_rules_params_dict)
-                for control_imp in as_list(component.control_implementations):
-                    control_imp_rules_dict, control_imp_rules_params_dict = ControlInterface.get_rules_and_params_dict_from_item(control_imp)  # noqa E501
-                    context.rules_dict[context.comp_name].update(control_imp_rules_dict)
-                    comp_rules_params_dict = context.rules_params_dict.get(context.comp_name, {})
-                    comp_rules_params_dict.update(control_imp_rules_params_dict)
-                    context.rules_params_dict[context.comp_name] = comp_rules_params_dict
-                    ci_set_params = ControlInterface.get_set_params_from_item(control_imp)
-                    for imp_req in as_list(control_imp.implemented_requirements):
-                        control_part_id_map = part_id_map.get(imp_req.control_id, {})
-                        # find if any rules apply to this control, including in statements
-                        control_rules, statement_rules = ControlInterface.get_rule_list_for_imp_req(imp_req)
-                        if control_rules or statement_rules:
-                            if control_rules:
-                                status = ControlInterface.get_status_from_props(imp_req)
-                                comp_info = ComponentImpInfo(imp_req.description, control_rules, status)
-                                self._catalog_interface.add_comp_info(
-                                    imp_req.control_id, context.comp_name, '', comp_info
-                                )
-                            set_params = copy.deepcopy(ci_set_params)
-                            set_params.update(ControlInterface.get_set_params_from_item(imp_req))
-                            for set_param in set_params.values():
-                                self._catalog_interface.add_comp_set_param(
-                                    imp_req.control_id, context.comp_name, set_param
-                                )
-                            for statement in as_list(imp_req.statements):
-                                rule_list = ControlInterface.get_rule_list_for_item(statement)
-                                if rule_list:
-                                    status = ControlInterface.get_status_from_props(statement)
-                                    if statement.statement_id not in control_part_id_map:
-                                        label = statement.statement_id
-                                        logger.warning(
-                                            f'No statement label found for statement id {label}.  Defaulting to {label}.'  # noqa E501
-                                        )
-                                    else:
-                                        label = control_part_id_map[statement.statement_id]
-                                    comp_info = ComponentImpInfo(statement.description, rule_list, status)
-                                    self._catalog_interface.add_comp_info(
-                                        imp_req.control_id, context.comp_name, label, comp_info
-                                    )
+        self._catalog_interface.generate_control_rule_info(part_id_map, context)
 
         # now have all rules in context.rules_dict and all rules_params in context.rules_params_dict
         # all set-params per component for each control are in the cat interface
@@ -340,11 +286,11 @@ class CatalogWriter():
         context.rules_params_dict = {}
 
         # get top level rule info applying to all controls
-        comp_rules_dict, comp_rules_params_dict = ControlInterface.get_rules_and_params_dict_from_item(context.component)  # noqa E501
+        comp_rules_dict, comp_rules_params_dict, _ = ControlInterface.get_rules_and_params_dict_from_item(context.component)  # noqa E501
         context.rules_dict[context.comp_name] = comp_rules_dict
         context.rules_params_dict.update(comp_rules_params_dict)
         for control_imp in as_list(context.component.control_implementations):
-            control_imp_rules_dict, control_imp_rules_params_dict = ControlInterface.get_rules_and_params_dict_from_item(control_imp)  # noqa E501
+            control_imp_rules_dict, control_imp_rules_params_dict, _ = ControlInterface.get_rules_and_params_dict_from_item(control_imp)  # noqa E501
             context.rules_dict[context.comp_name].update(control_imp_rules_dict)
             comp_rules_params_dict = context.rules_params_dict.get(context.comp_name, {})
             comp_rules_params_dict.update(control_imp_rules_params_dict)
@@ -352,18 +298,18 @@ class CatalogWriter():
             ci_set_params = ControlInterface.get_set_params_from_item(control_imp)
             for imp_req in as_list(control_imp.implemented_requirements):
                 control_part_id_map = part_id_map.get(imp_req.control_id, {})
-                control_rules, statement_rules = ControlInterface.get_rule_list_for_imp_req(imp_req)
+                control_rules, statement_rules, _ = ControlInterface.get_rule_list_for_imp_req(imp_req)
                 if control_rules or statement_rules:
                     if control_rules:
                         status = ControlInterface.get_status_from_props(imp_req)
-                        comp_info = ComponentImpInfo(imp_req.description, control_rules, status)
+                        comp_info = ComponentImpInfo(imp_req.description, control_rules, [], status)  # FIXME
                         self._catalog_interface.add_comp_info(imp_req.control_id, context.comp_name, '', comp_info)
                     set_params = copy.deepcopy(ci_set_params)
                     set_params.update(ControlInterface.get_set_params_from_item(imp_req))
                     for set_param in set_params.values():
                         self._catalog_interface.add_comp_set_param(imp_req.control_id, context.comp_name, set_param)
                     for statement in as_list(imp_req.statements):
-                        rule_list = ControlInterface.get_rule_list_for_item(statement)
+                        rule_list, _ = ControlInterface.get_rule_list_for_item(statement)
                         if rule_list:
                             status = ControlInterface.get_status_from_props(statement)
                             if statement.statement_id not in control_part_id_map:
@@ -373,7 +319,7 @@ class CatalogWriter():
                                 )
                             else:
                                 label = control_part_id_map[statement.statement_id]
-                            comp_info = ComponentImpInfo(statement.description, rule_list, status)
+                            comp_info = ComponentImpInfo(statement.description, rule_list, [], status)  # FIXME
                             self._catalog_interface.add_comp_info(
                                 imp_req.control_id, context.comp_name, label, comp_info
                             )

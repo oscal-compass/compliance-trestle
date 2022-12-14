@@ -53,6 +53,7 @@ class ComponentImpInfo:
 
     prose: str
     rules: List[str]
+    props: List[common.Property]
     # the lambda is needed to prevent a mutable from being used as a default
     # without the lambda it would break python 3.11 and is a bug either way
     status: common.ImplementationStatus = field(
@@ -369,39 +370,53 @@ class ControlInterface:
         name = ''
         desc = ''
         id_ = ''
+        rules_props = []
         for prop in as_list(item.props):
             if prop.name == const.RULE_ID:
                 name = prop.value
                 id_ = string_from_root(prop.remarks)
+                rules_props.append(prop)
             elif prop.name == const.RULE_DESCRIPTION:
                 desc = prop.value
+                rules_props.append(prop)
             # grab each pair in case there are multiple pairs
             # then clear and look for new pair
             if name and desc:
                 rules_dict[id_] = {'name': name, 'description': desc}
                 name = desc = id_ = ''
-        return rules_dict
+        return rules_dict, rules_props
 
     @staticmethod
-    def get_rule_list_for_item(item: TypeWithProps) -> List[str]:
+    def get_rule_list_for_item(item: TypeWithProps) -> Tuple[List[str], List[common.Property]]:
         """Get the list of rules applying to this item from its top level props."""
-        return [prop.value for prop in as_filtered_list(item.props, lambda p: p.name == const.RULE_ID)]
+        props = []
+        rule_list = []
+        for prop in item.props:
+            if prop.name == const.RULE_ID:
+                rule_list.append(prop.value)
+                props.append(prop)
+        return rule_list, props
 
     @staticmethod
-    def get_rule_list_for_imp_req(imp_req: ossp.ImplementedRequirement) -> Tuple[List[str], List[str]]:
+    def get_rule_list_for_imp_req(
+        imp_req: ossp.ImplementedRequirement
+    ) -> Tuple[List[str], List[str], List[common.Property]]:
         """Get the list of rules applying to an imp_req as two lists."""
-        comp_rules = ControlInterface.get_rule_list_for_item(imp_req)
+        comp_rules, rule_props = ControlInterface.get_rule_list_for_item(imp_req)
         statement_rules = set()
         for statement in as_list(imp_req.statements):
-            statement_rules.update(ControlInterface.get_rule_list_for_item(statement))
-        return comp_rules, list(statement_rules)
+            stat_rules, statement_props = ControlInterface.get_rule_list_for_item(statement)
+            statement_rules.update(stat_rules)
+            rule_props.extend(statement_props)
+        return comp_rules, list(statement_rules), rule_props
 
     @staticmethod
-    def get_params_dict_from_item(item: TypeWithProps) -> Dict[str, Dict[str, str]]:
+    def get_params_dict_from_item(item: TypeWithProps) -> Tuple[Dict[str, Dict[str, str]], List[common.Property]]:
         """Get all params found in this item with rule_id as key."""
         # id, description, options - where options is a string containing comma-sep list of items
         # params is dict with rule_id as key and value contains: param_name, description and choices
         params: Dict[str, Dict[str, str]] = {}
+        props = []
         for prop in as_list(item.props):
             if prop.name == const.PARAMETER_ID:
                 rule_id = string_from_root(prop.remarks)
@@ -410,16 +425,19 @@ class ControlInterface:
                     raise TrestleError(f'Duplicate param {param_name} found for rule {rule_id}')
                 # create new param for this rule
                 params[rule_id] = {'name': param_name}
+                props.append(prop)
             elif prop.name == const.PARAMETER_DESCRIPTION:
                 rule_id = string_from_root(prop.remarks)
                 if rule_id in params:
                     params[rule_id]['description'] = prop.value
+                    props.append(prop)
                 else:
                     raise TrestleError(f'Param description for rule {rule_id} found with no param_id')
             elif prop.name == const.PARAMETER_VALUE_ALTERNATIVES:
                 rule_id = string_from_root(prop.remarks)
                 if rule_id in params:
                     params[rule_id]['options'] = prop.value
+                    props.append(prop)
                 else:
                     raise TrestleError(f'Param options for rule {rule_id} found with no param_id')
         new_params = {}
@@ -430,16 +448,17 @@ class ControlInterface:
                 param['description'] = param.get('description', '')
                 param['options'] = param.get('options', '')
                 new_params[rule_id] = param
-        return new_params
+        return new_params, props
 
     @staticmethod
     def get_rules_and_params_dict_from_item(
         item: TypeWithProps
-    ) -> Tuple[Dict[str, Dict[str, str]], Dict[str, Dict[str, str]]]:
+    ) -> Tuple[Dict[str, Dict[str, str]], Dict[str, Dict[str, str]], List[common.Property]]:
         """Get the rule dict and params dict from item with props."""
-        rules_dict = ControlInterface.get_rules_dict_from_item(item)
-        params_dict = ControlInterface.get_params_dict_from_item(item)
-        return rules_dict, params_dict
+        rules_dict, rules_props = ControlInterface.get_rules_dict_from_item(item)
+        params_dict, params_props = ControlInterface.get_params_dict_from_item(item)
+        rules_props.extend(params_props)
+        return rules_dict, params_dict, rules_props
 
     @staticmethod
     def get_set_params_from_item(
@@ -864,6 +883,19 @@ class ControlInterface:
                 status = ControlInterface._prop_as_status(prop)
                 break
         return status
+
+    @staticmethod
+    def cull_props_by_rules(props: Optional[List[common.Property]], rules: List[str]) -> List[str]:
+        """Cull properties to the ones needed by rules."""
+        needed_rule_ids = set()
+        culled_props = []
+        for prop in as_list(props):
+            if prop.value in rules and prop.remarks:
+                needed_rule_ids.add(string_from_root(prop.remarks))
+        for prop in as_list(props):
+            if prop.value in rules or string_from_root(prop.remarks) in needed_rule_ids:
+                culled_props.append(prop)
+        return culled_props
 
     @staticmethod
     def _status_as_prop(status: common.ImplementationStatus) -> common.Property:

@@ -15,7 +15,7 @@
 
 import logging
 import pathlib
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import trestle.common.const as const
 import trestle.core.generic_oscal as generic
@@ -121,7 +121,10 @@ class CatalogReader():
 
     @staticmethod
     def read_catalog_imp_reqs(
-        md_path: pathlib.Path, avail_comps: Dict[str, generic.GenericComponent], context: ControlContext
+        md_path: pathlib.Path,
+        avail_comps: Dict[str, generic.GenericComponent],
+        catalog_interface: Optional[CatalogInterface],
+        context: ControlContext
     ) -> List[generic.GenericImplementedRequirement]:
         """Read the full set of control implemented requirements from markdown.
 
@@ -140,7 +143,11 @@ class CatalogReader():
         imp_req_map: Dict[str, generic.GenericImplementedRequirement] = {}
         for group_path in CatalogInterface._get_group_ids_and_dirs(md_path).values():
             for control_file in group_path.glob('*.md'):
-                sort_id, imp_req = ControlReader.read_implemented_requirement(control_file, avail_comps, context)
+                control_id = control_file.stem
+                comp_dict = catalog_interface.get_comp_info(control_id) if catalog_interface else {}
+                sort_id, imp_req = ControlReader.read_implemented_requirement(
+                    control_file, avail_comps, comp_dict, context
+                )
                 imp_req_map[sort_id] = imp_req
         return [imp_req_map[key] for key in sorted(imp_req_map.keys())]
 

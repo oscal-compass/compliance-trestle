@@ -33,6 +33,7 @@ from trestle.common.list_utils import as_list, comma_sep_to_list, deep_set, none
 from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog.catalog_api import CatalogAPI
+from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.catalog.catalog_reader import CatalogReader
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.author.component import ComponentAssemble
@@ -316,6 +317,10 @@ class SSPAssemble(AuthorCommonCommand):
                 orig_ssp_name = args.name
             new_ssp_name = args.output
 
+            _, profile_href = ComponentAssemble._get_profile_title_and_href_from_dir(md_path)
+            res_cat = ProfileResolver.get_resolved_profile_catalog(trestle_root, profile_href)
+            catalog_interface = CatalogInterface(res_cat)
+
             # load all original comp defs
             # only additions from markdown will be imp_req prose and status
             # and param vals
@@ -338,6 +343,9 @@ class SSPAssemble(AuthorCommonCommand):
             )
 
             context = ControlContext.generate(ContextPurpose.SSP, True, trestle_root, md_path)
+            context.comp_def_name_list = comma_sep_to_list(args.compdefs)
+            part_id_map = catalog_interface.get_statement_part_id_map(False)
+            catalog_interface.generate_control_rule_info(part_id_map, context)
 
             # if ssp already exists use it as container for new content
             if orig_ssp_path:
@@ -349,19 +357,19 @@ class SSPAssemble(AuthorCommonCommand):
                     comp_dict[const.SSP_MAIN_COMP_NAME] = sys_comp
 
                 # read the new imp reqs from markdown and have them reference existing components
-                imp_reqs = CatalogReader.read_catalog_imp_reqs(md_path, comp_dict, context)
+                imp_reqs = CatalogReader.read_catalog_imp_reqs(md_path, comp_dict, catalog_interface, context)
                 new_imp_reqs = []
                 for imp_req in imp_reqs:
                     new_imp_reqs.append(imp_req.as_ssp())
-                # FIXME use set params dict
-                self._merge_comp_defs(ssp, comp_dict)
-                self._merge_imp_reqs(ssp, new_imp_reqs)
+                # FIXME use set params dict and changed
+                _ = self._merge_comp_defs(ssp, comp_dict)
+                _ = self._merge_imp_reqs(ssp, new_imp_reqs)
                 new_file_content_type = FileContentType.path_to_content_type(orig_ssp_path)
             else:
                 # create a sample ssp to hold all the parts
                 ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
                 # load the imp_reqs from markdown and link to original comp defs
-                imp_reqs = CatalogReader.read_catalog_imp_reqs(md_path, comp_dict, context)
+                imp_reqs = CatalogReader.read_catalog_imp_reqs(md_path, comp_dict, catalog_interface, context)
                 new_imp_reqs = []
                 for imp_req in imp_reqs:
                     new_imp_reqs.append(imp_req.as_ssp())
@@ -389,8 +397,6 @@ class SSPAssemble(AuthorCommonCommand):
             # now that we know the complete list of needed components, add them to the sys_imp
             # TODO if the ssp already existed then components may need to be removed if not ref'd by imp_reqs
             self._generate_roles_in_metadata(ssp)
-
-            _, profile_href = ComponentAssemble._get_profile_title_and_href_from_dir(md_path)
 
             ssp.import_profile.href = profile_href
 

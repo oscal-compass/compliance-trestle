@@ -257,6 +257,20 @@
                 "remarks": "rule_2"
               },
               {
+                "name": "Rule_Id",
+                "ns": "http://comp_ns",
+                "value": "comp_rule_ab_5",
+                "class": "Rule_Id",
+                "remarks": "rule_5"
+              },
+              {
+                "name": "Rule_Description",
+                "ns": "http://comp_ns",
+                "value": "comp rule ab 5",
+                "class": "Rule_Description",
+                "remarks": "rule_5"
+              },
+              {
                 "name": "Parameter_Id",
                 "ns": "http://comp_ns",
                 "value": "shared_param_1",
