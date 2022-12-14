@@ -659,7 +659,6 @@ class ControlReader():
                 if comp_name == const.SSP_MAIN_COMP_NAME:
                     component.type = const.THIS_SYSTEM_AS_KEY
                 avail_comps[comp_name] = component
-                avail_comps[comp_name] = component
             # now create statements to hold the by-components and assign the statement id
             for label, comp_info in comp_dict[comp_name].items():
                 md_comp_info = md_comp_dict[comp_name]
