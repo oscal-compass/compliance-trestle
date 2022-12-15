@@ -129,7 +129,7 @@ def test_ssp_generate_no_cds(tmp_trestle_dir: pathlib.Path) -> None:
     assert len(node.subnodes) == 1
     assert len(node.subnodes[0].subnodes) == 1
     assert node.subnodes[0].key == '### This System'
-    assert node.subnodes[0].subnodes[0].key == '#### Implementation Status: planned'
+    assert node.subnodes[0].subnodes[0].key == '#### Implementation Status: operational'
 
     fc = FileChecker(md_dir)
 

@@ -16,7 +16,6 @@ import logging
 import pathlib
 import re
 import string
-from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
 from uuid import uuid4
 
@@ -437,68 +436,9 @@ class ControlReader():
     ) -> None:
         """Insert yaml header content into the imp_req and its by_comps as props."""
         dict_ = header.get(const.TRESTLE_PROPS_TAG, {})
-        # if an attribute is in the dict but it is None, need to make sure we get empty list anyway
-        control_orig = as_list(dict_.get(const.CONTROL_ORIGINATION, []))
-        imp_status = as_list(dict_.get(const.IMPLEMENTATION_STATUS, []))
         roles = as_list(dict_.get(const.RESPONSIBLE_ROLES, []))
         props = []
         responsible_roles = []
-        for co in control_orig:
-            if isinstance(co, str):
-                props.append(common.Property(ns=const.NAMESPACE_NIST, name=const.CONTROL_ORIGINATION, value=co))
-            elif isinstance(co, dict):
-                if const.STATUS_INHERITED in co:
-                    uuid = co[const.STATUS_INHERITED]
-                    props.append(common.Property(name=const.LEV_AUTH_UUID, value=uuid))
-                    props.append(
-                        common.Property(
-                            ns=const.NAMESPACE_NIST, name=const.CONTROL_ORIGINATION, value=const.STATUS_INHERITED
-                        )
-                    )
-                else:
-                    raise TrestleError(f'The yaml header for control {control_id} has unexpected content: {co}')
-            else:
-                raise TrestleError(f'The yaml header for control {control_id} has unexpected content: {co}')
-        # TODO Update Fedramp content when Fedramp use case defined
-        for status in imp_status:
-            if isinstance(status, str):
-                props.append(
-                    common.Property(ns=const.NAMESPACE_FEDRAMP, name=const.IMPLEMENTATION_STATUS, value=status)
-                )
-            elif isinstance(status, dict):
-                if const.STATUS_PLANNED in status:
-                    if const.STATUS_COMPLETION_DATE not in status:
-                        raise TrestleError(
-                            f'Planned status in the control {control_id} yaml header must '
-                            f'specify completion date: {status}'
-                        )
-                    props.append(
-                        common.Property(
-                            ns=const.NAMESPACE_FEDRAMP, name=const.STATUS_PLANNED, value=status[const.STATUS_PLANNED]
-                        )
-                    )
-                    datestr = status[const.STATUS_COMPLETION_DATE]
-                    datestr = datestr.strftime('%Y-%m-%d') if isinstance(datestr, datetime) else str(datestr)
-                    props.append(
-                        common.Property(
-                            ns=const.NAMESPACE_FEDRAMP, name=const.STATUS_PLANNED_COMPLETION_DATE, value=datestr
-                        )
-                    )
-                else:
-                    if len(status) != 1:
-                        raise TrestleError(f'Unexpected content in control {control_id} yaml header: {status}')
-                    value = list(status.keys())[0]
-                    remark = list(status.values())[0]
-                    props.append(
-                        common.Property(
-                            ns=const.NAMESPACE_FEDRAMP,
-                            name=const.IMPLEMENTATION_STATUS,
-                            value=value,
-                            remarks=common.Remarks(__root__=remark)
-                        )
-                    )
-            else:
-                raise TrestleError(f'Unexpected content in control {control_id} yaml header: {status}')
         for role in roles:
             if isinstance(role, str):
                 # role_id must conform to NCNAME regex

@@ -145,7 +145,7 @@ class ControlWriter():
             self._insert_rules(info.rules, level)
             self._insert_status(info.status, level)
         else:
-            self._insert_status(ImplementationStatus(state=const.STATUS_PLANNED), level)
+            self._insert_status(ImplementationStatus(state=const.STATUS_OPERATIONAL), level)
 
     def _add_component_control_prompts(self, control_id: str, comp_dict: CompDict, context: ControlContext) -> bool:
         """Add prompts to the markdown for the control itself, per component."""
@@ -160,7 +160,7 @@ class ControlWriter():
             self._md_file.new_header(3, const.SSP_MAIN_COMP_NAME)
             self._md_file.new_paragraph()
             prose = f'{const.SSP_ADD_THIS_SYSTEM_IMPLEMENTATION_FOR_CONTROL_TEXT}: {control_id} -->'
-            status = ImplementationStatus(state=const.STATUS_PLANNED)
+            status = ImplementationStatus(state=const.STATUS_OPERATIONAL)
             if const.SSP_MAIN_COMP_NAME in comp_dict:
                 comp_info = list(comp_dict[const.SSP_MAIN_COMP_NAME].values())[0]
                 if comp_info.prose:
@@ -243,7 +243,7 @@ class ControlWriter():
                                 wrote_label_content = True
                         if not wrote_label_content:
                             level = 3 if context.purpose == ContextPurpose.COMPONENT else 4
-                            self._insert_status(ImplementationStatus(state=const.STATUS_PLANNED), level)
+                            self._insert_status(ImplementationStatus(state=const.STATUS_OPERATIONAL), level)
                         self._md_file.new_paragraph()
                         did_write_part = True
         # if we loaded nothing for this control yet then it must need a fresh prompt for the control statement
