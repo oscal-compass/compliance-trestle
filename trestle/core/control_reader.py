@@ -617,7 +617,7 @@ class ControlReader():
                 # link it to the component uuid
                 by_comp.component_uuid = component.uuid
                 by_comp.implementation_status = md_comp_info[label].status
-                by_comp.props = none_if_empty(comp_info.props)
+                by_comp.props = none_if_empty(ControlInterface.clean_props(comp_info.props))
                 # add the response prose to the description
                 by_comp.description = ControlReader._handle_empty_prose(md_comp_info[label].prose, control_id)
                 # is this a top level component not assoc with statement part
@@ -641,7 +641,7 @@ class ControlReader():
                 statement.by_components = as_list(statement.by_components)
                 statement.by_components.append(by_comp)
                 statement.description = md_comp_info[label].prose
-                statement.props = none_if_empty(comp_info.props)
+                statement.props = none_if_empty(ControlInterface.clean_props(comp_info.props))
 
         imp_req.statements = list(statement_map.values())
 
@@ -676,7 +676,7 @@ class ControlReader():
                             by_comp = generic.GenericByComponent.generate()
                             by_comp.component_uuid = comp_uuid
                             by_comp.description = comp_info.prose
-                            by_comp.props = none_if_empty(comp_info.props)
+                            by_comp.props = none_if_empty(ControlInterface.clean_props(comp_info.props))
                             imp_req.by_components.append(by_comp)
                         by_comp.set_parameters = as_list(by_comp.set_parameters)
                         by_comp.set_parameters.append(set_param)
@@ -695,9 +695,10 @@ class ControlReader():
                         by_comp.component_uuid = comp_uuid
                         by_comp.set_parameters = [set_param]
                         by_comp.description = comp_info.prose
-                        by_comp.props = none_if_empty(comp_info.props)
+                        by_comp.props = none_if_empty(ControlInterface.clean_props(comp_info.props))
                         statement.by_components = as_list(statement.by_components)
                         statement.by_components.append(by_comp)
+                        statement.props = none_if_empty(ControlInterface.clean_props(statement.props))
         imp_req.by_components = none_if_empty(imp_req.by_components)
         imp_req.statements = none_if_empty(list(statement_map.values()))
         imp_req.set_parameters = none_if_empty(imp_req.set_parameters)

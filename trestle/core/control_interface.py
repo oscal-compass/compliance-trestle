@@ -19,7 +19,7 @@ import pathlib
 import re
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 import trestle.oscal.catalog as cat
 import trestle.oscal.ssp as ossp
@@ -28,7 +28,7 @@ from trestle.common.common_types import TypeWithParts, TypeWithProps
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_filtered_list, as_list, none_if_empty
 from trestle.common.model_utils import ModelUtils
-from trestle.common.str_utils import string_from_root, strip_lower_equals
+from trestle.common.str_utils import as_string, string_from_root, strip_lower_equals
 from trestle.oscal import common
 from trestle.oscal import component as comp
 from trestle.oscal import profile as prof
@@ -883,6 +883,21 @@ class ControlInterface:
                 status = ControlInterface._prop_as_status(prop)
                 break
         return status
+
+    @staticmethod
+    def clean_props(props: Optional[List[common.Property]]) -> List[common.Property]:
+        """Remove duplicate props and implementation status."""
+        new_props: List[common.Property] = []
+        found_props: Set[Tuple[str, str, str, str]] = set()
+        # reverse the list so the latest items are kept
+        for prop in reversed(as_list(props)):
+            prop_tuple = (prop.name, as_string(prop.value), as_string(prop.ns), string_from_root(prop.remarks))
+            if prop_tuple in found_props or prop.name == const.IMPLEMENTATION_STATUS:
+                continue
+            found_props.add(prop_tuple)
+            new_props.append(prop)
+        new_props.reverse()
+        return new_props
 
     @staticmethod
     def cull_props_by_rules(props: Optional[List[common.Property]], rules: List[str]) -> List[str]:

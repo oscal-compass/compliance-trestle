@@ -26,6 +26,7 @@ from trestle.core.control_context import ControlContext
 from trestle.core.control_interface import CompDict, ControlInterface
 from trestle.core.control_reader import ControlReader
 from trestle.oscal import profile as prof
+from trestle.oscal import ssp as ossp
 
 logger = logging.getLogger(__name__)
 
@@ -159,3 +160,32 @@ class CatalogReader():
         if control_file_path.exists():
             md_header, comp_dict = ControlReader.read_control_info_from_md(control_file_path, context)
         return md_header, comp_dict
+
+    @staticmethod
+    def read_ssp_md_content(
+        md_path: pathlib.Path,
+        ssp: ossp.SystemSecurityPlan,
+        catalog_interface: CatalogInterface,
+        context: ControlContext
+    ) -> None:
+        """
+        Read md content into the ssp.
+
+        Args:
+            md_path: path to the catalog markdown
+            ssp: ssp in which to insert the md content
+            catalog_interface: catalog interface for the resolved profile catalog
+            context: control context for the procedure
+
+        Notes:
+            The ssp should already contain info from the comp defs and this fills in selected content from md.
+            The only content read from md is:
+                ssp values in the comp def rules param vals of the header
+                ssp values in the set-params of the header
+                all prose for implementaton responses
+                all status values
+        """
+        for group_path in CatalogInterface._get_group_ids_and_dirs(md_path).values():
+            for control_file in group_path.glob('*.md'):
+                md_header, comp_dict = CatalogReader._read_comp_info_from_md(control_file, context)
+                pass
