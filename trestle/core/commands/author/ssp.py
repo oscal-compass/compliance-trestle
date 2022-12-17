@@ -324,6 +324,7 @@ class SSPAssemble(AuthorCommonCommand):
                 # didnt find bycomp so need to make one
                 by_comp = gens.generate_sample_model(ossp.ByComponent)
                 by_comp.component_uuid = comp_uuid
+                by_comp.implementation_status = com.ImplementationStatus(state=const.STATUS_OPERATIONAL)
                 statement.by_components = as_list(statement.by_components)
                 statement.by_components.append(by_comp)
                 return by_comp
@@ -342,6 +343,7 @@ class SSPAssemble(AuthorCommonCommand):
             by_comp.component_uuid = gen_comp.uuid
             by_comp.description = gen_imp_req.description
             by_comp.props = ControlInterface.clean_props(gen_imp_req.props)
+            by_comp.implementation_status = com.ImplementationStatus(state=const.STATUS_OPERATIONAL)
             imp_req.by_components = as_list(imp_req.by_components)
             imp_req.by_components.append(by_comp)
         # each statement in ci corresponds to by_comp in an ssp imp req

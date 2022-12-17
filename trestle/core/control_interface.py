@@ -389,8 +389,8 @@ class ControlInterface:
     @staticmethod
     def item_has_rules(item: TypeWithProps) -> bool:
         """Determine if the item has rules in its props."""
-        rules_dict, _ = ControlInterface.get_rules_dict_from_item(item)
-        return bool(rules_dict)
+        _, rules_props = ControlInterface.get_rules_dict_from_item(item)
+        return bool(rules_props)
 
     @staticmethod
     def get_rule_list_for_item(item: TypeWithProps) -> Tuple[List[str], List[common.Property]]:
