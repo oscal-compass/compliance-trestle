@@ -278,7 +278,7 @@ class SSPAssemble(AuthorCommonCommand):
                 return imp_req
         imp_req = gens.generate_sample_model(ossp.ImplementedRequirement)
         imp_req.control_id = control_id
-        imp_req.statements = []
+        imp_req.statements = None
         ssp.control_implementation.implemented_requirements = as_list(
             ssp.control_implementation.implemented_requirements
         )
@@ -299,14 +299,15 @@ class SSPAssemble(AuthorCommonCommand):
         if not control_imp_req:
             control_imp_req = gens.generate_sample_model(ossp.ImplementedRequirement)
             control_imp_req.control_id = control_id
-            control_imp_req.statements = []
+            control_imp_req.statements = None
             ssp.control_implementation.implemented_requirements = as_list(
                 ssp.control_implementation.implemented_requirements
             )
             ssp.control_implementation.implemented_requirements.append(control_imp_req)
         statement = gens.generate_sample_model(ossp.Statement)
         statement.statement_id = statement_id
-        statement.by_components = []
+        statement.by_components = None
+        control_imp_req.statements = as_list(control_imp_req.statements)
         control_imp_req.statements.append(statement)
         return control_imp_req
 
@@ -335,7 +336,7 @@ class SSPAssemble(AuthorCommonCommand):
         gen_imp_req: generic.GenericImplementedRequirement,
         set_params: List[ossp.SetParameter]
     ) -> None:
-        if ControlInterface.get_rules_dict_from_item(gen_imp_req):
+        if ControlInterface.item_has_rules(gen_imp_req):
             imp_req = SSPAssemble._get_imp_req_for_control(ssp, gen_imp_req.control_id)
             by_comp = gens.generate_sample_model(ossp.ByComponent)
             by_comp.component_uuid = gen_comp.uuid
@@ -346,7 +347,7 @@ class SSPAssemble(AuthorCommonCommand):
         # each statement in ci corresponds to by_comp in an ssp imp req
         # so insert the new by_comp directly into the ssp, generating parts as needed
         for statement in as_list(gen_imp_req.statements):
-            if ControlInterface.get_rules_dict_from_item(statement):
+            if ControlInterface.item_has_rules(statement):
                 imp_req = SSPAssemble._get_imp_req_for_statement(ssp, gen_imp_req.control_id, statement.statement_id)
                 by_comp = SSPAssemble._get_by_comp_from_imp_req(imp_req, statement.statement_id, gen_comp.uuid)
                 by_comp.description = statement.description
