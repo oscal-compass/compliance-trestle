@@ -380,13 +380,15 @@ class GenericControlImplementation(TrestleBaseModel):
         class_dict = copy.deepcopy(control_imp.__dict__)
         if 'implemented_requirements' in class_dict:
             new_irs = []
-            for ir in class_dict.get('implemented_requirements', []):
+            ir_list = class_dict.get('implemented_requirements', None)
+            for ir in as_list(ir_list):
                 new_ir = GenericImplementedRequirement.from_comp_def(ir)
                 new_irs.append(new_ir)
             class_dict['implemented-requirements'] = none_if_empty(new_irs)
             class_dict.pop('implemented_requirements', None)
             new_sps = []
-            for sp in class_dict.get('set_parameters', []):
+            sp_list = class_dict.get('set_parameters', None)
+            for sp in as_list(sp_list):
                 new_sps.append(GenericSetParameter.from_defined_component(sp))
             class_dict['set-parameters'] = none_if_empty(new_sps)
             class_dict.pop('set_parameters', None)
