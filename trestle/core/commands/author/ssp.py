@@ -272,65 +272,6 @@ class SSPAssemble(AuthorCommonCommand):
         imp_req.by_components = src_imp_req.by_components
 
     @staticmethod
-    def _get_imp_req_for_control(ssp: ossp.SystemSecurityPlan, control_id: str) -> ossp.ImplementedRequirement:
-        for imp_req in as_list(ssp.control_implementation.implemented_requirements):
-            if imp_req.control_id == control_id:
-                return imp_req
-        imp_req = gens.generate_sample_model(ossp.ImplementedRequirement)
-        imp_req.control_id = control_id
-        imp_req.statements = None
-        ssp.control_implementation.implemented_requirements = as_list(
-            ssp.control_implementation.implemented_requirements
-        )
-        ssp.control_implementation.implemented_requirements.append(imp_req)
-        return imp_req
-
-    @staticmethod
-    def _get_imp_req_for_statement(
-        ssp: ossp.SystemSecurityPlan, control_id: str, statement_id: str
-    ) -> ossp.ImplementedRequirement:
-        control_imp_req: Optional[ossp.ImplementedRequirement] = None
-        for imp_req in as_list(ssp.control_implementation.implemented_requirements):
-            if imp_req.control_id == control_id:
-                control_imp_req = imp_req
-                if statement_id in [stat.statement_id for stat in as_list(imp_req.statements)]:
-                    return imp_req
-        # we didn't find imp_req with statement so need to make statement and/or imp_req
-        if not control_imp_req:
-            control_imp_req = gens.generate_sample_model(ossp.ImplementedRequirement)
-            control_imp_req.control_id = control_id
-            control_imp_req.statements = None
-            ssp.control_implementation.implemented_requirements = as_list(
-                ssp.control_implementation.implemented_requirements
-            )
-            ssp.control_implementation.implemented_requirements.append(control_imp_req)
-        statement = gens.generate_sample_model(ossp.Statement)
-        statement.statement_id = statement_id
-        statement.by_components = None
-        control_imp_req.statements = as_list(control_imp_req.statements)
-        control_imp_req.statements.append(statement)
-        return control_imp_req
-
-    @staticmethod
-    def _get_by_comp_from_imp_req(
-        imp_req: ossp.ImplementedRequirement, statement_id: str, comp_uuid: str
-    ) -> ossp.ByComponent:
-        # this assumes the statement with id has been generated as needed
-        for statement in as_list(imp_req.statements):
-            if statement.statement_id == statement_id:
-                for by_comp in as_list(statement.by_components):
-                    if by_comp.component_uuid == comp_uuid:
-                        return by_comp
-                # didnt find bycomp so need to make one
-                by_comp = gens.generate_sample_model(ossp.ByComponent)
-                by_comp.component_uuid = comp_uuid
-                by_comp.implementation_status = com.ImplementationStatus(state=const.STATUS_OPERATIONAL)
-                statement.by_components = as_list(statement.by_components)
-                statement.by_components.append(by_comp)
-                return by_comp
-        raise TrestleError(f'Internal error seeking by_comp for component {comp_uuid} and statement {statement_id}')
-
-    @staticmethod
     def _add_imp_req_to_ssp(
         ssp: ossp.SystemSecurityPlan,
         gen_comp: generic.GenericComponent,
@@ -338,10 +279,11 @@ class SSPAssemble(AuthorCommonCommand):
         set_params: List[ossp.SetParameter]
     ) -> None:
         if ControlInterface.item_has_rules(gen_imp_req):
-            imp_req = SSPAssemble._get_imp_req_for_control(ssp, gen_imp_req.control_id)
+            imp_req = CatalogReader._get_imp_req_for_control(ssp, gen_imp_req.control_id)
             by_comp = gens.generate_sample_model(ossp.ByComponent)
             by_comp.component_uuid = gen_comp.uuid
             by_comp.description = gen_imp_req.description
+            by_comp.set_parameters = none_if_empty(set_params)
             by_comp.props = ControlInterface.clean_props(gen_imp_req.props)
             by_comp.implementation_status = com.ImplementationStatus(state=const.STATUS_OPERATIONAL)
             imp_req.by_components = as_list(imp_req.by_components)
@@ -350,11 +292,10 @@ class SSPAssemble(AuthorCommonCommand):
         # so insert the new by_comp directly into the ssp, generating parts as needed
         for statement in as_list(gen_imp_req.statements):
             if ControlInterface.item_has_rules(statement):
-                imp_req = SSPAssemble._get_imp_req_for_statement(ssp, gen_imp_req.control_id, statement.statement_id)
-                by_comp = SSPAssemble._get_by_comp_from_imp_req(imp_req, statement.statement_id, gen_comp.uuid)
+                imp_req = CatalogReader._get_imp_req_for_statement(ssp, gen_imp_req.control_id, statement.statement_id)
+                by_comp = CatalogReader._get_by_comp_from_imp_req(imp_req, statement.statement_id, gen_comp.uuid)
                 by_comp.description = statement.description
                 by_comp.props = none_if_empty(ControlInterface.clean_props(statement.props))
-                by_comp.set_parameters = none_if_empty(set_params)
         ssp.control_implementation.implemented_requirements = as_list(
             ssp.control_implementation.implemented_requirements
         )
@@ -393,7 +334,7 @@ class SSPAssemble(AuthorCommonCommand):
             for ci in as_list(gen_comp.control_implementations):
                 all_ci_props.extend(as_list(ci.props))
                 for sp in as_list(ci.set_parameters):
-                    set_params.append(ossp.SetParameter(sp.param_id, sp.values, sp.remarks))
+                    set_params.append(sp.to_ssp())
                 for imp_req in as_list(ci.implemented_requirements):
                     if new_ssp:
                         SSPAssemble._add_imp_req_to_ssp(ssp, gen_comp, imp_req, set_params)
@@ -483,8 +424,8 @@ class SSPAssemble(AuthorCommonCommand):
 
             context = ControlContext.generate(ContextPurpose.SSP, True, trestle_root, md_path)
             context.comp_def_name_list = comma_sep_to_list(args.compdefs)
-            part_id_map = catalog_interface.get_statement_part_id_map(False)
-            catalog_interface.generate_control_rule_info(part_id_map, context)
+            part_id_map_by_id = catalog_interface.get_statement_part_id_map(False)
+            catalog_interface.generate_control_rule_info(part_id_map_by_id, context)
 
             # load all original comp defs
             # only additions from markdown will be imp_req prose and status
@@ -493,6 +434,8 @@ class SSPAssemble(AuthorCommonCommand):
             comp_dict = SSPAssemble._build_comp_dict_from_comp_defs(
                 trestle_root, context.comp_def_name_list, not orig_ssp_path
             )
+
+            part_id_map_by_label = catalog_interface.get_statement_part_id_map(True)
 
             # if ssp already exists use it as container for new content
             if orig_ssp_path:
@@ -505,7 +448,9 @@ class SSPAssemble(AuthorCommonCommand):
                 comp_dict[const.SSP_MAIN_COMP_NAME] = sys_comp
 
                 self._merge_comp_defs(ssp, comp_dict)
-                CatalogReader.read_ssp_md_content(md_path, ssp, catalog_interface, context)
+                CatalogReader.read_ssp_md_content(
+                    md_path, ssp, catalog_interface, comp_dict, part_id_map_by_label, context
+                )
 
                 new_file_content_type = FileContentType.path_to_content_type(orig_ssp_path)
             else:
@@ -515,11 +460,10 @@ class SSPAssemble(AuthorCommonCommand):
                 ssp.control_implementation.description = const.SSP_SYSTEM_CONTROL_IMPLEMENTATION_TEXT
                 ssp.system_implementation.components = []
                 self._merge_comp_defs(ssp, comp_dict)
-                CatalogReader.read_ssp_md_content(md_path, ssp, catalog_interface, context)
+                CatalogReader.read_ssp_md_content(
+                    md_path, ssp, catalog_interface, comp_dict, part_id_map_by_label, context
+                )
 
-                # FIXME use set params dict
-                # FIXME self._merge_comp_defs(ssp, comp_dict)
-                # FIXME self._merge_imp_reqs(ssp, new_imp_reqs)
                 import_profile: ossp.ImportProfile = gens.generate_sample_model(ossp.ImportProfile)
                 import_profile.href = 'REPLACE_ME'
                 ssp.import_profile = import_profile

@@ -18,12 +18,15 @@ import pathlib
 from typing import Any, Dict, List, Optional, Tuple
 
 import trestle.common.const as const
+import trestle.core.generators as gens
 import trestle.core.generic_oscal as generic
 import trestle.oscal.catalog as cat
-from trestle.common.list_utils import none_if_empty
+import trestle.oscal.common as com
+from trestle.common.err import TrestleError
+from trestle.common.list_utils import as_list, none_if_empty
 from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.control_context import ControlContext
-from trestle.core.control_interface import CompDict, ControlInterface
+from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlInterface
 from trestle.core.control_reader import ControlReader
 from trestle.oscal import profile as prof
 from trestle.oscal import ssp as ossp
@@ -153,6 +156,76 @@ class CatalogReader():
         return [imp_req_map[key] for key in sorted(imp_req_map.keys())]
 
     @staticmethod
+    def _get_imp_req_for_control(ssp: ossp.SystemSecurityPlan, control_id: str) -> ossp.ImplementedRequirement:
+        for imp_req in as_list(ssp.control_implementation.implemented_requirements):
+            if imp_req.control_id == control_id:
+                return imp_req
+        imp_req = gens.generate_sample_model(ossp.ImplementedRequirement)
+        imp_req.control_id = control_id
+        imp_req.statements = None
+        ssp.control_implementation.implemented_requirements = as_list(
+            ssp.control_implementation.implemented_requirements
+        )
+        ssp.control_implementation.implemented_requirements.append(imp_req)
+        return imp_req
+
+    @staticmethod
+    def _get_imp_req_for_statement(
+        ssp: ossp.SystemSecurityPlan, control_id: str, statement_id: str
+    ) -> ossp.ImplementedRequirement:
+        control_imp_req: Optional[ossp.ImplementedRequirement] = None
+        for imp_req in as_list(ssp.control_implementation.implemented_requirements):
+            if imp_req.control_id == control_id:
+                control_imp_req = imp_req
+                if statement_id in [stat.statement_id for stat in as_list(imp_req.statements)]:
+                    return imp_req
+        # we didn't find imp_req with statement so need to make statement and/or imp_req
+        if not control_imp_req:
+            control_imp_req = gens.generate_sample_model(ossp.ImplementedRequirement)
+            control_imp_req.control_id = control_id
+            control_imp_req.statements = None
+            ssp.control_implementation.implemented_requirements = as_list(
+                ssp.control_implementation.implemented_requirements
+            )
+            ssp.control_implementation.implemented_requirements.append(control_imp_req)
+        statement = gens.generate_sample_model(ossp.Statement)
+        statement.statement_id = statement_id
+        statement.by_components = None
+        control_imp_req.statements = as_list(control_imp_req.statements)
+        control_imp_req.statements.append(statement)
+        return control_imp_req
+
+    @staticmethod
+    def _get_by_comp_from_imp_req(
+        imp_req: ossp.ImplementedRequirement, statement_id: str, comp_uuid: str
+    ) -> ossp.ByComponent:
+        # this assumes the statement with id has been generated as needed
+        if statement_id:
+            for statement in as_list(imp_req.statements):
+                if statement.statement_id == statement_id:
+                    for by_comp in as_list(statement.by_components):
+                        if by_comp.component_uuid == comp_uuid:
+                            return by_comp
+                    # didnt find bycomp so need to make one
+                    by_comp = gens.generate_sample_model(ossp.ByComponent)
+                    by_comp.component_uuid = comp_uuid
+                    by_comp.implementation_status = com.ImplementationStatus(state=const.STATUS_OPERATIONAL)
+                    statement.by_components = as_list(statement.by_components)
+                    statement.by_components.append(by_comp)
+                    return by_comp
+        else:
+            for by_comp in as_list(imp_req.by_components):
+                if by_comp.component_uuid == comp_uuid:
+                    return by_comp
+            by_comp = gens.generate_sample_model(ossp.ByComponent)
+            by_comp.component_uuid = comp_uuid
+            by_comp.implementation_status = com.ImplementationStatus(state=const.STATUS_OPERATIONAL)
+            imp_req.by_components = as_list(imp_req.by_components)
+            imp_req.by_components.append(by_comp)
+            return by_comp
+        raise TrestleError(f'Internal error seeking by_comp for component {comp_uuid} and statement {statement_id}')
+
+    @staticmethod
     def _read_comp_info_from_md(control_file_path: pathlib.Path,
                                 context: ControlContext) -> Tuple[Dict[str, Any], CompDict]:
         md_header = {}
@@ -162,10 +235,37 @@ class CatalogReader():
         return md_header, comp_dict
 
     @staticmethod
+    def _update_ssp_with_comp_info(
+        ssp: ossp.SystemSecurityPlan,
+        control_id: str,
+        gen_comp: generic.GenericComponent,
+        comp_info_dict: Dict[str, ComponentImpInfo],
+        part_id_map_by_label: Dict[str, Dict[str, str]]
+    ) -> None:
+        # get imp req for control and find one with by_comp, creating if needed
+        imp_req = CatalogReader._get_imp_req_for_control(ssp, control_id)
+        # if control has no parts it will not have part id map and bycomps will go at control level
+        control_part_id_map = part_id_map_by_label.get(control_id, {})
+        for label, comp_info in comp_info_dict.items():
+            part_id = control_part_id_map.get(label, '')
+            by_comp = CatalogReader._get_by_comp_from_imp_req(imp_req, part_id, gen_comp.uuid)
+            by_comp.props = none_if_empty(comp_info.props)
+            by_comp.description = comp_info.prose
+            by_comp.implementation_status = comp_info.status
+
+    @staticmethod
+    def _update_ssp_with_md_header(
+        ssp: ossp.SystemSecurityPlan, control_id: str, md_header: Dict[str, Dict[str, str]]
+    ) -> None:
+        pass
+
+    @staticmethod
     def read_ssp_md_content(
         md_path: pathlib.Path,
         ssp: ossp.SystemSecurityPlan,
         catalog_interface: CatalogInterface,
+        comp_dict: Dict[str, generic.GenericComponent],
+        part_id_map_by_label: Dict[str, Dict[str, str]],
         context: ControlContext
     ) -> None:
         """
@@ -175,6 +275,8 @@ class CatalogReader():
             md_path: path to the catalog markdown
             ssp: ssp in which to insert the md content
             catalog_interface: catalog interface for the resolved profile catalog
+            comp_dict: map of component name to component
+            part_id_map_by_label: map label to part_id of control
             context: control context for the procedure
 
         Notes:
@@ -184,8 +286,15 @@ class CatalogReader():
                 ssp values in the set-params of the header
                 all prose for implementaton responses
                 all status values
+            ssp has components but may not have all needed imp reqs and bycomps
+            know controlid and comp name in comp_dict
         """
         for group_path in CatalogInterface._get_group_ids_and_dirs(md_path).values():
             for control_file in group_path.glob('*.md'):
-                md_header, comp_dict = CatalogReader._read_comp_info_from_md(control_file, context)
-                pass
+                control_id = control_file.stem
+                md_header, control_comp_dict = CatalogReader._read_comp_info_from_md(control_file, context)
+                for comp_name, comp_info_dict in control_comp_dict.items():
+                    CatalogReader._update_ssp_with_comp_info(
+                        ssp, control_id, comp_dict[comp_name], comp_info_dict, part_id_map_by_label
+                    )
+                CatalogReader._update_ssp_with_md_header(ssp, control_id, md_header)

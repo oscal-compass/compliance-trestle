@@ -24,7 +24,7 @@ from pydantic import Field, constr
 import trestle.oscal.component as comp
 import trestle.oscal.ssp as ossp
 from trestle.common import const
-from trestle.common.list_utils import as_list
+from trestle.common.list_utils import as_list, none_if_empty
 from trestle.core.control_interface import ControlInterface
 from trestle.core.trestle_base_model import TrestleBaseModel
 from trestle.oscal import common
@@ -243,6 +243,16 @@ class GenericSetParameter(TrestleBaseModel):
     values: List[common.Value] = Field(...)
     remarks: Optional[common.Remarks] = None
 
+    @staticmethod
+    def from_defined_component(sp: comp.SetParameter):
+        """Generate generic set parameter from comp_def version."""
+        class_dict = {'param-id': sp.param_id, 'values': sp.values, 'remarks': sp.remarks}
+        return GenericSetParameter(**class_dict)
+
+    def to_ssp(self):
+        """Convert to ssp format."""
+        return (ossp.SetParameter(param_id=self.param_id, values=self.values, remarks=self.remarks))
+
 
 class GenericImplementedRequirement(TrestleBaseModel):
     """Generic ImplementedRequirement for SSP and DefinedComponent."""
@@ -370,11 +380,17 @@ class GenericControlImplementation(TrestleBaseModel):
         class_dict = copy.deepcopy(control_imp.__dict__)
         if 'implemented_requirements' in class_dict:
             new_irs = []
-            for ir in class_dict['implemented_requirements']:
+            for ir in class_dict.get('implemented_requirements', []):
                 new_ir = GenericImplementedRequirement.from_comp_def(ir)
                 new_irs.append(new_ir)
-            class_dict['implemented-requirements'] = new_irs
+            class_dict['implemented-requirements'] = none_if_empty(new_irs)
             class_dict.pop('implemented_requirements', None)
+            new_sps = []
+            for sp in class_dict.get('set_parameters', []):
+                new_sps.append(GenericSetParameter.from_defined_component(sp))
+            class_dict['set-parameters'] = none_if_empty(new_sps)
+            class_dict.pop('set_parameters', None)
+
         return cls(**class_dict)
 
     def as_ssp(self) -> ossp.ControlImplementation:
