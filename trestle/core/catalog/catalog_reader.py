@@ -209,7 +209,7 @@ class CatalogReader():
                     # didnt find bycomp so need to make one
                     by_comp = gens.generate_sample_model(ossp.ByComponent)
                     by_comp.component_uuid = comp_uuid
-                    by_comp.implementation_status = com.ImplementationStatus(state=const.STATUS_OPERATIONAL)
+                    by_comp.implementation_status = com.ImplementationStatus(state=const.STATUS_PLANNED)
                     statement.by_components = as_list(statement.by_components)
                     statement.by_components.append(by_comp)
                     return by_comp
@@ -219,7 +219,7 @@ class CatalogReader():
                     return by_comp
             by_comp = gens.generate_sample_model(ossp.ByComponent)
             by_comp.component_uuid = comp_uuid
-            by_comp.implementation_status = com.ImplementationStatus(state=const.STATUS_OPERATIONAL)
+            by_comp.implementation_status = com.ImplementationStatus(state=const.STATUS_PLANNED)
             imp_req.by_components = as_list(imp_req.by_components)
             imp_req.by_components.append(by_comp)
             return by_comp

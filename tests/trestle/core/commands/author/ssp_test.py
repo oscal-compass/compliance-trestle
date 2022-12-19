@@ -129,7 +129,7 @@ def test_ssp_generate_no_cds(tmp_trestle_dir: pathlib.Path) -> None:
     assert len(node.subnodes) == 1
     assert len(node.subnodes[0].subnodes) == 1
     assert node.subnodes[0].key == '### This System'
-    assert node.subnodes[0].subnodes[0].key == '#### Implementation Status: operational'
+    assert node.subnodes[0].subnodes[0].key == '#### Implementation Status: planned'
 
     fc = FileChecker(md_dir)
 
@@ -276,7 +276,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert test_utils.substitute_text_in_file(ac_1_path, 'imp req prose for ac-1 from comp aa', prose_aa)
     assert test_utils.substitute_text_in_file(ac_1_path, 'statement prose for part a. from comp aa', prose_aa_a)
     # change status for sys comp
-    assert test_utils.substitute_text_in_file(ac_1_path, 'Status: operational', 'Status: alternative')
+    assert test_utils.substitute_text_in_file(ac_1_path, 'Status: planned', 'Status: alternative')
 
     add_prompt = 'statement prose for part a. from comp ba'
     ac_67_path = tmp_trestle_dir / ssp_name / 'ac/ac-6.7.md'

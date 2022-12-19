@@ -57,7 +57,7 @@ class ComponentImpInfo:
     # the lambda is needed to prevent a mutable from being used as a default
     # without the lambda it would break python 3.11 and is a bug either way
     status: common.ImplementationStatus = field(
-        default_factory=lambda: common.ImplementationStatus(state=const.STATUS_OPERATIONAL)
+        default_factory=lambda: common.ImplementationStatus(state=const.STATUS_PLANNED)
     )
 
 
@@ -883,7 +883,7 @@ class ControlInterface:
     @staticmethod
     def get_status_from_props(item: TypeWithProps) -> common.ImplementationStatus:
         """Get the status of an item from its props."""
-        status = common.ImplementationStatus(state=const.STATUS_OPERATIONAL)
+        status = common.ImplementationStatus(state=const.STATUS_PLANNED)
         for prop in as_list(item.props):
             if prop.name == const.IMPLEMENTATION_STATUS:
                 status = ControlInterface._prop_as_status(prop)
