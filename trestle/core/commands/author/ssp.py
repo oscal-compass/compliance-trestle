@@ -14,7 +14,6 @@
 """Create ssp from catalog and profile."""
 
 import argparse
-import copy
 import logging
 import pathlib
 from typing import Any, Dict, List, Optional, Set
@@ -264,7 +263,9 @@ class SSPAssemble(AuthorCommonCommand):
             for dest_by_comp in as_list(stat.by_components):
                 if dest_by_comp.component_uuid == by_comp.component_uuid:
                     dest_by_comp.description = by_comp.description
-                    dest_by_comp.props = ControlInterface.clean_props(by_comp.props)
+                    dest_by_comp.props = as_list(dest_by_comp.props)
+                    dest_by_comp.props.extend(as_list(statement.props))
+                    dest_by_comp.props = none_if_empty(ControlInterface.clean_props(by_comp.props))
                     dest_by_comp.implementation_status = by_comp.implementation_status
                     dest_by_comp.set_parameters = set_params
                     found = True
@@ -281,9 +282,6 @@ class SSPAssemble(AuthorCommonCommand):
         """Merge the generic statement into the statements of the imp_req."""
         for stat in as_list(imp_req.statements):
             if stat.statement_id == statement.statement_id:
-                stat.props = as_list(stat.props)
-                stat.props.extend(as_list(statement.props))
-                stat.props = ControlInterface.clean_props(stat.props)
                 SSPAssemble._merge_by_comps(stat, statement, set_params)
                 return
         imp_req.statements = as_list(imp_req.statements)
@@ -301,7 +299,6 @@ class SSPAssemble(AuthorCommonCommand):
         imp_req.props = none_if_empty(ControlInterface.clean_props(gen_imp_req.props))
         for statement in as_list(src_imp_req.statements):
             SSPAssemble._merge_statement(imp_req, statement, set_params)
-        imp_req.by_components = copy.deepcopy(src_imp_req.by_components)
 
     @staticmethod
     def _add_imp_req_to_ssp(

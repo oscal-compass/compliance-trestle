@@ -341,7 +341,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert ssp_assemble._run(args) == 0
 
     # confirm the file was not written out since no change
-    # FIXME assert orig_ssp_path.stat().st_mtime == orig_file_creation
+    assert orig_ssp_path.stat().st_mtime == orig_file_creation
 
     repeat_ssp, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     assert len(repeat_ssp.system_implementation.components) == 5
@@ -360,9 +360,9 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
         compdefs=args_compdefs
     )
     assert ssp_assemble._run(args) == 0
-    # FIXME assert orig_uuid == test_utils.get_model_uuid(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+    assert orig_uuid == test_utils.get_model_uuid(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     # confirm the file was not written out since no change
-    # FIXME assert orig_ssp_path.stat().st_mtime == orig_file_creation
+    assert orig_ssp_path.stat().st_mtime == orig_file_creation
 
     # assemble it again but give new version and regen uuid's
     args = argparse.Namespace(
