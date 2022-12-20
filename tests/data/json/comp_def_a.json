@@ -155,7 +155,7 @@
             ],
             "implemented-requirements": [
               {
-                "uuid": "ca5ea4c5-ba51-4b1d-932a-5606891b7486",
+                "uuid": "ca5ea4c5-ba51-4b1d-932a-5606891b7500",
                 "control-id": "ac-1",
                 "description": "imp req prose for ac-1 from comp aa",
                 "props": [
@@ -192,7 +192,7 @@
                 "statements": [
                   {
                     "statement-id": "ac-1_smt.a",
-                    "uuid": "2652b814-2a6b-4b6d-a0ae-8bc7a007219f",
+                    "uuid": "2652b814-2a6b-4b6d-a0ae-8bc7a0072200",
                     "description": "statement prose for part a. from comp aa",
                     "props": [
                       {
@@ -303,7 +303,7 @@
             ],
             "implemented-requirements": [
               {
-                "uuid": "ca5ea4c5-ba51-4b1d-932a-5606891b7486",
+                "uuid": "ca5ea4c5-ba51-4b1d-932a-5606891b7501",
                 "control-id": "ac-1",
                 "description": "",
                 "props": [
@@ -340,7 +340,7 @@
                 "statements": [
                   {
                     "statement-id": "ac-1_smt.a",
-                    "uuid": "2652b814-2a6b-4b6d-a0ae-8bc7a007219f",
+                    "uuid": "2652b814-2a6b-4b6d-a0ae-8bc7a0072201",
                     "description": "",
                     "props": [
                       {
@@ -356,7 +356,7 @@
                 ]
               },
               {
-                "uuid": "ca5ea4c5-ba51-4b1d-932a-5606891b7486",
+                "uuid": "ca5ea4c5-ba51-4b1d-932a-5606891b7502",
                 "control-id": "at-1",
                 "description": "imp req prose for at-1 from comp ab",
                 "props": [
@@ -393,7 +393,7 @@
                 "statements": [
                   {
                     "statement-id": "at-1_smt.b",
-                    "uuid": "2652b814-2a6b-4b6d-a0ae-8bc7a007219f",
+                    "uuid": "2652b814-2a6b-4b6d-a0ae-8bc7a0072202",
                     "description": "statement prose for part b. from comp ab",
                     "props": [
                       {

@@ -72,6 +72,26 @@ class GenericByComponent(TrestleBaseModel):
         uuid = str(uuid4())
         return GenericByComponent(component_uuid=const.SAMPLE_UUID_STR, uuid=uuid, description='')
 
+    def as_ssp(self) -> ossp.ByComponent:
+        """Convert to ssp format."""
+        set_params = []
+        for set_param in as_list(self.set_parameters):
+            new_set_param = ossp.SetParameter(
+                param_id=set_param.param_id, values=set_param.values, remarks=set_param.remarks
+            )
+            set_params.append(new_set_param)
+        set_params = none_if_empty(set_params)
+        return ossp.ByComponent(
+            component_uuid=self.component_uuid,
+            uuid=self.uuid,
+            description=self.description,
+            props=self.props,
+            links=self.links,
+            set_parameters=set_params,
+            implementation_status=self.implementation_status,
+            responsible_roles=self.responsible_roles
+        )
+
 
 class GenericStatement(TrestleBaseModel):
     """Generic statement for SSP and DefinedComp."""
@@ -129,7 +149,19 @@ class GenericStatement(TrestleBaseModel):
         """Represent in ssp form."""
         class_dict = copy.deepcopy(self.__dict__)
         class_dict.pop('description', None)
-        return ossp.Statement(**class_dict)
+        by_comps = []
+        for by_comp in as_list(self.by_components):
+            new_by_comp = by_comp.as_ssp(by_comp)
+            by_comps.append(new_by_comp)
+        return ossp.Statement(
+            statement_id=self.statement_id,
+            uuid=self.uuid,
+            props=self.props,
+            links=self.links,
+            responsible_roles=self.responsible_roles,
+            by_components=by_comps,
+            remarks=self.remarks
+        )
 
 
 class GenericComponent(TrestleBaseModel):

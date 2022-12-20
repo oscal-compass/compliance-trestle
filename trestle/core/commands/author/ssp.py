@@ -14,6 +14,7 @@
 """Create ssp from catalog and profile."""
 
 import argparse
+import copy
 import logging
 import pathlib
 from typing import Any, Dict, List, Optional, Set
@@ -257,6 +258,38 @@ class SSPAssemble(AuthorCommonCommand):
         return new_component
 
     @staticmethod
+    def _merge_by_comps(stat: ossp.Statement, statement: ossp.Statement, set_params: List[ossp.SetParameter]):
+        for by_comp in as_list(statement.by_components):
+            found = False
+            for dest_by_comp in as_list(stat.by_components):
+                if dest_by_comp.component_uuid == by_comp.component_uuid:
+                    dest_by_comp.description = by_comp.description
+                    dest_by_comp.props = ControlInterface.clean_props(by_comp.props)
+                    dest_by_comp.implementation_status = by_comp.implementation_status
+                    dest_by_comp.set_parameters = set_params
+                    found = True
+                    break
+            if not found:
+                stat.by_components = as_list(stat.by_components)
+                by_comp.set_parameters = set_params
+                stat.by_components.append(by_comp)
+
+    @staticmethod
+    def _merge_statement(
+        imp_req: ossp.ImplementedRequirement, statement: generic.GenericStatement, set_params: List[ossp.SetParameter]
+    ):
+        """Merge the generic statement into the statements of the imp_req."""
+        for stat in as_list(imp_req.statements):
+            if stat.statement_id == statement.statement_id:
+                stat.props = as_list(stat.props)
+                stat.props.extend(as_list(statement.props))
+                stat.props = ControlInterface.clean_props(stat.props)
+                SSPAssemble._merge_by_comps(stat, statement, set_params)
+                return
+        imp_req.statements = as_list(imp_req.statements)
+        imp_req.append(statement)
+
+    @staticmethod
     def _merge_imp_req_into_imp_req(
         imp_req: ossp.ImplementedRequirement,
         gen_imp_req: generic.GenericImplementedRequirement,
@@ -266,10 +299,9 @@ class SSPAssemble(AuthorCommonCommand):
         # convert generic imp req from comp defs into ssp form
         src_imp_req = gen_imp_req.as_ssp()
         imp_req.props = none_if_empty(ControlInterface.clean_props(gen_imp_req.props))
-        imp_req.statements = src_imp_req.statements
-        for statement in as_list(imp_req.statements):
-            statement.props = none_if_empty(ControlInterface.clean_props(statement.props))
-        imp_req.by_components = src_imp_req.by_components
+        for statement in as_list(src_imp_req.statements):
+            SSPAssemble._merge_statement(imp_req, statement, set_params)
+        imp_req.by_components = copy.deepcopy(src_imp_req.by_components)
 
     @staticmethod
     def _add_imp_req_to_ssp(
@@ -278,24 +310,28 @@ class SSPAssemble(AuthorCommonCommand):
         gen_imp_req: generic.GenericImplementedRequirement,
         set_params: List[ossp.SetParameter]
     ) -> None:
-        if ControlInterface.item_has_rules(gen_imp_req):
-            imp_req = CatalogReader._get_imp_req_for_control(ssp, gen_imp_req.control_id)
-            by_comp = gens.generate_sample_model(ossp.ByComponent)
-            by_comp.component_uuid = gen_comp.uuid
-            by_comp.description = gen_imp_req.description
-            by_comp.set_parameters = none_if_empty(set_params)
-            by_comp.props = ControlInterface.clean_props(gen_imp_req.props)
-            by_comp.implementation_status = com.ImplementationStatus(state=const.STATUS_PLANNED)
-            imp_req.by_components = as_list(imp_req.by_components)
-            imp_req.by_components.append(by_comp)
+        imp_req = CatalogReader._get_imp_req_for_control(ssp, gen_imp_req.control_id)
+        imp_req.props = ControlInterface.clean_props(gen_imp_req.props)
+        # if a new imp_req was created make sure its uuid matches the generic one
+        by_comp = gens.generate_sample_model(ossp.ByComponent)
+        by_comp.component_uuid = gen_comp.uuid
+        by_comp.description = gen_imp_req.description
+        by_comp.set_parameters = none_if_empty(set_params)
+        by_comp.props = ControlInterface.clean_props(gen_imp_req.props)
+        by_comp.implementation_status = com.ImplementationStatus(state=const.STATUS_PLANNED)
+        imp_req.by_components = as_list(imp_req.by_components)
+        imp_req.by_components.append(by_comp)
         # each statement in ci corresponds to by_comp in an ssp imp req
         # so insert the new by_comp directly into the ssp, generating parts as needed
+        imp_req.statements = as_list(imp_req.statements)
         for statement in as_list(gen_imp_req.statements):
             if ControlInterface.item_has_rules(statement):
                 imp_req = CatalogReader._get_imp_req_for_statement(ssp, gen_imp_req.control_id, statement.statement_id)
                 by_comp = CatalogReader._get_by_comp_from_imp_req(imp_req, statement.statement_id, gen_comp.uuid)
                 by_comp.description = statement.description
                 by_comp.props = none_if_empty(ControlInterface.clean_props(statement.props))
+                SSPAssemble._merge_statement(imp_req, statement, set_params)
+        imp_req.statements = none_if_empty(imp_req.statements)
         ssp.control_implementation.implemented_requirements = as_list(
             ssp.control_implementation.implemented_requirements
         )
@@ -308,18 +344,11 @@ class SSPAssemble(AuthorCommonCommand):
     ) -> None:
         """Merge the new imp_reqs into the ssp."""
         for imp_req in as_list(ssp.control_implementation.implemented_requirements):
-            if imp_req.uuid == gen_imp_req.uuid:
+            if imp_req.control_id == gen_imp_req.control_id:
                 SSPAssemble._merge_imp_req_into_imp_req(imp_req, gen_imp_req, set_params)
                 return
         new_imp_req = gen_imp_req.as_ssp()
         imp_req.props = none_if_empty(ControlInterface.clean_props(gen_imp_req.props))
-        # FIXME need to handle statement description
-        # FIXME imp_req.statements = gen_imp_req.statements
-        # FIXME for statement in as_list(imp_req.statements):
-        # FIXME     statement.props = none_if_empty(ControlInterface.clean_props(statement.props))
-        # FIXME ssp.control_implementation.implemented_requirements = as_list(
-        # FIXME     ssp.control_implementation.implemented_requirements
-        # FIXME )
         ssp.control_implementation.implemented_requirements.append(new_imp_req)
 
     def _merge_comp_defs(self, ssp: ossp.SystemSecurityPlan, comp_dict: Dict[str, generic.GenericComponent]) -> None:
@@ -340,6 +369,7 @@ class SSPAssemble(AuthorCommonCommand):
                         SSPAssemble._add_imp_req_to_ssp(ssp, gen_comp, imp_req, set_params)
                     else:
                         SSPAssemble._merge_imp_req_into_ssp(ssp, imp_req, set_params)
+                        pass
             ssp_comp.props = as_list(gen_comp.props)
             ssp_comp.props.extend(all_ci_props)
             ssp_comp.props = none_if_empty(ControlInterface.clean_props(ssp_comp.props))

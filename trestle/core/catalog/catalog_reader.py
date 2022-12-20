@@ -156,13 +156,22 @@ class CatalogReader():
         return [imp_req_map[key] for key in sorted(imp_req_map.keys())]
 
     @staticmethod
+    def _clean_imp_req(imp_req: generic.GenericImplementedRequirement):
+        imp_req.props = ControlInterface.clean_props(imp_req.props)
+        for statement in as_list(imp_req.statements):
+            statement.props = ControlInterface.clean_props(statement.props)
+            for by_comp in as_list(statement.by_components):
+                by_comp.props = ControlInterface.clean_props(by_comp.props)
+        for by_comp in as_list(imp_req.by_components):
+            by_comp.props = ControlInterface.clean_props(by_comp.props)
+
+    @staticmethod
     def _get_imp_req_for_control(ssp: ossp.SystemSecurityPlan, control_id: str) -> ossp.ImplementedRequirement:
         for imp_req in as_list(ssp.control_implementation.implemented_requirements):
             if imp_req.control_id == control_id:
                 return imp_req
         imp_req = gens.generate_sample_model(ossp.ImplementedRequirement)
         imp_req.control_id = control_id
-        imp_req.statements = None
         ssp.control_implementation.implemented_requirements = as_list(
             ssp.control_implementation.implemented_requirements
         )
@@ -249,15 +258,46 @@ class CatalogReader():
         for label, comp_info in comp_info_dict.items():
             part_id = control_part_id_map.get(label, '')
             by_comp = CatalogReader._get_by_comp_from_imp_req(imp_req, part_id, gen_comp.uuid)
-            by_comp.props = none_if_empty(comp_info.props)
             by_comp.description = comp_info.prose
             by_comp.implementation_status = comp_info.status
 
     @staticmethod
     def _update_ssp_with_md_header(
-        ssp: ossp.SystemSecurityPlan, control_id: str, md_header: Dict[str, Dict[str, str]]
+        ssp: ossp.SystemSecurityPlan,
+        control_id: str,
+        comp_dict: Dict[str, generic.GenericComponent],
+        md_header: Dict[str, Dict[str, str]]
     ) -> None:
-        pass
+        # rules param vals go in bycomps of imp_req
+        # param vals go directly in imp_req
+        rules_param_vals_dict = md_header.get(const.COMP_DEF_RULES_PARAM_VALS_TAG, {})
+        imp_req = CatalogReader._get_imp_req_for_control(ssp, control_id)
+        for comp_name, param_dict_list in rules_param_vals_dict.items():
+            for param_dict in as_list(param_dict_list):
+                if const.SSP_VALUES in param_dict:
+                    by_comp = CatalogReader._get_by_comp_from_imp_req(imp_req, '', comp_dict[comp_name].uuid)
+                    by_comp.set_parameters = as_list(by_comp.set_parameters)
+                    param_id = param_dict['name']
+                    value_list = param_dict[const.SSP_VALUES]
+                    param_values = [com.Value(__root__=value) for value in value_list]
+                    # remove any preceding set params for this param_id
+                    new_sp_list = []
+                    for sp in as_list(by_comp.set_parameters):
+                        if sp.param_id != param_id:
+                            new_sp_list.append(sp)
+                    by_comp.set_parameters = new_sp_list
+                    by_comp.set_parameters.append(ossp.SetParameter(param_id=param_id, values=param_values))
+        param_vals_dict = md_header.get(const.SET_PARAMS_TAG, {})
+        for param_id, param_dict in param_vals_dict.items():
+            if const.SSP_VALUES in param_dict:
+                value_list = param_dict[const.SSP_VALUES]
+                param_values = [com.Value(__root__=value) for value in value_list]
+                new_sp_list = []
+                for sp in as_list(imp_req.set_parameters):
+                    if sp.param_id != param_id:
+                        new_sp_list.append(sp)
+                imp_req.set_parameters = new_sp_list
+                imp_req.set_parameters.append(ossp.SetParameter(param_id=param_id, values=param_values))
 
     @staticmethod
     def read_ssp_md_content(
@@ -297,4 +337,4 @@ class CatalogReader():
                     CatalogReader._update_ssp_with_comp_info(
                         ssp, control_id, comp_dict[comp_name], comp_info_dict, part_id_map_by_label
                     )
-                CatalogReader._update_ssp_with_md_header(ssp, control_id, md_header)
+                CatalogReader._update_ssp_with_md_header(ssp, control_id, comp_dict, md_header)
