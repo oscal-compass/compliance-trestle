@@ -1,0 +1,1036 @@
+{
+  "component-definition": {
+    "uuid": "f9a7af0d-7b59-420d-95a5-5f409fd2ecac",
+    "metadata": {
+      "title": "Component definition for Best Practices",
+      "last-modified": "2022-12-29T15:21:24+00:00",
+      "version": "V1.1",
+      "oscal-version": "1.0.2"
+    },
+    "components": [
+      {
+        "uuid": "954ab26d-e7f7-4981-bea4-aa64dfa146d0",
+        "type": "Service",
+        "title": "IAM",
+        "description": "",
+        "props": [
+          {
+            "name": "Rule_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "account_owner_authorized_ip_range_configured",
+            "class": "scc_class",
+            "remarks": "rule_set_00"
+          },
+          {
+            "name": "Rule_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Ensure authorized IP ranges are configured by the account owner",
+            "class": "scc_class",
+            "remarks": "rule_set_00"
+          },
+          {
+            "name": "Check_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "account_owner_authorized_ip_range_configured",
+            "remarks": "rule_set_00"
+          },
+          {
+            "name": "Check_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Check whether authorized IP ranges are configured by the account owner",
+            "remarks": "rule_set_00"
+          },
+          {
+            "name": "Reference_Id",
+            "ns": "http://abc.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "3000020",
+            "remarks": "rule_set_00"
+          },
+          {
+            "name": "Rule_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "iam_admin_role_users_per_account_maxcount",
+            "class": "scc_class",
+            "remarks": "rule_set_01"
+          },
+          {
+            "name": "Rule_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Ensure there are no more than # IAM administrators configured per account",
+            "class": "scc_class",
+            "remarks": "rule_set_01"
+          },
+          {
+            "name": "Parameter_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "allowed_admins_per_account",
+            "class": "scc_class",
+            "remarks": "rule_set_01"
+          },
+          {
+            "name": "Parameter_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Maximum allowed administrators per",
+            "class": "scc_class",
+            "remarks": "rule_set_01"
+          },
+          {
+            "name": "Parameter_Value_Alternatives",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "10",
+            "class": "scc_class",
+            "remarks": "rule_set_01"
+          },
+          {
+            "name": "Check_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "iam_admin_role_users_per_account_maxcount",
+            "remarks": "rule_set_01"
+          },
+          {
+            "name": "Check_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Check whether there are no more than # IAM administrators configured per account",
+            "remarks": "rule_set_01"
+          },
+          {
+            "name": "Reference_Id",
+            "ns": "http://abc.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "3000021",
+            "remarks": "rule_set_01"
+          },
+          {
+            "name": "Rule_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "iam_cos_public_access_disabled",
+            "class": "scc_class",
+            "remarks": "rule_set_02"
+          },
+          {
+            "name": "Rule_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Ensure Cloud Object Storage public access is disabled in IAM settings (not applicable to ACLs managed using S3 APIs)",
+            "class": "scc_class",
+            "remarks": "rule_set_02"
+          },
+          {
+            "name": "Check_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "iam_cos_public_access_disabled",
+            "remarks": "rule_set_02"
+          },
+          {
+            "name": "Check_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Check whether Cloud Object Storage public access is disabled in IAM settings (not applicable to ACLs managed using S3 APIs)",
+            "remarks": "rule_set_02"
+          },
+          {
+            "name": "Reference_Id",
+            "ns": "http://abc.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "3000022",
+            "remarks": "rule_set_02"
+          },
+          {
+            "name": "Rule_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "iam_account_owner_no_api_key",
+            "class": "scc_class",
+            "remarks": "rule_set_03"
+          },
+          {
+            "name": "Rule_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Ensure the account owner does not have an IBM Cloud API key created in IAM",
+            "class": "scc_class",
+            "remarks": "rule_set_03"
+          },
+          {
+            "name": "Check_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "iam_account_owner_no_api_key",
+            "remarks": "rule_set_03"
+          },
+          {
+            "name": "Check_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Check whether the account owner does not have an IBM Cloud API key created in IAM",
+            "remarks": "rule_set_03"
+          },
+          {
+            "name": "Reference_Id",
+            "ns": "http://abc.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "3000023",
+            "remarks": "rule_set_03"
+          },
+          {
+            "name": "Rule_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "iam_api_keys_rotation_configured",
+            "class": "scc_class",
+            "remarks": "rule_set_04"
+          },
+          {
+            "name": "Rule_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Ensure IBM Cloud API keys that are managed in IAM are rotated at least every # days",
+            "class": "scc_class",
+            "remarks": "rule_set_04"
+          },
+          {
+            "name": "Parameter_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "api_keys_rotated_days",
+            "class": "scc_class",
+            "remarks": "rule_set_04"
+          },
+          {
+            "name": "Parameter_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "API Keys Rotated",
+            "class": "scc_class",
+            "remarks": "rule_set_04"
+          },
+          {
+            "name": "Parameter_Value_Alternatives",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "90",
+            "class": "scc_class",
+            "remarks": "rule_set_04"
+          },
+          {
+            "name": "Check_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "iam_api_keys_rotation_configured",
+            "remarks": "rule_set_04"
+          },
+          {
+            "name": "Check_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Check whether IBM Cloud API keys that are managed in IAM are rotated at least every # days",
+            "remarks": "rule_set_04"
+          },
+          {
+            "name": "Reference_Id",
+            "ns": "http://abc.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "3000024",
+            "remarks": "rule_set_04"
+          },
+          {
+            "name": "Rule_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "iam_account_owner_api_key_restrictions_configured",
+            "class": "scc_class",
+            "remarks": "rule_set_05"
+          },
+          {
+            "name": "Rule_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Ensure permissions for API key creation are limited and configured in IAM settings for the account owner",
+            "class": "scc_class",
+            "remarks": "rule_set_05"
+          },
+          {
+            "name": "Check_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "iam_account_owner_api_key_restrictions_configured",
+            "remarks": "rule_set_05"
+          },
+          {
+            "name": "Check_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Check whether permissions for API key creation are limited and configured in IAM settings for the account owner",
+            "remarks": "rule_set_05"
+          },
+          {
+            "name": "Reference_Id",
+            "ns": "http://abc.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "3000027",
+            "remarks": "rule_set_05"
+          },
+          {
+            "name": "Rule_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "iam_admin_role__user_maxcount",
+            "class": "scc_class",
+            "remarks": "rule_set_06"
+          },
+          {
+            "name": "Rule_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Ensure IAM-enabled services have no more than # users with the IAM administrator role",
+            "class": "scc_class",
+            "remarks": "rule_set_06"
+          },
+          {
+            "name": "Parameter_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "no_of_admins_for_iam",
+            "class": "scc_class",
+            "remarks": "rule_set_06"
+          },
+          {
+            "name": "Parameter_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Maximum no of IAM user",
+            "class": "scc_class",
+            "remarks": "rule_set_06"
+          },
+          {
+            "name": "Parameter_Value_Alternatives",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "3",
+            "class": "scc_class",
+            "remarks": "rule_set_06"
+          },
+          {
+            "name": "Check_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "iam_admin_role__user_maxcount",
+            "remarks": "rule_set_06"
+          },
+          {
+            "name": "Check_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Check whether IAM-enabled services have no more than # users with the IAM administrator role",
+            "remarks": "rule_set_06"
+          },
+          {
+            "name": "Reference_Id",
+            "ns": "http://abc.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "3000029",
+            "remarks": "rule_set_06"
+          },
+          {
+            "name": "Rule_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "iam_serviceID_policies_attached_to_access_groups_or_roles",
+            "class": "scc_class",
+            "remarks": "rule_set_07"
+          },
+          {
+            "name": "Rule_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Ensure IAM policies for service IDs are attached only to groups or roles",
+            "class": "scc_class",
+            "remarks": "rule_set_07"
+          },
+          {
+            "name": "Check_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "iam_serviceID_policies_attached_to_access_groups_or_roles",
+            "remarks": "rule_set_07"
+          },
+          {
+            "name": "Check_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Check whether IAM policies for service IDs are attached only to groups or roles",
+            "remarks": "rule_set_07"
+          },
+          {
+            "name": "Reference_Id",
+            "ns": "http://abc.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "3000030",
+            "remarks": "rule_set_07"
+          },
+          {
+            "name": "Rule_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "iam_logDNA_enabled",
+            "class": "scc_class",
+            "remarks": "rule_set_08"
+          },
+          {
+            "name": "Rule_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Ensure Identity and Access Management (IAM) is enabled with audit logging",
+            "class": "scc_class",
+            "remarks": "rule_set_08"
+          },
+          {
+            "name": "Check_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "iam_logDNA_enabled",
+            "remarks": "rule_set_08"
+          },
+          {
+            "name": "Check_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Check whether Identity and Access Management (IAM) is enabled with audit logging",
+            "remarks": "rule_set_08"
+          },
+          {
+            "name": "Reference_Id",
+            "ns": "http://abc.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "3000031",
+            "remarks": "rule_set_08"
+          },
+          {
+            "name": "Rule_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "iam_admin_role_serviceid_maxcount",
+            "class": "scc_class",
+            "remarks": "rule_set_09"
+          },
+          {
+            "name": "Rule_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Ensure IAM-enabled services have no more than # service IDs with the IAM administrator role",
+            "class": "scc_class",
+            "remarks": "rule_set_09"
+          },
+          {
+            "name": "Parameter_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "no_of_service_id_admins_for_iam",
+            "class": "scc_class",
+            "remarks": "rule_set_09"
+          },
+          {
+            "name": "Parameter_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Maximum no of IAM Service ID",
+            "class": "scc_class",
+            "remarks": "rule_set_09"
+          },
+          {
+            "name": "Parameter_Value_Alternatives",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "3",
+            "class": "scc_class",
+            "remarks": "rule_set_09"
+          },
+          {
+            "name": "Check_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "iam_admin_role_serviceid_maxcount",
+            "remarks": "rule_set_09"
+          },
+          {
+            "name": "Check_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Check whether IAM-enabled services have no more than # service IDs with the IAM administrator role",
+            "remarks": "rule_set_09"
+          },
+          {
+            "name": "Reference_Id",
+            "ns": "http://abc.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "3000032",
+            "remarks": "rule_set_09"
+          }
+        ],
+        "control-implementations": [
+          {
+            "uuid": "5b99d60b-4e44-4382-b227-90cb0b5bdf9f",
+            "source": "https://github.com/usnistgov/oscal-content/blob/main/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_HIGH-baseline_profile.json",
+            "description": "NIST Special Publication 800-53 Revision 5 HIGH IMPACT BASELINE",
+            "set-parameters": [
+              {
+                "param-id": "allowed_admins_per_account",
+                "values": [
+                  "10"
+                ]
+              },
+              {
+                "param-id": "api_keys_rotated_days",
+                "values": [
+                  "90"
+                ]
+              },
+              {
+                "param-id": "no_of_admins_for_iam",
+                "values": [
+                  "3"
+                ]
+              },
+              {
+                "param-id": "no_of_service_id_admins_for_iam",
+                "values": [
+                  "3"
+                ]
+              }
+            ],
+            "implemented-requirements": [
+              {
+                "uuid": "bf71f8d2-6b6a-4d1d-ace5-23df6ab54643",
+                "control-id": "sc-7",
+                "description": "",
+                "statements": [
+                  {
+                    "statement-id": "sc-7_smt.a",
+                    "uuid": "656fc2a3-0e2e-48a3-9620-1fbcf17b458f",
+                    "description": "",
+                    "props": [
+                      {
+                        "name": "Rule_Id",
+                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                        "value": "account_owner_authorized_ip_range_configured",
+                        "class": "scc_class"
+                      },
+                      {
+                        "name": "Rule_Id",
+                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                        "value": "iam_cos_public_access_disabled",
+                        "class": "scc_class"
+                      }
+                    ]
+                  },
+                  {
+                    "statement-id": "sc-7_smt.b",
+                    "uuid": "c890fbbe-a572-4bcb-aad9-998f407d4677",
+                    "description": "",
+                    "props": [
+                      {
+                        "name": "Rule_Id",
+                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                        "value": "account_owner_authorized_ip_range_configured",
+                        "class": "scc_class"
+                      },
+                      {
+                        "name": "Rule_Id",
+                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                        "value": "iam_cos_public_access_disabled",
+                        "class": "scc_class"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "uuid": "0a2ff837-4612-4cb3-9d6f-f201e1662b89",
+                "control-id": "sc-7.3",
+                "description": "",
+                "props": [
+                  {
+                    "name": "Rule_Id",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "account_owner_authorized_ip_range_configured",
+                    "class": "scc_class"
+                  }
+                ]
+              },
+              {
+                "uuid": "4f4f8c37-137a-4653-b5cd-beca3161d85a",
+                "control-id": "sc-7.4",
+                "description": "",
+                "statements": [
+                  {
+                    "statement-id": "sc-7.4_smt.a",
+                    "uuid": "f42bd971-9e2b-432d-88aa-41e1fb9ca15e",
+                    "description": "",
+                    "props": [
+                      {
+                        "name": "Rule_Id",
+                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                        "value": "account_owner_authorized_ip_range_configured",
+                        "class": "scc_class"
+                      },
+                      {
+                        "name": "Rule_Id",
+                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                        "value": "iam_cos_public_access_disabled",
+                        "class": "scc_class"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "uuid": "c5ab5af5-8295-4f81-b27b-736b3b027b8b",
+                "control-id": "sc-7.5",
+                "description": "",
+                "props": [
+                  {
+                    "name": "Rule_Id",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "account_owner_authorized_ip_range_configured",
+                    "class": "scc_class"
+                  }
+                ]
+              },
+              {
+                "uuid": "5e87fe5d-527c-4809-ac7d-a4cd90ca4cff",
+                "control-id": "ia-3",
+                "description": "",
+                "props": [
+                  {
+                    "name": "Rule_Id",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "account_owner_authorized_ip_range_configured",
+                    "class": "scc_class"
+                  }
+                ]
+              },
+              {
+                "uuid": "ffcf5725-43e3-4f02-bc4f-28f218e46910",
+                "control-id": "ac-6",
+                "description": "",
+                "props": [
+                  {
+                    "name": "Rule_Id",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "iam_admin_role_users_per_account_maxcount",
+                    "class": "scc_class"
+                  },
+                  {
+                    "name": "Rule_Id",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "iam_cos_public_access_disabled",
+                    "class": "scc_class"
+                  },
+                  {
+                    "name": "Rule_Id",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "iam_account_owner_no_api_key",
+                    "class": "scc_class"
+                  },
+                  {
+                    "name": "Rule_Id",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "iam_account_owner_api_key_restrictions_configured",
+                    "class": "scc_class"
+                  },
+                  {
+                    "name": "Rule_Id",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "iam_admin_role__user_maxcount",
+                    "class": "scc_class"
+                  },
+                  {
+                    "name": "Rule_Id",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "iam_serviceID_policies_attached_to_access_groups_or_roles",
+                    "class": "scc_class"
+                  },
+                  {
+                    "name": "Rule_Id",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "iam_admin_role_serviceid_maxcount",
+                    "class": "scc_class"
+                  }
+                ]
+              },
+              {
+                "uuid": "e3120e4c-cefc-41df-8d4d-f952883d5a91",
+                "control-id": "ac-5",
+                "description": "",
+                "statements": [
+                  {
+                    "statement-id": "ac-5_smt.c",
+                    "uuid": "6cdbdb65-b653-49ed-8a75-76f5a3e16e52",
+                    "description": "",
+                    "props": [
+                      {
+                        "name": "Rule_Id",
+                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                        "value": "iam_admin_role_users_per_account_maxcount",
+                        "class": "scc_class"
+                      },
+                      {
+                        "name": "Rule_Id",
+                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                        "value": "iam_account_owner_no_api_key",
+                        "class": "scc_class"
+                      },
+                      {
+                        "name": "Rule_Id",
+                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                        "value": "iam_account_owner_api_key_restrictions_configured",
+                        "class": "scc_class"
+                      },
+                      {
+                        "name": "Rule_Id",
+                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                        "value": "iam_admin_role__user_maxcount",
+                        "class": "scc_class"
+                      },
+                      {
+                        "name": "Rule_Id",
+                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                        "value": "iam_serviceID_policies_attached_to_access_groups_or_roles",
+                        "class": "scc_class"
+                      },
+                      {
+                        "name": "Rule_Id",
+                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                        "value": "iam_admin_role_serviceid_maxcount",
+                        "class": "scc_class"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "uuid": "62619f8d-2a65-4625-b66d-0d2bffb8f50e",
+                "control-id": "ac-4",
+                "description": "",
+                "props": [
+                  {
+                    "name": "Rule_Id",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "iam_cos_public_access_disabled",
+                    "class": "scc_class"
+                  }
+                ]
+              },
+              {
+                "uuid": "6e0eac56-6d73-4ac8-95c3-7cd8f2e561b9",
+                "control-id": "ac-14",
+                "description": "",
+                "statements": [
+                  {
+                    "statement-id": "ac-14_smt.a",
+                    "uuid": "b165470c-e565-4e23-89a5-834257767f5d",
+                    "description": "",
+                    "props": [
+                      {
+                        "name": "Rule_Id",
+                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                        "value": "iam_cos_public_access_disabled",
+                        "class": "scc_class"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "uuid": "bae3b95e-6a2b-47b5-999f-bb6627ca86dc",
+                "control-id": "cm-7",
+                "description": "",
+                "statements": [
+                  {
+                    "statement-id": "cm-7_smt.a",
+                    "uuid": "e631eea8-37ff-42d5-8538-5252783d209f",
+                    "description": "",
+                    "props": [
+                      {
+                        "name": "Rule_Id",
+                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                        "value": "iam_cos_public_access_disabled",
+                        "class": "scc_class"
+                      }
+                    ]
+                  },
+                  {
+                    "statement-id": "cm-7_smt.b",
+                    "uuid": "41db2814-1690-49b5-ada1-8fc492a8430b",
+                    "description": "",
+                    "props": [
+                      {
+                        "name": "Rule_Id",
+                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                        "value": "iam_cos_public_access_disabled",
+                        "class": "scc_class"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "uuid": "5fce5d5c-4bba-43c2-be6e-44ecacbbbcc6",
+                "control-id": "ac-2",
+                "description": "",
+                "statements": [
+                  {
+                    "statement-id": "ac-2_smt.d",
+                    "uuid": "34da774a-61a2-4968-b44d-e1ad36d1786c",
+                    "description": "",
+                    "props": [
+                      {
+                        "name": "Rule_Id",
+                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                        "value": "iam_account_owner_no_api_key",
+                        "class": "scc_class"
+                      },
+                      {
+                        "name": "Rule_Id",
+                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                        "value": "iam_account_owner_api_key_restrictions_configured",
+                        "class": "scc_class"
+                      },
+                      {
+                        "name": "Rule_Id",
+                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                        "value": "iam_serviceID_policies_attached_to_access_groups_or_roles",
+                        "class": "scc_class"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "uuid": "428e531f-cad7-432d-8c79-7d7e35e2d391",
+                "control-id": "ia-5",
+                "description": "",
+                "statements": [
+                  {
+                    "statement-id": "ia-5_smt.g",
+                    "uuid": "348d2814-1469-4a31-adf2-e7ae53101349",
+                    "description": "",
+                    "props": [
+                      {
+                        "name": "Rule_Id",
+                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                        "value": "iam_api_keys_rotation_configured",
+                        "class": "scc_class"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "uuid": "bc7674f4-6ffd-4277-b805-28751f511b8e",
+                "control-id": "ia-7",
+                "description": "",
+                "props": [
+                  {
+                    "name": "Rule_Id",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "iam_admin_role__user_maxcount",
+                    "class": "scc_class"
+                  },
+                  {
+                    "name": "Rule_Id",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "iam_serviceID_policies_attached_to_access_groups_or_roles",
+                    "class": "scc_class"
+                  },
+                  {
+                    "name": "Rule_Id",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "iam_admin_role_serviceid_maxcount",
+                    "class": "scc_class"
+                  }
+                ]
+              },
+              {
+                "uuid": "edbbab52-0d57-4e9e-8159-14d81140128a",
+                "control-id": "au-2",
+                "description": "",
+                "statements": [
+                  {
+                    "statement-id": "au-2_smt.a",
+                    "uuid": "ff7fb5ab-686d-4a30-8cbd-5a7dfd8b31af",
+                    "description": "",
+                    "props": [
+                      {
+                        "name": "Rule_Id",
+                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                        "value": "iam_logDNA_enabled",
+                        "class": "scc_class"
+                      }
+                    ]
+                  },
+                  {
+                    "statement-id": "au-2_smt.d",
+                    "uuid": "a72cc00e-11d2-48cd-914f-3f4bbccbb475",
+                    "description": "",
+                    "props": [
+                      {
+                        "name": "Rule_Id",
+                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                        "value": "iam_logDNA_enabled",
+                        "class": "scc_class"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "uuid": "5e367f78-728d-4704-9337-6fc76d024983",
+                "control-id": "si-4",
+                "description": "",
+                "statements": [
+                  {
+                    "statement-id": "si-4_smt.a",
+                    "uuid": "c82ee59b-3e66-427a-bc68-00ab3152bd66",
+                    "description": "",
+                    "props": [
+                      {
+                        "name": "Rule_Id",
+                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                        "value": "iam_logDNA_enabled",
+                        "class": "scc_class"
+                      }
+                    ]
+                  },
+                  {
+                    "statement-id": "si-4_smt.b",
+                    "uuid": "9030b42e-22a7-4354-9ec0-b9a06e76db74",
+                    "description": "",
+                    "props": [
+                      {
+                        "name": "Rule_Id",
+                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                        "value": "iam_logDNA_enabled",
+                        "class": "scc_class"
+                      }
+                    ]
+                  },
+                  {
+                    "statement-id": "si-4_smt.c",
+                    "uuid": "7cf5eef2-6892-45cd-8da4-da12fae4b72b",
+                    "description": "",
+                    "props": [
+                      {
+                        "name": "Rule_Id",
+                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                        "value": "iam_logDNA_enabled",
+                        "class": "scc_class"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "uuid": "04f70274-f1cd-47aa-9661-639430657121",
+                "control-id": "au-12",
+                "description": "",
+                "statements": [
+                  {
+                    "statement-id": "au-12_smt.a",
+                    "uuid": "bdb8b390-10ee-431f-81b6-39a6d060b091",
+                    "description": "",
+                    "props": [
+                      {
+                        "name": "Rule_Id",
+                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                        "value": "iam_logDNA_enabled",
+                        "class": "scc_class"
+                      }
+                    ]
+                  },
+                  {
+                    "statement-id": "au-12_smt.b",
+                    "uuid": "7394ed91-fea9-4dda-af49-f0e0d83cbb68",
+                    "description": "",
+                    "props": [
+                      {
+                        "name": "Rule_Id",
+                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                        "value": "iam_logDNA_enabled",
+                        "class": "scc_class"
+                      }
+                    ]
+                  },
+                  {
+                    "statement-id": "au-12_smt.c",
+                    "uuid": "f5094ee5-feb9-4139-99f4-a0667a2e9a10",
+                    "description": "",
+                    "props": [
+                      {
+                        "name": "Rule_Id",
+                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                        "value": "iam_logDNA_enabled",
+                        "class": "scc_class"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "uuid": "310588e6-e242-4212-9935-bb04a7f28648",
+                "control-id": "au-3",
+                "description": "",
+                "props": [
+                  {
+                    "name": "Rule_Id",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "iam_logDNA_enabled",
+                    "class": "scc_class"
+                  }
+                ]
+              },
+              {
+                "uuid": "53f34aa6-1315-47bd-b678-69ca18d079ac",
+                "control-id": "au-8",
+                "description": "",
+                "statements": [
+                  {
+                    "statement-id": "au-8_smt.a",
+                    "uuid": "08d0f299-69cb-47a9-a416-b016e0178729",
+                    "description": "",
+                    "props": [
+                      {
+                        "name": "Rule_Id",
+                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                        "value": "iam_logDNA_enabled",
+                        "class": "scc_class"
+                      }
+                    ]
+                  },
+                  {
+                    "statement-id": "au-8_smt.b",
+                    "uuid": "a0a5a82a-1ac6-4b9f-82b0-215021be26aa",
+                    "description": "",
+                    "props": [
+                      {
+                        "name": "Rule_Id",
+                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                        "value": "iam_logDNA_enabled",
+                        "class": "scc_class"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "uuid": "53156d82-e99c-42b4-be54-a3a739fa65a8",
+                "control-id": "au-8.1",
+                "description": "",
+                "statements": [
+                  {
+                    "statement-id": "au-8.1_smt.a",
+                    "uuid": "06dd19ea-1d0f-4c9f-bd76-948db13a69c0",
+                    "description": "",
+                    "props": [
+                      {
+                        "name": "Rule_Id",
+                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                        "value": "iam_logDNA_enabled",
+                        "class": "scc_class"
+                      }
+                    ]
+                  },
+                  {
+                    "statement-id": "au-8.1_smt.b",
+                    "uuid": "5217d59a-e739-46ef-8858-481e563918a1",
+                    "description": "",
+                    "props": [
+                      {
+                        "name": "Rule_Id",
+                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                        "value": "iam_logDNA_enabled",
+                        "class": "scc_class"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "uuid": "df2e7b3e-82bf-4dae-8e01-277c0c154cf9",
+                "control-id": "ca-7",
+                "description": "",
+                "statements": [
+                  {
+                    "statement-id": "ca-7_smt.d",
+                    "uuid": "f615826a-bda6-4c7a-8509-69e287e9a1bb",
+                    "description": "",
+                    "props": [
+                      {
+                        "name": "Rule_Id",
+                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                        "value": "iam_logDNA_enabled",
+                        "class": "scc_class"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

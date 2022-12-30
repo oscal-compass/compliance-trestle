@@ -1,0 +1,158 @@
+{
+  "component-definition": {
+    "uuid": "b642ecb8-de8f-4578-93a5-38b493672bae",
+    "metadata": {
+      "title": "Component definition for CIS Red Hat OpenShift Container Platform 4 Benchmark profiles",
+      "last-modified": "2022-12-19T13:19:05+00:00",
+      "version": "V1.1",
+      "oscal-version": "1.0.2"
+    },
+    "components": [
+      {
+        "uuid": "1ca34f3a-2bda-4231-ab72-bd44a33d5fc0",
+        "type": "Service",
+        "title": "OSCO",
+        "description": "",
+        "props": [
+          {
+            "name": "Rule_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "xccdf_org.ssgproject.content_rule_api_server_anonymous_auth",
+            "class": "scc_class",
+            "remarks": "rule_set_0"
+          },
+          {
+            "name": "Rule_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Ensure that the --anonymous-auth argument is set to false",
+            "class": "scc_class",
+            "remarks": "rule_set_0"
+          },
+          {
+            "name": "Rule_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "xccdf_org.ssgproject.content_rule_api_server_basic_auth",
+            "class": "scc_class",
+            "remarks": "rule_set_1"
+          },
+          {
+            "name": "Rule_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Ensure that the --basic-auth-file argument is not set",
+            "class": "scc_class",
+            "remarks": "rule_set_1"
+          },
+          {
+            "name": "Rule_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "xccdf_org.ssgproject.content_rule_api_server_token_auth",
+            "class": "scc_class",
+            "remarks": "rule_set_2"
+          },
+          {
+            "name": "Rule_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Ensure that the --token-auth-file parameter is not set",
+            "class": "scc_class",
+            "remarks": "rule_set_2"
+          },
+          {
+            "name": "Rule_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "xccdf_org.ssgproject.content_rule_api_server_https_for_kubelet_conn",
+            "class": "scc_class",
+            "remarks": "rule_set_3"
+          },
+          {
+            "name": "Rule_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Ensure that the --kubelet-https argument is set to true",
+            "class": "scc_class",
+            "remarks": "rule_set_3"
+          },
+          {
+            "name": "Rule_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "xccdf_org.ssgproject.content_rule_api_server_openshift_https_serving_cert",
+            "class": "scc_class",
+            "remarks": "rule_set_4"
+          },
+          {
+            "name": "Rule_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Ensure that the --kubelet-https argument is set to true",
+            "class": "scc_class",
+            "remarks": "rule_set_4"
+          }
+        ],
+        "control-implementations": [
+          {
+            "uuid": "d7367d67-d29c-4193-824d-a7caaffa9fc4",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "8a30da66-4a3f-4224-8a11-954706c8fd66",
+                "control-id": "CIS-1.2.1",
+                "description": "",
+                "props": [
+                  {
+                    "name": "Rule_Id",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "xccdf_org.ssgproject.content_rule_api_server_anonymous_auth",
+                    "class": "scc_class"
+                  }
+                ]
+              },
+              {
+                "uuid": "6bca5cbe-332c-4316-968f-b17aacd5296a",
+                "control-id": "CIS-1.2.2",
+                "description": "",
+                "props": [
+                  {
+                    "name": "Rule_Id",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "xccdf_org.ssgproject.content_rule_api_server_basic_auth",
+                    "class": "scc_class"
+                  }
+                ]
+              },
+              {
+                "uuid": "26bf3442-d4c8-40b0-98cc-df107892845f",
+                "control-id": "CIS-1.2.3",
+                "description": "",
+                "props": [
+                  {
+                    "name": "Rule_Id",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "xccdf_org.ssgproject.content_rule_api_server_token_auth",
+                    "class": "scc_class"
+                  }
+                ]
+              },
+              {
+                "uuid": "5a3cd793-5f1c-47e0-90db-832c237caf0f",
+                "control-id": "CIS-1.2.4",
+                "description": "",
+                "props": [
+                  {
+                    "name": "Rule_Id",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "xccdf_org.ssgproject.content_rule_api_server_https_for_kubelet_conn",
+                    "class": "scc_class"
+                  },
+                  {
+                    "name": "Rule_Id",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "xccdf_org.ssgproject.content_rule_api_server_openshift_https_serving_cert",
+                    "class": "scc_class"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "component-definition": {
+    "uuid": "3140d2a2-fc41-4706-8ec6-dcc9b23fc610",
+    "metadata": {
+      "title": "Component definition for CIS Red Hat OpenShift Container Platform 4 Benchmark profiles",
+      "last-modified": "2022-12-21T15:45:32+00:00",
+      "version": "V1.1",
+      "oscal-version": "1.0.2"
+    },
+    "components": [
+      {
+        "uuid": "5e44ec9a-f2fb-4d0c-915c-c4daba1f7761",
+        "type": "Service",
+        "title": "IAM",
+        "description": ""
+      }
+    ]
+  }
+}

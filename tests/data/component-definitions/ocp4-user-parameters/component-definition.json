@@ -1,0 +1,160 @@
+{
+  "component-definition": {
+    "uuid": "c6f79456-bcd8-49a8-bd10-12e36ace11b7",
+    "metadata": {
+      "title": "Component definition for CIS Red Hat OpenShift Container Platform 4 Benchmark profiles",
+      "last-modified": "2022-12-21T15:03:36+00:00",
+      "version": "V1.1",
+      "oscal-version": "1.0.2"
+    },
+    "components": [
+      {
+        "uuid": "3c0bd522-a845-47f9-819f-35d37421f623",
+        "type": "Service",
+        "title": "OSCO",
+        "description": "",
+        "props": [
+          {
+            "name": "Rule_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "xccdf_org.ssgproject.content_rule_api_server_anonymous_auth",
+            "class": "scc_class",
+            "remarks": "rule_set_0"
+          },
+          {
+            "name": "Rule_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Ensure that the --anonymous-auth argument is set to false",
+            "class": "scc_class",
+            "remarks": "rule_set_0"
+          },
+          {
+            "name": "Parameter_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "scan_interval_max",
+            "class": "scc_class",
+            "remarks": "rule_set_0"
+          },
+          {
+            "name": "Parameter_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Max Scan Interval Days",
+            "class": "scc_class",
+            "remarks": "rule_set_0"
+          },
+          {
+            "name": "Parameter_Value_Alternatives",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "10, 30",
+            "class": "scc_class",
+            "remarks": "rule_set_0"
+          },
+          {
+            "name": "Rule_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "xccdf_org.ssgproject.content_rule_api_server_basic_auth",
+            "class": "scc_class",
+            "remarks": "rule_set_1"
+          },
+          {
+            "name": "Rule_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Ensure that the --basic-auth-file argument is not set",
+            "class": "scc_class",
+            "remarks": "rule_set_1"
+          },
+          {
+            "name": "Parameter_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "no_of_admins_for_secrets_manager",
+            "class": "scc_class",
+            "remarks": "rule_set_1"
+          },
+          {
+            "name": "Parameter_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Maximum no of Secrets Manager user administrators",
+            "class": "scc_class",
+            "remarks": "rule_set_1"
+          },
+          {
+            "name": "Rule_Id",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "xccdf_org.ssgproject.content_rule_api_server_token_auth",
+            "class": "scc_class",
+            "remarks": "rule_set_2"
+          },
+          {
+            "name": "Rule_Description",
+            "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+            "value": "Ensure that the --token-auth-file parameter is not set",
+            "class": "scc_class",
+            "remarks": "rule_set_2"
+          }
+        ],
+        "control-implementations": [
+          {
+            "uuid": "f38a4b4e-4af2-45ea-9be6-3e59b1d676c2",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "set-parameters": [
+              {
+                "param-id": "scan_interval_max",
+                "values": [
+                  "7"
+                ]
+              },
+              {
+                "param-id": "no_of_admins_for_secrets_manager",
+                "values": [
+                  "3"
+                ]
+              }
+            ],
+            "implemented-requirements": [
+              {
+                "uuid": "f9e3e7cd-5721-49f2-8436-394d78a2fa0b",
+                "control-id": "CIS-1.2.1",
+                "description": "",
+                "props": [
+                  {
+                    "name": "Rule_Id",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "xccdf_org.ssgproject.content_rule_api_server_anonymous_auth",
+                    "class": "scc_class"
+                  }
+                ]
+              },
+              {
+                "uuid": "36461139-a2f2-460b-aab6-fa6d287da83c",
+                "control-id": "CIS-1.2.2",
+                "description": "",
+                "props": [
+                  {
+                    "name": "Rule_Id",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "xccdf_org.ssgproject.content_rule_api_server_basic_auth",
+                    "class": "scc_class"
+                  }
+                ]
+              },
+              {
+                "uuid": "eac6c22c-efe5-4e0c-a475-381bf62cf165",
+                "control-id": "CIS-1.2.3",
+                "description": "",
+                "props": [
+                  {
+                    "name": "Rule_Id",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "xccdf_org.ssgproject.content_rule_api_server_token_auth",
+                    "class": "scc_class"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
