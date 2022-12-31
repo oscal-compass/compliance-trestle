@@ -1023,51 +1023,66 @@ class _CdMgr():
     ) -> None:
         """Update rule definition."""
         if value is not None and len(value):
-            last = 0
-            # modify property
-            for index, prop in enumerate(component.props):
-                if prop.remarks.__root__ != rule_set:
-                    continue
-                last = index
-                if prop.name != name:
-                    continue
+            prop = self.find_property(component, rule_set, name)
+            if prop:
+                # modify property
                 if prop.value == value:
                     return
                 logger.debug(f'{rule_set} {name} {prop.value} -> {value}')
                 prop.value = value
-                return
-            # add property
-            prop_add = Property(
-                name=name,
-                value=value,
-                ns=ns,
-                class_=class_,
-                remarks=rule_set,
-            )
-            # insert property immediately after last of same rule set
-            props = []
-            for index, prop in enumerate(component.props):
-                if prop_add:
-                    if index > last:
+            else:
+                self.add_property(component, rule_set, name, value, ns, class_)
+        else:
+            self.delete_property(component, rule_set, name)
+
+    def find_property(self, component: DefinedComponent, rule_set: str, name: str) -> Property:
+        """Find property."""
+        rval = None
+        for prop in component.props:
+            if prop.remarks.__root__ == rule_set and prop.name == name:
+                rval = prop
+                break
+        return rval
+
+    def add_property(
+        self, component: DefinedComponent, rule_set: str, name: str, value: str, ns: str, class_: str
+    ) -> None:
+        """Add property."""
+        prop_add = Property(
+            name=name,
+            value=value,
+            ns=ns,
+            class_=class_,
+            remarks=rule_set,
+        )
+        last = 0
+        for index, prop in enumerate(component.props):
+            if prop.remarks.__root__ == rule_set:
+                last = index
+        props = []
+        for index, prop in enumerate(component.props):
+            if prop_add:
+                if index > last:
+                    props.append(prop_add)
+                    prop_add = None
+                    logger.debug(f'{rule_set} {name} {prop.value} ->> {value}')
+                elif prop_add.remarks.__root__ == prop.remarks.__root__:
+                    if CsvColumn.get_order(prop.name) > CsvColumn.get_order(prop_add.name):
                         props.append(prop_add)
                         prop_add = None
                         logger.debug(f'{rule_set} {name} {prop.value} ->> {value}')
-                    elif prop_add.remarks.__root__ == prop.remarks.__root__:
-                        if CsvColumn.get_order(prop.name) > CsvColumn.get_order(prop_add.name):
-                            props.append(prop_add)
-                            prop_add = None
-                            logger.debug(f'{rule_set} {name} {prop.value} ->> {value}')
+            props.append(prop)
+        component.props = props
+
+    def delete_property(self, component: DefinedComponent, rule_set: str, name: str) -> None:
+        """Delete property."""
+        props = []
+        for prop in component.props:
+            if prop.remarks.__root__ == rule_set and prop.name == name:
+                logger.debug(f'{rule_set} {name} {prop.value} removed')
+            else:
                 props.append(prop)
-            component.props = props
-        else:
-            # delete property
-            props = []
-            for prop in component.props:
-                if prop.remarks.__root__ == rule_set and prop.name == name:
-                    logger.debug(f'{rule_set} {name} {prop.value} removed')
-                else:
-                    props.append(prop)
-            component.props = props
+        component.props = props
 
 
 class CsvColumn():
@@ -1331,10 +1346,6 @@ class _CsvMgr():
         """Get value for specified name."""
         row = self.get_row(rule_key)
         return self.get_row_value(row, name)
-
-    def get_row_param(self, param_key: tuple) -> List:
-        """Get row for param."""
-        return self._csv_set_params_map[param_key][1]
 
     def get_user_column_names(self) -> List[str]:
         """Get user column names."""
