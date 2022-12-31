@@ -990,23 +990,41 @@ class _CdMgr():
         """Accounting, control mappings."""
         if control_implementation.implemented_requirements:
             for implemented_requirement in control_implementation.implemented_requirements:
-                if implemented_requirement.statements:
-                    for statement in implemented_requirement.statements:
-                        if statement.props:
-                            for prop in statement.props:
-                                if prop.name == 'Rule_Id':
-                                    rule_id = prop.value
-                                    key = (
-                                        component.title,
-                                        component.type,
-                                        rule_id,
-                                        control_implementation.source,
-                                        control_implementation.description,
-                                        statement.statement_id,
-                                    )
-                                    self._cd_controls_map[key] = prop
-                if implemented_requirement.props:
-                    for prop in implemented_requirement.props:
+                self.accounting_control_mappings_props(component, control_implementation, implemented_requirement)
+                self.accounting_control_mappings_statements(component, control_implementation, implemented_requirement)
+
+    def accounting_control_mappings_props(
+        self,
+        component: DefinedComponent,
+        control_implementation: ControlImplementation,
+        implemented_requirement: ImplementedRequirement
+    ) -> None:
+        """Accounting, control mappings props."""
+        if implemented_requirement.props:
+            for prop in implemented_requirement.props:
+                if prop.name == 'Rule_Id':
+                    rule_id = prop.value
+                    key = (
+                        component.title,
+                        component.type,
+                        rule_id,
+                        control_implementation.source,
+                        control_implementation.description,
+                        implemented_requirement.control_id,
+                    )
+                    self._cd_controls_map[key] = prop
+
+    def accounting_control_mappings_statements(
+        self,
+        component: DefinedComponent,
+        control_implementation: ControlImplementation,
+        implemented_requirement: ImplementedRequirement
+    ) -> None:
+        """Accounting, control mappings statements."""
+        if implemented_requirement.statements:
+            for statement in implemented_requirement.statements:
+                if statement.props:
+                    for prop in statement.props:
                         if prop.name == 'Rule_Id':
                             rule_id = prop.value
                             key = (
@@ -1015,7 +1033,7 @@ class _CdMgr():
                                 rule_id,
                                 control_implementation.source,
                                 control_implementation.description,
-                                implemented_requirement.control_id,
+                                statement.statement_id,
                             )
                             self._cd_controls_map[key] = prop
 
