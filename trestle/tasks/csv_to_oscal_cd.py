@@ -55,8 +55,8 @@ def derive_part_id(control_mapping: str) -> str:
     return rval
 
 
-def get_list_len(list_: List) -> int:
-    """Calculate list length."""
+def non_empty(list_: List) -> int:
+    """Determine emptiness."""
     if list_ is None:
         return 0
     return len(list_)
@@ -372,14 +372,13 @@ class CsvToOscalComponentDefinition(TaskBase):
                     for implemented_requirement in implemented_requirements:
                         self._delete_ir_props(implemented_requirement, rule_id)
                         self._delete_ir_statements(implemented_requirement, rule_id)
-                        if get_list_len(implemented_requirement.props) or get_list_len(
-                                implemented_requirement.statements):
+                        if non_empty(implemented_requirement.props) or non_empty(implemented_requirement.statements):
                             control_implementation.implemented_requirements.append(implemented_requirement)
                         else:
                             logger.debug(
                                 f'drop: {control_implementation.description} {implemented_requirement.control_id}'
                             )
-                if get_list_len(control_implementation.implemented_requirements):
+                if non_empty(control_implementation.implemented_requirements):
                     component.control_implementations.append(control_implementation)
 
     def _delete_ir_statements(self, implemented_requirement: ImplementedRequirement, rule_id: str) -> None:
@@ -416,29 +415,27 @@ class CsvToOscalComponentDefinition(TaskBase):
     def rules_add(self, add_rules: List[str]) -> None:
         """Add rules."""
         for rule_key in add_rules:
-            row = self._csv_mgr.get_row(rule_key)
-            row_number = self._csv_mgr.get_row_number(rule_key)
-            resource = self._csv_mgr.get_value(row, 'Resource')
-            component_type = self._csv_mgr.get_value(row, 'Component_Type')
+            resource = self._csv_mgr.get_value(rule_key, 'Resource')
+            component_type = self._csv_mgr.get_value(rule_key, 'Component_Type')
             description = ''
             # component
             component = self._cd_mgr.get_component(resource, component_type, description)
             # props
             if component.props is None:
                 component.props = []
-            component.props = component.props + self._create_rule_props(component, row, row_number)
+            component.props = component.props + self._create_rule_props(rule_key)
             # control implementation
-            source = self._csv_mgr.get_value(row, 'Profile_Reference_URL')
-            description = self._csv_mgr.get_value(row, 'Profile_Description')
+            source = self._csv_mgr.get_value(rule_key, 'Profile_Reference_URL')
+            description = self._csv_mgr.get_value(rule_key, 'Profile_Description')
             control_implementation = self._get_control_implementation(component, source, description)
             # set-parameter
-            set_parameter = self._create_set_parameter(component, row, row_number)
+            set_parameter = self._create_set_parameter(rule_key)
             if set_parameter:
                 if control_implementation.set_parameters is None:
                     control_implementation.set_parameters = []
                 _OscalHelper.add_set_parameter(control_implementation.set_parameters, set_parameter)
             # control-mappings
-            control_mappings = self._csv_mgr.get_value(row, 'Control_Mappings').split()
+            control_mappings = self._csv_mgr.get_value(rule_key, 'Control_Mappings').split()
             for control_mapping in control_mappings:
                 control_id = derive_control_id(control_mapping)
                 implemented_requirement = self._get_implemented_requirement(control_implementation, control_id)
@@ -446,7 +443,7 @@ class CsvToOscalComponentDefinition(TaskBase):
                 name = 'Rule_Id'
                 prop = Property(
                     name=name,
-                    value=self._csv_mgr.get_value(row, name),
+                    value=self._csv_mgr.get_value(rule_key, name),
                     ns=self._ns,
                     class_=self.get_class(name),
                 )
@@ -459,24 +456,25 @@ class CsvToOscalComponentDefinition(TaskBase):
                     statement = self._get_statement(implemented_requirement, part_id)
                     statement.props.append(prop)
 
-    def _create_rule_props(self, component: DefinedComponent, row: List, row_number: int) -> List[Property]:
+    def _create_rule_props(self, rule_key: tuple) -> List[Property]:
         """Create rule props."""
         rule_set = self._rule_set_id_mgr.get_next_rule_set_id()
+        row_number = self._csv_mgr.get_row_number(rule_key)
         rule_set_mgr = _RuleSetMgr(row_number, rule_set)
         column_names = CsvColumn.get_filtered_required_column_names() + CsvColumn.get_filtered_optional_column_names()
         # req'd & optional props
         for column_name in column_names:
-            column_value = self._csv_mgr.get_value(row, column_name).strip()
+            column_value = self._csv_mgr.get_value(rule_key, column_name).strip()
             rule_set_mgr.add_prop(column_name, column_value, self._ns, self.get_class(column_name))
         # parameter columns
         column_names = CsvColumn.get_parameter_column_names()
         for column_name in column_names:
-            column_value = self._csv_mgr.get_value(row, column_name).strip()
+            column_value = self._csv_mgr.get_value(rule_key, column_name).strip()
             rule_set_mgr.add_prop(column_name, column_value, self._ns, self.get_class(column_name))
         # user props
         column_names = self._csv_mgr.get_user_column_names()
         for column_name in column_names:
-            column_value = self._csv_mgr.get_value(row, column_name)
+            column_value = self._csv_mgr.get_value(rule_key, column_name)
             rule_set_mgr.add_prop(column_name, column_value, self._user_ns, self.get_class(column_name))
         rule_set_mgr.validate()
         return rule_set_mgr.get_props()
@@ -496,13 +494,14 @@ class CsvToOscalComponentDefinition(TaskBase):
         component.control_implementations.append(control_implementation)
         return control_implementation
 
-    def _create_set_parameter(self, component: DefinedComponent, row: List, row_number: int) -> SetParameter:
+    def _create_set_parameter(self, rule_key: tuple) -> SetParameter:
         """Create create set parameters."""
         set_parameter = None
-        name = self._csv_mgr.get_value(row, 'Parameter_Id')
+        name = self._csv_mgr.get_value(rule_key, 'Parameter_Id')
         if name:
-            value = self._csv_mgr.get_value(row, 'Parameter_Default_Value')
+            value = self._csv_mgr.get_value(rule_key, 'Parameter_Default_Value')
             if value == '':
+                row_number = self._csv_mgr.get_row_number(rule_key)
                 column_name = 'Parameter_Default_Value'
                 text = f'row "{row_number}" missing value for "{column_name}"'
                 raise RuntimeError(text)
@@ -547,38 +546,36 @@ class CsvToOscalComponentDefinition(TaskBase):
     def rules_modify(self, mod_rules: List[str]) -> None:
         """Modify rules."""
         for rule_key in mod_rules:
-            row = self._csv_mgr.get_row(rule_key)
-            row_number = self._csv_mgr.get_row_number(rule_key)
-            resource = self._csv_mgr.get_value(row, 'Resource')
-            component_type = self._csv_mgr.get_value(row, 'Component_Type')
+            resource = self._csv_mgr.get_value(rule_key, 'Resource')
+            component_type = self._csv_mgr.get_value(rule_key, 'Component_Type')
             description = ''
             # component
             component = self._cd_mgr.get_component(resource, component_type, description)
             # props
-            component.props = self._modify_rule_props(component, row, row_number)
+            component.props = self._modify_rule_props(component, rule_key)
 
-    def _modify_rule_props(self, component: DefinedComponent, row: List, row_number: int) -> List[Property]:
+    def _modify_rule_props(self, component: DefinedComponent, rule_key: tuple) -> List[Property]:
         """Modify rule props."""
-        rule_id = self._csv_mgr.get_value(row, 'Rule_Id')
+        rule_id = self._csv_mgr.get_value(rule_key, 'Rule_Id')
         rule_set = _RuleSetHelper.get_rule_set(component.props, rule_id)
         column_names = CsvColumn.get_filtered_required_column_names() + CsvColumn.get_filtered_optional_column_names()
         # req'd & optional props
         ns = self._ns
         for column_name in column_names:
-            column_value = self._csv_mgr.get_value(row, column_name).strip()
+            column_value = self._csv_mgr.get_value(rule_key, column_name).strip()
             class_ = self.get_class(column_name)
             self._cd_mgr.update_rule_definition(component, rule_set, column_name, column_value, ns, class_)
         # parameter columns
         column_names = CsvColumn.get_parameter_column_names()
         for column_name in column_names:
-            column_value = self._csv_mgr.get_value(row, column_name).strip()
+            column_value = self._csv_mgr.get_value(rule_key, column_name).strip()
             class_ = self.get_class(column_name)
             self._cd_mgr.update_rule_definition(component, rule_set, column_name, column_value, ns, class_)
         # user props
         ns = self._user_ns
         column_names = self._csv_mgr.get_user_column_names()
         for column_name in column_names:
-            column_value = self._csv_mgr.get_value(row, column_name).strip()
+            column_value = self._csv_mgr.get_value(rule_key, column_name).strip()
             self._cd_mgr.update_rule_definition(component, rule_set, column_name, column_value, ns, class_)
         return component.props
 
@@ -587,12 +584,11 @@ class CsvToOscalComponentDefinition(TaskBase):
         for tokens in del_set_params:
             resource = tokens[0]
             component_type = tokens[1]
-            rule_id = tokens[2]
             source = tokens[3]
             description = tokens[4]
             param_id = tokens[5]
             control_implementation = self._cd_mgr.find_control_implementation(
-                resource, component_type, rule_id, source, description
+                resource, component_type, source, description
             )
             if control_implementation:
                 set_parameters = control_implementation.set_parameters
@@ -615,13 +611,13 @@ class CsvToOscalComponentDefinition(TaskBase):
             description = tokens[4]
             param_id = tokens[5]
             control_implementation = self._cd_mgr.find_control_implementation(
-                resource, component_type, rule_id, source, description
+                resource, component_type, source, description
             )
             if control_implementation and not control_implementation.set_parameters:
                 control_implementation.set_parameters = []
             # add
-            row = self._csv_mgr.get_row_param(tokens)
-            values = [self._csv_mgr.get_value(row, 'Parameter_Default_Value')]
+            rule_key = _CsvMgr.get_rule_key(resource, component_type, rule_id)
+            values = [self._csv_mgr.get_value(rule_key, 'Parameter_Default_Value')]
             set_parameter = SetParameter(
                 param_id=param_id,
                 values=values,
@@ -638,15 +634,15 @@ class CsvToOscalComponentDefinition(TaskBase):
             description = tokens[4]
             param_id = tokens[5]
             control_implementation = self._cd_mgr.find_control_implementation(
-                resource, component_type, rule_id, source, description
+                resource, component_type, source, description
             )
             if control_implementation:
                 set_parameters = control_implementation.set_parameters
                 if set_parameters:
                     for set_parameter in set_parameters:
                         if set_parameter.param_id == param_id:
-                            row = self._csv_mgr.get_row_param(tokens)
-                            values = [self._csv_mgr.get_value(row, 'Parameter_Default_Value')]
+                            rule_key = _CsvMgr.get_rule_key(resource, component_type, rule_id)
+                            values = [self._csv_mgr.get_value(rule_key, 'Parameter_Default_Value')]
                             replacement = SetParameter(
                                 param_id=param_id,
                                 values=values,
@@ -666,7 +662,7 @@ class CsvToOscalComponentDefinition(TaskBase):
             smt_id = tokens[5]
             control_id = derive_control_id(smt_id)
             control_implementation = self._cd_mgr.find_control_implementation(
-                resource, component_type, rule_id, source, description
+                resource, component_type, source, description
             )
             if control_implementation:
                 implemented_requirements = control_implementation.implemented_requirements
@@ -677,7 +673,7 @@ class CsvToOscalComponentDefinition(TaskBase):
                             implemented_requirement.statements, rule_id, smt_id
                         )
                         implemented_requirement.props = _OscalHelper.remove_rule(implemented_requirement.props, rule_id)
-                        if _OscalHelper.is_implemented_requirement(implemented_requirement):
+                        if non_empty(implemented_requirement.props) or non_empty(implemented_requirement.statements):
                             control_implementation.implemented_requirements.append(implemented_requirement)
                     else:
                         control_implementation.implemented_requirements.append(implemented_requirement)
@@ -693,7 +689,7 @@ class CsvToOscalComponentDefinition(TaskBase):
             smt_id = tokens[5]
             control_id = derive_control_id(smt_id)
             control_implementation = self._cd_mgr.find_control_implementation(
-                resource, component_type, rule_id, source, description
+                resource, component_type, source, description
             )
             if control_implementation:
                 implemented_requirement = self._get_implemented_requirement(control_implementation, control_id)
@@ -758,16 +754,6 @@ class _OscalHelper():
                     rval.append(prop)
         return rval
 
-    @staticmethod
-    def is_implemented_requirement(implemented_requirement: ImplementedRequirement) -> bool:
-        """Check if implemented-requirement is not empty."""
-        rval = False
-        if implemented_requirement.props is not None and len(implemented_requirement.props):
-            rval = True
-        elif implemented_requirement.statements is not None and len(implemented_requirement.statements):
-            rval = True
-        return rval
-
 
 class _RuleSetHelper():
     """RuleSet Helper."""
@@ -778,10 +764,9 @@ class _RuleSetHelper():
         rule_set = None
         if props:
             for prop in props:
-                if prop.name == 'Rule_Id':
-                    if prop.value == rule_id:
-                        rule_set = prop.remarks.__root__
-                        break
+                if prop.name == 'Rule_Id' and prop.value == rule_id:
+                    rule_set = prop.remarks.__root__
+                    break
         return rule_set
 
 
@@ -912,7 +897,7 @@ class _CdMgr():
         return rval
 
     def find_control_implementation(
-        self, resource: str, component_type: str, rule_id: str, source: str, description: str
+        self, resource: str, component_type: str, source: str, description: str
     ) -> ControlImplementation:
         """Find control-implementation."""
         rval = None
@@ -1247,26 +1232,26 @@ class _CsvMgr():
         self._csv_controls_map = {}
         for row_num, row in self.row_generator():
             self._check_row_minimum_requirements(row_num, row)
-            resource = self.get_value(row, 'Resource')
-            component_type = self.get_value(row, 'Component_Type')
-            rule_id = self.get_value(row, 'Rule_Id')
+            resource = self.get_row_value(row, 'Resource')
+            component_type = self.get_row_value(row, 'Component_Type')
+            rule_id = self.get_row_value(row, 'Rule_Id')
             # rule sets
-            key = (resource, component_type, rule_id)
+            key = _CsvMgr.get_rule_key(resource, component_type, rule_id)
             if key in self._csv_rules_map:
                 text = f'row "{row_num}" contains duplicate Rule_Id "{rule_id}"'
                 raise RuntimeError(text)
             self._csv_rules_map[key] = [row_num, row]
             logger.debug(f'csv-rules: {key} {self._csv_rules_map[key][0]}')
             # set parameters, by component
-            source = self.get_value(row, 'Profile_Reference_URL')
-            description = self.get_value(row, 'Profile_Description')
-            param_id = self.get_value(row, 'Parameter_Id')
+            source = self.get_row_value(row, 'Profile_Reference_URL')
+            description = self.get_row_value(row, 'Profile_Description')
+            param_id = self.get_row_value(row, 'Parameter_Id')
             if param_id:
                 key = (resource, component_type, rule_id, source, description, param_id)
                 self._csv_set_params_map[key] = [row_num, row]
                 logger.debug(f'csv-set-paramaters: {key} {self._csv_set_params_map[key][0]}')
             # control mappings
-            control_mappings = self.get_value(row, 'Control_Mappings')
+            control_mappings = self.get_row_value(row, 'Control_Mappings')
             if control_mappings:
                 controls = control_mappings.split()
                 for control in controls:
@@ -1276,6 +1261,11 @@ class _CsvMgr():
         logger.debug(f'csv params: {len(self._csv_set_params_map)}')
         logger.debug(f'csv controls: {len(self._csv_controls_map)}')
 
+    @staticmethod
+    def get_rule_key(resource: str, component_type: str, rule_id: str) -> tuple:
+        """Get rule_key."""
+        return (resource, component_type, rule_id)
+
     def row_generator(self) -> [int, Iterator[List[str]]]:
         """Generate rows."""
         index = 0
@@ -1283,7 +1273,7 @@ class _CsvMgr():
             index += 1
             if index == 1:
                 continue
-            control_mappings = self.get_value(row, 'Control_Mappings')
+            control_mappings = self.get_row_value(row, 'Control_Mappings')
             if not len(control_mappings):
                 continue
             logger.debug(f'{index} {row}')
@@ -1292,7 +1282,7 @@ class _CsvMgr():
     def _check_row_minimum_requirements(self, row_num: int, row: List) -> None:
         """Check row minimum requirements."""
         for column_name in CsvColumn.get_required_column_names():
-            value = self.get_value(row, column_name)
+            value = self.get_row_value(row, column_name)
             if value is None or value == '':
                 text = f'row "{row_num}" missing value for "{column_name}"'
                 raise RuntimeError(text)
@@ -1309,27 +1299,27 @@ class _CsvMgr():
             text = f'Missing columns: {required_columns}'
             raise RuntimeError(text)
 
-    def get_rule_keys(self) -> List[str]:
+    def get_rule_keys(self) -> List[tuple]:
         """Get rule keys."""
         return self._csv_rules_map.keys()
 
-    def get_set_params_keys(self) -> List[str]:
+    def get_set_params_keys(self) -> List[tuple]:
         """Get set-parameter keys."""
         return self._csv_set_params_map.keys()
 
-    def get_control_keys(self) -> List[str]:
+    def get_control_keys(self) -> List[tuple]:
         """Get control keys."""
         return self._csv_controls_map.keys()
 
-    def get_row(self, rule_key: str) -> List:
+    def get_row(self, rule_key: tuple) -> List:
         """Get row for rule."""
         return self._csv_rules_map[rule_key][1]
 
-    def get_row_number(self, rule_key: str) -> List:
+    def get_row_number(self, rule_key: tuple) -> List:
         """Get row number for rule."""
         return self._csv_rules_map[rule_key][0]
 
-    def get_value(self, row: List[str], name: str) -> str:
+    def get_row_value(self, row: List[str], name: str) -> str:
         """Get value for specified name."""
         rval = ''
         index = self._csv_column.get_index(name)
@@ -1337,7 +1327,12 @@ class _CsvMgr():
             rval = row[index]
         return rval
 
-    def get_row_param(self, param_key: str) -> List:
+    def get_value(self, rule_key: tuple, name: str) -> str:
+        """Get value for specified name."""
+        row = self.get_row(rule_key)
+        return self.get_row_value(row, name)
+
+    def get_row_param(self, param_key: tuple) -> List:
         """Get row for param."""
         return self._csv_set_params_map[param_key][1]
 
