@@ -944,6 +944,17 @@ class _CdMgr():
     def accounting(self, component: DefinedComponent) -> None:
         """Accounting."""
         # rule definitions
+        self.accounting_rule_definitions(component)
+        # set-parameters & control mappings
+        if component.control_implementations:
+            for control_implementation in component.control_implementations:
+                # set-parameters
+                self.accounting_set_parameters(component, control_implementation)
+                # control mappings
+                self.accounting_control_mappings(component, control_implementation)
+
+    def accounting_rule_definitions(self, component: DefinedComponent) -> None:
+        """Accounting, rule definitions."""
         if component.props:
             for prop in component.props:
                 if prop.name == 'Rule_Id':
@@ -954,43 +965,35 @@ class _CdMgr():
                     rule_set_number = int(value.replace('rule_set_', ''))
                     if rule_set_number > self._max_rule_set_number:
                         self._max_rule_set_number = rule_set_number
-        # set-parameters & control mappings
-        if component.control_implementations:
-            for control_implementation in component.control_implementations:
-                # set-parameters
-                if control_implementation.set_parameters:
-                    for set_parameter in control_implementation.set_parameters:
-                        rule_id = self._get_rule_id(component, set_parameter.param_id)
-                        key = (
-                            component.title,
-                            component.type,
-                            rule_id,
-                            control_implementation.source,
-                            control_implementation.description,
-                            set_parameter.param_id
-                        )
-                        value = set_parameter.values
-                        self._cd_set_params_map[key] = value
-                # control mappings
-                if control_implementation.implemented_requirements:
-                    for implemented_requirement in control_implementation.implemented_requirements:
-                        if implemented_requirement.statements:
-                            for statement in implemented_requirement.statements:
-                                if statement.props:
-                                    for prop in statement.props:
-                                        if prop.name == 'Rule_Id':
-                                            rule_id = prop.value
-                                            key = (
-                                                component.title,
-                                                component.type,
-                                                rule_id,
-                                                control_implementation.source,
-                                                control_implementation.description,
-                                                statement.statement_id,
-                                            )
-                                            self._cd_controls_map[key] = prop
-                        if implemented_requirement.props:
-                            for prop in implemented_requirement.props:
+
+    def accounting_set_parameters(
+        self, component: DefinedComponent, control_implementation: ControlImplementation
+    ) -> None:
+        """Accounting, set-parameters."""
+        if control_implementation.set_parameters:
+            for set_parameter in control_implementation.set_parameters:
+                rule_id = self._get_rule_id(component, set_parameter.param_id)
+                key = (
+                    component.title,
+                    component.type,
+                    rule_id,
+                    control_implementation.source,
+                    control_implementation.description,
+                    set_parameter.param_id
+                )
+                value = set_parameter.values
+                self._cd_set_params_map[key] = value
+
+    def accounting_control_mappings(
+        self, component: DefinedComponent, control_implementation: ControlImplementation
+    ) -> None:
+        """Accounting, control mappings."""
+        if control_implementation.implemented_requirements:
+            for implemented_requirement in control_implementation.implemented_requirements:
+                if implemented_requirement.statements:
+                    for statement in implemented_requirement.statements:
+                        if statement.props:
+                            for prop in statement.props:
                                 if prop.name == 'Rule_Id':
                                     rule_id = prop.value
                                     key = (
@@ -999,9 +1002,22 @@ class _CdMgr():
                                         rule_id,
                                         control_implementation.source,
                                         control_implementation.description,
-                                        implemented_requirement.control_id,
+                                        statement.statement_id,
                                     )
                                     self._cd_controls_map[key] = prop
+                if implemented_requirement.props:
+                    for prop in implemented_requirement.props:
+                        if prop.name == 'Rule_Id':
+                            rule_id = prop.value
+                            key = (
+                                component.title,
+                                component.type,
+                                rule_id,
+                                control_implementation.source,
+                                control_implementation.description,
+                                implemented_requirement.control_id,
+                            )
+                            self._cd_controls_map[key] = prop
 
     def _get_rule_id(self, component: DefinedComponent, param_id: str):
         """Get rule_id for given param_id."""
