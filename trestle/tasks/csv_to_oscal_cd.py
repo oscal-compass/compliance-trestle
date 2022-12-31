@@ -636,20 +636,24 @@ class CsvToOscalComponentDefinition(TaskBase):
             control_implementation = self._cd_mgr.find_control_implementation(
                 resource, component_type, source, description
             )
-            if control_implementation:
-                set_parameters = control_implementation.set_parameters
-                if set_parameters:
-                    for set_parameter in set_parameters:
-                        if set_parameter.param_id == param_id:
-                            rule_key = _CsvMgr.get_rule_key(resource, component_type, rule_id)
-                            values = [self._csv_mgr.get_value(rule_key, 'Parameter_Default_Value')]
-                            replacement = SetParameter(
-                                param_id=param_id,
-                                values=values,
-                            )
-                            if set_parameter.values != replacement.values:
-                                logger.info(f'{rule_id} {param_id} {set_parameter.values} -> {replacement.values}')
-                                set_parameter.values = replacement.values
+            if not control_implementation:
+                continue
+            set_parameters = control_implementation.set_parameters
+            if not set_parameters:
+                continue
+            for set_parameter in set_parameters:
+                if set_parameter.param_id != param_id:
+                    continue
+                rule_key = _CsvMgr.get_rule_key(resource, component_type, rule_id)
+                values = [self._csv_mgr.get_value(rule_key, 'Parameter_Default_Value')]
+                replacement = SetParameter(
+                    param_id=param_id,
+                    values=values,
+                )
+                if set_parameter.values == replacement.values:
+                    continue
+                logger.info(f'{rule_id} {param_id} {set_parameter.values} -> {replacement.values}')
+                set_parameter.values = replacement.values
 
     def control_mappings_delete(self, del_control_mappings: List[str]) -> None:
         """Control mappings delete."""
