@@ -217,7 +217,39 @@ class CsvToOscalComponentDefinition(TaskBase):
         self._cd_mgr = _CdMgr(self._cd_path, self._title, self._timestamp, self._version)
         # fetch csv
         self._csv_mgr = _CsvMgr(self._csv_path)
-        # calculate addition, deletion & modification rule lists
+        # calculate deletion, addition & modification rule lists
+        rules = self._calculate_rules()
+        # calculate deletion, addition & modification set-parameter lists
+        set_params = self._calculate_set_params(rules[2])
+        # calculate deletion, addition & modification control mapping lists
+        control_mappings = self._calculate_control_mappings(rules[2])
+        # rule set manager
+        self._rule_set_id_mgr = _RuleSetIdMgr(self._cd_mgr.get_max_rule_set_number(), len(rules[1]))
+        # rule additions, deletions & modifications (by row)
+        self.rules_del(rules[0])
+        self.rules_add(rules[1])
+        self.rules_mod(rules[2])
+        # set-parameters additions, deletions & modifications (by row)
+        self.set_params_del(set_params[0])
+        self.set_params_add(set_params[1])
+        self.set_params_mod(set_params[2])
+        # control mappings additions, deletions & modifications (by row)
+        self.control_mappings_del(control_mappings[0])
+        self.control_mappings_add(control_mappings[1])
+        self.control_mappings_mod(control_mappings[2])
+        # perform additions & deletions (by column)
+        self.user_columns_add()
+        self.user_columns_del()
+        # prepare new/revised component definition
+        component_definition = self._cd_mgr.get_component_definition()
+        # write OSCAL ComponentDefinition to file
+        if self._verbose:
+            logger.info(f'output: {ofile}')
+        component_definition.oscal_write(pathlib.Path(ofile))
+        return TaskOutcome('success')
+
+    def _calculate_rules(self) -> tuple:
+        """Calculate rules add, delete, modify."""
         cd_rules = self._cd_mgr.get_rule_keys()
         csv_rules = self._csv_mgr.get_rule_keys()
         del_rules = []
@@ -236,10 +268,10 @@ class CsvToOscalComponentDefinition(TaskBase):
             else:
                 add_rules.append(key)
                 logger.debug(f'add: {key}')
-        logger.debug(f'del: {len(del_rules)}')
-        logger.debug(f'add: {len(add_rules)}')
-        logger.debug(f'mod: {len(mod_rules)}')
-        # calculate addition, deletion & modification set-parameter lists
+        return (del_rules, add_rules, mod_rules)
+
+    def _calculate_set_params(self, mod_rules: List) -> tuple:
+        """Calculate set parameters add, delete, modify."""
         cd_set_params = self._cd_mgr.get_set_params_keys()
         csv_set_params = self._csv_mgr.get_set_params_keys()
         del_set_params = []
@@ -264,10 +296,10 @@ class CsvToOscalComponentDefinition(TaskBase):
             else:
                 add_set_params.append(key)
                 logger.debug(f'add: {key}')
-        logger.debug(f'del: {len(del_set_params)}')
-        logger.debug(f'add: {len(add_set_params)}')
-        logger.debug(f'mod: {len(mod_set_params)}')
-        # calculate addition, deletion & modification control mapping lists
+        return (del_set_params, add_set_params, mod_set_params)
+
+    def _calculate_control_mappings(self, mod_rules: List) -> tuple:
+        """Calculate control mappings add, delete, modify."""
         cd_controls = self._cd_mgr.get_control_keys()
         csv_controls = self._csv_mgr.get_control_keys()
         del_control_mappings = []
@@ -292,35 +324,9 @@ class CsvToOscalComponentDefinition(TaskBase):
             else:
                 add_control_mappings.append(key)
                 logger.debug(f'add: {key}')
-        logger.debug(f'del: {len(del_control_mappings)}')
-        logger.debug(f'add: {len(add_control_mappings)}')
-        logger.debug(f'mod: {len(mod_control_mappings)}')
-        # rule set manager
-        self._rule_set_id_mgr = _RuleSetIdMgr(self._cd_mgr.get_max_rule_set_number(), len(add_rules))
-        # rule additions, deletions & modifications (by row)
-        self.rules_delete(del_rules)
-        self.rules_add(add_rules)
-        self.rules_modify(mod_rules)
-        # set-parameters additions, deletions & modifications (by row)
-        self.set_params_delete(del_set_params)
-        self.set_params_add(add_set_params)
-        self.set_params_modify(mod_set_params)
-        # control mappings additions, deletions & modifications (by row)
-        self.control_mappings_delete(del_control_mappings)
-        self.control_mappings_add(add_control_mappings)
-        self.control_mappings_modify(mod_control_mappings)
-        # perform additions & deletions (by column)
-        self.user_columns_add()
-        self.user_columns_del()
-        # prepare new/revised component definition
-        component_definition = self._cd_mgr.get_component_definition()
-        # write OSCAL ComponentDefinition to file
-        if self._verbose:
-            logger.info(f'output: {ofile}')
-        component_definition.oscal_write(pathlib.Path(ofile))
-        return TaskOutcome('success')
+        return (del_control_mappings, add_control_mappings, mod_control_mappings)
 
-    def rules_delete(self, del_rules: List[str]) -> None:
+    def rules_del(self, del_rules: List[str]) -> None:
         """Delete rules."""
         for tokens in del_rules:
             resource = tokens[0]
@@ -547,7 +553,7 @@ class CsvToOscalComponentDefinition(TaskBase):
         implemented_requirement.statements.append(statement)
         return statement
 
-    def rules_modify(self, mod_rules: List[str]) -> None:
+    def rules_mod(self, mod_rules: List[str]) -> None:
         """Modify rules."""
         for rule_key in mod_rules:
             resource = self._csv_mgr.get_value(rule_key, 'Resource')
@@ -583,7 +589,7 @@ class CsvToOscalComponentDefinition(TaskBase):
             self._cd_mgr.update_rule_definition(component, rule_set, column_name, column_value, ns, class_)
         return component.props
 
-    def set_params_delete(self, del_set_params: List[str]) -> None:
+    def set_params_del(self, del_set_params: List[str]) -> None:
         """Set parameters delete."""
         for tokens in del_set_params:
             resource = tokens[0]
@@ -630,7 +636,7 @@ class CsvToOscalComponentDefinition(TaskBase):
             )
             _OscalHelper.add_set_parameter(control_implementation.set_parameters, set_parameter)
 
-    def set_params_modify(self, mod_set_params: List[str]) -> None:
+    def set_params_mod(self, mod_set_params: List[str]) -> None:
         """Set parameters modify."""
         for tokens in mod_set_params:
             resource = tokens[0]
@@ -661,7 +667,7 @@ class CsvToOscalComponentDefinition(TaskBase):
                 logger.info(f'{rule_id} {param_id} {set_parameter.values} -> {replacement.values}')
                 set_parameter.values = replacement.values
 
-    def control_mappings_delete(self, del_control_mappings: List[str]) -> None:
+    def control_mappings_del(self, del_control_mappings: List[str]) -> None:
         """Control mappings delete."""
         for tokens in del_control_mappings:
             resource = tokens[0]
@@ -720,7 +726,7 @@ class CsvToOscalComponentDefinition(TaskBase):
                     statement = self._get_statement(implemented_requirement, smt_id)
                     statement.props.append(prop)
 
-    def control_mappings_modify(self, mod_control_mappings: List[str]) -> None:
+    def control_mappings_mod(self, mod_control_mappings: List[str]) -> None:
         """Control mappings modify."""
         # Not currently possible
 
