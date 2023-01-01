@@ -355,13 +355,13 @@ class CsvToOscalComponentDefinition(TaskBase):
 
     def _control_implementation_generator(
         self, control_implementations: List[ControlImplementation]
-    ) -> ControlImplementation:
+    ) -> Iterator[ControlImplementation]:
         """Control implementation generator."""
         if control_implementations:
             for control_implementation in control_implementations:
                 yield control_implementation
 
-    def _set_parameter_generator(self, set_parameters: List[SetParameter]) -> SetParameter:
+    def _set_parameter_generator(self, set_parameters: List[SetParameter]) -> Iterator[SetParameter]:
         """Set parameter generator."""
         if set_parameters:
             for set_parameter in set_parameters:
