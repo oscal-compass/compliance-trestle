@@ -349,37 +349,35 @@ class CsvToOscalComponentDefinition(TaskBase):
 
     def _delete_rule_set_parameter(self, component: DefinedComponent, parameter_id: str) -> None:
         """Delete rule set-parameter."""
-        if component.control_implementations:
-            for control_implementation in component.control_implementations:
-                if control_implementation.set_parameters:
-                    set_parameters = control_implementation.set_parameters
-                    control_implementation.set_parameters = []
-                    for set_parameter in set_parameters:
-                        if set_parameter.param_id != parameter_id:
-                            _OscalHelper.add_set_parameter(control_implementation.set_parameters, set_parameter)
-                    if not len(control_implementation.set_parameters):
-                        control_implementation.set_parameters = None
+        if not component.control_implementations:
+            return
+        for control_implementation in component.control_implementations:
+            if control_implementation.set_parameters:
+                set_parameters = control_implementation.set_parameters
+                control_implementation.set_parameters = []
+                for set_parameter in set_parameters:
+                    if set_parameter.param_id != parameter_id:
+                        _OscalHelper.add_set_parameter(control_implementation.set_parameters, set_parameter)
+                if not len(control_implementation.set_parameters):
+                    control_implementation.set_parameters = None
 
     def _delete_rule_implemented_requirement(self, component: DefinedComponent, rule_id: str) -> None:
         """Delete rule implemented_requirement."""
-        if component.control_implementations:
-            control_implementations = component.control_implementations
-            component.control_implementations = []
-            for control_implementation in control_implementations:
-                if control_implementation.implemented_requirements:
-                    implemented_requirements = control_implementation.implemented_requirements
-                    control_implementation.implemented_requirements = []
-                    for implemented_requirement in implemented_requirements:
-                        self._delete_ir_props(implemented_requirement, rule_id)
-                        self._delete_ir_statements(implemented_requirement, rule_id)
-                        if non_empty(implemented_requirement.props) or non_empty(implemented_requirement.statements):
-                            control_implementation.implemented_requirements.append(implemented_requirement)
-                        else:
-                            logger.debug(
-                                f'drop: {control_implementation.description} {implemented_requirement.control_id}'
-                            )
-                if non_empty(control_implementation.implemented_requirements):
-                    component.control_implementations.append(control_implementation)
+        if not component.control_implementations:
+            return
+        control_implementations = component.control_implementations
+        component.control_implementations = []
+        for control_implementation in control_implementations:
+            if control_implementation.implemented_requirements:
+                implemented_requirements = control_implementation.implemented_requirements
+                control_implementation.implemented_requirements = []
+                for implemented_requirement in implemented_requirements:
+                    self._delete_ir_props(implemented_requirement, rule_id)
+                    self._delete_ir_statements(implemented_requirement, rule_id)
+                    if non_empty(implemented_requirement.props) or non_empty(implemented_requirement.statements):
+                        control_implementation.implemented_requirements.append(implemented_requirement)
+            if non_empty(control_implementation.implemented_requirements):
+                component.control_implementations.append(control_implementation)
 
     def _delete_ir_statements(self, implemented_requirement: ImplementedRequirement, rule_id: str) -> None:
         """Delete implemented-requirement statements."""
@@ -786,7 +784,7 @@ class _RuleSetHelper():
 class _RuleSetIdMgr():
     """RuleSetId Manager."""
 
-    def __init__(self, max_rule_set_number, add_rules_count) -> None:
+    def __init__(self, max_rule_set_number: int, add_rules_count: int) -> None:
         """Initialize."""
         self._prev_rule_set_number = max_rule_set_number
         self._rule_set_number_digits = max_rule_set_number + add_rules_count + 1
@@ -1050,7 +1048,7 @@ class _CdMgr():
                             )
                             self._cd_controls_map[key] = prop
 
-    def _get_rule_id(self, component: DefinedComponent, param_id: str):
+    def _get_rule_id(self, component: DefinedComponent, param_id: str) -> str:
         """Get rule_id for given param_id."""
         rule_id = None
         if component.props:
