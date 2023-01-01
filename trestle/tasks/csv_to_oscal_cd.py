@@ -436,25 +436,31 @@ class CsvToOscalComponentDefinition(TaskBase):
                 _OscalHelper.add_set_parameter(control_implementation.set_parameters, set_parameter)
             # control-mappings
             control_mappings = self._csv_mgr.get_value(rule_key, 'Control_Mappings').split()
-            for control_mapping in control_mappings:
-                control_id = derive_control_id(control_mapping)
-                implemented_requirement = self._get_implemented_requirement(control_implementation, control_id)
-                # create rule implementation (as property)
-                name = 'Rule_Id'
-                prop = Property(
-                    name=name,
-                    value=self._csv_mgr.get_value(rule_key, name),
-                    ns=self._ns,
-                    class_=self.get_class(name),
-                )
-                part_id = derive_part_id(control_mapping)
-                if part_id is None:
-                    if implemented_requirement.props is None:
-                        implemented_requirement.props = []
-                    implemented_requirement.props.append(prop)
-                else:
-                    statement = self._get_statement(implemented_requirement, part_id)
-                    statement.props.append(prop)
+            self._add_rule_prop(control_implementation, control_mappings, rule_key)
+
+    def _add_rule_prop(
+        self, control_implementation: ControlImplementation, control_mappings: List[str], rule_key: tuple
+    ) -> None:
+        """Add rule prop."""
+        for control_mapping in control_mappings:
+            control_id = derive_control_id(control_mapping)
+            implemented_requirement = self._get_implemented_requirement(control_implementation, control_id)
+            # create rule implementation (as property)
+            name = 'Rule_Id'
+            prop = Property(
+                name=name,
+                value=self._csv_mgr.get_value(rule_key, name),
+                ns=self._ns,
+                class_=self.get_class(name),
+            )
+            part_id = derive_part_id(control_mapping)
+            if part_id is None:
+                if implemented_requirement.props is None:
+                    implemented_requirement.props = []
+                implemented_requirement.props.append(prop)
+            else:
+                statement = self._get_statement(implemented_requirement, part_id)
+                statement.props.append(prop)
 
     def _create_rule_props(self, rule_key: tuple) -> List[Property]:
         """Create rule props."""
@@ -590,16 +596,18 @@ class CsvToOscalComponentDefinition(TaskBase):
             control_implementation = self._cd_mgr.find_control_implementation(
                 resource, component_type, source, description
             )
-            if control_implementation:
-                set_parameters = control_implementation.set_parameters
-                if set_parameters:
-                    control_implementation.set_parameters = []
-                    for set_parameter in set_parameters:
-                        if set_parameter.param_id == param_id:
-                            continue
-                        _OscalHelper.add_set_parameter(control_implementation.set_parameters, set_parameter)
-                    if control_implementation.set_parameters == []:
-                        control_implementation.set_parameters = None
+            if not control_implementation:
+                continue
+            set_parameters = control_implementation.set_parameters
+            if not set_parameters:
+                continue
+            control_implementation.set_parameters = []
+            for set_parameter in set_parameters:
+                if set_parameter.param_id == param_id:
+                    continue
+                _OscalHelper.add_set_parameter(control_implementation.set_parameters, set_parameter)
+            if control_implementation.set_parameters == []:
+                control_implementation.set_parameters = None
 
     def set_params_add(self, add_set_params: List[str]) -> None:
         """Set parameters add."""
@@ -668,19 +676,20 @@ class CsvToOscalComponentDefinition(TaskBase):
             control_implementation = self._cd_mgr.find_control_implementation(
                 resource, component_type, source, description
             )
-            if control_implementation:
-                implemented_requirements = control_implementation.implemented_requirements
-                control_implementation.implemented_requirements = []
-                for implemented_requirement in implemented_requirements:
-                    if implemented_requirement.control_id == control_id:
-                        implemented_requirement.statements = _OscalHelper.remove_rule_statement(
-                            implemented_requirement.statements, rule_id, smt_id
-                        )
-                        implemented_requirement.props = _OscalHelper.remove_rule(implemented_requirement.props, rule_id)
-                        if non_empty(implemented_requirement.props) or non_empty(implemented_requirement.statements):
-                            control_implementation.implemented_requirements.append(implemented_requirement)
-                    else:
+            if not control_implementation:
+                continue
+            implemented_requirements = control_implementation.implemented_requirements
+            control_implementation.implemented_requirements = []
+            for implemented_requirement in implemented_requirements:
+                if implemented_requirement.control_id == control_id:
+                    implemented_requirement.statements = _OscalHelper.remove_rule_statement(
+                        implemented_requirement.statements, rule_id, smt_id
+                    )
+                    implemented_requirement.props = _OscalHelper.remove_rule(implemented_requirement.props, rule_id)
+                    if non_empty(implemented_requirement.props) or non_empty(implemented_requirement.statements):
                         control_implementation.implemented_requirements.append(implemented_requirement)
+                else:
+                    control_implementation.implemented_requirements.append(implemented_requirement)
 
     def control_mappings_add(self, add_control_mappings: List[str]) -> None:
         """Control mappings add."""
