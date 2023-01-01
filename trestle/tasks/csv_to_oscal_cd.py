@@ -353,12 +353,14 @@ class CsvToOscalComponentDefinition(TaskBase):
                 self._delete_rule_implemented_requirement(component, prop.value)
         return props
 
-    def _control_implementation_generator(self, control_implementations: List[ControlImplementation]) -> ControlImplementation:
+    def _control_implementation_generator(
+        self, control_implementations: List[ControlImplementation]
+    ) -> ControlImplementation:
         """Control implementation generator."""
         if control_implementations:
             for control_implementation in control_implementations:
                 yield control_implementation
-                
+
     def _set_parameter_generator(self, set_parameters: List[SetParameter]) -> SetParameter:
         """Set parameter generator."""
         if set_parameters:
