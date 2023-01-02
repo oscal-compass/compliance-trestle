@@ -680,9 +680,22 @@ class CsvToOscalComponentDefinition(TaskBase):
                     logger.debug(f'{rule_id} {param_id} {set_parameter.values} -> {replacement.values}')
                     set_parameter.values = replacement.values
 
+    def _control_mappings_generator(self, control_mappings: List[str]) -> Iterator[List[str]]:
+        """Control mappings generator."""
+        for tokens in control_mappings:
+            resource = tokens[0]
+            component_type = tokens[1]
+            source = tokens[3]
+            description = tokens[4]
+            control_implementation = self._cd_mgr.find_control_implementation(
+                resource, component_type, source, description
+            )
+            if control_implementation:
+                yield tokens
+
     def control_mappings_del(self, del_control_mappings: List[str]) -> None:
         """Control mappings delete."""
-        for tokens in del_control_mappings:
+        for tokens in self._control_mappings_generator(del_control_mappings):
             resource = tokens[0]
             component_type = tokens[1]
             rule_id = tokens[2]
@@ -693,23 +706,22 @@ class CsvToOscalComponentDefinition(TaskBase):
             control_implementation = self._cd_mgr.find_control_implementation(
                 resource, component_type, source, description
             )
-            if control_implementation:
-                implemented_requirements = control_implementation.implemented_requirements
-                control_implementation.implemented_requirements = []
-                for implemented_requirement in self._implemented_requirement_generator(implemented_requirements):
-                    if implemented_requirement.control_id == control_id:
-                        implemented_requirement.statements = _OscalHelper.remove_rule_statement(
-                            implemented_requirement.statements, rule_id, smt_id
-                        )
-                        implemented_requirement.props = _OscalHelper.remove_rule(implemented_requirement.props, rule_id)
-                        if non_empty(implemented_requirement.props) or non_empty(implemented_requirement.statements):
-                            control_implementation.implemented_requirements.append(implemented_requirement)
-                    else:
+            implemented_requirements = control_implementation.implemented_requirements
+            control_implementation.implemented_requirements = []
+            for implemented_requirement in self._implemented_requirement_generator(implemented_requirements):
+                if implemented_requirement.control_id == control_id:
+                    implemented_requirement.statements = _OscalHelper.remove_rule_statement(
+                        implemented_requirement.statements, rule_id, smt_id
+                    )
+                    implemented_requirement.props = _OscalHelper.remove_rule(implemented_requirement.props, rule_id)
+                    if non_empty(implemented_requirement.props) or non_empty(implemented_requirement.statements):
                         control_implementation.implemented_requirements.append(implemented_requirement)
+                else:
+                    control_implementation.implemented_requirements.append(implemented_requirement)
 
     def control_mappings_add(self, add_control_mappings: List[str]) -> None:
         """Control mappings add."""
-        for tokens in add_control_mappings:
+        for tokens in self._control_mappings_generator(add_control_mappings):
             resource = tokens[0]
             component_type = tokens[1]
             rule_id = tokens[2]
@@ -720,23 +732,22 @@ class CsvToOscalComponentDefinition(TaskBase):
             control_implementation = self._cd_mgr.find_control_implementation(
                 resource, component_type, source, description
             )
-            if control_implementation:
-                implemented_requirement = self._get_implemented_requirement(control_implementation, control_id)
-                # create rule implementation (as property)
-                name = 'Rule_Id'
-                prop = Property(
-                    name=name,
-                    value=rule_id,
-                    ns=self._ns,
-                    class_=self.get_class(name),
-                )
-                if smt_id == control_id:
-                    if implemented_requirement.props is None:
-                        implemented_requirement.props = []
-                    implemented_requirement.props.append(prop)
-                else:
-                    statement = self._get_statement(implemented_requirement, smt_id)
-                    statement.props.append(prop)
+            implemented_requirement = self._get_implemented_requirement(control_implementation, control_id)
+            # create rule implementation (as property)
+            name = 'Rule_Id'
+            prop = Property(
+                name=name,
+                value=rule_id,
+                ns=self._ns,
+                class_=self.get_class(name),
+            )
+            if smt_id == control_id:
+                if implemented_requirement.props is None:
+                    implemented_requirement.props = []
+                implemented_requirement.props.append(prop)
+            else:
+                statement = self._get_statement(implemented_requirement, smt_id)
+                statement.props.append(prop)
 
     def control_mappings_mod(self, mod_control_mappings: List[str]) -> None:
         """Control mappings modify."""
