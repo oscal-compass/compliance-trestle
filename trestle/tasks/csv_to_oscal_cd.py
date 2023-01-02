@@ -367,6 +367,14 @@ class CsvToOscalComponentDefinition(TaskBase):
             for set_parameter in set_parameters:
                 yield set_parameter
 
+    def _implemented_requirement_generator(
+        self, implemented_requirements: List[ImplementedRequirement]
+    ) -> Iterator[ImplementedRequirement]:
+        """Implemented-requirement generator."""
+        if implemented_requirements:
+            for implemented_requirement in implemented_requirements:
+                yield implemented_requirement
+
     def _delete_rule_set_parameter(self, component: DefinedComponent, parameter_id: str) -> None:
         """Delete rule set-parameter."""
         control_implementations = component.control_implementations
@@ -659,17 +667,18 @@ class CsvToOscalComponentDefinition(TaskBase):
             if control_implementation:
                 set_parameters = control_implementation.set_parameters
                 for set_parameter in self._set_parameter_generator(set_parameters):
-                    if set_parameter.param_id == param_id:
-                        rule_key = _CsvMgr.get_rule_key(resource, component_type, rule_id)
-                        values = [self._csv_mgr.get_value(rule_key, 'Parameter_Default_Value')]
-                        replacement = SetParameter(
-                            param_id=param_id,
-                            values=values,
-                        )
-                        if set_parameter.values == replacement.values:
-                            continue
-                        logger.debug(f'{rule_id} {param_id} {set_parameter.values} -> {replacement.values}')
-                        set_parameter.values = replacement.values
+                    if set_parameter.param_id != param_id:
+                        continue
+                    rule_key = _CsvMgr.get_rule_key(resource, component_type, rule_id)
+                    values = [self._csv_mgr.get_value(rule_key, 'Parameter_Default_Value')]
+                    replacement = SetParameter(
+                        param_id=param_id,
+                        values=values,
+                    )
+                    if set_parameter.values == replacement.values:
+                        continue
+                    logger.debug(f'{rule_id} {param_id} {set_parameter.values} -> {replacement.values}')
+                    set_parameter.values = replacement.values
 
     def control_mappings_del(self, del_control_mappings: List[str]) -> None:
         """Control mappings delete."""
@@ -687,7 +696,7 @@ class CsvToOscalComponentDefinition(TaskBase):
             if control_implementation:
                 implemented_requirements = control_implementation.implemented_requirements
                 control_implementation.implemented_requirements = []
-                for implemented_requirement in implemented_requirements:
+                for implemented_requirement in self._implemented_requirement_generator(implemented_requirements):
                     if implemented_requirement.control_id == control_id:
                         implemented_requirement.statements = _OscalHelper.remove_rule_statement(
                             implemented_requirement.statements, rule_id, smt_id
