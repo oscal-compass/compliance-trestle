@@ -16,7 +16,7 @@
 import argparse
 import logging
 import pathlib
-from typing import Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional, Set
 
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
@@ -28,18 +28,19 @@ import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
 from trestle.common import const, file_utils, log
 from trestle.common.err import TrestleError, handle_generic_command_exception
-from trestle.common.list_utils import as_list, none_if_empty
+from trestle.common.list_utils import as_list, comma_sep_to_list, none_if_empty
 from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
-from trestle.core.catalog_interface import CatalogInterface
+from trestle.core.catalog.catalog_api import CatalogAPI
+from trestle.core.catalog.catalog_reader import CatalogReader
 from trestle.core.commands.author.common import AuthorCommonCommand
-from trestle.core.commands.author.profile import sections_to_dict
 from trestle.core.commands.common.cmd_utils import clear_folder
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_reader import ControlReader
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
+from trestle.core.remote.cache import FetcherFactory
 
 logger = logging.getLogger(__name__)
 
@@ -53,6 +54,7 @@ class SSPGenerate(AuthorCommonCommand):
         file_help_str = 'Name of the profile model in the trestle workspace'
         self.add_argument('-p', '--profile', help=file_help_str, required=True, type=str)
         self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
+        self.add_argument('-cd', '--compdefs', help=const.HELP_COMPDEFS, required=True, type=str)
         self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
         self.add_argument(
             '-fo', '--force-overwrite', help=const.HELP_FO_OUTPUT, required=False, action='store_true', default=False
@@ -65,14 +67,6 @@ class SSPGenerate(AuthorCommonCommand):
             action='store_true',
             default=False
         )
-        sections_help_str = (
-            'Comma separated list of section:alias pairs.  Provides mapping of short names to long for markdown.'
-        )
-        self.add_argument('-s', '--sections', help=sections_help_str, required=False, type=str)
-        allowed_sections_help_str = (
-            'Comma separated list of section short names to include in the markdown.  Others will not appear.'
-        )
-        self.add_argument('-as', '--allowed-sections', help=allowed_sections_help_str, required=False, type=str)
 
     def _run(self, args: argparse.Namespace) -> int:
         try:
@@ -80,13 +74,6 @@ class SSPGenerate(AuthorCommonCommand):
             trestle_root = args.trestle_root
             if not file_utils.is_directory_name_allowed(args.output):
                 raise TrestleError(f'{args.output} is not an allowed directory name')
-
-            if args.force_overwrite:
-                try:
-                    logger.debug(f'Overwriting the content of {args.output}.')
-                    clear_folder(pathlib.Path(args.output))
-                except TrestleError as e:  # pragma: no cover
-                    raise TrestleError(f'Unable to overwrite contents of {args.output}: {e}')
 
             profile_path = trestle_root / f'profiles/{args.profile}/profile.json'
 
@@ -97,43 +84,84 @@ class SSPGenerate(AuthorCommonCommand):
                     yaml = YAML()
                     yaml_header = yaml.load(pathlib.Path(args.yaml_header).open('r'))
                 except YAMLError as e:
-                    raise TrestleError(f'YAML error loading yaml header for ssp generation: {e}')
+                    raise TrestleError(f'YAML error loading yaml header {args.yaml_header} for ssp generation: {e}')
 
-            markdown_path = trestle_root / args.output
+            compdef_name_list = comma_sep_to_list(args.compdefs)
 
-            profile_resolver = ProfileResolver()
+            md_path = trestle_root / args.output
 
-            # in ssp context we want to see missing value warnings
-            resolved_catalog = profile_resolver.get_resolved_profile_catalog(
-                trestle_root, profile_path, show_value_warnings=True
+            return self._generate_ssp_markdown(
+                trestle_root,
+                profile_path,
+                compdef_name_list,
+                md_path,
+                yaml_header,
+                args.overwrite_header_values,
+                args.force_overwrite
             )
-            catalog_interface = CatalogInterface(resolved_catalog)
-
-            sections_dict: Dict[str, str] = {}
-            if args.sections:
-                sections_dict = sections_to_dict(args.sections)
-                if const.STATEMENT in sections_dict:
-                    raise TrestleError('Statement is not allowed as a section name.')
-                # add any existing sections from the controls but only have short names
-                control_section_short_names = catalog_interface.get_sections()
-                for short_name in control_section_short_names:
-                    if short_name not in sections_dict:
-                        sections_dict[short_name] = short_name
-                logger.debug(f'ssp sections dict: {sections_dict}')
-
-            context = ControlContext.generate(ContextPurpose.SSP, True, trestle_root, markdown_path)
-            context.yaml_header = yaml_header
-            context.sections_dict = sections_dict
-            context.prompt_responses = True
-            context.overwrite_header_values = args.overwrite_header_values
-            context.allowed_sections = args.allowed_sections
-
-            catalog_interface.write_catalog_as_markdown(context, catalog_interface.get_statement_part_id_map(False))
-
-            return CmdReturnCodes.SUCCESS.value
 
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Error while writing markdown from catalog')
+
+    def _generate_ssp_markdown(
+        self,
+        trestle_root: pathlib.Path,
+        profile_path: pathlib.Path,
+        compdef_name_list: List[str],
+        md_path: pathlib.Path,
+        yaml_header: Dict[str, Any],
+        overwrite_header_values: bool,
+        force_overwrite: bool
+    ) -> int:
+        """
+        Generate the ssp markdown from the profile and compdefs.
+
+        Notes:
+        Get RPC from profile.
+        For each compdef:
+            For each comp:
+                Load top level rules
+                for each control_imp:
+                    Load rules params values
+                    For each imp_req (bound to 1 control):
+                        Load control level rules and status
+                        Load part level rules
+                        If rules apply then write out control and add to list written out
+                        If control exists, read it and insert content
+        """
+        if force_overwrite:
+            try:
+                logger.debug(f'Overwriting the content of {md_path}.')
+                clear_folder(pathlib.Path(md_path))
+            except TrestleError as e:  # pragma: no cover
+                raise TrestleError(f'Unable to overwrite contents of {md_path}: {e}')
+
+        context = ControlContext.generate(ContextPurpose.SSP, True, trestle_root, md_path)
+        context.cli_yaml_header = yaml_header
+        context.sections_dict = None
+        context.prompt_responses = True
+        context.overwrite_header_values = overwrite_header_values
+        context.allowed_sections = None
+        context.comp_def_name_list = compdef_name_list
+        # this will raise exception if problem loading profile
+        fetcher = FetcherFactory.get_fetcher(trestle_root, str(profile_path))
+        context.profile, _ = fetcher.get_oscal()
+
+        profile_resolver = ProfileResolver()
+        # in ssp context we want to see missing value warnings
+        resolved_catalog = profile_resolver.get_resolved_profile_catalog(
+            trestle_root, profile_path, block_params=False, params_format='[.]', show_value_warnings=True
+        )
+
+        catalog_api = CatalogAPI(catalog=resolved_catalog, context=context)
+
+        context.cli_yaml_header[const.TRESTLE_GLOBAL_TAG] = {}
+        profile_title = catalog_api._catalog_interface.get_catalog_title()
+        context.cli_yaml_header[const.TRESTLE_GLOBAL_TAG][const.PROFILE_TITLE] = profile_title
+
+        catalog_api.write_catalog_as_markdown()
+
+        return CmdReturnCodes.SUCCESS.value
 
 
 class SSPAssemble(AuthorCommonCommand):
@@ -164,9 +192,9 @@ class SSPAssemble(AuthorCommonCommand):
         """
         id_map: Dict[str, Dict[str, ossp.Statement]] = {}
         control_map: Dict[str, ossp.ImplementedRequirement] = {}
-        for imp_req in ssp.control_implementation.implemented_requirements:
+        for imp_req in as_list(ssp.control_implementation.implemented_requirements):
             control_map[imp_req.control_id] = imp_req
-            for statement in imp_req.statements:
+            for statement in as_list(imp_req.statements):
                 for by_comp in statement.by_components:
                     id_ = statement.statement_id
                     if id_ not in id_map:
@@ -250,7 +278,7 @@ class SSPAssemble(AuthorCommonCommand):
                 for component in ssp.system_implementation.components:
                     comp_dict[component.title] = generic.GenericComponent.from_system_component(component)
                 # read the new imp reqs from markdown and have them reference existing components
-                imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, comp_dict, context)
+                imp_reqs = CatalogReader.read_catalog_imp_reqs(md_path, comp_dict, context)
                 new_imp_reqs = []
                 for imp_req in imp_reqs:
                     new_imp_reqs.append(imp_req.as_ssp())
@@ -260,7 +288,7 @@ class SSPAssemble(AuthorCommonCommand):
                 # create a sample ssp to hold all the parts
                 ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
                 # load the imp_reqs from markdown and create components as needed, referenced by ### headers
-                imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, comp_dict, context)
+                imp_reqs = CatalogReader.read_catalog_imp_reqs(md_path, comp_dict, context)
                 new_imp_reqs = []
                 for imp_req in imp_reqs:
                     new_imp_reqs.append(imp_req.as_ssp())
@@ -289,7 +317,8 @@ class SSPAssemble(AuthorCommonCommand):
             for comp in comp_dict.values():
                 # need to skip the component corresponding to statement level prose
                 if comp.title:
-                    component_list.append(comp.as_system_component())
+                    # force status to be operational since if we have no info
+                    component_list.append(comp.as_system_component(const.STATUS_OPERATIONAL))
             if ssp.system_implementation.components:
                 # reconstruct list with same order as existing, but add/remove components as needed
                 new_list: List[ossp.SystemComponent] = []
@@ -405,7 +434,7 @@ class SSPFilter(AuthorCommonCommand):
                     new_by_comps: List[ossp.ByComponent] = []
                     # by_comps is optional
                     for by_comp in as_list(imp_req.by_components):
-                        if by_comp.component.uuid in comp_uuids:
+                        if by_comp.component_uuid in comp_uuids:
                             new_by_comps.append(by_comp)
                     imp_req.by_components = none_if_empty(new_by_comps)
                     new_imp_reqs.append(imp_req)
@@ -430,7 +459,7 @@ class SSPFilter(AuthorCommonCommand):
         if profile_name:
             prof_resolver = ProfileResolver()
             catalog = prof_resolver.get_resolved_profile_catalog(trestle_root, profile_path, show_value_warnings=True)
-            catalog_interface = CatalogInterface(catalog)
+            catalog_api = CatalogAPI(catalog=catalog)
 
             # The input ssp should reference a superset of the controls referenced by the profile
             # Need to cull references in the ssp to controls not in the profile
@@ -440,7 +469,7 @@ class SSPFilter(AuthorCommonCommand):
 
             new_set_params: List[ossp.SetParameter] = []
             for set_param in as_list(control_imp.set_parameters):
-                control = catalog_interface.get_control_by_param_id(set_param.param_id)
+                control = catalog_api._catalog_interface.get_control_by_param_id(set_param.param_id)
                 if control is not None:
                     new_set_params.append(set_param)
                     ssp_control_ids.add(control.id)
@@ -448,14 +477,14 @@ class SSPFilter(AuthorCommonCommand):
 
             new_imp_requirements: List[ossp.ImplementedRequirement] = []
             for imp_requirement in as_list(control_imp.implemented_requirements):
-                control = catalog_interface.get_control(imp_requirement.control_id)
+                control = catalog_api._catalog_interface.get_control(imp_requirement.control_id)
                 if control is not None:
                     new_imp_requirements.append(imp_requirement)
                     ssp_control_ids.add(control.id)
             control_imp.implemented_requirements = new_imp_requirements
 
             # make sure all controls in the profile have implemented reqs in the final ssp
-            if not ssp_control_ids.issuperset(catalog_interface.get_control_ids()):
+            if not ssp_control_ids.issuperset(catalog_api._catalog_interface.get_control_ids()):
                 raise TrestleError('Unable to filter the ssp because the profile references controls not in it.')
 
             ssp.control_implementation = control_imp

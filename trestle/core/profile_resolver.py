@@ -22,7 +22,7 @@ import trestle.oscal.common as com
 import trestle.oscal.profile as prof
 from trestle.common.const import TRESTLE_INHERITED_PROPS_TRACKER
 from trestle.common.list_utils import as_list, pop_item_from_list
-from trestle.core.catalog_interface import CatalogInterface
+from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.control_interface import ParameterRep
 from trestle.core.resolver._import import Import
 

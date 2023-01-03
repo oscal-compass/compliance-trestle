@@ -9,7 +9,7 @@
     },
     "imports": [
       {
-        "href": "trestle://catalogs/nist_cat/catalog.json",
+        "href": "trestle://catalogs/simplified_nist_catalog/catalog.json",
         "include-controls": [
           {
             "with-ids": [

@@ -406,6 +406,8 @@ class FetcherFactory:
         # but it at least needs a filename with suffix
         # the most minimal allowed uri is of the form a.yml
         uri_clean = uri.strip()
+        if uri_clean.startswith('ftp:'):
+            raise TrestleError(f'Invalid uri {uri}  ftp is not supported.  Use sftp instead.')
         uri_len = len(uri_clean)
         # at least 5 chars and ending with dot followed by at least 3 chars
         if uri_len > 4 and 0 < uri_clean.rfind('.') < uri_len - 3:

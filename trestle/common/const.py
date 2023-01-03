@@ -256,25 +256,33 @@ TABLE_OF_PARAMS_PART = 'table_of_parameters'
 # extracts standalone uuid's from anywhere in string
 UUID_REGEX = r'(?:^|[0-9A-Za-f])([0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12})(?:$|[^0-9A-Za-z])'  # noqa FS003 E501
 
+SSP_MAIN_COMP_NAME = 'This System'
+
 SSP_MD_HRULE_LINE = '______________________________________________________________________'
 
 SSP_MD_IMPLEMENTATION_QUESTION = 'What is the solution and how is it implemented?'
 
 SSP_MD_LEAVE_BLANK_TEXT = '<!-- Please leave this section blank and enter implementation details in the parts below. -->'  # noqa E501
 
-SSP_ADD_IMPLEMENTATION_PREFIX = 'Add control implementation description here for '
+SSP_ADD_IMPLEMENTATION_PREFIX = '<!-- Add control implementation description here for '
 
 STATEMENT = 'statement'
 
-SSP_ADD_IMPLEMENTATION_FOR_STATEMENT_TEXT = SSP_ADD_IMPLEMENTATION_PREFIX + STATEMENT
+CLOSE_COMMENT = ' -->'
+
+SSP_ADD_IMPLEMENTATION_FOR_STATEMENT_TEXT = SSP_ADD_IMPLEMENTATION_PREFIX + STATEMENT + CLOSE_COMMENT
 
 SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT = SSP_ADD_IMPLEMENTATION_PREFIX + 'item'
 
 SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT = SSP_ADD_IMPLEMENTATION_PREFIX + 'control'
 
+SSP_ADD_THIS_SYSTEM_IMPLEMENTATION_FOR_CONTROL_TEXT = f'<!-- Add implementation prose for the main {SSP_MAIN_COMP_NAME} component for control'  # noqa E501
+
 SSP_SYSTEM_CONTROL_IMPLEMENTATION_TEXT = 'This is the control implementation for the system.'
 
-PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT = 'Add prose here for required Section'
+SSP_VALUES = 'ssp-values'
+
+PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT = '<!-- Add prose here for required Section'
 
 NCNAME_REGEX = r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'  # noqa FS003 E501
 
@@ -306,6 +314,8 @@ HELP_ALLOWED_SECTIONS = 'Short names of sections that are allowed to be in the a
 
 HELP_MARKDOWN_NAME = 'Name of the output generated profile markdown folder'
 
+HELP_COMPDEFS = 'Comma-separated list of component-definitions for the ssp.'
+
 FILTER_BY_PROFILE = 'filter-by-profile'
 
 FILTER_BY_COMPONENTS = 'filter-by-components'
@@ -315,8 +325,6 @@ FILTER_EXCLUDE_COMPONENTS = 'filter-exclude-components'
 GENERATE_RESOLVED_CATALOG = 'generate-resolved-catalog'
 
 TRANSFORM_TYPES = [FILTER_BY_PROFILE, FILTER_BY_COMPONENTS, FILTER_EXCLUDE_COMPONENTS, GENERATE_RESOLVED_CATALOG]
-
-SSP_MAIN_COMP_NAME = 'This System'
 
 TRESTLE_TAG = 'x-trestle-'
 
@@ -401,6 +409,8 @@ STATUS_PROMPT = f'<!-- For implementation status enter one of: {STATUS_IMPLEMENT
 
 RULES_WARNING = '<!-- Note that the list of rules under ### Rules: is read-only and changes will not be captured after assembly to JSON -->'  # noqa E501
 
+THIS_SYSTEM_PROMPT = '### ' + SSP_MAIN_COMP_NAME
+
 RESPONSIBLE_ROLE = 'responsible-role'
 
 RESPONSIBLE_ROLES = 'responsible-roles'
@@ -464,6 +474,8 @@ RESOLUTION_SOURCE = 'resolution-source'
 TRESTLE_INHERITED_PROPS_TRACKER = 'trestle_inherited_props_tracker'
 
 RULE_ID = 'Rule_Id'
+
+RULE_NAME = 'rule_name'
 
 RULE_DESCRIPTION = 'Rule_Description'
 
