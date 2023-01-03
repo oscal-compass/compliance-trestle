@@ -40,10 +40,10 @@ def _get_model_field_info(field_type: Type[Any]) -> Tuple[Optional[Type[Any]], O
     root_type: Optional[str] = None
     singular_type: Optional[Type[Any]] = None
     try:
-        fields = field_type.__fields__
-        root = fields['__root__']
-        singular_type = root.type_
-        root_type = root.outer_type_._name
+        fields = field_type.__fields__  # @IgnoreException
+        root = fields['__root__']  # @IgnoreException
+        singular_type = root.type_  # @IgnoreException
+        root_type = root.outer_type_._name  # @IgnoreException
     except Exception:  # noqa S110
         pass
     return root, root_type, singular_type

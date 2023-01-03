@@ -15,6 +15,7 @@
 from __future__ import annotations
 
 import copy
+import logging
 from typing import List, Optional
 from uuid import uuid4
 
@@ -27,6 +28,8 @@ from trestle.common.list_utils import as_list
 from trestle.core.control_interface import ControlInterface
 from trestle.core.trestle_base_model import TrestleBaseModel
 from trestle.oscal import common
+
+logger = logging.getLogger(__name__)
 
 
 class GenericByComponent(TrestleBaseModel):
@@ -67,7 +70,7 @@ class GenericByComponent(TrestleBaseModel):
     def generate() -> GenericByComponent:
         """Generate instance of generic ByComponent."""
         uuid = str(uuid4())
-        return GenericByComponent(component_uuid=const.SAMPLE_UUID_STR, uuid=uuid, description=const.REPLACE_ME)
+        return GenericByComponent(component_uuid=const.SAMPLE_UUID_STR, uuid=uuid, description='')
 
 
 class GenericStatement(TrestleBaseModel):
@@ -107,7 +110,7 @@ class GenericStatement(TrestleBaseModel):
     def generate() -> GenericStatement:
         """Generate instance of GenericStatement."""
         uuid = str(uuid4())
-        return GenericStatement(statement_id=const.REPLACE_ME, uuid=uuid, description=const.REPLACE_ME)
+        return GenericStatement(statement_id=const.REPLACE_ME, uuid=uuid, description='')
 
     def as_comp_def(self) -> List[comp.Statement]:
         """Represent in comp_def form."""
@@ -187,13 +190,15 @@ class GenericComponent(TrestleBaseModel):
         class_dict['status'] = status
         return cls(**class_dict)
 
-    def as_system_component(self) -> ossp.SystemComponent:
+    def as_system_component(self, status_override: str = '') -> ossp.SystemComponent:
         """Convert to SystemComponent."""
         class_dict = copy.deepcopy(self.__dict__)
         class_dict.pop('control_implementations', None)
-        status_str = self.status.state if self.status else 'other'
+        status_str = self.status.state if self.status else const.STATUS_OPERATIONAL
+        status_str = status_override if status_override else status_str
         if status_str not in ['under-development', 'operational', 'disposition', 'other']:
-            status_str = 'other'
+            logger.warning(f'Component status {status_str} not recognized.  Setting to {const.STATUS_OPERATIONAL}')
+            status_str = const.STATUS_OPERATIONAL
         class_dict['status'] = ossp.Status(state=ossp.State1(status_str), remarks=self.status.remarks)
         return ossp.SystemComponent(**class_dict)
 
@@ -213,9 +218,7 @@ class GenericComponent(TrestleBaseModel):
         """Generate instance of GenericComponent."""
         uuid = str(uuid4())
         status = common.ImplementationStatus(state=const.STATUS_PLANNED)
-        return GenericComponent(
-            uuid=uuid, type=const.REPLACE_ME, title=const.REPLACE_ME, description=const.REPLACE_ME, status=status
-        )
+        return GenericComponent(uuid=uuid, type=const.REPLACE_ME, title='', description='', status=status)
 
 
 class GenericSetParameter(TrestleBaseModel):
@@ -276,7 +279,7 @@ class GenericImplementedRequirement(TrestleBaseModel):
     def generate() -> GenericImplementedRequirement:
         """Generate instance of this class."""
         uuid = str(uuid4())
-        class_dict = {'uuid': uuid, 'control-id': const.REPLACE_ME, 'description': const.REPLACE_ME}
+        class_dict = {'uuid': uuid, 'control-id': const.REPLACE_ME, 'description': ''}
         return GenericImplementedRequirement(**class_dict)
 
     def as_comp_def(self) -> comp.ImplementedRequirement:
@@ -343,7 +346,7 @@ class GenericControlImplementation(TrestleBaseModel):
             'uuid': uuid,
             'control-id': const.REPLACE_ME,
             'source': const.REPLACE_ME,
-            'description': const.REPLACE_ME,
+            'description': '',
             'implemented-requirements': imp_reqs
         }
         return GenericControlImplementation(**class_dict)

@@ -34,13 +34,14 @@ from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import AliasMode
 from trestle.core import generators
 from trestle.core.base_model import OscalBaseModel
-from trestle.core.catalog_interface import CatalogInterface
+from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.commands.href import HrefCmd
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.repository import Repository
 from trestle.oscal import catalog as cat
 from trestle.oscal import common
+from trestle.oscal import component as comp
 from trestle.oscal import profile as prof
 
 if file_utils.is_windows():  # pragma: no cover
@@ -384,36 +385,43 @@ def setup_for_multi_profile(trestle_root: pathlib.Path, big_profile: bool, impor
     assert HrefCmd.change_import_href(trestle_root, main_profile_name, new_href, 0) == 0
 
 
-def setup_for_ssp(
-    include_header: bool,
-    big_profile: bool,
-    tmp_trestle_dir: pathlib.Path,
-    prof_name: str,
-    output_name: str,
-    import_nist_cat: bool = True
-) -> Tuple[argparse.Namespace, str, pathlib.Path]:
-    """Create the markdown ssp content from catalog and profile."""
-    setup_for_multi_profile(tmp_trestle_dir, big_profile, import_nist_cat)
+def load_from_json(
+    tmp_trestle_dir: pathlib.Path, file_prefix: str, model_name: str, model_type: OscalBaseModel
+) -> None:
+    """Load model from JSON test dir."""
+    src_path = JSON_TEST_DATA_PATH / f'{file_prefix}.json'
+    dst_path = ModelUtils.path_for_top_level_model(tmp_trestle_dir, model_name, model_type, FileContentType.JSON)
+    dst_path.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(src_path, dst_path)
 
-    # leave out guidance:Guidance
-    sections = 'ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence,guidance:Guidance'
+
+def setup_for_ssp(tmp_trestle_dir: pathlib.Path,
+                  prof_name: str,
+                  output_name: str,
+                  use_yaml: bool = False) -> Tuple[argparse.Namespace, pathlib.Path]:
+    """Create the comp_def, profile and catalog content needed for ssp-generate."""
+    comp_names = 'comp_def_a,comp_def_b'
+    for comp_name in comp_names.split(','):
+        load_from_json(tmp_trestle_dir, comp_name, comp_name, comp.ComponentDefinition)
+    prof_name_list = [prof_name]
+    prof_name_list.extend('comp_prof_aa,comp_prof_ab,comp_prof_ba,comp_prof_bb'.split(','))
+    for local_prof_name in prof_name_list:
+        load_from_json(tmp_trestle_dir, local_prof_name, local_prof_name, prof.Profile)
+    load_from_json(tmp_trestle_dir, 'simplified_nist_catalog', 'simplified_nist_catalog', cat.Catalog)
+    yaml_path = YAML_TEST_DATA_PATH / 'good_simple.yaml' if use_yaml else None
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
         profile=prof_name,
+        compdefs=comp_names,
         output=output_name,
         verbose=0,
-        sections=sections,
         overwrite_header_values=False,
-        yaml_header=None,
+        yaml_header=yaml_path,
         allowed_sections=None,
         force_overwrite=None
     )
 
-    yaml_path = YAML_TEST_DATA_PATH / 'good_simple.yaml'
-    if include_header:
-        args.yaml_header = str(yaml_path)
-
-    return args, sections, yaml_path
+    return args, yaml_path
 
 
 def make_file_hidden(file_path: pathlib.Path, if_dot=False) -> None:
@@ -565,7 +573,7 @@ class FileChecker:
         self._file_dict: Dict[pathlib.Path, str] = {}
         for file in self._root_dir.rglob('*'):
             if not file.is_dir():
-                self._file_dict[file] = file.read_text()
+                self._file_dict[file] = file.read_text(encoding=const.FILE_ENCODING)
 
     def files_unchanged(self) -> bool:
         """Check if any files have changed."""
@@ -576,7 +584,7 @@ class FileChecker:
                     logger.error(f'Test file {file} is a new file that was not there originally.')
                     return False
                 old_text = self._file_dict[file]
-                new_text = file.read_text()
+                new_text = file.read_text(encoding=const.FILE_ENCODING)
                 if old_text != new_text:
                     logger.error(f'Test file {file} has changed contents:')
                     differ = difflib.Differ()

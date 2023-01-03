@@ -18,13 +18,14 @@ import re
 import string
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Set, Tuple
+from uuid import uuid4
 
 import trestle.core.generic_oscal as generic
 import trestle.oscal.catalog as cat
 from trestle.common import const
 from trestle.common.common_types import TypeWithProps
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import as_list, delete_list_from_list, merge_dicts, none_if_empty
+from trestle.common.list_utils import as_list, deep_get, delete_list_from_list, merge_dicts, none_if_empty
 from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import spaces_and_caps_to_snake
 from trestle.core import generators as gens
@@ -34,6 +35,7 @@ from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.markdown.markdown_processor import MarkdownNode
 from trestle.oscal import common
 from trestle.oscal import profile as prof
+from trestle.oscal import ssp as ossp
 
 logger = logging.getLogger(__name__)
 
@@ -351,7 +353,7 @@ class ControlReader():
 
     @staticmethod
     def _add_node_to_dict(
-        comp_name: str,
+        comp_name: Optional[str],
         label: str,
         comp_dict: CompDict,
         node: MarkdownNode,
@@ -359,7 +361,12 @@ class ControlReader():
         comp_list: List[str],
         context: ControlContext
     ) -> None:
-        """Extract the label, prose, possible component name - along with implementation status."""
+        """
+        Extract the label, prose, possible component name - along with implementation status.
+
+        In component mode there is only one component and its name is not in markdown.
+        In ssp mode there are many components in each md file.
+        """
         component_mode = context.purpose == ContextPurpose.COMPONENT
         # for ssp, ### marks component name but for component it is ##
         # if it is a header, make sure it has correct format
@@ -375,24 +382,12 @@ class ControlReader():
                     )
                 comp_name = node.key.split(' ', 1)[1].strip()
                 simp_comp_name = ControlReader.simplify_name(comp_name)
-                if simp_comp_name == ControlReader.simplify_name(const.SSP_MAIN_COMP_NAME) and not component_mode:
-                    raise TrestleError(
-                        f'Response in control {control_id} has {const.SSP_MAIN_COMP_NAME} as a component heading.  '
-                        'Instead, place all response prose for the default component at the top of the section, '
-                        'with no ### component_name heading.  It will be entered as prose for the default system '
-                        'component.'
-                    )
                 if simp_comp_name in comp_list:
                     raise TrestleError(
                         f'Control {control_id} has a section with two component headings for {comp_name}.  '
                         'Please combine the sections so there is only one heading for each component in a '
                         'statement.'
                     )
-                comp_list.append(simp_comp_name)
-                comp_name = ControlReader._comp_name_in_dict(comp_name, comp_dict)
-            elif node.key.startswith('## What is the solution'):
-                comp_name = const.SSP_MAIN_COMP_NAME
-                simp_comp_name = ControlReader.simplify_name(comp_name)
                 comp_list.append(simp_comp_name)
                 comp_name = ControlReader._comp_name_in_dict(comp_name, comp_dict)
 
@@ -405,7 +400,7 @@ class ControlReader():
             else:
                 # create new entry with prose
                 comp_dict[comp_name][label] = ComponentImpInfo(prose=prose, rules=[])
-        else:
+        elif comp_name:
             comp_dict[comp_name] = {label: ComponentImpInfo(prose=prose, rules=[])}
 
         # build list of subnodes that get handled specially so they aren't processed here
@@ -454,14 +449,14 @@ class ControlReader():
         all_rules: Set[str] = set()
         sub_comp_dict: Dict[str, ComponentImpInfo] = {}
         if control:
-            component = ControlInterface.get_component_by_name(context.comp_def, context.comp_name)
+            component = context.component
             for control_imp in as_list(component.control_implementations):
                 for imp_req in ControlInterface.get_control_imp_reqs(control_imp, control.id):
                     # if description is same as control id regard it as not having prose
                     # add top level control guidance with no statement id
                     prose = ControlReader._handle_empty_prose(imp_req.description, control.id)
                     params_dict.update(ControlInterface.get_params_dict_from_item(imp_req))
-                    rules_list = ControlInterface.get_rule_list_for_item(imp_req)
+                    rules_list = ControlInterface.get_rule_list_for_imp_req(imp_req)
                     all_rules.update(rules_list)
                     status = ControlInterface.get_status_from_props(imp_req)
                     sub_comp_dict[''] = ComponentImpInfo(prose=prose, status=status, rules=rules_list)
@@ -473,7 +468,7 @@ class ControlReader():
                         prose = ControlReader._handle_empty_prose(statement.description, statement.statement_id)
                         sub_comp_dict[label] = ComponentImpInfo(prose=prose, status=status, rules=rules_list)
             if sub_comp_dict:
-                comp_dict[context.comp_name] = sub_comp_dict
+                comp_dict[component.title] = sub_comp_dict
         return params_dict, sorted(all_rules)
 
     @staticmethod
@@ -577,70 +572,34 @@ class ControlReader():
         return split_header[4].strip()
 
     @staticmethod
-    def read_all_implementation_prose_and_header(
-        control: Optional[cat.Control], control_file: pathlib.Path, context: ControlContext
-    ) -> Tuple[CompDict, Dict[str, List[str]]]:
+    def read_control_info_from_md(control_file: pathlib.Path,
+                                  context: ControlContext) -> Tuple[Dict[str, List[str]], CompDict]:
         """
         Find all labels and associated implementation prose in the markdown for this control.
 
         Args:
-            control: optional control used for finding statement labels
             control_file: path to the control markdown file
             context: context of the control usage
 
         Returns:
-            Dictionary by comp_name of Dictionaries of part labels and corresponding prose read from the markdown file.
-            Also returns the yaml header as dict in second part of tuple.
-            This does not generate components - it only tracks component names and associated responses.
-
-        Notes:
-            If a component is provided, any implementation prose for a control will be added.
-            In addition, the implemented requirement will be queried for a
-            property corresponding to implementation status and included if available.
+            The yaml header as dict in second part of tuple.
+            Adds to the passed in comp_dict.
         """
-        # this level only adds for known component but add_node_to_dict can add for other components
-        comp_name = context.comp_name if context.comp_name else const.SSP_MAIN_COMP_NAME
-        control_id = control_file.stem
-
-        comp_dict: CompDict = {}
         yaml_header = {}
-        # use context.rules_dict and params_dict to map rules
-        if context.purpose == ContextPurpose.COMPONENT:
-            # find rule info needed by this control
-            params_dict, rules_list = ControlReader._add_component_to_dict(context, control, comp_dict)
-            all_params = []
-            if params_dict:
-                if not set(params_dict.keys()).issuperset(rules_list):
-                    raise TrestleError(f'Control {control_id} has a parameter assigned to a rule that is not defined.')
-                if context.rules_dict:
-                    all_params.extend(
-                        [
-                            {
-                                context.rules_dict[id_]['name']: context.rules_params_dict[id_]
-                                for id_ in context.rules_params_dict.keys()
-                            }
-                        ]
-                    )
-            if context.rules_dict:
-                rule_ids = [id_ for id_ in context.rules_dict.keys() if context.rules_dict[id_]['name'] in rules_list]
-                control_rules = [context.rules_dict[id_] for id_ in rule_ids]
-                if control_rules:
-                    yaml_header[const.COMP_DEF_RULES_TAG] = control_rules
-                all_params.extend(
-                    [context.rules_params_dict[id_] for id_ in rule_ids if id_ in context.rules_params_dict]
-                )
-            if all_params:
-                yaml_header[const.RULES_PARAMS_TAG] = all_params
-            if context.rules_param_vals:
-                yaml_header[const.COMP_DEF_RULES_PARAM_VALS_TAG] = context.rules_param_vals
+        comp_dict = {}
 
         if not control_file.exists():
-            return comp_dict, yaml_header
-        # if the file exists, load the contents and do not use prose from comp_dict
+            return yaml_header, comp_dict
+        # if the file exists, load the contents but do not use prose from comp_dict
+        # for non ssp or component mode just use empty string for comp
+        comp_name = ''
         try:
+            control_id = control_file.stem
+            if context.purpose == ContextPurpose.COMPONENT:
+                comp_name = context.comp_name if context.comp_name else const.SSP_MAIN_COMP_NAME
+
             md_api = MarkdownAPI()
-            new_yaml_header, control_md = md_api.processor.process_markdown(control_file)
-            yaml_header = new_yaml_header
+            yaml_header, control_md = md_api.processor.process_markdown(control_file)
 
             # first get the header strings, including statement labels, for statement imp reqs
             imp_string = '## Implementation '
@@ -668,7 +627,7 @@ class ControlReader():
 
         except TrestleError as e:
             raise TrestleError(f'Error occurred reading {control_file}: {e}')
-        return comp_dict, yaml_header
+        return yaml_header, comp_dict
 
     @staticmethod
     def _handle_empty_prose(prose: str, id_: str) -> str:
@@ -676,6 +635,14 @@ class ControlReader():
         if prose.startswith(const.SSP_ADD_IMPLEMENTATION_PREFIX) or prose == id_:
             return ''
         return prose
+
+    @staticmethod
+    def _get_labels_with_rule(comp_dict: Dict[str, ComponentImpInfo], rule_name: str) -> List[str]:
+        labels: List[str] = []
+        for label, comp_info in comp_dict.items():
+            if rule_name in comp_info.rules:
+                labels.append(label)
+        return labels
 
     @staticmethod
     def read_implemented_requirement(
@@ -697,7 +664,7 @@ class ControlReader():
             statement_map keeps track of statements that may have several by_component responses.
         """
         control_id = control_file.stem
-        comp_dict, header = ControlReader.read_all_implementation_prose_and_header(None, control_file, context)
+        header, comp_dict = ControlReader.read_control_info_from_md(control_file, context)
 
         statement_map: Dict[str, generic.GenericStatement] = {}
         # create a new implemented requirement linked to the control id to hold the statements
@@ -706,6 +673,18 @@ class ControlReader():
 
         raw_comp_dict = {ControlReader.simplify_name(key): value for key, value in comp_dict.items()}
         raw_avail_comps = {ControlReader.simplify_name(key): value for key, value in avail_comps.items()}
+
+        comp_name_uuid_map = {raw_comp.title: raw_comp.uuid for raw_comp in raw_avail_comps.values()}
+
+        imp_req.set_parameters = []
+        imp_req.statements = []
+        imp_req.by_components = []
+        # add normal user setparams
+        for param_id, param_dict in header.get(const.SET_PARAMS_TAG, {}).items():
+            if const.SSP_VALUES in param_dict:
+                values = [common.Value(__root__=value) for value in param_dict[const.SSP_VALUES]]
+                set_param = ossp.SetParameter(param_id=param_id, values=values)
+                imp_req.set_parameters.append(set_param)
 
         # the comp_dict captures all component names referenced by the control
         # need to create new components if not already in dict by looping over comps referenced by this control
@@ -727,8 +706,11 @@ class ControlReader():
                 # here is where we create a new component on the fly as needed
                 component = generic.GenericComponent.generate()
                 component.title = comp_name
+                if comp_name == const.SSP_MAIN_COMP_NAME:
+                    component.type = 'this-system'
                 avail_comps[comp_name] = component
                 raw_avail_comps[raw_comp_name] = component
+                comp_name_uuid_map[comp_name] = component.uuid
             # now create statements to hold the by-components and assign the statement id
             for label, comp_info in raw_comp_dict[raw_comp_name].items():
                 if context.purpose == ContextPurpose.COMPONENT:
@@ -737,6 +719,7 @@ class ControlReader():
                         continue
                     # if there is a statement label create by_comp - otherwise assign status and prose to imp_req
                     # create a new by-component to add to this statement
+                    # ssp imp_reqs don't have description
                     if not label:
                         imp_req.description = ControlReader._handle_empty_prose(comp_info.prose, control_id)
                         ControlInterface.insert_status_in_props(imp_req, comp_info.status)
@@ -747,6 +730,11 @@ class ControlReader():
                 by_comp.implementation_status = comp_info.status
                 # add the response prose to the description
                 by_comp.description = ControlReader._handle_empty_prose(comp_info.prose, control_id)
+                # is this a top level component not assoc with statement part
+                if not label:
+                    imp_req.by_components = as_list(imp_req.by_components)
+                    imp_req.by_components.append(by_comp)
+                    continue
                 statement_id = ControlInterface.create_statement_id(control_id)
                 # control level response has '' as label
                 if label in ['', const.STATEMENT]:
@@ -759,11 +747,67 @@ class ControlReader():
                 else:
                     statement: generic.GenericStatement = generic.GenericStatement.generate()
                     statement.statement_id = statement_part_id
-                    statement.by_components = []
                     statement_map[statement_part_id] = statement
+                statement.by_components = as_list(statement.by_components)
                 statement.by_components.append(by_comp)
+                statement.description = comp_info.prose
 
         imp_req.statements = list(statement_map.values())
+
+        rules_params_dict = header.get(const.RULES_PARAMS_TAG, {})
+
+        # add bycomps either at imp_req level or in statements for all places rule applies
+        for comp_name, param_dict_list in header.get(const.COMP_DEF_RULES_PARAM_VALS_TAG, {}).items():
+            simp_comp_name = ControlReader.simplify_name(comp_name)
+            if simp_comp_name not in raw_avail_comps:
+                raw_avail_comps[simp_comp_name] = generic.GenericComponent.generate()
+                if comp_name == const.SSP_MAIN_COMP_NAME:
+                    raw_avail_comps[simp_comp_name].type = 'this-system'
+            component = raw_avail_comps[simp_comp_name]
+            comp_uuid = component.uuid
+            for param_dict in param_dict_list:
+                param_name = param_dict['name']
+                param_list = rules_params_dict.get(comp_name, {})
+                rule_name = next((rp for rp in param_list if rp['name'] == param_name), 'unknown_rule_name')
+                values = [common.Value(__root__=value) for value in param_dict.get(const.VALUES, [])]
+                # if there are user ssp values, overwrite the compdef values
+                if const.SSP_VALUES in param_dict and comp_name in comp_dict:
+                    values = [common.Value(__root__=value) for value in param_dict[const.SSP_VALUES]]
+                set_param = ossp.SetParameter(param_id=param_dict['name'], values=values)
+                for label in ControlReader._get_labels_with_rule(comp_dict[comp_name], rule_name):
+                    # if not associated with a statement part put in imp_reqs by_comps directly, matching comp_uuid
+                    if label == '':
+                        if not imp_req.by_components:
+                            imp_req.by_components = []
+                        by_comp = next((bc for bc in imp_req.by_components if bc.component_uuid == comp_uuid), None)
+                        if not by_comp:
+                            by_comp = generic.GenericByComponent.generate()
+                            by_comp.component_uuid = comp_uuid
+                            by_comp.description = comp_info.prose
+                            imp_req.by_components.append(by_comp)
+                        by_comp.set_parameters = as_list(by_comp.set_parameters)
+                        by_comp.set_parameters.append(set_param)
+                    # associated with part so need to put by_comp in statement
+                    else:
+                        clean_label = label.strip('.')
+                        statement_part_id = ControlInterface.strip_to_make_ncname(f'{statement_id}.{clean_label}')
+                        statement = statement_map.get(statement_part_id, None)
+                        if not statement:
+                            logger.warning(f'imp_req has no statement part {statement_part_id}')
+                            statement = ossp.Statement(
+                                statement_id=f'{control_id}_{param_id}', description=comp_info.prose, uuid=str(uuid4())
+                            )
+                            statement_map[statement_part_id] = statement
+                        by_comp = generic.GenericByComponent.generate()
+                        by_comp.component_uuid = comp_uuid
+                        by_comp.set_parameters = [set_param]
+                        by_comp.description = comp_info.prose
+                        statement.by_components = as_list(statement.by_components)
+                        statement.by_components.append(by_comp)
+        imp_req.by_components = none_if_empty(imp_req.by_components)
+        imp_req.statements = none_if_empty(list(statement_map.values()))
+        imp_req.set_parameters = none_if_empty(imp_req.set_parameters)
+
         ControlReader._insert_header_content(imp_req, header, control_id)
         sort_id = header.get(const.SORT_ID, control_id)
         return sort_id, imp_req
@@ -799,6 +843,8 @@ class ControlReader():
             part = common.Part(id=id_, name=part_name, prose=prose, title=part_title)
             part.parts = ControlReader._add_sub_parts(part.id, subnode)
             control_parts.append(part)
+            # for required sections, only count them as found if they contain prose
+            # if not (part_name in required_sections_list and not prose):
             found_sections.append(part_name)
             return True
         return False
@@ -1022,7 +1068,8 @@ class ControlReader():
                     # if display_name is in list of properties, set its namespace
                     ControlReader._update_display_prop_namespace(param)
                     control.params.append(param)
-        if const.SORT_ID in yaml_header:
+        sort_id = deep_get(yaml_header, [const.TRESTLE_GLOBAL_TAG, const.SORT_ID], None)
+        if sort_id:
             control.props = control.props if control.props else []
-            control.props.append(common.Property(name=const.SORT_ID, value=yaml_header[const.SORT_ID]))
+            control.props.append(common.Property(name=const.SORT_ID, value=sort_id))
         return control, group_title
