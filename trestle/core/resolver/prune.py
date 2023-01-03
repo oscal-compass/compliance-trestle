@@ -22,7 +22,7 @@ import trestle.oscal.profile as prof
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list, none_if_empty
 from trestle.common.model_utils import ModelUtils
-from trestle.core.catalog_interface import CatalogInterface
+from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.pipeline import Pipeline
 from trestle.oscal import common
 
