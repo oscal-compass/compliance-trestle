@@ -1171,9 +1171,13 @@ class CsvColumn():
         'Resource',
     ]
 
-    columns_properties_required = [
-        'Rule_Id',
-        'Rule_Description',
+    # columns required which do not become properties
+    columns_required_filtered = [
+        'Profile_Reference_URL',
+        'Profile_Description',
+        'Component_Type',
+        'Control_Mappings',
+        'Resource',
     ]
 
     columns_optional = [
@@ -1188,29 +1192,29 @@ class CsvColumn():
         'Resource_Instance_Type',
     ]
 
+    # optional columns which do not become properties, initially
+    columns_optional_filtered = [
+        'Parameter_Id',
+        'Parameter_Description',
+        'Parameter_Default_Value',
+        'Parameter_Value_Alternatives',
+    ]
+
+    # optional columns which do become properties, afterwards
     columns_parameters = [
         'Parameter_Id',
         'Parameter_Description',
         'Parameter_Value_Alternatives',
     ]
 
+    # optional columns which require Parameter_Id be present in the row
     columns_parameters_dependent = [
         'Parameter_Description',
         'Parameter_Default_Value',
         'Parameter_Value_Alternatives',
     ]
 
-    columns_filtered = [
-        'Profile_Reference_URL',
-        'Profile_Description',
-        'Component_Type',
-        'Control_Mappings',
-        'Resource',
-        'Parameter_Id',
-        'Parameter_Description',
-        'Parameter_Default_Value',
-        'Parameter_Value_Alternatives',
-    ]
+    columns_filtered = columns_required_filtered + columns_optional_filtered
 
     @staticmethod
     def get_order(column_name: str) -> int:
