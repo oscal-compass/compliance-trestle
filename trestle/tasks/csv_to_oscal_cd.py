@@ -80,7 +80,6 @@ class CsvToOscalComponentDefinition(TaskBase):
             config_object: Config section associated with the task.
         """
         super().__init__(config_object)
-        self._csv_column = CsvColumn()
         self.eg_ns = 'https://ibm.github.io/compliance-trestle/schemas/oscal/cd'
         self.eg_ns_user = 'https://ibm.github.io/compliance-trestle/schemas/oscal/cd/user-defined'
 
@@ -105,11 +104,11 @@ class CsvToOscalComponentDefinition(TaskBase):
         text2 = '(required) the path of the csv file.'
         logger.info(text1 + text2)
         text1 = '  required columns:      '
-        for text2 in self._csv_column.help_list_required:
+        for text2 in CsvColumn.columns_required:
             logger.info(text1 + text2)
             text1 = '                         '
         text1 = '  optional columns:      '
-        for text2 in self._csv_column.help_list_optional:
+        for text2 in CsvColumn.columns_optional:
             logger.info(text1 + text2)
             text1 = '                         '
         text1 = '  output-dir           = '
@@ -1213,15 +1212,6 @@ class CsvColumn():
         'Parameter_Value_Alternatives',
     ]
 
-    def __init__(self) -> None:
-        """Initialize."""
-        self.help_list_required = []
-        for column in CsvColumn.columns_required:
-            self.help_list_required.append(column)
-        self.help_list_optional = []
-        for column in CsvColumn.columns_optional:
-            self.help_list_optional.append(column)
-
     @staticmethod
     def get_order(column_name: str) -> int:
         """Get order for column_name."""
@@ -1286,21 +1276,6 @@ class CsvColumn():
         rval += CsvColumn.columns_parameters_dependent
         return rval
 
-    def map_head(self, head_row: str) -> None:
-        """Keep head row."""
-        self.head_row = head_row
-
-    def get_index(self, name: str) -> int:
-        """Get index for column name."""
-        rval = -1
-        index = 0
-        for column in self.head_row:
-            if column == name:
-                rval = index
-                break
-            index += 1
-        return rval
-
 
 class _CsvMgr():
     """Csv Manager."""
@@ -1308,13 +1283,10 @@ class _CsvMgr():
     def __init__(self, csv_path: pathlib.Path) -> None:
         """Initialize."""
         self._csv = []
-        self._csv_column = CsvColumn()
         with open(csv_path, 'r', newline='') as f:
             csv_reader = csv.reader(f, delimiter=',', quoting=csv.QUOTE_MINIMAL)
             for row in csv_reader:
                 self._csv.append(row)
-            if len(self._csv):
-                self._csv_column.map_head(self._csv[0])
         self._verify()
         self._csv_rules_map = {}
         self._csv_set_params_map = {}
@@ -1400,6 +1372,18 @@ class _CsvMgr():
         """Get control keys."""
         return self._csv_controls_map.keys()
 
+    def get_col_index(self, column_name: str) -> int:
+        """Get index for column name."""
+        rval = -1
+        index = 0
+        head_row = self._csv[0]
+        for heading in head_row:
+            if heading == column_name:
+                rval = index
+                break
+            index += 1
+        return rval
+
     def get_row(self, rule_key: tuple) -> List:
         """Get row for rule."""
         return self._csv_rules_map[rule_key][1]
@@ -1411,7 +1395,7 @@ class _CsvMgr():
     def get_row_value(self, row: List[str], name: str) -> str:
         """Get value for specified name."""
         rval = ''
-        index = self._csv_column.get_index(name)
+        index = self.get_col_index(name)
         if index >= 0:
             rval = row[index]
         return rval
