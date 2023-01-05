@@ -352,6 +352,11 @@
                         "value": "partial"
                       }
                     ]
+                  },
+                  {
+                    "statement-id": "ac-1_smt.b",
+                    "uuid": "2652b814-2a6b-4b6d-a0ae-8bc7a0072209",
+                    "description": ""
                   }
                 ]
               },

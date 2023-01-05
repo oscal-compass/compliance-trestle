@@ -15,7 +15,7 @@
 
 import logging
 import pathlib
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import trestle.common.const as const
 import trestle.core.generators as gens
@@ -157,13 +157,13 @@ class CatalogReader():
 
     @staticmethod
     def _clean_imp_req(imp_req: generic.GenericImplementedRequirement):
-        imp_req.props = ControlInterface.clean_props(imp_req.props)
+        imp_req.props = none_if_empty(ControlInterface.clean_props(imp_req.props))
         for statement in as_list(imp_req.statements):
-            statement.props = ControlInterface.clean_props(statement.props)
+            statement.props = none_if_empty(ControlInterface.clean_props(statement.props))
             for by_comp in as_list(statement.by_components):
-                by_comp.props = ControlInterface.clean_props(by_comp.props)
+                by_comp.props = none_if_empty(ControlInterface.clean_props(by_comp.props))
         for by_comp in as_list(imp_req.by_components):
-            by_comp.props = ControlInterface.clean_props(by_comp.props)
+            by_comp.props = none_if_empty(ControlInterface.clean_props(by_comp.props))
 
     @staticmethod
     def _get_imp_req_for_control(ssp: ossp.SystemSecurityPlan, control_id: str) -> ossp.ImplementedRequirement:
@@ -208,7 +208,6 @@ class CatalogReader():
     def _get_by_comp_from_imp_req(
         imp_req: ossp.ImplementedRequirement, statement_id: str, comp_uuid: str
     ) -> ossp.ByComponent:
-        # this assumes the statement with id has been generated as needed
         if statement_id:
             for statement in as_list(imp_req.statements):
                 if statement.statement_id == statement_id:
@@ -262,6 +261,49 @@ class CatalogReader():
             by_comp.implementation_status = comp_info.status
 
     @staticmethod
+    def _insert_set_param_into_by_comps(
+        item: Union[ossp.ImplementedRequirement, ossp.ByComponent],
+        rule_id: str,
+        param_name: str,
+        param_values: List[com.Value]
+    ) -> None:
+        for by_comp in as_list(item.by_components):
+            for prop in as_list(by_comp.props):
+                if prop.name == const.RULE_ID and prop.value == rule_id:
+                    found = False
+                    for sp in as_list(by_comp.set_parameters):
+                        if sp.param_id == param_name:
+                            sp.values = param_values
+                            found = True
+                            break
+                    if not found:
+                        sp = ossp.SetParameter(param_id=param_name, values=param_values)
+                        by_comp.set_parameters = as_list(by_comp.set_parameters)
+                        by_comp.set_parameters.append(sp)
+
+    @staticmethod
+    def _insert_param_dict_in_imp_req(
+        imp_req: ossp.ImplementedRequirement,
+        param_dict: Dict[str, str],
+        comp_name: str,
+        comp_uuid: str,
+        md_header: Dict[str, Dict[str, str]]
+    ):
+        """Insert the param in the by_comps that are supported by the rule."""
+        # given param name find rule_id in comp name header entry
+        # then find all statements with by_comp that have that rule id in props
+        rules_dict = md_header.get(const.RULES_PARAMS_TAG, {})
+        comp_rules_params = rules_dict.get(comp_name, [])
+        param_name = param_dict['name']
+        param_values = [com.Value(__root__=param_val) for param_val in param_dict['values']]
+        for comp_rule_param in comp_rules_params:
+            if comp_rule_param['name'] == param_name:
+                rule_id = comp_rule_param[const.HEADER_RULE_ID]
+                CatalogReader._insert_set_param_into_by_comps(imp_req, rule_id, param_name, param_values)
+                for statement in as_list(imp_req.statements):
+                    CatalogReader._insert_set_param_into_by_comps(statement, rule_id, param_name, param_values)
+
+    @staticmethod
     def _update_ssp_with_md_header(
         ssp: ossp.SystemSecurityPlan,
         control_id: str,
@@ -275,6 +317,10 @@ class CatalogReader():
         for comp_name, param_dict_list in rules_param_vals_dict.items():
             for param_dict in as_list(param_dict_list):
                 if const.SSP_VALUES in param_dict:
+                    # needs to go in statements that support the rule
+                    CatalogReader._insert_param_dict_in_imp_req(
+                        imp_req, param_dict, comp_name, comp_dict[comp_name].uuid, md_header
+                    )
                     by_comp = CatalogReader._get_by_comp_from_imp_req(imp_req, '', comp_dict[comp_name].uuid)
                     by_comp.set_parameters = as_list(by_comp.set_parameters)
                     param_id = param_dict['name']

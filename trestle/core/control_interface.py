@@ -397,7 +397,7 @@ class ControlInterface:
         """Get the list of rules applying to this item from its top level props."""
         props = []
         rule_list = []
-        for prop in item.props:
+        for prop in as_list(item.props):
             if prop.name == const.RULE_ID:
                 rule_list.append(prop.value)
                 props.append(prop)

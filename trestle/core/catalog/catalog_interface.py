@@ -826,9 +826,7 @@ class CatalogInterface():
                             if control_rules:
                                 status = ControlInterface.get_status_from_props(imp_req)
                                 final_props = ControlInterface.cull_props_by_rules(rule_props, control_rules)
-                                comp_info = ComponentImpInfo(
-                                    imp_req.description, control_rules, final_props, status
-                                )  # FIXME
+                                comp_info = ComponentImpInfo(imp_req.description, control_rules, final_props, status)
                                 self.add_comp_info(imp_req.control_id, context.comp_name, '', comp_info)
                             set_params = copy.deepcopy(ci_set_params)
                             set_params.update(ControlInterface.get_set_params_from_item(imp_req))
@@ -848,7 +846,10 @@ class CatalogInterface():
                                     all_props = rule_props[:]
                                     all_props.extend(stat_props)
                                     final_props = ControlInterface.cull_props_by_rules(all_props, rule_list)
-                                    comp_info = ComponentImpInfo(
-                                        statement.description, rule_list, final_props, status
-                                    )  # FIXME
+                                    comp_info = ComponentImpInfo(statement.description, rule_list, final_props, status)
                                     self.add_comp_info(imp_req.control_id, context.comp_name, label, comp_info)
+                # add the rule_id to the param_dict
+                for param_comp_name, rule_param_dict in context.rules_params_dict.items():
+                    for rule_tag, param_dict in rule_param_dict.items():
+                        rule_dict = deep_get(context.rules_dict, [param_comp_name, rule_tag], {})
+                        param_dict['rule_id'] = rule_dict.get(const.NAME, 'unknown_rule')
