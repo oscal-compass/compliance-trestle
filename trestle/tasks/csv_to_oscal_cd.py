@@ -259,14 +259,14 @@ class CsvToOscalComponentDefinition(TaskBase):
                 continue
             else:
                 del_rules.append(key)
-                logger.debug(f'del: {key}')
+                logger.debug(f'rules del: {key}')
         for key in csv_rules:
             if key in cd_rules:
                 mod_rules.append(key)
-                logger.debug(f'mod: {key}')
+                logger.debug(f'rules mod: {key}')
             else:
                 add_rules.append(key)
-                logger.debug(f'add: {key}')
+                logger.debug(f'rules add: {key}')
         return (del_rules, add_rules, mod_rules)
 
     def _calculate_set_params(self, mod_rules: List) -> tuple:
@@ -284,17 +284,17 @@ class CsvToOscalComponentDefinition(TaskBase):
                 continue
             else:
                 del_set_params.append(key)
-                logger.debug(f'del: {key}')
+                logger.debug(f'params del: {key}')
         for key in csv_set_params:
             rule_key = (key[0], key[1], key[2])
             if rule_key not in mod_rules:
                 continue
             if key in cd_set_params:
                 mod_set_params.append(key)
-                logger.debug(f'mod: {key}')
+                logger.debug(f'params mod: {key}')
             else:
                 add_set_params.append(key)
-                logger.debug(f'add: {key}')
+                logger.debug(f'prams add: {key}')
         return (del_set_params, add_set_params, mod_set_params)
 
     def _calculate_control_mappings(self, mod_rules: List) -> tuple:
@@ -312,17 +312,17 @@ class CsvToOscalComponentDefinition(TaskBase):
                 continue
             else:
                 del_control_mappings.append(key)
-                logger.debug(f'del: {key}')
+                logger.debug(f'ctl-maps del: {key}')
         for key in csv_controls:
             rule_key = (key[0], key[1], key[2])
             if rule_key not in mod_rules:
                 continue
             if key in cd_controls:
                 mod_control_mappings.append(key)
-                logger.debug(f'mod: {key}')
+                logger.debug(f'ctl-maps mod: {key}')
             else:
                 add_control_mappings.append(key)
-                logger.debug(f'add: {key}')
+                logger.debug(f'ctl-maps add: {key}')
         return (del_control_mappings, add_control_mappings, mod_control_mappings)
 
     def rules_del(self, del_rules: List[str]) -> None:
@@ -344,8 +344,6 @@ class CsvToOscalComponentDefinition(TaskBase):
         for prop in component.props:
             if prop.remarks.__root__ != rule_set:
                 props.append(prop)
-                if prop.name == 'Parameter_Id':
-                    logger.debug(f'keep {prop.value}')
             elif prop.name == 'Parameter_Id':
                 self._delete_rule_set_parameter(component, prop.value)
             elif prop.name == 'Rule_Id':
@@ -676,7 +674,7 @@ class CsvToOscalComponentDefinition(TaskBase):
                     )
                     if set_parameter.values == replacement.values:
                         continue
-                    logger.debug(f'{rule_id} {param_id} {set_parameter.values} -> {replacement.values}')
+                    logger.debug(f'params-mod: {rule_id} {param_id} {set_parameter.values} -> {replacement.values}')
                     set_parameter.values = replacement.values
 
     def _control_mappings_generator(self, control_mappings: List[str]) -> Iterator[List[str]]:
@@ -1098,10 +1096,11 @@ class _CdMgr():
         if value is not None and len(value):
             prop = self.find_property(component, rule_set, name)
             if prop:
-                # modify property
+                # no change
                 if prop.value == value:
                     return
-                logger.debug(f'{rule_set} {name} {prop.value} -> {value}')
+                # replace value
+                logger.debug(f'update-rule: {rule_set} {name} {prop.value} -> {value}')
                 prop.value = value
             else:
                 self.add_property(component, rule_set, name, value, ns, class_)
@@ -1138,12 +1137,12 @@ class _CdMgr():
                 if index > last:
                     props.append(prop_add)
                     prop_add = None
-                    logger.debug(f'{rule_set} {name} {prop.value} ->> {value}')
+                    logger.debug(f'add-prop (last): {rule_set} {name} {prop.value} ->> {value}')
                 elif prop_add.remarks.__root__ == prop.remarks.__root__:
                     if CsvColumn.get_order(prop.name) > CsvColumn.get_order(prop_add.name):
                         props.append(prop_add)
                         prop_add = None
-                        logger.debug(f'{rule_set} {name} {prop.value} ->> {value}')
+                        logger.debug(f'add-prop (order): {rule_set} {name} {prop.value} ->> {value}')
             props.append(prop)
         component.props = props
 
@@ -1152,7 +1151,7 @@ class _CdMgr():
         props = []
         for prop in component.props:
             if prop.remarks.__root__ == rule_set and prop.name == name:
-                logger.debug(f'{rule_set} {name} {prop.value} removed')
+                logger.debug(f'delete-prop: {rule_set} {name} {prop.value}')
             else:
                 props.append(prop)
         component.props = props
@@ -1314,7 +1313,7 @@ class _CsvMgr():
             if param_id:
                 key = (resource, component_type, rule_id, source, description, param_id)
                 self._csv_set_params_map[key] = [row_num, row]
-                logger.debug(f'csv-set-paramaters: {key} {self._csv_set_params_map[key][0]}')
+                logger.debug(f'csv-set-parameters: {key} {self._csv_set_params_map[key][0]}')
             # control mappings
             control_mappings = self.get_row_value(row, 'Control_Mappings')
             if control_mappings:
@@ -1341,7 +1340,7 @@ class _CsvMgr():
             control_mappings = self.get_row_value(row, 'Control_Mappings')
             if not len(control_mappings):
                 continue
-            logger.debug(f'{index} {row}')
+            logger.debug(f'row_gen: {index} {row}')
             yield index, row
 
     def _check_row_minimum_requirements(self, row_num: int, row: List) -> None:
