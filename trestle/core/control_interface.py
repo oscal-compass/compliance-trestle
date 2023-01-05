@@ -57,7 +57,7 @@ class ComponentImpInfo:
     # the lambda is needed to prevent a mutable from being used as a default
     # without the lambda it would break python 3.11 and is a bug either way
     status: common.ImplementationStatus = field(
-        default_factory=lambda: common.ImplementationStatus(state=const.STATUS_PLANNED)
+        default_factory=lambda: common.ImplementationStatus(state=const.STATUS_OPERATIONAL)
     )
 
 

@@ -472,6 +472,34 @@ YAML_PROPS_COMMENT = """  # Add or modify control properties here
   #
 """
 
+YAML_SSP_VALUES_COMMENT = """  # You may set values for parameters in the assembled SSP by adding
+  #
+  # ssp-values:
+  #   - value 1
+  #   - value 2
+  #
+  # below each values: list
+  # The values list refers to the values in the resolved profile catalog, and the ssp-values represent new values
+  # to be placed in SetParameters of the SSP.
+  #
+"""
+
+YAML_PROFILE_VALUES_COMMENT = """  # You may set values for parameters in the assembled Profile by adding
+  #
+  # profile-values:
+  #   - value 1
+  #   - value 2
+  #
+  # below each values: list
+  # The values list refers to the values in the catalog, and the profile-values represent values
+  # in SetParameters of the Profile.
+  #
+"""
+
+YAML_RULE_PARAM_VALUES_COMMENT = """  # You may set new values for rule parameters by editing the values below.
+  #
+"""
+
 DISPLAY_NAME = 'display-name'
 
 TRESTLE_GENERIC_NS = 'https://ibm.github.io/compliance-trestle/schemas/oscal'

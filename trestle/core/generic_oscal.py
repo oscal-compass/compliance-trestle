@@ -235,7 +235,9 @@ class GenericComponent(TrestleBaseModel):
         status_str = self.status.state if self.status else const.STATUS_OPERATIONAL
         status_str = status_override if status_override else status_str
         if status_str not in ['under-development', 'operational', 'disposition', 'other']:
-            logger.warning(f'Component status {status_str} not recognized.  Setting to {const.STATUS_OPERATIONAL}')
+            logger.warning(
+                f'SystemComponent status {status_str} not recognized.  Setting to {const.STATUS_OPERATIONAL}'
+            )
             status_str = const.STATUS_OPERATIONAL
         class_dict['status'] = ossp.Status(state=ossp.State1(status_str), remarks=self.status.remarks)
         return ossp.SystemComponent(**class_dict)

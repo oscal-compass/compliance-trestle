@@ -485,8 +485,16 @@ class ControlWriter():
         if comp_dict:
             context.comp_dict = comp_dict
 
+        header_comment_dict = {const.TRESTLE_ADD_PROPS_TAG: const.YAML_PROPS_COMMENT}
+        if context.to_markdown:
+            if context.purpose == ContextPurpose.PROFILE:
+                header_comment_dict[const.SET_PARAMS_TAG] = const.YAML_PROFILE_VALUES_COMMENT
+            elif context.purpose == ContextPurpose.SSP:
+                header_comment_dict[const.SET_PARAMS_TAG] = const.YAML_SSP_VALUES_COMMENT
+                header_comment_dict[const.COMP_DEF_RULES_PARAM_VALS_TAG] = const.YAML_RULE_PARAM_VALUES_COMMENT
+
         # begin adding info to the md file
-        self._md_file = MDWriter(control_file)
+        self._md_file = MDWriter(control_file, header_comment_dict)
         self._sections_dict = context.sections_dict
 
         context.merged_header = ControlWriter._merge_headers(context.merged_header, md_header, context)

@@ -314,6 +314,7 @@ class SSPAssemble(AuthorCommonCommand):
         set_params: List[ossp.SetParameter],
         context: ControlContext
     ) -> None:
+        """Add imp req from control implementation into new ssp being assembled."""
         imp_req = CatalogReader._get_imp_req_for_control(ssp, gen_imp_req.control_id)
         imp_req.props = none_if_empty(ControlInterface.clean_props(gen_imp_req.props))
         rules_list, _ = ControlInterface.get_rule_list_for_item(imp_req)
@@ -324,9 +325,7 @@ class SSPAssemble(AuthorCommonCommand):
             by_comp.description = gen_imp_req.description
             by_comp.set_parameters = none_if_empty(set_params)
             by_comp.props = none_if_empty(ControlInterface.clean_props(gen_imp_req.props))
-            by_comp.implementation_status = com.ImplementationStatus(
-                state=const.STATUS_PLANNED
-            )  # FIXME should come from props?
+            by_comp.implementation_status = ControlInterface.get_status_from_props(by_comp)
             # FIXME confirm no need to insert set_params here for params linked to rule
             imp_req.by_components = as_list(imp_req.by_components)
             imp_req.by_components.append(by_comp)

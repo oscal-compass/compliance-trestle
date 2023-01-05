@@ -660,7 +660,9 @@ class ControlReader():
             for param_dict in param_dict_list:
                 param_name = param_dict['name']
                 param_list = rules_params_dict.get(comp_name, {})
-                rule_name = next((rp['rule-id'] for rp in param_list if rp['name'] == param_name), 'unknown_rule_name')
+                rule_name = next(
+                    (rp[const.HEADER_RULE_ID] for rp in param_list if rp['name'] == param_name), 'unknown_rule_name'
+                )
                 values = [common.Value(__root__=value) for value in param_dict.get(const.VALUES, [])]
                 # if there are user ssp values, overwrite the compdef values
                 if const.SSP_VALUES in param_dict and comp_name in comp_dict:

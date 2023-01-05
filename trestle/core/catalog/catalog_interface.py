@@ -729,7 +729,7 @@ class CatalogInterface():
                     if rule_id in rule_ids.get(comp_name, []):
                         param_name = rules_param['name']
                         rules_param_names.append(param_name)
-                        rules_param['rule-id'] = rule_id_rule_name_map[comp_name].get(rule_id, None)
+                        rules_param[const.HEADER_RULE_ID] = rule_id_rule_name_map[comp_name].get(rule_id, None)
                         deep_append(rules_params, [comp_name], rules_param)
                         deep_set(
                             param_id_rule_name_map, [comp_name, rules_param['name']],
@@ -852,4 +852,4 @@ class CatalogInterface():
                 for param_comp_name, rule_param_dict in context.rules_params_dict.items():
                     for rule_tag, param_dict in rule_param_dict.items():
                         rule_dict = deep_get(context.rules_dict, [param_comp_name, rule_tag], {})
-                        param_dict['rule_id'] = rule_dict.get(const.NAME, 'unknown_rule')
+                        param_dict[const.HEADER_RULE_ID] = rule_dict.get(const.NAME, 'unknown_rule')
