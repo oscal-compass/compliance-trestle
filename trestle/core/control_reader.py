@@ -604,6 +604,7 @@ class ControlReader():
             for param_dict in param_dict_list:
                 values = [common.Value(__root__=value) for value in param_dict.get(const.VALUES, [])]
                 set_param = ossp.SetParameter(param_id=param_dict['name'], values=values)
+                imp_req.set_parameters.append(set_param)
         imp_req.statements = none_if_empty(list(statement_map.values()))
         imp_req.set_parameters = none_if_empty(imp_req.set_parameters)
 
