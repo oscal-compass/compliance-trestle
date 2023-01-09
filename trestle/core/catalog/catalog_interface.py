@@ -782,6 +782,53 @@ class CatalogInterface():
                 return control_id, control_handle
         raise TrestleError(f'No controls found for group {group_id}')
 
+    def _add_control_imp_comp_info(
+        self,
+        context: ControlContext,
+        control_imp: comp.ControlImplementation,
+        part_id_map: Dict[str, Dict[str, str]],
+        comp_rules_props: List[common.Property]
+    ) -> None:
+        control_imp_rules_dict, control_imp_rules_params_dict, ci_rules_props = ControlInterface.get_rules_and_params_dict_from_item(control_imp)  # noqa E501
+        context.rules_dict[context.comp_name].update(control_imp_rules_dict)
+        comp_rules_params_dict = context.rules_params_dict.get(context.comp_name, {})
+        comp_rules_params_dict.update(control_imp_rules_params_dict)
+        context.rules_params_dict[context.comp_name] = comp_rules_params_dict
+        ci_set_params = ControlInterface.get_set_params_from_item(control_imp)
+        for imp_req in as_list(control_imp.implemented_requirements):
+            control_part_id_map = part_id_map.get(imp_req.control_id, {})
+            # find if any rules apply to this control, including in statements
+            control_rules, statement_rules, ir_props = ControlInterface.get_rule_list_for_imp_req(imp_req)
+            rule_props = comp_rules_props[:]
+            rule_props.extend(ci_rules_props)
+            rule_props.extend(ir_props)
+            if control_rules or statement_rules:
+                if control_rules:
+                    status = ControlInterface.get_status_from_props(imp_req)
+                    final_props = ControlInterface.cull_props_by_rules(rule_props, control_rules)
+                    comp_info = ComponentImpInfo(imp_req.description, control_rules, final_props, status)
+                    self.add_comp_info(imp_req.control_id, context.comp_name, '', comp_info)
+                set_params = copy.deepcopy(ci_set_params)
+                set_params.update(ControlInterface.get_set_params_from_item(imp_req))
+                for set_param in set_params.values():
+                    self.add_comp_set_param(imp_req.control_id, context.comp_name, set_param)
+                for statement in as_list(imp_req.statements):
+                    rule_list, stat_props = ControlInterface.get_rule_list_for_item(statement)
+                    if rule_list:
+                        status = ControlInterface.get_status_from_props(statement)
+                        if statement.statement_id not in control_part_id_map:
+                            label = statement.statement_id
+                            logger.warning(
+                                f'No statement label found for statement id {label}.  Defaulting to {label}.'  # noqa E501
+                            )
+                        else:
+                            label = control_part_id_map[statement.statement_id]
+                        all_props = rule_props[:]
+                        all_props.extend(stat_props)
+                        final_props = ControlInterface.cull_props_by_rules(all_props, rule_list)
+                        comp_info = ComponentImpInfo(statement.description, rule_list, final_props, status)
+                        self.add_comp_info(imp_req.control_id, context.comp_name, label, comp_info)
+
     def generate_control_rule_info(self, part_id_map: Dict[str, Dict[str, str]], context: ControlContext) -> None:
         """
         Generate rule info for controls directly from the component definitions and catalog interface.
@@ -809,45 +856,7 @@ class CatalogInterface():
                 context.rules_dict[context.comp_name] = comp_rules_dict
                 context.rules_params_dict.update(comp_rules_params_dict)
                 for control_imp in as_list(component.control_implementations):
-                    control_imp_rules_dict, control_imp_rules_params_dict, ci_rules_props = ControlInterface.get_rules_and_params_dict_from_item(control_imp)  # noqa E501
-                    context.rules_dict[context.comp_name].update(control_imp_rules_dict)
-                    comp_rules_params_dict = context.rules_params_dict.get(context.comp_name, {})
-                    comp_rules_params_dict.update(control_imp_rules_params_dict)
-                    context.rules_params_dict[context.comp_name] = comp_rules_params_dict
-                    ci_set_params = ControlInterface.get_set_params_from_item(control_imp)
-                    for imp_req in as_list(control_imp.implemented_requirements):
-                        control_part_id_map = part_id_map.get(imp_req.control_id, {})
-                        # find if any rules apply to this control, including in statements
-                        control_rules, statement_rules, ir_props = ControlInterface.get_rule_list_for_imp_req(imp_req)
-                        rule_props = comp_rules_props[:]
-                        rule_props.extend(ci_rules_props)
-                        rule_props.extend(ir_props)
-                        if control_rules or statement_rules:
-                            if control_rules:
-                                status = ControlInterface.get_status_from_props(imp_req)
-                                final_props = ControlInterface.cull_props_by_rules(rule_props, control_rules)
-                                comp_info = ComponentImpInfo(imp_req.description, control_rules, final_props, status)
-                                self.add_comp_info(imp_req.control_id, context.comp_name, '', comp_info)
-                            set_params = copy.deepcopy(ci_set_params)
-                            set_params.update(ControlInterface.get_set_params_from_item(imp_req))
-                            for set_param in set_params.values():
-                                self.add_comp_set_param(imp_req.control_id, context.comp_name, set_param)
-                            for statement in as_list(imp_req.statements):
-                                rule_list, stat_props = ControlInterface.get_rule_list_for_item(statement)
-                                if rule_list:
-                                    status = ControlInterface.get_status_from_props(statement)
-                                    if statement.statement_id not in control_part_id_map:
-                                        label = statement.statement_id
-                                        logger.warning(
-                                            f'No statement label found for statement id {label}.  Defaulting to {label}.'  # noqa E501
-                                        )
-                                    else:
-                                        label = control_part_id_map[statement.statement_id]
-                                    all_props = rule_props[:]
-                                    all_props.extend(stat_props)
-                                    final_props = ControlInterface.cull_props_by_rules(all_props, rule_list)
-                                    comp_info = ComponentImpInfo(statement.description, rule_list, final_props, status)
-                                    self.add_comp_info(imp_req.control_id, context.comp_name, label, comp_info)
+                    self._add_control_imp_comp_info(context, control_imp, part_id_map, comp_rules_props)
                 # add the rule_id to the param_dict
                 for param_comp_name, rule_param_dict in context.rules_params_dict.items():
                     for rule_tag, param_dict in rule_param_dict.items():
