@@ -68,7 +68,7 @@
         "type": "Service",
         "title": "comp_aa",
         "description": "comp aa",
-        "props":[
+        "props": [
           {
             "name": "Rule_Id",
             "ns": "http://comp_ns",
@@ -216,7 +216,7 @@
         "type": "Service",
         "title": "comp_ab",
         "description": "comp ab",
-        "props":[
+        "props": [
           {
             "name": "Rule_Id",
             "ns": "http://comp_ns",

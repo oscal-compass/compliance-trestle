@@ -17,7 +17,6 @@ import pathlib
 import re
 import string
 from typing import Any, Dict, List, Optional, Tuple
-from uuid import uuid4
 
 import trestle.core.generic_oscal as generic
 import trestle.oscal.catalog as cat
@@ -33,6 +32,7 @@ from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlIn
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.markdown.markdown_processor import MarkdownNode
 from trestle.oscal import common
+from trestle.oscal import component as comp
 from trestle.oscal import profile as prof
 from trestle.oscal import ssp as ossp
 
@@ -537,26 +537,13 @@ class ControlReader():
         return prose
 
     @staticmethod
-    def _get_labels_with_rule(comp_dict: Dict[str, ComponentImpInfo], rule_name: str) -> List[str]:
-        labels: List[str] = []
-        for label, comp_info in comp_dict.items():
-            if rule_name in comp_info.rules:
-                labels.append(label)
-        return labels
-
-    @staticmethod
-    def read_implemented_requirement(
-        control_file: pathlib.Path,
-        avail_comps: Dict[str, generic.GenericComponent],
-        comp_dict: Dict[str, ComponentImpInfo],
-        context: ControlContext
-    ) -> Tuple[str, generic.GenericImplementedRequirement]:
+    def read_implemented_requirement(control_file: pathlib.Path,
+                                     context: ControlContext) -> Tuple[str, comp.ImplementedRequirement]:
         """
         Get the implementated requirement associated with given control and link to existing components or new ones.
 
         Args:
             control_file: path of the control markdown file
-            avail_comps: dictionary of known components keyed by component name
             context: context of the control usage
 
         Returns:
@@ -565,20 +552,19 @@ class ControlReader():
         Notes:
             Each statement may have several responses, with each response in a by_component for a specific component.
             statement_map keeps track of statements that may have several by_component responses.
+            This is only used during component assemble and only for updating one component.
         """
         control_id = control_file.stem
         md_header, md_comp_dict = ControlReader.read_control_info_from_md(control_file, context)
+        comp_name = context.component.title
 
-        statement_map: Dict[str, generic.GenericStatement] = {}
+        statement_map: Dict[str, comp.Statement] = {}
         # create a new implemented requirement linked to the control id to hold the statements
-        imp_req: generic.GenericImplementedRequirement = generic.GenericImplementedRequirement.generate()
+        imp_req = gens.generate_sample_model(comp.ImplementedRequirement)
         imp_req.control_id = control_id
-
-        comp_dict = md_comp_dict if not comp_dict else comp_dict
 
         imp_req.set_parameters = []
         imp_req.statements = []
-        imp_req.by_components = []
         # add normal user setparams
         for param_id, param_dict in md_header.get(const.SET_PARAMS_TAG, {}).items():
             if const.SSP_VALUES in param_dict:
@@ -586,127 +572,43 @@ class ControlReader():
                 set_param = ossp.SetParameter(param_id=param_id, values=values)
                 imp_req.set_parameters.append(set_param)
 
-        # the comp_dict captures all component names referenced by the control
-        # need to create new components if not already in dict by looping over comps referenced by this control
-        for comp_name in comp_dict.keys():
-            component: Optional[generic.GenericComponent] = None
-            if comp_name in avail_comps:
-                component = avail_comps[comp_name]
+        comp_dict = md_comp_dict[comp_name]
+        for label, comp_info in comp_dict.items():
+            # only assemble responses with associated rules
+            if not comp_info.rules:
+                continue
+            # if no label it applies to the imp_req itself rather than a statement
+            if not label:
+                imp_req.description = ControlReader._handle_empty_prose(comp_info.prose, control_id)
+                ControlInterface.insert_status_in_props(imp_req, comp_info.status)
+                continue
+            statement_id = ControlInterface.create_statement_id(control_id)
+            if label in ['', const.STATEMENT]:
+                statement_part_id = statement_id
             else:
-                # here is where we create a new component on the fly as needed
-                component = generic.GenericComponent.generate()
-                component.title = comp_name
-                if comp_name == const.SSP_MAIN_COMP_NAME:
-                    component.type = const.THIS_SYSTEM_AS_KEY
-                avail_comps[comp_name] = component
-            # now create statements to hold the by-components and assign the statement id
-            for label, comp_info in comp_dict[comp_name].items():
-                md_comp_info = md_comp_dict[comp_name]
-                if context.purpose == ContextPurpose.COMPONENT:
-                    # only assemble responses with associated rules
-                    if not comp_info.rules:
-                        continue
-                    # if there is a statement label create by_comp - otherwise assign status and prose to imp_req
-                    # create a new by-component to add to this statement
-                    # ssp imp_reqs don't have description
-                    if not label:
-                        imp_req.description = ControlReader._handle_empty_prose(md_comp_info[label].prose, control_id)
-                        ControlInterface.insert_status_in_props(imp_req, md_comp_info[label].status)
-                        continue
-                by_comp: generic.GenericByComponent = generic.GenericByComponent.generate()
-                # link it to the component uuid
-                by_comp.component_uuid = component.uuid
-                by_comp.implementation_status = md_comp_info[label].status
-                by_comp.props = none_if_empty(ControlInterface.clean_props(comp_info.props))
-                # add the response prose to the description
-                by_comp.description = ControlReader._handle_empty_prose(md_comp_info[label].prose, control_id)
-                # is this a top level component not assoc with statement part
-                if not label:
-                    imp_req.by_components = as_list(imp_req.by_components)
-                    imp_req.by_components.append(by_comp)
-                    continue
-                statement_id = ControlInterface.create_statement_id(control_id)
-                # control level response has '' as label
-                if label in ['', const.STATEMENT]:
-                    statement_part_id = statement_id
-                else:
-                    clean_label = label.strip('.')
-                    statement_part_id = ControlInterface.strip_to_make_ncname(f'{statement_id}.{clean_label}')
-                if statement_part_id in statement_map:
-                    statement = statement_map[statement_part_id]
-                else:
-                    statement: generic.GenericStatement = generic.GenericStatement.generate()
-                    statement.statement_id = statement_part_id
-                    statement_map[statement_part_id] = statement
-                statement.by_components = as_list(statement.by_components)
-                statement.by_components.append(by_comp)
-                statement.description = md_comp_info[label].prose
-                statement.props = none_if_empty(ControlInterface.clean_props(comp_info.props))
+                clean_label = label.strip('.')
+                statement_part_id = ControlInterface.strip_to_make_ncname(f'{statement_id}.{clean_label}')
+            if statement_part_id in statement_map:
+                statement = statement_map[statement_part_id]
+            else:
+                statement = gens.generate_sample_model(comp.Statement)
+                statement.statement_id = statement_part_id
+                statement_map[statement_part_id] = statement
+            statement.description = comp_info.prose
+            statement.props = none_if_empty(ControlInterface.clean_props(comp_info.props))
+            ControlInterface.insert_status_in_props(statement, comp_info.status)
 
         imp_req.statements = list(statement_map.values())
 
-        rules_params_dict = md_header.get(const.RULES_PARAMS_TAG, {})  # FIXME not from here
-        # FIXME rules_params_dict = ControlReader._get_rules_params_dict(control_id, avail_comps)
-
-        # add bycomps either at imp_req level or in statements for all places rule applies
-        # FIXME below not from md header
-        for comp_name, param_dict_list in md_header.get(const.COMP_DEF_RULES_PARAM_VALS_TAG, {}).items():
-            if comp_name not in avail_comps:
-                avail_comps[comp_name] = generic.GenericComponent.generate()
-                if comp_name == const.SSP_MAIN_COMP_NAME:
-                    avail_comps[comp_name].type = const.THIS_SYSTEM_AS_KEY
-            component = avail_comps[comp_name]
-            comp_uuid = component.uuid
+        for _, param_dict_list in md_header.get(const.COMP_DEF_RULES_PARAM_VALS_TAG, {}).items():
             for param_dict in param_dict_list:
-                param_name = param_dict['name']
-                param_list = rules_params_dict.get(comp_name, {})
-                rule_name = next(
-                    (rp[const.HEADER_RULE_ID] for rp in param_list if rp['name'] == param_name), 'unknown_rule_name'
-                )
                 values = [common.Value(__root__=value) for value in param_dict.get(const.VALUES, [])]
-                # if there are user ssp values, overwrite the compdef values
-                if const.SSP_VALUES in param_dict and comp_name in comp_dict:
-                    values = [common.Value(__root__=value) for value in param_dict[const.SSP_VALUES]]
                 set_param = ossp.SetParameter(param_id=param_dict['name'], values=values)
-                for label in ControlReader._get_labels_with_rule(comp_dict[comp_name], rule_name):
-                    # if not associated with a statement part put in imp_reqs by_comps directly, matching comp_uuid
-                    if label == '':
-                        if not imp_req.by_components:
-                            imp_req.by_components = []
-                        by_comp = next((bc for bc in imp_req.by_components if bc.component_uuid == comp_uuid), None)
-                        if not by_comp:
-                            by_comp = generic.GenericByComponent.generate()
-                            by_comp.component_uuid = comp_uuid
-                            by_comp.description = comp_info.prose
-                            by_comp.props = none_if_empty(ControlInterface.clean_props(comp_info.props))
-                            imp_req.by_components.append(by_comp)
-                        by_comp.set_parameters = as_list(by_comp.set_parameters)
-                        by_comp.set_parameters.append(set_param)
-                    # associated with part so need to put by_comp in statement
-                    else:
-                        clean_label = label.strip('.')
-                        statement_part_id = ControlInterface.strip_to_make_ncname(f'{statement_id}.{clean_label}')
-                        statement = statement_map.get(statement_part_id, None)
-                        if not statement:
-                            logger.warning(f'imp_req has no statement part {statement_part_id}')
-                            statement = ossp.Statement(
-                                statement_id=f'{control_id}_{param_id}', description=comp_info.prose, uuid=str(uuid4())
-                            )
-                            statement_map[statement_part_id] = statement
-                        by_comp = generic.GenericByComponent.generate()
-                        by_comp.component_uuid = comp_uuid
-                        by_comp.set_parameters = [set_param]
-                        by_comp.description = comp_info.prose
-                        by_comp.props = none_if_empty(ControlInterface.clean_props(comp_info.props))
-                        statement.by_components = as_list(statement.by_components)
-                        statement.by_components.append(by_comp)
-                        statement.props = none_if_empty(ControlInterface.clean_props(statement.props))
-        imp_req.by_components = none_if_empty(imp_req.by_components)
         imp_req.statements = none_if_empty(list(statement_map.values()))
         imp_req.set_parameters = none_if_empty(imp_req.set_parameters)
 
-        ControlReader._insert_header_content(imp_req, md_header, control_id)  # FIXME
-        sort_id = md_header.get(const.SORT_ID, control_id)  # FIXME
+        ControlReader._insert_header_content(imp_req, md_header, control_id)
+        sort_id = md_header.get(const.SORT_ID, control_id)
         return sort_id, imp_req
 
     @staticmethod

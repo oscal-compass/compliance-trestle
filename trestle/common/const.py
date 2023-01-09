@@ -478,7 +478,7 @@ YAML_SSP_VALUES_COMMENT = """  # You may set values for parameters in the assemb
   #   - value 1
   #   - value 2
   #
-  # below each values: list
+  # below a section of values:
   # The values list refers to the values in the resolved profile catalog, and the ssp-values represent new values
   # to be placed in SetParameters of the SSP.
   #
@@ -490,7 +490,7 @@ YAML_PROFILE_VALUES_COMMENT = """  # You may set values for parameters in the as
   #   - value 1
   #   - value 2
   #
-  # below each values: list
+  # below a section of values:
   # The values list refers to the values in the catalog, and the profile-values represent values
   # in SetParameters of the Profile.
   #

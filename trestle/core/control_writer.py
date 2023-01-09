@@ -121,12 +121,6 @@ class ControlWriter():
             self._md_file.new_list(rules)
             self._md_file.set_indent_level(-1)
 
-    def _has_prose(self, part_label: str, comp_dict: CompDict) -> bool:
-        for dic in comp_dict.values():
-            if part_label in dic and dic[part_label].prose:
-                return True
-        return False
-
     def _insert_comp_info(
         self, part_label: str, comp_info: Dict[str, ComponentImpInfo], context: ControlContext
     ) -> None:

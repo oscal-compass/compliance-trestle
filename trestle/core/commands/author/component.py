@@ -22,7 +22,6 @@ from uuid import uuid4
 
 import trestle.common.const as const
 import trestle.common.log as log
-import trestle.core.generic_oscal as generic
 import trestle.oscal.common as com
 import trestle.oscal.component as comp
 from trestle.common import file_utils
@@ -274,6 +273,7 @@ class ComponentAssemble(AuthorCommonCommand):
         for component in parent_comp.components:
             context.comp_name = component.title
             context.comp_def = parent_comp
+            context.component = component
             ComponentAssemble._update_component_with_markdown(md_dir, component, context)
 
     @staticmethod
@@ -295,19 +295,13 @@ class ComponentAssemble(AuthorCommonCommand):
     def _update_component_with_markdown(
         md_dir: pathlib.Path, component: comp.DefinedComponent, context: ControlContext
     ) -> None:
-        #
         md_path = md_dir / component.title
         sub_dirs = file_utils.iterdir_without_hidden_files(md_path)
         source_dirs = [sub_dir.name for sub_dir in sub_dirs if sub_dir.is_dir()]
-        generic_comp = generic.GenericComponent.from_defined_component(component)
-        avail_comps = {component.title: generic_comp}
         for source_dir in source_dirs:
             profile_title, _ = ComponentAssemble._get_profile_title_and_href_from_dir(md_path / source_dir)
             # context has defined component and comp_name
-            imp_reqs = CatalogReader.read_catalog_imp_reqs(md_path / source_dir, avail_comps, {}, context)
+            imp_reqs = CatalogReader.read_catalog_imp_reqs(md_path / source_dir, context)
             # the imp_reqs need to be inserted into the correct control_implementation
             for imp_req in imp_reqs:
-                comp_imp_req = imp_req.as_comp_def()
-                ControlInterface.insert_imp_req_into_component(
-                    component, comp_imp_req, profile_title, context.trestle_root
-                )
+                ControlInterface.insert_imp_req_into_component(component, imp_req, profile_title, context.trestle_root)

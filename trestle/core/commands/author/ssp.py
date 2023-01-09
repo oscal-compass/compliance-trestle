@@ -29,7 +29,7 @@ import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
 from trestle.common import const, file_utils, log
 from trestle.common.err import TrestleError, handle_generic_command_exception
-from trestle.common.list_utils import as_list, comma_sep_to_list, deep_set, none_if_empty
+from trestle.common.list_utils import as_list, comma_sep_to_list, none_if_empty
 from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog.catalog_api import CatalogAPI
@@ -196,58 +196,6 @@ class SSPAssemble(AuthorCommonCommand):
         self.add_argument('-r', '--regenerate', action='store_true', help=const.HELP_REGENERATE)
         self.add_argument('-vn', '--version', help=const.HELP_VERSION, required=False, type=str)
 
-    def _merge_imp_reqs(self, ssp: ossp.SystemSecurityPlan, imp_reqs: List[ossp.ImplementedRequirement]) -> bool:
-        """
-        Merge the new imp_reqs into the ssp.
-
-        If a statement has same id and same by_comp uuid as ssp, use the ssp version with new description.
-        Otherwise just insert the statement.
-        When the statement was loaded it had access to the current components so the uuids should match.
-        """
-        id_map: Dict[str, Dict[str, ossp.Statement]] = {}
-        by_comp_map: Dict[str, Dict[str, ossp.ByComponent]] = {}
-        control_map: Dict[str, ossp.ImplementedRequirement] = {}
-        component_uuid_map: Dict[str, str] = {}
-        # go through existing ssp and create map of existing statements by statement id and component uuid
-        for component in as_list(ssp.system_implementation.components):
-            component_uuid_map[component.title] = component.uuid
-        for imp_req in as_list(ssp.control_implementation.implemented_requirements):
-            control_map[imp_req.control_id] = imp_req
-            for statement in as_list(imp_req.statements):
-                for by_comp in as_list(statement.by_components):
-                    id_ = statement.statement_id
-                    deep_set(id_map, [id_, by_comp.component_uuid], statement)
-            for by_comp in as_list(imp_req.by_components):
-                deep_set(by_comp_map, [imp_req.control_id, by_comp.component_uuid], by_comp)
-
-        # now go through provided imp_reqs and update the uuid refs
-        for imp_req in imp_reqs:
-            control_by_comp_map = by_comp_map.get(imp_req.control_id, {})
-            if imp_req.control_id in control_map:
-                imp_req.uuid = control_map[imp_req.control_id].uuid
-            for by_comp in as_list(imp_req.by_components):
-                if by_comp.component_uuid in control_by_comp_map:
-                    by_comp.uuid = control_by_comp_map[by_comp.component_uuid].uuid
-                else:
-                    pass
-            for statement in as_list(imp_req.statements):
-                id_ = statement.statement_id
-                # for each statement id match the statement per component to the original
-                if id_ in id_map:
-                    comp_dict = id_map[id_]
-                    for by_comp in as_list(statement.by_components):
-                        if by_comp.component_uuid in comp_dict:
-                            statement.uuid = comp_dict[by_comp.component_uuid].uuid
-                            for orig_by_comp in as_list(comp_dict[by_comp.component_uuid].by_components):
-                                if orig_by_comp.component_uuid == by_comp.component_uuid:
-                                    by_comp.uuid = orig_by_comp.uuid
-                                    break
-
-        # now that uuids have been fixed up - set the ssp imp_reqs equal to what was loaded from markdown
-        changed = ssp.control_implementation.implemented_requirements != imp_reqs
-        ssp.control_implementation.implemented_requirements = imp_reqs
-        return changed
-
     @staticmethod
     def _get_ssp_component(ssp: ossp.SystemSecurityPlan, gen_comp: generic.GenericComponent) -> ossp.SystemComponent:
         for component in as_list(ssp.system_implementation.components):
@@ -280,14 +228,14 @@ class SSPAssemble(AuthorCommonCommand):
         imp_req: ossp.ImplementedRequirement,
         statement: generic.GenericStatement,
         set_params: List[ossp.SetParameter],
-        context: ControlContext
     ):
         """Merge the generic statement into the statements of the imp_req."""
+        # if the statement id is already in the imp_req, merge its by_comps into the existing statement
         for stat in as_list(imp_req.statements):
             if stat.statement_id == statement.statement_id:
                 SSPAssemble._merge_by_comps(stat, statement, set_params)
                 return
-        # only add the new statement if it has by_comps
+        # otherwise just ad the statement - but only if it has by_comps
         if statement.by_components:
             imp_req.statements = as_list(imp_req.statements)
             imp_req.statements.append(statement)
@@ -296,15 +244,14 @@ class SSPAssemble(AuthorCommonCommand):
     def _merge_imp_req_into_imp_req(
         imp_req: ossp.ImplementedRequirement,
         gen_imp_req: generic.GenericImplementedRequirement,
-        set_params: List[ossp.SetParameter],
-        context: ControlContext
+        set_params: List[ossp.SetParameter]
     ) -> None:
         """Merge comp def imp req into existing imp req."""
         # convert generic imp req from comp defs into ssp form
         src_imp_req = gen_imp_req.as_ssp()
         imp_req.props = none_if_empty(ControlInterface.clean_props(gen_imp_req.props))
         for statement in as_list(src_imp_req.statements):
-            SSPAssemble._merge_statement(imp_req, statement, set_params, context)
+            SSPAssemble._merge_statement(imp_req, statement, set_params)
 
     @staticmethod
     def _add_imp_req_to_ssp(
@@ -326,7 +273,7 @@ class SSPAssemble(AuthorCommonCommand):
             by_comp.set_parameters = none_if_empty(set_params)
             by_comp.props = none_if_empty(ControlInterface.clean_props(gen_imp_req.props))
             by_comp.implementation_status = ControlInterface.get_status_from_props(by_comp)
-            # FIXME confirm no need to insert set_params here for params linked to rule
+            # TODO confirm no need to insert set_params here for params linked to rule
             imp_req.by_components = as_list(imp_req.by_components)
             imp_req.by_components.append(by_comp)
         # each statement in ci corresponds to by_comp in an ssp imp req
@@ -338,7 +285,7 @@ class SSPAssemble(AuthorCommonCommand):
                 by_comp = CatalogReader._get_by_comp_from_imp_req(imp_req, statement.statement_id, gen_comp.uuid)
                 by_comp.description = statement.description
                 by_comp.props = none_if_empty(ControlInterface.clean_props(statement.props))
-                SSPAssemble._merge_statement(imp_req, statement, set_params, context)
+                SSPAssemble._merge_statement(imp_req, statement, set_params)
         imp_req.statements = none_if_empty(imp_req.statements)
         ssp.control_implementation.implemented_requirements = as_list(
             ssp.control_implementation.implemented_requirements
@@ -354,7 +301,7 @@ class SSPAssemble(AuthorCommonCommand):
         """Merge the new imp_reqs into the ssp."""
         for imp_req in as_list(ssp.control_implementation.implemented_requirements):
             if imp_req.control_id == gen_imp_req.control_id:
-                SSPAssemble._merge_imp_req_into_imp_req(imp_req, gen_imp_req, set_params, context)
+                SSPAssemble._merge_imp_req_into_imp_req(imp_req, gen_imp_req, set_params)
                 return
         new_imp_req = gen_imp_req.as_ssp()
         imp_req.props = none_if_empty(ControlInterface.clean_props(gen_imp_req.props))
@@ -381,7 +328,6 @@ class SSPAssemble(AuthorCommonCommand):
                         SSPAssemble._add_imp_req_to_ssp(ssp, gen_comp, imp_req, set_params, context)
                     else:
                         SSPAssemble._merge_imp_req_into_ssp(ssp, imp_req, set_params, context)
-                        pass
             ssp_comp.props = as_list(gen_comp.props)
             ssp_comp.props.extend(all_ci_props)
             ssp_comp.props = none_if_empty(ControlInterface.clean_props(ssp_comp.props))

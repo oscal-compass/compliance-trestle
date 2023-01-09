@@ -55,14 +55,13 @@ def load_file(trestle_root: pathlib.Path, source_name: str, dest_name: str, sour
 
 def setup_component_generate(tmp_trestle_dir: pathlib.Path) -> List[str]:
     """Create the compdef, profile and catalog content component-generate."""
-    comp_names = 'comp_def_a,comp_def_b'
-    for comp_name in comp_names.split(','):
-        test_utils.load_from_json(tmp_trestle_dir, comp_name, comp_name, comp.ComponentDefinition)
+    comp_name = 'comp_def_a'
+    test_utils.load_from_json(tmp_trestle_dir, comp_name, comp_name, comp.ComponentDefinition)
     for prof_name in 'comp_prof,comp_prof_aa,comp_prof_ab,comp_prof_ba,comp_prof_bb'.split(','):
         test_utils.load_from_json(tmp_trestle_dir, prof_name, prof_name, prof.Profile)
     test_utils.load_from_json(tmp_trestle_dir, 'simplified_nist_catalog', 'simplified_nist_catalog', cat.Catalog)
 
-    return comp_names
+    return comp_name
 
 
 def check_common_contents(header: Dict[str, Any]) -> None:
@@ -112,8 +111,7 @@ def check_at1_contents(at1_path: pathlib.Path) -> None:
 
 def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test component generate."""
-    comp_names = setup_component_generate(tmp_trestle_dir)
-    comp_name = comp_names.split(',')[0]
+    comp_name = setup_component_generate(tmp_trestle_dir)
     ac1_path = tmp_trestle_dir / 'md_comp/comp_aa/comp_prof_aa/ac/ac-1.md'
 
     orig_component, _ = model_utils.ModelUtils.load_top_level_model(

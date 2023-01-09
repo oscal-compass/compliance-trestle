@@ -112,7 +112,6 @@ class CatalogWriter():
             context.cli_yaml_header[const.SET_PARAMS_TAG] = {}
 
         if context.cli_yaml_header:
-            # FIXME is this intended behavior
             if context.overwrite_header_values:
                 # update the control params with new values
                 for key, value in context.cli_yaml_header[const.SET_PARAMS_TAG].items():
@@ -302,7 +301,7 @@ class CatalogWriter():
                 if control_rules or statement_rules:
                     if control_rules:
                         status = ControlInterface.get_status_from_props(imp_req)
-                        comp_info = ComponentImpInfo(imp_req.description, control_rules, [], status)  # FIXME
+                        comp_info = ComponentImpInfo(imp_req.description, control_rules, [], status)
                         self._catalog_interface.add_comp_info(imp_req.control_id, context.comp_name, '', comp_info)
                     set_params = copy.deepcopy(ci_set_params)
                     set_params.update(ControlInterface.get_set_params_from_item(imp_req))
@@ -315,11 +314,11 @@ class CatalogWriter():
                             if statement.statement_id not in control_part_id_map:
                                 label = statement.statement_id
                                 logger.warning(
-                                    f'No statement label found for statement id {label}.  Defaulting to {label}.'  # noqa E501
+                                    f'No statement label found for statement id {label}.  Defaulting to {label}.'
                                 )
                             else:
                                 label = control_part_id_map[statement.statement_id]
-                            comp_info = ComponentImpInfo(statement.description, rule_list, [], status)  # FIXME
+                            comp_info = ComponentImpInfo(statement.description, rule_list, [], status)
                             self._catalog_interface.add_comp_info(
                                 imp_req.control_id, context.comp_name, label, comp_info
                             )

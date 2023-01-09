@@ -22,6 +22,7 @@ import trestle.core.generators as gens
 import trestle.core.generic_oscal as generic
 import trestle.oscal.catalog as cat
 import trestle.oscal.common as com
+import trestle.oscal.component as comp
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list, none_if_empty
 from trestle.core.catalog.catalog_interface import CatalogInterface
@@ -124,17 +125,12 @@ class CatalogReader():
         return self._catalog_interface._catalog
 
     @staticmethod
-    def read_catalog_imp_reqs(
-        md_path: pathlib.Path,
-        avail_comps: Dict[str, generic.GenericComponent],
-        catalog_interface: Optional[CatalogInterface],
-        context: ControlContext
-    ) -> List[generic.GenericImplementedRequirement]:
+    def read_catalog_imp_reqs(md_path: pathlib.Path, context: ControlContext) -> List[comp.ImplementedRequirement]:
         """Read the full set of control implemented requirements from markdown.
 
         Args:
             md_path: Path to the markdown control files, with directories for each group
-            avail_comps: Dict mapping component names to known components
+            context: Context for the operation
 
         Returns:
             List of implemented requirements gathered from each control
@@ -142,28 +138,14 @@ class CatalogReader():
         Notes:
             As the controls are read into the catalog the needed components are added if not already available.
             avail_comps provides the mapping of component name to the actual component.
-            This is only used for ssp via catalog_interface
+            This is only used during component assemble and only for updating one component
         """
-        imp_req_map: Dict[str, generic.GenericImplementedRequirement] = {}
+        imp_req_map: Dict[str, comp.ImplementedRequirement] = {}
         for group_path in CatalogInterface._get_group_ids_and_dirs(md_path).values():
             for control_file in group_path.glob('*.md'):
-                control_id = control_file.stem
-                comp_dict = catalog_interface.get_comp_info(control_id) if catalog_interface else {}
-                sort_id, imp_req = ControlReader.read_implemented_requirement(
-                    control_file, avail_comps, comp_dict, context
-                )
+                sort_id, imp_req = ControlReader.read_implemented_requirement(control_file, context)
                 imp_req_map[sort_id] = imp_req
         return [imp_req_map[key] for key in sorted(imp_req_map.keys())]
-
-    @staticmethod
-    def _clean_imp_req(imp_req: generic.GenericImplementedRequirement):
-        imp_req.props = none_if_empty(ControlInterface.clean_props(imp_req.props))
-        for statement in as_list(imp_req.statements):
-            statement.props = none_if_empty(ControlInterface.clean_props(statement.props))
-            for by_comp in as_list(statement.by_components):
-                by_comp.props = none_if_empty(ControlInterface.clean_props(by_comp.props))
-        for by_comp in as_list(imp_req.by_components):
-            by_comp.props = none_if_empty(ControlInterface.clean_props(by_comp.props))
 
     @staticmethod
     def _get_imp_req_for_control(ssp: ossp.SystemSecurityPlan, control_id: str) -> ossp.ImplementedRequirement:

@@ -21,6 +21,8 @@ from _pytest.monkeypatch import MonkeyPatch
 from tests import test_utils
 from tests.test_utils import FileChecker, setup_for_ssp
 
+import trestle.core.generators as gens
+import trestle.core.generic_oscal as generic
 import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
 from trestle.common import const, file_utils
@@ -594,3 +596,27 @@ def test_ssp_force_overwrite(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyP
     assert old_value in tree.content.raw_text
 
     assert fc.files_unchanged()
+
+
+def test_merge_statement() -> None:
+    """Test merge statement."""
+    imp_req = gens.generate_sample_model(ossp.ImplementedRequirement, True)
+    new_statement = gens.generate_sample_model(ossp.Statement, True)
+    prose = 'my new prose'
+    new_statement.by_components[0].description = prose
+    SSPAssemble._merge_statement(imp_req, new_statement, [])
+    assert imp_req.statements[0].by_components[0].description == prose
+
+
+def test_merge_imp_req() -> None:
+    """Test merge statement."""
+    imp_req_a = gens.generate_sample_model(ossp.ImplementedRequirement, True)
+    imp_req_b = generic.GenericImplementedRequirement.generate()
+    statement = generic.GenericStatement(statement_id=const.REPLACE_ME, uuid=const.SAMPLE_UUID_STR, description='foo')
+    by_comp = generic.GenericByComponent.generate()
+    prose = 'my new prose'
+    by_comp.description = prose
+    statement.by_components = [by_comp]
+    imp_req_b.statements = [statement]
+    SSPAssemble._merge_imp_req_into_imp_req(imp_req_a, imp_req_b, [])
+    assert imp_req_a.statements[0].by_components[0].description == prose
