@@ -891,14 +891,20 @@ class ControlInterface:
         return status
 
     @staticmethod
-    def clean_props(props: Optional[List[common.Property]]) -> List[common.Property]:
+    def clean_props(props: Optional[List[common.Property]],
+                    remove_all_rule_info: bool = False) -> List[common.Property]:
         """Remove duplicate props and implementation status."""
         new_props: List[common.Property] = []
         found_props: Set[Tuple[str, str, str, str]] = set()
+        rule_tag_list = [
+            const.RULE_DESCRIPTION, const.RULE_ID, const.PARAMETER_DESCRIPTION, const.PARAMETER_VALUE_ALTERNATIVES
+        ]
         # reverse the list so the latest items are kept
         for prop in reversed(as_list(props)):
             prop_tuple = (prop.name, as_string(prop.value), as_string(prop.ns), string_from_root(prop.remarks))
             if prop_tuple in found_props or prop.name == const.IMPLEMENTATION_STATUS:
+                continue
+            if remove_all_rule_info and prop.name in rule_tag_list:
                 continue
             found_props.add(prop_tuple)
             new_props.append(prop)

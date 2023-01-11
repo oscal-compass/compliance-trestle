@@ -32,6 +32,7 @@ from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog.catalog_api import CatalogAPI
 from trestle.core.catalog.catalog_reader import CatalogReader
 from trestle.core.commands.author.common import AuthorCommonCommand
+from trestle.core.commands.common.cmd_utils import clear_folder
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_interface import ControlInterface
@@ -53,10 +54,18 @@ class ComponentGenerate(AuthorCommonCommand):
         name_help_str = 'Name of the source component model in the trestle workspace'
         self.add_argument('-n', '--name', help=name_help_str, required=True, type=str)
         self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
+        self.add_argument('-fo', '--force-overwrite', help=const.HELP_FO_OUTPUT, required=False, action='store_true')
 
     def _run(self, args: argparse.Namespace) -> int:
         try:
             log.set_log_level_from_args(args)
+
+            if args.force_overwrite:
+                try:
+                    logger.debug(f'Overwriting the content in {args.output} folder.')
+                    clear_folder(pathlib.Path(args.output))
+                except TrestleError as e:  # pragma: no cover
+                    raise TrestleError(f'Unable to overwrite contents in {args.output} folder: {e}')
 
             return self.component_generate_all(args.trestle_root, args.name, args.output)
 
