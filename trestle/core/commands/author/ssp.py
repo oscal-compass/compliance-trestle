@@ -284,7 +284,8 @@ class SSPAssemble(AuthorCommonCommand):
         context: ControlContext
     ) -> None:
         """Add imp req from control implementation into new ssp being assembled."""
-        # this imp_req comes directly from the comp def
+        # the incoming gen_imp_req comes directly from the comp def
+        # but the imp_req here is pulled from the ssp and created if not already there
         imp_req = CatalogReader._get_imp_req_for_control(ssp, gen_imp_req.control_id)
         # get any rules set at control level, if present
         rules_list, _ = ControlInterface.get_rule_list_for_item(gen_imp_req)
@@ -310,9 +311,8 @@ class SSPAssemble(AuthorCommonCommand):
                 by_comp = CatalogReader._get_by_comp_from_imp_req(imp_req, statement.statement_id, gen_comp.uuid)
                 by_comp.description = statement.description
                 by_comp.props = none_if_empty(ControlInterface.clean_props(statement.props))
-                rules_list = ControlInterface.get_rule_list_for_item(statement)
-                item_set_params = SSPAssemble._get_params_for_rules(context, rules_list, set_params)
-                SSPAssemble._merge_statement(imp_req, statement, item_set_params)
+                rules_list, _ = ControlInterface.get_rule_list_for_item(statement)
+                by_comp.set_parameters = SSPAssemble._get_params_for_rules(context, rules_list, set_params)
         imp_req.statements = none_if_empty(imp_req.statements)
         ssp.control_implementation.implemented_requirements = as_list(
             ssp.control_implementation.implemented_requirements
@@ -342,6 +342,7 @@ class SSPAssemble(AuthorCommonCommand):
         # determine if this is a new and empty ssp
         new_ssp = not ssp.control_implementation.implemented_requirements
         for _, gen_comp in comp_dict.items():
+            context.comp_name = gen_comp.title
             all_ci_props: List[com.Property] = []
             ssp_comp = SSPAssemble._get_ssp_component(ssp, gen_comp)
             set_params: List[ossp.SetParameter] = []
