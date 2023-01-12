@@ -783,25 +783,23 @@ class CatalogInterface():
         raise TrestleError(f'No controls found for group {group_id}')
 
     def _add_control_imp_comp_info(
-        self,
-        context: ControlContext,
-        control_imp: comp.ControlImplementation,
-        part_id_map: Dict[str, Dict[str, str]],
-        comp_rules_props: List[common.Property]
+        self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]], comp_rules_props: List[common.Property]
     ) -> None:
-        control_imp_rules_dict, control_imp_rules_params_dict, ci_rules_props = ControlInterface.get_rules_and_params_dict_from_item(control_imp)  # noqa E501
+        """Add component info to the impreqs of the control implementation based on applied rules."""
+        control_imp_rules_dict, control_imp_rules_params_dict, ci_rules_props = ControlInterface.get_rules_and_params_dict_from_item(context.control_implementation)  # noqa E501
         context.rules_dict[context.comp_name].update(control_imp_rules_dict)
         comp_rules_params_dict = context.rules_params_dict.get(context.comp_name, {})
         comp_rules_params_dict.update(control_imp_rules_params_dict)
         context.rules_params_dict[context.comp_name] = comp_rules_params_dict
-        ci_set_params = ControlInterface.get_set_params_from_item(control_imp)
-        for imp_req in as_list(control_imp.implemented_requirements):
+        ci_set_params = ControlInterface.get_set_params_from_item(context.control_implementation)
+        for imp_req in as_list(context.control_implementation.implemented_requirements):
             control_part_id_map = part_id_map.get(imp_req.control_id, {})
             # find if any rules apply to this control, including in statements
             control_rules, statement_rules, ir_props = ControlInterface.get_rule_list_for_imp_req(imp_req)
             rule_props = comp_rules_props[:]
             rule_props.extend(ci_rules_props)
             rule_props.extend(ir_props)
+            rule_props = ControlInterface.clean_props(rule_props, remove_imp_status=False)
             if control_rules or statement_rules:
                 if control_rules:
                     status = ControlInterface.get_status_from_props(imp_req)
@@ -856,7 +854,8 @@ class CatalogInterface():
                 context.rules_dict[context.comp_name] = comp_rules_dict
                 context.rules_params_dict.update(comp_rules_params_dict)
                 for control_imp in as_list(component.control_implementations):
-                    self._add_control_imp_comp_info(context, control_imp, part_id_map, comp_rules_props)
+                    context.control_implementation = control_imp
+                    self._add_control_imp_comp_info(context, part_id_map, comp_rules_props)
                 # add the rule_id to the param_dict
                 for param_comp_name, rule_param_dict in context.rules_params_dict.items():
                     for rule_tag, param_dict in rule_param_dict.items():

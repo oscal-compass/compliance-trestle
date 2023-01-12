@@ -23,6 +23,7 @@ import trestle.core.generic_oscal as generic
 import trestle.oscal.catalog as cat
 import trestle.oscal.common as com
 import trestle.oscal.component as comp
+from trestle.common.common_types import TypeWithSetParams
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list, none_if_empty
 from trestle.core.catalog.catalog_interface import CatalogInterface
@@ -268,7 +269,6 @@ class CatalogReader():
         imp_req: ossp.ImplementedRequirement,
         param_dict: Dict[str, str],
         comp_name: str,
-        comp_uuid: str,
         md_header: Dict[str, Dict[str, str]]
     ):
         """Insert the param in the by_comps that are supported by the rule."""
@@ -286,12 +286,24 @@ class CatalogReader():
                     CatalogReader._insert_set_param_into_by_comps(statement, rule_id, param_name, param_values)
 
     @staticmethod
+    def _add_set_params_to_item(param_dict: Dict[str, str], item: TypeWithSetParams, param_id: str) -> None:
+        value_list = param_dict[const.SSP_VALUES]
+        param_values = [com.Value(__root__=value) for value in value_list]
+        new_sp_list = []
+        for sp in as_list(item.set_parameters):
+            if sp.param_id != param_id:
+                new_sp_list.append(sp)
+        item.set_parameters = new_sp_list
+        item.set_parameters.append(ossp.SetParameter(param_id=param_id, values=param_values))
+
+    @staticmethod
     def _update_ssp_with_md_header(
         ssp: ossp.SystemSecurityPlan,
         control_id: str,
         comp_dict: Dict[str, generic.GenericComponent],
         md_header: Dict[str, Dict[str, str]]
     ) -> None:
+        """Update the ssp with info from the header of an ssp control markdown file."""
         # rules param vals go in bycomps of imp_req
         # param vals go directly in imp_req
         rules_param_vals_dict = md_header.get(const.COMP_DEF_RULES_PARAM_VALS_TAG, {})
@@ -299,39 +311,20 @@ class CatalogReader():
         for comp_name, param_dict_list in rules_param_vals_dict.items():
             for param_dict in as_list(param_dict_list):
                 if const.SSP_VALUES in param_dict:
-                    # needs to go in statements that support the rule
-                    CatalogReader._insert_param_dict_in_imp_req(
-                        imp_req, param_dict, comp_name, comp_dict[comp_name].uuid, md_header
-                    )
+                    CatalogReader._insert_param_dict_in_imp_req(imp_req, param_dict, comp_name, md_header)
                     by_comp = CatalogReader._get_by_comp_from_imp_req(imp_req, '', comp_dict[comp_name].uuid)
                     by_comp.set_parameters = as_list(by_comp.set_parameters)
                     param_id = param_dict['name']
-                    value_list = param_dict[const.SSP_VALUES]
-                    param_values = [com.Value(__root__=value) for value in value_list]
-                    # remove any preceding set params for this param_id
-                    new_sp_list = []
-                    for sp in as_list(by_comp.set_parameters):
-                        if sp.param_id != param_id:
-                            new_sp_list.append(sp)
-                    by_comp.set_parameters = new_sp_list
-                    by_comp.set_parameters.append(ossp.SetParameter(param_id=param_id, values=param_values))
+                    CatalogReader._add_set_params_to_item(param_dict, by_comp, param_id)
         param_vals_dict = md_header.get(const.SET_PARAMS_TAG, {})
         for param_id, param_dict in param_vals_dict.items():
             if const.SSP_VALUES in param_dict:
-                value_list = param_dict[const.SSP_VALUES]
-                param_values = [com.Value(__root__=value) for value in value_list]
-                new_sp_list = []
-                for sp in as_list(imp_req.set_parameters):
-                    if sp.param_id != param_id:
-                        new_sp_list.append(sp)
-                imp_req.set_parameters = new_sp_list
-                imp_req.set_parameters.append(ossp.SetParameter(param_id=param_id, values=param_values))
+                CatalogReader._add_set_params_to_item(param_dict, imp_req, param_id)
 
     @staticmethod
     def read_ssp_md_content(
         md_path: pathlib.Path,
         ssp: ossp.SystemSecurityPlan,
-        catalog_interface: CatalogInterface,
         comp_dict: Dict[str, generic.GenericComponent],
         part_id_map_by_label: Dict[str, Dict[str, str]],
         context: ControlContext
@@ -342,7 +335,6 @@ class CatalogReader():
         Args:
             md_path: path to the catalog markdown
             ssp: ssp in which to insert the md content
-            catalog_interface: catalog interface for the resolved profile catalog
             comp_dict: map of component name to component
             part_id_map_by_label: map label to part_id of control
             context: control context for the procedure

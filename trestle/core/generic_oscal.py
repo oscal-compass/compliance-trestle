@@ -31,6 +31,8 @@ from trestle.oscal import common
 
 logger = logging.getLogger(__name__)
 
+IMPLEMENTED_REQUIREMENTS = 'implemented_requirements'
+
 
 class GenericByComponent(TrestleBaseModel):
     """Generic ByComponent for SSP and DefinedComponent."""
@@ -371,14 +373,14 @@ class GenericControlImplementation(TrestleBaseModel):
     def from_component_ci(cls, control_imp: comp.ControlImplementation) -> GenericControlImplementation:
         """Convert component control imp to generic."""
         class_dict = copy.deepcopy(control_imp.__dict__)
-        if 'implemented_requirements' in class_dict:
+        if IMPLEMENTED_REQUIREMENTS in class_dict:
             new_irs = []
-            ir_list = class_dict.get('implemented_requirements', None)
+            ir_list = class_dict.get(IMPLEMENTED_REQUIREMENTS, None)
             for ir in as_list(ir_list):
                 new_ir = GenericImplementedRequirement.from_comp_def(ir)
                 new_irs.append(new_ir)
             class_dict['implemented-requirements'] = none_if_empty(new_irs)
-            class_dict.pop('implemented_requirements', None)
+            class_dict.pop(IMPLEMENTED_REQUIREMENTS, None)
             new_sps = []
             sp_list = class_dict.get('set_parameters', None)
             for sp in as_list(sp_list):
@@ -394,11 +396,11 @@ class GenericControlImplementation(TrestleBaseModel):
         for imp_req in self.implemented_requirements:
             imp_reqs.append(imp_req.as_ssp())
         class_dict = self.__dict__
-        for prop in ['uuid', 'source', 'props', 'links', 'implemented_requirements']:
+        for prop in ['uuid', 'source', 'props', 'links', IMPLEMENTED_REQUIREMENTS]:
             class_dict.pop(prop, None)
         if imp_reqs:
             class_dict['implemented-requirements'] = imp_reqs
-            class_dict.pop('implemented_requirements', None)
+            class_dict.pop(IMPLEMENTED_REQUIREMENTS, None)
         return ossp.ControlImplementation(**class_dict)
 
 

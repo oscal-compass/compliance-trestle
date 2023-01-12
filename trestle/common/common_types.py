@@ -56,3 +56,13 @@ TypeWithProps = TypeVar(
 )
 
 TypeWithParts = TypeVar('TypeWithParts', Control, Part, Group, prof.Add, prof.Group)
+
+TypeWithSetParams = TypeVar(
+    'TypeWithSetParams',
+    ossp.ImplementedRequirement,
+    ossp.ByComponent,
+    ossp.ControlImplementation,
+    comp.ImplementedRequirement,
+    comp.ControlImplementation,
+    prof.Modify
+)

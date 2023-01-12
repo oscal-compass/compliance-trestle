@@ -891,8 +891,11 @@ class ControlInterface:
         return status
 
     @staticmethod
-    def clean_props(props: Optional[List[common.Property]],
-                    remove_all_rule_info: bool = False) -> List[common.Property]:
+    def clean_props(
+        props: Optional[List[common.Property]],
+        remove_imp_status: bool = True,
+        remove_all_rule_info: bool = False
+    ) -> List[common.Property]:
         """Remove duplicate props and implementation status."""
         new_props: List[common.Property] = []
         found_props: Set[Tuple[str, str, str, str]] = set()
@@ -902,7 +905,7 @@ class ControlInterface:
         # reverse the list so the latest items are kept
         for prop in reversed(as_list(props)):
             prop_tuple = (prop.name, as_string(prop.value), as_string(prop.ns), string_from_root(prop.remarks))
-            if prop_tuple in found_props or prop.name == const.IMPLEMENTATION_STATUS:
+            if prop_tuple in found_props or (prop.name == const.IMPLEMENTATION_STATUS and remove_imp_status):
                 continue
             if remove_all_rule_info and prop.name in rule_tag_list:
                 continue
@@ -912,10 +915,10 @@ class ControlInterface:
         return new_props
 
     @staticmethod
-    def cull_props_by_rules(props: Optional[List[common.Property]], rules: List[str]) -> List[str]:
+    def cull_props_by_rules(props: Optional[List[common.Property]], rules: List[str]) -> List[common.Property]:
         """Cull properties to the ones needed by rules."""
-        needed_rule_ids = set()
-        culled_props = []
+        needed_rule_ids: Set[str] = set()
+        culled_props: List[common.Property] = []
         for prop in as_list(props):
             if prop.value in rules and prop.remarks:
                 needed_rule_ids.add(string_from_root(prop.remarks))

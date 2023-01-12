@@ -323,7 +323,6 @@ class SSPAssemble(AuthorCommonCommand):
         ssp: ossp.SystemSecurityPlan,
         gen_imp_req: generic.GenericImplementedRequirement,
         set_params: List[ossp.SetParameter],
-        context: ControlContext
     ) -> None:
         """Merge the new imp_reqs into the ssp."""
         for imp_req in as_list(ssp.control_implementation.implemented_requirements):
@@ -355,7 +354,7 @@ class SSPAssemble(AuthorCommonCommand):
                     if new_ssp:
                         SSPAssemble._add_imp_req_to_ssp(ssp, gen_comp, imp_req, set_params, context)
                     else:
-                        SSPAssemble._merge_imp_req_into_ssp(ssp, imp_req, set_params, context)
+                        SSPAssemble._merge_imp_req_into_ssp(ssp, imp_req, set_params)
             ssp_comp.props = as_list(gen_comp.props)
             ssp_comp.props.extend(all_ci_props)
             ssp_comp.props = none_if_empty(ControlInterface.clean_props(ssp_comp.props))
@@ -464,9 +463,7 @@ class SSPAssemble(AuthorCommonCommand):
                 comp_dict[const.SSP_MAIN_COMP_NAME] = sys_comp
 
                 self._merge_comp_defs(ssp, comp_dict, context)
-                CatalogReader.read_ssp_md_content(
-                    md_path, ssp, catalog_interface, comp_dict, part_id_map_by_label, context
-                )
+                CatalogReader.read_ssp_md_content(md_path, ssp, comp_dict, part_id_map_by_label, context)
 
                 new_file_content_type = FileContentType.path_to_content_type(orig_ssp_path)
             else:
@@ -476,9 +473,7 @@ class SSPAssemble(AuthorCommonCommand):
                 ssp.control_implementation.description = const.SSP_SYSTEM_CONTROL_IMPLEMENTATION_TEXT
                 ssp.system_implementation.components = []
                 self._merge_comp_defs(ssp, comp_dict, context)
-                CatalogReader.read_ssp_md_content(
-                    md_path, ssp, catalog_interface, comp_dict, part_id_map_by_label, context
-                )
+                CatalogReader.read_ssp_md_content(md_path, ssp, comp_dict, part_id_map_by_label, context)
 
                 import_profile: ossp.ImportProfile = gens.generate_sample_model(ossp.ImportProfile)
                 import_profile.href = 'REPLACE_ME'
