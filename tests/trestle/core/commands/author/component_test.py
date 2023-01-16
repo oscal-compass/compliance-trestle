@@ -71,7 +71,7 @@ def check_common_contents(header: Dict[str, Any]) -> None:
     assert params[0] == {
         'name': 'shared_param_1',
         'description': 'shared param 1 in aa',
-        'options': '["shared_param_1_aa_opt_1", "shared_param_1_aa_opt_2"]',
+        'options': '["shared_param_1_aa_opt_1", "shared_param_1_aa_opt_2", "shared_param_1_aa_opt_3"]',
         'rule-id': 'top_shared_rule_1'
     }
     assert header[const.TRESTLE_GLOBAL_TAG][const.PROFILE]['title'] == 'comp prof aa'
@@ -84,9 +84,10 @@ def check_ac1_contents(ac1_path: pathlib.Path) -> None:
     assert test_utils.confirm_text_in_file(ac1_path, 'enter one of:', 'ac-1 from comp aa')
     assert test_utils.confirm_text_in_file(ac1_path, 'ac-1 from comp aa', 'Status: implemented')
     assert test_utils.confirm_text_in_file(ac1_path, '- comp_rule_aa_1', 'Status: partial')
+    assert test_utils.confirm_text_in_file(ac1_path, 'ac-1_prm_3:', '- set by comp aa imp req')
     markdown_processor = MarkdownProcessor()
     header, _ = markdown_processor.read_markdown_wo_processing(ac1_path)
-    assert header[const.PARAM_VALUES_TAG]['ac-1_prm_1'] == 'prof_aa val 1'
+    assert header[const.PARAM_VALUES_TAG]['ac-1_prm_1'] == ['prof_aa val 1']
     rules = header[const.COMP_DEF_RULES_TAG]['comp_aa']
     assert len(rules) == 2
     assert rules[0] == {'name': 'top_shared_rule_1', 'description': 'top shared rule 1 in aa'}

@@ -119,7 +119,6 @@ class CatalogMerger():
             status for all parts that still have rules
         """
         memory_header, memory_comp_dict = self._catalog_interface._get_control_memory_info(control.id, context)
-        # FIXME confirm this merge behavior
         ControlInterface.merge_dicts_deep(memory_header, context.merged_header, True)
         md_header, md_comp_dict = CatalogReader._read_comp_info_from_md(control_file_path, context)
         # md content replaces memory content but unless memory has no rules for it and the content is removed

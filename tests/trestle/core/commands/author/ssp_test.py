@@ -318,8 +318,8 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     imp_req = next((i_req for i_req in imp_reqs if i_req.control_id == 'ac-6.7'), None)
     assert imp_req.statements[0].by_components[0].description == prose_aa_a
 
-    assert imp_reqs[0].by_components[0].set_parameters[0].param_id == 'shared_param_1'
-    assert imp_reqs[0].by_components[0].set_parameters[0].values[0].__root__ == 'shared_param_1_aa_opt_2'
+    assert imp_reqs[0].by_components[0].set_parameters[1].param_id == 'shared_param_1'
+    assert imp_reqs[0].by_components[0].set_parameters[1].values[0].__root__ == 'shared_param_1_aa_opt_2'
     assert imp_reqs[0].set_parameters[0].values[0].__root__ == 'my ssp val'
 
     orig_file_creation = orig_ssp_path.stat().st_mtime

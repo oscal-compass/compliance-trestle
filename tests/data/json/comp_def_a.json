@@ -139,7 +139,7 @@
               {
                 "name": "Parameter_Value_Alternatives",
                 "ns": "http://comp_ns",
-                "value": "[\"shared_param_1_aa_opt_1\", \"shared_param_1_aa_opt_2\"]",
+                "value": "[\"shared_param_1_aa_opt_1\", \"shared_param_1_aa_opt_2\", \"shared_param_1_aa_opt_3\"]",
                 "class": "Parameter_Value_Alternatives",
                 "remarks": "rule_1"
               }
@@ -148,9 +148,15 @@
               {
                 "param-id": "shared_param_1",
                 "values": [
-                  "shared_param_1_aa_opt_1"
+                  "shared_param_1_aa_opt_3"
                 ],
-                "remarks": "set shared param aa 1"
+                "remarks": "set shared param aa 3"
+              },
+              {
+                "param-id": "ac-1_prm_3",
+                "values": [
+                  "set by comp aa ci"
+                ]
               }
             ],
             "implemented-requirements": [
@@ -189,6 +195,21 @@
                     ]
                   }
                 ],
+                "set-parameters": [
+                  {
+                    "param-id": "shared_param_1",
+                    "values": [
+                      "shared_param_1_aa_opt_1"
+                    ],
+                    "remarks": "set shared param aa 1"
+                  },
+                  {
+                    "param-id": "ac-1_prm_3",
+                    "values": [
+                      "set by comp aa imp req"
+                    ]
+                  }
+                ],    
                 "statements": [
                   {
                     "statement-id": "ac-1_smt.a",

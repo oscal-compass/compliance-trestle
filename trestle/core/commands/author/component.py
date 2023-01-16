@@ -112,6 +112,7 @@ class ComponentGenerate(AuthorCommonCommand):
         for control_imp in as_list(component.control_implementations):
             context.control_implementation = control_imp
             source_profile_uri = control_imp.source
+            # get the resolved profile catalog for this source, generating it if not already created
             if source_profile_uri not in cat_api_dict:
                 name = ComponentGenerate._get_name_from_uri(source_profile_uri)
                 if not name:

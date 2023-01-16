@@ -66,3 +66,5 @@ TypeWithSetParams = TypeVar(
     comp.ControlImplementation,
     prof.Modify
 )
+
+TypeWithParamId = TypeVar('TypeWithParamId', ossp.SetParameter, prof.SetParameter, comp.SetParameter)

@@ -19,12 +19,12 @@ from typing import Any, Dict, List
 
 import trestle.common.const as const
 import trestle.oscal.catalog as cat
+from trestle.common.list_utils import as_list, deep_get, none_if_empty
+from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.catalog.catalog_merger import CatalogMerger
-from trestle.common.list_utils import as_dict, as_filtered_list, as_list, delete_item_from_list, deep_get, deep_set, get_item_from_list, none_if_empty, set_or_pop  # noqa E501
-from trestle.common.model_utils import ModelUtils
 from trestle.core.control_context import ContextPurpose, ControlContext
-from trestle.core.control_interface import ComponentImpInfo, ControlInterface, ParameterRep
+from trestle.core.control_interface import ComponentImpInfo, ControlInterface
 from trestle.core.control_writer import ControlWriter
 from trestle.oscal import common
 from trestle.oscal import component as comp
@@ -67,9 +67,7 @@ class CatalogWriter():
             set_param_dict = self._construct_set_parameters_dict(profile_set_param_dict, control_param_dict, context)
 
             if set_param_dict:
-                new_context = self._add_set_params_from_cli_yaml_header_to_header(
-                    new_context, set_param_dict, control_param_dict
-                )
+                self._add_set_params_from_cli_yaml_header_to_header(new_context, set_param_dict, control_param_dict)
 
             elif const.SET_PARAMS_TAG in new_context.merged_header:
                 # need to cull any params that are not in control
@@ -124,8 +122,6 @@ class CatalogWriter():
                     if key in control_param_dict and key not in set_param_dict:
                         set_param_dict[key] = value
         context.merged_header[const.SET_PARAMS_TAG] = set_param_dict
-
-        return context
 
     def _construct_set_parameters_dict(
         self,
@@ -191,6 +187,9 @@ class CatalogWriter():
         """
         Write out the catalog as component markdown.
 
+        Already have resolved profile catalog, but with no setparams from compdefs
+        Load all control level rules and param values based on compdefs and profile values
+
         In memory:
         for each compdef:
             for each comp:
@@ -204,6 +203,7 @@ class CatalogWriter():
                         add as compinfo to control comp_dict
 
         """
+        # generate rule and param info from the components
         self._catalog_interface.generate_control_rule_info(part_id_map, context)
 
         # now have all rules in context.rules_dict and all rules_params in context.rules_params_dict
@@ -221,6 +221,7 @@ class CatalogWriter():
         context.component = None
         context.comp_name = None
 
+        # get param_dict of set_params in profile
         profile_set_param_dict = CatalogInterface._get_full_profile_param_dict(context.profile)
         catalog_merger = CatalogMerger(self._catalog_interface)
         for control in self._catalog_interface.get_all_controls_from_dict():
@@ -231,6 +232,7 @@ class CatalogWriter():
                 logger.warning(f'Control {control_id} referenced by component is not in the resolved catalog.')
                 continue
             control_file_path.parent.mkdir(exist_ok=True, parents=True)
+            # the catalog interface is from the resolved profile catalog
             control = self._catalog_interface.get_control(control_id)
             _, group_title, _ = self._catalog_interface.get_group_info_by_control(control_id)
             control_param_dict = ControlInterface.get_control_param_dict(control, False)
@@ -238,9 +240,7 @@ class CatalogWriter():
             new_context = ControlContext.clone(context)
 
             if set_param_dict:
-                new_context = self._add_set_params_from_cli_yaml_header_to_header(
-                    new_context, set_param_dict, control_param_dict
-                )
+                self._add_set_params_from_cli_yaml_header_to_header(new_context, set_param_dict, control_param_dict)
 
             elif const.SET_PARAMS_TAG in new_context.merged_header:
                 # need to cull any params that are not in control
@@ -268,21 +268,17 @@ class CatalogWriter():
         self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]]
     ) -> None:
         """Write out the catalog as component markdown."""
+        context.rules_dict = {}
+        context.rules_params_dict = {}
 
-        def _update_values(set_param: comp.SetParameter) -> None:
+        def _update_values(set_param: comp.SetParameter, control_param_dict) -> None:
+            # set the param values based on the control_param_dict if available
             if set_param.param_id in control_param_dict:
-                control_param_dict[set_param.param_id].values = set_param.values
-            if set_param.param_id in as_list(new_context.rules_param_vals):
-                values = ', '.join([v.__root__ for v in as_list(set_param.values)])
-                if values:
-                    new_context.rules_param_vals[set_param.param_id] = values
+                control_param_dict[set_param.param_id] = set_param
 
         control_ids_in_comp_imp = [
             imp_req.control_id for imp_req in as_list(context.control_implementation.implemented_requirements)
         ]
-
-        context.rules_dict = {}
-        context.rules_params_dict = {}
 
         # get top level rule info applying to all controls
         comp_rules_dict, comp_rules_params_dict, _ = ControlInterface.get_rules_and_params_dict_from_item(context.component)  # noqa E501
@@ -329,19 +325,23 @@ class CatalogWriter():
             if control.id in control_ids_in_comp_imp:
                 context.comp_dict = self._catalog_interface.get_comp_info(control.id)
                 new_context = ControlContext.clone(context)
+                # get the resolved catalog values for the control params
                 control_param_dict = ControlInterface.get_control_param_dict(control, False)
+                # update them with values in the ci
                 for set_param in as_list(new_context.control_implementation.set_parameters):
-                    _update_values(set_param)
+                    _update_values(set_param, control_param_dict)
+                # update them with values in the imp_req
                 for imp_req in as_list(new_context.control_implementation.implemented_requirements):
                     if imp_req.control_id == control.id:
                         for set_param in as_list(imp_req.set_parameters):
-                            _update_values(set_param)
+                            _update_values(set_param, control_param_dict)
 
+                # insert the param values into the header
                 if control_param_dict:
                     new_context.merged_header[const.PARAM_VALUES_TAG] = {}
                     for key, param in control_param_dict.items():
                         new_context.merged_header[const.PARAM_VALUES_TAG][key] = none_if_empty(
-                            ControlInterface.param_to_str(param, ParameterRep.VALUE_OR_EMPTY_STRING)
+                            ControlInterface._param_values_as_str_list(param)
                         )
                 # merge the md_header and md_comp_dict with info in cat_interface for this control
                 control_file_path = self._catalog_interface.get_control_file_path(context.md_root, control.id)

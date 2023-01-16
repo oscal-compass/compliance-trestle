@@ -58,7 +58,6 @@ class ControlContext:
     inherited_props: Optional[Dict[str, Any]] = None
     rules_dict: Optional[Dict[str, Dict[str, Any]]] = None
     rules_params_dict: Optional[Dict[str, Dict[str, Any]]] = None
-    rules_param_vals: Optional[List[Dict[str, str]]] = None
     control_implementation: Optional[comp.ControlImplementation] = None
     uri_name_map: Optional[Dict[str, str]] = None
     comp_dict: Optional[CompDict] = None
@@ -86,7 +85,6 @@ class ControlContext:
         inherited_props: Optional[Dict[str, Any]] = None,
         rules_dict: Optional[Dict[str, Dict[str, Any]]] = None,
         rules_params_dict: Optional[Dict[str, Dict[str, Any]]] = None,
-        rules_param_vals: Optional[List[Dict[str, str]]] = None,
         control_implementation: Optional[comp.ControlImplementation] = None,
         uri_name_map: Optional[Dict[str, str]] = None,
         comp_dict: Optional[CompDict] = None,
@@ -113,7 +111,6 @@ class ControlContext:
             inherited_props=inherited_props,
             rules_dict=rules_dict,
             rules_params_dict=rules_params_dict,
-            rules_param_vals=rules_param_vals,
             control_implementation=control_implementation,
             uri_name_map=uri_name_map,
             comp_dict=comp_dict
@@ -149,7 +146,6 @@ class ControlContext:
             inherited_props=copy.deepcopy(context.inherited_props),
             rules_dict=copy.deepcopy(context.rules_dict),
             rules_params_dict=copy.deepcopy(context.rules_params_dict),
-            rules_param_vals=context.rules_param_vals,
             control_implementation=copy.deepcopy(context.control_implementation),
             uri_name_map=context.uri_name_map,
             comp_dict=copy.deepcopy(context.comp_dict),

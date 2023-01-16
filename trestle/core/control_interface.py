@@ -24,7 +24,7 @@ from typing import Any, Dict, List, Optional, Set, Tuple, Union
 import trestle.oscal.catalog as cat
 import trestle.oscal.ssp as ossp
 from trestle.common import const
-from trestle.common.common_types import TypeWithParts, TypeWithProps
+from trestle.common.common_types import TypeWithParamId, TypeWithParts, TypeWithProps
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_filtered_list, as_list, none_if_empty
 from trestle.common.model_utils import ModelUtils
@@ -361,6 +361,17 @@ class ControlInterface:
         return common.Parameter(
             id=param_id, values=set_param.values, select=set_param.select, label=set_param.label, props=set_param.props
         )
+
+    @staticmethod
+    def uniquify_set_params(set_params: Optional[List[TypeWithParamId]]) -> List[TypeWithParamId]:
+        """Remove items with same param_id with priority to later items."""
+        found_ids: Set[str] = set()
+        unique_list: List[TypeWithParamId] = []
+        for set_param in reversed(as_list(set_params)):
+            if set_param.param_id not in found_ids:
+                unique_list.append(set_param)
+                found_ids.add(set_param.param_id)
+        return list(reversed(unique_list))
 
     @staticmethod
     def get_rules_dict_from_item(item: TypeWithProps) -> Tuple[Dict[str, Dict[str, str]], List[common.Property]]:

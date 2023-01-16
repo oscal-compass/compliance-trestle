@@ -156,7 +156,7 @@ class SSPGenerate(AuthorCommonCommand):
             _, _, context.profile = ModelUtils.load_distributed(profile_path, trestle_root)
         else:
             fetcher = FetcherFactory.get_fetcher(trestle_root, profile_href)
-            context.profile: prof.Profile = fetcher.get_oscal(profile_path)
+            context.profile: prof.Profile = fetcher.get_oscal()
             profile_path = profile_href
 
         profile_resolver = ProfileResolver()
@@ -215,12 +215,12 @@ class SSPAssemble(AuthorCommonCommand):
                     dest_by_comp.props.extend(as_list(statement.props))
                     dest_by_comp.props = none_if_empty(ControlInterface.clean_props(by_comp.props))
                     dest_by_comp.implementation_status = by_comp.implementation_status
-                    dest_by_comp.set_parameters = set_params
+                    dest_by_comp.set_parameters = none_if_empty(set_params)
                     found = True
                     break
             if not found:
                 stat.by_components = as_list(stat.by_components)
-                by_comp.set_parameters = set_params
+                by_comp.set_parameters = none_if_empty(set_params)
                 stat.by_components.append(by_comp)
 
     @staticmethod
@@ -249,18 +249,28 @@ class SSPAssemble(AuthorCommonCommand):
         """Merge comp def imp req into existing imp req."""
         # convert generic imp req from comp defs into ssp form
         src_imp_req = gen_imp_req.as_ssp()
-        imp_req.props = none_if_empty(ControlInterface.clean_props(gen_imp_req.props, True))
+        imp_req.props = none_if_empty(
+            ControlInterface.clean_props(gen_imp_req.props, remove_imp_status=True, remove_all_rule_info=True)
+        )
         for statement in as_list(src_imp_req.statements):
             SSPAssemble._merge_statement(imp_req, statement, set_params)
 
     @staticmethod
     def _get_params_for_rules(context: ControlContext, rules_list: List[str],
                               set_params: List[ossp.SetParameter]) -> List[ossp.SetParameter]:
+        """Get all set_params needed by the rules along with non-rule set_params."""
         needed_param_ids: Set[str] = set()
         rule_dict = context.rules_params_dict.get(context.comp_name, {})
+        # find param_ids needed by rules
         for rule_id in rules_list:
+            # get list of param_ids associated with this rule_id
             param_ids = [param['name'] for param in rule_dict.values() if param['rule-id'] == rule_id]
             needed_param_ids.update(param_ids)
+        all_rule_param_ids = [param['name'] for param in rule_dict.values()]
+        # any set_param that isn't associated with a rule should be included as a normal control set param with no rule
+        for set_param in set_params:
+            if set_param.param_id not in all_rule_param_ids:
+                needed_param_ids.add(set_param.param_id)
         param_ids_list = sorted(needed_param_ids)
         needed_set_params: List[ossp.SetParameter] = []
         for param_id in param_ids_list:
@@ -287,13 +297,18 @@ class SSPAssemble(AuthorCommonCommand):
         # the incoming gen_imp_req comes directly from the comp def
         # but the imp_req here is pulled from the ssp and created if not already there
         imp_req = CatalogReader._get_imp_req_for_control(ssp, gen_imp_req.control_id)
+        local_set_params = as_list(set_params)[:]
+        local_set_params.extend(as_list(imp_req.set_parameters))
+        local_set_params = ControlInterface.uniquify_set_params(local_set_params)
         # get any rules set at control level, if present
         rules_list, _ = ControlInterface.get_rule_list_for_item(gen_imp_req)
         # There should be no rule content at top level of imp_req in ssp so strip them out
-        imp_req.props = none_if_empty(ControlInterface.clean_props(gen_imp_req.props, True))
-        # if we either have rules at top level need to make by_comp
-        if rules_list:
-            control_set_params = SSPAssemble._get_params_for_rules(context, rules_list, set_params)
+        imp_req.props = none_if_empty(
+            ControlInterface.clean_props(gen_imp_req.props, remove_imp_status=True, remove_all_rule_info=True)
+        )
+        # if we have rules applying or need to make set_params, we need to make a by_comp
+        control_set_params = SSPAssemble._get_params_for_rules(context, rules_list, local_set_params)
+        if rules_list or control_set_params:
             by_comp = gens.generate_sample_model(ossp.ByComponent)
             by_comp.component_uuid = gen_comp.uuid
             by_comp.description = gen_imp_req.description
@@ -312,7 +327,9 @@ class SSPAssemble(AuthorCommonCommand):
                 by_comp.description = statement.description
                 by_comp.props = none_if_empty(ControlInterface.clean_props(statement.props))
                 rules_list, _ = ControlInterface.get_rule_list_for_item(statement)
-                by_comp.set_parameters = SSPAssemble._get_params_for_rules(context, rules_list, set_params)
+                by_comp.set_parameters = none_if_empty(
+                    SSPAssemble._get_params_for_rules(context, rules_list, local_set_params)
+                )
         imp_req.statements = none_if_empty(imp_req.statements)
         ssp.control_implementation.implemented_requirements = as_list(
             ssp.control_implementation.implemented_requirements
@@ -330,7 +347,9 @@ class SSPAssemble(AuthorCommonCommand):
                 SSPAssemble._merge_imp_req_into_imp_req(imp_req, gen_imp_req, set_params)
                 return
         new_imp_req = gen_imp_req.as_ssp()
-        imp_req.props = none_if_empty(ControlInterface.clean_props(gen_imp_req.props))
+        imp_req.props = none_if_empty(
+            ControlInterface.clean_props(gen_imp_req.props, remove_imp_status=True, remove_all_rule_info=True)
+        )
         ssp.control_implementation.implemented_requirements.append(new_imp_req)
 
     def _merge_comp_defs(
