@@ -596,6 +596,12 @@ class SSPFilter(AuthorCommonCommand):
             for component in ssp.system_implementation.components:
                 if ControlReader.simplify_name(component.title) in raw_comp_names:
                     comp_uuids.append(component.uuid)
+
+            if len(comp_uuids) != len(components):
+                raise TrestleError(
+                    f'Unable to filter the ssp because one of the components {components} is not in the ssp.'
+                )
+
             # imp_reqs can be by comp
             # and imp_reqs can have statements that are by comp
             if comp_uuids:
