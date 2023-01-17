@@ -28,6 +28,7 @@ nav:
     - SSP, Catalog, and Profile Authoring: tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring.md
   - Trestle Transformers and Tasks:
     - Transformer construction: tutorials/task.transformer-construction/transformer-construction.md
+    - Task - task.csv-to-oscal-cd: tutorials/task.csv-to-oscal-cd/transformation.md
     - Task - ocp4-cis-profile-to-oscal-catalog: tutorials/task.ocp4-cis-profile-to-oscal-catalog/transformation.md
     - Task - ocp4-cis-profile-to-oscal-cd: tutorials/task.ocp4-cis-profile-to-oscal-cd/transformation.md
     - Task - tanium-result-to-oscal-ar: tutorials/task.tanium-result-to-oscal-ar/transformation.md
