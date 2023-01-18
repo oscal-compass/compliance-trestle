@@ -496,7 +496,15 @@ YAML_PROFILE_VALUES_COMMENT = """  # You may set values for parameters in the as
   #
 """
 
-YAML_RULE_PARAM_VALUES_COMMENT = """  # You may set new values for rule parameters by editing the values below.
+YAML_RULE_PARAM_VALUES_COMMENT = """  # You may set new values for rule parameters by adding
+  #
+  # ssp-values:
+  #   - value 1
+  #   - value 2
+  #
+  # below a section of values:
+  # The values list refers to the values as set by the components, and the ssp-values are the new values
+  # to be placed in SetParameters of the SSP.
   #
 """
 

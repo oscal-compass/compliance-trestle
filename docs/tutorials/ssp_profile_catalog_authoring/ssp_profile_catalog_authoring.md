@@ -739,12 +739,22 @@ x-trestle-rules-params:
       options: '["shared_param_1_bb_opt_1", "shared_param_1_bb_opt_2"]'
       rule-id: top_shared_rule_1
 x-trestle-comp-def-rules-param-vals:
-  # You may set new values for rule parameters by editing the values below.
+  # You may set new values for rule parameters by adding
+  #
+  # ssp-values:
+  #   - value 1
+  #   - value 2
+  #
+  # below a section of values:
+  # The values list refers to the values as set by the components, and the ssp-values are the new values
+  # to be placed in SetParameters of the SSP.
   #
   comp_aa:
     - name: shared_param_1
       values:
         - shared_param_1_aa_opt_1
+      ssp-values:
+        - shared_param_1_aa_opt_2
   comp_ab:
     - name: shared_param_1
       values:
