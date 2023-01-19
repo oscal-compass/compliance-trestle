@@ -21,7 +21,7 @@ import pathlib
 import traceback
 import uuid
 from collections import OrderedDict
-from typing import Iterator, Optional
+from typing import Iterator, List, Optional
 
 from openpyxl import load_workbook
 
@@ -30,6 +30,7 @@ from trestle.oscal.catalog import Catalog
 from trestle.oscal.catalog import Control
 from trestle.oscal.catalog import Group
 from trestle.oscal.common import Metadata
+from trestle.oscal.common import Property
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
 
@@ -97,11 +98,13 @@ class CatalogHelper:
         self._group = OrderedDict()
         self._subgroup = OrderedDict()
 
-    def add_group(self, section: str, title: str) -> None:
+    def add_group(self, section: str, title: str, props: List[Property]) -> None:
         """Add group."""
         numdots = section.count('.')
         if numdots == 0:
             group = Group(title=f'{title}', id=f'CIS-{section}')
+            if len(props):
+                group.props = props
             self._group[section] = group
         if numdots == 1:
             key = section.split('.')[0]
@@ -109,10 +112,12 @@ class CatalogHelper:
             if parent.groups is None:
                 parent.groups = []
             group = Group(title=f'{title}', id=f'CIS-{section}')
+            if len(props):
+                group.props = props
             parent.groups.append(group)
             self._subgroup[section] = group
 
-    def add_control(self, section: str, recommendation: str, title: str) -> None:
+    def add_control(self, section: str, recommendation: str, title: str, props: List[Property]) -> None:
         """Add control."""
         if section in self._group.keys():
             group = self._group[section]
@@ -123,6 +128,8 @@ class CatalogHelper:
         id_ = f'CIS-{recommendation}'
         title = f'{title}'
         control = Control(id=id_, title=title)
+        if len(props):
+            control.props = props
         group.controls.append(control)
 
     def get_catalog(self) -> Catalog:
@@ -179,6 +186,13 @@ class CisXlsxToOscalCatalog(TaskBase):
             logger.info(traceback.format_exc())
             return TaskOutcome('failure')
 
+    def _add_property(self, xlsx_helper: XlsxHelper, props: List[Property], row: int, key: str) -> None:
+        """Add property."""
+        value = xlsx_helper.get(row, key)
+        if value:
+            name = key.replace(' ', '_')
+            props.append(Property(name=name, value=value))
+
     def _execute(self) -> TaskOutcome:
         """Wrap the execute for exception handling."""
         if not self._config:
@@ -212,10 +226,16 @@ class CisXlsxToOscalCatalog(TaskBase):
             section = xlsx_helper.get(row, 'section #')
             recommendation = xlsx_helper.get(row, 'recommendation #')
             title = xlsx_helper.get(row, 'title')
+            # props
+            props = []
+            self._add_property(xlsx_helper, props, row, 'profile')
+            self._add_property(xlsx_helper, props, row, 'status')
+            self._add_property(xlsx_helper, props, row, 'assessment status')
+            # group or control
             if recommendation is None:
-                catalog_helper.add_group(section, title)
+                catalog_helper.add_group(section, title, props)
             else:
-                catalog_helper.add_control(section, recommendation, title)
+                catalog_helper.add_control(section, recommendation, title, props)
         catalog = catalog_helper.get_catalog()
         # write OSCAL ComponentDefinition to file
         if verbose:
