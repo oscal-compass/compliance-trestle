@@ -20,26 +20,115 @@ import logging
 import pathlib
 import traceback
 import uuid
-from typing import List, Optional, ValuesView
+from collections import OrderedDict
+from typing import Iterator, Optional
 
 from openpyxl import load_workbook
-from openpyxl.cell.cell import MergedCell
-from openpyxl.utils import get_column_letter
 
-from pydantic import BaseModel, Field
-
-import trestle
-from trestle.common import const
 from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.catalog import Catalog
 from trestle.oscal.catalog import Control
 from trestle.oscal.catalog import Group
-from trestle.oscal.common import Link
 from trestle.oscal.common import Metadata
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
 
 logger = logging.getLogger(__name__)
+
+timestamp = datetime.datetime.utcnow().replace(microsecond=0).replace(tzinfo=datetime.timezone.utc).isoformat()
+
+
+def _uuid() -> str:
+    """Create uuid."""
+    return str(uuid.uuid4())
+
+
+class XlsxHelper:
+    """Xlsx Helper common functions and assistance navigating spread sheet."""
+
+    def __init__(self, file: str) -> None:
+        """Initialize."""
+        self._spread_sheet = file
+        self._wb = load_workbook(self._spread_sheet)
+        self._sheet_name = None
+        sheets = ['Combined Profiles', 'Combined']
+        for sheet in sheets:
+            if sheet in self._wb.sheetnames:
+                self._sheet_name = sheet
+                break
+        if not self._sheet_name:
+            raise RuntimeError(f'{file} missing one of {sheets} sheet')
+        self._work_sheet = self._wb[self._sheet_name]
+        self._mapper()
+
+    def _mapper(self) -> None:
+        """Map columns heading names to column numbers."""
+        self._col_name_to_number = {}
+        cols = self._work_sheet.max_column
+        row = 1
+        for col in range(row, cols):
+            cell = self._work_sheet.cell(row, col)
+            if not cell.value:
+                continue
+            name = cell.value.lower()
+            self._col_name_to_number[name] = col
+
+    def row_generator(self) -> Iterator[int]:
+        """Generate rows until max reached."""
+        row = 2
+        while row < self._work_sheet.max_row:
+            yield row
+            row += 1
+
+    def get(self, row: int, name: str) -> str:
+        """Get cell value for given row and column name."""
+        col = self._col_name_to_number[name]
+        cell = self._work_sheet.cell(row, col)
+        return cell.value
+
+
+class CatalogHelper:
+    """OSCAL Catalog Helper."""
+
+    def __init__(self, title: str, version: str) -> None:
+        """Initialize."""
+        # metadata
+        self._metadata = Metadata(title=title, last_modified=timestamp, oscal_version=OSCAL_VERSION, version=version)
+        self._group = OrderedDict()
+        self._subgroup = OrderedDict()
+
+    def add_group(self, section: str, title: str) -> None:
+        """Add group."""
+        numdots = section.count('.')
+        if numdots == 0:
+            group = Group(title=f'{section} {title}')
+            self._group[section] = group
+        if numdots == 1:
+            key = section.split('.')[0]
+            parent = self._group[key]
+            if parent.groups is None:
+                parent.groups = []
+            group = Group(title=f'{section} {title}')
+            parent.groups.append(group)
+            self._subgroup[section] = group
+
+    def add_control(self, section: str, recommendation: str, title: str) -> None:
+        """Add control."""
+        if section in self._group.keys():
+            group = self._group[section]
+        else:
+            group = self._subgroup[section]
+        if group.controls is None:
+            group.controls = []
+        id_ = f'CIS-{recommendation}'
+        title = f'{recommendation} {title}'
+        control = Control(id=id_, title=title)
+        group.controls.append(control)
+
+    def get_catalog(self) -> Catalog:
+        """Get catalog."""
+        catalog = Catalog(uuid=_uuid(), metadata=self._metadata, groups=list(self._group.values()))
+        return catalog
 
 
 class CisXlsxToOscalCatalog(TaskBase):
@@ -60,8 +149,6 @@ class CisXlsxToOscalCatalog(TaskBase):
             config_object: Config section associated with the task.
         """
         super().__init__(config_object)
-        self._timestamp = datetime.datetime.utcnow().replace(microsecond=0).replace(tzinfo=datetime.timezone.utc
-                                                                                    ).isoformat()
 
     def print_info(self) -> None:
         """Print the help string."""
@@ -117,5 +204,21 @@ class CisXlsxToOscalCatalog(TaskBase):
         if not overwrite and pathlib.Path(ofile).exists():
             logger.warning(f'output: {ofile} already exists')
             return TaskOutcome('failure')
-        
+        xlsx_helper = XlsxHelper(ifile)
+        title = self._config.get('title', '')
+        version = self._config.get('version', '')
+        catalog_helper = CatalogHelper(title, version)
+        for row in xlsx_helper.row_generator():
+            section = xlsx_helper.get(row, 'section #')
+            recommendation = xlsx_helper.get(row, 'recommendation #')
+            title = xlsx_helper.get(row, 'title')
+            if recommendation is None:
+                catalog_helper.add_group(section, title)
+            else:
+                catalog_helper.add_control(section, recommendation, title)
+        catalog = catalog_helper.get_catalog()
+        # write OSCAL ComponentDefinition to file
+        if verbose:
+            logger.info(f'output: {ofile}')
+        catalog.oscal_write(pathlib.Path(ofile))
         return TaskOutcome('success')
