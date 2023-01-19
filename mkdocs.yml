@@ -159,6 +159,7 @@ nav:
       - ssp: api_reference/trestle.oscal.ssp.md
     - tasks:
       - base_task: api_reference/trestle.tasks.base_task.md
+      - cis_xlsx_to_oscal_catalog: api_reference/trestle.tasks.cis_xlsx_to_oscal_catalog.md
       - csv_helper: api_reference/trestle.tasks.csv_helper.md
       - csv_to_oscal_cd: api_reference/trestle.tasks.csv_to_oscal_cd.md
       - ocp4_cis_profile_to_oscal_catalog: api_reference/trestle.tasks.ocp4_cis_profile_to_oscal_catalog.md
