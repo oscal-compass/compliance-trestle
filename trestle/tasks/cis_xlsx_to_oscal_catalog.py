@@ -101,14 +101,14 @@ class CatalogHelper:
         """Add group."""
         numdots = section.count('.')
         if numdots == 0:
-            group = Group(title=f'{section} {title}')
+            group = Group(title=f'{title}', id=f'CIS-{section}')
             self._group[section] = group
         if numdots == 1:
             key = section.split('.')[0]
             parent = self._group[key]
             if parent.groups is None:
                 parent.groups = []
-            group = Group(title=f'{section} {title}')
+            group = Group(title=f'{title}', id=f'CIS-{section}')
             parent.groups.append(group)
             self._subgroup[section] = group
 
@@ -121,7 +121,7 @@ class CatalogHelper:
         if group.controls is None:
             group.controls = []
         id_ = f'CIS-{recommendation}'
-        title = f'{recommendation} {title}'
+        title = f'{title}'
         control = Control(id=id_, title=title)
         group.controls.append(control)
 
