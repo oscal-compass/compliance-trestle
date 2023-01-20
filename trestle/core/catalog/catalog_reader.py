@@ -248,28 +248,31 @@ class CatalogReader():
         item: Union[ossp.ImplementedRequirement, ossp.ByComponent],
         rule_id: str,
         param_name: str,
-        param_values: List[com.Value]
+        param_values: List[com.Value],
+        comp_uuid: str
     ) -> None:
         for by_comp in as_list(item.by_components):
-            for prop in as_list(by_comp.props):
-                if prop.name == const.RULE_ID and prop.value == rule_id:
-                    found = False
-                    for sp in as_list(by_comp.set_parameters):
-                        if sp.param_id == param_name:
-                            sp.values = param_values
-                            found = True
-                            break
-                    if not found:
-                        sp = ossp.SetParameter(param_id=param_name, values=param_values)
-                        by_comp.set_parameters = as_list(by_comp.set_parameters)
-                        by_comp.set_parameters.append(sp)
+            if by_comp.component_uuid == comp_uuid:
+                for prop in as_list(by_comp.props):
+                    if prop.name == const.RULE_ID and prop.value == rule_id:
+                        found = False
+                        for sp in as_list(by_comp.set_parameters):
+                            if sp.param_id == param_name:
+                                sp.values = param_values
+                                found = True
+                                break
+                        if not found:
+                            sp = ossp.SetParameter(param_id=param_name, values=param_values)
+                            by_comp.set_parameters = as_list(by_comp.set_parameters)
+                            by_comp.set_parameters.append(sp)
 
     @staticmethod
     def _insert_param_dict_in_imp_req(
         imp_req: ossp.ImplementedRequirement,
         param_dict: Dict[str, str],
         comp_name: str,
-        md_header: Dict[str, Dict[str, str]]
+        md_header: Dict[str, Dict[str, str]],
+        comp_uuid: str
     ):
         """Insert the param in the by_comps that are supported by the rule."""
         # given param name find rule_id in comp name header entry
@@ -281,9 +284,11 @@ class CatalogReader():
         for comp_rule_param in comp_rules_params:
             if comp_rule_param['name'] == param_name:
                 rule_id = comp_rule_param[const.HEADER_RULE_ID]
-                CatalogReader._insert_set_param_into_by_comps(imp_req, rule_id, param_name, param_values)
+                CatalogReader._insert_set_param_into_by_comps(imp_req, rule_id, param_name, param_values, comp_uuid)
                 for statement in as_list(imp_req.statements):
-                    CatalogReader._insert_set_param_into_by_comps(statement, rule_id, param_name, param_values)
+                    CatalogReader._insert_set_param_into_by_comps(
+                        statement, rule_id, param_name, param_values, comp_uuid
+                    )
 
     @staticmethod
     def _add_set_params_to_item(param_dict: Dict[str, str], item: TypeWithSetParams, param_id: str) -> None:
@@ -311,11 +316,10 @@ class CatalogReader():
         for comp_name, param_dict_list in rules_param_vals_dict.items():
             for param_dict in as_list(param_dict_list):
                 if const.SSP_VALUES in param_dict:
-                    CatalogReader._insert_param_dict_in_imp_req(imp_req, param_dict, comp_name, md_header)
-                    by_comp = CatalogReader._get_by_comp_from_imp_req(imp_req, '', comp_dict[comp_name].uuid)
-                    by_comp.set_parameters = as_list(by_comp.set_parameters)
-                    param_id = param_dict['name']
-                    CatalogReader._add_set_params_to_item(param_dict, by_comp, param_id)
+                    param_dict['values'] = param_dict['ssp-values']
+                CatalogReader._insert_param_dict_in_imp_req(
+                    imp_req, param_dict, comp_name, md_header, comp_dict[comp_name].uuid
+                )
         param_vals_dict = md_header.get(const.SET_PARAMS_TAG, {})
         for param_id, param_dict in param_vals_dict.items():
             if const.SSP_VALUES in param_dict:
