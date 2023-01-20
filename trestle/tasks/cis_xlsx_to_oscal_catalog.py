@@ -69,10 +69,9 @@ class XlsxHelper:
         row = 1
         for col in range(row, cols):
             cell = self._work_sheet.cell(row, col)
-            if not cell.value:
-                continue
-            name = cell.value.lower()
-            self._col_name_to_number[name] = col
+            if cell.value:
+                name = cell.value.lower()
+                self._col_name_to_number[name] = col
 
     def row_generator(self) -> Iterator[int]:
         """Generate rows until max reached."""
@@ -170,6 +169,12 @@ class CisXlsxToOscalCatalog(TaskBase):
         text1 = '  output-dir             = '
         text2 = '(required) location to write the generated catalog.json file.'
         logger.info(text1 + text2)
+        text1 = '  title                  = '
+        text2 = '(required) title of the CIS catalog.'
+        logger.info(text1 + text2)
+        text1 = '  version                = '
+        text2 = '(required) version :q!of the CIS catalog.'
+        logger.info(text1 + text2)
         text1 = '  output-overwrite       = '
         text2 = '(optional) true [default] or false; replace existing output when true.'
         logger.info(text1 + text2)
@@ -201,6 +206,8 @@ class CisXlsxToOscalCatalog(TaskBase):
         try:
             ifile = self._config['input-file']
             odir = self._config['output-dir']
+            title = self._config['title']
+            version = self._config['version']
         except KeyError as e:
             logger.info(f'key {e.args[0]} missing')
             return TaskOutcome('failure')
@@ -219,8 +226,7 @@ class CisXlsxToOscalCatalog(TaskBase):
             logger.warning(f'output: {ofile} already exists')
             return TaskOutcome('failure')
         xlsx_helper = XlsxHelper(ifile)
-        title = self._config.get('title', '')
-        version = self._config.get('version', '')
+
         catalog_helper = CatalogHelper(title, version)
         for row in xlsx_helper.row_generator():
             section = xlsx_helper.get(row, 'section #')
