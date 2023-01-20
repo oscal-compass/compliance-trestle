@@ -39,11 +39,6 @@ logger = logging.getLogger(__name__)
 timestamp = datetime.datetime.utcnow().replace(microsecond=0).replace(tzinfo=datetime.timezone.utc).isoformat()
 
 
-def _uuid() -> str:
-    """Create uuid."""
-    return str(uuid.uuid4())
-
-
 class XlsxHelper:
     """Xlsx Helper common functions and assistance navigating spread sheet."""
 
@@ -133,7 +128,7 @@ class CatalogHelper:
 
     def get_catalog(self) -> Catalog:
         """Get catalog."""
-        catalog = Catalog(uuid=_uuid(), metadata=self._metadata, groups=list(self._group.values()))
+        catalog = Catalog(uuid=str(uuid.uuid4()), metadata=self._metadata, groups=list(self._group.values()))
         return catalog
 
 
