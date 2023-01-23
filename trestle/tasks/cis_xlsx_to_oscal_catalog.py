@@ -47,14 +47,9 @@ class XlsxHelper:
         """Initialize."""
         self._spread_sheet = file
         self._wb = load_workbook(self._spread_sheet)
-        self._sheet_name = None
-        sheets = ['Combined Profiles', 'Combined']
-        for sheet in sheets:
-            if sheet in self._wb.sheetnames:
-                self._sheet_name = sheet
-                break
-        if not self._sheet_name:
-            raise RuntimeError(f'{file} missing one of {sheets} sheet')
+        self._sheet_name = 'Combined Profiles'
+        if self._sheet_name not in self._wb.sheetnames:
+            raise RuntimeError(f'{file} missing {self._sheet_name} sheet')
         self._work_sheet = self._wb[self._sheet_name]
         self._mapper()
 
