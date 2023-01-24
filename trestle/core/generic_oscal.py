@@ -24,12 +24,14 @@ from pydantic import Field, constr
 import trestle.oscal.component as comp
 import trestle.oscal.ssp as ossp
 from trestle.common import const
-from trestle.common.list_utils import as_list
+from trestle.common.list_utils import as_list, none_if_empty
 from trestle.core.control_interface import ControlInterface
 from trestle.core.trestle_base_model import TrestleBaseModel
 from trestle.oscal import common
 
 logger = logging.getLogger(__name__)
+
+IMPLEMENTED_REQUIREMENTS = 'implemented_requirements'
 
 
 class GenericByComponent(TrestleBaseModel):
@@ -72,6 +74,26 @@ class GenericByComponent(TrestleBaseModel):
         uuid = str(uuid4())
         return GenericByComponent(component_uuid=const.SAMPLE_UUID_STR, uuid=uuid, description='')
 
+    def as_ssp(self) -> ossp.ByComponent:
+        """Convert to ssp format."""
+        set_params = []
+        for set_param in as_list(self.set_parameters):
+            new_set_param = ossp.SetParameter(
+                param_id=set_param.param_id, values=set_param.values, remarks=set_param.remarks
+            )
+            set_params.append(new_set_param)
+        set_params = none_if_empty(set_params)
+        return ossp.ByComponent(
+            component_uuid=self.component_uuid,
+            uuid=self.uuid,
+            description=self.description,
+            props=self.props,
+            links=self.links,
+            set_parameters=set_params,
+            implementation_status=self.implementation_status,
+            responsible_roles=self.responsible_roles
+        )
+
 
 class GenericStatement(TrestleBaseModel):
     """Generic statement for SSP and DefinedComp."""
@@ -106,30 +128,23 @@ class GenericStatement(TrestleBaseModel):
     # ssp has following
     by_components: Optional[List[GenericByComponent]] = Field(None, alias='by-components')
 
-    @staticmethod
-    def generate() -> GenericStatement:
-        """Generate instance of GenericStatement."""
-        uuid = str(uuid4())
-        return GenericStatement(statement_id=const.REPLACE_ME, uuid=uuid, description='')
-
-    def as_comp_def(self) -> List[comp.Statement]:
-        """Represent in comp_def form."""
-        # convert all by_comps to statements with status
-        statements: List[comp.Statement] = []
-        for by_comp in as_list(self.by_components):
-            stat_dict = copy.deepcopy(self.__dict__)
-            stat_dict.pop('by_components', None)
-            stat_dict['description'] = by_comp.description
-            new_stat = comp.Statement(**stat_dict)
-            ControlInterface.insert_status_in_props(new_stat, by_comp.implementation_status)
-            statements.append(new_stat)
-        return statements
-
     def as_ssp(self) -> ossp.Statement:
         """Represent in ssp form."""
         class_dict = copy.deepcopy(self.__dict__)
         class_dict.pop('description', None)
-        return ossp.Statement(**class_dict)
+        by_comps = []
+        for by_comp in as_list(self.by_components):
+            new_by_comp = by_comp.as_ssp()
+            by_comps.append(new_by_comp)
+        return ossp.Statement(
+            statement_id=self.statement_id,
+            uuid=self.uuid,
+            props=self.props,
+            links=self.links,
+            responsible_roles=self.responsible_roles,
+            by_components=by_comps,
+            remarks=self.remarks
+        )
 
 
 class GenericComponent(TrestleBaseModel):
@@ -167,7 +182,7 @@ class GenericComponent(TrestleBaseModel):
     links: Optional[List[common.Link]] = Field(None)
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
     protocols: Optional[List[common.Protocol]] = Field(None)
-    # ssp does not have
+    # ssp does not have a list of ci's but it does have one ci
     control_implementations: Optional[List[GenericControlImplementation]] = Field(None, alias='control-implementations')
     remarks: Optional[common.Remarks] = None
     # ssp has
@@ -187,6 +202,12 @@ class GenericComponent(TrestleBaseModel):
         """Convert defined component to generic."""
         status = ControlInterface.get_status_from_props(def_comp)
         class_dict = copy.deepcopy(def_comp.__dict__)
+        if 'control_implementations' in class_dict:
+            new_cis = []
+            for ci in class_dict['control_implementations']:
+                new_cis.append(GenericControlImplementation.from_component_ci(ci))
+            class_dict['control-implementations'] = new_cis
+            class_dict.pop('control_implementations', None)
         class_dict['status'] = status
         return cls(**class_dict)
 
@@ -197,27 +218,18 @@ class GenericComponent(TrestleBaseModel):
         status_str = self.status.state if self.status else const.STATUS_OPERATIONAL
         status_str = status_override if status_override else status_str
         if status_str not in ['under-development', 'operational', 'disposition', 'other']:
-            logger.warning(f'Component status {status_str} not recognized.  Setting to {const.STATUS_OPERATIONAL}')
+            logger.warning(
+                f'SystemComponent status {status_str} not recognized.  Setting to {const.STATUS_OPERATIONAL}'
+            )
             status_str = const.STATUS_OPERATIONAL
         class_dict['status'] = ossp.Status(state=ossp.State1(status_str), remarks=self.status.remarks)
         return ossp.SystemComponent(**class_dict)
-
-    @classmethod
-    def from_system_component(cls, sys_comp: ossp.SystemComponent) -> GenericComponent:
-        """Convert system component to generic."""
-        class_dict = copy.deepcopy(sys_comp.__dict__)
-        class_dict.pop('control_implementations', None)
-        status_str = 'other'
-        if 'status' in class_dict:
-            status_str = class_dict['status'].state.name
-        class_dict['status'] = common.ImplementationStatus(state=status_str)
-        return cls(**class_dict)
 
     @staticmethod
     def generate() -> GenericComponent:
         """Generate instance of GenericComponent."""
         uuid = str(uuid4())
-        status = common.ImplementationStatus(state=const.STATUS_PLANNED)
+        status = common.ImplementationStatus(state=const.STATUS_OPERATIONAL)
         return GenericComponent(uuid=uuid, type=const.REPLACE_ME, title='', description='', status=status)
 
 
@@ -236,6 +248,16 @@ class GenericSetParameter(TrestleBaseModel):
     )
     values: List[common.Value] = Field(...)
     remarks: Optional[common.Remarks] = None
+
+    @staticmethod
+    def from_defined_component(sp: comp.SetParameter):
+        """Generate generic set parameter from comp_def version."""
+        class_dict = {'param-id': sp.param_id, 'values': sp.values, 'remarks': sp.remarks}
+        return GenericSetParameter(**class_dict)
+
+    def to_ssp(self):
+        """Convert to ssp format."""
+        return (ossp.SetParameter(param_id=self.param_id, values=self.values, remarks=self.remarks))
 
 
 class GenericImplementedRequirement(TrestleBaseModel):
@@ -282,16 +304,12 @@ class GenericImplementedRequirement(TrestleBaseModel):
         class_dict = {'uuid': uuid, 'control-id': const.REPLACE_ME, 'description': ''}
         return GenericImplementedRequirement(**class_dict)
 
-    def as_comp_def(self) -> comp.ImplementedRequirement:
-        """Convert to defined component form."""
-        class_dict = copy.deepcopy(self.__dict__)
-        del class_dict['by_components']
-        new_stat_list = []
-        for statement in as_list(self.statements):
-            new_stat_list.extend(statement.as_comp_def())
-        if new_stat_list:
-            class_dict['statements'] = new_stat_list
-        return comp.ImplementedRequirement(**class_dict)
+    @classmethod
+    def from_comp_def(cls, imp_req: comp.ImplementedRequirement) -> GenericImplementedRequirement:
+        """Convert component form of imp req to generic."""
+        class_dict = copy.deepcopy(imp_req.__dict__)
+        class_dict['control-id'] = class_dict.pop('control_id', None)
+        return cls(**class_dict)
 
     def as_ssp(self) -> ossp.ImplementedRequirement:
         """Convert to ssp form."""
@@ -351,14 +369,39 @@ class GenericControlImplementation(TrestleBaseModel):
         }
         return GenericControlImplementation(**class_dict)
 
+    @classmethod
+    def from_component_ci(cls, control_imp: comp.ControlImplementation) -> GenericControlImplementation:
+        """Convert component control imp to generic."""
+        class_dict = copy.deepcopy(control_imp.__dict__)
+        if IMPLEMENTED_REQUIREMENTS in class_dict:
+            new_irs = []
+            ir_list = class_dict.get(IMPLEMENTED_REQUIREMENTS, None)
+            for ir in as_list(ir_list):
+                new_ir = GenericImplementedRequirement.from_comp_def(ir)
+                new_irs.append(new_ir)
+            class_dict['implemented-requirements'] = none_if_empty(new_irs)
+            class_dict.pop(IMPLEMENTED_REQUIREMENTS, None)
+            new_sps = []
+            sp_list = class_dict.get('set_parameters', None)
+            for sp in as_list(sp_list):
+                new_sps.append(GenericSetParameter.from_defined_component(sp))
+            class_dict['set-parameters'] = none_if_empty(new_sps)
+            class_dict.pop('set_parameters', None)
+
+        return cls(**class_dict)
+
     def as_ssp(self) -> ossp.ControlImplementation:
         """Represent in ssp form."""
         imp_reqs = []
         for imp_req in self.implemented_requirements:
             imp_reqs.append(imp_req.as_ssp())
         class_dict = self.__dict__
-        for prop in ['uuid', 'source', 'props', 'links', 'implemented_requirements']:
+        for prop in ['uuid', 'source', 'props', 'links', IMPLEMENTED_REQUIREMENTS]:
             class_dict.pop(prop, None)
         if imp_reqs:
             class_dict['implemented-requirements'] = imp_reqs
+            class_dict.pop(IMPLEMENTED_REQUIREMENTS, None)
         return ossp.ControlImplementation(**class_dict)
+
+
+GenericComponent.update_forward_refs()

@@ -258,6 +258,8 @@ UUID_REGEX = r'(?:^|[0-9A-Za-f])([0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[
 
 SSP_MAIN_COMP_NAME = 'This System'
 
+THIS_SYSTEM_AS_KEY = 'this-system'
+
 SSP_MD_HRULE_LINE = '______________________________________________________________________'
 
 SSP_MD_IMPLEMENTATION_QUESTION = 'What is the solution and how is it implemented?'
@@ -283,6 +285,14 @@ SSP_SYSTEM_CONTROL_IMPLEMENTATION_TEXT = 'This is the control implementation for
 SSP_VALUES = 'ssp-values'
 
 PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT = '<!-- Add prose here for required Section'
+
+PROFILE = 'profile'
+
+TITLE = 'title'
+
+NAME = 'name'
+
+HREF = 'href'
 
 NCNAME_REGEX = r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'  # noqa FS003 E501
 
@@ -335,8 +345,6 @@ NAMESPACE_NIST = 'https://csrc.nist.gov/ns/oscal'
 SSP_FEDRAMP_TAG = TRESTLE_TAG + 'fedramp-props'
 
 TRESTLE_GLOBAL_TAG = TRESTLE_TAG + 'global'
-
-PROFILE_TITLE = 'profile-title'
 
 NAMESPACE_FEDRAMP = 'https://fedramp.gov/ns/oscal'
 
@@ -464,6 +472,42 @@ YAML_PROPS_COMMENT = """  # Add or modify control properties here
   #
 """
 
+YAML_SSP_VALUES_COMMENT = """  # You may set values for parameters in the assembled SSP by adding
+  #
+  # ssp-values:
+  #   - value 1
+  #   - value 2
+  #
+  # below a section of values:
+  # The values list refers to the values in the resolved profile catalog, and the ssp-values represent new values
+  # to be placed in SetParameters of the SSP.
+  #
+"""
+
+YAML_PROFILE_VALUES_COMMENT = """  # You may set values for parameters in the assembled Profile by adding
+  #
+  # profile-values:
+  #   - value 1
+  #   - value 2
+  #
+  # below a section of values:
+  # The values list refers to the values in the catalog, and the profile-values represent values
+  # in SetParameters of the Profile.
+  #
+"""
+
+YAML_RULE_PARAM_VALUES_COMMENT = """  # You may set new values for rule parameters by adding
+  #
+  # ssp-values:
+  #   - value 1
+  #   - value 2
+  #
+  # below a section of values:
+  # The values list refers to the values as set by the components, and the ssp-values are the new values
+  # to be placed in SetParameters of the SSP.
+  #
+"""
+
 DISPLAY_NAME = 'display-name'
 
 TRESTLE_GENERIC_NS = 'https://ibm.github.io/compliance-trestle/schemas/oscal'
@@ -475,7 +519,7 @@ TRESTLE_INHERITED_PROPS_TRACKER = 'trestle_inherited_props_tracker'
 
 RULE_ID = 'Rule_Id'
 
-RULE_NAME = 'rule_name'
+HEADER_RULE_ID = 'rule-id'
 
 RULE_DESCRIPTION = 'Rule_Description'
 

@@ -55,14 +55,13 @@ def load_file(trestle_root: pathlib.Path, source_name: str, dest_name: str, sour
 
 def setup_component_generate(tmp_trestle_dir: pathlib.Path) -> List[str]:
     """Create the compdef, profile and catalog content component-generate."""
-    comp_names = 'comp_def_a,comp_def_b'
-    for comp_name in comp_names.split(','):
-        test_utils.load_from_json(tmp_trestle_dir, comp_name, comp_name, comp.ComponentDefinition)
+    comp_name = 'comp_def_a'
+    test_utils.load_from_json(tmp_trestle_dir, comp_name, comp_name, comp.ComponentDefinition)
     for prof_name in 'comp_prof,comp_prof_aa,comp_prof_ab,comp_prof_ba,comp_prof_bb'.split(','):
         test_utils.load_from_json(tmp_trestle_dir, prof_name, prof_name, prof.Profile)
     test_utils.load_from_json(tmp_trestle_dir, 'simplified_nist_catalog', 'simplified_nist_catalog', cat.Catalog)
 
-    return comp_names
+    return comp_name
 
 
 def check_common_contents(header: Dict[str, Any]) -> None:
@@ -72,9 +71,12 @@ def check_common_contents(header: Dict[str, Any]) -> None:
     assert params[0] == {
         'name': 'shared_param_1',
         'description': 'shared param 1 in aa',
-        'options': '["shared_param_1_aa_opt_1", "shared_param_1_aa_opt_2"]'
+        'options': '["shared_param_1_aa_opt_1", "shared_param_1_aa_opt_2", "shared_param_1_aa_opt_3"]',
+        'rule-id': 'top_shared_rule_1'
     }
-    assert header[const.TRESTLE_GLOBAL_TAG][const.PROFILE_TITLE] == 'comp prof aa'
+    assert header[const.TRESTLE_GLOBAL_TAG][const.PROFILE]['title'] == 'comp prof aa'
+    assert header[const.TRESTLE_GLOBAL_TAG][const.PROFILE
+                                            ]['href'] == 'trestle://profiles/comp_prof_aa/profile.json'  # noqa E501
 
 
 def check_ac1_contents(ac1_path: pathlib.Path) -> None:
@@ -82,9 +84,10 @@ def check_ac1_contents(ac1_path: pathlib.Path) -> None:
     assert test_utils.confirm_text_in_file(ac1_path, 'enter one of:', 'ac-1 from comp aa')
     assert test_utils.confirm_text_in_file(ac1_path, 'ac-1 from comp aa', 'Status: implemented')
     assert test_utils.confirm_text_in_file(ac1_path, '- comp_rule_aa_1', 'Status: partial')
+    assert test_utils.confirm_text_in_file(ac1_path, 'ac-1_prm_3:', '- set by comp aa imp req')
     markdown_processor = MarkdownProcessor()
     header, _ = markdown_processor.read_markdown_wo_processing(ac1_path)
-    assert header[const.PARAM_VALUES_TAG]['ac-1_prm_1'] == 'prof_aa val 1'
+    assert header[const.PARAM_VALUES_TAG]['ac-1_prm_1'] == ['prof_aa val 1']
     rules = header[const.COMP_DEF_RULES_TAG]['comp_aa']
     assert len(rules) == 2
     assert rules[0] == {'name': 'top_shared_rule_1', 'description': 'top shared rule 1 in aa'}
@@ -109,8 +112,7 @@ def check_at1_contents(at1_path: pathlib.Path) -> None:
 
 def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test component generate."""
-    comp_names = setup_component_generate(tmp_trestle_dir)
-    comp_name = comp_names.split(',')[0]
+    comp_name = setup_component_generate(tmp_trestle_dir)
     ac1_path = tmp_trestle_dir / 'md_comp/comp_aa/comp_prof_aa/ac/ac-1.md'
 
     orig_component, _ = model_utils.ModelUtils.load_top_level_model(

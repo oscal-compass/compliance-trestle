@@ -103,7 +103,7 @@ def test_ssp_get_control_response(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
     assert comp_dict['comp_aa'][''].prose == orig_imp_prose
     assert comp_dict['comp_aa']['a.'].prose == orig_a_prose
 
-    command_ssp_assem = 'trestle author ssp-assemble -m my_ssp -o ssp_json'
+    command_ssp_assem = f'trestle author ssp-assemble -m my_ssp -o ssp_json -cd {args.compdefs}'
     execute_command_and_assert(command_ssp_assem, 0, monkeypatch)
 
     ssp_obj, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, 'ssp_json', SystemSecurityPlan, FileContentType.JSON)

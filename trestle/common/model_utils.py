@@ -549,10 +549,6 @@ class ModelUtils:
             if not attr:
                 continue
             if isinstance(attr, list):
-                # special handling when only one value present - convert to single string
-                if field == 'values' and len(attr) == 1:
-                    res[field] = str(attr[0].__root__)
-                    continue
                 new_list = []
                 for item in attr:
                     new_list.append(ModelUtils._parameter_to_dict_recurse(item, partial))
