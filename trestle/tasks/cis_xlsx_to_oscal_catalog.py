@@ -29,6 +29,7 @@ from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.catalog import Catalog
 from trestle.oscal.catalog import Control
 from trestle.oscal.catalog import Group
+from trestle.oscal.common import Link
 from trestle.oscal.common import Metadata
 from trestle.oscal.common import Part
 from trestle.oscal.common import Property
@@ -61,13 +62,13 @@ class XlsxHelper:
         for col in range(row, cols):
             cell = self._work_sheet.cell(row, col)
             if cell.value:
-                name = cell.value.lower()
+                name = cell.value
                 self._col_name_to_number[name] = col
 
     def row_generator(self) -> Iterator[int]:
         """Generate rows until max reached."""
         row = 2
-        while row < self._work_sheet.max_row:
+        while row <= self._work_sheet.max_row:
             yield row
             row += 1
 
@@ -85,8 +86,8 @@ class CatalogHelper:
         """Initialize."""
         # metadata
         self._metadata = Metadata(title=title, last_modified=timestamp, oscal_version=OSCAL_VERSION, version=version)
-        self._group = OrderedDict()
-        self._subgroup = OrderedDict()
+        self._root_group = OrderedDict()
+        self._all_groups = OrderedDict()
 
     def add_group(self, section: str, title: str, props: List[Property], parts: List[Part]) -> None:
         """Add group."""
@@ -97,10 +98,11 @@ class CatalogHelper:
                 group.props = props
             if len(parts):
                 group.parts = parts
-            self._group[section] = group
-        if numdots == 1:
+            self._root_group[section] = group
+            self._all_groups[section] = group
+        elif numdots == 1:
             key = section.split('.')[0]
-            parent = self._group[key]
+            parent = self._root_group[key]
             if parent.groups is None:
                 parent.groups = []
             group = Group(title=f'{title}', id=f'CIS-{section}')
@@ -109,16 +111,21 @@ class CatalogHelper:
             if len(parts):
                 group.parts = parts
             parent.groups.append(group)
-            self._subgroup[section] = group
+            self._all_groups[section] = group
+        else:
+            raise RuntimeError(f'unexpected section {section}')
 
     def add_control(
-        self, section: str, recommendation: str, title: str, props: List[Property], parts: List[Part]
+        self,
+        section: str,
+        recommendation: str,
+        title: str,
+        props: List[Property],
+        parts: List[Part],
+        links: List[Link]
     ) -> None:
         """Add control."""
-        if section in self._group.keys():
-            group = self._group[section]
-        else:
-            group = self._subgroup[section]
+        group = self._all_groups[section]
         if group.controls is None:
             group.controls = []
         id_ = f'CIS-{recommendation}'
@@ -127,12 +134,14 @@ class CatalogHelper:
         if len(props):
             control.props = props
         if len(parts):
-            group.parts = parts
+            control.parts = parts
+        if len(links):
+            control.links = links
         group.controls.append(control)
 
     def get_catalog(self) -> Catalog:
         """Get catalog."""
-        catalog = Catalog(uuid=str(uuid.uuid4()), metadata=self._metadata, groups=list(self._group.values()))
+        catalog = Catalog(uuid=str(uuid.uuid4()), metadata=self._metadata, groups=list(self._root_group.values()))
         return catalog
 
 
@@ -190,19 +199,45 @@ class CisXlsxToOscalCatalog(TaskBase):
             logger.info(traceback.format_exc())
             return TaskOutcome('failure')
 
+    def _get_normalized_name(self, key: str) -> str:
+        """Get normalized name."""
+        name = key
+        name = name.replace(' ', '_')
+        name = name.replace('&', 'a')
+        return name
+
     def _add_property(self, xlsx_helper: XlsxHelper, props: List[Property], row: int, key: str) -> None:
         """Add property."""
+        name = self._get_normalized_name(key)
         value = xlsx_helper.get(row, key)
         if value:
-            name = key.replace(' ', '_')
             props.append(Property(name=name, value=value))
+
+    def _add_property_boolean(self, xlsx_helper: XlsxHelper, props: List[Property], row: int, key: str) -> None:
+        """Add property."""
+        name = self._get_normalized_name(key)
+        value = xlsx_helper.get(row, key)
+        if value:
+            props.append(Property(name=name, value='True'))
+        else:
+            props.append(Property(name=name, value='False'))
 
     def _add_part(self, xlsx_helper: XlsxHelper, parts: List[Part], id_: str, row: int, key: str) -> None:
         """Add part."""
         value = xlsx_helper.get(row, key)
         if value:
-            name = key.replace(' ', '_')
+            name = self._get_normalized_name(key)
             parts.append(Part(id=id_, name=name, prose=value))
+
+    def _add_links(self, xlsx_helper: XlsxHelper, links: List[Link], row: int, key: str) -> None:
+        """Add links."""
+        value = xlsx_helper.get(row, key)
+        if value:
+            value = value.replace(':http', ' http')
+            urls = value.split()
+            for url in urls:
+                link = Link(href=url, rel='reference')
+                links.append(link)
 
     def _execute(self) -> TaskOutcome:
         """Wrap the execute for exception handling."""
@@ -232,30 +267,41 @@ class CisXlsxToOscalCatalog(TaskBase):
             logger.warning(f'output: {ofile} already exists')
             return TaskOutcome('failure')
         xlsx_helper = XlsxHelper(ifile)
-
         catalog_helper = CatalogHelper(title, version)
+        # transform each row into OSCAL equivalent
         for row in xlsx_helper.row_generator():
             section = xlsx_helper.get(row, 'section #')
             recommendation = xlsx_helper.get(row, 'recommendation #')
             title = xlsx_helper.get(row, 'title')
-            # props
+            # init
             props = []
+            parts = []
+            links = []
+            # props
             self._add_property(xlsx_helper, props, row, 'profile')
             self._add_property(xlsx_helper, props, row, 'status')
             self._add_property(xlsx_helper, props, row, 'assessment status')
             # parts
-            parts = []
             self._add_part(xlsx_helper, parts, f'CIS-{section}_des', row, 'description')
             self._add_part(xlsx_helper, parts, f'CIS-{section}_rat', row, 'rationale statement')
             self._add_part(xlsx_helper, parts, f'CIS-{section}_imp', row, 'impact statement')
             self._add_part(xlsx_helper, parts, f'CIS-{section}_rem', row, 'remediation procedure')
             self._add_part(xlsx_helper, parts, f'CIS-{section}_aud', row, 'audit procedure')
             self._add_part(xlsx_helper, parts, f'CIS-{section}_inf', row, 'additional information')
+            self._add_part(xlsx_helper, parts, f'CIS-{section}_ctl', row, 'CIS Controls')
             # group or control
             if recommendation is None:
                 catalog_helper.add_group(section, title, props, parts)
             else:
-                catalog_helper.add_control(section, recommendation, title, props, parts)
+                self._add_property_boolean(xlsx_helper, props, row, 'v7 IG1')
+                self._add_property_boolean(xlsx_helper, props, row, 'v7 IG2')
+                self._add_property_boolean(xlsx_helper, props, row, 'v7 IG3')
+                self._add_property_boolean(xlsx_helper, props, row, 'v8 IG1')
+                self._add_property_boolean(xlsx_helper, props, row, 'v8 IG2')
+                self._add_property_boolean(xlsx_helper, props, row, 'v8 IG3')
+                self._add_property(xlsx_helper, props, row, 'MITRE ATT&CK Mappings')
+                self._add_links(xlsx_helper, links, row, 'references')
+                catalog_helper.add_control(section, recommendation, title, props, parts, links)
         catalog = catalog_helper.get_catalog()
         # write OSCAL ComponentDefinition to file
         if _verbose:

@@ -74,7 +74,7 @@ def _validate(tmp_path: pathlib.Path):
     g0 = catalog.groups[0]
     assert g0.id == 'CIS-1'
     assert g0.title == 'Control Plane Components'
-    assert len(g0.groups) == 1
+    assert len(g0.groups) == 2
     assert len(g0.props) == 1
     p0 = g0.props[0]
     assert p0.name == 'status'
@@ -83,7 +83,7 @@ def _validate(tmp_path: pathlib.Path):
     assert g00.id == 'CIS-1.1'
     assert g00.title == 'Master Node Configuration Files'
     assert len(g0.props) == 1
-    assert len(g00.controls) == 6
+    assert len(g00.controls) == 7
     c5 = g00.controls[5]
     p50 = c5.props[0]
     assert p50.name == 'profile'
@@ -134,15 +134,67 @@ def test_cis_xlsx_to_oscal_catalog_missing_version(tmp_path: pathlib.Path):
 def test_cis_xlsx_to_oscal_catalog_missing_sheet(tmp_path: pathlib.Path):
     """Test missing sheet."""
     folder = 'tests/data/tasks/cis-xlsx-to-oscal-catalog'
-    file = f'{folder}/CIS_RedHat_OpenShift_Container_Platform_Benchmark_v1.2.0-2.snippet.xlsx'
+    file_ = f'{folder}/CIS_RedHat_OpenShift_Container_Platform_Benchmark_v1.2.0-2.snippet.xlsx'
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.config')
     config.read(config_path)
     section = config['task.cis-xlsx-to-oscal-catalog']
     section['output-dir'] = str(tmp_path)
-    wb_hacked = load_workbook(file)
+    wb_hacked = load_workbook(file_)
     sheet = wb_hacked.get_sheet_by_name('Combined Profiles')
     wb_hacked.remove_sheet(sheet)
+    with mock.patch('trestle.tasks.cis_xlsx_to_oscal_catalog.load_workbook') as load_workbook_mock:
+        load_workbook_mock.return_value = wb_hacked
+        tgt = cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog(section)
+        retval = tgt.execute()
+        assert retval == TaskOutcome.FAILURE
+
+
+def test_cis_xlsx_to_oscal_catalog_one_dot_added_part(tmp_path: pathlib.Path):
+    """Test group part."""
+    folder = 'tests/data/tasks/cis-xlsx-to-oscal-catalog'
+    file_ = f'{folder}/CIS_RedHat_OpenShift_Container_Platform_Benchmark_v1.2.0-2.snippet.xlsx'
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.config')
+    config.read(config_path)
+    section = config['task.cis-xlsx-to-oscal-catalog']
+    section['output-dir'] = str(tmp_path)
+    wb_hacked = load_workbook(file_)
+    sheet = wb_hacked.get_sheet_by_name('Combined Profiles')
+    cell = sheet.cell(2, 7)
+    assert cell.value.startswith('This section consists of security recommendations for')
+    cell = sheet.cell(3, 7)
+    cell.value = 'foobar'
+    with mock.patch('trestle.tasks.cis_xlsx_to_oscal_catalog.load_workbook') as load_workbook_mock:
+        load_workbook_mock.return_value = wb_hacked
+        tgt = cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog(section)
+        retval = tgt.execute()
+        assert retval == TaskOutcome.SUCCESS
+    # read catalog
+    file_path = tmp_path / 'catalog.json'
+    catalog = Catalog.oscal_read(file_path)
+    # spot check
+    g0 = catalog.groups[0]
+    g00 = g0.groups[0]
+    assert len(g00.parts) == 1
+    p000 = g00.parts[0]
+    assert p000.prose == 'foobar'
+
+
+def test_cis_xlsx_to_oscal_catalog_unexpected_section(tmp_path: pathlib.Path):
+    """Test group part."""
+    folder = 'tests/data/tasks/cis-xlsx-to-oscal-catalog'
+    file_ = f'{folder}/CIS_RedHat_OpenShift_Container_Platform_Benchmark_v1.2.0-2.snippet.xlsx'
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.config')
+    config.read(config_path)
+    section = config['task.cis-xlsx-to-oscal-catalog']
+    section['output-dir'] = str(tmp_path)
+    wb_hacked = load_workbook(file_)
+    sheet = wb_hacked.get_sheet_by_name('Combined Profiles')
+    cell = sheet.cell(3, 1)
+    assert cell.value == '1.1'
+    cell.value = '1.2.3.4.5.6.7.8.9.0'
     with mock.patch('trestle.tasks.cis_xlsx_to_oscal_catalog.load_workbook') as load_workbook_mock:
         load_workbook_mock.return_value = wb_hacked
         tgt = cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog(section)
