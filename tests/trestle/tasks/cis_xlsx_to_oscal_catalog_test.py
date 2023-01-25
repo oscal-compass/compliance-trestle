@@ -141,8 +141,8 @@ def test_cis_xlsx_to_oscal_catalog_missing_sheet(tmp_path: pathlib.Path):
     section = config['task.cis-xlsx-to-oscal-catalog']
     section['output-dir'] = str(tmp_path)
     wb_hacked = load_workbook(file_)
-    sheet = wb_hacked.get_sheet_by_name('Combined Profiles')
-    wb_hacked.remove_sheet(sheet)
+    sheet = wb_hacked['Combined Profiles']
+    wb_hacked.remove(sheet)
     with mock.patch('trestle.tasks.cis_xlsx_to_oscal_catalog.load_workbook') as load_workbook_mock:
         load_workbook_mock.return_value = wb_hacked
         tgt = cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog(section)
@@ -160,7 +160,7 @@ def test_cis_xlsx_to_oscal_catalog_one_dot_added_part(tmp_path: pathlib.Path):
     section = config['task.cis-xlsx-to-oscal-catalog']
     section['output-dir'] = str(tmp_path)
     wb_hacked = load_workbook(file_)
-    sheet = wb_hacked.get_sheet_by_name('Combined Profiles')
+    sheet = wb_hacked['Combined Profiles']
     cell = sheet.cell(2, 7)
     assert cell.value.startswith('This section consists of security recommendations for')
     cell = sheet.cell(3, 7)
@@ -191,7 +191,7 @@ def test_cis_xlsx_to_oscal_catalog_unexpected_section(tmp_path: pathlib.Path):
     section = config['task.cis-xlsx-to-oscal-catalog']
     section['output-dir'] = str(tmp_path)
     wb_hacked = load_workbook(file_)
-    sheet = wb_hacked.get_sheet_by_name('Combined Profiles')
+    sheet = wb_hacked['Combined Profiles']
     cell = sheet.cell(3, 1)
     assert cell.value == '1.1'
     cell.value = '1.2.3.4.5.6.7.8.9.0'
