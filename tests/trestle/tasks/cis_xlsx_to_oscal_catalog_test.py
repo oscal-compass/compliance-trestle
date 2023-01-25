@@ -29,7 +29,7 @@ from trestle.tasks.base_task import TaskOutcome
 def test_cis_xlsx_to_oscal_catalog_print_info(tmp_path: pathlib.Path):
     """Test print_info call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.config')
+    config_path = pathlib.Path('tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.ocp.config')
     config.read(config_path)
     section = config['task.cis-xlsx-to-oscal-catalog']
     section['output-dir'] = str(tmp_path)
@@ -41,7 +41,7 @@ def test_cis_xlsx_to_oscal_catalog_print_info(tmp_path: pathlib.Path):
 def test_cis_xlsx_to_oscal_catalog_simulate(tmp_path: pathlib.Path):
     """Test simulate call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.config')
+    config_path = pathlib.Path('tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.ocp.config')
     config.read(config_path)
     section = config['task.cis-xlsx-to-oscal-catalog']
     section['output-dir'] = str(tmp_path)
@@ -54,17 +54,18 @@ def test_cis_xlsx_to_oscal_catalog_simulate(tmp_path: pathlib.Path):
 def test_cis_xlsx_to_oscal_catalog_execute(tmp_path: pathlib.Path):
     """Test execute call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.config')
+    config_path = pathlib.Path('tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.ocp.config')
     config.read(config_path)
     section = config['task.cis-xlsx-to-oscal-catalog']
     section['output-dir'] = str(tmp_path)
     tgt = cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
-    _validate(tmp_path)
+    _validate_ocp(tmp_path)
 
 
-def _validate(tmp_path: pathlib.Path):
+def _validate_ocp(tmp_path: pathlib.Path):
+    """Validate produced OSCAL for OCP catalog."""
     # read catalog
     file_path = tmp_path / 'catalog.json'
     catalog = Catalog.oscal_read(file_path)
@@ -96,14 +97,14 @@ def _validate(tmp_path: pathlib.Path):
 def test_cis_xlsx_to_oscal_catalog_no_overwrite(tmp_path: pathlib.Path):
     """Test execute call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.config')
+    config_path = pathlib.Path('tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.ocp.config')
     config.read(config_path)
     section = config['task.cis-xlsx-to-oscal-catalog']
     section['output-dir'] = str(tmp_path)
     tgt = cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
-    _validate(tmp_path)
+    _validate_ocp(tmp_path)
     section['output-overwrite'] = 'False'
     tgt = cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog(section)
     retval = tgt.execute()
@@ -121,7 +122,7 @@ def test_cis_xlsx_to_oscal_catalog_missing_config(tmp_path: pathlib.Path):
 def test_cis_xlsx_to_oscal_catalog_missing_version(tmp_path: pathlib.Path):
     """Test missing version."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.config')
+    config_path = pathlib.Path('tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.ocp.config')
     config.read(config_path)
     section = config['task.cis-xlsx-to-oscal-catalog']
     section['output-dir'] = str(tmp_path)
@@ -136,7 +137,7 @@ def test_cis_xlsx_to_oscal_catalog_missing_sheet(tmp_path: pathlib.Path):
     folder = 'tests/data/tasks/cis-xlsx-to-oscal-catalog'
     file_ = f'{folder}/CIS_RedHat_OpenShift_Container_Platform_Benchmark_v1.2.0-2.snippet.xlsx'
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.config')
+    config_path = pathlib.Path('tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.ocp.config')
     config.read(config_path)
     section = config['task.cis-xlsx-to-oscal-catalog']
     section['output-dir'] = str(tmp_path)
@@ -155,7 +156,7 @@ def test_cis_xlsx_to_oscal_catalog_one_dot_added_part(tmp_path: pathlib.Path):
     folder = 'tests/data/tasks/cis-xlsx-to-oscal-catalog'
     file_ = f'{folder}/CIS_RedHat_OpenShift_Container_Platform_Benchmark_v1.2.0-2.snippet.xlsx'
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.config')
+    config_path = pathlib.Path('tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.ocp.config')
     config.read(config_path)
     section = config['task.cis-xlsx-to-oscal-catalog']
     section['output-dir'] = str(tmp_path)
@@ -186,7 +187,7 @@ def test_cis_xlsx_to_oscal_catalog_unexpected_section(tmp_path: pathlib.Path):
     folder = 'tests/data/tasks/cis-xlsx-to-oscal-catalog'
     file_ = f'{folder}/CIS_RedHat_OpenShift_Container_Platform_Benchmark_v1.2.0-2.snippet.xlsx'
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.config')
+    config_path = pathlib.Path('tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.ocp.config')
     config.read(config_path)
     section = config['task.cis-xlsx-to-oscal-catalog']
     section['output-dir'] = str(tmp_path)
@@ -200,3 +201,53 @@ def test_cis_xlsx_to_oscal_catalog_unexpected_section(tmp_path: pathlib.Path):
         tgt = cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog(section)
         retval = tgt.execute()
         assert retval == TaskOutcome.FAILURE
+
+
+def test_cis_xlsx_to_oscal_catalog_execute_rhel(tmp_path: pathlib.Path):
+    """Test execute call."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.rhel.config')
+    config.read(config_path)
+    section = config['task.cis-xlsx-to-oscal-catalog']
+    section['output-dir'] = str(tmp_path)
+    tgt = cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    _validate_rhel(tmp_path)
+
+
+def _validate_rhel(tmp_path: pathlib.Path):
+    """Validate produced OSCAL for RHEL catalog."""
+    # read catalog
+    file_path = tmp_path / 'catalog.json'
+    catalog = Catalog.oscal_read(file_path)
+    # spot check
+    assert len(catalog.groups) == 1
+    # group 0
+    g0 = catalog.groups[0]
+    assert g0.id == 'CIS-1'
+    assert g0.title == 'Initial Setup'
+    assert len(g0.groups) == 1
+    assert len(g0.parts) == 1
+    assert len(g0.controls) == 4
+    p00 = g0.parts[0]
+    assert p00.id == 'CIS-1_des'
+    assert p00.name == 'description'
+    assert p00.prose.startswith('Items in this section are advised for all systems,')
+    g00 = g0.groups[0]
+    assert g00.id == 'CIS-1.1'
+    assert g00.title == 'Filesystem Configuration'
+    c00 = g0.controls[0]
+    assert c00.id == 'CIS-1.9'
+    assert c00.title == 'Ensure updates, patches, and additional security software are installed'
+    assert len(c00.props) == 8
+    prop0 = c00.props[0]
+    assert prop0.name == 'profile'
+    assert prop0.value == 'Level 1 - Server'
+    assert len(c00.parts) == 9
+    part0 = c00.parts[0]
+    assert part0.id == 'CIS-1_des'
+    assert part0.name == 'description'
+    t1 = 'Periodically patches are released for included software either due'
+    t2 = ' to security flaws or to include additional functionality.'
+    assert part0.prose == t1 + t2

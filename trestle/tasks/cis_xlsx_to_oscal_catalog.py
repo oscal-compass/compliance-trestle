@@ -48,11 +48,24 @@ class XlsxHelper:
         """Initialize."""
         self._spread_sheet = file
         self._wb = load_workbook(self._spread_sheet)
-        self._sheet_name = 'Combined Profiles'
-        if self._sheet_name not in self._wb.sheetnames:
-            raise RuntimeError(f'{file} missing {self._sheet_name} sheet')
+        sheet_candidates = ['Combined Profiles', 'Combined']
+        self._sheet_name = None
+        for sheet_candidate in sheet_candidates:
+            if sheet_candidate in self._wb.sheetnames:
+                self._sheet_name = sheet_candidate
+                break
+        if not self._sheet_name:
+            raise RuntimeError(f'{file} missing one of {sheet_candidates} sheet')
         self._work_sheet = self._wb[self._sheet_name]
         self._mapper()
+
+    def is_ocp(self) -> bool:
+        """Check if sheet is for OCP."""
+        return self._sheet_name == 'Combined Profiles'
+
+    def _normalize(self, name: str) -> str:
+        """Normalize."""
+        return name.lower()
 
     def _mapper(self) -> None:
         """Map columns heading names to column numbers."""
@@ -62,7 +75,7 @@ class XlsxHelper:
         for col in range(row, cols):
             cell = self._work_sheet.cell(row, col)
             if cell.value:
-                name = cell.value
+                name = self._normalize(cell.value)
                 self._col_name_to_number[name] = col
 
     def row_generator(self) -> Iterator[int]:
@@ -74,7 +87,7 @@ class XlsxHelper:
 
     def get(self, row: int, name: str) -> str:
         """Get cell value for given row and column name."""
-        col = self._col_name_to_number[name]
+        col = self._col_name_to_number[self._normalize(name)]
         cell = self._work_sheet.cell(row, col)
         return cell.value
 
@@ -100,9 +113,9 @@ class CatalogHelper:
                 group.parts = parts
             self._root_group[section] = group
             self._all_groups[section] = group
-        elif numdots == 1:
-            key = section.split('.')[0]
-            parent = self._root_group[key]
+        else:
+            key = '.'.join(section.split('.')[:-1])
+            parent = self._all_groups[key]
             if parent.groups is None:
                 parent.groups = []
             group = Group(title=f'{title}', id=f'CIS-{section}')
@@ -112,8 +125,6 @@ class CatalogHelper:
                 group.parts = parts
             parent.groups.append(group)
             self._all_groups[section] = group
-        else:
-            raise RuntimeError(f'unexpected section {section}')
 
     def add_control(
         self,
@@ -204,6 +215,8 @@ class CisXlsxToOscalCatalog(TaskBase):
         name = key
         name = name.replace(' ', '_')
         name = name.replace('&', 'a')
+        name = name.replace('(', '')
+        name = name.replace(')', '')
         return name
 
     def _add_property(self, xlsx_helper: XlsxHelper, props: List[Property], row: int, key: str) -> None:
@@ -268,6 +281,19 @@ class CisXlsxToOscalCatalog(TaskBase):
             return TaskOutcome('failure')
         xlsx_helper = XlsxHelper(ifile)
         catalog_helper = CatalogHelper(title, version)
+        if xlsx_helper.is_ocp():
+            self._process_ocp(xlsx_helper, catalog_helper)
+        else:
+            self._process_rhel(xlsx_helper, catalog_helper)
+        catalog = catalog_helper.get_catalog()
+        # write OSCAL ComponentDefinition to file
+        if _verbose:
+            logger.info(f'output: {ofile}')
+        catalog.oscal_write(pathlib.Path(ofile))
+        return TaskOutcome('success')
+
+    def _process_ocp(self, xlsx_helper: XlsxHelper, catalog_helper: CatalogHelper) -> None:
+        """Process OCP."""
         # transform each row into OSCAL equivalent
         for row in xlsx_helper.row_generator():
             section = xlsx_helper.get(row, 'section #')
@@ -302,9 +328,44 @@ class CisXlsxToOscalCatalog(TaskBase):
                 self._add_property(xlsx_helper, props, row, 'MITRE ATT&CK Mappings')
                 self._add_links(xlsx_helper, links, row, 'references')
                 catalog_helper.add_control(section, recommendation, title, props, parts, links)
-        catalog = catalog_helper.get_catalog()
-        # write OSCAL ComponentDefinition to file
-        if _verbose:
-            logger.info(f'output: {ofile}')
-        catalog.oscal_write(pathlib.Path(ofile))
-        return TaskOutcome('success')
+
+    def _process_rhel(self, xlsx_helper: XlsxHelper, catalog_helper: CatalogHelper) -> None:
+        """Process RHEL."""
+        # transform each row into OSCAL equivalent
+        for row in xlsx_helper.row_generator():
+            section = xlsx_helper.get(row, 'section #')
+            recommendation = xlsx_helper.get(row, 'recommendation #')
+            title = xlsx_helper.get(row, 'title')
+            # init
+            props = []
+            parts = []
+            links = []
+            # props
+            self._add_property(xlsx_helper, props, row, 'profile')
+            self._add_property(xlsx_helper, props, row, 'assessment status')
+            # parts
+            self._add_part(xlsx_helper, parts, f'CIS-{section}_des', row, 'description')
+            self._add_part(xlsx_helper, parts, f'CIS-{section}_rat', row, 'rational statement')
+            self._add_part(xlsx_helper, parts, f'CIS-{section}_imp', row, 'impact statement')
+            self._add_part(xlsx_helper, parts, f'CIS-{section}_rem', row, 'remediation procedure')
+            self._add_part(xlsx_helper, parts, f'CIS-{section}_aud', row, 'audit procedure')
+            self._add_part(xlsx_helper, parts, f'CIS-{section}_inf', row, 'additional information')
+            self._add_part(xlsx_helper, parts, f'CIS-{section}_ctl', row, 'CIS Controls')
+            self._add_part(xlsx_helper, parts, f'CIS-{section}_ctl', row, 'CIS Safeguards 1 (v8)')
+            self._add_part(xlsx_helper, parts, f'CIS-{section}_ctl', row, 'CIS Safeguards 2 (v8)')
+            self._add_part(xlsx_helper, parts, f'CIS-{section}_ctl', row, 'CIS Safeguards 3 (v8)')
+            self._add_part(xlsx_helper, parts, f'CIS-{section}_ctl', row, 'CIS Safeguards 1 (v7)')
+            self._add_part(xlsx_helper, parts, f'CIS-{section}_ctl', row, 'CIS Safeguards 2 (v7)')
+            self._add_part(xlsx_helper, parts, f'CIS-{section}_ctl', row, 'CIS Safeguards 3 (v7)')
+            # group or control
+            if recommendation is None:
+                catalog_helper.add_group(section, title, props, parts)
+            else:
+                self._add_property_boolean(xlsx_helper, props, row, 'v7 IG1')
+                self._add_property_boolean(xlsx_helper, props, row, 'v7 IG2')
+                self._add_property_boolean(xlsx_helper, props, row, 'v7 IG3')
+                self._add_property_boolean(xlsx_helper, props, row, 'v8 IG1')
+                self._add_property_boolean(xlsx_helper, props, row, 'v8 IG2')
+                self._add_property_boolean(xlsx_helper, props, row, 'v8 IG3')
+                self._add_links(xlsx_helper, links, row, 'references')
+                catalog_helper.add_control(section, recommendation, title, props, parts, links)
