@@ -229,10 +229,8 @@ class CsvToOscalComponentDefinition(TaskBase):
         # control mappings additions, deletions & modifications (by row)
         self.control_mappings_del(control_mappings[0])
         self.control_mappings_add(control_mappings[1])
-        self.control_mappings_mod(control_mappings[2])
-        # perform additions & deletions (by column)
-        self.user_columns_add()
-        self.user_columns_del()
+        # note: control mappings mod is currently not possible
+        # note: add/del user columns not currently supported
         # prepare new/revised component definition
         component_definition = self._cd_mgr.get_component_definition()
         # write OSCAL ComponentDefinition to file
@@ -739,18 +737,6 @@ class CsvToOscalComponentDefinition(TaskBase):
             else:
                 statement = self._get_statement(implemented_requirement, smt_id)
                 statement.props.append(prop)
-
-    def control_mappings_mod(self, mod_control_mappings: List[str]) -> None:
-        """Control mappings modify."""
-        # Not currently possible
-
-    def user_columns_add(self) -> None:
-        """Add user columns."""
-        # Future
-
-    def user_columns_del(self) -> None:
-        """Delete user columns."""
-        # Future
 
 
 class _OscalHelper():
