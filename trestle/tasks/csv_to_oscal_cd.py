@@ -25,6 +25,7 @@ import uuid
 from math import log10
 from typing import Iterator, List, Optional
 
+from trestle.common.list_utils import as_list
 from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.common import Metadata
 from trestle.oscal.common import Property
@@ -53,13 +54,6 @@ def derive_part_id(control_mapping: str) -> str:
     else:
         rval = None
     return rval
-
-
-def non_empty(list_: List) -> int:
-    """Determine emptiness."""
-    if list_ is None:
-        return 0
-    return len(list_)
 
 
 class CsvToOscalComponentDefinition(TaskBase):
@@ -396,9 +390,9 @@ class CsvToOscalComponentDefinition(TaskBase):
                 for implemented_requirement in implemented_requirements:
                     self._delete_ir_props(implemented_requirement, rule_id)
                     self._delete_ir_statements(implemented_requirement, rule_id)
-                    if non_empty(implemented_requirement.props) or non_empty(implemented_requirement.statements):
+                    if len(as_list(implemented_requirement.props)) or len(as_list(implemented_requirement.statements)):
                         control_implementation.implemented_requirements.append(implemented_requirement)
-            if non_empty(control_implementation.implemented_requirements):
+            if len(as_list(control_implementation.implemented_requirements)):
                 component.control_implementations.append(control_implementation)
 
     def _delete_ir_statements(self, implemented_requirement: ImplementedRequirement, rule_id: str) -> None:
@@ -711,7 +705,7 @@ class CsvToOscalComponentDefinition(TaskBase):
                         implemented_requirement.statements, rule_id, smt_id
                     )
                     implemented_requirement.props = _OscalHelper.remove_rule(implemented_requirement.props, rule_id)
-                    if non_empty(implemented_requirement.props) or non_empty(implemented_requirement.statements):
+                    if len(as_list(implemented_requirement.props)) or len(as_list(implemented_requirement.statements)):
                         control_implementation.implemented_requirements.append(implemented_requirement)
                 else:
                     control_implementation.implemented_requirements.append(implemented_requirement)
