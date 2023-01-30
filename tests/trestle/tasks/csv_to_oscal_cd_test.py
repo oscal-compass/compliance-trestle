@@ -116,13 +116,19 @@ def _validate_bp(tmp_path: pathlib.Path) -> None:
         0].description == 'NIST Special Publication 800-53 Revision 5 HIGH IMPACT BASELINE'
 
 
-def test_print_info(tmp_path: pathlib.Path) -> None:
-    """Test print_info."""
+def _get_config_section(tmp_path: pathlib.Path, fname: str) -> tuple:
+    """Get config section."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd.config')
+    config_path = pathlib.Path(f'tests/data/tasks/csv-to-oscal-cd/{fname}')
     config.read(config_path)
     section = config['task.csv-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
+    return (config, section)
+
+
+def test_print_info(tmp_path: pathlib.Path) -> None:
+    """Test print_info."""
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd.config')
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.print_info()
     assert retval is None
@@ -130,11 +136,7 @@ def test_print_info(tmp_path: pathlib.Path) -> None:
 
 def test_simulate(tmp_path: pathlib.Path) -> None:
     """Test simulate."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
-    section['output-dir'] = str(tmp_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd.config')
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.simulate()
     assert retval == TaskOutcome.SIM_SUCCESS
@@ -143,11 +145,7 @@ def test_simulate(tmp_path: pathlib.Path) -> None:
 
 def test_execute(tmp_path: pathlib.Path) -> None:
     """Test execute."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
-    section['output-dir'] = str(tmp_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd.config')
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
@@ -163,10 +161,7 @@ def test_config_missing(tmp_path: pathlib.Path) -> None:
 
 def test_config_missing_title(tmp_path: pathlib.Path) -> None:
     """Test config missing title."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd.config')
     section.pop('title')
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
@@ -175,10 +170,7 @@ def test_config_missing_title(tmp_path: pathlib.Path) -> None:
 
 def test_config_missing_version(tmp_path: pathlib.Path) -> None:
     """Test config missing version."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd.config')
     section.pop('version')
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
@@ -187,10 +179,7 @@ def test_config_missing_version(tmp_path: pathlib.Path) -> None:
 
 def test_config_missing_csv_file_spec(tmp_path: pathlib.Path) -> None:
     """Test config missing csv file spec."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd.config')
     section['output-dir'] = str(tmp_path)
     section.pop('csv-file')
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
@@ -200,10 +189,7 @@ def test_config_missing_csv_file_spec(tmp_path: pathlib.Path) -> None:
 
 def test_config_missing_csv_file(tmp_path: pathlib.Path) -> None:
     """Test config missing csv file."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd.config')
     section['csv-file'] = 'foobar'
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
@@ -212,11 +198,8 @@ def test_config_missing_csv_file(tmp_path: pathlib.Path) -> None:
 
 def test_config_missing_namespace(tmp_path: pathlib.Path) -> None:
     """Test config missing namespace."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd.config')
-    config.read(config_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd.config')
     config.remove_option('task.csv-to-oscal-cd', 'namespace')
-    section = config['task.csv-to-oscal-cd']
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
@@ -224,23 +207,17 @@ def test_config_missing_namespace(tmp_path: pathlib.Path) -> None:
 
 def test_config_missing_user_namespace(tmp_path: pathlib.Path) -> None:
     """Test config missing user-namespace."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd.config')
-    config.read(config_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd.config')
     config.remove_option('task.csv-to-oscal-cd', 'user-namespace')
-    section = config['task.csv-to-oscal-cd']
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
 
 
-def test_exception(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
+def test_exception(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test exception."""
     monkeypatch.setattr(csv_to_oscal_cd._RuleSetIdMgr, 'get_next_rule_set_id', monkey_exception)
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd.config')
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
@@ -248,11 +225,7 @@ def test_exception(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
 
 def test_execute_no_overwrite(tmp_path: pathlib.Path) -> None:
     """Test execute no overwrite."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
-    section['output-dir'] = str(tmp_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd.config')
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
@@ -263,11 +236,7 @@ def test_execute_no_overwrite(tmp_path: pathlib.Path) -> None:
 
 def test_execute_verbose(tmp_path: pathlib.Path) -> None:
     """Test execute verbose."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
-    section['output-dir'] = str(tmp_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd.config')
     section['quiet'] = 'False'
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
@@ -277,11 +246,7 @@ def test_execute_verbose(tmp_path: pathlib.Path) -> None:
 
 def test_execute_mock(tmp_path: pathlib.Path) -> None:
     """Test execute mock."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
-    section['output-dir'] = str(tmp_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd.config')
     # get good data & test that mocking works
     rows = _get_rows('tests/data/csv/ocp4-user.csv')
     with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
@@ -293,11 +258,7 @@ def test_execute_mock(tmp_path: pathlib.Path) -> None:
 
 def test_execute_missing_heading(tmp_path: pathlib.Path) -> None:
     """Test execute missing heading."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
-    section['output-dir'] = str(tmp_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd.config')
     # inject error
     rows = _get_rows('tests/data/csv/ocp4-user.csv')
     row = rows[0]
@@ -312,11 +273,7 @@ def test_execute_missing_heading(tmp_path: pathlib.Path) -> None:
 
 def test_execute_missing_value(tmp_path: pathlib.Path) -> None:
     """Test execute missing value."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
-    section['output-dir'] = str(tmp_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd.config')
     # inject error
     rows = _get_rows('tests/data/csv/ocp4-user.csv')
     row = rows[1]
@@ -331,11 +288,7 @@ def test_execute_missing_value(tmp_path: pathlib.Path) -> None:
 
 def test_execute_missing_rule_id(tmp_path: pathlib.Path) -> None:
     """Test execute missing rule id."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
-    section['output-dir'] = str(tmp_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd.config')
     # inject error
     rows = _get_rows('tests/data/csv/ocp4-user.csv')
     row = rows[1]
@@ -350,11 +303,7 @@ def test_execute_missing_rule_id(tmp_path: pathlib.Path) -> None:
 
 def test_execute_missing_control_mapping(tmp_path: pathlib.Path) -> None:
     """Test execute missing control mapping."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
-    section['output-dir'] = str(tmp_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd.config')
     # inject error
     rows = _get_rows('tests/data/csv/ocp4-user.csv')
     row = rows[1]
@@ -375,11 +324,7 @@ def test_execute_missing_control_mapping(tmp_path: pathlib.Path) -> None:
 
 def test_execute_missing_parameter_id(tmp_path: pathlib.Path) -> None:
     """Test execute missing parameter id."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
-    section['output-dir'] = str(tmp_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd.config')
     # inject error
     rows = _get_rows('tests/data/csv/ocp4-user.csv')
     row = rows[1]
@@ -394,11 +339,7 @@ def test_execute_missing_parameter_id(tmp_path: pathlib.Path) -> None:
 
 def test_execute_bp_sample(tmp_path: pathlib.Path) -> None:
     """Test execute bp sample."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd-bp.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
-    section['output-dir'] = str(tmp_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
@@ -407,11 +348,7 @@ def test_execute_bp_sample(tmp_path: pathlib.Path) -> None:
 
 def test_execute_bp_cd(tmp_path: pathlib.Path) -> None:
     """Test execute bp cd."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd-bp.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
-    section['output-dir'] = str(tmp_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
@@ -421,11 +358,7 @@ def test_execute_bp_cd(tmp_path: pathlib.Path) -> None:
 
 def test_execute_bp_cd_missing(tmp_path: pathlib.Path) -> None:
     """Test execute bp cd missing."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd-bp.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
-    section['output-dir'] = str(tmp_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/foobar/component-definition.json'
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
@@ -434,11 +367,7 @@ def test_execute_bp_cd_missing(tmp_path: pathlib.Path) -> None:
 
 def test_execute_duplicate_rule(tmp_path: pathlib.Path) -> None:
     """Test execute duplicate rule."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd-bp.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
-    section['output-dir'] = str(tmp_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # duplicate rule
     rows = _get_rows('tests/data/csv/bp.sample.csv')
@@ -452,11 +381,7 @@ def test_execute_duplicate_rule(tmp_path: pathlib.Path) -> None:
 
 def test_execute_delete_rule(tmp_path: pathlib.Path) -> None:
     """Test execute delete rule."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd-bp.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
-    section['output-dir'] = str(tmp_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # delete rule
     rows = _get_rows('tests/data/csv/bp.sample.csv')
@@ -481,11 +406,7 @@ def test_execute_delete_rule(tmp_path: pathlib.Path) -> None:
 
 def test_execute_delete_all_rules_with_params(tmp_path: pathlib.Path) -> None:
     """Test execute delete all rules with params."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd-bp.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
-    section['output-dir'] = str(tmp_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # delete all rules with params
     rows = _get_rows('tests/data/csv/bp.sample.csv')
@@ -511,11 +432,7 @@ def test_execute_delete_all_rules_with_params(tmp_path: pathlib.Path) -> None:
 
 def test_execute_delete_rule_with_params(tmp_path: pathlib.Path) -> None:
     """Test execute delete rule with params."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd-bp.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
-    section['output-dir'] = str(tmp_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # delete rule with params
     rows = _get_rows('tests/data/csv/bp.sample.csv')
@@ -538,11 +455,7 @@ def test_execute_delete_rule_with_params(tmp_path: pathlib.Path) -> None:
 
 def test_execute_add_rule(tmp_path: pathlib.Path) -> None:
     """Test execute add rule."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd-bp.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
-    section['output-dir'] = str(tmp_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # add rule
     rows = _get_rows('tests/data/csv/bp.sample.csv')
@@ -628,11 +541,7 @@ def test_execute_add_rule(tmp_path: pathlib.Path) -> None:
 
 def test_execute_missing_param_default_value(tmp_path: pathlib.Path) -> None:
     """Test execute missing param default_value."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd-bp.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
-    section['output-dir'] = str(tmp_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     # delete default param default value
     rows = _get_rows('tests/data/csv/bp.sample.csv')
     row = rows[2]
@@ -648,11 +557,7 @@ def test_execute_missing_param_default_value(tmp_path: pathlib.Path) -> None:
 
 def test_execute_change_param_default_value(tmp_path: pathlib.Path) -> None:
     """Test execute change param default_value."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd-bp.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
-    section['output-dir'] = str(tmp_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # change default param default value
     rows = _get_rows('tests/data/csv/bp.sample.csv')
@@ -682,11 +587,7 @@ def test_execute_change_param_default_value(tmp_path: pathlib.Path) -> None:
 
 def test_execute_delete_param(tmp_path: pathlib.Path) -> None:
     """Test execute delete param."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd-bp.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
-    section['output-dir'] = str(tmp_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # delete param
     rows = _get_rows('tests/data/csv/bp.sample.csv')
@@ -716,11 +617,7 @@ def test_execute_delete_param(tmp_path: pathlib.Path) -> None:
 
 def test_execute_delete_params(tmp_path: pathlib.Path) -> None:
     """Test execute delete params."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd-bp.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
-    section['output-dir'] = str(tmp_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # delete params
     rows = _get_rows('tests/data/csv/bp.sample.csv')
@@ -744,11 +641,7 @@ def test_execute_delete_params(tmp_path: pathlib.Path) -> None:
 
 def test_execute_add_param(tmp_path: pathlib.Path) -> None:
     """Test execute add param."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd-bp.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
-    section['output-dir'] = str(tmp_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # add param
     rows = _get_rows('tests/data/csv/bp.sample.csv')
@@ -787,11 +680,7 @@ def test_execute_add_param(tmp_path: pathlib.Path) -> None:
 
 def test_execute_delete_all_control_mappings(tmp_path: pathlib.Path) -> None:
     """Test execute delete all control mappings."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd-bp.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
-    section['output-dir'] = str(tmp_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # delete all control mappings
     rows = _get_rows('tests/data/csv/bp.sample.csv')
@@ -812,11 +701,7 @@ def test_execute_delete_all_control_mappings(tmp_path: pathlib.Path) -> None:
 
 def test_execute_delete_control_mapping(tmp_path: pathlib.Path) -> None:
     """Test execute delete control mapping."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd-bp.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
-    section['output-dir'] = str(tmp_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # delete control mapping
     rows = _get_rows('tests/data/csv/bp.sample.csv')
@@ -841,11 +726,7 @@ def test_execute_delete_control_mapping(tmp_path: pathlib.Path) -> None:
 
 def test_execute_delete_control_mapping_multi(tmp_path: pathlib.Path) -> None:
     """Test execute delete control mapping multi."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd-bp.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
-    section['output-dir'] = str(tmp_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # delete control mapping multi
     rows = _get_rows('tests/data/csv/bp.sample.csv')
@@ -870,11 +751,7 @@ def test_execute_delete_control_mapping_multi(tmp_path: pathlib.Path) -> None:
 
 def test_execute_delete_control_mapping_smt(tmp_path: pathlib.Path) -> None:
     """Test execute delete control mapping smt."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd-bp.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
-    section['output-dir'] = str(tmp_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # delete control mapping smt
     rows = _get_rows('tests/data/csv/bp.sample.csv')
@@ -901,11 +778,7 @@ def test_execute_delete_control_mapping_smt(tmp_path: pathlib.Path) -> None:
 
 def test_execute_add_control_mapping(tmp_path: pathlib.Path) -> None:
     """Test execute add control mapping."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd-bp.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
-    section['output-dir'] = str(tmp_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # add control mapping
     rows = _get_rows('tests/data/csv/bp.sample.csv')
@@ -929,11 +802,7 @@ def test_execute_add_control_mapping(tmp_path: pathlib.Path) -> None:
 
 def test_execute_add_control_mapping_smt(tmp_path: pathlib.Path) -> None:
     """Test execute add control mapping smt."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd-bp.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
-    section['output-dir'] = str(tmp_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # add control mapping smt
     rows = _get_rows('tests/data/csv/bp.sample.csv')
@@ -963,11 +832,7 @@ def test_execute_add_control_mapping_smt(tmp_path: pathlib.Path) -> None:
 
 def test_execute_delete_property(tmp_path: pathlib.Path) -> None:
     """Test execute delete property."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd-bp.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
-    section['output-dir'] = str(tmp_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # delete property
     rows = _get_rows('tests/data/csv/bp.sample.csv')
@@ -993,11 +858,7 @@ def test_execute_delete_property(tmp_path: pathlib.Path) -> None:
 
 def test_execute_add_property(tmp_path: pathlib.Path) -> None:
     """Test execute add property."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd-bp.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
-    section['output-dir'] = str(tmp_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # add property
     rows = _get_rows('tests/data/csv/bp.sample.csv')
@@ -1029,11 +890,7 @@ def test_execute_add_property(tmp_path: pathlib.Path) -> None:
 
 def test_execute_add_user_property(tmp_path: pathlib.Path) -> None:
     """Test execute add user property."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-cd/test-csv-to-oscal-cd-bp.config')
-    config.read(config_path)
-    section = config['task.csv-to-oscal-cd']
-    section['output-dir'] = str(tmp_path)
+    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # add user property
     rows = _get_rows('tests/data/csv/bp.sample.csv')
