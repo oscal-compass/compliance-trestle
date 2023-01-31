@@ -646,15 +646,21 @@ class ControlInterface:
 
     @staticmethod
     def _param_values_assignment_str(param: common.Parameter) -> str:
-        """Convert param label or choices to string, using choices if present."""
-        choices = ControlInterface._param_selection_as_str(param, True, False)
-        if choices:
-            text = f'[{choices}]'
-        elif param.label:
-            text = f'[Assignment: {param.label}]'
-        else:
-            text = param.id
-        return text
+        """Convert param values, label or choices to string."""
+        text = ''
+        # use values if present
+        param_str = ControlInterface._param_values_as_str(param, False)
+        if param_str:
+            text = f'Assignment: {param_str}'
+        # otherwise use param selection if present
+        if not text:
+            param_str = ControlInterface._param_selection_as_str(param, True, False)
+            if param_str:
+                text = param_str
+        # use label and param_id as fallbacks
+        if not text:
+            text = param.label if param.label else param.id
+        return f'[{text}]'
 
     @staticmethod
     def param_to_str(
@@ -705,10 +711,7 @@ class ControlInterface:
         return param_str
 
     @staticmethod
-    def get_control_param_dict(
-        control: cat.Control,
-        values_only: bool,
-    ) -> Dict[str, common.Parameter]:
+    def get_control_param_dict(control: cat.Control, values_only: bool) -> Dict[str, common.Parameter]:
         """
         Create mapping of param id's to params for params in the control.
 

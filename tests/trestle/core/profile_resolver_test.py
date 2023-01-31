@@ -237,10 +237,20 @@ def test_replace_params_assignment_mode(simplified_nist_catalog: cat.Catalog) ->
     cat_interface = CatalogInterface(simplified_nist_catalog)
     param_dict = cat_interface._get_full_param_dict()
     ac_44 = cat_interface.get_control('ac-4.4')
+    orig_prose = ac_44.parts[0].prose
+    # test the case where a selection has parameters in choices but no value was assigned
     ControlInterface.replace_control_prose(ac_44, param_dict, None, ParameterRep.ASSIGNMENT_FORM)
     assert ac_44.parts[
         0
-    ].prose == 'Prevent encrypted information from bypassing [Assignment: organization-defined information flow control mechanisms] by [Selection (one or more): decrypting the information; blocking the flow of the encrypted information; terminating communications sessions attempting to pass encrypted information; [Assignment: organization-defined procedure or method]].'  # noqa:E501
+    ].prose == 'Prevent encrypted information from bypassing [organization-defined information flow control mechanisms] by [Selection (one or more): decrypting the information; blocking the flow of the encrypted information; terminating communications sessions attempting to pass encrypted information; [Assignment: my procedure]].'  # noqa E501
+    value = 'blocking the flow of the encrypted information'
+    param_dict['ac-4.4_prm_2'].values = [com.Value(__root__=value)]
+    ac_44.parts[0].prose = orig_prose
+    # test the case where values for choices are assigned
+    ControlInterface.replace_control_prose(ac_44, param_dict, None, ParameterRep.ASSIGNMENT_FORM)
+    assert ac_44.parts[
+        0
+    ].prose == f'Prevent encrypted information from bypassing [organization-defined information flow control mechanisms] by [Assignment: {value}].'  # noqa E501
 
 
 def test_profile_resolver_param_sub() -> None:
