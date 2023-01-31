@@ -857,6 +857,8 @@ class ControlInterface:
         show_value_warnings: bool = False
     ) -> None:
         """Replace the control prose according to set_param."""
+        # first replace all choices that reference parameters
+        # note that in ASSIGNMENT_FORM each choice with a parameter will end up as [Assignment: value]
         for param in as_list(control.params):
             ControlInterface._replace_param_choices(param, param_dict, params_format, param_rep, show_value_warnings)
         for part in as_list(control.parts):
