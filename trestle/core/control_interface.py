@@ -651,7 +651,7 @@ class ControlInterface:
         # use values if present
         param_str = ControlInterface._param_values_as_str(param, False)
         if param_str:
-            text = f'Assignment: {param_str}'
+            text = f'{param_str}'
         # otherwise use param selection if present
         if not text:
             param_str = ControlInterface._param_selection_as_str(param, True, False)
@@ -660,6 +660,7 @@ class ControlInterface:
         # use label and param_id as fallbacks
         if not text:
             text = param.label if param.label else param.id
+            text = f'Assignment: {text}'
         return f'[{text}]'
 
     @staticmethod
