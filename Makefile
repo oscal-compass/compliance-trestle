@@ -27,7 +27,7 @@ nist-main:
 	git submodule set-branch --branch main nist-source
 	git submodule update --remote
 
-develop: submodules nist-dev
+develop: submodules
 	python -m pip install -e .[dev] --upgrade --upgrade-strategy eager --
 
 pre-commit: 
