@@ -229,7 +229,7 @@ class ComponentAssemble(AuthorCommonCommand):
         ComponentAssemble.assemble_comp_def_into_parent(parent_comp, md_dir, context)
 
         if version:
-            parent_comp.metadata.version = com.Version(__root__=version)
+            parent_comp.metadata.version = version
 
         assem_comp_path = ModelUtils.path_for_top_level_model(
             trestle_root, assem_comp_name, comp.ComponentDefinition, new_content_type

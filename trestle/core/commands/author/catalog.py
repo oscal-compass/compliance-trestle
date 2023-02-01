@@ -24,7 +24,6 @@ from ruamel.yaml.error import YAMLError
 
 import trestle.common.const as const
 import trestle.common.log as log
-import trestle.oscal.common as com
 from trestle.common import file_utils
 from trestle.common.err import TrestleError, TrestleNotFoundError, handle_generic_command_exception
 from trestle.common.load_validate import load_validate_model_name, load_validate_model_path
@@ -225,7 +224,7 @@ class CatalogAssemble(AuthorCommonCommand):
             new_content_type = FileContentType.path_to_content_type(parent_cat_path)
 
         if version:
-            md_catalog.metadata.version = com.Version(__root__=version)
+            md_catalog.metadata.version = version
 
         # now check the destination catalog to see if the in-memory catalog matches it
         if assem_cat_path:

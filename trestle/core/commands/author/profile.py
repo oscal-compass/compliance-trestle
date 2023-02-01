@@ -24,7 +24,6 @@ from ruamel.yaml.error import YAMLError
 
 import trestle.common.const as const
 import trestle.common.log as log
-import trestle.oscal.common as com
 import trestle.oscal.profile as prof
 from trestle.common import file_utils
 from trestle.common.err import TrestleError, TrestleNotFoundError, handle_generic_command_exception
@@ -360,7 +359,7 @@ class ProfileAssemble(AuthorCommonCommand):
             ProfileAssemble._replace_modify_set_params(parent_prof, param_dict, param_map)
 
         if version:
-            parent_prof.metadata.version = com.Version(__root__=version)
+            parent_prof.metadata.version = version
 
         parent_prof.metadata.oscal_version = OSCAL_VERSION
 

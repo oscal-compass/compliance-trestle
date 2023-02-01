@@ -684,6 +684,6 @@ def test_update_last_modified(sample_catalog_rich_controls: catalog.Catalog) -> 
     """Test update timestamps."""
     hour_ago = datetime.now().astimezone() - timedelta(seconds=const.HOUR_SECONDS)
     ModelUtils.update_last_modified(sample_catalog_rich_controls, hour_ago)
-    assert sample_catalog_rich_controls.metadata.last_modified.__root__ == hour_ago
+    assert sample_catalog_rich_controls.metadata.last_modified == hour_ago
     ModelUtils.update_last_modified(sample_catalog_rich_controls)
     assert ModelUtils.model_age(sample_catalog_rich_controls) < test_utils.NEW_MODEL_AGE_SECONDS

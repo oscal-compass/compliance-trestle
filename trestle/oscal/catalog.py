@@ -36,9 +36,116 @@ from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
 import trestle.oscal.common as common
 
 
+class Relationship(OscalBaseModel):
+    """
+    The relationship type for the mapping entry, which describes the relationship between the effective requirements of the specified source and target sets.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    ns: Optional[AnyUrl] = Field(
+        None,
+        description=
+        "A namespace qualifying the relationship's value. This allows different organizations to associate distinct semantics for relationships with the same name.",
+        title='Relationship Value Namespace',
+    )
+    type: str
+
+
+class MappingResourceReference(OscalBaseModel):
+    """
+    A reference to a resource that is either the source or target of a mapping.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    type: constr(
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+    ) = Field(..., description='The semantic type of the resource.', title='Resource Type')
+    href: str = Field(
+        ...,
+        description='A resolvable URL reference to the base catalog or profile that this profile is tailoring.',
+        title='Catalog or Profile Reference',
+    )
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
+    remarks: Optional[str] = None
+
+
+class MappingItem(OscalBaseModel):
+    """
+    Identifies a specific edge within a source or target that is the subject of a mapping.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    type: constr(
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+    ) = Field(..., description='The semantic type of the subject.', title='Subject Type')
+    id_ref: constr(regex=r'^\S(.*\S)?$') = Field(
+        ...,
+        alias='id-ref',
+        description='A reference to an identified subject that is of the specified type.',
+        title='Subject Identifier Reference',
+    )
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
+    remarks: Optional[str] = None
+
+
+class Map(OscalBaseModel):
+    """
+    A relationship-based mapping between a source and target set consisting of members (i.e., controls, control statements) from the respective source and target.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+                 ) = Field(
+                     ...,
+                     description='The unique identifier for the mapping entry.',
+                     title='Mapping Entry Identifier',
+                 )
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
+    relationship: Relationship = Field(
+        ...,
+        description=
+        'The relationship type for the mapping entry, which describes the relationship between the effective requirements of the specified source and target sets.',
+        title='Mapping Entry Relationship',
+    )
+    sources: List[MappingItem] = Field(...)
+    targets: List[MappingItem] = Field(...)
+    remarks: Optional[str] = None
+
+
+class Mapping(OscalBaseModel):
+    """
+    A mapping between the containing control and another resource.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+                 ) = Field(
+                     ...,
+                     description='The unique identifier for the mapping.',
+                     title='Mapping Identifier',
+                 )
+    target_resource: MappingResourceReference = Field(..., alias='target-resource')
+    maps: List[Map] = Field(...)
+
+
 class Control(OscalBaseModel):
     """
-    A structured information object representing a security or privacy control. Each security or privacy control within the Catalog is defined by a distinct control instance.
+    A structured object representing a requirement or guideline, which when implemented will reduce an aspect of risk related to an information system and its information.
     """
 
     class Config:
@@ -50,7 +157,7 @@ class Control(OscalBaseModel):
     ) = Field(
         ...,
         description=
-        'A human-oriented, locally unique identifier with instance scope that can be used to reference this control elsewhere in this and other OSCAL instances (e.g., profiles). This id should be assigned per-subject, which means it should be consistently used to identify the same control across revisions of the document.',
+        'Identifies a control such that it can be referenced in the defining catalog and other OSCAL instances (e.g., profiles).',
         title='Control Identifier',
     )
     class_: Optional[constr(
@@ -71,6 +178,11 @@ class Control(OscalBaseModel):
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     parts: Optional[List[common.Part]] = Field(None)
+    mapping: Optional[Mapping] = Field(
+        None,
+        description='A mapping between the containing control and another resource.',
+        title='Mapping',
+    )
     controls: Optional[List[Control]] = None
 
 
@@ -88,7 +200,7 @@ class Group(OscalBaseModel):
     )] = Field(
         None,
         description=
-        'A human-oriented, locally unique identifier with cross-instance scope that can be used to reference this defined group elsewhere in in this and other OSCAL instances (e.g., profiles). This id should be assigned per-subject, which means it should be consistently used to identify the same group across revisions of the document.',
+        'Identifies the group for the purpose of cross-linking within the defining instance or from other instances that reference the catalog.',
         title='Group Identifier',
     )
     class_: Optional[constr(
@@ -115,20 +227,18 @@ class Group(OscalBaseModel):
 
 class Catalog(OscalBaseModel):
     """
-    A collection of controls.
+    A structured, organized collection of control information.
     """
 
     class Config:
         extra = Extra.forbid
 
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description=
-        'A globally unique identifier with cross-instance scope for this catalog instance. This UUID should be changed when this document is revised.',
-        title='Catalog Universally Unique Identifier',
-    )
+    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+                 ) = Field(
+                     ...,
+                     description='Provides a globally unique means to identify a given catalog instance.',
+                     title='Catalog Universally Unique Identifier',
+                 )
     metadata: common.Metadata
     params: Optional[List[common.Parameter]] = Field(None)
     controls: Optional[List[Control]] = Field(None)

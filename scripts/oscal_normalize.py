@@ -832,6 +832,45 @@ def _strip_unrefed_files(file_class):
     return [c for c in file_class if c.name not in dead_names]
 
 
+def kill_roots(file_classes):
+    """Kill the root classes."""
+    com = file_classes['common']
+    root_classes = {}
+    match_str = ':__root__:'
+    # find all root classes
+    for c in com:
+        body = c.body_text
+        if body.startswith(match_str):
+            p_field = body.find('=Field(')
+            if p_field > 0:
+                body = body[:p_field]
+            root_classes[c.name] = body[len(match_str):]
+    new_root_classes = {}
+    skip_class_names = ['IntegerDatatype', 'NonNegativeIntegerDatatype', 'PositiveIntegerDatatype', 'OscalVersion']
+    special_classes = {}
+    # replace references to root classes in the root classes
+    for name, body in root_classes.items():
+        if body in root_classes:
+            body = root_classes[body]
+        # now have mapping of root class name to its simplified body
+        if name not in skip_class_names:
+            new_root_classes[name] = body
+    # some names are substrings of other names so they need to go to end of the list to be substituted last
+    for name, body in special_classes.items():
+        new_root_classes[name] = body
+    for classes in file_classes.values():
+        for c in classes:
+            if c.name not in new_root_classes:
+                for ii in range(1, len(c.lines)):
+                    line = c.lines[ii]
+                    for name, body in new_root_classes.items():
+                        if 'OscalVersion' not in line and 'OSCAL' not in line:
+                            line = line.replace('common.' + name, body, 1)
+                            line = line.replace(name, body, 1)
+                    c.lines[ii] = line
+    return file_classes
+
+
 def normalize_files():
     """Clean up classes to minimise cross reference."""
     all_classes = load_all_classes()
@@ -882,6 +921,9 @@ def normalize_files():
 
     # now apply all the changes to the class bodies
     file_classes = apply_changes_to_classes(file_classes, changes, com_names)
+
+    # kill the __root__ classes
+    file_classes = kill_roots(file_classes)
 
     # re-order them in each file and dump
     reorder_and_dump_as_python(file_classes)

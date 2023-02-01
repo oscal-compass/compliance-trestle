@@ -169,7 +169,7 @@ def test_all_positions_for_alter_can_be_resolved(tmp_trestle_dir: pathlib.Path) 
 def test_profile_resolver_merge(sample_catalog_rich_controls: cat.Catalog) -> None:
     """Test profile resolver merge."""
     profile = gens.generate_sample_model(prof.Profile)
-    method = prof.Method.merge
+    method = 'merge'
     combine = prof.Combine(method=method)
     profile.merge = prof.Merge(combine=combine)
     merge = Merge(profile)
@@ -196,7 +196,7 @@ def test_profile_resolver_merge(sample_catalog_rich_controls: cat.Catalog) -> No
     assert catalog_interface.get_control(control_id).parts[-1].name == 'foo'
 
     # add part to first control and merge but with use-first.  The part should not be there at end.
-    method = prof.Method.use_first
+    method = 'use_first'
     combine = prof.Combine(method=method)
     profile.merge = prof.Merge(combine=combine)
     merge = Merge(profile)
@@ -226,8 +226,8 @@ def test_profile_resolver_merge(sample_catalog_rich_controls: cat.Catalog) -> No
 )
 def test_replace_params(param_id, param_text, prose, result) -> None:
     """Test cases of replacing param in string."""
-    param = com.Parameter(id=param_id, values=[com.ParameterValue(__root__=param_text)])
-    param_10 = com.Parameter(id='ac-2_smt.10', values=[com.ParameterValue(__root__='my 10 str')])
+    param = com.Parameter(id=param_id, values=[param_text])
+    param_10 = com.Parameter(id='ac-2_smt.10', values=['my 10 str'])
     param_dict = {param_id: param, 'ac-1_smt.10': param_10}
     assert ControlInterface._replace_ids_with_text(prose, ParameterRep.VALUE_OR_STRING_NONE, param_dict) == result
 
@@ -246,9 +246,9 @@ def test_replace_params_assignment_mode(simplified_nist_catalog: cat.Catalog) ->
 def test_profile_resolver_param_sub() -> None:
     """Test profile resolver param sub via regex."""
     id_1 = 'ac-2_smt.1'
-    param_1 = com.Parameter(id=id_1, values=[com.ParameterValue(__root__='the cat')])
+    param_1 = com.Parameter(id=id_1, values=['the cat'])
     id_10 = 'ac-2_smt.10'
-    param_10 = com.Parameter(id=id_10, values=[com.ParameterValue(__root__='well fed')])
+    param_10 = com.Parameter(id=id_10, values=['well fed'])
 
     param_text = 'Make sure that {{insert: param, ac-2_smt.1}} is very {{ac-2_smt.10}} today.  Very {{ac-2_smt.10}}!'
     param_dict = {id_1: param_1, id_10: param_10}
@@ -286,7 +286,7 @@ def test_merge_params() -> None:
     params[0].remarks = None
     profile = gens.generate_sample_model(prof.Profile)
     merge = Merge(profile)
-    merge._merge_items(params[0], params[1], prof.Method.merge)
+    merge._merge_items(params[0], params[1], 'merge')
     assert params[0]
     # the contraints in each are identical so they don't merge
     assert len(params[0].constraints) == 1
@@ -301,7 +301,7 @@ def test_merge_two_catalogs() -> None:
     cat_1 = test_utils.generate_complex_catalog('foo')
     cat_2 = test_utils.generate_complex_catalog('bar')
     cat_2.controls[0].id = cat_1.controls[0].id
-    method = prof.Method.merge
+    method = 'merge'
     combine = prof.Combine(method=method)
     profile = gens.generate_sample_model(prof.Profile)
     profile.merge = prof.Merge(combine=combine)

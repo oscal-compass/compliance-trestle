@@ -17,9 +17,6 @@
 submodules: 
 	git submodule update --init
 
-develop: submodules
-	python -m pip install -e .[dev] --upgrade --upgrade-strategy eager --
-
 # switch the nist oscal submodules to the develop branch to work with future oscal schemas
 nist-dev:
 	git submodule set-branch --branch develop nist-source
@@ -31,6 +28,9 @@ nist-main:
 	git submodule set-branch --branch main nist-source
 	git submodule set-branch --branch main nist-content
 	git submodule update --remote
+
+develop: submodules nist-dev
+	python -m pip install -e .[dev] --upgrade --upgrade-strategy eager --
 
 pre-commit: 
 	pre-commit install

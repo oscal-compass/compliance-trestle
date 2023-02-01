@@ -248,7 +248,7 @@ class CatalogReader():
         item: Union[ossp.ImplementedRequirement, ossp.ByComponent],
         rule_id: str,
         param_name: str,
-        param_values: List[com.Value],
+        param_values: List[str],
         comp_uuid: str
     ) -> None:
         for by_comp in as_list(item.by_components):
@@ -280,7 +280,7 @@ class CatalogReader():
         rules_dict = md_header.get(const.RULES_PARAMS_TAG, {})
         comp_rules_params = rules_dict.get(comp_name, [])
         param_name = param_dict['name']
-        param_values = [com.Value(__root__=param_val) for param_val in param_dict['values']]
+        param_values = param_dict['values']
         for comp_rule_param in comp_rules_params:
             if comp_rule_param['name'] == param_name:
                 rule_id = comp_rule_param[const.HEADER_RULE_ID]
@@ -293,7 +293,7 @@ class CatalogReader():
     @staticmethod
     def _add_set_params_to_item(param_dict: Dict[str, str], item: TypeWithSetParams, param_id: str) -> None:
         value_list = param_dict[const.SSP_VALUES]
-        param_values = [com.Value(__root__=value) for value in value_list]
+        param_values = value_list
         new_sp_list = []
         for sp in as_list(item.set_parameters):
             if sp.param_id != param_id:

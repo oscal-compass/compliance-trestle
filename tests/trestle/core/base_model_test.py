@@ -261,7 +261,7 @@ def test_copy_to() -> None:
 
 def test_copy_components() -> None:
     """Test copying across similar but different objects."""
-    state_obj = ssp.State1('under-development')
+    state_obj = 'under-development'
     sys_component = ssp.SystemComponent(
         uuid=const.SAMPLE_UUID_STR,
         type='Hello',

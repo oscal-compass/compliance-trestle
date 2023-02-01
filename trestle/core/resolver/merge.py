@@ -68,9 +68,9 @@ class Merge(Pipeline.Filter):
             id_ = getattr(item, NAME, None)
         return id_
 
-    def _merge_lists(self, dest: List[OBT], src: List[OBT], merge_method: prof.Method) -> None:
+    def _merge_lists(self, dest: List[OBT], src: List[OBT], merge_method: common.StringDatatype) -> None:
         added_items = []
-        if merge_method == prof.Method.keep:
+        if merge_method == 'keep':
             dest.extend(src)
             return
         for item in src:
@@ -82,7 +82,7 @@ class Merge(Pipeline.Filter):
                     for other in dest:
                         other_id = self._get_id(other)
                         if other_id == item_id:
-                            if merge_method == prof.Method.merge:
+                            if merge_method == 'merge':
                                 self._merge_items(other, item, merge_method)
                             merged = True
                             break
@@ -92,7 +92,7 @@ class Merge(Pipeline.Filter):
         dest.extend(added_items)
 
     def _merge_attrs(
-        self, dest: Union[OBT, List[OBT]], src: Union[OBT, List[OBT]], attr: str, merge_method: prof.Method
+        self, dest: Union[OBT, List[OBT]], src: Union[OBT, List[OBT]], attr: str, merge_method: common.StringDatatype
     ) -> None:
         """Merge this attr of src into the attr of dest."""
         src_attr = getattr(src, attr, None)
@@ -106,13 +106,13 @@ class Merge(Pipeline.Filter):
             self._merge_lists(dest_attr, src_attr, merge_method)
             setattr(dest, attr, dest_attr)
             return
-        if dest_attr and merge_method == prof.Method.use_first:
+        if dest_attr and merge_method == 'use_first':
             return
-        if dest_attr == src_attr and merge_method != prof.Method.keep:
+        if dest_attr == src_attr and merge_method != 'keep':
             return
         setattr(dest, attr, src_attr)
 
-    def _merge_items(self, dest: OBT, src: OBT, merge_method: prof.Method) -> None:
+    def _merge_items(self, dest: OBT, src: OBT, merge_method: common.StringDatatype) -> None:
         """Merge two items recursively."""
         for field in src.__fields_set__:
             self._merge_attrs(dest, src, field, merge_method)
@@ -148,7 +148,7 @@ class Merge(Pipeline.Filter):
         return catalog
 
     def _merge_two_catalogs(
-        self, dest: cat.Catalog, src: cat.Catalog, merge_method: prof.Method, as_is: bool
+        self, dest: cat.Catalog, src: cat.Catalog, merge_method: common.StringDatatype, as_is: bool
     ) -> cat.Catalog:
         # merge_method is use_first, merge, or keep
         # if as_is is false, the result is flattened
@@ -175,7 +175,7 @@ class Merge(Pipeline.Filter):
         local_cat = catalog.copy(deep=True)
         local_merged = merged.copy(deep=True) if merged else None
 
-        merge_method = prof.Method.keep
+        merge_method = 'keep'
         as_is = False
         if self._profile.merge is not None:
             if self._profile.merge.custom is not None:
@@ -184,12 +184,12 @@ class Merge(Pipeline.Filter):
                 as_is = self._profile.merge.as_is
             if self._profile.merge.combine is None:
                 logger.warning('Profile has merge but no combine so defaulting to combine/merge.')
-                merge_method = prof.Method.merge
+                merge_method = 'merge'
             else:
                 merge_combine = self._profile.merge.combine
                 if merge_combine.method is None:
                     logger.warning('Profile has merge combine but no method.  Defaulting to merge.')
-                    merge_method = prof.Method.merge
+                    merge_method = 'merge'
                 else:
                     merge_method = merge_combine.method
 

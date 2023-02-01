@@ -58,10 +58,6 @@ def generate_sample_value_by_type(
         return False
     if type_ is int:
         return 0
-    if type_ is str:
-        if field_name == 'oscal_version':
-            return OSCAL_VERSION
-        return 'REPLACE_ME'
     if type_ is float:
         return 0.00
     if safe_is_sub(type_, ConstrainedStr) or (hasattr(type_, '__name__') and 'ConstrainedStr' in type_.__name__):
@@ -69,8 +65,13 @@ def generate_sample_value_by_type(
         # TODO: handle regex directly
         if 'uuid' == field_name:
             return str(uuid.uuid4())
+        # some things like location_uuid in lists arrive here with field_name=''
+        if type_.regex and type_.regex.pattern.startswith('^[0-9A-Fa-f]{8}'):
+            return const.SAMPLE_UUID_STR
         if field_name == 'date_authorized':
             return str(date.today().isoformat())
+        if field_name == 'date_datatype':
+            return '2023-01-01'
         if field_name == 'oscal_version':
             return OSCAL_VERSION
         if 'uuid' in field_name:
@@ -91,6 +92,10 @@ def generate_sample_value_by_type(
     if safe_is_sub(type_, Enum):
         # keys and values diverge due to hypens in oscal names
         return type_(list(type_.__members__.values())[0])
+    if type_ is str:
+        if field_name == 'oscal_version':
+            return OSCAL_VERSION
+        return 'REPLACE_ME'
     if type_ is pydantic.networks.EmailStr:
         return pydantic.networks.EmailStr('dummy@sample.com')
     if type_ is pydantic.networks.AnyUrl:

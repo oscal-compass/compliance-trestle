@@ -99,7 +99,7 @@ def _validate1(tmp_path: pathlib.Path):
         index = prop[0]
         assert cd.components[0].props[index].name == prop[1]
         assert cd.components[0].props[index].value == prop[2]
-        assert cd.components[0].props[index].remarks.__root__ == prop[3]
+        assert cd.components[0].props[index].remarks == prop[3]
         if prop[4] is not None:
             assert cd.components[0].props[index].ns == prop[4]
         if prop[5] is not None:
@@ -193,7 +193,7 @@ def _validate2(tmp_path: pathlib.Path):
         index = prop[0]
         assert cd.components[0].props[index].name == prop[1]
         assert cd.components[0].props[index].value == prop[2]
-        assert cd.components[0].props[index].remarks.__root__ == prop[3]
+        assert cd.components[0].props[index].remarks == prop[3]
         if prop[4] is not None:
             assert cd.components[0].props[index].ns == prop[4]
         if prop[5] is not None:
@@ -202,7 +202,7 @@ def _validate2(tmp_path: pathlib.Path):
     for param in set_params:
         index = param[0]
         assert cd.components[0].control_implementations[0].set_parameters[index].param_id == param[1]
-        assert cd.components[0].control_implementations[0].set_parameters[index].values[0].__root__ == param[2]
+        assert cd.components[0].control_implementations[0].set_parameters[index].values[0] == param[2]
     return
 
 

@@ -312,15 +312,15 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     orig_ssp, orig_ssp_path = ModelUtils.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     orig_uuid = orig_ssp.uuid
     assert len(orig_ssp.system_implementation.components) == 5
-    assert orig_ssp.metadata.version.__root__ == new_version
+    assert orig_ssp.metadata.version == new_version
     assert ModelUtils.model_age(orig_ssp) < test_utils.NEW_MODEL_AGE_SECONDS
     imp_reqs = orig_ssp.control_implementation.implemented_requirements
     imp_req = next((i_req for i_req in imp_reqs if i_req.control_id == 'ac-6.7'), None)
     assert imp_req.statements[0].by_components[0].description == prose_aa_a
 
     assert imp_reqs[0].by_components[0].set_parameters[1].param_id == 'shared_param_1'
-    assert imp_reqs[0].by_components[0].set_parameters[1].values[0].__root__ == 'shared_param_1_aa_opt_2'
-    assert imp_reqs[0].set_parameters[0].values[0].__root__ == 'my ssp val'
+    assert imp_reqs[0].by_components[0].set_parameters[1].values[0] == 'shared_param_1_aa_opt_2'
+    assert imp_reqs[0].set_parameters[0].values[0] == 'my ssp val'
 
     orig_file_creation = orig_ssp_path.stat().st_mtime
 
@@ -347,7 +347,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
 
     repeat_ssp, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     assert len(repeat_ssp.system_implementation.components) == 5
-    assert repeat_ssp.metadata.version.__root__ == new_version
+    assert repeat_ssp.metadata.version == new_version
 
     # assemble it again but regen uuid's
     # this should not regen uuid's because the file is not written out if only difference is uuid's

@@ -56,9 +56,9 @@ class Prune(Pipeline.Filter):
             for select_control in select_list:
                 if select_control.matching is not None:
                     raise TrestleError('Profiles with SelectControlById based on matching are not supported.')
-                include_children = select_control.with_child_controls == prof.WithChildControls.yes
+                include_children = select_control.with_child_controls == 'yes'
                 if select_control.with_ids:
-                    new_ids = [withid.__root__ for withid in select_control.with_ids]
+                    new_ids = select_control.with_ids
                     for id_ in new_ids:
                         control_ids.append(id_)
                         if include_children:

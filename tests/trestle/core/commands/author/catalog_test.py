@@ -43,7 +43,7 @@ from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.oscal import catalog as cat
 from trestle.oscal import profile as prof
-from trestle.oscal.common import ParameterValue, Part, Property
+from trestle.oscal.common import Part, Property
 
 markdown_name = 'my_md'
 
@@ -146,8 +146,8 @@ def test_catalog_generate_assemble(
         interface_orig.replace_control(ac1)
         orig_cat = interface_orig.get_catalog()
     if set_parameters_flag:
-        ac1.params[0].values = [ParameterValue(__root__='new value')]
-        ac1.params[2].values = [ParameterValue(__root__='added param 3 value')]
+        ac1.params[0].values = ['new value']
+        ac1.params[2].values = ['added param 3 value']
         interface_orig.replace_control(ac1)
         orig_cat = interface_orig.get_catalog()
     elif not use_orig_cat:
@@ -194,7 +194,7 @@ def test_catalog_assemble_version(sample_catalog_rich_controls: cat.Catalog, tmp
     )
 
     # confirm it is a fresh file with the version set as requested
-    assert assembled_cat.metadata.version.__root__ == new_version
+    assert assembled_cat.metadata.version == new_version
     assert ModelUtils.model_age(assembled_cat) < test_utils.NEW_MODEL_AGE_SECONDS
     creation_time = assembled_cat_path.stat().st_mtime
 
@@ -260,7 +260,7 @@ New control statement.
     assert interface.get_count_of_controls_in_catalog(True) == 7
     control_d = interface.get_control('control_d')
     assert control_d.controls[0].params[0].id == 'param_new'
-    assert control_d.controls[0].params[0].values[0].__root__ == 'new param value'
+    assert control_d.controls[0].params[0].values[0] == 'new param value'
 
 
 def test_catalog_interface(sample_catalog_rich_controls: cat.Catalog) -> None:
@@ -320,12 +320,12 @@ def test_catalog_interface_merge_controls(replace_params: bool, sample_catalog_r
     control_b = copy.deepcopy(control_a)
     CatalogMerger.merge_controls(control_a, control_b, replace_params)
     assert control_a == control_b
-    control_b.params[0].values = [ParameterValue(__root__='new value')]
+    control_b.params[0].values = ['new value']
     CatalogMerger.merge_controls(control_a, control_b, replace_params)
     if replace_params:
-        assert control_a.params[0].values[0].__root__ == 'new value'
+        assert control_a.params[0].values[0] == 'new value'
     else:
-        assert control_a.params[0].values[0].__root__ == 'param_0_val'
+        assert control_a.params[0].values[0] == 'param_0_val'
     control_b.params = control_b.params[:1]
     CatalogMerger.merge_controls(control_a, control_b, replace_params)
     assert len(control_a.params) == 1 if replace_params else 2
@@ -423,12 +423,12 @@ def test_params_in_choice(
     val_1 = 'blocking the flow of the encrypted information'
     val_2 = 'terminating communications sessions attempting to pass encrypted information'
     val_3 = 'hacking the system'
-    assert control.params[1].values[0].__root__ == val_1
-    assert control.params[1].values[1].__root__ == val_2
+    assert control.params[1].values[0] == val_1
+    assert control.params[1].values[1] == val_2
     # confirm the choice text was set properly
     assert control.params[1].select.choice[3] == val_3
-    assert control.params[2].values[0].__root__ == val_3
-    assert catalog.params[1].values[0].__root__ == 'loose_2_val_from_prof'
+    assert control.params[2].values[0] == val_3
+    assert catalog.params[1].values[0] == 'loose_2_val_from_prof'
 
     control = cat_interface.get_control('ac-1')
     param = control.params[0]
@@ -468,16 +468,16 @@ def test_pulled_params_in_choice(
     control = cat_interface.get_control('ac-4.4')
     val_1 = 'blocking the flow of the encrypted information'
     val_2 = 'from pulling profile'
-    assert control.params[1].values[0].__root__ == val_1
-    assert control.params[1].values[1].__root__ == val_2
+    assert control.params[1].values[0] == val_1
+    assert control.params[1].values[1] == val_2
 
     # confirm the choice text was handled properly
     # the param value and the choice should be set by the pulling profile
-    assert control.params[2].values[0].__root__ == val_2
+    assert control.params[2].values[0] == val_2
     assert control.params[1].select.choice[3] == val_2
 
     # this confirms the pulling profile sets the value of a loose param
-    assert catalog.params[1].values[0].__root__ == 'loose_2_val_from_pulling'
+    assert catalog.params[1].values[0] == 'loose_2_val_from_pulling'
 
     # confirm other attributes are as expected
     control = cat_interface.get_control('ac-1')

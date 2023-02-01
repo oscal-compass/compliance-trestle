@@ -36,7 +36,7 @@ from trestle.core.generators import generate_sample_model
 from trestle.core.validator import Validator
 from trestle.core.validator_factory import validator_factory
 from trestle.oscal.catalog import Catalog
-from trestle.oscal.common import PartyUuid, ResponsibleParty, Role
+from trestle.oscal.common import ResponsibleParty, Role
 from trestle.oscal.component import ComponentDefinition, ControlImplementation
 
 test_data_dir = pathlib.Path('tests/data').resolve()
@@ -140,8 +140,8 @@ def test_role_refs_validator(
     """Test validation of roles and references to them in responsible-parties."""
     (tmp_trestle_dir / 'assessment-plans/my_ap').mkdir(exist_ok=True, parents=True)
     roles = [Role(id='id1', title='title1'), Role(id='id2', title='title2'), Role(id='id3', title='title3')]
-    party1 = ResponsibleParty(role_id=test_id, party_uuids=[PartyUuid(__root__=str(uuid4()))])
-    party2 = ResponsibleParty(role_id='id2', party_uuids=[PartyUuid(__root__=str(uuid4()))])
+    party1 = ResponsibleParty(role_id=test_id, party_uuids=[str(uuid4())])
+    party2 = ResponsibleParty(role_id='id2', party_uuids=[str(uuid4())])
     responsible_parties = [party1, party2]
     ap_obj = generate_sample_model(ap.AssessmentPlan)
     ap_obj.metadata.roles = roles
