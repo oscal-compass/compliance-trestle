@@ -20,13 +20,11 @@ submodules:
 # switch the nist oscal submodules to the develop branch to work with future oscal schemas
 nist-dev:
 	git submodule set-branch --branch develop nist-source
-	git submodule set-branch --branch develop nist-content
 	git submodule update --remote
 
 # switch the nist oscal submodules back to the main (normal) current release branch
 nist-main:
 	git submodule set-branch --branch main nist-source
-	git submodule set-branch --branch main nist-content
 	git submodule update --remote
 
 develop: submodules nist-dev
