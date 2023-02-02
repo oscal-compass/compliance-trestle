@@ -17,12 +17,13 @@ import logging
 from typing import Iterator, List, Optional, Tuple, Union
 
 import trestle.oscal.catalog as cat
+import trestle.oscal.common as com
 import trestle.oscal.profile as prof
+from trestle.common import const
 from trestle.common.common_types import OBT
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list, none_if_empty
 from trestle.core.pipeline import Pipeline
-from trestle.oscal import common
 
 logger = logging.getLogger(__name__)
 
@@ -68,9 +69,9 @@ class Merge(Pipeline.Filter):
             id_ = getattr(item, NAME, None)
         return id_
 
-    def _merge_lists(self, dest: List[OBT], src: List[OBT], merge_method: common.StringDatatype) -> None:
+    def _merge_lists(self, dest: List[OBT], src: List[OBT], merge_method: str) -> None:
         added_items = []
-        if merge_method == 'keep':
+        if merge_method == const.KEEP:
             dest.extend(src)
             return
         for item in src:
@@ -92,7 +93,7 @@ class Merge(Pipeline.Filter):
         dest.extend(added_items)
 
     def _merge_attrs(
-        self, dest: Union[OBT, List[OBT]], src: Union[OBT, List[OBT]], attr: str, merge_method: common.StringDatatype
+        self, dest: Union[OBT, List[OBT]], src: Union[OBT, List[OBT]], attr: str, merge_method: str
     ) -> None:
         """Merge this attr of src into the attr of dest."""
         src_attr = getattr(src, attr, None)
@@ -112,12 +113,12 @@ class Merge(Pipeline.Filter):
             return
         setattr(dest, attr, src_attr)
 
-    def _merge_items(self, dest: OBT, src: OBT, merge_method: common.StringDatatype) -> None:
+    def _merge_items(self, dest: OBT, src: OBT, merge_method: str) -> None:
         """Merge two items recursively."""
         for field in src.__fields_set__:
             self._merge_attrs(dest, src, field, merge_method)
 
-    def _group_contents(self, group: cat.Group) -> Tuple[List[cat.Control], List[common.Parameter]]:
+    def _group_contents(self, group: cat.Group) -> Tuple[List[cat.Control], List[com.Parameter]]:
         """Get flattened content of group and its groups recursively."""
         controls = []
         params = []
@@ -147,9 +148,7 @@ class Merge(Pipeline.Filter):
         catalog.groups = None
         return catalog
 
-    def _merge_two_catalogs(
-        self, dest: cat.Catalog, src: cat.Catalog, merge_method: common.StringDatatype, as_is: bool
-    ) -> cat.Catalog:
+    def _merge_two_catalogs(self, dest: cat.Catalog, src: cat.Catalog, merge_method: str, as_is: bool) -> cat.Catalog:
         # merge_method is use_first, merge, or keep
         # if as_is is false, the result is flattened
 

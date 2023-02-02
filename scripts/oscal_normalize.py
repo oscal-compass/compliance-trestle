@@ -833,7 +833,7 @@ def _strip_unrefed_files(file_class):
 
 
 def kill_roots(file_classes):
-    """Kill the root classes."""
+    """Kill the root classes in common."""
     com = file_classes['common']
     root_classes = {}
     match_str = ':__root__:'
@@ -847,7 +847,6 @@ def kill_roots(file_classes):
             root_classes[c.name] = body[len(match_str):]
     new_root_classes = {}
     skip_class_names = ['IntegerDatatype', 'NonNegativeIntegerDatatype', 'PositiveIntegerDatatype', 'OscalVersion']
-    special_classes = {}
     # replace references to root classes in the root classes
     for name, body in root_classes.items():
         if body in root_classes:
@@ -855,9 +854,6 @@ def kill_roots(file_classes):
         # now have mapping of root class name to its simplified body
         if name not in skip_class_names:
             new_root_classes[name] = body
-    # some names are substrings of other names so they need to go to end of the list to be substituted last
-    for name, body in special_classes.items():
-        new_root_classes[name] = body
     for classes in file_classes.values():
         for c in classes:
             if c.name not in new_root_classes:

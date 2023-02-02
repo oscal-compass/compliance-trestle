@@ -629,7 +629,7 @@ class ControlInterface:
         if param.select and param.select.choice:
             how_many_str = ''
             if param.select.how_many:
-                how_many_str = 'one' if param.select.how_many == 'one' else 'one or more'
+                how_many_str = const.ONE if param.select.how_many == const.ONE else 'one or more'
             choices_str = '; '.join(as_list(param.select.choice))
             choices_str = f'[{choices_str}]' if brackets else choices_str
             choices_str = f'Selection ({how_many_str}): {choices_str}' if verbose else choices_str

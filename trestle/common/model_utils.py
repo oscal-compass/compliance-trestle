@@ -577,10 +577,10 @@ class ModelUtils:
     @staticmethod
     def _string_to_howmany(count_str: str) -> Optional[str]:
         clean_str = count_str.lower().strip().replace('-', ' ').replace('_', ' ')
-        if clean_str == 'one':
-            return clean_str
-        if clean_str == 'one or more':
-            return 'one-or-more'
+        if clean_str == const.ONE:
+            return const.ONE
+        if clean_str == const.ONE_OR_MORE_SPACED:
+            return const.ONE_OR_MORE_HYPHENED
         return None
 
     @staticmethod
@@ -611,7 +611,7 @@ class ModelUtils:
             if how_many is None:
                 raise TrestleError(f'Unrecognized HowMany value {how_many} in Parameter: should be one-or-more or one.')
             param_dict['select']['how_many'] = how_many
-            if how_many == 'one' and len(values) > 1:
+            if how_many == const.ONE and len(values) > 1:
                 logger.warning(f'Parameter specifies HowMany=1 but has {len(values)} values given.')
             choices = param_dict['select'].get('choice', [])
             if choices and values:
