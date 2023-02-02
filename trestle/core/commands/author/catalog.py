@@ -186,7 +186,7 @@ class CatalogAssemble(AuthorCommonCommand):
             0 on success, 1 otherwise
 
         Notes:
-            If the destination catalog_name model already exists in the trestle project, it is overwritten.
+            If the destination catalog_name model already exists in the workspace, it is overwritten.
             If a parent catalog is not specified, the assembled catalog will be used as the parent if it exists.
             If no parent catalog name is available, the catalog is created anew using only the markdown content.
         """

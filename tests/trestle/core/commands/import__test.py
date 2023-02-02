@@ -206,7 +206,7 @@ def test_import_bad_working_directory(tmp_path: pathlib.Path, monkeypatch: Monke
 
 
 def test_import_from_inside_trestle_project_is_bad(tmp_trestle_dir: pathlib.Path) -> None:
-    """Test for attempting import from a trestle project directory."""
+    """Test for attempting import from a workspace directory."""
     sample_file = open('infile.json', 'w+', encoding=const.FILE_ENCODING)
     sample_file.write('{}')
     sample_file.close()

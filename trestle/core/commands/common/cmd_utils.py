@@ -108,7 +108,7 @@ def parse_chain(
     Args:
         model_obj: Model to use for inspecting available elements, if available or none
         path_parts: list of string paths to parse including wildcards
-        relative_path: Optional relative path (w.r.t trestle project root directory)
+        relative_path: Optional relative path (w.r.t workspace root directory)
 
     Returns:
         List of ElementPath

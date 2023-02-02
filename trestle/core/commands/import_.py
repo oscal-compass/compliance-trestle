@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 
 
 class ImportCmd(CommandPlusDocs):
-    """Import an existing full OSCAL model into the trestle project."""
+    """Import an existing full OSCAL model into the workspace."""
 
     name = 'import'
 

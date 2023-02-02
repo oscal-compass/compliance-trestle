@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """
-Cleanup - a basic scropt to cleanup trestle project from various silliness that may occur.
+Cleanup - a basic script to cleanup workspace from various silliness that may occur.
 
 WARNING: This will delete files unprompted so make sure you know what you are doing.
 """

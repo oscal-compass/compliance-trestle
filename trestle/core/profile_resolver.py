@@ -78,7 +78,7 @@ class ProfileResolver():
         Create the resolved profile catalog given a profile path along with inherited props.
 
         Args:
-            trestle_root: root directory of the trestle project
+            trestle_root: root directory of the workspace
             profile_path: string path or uri of the profile being resolved
             block_adds: prevent the application of adds in the final profile
             block_params: prevent the application of setparams in the final profile
@@ -114,7 +114,7 @@ class ProfileResolver():
         Create the resolved profile catalog given a profile path.
 
         Args:
-            trestle_root: root directory of the trestle project
+            trestle_root: root directory of the workspace
             profile_path: string path or uri of the profile being resolved
             block_adds: prevent the application of adds in the final profile
             block_params: prevent the application of setparams in the final profile

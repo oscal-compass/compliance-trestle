@@ -48,7 +48,7 @@ class InitCmd(CommandBase):
         )
 
     def _run(self, args: argparse.Namespace) -> int:
-        """Create a trestle project in the current directory."""
+        """Create a workspace in the current directory."""
         try:
             log.set_log_level_from_args(args)
             dir_path: pathlib.Path = args.trestle_root
