@@ -284,3 +284,11 @@ def test_validate_catalog_params(sample_catalog_rich_controls: Catalog) -> None:
     param_0_id = sample_catalog_rich_controls.groups[0].controls[0].params[0].id
     sample_catalog_rich_controls.groups[0].controls[0].params[1].id = param_0_id
     assert not validator.model_is_valid(sample_catalog_rich_controls, False)
+
+
+def test_rules_validator(sample_catalog_rich_controls: Catalog) -> None:
+    """Test validation of rules in catalog."""
+    # FIXME use model with complex rules and param values
+    args = argparse.Namespace(mode=const.VAL_MODE_RULES)
+    validator: Validator = validator_factory.get(args)
+    assert validator.model_is_valid(sample_catalog_rich_controls, True)

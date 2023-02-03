@@ -174,6 +174,7 @@ VAL_MODE_CATALOG = 'catalog'
 VAL_MODE_DUPLICATES = 'duplicates'
 VAL_MODE_LINKS = 'links'
 VAL_MODE_REFS = 'refs'
+VAL_MODE_RULES = 'rules'
 VAL_MODE_ALL = 'all'
 
 IOF_SHORT = '-iof'
