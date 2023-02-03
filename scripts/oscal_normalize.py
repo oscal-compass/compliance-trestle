@@ -13,11 +13,60 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""
+r"""
 Script to normalize oscal after significant changes with version 1.0.0.
 
 It then reorders the classes so there are minimal forwards required.
 This script is normally called by gen_oscal.py when models are generated.
+
+gen_oscal.py only need to be run when there is a need to update the python oscal classes to track new schemas
+in the nist-source repository at the nist oscal web site.  The local version of that site is cloned as a
+submodule in the trestle directory, and it would only be updated if you run the git submodule update command
+(see gen_oscal.py for details).
+
+Normally the submodule is set to track the main, or release, branch of the nist-source - but there may be a need
+to work with 'draft' versions of the schemas, which are found in the develop branch of nist-source.  In that case
+the makefile should specify the develop branch for the submodule and execute the `git submodule update --remote` as
+shown in the Makefile for trestle.
+
+The main purpose of this script is to collapse the long-name versions of the classes into as simple a version as
+possible, while also collecting common classes into a separate file, common.py.
+
+The second purpose is to remove all the __root__ classes from common.py.  __root__ classes are classes that wrap a
+single __root__ member in the class along with its type - which could be a simple string, integer, or complex regex.
+If the __root__ classes are not removed, simple string assignment would look like:
+
+param.values[0] = ParameterValue(__root__='foo')
+
+instead of:
+
+param.values[0] = 'foo'
+
+The removal of __root__ is performed by extracting the type (and its possible regex) and substituting it in classes
+that reference the __root__ class.  For example:
+
+class StringDatatype(OscalBaseModel):
+    __root__: constr(regex=r'^\S(.*\S)?$')
+
+class Parameter(OscalBaseModel):
+    values: Optional[List[StringDataType]] = Field(None)
+
+In this case Parameter values reference a root class that is a constr type with regex, so we substitute the regex as:
+
+class Parameter(OscalBaseModel):
+    values: Optional[List[constr(regex=r'^\S(.*\S)?$')]] = Field(None)
+
+This has no impact on internal validation of the values and performs identically without the need to wrap strings
+in a StringDatatype with __root__ value specified.
+
+For convenience the original root classes are left in common.py for reference, but the root classes should never
+be referenced by name.
+
+The only exception to this is OscalVersion, which has a special validator inserted by this script.
+
+Note that __root__ classes in the other oscal .py files are left as-is since they don't tend to be referenced much
+if at all in the trestle code - but they could also be removed by extensions to this script.
+
 """
 
 import logging
