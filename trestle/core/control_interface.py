@@ -647,21 +647,16 @@ class ControlInterface:
     @staticmethod
     def _param_values_assignment_str(param: common.Parameter) -> str:
         """Convert param values, label or choices to string."""
-        text = ''
         # use values if present
         param_str = ControlInterface._param_values_as_str(param, False)
-        if param_str:
-            text = f'{param_str}'
         # otherwise use param selection if present
-        if not text:
+        if not param_str:
             param_str = ControlInterface._param_selection_as_str(param, True, False)
-            if param_str:
-                text = param_str
-        # use label and param_id as fallbacks
-        if not text:
-            text = param.label if param.label else param.id
-            text = f'Assignment: {text}'
-        return f'[{text}]'
+        # finally use label and param_id as fallbacks
+        if not param_str:
+            param_str = param.label if param.label else param.id
+            param_str = f'Assignment: {param_str}'
+        return f'[{param_str}]'
 
     @staticmethod
     def param_to_str(
