@@ -165,6 +165,7 @@ class CisXlsxToOscalCatalog(TaskBase):
     """
 
     name = 'cis-xlsx-to-oscal-catalog'
+    ns = 'https://ibm.github.io/compliance-trestle/schemas/oscal/catalog/cis'
 
     def __init__(self, config_object: Optional[configparser.SectionProxy]) -> None:
         """
@@ -219,21 +220,24 @@ class CisXlsxToOscalCatalog(TaskBase):
         name = name.replace(')', '')
         return name
 
+    def _create_property(self, name: str, value: str) -> Property:
+        return Property(name=name, value=value, ns=CisXlsxToOscalCatalog.ns)
+
     def _add_property(self, xlsx_helper: XlsxHelper, props: List[Property], row: int, key: str) -> None:
         """Add property."""
         name = self._get_normalized_name(key)
         value = xlsx_helper.get(row, key)
         if value:
-            props.append(Property(name=name, value=value))
+            props.append(self._create_property(name, value))
 
     def _add_property_boolean(self, xlsx_helper: XlsxHelper, props: List[Property], row: int, key: str) -> None:
         """Add property."""
         name = self._get_normalized_name(key)
         value = xlsx_helper.get(row, key)
         if value:
-            props.append(Property(name=name, value='True'))
+            props.append(self._create_property(name, 'True'))
         else:
-            props.append(Property(name=name, value='False'))
+            props.append(self._create_property(name, 'False'))
 
     def _add_part(self, xlsx_helper: XlsxHelper, parts: List[Part], id_: str, row: int, key: str) -> None:
         """Add part."""
