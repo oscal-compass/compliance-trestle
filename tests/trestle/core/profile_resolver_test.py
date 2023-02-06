@@ -250,11 +250,18 @@ def test_replace_params_assignment_mode(simplified_nist_catalog: cat.Catalog) ->
     ac_44.parts[0].prose = orig_prose
     # test the case where values for choices are assigned
     ControlInterface.replace_control_prose(
-        ac_44, param_dict, '[.]', ParameterRep.ASSIGNMENT_FORM, 'IBM Assignment:', 'Assignment:'
+        ac_44, param_dict, '[.]', ParameterRep.ASSIGNMENT_FORM, False, 'IBM Assignment:', 'Assignment:'
     )
     assert ac_44.parts[
         0
-    ].prose == f'Prevent encrypted information from bypassing [organization-defined information flow control mechanisms] by [Assignment: {value}].'  # noqa E501
+    ].prose == f'Prevent encrypted information from bypassing [Assignment: organization-defined information flow control mechanisms] by [IBM Assignment: {value}].'  # noqa E501
+
+    ac_44.parts[0].prose = orig_prose
+    ControlInterface.replace_control_prose(ac_44, param_dict, '[.]', ParameterRep.LABEL_FORM, False, None, 'Label:')
+    # FIXME it is not putting the label in the choice
+    assert ac_44.parts[
+        0
+    ].prose != f'Prevent encrypted information from bypassing [organization-defined information flow control mechanisms] by [Assignment: {value}].'  # noqa E501
 
 
 def test_profile_resolver_param_sub() -> None:

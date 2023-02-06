@@ -405,6 +405,14 @@ class ProfileResolve(AuthorCommonCommand):
             default=False
         )
         self.add_argument(
+            '-sl',
+            '--show-labels',
+            help='Show labels for parameters in prose',
+            required=False,
+            action='store_true',
+            default=False
+        )
+        self.add_argument(
             '-bf',
             '--bracket-format',
             help='With -sv, allows brackets around value, e.g. [.] or ((.)), with the dot representing the value.',
@@ -428,6 +436,14 @@ class ProfileResolve(AuthorCommonCommand):
             type=str,
             default=''
         )
+        self.add_argument(
+            '-lb',
+            '--label-prefix',
+            help='With -sl, places a prefix in front of the parameter label.',
+            required=False,
+            type=str,
+            default=''
+        )
 
     def _run(self, args: argparse.Namespace) -> int:
         try:
@@ -439,6 +455,9 @@ class ProfileResolve(AuthorCommonCommand):
             param_format = args.bracket_format
             value_assigned_prefix = args.value_assigned_prefix
             value_not_assigned_prefix = args.value_not_assigned_prefix
+            show_labels = args.show_labels
+            if args.label_prefix:
+                value_not_assigned_prefix = args.label_prefix
 
             return self.resolve_profile(
                 trestle_root,
@@ -447,7 +466,8 @@ class ProfileResolve(AuthorCommonCommand):
                 show_values,
                 param_format,
                 value_assigned_prefix,
-                value_not_assigned_prefix
+                value_not_assigned_prefix,
+                show_labels
             )
 
         except Exception as e:  # pragma: no cover
@@ -461,7 +481,8 @@ class ProfileResolve(AuthorCommonCommand):
         show_values: bool,
         bracket_format: str,
         value_assigned_prefix: Optional[str],
-        value_not_assigned_prefix: Optional[str]
+        value_not_assigned_prefix: Optional[str],
+        show_labels: bool
     ) -> int:
         """Create resolved profile catalog from given profile.
 
@@ -473,13 +494,22 @@ class ProfileResolve(AuthorCommonCommand):
             bracket_format: String representing brackets around value, e.g. [.] or ((.))
             value_assigned_prefix: Prefix placed in front of param string if a value was assigned
             value_not_assigned_prefix: Prefix placed in front of param string if a value was *not* assigned
+            show_labels: Show labels for parameters and not values
 
         Returns:
             0 on success and raises exception on error
         """
         if not profile_path.exists():
             raise TrestleNotFoundError(f'Cannot resolve profile catalog: profile {profile_path} does not exist.')
-        param_rep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES if show_values else ParameterRep.LEAVE_MOUSTACHE
+
+        param_rep = ParameterRep.LEAVE_MOUSTACHE
+        if show_values:
+            param_rep = ParameterRep.ASSIGNMENT_FORM
+        else:
+            if value_assigned_prefix or value_not_assigned_prefix or show_labels:
+                raise TrestleError('Use of value-assigned-prefix or value-not-assigned-prefix requires show-values')
+        if show_labels:
+            param_rep = ParameterRep.LABEL_FORM
 
         bracket_format = none_if_empty(bracket_format)
         catalog = ProfileResolver().get_resolved_profile_catalog(

@@ -73,16 +73,15 @@ class JinjaCmd(CommandPlusDocs):
             action='store_true'
         )
         self.add_argument(
-            '-pf',
-            '--param-formatting',
-            help='Add given text to each parameter, '
-            'use dot to specify location of parameter (i.e. foo.bar will wrap param with foo and bar)',
+            '-bf',
+            '--bracket-format',
+            help='With -sv, allows brackets around value, e.g. [.] or ((.)), with the dot representing the value.',
             required=False
         )
         self.add_argument(
             '-vap',
             '--value-assigned-prefix',
-            help='With -sv, places a prefix in front of the parameter string if a value has been assigned.',
+            help='Places a prefix in front of the parameter string if a value has been assigned.',
             required=False,
             type=str,
             default=''
@@ -90,7 +89,7 @@ class JinjaCmd(CommandPlusDocs):
         self.add_argument(
             '-vnap',
             '--value-not-assigned-prefix',
-            help='With -sv, places a prefix in front of the parameter string if a value has *not* been assigned.',
+            help='Places a prefix in front of the parameter string if a value has *not* been assigned.',
             required=False,
             type=str,
             default=''
@@ -134,7 +133,7 @@ class JinjaCmd(CommandPlusDocs):
                     args.profile,
                     lut,
                     number_captions=args.number_captions,
-                    parameters_formatting=args.param_formatting,
+                    parameters_formatting=args.bracket_format,
                     value_assigned_prefix=args.value_assigned_prefix,
                     value_not_assigned_prefix=args.value_not_assigned_prefix
                 )
@@ -145,7 +144,7 @@ class JinjaCmd(CommandPlusDocs):
                     output_path,
                     args.profile,
                     lut,
-                    parameters_formatting=args.param_formatting,
+                    parameters_formatting=args.bracket_format,
                     value_assigned_prefix=args.value_assigned_prefix,
                     value_not_assigned_prefix=args.value_not_assigned_prefix
                 )
