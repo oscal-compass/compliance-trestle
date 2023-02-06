@@ -217,6 +217,17 @@ class ControlInterface:
         part_control.props.append(new_prop)
 
     @staticmethod
+    def _apply_params_format(param_str: Optional[str], params_format: Optional[str]) -> Optional[str]:
+        if param_str is not None and params_format:
+            if params_format.count('.') > 1:
+                raise TrestleError(
+                    f'Additional text {params_format} '
+                    f'for the parameter format cannot contain multiple dots (.)'
+                )
+            param_str = params_format.replace('.', param_str)
+        return param_str
+
+    @staticmethod
     def create_statement_id(control_id: str, lower: bool = False) -> str:
         """Create the control statement id from the control id."""
         id_ = f'{control_id}_smt'
@@ -624,7 +635,7 @@ class ControlInterface:
         return f'[{values_str}]' if brackets else values_str
 
     @staticmethod
-    def _param_selection_as_str(param: common.Parameter, verbose=False, brackets=False) -> str:
+    def _param_selection_as_str(param: common.Parameter, verbose: bool = False, brackets: bool = False) -> str:
         """Convert parameter selection to str."""
         if param.select and param.select.choice:
             how_many_str = ''
@@ -637,7 +648,7 @@ class ControlInterface:
         return ''
 
     @staticmethod
-    def _param_label_choices_as_str(param: common.Parameter, verbose=False, brackets=False) -> str:
+    def _param_label_choices_as_str(param: common.Parameter, verbose: bool = False, brackets: bool = False) -> str:
         """Convert param label or choices to string, using choices if present."""
         choices = ControlInterface._param_selection_as_str(param, verbose, brackets)
         text = choices if choices else param.label
@@ -645,26 +656,35 @@ class ControlInterface:
         return text
 
     @staticmethod
-    def _param_values_assignment_str(param: common.Parameter) -> str:
+    def _param_values_assignment_str(
+        param: common.Parameter,
+        value_assigned_prefix: Optional[str] = None,
+        value_not_assigned_prefix: Optional[str] = None
+    ) -> str:
         """Convert param values, label or choices to string."""
         # use values if present
         param_str = ControlInterface._param_values_as_str(param, False)
+        if param_str and value_assigned_prefix:
+            param_str = f'{value_assigned_prefix} {param_str}'
         # otherwise use param selection if present
         if not param_str:
             param_str = ControlInterface._param_selection_as_str(param, True, False)
         # finally use label and param_id as fallbacks
         if not param_str:
             param_str = param.label if param.label else param.id
-            param_str = f'Assignment: {param_str}'
-        return f'[{param_str}]'
+            if value_not_assigned_prefix:
+                param_str = f'{value_not_assigned_prefix} {param_str}'
+        return f'{param_str}'
 
     @staticmethod
     def param_to_str(
         param: common.Parameter,
         param_rep: ParameterRep,
-        verbose=False,
-        brackets=False,
+        verbose: bool = False,
+        brackets: bool = False,
         params_format: Optional[str] = None,
+        value_assigned_prefix: Optional[str] = None,
+        value_not_assigned_prefix: Optional[str] = None
     ) -> Optional[str]:
         """
         Convert parameter to string based on best available representation.
@@ -675,6 +695,8 @@ class ControlInterface:
             verbose: provide verbose text for selection choices
             brackets: add brackets around the lists of items
             params_format: a string containing a single dot that represents a form of highlighting around the param
+            value_assigned_prefix: string to place before the parameter string if a value was assigned
+            value_not_assigned_prefix: string to place before the parameter string if value not assigned
 
         Returns:
             formatted string or None
@@ -694,17 +716,12 @@ class ControlInterface:
             if not param_str:
                 param_str = ''
         elif param_rep == ParameterRep.ASSIGNMENT_FORM:
-            param_str = ControlInterface._param_values_assignment_str(param)
+            param_str = ControlInterface._param_values_assignment_str(
+                param, value_assigned_prefix, value_not_assigned_prefix
+            )
             if not param_str:
                 param_str = ''
-        if param_str is not None and params_format:
-            if params_format.count('.') > 1:
-                raise TrestleError(
-                    f'Additional text {params_format} '
-                    f'for the parameters cannot contain multiple dots (.)'
-                )
-            param_str = params_format.replace('.', param_str)
-        return param_str
+        return ControlInterface._apply_params_format(param_str, params_format)
 
     @staticmethod
     def get_control_param_dict(control: cat.Control, values_only: bool) -> Dict[str, common.Parameter]:
@@ -730,7 +747,14 @@ class ControlInterface:
         return param_dict
 
     @staticmethod
-    def _replace_ids_with_text(prose: str, param_rep: ParameterRep, param_dict: Dict[str, common.Parameter]) -> str:
+    def _replace_ids_with_text(
+        prose: str,
+        param_rep: ParameterRep,
+        param_dict: Dict[str, common.Parameter],
+        params_format: Optional[str] = None,
+        value_assigned_prefix: Optional[str] = None,
+        value_not_assigned_prefix: Optional[str] = None
+    ) -> str:
         """Find all instances of param_ids in prose and replace each with corresponding parameter representation.
 
         Need to check all values in dict for a match
@@ -740,7 +764,9 @@ class ControlInterface:
             if param.id not in prose:
                 continue
             # create the replacement text for the param_id
-            param_str = ControlInterface.param_to_str(param, param_rep)
+            param_str = ControlInterface.param_to_str(
+                param, param_rep, False, False, params_format, value_assigned_prefix, value_not_assigned_prefix
+            )
             # non-capturing groups are odd in re.sub so capture all 3 groups and replace the middle one
             pattern = r'(^|[^a-zA-Z0-9_])' + param.id + r'($|[^a-zA-Z0-9_])'
             prose = re.sub(pattern, r'\1' + param_str + r'\2', prose)
@@ -752,7 +778,9 @@ class ControlInterface:
         param_dict: Dict[str, common.Parameter],
         params_format: Optional[str] = None,
         param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES,
-        show_value_warnings: bool = False
+        show_value_warnings: bool = False,
+        value_assigned_prefix: Optional[str] = None,
+        value_not_assigned_prefix: Optional[str] = None
     ) -> str:
         """
         Replace params found in moustaches with values from the param_dict.
@@ -783,7 +811,9 @@ class ControlInterface:
                     logger.warning(f'Control prose references param {param_ids[i]} not set in the control: {staches}')
             elif param_dict[param_ids[i]] is not None:
                 param = param_dict[param_ids[i]]
-                param_str = ControlInterface.param_to_str(param, param_rep, False, False, params_format)
+                param_str = ControlInterface.param_to_str(
+                    param, param_rep, False, False, params_format, value_assigned_prefix, value_not_assigned_prefix
+                )
                 text = text.replace(staches[i], param_str, 1).strip()
                 if show_value_warnings and param_rep != ParameterRep.LABEL_OR_CHOICES and not param.values:
                     logger.warning(f'Parameter {param_id} has no values and was referenced by prose.')
@@ -793,7 +823,13 @@ class ControlInterface:
         if text != orig_text:
             while True:
                 new_text = ControlInterface._replace_params(
-                    text, param_dict, params_format, param_rep, show_value_warnings
+                    text,
+                    param_dict,
+                    params_format,
+                    param_rep,
+                    show_value_warnings,
+                    value_assigned_prefix,
+                    value_not_assigned_prefix
                 )
                 if new_text == text:
                     break
@@ -807,23 +843,45 @@ class ControlInterface:
         param_dict: Dict[str, common.Parameter],
         params_format: Optional[str] = None,
         param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES,
-        show_value_warnings: bool = False
+        show_value_warnings: bool = False,
+        value_assigned_prefix: Optional[str] = None,
+        value_not_assigned_prefix: Optional[str] = None
     ) -> None:
         """Replace the part prose according to set_param."""
         if part.prose is not None:
             fixed_prose = ControlInterface._replace_params(
-                part.prose, param_dict, params_format, param_rep, show_value_warnings
+                part.prose,
+                param_dict,
+                params_format,
+                param_rep,
+                show_value_warnings,
+                value_assigned_prefix,
+                value_not_assigned_prefix
             )
             # change the prose in the control itself
             part.prose = fixed_prose
         for prt in as_list(part.parts):
             ControlInterface._replace_part_prose(
-                control, prt, param_dict, params_format, param_rep, show_value_warnings
+                control,
+                prt,
+                param_dict,
+                params_format,
+                param_rep,
+                show_value_warnings,
+                value_assigned_prefix,
+                value_not_assigned_prefix
             )
         for sub_control in as_list(control.controls):
             for prt in as_list(sub_control.parts):
                 ControlInterface._replace_part_prose(
-                    sub_control, prt, param_dict, params_format, param_rep, show_value_warnings
+                    sub_control,
+                    prt,
+                    param_dict,
+                    params_format,
+                    param_rep,
+                    show_value_warnings,
+                    value_assigned_prefix,
+                    value_not_assigned_prefix
                 )
 
     @staticmethod
@@ -832,14 +890,22 @@ class ControlInterface:
         param_dict: Dict[str, common.Parameter],
         params_format: Optional[str],
         param_rep: ParameterRep,
-        show_value_warnings: bool
+        show_value_warnings: bool,
+        value_assigned_prefix: Optional[str] = None,
+        value_not_assigned_prefix: Optional[str] = None
     ) -> None:
         """Set values for all choices param that refer to params with values."""
         if param.select:
             new_choices: List[str] = []
             for choice in as_list(param.select.choice):
                 new_choice = ControlInterface._replace_params(
-                    choice, param_dict, params_format, param_rep, show_value_warnings
+                    choice,
+                    param_dict,
+                    params_format,
+                    param_rep,
+                    show_value_warnings,
+                    value_assigned_prefix,
+                    value_not_assigned_prefix
                 )
                 new_choices.append(new_choice)
             param.select.choice = new_choices
@@ -850,23 +916,46 @@ class ControlInterface:
         param_dict: Dict[str, common.Parameter],
         params_format: Optional[str] = None,
         param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES,
-        show_value_warnings: bool = False
+        show_value_warnings: bool = False,
+        value_assigned_prefix: Optional[str] = None,
+        value_not_assigned_prefix: Optional[str] = None
     ) -> None:
         """Replace the control prose according to set_param."""
         # first replace all choices that reference parameters
         # note that in ASSIGNMENT_FORM each choice with a parameter will end up as [Assignment: value]
         for param in as_list(control.params):
-            ControlInterface._replace_param_choices(param, param_dict, params_format, param_rep, show_value_warnings)
+            ControlInterface._replace_param_choices(
+                param,
+                param_dict,
+                params_format,
+                param_rep,
+                show_value_warnings,
+                value_assigned_prefix,
+                value_not_assigned_prefix
+            )
         for part in as_list(control.parts):
             if part.prose is not None:
                 fixed_prose = ControlInterface._replace_params(
-                    part.prose, param_dict, params_format, param_rep, show_value_warnings
+                    part.prose,
+                    param_dict,
+                    params_format,
+                    param_rep,
+                    show_value_warnings,
+                    value_assigned_prefix,
+                    value_not_assigned_prefix
                 )
                 # change the prose in the control itself
                 part.prose = fixed_prose
             for prt in as_list(part.parts):
                 ControlInterface._replace_part_prose(
-                    control, prt, param_dict, params_format, param_rep, show_value_warnings
+                    control,
+                    prt,
+                    param_dict,
+                    params_format,
+                    param_rep,
+                    show_value_warnings,
+                    value_assigned_prefix,
+                    value_not_assigned_prefix
                 )
 
     @staticmethod

@@ -412,6 +412,22 @@ class ProfileResolve(AuthorCommonCommand):
             type=str,
             default=''
         )
+        self.add_argument(
+            '-vap',
+            '--value-assigned-prefix',
+            help='With -sv, places a prefix in front of the parameter string if a value has been assigned.',
+            required=False,
+            type=str,
+            default=''
+        )
+        self.add_argument(
+            '-vnap',
+            '--value-not-assigned-prefix',
+            help='With -sv, places a prefix in front of the parameter string if a value has *not* been assigned.',
+            required=False,
+            type=str,
+            default=''
+        )
 
     def _run(self, args: argparse.Namespace) -> int:
         try:
@@ -421,8 +437,18 @@ class ProfileResolve(AuthorCommonCommand):
             catalog_name = args.output
             show_values = args.show_values
             param_format = args.bracket_format
+            value_assigned_prefix = args.value_assigned_prefix
+            value_not_assigned_prefix = args.value_not_assigned_prefix
 
-            return self.resolve_profile(trestle_root, profile_path, catalog_name, show_values, param_format)
+            return self.resolve_profile(
+                trestle_root,
+                profile_path,
+                catalog_name,
+                show_values,
+                param_format,
+                value_assigned_prefix,
+                value_not_assigned_prefix
+            )
 
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Generation of the resolved profile catalog failed')
@@ -433,7 +459,9 @@ class ProfileResolve(AuthorCommonCommand):
         profile_path: pathlib.Path,
         catalog_name: str,
         show_values: bool,
-        bracket_format: str
+        bracket_format: str,
+        value_assigned_prefix: Optional[str],
+        value_not_assigned_prefix: Optional[str]
     ) -> int:
         """Create resolved profile catalog from given profile.
 
@@ -443,6 +471,8 @@ class ProfileResolve(AuthorCommonCommand):
             catalog_name: Name of the resolved profile catalog
             show_values: If true, show values of parameters in prose rather than original {{}} form
             bracket_format: String representing brackets around value, e.g. [.] or ((.))
+            value_assigned_prefix: Prefix placed in front of param string if a value was assigned
+            value_not_assigned_prefix: Prefix placed in front of param string if a value was *not* assigned
 
         Returns:
             0 on success and raises exception on error
@@ -453,7 +483,14 @@ class ProfileResolve(AuthorCommonCommand):
 
         bracket_format = none_if_empty(bracket_format)
         catalog = ProfileResolver().get_resolved_profile_catalog(
-            trestle_root, profile_path, False, False, bracket_format, param_rep
+            trestle_root,
+            profile_path,
+            False,
+            False,
+            bracket_format,
+            param_rep,
+            value_assigned_prefix,
+            value_not_assigned_prefix
         )
         ModelUtils.save_top_level_model(catalog, trestle_root, catalog_name, FileContentType.JSON)
 

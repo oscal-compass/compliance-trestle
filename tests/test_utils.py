@@ -20,6 +20,7 @@ import difflib
 import logging
 import os
 import pathlib
+import shlex
 import shutil
 import sys
 from typing import Any, Dict, List, Tuple
@@ -479,8 +480,25 @@ def get_model_uuid(trestle_root: pathlib.Path, model_name: str, model_class: Top
 
 
 def execute_command_and_assert(command: str, return_code: int, monkeypatch: MonkeyPatch) -> None:
-    """Execute given command using monkeypatch and assert return code."""
-    monkeypatch.setattr(sys, 'argv', command.split())
+    r"""
+    Execute given command using monkeypatch and assert return code.
+
+    tokens in quotes with embedded spaces require special parsing by shlex.
+    But shlex is mainly for posix and strips away all \\, which is a problem for windows file paths.
+    So this has a simple hack to replace \\ by $ and convert back after splitting.
+    """
+    win_path = '\\' in command
+    if win_path:
+        if '$' in command:
+            logger.error('cannot parse windows command string with backslashes and $.')
+            return 1
+        command = command.replace('\\', '$')
+
+    split_command = shlex.split(command)
+    if win_path:
+        split_command = [token.replace('$', '\\') for token in split_command]
+    monkeypatch.setattr(sys, 'argv', split_command)
+
     rc = Trestle().run()
     assert rc == return_code
 
