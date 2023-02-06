@@ -64,7 +64,7 @@
     },
     "components": [
       {
-        "uuid": "8220b305-0271-45f9-8a21-40ab6f197f73",
+        "uuid": "8220b305-0271-45f9-8a21-40ab6f197f75",
         "type": "Service",
         "title": "comp_ba",
         "description": "comp ba",
@@ -155,7 +155,7 @@
             ],
             "implemented-requirements": [
               {
-                "uuid": "ca5ea4c5-ba51-4b1d-932a-5606891b7486",
+                "uuid": "ca5ea4c5-ba51-4b1d-932a-5606891b7600",
                 "control-id": "ac-6.7",
                 "description": "imp req prose for ac-6.7 from comp ba",
                 "props": [
@@ -192,7 +192,7 @@
                 "statements": [
                   {
                     "statement-id": "ac-6.7_smt.a",
-                    "uuid": "2652b814-2a6b-4b6d-a0ae-8bc7a007219f",
+                    "uuid": "2652b814-2a6b-4b6d-a0ae-8bc7a0072600",
                     "description": "statement prose for part a. from comp ba",
                     "props": [
                       {
@@ -212,7 +212,7 @@
         ]
       },
       {
-        "uuid": "8220b305-0271-45f9-8a21-40ab6f197f73",
+        "uuid": "8220b305-0271-45f9-8a21-40ab6f197f76",
         "type": "Service",
         "title": "comp_bb",
         "description": "comp bb",
@@ -289,7 +289,7 @@
             ],
             "implemented-requirements": [
               {
-                "uuid": "ca5ea4c5-ba51-4b1d-932a-5606891b7486",
+                "uuid": "ca5ea4c5-ba51-4b1d-932a-5606891b7601",
                 "control-id": "at-2",
                 "description": "imp req prose for at-2 from comp bb",
                 "props": [
@@ -326,7 +326,7 @@
                 "statements": [
                   {
                     "statement-id": "at-2_smt.b",
-                    "uuid": "2652b814-2a6b-4b6d-a0ae-8bc7a007219f",
+                    "uuid": "2652b814-2a6b-4b6d-a0ae-8bc7a0072601",
                     "description": "statement prose for part b. from comp ab",
                     "props": [
                       {

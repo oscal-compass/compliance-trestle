@@ -121,12 +121,6 @@ class ControlWriter():
             self._md_file.new_list(rules)
             self._md_file.set_indent_level(-1)
 
-    def _has_prose(self, part_label: str, comp_dict: CompDict) -> bool:
-        for dic in comp_dict.values():
-            if part_label in dic and dic[part_label].prose:
-                return True
-        return False
-
     def _insert_comp_info(
         self, part_label: str, comp_info: Dict[str, ComponentImpInfo], context: ControlContext
     ) -> None:
@@ -439,12 +433,8 @@ class ControlWriter():
     @staticmethod
     def _merge_headers(memory_header: Dict[str, Any], md_header: Dict[str, Any],
                        context: ControlContext) -> Dict[str, Any]:
-        if context.purpose == ContextPurpose.PROFILE:
-            merged_header = copy.deepcopy(memory_header)
-            ControlInterface.merge_dicts_deep(merged_header, md_header, True)
-        else:
-            merged_header = copy.deepcopy(md_header)
-            ControlInterface.merge_dicts_deep(merged_header, memory_header, True)
+        merged_header = copy.deepcopy(md_header)
+        ControlInterface.merge_dicts_deep(merged_header, memory_header, False, 1)
         return merged_header
 
     def write_control_for_editing(
@@ -489,8 +479,16 @@ class ControlWriter():
         if comp_dict:
             context.comp_dict = comp_dict
 
+        header_comment_dict = {const.TRESTLE_ADD_PROPS_TAG: const.YAML_PROPS_COMMENT}
+        if context.to_markdown:
+            if context.purpose == ContextPurpose.PROFILE:
+                header_comment_dict[const.SET_PARAMS_TAG] = const.YAML_PROFILE_VALUES_COMMENT
+            elif context.purpose == ContextPurpose.SSP:
+                header_comment_dict[const.SET_PARAMS_TAG] = const.YAML_SSP_VALUES_COMMENT
+                header_comment_dict[const.COMP_DEF_RULES_PARAM_VALS_TAG] = const.YAML_RULE_PARAM_VALUES_COMMENT
+
         # begin adding info to the md file
-        self._md_file = MDWriter(control_file)
+        self._md_file = MDWriter(control_file, header_comment_dict)
         self._sections_dict = context.sections_dict
 
         context.merged_header = ControlWriter._merge_headers(context.merged_header, md_header, context)

@@ -13,6 +13,7 @@
 # limitations under the License.
 """Provide interface to catalog allowing queries and operations at control level."""
 
+import copy
 import logging
 import pathlib
 from dataclasses import dataclass
@@ -22,6 +23,7 @@ import trestle.common.const as const
 import trestle.oscal.catalog as cat
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_dict, as_filtered_list, as_list, delete_item_from_list, deep_append, deep_get, deep_set, get_item_from_list, none_if_empty, set_or_pop  # noqa E501
+from trestle.common.model_utils import ModelUtils
 from trestle.core.control_context import ControlContext
 from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlInterface
 from trestle.oscal import common
@@ -691,7 +693,7 @@ class CatalogInterface():
                 param_vals = none_if_empty([value.__root__ for value in as_list(param.values)])
                 rule_name = deep_get(param_id_rule_name_map, [comp_name, param.param_id], None)
                 if rule_name:
-                    param_dict = {'rule_name': rule_name, 'name': param.param_id}
+                    param_dict = {'name': param.param_id}
                     if param_vals:
                         param_dict['values'] = param_vals
                     deep_append(rules_set_params, [comp_name], param_dict)
@@ -725,7 +727,9 @@ class CatalogInterface():
             for comp_name, rules_params_dict in as_dict(context.rules_params_dict).items():
                 for rule_id, rules_param in rules_params_dict.items():
                     if rule_id in rule_ids.get(comp_name, []):
-                        rules_param_names.append(rules_param['name'])
+                        param_name = rules_param['name']
+                        rules_param_names.append(param_name)
+                        rules_param[const.HEADER_RULE_ID] = rule_id_rule_name_map[comp_name].get(rule_id, None)
                         deep_append(rules_params, [comp_name], rules_param)
                         deep_set(
                             param_id_rule_name_map, [comp_name, rules_param['name']],
@@ -777,3 +781,83 @@ class CatalogInterface():
             if control_handle.group_id == group_id:
                 return control_id, control_handle
         raise TrestleError(f'No controls found for group {group_id}')
+
+    def _add_control_imp_comp_info(
+        self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]], comp_rules_props: List[common.Property]
+    ) -> None:
+        """Add component info to the impreqs of the control implementation based on applied rules."""
+        control_imp_rules_dict, control_imp_rules_params_dict, ci_rules_props = ControlInterface.get_rules_and_params_dict_from_item(context.control_implementation)  # noqa E501
+        context.rules_dict[context.comp_name].update(control_imp_rules_dict)
+        comp_rules_params_dict = context.rules_params_dict.get(context.comp_name, {})
+        comp_rules_params_dict.update(control_imp_rules_params_dict)
+        context.rules_params_dict[context.comp_name] = comp_rules_params_dict
+        ci_set_params = ControlInterface.get_set_params_from_item(context.control_implementation)
+        for imp_req in as_list(context.control_implementation.implemented_requirements):
+            control_part_id_map = part_id_map.get(imp_req.control_id, {})
+            # find if any rules apply to this control, including in statements
+            control_rules, statement_rules, ir_props = ControlInterface.get_rule_list_for_imp_req(imp_req)
+            rule_props = comp_rules_props[:]
+            rule_props.extend(ci_rules_props)
+            rule_props.extend(ir_props)
+            rule_props = ControlInterface.clean_props(rule_props, remove_imp_status=False)
+            if control_rules:
+                status = ControlInterface.get_status_from_props(imp_req)
+                final_props = ControlInterface.cull_props_by_rules(rule_props, control_rules)
+                comp_info = ComponentImpInfo(imp_req.description, control_rules, final_props, status)
+                self.add_comp_info(imp_req.control_id, context.comp_name, '', comp_info)
+            set_params = copy.deepcopy(ci_set_params)
+            set_params.update(ControlInterface.get_set_params_from_item(imp_req))
+            for set_param in set_params.values():
+                # add to control_comp_set_params dict
+                self.add_comp_set_param(imp_req.control_id, context.comp_name, set_param)
+            for statement in as_list(imp_req.statements):
+                rule_list, stat_props = ControlInterface.get_rule_list_for_item(statement)
+                if rule_list:
+                    status = ControlInterface.get_status_from_props(statement)
+                    if statement.statement_id not in control_part_id_map:
+                        label = statement.statement_id
+                        logger.warning(
+                            f'No statement label found for statement id {label}.  Defaulting to {label}.'  # noqa E501
+                        )
+                    else:
+                        label = control_part_id_map[statement.statement_id]
+                    all_props = rule_props[:]
+                    all_props.extend(stat_props)
+                    final_props = ControlInterface.cull_props_by_rules(all_props, rule_list)
+                    comp_info = ComponentImpInfo(statement.description, rule_list, final_props, status)
+                    self.add_comp_info(imp_req.control_id, context.comp_name, label, comp_info)
+
+    def generate_control_rule_info(self, part_id_map: Dict[str, Dict[str, str]], context: ControlContext) -> None:
+        """
+        Generate rule info for controls directly from the components.
+
+        Args:
+            part_id_map: Mapping of label to part in the control
+            context: Control context for the current operation
+
+        Returns:
+            Returns nothing but places the rules_dict and rules_params_dict in the context for each component
+        """
+        context.rules_dict = {}
+        context.rules_params_dict = {}
+        for comp_def_name in context.comp_def_name_list:
+            context.comp_def, _ = ModelUtils.load_top_level_model(
+                context.trestle_root,
+                comp_def_name,
+                comp.ComponentDefinition
+            )
+            for component in as_list(context.comp_def.components):
+                context.component = component
+                context.comp_name = component.title
+                # get top level rule info applying to all controls from the component props
+                comp_rules_dict, comp_rules_params_dict, comp_rules_props = ControlInterface.get_rules_and_params_dict_from_item(component)  # noqa E501
+                context.rules_dict[context.comp_name] = comp_rules_dict
+                context.rules_params_dict.update(comp_rules_params_dict)
+                for control_imp in as_list(component.control_implementations):
+                    context.control_implementation = control_imp
+                    self._add_control_imp_comp_info(context, part_id_map, comp_rules_props)
+                # add the rule_id to the param_dict
+                for param_comp_name, rule_param_dict in context.rules_params_dict.items():
+                    for rule_tag, param_dict in rule_param_dict.items():
+                        rule_dict = deep_get(context.rules_dict, [param_comp_name, rule_tag], {})
+                        param_dict[const.HEADER_RULE_ID] = rule_dict.get(const.NAME, 'unknown_rule')

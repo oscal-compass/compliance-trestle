@@ -19,16 +19,16 @@ import pathlib
 import re
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 import trestle.oscal.catalog as cat
 import trestle.oscal.ssp as ossp
 from trestle.common import const
-from trestle.common.common_types import TypeWithParts, TypeWithProps
+from trestle.common.common_types import TypeWithParamId, TypeWithParts, TypeWithProps
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_filtered_list, as_list, none_if_empty
 from trestle.common.model_utils import ModelUtils
-from trestle.common.str_utils import string_from_root, strip_lower_equals
+from trestle.common.str_utils import as_string, string_from_root, strip_lower_equals
 from trestle.oscal import common
 from trestle.oscal import component as comp
 from trestle.oscal import profile as prof
@@ -53,10 +53,11 @@ class ComponentImpInfo:
 
     prose: str
     rules: List[str]
+    props: List[common.Property]
     # the lambda is needed to prevent a mutable from being used as a default
     # without the lambda it would break python 3.11 and is a bug either way
     status: common.ImplementationStatus = field(
-        default_factory=lambda: common.ImplementationStatus(state=const.STATUS_PLANNED)
+        default_factory=lambda: common.ImplementationStatus(state=const.STATUS_OPERATIONAL)
     )
 
 
@@ -362,46 +363,77 @@ class ControlInterface:
         )
 
     @staticmethod
-    def get_rules_dict_from_item(item: TypeWithProps) -> Dict[str, Dict[str, str]]:
+    def uniquify_set_params(set_params: Optional[List[TypeWithParamId]]) -> List[TypeWithParamId]:
+        """Remove items with same param_id with priority to later items."""
+        found_ids: Set[str] = set()
+        unique_list: List[TypeWithParamId] = []
+        for set_param in reversed(as_list(set_params)):
+            if set_param.param_id not in found_ids:
+                unique_list.append(set_param)
+                found_ids.add(set_param.param_id)
+        return list(reversed(unique_list))
+
+    @staticmethod
+    def get_rules_dict_from_item(item: TypeWithProps) -> Tuple[Dict[str, Dict[str, str]], List[common.Property]]:
         """Get all rules found in this items props."""
         # rules is dict containing rule_id and description
         rules_dict = {}
         name = ''
         desc = ''
         id_ = ''
+        rules_props = []
         for prop in as_list(item.props):
             if prop.name == const.RULE_ID:
                 name = prop.value
                 id_ = string_from_root(prop.remarks)
+                rules_props.append(prop)
             elif prop.name == const.RULE_DESCRIPTION:
                 desc = prop.value
+                rules_props.append(prop)
             # grab each pair in case there are multiple pairs
             # then clear and look for new pair
             if name and desc:
                 rules_dict[id_] = {'name': name, 'description': desc}
                 name = desc = id_ = ''
-        return rules_dict
+        return rules_dict, rules_props
 
     @staticmethod
-    def get_rule_list_for_item(item: TypeWithProps) -> List[str]:
+    def item_has_rules(item: TypeWithProps) -> bool:
+        """Determine if the item has rules in its props."""
+        _, rules_props = ControlInterface.get_rules_dict_from_item(item)
+        return bool(rules_props)
+
+    @staticmethod
+    def get_rule_list_for_item(item: TypeWithProps) -> Tuple[List[str], List[common.Property]]:
         """Get the list of rules applying to this item from its top level props."""
-        return [prop.value for prop in as_filtered_list(item.props, lambda p: p.name == const.RULE_ID)]
+        props = []
+        rule_list = []
+        for prop in as_list(item.props):
+            if prop.name == const.RULE_ID:
+                rule_list.append(prop.value)
+                props.append(prop)
+        return rule_list, props
 
     @staticmethod
-    def get_rule_list_for_imp_req(imp_req: ossp.ImplementedRequirement) -> Tuple[List[str], List[str]]:
+    def get_rule_list_for_imp_req(
+        imp_req: ossp.ImplementedRequirement
+    ) -> Tuple[List[str], List[str], List[common.Property]]:
         """Get the list of rules applying to an imp_req as two lists."""
-        comp_rules = ControlInterface.get_rule_list_for_item(imp_req)
+        comp_rules, rule_props = ControlInterface.get_rule_list_for_item(imp_req)
         statement_rules = set()
         for statement in as_list(imp_req.statements):
-            statement_rules.update(ControlInterface.get_rule_list_for_item(statement))
-        return comp_rules, list(statement_rules)
+            stat_rules, statement_props = ControlInterface.get_rule_list_for_item(statement)
+            statement_rules.update(stat_rules)
+            rule_props.extend(statement_props)
+        return comp_rules, list(statement_rules), rule_props
 
     @staticmethod
-    def get_params_dict_from_item(item: TypeWithProps) -> Dict[str, Dict[str, str]]:
+    def get_params_dict_from_item(item: TypeWithProps) -> Tuple[Dict[str, Dict[str, str]], List[common.Property]]:
         """Get all params found in this item with rule_id as key."""
         # id, description, options - where options is a string containing comma-sep list of items
         # params is dict with rule_id as key and value contains: param_name, description and choices
         params: Dict[str, Dict[str, str]] = {}
+        props = []
         for prop in as_list(item.props):
             if prop.name == const.PARAMETER_ID:
                 rule_id = string_from_root(prop.remarks)
@@ -410,16 +442,19 @@ class ControlInterface:
                     raise TrestleError(f'Duplicate param {param_name} found for rule {rule_id}')
                 # create new param for this rule
                 params[rule_id] = {'name': param_name}
+                props.append(prop)
             elif prop.name == const.PARAMETER_DESCRIPTION:
                 rule_id = string_from_root(prop.remarks)
                 if rule_id in params:
                     params[rule_id]['description'] = prop.value
+                    props.append(prop)
                 else:
                     raise TrestleError(f'Param description for rule {rule_id} found with no param_id')
             elif prop.name == const.PARAMETER_VALUE_ALTERNATIVES:
                 rule_id = string_from_root(prop.remarks)
                 if rule_id in params:
                     params[rule_id]['options'] = prop.value
+                    props.append(prop)
                 else:
                     raise TrestleError(f'Param options for rule {rule_id} found with no param_id')
         new_params = {}
@@ -430,16 +465,17 @@ class ControlInterface:
                 param['description'] = param.get('description', '')
                 param['options'] = param.get('options', '')
                 new_params[rule_id] = param
-        return new_params
+        return new_params, props
 
     @staticmethod
     def get_rules_and_params_dict_from_item(
         item: TypeWithProps
-    ) -> Tuple[Dict[str, Dict[str, str]], Dict[str, Dict[str, str]]]:
+    ) -> Tuple[Dict[str, Dict[str, str]], Dict[str, Dict[str, str]], List[common.Property]]:
         """Get the rule dict and params dict from item with props."""
-        rules_dict = ControlInterface.get_rules_dict_from_item(item)
-        params_dict = ControlInterface.get_params_dict_from_item(item)
-        return rules_dict, params_dict
+        rules_dict, rules_props = ControlInterface.get_rules_dict_from_item(item)
+        params_dict, params_props = ControlInterface.get_params_dict_from_item(item)
+        rules_props.extend(params_props)
+        return rules_dict, params_dict, rules_props
 
     @staticmethod
     def get_set_params_from_item(
@@ -509,7 +545,13 @@ class ControlInterface:
             dest.parts = new_parts
 
     @staticmethod
-    def merge_dicts_deep(dest: Dict[Any, Any], src: Dict[Any, Any], overwrite_header_values: bool) -> None:
+    def merge_dicts_deep(
+        dest: Dict[Any, Any],
+        src: Dict[Any, Any],
+        overwrite_header_values: bool,
+        depth: int = 0,
+        level: int = 0
+    ) -> None:
         """
         Merge dict src into dest.
 
@@ -518,9 +560,13 @@ class ControlInterface:
         """
         for key in src.keys():
             if key in dest:
+                if depth and level == depth:
+                    if overwrite_header_values:
+                        dest[key] = src[key]
+                    continue
                 # if they are both dicts, recurse
                 if isinstance(dest[key], dict) and isinstance(src[key], dict):
-                    ControlInterface.merge_dicts_deep(dest[key], src[key], overwrite_header_values)
+                    ControlInterface.merge_dicts_deep(dest[key], src[key], overwrite_header_values, depth, level + 1)
                 # if they are both lists, add any item that is not already in the list
                 elif isinstance(dest[key], list) and isinstance(src[key], list):
                     for item in src[key]:
@@ -846,14 +892,6 @@ class ControlInterface:
         return None
 
     @staticmethod
-    def get_control_imp_reqs(control_imp: Optional[comp.ControlImplementation],
-                             control_id: str) -> List[comp.ImplementedRequirement]:
-        """Get the imp_reqs for this control from the control implementation."""
-        if control_imp is None:
-            return []
-        return as_filtered_list(control_imp.implemented_requirements, lambda imp_req: imp_req.control_id == control_id)
-
-    @staticmethod
     def get_status_from_props(item: TypeWithProps) -> common.ImplementationStatus:
         """Get the status of an item from its props."""
         status = common.ImplementationStatus(state=const.STATUS_PLANNED)
@@ -862,6 +900,43 @@ class ControlInterface:
                 status = ControlInterface._prop_as_status(prop)
                 break
         return status
+
+    @staticmethod
+    def clean_props(
+        props: Optional[List[common.Property]],
+        remove_imp_status: bool = True,
+        remove_all_rule_info: bool = False
+    ) -> List[common.Property]:
+        """Remove duplicate props and implementation status."""
+        new_props: List[common.Property] = []
+        found_props: Set[Tuple[str, str, str, str]] = set()
+        rule_tag_list = [
+            const.RULE_DESCRIPTION, const.RULE_ID, const.PARAMETER_DESCRIPTION, const.PARAMETER_VALUE_ALTERNATIVES
+        ]
+        # reverse the list so the latest items are kept
+        for prop in reversed(as_list(props)):
+            prop_tuple = (prop.name, as_string(prop.value), as_string(prop.ns), string_from_root(prop.remarks))
+            if prop_tuple in found_props or (prop.name == const.IMPLEMENTATION_STATUS and remove_imp_status):
+                continue
+            if remove_all_rule_info and prop.name in rule_tag_list:
+                continue
+            found_props.add(prop_tuple)
+            new_props.append(prop)
+        new_props.reverse()
+        return new_props
+
+    @staticmethod
+    def cull_props_by_rules(props: Optional[List[common.Property]], rules: List[str]) -> List[common.Property]:
+        """Cull properties to the ones needed by rules."""
+        needed_rule_ids: Set[str] = set()
+        culled_props: List[common.Property] = []
+        for prop in as_list(props):
+            if prop.value in rules and prop.remarks:
+                needed_rule_ids.add(string_from_root(prop.remarks))
+        for prop in as_list(props):
+            if prop.value in rules or string_from_root(prop.remarks) in needed_rule_ids:
+                culled_props.append(prop)
+        return culled_props
 
     @staticmethod
     def _status_as_prop(status: common.ImplementationStatus) -> common.Property:

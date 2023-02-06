@@ -13,7 +13,6 @@
         "include-controls": [
           {
             "with-ids": [
-              "ac-5",
               "at-2"
             ]
           }
@@ -26,7 +25,7 @@
     "modify": {
       "set-parameters": [
         {
-          "param-id": "ac-5_prm_1",
+          "param-id": "at-2_prm_1",
           "values": [
             "prof_bb val 1"
           ]

@@ -274,7 +274,7 @@ def test_profile_generate_assemble(
     if set_parameters_flag:
         assert set_params[2].values[0].__root__ == 'new value'
         assert set_params[1].props[0].ns == const.TRESTLE_GENERIC_NS
-        assert len(set_params) == 14
+        assert len(set_params) == 15
     else:
         # the original profile did not have ns set for this display name
         # confirm the namespace is not defined unless set_parameters_flag is True
@@ -321,12 +321,6 @@ def test_profile_generate_assemble(
     profile_generate.generate_markdown(
         tmp_trestle_dir, assem_prof_path, markdown_path, {}, False, all_sections_dict, ['NeededExtra']
     )
-
-    # if not set_parameters_flag then the markdown will have no profile value for ac-1_prm_4, but the profile will still
-    # have a value for it.  So if set_parameters_flag is true we need to remove that line that gets added
-    if not set_parameters_flag:
-        ac_1_path = tmp_trestle_dir / 'my_md/ac/ac-1.md'
-        assert test_utils.delete_line_in_file(ac_1_path, 'profile-values: weekly')
 
     ac_21_path.unlink()
     # order of sections changes
@@ -386,7 +380,7 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
         )
         set_params = profile.modify.set_parameters
 
-        assert len(set_params) == 14
+        assert len(set_params) == 15
         assert set_params[0].values[0].__root__ == 'all personnel'
         # the label is present in the header so it ends up in the set_parameter
         assert set_params[0].label == 'label from edit'
@@ -396,11 +390,11 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
         assert set_params[2].values[0].__root__ == 'new value'
         assert profile.metadata.version.__root__ == new_version
         if ohv:
-            assert set_params[3].values[0].__root__ == 'no meetings from cli yaml'
-            assert set_params[3].label == 'meetings cancelled from cli yaml'
+            assert set_params[4].values[0].__root__ == 'no meetings from cli yaml'
+            assert set_params[4].label == 'meetings cancelled from cli yaml'
         else:
-            assert set_params[3].values[0].__root__ == 'all meetings'
-            assert set_params[3].label is None
+            assert set_params[4].values[0].__root__ == 'all meetings'
+            assert set_params[4].label is None
 
         catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, assembled_prof_dir / 'profile.json')
         catalog_interface = CatalogInterface(catalog)
@@ -909,8 +903,8 @@ def test_profile_generate_inherited_props(tmp_trestle_dir: pathlib.Path, monkeyp
         'name': 'add_prof_b_prop_by_id', 'value': 'add prof b prop by id value', 'part_name': 'ac-3.3_prm_2'
     }
     set_params = header[const.SET_PARAMS_TAG]
-    assert set_params['ac-3.3_prm_1'][const.PROFILE_VALUES] == 'from prof f set-param'
-    assert set_params['ac-3.3_prm_1'][const.VALUES] == 'key power users'
+    assert set_params['ac-3.3_prm_1'][const.PROFILE_VALUES] == ['from prof f set-param']
+    assert set_params['ac-3.3_prm_1'][const.VALUES] == ['key power users']
 
     ac5_path = tmp_trestle_dir / 'my_md/ac/ac-5.md'
     assert test_utils.confirm_text_in_file(ac5_path, 'value: one', 'smt-part: a.')

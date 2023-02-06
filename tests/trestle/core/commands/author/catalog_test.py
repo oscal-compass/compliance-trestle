@@ -51,7 +51,7 @@ markdown_name = 'my_md'
 def _change_params(ac1_path: pathlib.Path, new_prose: str, make_change: bool) -> None:
     if make_change:
         assert file_utils.insert_text_in_file(ac1_path, 'Procedures {{', f'- \\[d\\] {new_prose}\n')
-    assert test_utils.delete_line_in_file(ac1_path, 'ac-1_prm_1', 2)
+    assert test_utils.delete_line_in_file(ac1_path, 'ac-1_prm_1', 1)
     assert test_utils.replace_line_in_file_after_tag(
         ac1_path, 'trestle-set-params', '  ac-1_prm_1:\n    values:\n      - new value\n'
     )
