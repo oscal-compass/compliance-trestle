@@ -119,14 +119,6 @@
           ]
         },
         {
-          "param_id": "ac-4.4_prm_2",
-          "values": [
-            "blocking the flow of the encrypted information",
-            "terminating communications sessions attempting to pass encrypted information",
-            "hacking the system"
-          ]
-        },
-        {
           "param_id": "ac-4.4_prm_3",
           "values": [
             "hacking the system"

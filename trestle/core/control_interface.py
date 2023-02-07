@@ -640,11 +640,12 @@ class ControlInterface:
         """Convert parameter selection to str."""
         if param.select and param.select.choice:
             how_many_str = ''
+            # if all values are specified there is no how_many string and parens are dropped.  See ac-2.2
             if param.select.how_many:
-                how_many_str = 'one' if param.select.how_many == common.HowMany.one else 'one or more'
+                how_many_str = ' (one)' if param.select.how_many == common.HowMany.one else ' (one or more)'
             choices_str = '; '.join(as_list(param.select.choice))
             choices_str = f'[{choices_str}]' if brackets else choices_str
-            choices_str = f'Selection ({how_many_str}): {choices_str}' if verbose else choices_str
+            choices_str = f'Selection{how_many_str}: {choices_str}' if verbose else choices_str
             return choices_str
         return ''
 

@@ -519,6 +519,7 @@ class ProfileResolve(AuthorCommonCommand):
             False,
             bracket_format,
             param_rep,
+            False,
             value_assigned_prefix,
             value_not_assigned_prefix
         )

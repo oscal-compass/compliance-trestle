@@ -950,3 +950,37 @@ def test_profile_force_overwrite(tmp_trestle_dir: pathlib.Path, monkeypatch: Mon
     prof_generate = f'trestle author profile-generate -n test_profile_f -o {md_name} --force-overwrite'
     test_utils.execute_command_and_assert(prof_generate, 0, monkeypatch)
     assert fc.files_unchanged()
+
+
+def test_profile_resolve_assignment(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test profile resolve to create resolved profile catalog in assignment mode."""
+    test_utils.setup_for_multi_profile(tmp_trestle_dir, False, False)
+    cat_name = 'resolved_catalog'
+    command_profile_resolve = f'trestle author profile-resolve -n main_profile -o {cat_name} -bf (.) -sv -vap "IBM Assignment:" -vnap "Assignment:"'  # noqa E501
+    test_utils.execute_command_and_assert(command_profile_resolve, 0, monkeypatch)
+    res_cat, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, cat_name, cat.Catalog, FileContentType.JSON)
+    ac_1 = res_cat.groups[0].controls[0]
+    expected_value = '(IBM Assignment: officer)'
+    expected_prose = f'Designate an {expected_value} to manage the development, documentation, and dissemination of the access control policy and procedures; and'  # noqa E501
+    assert ac_1.parts[0].parts[1].prose == expected_prose
+    ac_21 = res_cat.groups[0].controls[-1].controls[0]
+    assert ac_21.parts[
+        0
+    ].prose == 'Support the management of system accounts using (Assignment: organization-defined automated mechanisms).'  # noqa E501
+
+
+def test_profile_resolve_assignment_simple(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test profile resolve with simple profile."""
+    test_utils.setup_for_multi_profile(tmp_trestle_dir, True, False)
+    cat_name = 'resolved_catalog'
+    command_profile_resolve = f'trestle author profile-resolve -n main_profile -o {cat_name} -bf (.) -sv -vap "IBM Assignment:" -vnap "Assignment:"'  # noqa E501
+    test_utils.execute_command_and_assert(command_profile_resolve, 0, monkeypatch)
+    res_cat, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, cat_name, cat.Catalog, FileContentType.JSON)
+    ac_1 = res_cat.groups[0].controls[0]
+    expected_value = '(Assignment: organization-defined official)'
+    expected_prose = f'Designate an {expected_value} to manage the development, documentation, and dissemination of the access control policy and procedures; and'  # noqa E501
+    assert ac_1.parts[0].parts[1].prose == expected_prose
+    ac_21 = res_cat.groups[0].controls[1].controls[0]
+    assert ac_21.parts[
+        0
+    ].prose == 'Support the management of system accounts using (Assignment: organization-defined automated mechanisms).'  # noqa E501
