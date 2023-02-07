@@ -231,8 +231,8 @@ def _validate_rhel(tmp_path: pathlib.Path):
     assert len(g0.parts) == 1
     assert len(g0.controls) == 4
     p00 = g0.parts[0]
-    assert p00.id == 'CIS-1_des'
-    assert p00.name == 'description'
+    assert p00.id == 'CIS-1_smt'
+    assert p00.name == 'statement'
     assert p00.prose.startswith('Items in this section are advised for all systems,')
     g00 = g0.groups[0]
     assert g00.id == 'CIS-1.1'
@@ -246,8 +246,8 @@ def _validate_rhel(tmp_path: pathlib.Path):
     assert prop0.value == 'Level 1 - Server'
     assert len(c00.parts) == 9
     part0 = c00.parts[0]
-    assert part0.id == 'CIS-1_des'
-    assert part0.name == 'description'
+    assert part0.id == 'CIS-1_smt'
+    assert part0.name == 'statement'
     t1 = 'Periodically patches are released for included software either due'
     t2 = ' to security flaws or to include additional functionality.'
     assert part0.prose == t1 + t2

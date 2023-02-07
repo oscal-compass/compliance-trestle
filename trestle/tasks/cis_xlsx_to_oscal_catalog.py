@@ -58,6 +58,7 @@ class XlsxHelper:
             raise RuntimeError(f'{file} missing one of {sheet_candidates} sheet')
         self._work_sheet = self._wb[self._sheet_name]
         self._mapper()
+        self._key_to_col_map = {'statement': 'description'}
 
     def is_ocp(self) -> bool:
         """Check if sheet is for OCP."""
@@ -66,6 +67,10 @@ class XlsxHelper:
     def _normalize(self, name: str) -> str:
         """Normalize."""
         return name.lower()
+
+    def _translate(self, name: str) -> str:
+        """Translate name key to column name."""
+        return self._key_to_col_map.get(name, name)
 
     def _mapper(self) -> None:
         """Map columns heading names to column numbers."""
@@ -87,7 +92,9 @@ class XlsxHelper:
 
     def get(self, row: int, name: str) -> str:
         """Get cell value for given row and column name."""
-        col = self._col_name_to_number[self._normalize(name)]
+        nname = self._normalize(name)
+        cname = self._translate(nname)
+        col = self._col_name_to_number[cname]
         cell = self._work_sheet.cell(row, col)
         return cell.value
 
@@ -312,7 +319,7 @@ class CisXlsxToOscalCatalog(TaskBase):
             self._add_property(xlsx_helper, props, row, 'status')
             self._add_property(xlsx_helper, props, row, 'assessment status')
             # parts
-            self._add_part(xlsx_helper, parts, f'CIS-{section}_des', row, 'description')
+            self._add_part(xlsx_helper, parts, f'CIS-{section}_smt', row, 'statement')
             self._add_part(xlsx_helper, parts, f'CIS-{section}_rat', row, 'rationale statement')
             self._add_part(xlsx_helper, parts, f'CIS-{section}_imp', row, 'impact statement')
             self._add_part(xlsx_helper, parts, f'CIS-{section}_rem', row, 'remediation procedure')
@@ -348,7 +355,7 @@ class CisXlsxToOscalCatalog(TaskBase):
             self._add_property(xlsx_helper, props, row, 'profile')
             self._add_property(xlsx_helper, props, row, 'assessment status')
             # parts
-            self._add_part(xlsx_helper, parts, f'CIS-{section}_des', row, 'description')
+            self._add_part(xlsx_helper, parts, f'CIS-{section}_smt', row, 'statement')
             self._add_part(xlsx_helper, parts, f'CIS-{section}_rat', row, 'rational statement')
             self._add_part(xlsx_helper, parts, f'CIS-{section}_imp', row, 'impact statement')
             self._add_part(xlsx_helper, parts, f'CIS-{section}_rem', row, 'remediation procedure')
