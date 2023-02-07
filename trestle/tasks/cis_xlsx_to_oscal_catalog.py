@@ -108,6 +108,7 @@ class CatalogHelper:
         self._metadata = Metadata(title=title, last_modified=timestamp, oscal_version=OSCAL_VERSION, version=version)
         self._root_group = OrderedDict()
         self._all_groups = OrderedDict()
+        self._all_controls = OrderedDict()
 
     def add_group(self, section: str, title: str, props: List[Property], parts: List[Part]) -> None:
         """Add group."""
@@ -133,6 +134,33 @@ class CatalogHelper:
             parent.groups.append(group)
             self._all_groups[section] = group
 
+    def _add_prop(self, control: Control, prop: Property) -> None:
+        """Add property to control."""
+        control_props = control.props
+        control.props = []
+        match = 0
+        append = 0
+        for control_prop in control_props:
+            if control_prop.name == prop.name:
+                control.props.append(control_prop)
+                match = 1
+            elif match and not append:
+                append = 1
+                control.props.append(prop)
+                control.props.append(control_prop)
+            else:
+                control.props.append(control_prop)
+        if not append:
+            control.props.append(prop)
+
+    def _chk_prop(self, control: Control, prop: Property) -> None:
+        """Check property in control."""
+        for control_prop in control.props:
+            if prop.name == control_prop.name:
+                if prop.value != control_prop.value:
+                    text = f'{control.id} property {prop.name} values {prop.value} and {control_prop.value} not equal'
+                    raise RuntimeError(text)
+
     def add_control(
         self,
         section: str,
@@ -147,15 +175,24 @@ class CatalogHelper:
         if group.controls is None:
             group.controls = []
         id_ = f'CIS-{recommendation}'
-        title = f'{title}'
-        control = Control(id=id_, title=title)
-        if len(props):
-            control.props = props
-        if len(parts):
-            control.parts = parts
-        if len(links):
-            control.links = links
-        group.controls.append(control)
+        if id_ in self._all_controls:
+            control = self._all_controls[id_]
+            for prop in props:
+                if prop.name == 'profile':
+                    self._add_prop(control, prop)
+                else:
+                    self._chk_prop(control, prop)
+        else:
+            title = f'{title}'
+            control = Control(id=id_, title=title)
+            self._all_controls[id_] = control
+            if len(props):
+                control.props = props
+            if len(parts):
+                control.parts = parts
+            if len(links):
+                control.links = links
+            group.controls.append(control)
 
     def get_catalog(self) -> Catalog:
         """Get catalog."""

@@ -229,7 +229,7 @@ def _validate_rhel(tmp_path: pathlib.Path):
     assert g0.title == 'Initial Setup'
     assert len(g0.groups) == 1
     assert len(g0.parts) == 1
-    assert len(g0.controls) == 4
+    assert len(g0.controls) == 2
     p00 = g0.parts[0]
     assert p00.id == 'CIS-1_smt'
     assert p00.name == 'statement'
@@ -240,7 +240,7 @@ def _validate_rhel(tmp_path: pathlib.Path):
     c00 = g0.controls[0]
     assert c00.id == 'CIS-1.9'
     assert c00.title == 'Ensure updates, patches, and additional security software are installed'
-    assert len(c00.props) == 8
+    assert len(c00.props) == 9
     prop0 = c00.props[0]
     assert prop0.name == 'profile'
     assert prop0.value == 'Level 1 - Server'
