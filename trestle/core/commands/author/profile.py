@@ -437,7 +437,7 @@ class ProfileResolve(AuthorCommonCommand):
             default=''
         )
         self.add_argument(
-            '-lb',
+            '-lp',
             '--label-prefix',
             help='With -sl, places a prefix in front of the parameter label.',
             required=False,
