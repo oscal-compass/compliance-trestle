@@ -51,8 +51,8 @@ def test_cis_xlsx_to_oscal_catalog_simulate(tmp_path: pathlib.Path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
-def test_cis_xlsx_to_oscal_catalog_execute(tmp_path: pathlib.Path):
-    """Test execute call."""
+def test_cis_xlsx_to_oscal_catalog_execute_ocp(tmp_path: pathlib.Path):
+    """Test execute call - ocp."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.ocp.config')
     config.read(config_path)
@@ -204,7 +204,7 @@ def test_cis_xlsx_to_oscal_catalog_unexpected_section(tmp_path: pathlib.Path):
 
 
 def test_cis_xlsx_to_oscal_catalog_execute_rhel(tmp_path: pathlib.Path):
-    """Test execute call."""
+    """Test execute call - rhel."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.rhel.config')
     config.read(config_path)
