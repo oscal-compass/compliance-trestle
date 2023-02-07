@@ -246,7 +246,7 @@ def _validate_rhel(tmp_path: pathlib.Path):
     assert prop0.value == 'Level 1 - Server'
     assert len(c00.parts) == 9
     part0 = c00.parts[0]
-    assert part0.id == 'CIS-1_smt'
+    assert part0.id == 'CIS-1.9_smt'
     assert part0.name == 'statement'
     t1 = 'Periodically patches are released for included software either due'
     t2 = ' to security flaws or to include additional functionality.'
