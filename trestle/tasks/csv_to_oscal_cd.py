@@ -23,7 +23,7 @@ import sys
 import traceback
 import uuid
 from math import log10
-from typing import Iterator, List, Optional
+from typing import Iterator, List, Optional, Union
 
 from trestle.common.list_utils import as_list
 from trestle.oscal import OSCAL_VERSION
@@ -1302,7 +1302,7 @@ class _CsvMgr():
         """Get rule_key."""
         return (resource, component_type, rule_id)
 
-    def row_generator(self) -> [int, Iterator[List[str]]]:
+    def row_generator(self) -> Union[int, Iterator[List[str]]]:
         """Generate rows."""
         index = 0
         for row in self._csv:

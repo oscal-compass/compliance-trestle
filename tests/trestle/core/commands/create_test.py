@@ -48,7 +48,10 @@ def test_create_cmd(tmp_trestle_dir: pathlib.Path, include_optional: bool, monke
         model_file = tmp_trestle_dir / const.MODEL_TYPE_TO_MODEL_DIR[subcommand] / name_stem / f'{subcommand}.json'
         with open(model_file, 'r', encoding=const.FILE_ENCODING) as fp:
             model = json.load(fp)
-        assert name_stem in model[subcommand]['metadata']['title']
+        if subcommand == const.MODEL_TYPE_MAPPING:
+            assert model[subcommand]['source-resource']['href']
+        else:
+            assert name_stem in model[subcommand]['metadata']['title']
 
 
 def test_no_dir(tmp_empty_cwd: pathlib.Path) -> None:
