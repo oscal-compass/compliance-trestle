@@ -443,6 +443,87 @@ In all cases above Trestle markdown parser will skip such headers and it will be
 
 <details markdown>
 
+<summary>trestle author profile-resolve</summary>
+
+The `trestle author profile-resolve` command is different from the `generate/assemble` commands because it doesn't involve markdown and instead
+it takes an input profile and creates the corresponding resolved profile catalog in `JSON` format.  In addition, it has several options for how
+parameters are represented in prose of the controls, and whether or not those values are substituted.
+
+As an example, the prose in the statement for control `AC-1` is:
+
+`Develops, documents, and disseminates to {{ insert: param, ac-1_prm_1 }}:`
+
+The parameter `ac-1_prm_1` has a label: `organization-defined personnel or roles` and it may or may not have a value assigned
+by the profile being resolved.  Suppose it has been assigned the value, `my prm 1 value`.  In that case we can either leave the prose
+as-is (with the parameter in "moustache" form) in the resolved catalog, or we can substitute the value, or we can substitute the descriptive label.  trestle
+supports all these options, along with an optional prefix to specify whether a value has been assigned or not - typically using the name of the organization responsible.
+
+The `--show-value -sv` option will cause the value for the parameter to be substituted in the prose if it is available - otherwise the list of selection options if
+it has any, or simply the label prose if it has no options.
+
+The `--value-assigned-prefix -vap` option adds a prefix to the value if the value is being assigned by the profile, and the `--value-not-assigned-prefix -vnap` will assign a prefix
+to parameters that do not have values assigned, along with the descriptive parameter label.
+
+Finally, the `--bracket-format -bf` option specifies how the parameter representation will be wrapped in braces.  The specification is done by placing characters around a single `.`
+symbol representing the parameter string, e.g. `[.]` will place square brackets around the parameter.
+
+Note that these options that specify how the parameter is represented all require `--show-value` to be True, otherwise the raw prose with the moustache is produced.
+
+As an example, if we use options
+
+`trestle author profile-resolve -n my_profile -o my_resolved_catalog -sv -bf [.] -vap "ACME Assignment:" -vnap "Assignment:"`
+
+the above prose would become:
+
+`Develops, documents, and disseminates to [ACME Assignment: my prm 1 value]:`
+
+(Note that you need appropriate use of quotation marks in the command for any strings that include spaces or special characters.)
+
+And if the parameter did not have a value assigned the result would be:
+
+`Develops, documents, and disseminates to [Assignment: organization-defined personell or roles]:`
+
+Finally, if the parameter already had a value specified in the catalog, the value would be shown by itself in braces:
+
+`Develops, documents, and disseminates to [value in catalog]:`
+
+Similar substitution happens when a parameter has choices that themselves reference a parameter, such as:
+
+```markdown
+"id": "ac-4.4_prm_1",
+"select": {
+  "how-many": "one-or-more",
+  "choice": [
+    "decrypting the information",
+    "blocking the flow of the encrypted information",
+    "terminating communications sessions attempting to pass encrypted information",
+    " {{ insert: param, ac-4.4_prm_2 }} "
+  ]
+```
+
+If the statement prose for AC-4.4 is:
+
+`The information system prevents encrypted information from bypassing content-checking mechanisms by {{ insert: param, ac-4.4_prm_1 }}.`
+
+and if a value `pulling the plug` has been assigned to ac-4.4_prm_2, the prose will be:
+
+`The information system prevents encrypted information from bypassing content-checking mechanisms by [Selection (one or more): decrypting the information, blocking the flow of the encrypted information, terminating the communications sessions attempting to pass encrypted information, [ACME Assignment: pulling the plug]].`
+
+There is a separate option from `--show-values` that will instead show only the descriptive labels for the parameters - again with an optional prefix.  The options are `--show-labels -sl`
+and `--label-prefix -lp`.  Note that there is no need for "assigned" or "not assigned" because no values are being shown - just the labels.
+
+If we resolve the profile with options `--show-labels --label-prefix "Label:" --bracket-format [.]` the resulting prose from earlier would be:
+
+`Develops, documents, and disseminates to [Label: organization-defined personnel or roles]:`
+
+and any value present for the parameter would be ignored.
+
+Similar options apply to the `jinja` authoring commands.
+
+</details>
+
+<details markdown>
+
 <summary>trestle author component-generate</summary>
 
 The `trestle author component-generate` command takes a JSON ComponentDefinition file and creates markdown for its controls in separate directories for each of the DefinedComponents in the file.  This allows specifying the implementation response and status for each component separately in separate markdown files for a control.  In addition, the markdown captures Rules in the control that specify descriptions and parameter values that apply to the expected responses.

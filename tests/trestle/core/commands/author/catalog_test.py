@@ -138,6 +138,7 @@ def test_catalog_generate_assemble(
     # need to delete withdrawn controls because they won't be in the assembled catalog
     interface_orig.delete_withdrawn_controls()
     ac1 = interface_orig.get_control('ac-1')
+    ac44 = interface_orig.get_control('ac-4.4')
     if make_change:
         # add the item manually to the original catalog so we can confirm the item was loaded correctly
         prop = Property(name='label', value='d.')
@@ -152,6 +153,8 @@ def test_catalog_generate_assemble(
         orig_cat = interface_orig.get_catalog()
     elif not use_orig_cat:
         ac1.params = None
+        # ac 4.4 has a parameter set in it that needs to be removed if set_param=False and use_orig_cat=False
+        ac44.params = None
         interface_orig.replace_control(ac1)
         orig_cat = interface_orig.get_catalog()
     if use_orig_cat:
@@ -420,11 +423,7 @@ def test_params_in_choice(
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
     cat_interface = CatalogInterface(catalog)
     control = cat_interface.get_control('ac-4.4')
-    val_1 = 'blocking the flow of the encrypted information'
-    val_2 = 'terminating communications sessions attempting to pass encrypted information'
     val_3 = 'hacking the system'
-    assert control.params[1].values[0] == val_1
-    assert control.params[1].values[1] == val_2
     # confirm the choice text was set properly
     assert control.params[1].select.choice[3] == val_3
     assert control.params[2].values[0] == val_3

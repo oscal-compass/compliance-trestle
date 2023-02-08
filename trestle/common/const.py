@@ -553,3 +553,6 @@ MERGE = 'merge'
 BEFORE = 'before'
 
 AFTER = 'after'
+VALUE_ASSIGNED_PREFIX = 'value-assigned-prefix'
+
+VALUE_NOT_ASSIGNED_PREFIX = 'value-not-assigned-prefix'
