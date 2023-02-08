@@ -45,6 +45,7 @@ class ParameterRep(Enum):
     VALUE_OR_LABEL_OR_CHOICES = 3
     VALUE_OR_EMPTY_STRING = 4
     ASSIGNMENT_FORM = 5
+    LABEL_FORM = 6
 
 
 @dataclass
@@ -639,11 +640,12 @@ class ControlInterface:
         """Convert parameter selection to str."""
         if param.select and param.select.choice:
             how_many_str = ''
+            # if all values are specified there is no how_many string and parens are dropped.  See ac-2.2
             if param.select.how_many:
-                how_many_str = 'one' if param.select.how_many == common.HowMany.one else 'one or more'
+                how_many_str = ' (one)' if param.select.how_many == common.HowMany.one else ' (one or more)'
             choices_str = '; '.join(as_list(param.select.choice))
             choices_str = f'[{choices_str}]' if brackets else choices_str
-            choices_str = f'Selection ({how_many_str}): {choices_str}' if verbose else choices_str
+            choices_str = f'Selection{how_many_str}: {choices_str}' if verbose else choices_str
             return choices_str
         return ''
 
@@ -674,6 +676,21 @@ class ControlInterface:
             param_str = param.label if param.label else param.id
             if value_not_assigned_prefix:
                 param_str = f'{value_not_assigned_prefix} {param_str}'
+        return f'{param_str}'
+
+    @staticmethod
+    def _param_labels_assignment_str(
+        param: common.Parameter,
+        label_prefix: Optional[str] = None,
+    ) -> str:
+        """Convert param label or choices to string."""
+        # use values if present
+        param_str = ControlInterface._param_selection_as_str(param, True, False)
+        # finally use label and param_id as fallbacks
+        if not param_str:
+            param_str = param.label if param.label else param.id
+            if label_prefix:
+                param_str = f'{label_prefix} {param_str}'
         return f'{param_str}'
 
     @staticmethod
@@ -719,6 +736,10 @@ class ControlInterface:
             param_str = ControlInterface._param_values_assignment_str(
                 param, value_assigned_prefix, value_not_assigned_prefix
             )
+            if not param_str:
+                param_str = ''
+        elif param_rep == ParameterRep.LABEL_FORM:
+            param_str = ControlInterface._param_labels_assignment_str(param, value_not_assigned_prefix)
             if not param_str:
                 param_str = ''
         return ControlInterface._apply_params_format(param_str, params_format)

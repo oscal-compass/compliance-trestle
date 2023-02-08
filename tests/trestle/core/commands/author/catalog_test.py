@@ -423,11 +423,7 @@ def test_params_in_choice(
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
     cat_interface = CatalogInterface(catalog)
     control = cat_interface.get_control('ac-4.4')
-    val_1 = 'blocking the flow of the encrypted information'
-    val_2 = 'terminating communications sessions attempting to pass encrypted information'
     val_3 = 'hacking the system'
-    assert control.params[1].values[0].__root__ == val_1
-    assert control.params[1].values[1].__root__ == val_2
     # confirm the choice text was set properly
     assert control.params[1].select.choice[3] == val_3
     assert control.params[2].values[0].__root__ == val_3

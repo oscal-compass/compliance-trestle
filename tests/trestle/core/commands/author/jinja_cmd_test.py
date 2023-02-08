@@ -96,7 +96,7 @@ def test_params_formatting(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.
 
     setup_ssp(testdata_dir, tmp_trestle_dir, monkeypatch)
 
-    command_md_gen = f'trestle author jinja -pf *.* -vap "IBM Assignment:" -vnap "Assignment:" -i {input_template} -o output.md -ssp ssp_json -p comp_prof'  # noqa E501
+    command_md_gen = f'trestle author jinja -bf *.* -vap "IBM Assignment:" -vnap "Assignment:" -i {input_template} -o output.md -ssp ssp_json -p comp_prof'  # noqa E501
     execute_command_and_assert(command_md_gen, 0, monkeypatch)
 
     with open('output.md') as test_output:
@@ -109,7 +109,7 @@ def test_params_formatting(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.
         child2 = parent.get_node_for_key('#### Control Statement')
         assert '*Assignment: organization-defined official*' in child2.content.raw_text
 
-    command_md_gen = f'trestle author jinja -pf Prefix:[.] -vap "IBM Assignment:" -vnap "Assignment:" -i {input_template} -o output.md -ssp ssp_json -p comp_prof'  # noqa E501
+    command_md_gen = f'trestle author jinja -bf Prefix:[.] -vap "IBM Assignment:" -vnap "Assignment:" -i {input_template} -o output.md -ssp ssp_json -p comp_prof'  # noqa E501
     execute_command_and_assert(command_md_gen, 0, monkeypatch)
 
     with open('output.md') as test_output:
