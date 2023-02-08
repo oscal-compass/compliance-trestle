@@ -17,6 +17,7 @@
 import configparser
 import os
 import pathlib
+from typing import Dict
 from unittest import mock
 
 from openpyxl import load_workbook
@@ -25,14 +26,23 @@ import trestle.tasks.cis_xlsx_to_oscal_catalog as cis_xlsx_to_oscal_catalog
 from trestle.oscal.catalog import Catalog
 from trestle.tasks.base_task import TaskOutcome
 
+ocp_config = 'tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.ocp.config'
+rhel_config = 'tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.rhel.config'
 
-def test_cis_xlsx_to_oscal_catalog_print_info(tmp_path: pathlib.Path):
-    """Test print_info call."""
+
+def _get_section(tmp_path: pathlib.Path, file_: str) -> Dict:
+    """Get section."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.ocp.config')
+    config_path = pathlib.Path(file_)
     config.read(config_path)
     section = config['task.cis-xlsx-to-oscal-catalog']
     section['output-dir'] = str(tmp_path)
+    return section
+
+
+def test_cis_xlsx_to_oscal_catalog_print_info(tmp_path: pathlib.Path):
+    """Test print_info call."""
+    section = _get_section(tmp_path, ocp_config)
     tgt = cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog(section)
     retval = tgt.print_info()
     assert retval is None
@@ -40,11 +50,7 @@ def test_cis_xlsx_to_oscal_catalog_print_info(tmp_path: pathlib.Path):
 
 def test_cis_xlsx_to_oscal_catalog_simulate(tmp_path: pathlib.Path):
     """Test simulate call."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.ocp.config')
-    config.read(config_path)
-    section = config['task.cis-xlsx-to-oscal-catalog']
-    section['output-dir'] = str(tmp_path)
+    section = _get_section(tmp_path, ocp_config)
     tgt = cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog(section)
     retval = tgt.simulate()
     assert retval == TaskOutcome.SIM_SUCCESS
@@ -53,11 +59,7 @@ def test_cis_xlsx_to_oscal_catalog_simulate(tmp_path: pathlib.Path):
 
 def test_cis_xlsx_to_oscal_catalog_execute_ocp(tmp_path: pathlib.Path):
     """Test execute call - ocp."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.ocp.config')
-    config.read(config_path)
-    section = config['task.cis-xlsx-to-oscal-catalog']
-    section['output-dir'] = str(tmp_path)
+    section = _get_section(tmp_path, ocp_config)
     tgt = cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
@@ -96,11 +98,7 @@ def _validate_ocp(tmp_path: pathlib.Path):
 
 def test_cis_xlsx_to_oscal_catalog_no_overwrite(tmp_path: pathlib.Path):
     """Test execute call."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.ocp.config')
-    config.read(config_path)
-    section = config['task.cis-xlsx-to-oscal-catalog']
-    section['output-dir'] = str(tmp_path)
+    section = _get_section(tmp_path, ocp_config)
     tgt = cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
@@ -121,11 +119,7 @@ def test_cis_xlsx_to_oscal_catalog_missing_config(tmp_path: pathlib.Path):
 
 def test_cis_xlsx_to_oscal_catalog_missing_version(tmp_path: pathlib.Path):
     """Test missing version."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.ocp.config')
-    config.read(config_path)
-    section = config['task.cis-xlsx-to-oscal-catalog']
-    section['output-dir'] = str(tmp_path)
+    section = _get_section(tmp_path, ocp_config)
     section.pop('version')
     tgt = cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog(section)
     retval = tgt.execute()
@@ -136,16 +130,12 @@ def test_cis_xlsx_to_oscal_catalog_missing_sheet(tmp_path: pathlib.Path):
     """Test missing sheet."""
     folder = 'tests/data/tasks/cis-xlsx-to-oscal-catalog'
     file_ = f'{folder}/CIS_RedHat_OpenShift_Container_Platform_Benchmark_v1.2.0-2.snippet.xlsx'
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.ocp.config')
-    config.read(config_path)
-    section = config['task.cis-xlsx-to-oscal-catalog']
-    section['output-dir'] = str(tmp_path)
     wb_hacked = load_workbook(file_)
     sheet = wb_hacked['Combined Profiles']
     wb_hacked.remove(sheet)
     with mock.patch('trestle.tasks.cis_xlsx_to_oscal_catalog.load_workbook') as load_workbook_mock:
         load_workbook_mock.return_value = wb_hacked
+        section = _get_section(tmp_path, ocp_config)
         tgt = cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog(section)
         retval = tgt.execute()
         assert retval == TaskOutcome.FAILURE
@@ -155,11 +145,6 @@ def test_cis_xlsx_to_oscal_catalog_one_dot_added_part(tmp_path: pathlib.Path):
     """Test group part."""
     folder = 'tests/data/tasks/cis-xlsx-to-oscal-catalog'
     file_ = f'{folder}/CIS_RedHat_OpenShift_Container_Platform_Benchmark_v1.2.0-2.snippet.xlsx'
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.ocp.config')
-    config.read(config_path)
-    section = config['task.cis-xlsx-to-oscal-catalog']
-    section['output-dir'] = str(tmp_path)
     wb_hacked = load_workbook(file_)
     sheet = wb_hacked['Combined Profiles']
     cell = sheet.cell(2, 7)
@@ -168,6 +153,7 @@ def test_cis_xlsx_to_oscal_catalog_one_dot_added_part(tmp_path: pathlib.Path):
     cell.value = 'foobar'
     with mock.patch('trestle.tasks.cis_xlsx_to_oscal_catalog.load_workbook') as load_workbook_mock:
         load_workbook_mock.return_value = wb_hacked
+        section = _get_section(tmp_path, ocp_config)
         tgt = cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog(section)
         retval = tgt.execute()
         assert retval == TaskOutcome.SUCCESS
@@ -186,11 +172,6 @@ def test_cis_xlsx_to_oscal_catalog_unexpected_section(tmp_path: pathlib.Path):
     """Test group part."""
     folder = 'tests/data/tasks/cis-xlsx-to-oscal-catalog'
     file_ = f'{folder}/CIS_RedHat_OpenShift_Container_Platform_Benchmark_v1.2.0-2.snippet.xlsx'
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.ocp.config')
-    config.read(config_path)
-    section = config['task.cis-xlsx-to-oscal-catalog']
-    section['output-dir'] = str(tmp_path)
     wb_hacked = load_workbook(file_)
     sheet = wb_hacked['Combined Profiles']
     cell = sheet.cell(3, 1)
@@ -198,6 +179,7 @@ def test_cis_xlsx_to_oscal_catalog_unexpected_section(tmp_path: pathlib.Path):
     cell.value = '1.2.3.4.5.6.7.8.9.0'
     with mock.patch('trestle.tasks.cis_xlsx_to_oscal_catalog.load_workbook') as load_workbook_mock:
         load_workbook_mock.return_value = wb_hacked
+        section = _get_section(tmp_path, ocp_config)
         tgt = cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog(section)
         retval = tgt.execute()
         assert retval == TaskOutcome.FAILURE
@@ -205,11 +187,7 @@ def test_cis_xlsx_to_oscal_catalog_unexpected_section(tmp_path: pathlib.Path):
 
 def test_cis_xlsx_to_oscal_catalog_execute_rhel(tmp_path: pathlib.Path):
     """Test execute call - rhel."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.rhel.config')
-    config.read(config_path)
-    section = config['task.cis-xlsx-to-oscal-catalog']
-    section['output-dir'] = str(tmp_path)
+    section = _get_section(tmp_path, rhel_config)
     tgt = cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
