@@ -36,7 +36,7 @@ from trestle.common.str_utils import AliasMode, alias_to_classname
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.remote import cache
-from trestle.oscal import common
+from trestle.oscal import assessment_plan, assessment_results, common, poam
 
 logger = logging.getLogger(__name__)
 
@@ -902,8 +902,11 @@ class ModelUtils:
             common.LocationUuid,
             common.PartyUuid,
             common.RelatedRisk,
-            common.RelatedObservation1,
-            common.Source
+            common.Source,
+            assessment_plan.RelatedObservation,
+            assessment_results.RelatedObservation,
+            poam.RelatedObservation,
+            poam.RelatedObservation1
         ]
         type_list = uuid_type_list if ignore_all_uuid else [common.LastModified]
         return not ModelUtils._objects_differ(model_a, model_b, type_list, ['last_modified'], ignore_all_uuid)

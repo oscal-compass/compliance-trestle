@@ -89,7 +89,7 @@ def generate_models():
 
     in_dir = Path('nist-source/json/schema')
     for full_name in in_dir.glob('oscal_*_schema.json'):
-        if 'complete' in str(full_name) or 'mapping' in str(full_name):
+        if 'complete' in str(full_name):
             continue
         try:
             obj = re.search('oscal_(.+?)_schema.json', str(full_name)).group(1)

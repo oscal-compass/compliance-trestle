@@ -27,7 +27,7 @@ from __future__ import annotations
 import re
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr, validator
 
@@ -526,7 +526,7 @@ class Risk(OscalBaseModel):
         description='A log of all risk-related tasks taken.',
         title='Risk Log',
     )
-    related_observations: Optional[List[common.RelatedObservation1]] = Field(None, alias='related-observations')
+    related_observations: Optional[List[RelatedObservation]] = Field(None, alias='related-observations')
 
 
 class AssessmentAssets(OscalBaseModel):

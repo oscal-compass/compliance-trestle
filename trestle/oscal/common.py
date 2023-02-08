@@ -27,7 +27,7 @@ from __future__ import annotations
 import re
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr, validator
 
@@ -213,6 +213,23 @@ class Remarks(OscalBaseModel):
     )
 
 
+class Relationship(OscalBaseModel):
+    """
+    The relationship type for the mapping entry, which describes the relationship between the effective requirements of the specified source and target sets.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    ns: Optional[AnyUrl] = Field(
+        None,
+        description=
+        "A namespace qualifying the relationship's value. This allows different organizations to associate distinct semantics for relationships with the same name.",
+        title='Relationship Value Namespace',
+    )
+    type: str
+
+
 class RelatedRisk(OscalBaseModel):
     """
     Relates the finding to a set of referenced risks that were used to determine the finding.
@@ -228,24 +245,6 @@ class RelatedRisk(OscalBaseModel):
         alias='risk-uuid',
         description='A machine-oriented identifier reference to a risk defined in the list of risks.',
         title='Risk Universally Unique Identifier Reference',
-    )
-
-
-class RelatedObservation1(OscalBaseModel):
-    """
-    Relates the finding to a set of referenced observations that were used to determine the finding.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    observation_uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        alias='observation-uuid',
-        description='A machine-oriented identifier reference to an observation defined in the list of observations.',
-        title='Observation Universally Unique Identifier Reference',
     )
 
 
@@ -1605,6 +1604,78 @@ class OriginActor(OscalBaseModel):
     )
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
+
+
+class MappingResourceReference(OscalBaseModel):
+    """
+    A reference to a resource that is either the source or target of a mapping.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    type: constr(
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+    ) = Field(..., description='The semantic type of the resource.', title='Resource Type')
+    href: str = Field(
+        ...,
+        description='A resolvable URL reference to the base catalog or profile that this profile is tailoring.',
+        title='Catalog or Profile Reference',
+    )
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
+    remarks: Optional[str] = None
+
+
+class MappingItem(OscalBaseModel):
+    """
+    Identifies a specific edge within a source or target that is the subject of a mapping.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    type: constr(
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+    ) = Field(..., description='The semantic type of the subject.', title='Subject Type')
+    id_ref: constr(regex=r'^\S(.*\S)?$') = Field(
+        ...,
+        alias='id-ref',
+        description='A reference to an identified subject that is of the specified type.',
+        title='Subject Identifier Reference',
+    )
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
+    remarks: Optional[str] = None
+
+
+class Map(OscalBaseModel):
+    """
+    A relationship-based mapping between a source and target set consisting of members (i.e., controls, control statements) from the respective source and target.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+                 ) = Field(
+                     ...,
+                     description='The unique identifier for the mapping entry.',
+                     title='Mapping Entry Identifier',
+                 )
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
+    relationship: Relationship = Field(
+        ...,
+        description=
+        'The relationship type for the mapping entry, which describes the relationship between the effective requirements of the specified source and target sets.',
+        title='Mapping Entry Relationship',
+    )
+    sources: List[MappingItem] = Field(...)
+    targets: List[MappingItem] = Field(...)
+    remarks: Optional[str] = None
 
 
 class Location(OscalBaseModel):

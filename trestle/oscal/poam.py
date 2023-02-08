@@ -27,7 +27,7 @@ from __future__ import annotations
 import re
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr, validator
 
@@ -104,25 +104,7 @@ class SelectControlById(OscalBaseModel):
     )
 
 
-class RelatedRisk1(OscalBaseModel):
-    """
-    Relates the finding to a set of referenced risks that were used to determine the finding.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    risk_uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        alias='risk-uuid',
-        description='A machine-oriented identifier reference to a risk defined in the list of risks.',
-        title='Risk Universally Unique Identifier Reference',
-    )
-
-
-class RelatedObservation2(OscalBaseModel):
+class RelatedObservation1(OscalBaseModel):
     """
     Relates the finding to a set of referenced observations that were used to determine the finding.
     """
@@ -324,8 +306,8 @@ class Finding(OscalBaseModel):
         'A machine-oriented identifier reference to the implementation statement in the SSP to which this finding is related.',
         title='Implementation Statement UUID',
     )
-    related_observations: Optional[List[common.RelatedObservation1]] = Field(None, alias='related-observations')
-    related_risks: Optional[List[RelatedRisk1]] = Field(None, alias='related-risks')
+    related_observations: Optional[List[RelatedObservation1]] = Field(None, alias='related-observations')
+    related_risks: Optional[List[common.RelatedRisk]] = Field(None, alias='related-risks')
     remarks: Optional[str] = None
 
 
@@ -606,7 +588,7 @@ class Risk(OscalBaseModel):
         description='A log of all risk-related tasks taken.',
         title='Risk Log',
     )
-    related_observations: Optional[List[RelatedObservation2]] = Field(None, alias='related-observations')
+    related_observations: Optional[List[RelatedObservation1]] = Field(None, alias='related-observations')
 
 
 class PoamItem(OscalBaseModel):
