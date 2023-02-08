@@ -29,10 +29,12 @@ from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.catalog import Catalog
 from trestle.oscal.catalog import Control
 from trestle.oscal.catalog import Group
+from trestle.oscal.common import BackMatter
 from trestle.oscal.common import Link
 from trestle.oscal.common import Metadata
 from trestle.oscal.common import Part
 from trestle.oscal.common import Property
+from trestle.oscal.common import Resource
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
 
@@ -107,6 +109,7 @@ class CatalogHelper:
         # metadata
         self._metadata = Metadata(title=title, last_modified=timestamp, oscal_version=OSCAL_VERSION, version=version)
         self._root_group = OrderedDict()
+        self._root_resources = OrderedDict()
         self._all_groups = OrderedDict()
         self._all_controls = OrderedDict()
 
@@ -138,28 +141,17 @@ class CatalogHelper:
         """Add property to control."""
         control_props = control.props
         control.props = []
-        match = 0
-        append = 0
-        for control_prop in control_props:
+        first = -1
+        last = -1
+        for i, control_prop in enumerate(control_props):
             if control_prop.name == prop.name:
-                control.props.append(control_prop)
-                match = 1
-            elif match and not append:
-                append = 1
+                if first < 0:
+                    first = i
+                last = i
+        for i, control_prop in enumerate(control_props):
+            control.props.append(control_prop)
+            if i == last:
                 control.props.append(prop)
-                control.props.append(control_prop)
-            else:
-                control.props.append(control_prop)
-        if not append:
-            control.props.append(prop)
-
-    def _chk_prop(self, control: Control, prop: Property) -> None:
-        """Check property in control."""
-        for control_prop in control.props:
-            if prop.name == control_prop.name:
-                if prop.value != control_prop.value:
-                    text = f'{control.id} property {prop.name} values {prop.value} and {control_prop.value} not equal'
-                    raise RuntimeError(text)
 
     def add_control(
         self,
@@ -180,8 +172,6 @@ class CatalogHelper:
             for prop in props:
                 if prop.name == 'profile':
                     self._add_prop(control, prop)
-                else:
-                    self._chk_prop(control, prop)
         else:
             title = f'{title}'
             control = Control(id=id_, title=title)
@@ -194,9 +184,34 @@ class CatalogHelper:
                 control.links = links
             group.controls.append(control)
 
+    def add_link(
+        self,
+        recommendation: str,
+        reference: str,
+        links: List[Link],
+    ) -> None:
+        """Add link."""
+        id_ = f'CIS-{recommendation}'
+        if id_ not in self._root_resources:
+            res_id = str(uuid.uuid4())
+            link = Link(href=f'#{res_id}', rel='reference')
+            links.append(link)
+            resource = Resource(
+                uuid=res_id,
+                title=recommendation,
+                description=reference,
+            )
+            self._root_resources[id_] = resource
+
     def get_catalog(self) -> Catalog:
         """Get catalog."""
-        catalog = Catalog(uuid=str(uuid.uuid4()), metadata=self._metadata, groups=list(self._root_group.values()))
+        back_matter = BackMatter(resources=list(self._root_resources.values()))
+        catalog = Catalog(
+            uuid=str(uuid.uuid4()),
+            metadata=self._metadata,
+            groups=list(self._root_group.values()),
+            back_matter=back_matter
+        )
         return catalog
 
 
@@ -290,15 +305,14 @@ class CisXlsxToOscalCatalog(TaskBase):
             name = self._get_normalized_name(key)
             parts.append(Part(id=id_, name=name, prose=value))
 
-    def _add_links(self, xlsx_helper: XlsxHelper, links: List[Link], row: int, key: str) -> None:
+    def _add_links(
+        self, xlsx_helper: XlsxHelper, catalog_helper: CatalogHelper, links: List[Link], row: int, key: str
+    ) -> None:
         """Add links."""
         value = xlsx_helper.get(row, key)
         if value:
-            value = value.replace(':http', ' http')
-            urls = value.split()
-            for url in urls:
-                link = Link(href=url, rel='reference')
-                links.append(link)
+            recommendation = xlsx_helper.get(row, 'recommendation #')
+            catalog_helper.add_link(recommendation, value, links)
 
     def _execute(self) -> TaskOutcome:
         """Wrap the execute for exception handling."""
@@ -378,7 +392,7 @@ class CisXlsxToOscalCatalog(TaskBase):
                 self._add_property_boolean(xlsx_helper, props, row, 'v8 IG2')
                 self._add_property_boolean(xlsx_helper, props, row, 'v8 IG3')
                 self._add_property(xlsx_helper, props, row, 'MITRE ATT&CK Mappings')
-                self._add_links(xlsx_helper, links, row, 'references')
+                self._add_links(xlsx_helper, catalog_helper, links, row, 'references')
                 catalog_helper.add_control(section, recommendation, title, props, parts, links)
 
     def _process_rhel(self, xlsx_helper: XlsxHelper, catalog_helper: CatalogHelper) -> None:
@@ -423,5 +437,5 @@ class CisXlsxToOscalCatalog(TaskBase):
                 self._add_property_boolean(xlsx_helper, props, row, 'v8 IG1')
                 self._add_property_boolean(xlsx_helper, props, row, 'v8 IG2')
                 self._add_property_boolean(xlsx_helper, props, row, 'v8 IG3')
-                self._add_links(xlsx_helper, links, row, 'references')
+                self._add_links(xlsx_helper, catalog_helper, links, row, 'references')
                 catalog_helper.add_control(section, recommendation, title, props, parts, links)
