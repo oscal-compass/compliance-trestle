@@ -407,12 +407,12 @@ class CisXlsxToOscalCatalog(TaskBase):
             self._add_part(xlsx_helper, parts, f'CIS-{frag}_aud', row, 'audit procedure')
             self._add_part(xlsx_helper, parts, f'CIS-{frag}_inf', row, 'additional information')
             self._add_part(xlsx_helper, parts, f'CIS-{frag}_ctl', row, 'CIS Controls')
-            self._add_part(xlsx_helper, parts, f'CIS-{frag}_ctl', row, 'CIS Safeguards 1 (v8)')
-            self._add_part(xlsx_helper, parts, f'CIS-{frag}_ctl', row, 'CIS Safeguards 2 (v8)')
-            self._add_part(xlsx_helper, parts, f'CIS-{frag}_ctl', row, 'CIS Safeguards 3 (v8)')
-            self._add_part(xlsx_helper, parts, f'CIS-{frag}_ctl', row, 'CIS Safeguards 1 (v7)')
-            self._add_part(xlsx_helper, parts, f'CIS-{frag}_ctl', row, 'CIS Safeguards 2 (v7)')
-            self._add_part(xlsx_helper, parts, f'CIS-{frag}_ctl', row, 'CIS Safeguards 3 (v7)')
+            self._add_part(xlsx_helper, parts, f'CIS-{frag}_1v8', row, 'CIS Safeguards 1 (v8)')
+            self._add_part(xlsx_helper, parts, f'CIS-{frag}_2v8', row, 'CIS Safeguards 2 (v8)')
+            self._add_part(xlsx_helper, parts, f'CIS-{frag}_3v8', row, 'CIS Safeguards 3 (v8)')
+            self._add_part(xlsx_helper, parts, f'CIS-{frag}_1v7', row, 'CIS Safeguards 1 (v7)')
+            self._add_part(xlsx_helper, parts, f'CIS-{frag}_2v7', row, 'CIS Safeguards 2 (v7)')
+            self._add_part(xlsx_helper, parts, f'CIS-{frag}_3v7', row, 'CIS Safeguards 3 (v7)')
             # group or control
             if recommendation is None:
                 catalog_helper.add_group(section, title, props, parts)
