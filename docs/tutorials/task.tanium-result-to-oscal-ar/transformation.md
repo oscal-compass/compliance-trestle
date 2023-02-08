@@ -88,7 +88,7 @@ Initialized trestle project successfully in /home/<user>/trestle.workspace
 - Fetch sample Tanium data file. It is a "raw" Tanium result for which a transformation to OSCAL is desired.
 
 ```bash
-(venv.trestle)$ curl 'https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/tasks/tanium/input-doc/Tanium.comply-nist-results' > tanium/tests/data/tasks/tanium/input/Tanium.doc-json
+(venv.trestle)$ curl 'https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/tasks/tanium/input-doc/Tanium.doc-json' > tanium/tests/data/tasks/tanium/input/Tanium.doc-json
 ```
 
 <details markdown>
