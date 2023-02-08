@@ -39,34 +39,36 @@ class LinksValidator(Validator):
         returns:
             Always returns True, but gives warning if links and resources are not one-to-one.
         """
-        if model.__module__ == const.MODEL_MODULE_MAPPING:
-            return True
+        if model.__module__ != const.MODEL_MODULE_MAPPING:
+            refs = ModelUtils.find_uuid_refs(model)
 
-        refs = ModelUtils.find_uuid_refs(model)
+            # find uuids in backmatter
+            links: List[str] = []
+            if model.back_matter and model.back_matter.resources:
+                links = [res.uuid for res in model.back_matter.resources]
+                seen: Set[str] = set()
+                dupes = [uuid for uuid in links if uuid in seen or seen.add(uuid)]
+                if dupes:
+                    if not quiet:
+                        logger.warning(f'Backmatter has  {len(dupes)} duplicate link uuids.')
+                    logger.debug(f'Backmatter has {len(dupes)} duplicate link uuids: {dupes}')
 
-        # find uuids in backmatter
-        links: List[str] = []
-        if model.back_matter and model.back_matter.resources:
-            links = [res.uuid for res in model.back_matter.resources]
-            seen: Set[str] = set()
-            dupes = [uuid for uuid in links if uuid in seen or seen.add(uuid)]
-            if dupes:
+            links = set(links)
+            in_refs = refs.difference(links)
+            if in_refs:
                 if not quiet:
-                    logger.warning(f'Backmatter has  {len(dupes)} duplicate link uuids.')
-                logger.debug(f'Backmatter has {len(dupes)} duplicate link uuids: {dupes}')
+                    logger.warning(
+                        f'Model references {len(refs)} uuids and {len(in_refs)} of them are not in resources.'
+                    )
+                logger.debug(f'Model references {len(in_refs)} uuids not in resources: {in_refs}')
 
-        links = set(links)
-        in_refs = refs.difference(links)
-        if in_refs:
-            if not quiet:
-                logger.warning(f'Model references {len(refs)} uuids and {len(in_refs)} of them are not in resources.')
-            logger.debug(f'Model references {len(in_refs)} uuids not in resources: {in_refs}')
-
-        in_links = links.difference(refs)
-        if in_links:
-            if not quiet:
-                logger.warning(f'Resources have {len(links)} uuids and {len(in_links)} are not referenced by model.')
-            logger.debug(f'Resources have {len(in_links)} uuids not referenced by model: {in_links}')
+            in_links = links.difference(refs)
+            if in_links:
+                if not quiet:
+                    logger.warning(
+                        f'Resources have {len(links)} uuids and {len(in_links)} are not referenced by model.'
+                    )
+                logger.debug(f'Resources have {len(in_links)} uuids not referenced by model: {in_links}')
 
         # This validator is intended just to give warnings, so it always returns True
         return True
