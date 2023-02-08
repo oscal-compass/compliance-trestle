@@ -1,30 +1,41 @@
 {
-  "mapping": {
+  "mapping-collection": {
     "uuid": "A0000000-0000-4000-8000-000000000050",
-    "source-resource": {
-      "type": "SemanticType",
-      "href": "https://foo/bar.json"
+    "metadata": {
+      "title": "Trestle test mapping-collection",
+      "last-modified": "2021-01-01T00:00:00.000+00:00",
+      "version": "2021-01-01",
+      "oscal-version": "1.0.0"
     },
-    "target-resource": {
-      "type": "SemanticType",
-      "href": "https://dog/cat.json"
-    },
-    "maps": [
+    "mappings": [
       {
         "uuid":"A0000000-0000-4000-8000-000000000060",
-        "relationship": {
-          "type": "brother"
+        "source-resource": {
+          "type": "SemanticType",
+          "href": "https://foo/bar.json"
         },
-        "sources": [
+        "target-resource": {
+          "type": "SemanticType",
+          "href": "https://dog/cat.json"
+        },
+        "maps": [
           {
-            "type": "SemanticType",
-            "id_ref": "IdRefSource"
-          }
-        ],
-        "targets": [
-          {
-            "type": "SemanticType",
-            "id_ref": "IdRefTarget"
+            "uuid":"A0000000-0000-4000-8000-000000000070",
+            "relationship": {
+              "type": "brother"
+            },
+            "sources": [
+              {
+                "type": "SemanticType",
+                "id_ref": "IdRefSource"
+              }
+            ],
+            "targets": [
+              {
+                "type": "SemanticType",
+                "id_ref": "IdRefTarget"
+              }
+            ]
           }
         ]
       }

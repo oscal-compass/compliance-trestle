@@ -39,7 +39,7 @@ from trestle.core import generators
 from trestle.core.commands import create
 from trestle.core.models.plans import Plan
 from trestle.oscal.catalog import Catalog, Group
-from trestle.oscal.mapping import Mapping
+from trestle.oscal.mapping import MappingCollection
 from trestle.oscal.profile import Modify, Profile, SetParameter
 
 
@@ -364,14 +364,18 @@ def test_import_wrong_oscal_version(tmp_trestle_dir: pathlib.Path) -> None:
 def test_import_load_mapping(tmp_trestle_dir: pathlib.Path) -> None:
     """Test load of mapping model."""
     external_map_path = test_utils.JSON_TEST_DATA_PATH / 'simple_mapping.json'
-    read_map: Mapping = Mapping.oscal_read(external_map_path)
-    assert read_map.maps[0].relationship.type == 'brother'
+    read_mapping_collection: MappingCollection = MappingCollection.oscal_read(external_map_path)
+    assert read_mapping_collection.mappings[0].maps[0].relationship.type == 'brother'
 
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, file=str(external_map_path), output='my_map', verbose=1, regenerate=False
+        trestle_root=tmp_trestle_dir,
+        file=str(external_map_path),
+        output='my_mapping_collection',
+        verbose=1,
+        regenerate=False
     )
     i = importcmd.ImportCmd()
     assert i._run(args) == 0
 
-    loaded_map, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, 'my_map', Mapping)
-    assert loaded_map.maps[0].relationship.type == 'brother'
+    loaded_mapping_collection, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, 'my_mapping_collection', MappingCollection)  # noqa E501
+    assert loaded_mapping_collection.mappings[0].maps[0].relationship.type == 'brother'

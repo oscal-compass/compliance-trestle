@@ -92,7 +92,7 @@ alias_map = {
     'assessment_results': 'assessment-results',
     'catalog': 'catalog',
     'component': 'component-definition',
-    'mapping': 'mapping',
+    'mapping': 'mapping-collection',
     'poam': 'plan-of-action-and-milestones',
     'profile': 'profile',
     'ssp': 'system-security-plan'
@@ -103,7 +103,7 @@ camel_map = {
     'assessment_results': 'AssessmentResults',
     'catalog': 'Catalog',
     'component': 'ComponentDefinition',
-    'mapping': 'Mapping',
+    'mapping': 'MappingCollection',
     'poam': 'PlanOfActionAndMilestones',
     'profile': 'Profile',
     'ssp': 'SystemSecurityPlan'

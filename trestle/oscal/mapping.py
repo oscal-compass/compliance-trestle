@@ -79,4 +79,4 @@ class MappingCollection(OscalBaseModel):
 
 
 class Model(OscalBaseModel):
-    mapping: Mapping
+    mapping_collection: MappingCollection = Field(..., alias='mapping-collection')
