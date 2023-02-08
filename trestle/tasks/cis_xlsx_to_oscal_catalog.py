@@ -118,9 +118,9 @@ class CatalogHelper:
         numdots = section.count('.')
         if numdots == 0:
             group = Group(title=f'{title}', id=f'CIS-{section}')
-            if len(props):
+            if props:
                 group.props = props
-            if len(parts):
+            if parts:
                 group.parts = parts
             self._root_group[section] = group
             self._all_groups[section] = group
@@ -130,9 +130,9 @@ class CatalogHelper:
             if parent.groups is None:
                 parent.groups = []
             group = Group(title=f'{title}', id=f'CIS-{section}')
-            if len(props):
+            if props:
                 group.props = props
-            if len(parts):
+            if parts:
                 group.parts = parts
             parent.groups.append(group)
             self._all_groups[section] = group
@@ -176,11 +176,11 @@ class CatalogHelper:
             title = f'{title}'
             control = Control(id=id_, title=title)
             self._all_controls[id_] = control
-            if len(props):
+            if props:
                 control.props = props
-            if len(parts):
+            if parts:
                 control.parts = parts
-            if len(links):
+            if links:
                 control.links = links
             group.controls.append(control)
 
