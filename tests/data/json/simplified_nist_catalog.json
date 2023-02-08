@@ -2898,7 +2898,8 @@
                   {
                     "id": "ac-4.4_prm_3",
                     "depends-on": "ac-4.4_prm_2",
-                    "label": "organization-defined procedure or method"
+                    "label": "organization-defined procedure or method",
+                    "values": ["my procedure"]
                   }
                 ],
                 "props": [

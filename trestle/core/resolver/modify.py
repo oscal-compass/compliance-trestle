@@ -41,7 +41,9 @@ class Modify(Pipeline.Filter):
         block_params: bool = False,
         params_format: str = None,
         param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES,
-        show_value_warnings: bool = False
+        show_value_warnings: bool = False,
+        value_assigned_prefix: Optional[str] = None,
+        value_not_assigned_prefix: Optional[str] = None
     ) -> None:
         """Initialize the filter."""
         self._profile = profile
@@ -52,6 +54,8 @@ class Modify(Pipeline.Filter):
         self._params_format = params_format
         self._param_rep = param_rep
         self.show_value_warnings = show_value_warnings
+        self._value_assigned_prefix = value_assigned_prefix
+        self._value_not_assigned_prefix = value_not_assigned_prefix
         logger.debug(f'modify initialize filter with profile {profile.metadata.title}')
 
     @staticmethod
@@ -308,7 +312,11 @@ class Modify(Pipeline.Filter):
         if self._change_prose:
             # go through all controls and fix the prose based on param values
             self._catalog_interface._change_prose_with_param_values(
-                self._params_format, self._param_rep, self.show_value_warnings
+                self._params_format,
+                self._param_rep,
+                self.show_value_warnings,
+                self._value_assigned_prefix,
+                self._value_not_assigned_prefix
             )
 
         catalog = self._catalog_interface.get_catalog()

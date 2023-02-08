@@ -46,7 +46,9 @@ class Import(Pipeline.Filter):
         params_format: str = None,
         param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES,
         resources: Optional[List[Resource]] = None,
-        show_value_warnings: bool = False
+        show_value_warnings: bool = False,
+        value_assigned_prefix: Optional[str] = None,
+        value_not_assigned_prefix: Optional[str] = None
     ) -> None:
         """Initialize and store trestle root for cache access."""
         self._trestle_root = trestle_root
@@ -59,6 +61,8 @@ class Import(Pipeline.Filter):
         self._param_rep = param_rep
         self._resources = resources
         self.show_value_warnings = show_value_warnings
+        self.value_assigned_prefix = value_assigned_prefix
+        self.value_not_assigned_prefix = value_not_assigned_prefix
 
         if self._import.href[0] == '#':
             # Specification section on internal reference resolution:
@@ -117,7 +121,9 @@ class Import(Pipeline.Filter):
                 self._block_params,
                 self._params_format,
                 self._param_rep,
-                self.show_value_warnings
+                self.show_value_warnings,
+                self.value_assigned_prefix,
+                self.value_not_assigned_prefix
             )
             final_pipeline = Pipeline([merge_filter, modify_filter])
             yield next(final_pipeline.process(pipelines))

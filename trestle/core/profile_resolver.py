@@ -72,7 +72,9 @@ class ProfileResolver():
         block_params: bool = False,
         params_format: Optional[str] = None,
         param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES,
-        show_value_warnings: bool = False
+        show_value_warnings: bool = False,
+        value_assigned_prefix: Optional[str] = None,
+        value_not_assigned_prefix: Optional[str] = None
     ) -> Tuple[cat.Catalog, Optional[Dict[str, Any]]]:
         """
         Create the resolved profile catalog given a profile path along with inherited props.
@@ -85,6 +87,8 @@ class ProfileResolver():
             params_format: optional pattern with dot to wrap the param string, where dot represents the param string
             param_rep: desired way to convert params to strings
             show_value_warnings: warn if prose references a value that has not been set
+            value_assigned_prefix: Prefix placed in front of param string if a value was assigned
+            value_not_assigned_prefix: Prefix placed in front of param string if a value was *not* assigned
 
         Returns:
             The resolved profile catalog and a control dict of inherited props
@@ -93,7 +97,17 @@ class ProfileResolver():
         import_ = prof.Import(href=str(profile_path), include_all={})
         # The final Import has change_prose=True to force parameter substitution in the prose only at the last stage.
         import_filter = Import(
-            trestle_root, import_, [], True, block_adds, block_params, params_format, param_rep, show_value_warnings
+            trestle_root,
+            import_, [],
+            True,
+            block_adds,
+            block_params,
+            params_format,
+            param_rep,
+            None,
+            show_value_warnings,
+            value_assigned_prefix,
+            value_not_assigned_prefix
         )
         logger.debug('launch pipeline')
         resolved_profile_catalog = next(import_filter.process())
@@ -108,7 +122,9 @@ class ProfileResolver():
         block_params: bool = False,
         params_format: Optional[str] = None,
         param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES,
-        show_value_warnings: bool = False
+        show_value_warnings: bool = False,
+        value_assigned_prefix: Optional[str] = None,
+        value_not_assigned_prefix: Optional[str] = None
     ) -> cat.Catalog:
         """
         Create the resolved profile catalog given a profile path.
@@ -121,6 +137,8 @@ class ProfileResolver():
             params_format: optional pattern with dot to wrap the param string, where dot represents the param string
             param_rep: desired way to convert params to strings
             show_value_warnings: warn if prose references a value that has not been set
+            value_assigned_prefix: Prefix placed in front of param string if a value was assigned
+            value_not_assigned_prefix: Prefix placed in front of param string if a value was *not* assigned
 
         Returns:
             The resolved profile catalog
@@ -133,6 +151,8 @@ class ProfileResolver():
             block_params,
             params_format,
             param_rep,
-            show_value_warnings
+            show_value_warnings,
+            value_assigned_prefix,
+            value_not_assigned_prefix
         )
         return resolved_profile_catalog

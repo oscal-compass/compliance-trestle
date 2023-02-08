@@ -57,7 +57,9 @@ class SSPGenerate(AuthorCommonCommand):
     def _init_arguments(self) -> None:
         file_help_str = 'Main profile href, or name of the profile model in the trestle workspace'
         self.add_argument('-p', '--profile', help=file_help_str, required=True, type=str)
-        self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
+        self.add_argument(
+            '-o', '--output', help='Name of the output generated ssp markdown folder', required=True, type=str
+        )  # noqa E501
         self.add_argument('-cd', '--compdefs', help=const.HELP_COMPDEFS, required=False, type=str)
         self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
         self.add_argument(
