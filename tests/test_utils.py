@@ -484,18 +484,17 @@ def execute_command_and_assert(command: str, return_code: int, monkeypatch: Monk
     Execute given command using monkeypatch and assert return code.
 
     tokens in quotes with embedded spaces require special parsing by shlex.
-    But shlex is mainly for posix and strips away all \\, which is a problem for windows file paths.
+    But shlex strips away all \\, which is a problem for windows file paths and any token with backlashes.
     So this has a simple hack to replace \\ by $ and convert back after splitting.
     """
-    win_path = '\\' in command
-    if win_path:
+    has_slashes = '\\' in command
+    if has_slashes:
         if '$' in command:
-            logger.error('cannot parse windows command string with backslashes and $.')
-            return 1
+            raise TrestleError('cannot parse command string containing backslashes and $.')
         command = command.replace('\\', '$')
 
     split_command = shlex.split(command)
-    if win_path:
+    if has_slashes:
         split_command = [token.replace('$', '\\') for token in split_command]
     monkeypatch.setattr(sys, 'argv', split_command)
 

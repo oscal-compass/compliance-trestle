@@ -246,7 +246,7 @@ def test_replace_params_assignment_mode(simplified_nist_catalog: cat.Catalog) ->
         0
     ].prose == 'Prevent encrypted information from bypassing [Assignment: organization-defined information flow control mechanisms] by [Selection (one or more): decrypting the information; blocking the flow of the encrypted information; terminating communications sessions attempting to pass encrypted information;  [IBM Assignment: my procedure] ].'  # noqa E501
     value = 'blocking the flow of the encrypted information'
-    param_dict['ac-4.4_prm_2'].values = [com.Value(__root__=value)]
+    param_dict['ac-4.4_prm_2'].values = [com.ParameterValue(__root__=value)]
     ac_44.parts[0].prose = orig_prose
     # test the case where values for choices are assigned
     ControlInterface.replace_control_prose(
