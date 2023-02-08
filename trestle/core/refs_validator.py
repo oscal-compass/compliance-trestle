@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Validate by confirming all refs have corresponding id."""
+from trestle.common import const
 from trestle.common.common_types import TopLevelOscalModel
 from trestle.common.list_utils import as_list
 from trestle.core.validator import Validator
@@ -33,6 +34,8 @@ class RefsValidator(Validator):
         returns:
             True (valid) if the model's responsible parties match those found in roles.
         """
+        if model.__module__ == const.MODEL_MODULE_MAPPING:
+            return True
         roles = as_list(model.metadata.roles)
         role_ids = [role.id for role in roles]
         responsible_parties = as_list(model.metadata.responsible_parties)

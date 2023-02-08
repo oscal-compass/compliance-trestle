@@ -155,6 +155,7 @@ nav:
       - catalog: api_reference/trestle.oscal.catalog.md
       - common: api_reference/trestle.oscal.common.md
       - component: api_reference/trestle.oscal.component.md
+      - mapping: api_reference/trestle.oscal.mapping.md
       - poam: api_reference/trestle.oscal.poam.md
       - profile: api_reference/trestle.oscal.profile.md
       - ssp: api_reference/trestle.oscal.ssp.md

@@ -67,6 +67,8 @@ The only exception to this is OscalVersion, which has a special validator insert
 Note that __root__ classes in the other oscal .py files are left as-is since they don't tend to be referenced much
 if at all in the trestle code - but they could also be removed by extensions to this script.
 
+NOTE: The routine is fully automatic except the new Mapping class requires a slight manual edit to MappingCollection.
+
 """
 
 import logging

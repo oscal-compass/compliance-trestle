@@ -17,6 +17,7 @@
 import logging
 from typing import List, Set
 
+from trestle.common import const
 from trestle.common.common_types import TopLevelOscalModel
 from trestle.common.model_utils import ModelUtils
 from trestle.core.validator import Validator
@@ -38,6 +39,9 @@ class LinksValidator(Validator):
         returns:
             Always returns True, but gives warning if links and resources are not one-to-one.
         """
+        if model.__module__ == const.MODEL_MODULE_MAPPING:
+            return True
+
         refs = ModelUtils.find_uuid_refs(model)
 
         # find uuids in backmatter
