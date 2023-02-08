@@ -27,7 +27,10 @@ Note the examples here use markdown, however, jinja can quite easily target xml 
 - `-p` (optional) profile name (in the trestle project). When used the jinja template will have `resolved_catalog` and `catalog_interface` variables to use.
 - `-lut` (optional) loads yaml into a dictionary in python for which each (top level) variable is available in jinja.
 - `-elp` (optional) a period separated prefix for the variables in the lookup table. E.g. if the lut contained `banana: yellow` and the prefix was `fruit.tropical` using `{{ fruit.tropical.banana }}` would print out `yellow` in the jinja template.
-- `-bf` (optional) use to provide a custom formatting of the substituted parameters in the text with brackets or markup formatting. Use dot (.) to indicate where the parameter value will be written. E.g. `-bf *.*` to italicize all substituted parameters, `-bf Prefix:.` to add `Prefix:` to all parameters.
+- `-bf` (optional) use to provide a custom formatting of the substituted parameters in the text with brackets or markup formatting. Use dot (.) to indicate where the parameter value will be written. E.g. `-bf *.*` to italicize all substituted parameters, `-bf Prefix:.` to add `Prefix:` to all parameters, and `-bf [.]` to put square brackets around the parameters.
+- `-vap` (optional) use to specify a `--value-assigned-prefix` in front of parameters that have values assigned by the profile.  An example would include the organization doing the
+  assignment, e.g. `-vap "ACME Assignment:"`  This is identical to the behavior of `profile-resolve`.
+- `-vnap` (optional) use to specify a `--value-not-assigned-prefix` in front of parameters that do *not* have values assigned by the profile.  An example would be `-vap "Assignment:"`  This is identical to the behavior of `profile-resolve`.
 
 ## Sample jinja templates
 

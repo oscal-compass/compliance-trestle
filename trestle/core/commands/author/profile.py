@@ -407,7 +407,7 @@ class ProfileResolve(AuthorCommonCommand):
         self.add_argument(
             '-sl',
             '--show-labels',
-            help='Show labels for parameters in prose',
+            help='Show labels for parameters in prose instead of values',
             required=False,
             action='store_true',
             default=False
@@ -455,9 +455,8 @@ class ProfileResolve(AuthorCommonCommand):
             param_format = args.bracket_format
             value_assigned_prefix = args.value_assigned_prefix
             value_not_assigned_prefix = args.value_not_assigned_prefix
+            label_prefix = args.label_prefix
             show_labels = args.show_labels
-            if args.label_prefix:
-                value_not_assigned_prefix = args.label_prefix
 
             return self.resolve_profile(
                 trestle_root,
@@ -467,7 +466,8 @@ class ProfileResolve(AuthorCommonCommand):
                 param_format,
                 value_assigned_prefix,
                 value_not_assigned_prefix,
-                show_labels
+                show_labels,
+                label_prefix
             )
 
         except Exception as e:  # pragma: no cover
@@ -482,7 +482,8 @@ class ProfileResolve(AuthorCommonCommand):
         bracket_format: str,
         value_assigned_prefix: Optional[str],
         value_not_assigned_prefix: Optional[str],
-        show_labels: bool
+        show_labels: bool,
+        label_prefix: Optional[str]
     ) -> int:
         """Create resolved profile catalog from given profile.
 
@@ -495,6 +496,7 @@ class ProfileResolve(AuthorCommonCommand):
             value_assigned_prefix: Prefix placed in front of param string if a value was assigned
             value_not_assigned_prefix: Prefix placed in front of param string if a value was *not* assigned
             show_labels: Show labels for parameters and not values
+            label_prefix: Prefix placed in front of param label
 
         Returns:
             0 on success and raises exception on error
@@ -505,11 +507,16 @@ class ProfileResolve(AuthorCommonCommand):
         param_rep = ParameterRep.LEAVE_MOUSTACHE
         if show_values:
             param_rep = ParameterRep.ASSIGNMENT_FORM
-        else:
-            if value_assigned_prefix or value_not_assigned_prefix or show_labels:
-                raise TrestleError('Use of value-assigned-prefix or value-not-assigned-prefix requires show-values')
+            if label_prefix or show_labels:
+                raise TrestleError('Use of show-values is not compatible with show-labels or label-prefix')
+        elif value_assigned_prefix or value_not_assigned_prefix:
+            raise TrestleError('Use of value-assigned-prefix or value-not-assigned-prefix requires show-values')
         if show_labels:
             param_rep = ParameterRep.LABEL_FORM
+            # overload value_not_assigned_prefix to use the label_prefix value
+            value_not_assigned_prefix = label_prefix
+        elif label_prefix:
+            raise TrestleError('Use of label-prefix requires show-labels')
 
         bracket_format = none_if_empty(bracket_format)
         catalog = ProfileResolver().get_resolved_profile_catalog(

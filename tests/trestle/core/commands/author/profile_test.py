@@ -969,6 +969,23 @@ def test_profile_resolve_assignment(tmp_trestle_dir: pathlib.Path, monkeypatch: 
     ].prose == 'Support the management of system accounts using (Assignment: organization-defined automated mechanisms).'  # noqa E501
 
 
+def test_profile_resolve_label_mode(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test profile resolve to create resolved profile catalog in label mode."""
+    test_utils.setup_for_multi_profile(tmp_trestle_dir, False, False)
+    cat_name = 'resolved_catalog'
+    command_profile_resolve = f'trestle author profile-resolve -n main_profile -o {cat_name} -bf (.) -sl -lp Label:'  # noqa E501
+    test_utils.execute_command_and_assert(command_profile_resolve, 0, monkeypatch)
+    res_cat, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, cat_name, cat.Catalog, FileContentType.JSON)
+    ac_1 = res_cat.groups[0].controls[0]
+    expected_value = '(Label: organization-defined official)'
+    expected_prose = f'Designate an {expected_value} to manage the development, documentation, and dissemination of the access control policy and procedures; and'  # noqa E501
+    assert ac_1.parts[0].parts[1].prose == expected_prose
+    ac_21 = res_cat.groups[0].controls[-1].controls[0]
+    assert ac_21.parts[
+        0
+    ].prose == 'Support the management of system accounts using (Label: organization-defined automated mechanisms).'  # noqa E501
+
+
 def test_profile_resolve_assignment_simple(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test profile resolve with simple profile."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, True, False)
@@ -984,3 +1001,14 @@ def test_profile_resolve_assignment_simple(tmp_trestle_dir: pathlib.Path, monkey
     assert ac_21.parts[
         0
     ].prose == 'Support the management of system accounts using (Assignment: organization-defined automated mechanisms).'  # noqa E501
+
+
+def test_profile_resolve_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test profile resolve failure due to disallowed argument combinations."""
+    test_utils.setup_for_multi_profile(tmp_trestle_dir, True, False)
+    core_command = 'trestle author profile-resolve -n main_profile -o resolved_catalog -bf (.) '
+    test_utils.execute_command_and_assert(core_command + '-sv -sl', 1, monkeypatch)
+    test_utils.execute_command_and_assert(core_command + '-sv -lp prefix', 1, monkeypatch)
+    test_utils.execute_command_and_assert(core_command + '-lp prefix', 1, monkeypatch)
+    test_utils.execute_command_and_assert(core_command + '-vap prefix', 1, monkeypatch)
+    test_utils.execute_command_and_assert(core_command + '-sl -vap prefix', 1, monkeypatch)
