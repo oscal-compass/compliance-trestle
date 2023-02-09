@@ -198,7 +198,6 @@ class CatalogHelper:
             links.append(link)
             resource = Resource(
                 uuid=res_id,
-                title=recommendation,
                 description=reference,
             )
             self._root_resources[id_] = resource

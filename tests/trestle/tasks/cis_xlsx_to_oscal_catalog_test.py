@@ -229,3 +229,9 @@ def _validate_rhel(tmp_path: pathlib.Path):
     t1 = 'Periodically patches are released for included software either due'
     t2 = ' to security flaws or to include additional functionality.'
     assert part0.prose == t1 + t2
+    md = catalog.metadata
+    assert md.title == 'CIS Red Hat Enterprise Linux 8 Benchmark'
+    rs = catalog.back_matter.resources
+    assert len(rs) == 1
+    assert rs[
+        0].description == 'CRYPTO-POLICIES(7):https://access.redhat.com/articles/3642912#what-polices-are-provided-1'
