@@ -653,12 +653,27 @@ class CatalogInterface():
             param_dict.update(ControlInterface.get_control_param_dict(control, False))
         return param_dict
 
-    def _change_prose_with_param_values(self, param_format, param_rep, show_value_warnings: bool) -> None:
+    def _change_prose_with_param_values(
+        self,
+        param_format,
+        param_rep,
+        show_value_warnings: bool,
+        value_assigned_prefix: Optional[str] = None,
+        value_not_assigned_prefix: Optional[str] = None
+    ) -> None:
         """Go through all controls and change prose based on param values."""
         param_dict = self._get_full_param_dict()
         # insert param values into prose of all controls
         for control in self.get_all_controls_from_dict():
-            ControlInterface.replace_control_prose(control, param_dict, param_format, param_rep, show_value_warnings)
+            ControlInterface.replace_control_prose(
+                control,
+                param_dict,
+                param_format,
+                param_rep,
+                show_value_warnings,
+                value_assigned_prefix,
+                value_not_assigned_prefix
+            )
 
     @staticmethod
     def _get_display_name_and_ns(param: common.Parameter) -> Tuple[Optional[str], Optional[str]]:
