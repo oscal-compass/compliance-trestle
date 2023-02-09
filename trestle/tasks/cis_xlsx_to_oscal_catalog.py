@@ -141,12 +141,9 @@ class CatalogHelper:
         """Add property to control."""
         control_props = control.props
         control.props = []
-        first = -1
-        last = -1
+        last = 0
         for i, control_prop in enumerate(control_props):
             if control_prop.name == prop.name:
-                if first < 0:
-                    first = i
                 last = i
         for i, control_prop in enumerate(control_props):
             control.props.append(control_prop)
