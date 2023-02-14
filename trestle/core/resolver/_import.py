@@ -14,6 +14,7 @@
 """Create resolved catalog from profile."""
 
 import logging
+import os
 import pathlib
 from typing import Iterator, List, Optional, Union
 
@@ -48,7 +49,8 @@ class Import(Pipeline.Filter):
         resources: Optional[List[Resource]] = None,
         show_value_warnings: bool = False,
         value_assigned_prefix: Optional[str] = None,
-        value_not_assigned_prefix: Optional[str] = None
+        value_not_assigned_prefix: Optional[str] = None,
+        parent_url_root: Optional[str] = None
     ) -> None:
         """Initialize and store trestle root for cache access."""
         self._trestle_root = trestle_root
@@ -63,6 +65,10 @@ class Import(Pipeline.Filter):
         self.show_value_warnings = show_value_warnings
         self.value_assigned_prefix = value_assigned_prefix
         self.value_not_assigned_prefix = value_not_assigned_prefix
+        self._parent_url_root = parent_url_root
+
+        if not self._import.href or not self._import.href.strip():
+            raise TrestleError('Attempt to import via an empty href.')
 
         if self._import.href[0] == '#':
             # Specification section on internal reference resolution:
@@ -80,6 +86,18 @@ class Import(Pipeline.Filter):
                 raise TrestleError(
                     f'Back matter resource resolution needed for profile import failed with error: {str(e)}'
                 )
+        uri_type = cache.FetcherFactory.get_uri_type(self._import.href)
+        # if this looks like a relative path to remote source, append parent path
+        if uri_type == cache.FetcherFactory.UriType.LOCAL_FILE and self._parent_url_root:
+            self._import.href = self._parent_url_root + self._import.href
+        # if href is now a remote path, capture its parent path for use with child imports
+        if uri_type not in [cache.FetcherFactory.UriType.LOCAL_FILE, cache.FetcherFactory.UriType.TRESTLE]:
+            head_path, _ = os.path.split(self._import.href)
+            if head_path and head_path[-1] != '/':
+                head_path += '/'
+            self._parent_url_root = head_path
+            logger.info('parent head path %s', head_path)
+        logger.info('import href is %s', self._import.href)
 
     def process(self, _=None) -> Iterator[cat.Catalog]:
         """Load href for catalog or profile and yield each import as catalog imported by its distinct pipeline."""
@@ -108,7 +126,13 @@ class Import(Pipeline.Filter):
                 f'import pipelines for sub_imports of profile {self._import.href} with title {model.metadata.title}'
             )
             for sub_import in profile.imports:
-                import_filter = Import(self._trestle_root, sub_import, self._uuid_chain, resources=resources)
+                import_filter = Import(
+                    self._trestle_root,
+                    sub_import,
+                    self._uuid_chain,
+                    resources=resources,
+                    parent_url_root=self._parent_url_root
+                )
                 prune_filter = Prune(sub_import, profile)
                 pipeline = Pipeline([import_filter, prune_filter])
                 pipelines.append(pipeline)
