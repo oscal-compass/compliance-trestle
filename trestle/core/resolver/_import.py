@@ -73,6 +73,7 @@ class Import(Pipeline.Filter):
         if self._import.href[0] == '#':
             # Specification section on internal reference resolution:
             # https://pages.nist.gov/OSCAL/concepts/processing/profile-resolution/#d2e300-head
+            # if href is a local reference, replace it with the actual uri in the resources
             try:
                 resource = [r for r in self._resources if r.uuid == self._import.href[1:]][0]
                 self._import.href = [
@@ -86,11 +87,12 @@ class Import(Pipeline.Filter):
                 raise TrestleError(
                     f'Back matter resource resolution needed for profile import failed with error: {str(e)}'
                 )
+
         uri_type = cache.FetcherFactory.get_uri_type(self._import.href)
         # if this looks like a relative path to remote source, append parent path
         if uri_type == cache.FetcherFactory.UriType.LOCAL_FILE and self._parent_url_root:
             self._import.href = self._parent_url_root + self._import.href
-        # if href is now a remote path, capture its parent path for use with child imports
+        # if href is now a remote path, capture its parent path for possible use with child imports that are relative
         if uri_type not in [cache.FetcherFactory.UriType.LOCAL_FILE, cache.FetcherFactory.UriType.TRESTLE]:
             head_path, _ = os.path.split(self._import.href)
             if head_path and head_path[-1] != '/':
