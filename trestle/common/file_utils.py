@@ -172,13 +172,13 @@ def check_oscal_directories(root_path: pathlib.Path) -> bool:
 
 
 def is_valid_project_root(path: pathlib.Path) -> bool:
-    """Check if the path is a valid workspace root."""
+    """Check if the path is a valid Trestle workspace root."""
     trestle_dir = path / const.TRESTLE_CONFIG_DIR
     return trestle_dir.exists() and trestle_dir.is_dir()
 
 
 def extract_trestle_project_root(path: pathlib.Path) -> Optional[pathlib.Path]:
-    """Get the workspace root folder in the path."""
+    """Get the Trestle workspace root folder in the path."""
     while len(path.parts) > 1:  # it must not be the system root directory
         if is_valid_project_root(path):
             return path

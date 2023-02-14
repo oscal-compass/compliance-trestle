@@ -176,7 +176,7 @@ class Headers(AuthorCommonCommand):
         template_version: str,
         ignore: str
     ) -> bool:
-        """Validate a directory within the workspace."""
+        """Validate a directory within the Trestle workspace."""
         all_versioned_templates = {}
         instance_version = template_version
         instance_file_names: List[pathlib.Path] = []

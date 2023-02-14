@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 
 class HrefCmd(CommandPlusDocs):
-    """Change href of import in profile to point to catalog in workspace.
+    """Change href of import in profile to point to catalog in Trestle workspace.
 
     This command is needed when generating an SSP with a profile that imports a catalog from a temporary
     location different from the final intended location of the catalog.  Omit the href argument to see
@@ -84,7 +84,7 @@ class HrefCmd(CommandPlusDocs):
         """Change the href of the import in the profile to point to a catalog in a specific location.
 
         A Profile has an Imports list containing at least one href of a catalog or profile to be imported.
-        If the item being referenced is currently in the same workspace as the main profile, the original
+        If the item being referenced is currently in the same Trestle workspace as the main profile, the original
         href is likely different from the one needed to access the item from the profile.  Therefore,
         in order for trestle to find the item directly from the profile, the href must be modified in a way that
         trestle can load it.
@@ -108,7 +108,7 @@ class HrefCmd(CommandPlusDocs):
             0 on success, 1 on failure
 
         Assumptions and requirements:
-            The profile must be a valid profile in the workspace.
+            The profile must be a valid profile in the Trestle workspace.
             The import must either be a valid uri, including local file, or trestle://
             The original href is not checked and will be overwritten.
             If href is the empty string, just list all hrefs.

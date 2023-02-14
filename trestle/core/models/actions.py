@@ -247,7 +247,7 @@ class CreatePathAction(Action):
         super().__init__(ActionType.CREATE_PATH, True)
 
     def get_trestle_project_root(self) -> pathlib.Path:
-        """Return the workspace root path."""
+        """Return the Trestle workspace root path."""
         return self._trestle_project_root
 
     def get_created_paths(self) -> List[pathlib.Path]:
@@ -348,7 +348,7 @@ class RemovePathAction(Action):
         super().__init__(ActionType.REMOVE_PATH, True)
 
     def get_trestle_project_root(self) -> Optional[pathlib.Path]:
-        """Return the workspace root path."""
+        """Return the Trestle workspace root path."""
         return self._trestle_project_root
 
     def execute(self) -> None:

@@ -186,7 +186,7 @@ def recover_file(file_path: pathlib.Path, delete_trash: bool = False) -> None:
 def recover_dir(dest_dir_path: pathlib.Path, delete_trash: bool = False) -> None:
     """Move the specified dir from the trash directory.
 
-    dest_dir_path: destination path of the directory inside a workspace
+    dest_dir_path: destination path of the directory inside a Trestle workspace
 
     It recovers the latest directory and contents from trash if exists
     """

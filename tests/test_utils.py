@@ -123,7 +123,7 @@ def prepare_trestle_project_dir(
 def create_trestle_project_with_model(
     top_dir: pathlib.Path, model_obj: OscalBaseModel, model_name: str, monkeypatch: MonkeyPatch
 ) -> pathlib.Path:
-    """Create initialized workspace and import the model into it."""
+    """Create initialized Trestle workspace and import the model into it."""
     cur_dir = pathlib.Path.cwd()
 
     # create subdirectory for trestle project
