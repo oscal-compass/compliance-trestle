@@ -281,7 +281,6 @@ class HTTPSFetcher(FetcherBase):
         if self._username is not None and self._password is not None:
             auth = HTTPBasicAuth(self._username, self._password)
 
-        # attempt get of the file from url
         try:
             response = requests.get(self._url, auth=auth, verify=verify)
         except Exception as e:
@@ -396,6 +395,11 @@ class FetcherFactory:
         HTTPS = 3
 
         TRESTLE = 4
+
+    @staticmethod
+    def uri_type_is_not_local(uri_type: UriType) -> bool:
+        """Determine if the uri type is not local."""
+        return uri_type in [FetcherFactory.UriType.SFTP, FetcherFactory.UriType.HTTPS]
 
     @staticmethod
     def get_uri_type(uri: str) -> UriType:

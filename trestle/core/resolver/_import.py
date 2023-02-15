@@ -91,15 +91,12 @@ class Import(Pipeline.Filter):
         uri_type = cache.FetcherFactory.get_uri_type(self._import.href)
         # if this looks like a relative path to remote source, append parent path
         if uri_type == cache.FetcherFactory.UriType.LOCAL_FILE and self._parent_url_root:
-            self._import.href = self._parent_url_root + self._import.href
+            self._import.href = self._parent_url_root + '/' + self._import.href
         # if href is now a remote path, capture its parent path for possible use with child imports that are relative
-        if uri_type not in [cache.FetcherFactory.UriType.LOCAL_FILE, cache.FetcherFactory.UriType.TRESTLE]:
-            head_path, _ = os.path.split(self._import.href)
-            if head_path and head_path[-1] != '/':
-                head_path += '/'
-            self._parent_url_root = head_path
-            logger.info('parent head path %s', head_path)
-        logger.info('import href is %s', self._import.href)
+        if cache.FetcherFactory.uri_type_is_not_local(uri_type):
+            self._parent_url_root = os.path.dirname(self._import.href)
+            logger.debug('parent url root path %s', self._parent_url_root)
+        logger.debug('import href is %s', self._import.href)
 
     def process(self, _=None) -> Iterator[cat.Catalog]:
         """Load href for catalog or profile and yield each import as catalog imported by its distinct pipeline."""

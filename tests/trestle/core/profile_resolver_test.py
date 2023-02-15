@@ -435,6 +435,6 @@ def test_profile_resolver_no_params(tmp_trestle_dir: pathlib.Path) -> None:
 
 def test_remote_profile_relative_cat(tmp_trestle_dir: pathlib.Path) -> None:
     """Test profile resolver with remote profile and import of relative catalog path."""
-    profile_path = 'https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_LOW-baseline_profile.json'  # noqa E501
+    profile_path = 'https://raw.githubusercontent.com/usnistgov/oscal-content/feature-basic-end-to-end-example/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_LOW-baseline_profile.json'  # noqa E501
     resolved_cat = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, profile_path)
     assert len(resolved_cat.groups) > 10
