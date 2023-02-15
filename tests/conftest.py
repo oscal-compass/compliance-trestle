@@ -169,6 +169,20 @@ def sample_catalog_rich_controls():
 
 
 @pytest.fixture(scope='function')
+def sample_catalog_subgroups():
+    """Return a catalog with groups of groups."""
+    catalog_obj = gens.generate_sample_model(cat.Catalog)
+    group = cat.Group(id='a', title='The a group')
+    control_c = cat.Control(id='control_c', title='this is control c')
+    sub_sub_group = cat.Group(id='bb', title='The bb sub sub group', controls=[control_c])
+    sub_group = cat.Group(id='b', title='The b sub group', groups=[sub_sub_group])
+    group.groups = [sub_group]
+    catalog_obj.groups = [group]
+
+    return catalog_obj
+
+
+@pytest.fixture(scope='function')
 def sample_component_definition():
     """Return a valid ComponentDefinition object with some contents."""
     # one component has no properties - the other has two

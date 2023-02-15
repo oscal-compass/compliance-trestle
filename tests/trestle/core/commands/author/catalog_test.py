@@ -612,3 +612,14 @@ def test_prune_written_controls(tmp_trestle_dir: pathlib.Path, monkeypatch: Monk
     id_subset = control_ids - set(controls_to_delete)
 
     assert CatalogInterface._prune_controls(md_path, id_subset) == controls_to_delete
+
+
+def test_catalog_assemble_subgroups(
+    tmp_trestle_dir: pathlib.Path, sample_catalog_subgroups: cat.Catalog, monkeypatch: MonkeyPatch
+) -> None:
+    """Test assembly of catalog with group having no controls but does contain subgroup."""
+    ModelUtils.save_top_level_model(sample_catalog_subgroups, tmp_trestle_dir, 'my_catalog', FileContentType.JSON)
+    catalog_generate = 'trestle author catalog-generate -n my_catalog -o md_catalog -vv'
+    test_utils.execute_command_and_assert(catalog_generate, 0, monkeypatch)
+    catalog_assemble = 'trestle author catalog-assemble -m md_catalog -o my_catalog -vv'
+    test_utils.execute_command_and_assert(catalog_assemble, 0, monkeypatch)

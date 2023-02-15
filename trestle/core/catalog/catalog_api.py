@@ -42,7 +42,7 @@ class CatalogAPI():
     def __init__(self, catalog: Optional[cat.Catalog], context: Optional[ControlContext] = None):
         """Initialize catalog api."""
         if not catalog:
-            logger.info('No catalog was provided, generating a new one.')
+            logger.debug('No catalog was provided in CatalogAPI init, generating a new one.')
             catalog = gens.generate_sample_model(cat.Catalog)
         self._catalog = catalog
         self._catalog_interface = CatalogInterface(self._catalog)
