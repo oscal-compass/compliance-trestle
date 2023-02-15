@@ -222,8 +222,7 @@ class CatalogInterface():
         if group.controls:
             controls.extend(CatalogInterface._get_all_controls_in_list(group.controls, recurse))
         for sub_group in as_list(group.groups):
-            if sub_group.controls:
-                controls.extend(CatalogInterface._get_all_controls_in_group(sub_group, recurse))
+            controls.extend(CatalogInterface._get_all_controls_in_group(sub_group, recurse))
         return controls
 
     def get_sorted_controls_in_group(self, group_id: str) -> List[cat.Control]:
@@ -767,7 +766,8 @@ class CatalogInterface():
         id_map: Dict[str, pathlib.Path] = {'': md_path}
         for gdir in md_path.rglob('*'):
             if gdir.is_dir():
-                id_map[gdir.stem] = gdir
+                dir_name = gdir.parts[-1]
+                id_map[dir_name] = gdir
         # rebuild the dict by inserting items in manner sorted by key
         sorted_id_map: Dict[str, pathlib.Path] = {}
         for key in sorted(id_map):
