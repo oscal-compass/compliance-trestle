@@ -100,7 +100,9 @@ class FetcherBase(ABC):
                 self._do_fetch()
                 return True
             except Exception as e:
-                raise TrestleError(f'Cache update failure for {self._uri}: {e}.') from e
+                raise TrestleError(
+                    f'Cache update failure for {self._uri}.  Please confirm the file is json and not html: {e}.'
+                ) from e  # noqa E501
         return False
 
     def get_raw(self, force_update=False) -> Dict[str, Any]:
@@ -278,6 +280,7 @@ class HTTPSFetcher(FetcherBase):
                     raise TrestleError(f'Cache update failure with bad inputenv var: {err_str}')
         if self._username is not None and self._password is not None:
             auth = HTTPBasicAuth(self._username, self._password)
+
         try:
             response = requests.get(self._url, auth=auth, verify=verify)
         except Exception as e:
@@ -392,6 +395,11 @@ class FetcherFactory:
         HTTPS = 3
 
         TRESTLE = 4
+
+    @staticmethod
+    def uri_type_is_not_local(uri_type: UriType) -> bool:
+        """Determine if the uri type is not local."""
+        return uri_type in [FetcherFactory.UriType.SFTP, FetcherFactory.UriType.HTTPS]
 
     @staticmethod
     def get_uri_type(uri: str) -> UriType:
