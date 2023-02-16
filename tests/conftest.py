@@ -198,7 +198,7 @@ def sample_component_definition():
 
 @pytest.fixture(scope='function')
 def tmp_trestle_dir(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> Iterator[pathlib.Path]:
-    """Create and return a new workspace directory using std tmp_path fixture.
+    """Create and return a new trestle workspace directory using std tmp_path fixture.
 
     Note that this fixture relies on the 'trestle init' command and therefore may
     misbehave if there are errors in trestle init, perhaps in spite of the try block.

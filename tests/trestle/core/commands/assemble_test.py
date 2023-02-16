@@ -68,7 +68,7 @@ def test_assemble_catalog(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.P
 
 
 def test_assemble_not_trestle_project(tmp_empty_cwd: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
-    """Test failure if not Trestle workspace."""
+    """Test failure if not trestle workspace."""
     testargs = ['trestle', 'assemble', 'catalog', '-n', 'mycatalog', '-x', 'json']
     monkeypatch.setattr(sys, 'argv', testargs)
     rc = Trestle().run()

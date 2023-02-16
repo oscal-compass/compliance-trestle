@@ -45,7 +45,7 @@ def edit_files(control_path: pathlib.Path, set_parameters_flag: bool, guid_dict:
 
 
 def load_file(trestle_root: pathlib.Path, source_name: str, dest_name: str, source_type: str) -> None:
-    """Load file into Trestle workspace."""
+    """Load file into trestle workspace."""
     item_orig_path = test_utils.JSON_TEST_DATA_PATH / (source_name)
     item_dir = trestle_root / f'{source_type}s/{dest_name}'
     item_dir.mkdir(exist_ok=True, parents=True)

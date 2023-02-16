@@ -154,9 +154,9 @@ def _verify_oscal_folder(path: pathlib.Path) -> bool:
 
 def check_oscal_directories(root_path: pathlib.Path) -> bool:
     """
-    Identify the state of the Trestle workspace.
+    Identify the state of the trestle workspace.
 
-    Traverses Trestle workspace and looks for unexpected files or directories.
+    Traverses trestle workspace and looks for unexpected files or directories.
     Additional files are allowed in the Trestle root but not inside the model folders.
     """
     trestle_dir_walk = os.walk(root_path)
@@ -172,13 +172,13 @@ def check_oscal_directories(root_path: pathlib.Path) -> bool:
 
 
 def is_valid_project_root(path: pathlib.Path) -> bool:
-    """Check if the path is a valid Trestle workspace root."""
+    """Check if the path is a valid trestle workspace root."""
     trestle_dir = path / const.TRESTLE_CONFIG_DIR
     return trestle_dir.exists() and trestle_dir.is_dir()
 
 
 def extract_trestle_project_root(path: pathlib.Path) -> Optional[pathlib.Path]:
-    """Get the Trestle workspace root folder in the path."""
+    """Get the trestle workspace root folder in the path."""
     while len(path.parts) > 1:  # it must not be the system root directory
         if is_valid_project_root(path):
             return path

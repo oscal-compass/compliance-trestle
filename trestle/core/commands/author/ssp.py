@@ -574,7 +574,7 @@ class SSPFilter(AuthorCommonCommand):
         Filter the ssp based on controls included by the profile and/or components and output new ssp.
 
         Args:
-            trestle_root: root directory of the workspace
+            trestle_root: root directory of the trestle workspace
             ssp_name: name of the ssp model
             profile_name: name of the optional profile model used for filtering
             out_name: name of the output ssp model with filtered controls
