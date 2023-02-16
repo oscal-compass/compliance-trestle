@@ -632,10 +632,15 @@ class ModelUtils:
         return param
 
     @staticmethod
+    def last_modified_at_time(timestamp: Optional[datetime] = None) -> common.LastModified:
+        """Generate a LastModified set to timestamp or now."""
+        timestamp = timestamp if timestamp else datetime.now().astimezone()
+        return common.LastModified(__root__=timestamp)
+
+    @staticmethod
     def update_last_modified(model: TopLevelOscalModel, timestamp: Optional[datetime] = None) -> None:
         """Update the LastModified timestamp in top level model to now."""
-        timestamp = timestamp if timestamp else datetime.now().astimezone()
-        model.metadata.last_modified = common.LastModified(__root__=timestamp)
+        model.metadata.last_modified = ModelUtils.last_modified_at_time(timestamp)
 
     @staticmethod
     def model_age(model: TopLevelOscalModel) -> int:

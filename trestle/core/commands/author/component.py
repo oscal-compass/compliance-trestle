@@ -276,7 +276,10 @@ class ComponentAssemble(AuthorCommonCommand):
         for comp_name in comp_names:
             if comp_name not in existing_comp_names:
                 metadata = com.Metadata(
-                    title=comp_name, last_modified='REPLACE_ME', version='REPLACE_ME', oscal_version=OSCAL_VERSION
+                    title=comp_name,
+                    last_modified=ModelUtils.last_modified_at_time(),
+                    version='REPLACE_ME',
+                    oscal_version=OSCAL_VERSION
                 )
                 parent_comp.components.append(
                     comp.DefinedComponent(uuid=str(uuid4()), title=comp_name, metadata=metadata)
