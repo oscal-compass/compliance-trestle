@@ -40,7 +40,6 @@ from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.remote.cache import FetcherFactory
-from trestle.oscal import OSCAL_VERSION
 
 logger = logging.getLogger(__name__)
 
@@ -275,14 +274,10 @@ class ComponentAssemble(AuthorCommonCommand):
         existing_comp_names = [component.title for component in parent_comp.components]
         for comp_name in comp_names:
             if comp_name not in existing_comp_names:
-                metadata = com.Metadata(
-                    title=comp_name,
-                    last_modified=ModelUtils.last_modified_at_time(),
-                    version='REPLACE_ME',
-                    oscal_version=OSCAL_VERSION
-                )
                 parent_comp.components.append(
-                    comp.DefinedComponent(uuid=str(uuid4()), title=comp_name, metadata=metadata)
+                    comp.DefinedComponent(
+                        uuid=str(uuid4()), title=comp_name, type=const.REPLACE_ME, description=const.REPLACE_ME
+                    )
                 )
 
         for component in parent_comp.components:
