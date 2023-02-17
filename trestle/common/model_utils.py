@@ -354,7 +354,7 @@ class ModelUtils:
         trestle_root: pathlib.Path,
         model_name: str,
         model_class: Type[TopLevelOscalModel],
-        file_content_type: Optional[FileContentType]
+        file_content_type: Optional[FileContentType] = None
     ) -> pathlib.Path:
         """
         Find the full path of a model given its name, model type and file content type.
