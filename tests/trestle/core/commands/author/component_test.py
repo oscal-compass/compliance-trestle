@@ -25,32 +25,19 @@ import trestle.core.generic_oscal as generic
 import trestle.oscal.catalog as cat
 import trestle.oscal.component as comp
 import trestle.oscal.profile as prof
-from trestle.common import const, file_utils, model_utils
+from trestle.common import const, model_utils
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.markdown.markdown_processor import MarkdownProcessor
 
 md_path = 'md_comp'
 
 
-def edit_files(control_path: pathlib.Path, set_parameters_flag: bool, guid_dict: Dict[str, str]) -> None:
-    """Edit the files to show assemble worked."""
-    assert control_path.exists()
-    assert file_utils.insert_text_in_file(control_path, None, guid_dict['text'])
-    if set_parameters_flag:
-        assert test_utils.delete_line_in_file(control_path, 'label:')
-        assert file_utils.insert_text_in_file(control_path, 'ac-1_prm_1:', '    label: label from edit\n')
-        # delete profile values for 4, then replace value for 3 with new value
-        assert file_utils.insert_text_in_file(control_path, 'officer', '    profile-values: new value\n')
-        assert test_utils.delete_line_in_file(control_path, 'weekly')
-
-
-def load_file(trestle_root: pathlib.Path, source_name: str, dest_name: str, source_type: str) -> None:
-    """Load file into trestle workspace."""
-    item_orig_path = test_utils.JSON_TEST_DATA_PATH / (source_name)
-    item_dir = trestle_root / f'{source_type}s/{dest_name}'
-    item_dir.mkdir(exist_ok=True, parents=True)
-    item_new_path = item_dir / f'{source_type}.json'
-    shutil.copy(item_orig_path, item_new_path)
+def add_comp(comp_path: pathlib.Path, ac1_path: pathlib.Path) -> None:
+    """Add a new component to the markdown."""
+    ac_path = comp_path / 'comp_new/ac'
+    ac_path.mkdir(parents=True, exist_ok=True)
+    new_ac1_path = ac_path / 'ac-1.md'
+    shutil.copyfile(str(ac1_path), str(new_ac1_path))
 
 
 def setup_component_generate(tmp_trestle_dir: pathlib.Path) -> List[str]:
@@ -139,10 +126,24 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
     # confirm assembled is identical except for uuids
     assemble_cmd = f'trestle author component-assemble -m {md_path} -n {comp_name} -o {assem_name}'
     test_utils.execute_command_and_assert(assemble_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
+    assem_component, assem_comp_path = model_utils.ModelUtils.load_top_level_model(
+        tmp_trestle_dir, assem_name, comp.ComponentDefinition
+    )
+    creation_time = assem_comp_path.stat().st_mtime
+    assert model_utils.ModelUtils.models_are_equivalent(orig_component, assem_component, True)
+
+    test_utils.execute_command_and_assert(assemble_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
+    assert creation_time == assem_comp_path.stat().st_mtime
+
+    ac1_path = tmp_trestle_dir / 'md_comp/comp_aa/comp_prof_aa/ac/ac-1.md'
+
+    # confirm we can add a new component via markdown
+    add_comp(tmp_trestle_dir / 'md_comp', ac1_path)
+    test_utils.execute_command_and_assert(assemble_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
     assem_component, _ = model_utils.ModelUtils.load_top_level_model(
         tmp_trestle_dir, assem_name, comp.ComponentDefinition
     )
-    assert model_utils.ModelUtils.models_are_equivalent(orig_component, assem_component, True)
+    assert assem_component.components[2].title == 'comp_new'
 
 
 def test_generic_oscal() -> None:
