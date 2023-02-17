@@ -52,7 +52,7 @@ class FetcherBase(ABC):
         """Intialize fetcher base.
 
         Args:
-            trestle_root: Path of the Trestle project path, i.e., within which .trestle is to be found.
+            trestle_root: Path of the trestle workspace, i.e., within which .trestle is to be found.
             uri: Reference to the source object to cache.
         """
         logger.debug('Initializing FetcherBase')
@@ -100,7 +100,9 @@ class FetcherBase(ABC):
                 self._do_fetch()
                 return True
             except Exception as e:
-                raise TrestleError(f'Cache update failure for {self._uri}: {e}.') from e
+                raise TrestleError(
+                    f'Cache update failure for {self._uri}.  Please confirm the file is json and not html: {e}.'
+                ) from e  # noqa E501
         return False
 
     def get_raw(self, force_update=False) -> Dict[str, Any]:
@@ -278,6 +280,7 @@ class HTTPSFetcher(FetcherBase):
                     raise TrestleError(f'Cache update failure with bad inputenv var: {err_str}')
         if self._username is not None and self._password is not None:
             auth = HTTPBasicAuth(self._username, self._password)
+
         try:
             response = requests.get(self._url, auth=auth, verify=verify)
         except Exception as e:
@@ -301,7 +304,7 @@ class SFTPFetcher(FetcherBase):
         """Initialize SFTP fetcher. Update the expected cache path as per caching specs.
 
         Args:
-            trestle_root: Path of the Trestle project path, i.e., within which .trestle is to be found.
+            trestle_root: Path of the trestle workspace, i.e., within which .trestle is to be found.
             uri: Reference to the remote file to cache that can be fetched using the sftp:// scheme.
         """
         logger.debug(f'initialize SFTPFetcher for uri {uri}')
@@ -394,6 +397,11 @@ class FetcherFactory:
         TRESTLE = 4
 
     @staticmethod
+    def uri_type_is_not_local(uri_type: UriType) -> bool:
+        """Determine if the uri type is not local."""
+        return uri_type in [FetcherFactory.UriType.SFTP, FetcherFactory.UriType.HTTPS]
+
+    @staticmethod
     def get_uri_type(uri: str) -> UriType:
         """Determine the type of uri."""
         if uri.startswith(const.SFTP_URI):
@@ -433,7 +441,7 @@ class FetcherFactory:
         """Return an instantiated fetcher object based on the type of URI.
 
         Args:
-            trestle_root: Path of the Trestle project path, i.e., within which .trestle is to be found.
+            trestle_root: Path of the trestle workspace, i.e., within which .trestle is to be found.
             uri: Reference to the remote object to cache.
 
         Returns:

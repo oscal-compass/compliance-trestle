@@ -57,7 +57,7 @@ class ModelUtils:
 
         Args:
             abs_path: The path to the file/directory to be loaded.
-            abs_trestle_root: The trestle project root directory.
+            abs_trestle_root: The trestle workspace root directory.
             collection_type: The type of collection model, if it is a collection model.
                 typing.List is the only collection type handled or expected.
                 Defaults to None.
@@ -201,14 +201,14 @@ class ModelUtils:
         Given the relative path of a file with respect to 'trestle_root' return the oscal model type.
 
         Args:
-            relative_path: Relative path of the model with respect to the root directory of the trestle project.
+            relative_path: Relative path of the model with respect to the root directory of the trestle workspace.
         Returns:
             Type of Oscal Model for the provided model
             Alias of that oscal model.
         """
         if len(relative_path.parts) < 2:
             raise TrestleError(
-                'Insufficient path length to be a valid relative path w.r.t Trestle project root directory.'
+                'Insufficient path length to be a valid relative path w.r.t trestle workspace root directory.'
             )
         model_dir = relative_path.parts[0]
         model_relative_path = pathlib.Path(*relative_path.parts[2:])  # catalogs, profiles, etc
