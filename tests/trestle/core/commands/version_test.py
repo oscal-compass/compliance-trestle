@@ -34,12 +34,26 @@ def test_oscal_obj_version(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPat
     testcmd = 'trestle version -n test_profile_c -t profile'
     execute_command_and_assert(testcmd, 0, monkeypatch)
     output, _ = capsys.readouterr()
-    assert 'OSCAL object of type profile and name test_profile_c is 2021-01-01' in output
+    assert 'Version of OSCAL object of test_profile_c profile is: 2021-01-01' in output
 
     testcmd = 'trestle version -n test_profile_c'
+    execute_command_and_assert(testcmd, 1, monkeypatch)
+
+    testcmd = 'trestle version -n test_profile_c -t nonexisting'
     execute_command_and_assert(testcmd, 1, monkeypatch)
 
     testcmd = 'trestle version'
     execute_command_and_assert(testcmd, 0, monkeypatch)
     output, _ = capsys.readouterr()
     assert 'Trestle version v1.2.0 based on OSCAL version 1.0.2' in output
+
+    testcmd = 'trestle version -n complex_cat -t catalog'
+    execute_command_and_assert(testcmd, 0, monkeypatch)
+    output, _ = capsys.readouterr()
+    assert 'Version of OSCAL object of complex_cat catalog is: REPLACE_ME' in output
+
+    comp_name = test_utils.setup_for_component_definition(tmp_trestle_dir, monkeypatch)
+    testcmd = f'trestle version -n {comp_name} -t component-definition'
+    execute_command_and_assert(testcmd, 0, monkeypatch)
+    output, _ = capsys.readouterr()
+    assert f'Version of OSCAL object of {comp_name} component-definition is: 0.21.0' in output

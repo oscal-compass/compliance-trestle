@@ -89,7 +89,7 @@ class VersionCmd(CommandBase):
             if args.name and args.type:
                 trestle_root = pathlib.Path(args.trestle_root)
                 version = self._get_version(args.type, args.name, trestle_root)
-                version_string = f'OSCAL object of type {args.type} and name {args.name} is {version}.'
+                version_string = f'Version of OSCAL object of {args.name} {args.type} is: {version}.'
                 self.out(version_string)
                 status = CmdReturnCodes.SUCCESS.value
 

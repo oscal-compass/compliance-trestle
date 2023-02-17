@@ -344,6 +344,25 @@ def patch_raise_exception() -> None:
     raise TrestleError('Forced raising of an errors')
 
 
+def setup_for_component_definition(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> str:
+    """Initiallize trestle workspace with component-definitions."""
+    comp_name = setup_component_generate(tmp_trestle_dir)
+    assemble_cmd = f'trestle author component-assemble -m md_comp -n {comp_name} -o assem_comp'
+    execute_command_and_assert(assemble_cmd, 1, monkeypatch)
+    return comp_name
+
+
+def setup_component_generate(tmp_trestle_dir: pathlib.Path) -> str:
+    """Create the compdef, profile and catalog content component-generate."""
+    comp_name = 'comp_def_a'
+    load_from_json(tmp_trestle_dir, comp_name, comp_name, comp.ComponentDefinition)
+    for prof_name in 'comp_prof,comp_prof_aa,comp_prof_ab,comp_prof_ba,comp_prof_bb'.split(','):
+        load_from_json(tmp_trestle_dir, prof_name, prof_name, prof.Profile)
+    load_from_json(tmp_trestle_dir, 'simplified_nist_catalog', 'simplified_nist_catalog', cat.Catalog)
+
+    return comp_name
+
+
 def setup_for_multi_profile(trestle_root: pathlib.Path, big_profile: bool, import_nist_cat: bool) -> None:
     """Initiallize trestle directory with catalogs and profiles."""
     repo = Repository(trestle_root)
