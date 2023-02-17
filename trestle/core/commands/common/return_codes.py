@@ -26,7 +26,7 @@ class CmdReturnCodes(enum.Enum):
     INCORRECT_ARGS - Provided arguments were incorrect/incomplete
     DOCUMENTS_VALIDATION_ERROR - Validation of the markdown or drawio files failed
     MODEL_VALIDATION_ERROR - Validation of OSCAL model failed
-    TRESTLE_ROOT_ERROR - Trestle project setup has failed, the root is not trestle directory
+    TRESTLE_ROOT_ERROR - Workspace setup has failed, the root is not trestle directory
     IO_ERROR - IO related errors, i.e. permission issue, non-existing file, etc
     AUTH_ERROR - Authenication error while accessing/storing cache
     UNKNOWN_ERROR - Unexpected error (unhandled by command)

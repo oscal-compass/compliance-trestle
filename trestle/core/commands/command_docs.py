@@ -45,7 +45,7 @@ class CommandPlusDocs(CommandBase):
     """This class validates trestle-root argument.
 
     Trestle commands requiring trestle-root should extend from this class.
-    All commands that extend this class will validate the state of Trestle workspace.
+    All commands that extend this class will validate the state of trestle workspace.
     """
 
     def _validate_arguments(self, args):

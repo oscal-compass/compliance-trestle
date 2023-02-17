@@ -61,7 +61,7 @@ class TrestleNotFoundError(TrestleError):
 
 
 class TrestleRootError(TrestleError):
-    """General error for Trestle project root/setup errors."""
+    """General error for trestle workspace root/setup errors."""
 
     def __init__(self, msg: str):
         """

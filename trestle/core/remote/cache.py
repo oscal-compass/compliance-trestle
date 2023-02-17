@@ -52,7 +52,7 @@ class FetcherBase(ABC):
         """Intialize fetcher base.
 
         Args:
-            trestle_root: Path of the Trestle project path, i.e., within which .trestle is to be found.
+            trestle_root: Path of the trestle workspace, i.e., within which .trestle is to be found.
             uri: Reference to the source object to cache.
         """
         logger.debug('Initializing FetcherBase')
@@ -304,7 +304,7 @@ class SFTPFetcher(FetcherBase):
         """Initialize SFTP fetcher. Update the expected cache path as per caching specs.
 
         Args:
-            trestle_root: Path of the Trestle project path, i.e., within which .trestle is to be found.
+            trestle_root: Path of the trestle workspace, i.e., within which .trestle is to be found.
             uri: Reference to the remote file to cache that can be fetched using the sftp:// scheme.
         """
         logger.debug(f'initialize SFTPFetcher for uri {uri}')
@@ -441,7 +441,7 @@ class FetcherFactory:
         """Return an instantiated fetcher object based on the type of URI.
 
         Args:
-            trestle_root: Path of the Trestle project path, i.e., within which .trestle is to be found.
+            trestle_root: Path of the trestle workspace, i.e., within which .trestle is to be found.
             uri: Reference to the remote object to cache.
 
         Returns:
