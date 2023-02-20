@@ -34,11 +34,11 @@ class VersionCmd(CommandBase):
     name = 'version'
 
     def _init_arguments(self) -> None:
-        self.add_argument('-n', '--name', help='Name of the OSCAL object (folder name)', default=None, type=str)
+        self.add_argument('-n', '--name', help='Name of the OSCAL model', default=None, type=str)
         self.add_argument(
             '-t',
             '--type',
-            help='Name of the OSCAL type (catalog, profile, component-definition, system-security-plan, etc)',
+            help='Type of the model being queried: (catalog, profile, component-definition, ...)',
             default=None,
             type=str
         )
