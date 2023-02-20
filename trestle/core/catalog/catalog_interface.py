@@ -222,8 +222,7 @@ class CatalogInterface():
         if group.controls:
             controls.extend(CatalogInterface._get_all_controls_in_list(group.controls, recurse))
         for sub_group in as_list(group.groups):
-            if sub_group.controls:
-                controls.extend(CatalogInterface._get_all_controls_in_group(sub_group, recurse))
+            controls.extend(CatalogInterface._get_all_controls_in_group(sub_group, recurse))
         return controls
 
     def get_sorted_controls_in_group(self, group_id: str) -> List[cat.Control]:
@@ -653,12 +652,27 @@ class CatalogInterface():
             param_dict.update(ControlInterface.get_control_param_dict(control, False))
         return param_dict
 
-    def _change_prose_with_param_values(self, param_format, param_rep, show_value_warnings: bool) -> None:
+    def _change_prose_with_param_values(
+        self,
+        param_format,
+        param_rep,
+        show_value_warnings: bool,
+        value_assigned_prefix: Optional[str] = None,
+        value_not_assigned_prefix: Optional[str] = None
+    ) -> None:
         """Go through all controls and change prose based on param values."""
         param_dict = self._get_full_param_dict()
         # insert param values into prose of all controls
         for control in self.get_all_controls_from_dict():
-            ControlInterface.replace_control_prose(control, param_dict, param_format, param_rep, show_value_warnings)
+            ControlInterface.replace_control_prose(
+                control,
+                param_dict,
+                param_format,
+                param_rep,
+                show_value_warnings,
+                value_assigned_prefix,
+                value_not_assigned_prefix
+            )
 
     @staticmethod
     def _get_display_name_and_ns(param: common.Parameter) -> Tuple[Optional[str], Optional[str]]:
@@ -752,7 +766,8 @@ class CatalogInterface():
         id_map: Dict[str, pathlib.Path] = {'': md_path}
         for gdir in md_path.rglob('*'):
             if gdir.is_dir():
-                id_map[gdir.stem] = gdir
+                dir_name = gdir.parts[-1]
+                id_map[dir_name] = gdir
         # rebuild the dict by inserting items in manner sorted by key
         sorted_id_map: Dict[str, pathlib.Path] = {}
         for key in sorted(id_map):
@@ -841,7 +856,7 @@ class CatalogInterface():
         context.rules_dict = {}
         context.rules_params_dict = {}
         for comp_def_name in context.comp_def_name_list:
-            context.comp_def, _ = ModelUtils.load_top_level_model(
+            context.comp_def, _ = ModelUtils.load_model_for_class(
                 context.trestle_root,
                 comp_def_name,
                 comp.ComponentDefinition

@@ -20,6 +20,7 @@ import difflib
 import logging
 import os
 import pathlib
+import shlex
 import shutil
 import sys
 from typing import Any, Dict, List, Tuple
@@ -122,7 +123,7 @@ def prepare_trestle_project_dir(
 def create_trestle_project_with_model(
     top_dir: pathlib.Path, model_obj: OscalBaseModel, model_name: str, monkeypatch: MonkeyPatch
 ) -> pathlib.Path:
-    """Create initialized trestle project and import the model into it."""
+    """Create initialized trestle workspace and import the model into it."""
     cur_dir = pathlib.Path.cwd()
 
     # create subdirectory for trestle project
@@ -343,6 +344,25 @@ def patch_raise_exception() -> None:
     raise TrestleError('Forced raising of an errors')
 
 
+def setup_for_component_definition(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> str:
+    """Initiallize trestle workspace with component-definitions."""
+    comp_name = setup_component_generate(tmp_trestle_dir)
+    assemble_cmd = f'trestle author component-assemble -m md_comp -n {comp_name} -o assem_comp'
+    execute_command_and_assert(assemble_cmd, 1, monkeypatch)
+    return comp_name
+
+
+def setup_component_generate(tmp_trestle_dir: pathlib.Path) -> str:
+    """Create the compdef, profile and catalog content component-generate."""
+    comp_name = 'comp_def_a'
+    load_from_json(tmp_trestle_dir, comp_name, comp_name, comp.ComponentDefinition)
+    for prof_name in 'comp_prof,comp_prof_aa,comp_prof_ab,comp_prof_ba,comp_prof_bb'.split(','):
+        load_from_json(tmp_trestle_dir, prof_name, prof_name, prof.Profile)
+    load_from_json(tmp_trestle_dir, 'simplified_nist_catalog', 'simplified_nist_catalog', cat.Catalog)
+
+    return comp_name
+
+
 def setup_for_multi_profile(trestle_root: pathlib.Path, big_profile: bool, import_nist_cat: bool) -> None:
     """Initiallize trestle directory with catalogs and profiles."""
     repo = Repository(trestle_root)
@@ -390,7 +410,9 @@ def load_from_json(
 ) -> None:
     """Load model from JSON test dir."""
     src_path = JSON_TEST_DATA_PATH / f'{file_prefix}.json'
-    dst_path = ModelUtils.path_for_top_level_model(tmp_trestle_dir, model_name, model_type, FileContentType.JSON)
+    dst_path = ModelUtils.get_model_path_for_name_and_class(
+        tmp_trestle_dir, model_name, model_type, FileContentType.JSON
+    )
     dst_path.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(src_path, dst_path)
 
@@ -474,13 +496,29 @@ def make_hidden_file(file_path: pathlib.Path) -> None:
 
 def get_model_uuid(trestle_root: pathlib.Path, model_name: str, model_class: TopLevelOscalModel) -> str:
     """Load the model and extract its uuid."""
-    model, _ = ModelUtils.load_top_level_model(trestle_root, model_name, model_class)
+    model, _ = ModelUtils.load_model_for_class(trestle_root, model_name, model_class)
     return model.uuid
 
 
 def execute_command_and_assert(command: str, return_code: int, monkeypatch: MonkeyPatch) -> None:
-    """Execute given command using monkeypatch and assert return code."""
-    monkeypatch.setattr(sys, 'argv', command.split())
+    r"""
+    Execute given command using monkeypatch and assert return code.
+
+    tokens in quotes with embedded spaces require special parsing by shlex.
+    But shlex strips away all \\, which is a problem for windows file paths and any token with backlashes.
+    So this has a simple hack to replace \\ by $ and convert back after splitting.
+    """
+    has_slashes = '\\' in command
+    if has_slashes:
+        if '$' in command:
+            raise TrestleError('cannot parse command string containing backslashes and $.')
+        command = command.replace('\\', '$')
+
+    split_command = shlex.split(command)
+    if has_slashes:
+        split_command = [token.replace('$', '\\') for token in split_command]
+    monkeypatch.setattr(sys, 'argv', split_command)
+
     rc = Trestle().run()
     assert rc == return_code
 

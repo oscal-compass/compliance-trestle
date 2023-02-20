@@ -57,7 +57,7 @@ class ModelUtils:
 
         Args:
             abs_path: The path to the file/directory to be loaded.
-            abs_trestle_root: The trestle project root directory.
+            abs_trestle_root: The trestle workspace root directory.
             collection_type: The type of collection model, if it is a collection model.
                 typing.List is the only collection type handled or expected.
                 Defaults to None.
@@ -158,7 +158,7 @@ class ModelUtils:
         return primary_model_type, primary_model_alias, primary_model_instance
 
     @staticmethod
-    def load_top_level_model(
+    def load_model_for_class(
         trestle_root: pathlib.Path,
         model_name: str,
         model_class: TG,
@@ -181,6 +181,19 @@ class ModelUtils:
         return model, full_model_path
 
     @staticmethod
+    def load_model_for_type(trestle_root: pathlib.Path, model_type: str, model_name: str) -> Tuple[TG, pathlib.Path]:
+        """Load model for the given type and name."""
+        dir_name = ModelUtils.model_type_to_model_dir(model_type)
+        model_path = trestle_root / dir_name / model_name
+
+        if not model_path.exists():
+            raise TrestleError(f'No model is found at path: {model_path}.')
+
+        _, _, oscal_object = ModelUtils.load_distributed(model_path, trestle_root)
+
+        return oscal_object, model_path
+
+    @staticmethod
     def save_top_level_model(
         model: TopLevelOscalModel, trestle_root: pathlib.Path, model_name: str, file_content_type: FileContentType
     ) -> None:
@@ -201,14 +214,14 @@ class ModelUtils:
         Given the relative path of a file with respect to 'trestle_root' return the oscal model type.
 
         Args:
-            relative_path: Relative path of the model with respect to the root directory of the trestle project.
+            relative_path: Relative path of the model with respect to the root directory of the trestle workspace.
         Returns:
             Type of Oscal Model for the provided model
             Alias of that oscal model.
         """
         if len(relative_path.parts) < 2:
             raise TrestleError(
-                'Insufficient path length to be a valid relative path w.r.t Trestle project root directory.'
+                'Insufficient path length to be a valid relative path w.r.t trestle workspace root directory.'
             )
         model_dir = relative_path.parts[0]
         model_relative_path = pathlib.Path(*relative_path.parts[2:])  # catalogs, profiles, etc
@@ -331,38 +344,25 @@ class ModelUtils:
         return full_list
 
     @staticmethod
-    def full_path_for_top_level_model(
+    def get_model_path_for_name_and_class(
         trestle_root: pathlib.Path,
         model_name: str,
         model_class: Type[TopLevelOscalModel],
+        file_content_type: Optional[FileContentType] = None
     ) -> Optional[pathlib.Path]:
-        """
-        Find the full path of an existing model given its name and model type but no file content type.
-
-        Use this method when you need the path of a model but you don't know the file content type.
-        Returns None if neither json nor yaml file can be found.
-        If you do know the file content type, use path_for_top_level_model instead.
-        """
-        root_model_path = ModelUtils._root_path_for_top_level_model(trestle_root, model_name, model_class)
-        file_content_type = FileContentType.path_to_content_type(root_model_path)
-        if not FileContentType.is_readable_file(file_content_type):
-            return None
-        return root_model_path.with_suffix(FileContentType.to_file_extension(file_content_type))
-
-    @staticmethod
-    def path_for_top_level_model(
-        trestle_root: pathlib.Path,
-        model_name: str,
-        model_class: Type[TopLevelOscalModel],
-        file_content_type: Optional[FileContentType]
-    ) -> pathlib.Path:
         """
         Find the full path of a model given its name, model type and file content type.
 
         If file_content_type is given it will not inspect the file system or confirm the needed path and file exists.
         """
         if file_content_type is None:
-            return ModelUtils.full_path_for_top_level_model(trestle_root, model_name, model_class)
+            root_model_path = ModelUtils._root_path_for_top_level_model(trestle_root, model_name, model_class)
+            file_content_type = FileContentType.path_to_content_type(root_model_path)
+            if not FileContentType.is_readable_file(file_content_type):
+                return None
+
+            return root_model_path.with_suffix(FileContentType.to_file_extension(file_content_type))
+
         root_path = ModelUtils._root_path_for_top_level_model(trestle_root, model_name, model_class)
         return root_path.with_suffix(FileContentType.to_file_extension(file_content_type))
 
@@ -632,10 +632,15 @@ class ModelUtils:
         return param
 
     @staticmethod
+    def last_modified_at_time(timestamp: Optional[datetime] = None) -> common.LastModified:
+        """Generate a LastModified set to timestamp or now."""
+        timestamp = timestamp if timestamp else datetime.now().astimezone()
+        return common.LastModified(__root__=timestamp)
+
+    @staticmethod
     def update_last_modified(model: TopLevelOscalModel, timestamp: Optional[datetime] = None) -> None:
         """Update the LastModified timestamp in top level model to now."""
-        timestamp = timestamp if timestamp else datetime.now().astimezone()
-        model.metadata.last_modified = common.LastModified(__root__=timestamp)
+        model.metadata.last_modified = ModelUtils.last_modified_at_time(timestamp)
 
     @staticmethod
     def model_age(model: TopLevelOscalModel) -> int:

@@ -39,7 +39,7 @@ logger = logging.getLogger(__name__)
 
 
 class CreateCmd(CommandPlusDocs):
-    """Create a sample OSCAL model in trestle project or create new elements within a given model."""
+    """Create a sample OSCAL model in trestle workspace or create new elements within a given model."""
 
     name = 'create'
 

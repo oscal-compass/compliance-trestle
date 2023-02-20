@@ -138,6 +138,7 @@ def test_catalog_generate_assemble(
     # need to delete withdrawn controls because they won't be in the assembled catalog
     interface_orig.delete_withdrawn_controls()
     ac1 = interface_orig.get_control('ac-1')
+    ac44 = interface_orig.get_control('ac-4.4')
     if make_change:
         # add the item manually to the original catalog so we can confirm the item was loaded correctly
         prop = Property(name='label', value='d.')
@@ -152,6 +153,8 @@ def test_catalog_generate_assemble(
         orig_cat = interface_orig.get_catalog()
     elif not use_orig_cat:
         ac1.params = None
+        # ac 4.4 has a parameter set in it that needs to be removed if set_param=False and use_orig_cat=False
+        ac44.params = None
         interface_orig.replace_control(ac1)
         orig_cat = interface_orig.get_catalog()
     if use_orig_cat:
@@ -187,7 +190,7 @@ def test_catalog_assemble_version(sample_catalog_rich_controls: cat.Catalog, tmp
     )
 
     # load the freshly assembled catalog
-    assembled_cat, assembled_cat_path = ModelUtils.load_top_level_model(
+    assembled_cat, assembled_cat_path = ModelUtils.load_model_for_class(
         tmp_trestle_dir,
         assembled_cat_name,
         cat.Catalog
@@ -231,7 +234,7 @@ def test_catalog_assemble_version(sample_catalog_rich_controls: cat.Catalog, tmp
         tmp_trestle_dir, md_name, assembled_cat_name, assembled_cat_name, False, False, 'xx2'
     )
 
-    catalog, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, 'my_assembled_cat', cat.Catalog, FileContentType.JSON)
+    catalog, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'my_assembled_cat', cat.Catalog, FileContentType.JSON)
     interface = CatalogInterface(catalog)
     assert interface.get_count_of_controls_in_catalog(True) == 7
 
@@ -255,7 +258,7 @@ New control statement.
         tmp_trestle_dir, md_name, assembled_cat_name, assembled_cat_name, True, False, 'xx3'
     )
 
-    catalog, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, 'my_assembled_cat', cat.Catalog, FileContentType.JSON)
+    catalog, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'my_assembled_cat', cat.Catalog, FileContentType.JSON)
     interface = CatalogInterface(catalog)
     assert interface.get_count_of_controls_in_catalog(True) == 7
     control_d = interface.get_control('control_d')
@@ -364,7 +367,7 @@ def test_catalog_assemble_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: M
 def test_get_profile_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
     """Test get profile param dict for control."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
-    profile, profile_path = ModelUtils.load_top_level_model(
+    profile, profile_path = ModelUtils.load_model_for_class(
         tmp_trestle_dir,
         'test_profile_a',
         prof.Profile,
@@ -416,15 +419,11 @@ def test_params_in_choice(
     prof_name = 'simplified_nist_profile'
     ModelUtils.save_top_level_model(simplified_nist_catalog, tmp_trestle_dir, cat_name, FileContentType.JSON)
     ModelUtils.save_top_level_model(simplified_nist_profile, tmp_trestle_dir, prof_name, FileContentType.JSON)
-    prof_path = ModelUtils.full_path_for_top_level_model(tmp_trestle_dir, prof_name, prof.Profile)
+    prof_path = ModelUtils.get_model_path_for_name_and_class(tmp_trestle_dir, prof_name, prof.Profile)
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
     cat_interface = CatalogInterface(catalog)
     control = cat_interface.get_control('ac-4.4')
-    val_1 = 'blocking the flow of the encrypted information'
-    val_2 = 'terminating communications sessions attempting to pass encrypted information'
     val_3 = 'hacking the system'
-    assert control.params[1].values[0].__root__ == val_1
-    assert control.params[1].values[1].__root__ == val_2
     # confirm the choice text was set properly
     assert control.params[1].select.choice[3] == val_3
     assert control.params[2].values[0].__root__ == val_3
@@ -456,7 +455,9 @@ def test_pulled_params_in_choice(
     ModelUtils.save_top_level_model(simplified_nist_catalog, tmp_trestle_dir, cat_name, FileContentType.JSON)
     ModelUtils.save_top_level_model(simplified_nist_profile, tmp_trestle_dir, prof_name, FileContentType.JSON)
     pull_prof_name = 'pull_nist_profile'
-    prof_path = ModelUtils.path_for_top_level_model(tmp_trestle_dir, pull_prof_name, prof.Profile, FileContentType.JSON)
+    prof_path = ModelUtils.get_model_path_for_name_and_class(
+        tmp_trestle_dir, pull_prof_name, prof.Profile, FileContentType.JSON
+    )
     prof_path.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy(test_utils.JSON_TEST_DATA_PATH / (pull_prof_name + '.json'), prof_path)
 
@@ -520,7 +521,7 @@ def test_validate_catalog_missing_group_id(
     assert rc == 0
 
     # load the file without doing validation - to make sure the file itself has the group id assigned
-    new_cat, new_cat_path = ModelUtils.load_top_level_model(tmp_trestle_dir, cat_name, cat.Catalog)
+    new_cat, new_cat_path = ModelUtils.load_model_for_class(tmp_trestle_dir, cat_name, cat.Catalog)
     assert new_cat.groups[0].id == 'trestle_group_0000'
 
     md_name = 'md_cat'
@@ -536,7 +537,7 @@ def test_validate_catalog_missing_group_id(
     cat_assemble.assemble_catalog(tmp_trestle_dir, md_name, assem_cat_name, None, False, False, None)
 
     # load the file without doing validation - to make sure the file itself has the group id assigned
-    _, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, assem_cat_name, cat.Catalog)
+    _, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, assem_cat_name, cat.Catalog)
     assert new_cat.groups[0].id == 'trestle_group_0000'
 
 
@@ -613,3 +614,14 @@ def test_prune_written_controls(tmp_trestle_dir: pathlib.Path, monkeypatch: Monk
     id_subset = control_ids - set(controls_to_delete)
 
     assert CatalogInterface._prune_controls(md_path, id_subset) == controls_to_delete
+
+
+def test_catalog_assemble_subgroups(
+    tmp_trestle_dir: pathlib.Path, sample_catalog_subgroups: cat.Catalog, monkeypatch: MonkeyPatch
+) -> None:
+    """Test assembly of catalog with group having no controls but does contain subgroup."""
+    ModelUtils.save_top_level_model(sample_catalog_subgroups, tmp_trestle_dir, 'my_catalog', FileContentType.JSON)
+    catalog_generate = 'trestle author catalog-generate -n my_catalog -o md_catalog -vv'
+    test_utils.execute_command_and_assert(catalog_generate, 0, monkeypatch)
+    catalog_assemble = 'trestle author catalog-assemble -m md_catalog -o my_catalog -vv'
+    test_utils.execute_command_and_assert(catalog_assemble, 0, monkeypatch)

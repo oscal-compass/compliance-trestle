@@ -40,7 +40,6 @@ from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.remote.cache import FetcherFactory
-from trestle.oscal import OSCAL_VERSION
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +52,9 @@ class ComponentGenerate(AuthorCommonCommand):
     def _init_arguments(self) -> None:
         name_help_str = 'Name of the source component model in the trestle workspace'
         self.add_argument('-n', '--name', help=name_help_str, required=True, type=str)
-        self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
+        self.add_argument(
+            '-o', '--output', help='Name of the output generated component markdown folder', required=True, type=str
+        )  # noqa E501
         self.add_argument('-fo', '--force-overwrite', help=const.HELP_FO_OUTPUT, required=False, action='store_true')
 
     def _run(self, args: argparse.Namespace) -> int:
@@ -217,7 +218,7 @@ class ComponentAssemble(AuthorCommonCommand):
             parent_comp_name = assem_comp_name
 
         # load the comp-def that will be updated
-        parent_comp, parent_comp_path = ModelUtils.load_top_level_model(
+        parent_comp, parent_comp_path = ModelUtils.load_model_for_class(
             trestle_root,
             parent_comp_name,
             comp.ComponentDefinition
@@ -231,7 +232,7 @@ class ComponentAssemble(AuthorCommonCommand):
         if version:
             parent_comp.metadata.version = com.Version(__root__=version)
 
-        assem_comp_path = ModelUtils.path_for_top_level_model(
+        assem_comp_path = ModelUtils.get_model_path_for_name_and_class(
             trestle_root, assem_comp_name, comp.ComponentDefinition, new_content_type
         )
 
@@ -273,11 +274,10 @@ class ComponentAssemble(AuthorCommonCommand):
         existing_comp_names = [component.title for component in parent_comp.components]
         for comp_name in comp_names:
             if comp_name not in existing_comp_names:
-                metadata = com.Metadata(
-                    title=comp_name, last_modified='REPLACE_ME', version='REPLACE_ME', oscal_version=OSCAL_VERSION
-                )
                 parent_comp.components.append(
-                    comp.DefinedComponent(uuid=str(uuid4()), title=comp_name, metadata=metadata)
+                    comp.DefinedComponent(
+                        uuid=str(uuid4()), title=comp_name, type=const.REPLACE_ME, description=const.REPLACE_ME
+                    )
                 )
 
         for component in parent_comp.components:

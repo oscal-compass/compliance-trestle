@@ -529,3 +529,7 @@ PARAMETER_ID = 'Parameter_Id'
 PARAMETER_DESCRIPTION = 'Parameter_Description'
 
 PARAMETER_VALUE_ALTERNATIVES = 'Parameter_Value_Alternatives'
+
+VALUE_ASSIGNED_PREFIX = 'value-assigned-prefix'
+
+VALUE_NOT_ASSIGNED_PREFIX = 'value-not-assigned-prefix'

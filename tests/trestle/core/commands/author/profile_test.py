@@ -266,7 +266,7 @@ def test_profile_generate_assemble(
 
     # check the assembled profile is as expected
     profile: prof.Profile
-    profile, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, assembled_prof_name,
+    profile, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, assembled_prof_name,
                                                  prof.Profile, FileContentType.JSON)
     assert ModelUtils.model_age(profile) < test_utils.NEW_MODEL_AGE_SECONDS
     # get the set_params from the assembled profile
@@ -373,7 +373,7 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
 
         # check the assembled profile is as expected
         profile: prof.Profile
-        profile, _ = ModelUtils.load_top_level_model(
+        profile, _ = ModelUtils.load_model_for_class(
             tmp_trestle_dir, assembled_prof_name,
             prof.Profile,
             FileContentType.JSON
@@ -453,10 +453,14 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatc
     assert Trestle().run() == 1
 
     # setup for generate and assemble
-    profile_path = ModelUtils.path_for_top_level_model(tmp_trestle_dir, 'my_prof', prof.Profile, FileContentType.JSON)
+    profile_path = ModelUtils.get_model_path_for_name_and_class(
+        tmp_trestle_dir, 'my_prof', prof.Profile, FileContentType.JSON
+    )
     profile_path.parent.mkdir()
     shutil.copyfile(test_utils.JSON_TEST_DATA_PATH / 'simple_test_profile.json', profile_path)
-    cat_path = ModelUtils.path_for_top_level_model(tmp_trestle_dir, 'nist_cat', cat.Catalog, FileContentType.JSON)
+    cat_path = ModelUtils.get_model_path_for_name_and_class(
+        tmp_trestle_dir, 'nist_cat', cat.Catalog, FileContentType.JSON
+    )
     cat_path.parent.mkdir()
     shutil.copyfile(test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME, cat_path)
 
@@ -621,7 +625,7 @@ def test_profile_alter_props(tmp_trestle_dir: pathlib.Path) -> None:
 
     # check the assembled profile is as expected
     profile: prof.Profile
-    profile, prof_path = ModelUtils.load_top_level_model(
+    profile, prof_path = ModelUtils.load_model_for_class(
         tmp_trestle_dir,
         assembled_prof_name,
         prof.Profile, FileContentType.JSON
@@ -687,7 +691,7 @@ More evidence
     ) == 0
 
     # check the assembled profile is as expected
-    profile, prof_path = ModelUtils.load_top_level_model(
+    profile, prof_path = ModelUtils.load_model_for_class(
         tmp_trestle_dir,
         assembled_prof_name,
         prof.Profile, FileContentType.JSON
@@ -798,7 +802,7 @@ def test_profile_resolve(
     if bracket_format:
         command_profile_resolve += ' -bf [(.])'
     test_utils.execute_command_and_assert(command_profile_resolve, 0, monkeypatch)
-    res_cat, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, cat_name, cat.Catalog, FileContentType.JSON)
+    res_cat, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, cat_name, cat.Catalog, FileContentType.JSON)
     ac_1 = res_cat.groups[0].controls[0]
     expected_value = '{{ insert: param, ac-1_prm_3 }}'
     if show_values:
@@ -851,13 +855,13 @@ def test_profile_generate_updates_statement(tmp_trestle_dir: pathlib.Path, monke
 
     # add a new allowed part to the profile
     # and change a parameter value on a control
-    main_prof, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, 'main_profile', prof.Profile, FileContentType.JSON)
+    main_prof, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'main_profile', prof.Profile, FileContentType.JSON)
     main_prof.modify.alters[0].adds[0].parts.append(com.Part(id='ac-1_wombat', name='wombat', prose='Assess wombats.'))
     main_prof.modify.set_parameters[2].values = [com.ParameterValue(__root__='echidna')]
     ModelUtils.save_top_level_model(main_prof, tmp_trestle_dir, 'main_profile', FileContentType.JSON)
 
     # now add a part to the catalog
-    nist_cat, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, 'nist_cat', cat.Catalog, FileContentType.JSON)
+    nist_cat, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'nist_cat', cat.Catalog, FileContentType.JSON)
     nist_cat.groups[0].controls[0].parts.append(com.Part(id='ac-1_koala', name='koala', prose='Enjoy koalas'))
     ModelUtils.save_top_level_model(nist_cat, tmp_trestle_dir, 'nist_cat', FileContentType.JSON)
 
@@ -874,7 +878,7 @@ def test_profile_generate_updates_statement(tmp_trestle_dir: pathlib.Path, monke
 
     # echidna and wombat came from changes to main profile
     # koala came from edit to the nist catalog
-    resolved_cat, _ = ModelUtils.load_top_level_model(
+    resolved_cat, _ = ModelUtils.load_model_for_class(
         tmp_trestle_dir,
         'resolved_cat',
         cat.Catalog,
@@ -950,3 +954,65 @@ def test_profile_force_overwrite(tmp_trestle_dir: pathlib.Path, monkeypatch: Mon
     prof_generate = f'trestle author profile-generate -n test_profile_f -o {md_name} --force-overwrite'
     test_utils.execute_command_and_assert(prof_generate, 0, monkeypatch)
     assert fc.files_unchanged()
+
+
+def test_profile_resolve_assignment(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test profile resolve to create resolved profile catalog in assignment mode."""
+    test_utils.setup_for_multi_profile(tmp_trestle_dir, False, False)
+    cat_name = 'resolved_catalog'
+    command_profile_resolve = f'trestle author profile-resolve -n main_profile -o {cat_name} -bf (.) -sv -vap "IBM Assignment:" -vnap "Assignment:"'  # noqa E501
+    test_utils.execute_command_and_assert(command_profile_resolve, 0, monkeypatch)
+    res_cat, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, cat_name, cat.Catalog, FileContentType.JSON)
+    ac_1 = res_cat.groups[0].controls[0]
+    expected_value = '(IBM Assignment: officer)'
+    expected_prose = f'Designate an {expected_value} to manage the development, documentation, and dissemination of the access control policy and procedures; and'  # noqa E501
+    assert ac_1.parts[0].parts[1].prose == expected_prose
+    ac_21 = res_cat.groups[0].controls[-1].controls[0]
+    assert ac_21.parts[
+        0
+    ].prose == 'Support the management of system accounts using (Assignment: organization-defined automated mechanisms).'  # noqa E501
+
+
+def test_profile_resolve_label_mode(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test profile resolve to create resolved profile catalog in label mode."""
+    test_utils.setup_for_multi_profile(tmp_trestle_dir, False, False)
+    cat_name = 'resolved_catalog'
+    command_profile_resolve = f'trestle author profile-resolve -n main_profile -o {cat_name} -bf (.) -sl -lp Label:'  # noqa E501
+    test_utils.execute_command_and_assert(command_profile_resolve, 0, monkeypatch)
+    res_cat, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, cat_name, cat.Catalog, FileContentType.JSON)
+    ac_1 = res_cat.groups[0].controls[0]
+    expected_value = '(Label: organization-defined official)'
+    expected_prose = f'Designate an {expected_value} to manage the development, documentation, and dissemination of the access control policy and procedures; and'  # noqa E501
+    assert ac_1.parts[0].parts[1].prose == expected_prose
+    ac_21 = res_cat.groups[0].controls[-1].controls[0]
+    assert ac_21.parts[
+        0
+    ].prose == 'Support the management of system accounts using (Label: organization-defined automated mechanisms).'  # noqa E501
+
+
+def test_profile_resolve_assignment_simple(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test profile resolve with simple profile."""
+    test_utils.setup_for_multi_profile(tmp_trestle_dir, True, False)
+    cat_name = 'resolved_catalog'
+    command_profile_resolve = f'trestle author profile-resolve -n main_profile -o {cat_name} -bf (.) -sv -vap "IBM Assignment:" -vnap "Assignment:"'  # noqa E501
+    test_utils.execute_command_and_assert(command_profile_resolve, 0, monkeypatch)
+    res_cat, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, cat_name, cat.Catalog, FileContentType.JSON)
+    ac_1 = res_cat.groups[0].controls[0]
+    expected_value = '(Assignment: organization-defined official)'
+    expected_prose = f'Designate an {expected_value} to manage the development, documentation, and dissemination of the access control policy and procedures; and'  # noqa E501
+    assert ac_1.parts[0].parts[1].prose == expected_prose
+    ac_21 = res_cat.groups[0].controls[1].controls[0]
+    assert ac_21.parts[
+        0
+    ].prose == 'Support the management of system accounts using (Assignment: organization-defined automated mechanisms).'  # noqa E501
+
+
+def test_profile_resolve_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test profile resolve failure due to disallowed argument combinations."""
+    test_utils.setup_for_multi_profile(tmp_trestle_dir, True, False)
+    core_command = 'trestle author profile-resolve -n main_profile -o resolved_catalog -bf (.) '
+    test_utils.execute_command_and_assert(core_command + '-sv -sl', 1, monkeypatch)
+    test_utils.execute_command_and_assert(core_command + '-sv -lp prefix', 1, monkeypatch)
+    test_utils.execute_command_and_assert(core_command + '-lp prefix', 1, monkeypatch)
+    test_utils.execute_command_and_assert(core_command + '-vap prefix', 1, monkeypatch)
+    test_utils.execute_command_and_assert(core_command + '-sl -vap prefix', 1, monkeypatch)
