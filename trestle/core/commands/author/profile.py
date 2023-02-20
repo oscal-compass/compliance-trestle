@@ -328,7 +328,7 @@ class ProfileAssemble(AuthorCommonCommand):
         if not parent_prof_name:
             parent_prof_name = assem_prof_name
 
-        parent_prof_path = ModelUtils.full_path_for_top_level_model(trestle_root, parent_prof_name, prof.Profile)
+        parent_prof_path = ModelUtils.get_model_path_for_name_and_class(trestle_root, parent_prof_name, prof.Profile)
         if parent_prof_path is None:
             raise TrestleError(f'Profile {parent_prof_name} does not exist.  An existing profile must be provided.')
 
@@ -364,7 +364,7 @@ class ProfileAssemble(AuthorCommonCommand):
 
         parent_prof.metadata.oscal_version = OSCAL_VERSION
 
-        assem_prof_path = ModelUtils.path_for_top_level_model(
+        assem_prof_path = ModelUtils.get_model_path_for_name_and_class(
             trestle_root, assem_prof_name, prof.Profile, new_content_type
         )
 

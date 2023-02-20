@@ -311,7 +311,7 @@ def test_merge_dicts_deep_empty() -> None:
 def test_get_control_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
     """Test getting the param dict of a control."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
-    prof_a_path = ModelUtils.path_for_top_level_model(
+    prof_a_path = ModelUtils.get_model_path_for_name_and_class(
         tmp_trestle_dir, 'test_profile_a', prof.Profile, FileContentType.JSON
     )
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)

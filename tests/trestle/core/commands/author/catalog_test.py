@@ -190,7 +190,7 @@ def test_catalog_assemble_version(sample_catalog_rich_controls: cat.Catalog, tmp
     )
 
     # load the freshly assembled catalog
-    assembled_cat, assembled_cat_path = ModelUtils.load_top_level_model(
+    assembled_cat, assembled_cat_path = ModelUtils.load_model_for_class(
         tmp_trestle_dir,
         assembled_cat_name,
         cat.Catalog
@@ -234,7 +234,7 @@ def test_catalog_assemble_version(sample_catalog_rich_controls: cat.Catalog, tmp
         tmp_trestle_dir, md_name, assembled_cat_name, assembled_cat_name, False, False, 'xx2'
     )
 
-    catalog, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, 'my_assembled_cat', cat.Catalog, FileContentType.JSON)
+    catalog, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'my_assembled_cat', cat.Catalog, FileContentType.JSON)
     interface = CatalogInterface(catalog)
     assert interface.get_count_of_controls_in_catalog(True) == 7
 
@@ -258,7 +258,7 @@ New control statement.
         tmp_trestle_dir, md_name, assembled_cat_name, assembled_cat_name, True, False, 'xx3'
     )
 
-    catalog, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, 'my_assembled_cat', cat.Catalog, FileContentType.JSON)
+    catalog, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'my_assembled_cat', cat.Catalog, FileContentType.JSON)
     interface = CatalogInterface(catalog)
     assert interface.get_count_of_controls_in_catalog(True) == 7
     control_d = interface.get_control('control_d')
@@ -367,7 +367,7 @@ def test_catalog_assemble_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: M
 def test_get_profile_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
     """Test get profile param dict for control."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
-    profile, profile_path = ModelUtils.load_top_level_model(
+    profile, profile_path = ModelUtils.load_model_for_class(
         tmp_trestle_dir,
         'test_profile_a',
         prof.Profile,
@@ -419,7 +419,7 @@ def test_params_in_choice(
     prof_name = 'simplified_nist_profile'
     ModelUtils.save_top_level_model(simplified_nist_catalog, tmp_trestle_dir, cat_name, FileContentType.JSON)
     ModelUtils.save_top_level_model(simplified_nist_profile, tmp_trestle_dir, prof_name, FileContentType.JSON)
-    prof_path = ModelUtils.full_path_for_top_level_model(tmp_trestle_dir, prof_name, prof.Profile)
+    prof_path = ModelUtils.get_model_path_for_name_and_class(tmp_trestle_dir, prof_name, prof.Profile)
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
     cat_interface = CatalogInterface(catalog)
     control = cat_interface.get_control('ac-4.4')
@@ -455,7 +455,9 @@ def test_pulled_params_in_choice(
     ModelUtils.save_top_level_model(simplified_nist_catalog, tmp_trestle_dir, cat_name, FileContentType.JSON)
     ModelUtils.save_top_level_model(simplified_nist_profile, tmp_trestle_dir, prof_name, FileContentType.JSON)
     pull_prof_name = 'pull_nist_profile'
-    prof_path = ModelUtils.path_for_top_level_model(tmp_trestle_dir, pull_prof_name, prof.Profile, FileContentType.JSON)
+    prof_path = ModelUtils.get_model_path_for_name_and_class(
+        tmp_trestle_dir, pull_prof_name, prof.Profile, FileContentType.JSON
+    )
     prof_path.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy(test_utils.JSON_TEST_DATA_PATH / (pull_prof_name + '.json'), prof_path)
 
@@ -519,7 +521,7 @@ def test_validate_catalog_missing_group_id(
     assert rc == 0
 
     # load the file without doing validation - to make sure the file itself has the group id assigned
-    new_cat, new_cat_path = ModelUtils.load_top_level_model(tmp_trestle_dir, cat_name, cat.Catalog)
+    new_cat, new_cat_path = ModelUtils.load_model_for_class(tmp_trestle_dir, cat_name, cat.Catalog)
     assert new_cat.groups[0].id == 'trestle_group_0000'
 
     md_name = 'md_cat'
@@ -535,7 +537,7 @@ def test_validate_catalog_missing_group_id(
     cat_assemble.assemble_catalog(tmp_trestle_dir, md_name, assem_cat_name, None, False, False, None)
 
     # load the file without doing validation - to make sure the file itself has the group id assigned
-    _, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, assem_cat_name, cat.Catalog)
+    _, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, assem_cat_name, cat.Catalog)
     assert new_cat.groups[0].id == 'trestle_group_0000'
 
 

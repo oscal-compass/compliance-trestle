@@ -309,7 +309,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     )
     assert ssp_assemble._run(args) == 0
 
-    orig_ssp, orig_ssp_path = ModelUtils.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+    orig_ssp, orig_ssp_path = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     orig_uuid = orig_ssp.uuid
     assert len(orig_ssp.system_implementation.components) == 5
     assert orig_ssp.metadata.version.__root__ == new_version
@@ -345,7 +345,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     # confirm the file was not written out since no change
     assert orig_ssp_path.stat().st_mtime == orig_file_creation
 
-    repeat_ssp, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+    repeat_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     assert len(repeat_ssp.system_implementation.components) == 5
     assert repeat_ssp.metadata.version.__root__ == new_version
 
@@ -432,7 +432,7 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
     assert ssp_assemble._run(args) == 0
 
     ssp: ossp.SystemSecurityPlan
-    ssp, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
+    ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
 
     assert len(ssp.control_implementation.implemented_requirements) == 7
 
@@ -452,7 +452,7 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
 
-    ssp, _ = ModelUtils.load_top_level_model(
+    ssp, _ = ModelUtils.load_model_for_class(
         tmp_trestle_dir,
         filtered_name,
         ossp.SystemSecurityPlan,
@@ -479,7 +479,7 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
 
-    ssp, _ = ModelUtils.load_top_level_model(
+    ssp, _ = ModelUtils.load_model_for_class(
         tmp_trestle_dir,
         filtered_name,
         ossp.SystemSecurityPlan,
@@ -555,7 +555,7 @@ def test_ssp_assemble_header_metadata(tmp_trestle_dir: pathlib.Path, monkeypatch
     test_utils.execute_command_and_assert(ssp_assemble, 0, monkeypatch)
 
     # read the assembled ssp and confirm roles are in metadata
-    ssp, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
+    ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
     # FIXME assert len(ssp.metadata.roles) == 2
 
 

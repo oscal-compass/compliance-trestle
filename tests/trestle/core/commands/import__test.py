@@ -346,7 +346,7 @@ def test_import_load_profile(tmp_trestle_dir: pathlib.Path) -> None:
     i = importcmd.ImportCmd()
     assert i._run(args) == 0
 
-    loaded_profile, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, 'my_prof', Profile)
+    loaded_profile, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'my_prof', Profile)
     assert len(loaded_profile.modify.set_parameters[1].constraints) == 1
 
 

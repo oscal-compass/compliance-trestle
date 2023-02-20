@@ -410,7 +410,9 @@ def load_from_json(
 ) -> None:
     """Load model from JSON test dir."""
     src_path = JSON_TEST_DATA_PATH / f'{file_prefix}.json'
-    dst_path = ModelUtils.path_for_top_level_model(tmp_trestle_dir, model_name, model_type, FileContentType.JSON)
+    dst_path = ModelUtils.get_model_path_for_name_and_class(
+        tmp_trestle_dir, model_name, model_type, FileContentType.JSON
+    )
     dst_path.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(src_path, dst_path)
 
@@ -494,7 +496,7 @@ def make_hidden_file(file_path: pathlib.Path) -> None:
 
 def get_model_uuid(trestle_root: pathlib.Path, model_name: str, model_class: TopLevelOscalModel) -> str:
     """Load the model and extract its uuid."""
-    model, _ = ModelUtils.load_top_level_model(trestle_root, model_name, model_class)
+    model, _ = ModelUtils.load_model_for_class(trestle_root, model_name, model_class)
     return model.uuid
 
 

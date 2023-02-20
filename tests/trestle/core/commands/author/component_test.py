@@ -89,7 +89,7 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
     comp_name = test_utils.setup_component_generate(tmp_trestle_dir)
     ac1_path = tmp_trestle_dir / 'md_comp/comp_aa/comp_prof_aa/ac/ac-1.md'
 
-    orig_component, _ = model_utils.ModelUtils.load_top_level_model(
+    orig_component, _ = model_utils.ModelUtils.load_model_for_class(
         tmp_trestle_dir, comp_name, comp.ComponentDefinition
     )
 
@@ -113,7 +113,7 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
     # confirm assembled is identical except for uuids
     assemble_cmd = f'trestle author component-assemble -m {md_path} -n {comp_name} -o {assem_name}'
     test_utils.execute_command_and_assert(assemble_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
-    assem_component, assem_comp_path = model_utils.ModelUtils.load_top_level_model(
+    assem_component, assem_comp_path = model_utils.ModelUtils.load_model_for_class(
         tmp_trestle_dir, assem_name, comp.ComponentDefinition
     )
     creation_time = assem_comp_path.stat().st_mtime
@@ -127,7 +127,7 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
     # confirm we can add a new component via markdown
     add_comp(tmp_trestle_dir / 'md_comp', ac1_path)
     test_utils.execute_command_and_assert(assemble_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
-    assem_component, _ = model_utils.ModelUtils.load_top_level_model(
+    assem_component, _ = model_utils.ModelUtils.load_model_for_class(
         tmp_trestle_dir, assem_name, comp.ComponentDefinition
     )
     assert assem_component.components[2].title == 'comp_new'

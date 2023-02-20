@@ -18,10 +18,6 @@ import argparse
 import logging
 import pathlib
 
-import trestle.oscal.catalog as cat
-import trestle.oscal.component as comp
-import trestle.oscal.profile as prof
-import trestle.oscal.ssp as ssp
 from trestle import __version__
 from trestle.common.err import TrestleError, handle_generic_command_exception
 from trestle.common.model_utils import ModelUtils
@@ -49,28 +45,10 @@ class VersionCmd(CommandBase):
 
     def _get_version(self, type_name: str, obj_name: str, trestle_root: pathlib.Path) -> str:
         """Fetch the version of the OSCAL object from its metadata."""
-        obj_type = None
-        if type_name == 'profile':
-            obj_type = prof.Profile
-        elif type_name == 'catalog':
-            obj_type = cat.Catalog
-        elif type_name == 'component-definition':
-            obj_type = comp.ComponentDefinition
-        elif type_name == 'ssp':
-            obj_type = ssp.SystemSecurityPlan
-        else:
-            raise TrestleError(
-                f'Type is not supported {type_name}, '
-                f'please select from: catalog, profile, component-definition, ssp.'
-            )
-
-        obj_path = ModelUtils.path_for_top_level_model(trestle_root, obj_name, obj_type)
-        _, _, oscal_object = ModelUtils.load_distributed(obj_path, trestle_root)
+        oscal_object, obj_path = ModelUtils.load_model_for_type(trestle_root, type_name, obj_name)
 
         if not (oscal_object.metadata or oscal_object.metadata.version):
-            raise TrestleError(
-                f'Unable to determine the version. Metadata version is missing in OSCAL object: {obj_path}.'
-            )
+            raise TrestleError(f'Unable to determine the version. Metadata version is missing in model: {obj_path}.')
 
         return oscal_object.metadata.version.__root__
 
