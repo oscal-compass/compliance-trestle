@@ -218,7 +218,7 @@ class ComponentAssemble(AuthorCommonCommand):
             parent_comp_name = assem_comp_name
 
         # load the comp-def that will be updated
-        parent_comp, parent_comp_path = ModelUtils.load_top_level_model(
+        parent_comp, parent_comp_path = ModelUtils.load_model_for_class(
             trestle_root,
             parent_comp_name,
             comp.ComponentDefinition
@@ -232,7 +232,7 @@ class ComponentAssemble(AuthorCommonCommand):
         if version:
             parent_comp.metadata.version = com.Version(__root__=version)
 
-        assem_comp_path = ModelUtils.path_for_top_level_model(
+        assem_comp_path = ModelUtils.get_model_path_for_name_and_class(
             trestle_root, assem_comp_name, comp.ComponentDefinition, new_content_type
         )
 

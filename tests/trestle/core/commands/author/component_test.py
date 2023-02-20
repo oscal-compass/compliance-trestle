@@ -15,16 +15,14 @@
 
 import pathlib
 import shutil
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 from _pytest.monkeypatch import MonkeyPatch
 
 from tests import test_utils
 
 import trestle.core.generic_oscal as generic
-import trestle.oscal.catalog as cat
 import trestle.oscal.component as comp
-import trestle.oscal.profile as prof
 from trestle.common import const, model_utils
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.markdown.markdown_processor import MarkdownProcessor
@@ -38,17 +36,6 @@ def add_comp(comp_path: pathlib.Path, ac1_path: pathlib.Path) -> None:
     ac_path.mkdir(parents=True, exist_ok=True)
     new_ac1_path = ac_path / 'ac-1.md'
     shutil.copyfile(str(ac1_path), str(new_ac1_path))
-
-
-def setup_component_generate(tmp_trestle_dir: pathlib.Path) -> List[str]:
-    """Create the compdef, profile and catalog content component-generate."""
-    comp_name = 'comp_def_a'
-    test_utils.load_from_json(tmp_trestle_dir, comp_name, comp_name, comp.ComponentDefinition)
-    for prof_name in 'comp_prof,comp_prof_aa,comp_prof_ab,comp_prof_ba,comp_prof_bb'.split(','):
-        test_utils.load_from_json(tmp_trestle_dir, prof_name, prof_name, prof.Profile)
-    test_utils.load_from_json(tmp_trestle_dir, 'simplified_nist_catalog', 'simplified_nist_catalog', cat.Catalog)
-
-    return comp_name
 
 
 def check_common_contents(header: Dict[str, Any]) -> None:
@@ -99,10 +86,10 @@ def check_at1_contents(at1_path: pathlib.Path) -> None:
 
 def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test component generate."""
-    comp_name = setup_component_generate(tmp_trestle_dir)
+    comp_name = test_utils.setup_component_generate(tmp_trestle_dir)
     ac1_path = tmp_trestle_dir / 'md_comp/comp_aa/comp_prof_aa/ac/ac-1.md'
 
-    orig_component, _ = model_utils.ModelUtils.load_top_level_model(
+    orig_component, _ = model_utils.ModelUtils.load_model_for_class(
         tmp_trestle_dir, comp_name, comp.ComponentDefinition
     )
 
@@ -126,7 +113,7 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
     # confirm assembled is identical except for uuids
     assemble_cmd = f'trestle author component-assemble -m {md_path} -n {comp_name} -o {assem_name}'
     test_utils.execute_command_and_assert(assemble_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
-    assem_component, assem_comp_path = model_utils.ModelUtils.load_top_level_model(
+    assem_component, assem_comp_path = model_utils.ModelUtils.load_model_for_class(
         tmp_trestle_dir, assem_name, comp.ComponentDefinition
     )
     creation_time = assem_comp_path.stat().st_mtime
@@ -140,7 +127,7 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
     # confirm we can add a new component via markdown
     add_comp(tmp_trestle_dir / 'md_comp', ac1_path)
     test_utils.execute_command_and_assert(assemble_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
-    assem_component, _ = model_utils.ModelUtils.load_top_level_model(
+    assem_component, _ = model_utils.ModelUtils.load_model_for_class(
         tmp_trestle_dir, assem_name, comp.ComponentDefinition
     )
     assert assem_component.components[2].title == 'comp_new'

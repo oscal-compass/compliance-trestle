@@ -46,6 +46,6 @@ def load_validate_model_name(
     file_content_type: Optional[FileContentType] = None
 ) -> Tuple[TG, Path]:
     """Load a model by its name and type and validate it."""
-    model_path = ModelUtils.path_for_top_level_model(trestle_root, model_name, model_class, file_content_type)
+    model_path = ModelUtils.get_model_path_for_name_and_class(trestle_root, model_name, model_class, file_content_type)
     model = load_validate_model_path(trestle_root, model_path)
     return model, model_path

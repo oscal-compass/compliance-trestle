@@ -856,7 +856,7 @@ class CatalogInterface():
         context.rules_dict = {}
         context.rules_params_dict = {}
         for comp_def_name in context.comp_def_name_list:
-            context.comp_def, _ = ModelUtils.load_top_level_model(
+            context.comp_def, _ = ModelUtils.load_model_for_class(
                 context.trestle_root,
                 comp_def_name,
                 comp.ComponentDefinition
