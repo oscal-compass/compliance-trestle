@@ -166,7 +166,7 @@ It can also be used to retrieve the metadata version of the OSCAL object:
 ...
 ```
 
-- `-t or --type` - a type of the OSCAL object (can be either catalog, profile, component-definition or ssp)
+- `-t or --type` - a type of the OSCAL object (can be either catalog, profile, component-definition, system-security-plan, etc)
 - `-n or --name` - a name of the OSCAL object
 
 Running `trestle version -n nist -t catalog` will return:

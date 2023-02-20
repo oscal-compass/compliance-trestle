@@ -38,7 +38,7 @@ class VersionCmd(CommandBase):
         self.add_argument(
             '-t',
             '--type',
-            help='Name of the OSCAL type (catalog, profile, component-definition, ssp)',
+            help='Name of the OSCAL type (catalog, profile, component-definition, system-security-plan, etc)',
             default=None,
             type=str
         )
