@@ -174,6 +174,21 @@
                     "value": "implemented"
                   }
                 ],
+                "set-parameters": [
+                  {
+                    "param-id": "shared_param_1",
+                    "values": [
+                      "shared_param_1_aa_opt_1"
+                    ],
+                    "remarks": "set shared param aa 1"
+                  },
+                  {
+                    "param-id": "ac-1_prm_3",
+                    "values": [
+                      "set by comp aa imp req"
+                    ]
+                  }
+                ],    
                 "responsible-roles": [
                   {
                     "role-id": "prepared-by",
@@ -195,21 +210,6 @@
                     ]
                   }
                 ],
-                "set-parameters": [
-                  {
-                    "param-id": "shared_param_1",
-                    "values": [
-                      "shared_param_1_aa_opt_1"
-                    ],
-                    "remarks": "set shared param aa 1"
-                  },
-                  {
-                    "param-id": "ac-1_prm_3",
-                    "values": [
-                      "set by comp aa imp req"
-                    ]
-                  }
-                ],    
                 "statements": [
                   {
                     "statement-id": "ac-1_smt.a",
