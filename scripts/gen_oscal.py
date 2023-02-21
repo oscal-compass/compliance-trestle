@@ -78,7 +78,14 @@ def generate_model(full_name, out_full_name):
 
 
 def generate_models():
-    """Generate all models including 3rd party."""
+    """
+    Generate all models including 3rd party.
+
+    IMPORTANT NOTE: This script will leave the temporary classes in oscal/tmp for reference, but they should be deleted
+    when no longer needed because some of the operations in the build will seek all .py files, and will try to act
+    on these temporary files - giving an error.  So be sure to delete the oscal/tmp directory when done generating
+    new classes.
+    """
     logger.info('generating models')
     out_dir = Path('trestle/oscal')
     out_dir.mkdir(exist_ok=True, parents=True)

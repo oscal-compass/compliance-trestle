@@ -551,6 +551,16 @@ x-trestle-rules-params:
       options: '["shared_param_1_aa_opt_1", "shared_param_1_aa_opt_2"]'
       rule-id: top_shared_rule_1
 x-trestle-comp-def-rules-param-vals:
+  # You may set new values for rule parameters by adding
+  #
+  # component-values:
+  #   - value 1
+  #   - value 2
+  #
+  # below a section of values:
+  # The values list refers to the values as set by the components, and the component-values are the new values
+  # to be placed in SetParameters of the component definition.
+  #
   comp_aa:
     - name: shared_param_1
       values:
@@ -740,11 +750,12 @@ The values for rule parameters are specified using the normal `SetParameter` mec
 Note that markdown for a control is only created if there are rules associated with the control, and within the markdown the only parts written out that
 prompt for responses are parts that have rules assigned.  Thus the output markdown directory may be highly pruned of both controls and groups of controls if only some controls have rules associated.
 
-In addition, the rules should be regarded as read-only from the editing perspective, and you cannot change the rules associated with a control or its parts.
+In addition, the rules should be regarded as read-only from the editing perspective, and you cannot change the rules associated with a control or its parts.  But you may edit the rule parameter values as described in the comments of the markdown file under
+`x-trestle-comp-def-rules-param-vals`.  You may also edit the prose and implementation status associated with a statement part at the bottom of the markdown file.
 
 `trestle author component-assemble`
 
-The `component-assemble` command will assemble the markdown into a ComponentDefinition file containing all the DefinedComponents in the markdown, and as usual it can either overwrite the original JSON file or create a new one.  Edits made to the prose, status and values in the markdown and header will be captured in the assembled file, but the list of rules attached to each ImplementedRequirement may is *readonly* and new rule associations cannot be made via markdown.
+The `component-assemble` command will assemble the markdown into a ComponentDefinition file containing all the DefinedComponents in the markdown, and as usual it can either overwrite the original JSON file or create a new one.  Edits made to the prose, status and rule parameter values in the markdown and header will be captured in the assembled file, but the list of rules attached with each ImplementedRequirement is *readonly* and new rule associations cannot be made via markdown.
 
 </details>
 
