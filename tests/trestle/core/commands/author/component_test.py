@@ -125,7 +125,10 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
 
     # edit a rule param value
     new_text = '      component-values:\n        - inserted value\n'
-    file_utils.insert_text_in_file(ac1_path, '- shared_param_1_aa_opt_1', new_text)
+
+    # testing multiple values setting
+    for _n in range(3):
+        file_utils.insert_text_in_file(ac1_path, '- shared_param_1_aa_opt_1', new_text)
 
     # assemble and confirm new value was captured
     test_utils.execute_command_and_assert(assemble_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
