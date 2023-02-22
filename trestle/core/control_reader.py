@@ -563,15 +563,7 @@ class ControlReader():
         imp_req = gens.generate_sample_model(comp.ImplementedRequirement)
         imp_req.control_id = control_id
 
-        imp_req.set_parameters = []
         imp_req.statements = []
-        # add normal user setparams
-        for param_id, param_dict in md_header.get(const.SET_PARAMS_TAG, {}).items():
-            if const.SSP_VALUES in param_dict:
-                values = [common.Value(__root__=value) for value in param_dict[const.SSP_VALUES]]
-                set_param = ossp.SetParameter(param_id=param_id, values=values)
-                imp_req.set_parameters.append(set_param)
-
         comp_dict = md_comp_dict[comp_name]
         for label, comp_info in comp_dict.items():
             # only assemble responses with associated rules
@@ -599,10 +591,13 @@ class ControlReader():
             ControlInterface.insert_status_in_props(statement, comp_info.status)
 
         imp_req.statements = list(statement_map.values())
+        imp_req.set_parameters = []
 
         for _, param_dict_list in md_header.get(const.COMP_DEF_RULES_PARAM_VALS_TAG, {}).items():
             for param_dict in param_dict_list:
                 values = [common.Value(__root__=value) for value in param_dict.get(const.VALUES, [])]
+                comp_values = [common.Value(__root__=value) for value in param_dict.get(const.COMPONENT_VALUES, [])]
+                values = comp_values if comp_values else values
                 set_param = ossp.SetParameter(param_id=param_dict['name'], values=values)
                 imp_req.set_parameters.append(set_param)
         imp_req.statements = none_if_empty(list(statement_map.values()))
