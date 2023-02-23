@@ -620,3 +620,21 @@ def test_merge_imp_req() -> None:
     imp_req_b.statements = [statement]
     SSPAssemble._merge_imp_req_into_imp_req(imp_req_a, imp_req_b, [])
     assert imp_req_a.statements[0].by_components[0].description == prose
+
+
+def test_doit() -> None:
+    """Do the test."""
+    p = pathlib.Path('/fs/src/ibm/test-ssp-using-cd')
+
+    args = argparse.Namespace(
+        trestle_root=p,
+        profile='IBM_FS_CLOUD',
+        output='md_ssp/cloud-services-fscloud',
+        overwrite_header_values=False,
+        force_overwrite=False,
+        compdefs='cloud-services-fscloud',
+        verbose=0,
+        yaml_header=None
+    )
+    ssp_cmd = SSPGenerate()
+    assert ssp_cmd._run(args) == 0
