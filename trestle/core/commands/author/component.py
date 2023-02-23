@@ -284,6 +284,7 @@ class ComponentAssemble(AuthorCommonCommand):
             context.comp_name = component.title
             context.comp_def = parent_comp
             context.component = component
+            logger.info(f'reading markdown for component {component.title}')
             ComponentAssemble._update_component_with_markdown(md_dir, component, context)
 
     @staticmethod

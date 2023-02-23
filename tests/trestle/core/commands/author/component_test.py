@@ -124,11 +124,8 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
     assert creation_time == assem_comp_path.stat().st_mtime
 
     # edit a rule param value
-    new_text = '      component-values:\n        - inserted value\n'
-
-    # testing multiple values setting
-    for _n in range(3):
-        file_utils.insert_text_in_file(ac1_path, '- shared_param_1_aa_opt_1', new_text)
+    new_text = '      component-values:\n        - inserted value 0\n        - inserted value 1\n        - inserted value 2\n'  # noqa E501
+    file_utils.insert_text_in_file(ac1_path, '- shared_param_1_aa_opt_1', new_text)
 
     # assemble and confirm new value was captured
     test_utils.execute_command_and_assert(assemble_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
@@ -137,8 +134,9 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
         tmp_trestle_dir, assem_name, comp.ComponentDefinition
     )
 
-    assert assem_component.components[0].control_implementations[0].implemented_requirements[0].set_parameters[
-        0].values[0].__root__ == 'inserted value'
+    for ii in range(3):
+        assert assem_component.components[0].control_implementations[0].implemented_requirements[0].set_parameters[
+            0].values[ii].__root__ == f'inserted value {ii}'
 
     # confirm we can add a new component via markdown
     add_comp(tmp_trestle_dir / 'md_comp', ac1_path)
