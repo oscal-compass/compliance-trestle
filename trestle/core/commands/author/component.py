@@ -63,7 +63,7 @@ class ComponentGenerate(AuthorCommonCommand):
 
             if args.force_overwrite:
                 try:
-                    logger.debug(f'Overwriting the content in {args.output} folder.')
+                    logger.info(f'Overwriting the content in {args.output} folder.')
                     clear_folder(pathlib.Path(args.output))
                 except TrestleError as e:  # pragma: no cover
                     raise TrestleError(f'Unable to overwrite contents in {args.output} folder: {e}')
@@ -104,7 +104,7 @@ class ComponentGenerate(AuthorCommonCommand):
         self, context: ControlContext, component: comp.DefinedComponent, markdown_dir_path: pathlib.Path
     ) -> int:
         """Create markdown for the component using its source profiles."""
-        logger.debug(f'Creating markdown for component {component.title}.')
+        logger.info(f'Generating markdown for component {component.title}')
         context.comp_name = component.title
         context.component = component
         context.uri_name_map = {}
@@ -284,7 +284,7 @@ class ComponentAssemble(AuthorCommonCommand):
             context.comp_name = component.title
             context.comp_def = parent_comp
             context.component = component
-            logger.info(f'reading markdown for component {component.title}')
+            logger.info(f'Assembling markdown for component {component.title}')
             ComponentAssemble._update_component_with_markdown(md_dir, component, context)
 
     @staticmethod
