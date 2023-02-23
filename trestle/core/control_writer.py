@@ -485,7 +485,10 @@ class ControlWriter():
                 header_comment_dict[const.SET_PARAMS_TAG] = const.YAML_PROFILE_VALUES_COMMENT
             elif context.purpose == ContextPurpose.SSP:
                 header_comment_dict[const.SET_PARAMS_TAG] = const.YAML_SSP_VALUES_COMMENT
-                header_comment_dict[const.COMP_DEF_RULES_PARAM_VALS_TAG] = const.YAML_RULE_PARAM_VALUES_COMMENT
+                header_comment_dict[const.COMP_DEF_RULES_PARAM_VALS_TAG] = const.YAML_RULE_PARAM_VALUES_SSP_COMMENT
+            elif context.purpose == ContextPurpose.COMPONENT:
+                header_comment_dict[const.COMP_DEF_RULES_PARAM_VALS_TAG
+                                    ] = const.YAML_RULE_PARAM_VALUES_COMPONENT_COMMENT
 
         # begin adding info to the md file
         self._md_file = MDWriter(control_file, header_comment_dict)

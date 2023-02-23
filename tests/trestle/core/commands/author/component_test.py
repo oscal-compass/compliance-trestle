@@ -23,7 +23,7 @@ from tests import test_utils
 
 import trestle.core.generic_oscal as generic
 import trestle.oscal.component as comp
-from trestle.common import const, model_utils
+from trestle.common import const, file_utils, model_utils
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.markdown.markdown_processor import MarkdownProcessor
 
@@ -101,8 +101,8 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
 
     file_checker = test_utils.FileChecker(tmp_trestle_dir / md_path)
 
-    generate_cmd = f'trestle author component-generate -n {comp_name} -o {md_path}'
     # confirm it overwrites existing md identically
+    generate_cmd = f'trestle author component-generate -n {comp_name} -o {md_path}'
     test_utils.execute_command_and_assert(generate_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
 
     # all files should be the same
@@ -119,10 +119,24 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
     creation_time = assem_comp_path.stat().st_mtime
     assert model_utils.ModelUtils.models_are_equivalent(orig_component, assem_component, True)
 
+    # assemble again and confirm it is not written out since no change
     test_utils.execute_command_and_assert(assemble_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
     assert creation_time == assem_comp_path.stat().st_mtime
 
-    ac1_path = tmp_trestle_dir / 'md_comp/comp_aa/comp_prof_aa/ac/ac-1.md'
+    # edit a rule param value
+    new_text = '      component-values:\n        - inserted value 0\n        - inserted value 1\n        - inserted value 2\n'  # noqa E501
+    file_utils.insert_text_in_file(ac1_path, '- shared_param_1_aa_opt_1', new_text)
+
+    # assemble and confirm new value was captured
+    test_utils.execute_command_and_assert(assemble_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
+
+    assem_component, _ = model_utils.ModelUtils.load_model_for_class(
+        tmp_trestle_dir, assem_name, comp.ComponentDefinition
+    )
+
+    for ii in range(3):
+        assert assem_component.components[0].control_implementations[0].implemented_requirements[0].set_parameters[
+            0].values[ii].__root__ == f'inserted value {ii}'
 
     # confirm we can add a new component via markdown
     add_comp(tmp_trestle_dir / 'md_comp', ac1_path)

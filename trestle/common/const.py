@@ -438,7 +438,7 @@ COMP_DEF_RULES_TAG = TRESTLE_TAG + 'comp-def-rules'
 
 PROFILE_VALUES = 'profile-values'
 
-COMP_DEF_VALUES = 'comp-def-values'
+COMPONENT_VALUES = 'component-values'
 
 VALUES = 'values'
 
@@ -497,7 +497,7 @@ YAML_PROFILE_VALUES_COMMENT = """  # You may set values for parameters in the as
   #
 """
 
-YAML_RULE_PARAM_VALUES_COMMENT = """  # You may set new values for rule parameters by adding
+YAML_RULE_PARAM_VALUES_SSP_COMMENT = """  # You may set new values for rule parameters by adding
   #
   # ssp-values:
   #   - value 1
@@ -506,6 +506,18 @@ YAML_RULE_PARAM_VALUES_COMMENT = """  # You may set new values for rule paramete
   # below a section of values:
   # The values list refers to the values as set by the components, and the ssp-values are the new values
   # to be placed in SetParameters of the SSP.
+  #
+"""
+
+YAML_RULE_PARAM_VALUES_COMPONENT_COMMENT = """  # You may set new values for rule parameters by adding
+  #
+  # component-values:
+  #   - value 1
+  #   - value 2
+  #
+  # below a section of values:
+  # The values list refers to the values as set by the components, and the component-values are the new values
+  # to be placed in SetParameters of the component definition.
   #
 """
 

@@ -63,7 +63,7 @@ class ComponentGenerate(AuthorCommonCommand):
 
             if args.force_overwrite:
                 try:
-                    logger.debug(f'Overwriting the content in {args.output} folder.')
+                    logger.info(f'Overwriting the content in {args.output} folder.')
                     clear_folder(pathlib.Path(args.output))
                 except TrestleError as e:  # pragma: no cover
                     raise TrestleError(f'Unable to overwrite contents in {args.output} folder: {e}')
@@ -104,7 +104,7 @@ class ComponentGenerate(AuthorCommonCommand):
         self, context: ControlContext, component: comp.DefinedComponent, markdown_dir_path: pathlib.Path
     ) -> int:
         """Create markdown for the component using its source profiles."""
-        logger.debug(f'Creating markdown for component {component.title}.')
+        logger.info(f'Generating markdown for component {component.title}')
         context.comp_name = component.title
         context.component = component
         context.uri_name_map = {}
@@ -240,7 +240,7 @@ class ComponentAssemble(AuthorCommonCommand):
             _, _, existing_comp = ModelUtils.load_distributed(assem_comp_path, trestle_root)
             # comp def will change statement uuids so need to ignore them in comparison
             if ModelUtils.models_are_equivalent(existing_comp, parent_comp, True):
-                logger.info('Assembled component is no different from existing version, so no update.')
+                logger.info('Assembled component definition is no different from existing version, so no update.')
                 return CmdReturnCodes.SUCCESS.value
 
         if regenerate:
@@ -248,7 +248,9 @@ class ComponentAssemble(AuthorCommonCommand):
         ModelUtils.update_last_modified(parent_comp)
 
         if assem_comp_path.parent.exists():
-            logger.info('Creating component from markdown and destination component exists, so updating.')
+            logger.info(
+                'Creating component definition from markdown and destination component definition exists, so updating.'
+            )  # noqa E501
             shutil.rmtree(str(assem_comp_path.parent))
 
         assem_comp_path.parent.mkdir(parents=True, exist_ok=True)
@@ -284,6 +286,7 @@ class ComponentAssemble(AuthorCommonCommand):
             context.comp_name = component.title
             context.comp_def = parent_comp
             context.component = component
+            logger.info(f'Assembling markdown for component {component.title}')
             ComponentAssemble._update_component_with_markdown(md_dir, component, context)
 
     @staticmethod
