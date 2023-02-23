@@ -1,7 +1,7 @@
 # Compliance-trestle (also known as `trestle`)
 
 ![[OS Compatibility](#prerequisites)](https://img.shields.io/badge/platform-osx%20%7C%20linux%20%7C%20windows-orange.svg)
-![[Python](https://www.python.org/downloads/)](https://img.shields.io/badge/python-v3.7+-blue.svg)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/compliance-trestle)
 ![[Pre-commit](https://github.com/pre-commit/pre-commit)](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)
 ![[Code Coverage](https://sonarcloud.io/dashboard?id=compliance-trestle)](https://sonarcloud.io/api/project_badges/measure?project=compliance-trestle&metric=coverage)
 ![[Quality gate](https://sonarcloud.io/dashboard?id=compliance-trestle)](https://sonarcloud.io/api/project_badges/measure?project=compliance-trestle&metric=alert_status)
@@ -12,7 +12,7 @@ Trestle is an ensemble of tools that enable the creation, validation, and govern
 
 Trestle is designed to operate as a CICD pipeline running on top of compliance artifacts in `git`, to provide transparency for the state of compliance across multiple stakeholders in an environment friendly to developers. Trestle passes the generated artifacts on to tools that orchestrate the enforcement, measurement, and reporting of compliance.
 
-It also provides tooling to manage OSCAL documents in a more human-friendly manner. By splitting large OSCAL data structures into smaller and easier to edit sub-structures, creation and maintenance of these artifacts, or facsimilies in markdown, can follow normal `git` workflows including peer review via pull request, versioning, releases/tagging.
+It also provides tooling to manage OSCAL documents in a more human-friendly manner. By splitting large OSCAL data structures into smaller and easier to edit sub-structures, creation and maintenance of these artifacts can follow normal `git` workflows including peer review via pull request, versioning, releases/tagging.
 
 Trestle provides three separate but related functions in the compliance space:
 
@@ -27,7 +27,7 @@ Trestle provides tooling to help orchestrate the compliance process across a num
 - Provide governance for markdown documents and enforce consistency of format and content based on specified templates
 - Tooling manage authoring and governance of markdown and drawio files withn a repository.
 - Support within trestle to streamline management within a managed git environment.
-- An underlying object model that supports developers interacting with OSCAL artifacts.
+- An underlying object model that supports developers interacting with OSCAL artefacts.
 
 ## Important Note:
 
@@ -57,7 +57,7 @@ By building human managed artifacts into OSCAL, Trestle is not only able to vali
 
 `trestle` implicitly supports all OSCAL schemas for use within the object model. The development roadmap for `trestle` includes adding workflow around specific elements / objects that is opinionated.
 
-## Supported file formats for OSCAL objects
+## Supported file formats for OSCAL objects.
 
 OSCAL supports `xml`, `json` and `yaml` with their [metaschema](https://github.com/usnistgov/metaschema) tooling. Trestle
 natively supports only `json` and `yaml` formats at this time.
