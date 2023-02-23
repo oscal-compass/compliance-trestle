@@ -135,7 +135,7 @@ class SSPGenerate(AuthorCommonCommand):
         """
         if force_overwrite:
             try:
-                logger.debug(f'Overwriting the content of {md_path}.')
+                logger.info(f'Overwriting the content in {md_path}.')
                 clear_folder(pathlib.Path(md_path))
             except TrestleError as e:  # pragma: no cover
                 raise TrestleError(f'Unable to overwrite contents of {md_path}: {e}')
