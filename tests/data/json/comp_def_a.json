@@ -81,6 +81,27 @@
             "ns": "http://comp_ns",
             "value": "top shared rule 1 in aa",
             "remarks": "rule_1"
+          },
+          {
+            "name": "Parameter_Id",
+            "ns": "http://comp_ns",
+            "value": "shared_param_x",
+            "class": "Parameter_Id",
+            "remarks": "rule_x"
+          },
+          {
+            "name": "Parameter_Description",
+            "ns": "http://comp_ns",
+            "value": "shared param x in aa",
+            "class": "Parameter_Description",
+            "remarks": "rule_x"
+          },
+          {
+            "name": "Parameter_Value_Alternatives",
+            "ns": "http://comp_ns",
+            "value": "[\"shared_param_x_aa_opt_1\", \"shared_param_x_aa_opt_2\", \"shared_param_x_aa_opt_3\"]",
+            "class": "Parameter_Value_Alternatives",
+            "remarks": "rule_x"
           }
         ],
         "control-implementations": [
