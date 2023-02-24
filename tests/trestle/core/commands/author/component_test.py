@@ -117,6 +117,9 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
         tmp_trestle_dir, assem_name, comp.ComponentDefinition
     )
     creation_time = assem_comp_path.stat().st_mtime
+
+    # remove statement ac-1_smt.b because it has no rules associated and won't get written out
+    orig_component.components[1].control_implementations[0].implemented_requirements[0].statements.pop()
     assert model_utils.ModelUtils.models_are_equivalent(orig_component, assem_component, True)
 
     # assemble again and confirm it is not written out since no change
@@ -156,3 +159,16 @@ def test_generic_oscal() -> None:
     generic_cont_imp = generic.GenericControlImplementation.generate()
     cont_imp = generic_cont_imp.as_ssp()
     assert cont_imp.description == ''
+
+
+def test_component_generate_missing_control(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test component generate failure when profile missing control."""
+    comp_name = test_utils.setup_component_generate(tmp_trestle_dir)
+
+    prof_path = tmp_trestle_dir / 'profiles/comp_prof_aa/profile.json'
+    test_utils.delete_line_in_file(prof_path, 'ac-1')
+
+    generate_cmd = f'trestle author component-generate -n {comp_name} -o {md_path}'
+
+    # confirm failure because profile is missing a needed control
+    test_utils.execute_command_and_assert(generate_cmd, 1, monkeypatch)

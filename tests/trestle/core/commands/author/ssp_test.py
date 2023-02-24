@@ -620,3 +620,12 @@ def test_merge_imp_req() -> None:
     imp_req_b.statements = [statement]
     SSPAssemble._merge_imp_req_into_imp_req(imp_req_a, imp_req_b, [])
     assert imp_req_a.statements[0].by_components[0].description == prose
+
+
+def test_ssp_failure_missing_control(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test ssp failure when profile missing control."""
+    gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
+    prof_path = tmp_trestle_dir / 'profiles/comp_prof/profile.json'
+    test_utils.delete_line_in_file(prof_path, 'ac-1')
+    ssp_gen = SSPGenerate()
+    assert ssp_gen._run(gen_args) == 1

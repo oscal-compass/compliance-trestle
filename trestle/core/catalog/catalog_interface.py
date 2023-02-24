@@ -807,7 +807,12 @@ class CatalogInterface():
         comp_rules_params_dict.update(control_imp_rules_params_dict)
         context.rules_params_dict[context.comp_name] = comp_rules_params_dict
         ci_set_params = ControlInterface.get_set_params_from_item(context.control_implementation)
+        catalog_control_ids = self.get_control_ids()
         for imp_req in as_list(context.control_implementation.implemented_requirements):
+            if imp_req.control_id not in catalog_control_ids:
+                raise TrestleError(
+                    f'Component {context.component.title} references control {imp_req.control_id} not in profile.'
+                )
             control_part_id_map = part_id_map.get(imp_req.control_id, {})
             # find if any rules apply to this control, including in statements
             control_rules, statement_rules, ir_props = ControlInterface.get_rule_list_for_imp_req(imp_req)
