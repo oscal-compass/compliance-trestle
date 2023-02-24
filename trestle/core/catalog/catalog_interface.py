@@ -22,7 +22,7 @@ from typing import Any, Callable, Dict, Iterator, List, Optional, Set, Tuple
 import trestle.common.const as const
 import trestle.oscal.catalog as cat
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import as_dict, as_filtered_list, as_list, delete_item_from_list, deep_append, deep_get, deep_set, get_item_from_list, none_if_empty, set_or_pop  # noqa E501
+from trestle.common.list_utils import as_dict, as_filtered_list, as_list, deep_append, deep_get, deep_set, deep_update, delete_item_from_list, get_item_from_list, none_if_empty, set_or_pop  # noqa E501
 from trestle.common.model_utils import ModelUtils
 from trestle.core.control_context import ControlContext
 from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlInterface
@@ -872,7 +872,7 @@ class CatalogInterface():
                 # get top level rule info applying to all controls from the component props
                 comp_rules_dict, comp_rules_params_dict, comp_rules_props = ControlInterface.get_rules_and_params_dict_from_item(component)  # noqa E501
                 context.rules_dict[context.comp_name] = comp_rules_dict
-                context.rules_params_dict.update(comp_rules_params_dict)
+                deep_update(context.rules_params_dict, [context.comp_name], comp_rules_params_dict)
                 for control_imp in as_list(component.control_implementations):
                     context.control_implementation = control_imp
                     self._add_control_imp_comp_info(context, part_id_map, comp_rules_props)
