@@ -17,3 +17,7 @@ Nebula Alam - [aNebula](https://github.com/aNebula)
 Vikas Agarwal [vikas-agarwal76](https://github.com/vikas-agarwal76)
 
 Lou Degenaro [degenaro](https://github.com/degenaro)
+
+Ekaterina Nikonova [enikonovad](https://github.com/enikonovad)
+
+Alejandro Jose Leiva Palomo [AleJo2995](https://github.com/AleJo2995)
