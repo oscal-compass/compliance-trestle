@@ -626,6 +626,7 @@ def test_ssp_failure_missing_control(tmp_trestle_dir: pathlib.Path) -> None:
     """Test ssp failure when profile missing control."""
     gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
     prof_path = tmp_trestle_dir / 'profiles/comp_prof/profile.json'
+    # remove the reference to control ac-1
     test_utils.delete_line_in_file(prof_path, 'ac-1')
     ssp_gen = SSPGenerate()
     assert ssp_gen._run(gen_args) == 1
