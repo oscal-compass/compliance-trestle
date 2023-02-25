@@ -26,8 +26,12 @@ from math import log10
 from typing import Iterator, List, Optional
 
 from trestle.common.list_utils import as_list
+from trestle.core.profile_resolver import ProfileResolver
 from trestle.oscal import OSCAL_VERSION
+from trestle.oscal.catalog import Control
+from trestle.oscal.catalog import Group
 from trestle.oscal.common import Metadata
+from trestle.oscal.common import Part
 from trestle.oscal.common import Property
 from trestle.oscal.component import ComponentDefinition
 from trestle.oscal.component import ControlImplementation
@@ -132,6 +136,9 @@ class CsvToOscalComponentDefinition(TaskBase):
         text1 = '  output-overwrite     = '
         text2 = '(optional) true [default] or false; replace existing output when true.'
         logger.info(text1 + text2)
+        text1 = '  validate-controls    = '
+        text2 = '(optional) true or false [default]; validate controls exist in resolved profile when true.'
+        logger.info(text1 + text2)
 
     def configure(self) -> bool:
         """Configure."""
@@ -170,6 +177,8 @@ class CsvToOscalComponentDefinition(TaskBase):
             if not self._cd_path.exists():
                 logger.warning('"component-definition" not found')
                 return False
+        # validate_controls
+        self._validate_controls = self._config.getboolean('validate-controls', False)
         return True
 
     def get_class(self, name: str) -> str:
@@ -209,6 +218,10 @@ class CsvToOscalComponentDefinition(TaskBase):
         self._cd_mgr = _CdMgr(self._cd_path, self._title, self._timestamp, self._version)
         # fetch csv
         self._csv_mgr = _CsvMgr(self._csv_path)
+        # create resolved profile -> catalog helper
+        profile_list = self._csv_mgr.get_profile_list()
+        self._resolved_profile_catalog_helper = _ResolvedProfileCatalogHelper(profile_list, odir)
+        self._unresolved_controls = []
         # calculate deletion, addition & modification rule lists
         rules = self._calculate_rules()
         # calculate deletion, addition & modification set-parameter lists
@@ -230,6 +243,8 @@ class CsvToOscalComponentDefinition(TaskBase):
         self.control_mappings_add(control_mappings[1])
         # note: control mappings mod is currently not possible
         # note: add/del user columns not currently supported
+        if len(self._unresolved_controls) > 0:
+            logger.warn(f'Unresolved controls: {self._unresolved_controls}')
         # prepare new/revised component definition
         component_definition = self._cd_mgr.get_component_definition()
         # write OSCAL ComponentDefinition to file
@@ -542,6 +557,10 @@ class CsvToOscalComponentDefinition(TaskBase):
         self, control_implementation: ControlImplementation, control_id: str
     ) -> ImplementedRequirement:
         """Find or create implemented requirement."""
+        if self._validate_controls:
+            if not self._resolved_profile_catalog_helper.validate(control_id):
+                if control_id not in self._unresolved_controls:
+                    self._unresolved_controls.append(control_id)
         for implemented_requirement in control_implementation.implemented_requirements:
             if implemented_requirement.control_id == control_id:
                 return implemented_requirement
@@ -854,6 +873,72 @@ class _RuleSetMgr():
             if key in c1 or key in c2:
                 continue
             rval.append(self._props[key])
+        return rval
+
+
+class _ResolvedProfileCatalogHelper():
+    """Resolved Profile Catalog Helper."""
+
+    def __init__(self, profile_list: List[str], root: str = '.') -> None:
+        """Initialize."""
+        self._profile_list = profile_list
+        self._root = root
+        self._init = False
+
+    def _initilaize(self):
+        if not self._init:
+            self._profile_map = {}
+            self._control_list = []
+            for profile in self._profile_list:
+                catalog = ProfileResolver.get_resolved_profile_catalog(
+                    pathlib.Path(self._root),
+                    pathlib.Path(profile),
+                )
+                self._profile_map[profile] = catalog
+                self._process_groups(catalog.groups)
+                self._process_controls(catalog.controls)
+            logger.debug(f'resolved controls: {self._control_list}')
+            self._init = True
+
+    def _list_add(self, control_id: str) -> None:
+        if control_id not in self._control_list:
+            self._control_list.append(control_id)
+
+    def _process_groups(self, groups: List[Group]) -> None:
+        """Process groups."""
+        if groups:
+            for group in groups:
+                self._process_groups(group.groups)
+                self._process_controls(group.controls)
+                self._process_parts(group.parts)
+
+    def _process_controls(self, controls: List[Control]) -> None:
+        """Process controls."""
+        if controls:
+            for control in controls:
+                self._list_add(control.id)
+                self._process_parts(control.parts)
+                self._process_controls(control.controls)
+
+    def _process_parts(self, parts: List[Part]) -> None:
+        """Process parts."""
+        if parts:
+            for part in parts:
+                if part.id:
+                    if '_smt.' in part.id:
+                        control_id = part.id.replace('_smt.', '')
+                        self._list_add(control_id)
+                    elif '_smt' in part.id:
+                        control_id = part.id.replace('_smt', '')
+                        self._list_add(control_id)
+                self._process_parts(part.parts)
+
+    def validate(self, control_id: str) -> bool:
+        """Validate control_id."""
+        self._initilaize()
+        rval = True
+        if control_id not in self._control_list:
+            rval = False
         return rval
 
 
@@ -1282,6 +1367,7 @@ class _CsvMgr():
         self._csv_rules_map = {}
         self._csv_set_params_map = {}
         self._csv_controls_map = {}
+        self._csv_profile_list = []
         for row_num, row in self.row_generator():
             self._check_row_minimum_requirements(row_num, row)
             component_title = self.get_row_value(row, f'{COMPONENT_TITLE}')
@@ -1297,6 +1383,8 @@ class _CsvMgr():
             logger.debug(f'csv-rules: {key} {self._csv_rules_map[key][0]}')
             # set parameters, by component
             source = self.get_row_value(row, PROFILE_SOURCE)
+            if source not in self._csv_profile_list:
+                self._csv_profile_list.append(source)
             description = self.get_row_value(row, PROFILE_DESCRIPTION)
             param_id = self.get_row_value(row, PARAMETER_ID)
             if param_id:
@@ -1318,6 +1406,10 @@ class _CsvMgr():
     def get_rule_key(component_title: str, component_type: str, rule_id: str) -> tuple:
         """Get rule_key."""
         return (component_title, component_type, rule_id)
+
+    def get_profile_list(self):
+        """Get profile list."""
+        return [] + self._csv_profile_list
 
     def row_generator(self) -> [int, Iterator[List[str]]]:
         """Generate rows."""
