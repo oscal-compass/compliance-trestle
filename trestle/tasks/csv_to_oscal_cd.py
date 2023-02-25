@@ -18,6 +18,7 @@ import configparser
 import csv
 import datetime
 import logging
+import os
 import pathlib
 import sys
 import traceback
@@ -177,6 +178,8 @@ class CsvToOscalComponentDefinition(TaskBase):
             if not self._cd_path.exists():
                 logger.warning('"component-definition" not found')
                 return False
+        # workspace
+        self._workspace = os.getcwd()
         # validate_controls
         self._validate_controls = self._config.getboolean('validate-controls', False)
         return True
@@ -220,7 +223,7 @@ class CsvToOscalComponentDefinition(TaskBase):
         self._csv_mgr = _CsvMgr(self._csv_path)
         # create resolved profile -> catalog helper
         profile_list = self._csv_mgr.get_profile_list()
-        self._resolved_profile_catalog_helper = _ResolvedProfileCatalogHelper(profile_list, odir)
+        self._resolved_profile_catalog_helper = _ResolvedProfileCatalogHelper(profile_list, self._workspace)
         self._unresolved_controls = []
         # calculate deletion, addition & modification rule lists
         rules = self._calculate_rules()

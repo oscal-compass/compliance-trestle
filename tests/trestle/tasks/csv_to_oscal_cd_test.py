@@ -230,49 +230,96 @@ def test_execute_mock(tmp_path: pathlib.Path) -> None:
         _validate_ocp(tmp_path)
 
 
-def test_execute_validate_controls(tmp_path: pathlib.Path) -> None:
+def _setup_workspace(workspace: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test workspace setup."""
+    src = 'tests/data/tasks/csv-to-oscal-cd'
+    tgt = workspace / src
+    test_utils.copy_tree_with_hidden(src, tgt)
+    src = 'tests/data/csv'
+    tgt = workspace / src
+    test_utils.copy_tree_with_hidden(src, tgt)
+    src = 'tests/data/ocp4-cis'
+    tgt = workspace / src
+    test_utils.copy_tree_with_hidden(src, tgt)
+    src = 'nist-content/nist.gov/SP800-53/rev4/json'
+    tgt = workspace / src
+    test_utils.copy_tree_with_hidden(src, tgt)
+    cwd = os.getcwd()
+    try:
+        os.chdir(workspace)
+        command = 'trestle init -v'
+        test_utils.execute_command_and_assert(command, 0, monkeypatch)
+    finally:
+        os.chdir(cwd)
+
+
+def test_execute_validate_controls(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test execute validate_controls."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
-    tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
-    section['validate-controls'] = 'true'
-    retval = tgt.execute()
+    workspace = tmp_path / 'trestle.workspace'
+    _setup_workspace(workspace, monkeypatch)
+    cwd = os.getcwd()
+    try:
+        os.chdir(workspace)
+        config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
+        tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+        section['validate-controls'] = 'true'
+        retval = tgt.execute()
+    finally:
+        os.chdir(cwd)
     assert retval == TaskOutcome.SUCCESS
 
 
-def test_execute_validate_controls_nist(tmp_path: pathlib.Path) -> None:
+def test_execute_validate_controls_nist(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test execute validate_controls nist."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
-    rows = _get_rows('tests/data/csv/ocp4-user.v2.csv')
-    for i, row in enumerate(rows):
-        if i == 0:
-            assert row[3] == 'Profile_Source'
-            continue
-        elif i == 1:
-            continue
-        assert row[3] == 'tests/data/ocp4-cis/catalog.json'
-        row[3] = 'nist-content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json'
-    with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
-        mock_csv_reader.return_value = rows
-        section['validate-controls'] = 'true'
-        tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
-        retval = tgt.execute()
-        assert retval == TaskOutcome.SUCCESS
+    workspace = tmp_path / 'trestle.workspace'
+    _setup_workspace(workspace, monkeypatch)
+    cwd = os.getcwd()
+    try:
+        os.chdir(workspace)
+        config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
+        # replace resolved profile (catalog)
+        rows = _get_rows('tests/data/csv/ocp4-user.v2.csv')
+        for i, row in enumerate(rows):
+            if i == 0:
+                assert row[3] == 'Profile_Source'
+                continue
+            elif i == 1:
+                continue
+            assert row[3] == 'tests/data/ocp4-cis/catalog.json'
+            row[3] = 'nist-content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json'
+        # test
+        with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
+            mock_csv_reader.return_value = rows
+            section['validate-controls'] = 'true'
+            tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+            retval = tgt.execute()
+    finally:
+        os.chdir(cwd)
+    assert retval == TaskOutcome.SUCCESS
 
 
-def test_execute_control_invalid(tmp_path: pathlib.Path) -> None:
+def test_execute_control_invalid(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test execute control invalid (not in catalog)."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
-    # inject error
-    rows = _get_rows('tests/data/csv/ocp4-user.v2.csv')
-    row = rows[2]
-    assert row[6] == 'CIS-1.2.1'
-    row[6] = 'CIS-9.9.9'
-    with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
-        mock_csv_reader.return_value = rows
-        section['validate-controls'] = 'true'
-        tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
-        retval = tgt.execute()
-        assert retval == TaskOutcome.SUCCESS
+    workspace = tmp_path / 'trestle.workspace'
+    _setup_workspace(workspace, monkeypatch)
+    cwd = os.getcwd()
+    try:
+        os.chdir(workspace)
+        config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
+        # inject error
+        rows = _get_rows('tests/data/csv/ocp4-user.v2.csv')
+        row = rows[2]
+        assert row[6] == 'CIS-1.2.1'
+        row[6] = 'CIS-9.9.9'
+        # test
+        with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
+            mock_csv_reader.return_value = rows
+            section['validate-controls'] = 'true'
+            tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+            retval = tgt.execute()
+    finally:
+        os.chdir(cwd)
+    assert retval == TaskOutcome.SUCCESS
 
 
 def test_execute_no_overwrite(tmp_path: pathlib.Path) -> None:
