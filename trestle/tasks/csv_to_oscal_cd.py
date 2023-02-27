@@ -1425,7 +1425,7 @@ class _CsvMgr():
             index += 1
             if index < 3:
                 continue
-            control_mappings = self.get_row_value(row, CONTROL_ID_LIST)
+            control_mappings = self.get_row_value(row, CONTROL_ID_LIST).strip()
             if not len(control_mappings):
                 continue
             logger.debug(f'row_gen: {index} {row}')
