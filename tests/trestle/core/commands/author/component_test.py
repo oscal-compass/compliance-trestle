@@ -13,7 +13,6 @@
 # limitations under the License.
 """Tests for the component author module."""
 
-import logging
 import pathlib
 import shutil
 from typing import Any, Dict
@@ -29,8 +28,6 @@ import trestle.oscal.component as comp
 from trestle.common import const, file_utils, model_utils
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.markdown.markdown_processor import MarkdownProcessor
-
-logger = logging.getLogger(__name__)
 
 md_path = 'md_comp'
 
