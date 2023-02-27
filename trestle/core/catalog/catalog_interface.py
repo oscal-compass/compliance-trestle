@@ -810,7 +810,7 @@ class CatalogInterface():
         catalog_control_ids = self.get_control_ids()
         for imp_req in as_list(context.control_implementation.implemented_requirements):
             if imp_req.control_id not in catalog_control_ids:
-                raise TrestleError(
+                logger.warning(
                     f'Component {context.component.title} references control {imp_req.control_id} not in profile.'
                 )
             control_part_id_map = part_id_map.get(imp_req.control_id, {})

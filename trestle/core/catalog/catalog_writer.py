@@ -19,7 +19,6 @@ from typing import Any, Dict, List
 
 import trestle.common.const as const
 import trestle.oscal.catalog as cat
-from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list, deep_get, none_if_empty
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog.catalog_interface import CatalogInterface
@@ -280,7 +279,7 @@ class CatalogWriter():
 
         missing_controls = set(control_ids_in_comp_imp).difference(self._catalog_interface.get_control_ids())
         if missing_controls:
-            raise TrestleError(f'Component {context.comp_name} references controls {missing_controls} not in profile.')
+            logger.warning(f'Component {context.comp_name} references controls {missing_controls} not in profile.')
 
         # get top level rule info applying to all controls
         comp_rules_dict, comp_rules_params_dict, _ = ControlInterface.get_rules_and_params_dict_from_item(context.component)  # noqa E501

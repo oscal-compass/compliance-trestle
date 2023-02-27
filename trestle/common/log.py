@@ -50,7 +50,8 @@ def set_global_logging_levels(level: int = logging.INFO) -> None:
     """
     # This line stops default root loggers setup for a python context from logging extra messages.
     # DO NOT USE THIS COMMAND directly from an SDK. Handle logs levels based on your own application
-    _logger.propagate = False
+    # set propagate to True in order to capture warning messages in tests via caplog
+    _logger.propagate = True
     # Remove handlers
     _logger.handlers.clear()
     # set global level

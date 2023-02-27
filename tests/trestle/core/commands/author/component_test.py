@@ -13,11 +13,14 @@
 # limitations under the License.
 """Tests for the component author module."""
 
+import logging
 import pathlib
 import shutil
 from typing import Any, Dict
 
 from _pytest.monkeypatch import MonkeyPatch
+
+import pytest
 
 from tests import test_utils
 
@@ -26,6 +29,8 @@ import trestle.oscal.component as comp
 from trestle.common import const, file_utils, model_utils
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.markdown.markdown_processor import MarkdownProcessor
+
+logger = logging.getLogger(__name__)
 
 md_path = 'md_comp'
 
@@ -161,8 +166,10 @@ def test_generic_oscal() -> None:
     assert cont_imp.description == ''
 
 
-def test_component_generate_missing_control(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
-    """Test component generate failure when profile missing control."""
+def test_component_generate_missing_control(
+    tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch, caplog: pytest.LogCaptureFixture
+) -> None:
+    """Test component generate succeeds when profile missing control."""
     comp_name = test_utils.setup_component_generate(tmp_trestle_dir)
 
     prof_path = tmp_trestle_dir / 'profiles/comp_prof_aa/profile.json'
@@ -170,5 +177,6 @@ def test_component_generate_missing_control(tmp_trestle_dir: pathlib.Path, monke
 
     generate_cmd = f'trestle author component-generate -n {comp_name} -o {md_path}'
 
-    # confirm failure because profile is missing a needed control
-    test_utils.execute_command_and_assert(generate_cmd, 1, monkeypatch)
+    # confirm success when profile is missing a needed control
+    test_utils.execute_command_and_assert(generate_cmd, 0, monkeypatch)
+    assert "Component comp_aa references controls {'ac-1'} not in profile." in caplog.text
