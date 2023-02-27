@@ -138,7 +138,7 @@ class CsvToOscalComponentDefinition(TaskBase):
         text2 = '(optional) true [default] or false; replace existing output when true.'
         logger.info(text1 + text2)
         text1 = '  validate-controls    = '
-        text2 = '(optional) true or false [default]; validate controls exist in resolved profile when true.'
+        text2 = '(optional) on, warn, or off [default]; validate controls exist in resolved profile.'
         logger.info(text1 + text2)
 
     def configure(self) -> bool:
@@ -181,7 +181,7 @@ class CsvToOscalComponentDefinition(TaskBase):
         # workspace
         self._workspace = os.getcwd()
         # validate_controls
-        self._validate_controls = self._config.getboolean('validate-controls', False)
+        self._validate_controls = self._config.get('validate-controls', 'off')
         return True
 
     def get_class(self, name: str) -> str:
@@ -247,7 +247,11 @@ class CsvToOscalComponentDefinition(TaskBase):
         # note: control mappings mod is currently not possible
         # note: add/del user columns not currently supported
         if len(self._unresolved_controls) > 0:
-            logger.warn(f'Unresolved controls: {self._unresolved_controls}')
+            text = f'Unresolved controls: {self._unresolved_controls}'
+            if self._validate_controls == 'warn':
+                logger.warn(text)
+            elif self._validate_controls == 'on':
+                raise RuntimeError(text)
         # prepare new/revised component definition
         component_definition = self._cd_mgr.get_component_definition()
         # write OSCAL ComponentDefinition to file
@@ -560,7 +564,7 @@ class CsvToOscalComponentDefinition(TaskBase):
         self, control_implementation: ControlImplementation, control_id: str
     ) -> ImplementedRequirement:
         """Find or create implemented requirement."""
-        if self._validate_controls:
+        if self._validate_controls != 'off':
             if not self._resolved_profile_catalog_helper.validate(control_id):
                 if control_id not in self._unresolved_controls:
                     self._unresolved_controls.append(control_id)
