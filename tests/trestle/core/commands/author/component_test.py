@@ -25,6 +25,7 @@ import trestle.core.generic_oscal as generic
 import trestle.oscal.component as comp
 from trestle.common import const, file_utils, model_utils
 from trestle.core.commands.common.return_codes import CmdReturnCodes
+from trestle.core.control_interface import ControlInterface
 from trestle.core.markdown.markdown_processor import MarkdownProcessor
 
 md_path = 'md_comp'
@@ -127,6 +128,15 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
     new_text = '      component-values:\n        - inserted value 0\n        - inserted value 1\n        - inserted value 2\n'  # noqa E501
     file_utils.insert_text_in_file(ac1_path, '- shared_param_1_aa_opt_1', new_text)
 
+    # edit a status
+    test_utils.substitute_text_in_file(
+        ac1_path, '### Implementation Status: partial', f'### Implementation Status: {const.STATUS_IMPLEMENTED}'
+    )
+
+    # edit a prose
+    new_prose = 'new prose\nmultiline too'
+    test_utils.substitute_text_in_file(ac1_path, 'statement prose for part a. from comp aa', new_prose)
+
     # assemble and confirm new value was captured
     test_utils.execute_command_and_assert(assemble_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
 
@@ -137,6 +147,10 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
     for ii in range(3):
         assert assem_component.components[0].control_implementations[0].implemented_requirements[0].set_parameters[
             0].values[ii].__root__ == f'inserted value {ii}'
+
+    statement = assem_component.components[0].control_implementations[0].implemented_requirements[0].statements[0]
+    assert statement.description == new_prose
+    assert ControlInterface.get_status_from_props(statement).state == const.STATUS_IMPLEMENTED
 
     # confirm we can add a new component via markdown
     add_comp(tmp_trestle_dir / 'md_comp', ac1_path)
