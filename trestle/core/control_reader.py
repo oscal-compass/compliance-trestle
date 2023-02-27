@@ -85,11 +85,11 @@ class ControlReader():
         return -1, ''
 
     @staticmethod
-    def _get_next_indent(ii: int, lines: List[str]) -> Tuple[int, int, str]:
+    def _get_next_indent(ii: int, lines: List[str], skip_empty_lines: bool = True) -> Tuple[int, int, str]:
         """Seek to next content line.  ii remains at line read."""
         while 0 <= ii < len(lines):
             line = lines[ii]
-            if line:
+            if line and not line.isspace():
                 if line[0] == '#':
                     return ii, -1, line
                 indent = ControlReader._indent(line)
@@ -102,6 +102,8 @@ class ControlReader():
                         raise TrestleError(f'Invalid line {line}')
                     return ii, indent, line[start:]
                 return ii, indent, line
+            elif not skip_empty_lines:
+                return ii, -1, line
             ii += 1
         return ii, -1, ''
 
@@ -241,8 +243,13 @@ class ControlReader():
         statement_part = common.Part(name=const.STATEMENT, id=statement_id)
         # first line is either statement prose or start of statement parts
         if indent < 0:
-            statement_part.prose = line
-            ii += 1
+            statement_part.prose = ''
+            while indent < 0 and ii < len(lines):
+                if statement_part.prose:
+                    line = '\n' + line
+                statement_part.prose += line
+                ii += 1
+                ii, indent, line = ControlReader._get_next_indent(ii, lines, skip_empty_lines=False)
         # we have absorbed possible statement prose.
         # now just read parts recursively
         # if there was no statement prose, this will re-read the line just read
