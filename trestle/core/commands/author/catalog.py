@@ -72,7 +72,7 @@ class CatalogGenerate(AuthorCommonCommand):
 
             if args.force_overwrite:
                 try:
-                    logger.debug(f'Overwriting the content in {args.output} folder.')
+                    logger.info(f'Overwriting the content in {args.output} folder.')
                     clear_folder(pathlib.Path(args.output))
                 except TrestleError as e:  # pragma: no cover
                     raise TrestleError(f'Unable to overwrite contents in {args.output} folder: {e}')
