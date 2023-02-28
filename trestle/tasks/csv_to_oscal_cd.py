@@ -27,12 +27,10 @@ from math import log10
 from typing import Iterator, List, Optional
 
 from trestle.common.list_utils import as_list
+from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.oscal import OSCAL_VERSION
-from trestle.oscal.catalog import Control
-from trestle.oscal.catalog import Group
 from trestle.oscal.common import Metadata
-from trestle.oscal.common import Part
 from trestle.oscal.common import Property
 from trestle.oscal.component import ComponentDefinition
 from trestle.oscal.component import ControlImplementation
@@ -890,55 +888,22 @@ class _ResolvedProfileCatalogHelper():
         """Initialize."""
         self._profile_list = profile_list
         self._root = root
+        self._profile_map = {}
+        self._control_list = []
         self._init = False
 
     def _initialize(self):
         if not self._init:
-            self._profile_map = {}
-            self._control_list = []
             for profile in self._profile_list:
                 catalog = ProfileResolver.get_resolved_profile_catalog(
                     pathlib.Path(self._root),
                     pathlib.Path(profile),
                 )
                 self._profile_map[profile] = catalog
-                self._process_groups(catalog.groups)
-                self._process_controls(catalog.controls)
+                controls = CatalogInterface.get_control_ids_from_catalog(catalog)
+                self._control_list += controls
             logger.debug(f'resolved controls: {self._control_list}')
             self._init = True
-
-    def _list_add(self, control_id: str) -> None:
-        if control_id not in self._control_list:
-            self._control_list.append(control_id)
-
-    def _process_groups(self, groups: List[Group]) -> None:
-        """Process groups."""
-        if groups:
-            for group in groups:
-                self._process_groups(group.groups)
-                self._process_controls(group.controls)
-                self._process_parts(group.parts)
-
-    def _process_controls(self, controls: List[Control]) -> None:
-        """Process controls."""
-        if controls:
-            for control in controls:
-                self._list_add(control.id)
-                self._process_parts(control.parts)
-                self._process_controls(control.controls)
-
-    def _process_parts(self, parts: List[Part]) -> None:
-        """Process parts."""
-        if parts:
-            for part in parts:
-                if part.id:
-                    if '_smt.' in part.id:
-                        control_id = part.id.replace('_smt.', '')
-                        self._list_add(control_id)
-                    elif '_smt' in part.id:
-                        control_id = part.id.replace('_smt', '')
-                        self._list_add(control_id)
-                self._process_parts(part.parts)
 
     def validate(self, control_id: str) -> bool:
         """Validate control_id."""
