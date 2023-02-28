@@ -137,6 +137,42 @@ Trestle provides utilities for converting from element path to trestle's python 
 1. Class attributes are converted from `dash-case` to `dash_case` (aka snake_case)
 1. Class names are converted from `dash-case` to `DashCase` (aka CamelCase)
 
+## `trestle version`
+
+This command will return the current version of Trestle and OSCAL it is using.
+
+Running `trestle version` will return:
+
+> Trestle version v1.2.0 based on OSCAL version 1.0.2
+
+It can also be used to retrieve the metadata version of the OSCAL object:
+
+```json
+"catalog": {
+
+    "uuid": "fa3f44a8-25cd-4f6a-8175-7afe647df7ed",
+
+    "metadata": {
+
+      "title": "Catalog1",
+
+      "last-modified": "2023-01-11T17:04:02.840910+00:00",
+
+      "version": "0.1.10", <<< this version here
+
+      "oscal-version": "1.0.2"
+
+    },
+...
+```
+
+- `-t or --type` - a type of the OSCAL object (can be either catalog, profile, component-definition, system-security-plan, etc)
+- `-n or --name` - a name of the OSCAL object
+
+Running `trestle version -n nist -t catalog` will return:
+
+> Version of OSCAL object of nist catalog is: 1.0.0
+
 ## `trestle init`
 
 This command will create (initialize) a trestle workspace in the current directory with the necessary directory structure and trestle artefacts.
@@ -571,7 +607,8 @@ Example input OSCO scan result file contents (snippet):
 
 *ssg-ocp4-ds-cis-111.222.333.444-pod.yaml*
 
-<details>
+<details markdown>
+
 <summary>display sample</summary>
 
 ```yaml
@@ -643,7 +680,8 @@ Example input OSCAL metadata file contents:
 
 *oscal-metadata.yaml*
 
-<details>
+<details markdown>
+
 <summary>display sample</summary>
 
 ```yaml
@@ -741,7 +779,8 @@ Example output OSCAL Observations file contents (snippet):
 
 *ssg-ocp4-ds-cis-111.222.333.444-pod.json*
 
-<details>
+<details markdown>
+
 <summary>display sample</summary>
 
 ```json
@@ -882,7 +921,8 @@ Example input directory contents listing:
 
 *Tanium.comply-nist-results*
 
-<details>
+<details markdown>
+
 <summary>display sample</summary>
 
 ```json
@@ -982,7 +1022,8 @@ Example output directory contents listing:
 
 *Tanium.oscal.json*
 
-<details>
+<details markdown>
+
 <summary>display sample</summary>
 
 ```json
@@ -1315,7 +1356,8 @@ Example component-definition.json:
 
 ### spreadsheet to component definition mapping
 
-<details>
+<details markdown>
+
 <summary>display mapping table</summary>
 
 <style>

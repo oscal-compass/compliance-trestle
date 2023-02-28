@@ -14,12 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle file system utils."""
+import glob
 import json
 import logging
 import os
 import pathlib
 import platform
-from typing import Any, Dict, Iterable, List, Optional
+import shutil
+from typing import Any, Dict, Iterable, List, Optional, Set
 
 from ruamel.yaml import YAML
 
@@ -152,9 +154,9 @@ def _verify_oscal_folder(path: pathlib.Path) -> bool:
 
 def check_oscal_directories(root_path: pathlib.Path) -> bool:
     """
-    Identify the state of the Trestle workspace.
+    Identify the state of the trestle workspace.
 
-    Traverses Trestle workspace and looks for unexpected files or directories.
+    Traverses trestle workspace and looks for unexpected files or directories.
     Additional files are allowed in the Trestle root but not inside the model folders.
     """
     trestle_dir_walk = os.walk(root_path)
@@ -170,13 +172,13 @@ def check_oscal_directories(root_path: pathlib.Path) -> bool:
 
 
 def is_valid_project_root(path: pathlib.Path) -> bool:
-    """Check if the path is a valid trestle project root."""
+    """Check if the path is a valid trestle workspace root."""
     trestle_dir = path / const.TRESTLE_CONFIG_DIR
     return trestle_dir.exists() and trestle_dir.is_dir()
 
 
 def extract_trestle_project_root(path: pathlib.Path) -> Optional[pathlib.Path]:
-    """Get the trestle project root folder in the path."""
+    """Get the trestle workspace root folder in the path."""
     while len(path.parts) > 1:  # it must not be the system root directory
         if is_valid_project_root(path):
             return path
@@ -223,9 +225,9 @@ def load_file(file_path: pathlib.Path) -> Dict[str, Any]:
 
 
 def get_contextual_file_type(path: pathlib.Path) -> FileContentType:
-    """Return the file content type for files in the given directory, if it's a trestle project."""
+    """Return the file content type for files in the given directory, if it's a trestle workspace."""
     if not _is_valid_project_model_path(path):
-        raise err.TrestleError(f'Trestle project not found at path {path}')
+        raise err.TrestleError(f'Trestle workspace not found at path {path}')
 
     for file_or_directory in iterdir_without_hidden_files(path):
         if file_or_directory.is_file():
@@ -291,3 +293,14 @@ def insert_text_in_file(file_path: pathlib.Path, tag: Optional[str], text: str) 
             f.writelines(text)
         return True
     return False
+
+
+def prune_empty_dirs(file_path: pathlib.Path, pattern: str) -> None:
+    """Remove directories with no subdirs and with no files matching pattern."""
+    deleted: Set[str] = set()
+    # this traverses from leaf nodes upward so only needs one traversal
+    for current_dir, subdirs, _ in os.walk(str(file_path), topdown=False):
+        true_dirs = [subdir for subdir in subdirs if os.path.join(current_dir, subdir) not in deleted]
+        if not true_dirs and not any(glob.glob(f'{current_dir}/{pattern}')):
+            shutil.rmtree(current_dir)
+            deleted.add(current_dir)

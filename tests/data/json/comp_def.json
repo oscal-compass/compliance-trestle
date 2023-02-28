@@ -68,6 +68,21 @@
         "type": "Service",
         "title": "OSCO",
         "description": "OSCO",
+        "props":[
+          {
+            "name": "Rule_Id",
+            "ns": "http://bar_ns",
+            "value": "TopRule",
+            "class": "Rule_Id",
+            "remarks": "rule_3"
+          },
+          {
+            "name": "Rule_Description",
+            "ns": "http://foo_top_ns",
+            "value": "Top level rule",
+            "remarks": "rule_3"
+          }
+        ],
         "control-implementations": [
           {
             "uuid": "76e89b67-3d6b-463d-90df-ec56a46c6069",
@@ -204,6 +219,10 @@
                     "uuid": "2652b814-2a6b-4b6d-a0ae-8bc7a007219f",
                     "description": "Implement as needed for OSCO",
                     "props": [
+                      {
+                        "name": "Rule_Id",
+                        "value": "TopRule"
+                      },
                       {
                         "name": "implementation-status",
                         "value": "partial"
@@ -556,7 +575,7 @@
             ]
           },
           {
-            "uuid": "098ed59b-2a8c-4b3c-a0fd-1eee194be563",
+            "uuid": "098ed59b-2a8c-4b3c-a0fd-1eee19499999",
             "source": "trestle://catalogs/simple_catalog_no_parts/catalog.json",
             "description": "Simple catalog with no parts.",
             "implemented-requirements": [
@@ -565,6 +584,10 @@
                 "control-id": "s2.1.1",
                 "description": "Ensure that garbage collection is configured as appropriate",
                 "props": [
+                  {
+                    "name": "Rule_Id",
+                    "value": "TopRule"
+                  },
                   {
                     "name": "implementation-status",
                     "value": "implemented",

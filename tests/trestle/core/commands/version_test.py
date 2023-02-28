@@ -14,20 +14,46 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Test for cli module command version."""
-import sys
+import pathlib
 
 from _pytest.monkeypatch import MonkeyPatch
 
-import pytest
-
-from trestle import cli
+from tests import test_utils
+from tests.test_utils import execute_command_and_assert
 
 
 def test_version(monkeypatch: MonkeyPatch) -> None:
     """Test version output."""
     testcmd = 'trestle version'
-    monkeypatch.setattr(sys, 'argv', testcmd.split())
-    with pytest.raises(SystemExit) as pytest_wrapped_e:
-        cli.run()
-    assert pytest_wrapped_e.type == SystemExit
-    assert pytest_wrapped_e.value.code == 0
+    execute_command_and_assert(testcmd, 0, monkeypatch)
+
+
+def test_oscal_obj_version(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch, capsys) -> None:
+    """Test OSCAL object version output."""
+    test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
+    testcmd = 'trestle version -n test_profile_c -t profile'
+    execute_command_and_assert(testcmd, 0, monkeypatch)
+    output, _ = capsys.readouterr()
+    assert 'Version of OSCAL object of test_profile_c profile is: 2021-01-01' in output
+
+    testcmd = 'trestle version -n test_profile_c'
+    execute_command_and_assert(testcmd, 1, monkeypatch)
+
+    testcmd = 'trestle version -n test_profile_c -t nonexisting'
+    execute_command_and_assert(testcmd, 1, monkeypatch)
+
+    testcmd = 'trestle version'
+    execute_command_and_assert(testcmd, 0, monkeypatch)
+    output, _ = capsys.readouterr()
+    assert 'Trestle version v1.2.0 based on OSCAL version 1.0.2' in output
+
+    testcmd = 'trestle version -n complex_cat -t catalog'
+    execute_command_and_assert(testcmd, 0, monkeypatch)
+    output, _ = capsys.readouterr()
+    assert 'Version of OSCAL object of complex_cat catalog is: REPLACE_ME' in output
+
+    comp_name = test_utils.setup_for_component_definition(tmp_trestle_dir, monkeypatch)
+    testcmd = f'trestle version -n {comp_name} -t component-definition'
+    execute_command_and_assert(testcmd, 0, monkeypatch)
+    output, _ = capsys.readouterr()
+    assert f'Version of OSCAL object of {comp_name} component-definition is: 0.21.0' in output

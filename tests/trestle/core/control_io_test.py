@@ -22,15 +22,13 @@ import pytest
 
 import tests.test_utils as test_utils
 
-import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
 import trestle.oscal.component as comp
 import trestle.oscal.profile as prof
-import trestle.oscal.ssp as ossp
 from trestle.common import const
 from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
-from trestle.core.catalog_interface import CatalogInterface
+from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_interface import ControlInterface, ParameterRep
 from trestle.core.control_reader import ControlReader
@@ -47,7 +45,8 @@ case_3 = 'indent end abrupt'
 case_4 = 'no items'
 
 control_text = """---
-sort-id: xy-09
+x-trestle-global:
+  sort-id: xy-09
 ---
 
 # xy-9 - \[My Group Title\] Fancy Control
@@ -256,9 +255,6 @@ def test_control_failures(tmp_path: pathlib.Path) -> None:
     with pytest.raises(TrestleError):
         ControlReader._indent('')
 
-    with pytest.raises(TrestleError):
-        ControlReader._indent('  foo')
-
 
 def test_bad_unicode_in_file(tmp_path: pathlib.Path) -> None:
     """Test error on read of bad unicode in control markdown."""
@@ -309,48 +305,10 @@ def test_merge_dicts_deep_empty() -> None:
     assert dest['foo'] == 'fancy value'
 
 
-def test_control_with_components(tmp_path: pathlib.Path) -> None:
-    """Test loading and parsing of implementated reqs with components."""
-    control_path = pathlib.Path('tests/data/author/controls/control_with_components.md').resolve()
-    control, _ = ControlReader.read_control(control_path, False)
-    context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_path, tmp_path)
-    comp_prose_dict, _ = ControlReader.read_all_implementation_prose_and_header(control, control_path, context)
-    assert len(comp_prose_dict.keys()) == 3
-    assert len(comp_prose_dict['This System'].keys()) == 4
-    assert len(comp_prose_dict['Trestle Component'].keys()) == 1
-    assert len(comp_prose_dict['Fancy Thing'].keys()) == 2
-    assert comp_prose_dict['Fancy Thing']['a.'].prose == 'Text for fancy thing component'
-
-    # need to build the needed components so they can be referenced by the imp_req
-    comp_dict = {}
-    for comp_name in comp_prose_dict.keys():
-        comp = gens.generate_sample_model(ossp.SystemComponent)
-        comp.title = comp_name
-        comp_dict[comp_name] = comp
-
-    # confirm that the header content was inserted into the props of the imp_req
-    sort_id, imp_req = ControlReader.read_implemented_requirement(control_path, comp_dict, context)
-    assert len(imp_req.props) == 12
-    assert len(imp_req.statements) == 4
-    assert len(imp_req.statements[1].by_components) == 3
-
-
-@pytest.mark.parametrize(
-    'md_file', ['control_with_bad_system_comp.md', 'control_with_double_comp.md', 'control_with_bad_component.md']
-)
-def test_control_bad_components(md_file: str, tmp_path: pathlib.Path) -> None:
-    """Test loading of imp reqs for control with bad components."""
-    control_path = pathlib.Path('tests/data/author/controls/') / md_file
-    control, _ = ControlReader.read_control(control_path, False)
-    context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_path, tmp_path)
-    with pytest.raises(TrestleError):
-        ControlReader.read_all_implementation_prose_and_header(control, control_path, context)
-
-
 def test_get_control_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
     """Test getting the param dict of a control."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
-    prof_a_path = ModelUtils.path_for_top_level_model(
+    prof_a_path = ModelUtils.get_model_path_for_name_and_class(
         tmp_trestle_dir, 'test_profile_a', prof.Profile, FileContentType.JSON
     )
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
@@ -407,7 +365,7 @@ def test_write_control_header_params(overwrite_header_values, tmp_path: pathlib.
     orig_control_read, group_title = ControlReader.read_control(control_path, True)
     assert group_title == 'Access Control'
     context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_path, tmp_path)
-    context.yaml_header = header
+    context.cli_yaml_header = header
     context.overwrite_header_values = overwrite_header_values
     control_writer = ControlWriter()
     control_writer.write_control_for_editing(context, orig_control_read, tmp_path, group_title, {}, [])
@@ -464,17 +422,21 @@ statement_text = """
 
 def test_read_control_statement():
     """Test read control statement."""
-    _, part = ControlReader._read_control_statement(0, statement_text.split('\n'), 'xy-9')
+    part = ControlReader._read_control_statement_or_objective(
+        '## Control Statement', statement_text.split('\n'), 'xy-9'
+    )
     assert part.prose == 'The org:'
 
 
 def test_read_control_objective():
     """Test read control objective."""
-    _, part = ControlReader._read_control_objective(13, statement_text.split('\n'), 'xy-9')
+    part = ControlReader._read_control_statement_or_objective(
+        '## Control Objective', statement_text.split('\n'), 'xy-9'
+    )
     assert part.prose == 'Confirm the org:'
 
-    _, part = ControlReader._read_control_objective(16, statement_text.split('\n'), 'xy-9')
-    assert part is None
+    with pytest.raises(TrestleError):
+        ControlReader._read_control_statement_or_objective('## Non existing', statement_text.split('\n'), 'xy-9')
 
 
 section_text = """

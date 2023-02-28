@@ -20,6 +20,7 @@ import difflib
 import logging
 import os
 import pathlib
+import shlex
 import shutil
 import sys
 from typing import Any, Dict, List, Tuple
@@ -34,13 +35,14 @@ from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import AliasMode
 from trestle.core import generators
 from trestle.core.base_model import OscalBaseModel
-from trestle.core.catalog_interface import CatalogInterface
+from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.commands.href import HrefCmd
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.repository import Repository
 from trestle.oscal import catalog as cat
 from trestle.oscal import common
+from trestle.oscal import component as comp
 from trestle.oscal import profile as prof
 
 if file_utils.is_windows():  # pragma: no cover
@@ -121,7 +123,7 @@ def prepare_trestle_project_dir(
 def create_trestle_project_with_model(
     top_dir: pathlib.Path, model_obj: OscalBaseModel, model_name: str, monkeypatch: MonkeyPatch
 ) -> pathlib.Path:
-    """Create initialized trestle project and import the model into it."""
+    """Create initialized trestle workspace and import the model into it."""
     cur_dir = pathlib.Path.cwd()
 
     # create subdirectory for trestle project
@@ -342,6 +344,25 @@ def patch_raise_exception() -> None:
     raise TrestleError('Forced raising of an errors')
 
 
+def setup_for_component_definition(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> str:
+    """Initiallize trestle workspace with component-definitions."""
+    comp_name = setup_component_generate(tmp_trestle_dir)
+    assemble_cmd = f'trestle author component-assemble -m md_comp -n {comp_name} -o assem_comp'
+    execute_command_and_assert(assemble_cmd, 1, monkeypatch)
+    return comp_name
+
+
+def setup_component_generate(tmp_trestle_dir: pathlib.Path) -> str:
+    """Create the compdef, profile and catalog content component-generate."""
+    comp_name = 'comp_def_a'
+    load_from_json(tmp_trestle_dir, comp_name, comp_name, comp.ComponentDefinition)
+    for prof_name in 'comp_prof,comp_prof_aa,comp_prof_ab,comp_prof_ba,comp_prof_bb'.split(','):
+        load_from_json(tmp_trestle_dir, prof_name, prof_name, prof.Profile)
+    load_from_json(tmp_trestle_dir, 'simplified_nist_catalog', 'simplified_nist_catalog', cat.Catalog)
+
+    return comp_name
+
+
 def setup_for_multi_profile(trestle_root: pathlib.Path, big_profile: bool, import_nist_cat: bool) -> None:
     """Initiallize trestle directory with catalogs and profiles."""
     repo = Repository(trestle_root)
@@ -384,35 +405,45 @@ def setup_for_multi_profile(trestle_root: pathlib.Path, big_profile: bool, impor
     assert HrefCmd.change_import_href(trestle_root, main_profile_name, new_href, 0) == 0
 
 
-def setup_for_ssp(
-    include_header: bool,
-    big_profile: bool,
-    tmp_trestle_dir: pathlib.Path,
-    prof_name: str,
-    output_name: str,
-    import_nist_cat: bool = True
-) -> Tuple[argparse.Namespace, str, pathlib.Path]:
-    """Create the markdown ssp content from catalog and profile."""
-    setup_for_multi_profile(tmp_trestle_dir, big_profile, import_nist_cat)
+def load_from_json(
+    tmp_trestle_dir: pathlib.Path, file_prefix: str, model_name: str, model_type: OscalBaseModel
+) -> None:
+    """Load model from JSON test dir."""
+    src_path = JSON_TEST_DATA_PATH / f'{file_prefix}.json'
+    dst_path = ModelUtils.get_model_path_for_name_and_class(
+        tmp_trestle_dir, model_name, model_type, FileContentType.JSON
+    )
+    dst_path.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(src_path, dst_path)
 
-    # leave out guidance:Guidance
-    sections = 'ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence,guidance:Guidance'
+
+def setup_for_ssp(tmp_trestle_dir: pathlib.Path,
+                  prof_name: str,
+                  output_name: str,
+                  use_yaml: bool = False) -> Tuple[argparse.Namespace, pathlib.Path]:
+    """Create the comp_def, profile and catalog content needed for ssp-generate."""
+    comp_names = 'comp_def_a,comp_def_b'
+    for comp_name in comp_names.split(','):
+        load_from_json(tmp_trestle_dir, comp_name, comp_name, comp.ComponentDefinition)
+    prof_name_list = [prof_name]
+    prof_name_list.extend('comp_prof_aa,comp_prof_ab,comp_prof_ba,comp_prof_bb'.split(','))
+    for local_prof_name in prof_name_list:
+        load_from_json(tmp_trestle_dir, local_prof_name, local_prof_name, prof.Profile)
+    load_from_json(tmp_trestle_dir, 'simplified_nist_catalog', 'simplified_nist_catalog', cat.Catalog)
+    yaml_path = YAML_TEST_DATA_PATH / 'good_simple.yaml' if use_yaml else None
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
         profile=prof_name,
+        compdefs=comp_names,
         output=output_name,
         verbose=0,
-        sections=sections,
         overwrite_header_values=False,
-        yaml_header=None,
-        allowed_sections=None
+        yaml_header=yaml_path,
+        allowed_sections=None,
+        force_overwrite=None
     )
 
-    yaml_path = YAML_TEST_DATA_PATH / 'good_simple.yaml'
-    if include_header:
-        args.yaml_header = str(yaml_path)
-
-    return args, sections, yaml_path
+    return args, yaml_path
 
 
 def make_file_hidden(file_path: pathlib.Path, if_dot=False) -> None:
@@ -465,13 +496,29 @@ def make_hidden_file(file_path: pathlib.Path) -> None:
 
 def get_model_uuid(trestle_root: pathlib.Path, model_name: str, model_class: TopLevelOscalModel) -> str:
     """Load the model and extract its uuid."""
-    model, _ = ModelUtils.load_top_level_model(trestle_root, model_name, model_class)
+    model, _ = ModelUtils.load_model_for_class(trestle_root, model_name, model_class)
     return model.uuid
 
 
 def execute_command_and_assert(command: str, return_code: int, monkeypatch: MonkeyPatch) -> None:
-    """Execute given command using monkeypatch and assert return code."""
-    monkeypatch.setattr(sys, 'argv', command.split())
+    r"""
+    Execute given command using monkeypatch and assert return code.
+
+    tokens in quotes with embedded spaces require special parsing by shlex.
+    But shlex strips away all \\, which is a problem for windows file paths and any token with backlashes.
+    So this has a simple hack to replace \\ by $ and convert back after splitting.
+    """
+    has_slashes = '\\' in command
+    if has_slashes:
+        if '$' in command:
+            raise TrestleError('cannot parse command string containing backslashes and $.')
+        command = command.replace('\\', '$')
+
+    split_command = shlex.split(command)
+    if has_slashes:
+        split_command = [token.replace('$', '\\') for token in split_command]
+    monkeypatch.setattr(sys, 'argv', split_command)
+
     rc = Trestle().run()
     assert rc == return_code
 
@@ -564,7 +611,7 @@ class FileChecker:
         self._file_dict: Dict[pathlib.Path, str] = {}
         for file in self._root_dir.rglob('*'):
             if not file.is_dir():
-                self._file_dict[file] = file.read_text()
+                self._file_dict[file] = file.read_text(encoding=const.FILE_ENCODING)
 
     def files_unchanged(self) -> bool:
         """Check if any files have changed."""
@@ -575,7 +622,7 @@ class FileChecker:
                     logger.error(f'Test file {file} is a new file that was not there originally.')
                     return False
                 old_text = self._file_dict[file]
-                new_text = file.read_text()
+                new_text = file.read_text(encoding=const.FILE_ENCODING)
                 if old_text != new_text:
                     logger.error(f'Test file {file} has changed contents:')
                     differ = difflib.Differ()

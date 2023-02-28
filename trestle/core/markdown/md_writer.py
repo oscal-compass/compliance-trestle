@@ -15,13 +15,14 @@
 
 import logging
 import pathlib
-from typing import Any, List
+from typing import Any, Dict, List, Optional
 
 from ruamel.yaml import YAML
 
 import trestle.common.const as const
 from trestle.common import file_utils
 from trestle.common.err import TrestleError
+from trestle.common.list_utils import as_dict
 from trestle.core.markdown.markdown_api import MarkdownAPI
 
 logger = logging.getLogger(__name__)
@@ -30,13 +31,14 @@ logger = logging.getLogger(__name__)
 class MDWriter():
     """Simple class to create markdown files."""
 
-    def __init__(self, file_path: pathlib.Path):
+    def __init__(self, file_path: pathlib.Path, header_comments_dict: Optional[Dict[str, str]] = None):
         """Initialize the class."""
         self._file_path = file_path
         self._lines = []
         self._indent_level = 0
         self._indent_size = 2
         self._yaml_header = None
+        self._header_comments_dict = header_comments_dict
 
     def _current_indent_space(self):
         if self._indent_level <= 0:
@@ -154,9 +156,10 @@ class MDWriter():
                 # if last line has text it will need an extra \n at end
                 if self._lines and self._lines[-1]:
                     f.write('\n')
-            # inserting a comment into the header happens after header is written out
-            # the comment is only added if the add_props tag is found
-            file_utils.insert_text_in_file(self._file_path, const.TRESTLE_ADD_PROPS_TAG, const.YAML_PROPS_COMMENT)
+            # insert helpful comments into the header happens after header is written out
+            for tag, comment in as_dict(self._header_comments_dict).items():
+                if tag in as_dict(self._yaml_header):
+                    file_utils.insert_text_in_file(self._file_path, tag, comment)
         except IOError as e:
             logger.debug(f'md_writer error attempting to write out md file {self._file_path} {e}')
             raise TrestleError(f'Error attempting to write out md file {self._file_path} {e}')

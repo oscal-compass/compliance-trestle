@@ -52,7 +52,7 @@ class FetcherBase(ABC):
         """Intialize fetcher base.
 
         Args:
-            trestle_root: Path of the Trestle project path, i.e., within which .trestle is to be found.
+            trestle_root: Path of the trestle workspace, i.e., within which .trestle is to be found.
             uri: Reference to the source object to cache.
         """
         logger.debug('Initializing FetcherBase')
@@ -100,7 +100,9 @@ class FetcherBase(ABC):
                 self._do_fetch()
                 return True
             except Exception as e:
-                raise TrestleError(f'Cache update failure for {self._uri}: {e}.') from e
+                raise TrestleError(
+                    f'Cache update failure for {self._uri}.  Please confirm the file is json and not html: {e}.'
+                ) from e  # noqa E501
         return False
 
     def get_raw(self, force_update=False) -> Dict[str, Any]:
@@ -278,6 +280,7 @@ class HTTPSFetcher(FetcherBase):
                     raise TrestleError(f'Cache update failure with bad inputenv var: {err_str}')
         if self._username is not None and self._password is not None:
             auth = HTTPBasicAuth(self._username, self._password)
+
         try:
             response = requests.get(self._url, auth=auth, verify=verify)
         except Exception as e:
@@ -301,7 +304,7 @@ class SFTPFetcher(FetcherBase):
         """Initialize SFTP fetcher. Update the expected cache path as per caching specs.
 
         Args:
-            trestle_root: Path of the Trestle project path, i.e., within which .trestle is to be found.
+            trestle_root: Path of the trestle workspace, i.e., within which .trestle is to be found.
             uri: Reference to the remote file to cache that can be fetched using the sftp:// scheme.
         """
         logger.debug(f'initialize SFTPFetcher for uri {uri}')
@@ -394,7 +397,12 @@ class FetcherFactory:
         TRESTLE = 4
 
     @staticmethod
-    def _get_uri_type(uri: str) -> UriType:
+    def uri_type_is_not_local(uri_type: UriType) -> bool:
+        """Determine if the uri type is not local."""
+        return uri_type in [FetcherFactory.UriType.SFTP, FetcherFactory.UriType.HTTPS]
+
+    @staticmethod
+    def get_uri_type(uri: str) -> UriType:
         """Determine the type of uri."""
         if uri.startswith(const.SFTP_URI):
             return FetcherFactory.UriType.SFTP
@@ -406,6 +414,8 @@ class FetcherFactory:
         # but it at least needs a filename with suffix
         # the most minimal allowed uri is of the form a.yml
         uri_clean = uri.strip()
+        if uri_clean.startswith('ftp:'):
+            raise TrestleError(f'Invalid uri {uri}  ftp is not supported.  Use sftp instead.')
         uri_len = len(uri_clean)
         # at least 5 chars and ending with dot followed by at least 3 chars
         if uri_len > 4 and 0 < uri_clean.rfind('.') < uri_len - 3:
@@ -415,7 +425,7 @@ class FetcherFactory:
     @staticmethod
     def in_trestle_directory(trestle_root: pathlib.Path, uri: str) -> bool:
         """Check if in trestle directory when uri may not be a file path."""
-        uri_type = FetcherFactory._get_uri_type(uri)
+        uri_type = FetcherFactory.get_uri_type(uri)
         if uri_type == FetcherFactory.UriType.TRESTLE:
             return True
         if uri_type != FetcherFactory.UriType.LOCAL_FILE:
@@ -431,7 +441,7 @@ class FetcherFactory:
         """Return an instantiated fetcher object based on the type of URI.
 
         Args:
-            trestle_root: Path of the Trestle project path, i.e., within which .trestle is to be found.
+            trestle_root: Path of the trestle workspace, i.e., within which .trestle is to be found.
             uri: Reference to the remote object to cache.
 
         Returns:
@@ -443,5 +453,5 @@ class FetcherFactory:
             FetcherFactory.UriType.HTTPS: HTTPSFetcher,
             FetcherFactory.UriType.TRESTLE: LocalFetcher,
         }
-        uri_type = cls._get_uri_type(uri)
+        uri_type = cls.get_uri_type(uri)
         return fetcher_dict[uri_type](trestle_root, uri)

@@ -28,7 +28,7 @@ from trestle.common.const import RESOLUTION_SOURCE
 from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.core import generators as gens
-from trestle.core.catalog_interface import CatalogInterface
+from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.control_interface import ControlInterface, ParameterRep
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
@@ -53,7 +53,7 @@ def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
 
     test_prof_name = 'test_profile_a'
-    test_prof, test_prof_path = ModelUtils.load_top_level_model(tmp_trestle_dir, test_prof_name, prof.Profile)
+    test_prof, test_prof_path = ModelUtils.load_model_for_class(tmp_trestle_dir, test_prof_name, prof.Profile)
     cat = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, test_prof_path)
     interface = CatalogInterface(cat)
     # added part ac-1_expevid from prof a
@@ -236,11 +236,31 @@ def test_replace_params_assignment_mode(simplified_nist_catalog: cat.Catalog) ->
     """Test replacement of params in assignment mode."""
     cat_interface = CatalogInterface(simplified_nist_catalog)
     param_dict = cat_interface._get_full_param_dict()
-    ac_44 = cat_interface.get_control('ac-4.4')
-    ControlInterface.replace_control_prose(ac_44, param_dict, None, ParameterRep.ASSIGNMENT_FORM)
+    ac_44 = copy.deepcopy(cat_interface.get_control('ac-4.4'))
+    orig_prose = ac_44.parts[0].prose
+    # test the case where a selection has parameters in choices but no value was assigned
+    ControlInterface.replace_control_prose(
+        ac_44, param_dict, '[.]', ParameterRep.ASSIGNMENT_FORM, False, 'IBM Assignment:', 'Assignment:'
+    )
     assert ac_44.parts[
         0
-    ].prose == 'Prevent encrypted information from bypassing [Assignment: organization-defined information flow control mechanisms] by [Selection (one or more): decrypting the information; blocking the flow of the encrypted information; terminating communications sessions attempting to pass encrypted information; [Assignment: organization-defined procedure or method]].'  # noqa:E501
+    ].prose == 'Prevent encrypted information from bypassing [Assignment: organization-defined information flow control mechanisms] by [Selection (one or more): decrypting the information; blocking the flow of the encrypted information; terminating communications sessions attempting to pass encrypted information;  [IBM Assignment: my procedure] ].'  # noqa E501
+    value = 'blocking the flow of the encrypted information'
+    param_dict['ac-4.4_prm_2'].values = [com.ParameterValue(__root__=value)]
+    ac_44.parts[0].prose = orig_prose
+    # test the case where values for choices are assigned
+    ControlInterface.replace_control_prose(
+        ac_44, param_dict, '[.]', ParameterRep.ASSIGNMENT_FORM, False, 'IBM Assignment:', 'Assignment:'
+    )
+    assert ac_44.parts[
+        0
+    ].prose == f'Prevent encrypted information from bypassing [Assignment: organization-defined information flow control mechanisms] by [IBM Assignment: {value}].'  # noqa E501
+
+    ac_44 = copy.deepcopy(cat_interface.get_control('ac-4.4'))
+    ControlInterface.replace_control_prose(ac_44, param_dict, '[.]', ParameterRep.LABEL_FORM, False, None, 'Label:')
+    assert ac_44.parts[
+        0
+    ].prose != f'Prevent encrypted information from bypassing [organization-defined information flow control mechanisms] by  [Label: organization-defined procedure or method] ].'  # noqa E501
 
 
 def test_profile_resolver_param_sub() -> None:
@@ -260,7 +280,7 @@ def test_parameter_resolution(tmp_trestle_dir: pathlib.Path) -> None:
     """Test whether expected order of operations is preserved for parameter substution."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
 
-    prof_e_path = ModelUtils.path_for_top_level_model(
+    prof_e_path = ModelUtils.get_model_path_for_name_and_class(
         tmp_trestle_dir, 'test_profile_e', prof.Profile, FileContentType.JSON
     )
     profile_e_parameter_string = '## Override value ##'
@@ -316,7 +336,7 @@ def test_merge_two_catalogs() -> None:
 def test_add_props(tmp_trestle_dir: pathlib.Path) -> None:
     """Test all types of property additions."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
-    prof_f_path = ModelUtils.path_for_top_level_model(
+    prof_f_path = ModelUtils.get_model_path_for_name_and_class(
         tmp_trestle_dir, 'test_profile_f', prof.Profile, FileContentType.JSON
     )
     cat = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_f_path)
@@ -345,7 +365,7 @@ def test_add_props_before_after_ok(tmp_trestle_dir: pathlib.Path) -> None:
     Properties added with before or after will default to starting or ending.
     """
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
-    prof_g_path = ModelUtils.path_for_top_level_model(
+    prof_g_path = ModelUtils.get_model_path_for_name_and_class(
         tmp_trestle_dir, 'test_profile_g', prof.Profile, FileContentType.JSON
     )
     _ = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_g_path)
@@ -355,7 +375,7 @@ def test_get_control_and_group_info_from_catalog(tmp_trestle_dir: pathlib.Path) 
     """Test get all groups from the catalog."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
 
-    prof_a_path = ModelUtils.path_for_top_level_model(
+    prof_a_path = ModelUtils.get_model_path_for_name_and_class(
         tmp_trestle_dir, 'test_profile_a', prof.Profile, FileContentType.JSON
     )
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
@@ -382,12 +402,12 @@ def test_get_control_and_group_info_from_catalog(tmp_trestle_dir: pathlib.Path) 
 def test_profile_resolver_circular_ref(tmp_trestle_dir: pathlib.Path) -> None:
     """Test rejection of circular import refs."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
-    prof_a_path = ModelUtils.path_for_top_level_model(
+    prof_a_path = ModelUtils.get_model_path_for_name_and_class(
         tmp_trestle_dir, 'test_profile_a', prof.Profile, FileContentType.JSON
     )
     # add new import to profile_c so it reloads prof_a in circular manner
     prof_c: prof.Profile
-    prof_c, prof_c_path = ModelUtils.load_top_level_model(tmp_trestle_dir, 'test_profile_c', prof.Profile)
+    prof_c, prof_c_path = ModelUtils.load_model_for_class(tmp_trestle_dir, 'test_profile_c', prof.Profile)
     imp = prof.Import(href='trestle://profiles/test_profile_a/profile.json')
     prof_c.imports.append(imp)
     prof_c.oscal_write(prof_c_path)
@@ -411,3 +431,10 @@ def test_profile_resolver_no_params(tmp_trestle_dir: pathlib.Path) -> None:
     catalog_str = catalog.oscal_serialize_json()
     # make sure no moustaches remain that would confuse jinja
     assert '{{' not in catalog_str
+
+
+def test_remote_profile_relative_cat(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test profile resolver with remote profile and import of relative catalog path."""
+    profile_path = 'https://raw.githubusercontent.com/usnistgov/oscal-content/feature-basic-end-to-end-example/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_LOW-baseline_profile.json'  # noqa E501
+    resolved_cat = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, profile_path)
+    assert len(resolved_cat.groups) > 10

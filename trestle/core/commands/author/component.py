@@ -17,27 +17,29 @@ import argparse
 import logging
 import pathlib
 import shutil
-from typing import Dict, Optional
+from typing import Dict, Optional, Tuple
 from uuid import uuid4
 
 import trestle.common.const as const
 import trestle.common.log as log
-import trestle.core.generic_oscal as generic
 import trestle.oscal.common as com
 import trestle.oscal.component as comp
 from trestle.common import file_utils
 from trestle.common.err import TrestleError, handle_generic_command_exception
-from trestle.common.list_utils import as_list
+from trestle.common.list_utils import as_list, deep_get
 from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
-from trestle.core.catalog_interface import CatalogInterface
+from trestle.core.catalog.catalog_api import CatalogAPI
+from trestle.core.catalog.catalog_reader import CatalogReader
 from trestle.core.commands.author.common import AuthorCommonCommand
+from trestle.core.commands.common.cmd_utils import clear_folder
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_interface import ControlInterface
+from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
-from trestle.oscal import OSCAL_VERSION
+from trestle.core.remote.cache import FetcherFactory
 
 logger = logging.getLogger(__name__)
 
@@ -50,11 +52,21 @@ class ComponentGenerate(AuthorCommonCommand):
     def _init_arguments(self) -> None:
         name_help_str = 'Name of the source component model in the trestle workspace'
         self.add_argument('-n', '--name', help=name_help_str, required=True, type=str)
-        self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
+        self.add_argument(
+            '-o', '--output', help='Name of the output generated component markdown folder', required=True, type=str
+        )  # noqa E501
+        self.add_argument('-fo', '--force-overwrite', help=const.HELP_FO_OUTPUT, required=False, action='store_true')
 
     def _run(self, args: argparse.Namespace) -> int:
         try:
             log.set_log_level_from_args(args)
+
+            if args.force_overwrite:
+                try:
+                    logger.info(f'Overwriting the content in {args.output} folder.')
+                    clear_folder(pathlib.Path(args.output))
+                except TrestleError as e:  # pragma: no cover
+                    raise TrestleError(f'Unable to overwrite contents in {args.output} folder: {e}')
 
             return self.component_generate_all(args.trestle_root, args.name, args.output)
 
@@ -74,47 +86,64 @@ class ComponentGenerate(AuthorCommonCommand):
         context.comp_def = component_def
 
         rc = CmdReturnCodes.SUCCESS.value
-        cat_interface_dict: Dict[str, CatalogInterface] = {}
         for component in as_list(component_def.components):
-            rc = self.component_generate_by_name(context, component, md_path / component.title, cat_interface_dict)
+            rc = self.component_generate_by_name(context, component, md_path / component.title)
             if rc != CmdReturnCodes.SUCCESS.value:
                 break
         return rc
 
+    @staticmethod
+    def _get_name_from_uri(source_uri: str) -> str:
+        """Get the name from a source profile or catalog source uri."""
+        uri_type = FetcherFactory.get_uri_type(source_uri)
+        if uri_type == FetcherFactory.UriType.TRESTLE:
+            return source_uri.split('/')[-2]
+        return ''
+
     def component_generate_by_name(
-        self,
-        context: ControlContext,
-        component: comp.DefinedComponent,
-        markdown_dir_path: pathlib.Path,
-        cat_interface_dict: Dict[str, CatalogInterface]
+        self, context: ControlContext, component: comp.DefinedComponent, markdown_dir_path: pathlib.Path
     ) -> int:
         """Create markdown for the component using its source profiles."""
-        logger.debug(f'Creating markdown for component {component.title}.')
-        context.md_root = markdown_dir_path
+        logger.info(f'Generating markdown for component {component.title}')
         context.comp_name = component.title
+        context.component = component
+        context.uri_name_map = {}
+        cat_api_dict: Dict[str, CatalogAPI] = {}
+        name_index = 1
         for control_imp in as_list(component.control_implementations):
             context.control_implementation = control_imp
             source_profile_uri = control_imp.source
-            if source_profile_uri not in cat_interface_dict:
+            # get the resolved profile catalog for this source, generating it if not already created
+            if source_profile_uri not in cat_api_dict:
+                name = ComponentGenerate._get_name_from_uri(source_profile_uri)
+                if not name:
+                    name = f'source_{name_index:03d}'
+                    name_index += 1
+                context.uri_name_map[source_profile_uri] = name
                 resolved_catalog = ProfileResolver.get_resolved_profile_catalog(
                     context.trestle_root, source_profile_uri
                 )
-                local_catalog_interface = CatalogInterface(resolved_catalog)
-                cat_interface_dict[source_profile_uri] = local_catalog_interface
+                local_catalog_api = CatalogAPI(resolved_catalog)
+                cat_api_dict[source_profile_uri] = local_catalog_api
             else:
-                local_catalog_interface = cat_interface_dict[source_profile_uri]
+                local_catalog_api = cat_api_dict[source_profile_uri]
             # insert the profile title (from title of resolved catalog) into the yaml header so it appears in md
             # different controls in the final catalog may have different profile titles if from different control_imps
-            context.yaml_header = {}
-            context.yaml_header[const.TRESTLE_GLOBAL_TAG] = {}
-            context.yaml_header[const.TRESTLE_GLOBAL_TAG][const.PROFILE_TITLE
-                                                          ] = local_catalog_interface.get_catalog_title()
-            part_id_map = local_catalog_interface.get_statement_part_id_map(False) if local_catalog_interface else {}
+            context.cli_yaml_header = {}
+            context.cli_yaml_header[const.TRESTLE_GLOBAL_TAG] = {}
+
+            profile_title = local_catalog_api._catalog_interface.get_catalog_title()
+            profile_header = {'title': profile_title, 'href': source_profile_uri}
+            context.cli_yaml_header[const.TRESTLE_GLOBAL_TAG][const.PROFILE] = profile_header
+
+            sub_dir_name = context.uri_name_map[source_profile_uri]
+            context.md_root = markdown_dir_path / sub_dir_name
             # write controls corresponding to this source catalog
             # if two controlimps load the same control, the second one will merge into the first
             # otherwise the full catalog will be written in subsets by control_imp
             # if an imp_req has a set param also in the control_imp. the imp_req value is used for the control
-            cat_interface_dict[source_profile_uri].write_catalog_as_markdown(context, part_id_map)
+            cat_api_dict[source_profile_uri].update_context(context)
+            cat_api_dict[source_profile_uri].write_catalog_as_markdown()
         return CmdReturnCodes.SUCCESS.value
 
 
@@ -189,7 +218,7 @@ class ComponentAssemble(AuthorCommonCommand):
             parent_comp_name = assem_comp_name
 
         # load the comp-def that will be updated
-        parent_comp, parent_comp_path = ModelUtils.load_top_level_model(
+        parent_comp, parent_comp_path = ModelUtils.load_model_for_class(
             trestle_root,
             parent_comp_name,
             comp.ComponentDefinition
@@ -203,7 +232,7 @@ class ComponentAssemble(AuthorCommonCommand):
         if version:
             parent_comp.metadata.version = com.Version(__root__=version)
 
-        assem_comp_path = ModelUtils.path_for_top_level_model(
+        assem_comp_path = ModelUtils.get_model_path_for_name_and_class(
             trestle_root, assem_comp_name, comp.ComponentDefinition, new_content_type
         )
 
@@ -211,7 +240,7 @@ class ComponentAssemble(AuthorCommonCommand):
             _, _, existing_comp = ModelUtils.load_distributed(assem_comp_path, trestle_root)
             # comp def will change statement uuids so need to ignore them in comparison
             if ModelUtils.models_are_equivalent(existing_comp, parent_comp, True):
-                logger.info('Assembled component is no different from existing version, so no update.')
+                logger.info('Assembled component definition is no different from existing version, so no update.')
                 return CmdReturnCodes.SUCCESS.value
 
         if regenerate:
@@ -219,7 +248,9 @@ class ComponentAssemble(AuthorCommonCommand):
         ModelUtils.update_last_modified(parent_comp)
 
         if assem_comp_path.parent.exists():
-            logger.info('Creating component from markdown and destination component exists, so updating.')
+            logger.info(
+                'Creating component definition from markdown and destination component definition exists, so updating.'
+            )  # noqa E501
             shutil.rmtree(str(assem_comp_path.parent))
 
         assem_comp_path.parent.mkdir(parents=True, exist_ok=True)
@@ -245,29 +276,45 @@ class ComponentAssemble(AuthorCommonCommand):
         existing_comp_names = [component.title for component in parent_comp.components]
         for comp_name in comp_names:
             if comp_name not in existing_comp_names:
-                metadata = com.Metadata(
-                    title=comp_name, last_modified='REPLACE_ME', version='REPLACE_ME', oscal_version=OSCAL_VERSION
-                )
                 parent_comp.components.append(
-                    comp.DefinedComponent(uuid=str(uuid4()), title=comp_name, metadata=metadata)
+                    comp.DefinedComponent(
+                        uuid=str(uuid4()), title=comp_name, type=const.REPLACE_ME, description=const.REPLACE_ME
+                    )
                 )
 
         for component in parent_comp.components:
             context.comp_name = component.title
             context.comp_def = parent_comp
+            context.component = component
+            logger.info(f'Assembling markdown for component {component.title}')
             ComponentAssemble._update_component_with_markdown(md_dir, component, context)
+
+    @staticmethod
+    def _get_profile_title_and_href_from_dir(md_dir: pathlib.Path) -> Tuple[str, str]:
+        """Get profile title and href from yaml header of first md file found in dir that has info."""
+        md_files = md_dir.rglob('*.md')
+        markdown_api = MarkdownAPI()
+        for md_file in md_files:
+            header, _ = markdown_api.processor.read_markdown_wo_processing(md_file)
+            prof_title = deep_get(header, [const.TRESTLE_GLOBAL_TAG, const.PROFILE, const.TITLE])
+            profile_href = deep_get(header, [const.TRESTLE_GLOBAL_TAG, const.PROFILE, const.HREF], 'unknown_href')
+            # return first one found
+            if prof_title:
+                return prof_title, profile_href
+        logger.warning(f'Cannot find profile title and href in markdown headers of directory {md_dir}')
+        return 'unknown_title', 'unknown_href'
 
     @staticmethod
     def _update_component_with_markdown(
         md_dir: pathlib.Path, component: comp.DefinedComponent, context: ControlContext
     ) -> None:
-        #
         md_path = md_dir / component.title
-        generic_comp = generic.GenericComponent.from_defined_component(component)
-        avail_comps = {component.title: generic_comp}
-        cat_interface = CatalogInterface()
-        imp_reqs = cat_interface.read_catalog_imp_reqs(md_path, avail_comps, context)
-        # the imp_reqs need to be inserted into the correct control_implementation
-        for imp_req in imp_reqs:
-            comp_imp_req = imp_req.as_comp_def()
-            ControlInterface.insert_imp_req_into_component(component, comp_imp_req)
+        sub_dirs = file_utils.iterdir_without_hidden_files(md_path)
+        source_dirs = [sub_dir.name for sub_dir in sub_dirs if sub_dir.is_dir()]
+        for source_dir in source_dirs:
+            profile_title, _ = ComponentAssemble._get_profile_title_and_href_from_dir(md_path / source_dir)
+            # context has defined component and comp_name
+            imp_reqs = CatalogReader.read_catalog_imp_reqs(md_path / source_dir, context)
+            # the imp_reqs need to be inserted into the correct control_implementation
+            for imp_req in imp_reqs:
+                ControlInterface.insert_imp_req_into_component(component, imp_req, profile_title, context.trestle_root)

@@ -443,7 +443,7 @@ def test_e2e_backward_compatibility(
     tmp_trestle_dir: pathlib.Path,
     monkeypatch: MonkeyPatch
 ) -> None:
-    """Same as E2E test but pretend like workspace existed and needs to be updated."""
+    """Same as E2E test but pretend like trestle workspace existed and needs to be updated."""
     # Note testdata_dir must be before tmp_trestle_dir in the argument order.
     recurse_flag = '-r' if recurse else ''
     command_string_setup = f'trestle author docs setup -tn {task_name}'
@@ -685,3 +685,39 @@ def test_instance_validate_with_governed_heading(
     # Validate non existing governed section
     command_string_validate_content = 'trestle author docs validate -tn test_task -gh=NonExisting'
     execute_command_and_assert(command_string_validate_content, 1, monkeypatch)
+
+
+def test_template_validate_flags_invalid_body(
+    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """Test behaviour of flags when validating template with invalid body."""
+    task_template = tmp_trestle_dir / '.trestle/author/test_task/0.0.1/template.md'
+    test_template = testdata_dir / 'author/0.0.1/test_1_md_format/template.md'
+
+    (tmp_trestle_dir / '.trestle/author/test_task/0.0.1').mkdir(parents=True)
+    task_template.touch()
+    shutil.copy(test_template, task_template)
+
+    command_validate = 'trestle author docs template-validate -tn test_task'
+    execute_command_and_assert(command_validate, 0, monkeypatch)
+
+    command_validate = 'trestle author docs template-validate -tn test_task -hv'
+    execute_command_and_assert(command_validate, 0, monkeypatch)
+
+    # Make invalid change in the body
+    md_api = MarkdownAPI()
+    header, tree = md_api.processor.process_markdown(task_template)
+    a_node = tree.get_node_for_key('# Required header 1', True)
+
+    assert a_node
+    tree.content.raw_text = tree.content.raw_text.replace('# Required header 1', '<unclosed_html>')
+    md_api.write_markdown_with_header(task_template, header, tree.content.raw_text)
+
+    command_validate = 'trestle author docs template-validate -tn test_task'
+    execute_command_and_assert(command_validate, 1, monkeypatch)
+
+    command_validate = 'trestle author docs template-validate -tn test_task -hov'
+    execute_command_and_assert(command_validate, 0, monkeypatch)
+
+    command_validate = 'trestle author docs template-validate -tn test_task -hv'
+    execute_command_and_assert(command_validate, 1, monkeypatch)

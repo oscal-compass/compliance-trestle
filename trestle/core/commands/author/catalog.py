@@ -29,8 +29,9 @@ from trestle.common import file_utils
 from trestle.common.err import TrestleError, TrestleNotFoundError, handle_generic_command_exception
 from trestle.common.load_validate import load_validate_model_name, load_validate_model_path
 from trestle.common.model_utils import ModelUtils
-from trestle.core.catalog_interface import CatalogInterface
+from trestle.core.catalog.catalog_api import CatalogAPI
 from trestle.core.commands.author.common import AuthorCommonCommand
+from trestle.core.commands.common.cmd_utils import clear_folder
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.models.file_content_type import FileContentType
@@ -48,7 +49,10 @@ class CatalogGenerate(AuthorCommonCommand):
     def _init_arguments(self) -> None:
         name_help_str = 'Name of the catalog model in the trestle workspace'
         self.add_argument('-n', '--name', help=name_help_str, required=True, type=str)
-        self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
+        self.add_argument(
+            '-o', '--output', help='Name of the output generated catalog markdown folder', required=True, type=str
+        )  # noqa E501
+        self.add_argument('-fo', '--force-overwrite', help=const.HELP_FO_OUTPUT, required=False, action='store_true')
         self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
         self.add_argument(
             '-ohv',
@@ -65,6 +69,13 @@ class CatalogGenerate(AuthorCommonCommand):
             trestle_root = args.trestle_root
             if not file_utils.is_directory_name_allowed(args.output):
                 raise TrestleError(f'{args.output} is not an allowed directory name')
+
+            if args.force_overwrite:
+                try:
+                    logger.info(f'Overwriting the content in {args.output} folder.')
+                    clear_folder(pathlib.Path(args.output))
+                except TrestleError as e:  # pragma: no cover
+                    raise TrestleError(f'Unable to overwrite contents in {args.output} folder: {e}')
 
             yaml_header: dict = {}
             if args.yaml_header:
@@ -96,17 +107,17 @@ class CatalogGenerate(AuthorCommonCommand):
         """Generate markdown for the controls in the catalog."""
         try:
             catalog = load_validate_model_path(trestle_root, catalog_path)
-            catalog_interface = CatalogInterface(catalog)
             context = ControlContext.generate(
                 ContextPurpose.CATALOG,
                 True,
                 trestle_root,
                 markdown_path,
-                yaml_header=yaml_header,
+                cli_yaml_header=yaml_header,
                 overwrite_header_values=overwrite_header_values,
                 set_parameters_flag=True
             )
-            catalog_interface.write_catalog_as_markdown(context, catalog_interface.get_statement_part_id_map(False))
+            catalog_api = CatalogAPI(catalog=catalog, context=context)
+            catalog_api.write_catalog_as_markdown()
 
         except TrestleNotFoundError as e:
             raise TrestleError(f'Catalog {catalog_path} not found for load: {e}')
@@ -177,7 +188,7 @@ class CatalogAssemble(AuthorCommonCommand):
             0 on success, 1 otherwise
 
         Notes:
-            If the destination catalog_name model already exists in the trestle project, it is overwritten.
+            If the destination catalog_name model already exists in the trestle workspace, it is overwritten.
             If a parent catalog is not specified, the assembled catalog will be used as the parent if it exists.
             If no parent catalog name is available, the catalog is created anew using only the markdown content.
         """
@@ -186,16 +197,14 @@ class CatalogAssemble(AuthorCommonCommand):
             raise TrestleError(f'Markdown directory {md_name} does not exist.')
 
         # assemble the markdown controls into fresh md_catalog
-        md_catalog_interface = CatalogInterface()
+        catalog_api_from_md = CatalogAPI(catalog=None)
         try:
-            md_catalog = md_catalog_interface.read_catalog_from_markdown(md_dir, set_parameters_flag)
+            md_catalog = catalog_api_from_md.read_catalog_from_markdown(md_dir, set_parameters_flag)
         except Exception as e:
             raise TrestleError(f'Error reading catalog from markdown {md_dir}: {e}')
-        if md_catalog_interface.get_count_of_controls_in_catalog(True) == 0:
-            raise TrestleError(f'No controls were loaded from markdown {md_dir}.  No catalog created.')
 
         # this is None if it doesn't exist yet
-        assem_cat_path = ModelUtils.full_path_for_top_level_model(trestle_root, assem_cat_name, Catalog)
+        assem_cat_path = ModelUtils.get_model_path_for_name_and_class(trestle_root, assem_cat_name, Catalog)
         logger.debug(f'assem_cat_path is {assem_cat_path}')
 
         # if original cat is not specified, use the assembled cat but only if it already exists
@@ -211,10 +220,10 @@ class CatalogAssemble(AuthorCommonCommand):
         logger.debug(f'parent_cat_name is {parent_cat_name}')
         if parent_cat_name:
             parent_cat, parent_cat_path = load_validate_model_name(trestle_root, parent_cat_name, Catalog)
-            parent_cat_interface = CatalogInterface(parent_cat)
+            parent_cat_api = CatalogAPI(catalog=parent_cat)
             # merge the just-read md catalog into the original json
-            parent_cat_interface.merge_catalog(md_catalog, set_parameters_flag)
-            md_catalog = parent_cat_interface.get_catalog()
+            parent_cat_api.merge_catalog(md_catalog, set_parameters_flag)
+            md_catalog = parent_cat_api._catalog_interface.get_catalog()
             new_content_type = FileContentType.path_to_content_type(parent_cat_path)
 
         if version:
@@ -238,7 +247,9 @@ class CatalogAssemble(AuthorCommonCommand):
         md_catalog.metadata.oscal_version = OSCAL_VERSION
 
         # we still may not know the assem_cat_path but can now create it with file content type
-        assem_cat_path = ModelUtils.path_for_top_level_model(trestle_root, assem_cat_name, Catalog, new_content_type)
+        assem_cat_path = ModelUtils.get_model_path_for_name_and_class(
+            trestle_root, assem_cat_name, Catalog, new_content_type
+        )
 
         if assem_cat_path.parent.exists():
             logger.info('Creating catalog from markdown and destination catalog exists, so updating.')

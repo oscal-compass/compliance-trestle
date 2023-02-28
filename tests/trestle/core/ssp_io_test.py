@@ -17,20 +17,23 @@ from typing import Tuple
 
 from _pytest.monkeypatch import MonkeyPatch
 
-from tests.test_utils import delete_line_in_file, execute_command_and_assert, setup_for_ssp
-from tests.trestle.core.commands.author.ssp_test import insert_prose
+from tests.test_utils import execute_command_and_assert, setup_for_ssp, substitute_text_in_file
 
-from trestle.common import file_utils
 from trestle.common.const import CONTROL_ORIGINATION, IMPLEMENTATION_STATUS, STATUS_INHERITED, STATUS_PLANNED
+from trestle.common.model_utils import ModelUtils
 from trestle.core import profile_resolver
 from trestle.core.commands.author.ssp import SSPGenerate
+from trestle.core.control_context import ContextPurpose, ControlContext
+from trestle.core.control_reader import ControlReader
 from trestle.core.markdown.markdown_node import MarkdownNode
+from trestle.core.models.file_content_type import FileContentType
 from trestle.core.remote import cache
 from trestle.core.ssp_io import SSPMarkdownWriter
 from trestle.oscal.common import Property
+from trestle.oscal.profile import Profile
 from trestle.oscal.ssp import SystemSecurityPlan
 
-prof_name = 'main_profile'
+prof_name = 'comp_prof'
 ssp_name = 'my_ssp'
 
 
@@ -57,7 +60,7 @@ def setup_test(tmp_trestle_dir: pathlib.Path, testdata_dir: pathlib.Path,
 
 def test_ssp_writer(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test ssp writer from cli."""
-    gen_args, _, _ = setup_for_ssp(True, True, tmp_trestle_dir, prof_name, ssp_name)
+    gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
 
     profile_path, ssp_obj = setup_test(tmp_trestle_dir, testdata_dir, gen_args.trestle_root)
 
@@ -87,29 +90,27 @@ def test_ssp_writer(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, m
 
 def test_ssp_get_control_response(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test generating SSP from the sample profile and generate markdown representation of it."""
-    args, _, _ = setup_for_ssp(True, True, tmp_trestle_dir, prof_name, ssp_name)
+    args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
     ssp_cmd = SSPGenerate()
     assert ssp_cmd._run(args) == 0
-    ac1_path = tmp_trestle_dir / 'my_ssp/ac/ac-1.md'
 
-    # set responses
-    assert insert_prose(tmp_trestle_dir, 'ac-1_smt.b', 'This is a response')
-    assert insert_prose(tmp_trestle_dir, 'ac-1_smt.c', 'This is also a response.')
-    assert insert_prose(tmp_trestle_dir, 'ac-1_smt.a', 'This is a response.')
-    assert delete_line_in_file(ac1_path, 'Add control implementation description here')
-    assert delete_line_in_file(ac1_path, 'Add control implementation description here')
-    assert delete_line_in_file(ac1_path, 'Add control implementation description here')
+    ac1_path = tmp_trestle_dir / ssp_name / 'ac/ac-1.md'
 
-    command_ssp_assem = 'trestle author ssp-assemble -m my_ssp -o ssp_json'
+    context = ControlContext.generate(ContextPurpose.SSP, True, tmp_trestle_dir, ssp_name)
+    _, comp_dict = ControlReader.read_control_info_from_md(ac1_path, context)
+    orig_imp_prose = 'imp req prose for ac-1 from comp aa'
+    orig_a_prose = 'statement prose for part a. from comp aa'
+    assert comp_dict['comp_aa'][''].prose == orig_imp_prose
+    assert comp_dict['comp_aa']['a.'].prose == orig_a_prose
+
+    command_ssp_assem = f'trestle author ssp-assemble -m my_ssp -o ssp_json -cd {args.compdefs}'
     execute_command_and_assert(command_ssp_assem, 0, monkeypatch)
 
-    ssp_json_path = tmp_trestle_dir / 'system-security-plans/ssp_json/system-security-plan.json'
-    profile_path = tmp_trestle_dir / 'profiles/main_profile/profile.json'
-    fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, str(ssp_json_path))
-    ssp_obj, _ = fetcher.get_oscal(True)
-
+    ssp_obj, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'ssp_json', SystemSecurityPlan, FileContentType.JSON)
+    profile_path = ModelUtils.get_model_path_for_name_and_class(
+        tmp_trestle_dir, prof_name, Profile, FileContentType.JSON
+    )
     resolved_catalog = profile_resolver.ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, profile_path)
-
     ssp_io = SSPMarkdownWriter(tmp_trestle_dir)
     ssp_io.set_catalog(resolved_catalog)
     ssp_io.set_ssp(ssp_obj)
@@ -119,35 +120,33 @@ def test_ssp_get_control_response(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
     tree = MarkdownNode.build_tree_from_markdown(md_text.split('\n'))
 
     assert tree.get_node_for_key('## Implementation for part a.')
-    assert tree.get_node_for_key('## Implementation for part c.')
-    assert len(list(tree.get_all_headers_for_level(2))) == 3
+    assert len(list(tree.get_all_headers_for_level(2))) == 1
+    assert len(list(tree.get_all_headers_for_level(3))) == 2
 
-    md_text = ssp_io.get_control_response('ac-1', 1, False)
-    tree = MarkdownNode.build_tree_from_markdown(md_text.split('\n'))
+    # change responses
+    new_imp_prose = 'edited imp req prose'
+    new_a_prose = 'edited a prose'
+    substitute_text_in_file(ac1_path, orig_imp_prose, new_imp_prose)
+    substitute_text_in_file(ac1_path, orig_a_prose, new_a_prose)
 
-    assert tree.get_node_for_key('## Implementation for part a.')
-    assert tree.get_node_for_key('## Implementation for part c.')
-    assert len(list(tree.get_all_headers_for_level(2))) == 3
-
-    # insert some responses by component
-    assert file_utils.insert_text_in_file(ac1_path, 'Implementation for part a.', '### foo comp\n')
-    assert file_utils.insert_text_in_file(ac1_path, 'a response', '### bar comp\nstuff for other response\n')
     execute_command_and_assert(command_ssp_assem, 0, monkeypatch)
-    ssp_obj, _ = fetcher.get_oscal(True)
+    ssp_obj, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'ssp_json', SystemSecurityPlan, FileContentType.JSON)
+    profile_path = ModelUtils.get_model_path_for_name_and_class(
+        tmp_trestle_dir, prof_name, Profile, FileContentType.JSON
+    )
     resolved_catalog = profile_resolver.ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, profile_path)
     ssp_io = SSPMarkdownWriter(tmp_trestle_dir)
     ssp_io.set_catalog(resolved_catalog)
     ssp_io.set_ssp(ssp_obj)
 
-    # component titles should not be there
+    # confirm edited response is there and that comp name presence is controlled
     md_text = ssp_io.get_control_response('ac-1', 2, False, False)
-    assert 'foo' not in md_text
-    assert 'bar' not in md_text
+    assert 'comp_aa' not in md_text
+    assert new_a_prose in md_text
 
-    # component titles should be there
     md_text = ssp_io.get_control_response('ac-1', 2, False, True)
-    assert 'foo' in md_text
-    assert 'bar' in md_text
+    assert 'comp_aa' in md_text
+    assert new_a_prose in md_text
 
 
 def test_writers(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:

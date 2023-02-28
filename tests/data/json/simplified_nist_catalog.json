@@ -2,7 +2,7 @@
   "catalog": {
     "uuid": "613fca2d-704a-42e7-8e2b-b206fb92b456",
     "metadata": {
-      "title": "NIST Special Publication 800-53 Revision 5: Security and Privacy Controls for Federal Information Systems and Organizations",
+      "title": "Trestle simplified: NIST Special Publication 800-53 Revision 5: Security and Privacy Controls for Federal Information Systems and Organizations",
       "last-modified": "2021-06-08T13:57:33.013981-04:00",
       "version": "5.0.1",
       "oscal-version": "1.0.0",
@@ -2898,7 +2898,8 @@
                   {
                     "id": "ac-4.4_prm_3",
                     "depends-on": "ac-4.4_prm_2",
-                    "label": "organization-defined procedure or method"
+                    "label": "organization-defined procedure or method",
+                    "values": ["my procedure"]
                   }
                 ],
                 "props": [
@@ -5008,7 +5009,7 @@
                         "value": "b."
                       }
                     ],
-                    "prose": "Designate an {{ insert: param, at-1_prm_3 }} to manage the development, documentation, and dissemination of the awareness and training policy and procedures; and"
+                    "prose": "Designate an {{ insert: param, at-1_prm_1 }} to manage the development, documentation, and dissemination of the awareness and training policy and procedures; and"
                   }
                 ]
               },
@@ -5102,7 +5103,7 @@
                         "value": "b."
                       }
                     ],
-                    "prose": "Employ the following techniques to increase the security and privacy awareness of system users {{ insert: param, at-2_prm_3 }};"
+                    "prose": "Employ the following techniques to increase the security and privacy awareness of system users {{ insert: param, at-2_prm_1 }};"
                   }
                 ]
               },

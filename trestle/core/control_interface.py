@@ -15,18 +15,20 @@
 from __future__ import annotations
 
 import logging
+import pathlib
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple, Union
-from uuid import uuid4
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 import trestle.oscal.catalog as cat
+import trestle.oscal.ssp as ossp
 from trestle.common import const
-from trestle.common.common_types import TypeWithParts, TypeWithProps
+from trestle.common.common_types import TypeWithParamId, TypeWithParts, TypeWithProps
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_filtered_list, as_list, none_if_empty
-from trestle.common.str_utils import string_from_root, strip_lower_equals
+from trestle.common.model_utils import ModelUtils
+from trestle.common.str_utils import as_string, string_from_root, strip_lower_equals
 from trestle.oscal import common
 from trestle.oscal import component as comp
 from trestle.oscal import profile as prof
@@ -43,6 +45,7 @@ class ParameterRep(Enum):
     VALUE_OR_LABEL_OR_CHOICES = 3
     VALUE_OR_EMPTY_STRING = 4
     ASSIGNMENT_FORM = 5
+    LABEL_FORM = 6
 
 
 @dataclass
@@ -51,7 +54,12 @@ class ComponentImpInfo:
 
     prose: str
     rules: List[str]
-    status: common.ImplementationStatus = common.ImplementationStatus(state=const.STATUS_PLANNED)
+    props: List[common.Property]
+    # the lambda is needed to prevent a mutable from being used as a default
+    # without the lambda it would break python 3.11 and is a bug either way
+    status: common.ImplementationStatus = field(
+        default_factory=lambda: common.ImplementationStatus(state=const.STATUS_OPERATIONAL)
+    )
 
 
 # provide name for this type
@@ -210,6 +218,17 @@ class ControlInterface:
         part_control.props.append(new_prop)
 
     @staticmethod
+    def _apply_params_format(param_str: Optional[str], params_format: Optional[str]) -> Optional[str]:
+        if param_str is not None and params_format:
+            if params_format.count('.') > 1:
+                raise TrestleError(
+                    f'Additional text {params_format} '
+                    f'for the parameter format cannot contain multiple dots (.)'
+                )
+            param_str = params_format.replace('.', param_str)
+        return param_str
+
+    @staticmethod
     def create_statement_id(control_id: str, lower: bool = False) -> str:
         """Create the control statement id from the control id."""
         id_ = f'{control_id}_smt'
@@ -356,37 +375,77 @@ class ControlInterface:
         )
 
     @staticmethod
-    def get_rules_dict_from_item(item: TypeWithProps) -> Dict[str, Dict[str, str]]:
+    def uniquify_set_params(set_params: Optional[List[TypeWithParamId]]) -> List[TypeWithParamId]:
+        """Remove items with same param_id with priority to later items."""
+        found_ids: Set[str] = set()
+        unique_list: List[TypeWithParamId] = []
+        for set_param in reversed(as_list(set_params)):
+            if set_param.param_id not in found_ids:
+                unique_list.append(set_param)
+                found_ids.add(set_param.param_id)
+        return list(reversed(unique_list))
+
+    @staticmethod
+    def get_rules_dict_from_item(item: TypeWithProps) -> Tuple[Dict[str, Dict[str, str]], List[common.Property]]:
         """Get all rules found in this items props."""
         # rules is dict containing rule_id and description
-        rules = {}
+        rules_dict = {}
         name = ''
         desc = ''
         id_ = ''
+        rules_props = []
         for prop in as_list(item.props):
             if prop.name == const.RULE_ID:
                 name = prop.value
                 id_ = string_from_root(prop.remarks)
+                rules_props.append(prop)
             elif prop.name == const.RULE_DESCRIPTION:
                 desc = prop.value
+                rules_props.append(prop)
             # grab each pair in case there are multiple pairs
             # then clear and look for new pair
             if name and desc:
-                rules[id_] = {'name': name, 'description': desc}
+                rules_dict[id_] = {'name': name, 'description': desc}
                 name = desc = id_ = ''
-        return rules
+        return rules_dict, rules_props
 
     @staticmethod
-    def get_rule_list_for_item(item: TypeWithProps) -> List[str]:
-        """Get the list of rules applying to this item."""
-        return [prop.value for prop in as_filtered_list(item.props, lambda p: p.name == const.RULE_ID)]
+    def item_has_rules(item: TypeWithProps) -> bool:
+        """Determine if the item has rules in its props."""
+        _, rules_props = ControlInterface.get_rules_dict_from_item(item)
+        return bool(rules_props)
 
     @staticmethod
-    def get_params_dict_from_item(item: TypeWithProps) -> Dict[str, Dict[str, str]]:
+    def get_rule_list_for_item(item: TypeWithProps) -> Tuple[List[str], List[common.Property]]:
+        """Get the list of rules applying to this item from its top level props."""
+        props = []
+        rule_list = []
+        for prop in as_list(item.props):
+            if prop.name == const.RULE_ID:
+                rule_list.append(prop.value)
+                props.append(prop)
+        return rule_list, props
+
+    @staticmethod
+    def get_rule_list_for_imp_req(
+        imp_req: ossp.ImplementedRequirement
+    ) -> Tuple[List[str], List[str], List[common.Property]]:
+        """Get the list of rules applying to an imp_req as two lists."""
+        comp_rules, rule_props = ControlInterface.get_rule_list_for_item(imp_req)
+        statement_rules = set()
+        for statement in as_list(imp_req.statements):
+            stat_rules, statement_props = ControlInterface.get_rule_list_for_item(statement)
+            statement_rules.update(stat_rules)
+            rule_props.extend(statement_props)
+        return comp_rules, list(statement_rules), rule_props
+
+    @staticmethod
+    def get_params_dict_from_item(item: TypeWithProps) -> Tuple[Dict[str, Dict[str, str]], List[common.Property]]:
         """Get all params found in this item with rule_id as key."""
         # id, description, options - where options is a string containing comma-sep list of items
         # params is dict with rule_id as key and value contains: param_name, description and choices
         params: Dict[str, Dict[str, str]] = {}
+        props = []
         for prop in as_list(item.props):
             if prop.name == const.PARAMETER_ID:
                 rule_id = string_from_root(prop.remarks)
@@ -395,16 +454,19 @@ class ControlInterface:
                     raise TrestleError(f'Duplicate param {param_name} found for rule {rule_id}')
                 # create new param for this rule
                 params[rule_id] = {'name': param_name}
+                props.append(prop)
             elif prop.name == const.PARAMETER_DESCRIPTION:
                 rule_id = string_from_root(prop.remarks)
                 if rule_id in params:
                     params[rule_id]['description'] = prop.value
+                    props.append(prop)
                 else:
                     raise TrestleError(f'Param description for rule {rule_id} found with no param_id')
             elif prop.name == const.PARAMETER_VALUE_ALTERNATIVES:
                 rule_id = string_from_root(prop.remarks)
                 if rule_id in params:
                     params[rule_id]['options'] = prop.value
+                    props.append(prop)
                 else:
                     raise TrestleError(f'Param options for rule {rule_id} found with no param_id')
         new_params = {}
@@ -415,16 +477,27 @@ class ControlInterface:
                 param['description'] = param.get('description', '')
                 param['options'] = param.get('options', '')
                 new_params[rule_id] = param
-        return new_params
+        return new_params, props
 
     @staticmethod
-    def get_param_vals_from_control_imp(control_imp: comp.ControlImplementation) -> Dict[str, str]:
-        """Get param values from set_parameters in control implementation."""
-        param_dict = {
-            set_param.param_id: ControlInterface._setparam_values_as_str(set_param)
-            for set_param in as_list(control_imp.set_parameters)
+    def get_rules_and_params_dict_from_item(
+        item: TypeWithProps
+    ) -> Tuple[Dict[str, Dict[str, str]], Dict[str, Dict[str, str]], List[common.Property]]:
+        """Get the rule dict and params dict from item with props."""
+        rules_dict, rules_props = ControlInterface.get_rules_dict_from_item(item)
+        params_dict, params_props = ControlInterface.get_params_dict_from_item(item)
+        rules_props.extend(params_props)
+        return rules_dict, params_dict, rules_props
+
+    @staticmethod
+    def get_set_params_from_item(
+        item: Union[comp.ControlImplementation, comp.ImplementedRequirement]
+    ) -> Dict[str, comp.SetParameter]:
+        """Get set params that have values from control implementation or imp req."""
+        return {
+            set_param.param_id: set_param
+            for set_param in as_filtered_list(item.set_parameters, lambda i: i.values)
         }
-        return {key: val for key, val in param_dict.items() if val}
 
     @staticmethod
     def merge_props(dest: Optional[List[common.Property]],
@@ -484,7 +557,13 @@ class ControlInterface:
             dest.parts = new_parts
 
     @staticmethod
-    def merge_dicts_deep(dest: Dict[Any, Any], src: Dict[Any, Any], overwrite_header_values: bool) -> None:
+    def merge_dicts_deep(
+        dest: Dict[Any, Any],
+        src: Dict[Any, Any],
+        overwrite_header_values: bool,
+        depth: int = 0,
+        level: int = 0
+    ) -> None:
         """
         Merge dict src into dest.
 
@@ -493,9 +572,14 @@ class ControlInterface:
         """
         for key in src.keys():
             if key in dest:
+                if depth and level == depth:
+                    if overwrite_header_values:
+                        dest[key] = src[key]
+                    continue
                 # if they are both dicts, recurse
                 if isinstance(dest[key], dict) and isinstance(src[key], dict):
-                    ControlInterface.merge_dicts_deep(dest[key], src[key], overwrite_header_values)
+                    ControlInterface.merge_dicts_deep(dest[key], src[key], overwrite_header_values, depth, level + 1)
+                # if they are both lists, add any item that is not already in the list
                 elif isinstance(dest[key], list) and isinstance(src[key], list):
                     for item in src[key]:
                         if item not in dest[key]:
@@ -552,20 +636,21 @@ class ControlInterface:
         return f'[{values_str}]' if brackets else values_str
 
     @staticmethod
-    def _param_selection_as_str(param: common.Parameter, verbose=False, brackets=False) -> str:
+    def _param_selection_as_str(param: common.Parameter, verbose: bool = False, brackets: bool = False) -> str:
         """Convert parameter selection to str."""
         if param.select and param.select.choice:
             how_many_str = ''
+            # if all values are specified there is no how_many string and parens are dropped.  See ac-2.2
             if param.select.how_many:
-                how_many_str = 'one' if param.select.how_many == common.HowMany.one else 'one or more'
+                how_many_str = ' (one)' if param.select.how_many == common.HowMany.one else ' (one or more)'
             choices_str = '; '.join(as_list(param.select.choice))
             choices_str = f'[{choices_str}]' if brackets else choices_str
-            choices_str = f'Selection ({how_many_str}): {choices_str}' if verbose else choices_str
+            choices_str = f'Selection{how_many_str}: {choices_str}' if verbose else choices_str
             return choices_str
         return ''
 
     @staticmethod
-    def _param_label_choices_as_str(param: common.Parameter, verbose=False, brackets=False) -> str:
+    def _param_label_choices_as_str(param: common.Parameter, verbose: bool = False, brackets: bool = False) -> str:
         """Convert param label or choices to string, using choices if present."""
         choices = ControlInterface._param_selection_as_str(param, verbose, brackets)
         text = choices if choices else param.label
@@ -573,24 +658,50 @@ class ControlInterface:
         return text
 
     @staticmethod
-    def _param_values_assignment_str(param: common.Parameter) -> str:
-        """Convert param label or choices to string, using choices if present."""
-        choices = ControlInterface._param_selection_as_str(param, True, False)
-        if choices:
-            text = f'[{choices}]'
-        elif param.label:
-            text = f'[Assignment: {param.label}]'
-        else:
-            text = param.id
-        return text
+    def _param_values_assignment_str(
+        param: common.Parameter,
+        value_assigned_prefix: Optional[str] = None,
+        value_not_assigned_prefix: Optional[str] = None
+    ) -> str:
+        """Convert param values, label or choices to string."""
+        # use values if present
+        param_str = ControlInterface._param_values_as_str(param, False)
+        if param_str and value_assigned_prefix:
+            param_str = f'{value_assigned_prefix} {param_str}'
+        # otherwise use param selection if present
+        if not param_str:
+            param_str = ControlInterface._param_selection_as_str(param, True, False)
+        # finally use label and param_id as fallbacks
+        if not param_str:
+            param_str = param.label if param.label else param.id
+            if value_not_assigned_prefix:
+                param_str = f'{value_not_assigned_prefix} {param_str}'
+        return f'{param_str}'
+
+    @staticmethod
+    def _param_labels_assignment_str(
+        param: common.Parameter,
+        label_prefix: Optional[str] = None,
+    ) -> str:
+        """Convert param label or choices to string."""
+        # use values if present
+        param_str = ControlInterface._param_selection_as_str(param, True, False)
+        # finally use label and param_id as fallbacks
+        if not param_str:
+            param_str = param.label if param.label else param.id
+            if label_prefix:
+                param_str = f'{label_prefix} {param_str}'
+        return f'{param_str}'
 
     @staticmethod
     def param_to_str(
         param: common.Parameter,
         param_rep: ParameterRep,
-        verbose=False,
-        brackets=False,
+        verbose: bool = False,
+        brackets: bool = False,
         params_format: Optional[str] = None,
+        value_assigned_prefix: Optional[str] = None,
+        value_not_assigned_prefix: Optional[str] = None
     ) -> Optional[str]:
         """
         Convert parameter to string based on best available representation.
@@ -601,6 +712,8 @@ class ControlInterface:
             verbose: provide verbose text for selection choices
             brackets: add brackets around the lists of items
             params_format: a string containing a single dot that represents a form of highlighting around the param
+            value_assigned_prefix: string to place before the parameter string if a value was assigned
+            value_not_assigned_prefix: string to place before the parameter string if value not assigned
 
         Returns:
             formatted string or None
@@ -620,23 +733,19 @@ class ControlInterface:
             if not param_str:
                 param_str = ''
         elif param_rep == ParameterRep.ASSIGNMENT_FORM:
-            param_str = ControlInterface._param_values_assignment_str(param)
+            param_str = ControlInterface._param_values_assignment_str(
+                param, value_assigned_prefix, value_not_assigned_prefix
+            )
             if not param_str:
                 param_str = ''
-        if param_str is not None and params_format:
-            if params_format.count('.') > 1:
-                raise TrestleError(
-                    f'Additional text {params_format} '
-                    f'for the parameters cannot contain multiple dots (.)'
-                )
-            param_str = params_format.replace('.', param_str)
-        return param_str
+        elif param_rep == ParameterRep.LABEL_FORM:
+            param_str = ControlInterface._param_labels_assignment_str(param, value_not_assigned_prefix)
+            if not param_str:
+                param_str = ''
+        return ControlInterface._apply_params_format(param_str, params_format)
 
     @staticmethod
-    def get_control_param_dict(
-        control: cat.Control,
-        values_only: bool,
-    ) -> Dict[str, common.Parameter]:
+    def get_control_param_dict(control: cat.Control, values_only: bool) -> Dict[str, common.Parameter]:
         """
         Create mapping of param id's to params for params in the control.
 
@@ -659,7 +768,14 @@ class ControlInterface:
         return param_dict
 
     @staticmethod
-    def _replace_ids_with_text(prose: str, param_rep: ParameterRep, param_dict: Dict[str, common.Parameter]) -> str:
+    def _replace_ids_with_text(
+        prose: str,
+        param_rep: ParameterRep,
+        param_dict: Dict[str, common.Parameter],
+        params_format: Optional[str] = None,
+        value_assigned_prefix: Optional[str] = None,
+        value_not_assigned_prefix: Optional[str] = None
+    ) -> str:
         """Find all instances of param_ids in prose and replace each with corresponding parameter representation.
 
         Need to check all values in dict for a match
@@ -669,7 +785,9 @@ class ControlInterface:
             if param.id not in prose:
                 continue
             # create the replacement text for the param_id
-            param_str = ControlInterface.param_to_str(param, param_rep)
+            param_str = ControlInterface.param_to_str(
+                param, param_rep, False, False, params_format, value_assigned_prefix, value_not_assigned_prefix
+            )
             # non-capturing groups are odd in re.sub so capture all 3 groups and replace the middle one
             pattern = r'(^|[^a-zA-Z0-9_])' + param.id + r'($|[^a-zA-Z0-9_])'
             prose = re.sub(pattern, r'\1' + param_str + r'\2', prose)
@@ -681,7 +799,9 @@ class ControlInterface:
         param_dict: Dict[str, common.Parameter],
         params_format: Optional[str] = None,
         param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES,
-        show_value_warnings: bool = False
+        show_value_warnings: bool = False,
+        value_assigned_prefix: Optional[str] = None,
+        value_not_assigned_prefix: Optional[str] = None
     ) -> str:
         """
         Replace params found in moustaches with values from the param_dict.
@@ -712,7 +832,9 @@ class ControlInterface:
                     logger.warning(f'Control prose references param {param_ids[i]} not set in the control: {staches}')
             elif param_dict[param_ids[i]] is not None:
                 param = param_dict[param_ids[i]]
-                param_str = ControlInterface.param_to_str(param, param_rep, False, False, params_format)
+                param_str = ControlInterface.param_to_str(
+                    param, param_rep, False, False, params_format, value_assigned_prefix, value_not_assigned_prefix
+                )
                 text = text.replace(staches[i], param_str, 1).strip()
                 if show_value_warnings and param_rep != ParameterRep.LABEL_OR_CHOICES and not param.values:
                     logger.warning(f'Parameter {param_id} has no values and was referenced by prose.')
@@ -722,7 +844,13 @@ class ControlInterface:
         if text != orig_text:
             while True:
                 new_text = ControlInterface._replace_params(
-                    text, param_dict, params_format, param_rep, show_value_warnings
+                    text,
+                    param_dict,
+                    params_format,
+                    param_rep,
+                    show_value_warnings,
+                    value_assigned_prefix,
+                    value_not_assigned_prefix
                 )
                 if new_text == text:
                     break
@@ -736,23 +864,45 @@ class ControlInterface:
         param_dict: Dict[str, common.Parameter],
         params_format: Optional[str] = None,
         param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES,
-        show_value_warnings: bool = False
+        show_value_warnings: bool = False,
+        value_assigned_prefix: Optional[str] = None,
+        value_not_assigned_prefix: Optional[str] = None
     ) -> None:
         """Replace the part prose according to set_param."""
         if part.prose is not None:
             fixed_prose = ControlInterface._replace_params(
-                part.prose, param_dict, params_format, param_rep, show_value_warnings
+                part.prose,
+                param_dict,
+                params_format,
+                param_rep,
+                show_value_warnings,
+                value_assigned_prefix,
+                value_not_assigned_prefix
             )
             # change the prose in the control itself
             part.prose = fixed_prose
         for prt in as_list(part.parts):
             ControlInterface._replace_part_prose(
-                control, prt, param_dict, params_format, param_rep, show_value_warnings
+                control,
+                prt,
+                param_dict,
+                params_format,
+                param_rep,
+                show_value_warnings,
+                value_assigned_prefix,
+                value_not_assigned_prefix
             )
         for sub_control in as_list(control.controls):
             for prt in as_list(sub_control.parts):
                 ControlInterface._replace_part_prose(
-                    sub_control, prt, param_dict, params_format, param_rep, show_value_warnings
+                    sub_control,
+                    prt,
+                    param_dict,
+                    params_format,
+                    param_rep,
+                    show_value_warnings,
+                    value_assigned_prefix,
+                    value_not_assigned_prefix
                 )
 
     @staticmethod
@@ -761,14 +911,22 @@ class ControlInterface:
         param_dict: Dict[str, common.Parameter],
         params_format: Optional[str],
         param_rep: ParameterRep,
-        show_value_warnings: bool
+        show_value_warnings: bool,
+        value_assigned_prefix: Optional[str] = None,
+        value_not_assigned_prefix: Optional[str] = None
     ) -> None:
         """Set values for all choices param that refer to params with values."""
         if param.select:
             new_choices: List[str] = []
             for choice in as_list(param.select.choice):
                 new_choice = ControlInterface._replace_params(
-                    choice, param_dict, params_format, param_rep, show_value_warnings
+                    choice,
+                    param_dict,
+                    params_format,
+                    param_rep,
+                    show_value_warnings,
+                    value_assigned_prefix,
+                    value_not_assigned_prefix
                 )
                 new_choices.append(new_choice)
             param.select.choice = new_choices
@@ -779,21 +937,46 @@ class ControlInterface:
         param_dict: Dict[str, common.Parameter],
         params_format: Optional[str] = None,
         param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES,
-        show_value_warnings: bool = False
+        show_value_warnings: bool = False,
+        value_assigned_prefix: Optional[str] = None,
+        value_not_assigned_prefix: Optional[str] = None
     ) -> None:
         """Replace the control prose according to set_param."""
+        # first replace all choices that reference parameters
+        # note that in ASSIGNMENT_FORM each choice with a parameter will end up as [Assignment: value]
         for param in as_list(control.params):
-            ControlInterface._replace_param_choices(param, param_dict, params_format, param_rep, show_value_warnings)
+            ControlInterface._replace_param_choices(
+                param,
+                param_dict,
+                params_format,
+                param_rep,
+                show_value_warnings,
+                value_assigned_prefix,
+                value_not_assigned_prefix
+            )
         for part in as_list(control.parts):
             if part.prose is not None:
                 fixed_prose = ControlInterface._replace_params(
-                    part.prose, param_dict, params_format, param_rep, show_value_warnings
+                    part.prose,
+                    param_dict,
+                    params_format,
+                    param_rep,
+                    show_value_warnings,
+                    value_assigned_prefix,
+                    value_not_assigned_prefix
                 )
                 # change the prose in the control itself
                 part.prose = fixed_prose
             for prt in as_list(part.parts):
                 ControlInterface._replace_part_prose(
-                    control, prt, param_dict, params_format, param_rep, show_value_warnings
+                    control,
+                    prt,
+                    param_dict,
+                    params_format,
+                    param_rep,
+                    show_value_warnings,
+                    value_assigned_prefix,
+                    value_not_assigned_prefix
                 )
 
     @staticmethod
@@ -820,14 +1003,6 @@ class ControlInterface:
         return None
 
     @staticmethod
-    def get_control_imp_reqs(control_imp: Optional[comp.ControlImplementation],
-                             control_id: str) -> List[comp.ImplementedRequirement]:
-        """Get the imp_reqs for this control from the control implementation."""
-        if control_imp is None:
-            return []
-        return as_filtered_list(control_imp.implemented_requirements, lambda imp_req: imp_req.control_id == control_id)
-
-    @staticmethod
     def get_status_from_props(item: TypeWithProps) -> common.ImplementationStatus:
         """Get the status of an item from its props."""
         status = common.ImplementationStatus(state=const.STATUS_PLANNED)
@@ -836,6 +1011,43 @@ class ControlInterface:
                 status = ControlInterface._prop_as_status(prop)
                 break
         return status
+
+    @staticmethod
+    def clean_props(
+        props: Optional[List[common.Property]],
+        remove_imp_status: bool = True,
+        remove_all_rule_info: bool = False
+    ) -> List[common.Property]:
+        """Remove duplicate props and implementation status."""
+        new_props: List[common.Property] = []
+        found_props: Set[Tuple[str, str, str, str]] = set()
+        rule_tag_list = [
+            const.RULE_DESCRIPTION, const.RULE_ID, const.PARAMETER_DESCRIPTION, const.PARAMETER_VALUE_ALTERNATIVES
+        ]
+        # reverse the list so the latest items are kept
+        for prop in reversed(as_list(props)):
+            prop_tuple = (prop.name, as_string(prop.value), as_string(prop.ns), string_from_root(prop.remarks))
+            if prop_tuple in found_props or (prop.name == const.IMPLEMENTATION_STATUS and remove_imp_status):
+                continue
+            if remove_all_rule_info and prop.name in rule_tag_list:
+                continue
+            found_props.add(prop_tuple)
+            new_props.append(prop)
+        new_props.reverse()
+        return new_props
+
+    @staticmethod
+    def cull_props_by_rules(props: Optional[List[common.Property]], rules: List[str]) -> List[common.Property]:
+        """Cull properties to the ones needed by rules."""
+        needed_rule_ids: Set[str] = set()
+        culled_props: List[common.Property] = []
+        for prop in as_list(props):
+            if prop.value in rules and prop.remarks:
+                needed_rule_ids.add(string_from_root(prop.remarks))
+        for prop in as_list(props):
+            if prop.value in rules or string_from_root(prop.remarks) in needed_rule_ids:
+                culled_props.append(prop)
+        return culled_props
 
     @staticmethod
     def _status_as_prop(status: common.ImplementationStatus) -> common.Property:
@@ -861,31 +1073,75 @@ class ControlInterface:
 
     @staticmethod
     def insert_imp_req_into_component(
-        component: comp.DefinedComponent, new_imp_req: comp.ImplementedRequirement
+        component: comp.DefinedComponent,
+        new_imp_req: comp.ImplementedRequirement,
+        profile_title: str,
+        trestle_root: pathlib.Path
     ) -> None:
-        """Insert imp req into component by matching control id to existing imp req."""
+        """
+        Insert imp req into component by matching source title and control id to existing imp req.
+
+        Args:
+            component: The defined component receiving the imp_req
+            new_imp_req: The new imp_req being added
+            profile_title: The title of the source profile for the control implementation containing the imp_req
+
+        Notes:
+            Inserts the imp_req on the first match found.  Note it is possible two control implementations could
+            have the same source and specify the same control
+        """
         for control_imp in as_list(component.control_implementations):
+            _, control_imp_param_dict, _ = ControlInterface.get_rules_and_params_dict_from_item(control_imp)
+            control_imp_rule_param_ids = [d['name'] for d in control_imp_param_dict.values()]
+            if profile_title != ModelUtils.get_title_from_model_uri(trestle_root, control_imp.source):
+                continue
             for imp_req in as_list(control_imp.implemented_requirements):
-                if imp_req.control_id == new_imp_req.control_id:
-                    status = ControlInterface.get_status_from_props(new_imp_req)
-                    ControlInterface.insert_status_in_props(imp_req, status)
-                    imp_req.description = new_imp_req.description
-                    statement_dict = {stat.statement_id: stat for stat in as_list(imp_req.statements)}
-                    new_statements: List[comp.Statement] = []
-                    for statement in as_list(new_imp_req.statements):
-                        # get the original version of the statement if available, or use new one
-                        stat = statement_dict.get(statement.statement_id, statement)
-                        # update the description and status from markdown
-                        stat.description = statement.description
-                        ControlInterface._copy_status_in_props(stat, statement)
-                        new_statements.append(stat)
-                    imp_req.statements = none_if_empty(new_statements)
-                    return
-        # need to insert new imp_req into an available control_imp, so choose first one and make it if needed
-        if not component.control_implementations:
-            component.control_implementations = [
-                comp.ControlImplementation(uuid=str(uuid4()), source=const.REPLACE_ME, description=const.REPLACE_ME)
-            ]
-        imp_reqs = as_list(component.control_implementations[0].implemented_requirements)
-        imp_reqs.append(new_imp_req)
-        component.control_implementations[0].implemented_requirements = imp_reqs
+                if imp_req.control_id != new_imp_req.control_id:
+                    continue
+                _, imp_req_param_dict, _ = ControlInterface.get_rules_and_params_dict_from_item(imp_req)
+                imp_req_rule_param_ids = [d['name'] for d in imp_req_param_dict]
+                status = ControlInterface.get_status_from_props(new_imp_req)
+                ControlInterface.insert_status_in_props(imp_req, status)
+                imp_req.description = new_imp_req.description
+                statement_dict = {stat.statement_id: stat for stat in as_list(imp_req.statements)}
+                # update set parameter values with values from markdown - but only for rule param vals
+                for set_param in as_list(new_imp_req.set_parameters):
+                    if set_param.param_id not in (control_imp_rule_param_ids + imp_req_rule_param_ids):
+                        continue
+                    found = False
+                    for dest_param in as_list(imp_req.set_parameters):
+                        if dest_param.param_id != set_param.param_id:
+                            continue
+                        dest_param.values = set_param.values
+                        found = True
+                        break
+                    # if rule parameter val was not already set by a set_param, make new set_param for it
+                    if found:
+                        continue
+                    # but first check if the parameter was already set with the same value in the control_imp
+                    # if so we don't need to insert a new set_param in imp_req
+                    for dest_param in as_list(control_imp.set_parameters):
+                        if dest_param.param_id != set_param.param_id:
+                            continue
+                        if dest_param.values == set_param.values:
+                            found = True
+                            break
+                    if found:
+                        continue
+                    imp_req.set_parameters = as_list(imp_req.set_parameters)
+                    imp_req.set_parameters.append(
+                        comp.SetParameter(param_id=set_param.param_id, values=set_param.values)
+                    )
+                new_statements: List[comp.Statement] = []
+                for statement in as_list(new_imp_req.statements):
+                    # get the original version of the statement if available, or use new one
+                    stat = statement_dict.get(statement.statement_id, statement)
+                    # update the description and status from markdown
+                    stat.description = statement.description
+                    ControlInterface._copy_status_in_props(stat, statement)
+                    new_statements.append(stat)
+                imp_req.statements = none_if_empty(new_statements)
+                return
+        logger.warning(
+            f'Unable to add imp req for component {component.title} control {new_imp_req.control_id} and source: {profile_title}'  # noqa E501
+        )

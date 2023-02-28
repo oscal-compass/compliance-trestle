@@ -8,14 +8,18 @@ The key modes of authoring are *-generate* and *-assemble*.  During *-generate* 
 
 A third mode of authoring is *-filter*, where parts of a document are removed.  This allows one large master document to be represented in simpler ways with, e.g. proprietary prose culled in form intended for consumption outside a company.
 
-<details><summary>Integration with git and CI/CD</summary>
+<details markdown>
+
+<summary>Integration with git and CI/CD</summary>
+
 The command line interface in Trestle makes a powerful combination with git and CI/CD environments (Continuous Integration, Continuous Delivery or Deployment) when the trestle commands are performed via github actions or equivalent.  This allows different classes of users based on 1) their access to the repository 2) the changes to documents they are allowed to commit, and 3) the changes they can make to actions that are triggered by a commit.  As an example, a command line option may limit the type of content added to a profile, and if disallowed changes are detected during commit - the commit will be rejected.  This, in combination with having all controls as individual markdown files organized by groups in directories, makes management and tracking of author edits robust and automatically controlled by the built-in features of the respository.
 
 For an example of actions triggered by a commit, a change to a control in a catalog could generate a pull request that is approved by someone with appropriate authority, and when it is later merged it triggers notification downstream to authors of profiles that import that catalog.
 
 </details>
 
-<details>
+<details markdown>
+
 <summary>The author commands</summary>
 
 The author commands are:
@@ -24,27 +28,30 @@ The author commands are:
 1. `profile-generate` takes a given Profile and converts the controls represented by its resolved profile catalog to individual controls in markdown format, with sections corresponding to the content that the Profile adds to the Catalog, along with both the current values of parameters in the resolved profile catalog - and the values that are being modified by the given profile's SetParameters.  The user may edit the content or add more, and `profile-assemble` then gathers the updated content and creates a new OSCAL Profile that includes those changes.
 1. `profile-resolve` is special as an authoring tool because it does not involve markdown and instead it simply creates a JSON resolved profile catalog from a specified JSON profile in the trestle directory.  There are options to specify whether or not parameters get replace in the control prose or not, along with any special brackets that might be desired to indicate the parameters embedded in the prose.
 1. `component-generate` takes a given ComponentDefinition file and represents all the controls in markdown in separate directories for each Component in the file.  This allows editing of the prose on a per-component basis.  `component-assemble` then assembles the markdown for all controls in all component directories into a new, or the same, ComponentDefinition file.
-1. `ssp-generate` takes a given Profile and its resolved profile catalog, and represents the individual controls as markdown files with sections that prompt for prose regarding the implementation response for items in the statement of the control.  `ssp-assemble` then gathers the response sections and creates an OSCAL System Security Plan comprising the resolved profile catalog and the implementation responses.
-1. `ssp-filter` takes a given ssp and filters its contents based on the controls included in a provided profile.
+1. `ssp-generate` takes a given Profile and its resolved profile catalog, and represents the individual controls as markdown files with sections that prompt for prose regarding the implementation response for items in the statement of the control.  `ssp-assemble` then gathers the response sections and creates an OSCAL System Security Plan comprising the resolved profile catalog and the implementation responses.  Both commands may also include a list of component definitions representing the components referred to in the ssp.  Rules, parameters and status associated with the implemented requirements are stored in the SetParameters and Properties of the components in the component definitions and represented in the markdown, allowing changes to be made to the parameter values and status.  These edits are then included in the assembled SSP.  Note that the rules themselves may not be edited and strictly correspond to what is in the component definition.
+1. `ssp-filter` takes a given ssp and filters its contents based on the controls included in a provided profile, or in a list of components to be included in the final ssp.
 
 In summary, the `catalog` tools allow conversion of a Catalog to markdown for editing - and back again to a Catalog.  The `profile` tools similarly convert a Profile's resolved profile catalog to markdown and allow conversion to a new Profile with modified additions that get applied in resolving the profile catalog.  `component` tools perform similarly for ComponentDefinitions.  Finally, the `ssp` tools allow the addition of implementation prose to the markdown of a system security plan, which is then assembled into a JSON SSP on a by-component basis.
 
-Note that version 1.x of trestle creates SSP's by adding prose directly to the SSP markdown on a per-component basis - but there is no connection with separate ComponentDefinition JSON files.  This will be changed in version 2 so that control responses can be added to the ComponentDefinition and then merged to create the SSP markdown.
+Note that the original ssp implementation in trestle created SSP's by adding prose directly to the SSP markdown on a per-component basis, and there was no connection with separate ComponentDefinition JSON files.  This is now changed so that control responses can be added to the ComponentDefinition and then merged to create the SSP markdown.  In addition, rules and status are captured in the component definition as properties that propogate via markdown into the assembled SSP.  The OSCAL schema doesn't include a form of implementation status for components in the component definition, which is why trestle embeds the status value in the properties.  Similarly, rules and rule parameter values are not currently part of the schema, so they are also embedded in properties.
 
 </details>
 
-<details>
+<details markdown>
+
 <summary>Some details of the author commands</summary>
 
-The markdown files for controls usually have a YAML header at the top containing metadata about the control.  Sometimes that information is read-only and intended as additional information useful during markdown editing, but in other cases the content may be edited and incorporated as new values for the control after `-assemble`.  In addition, most `-generate` commands allow specifying a separate YAML header file containing information either needed by the command, or intended to be incorporated into the header of each control markdown file.  When generating markdown a YAML header may be optionally provided, and if so, the option `--overwrite-header-values` will cause the values in the provided YAML header to overwrite the value in the markdown file's header for any items that are common.  Otherwise the provided YAML header will simply insert any values not already in the markdown header.  Similarly, when assembling to JSON, the `--set-parameters` option will cause any changes in the header to take effect and change values in the assembled JSON for the control.  The changes can including setting parameter and property values.  The `--set-parameters` option is available only for `catalog-assemble` and `profile-assemble`.
+The markdown files for controls usually have a YAML header at the top containing metadata about the control.  Sometimes that information is read-only and intended as additional information useful during markdown editing, but in other cases the content may be edited and incorporated as new values for the control after `-assemble`.  In addition, most `-generate` commands allow specifying a separate YAML header file containing information either needed by the command, or intended to be incorporated into the header of each control markdown file.  When generating markdown a YAML header may be optionally provided, and if so, the option `--overwrite-header-values` will cause the values in the provided YAML header to overwrite the value in the markdown file's header for any items that are common.  Otherwise the provided YAML header will simply insert any values not already in the markdown header. By default, Trestle will preserve the history of the changes in generated markdowns, however `--force-overwrite` option can be used to overwrite markdowns with content from JSON. Note that this option will completely delete all existing markdowns (in the given `output` folder) without saving any changes. To save the changes, run assemble first.
+Similarly, when assembling to JSON, the `--set-parameters` option will cause any changes in the header to take effect and change values in the assembled JSON for the control.  The changes can including setting parameter and property values.  The `--set-parameters` option is available only for `catalog-assemble` and `profile-assemble`.
 
 As described earlier, the authoring tools are designed to work well in a CI/CD environment where changes are made in a pipeline by people with different responsibilities and authority.  In this setting, changes to documents can trigger changes downstream, e.g. the editing of a control would cause an update in the catalog, which could then flow down to an updated SSP.  These changes can occur automatically via actions that restrict the potential changes to the generated documents.  Examples are the `--set-parameters` option on the `-assemble` tools, and both `--required-sections` and `allowed-sections` for `profile-assemble`.  If a document change triggers an assemble action, changes to parameters can only occur if the action has `--set-parameters` in the command.  Similarly, `profile-assemble` will fail if the sections do not meet the requirements specified in the command options.  Another feature of the `-assemble` tools is that they won't create a new OSCAL file if the output already exists and its content would not be changed.  This prevents undesired triggering of downstream actions when there is no actual change in content.
 
-For a complete standalone demonstration of the SSP generation process with trestle, please see the [Trestle SSP Demo](https://github.com/IBM/compliance-trestle-ssp-demo).  It shows the complete flow from OSCAL json files to a finished Word .docx file.  Note that the procedure will change in version 2.x to one based on ComponentDefintion.
+There is a standalone demonstration of the SSP generation process with trestle in the [Trestle SSP Demo](https://github.com/IBM/compliance-trestle-ssp-demo), but it currently represents the earlier version of ssp authoring with trestle - prior to the link with component definitions and rules.  Nonetheless it captures the flow from OSCAL json files to a finished Word .docx file.
 
 </details>
 
-<details>
+<details markdown>
+
 <summary>Background on underlying concepts</summary>
 
 In order to understand the specific operations handled by these commands, it is helpful to clarify some of the underlying OSCAL structures and how they can be edited in markdown form.  This tutorial should be viewed in the context of the extensive documentation provided by [OSCAL](https://pages.nist.gov/OSCAL).
@@ -77,8 +84,9 @@ NOTE: We use `json` format for specifying OSCAL files in this tutorial, but it i
 
 ## The author commands for markdown generation and assembly (to JSON)
 
-<details>
-<summary>`trestle author catalog-generate` and `trestle author catalog-assemble`</summary>
+<details markdown>
+
+<summary>trestle author catalog-generate and trestle author catalog-assemble</summary>
 
 `catalog-generate` takes an existing json catalog and writes it out as markdown files for each control in a user-specified directory.  That directory will contain subdirectories for each group in the catalog, and those directories may contain subdirectories for groups within groups.  But controls containing controls are always split out into a series of controls in the same directory - and each control markdown file corresponds to a single control.
 
@@ -86,23 +94,21 @@ We now look at the contents of a typical control markdown file.
 
 A Control may contain many parts, but only one of them is a Statement, which describes the function of the control.  The statement itself is broken down into separate items, each of which may contain parameter id's in "moustache" (`{{}}`) brackets.  Below is an example of a control as generated in markdown form by the `catalog-generate` command.
 
-<details>
+<details markdown>
+
 <summary>Control example</summary>
 
 ```markdown
 ---
-control-origination:
-  - Service Provider Corporate
-  - Service Provider System Specific
-responsible-roles:
-  - Customer
 x-trestle-set-params:
   ac-1_prm_1:
-    values: new value
+    values:
+      - new value
   ac-1_prm_2:
     values:
   ac-1_prm_3:
-    values: added param 3 value
+    values:
+      - added param 3 value
   ac-1_prm_4:
     values:
   ac-1_prm_5:
@@ -111,7 +117,8 @@ x-trestle-set-params:
     values:
   ac-1_prm_7:
     values:
-sort-id: ac-01
+x-trestle-global:
+  sort-id: ac-01
 ---
 
 # ac-1 - \[Access Control\] Policy and Procedures
@@ -161,6 +168,8 @@ Parameters in the header are shown with a subset of their full OSCAL attributes 
 
 Another important item in the header is the sort-id for the control.  This specifies how the controls and their parameters are ordered in any aggregated list operation.  If it is not specified for a control, the control's id is used for sorting.
 
+As with the other -generate tools, the `--force-overwrite` option will cause the destination markdown directory to be erased prior to generating the new markdown, so that any prior edits to the markdown will be erased.
+
 `catalog-assemble` is run with the command `catalog-assemble --markdown my_md --output my_new_catalog`.  This will read the markdown for each control and create a new catalog based on any edits to the markdown.  Note that you may optionally provide a `--name` option specifying an original json catalog into which the updated controls are inserted, and the resulting catalog can either replace the original one or output to a different json file.  New controls may be added but existing controls may not be removed and new groups cannot be added when you are updating an existing catalog.  The main benefit of updating an existing catalog is that the original metadata and other contents of the catalog json file will be retained.  Note that you cannot create new controls that contain controls, but if an original json catalog contains controls with child controls, you can edit and update all of them as individual markdown files.  You have the option to specify a new `--version` for the catalog, and an option to regenerate the uuid's in the catalog.  Finally, you have the option to use the parameters in the markdown header to update the values in the control.  Any parameters and their values present will be added to the control, and any not present will be removed.  The parameters themselves are still present but their values are removed.
 
 In a typical `generate-edit-assemble` cycle, the cycle would start with an original json file containing source content and metadata and use that to generate an initial markdown directory of controls.  After editing the controls they would be assembled into into a new json file with a different name.  But once that new file exists, it can be used as the source for the next generation and the original source document is no longer needed or referred to.  For the `catalog-` editing cycle it would go as:
@@ -181,26 +190,35 @@ Note that `catalog-assemble` can instantiate a catalog anew from a manually crea
 
 </details>
 
-<details>
-<summary>`trestle author profile-generate` and `trestle author profile-assemble`</summary>
+<details markdown>
+
+<summary>trestle author profile-generate and trestle author profile-assemble</summary>
 
 The background text above conveys how a profile pulls controls from catalogs and makes modifications to them, and the `trestle profile` tools let you change the way those modifications are made.  In addition to selecting controls and setting parameters, a profile may add new parts to a control that provide additional guidance specific to a certain use case.  `profile-generate` is run with the command, `trestle author profile-generate --name profile_name --output markdown_dir`.  It will load the specified profile name from the trestle workspace (it must have been imported into the trestle workspace prior) and create its corresponding resolved profile catalog - but *without* applying any of its `Adds` of additonal guidance content or `SetParameters`.  It will make all other modifications, but the `Adds` and `SetParameters` are kept separate, as shown below:
 
-<details>
+<details markdown>
+
 <summary>Example of control markdown after `profile-generate`</summary>
 
 ```markdown
 ---
-control-origination:
-  - Service Provider Corporate
-  - Service Provider System Specific
-responsible-roles:
-  - Customer
 x-trestle-set-params:
+  # You may set values for parameters in the assembled Profile by adding
+  #
+  # profile-values:
+  #   - value 1
+  #   - value 2
+  #
+  # in the section under a parameter name
+  # The values list refers to the values in the catalog, and the profile-values represent values
+  # in SetParameters of the Profile.
+  #
   ac-1_prm_1:
     label: label from edit
-    profile-values: all personnel
-    values: Param_1_value_in_catalog
+    profile-values:
+      - all personnel
+    values:
+      - Param_1_value_in_catalog
     display-name: Pretty ac-1 prm 1
   ac-1_prm_2:
     profile-values:
@@ -209,22 +227,28 @@ x-trestle-set-params:
     values:
     display-name: Pretty ac-1 prm 2
   ac-1_prm_3:
-    profile-values: new value
+    profile-values:
+      - new value
     values:
   ac-1_prm_4:
+    profile-values:
     values:
   ac-1_prm_5:
-    profile-values: all meetings
+    profile-values:
+      - all meetings
     values:
   ac-1_prm_6:
-    profile-values: monthly
+    profile-values:
+      - monthly
     values:
   ac-1_prm_7:
     values:
 x-trestle-global:
-  profile-title: Trestle test profile
-sort-id: ac-01
+  profile:
+    title: Trestle test profile
+  sort-id: ac-01
 x-trestle-sections:
+  guidance: Guidance
   implgdn: Implementation Guidance
   expevid: Expected Evidence
   my_guidance: My Guidance
@@ -250,9 +274,10 @@ x-trestle-add-props:
   - name: prop_with_ns
     value: prop with ns
     ns: https://my_new_namespace
-  - name: prop_added_to_statement_part_b
-    value: the prop value
-    smt-part: b.
+  - name: prop_with_no_ns
+    value: prop with no ns
+    ns: https://my_added_namespace
+---
 
 ---
 
@@ -345,7 +370,7 @@ In a cyclic operation of `profile generate-edit-assemble` you would simply be re
 
 It's important to note that these operations only apply to the `Adds` and `SetParameters` in the profile itself - and nothing upstream of the profile is affected.  Nor is anything else in the original profile lost or altered.  In the example above, the section, `## Control Implementation Guidance` was added by editing the generated control - and after `profile-assemble` it ended up as new guidance in the assembled profile.
 
-As in the other commands, `profile-generate` allows specification of a yaml header with `--yaml`, and support of the `--overwrite-header-values` flag.   Also, during assembly with `profile-assemble` the `--set-parameters` flag will set parameters in the profile for the control based on the header in the control markdown file.  But unlike with `catalog-assemble`, only those parameter values marked `profile-values` will be part of the assembled profile's SetParams when you assemble with the `--set-parameters` flag.  For each parameter, the "incoming" values for the parameters prior to any changes made by the profile are listed as `values:` and any pending changes made by the profile are listed as `profile-values:`.  If you don't use the `--set-parameters` flag then all the original SetParameters in the profile will be retained in the new, assembled profile.  But if you do set that flag, then only the header parameters with `profile-values:` will be added as SetParameters.  This lets you see all the incoming values for parameters along with any changes made by the current profile, and you can modify, add, or remove parameter settings as desired in the new profile.
+As in the other commands, `profile-generate` allows specification of a yaml header with `--yaml-header`, support of the `--overwrite-header-values` flag and `--force-overwrite`.   Also, during assembly with `profile-assemble` the `--set-parameters` flag will set parameters in the profile for the control based on the header in the control markdown file.  But unlike with `catalog-assemble`, only those parameter values marked `profile-values` will be part of the assembled profile's SetParams when you assemble with the `--set-parameters` flag.  For each parameter, the "incoming" values for the parameters prior to any changes made by the profile are listed as `values:` and any pending changes made by the profile are listed as `profile-values:`.  If you don't use the `--set-parameters` flag then all the original SetParameters in the profile will be retained in the new, assembled profile.  But if you do set that flag, then only the header parameters with `profile-values:` will be added as SetParameters.  This lets you see all the incoming values for parameters along with any changes made by the current profile, and you can modify, add, or remove parameter settings as desired in the new profile.
 
 The `x-trestle-add-props` key of the yaml header allows addition of properties to the SetParameters of the profile, comprising `name`, `value`, and optionally a namespace `ns` value.  The properties may be added at the control level, or attached to a top level statment part by adding a value, `smt-part` with value `a.`, `b.` or any other label for one of the top level statement parts.
 
@@ -353,10 +378,11 @@ For convenience, the `x-trestle-global` key of the yaml header contains the `pro
 
 Keep in mind that the header in the `profile-` tools corresponds to the `SetParameters` in the profile - and not simply the `Parameters` in the control.  For convenience the current incoming values of the control parameters, as set by any upstream profiles, are shown as `values` - but anything else associated with a parameter, such as `profile-values`, `label`, `choice` will be added to the profile's `SetParameters` during `profile-assemble` (if you use the `--set-parameters` flag.)  So entries should be set there only if you want the profile to enforce those entries as `SetParameters`.
 
-As with `catalog-assemble` described above, a new file is written out only if there are changes to the model relative to an existing output file.
+As with `catalog-assemble` described above, a new file is written out only if there are changes to the model relative to an existing output file, and during generate, `--force-overwrite` will first erase any existing markdown so that fresh markdown is created.
 
-<details>
-<summary>Use of Sections in `profile-generate` and `profile-assemble`</summary>
+<details markdown>
+
+<summary>Use of Sections in profile-generate and profile-assemble</summary>
 
 The addition of guidance sections in the `profile` tools requires special handling because the corresponding parts have both a name and a title, where the name is a short form used as an id in the json schema, while the title is the readable form intended for final presentation.  An example is `ImplGuidance` vs. `Implementation Guidance`.  The trestle authoring tools strive to make the markdown as readable as possible, therefore the headings for sections use the title - which means somehow there is a need for a mapping from the short name to the long title for each section.  This mapping is provided in several ways:  During `profile-generate` you may provide a `--sections "ImplGuidance:Implementation Guidance,ExpEvidence:Expected Evidence"` option that would provide title values for `ImplGuidance` and `ExpEvidence`.  This dictionary mapping is then inserted into the yaml header of each control's markdown.  You may also add this mapping directly to a yaml file that is passed in during `profile-generate`, which is preferable if the list of sections is long.  The sections should be entered in the yaml header in a section titled, `x-trestle-sections`.
 
@@ -370,7 +396,8 @@ Note that these section options are all optional and there isn't a need to provi
 
 </details>
 
-<details>
+<details markdown>
+
 <summary>Markdown Specifications for Editable Content.</summary>
 
 For the ease of editing markdown in Github, Trestle's markdown parser follows [Github Flavoured Markdown (GFM) specifications](https://github.github.com/gfm/) and therefore only certain Control headers will be parsed and added to the control.
@@ -414,221 +441,153 @@ In all cases above Trestle markdown parser will skip such headers and it will be
 </details>
 </details>
 
-<details>
-<summary>`trestle author ssp-generate` and `trestle author ssp-assemble`</summary>
+<details markdown>
 
-The `ssp-generate` sub-command creates a partial SSP (System Security Plan) from a profile and optional yaml header file.  `ssp-assemble` (described below) can later assemble the markdown files into a single json SSP file.  The profile contains a list of imports that are either a direct reference to a catalog, or an indirect reference via a profile.
-There may be multiple imports of either type, and referenced profiles may themselves import either catalogs or profiles.  Each profile involved may specify
-the controls that should be imported, along with any modifications to those controls.  This command internally creates a resolved profile catalog and generates a
-directory containing a set of markdown files, one for each control in the resolved catalog.  Each markdown file has the optional yaml header embedded
-at the start of the file.
+<summary>trestle author profile-resolve</summary>
 
-Example usage for creation of the markdown:
+The `trestle author profile-resolve` command is different from the `generate/assemble` commands because it doesn't involve markdown and instead
+it takes an input profile and creates the corresponding resolved profile catalog in `JSON` format.  In addition, it has several options for how
+parameters are represented in prose of the controls, and whether or not those values are substituted.
 
-`trestle author ssp-generate --profile my_prof --yaml /my_yaml_dir/header.yaml --sections 'ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence' --output my_ssp`
+As an example, the prose in the statement for control `AC-1` is:
 
-In this example the profile has previously been imported into the trestle directory.  The profile itself must be in the trestle directory, but the imported catalogs and profiles may be URI's with href's as described below.
+`Develops, documents, and disseminates to {{ insert: param, ac-1_prm_1 }}:`
 
-The `-s --sections` argument specifies the name of Parts in the control for which the corresponding prose should be included in the control's markdown file.  The concept is the same as above with `profile` tools in providing a mapping between all possible short names for guidance and their corresponding long versions that should appear in the markdown headings.  In addition, `ssp-generate` has an `--allowed-sections` option that specifies a list of section short names that will be included in the markdown.  This provides a means for filtering the guidance that appears in the markdown for the controls.  Note that unlike in `profile-assemble` there is no error if sections are present in the control that are not among the "allowed" sections.  For `ssp-generate` the allowed sections simply provide a means for filtering the guidance.  If you do not specify `--allowed-sections` then all sections present in the control will appear in the markdown.
+The parameter `ac-1_prm_1` has a label: `organization-defined personnel or roles` and it may or may not have a value assigned
+by the profile being resolved.  Suppose it has been assigned the value, `my prm 1 value`.  In that case we can either leave the prose
+as-is (with the parameter in "moustache" form) in the resolved catalog, or we can substitute the value, or we can substitute the descriptive label.  trestle
+supports all these options, along with an optional prefix to specify whether a value has been assigned or not - typically using the name of the organization responsible.
 
-The generated markdown output will be placed in the trestle subdirectory `my_ssp` with a subdirectory
-for each control group.
+The `--show-value -sv` option will cause the value for the parameter to be substituted in the prose if it is available - otherwise the list of selection options if
+it has any, or simply the label prose if it has no options.
 
-If the imported catalogs or profiles are not at the URI pointed to by the Import href of the profile then the href should be changed using the `trestle href` command.
+The `--value-assigned-prefix -vap` option adds a prefix to the value if the value is being assigned by the profile, and the `--value-not-assigned-prefix -vnap` will assign a prefix
+to parameters that do not have values assigned, along with the descriptive parameter label.
 
-Similar to `catalog-generate`, the `--yaml` and `--overwrite-header-values` flag may be specified to let the input yaml header overwrite values already specified in the header of the control markdown file.
+Finally, the `--bracket-format -bf` option specifies how the parameter representation will be wrapped in braces.  The specification is done by placing characters around a single `.`
+symbol representing the parameter string, e.g. `[.]` will place square brackets around the parameter.
 
-The resulting files look like this:
+Note that these options that specify how the parameter is represented all require `--show-value` to be True, otherwise the raw prose with the moustache is produced.
 
-<details>
-<summary>Example of control markdown after `ssp-generate`</summary>
+As an example, if we use options
+
+`trestle author profile-resolve -n my_profile -o my_resolved_catalog -sv -bf [.] -vap "ACME Assignment:" -vnap "Assignment:"`
+
+the above prose would become:
+
+`Develops, documents, and disseminates to [ACME Assignment: my prm 1 value]:`
+
+(Note that you need appropriate use of quotation marks in the command for any strings that include spaces or special characters.)
+
+And if the parameter did not have a value assigned the result would be:
+
+`Develops, documents, and disseminates to [Assignment: organization-defined personell or roles]:`
+
+Finally, if the parameter already had a value specified in the catalog, the value would be shown by itself in braces:
+
+`Develops, documents, and disseminates to [value in catalog]:`
+
+Similar substitution happens when a parameter has choices that themselves reference a parameter, such as:
 
 ```markdown
----
-control-origination:
-  - Service Provider Corporate
-  - Service Provider System Specific
-responsible-roles:
-  - Customer
-x-trestle-set-params:
-  ac-1_prm_1:
-    values: Param_1_value_in_catalog
-  ac-1_prm_2:
-    values:
-  ac-1_prm_3:
-    values:
-  ac-1_prm_4:
-    values:
-  ac-1_prm_5:
-    values:
-  ac-1_prm_6:
-    values:
-  ac-1_prm_7:
-    values:
-sort-id: ac-01
-x-trestle-sections:
-  ImplGuidance: Implementation Guidance
-  ExpectedEvidence: Expected Evidence
-  guidance: Guidance
----
-
-# ac-1 - \[Access Control\] Policy and Procedures
-
-## Control Statement
-
-- \[a.\] Develop, document, and disseminate to Param_1_value_in_catalog:
-
-  - \[1.\] Organization-level; Mission/business process-level; System-level access control policy that:
-
-    - \[(a)\] Addresses purpose, scope, roles, responsibilities, management commitment, coordination among organizational entities, and compliance; and
-    - \[(b)\] Is consistent with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines; and
-
-  - \[2.\] Procedures to facilitate the implementation of the access control policy and the associated access controls;
-
-- \[b.\] Designate an organization-defined official to manage the development, documentation, and dissemination of the access control policy and procedures; and
-
-- \[c.\] Review and update the current access control:
-
-  - \[1.\] Policy organization-defined frequency and following organization-defined events; and
-  - \[2.\] Procedures organization-defined frequency and following organization-defined events.
-
-## Control Guidance
-
-Access control policy and procedures address the controls in the AC family that are implemented within systems and organizations. The risk management strategy is an important factor in establishing such policies and procedures. Policies and procedures contribute to security and privacy assurance. Therefore, it is important that security and privacy programs collaborate on the development of access control policy and procedures. Security and privacy program policies and procedures at the organization level are preferable, in general, and may obviate the need for mission- or system-specific policies and procedures. The policy can be included as part of the general security and privacy policy or be represented by multiple policies reflecting the complex nature of organizations. Procedures can be established for security and privacy programs, for mission or business processes, and for systems, if needed. Procedures describe how the policies or controls are implemented and can be directed at the individual or role that is the object of the procedure. Procedures can be documented in system security and privacy plans or in one or more separate documents. Events that may precipitate an update to access control policy and procedures include assessment or audit findings, security incidents or breaches, or changes in laws, executive orders, directives, regulations, policies, standards, and guidelines. Simply restating controls does not constitute an organizational policy or procedure.
-
-______________________________________________________________________
-
-## What is the solution and how is it implemented?
-
-Top level response prose for the overall control and component This System
-
-### Implementation Status: planned
-
-______________________________________________________________________
-
-## Implementation a.
-
-Implementation response prose for component This System and corresponding status
-
-#### Implementation Status: planned
-
-______________________________________________________________________
-
-## Implementation b.
-
-Implementation response prose for component This System and corresponding status
-
-#### Implementation Status: planned
-
-### ACME Component
-
-Implementation response prose for ACME component and corresponding status
-
-#### Implementation Status: planned
-
-______________________________________________________________________
-
-## Implementation c.
-
-Implementation response prose for component This System and corresponding status
-
-#### Implementation Status: planned
-
-______________________________________________________________________
-
+"id": "ac-4.4_prm_1",
+"select": {
+  "how-many": "one-or-more",
+  "choice": [
+    "decrypting the information",
+    "blocking the flow of the encrypted information",
+    "terminating communications sessions attempting to pass encrypted information",
+    " {{ insert: param, ac-4.4_prm_2 }} "
+  ]
 ```
 
-</details>
+If the statement prose for AC-4.4 is:
 
-Each label in the ssp is wrapped in `\[ \]` to indicate it comes directly from the label in the control and is not generated by the markdown viewer.  Keep in mind that the actual label is the same but with the `\[ \]` removed.
+`The information system prevents encrypted information from bypassing content-checking mechanisms by {{ insert: param, ac-4.4_prm_1 }}.`
 
-Note that for each statement in the control description there is a corresponding response section in which to provide a detailed response for later inclusion in the final ssp as the control implementation.
+and if a value `pulling the plug` has been assigned to ac-4.4_prm_2, the prose will be:
 
-Also note that the optional final sections are provided, and labeled using the title for the corresponding section.
+`The information system prevents encrypted information from bypassing content-checking mechanisms by [Selection (one or more): decrypting the information, blocking the flow of the encrypted information, terminating the communications sessions attempting to pass encrypted information, [ACME Assignment: pulling the plug]].`
 
-In addition, this is the only control markdown where the moustache (`{{}}`) items have been replaced by the corresponding parameter values in the final resolved profile catalog, so that the prose corresponds to the final intended control and its implementation.
+There is a separate option from `--show-values` that will instead show only the descriptive labels for the parameters - again with an optional prefix.  The options are `--show-labels -sl`
+and `--label-prefix -lp`.  Note that there is no need for "assigned" or "not assigned" because no values are being shown - just the labels.
 
-The markdown can have guidance per-component in the control, as shown by the line, `### ACME Component`.  Any prose directly under a `##` implementation section will apply to the overall system component, but sections in a sub-header of the form `###` will only apply to that particular component.
+If we resolve the profile with options `--show-labels --label-prefix "Label:" --bracket-format [.]` the resulting prose from earlier would be:
 
-After generating the markdown for the resolved profile catalog you may then edit the files and provide text in the sections with `Add control implementation...` in them.  But do not remove the horizontal rule
-lines or modify/remove the lines with `### ` in them, corresponding to system components.
+`Develops, documents, and disseminates to [Label: organization-defined personnel or roles]:`
 
-If you edit the control markdown files you may run `ssp-generate` again and your edits will not be overwritten.  When writing out the markdown for a control, any existing markdown for that control will be read and the response text for each part will be re-inserted into the new markdown file.  If the new markdown has added parts the original responses will be placed correctly in the new file, but if any part is removed from the source control json file then any corresponding prose will be lost after the next `ssp-generate`.
+and any value present for the parameter would be ignored.
 
-## `trestle author ssp-assemble`
-
-After manually edting the markdown and providing the responses for the control implementation requirements, the markdown can be assembled into a single json SSP file with:
-
-`trestle author ssp-assemble --markdown my_ssp --output my_json_ssp`
-
-This will assemble the markdown files in the my_ssp directory and create a json SSP with name my_json_ssp in the system-security-plans directory.
-
-As indicated for `ssp-generate`, please do not alter any of the horizontal rule lines or lines indicating the part or control id, e.g. `### ACME Component`.  You may run `ssp-generate` and `ssp-assemble` repeatedly for the same markdown directory, allowing a continuous editing and updating cycle.
-
-As with all the `assemble` tools, you may optionally specify a `--name` for a corresponding json file into which the updates will be inserted, thereby preserving metadata and other aspects of the model.  The result can overwrite the provided model or get directed to a new model.  And the version may be updated and the uuid's regenerated.  As with the other `-assemble` tools, if an output file already exists, a new one will only be written if there are changes to the model relative to the existing file.  See `catalog-assemble` for more details.
+Similar options apply to the `jinja` authoring commands.
 
 </details>
 
-<details>
-<summary>`trestle author ssp-filter`</summary>
+<details markdown>
 
-Once you have an SSP in the trestle directory you can filter its contents with a profile by using the command `trestle author ssp-filter`.  The SSP is assumed to contain a superset of the controls needed by the profile, and the filter operation will generate a new SSP with only those controls needed by the profile.  The filter command is invoked as:
-
-`trestle author ssp-filter --name my_ssp --profile my_profile --output my_culled_ssp`
-
-Both the SSP and profile must be present in the trestle directory.  This command will generate a new SSP in the directory.  If the profile makes reference to a control not in the SSP then the routine will fail with an error message.
-
-</details>
-
-<details>
-<summary>`trestle author component-generate`</summary>
+<summary>trestle author component-generate</summary>
 
 The `trestle author component-generate` command takes a JSON ComponentDefinition file and creates markdown for its controls in separate directories for each of the DefinedComponents in the file.  This allows specifying the implementation response and status for each component separately in separate markdown files for a control.  In addition, the markdown captures Rules in the control that specify descriptions and parameter values that apply to the expected responses.
 
 The command has few options compared to other author commands and only requires specifying `--name` and `--output` for the ComponentDefinition and output markdown directory, respectively.
 
-Here is an example of the generated markdown for the component `OSCO` in the ComponentDefinition file.  Note that this file will be under the subdirectory `OSCO` of the specified output directory - and any other DefinedComponents will have corresponding subdirectories level with the `OSCO` one.
+Here is an example of the generated markdown for the component `OSCO` in the ComponentDefinition file.  Note that this file will be under the subdirectory `OSCO/source_name` of the specified output directory - and any other DefinedComponents will have corresponding subdirectories level with the `OSCO` one.  Here `source_name` refers to the name of the profile or catalog in the ComponentDefinition that is the source for this control.  The control markdown files are written into directories split by both component name and source name.  If the source refers to a general uri and not a named profile or catalog in the trestle directory, then names such as `source_001` and `source_002` are assigned.  The actual source title can be found in the yaml header of any of the control markdown files.
 
-<details>
-<summary>Example of control markdown after `component-generate`</summary>
+<details markdown>
+
+<summary>Example of control markdown after component-generate</summary>
 
 ```markdown
 ---
 x-trestle-comp-def-rules:
-  - name: XCCDF
-    description: The XCCDF must be compliant
+  comp_aa:
+    - name: top_shared_rule_1
+      description: top shared rule 1 in aa
+    - name: comp_rule_aa_1
+      description: comp rule aa 1
 x-trestle-rules-params:
-  - name: foo_length
-    description: minimum_foo_length
-    rule-id: XCCDF
-    options: '["6", "9"]'
-x-trestle-comp-def-param-vals:
-  quantity_available: '500'
-  foo_length: '6'
-x-trestle-global:
-  profile-title: NIST Special Publication 800-53 Revision 5 MODERATE IMPACT BASELINE
-x-trestle-set-params:
+  comp_aa:
+    - name: shared_param_1
+      description: shared param 1 in aa
+      options: '["shared_param_1_aa_opt_1", "shared_param_1_aa_opt_2"]'
+      rule-id: top_shared_rule_1
+x-trestle-comp-def-rules-param-vals:
+  # You may set new values for rule parameters by adding
+  #
+  # component-values:
+  #   - value 1
+  #   - value 2
+  #
+  # below a section of values:
+  # The values list refers to the values as set by the components, and the component-values are the new values
+  # to be placed in SetParameters of the component definition.
+  #
+  comp_aa:
+    - name: shared_param_1
+      values:
+        - shared_param_1_aa_opt_1
+x-trestle-param-values:
   ac-1_prm_1:
-    values: Param_1_value_in_catalog
+    - prof_aa val 1
   ac-1_prm_2:
-    values:
   ac-1_prm_3:
-    values:
   ac-1_prm_4:
-    values:
   ac-1_prm_5:
-    values:
   ac-1_prm_6:
-    values:
   ac-1_prm_7:
-    values:
+x-trestle-global:
+  profile:
+    title: comp prof aa
+    href: trestle://profiles/comp_prof_aa/profile.json
+  sort-id: ac-01
 ---
 
 # ac-1 - \[Access Control\] Policy and Procedures
 
 ## Control Statement
 
-- \[a.\] Develop, document, and disseminate to Param_1_value_in_catalog:
+The organization:
+
+- \[a.\] Develop, document, and disseminate to prof_aa val 1:
 
   - \[1.\] Organization-level; Mission/business process-level; System-level access control policy that:
 
@@ -656,39 +615,25 @@ ______________________________________________________________________
 
 <!-- Note that the list of rules under ### Rules: is read-only and changes will not be captured after assembly to JSON -->
 
-Ensure that the API server pod specification file permissions are set to 567 or more restrictive
+imp req prose for ac-1 from comp aa
 
 ### Rules:
 
-  - XCCDF
+  - top_shared_rule_1
 
 ### Implementation Status: implemented
 
-### Implementation Status Remarks: ac1 remark
-
 ______________________________________________________________________
 
-## Implementation a.
+## Implementation for part a.
 
-Implement as needed for OSCO
+statement prose for part a. from comp aa
+
+### Rules:
+
+  - comp_rule_aa_1
 
 ### Implementation Status: partial
-
-______________________________________________________________________
-
-## Implementation b.
-
-Add control implementation description here for item ac-1_smt.b
-
-### Implementation Status: planned
-
-______________________________________________________________________
-
-## Implementation c.
-
-Add control implementation description here for item ac-1_smt.c
-
-### Implementation Status: planned
 
 ______________________________________________________________________
 
@@ -698,90 +643,384 @@ ______________________________________________________________________
 
 There is no direct way to specify rules in the ComponentDefinition, so they are specified via properties as shown here:
 
-<details>
-<summary>Representation of rules in the `props` of a `ComponentDefinition`</summary>
+<details markdown>
+
+<summary>Representation of rules in the props of a ComponentDefinition</summary>
+
 ```json
 [
   {
     "name": "Rule_Id",
-    "ns": "http://foo_ns",
-    "value": "XCCDF",
+    "ns": "http://comp_ns",
+    "value": "comp_rule_aa_1",
     "class": "Rule_Id",
-    "remarks": "rule_1"
+    "remarks": "rule_2"
   },
   {
     "name": "Rule_Description",
-    "ns": "http://foo_ns",
-    "value": "The XCCDF must be compliant",
-    "remarks": "rule_1"
+    "ns": "http://comp_ns",
+    "value": "comp rule aa 1",
+    "remarks": "rule_2"
+  },
+  {
+    "name": "Rule_Id",
+    "ns": "http://comp_ns",
+    "value": "comp_rule_aa_2",
+    "class": "Rule_Id",
+    "remarks": "rule_3"
+  },
+  {
+    "name": "Rule_Description",
+    "ns": "http://comp_ns",
+    "value": "comp rule aa 2",
+    "class": "Rule_Description",
+    "remarks": "rule_3"
   },
   {
     "name": "Parameter_Id",
-    "ns": "http://foo_ns",
-    "value": "foo_length",
+    "ns": "http://comp_ns",
+    "value": "shared_param_1",
     "class": "Parameter_Id",
     "remarks": "rule_1"
   },
   {
     "name": "Parameter_Description",
-    "ns": "http://foo_ns",
-    "value": "minimum_foo_length",
+    "ns": "http://comp_ns",
+    "value": "shared param 1 in aa",
     "class": "Parameter_Description",
     "remarks": "rule_1"
   },
   {
     "name": "Parameter_Value_Alternatives",
-    "ns": "http://foo_ns",
-    "value": "[\"6\", \"9\"]",
+    "ns": "http://comp_ns",
+    "value": "[\"shared_param_1_aa_opt_1\", \"shared_param_1_aa_opt_2\"]",
     "class": "Parameter_Value_Alternatives",
     "remarks": "rule_1"
   }
+],
+"set-parameters": [
+  {
+    "param-id": "shared_param_1",
+    "values": [
+      "shared_param_1_aa_opt_1"
+    ],
+    "remarks": "set shared param aa 1"
+  }
 ]
 ```
+
 </details>
 
-In this scheme the rules have a `Rule_Id` (`XCCDF` in this example) and an associated tag (`rule_1`) in the `remarks` section that binds the name to the description: `Rule_Description`=`The XCCDF must be compliant`.  In addition, rules may be associated with parameters specified here with `Parameter_id`=`foo_length`, `Parameter_Description`=`minimum_foo_length`, and `Parameter_Value_Alternatives`=`[\"6\", \"9\"]`.  `Parameter_Value_Alternatives` corresponds to possible Choices for the parameter value.
+In this scheme the rules have a `Rule_Id` (e.g. `comp_rule_aa_1` in this example) and an associated tag (`rule_2`) in the `remarks` section that binds the name to the description: `Rule_Description`=`comp rule aa 1`.  In addition, rules may be associated with parameters specified here with `Parameter_id`=`shared_param_1`, `Parameter_Description`=`shared param 1 in aa`, and `Parameter_Value_Alternatives`=`[\"shared_param_1_aa_opt_1\", \"shared_param_1_aa_opt_2\"]`.  `Parameter_Value_Alternatives` corresponds to possible Choices for the parameter value.
+
+Also shown in this JSON excerpt is a normal set-parameter used to set the value of a parameter associated with a rule id.  Thus the setting of the parameter follows the normal OSCAL schema for setting a parameter value, while the specification of the parameter and its options is specified via linked properties.
 
 The markdown header lists all the rules that apply to this control, along with their descriptions, and for each implementation response, the rules that apply to it are shown.  The association of an ImplementedRequirement with a rule is again done with properties as shown here:
 
-<details>
-<summary>Linking of `ImplementedRequirement` to a rule</summary>
+<details markdown>
+
+<summary>Linking of ImplementedRequirement to a rule</summary>
+
 ```json
 {
   "implemented-requirements": [
     {
-      "uuid": "ca5ea4c5-ba51-4b1d-932a-5606891b7486",
+      "uuid": "ca5ea4c5-ba51-4b1d-932a-5606891b7500",
       "control-id": "ac-1",
-      "description": "Ensure that the API server pod specification file permissions are set to 644 or more restrictive",
+      "description": "imp req prose for ac-1 from comp aa",
       "props": [
         {
           "name": "Rule_Id",
-          "value": "XCCDF"
+          "value": "top_shared_rule_1"
         },
         {
           "name": "implementation-status",
-          "value": "implemented",
-          "remarks": "ac1 remark"
+          "value": "implemented"
         }
       ]
     }
   ]
 }
 ```
+
 </details>
 
 The values for rule parameters are specified using the normal `SetParameter` mechanism in the ControlImplementation, but it's important to note that there are two different types of `SetParameter`: Those that apply to the normal parameters of the control, and those that apply strictly to the rules.
 
+Note that markdown for a control is only created if there are rules associated with the control, and within the markdown the only parts written out that
+prompt for responses are parts that have rules assigned.  Thus the output markdown directory may be highly pruned of both controls and groups of controls if only some controls have rules associated.
+
+In addition, the rules should be regarded as read-only from the editing perspective, and you cannot change the rules associated with a control or its parts.  But you may edit the rule parameter values as described in the comments of the markdown file under
+`x-trestle-comp-def-rules-param-vals`.  You may also edit the prose and implementation status associated with a statement part at the bottom of the markdown file.
+
 `trestle author component-assemble`
 
-The `component-assemble` command will assemble the markdown into a ComponentDefinition file containing all the DefinedComponents in the markdown, and as usual it can either overwrite the original JSON file or create a new one.  Edits made to the prose, status and values in the markdown and header will be captured in the assembled file, but the list of rules attached to each ImplementedRequirement may is *readonly* and new rule associations cannot be made via markdown.
-
-As mentioned above, trestle version 1.x allows generation and assembly of markdown for ComponentDefinitions, but it will not be hooked in to ssp authoring until version 2.x, expected shortly.
+The `component-assemble` command will assemble the markdown into a ComponentDefinition file containing all the DefinedComponents in the markdown, and as usual it can either overwrite the original JSON file or create a new one.  Edits made to the prose, status and rule parameter values in the markdown and header will be captured in the assembled file, but the list of rules attached with each ImplementedRequirement is *readonly* and new rule associations cannot be made via markdown.
 
 </details>
 
-<details>
-<summary>Summary of options used by the `catalog`, `profile`, `component` and `ssp` authoring tools.</summary>
+<details markdown>
+
+<summary>trestle author ssp-generate and trestle author ssp-assemble</summary>
+
+The `ssp-generate` command creates markdown for an SSP (System Security Plan) from a profile, optional component definitions, and optional yaml header file.  `ssp-assemble` (described below) can then assemble the markdown files into a single json SSP file.  The profile contains a list of imports that are either a direct reference to a catalog, or an indirect reference via a profile.
+There may be multiple imports of either type, and referenced profiles may themselves import either catalogs or profiles.  Each profile involved may specify
+the controls that should be imported, along with any modifications to those controls.  This command internally creates a resolved profile catalog and generates a
+directory containing a set of markdown files, one for each control in the resolved catalog.  Each markdown file has the optional yaml header embedded
+at the start of the file.
+
+The component definitions specify the components of the SSP, along with metadata associated with rules and status for the implemented requirements.  The rules, rule parameters, and status values are encoded by properties within the components as described above for `component-generate`.
+
+Example usage for creation of the markdown:
+
+`trestle author ssp-generate --profile my_prof --compdefs "compdef_a,compdef_b" --yaml /my_yaml_dir/header.yaml --output my_ssp`
+
+In this example the profile and component definitions have previously been imported into the trestle directory.  The profile itself must be in the trestle directory, but the imported catalogs and profiles may be URI's with href's as described below.
+
+The generated markdown output will be placed in the trestle subdirectory `my_ssp` with a subdirectory
+for each control group.
+
+If the imported catalogs or profiles are not at the URI pointed to by the Import href of the profile then the href should be changed using the `trestle href` command.
+
+Similar to `catalog-generate`, the `--yaml` and `--overwrite-header-values` flag may be specified to let the input yaml header overwrite values already specified in the header of the control markdown file. Also, the `--force-overwrite` option can be used to overwrite markdowns with content from JSON.
+
+The resulting files look like this:
+
+<details markdown>
+
+<summary>Example of control markdown after ssp-generate</summary>
+
+```markdown
+---
+x-trestle-comp-def-rules:
+  comp_aa:
+    - name: top_shared_rule_1
+      description: top shared rule 1 in aa
+    - name: comp_rule_aa_1
+      description: comp rule aa 1
+  comp_ab:
+    - name: top_shared_rule_1
+      description: top shared rule 1 in ab
+    - name: comp_rule_ab_1
+      description: comp rule ab 1
+  comp_ba:
+    - name: top_shared_rule_1
+      description: top shared rule 1 in ba
+  comp_bb:
+    - name: top_shared_rule_1
+      description: top shared rule 1 in bb
+x-trestle-rules-params:
+  comp_aa:
+    - name: shared_param_1
+      description: shared param 1 in aa
+      options: '["shared_param_1_aa_opt_1", "shared_param_1_aa_opt_2"]'
+      rule-id: top_shared_rule_1
+  comp_ab:
+    - name: shared_param_1
+      description: shared param 1 in ab
+      options: '["shared_param_1_ab_opt_1", "shared_param_1_ab_opt_2"]'
+      rule-id: top_shared_rule_1
+  comp_ba:
+    - name: shared_param_1
+      description: shared param 1 in ba
+      options: '["shared_param_1_ba_opt_1", "shared_param_1_ba_opt_2"]'
+      rule-id: top_shared_rule_1
+  comp_bb:
+    - name: shared_param_1
+      description: shared param 1 in bb
+      options: '["shared_param_1_bb_opt_1", "shared_param_1_bb_opt_2"]'
+      rule-id: top_shared_rule_1
+x-trestle-comp-def-rules-param-vals:
+  # You may set new values for rule parameters by adding
+  #
+  # ssp-values:
+  #   - value 1
+  #   - value 2
+  #
+  # below a section of values:
+  # The values list refers to the values as set by the components, and the ssp-values are the new values
+  # to be placed in SetParameters of the SSP.
+  #
+  comp_aa:
+    - name: shared_param_1
+      values:
+        - shared_param_1_aa_opt_1
+      ssp-values:
+        - shared_param_1_aa_opt_2
+  comp_ab:
+    - name: shared_param_1
+      values:
+        - shared_param_1_ab_opt_2
+x-trestle-set-params:
+  # You may set values for parameters in the assembled SSP by adding
+  #
+  # ssp-values:
+  #   - value 1
+  #   - value 2
+  #
+  # below a section of values:
+  # The values list refers to the values in the resolved profile catalog, and the ssp-values represent new values
+  # to be placed in SetParameters of the SSP.
+  #
+  ac-1_prm_1:
+    values:
+      - comp_prof val 1
+    display-name: AC-1 (a) (1)
+  ac-1_prm_2:
+    values:
+  ac-1_prm_3:
+    values:
+  ac-1_prm_4:
+    values:
+  ac-1_prm_5:
+    values:
+  ac-1_prm_6:
+    values:
+  ac-1_prm_7:
+    values:
+x-trestle-global:
+  profile:
+    title: comp prof aa
+    href: trestle://profiles/comp_prof/profile.json
+  sort-id: ac-01
+---
+
+# ac-1 - \[Access Control\] Policy and Procedures
+
+## Control Statement
+
+The organization:
+
+- \[a.\] Develop, document, and disseminate to [comp_prof val 1]:
+
+  - \[1.\] [Organization-level; Mission/business process-level; System-level] access control policy that:
+
+    - \[(a)\] Addresses purpose, scope, roles, responsibilities, management commitment, coordination among organizational entities, and compliance; and
+    - \[(b)\] Is consistent with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines; and
+
+  - \[2.\] Procedures to facilitate the implementation of the access control policy and the associated access controls;
+
+- \[b.\] Designate an [organization-defined official] to manage the development, documentation, and dissemination of the access control policy and procedures; and
+
+- \[c.\] Review and update the current access control:
+
+  - \[1.\] Policy [organization-defined frequency] and following [organization-defined events]; and
+  - \[2.\] Procedures [organization-defined frequency] and following [organization-defined events].
+
+## Control guidance
+
+Access control policy and procedures address the controls in the AC family that are implemented within systems and organizations. The risk management strategy is an important factor in establishing such policies and procedures. Policies and procedures contribute to security and privacy assurance. Therefore, it is important that security and privacy programs collaborate on the development of access control policy and procedures. Security and privacy program policies and procedures at the organization level are preferable, in general, and may obviate the need for mission- or system-specific policies and procedures. The policy can be included as part of the general security and privacy policy or be represented by multiple policies reflecting the complex nature of organizations. Procedures can be established for security and privacy programs, for mission or business processes, and for systems, if needed. Procedures describe how the policies or controls are implemented and can be directed at the individual or role that is the object of the procedure. Procedures can be documented in system security and privacy plans or in one or more separate documents. Events that may precipitate an update to access control policy and procedures include assessment or audit findings, security incidents or breaches, or changes in laws, executive orders, directives, regulations, policies, standards, and guidelines. Simply restating controls does not constitute an organizational policy or procedure.
+
+______________________________________________________________________
+
+## What is the solution and how is it implemented?
+
+<!-- For implementation status enter one of: implemented, partial, planned, alternative, not-applicable -->
+
+<!-- Note that the list of rules under ### Rules: is read-only and changes will not be captured after assembly to JSON -->
+
+### This System
+
+<!-- Add implementation prose for the main This System component for control: ac-1 -->
+
+#### Implementation Status: planned
+
+### comp_aa
+
+imp req prose for ac-1 from comp aa
+
+#### Rules:
+
+  - top_shared_rule_1
+
+#### Implementation Status: implemented
+
+### comp_ab
+
+<!-- Add control implementation description here for control: ac-1 -->
+
+#### Rules:
+
+  - top_shared_rule_1
+
+#### Implementation Status: implemented
+
+______________________________________________________________________
+
+## Implementation for part a.
+
+### comp_aa
+
+statement prose for part a. from comp aa
+
+#### Rules:
+
+  - comp_rule_aa_1
+
+#### Implementation Status: partial
+
+### comp_ab
+
+<!-- Add control implementation description here for item a. -->
+
+#### Rules:
+
+  - comp_rule_ab_1
+
+#### Implementation Status: partial
+
+______________________________________________________________________
+```
+
+</details>
+
+\
+Each label in the ssp is wrapped in `\[ \]` to indicate it comes directly from the label in the control and is not generated by the markdown viewer.  Keep in mind that the actual label is the same but with the `\[ \]` removed.
+
+Note that for each statement in the control description there is a corresponding response section in which to provide a detailed response for later inclusion in the final ssp as the control implementation.
+
+Also note that the optional final sections are provided, and labeled using the title for the corresponding section.
+
+In addition, this is the only control markdown where the moustache (`{{}}`) items have been replaced by the corresponding parameter values in the final resolved profile catalog, surrounded by brackets, so that the prose corresponds to the final intended control and its implementation.
+
+The markdown can have guidance per-component in the control, as shown by the line, `### ACME Component`.  Any prose directly under a `##` implementation section will apply to the overall system component, but sections in a sub-header of the form `###` will only apply to that particular component.
+
+After generating the markdown for the resolved profile catalog you may then edit the files and provide text in the sections with `Add control implementation...` in them.  But do not remove the horizontal rule
+lines or modify/remove the lines with `### ` in them, corresponding to system components.
+
+If you edit the control markdown files you may run `ssp-generate` again and your edits will not be overwritten.  When writing out the markdown for a control, any existing markdown for that control will be read and the response text for each part will be re-inserted into the new markdown file.  If the new markdown has added parts the original responses will be placed correctly in the new file, but if any part is removed from the source control json file then any corresponding prose will be lost after the next `ssp-generate`.
+
+## `trestle author ssp-assemble`
+
+After manually edting the markdown and providing the responses for the control implementation requirements, the markdown can be assembled into a single json SSP file with:
+
+`trestle author ssp-assemble --markdown my_ssp --output my_json_ssp`
+
+This will assemble the markdown files in the my_ssp directory and create a json SSP with name my_json_ssp in the system-security-plans directory.
+
+As indicated for `ssp-generate`, please do not alter any of the horizontal rule lines or lines indicating the part or control id, e.g. `### ACME Component`.  You may run `ssp-generate` and `ssp-assemble` repeatedly for the same markdown directory, allowing a continuous editing and updating cycle.
+
+As with all the `assemble` tools, you may optionally specify a `--name` for a corresponding json file into which the updates will be inserted, thereby preserving metadata and other aspects of the model.  The result can overwrite the provided model or get directed to a new model.  And the version may be updated and the uuid's regenerated.  As with the other `-assemble` tools, if an output file already exists, a new one will only be written if there are changes to the model relative to the existing file.  See `catalog-assemble` for more details.
+
+</details>
+
+<details markdown>
+
+<summary>trestle author ssp-filter</summary>
+
+Once you have an SSP in the trestle directory you can filter its contents with a profile or list of components by using the command `trestle author ssp-filter`.  The SSP is assumed to contain a superset of the controls needed by the profile if a profile is specified, and the filter operation will generate a new SSP with only those controls needed by the profile.  If a list of component names is provided, only the specified components will appear in the system implementation of the ssp.
+
+The filter command is invoked as:
+
+`trestle author ssp-filter --name my_ssp --profile my_profile --components comp_a:comp_b --output my_culled_ssp`
+
+Both the SSP and profile must be present in the trestle directory.  This command will generate a new SSP in the directory.  If the profile makes reference to a control not in the SSP then the routine will fail with an error message.  Similarly, if one of the components is not present in the ssp the routine will also fail.
+
+</details>
+
+<details markdown>
+
+<summary>Summary of options used by the catalog, profile, component and ssp authoring tools.</summary>
 
 The provided options for the generation and assembly of documents in the ssp workflow is rich and powerful, but can also be confusing.  To help see how they all relate please consult the following diagram showing the required and optional command line arguments for each command.  The checkboxes indicate required and the open circles represent optional.
 

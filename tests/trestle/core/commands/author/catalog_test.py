@@ -28,13 +28,17 @@ from ruamel.yaml import YAML
 from tests import test_utils
 
 from trestle.cli import Trestle
-from trestle.common import file_utils
+from trestle.common import const, file_utils
 from trestle.common.model_utils import ModelUtils
-from trestle.core.commands.author.catalog import CatalogAssemble, CatalogGenerate, CatalogInterface
+from trestle.core.catalog.catalog_api import CatalogAPI
+from trestle.core.catalog.catalog_interface import CatalogInterface
+from trestle.core.catalog.catalog_merger import CatalogMerger
+from trestle.core.commands.author.catalog import CatalogAssemble, CatalogGenerate
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_interface import ControlInterface, ParameterRep
+from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.oscal import catalog as cat
@@ -47,8 +51,13 @@ markdown_name = 'my_md'
 def _change_params(ac1_path: pathlib.Path, new_prose: str, make_change: bool) -> None:
     if make_change:
         assert file_utils.insert_text_in_file(ac1_path, 'Procedures {{', f'- \\[d\\] {new_prose}\n')
-    assert test_utils.replace_line_in_file_after_tag(ac1_path, 'ac-1_prm_1', '    values: new value\n')
-    assert test_utils.replace_line_in_file_after_tag(ac1_path, 'ac-1_prm_3', '    values: added param 3 value\n')
+    assert test_utils.delete_line_in_file(ac1_path, 'ac-1_prm_1', 1)
+    assert test_utils.replace_line_in_file_after_tag(
+        ac1_path, 'trestle-set-params', '  ac-1_prm_1:\n    values:\n      - new value\n'
+    )
+    assert test_utils.replace_line_in_file_after_tag(
+        ac1_path, 'ac-1_prm_3', '    values:\n      - added param 3 value\n'
+    )
 
 
 @pytest.mark.parametrize('set_parameters_flag', [True, False])
@@ -129,6 +138,7 @@ def test_catalog_generate_assemble(
     # need to delete withdrawn controls because they won't be in the assembled catalog
     interface_orig.delete_withdrawn_controls()
     ac1 = interface_orig.get_control('ac-1')
+    ac44 = interface_orig.get_control('ac-4.4')
     if make_change:
         # add the item manually to the original catalog so we can confirm the item was loaded correctly
         prop = Property(name='label', value='d.')
@@ -143,6 +153,8 @@ def test_catalog_generate_assemble(
         orig_cat = interface_orig.get_catalog()
     elif not use_orig_cat:
         ac1.params = None
+        # ac 4.4 has a parameter set in it that needs to be removed if set_param=False and use_orig_cat=False
+        ac44.params = None
         interface_orig.replace_control(ac1)
         orig_cat = interface_orig.get_catalog()
     if use_orig_cat:
@@ -178,7 +190,7 @@ def test_catalog_assemble_version(sample_catalog_rich_controls: cat.Catalog, tmp
     )
 
     # load the freshly assembled catalog
-    assembled_cat, assembled_cat_path = ModelUtils.load_top_level_model(
+    assembled_cat, assembled_cat_path = ModelUtils.load_model_for_class(
         tmp_trestle_dir,
         assembled_cat_name,
         cat.Catalog
@@ -222,7 +234,7 @@ def test_catalog_assemble_version(sample_catalog_rich_controls: cat.Catalog, tmp
         tmp_trestle_dir, md_name, assembled_cat_name, assembled_cat_name, False, False, 'xx2'
     )
 
-    catalog, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, 'my_assembled_cat', cat.Catalog, FileContentType.JSON)
+    catalog, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'my_assembled_cat', cat.Catalog, FileContentType.JSON)
     interface = CatalogInterface(catalog)
     assert interface.get_count_of_controls_in_catalog(True) == 7
 
@@ -246,7 +258,7 @@ New control statement.
         tmp_trestle_dir, md_name, assembled_cat_name, assembled_cat_name, True, False, 'xx3'
     )
 
-    catalog, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, 'my_assembled_cat', cat.Catalog, FileContentType.JSON)
+    catalog, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'my_assembled_cat', cat.Catalog, FileContentType.JSON)
     interface = CatalogInterface(catalog)
     assert interface.get_count_of_controls_in_catalog(True) == 7
     control_d = interface.get_control('control_d')
@@ -309,16 +321,16 @@ def test_catalog_interface_merge_controls(replace_params: bool, sample_catalog_r
     """Test merging of controls."""
     control_a = sample_catalog_rich_controls.groups[0].controls[0]
     control_b = copy.deepcopy(control_a)
-    CatalogInterface.merge_controls(control_a, control_b, replace_params)
+    CatalogMerger.merge_controls(control_a, control_b, replace_params)
     assert control_a == control_b
     control_b.params[0].values = [ParameterValue(__root__='new value')]
-    CatalogInterface.merge_controls(control_a, control_b, replace_params)
+    CatalogMerger.merge_controls(control_a, control_b, replace_params)
     if replace_params:
         assert control_a.params[0].values[0].__root__ == 'new value'
     else:
         assert control_a.params[0].values[0].__root__ == 'param_0_val'
     control_b.params = control_b.params[:1]
-    CatalogInterface.merge_controls(control_a, control_b, replace_params)
+    CatalogMerger.merge_controls(control_a, control_b, replace_params)
     assert len(control_a.params) == 1 if replace_params else 2
 
 
@@ -355,7 +367,7 @@ def test_catalog_assemble_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: M
 def test_get_profile_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
     """Test get profile param dict for control."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
-    profile, profile_path = ModelUtils.load_top_level_model(
+    profile, profile_path = ModelUtils.load_model_for_class(
         tmp_trestle_dir,
         'test_profile_a',
         prof.Profile,
@@ -388,9 +400,9 @@ def test_catalog_generate_withdrawn(tmp_path: pathlib.Path, sample_catalog_rich_
     if not control_b.props:
         control_b.props = []
     control_b.props.append(Property(name='status', value='Withdrawn'))
-    catalog_interface = CatalogInterface(sample_catalog_rich_controls)
     context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_path, tmp_path)
-    catalog_interface.write_catalog_as_markdown(context, catalog_interface.get_statement_part_id_map(False))
+    catalog_api = CatalogAPI(catalog=sample_catalog_rich_controls, context=context)
+    catalog_api.write_catalog_as_markdown()
     # confirm that the first control was written out but not the second
     path_a = tmp_path / group_id / (control_a.id + '.md')
     assert path_a.exists()
@@ -407,15 +419,11 @@ def test_params_in_choice(
     prof_name = 'simplified_nist_profile'
     ModelUtils.save_top_level_model(simplified_nist_catalog, tmp_trestle_dir, cat_name, FileContentType.JSON)
     ModelUtils.save_top_level_model(simplified_nist_profile, tmp_trestle_dir, prof_name, FileContentType.JSON)
-    prof_path = ModelUtils.full_path_for_top_level_model(tmp_trestle_dir, prof_name, prof.Profile)
+    prof_path = ModelUtils.get_model_path_for_name_and_class(tmp_trestle_dir, prof_name, prof.Profile)
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
     cat_interface = CatalogInterface(catalog)
     control = cat_interface.get_control('ac-4.4')
-    val_1 = 'blocking the flow of the encrypted information'
-    val_2 = 'terminating communications sessions attempting to pass encrypted information'
     val_3 = 'hacking the system'
-    assert control.params[1].values[0].__root__ == val_1
-    assert control.params[1].values[1].__root__ == val_2
     # confirm the choice text was set properly
     assert control.params[1].select.choice[3] == val_3
     assert control.params[2].values[0].__root__ == val_3
@@ -447,7 +455,9 @@ def test_pulled_params_in_choice(
     ModelUtils.save_top_level_model(simplified_nist_catalog, tmp_trestle_dir, cat_name, FileContentType.JSON)
     ModelUtils.save_top_level_model(simplified_nist_profile, tmp_trestle_dir, prof_name, FileContentType.JSON)
     pull_prof_name = 'pull_nist_profile'
-    prof_path = ModelUtils.path_for_top_level_model(tmp_trestle_dir, pull_prof_name, prof.Profile, FileContentType.JSON)
+    prof_path = ModelUtils.get_model_path_for_name_and_class(
+        tmp_trestle_dir, pull_prof_name, prof.Profile, FileContentType.JSON
+    )
     prof_path.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy(test_utils.JSON_TEST_DATA_PATH / (pull_prof_name + '.json'), prof_path)
 
@@ -511,7 +521,7 @@ def test_validate_catalog_missing_group_id(
     assert rc == 0
 
     # load the file without doing validation - to make sure the file itself has the group id assigned
-    new_cat, new_cat_path = ModelUtils.load_top_level_model(tmp_trestle_dir, cat_name, cat.Catalog)
+    new_cat, new_cat_path = ModelUtils.load_model_for_class(tmp_trestle_dir, cat_name, cat.Catalog)
     assert new_cat.groups[0].id == 'trestle_group_0000'
 
     md_name = 'md_cat'
@@ -527,7 +537,7 @@ def test_validate_catalog_missing_group_id(
     cat_assemble.assemble_catalog(tmp_trestle_dir, md_name, assem_cat_name, None, False, False, None)
 
     # load the file without doing validation - to make sure the file itself has the group id assigned
-    _, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, assem_cat_name, cat.Catalog)
+    _, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, assem_cat_name, cat.Catalog)
     assert new_cat.groups[0].id == 'trestle_group_0000'
 
 
@@ -547,3 +557,107 @@ def test_get_control_paths(sample_catalog_rich_controls: cat.Catalog) -> None:
     path = cat_interface.get_full_control_path('cat_level')
     assert path == ['']
     assert cat_interface.get_control_path('cat_level') == ['']
+
+
+def test_catalog_force_overwrite(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test catalog generate with force-overwrite."""
+    catalog = cat.Catalog.oscal_read(test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME)
+    ModelUtils.save_top_level_model(catalog, tmp_trestle_dir, 'my_catalog', FileContentType.JSON)
+
+    catalog_generate = 'trestle author catalog-generate -n my_catalog -o md_catalog --force-overwrite'
+    test_utils.execute_command_and_assert(catalog_generate, 0, monkeypatch)
+
+    catalog_generate = 'trestle author catalog-generate -n my_catalog -o md_catalog'
+    test_utils.execute_command_and_assert(catalog_generate, 0, monkeypatch)
+
+    md_path = tmp_trestle_dir / 'md_catalog/ac/ac-2.md'
+    assert md_path.exists()
+    md_api = MarkdownAPI()
+    header, tree = md_api.processor.process_markdown(md_path)
+
+    assert header
+    old_value = header[const.SET_PARAMS_TAG]['ac-2_prm_1'][const.VALUES]
+    header[const.SET_PARAMS_TAG]['ac-2_prm_1'][const.VALUES] = 'New value'
+    md_api.write_markdown_with_header(md_path, header, tree.content.raw_text)
+
+    catalog_generate = 'trestle author catalog-generate -n my_catalog -o md_catalog'
+    test_utils.execute_command_and_assert(catalog_generate, 0, monkeypatch)
+
+    header, _ = md_api.processor.process_markdown(md_path)
+    assert header[const.SET_PARAMS_TAG]['ac-2_prm_1'][const.VALUES] == 'New value'
+
+    catalog_generate = 'trestle author catalog-generate -n my_catalog -o md_catalog --force-overwrite'
+    test_utils.execute_command_and_assert(catalog_generate, 0, monkeypatch)
+
+    header, _ = md_api.processor.process_markdown(md_path)
+    assert header[const.SET_PARAMS_TAG]['ac-2_prm_1'][const.VALUES] == old_value
+
+    fc = test_utils.FileChecker(tmp_trestle_dir / 'md_catalog/')
+    catalog_generate = 'trestle author catalog-generate -n my_catalog -o md_catalog --force-overwrite'
+    test_utils.execute_command_and_assert(catalog_generate, 0, monkeypatch)
+    assert fc.files_unchanged()
+
+
+def test_prune_written_controls(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test pruning of written controls."""
+    catalog = cat.Catalog.oscal_read(test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME)
+    ModelUtils.save_top_level_model(catalog, tmp_trestle_dir, 'my_catalog', FileContentType.JSON)
+
+    catalog_generate = 'trestle author catalog-generate -n my_catalog -o md_catalog'
+    test_utils.execute_command_and_assert(catalog_generate, 0, monkeypatch)
+
+    md_path = tmp_trestle_dir / 'md_catalog'
+
+    catalog_interface = CatalogInterface(catalog)
+    control_ids = set(catalog_interface.get_control_ids())
+    controls_to_delete = sorted(['ac-1', 'ac-2.9', 'at-2.1'])
+    id_subset = control_ids - set(controls_to_delete)
+
+    assert CatalogInterface._prune_controls(md_path, id_subset) == controls_to_delete
+
+
+def test_catalog_assemble_subgroups(
+    tmp_trestle_dir: pathlib.Path, sample_catalog_subgroups: cat.Catalog, monkeypatch: MonkeyPatch
+) -> None:
+    """Test assembly of catalog with group having no controls but does contain subgroup."""
+    ModelUtils.save_top_level_model(sample_catalog_subgroups, tmp_trestle_dir, 'my_catalog', FileContentType.JSON)
+    catalog_generate = 'trestle author catalog-generate -n my_catalog -o md_catalog -vv'
+    test_utils.execute_command_and_assert(catalog_generate, 0, monkeypatch)
+    catalog_assemble = 'trestle author catalog-assemble -m md_catalog -o my_catalog -vv'
+    test_utils.execute_command_and_assert(catalog_assemble, 0, monkeypatch)
+
+
+def test_catalog_multiline_statement(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test catalog-assemble with multiline prose for control statement."""
+    catalog = cat.Catalog.oscal_read(test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME)
+    ModelUtils.save_top_level_model(catalog, tmp_trestle_dir, 'my_catalog', FileContentType.JSON)
+
+    catalog_generate = 'trestle author catalog-generate -n my_catalog -o md_catalog'
+    test_utils.execute_command_and_assert(catalog_generate, 0, monkeypatch)
+    md_path = tmp_trestle_dir / 'md_catalog/ac/ac-2.md'
+    assert md_path.exists()
+
+    control_statement_prose = """The organization:
+
+Test 1
+
+Here goes a long paragraph. Test 2
+
+Test 3
+Test 4
+
+
+"""
+
+    file_utils.insert_text_in_file(md_path, '## Control Statement', control_statement_prose)
+
+    catalog_assemble = 'trestle author catalog-assemble -o my_catalog -m md_catalog'
+    test_utils.execute_command_and_assert(catalog_assemble, 0, monkeypatch)
+
+    catalog, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'my_catalog', cat.Catalog)
+
+    assert catalog
+    assert catalog.groups[0].controls[1].parts[0].prose == control_statement_prose.strip('\n')
+    assert catalog.groups[0].controls[1].parts[0].parts[
+        0
+    ].prose == 'Define and document the types of accounts allowed and specifically prohibited for use within the system;'  # noqa E501

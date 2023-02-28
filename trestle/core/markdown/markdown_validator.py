@@ -37,12 +37,12 @@ class MarkdownValidator:
         template_tree: MarkdownNode,
         validate_yaml_header: bool,
         validate_md_body: bool,
-        md_header_to_validate: Optional[str] = None
+        governed_section: Optional[str] = None
     ):
         """Initialize markdown validator."""
         self._validate_yaml_header = validate_yaml_header
         self._validate_md_body = validate_md_body
-        self.md_header_to_validate = md_header_to_validate.strip(' ') if md_header_to_validate is not None else None
+        self.governed_section = governed_section.strip(' ') if governed_section is not None else None
         self.template_header = template_header
         self.template_tree = template_tree
         self.template_path = tmp_path
@@ -98,18 +98,16 @@ class MarkdownValidator:
             elif headers_match and not self._validate_md_body:
                 return True
 
-        if self.md_header_to_validate is not None:
-            instance_gov_nodes = instance_tree.get_all_nodes_for_keys([self.md_header_to_validate], False)
-            template_gov_nodes = self.template_tree.get_all_nodes_for_keys([self.md_header_to_validate], False)
+        if self.governed_section is not None:
+            instance_gov_nodes = instance_tree.get_all_nodes_for_keys([self.governed_section], False)
+            template_gov_nodes = self.template_tree.get_all_nodes_for_keys([self.governed_section], False)
 
             if not instance_gov_nodes:
-                logger.info(f'Governed section {self.md_header_to_validate} not found in instance: {instance}')
+                logger.info(f'Governed section {self.governed_section} not found in instance: {instance}')
                 return False
 
             if not template_gov_nodes:
-                logger.info(
-                    f'Governed section {self.md_header_to_validate} not found in template: {self.template_path}'
-                )
+                logger.info(f'Governed section {self.governed_section} not found in template: {self.template_path}')
                 return False
 
             if [node.key for node in instance_gov_nodes] != [node.key for node in template_gov_nodes]:

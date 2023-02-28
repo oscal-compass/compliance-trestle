@@ -28,11 +28,12 @@ import trestle.oscal.common as com
 import trestle.oscal.profile as prof
 from trestle.common import file_utils
 from trestle.common.err import TrestleError, TrestleNotFoundError, handle_generic_command_exception
-from trestle.common.list_utils import as_filtered_list, as_list, none_if_empty
+from trestle.common.list_utils import as_filtered_list, as_list, comma_sep_to_list, comma_colon_sep_to_dict, deep_set, none_if_empty  # noqa E501
 from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
-from trestle.core.catalog_interface import CatalogInterface
+from trestle.core.catalog.catalog_api import CatalogAPI
 from trestle.core.commands.author.common import AuthorCommonCommand
+from trestle.core.commands.common.cmd_utils import clear_folder
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_interface import ParameterRep
@@ -41,33 +42,6 @@ from trestle.core.profile_resolver import ProfileResolver
 from trestle.oscal import OSCAL_VERSION
 
 logger = logging.getLogger(__name__)
-
-
-def sections_to_dict(sections: Optional[str]) -> Dict[str, str]:
-    """
-    Convert sections string to dict mapping short to long names.
-
-    Args:
-        sections: String containing comma-sep pars of short_name:long_name for sections
-
-    Returns:
-        Dict mapping short names to long names
-
-    Notes:
-        If the long name is not provided (single string and no :) the long name is same as short name.
-        This is needed to map the internal part name for a guidance section to its long name in the formatted markdown.
-    """
-    sections_dict: Dict[str, str] = {}
-    if sections:
-        section_pairs = sections.strip("'").split(',')
-        # section pair is a single string possibly containing : and is either short_name:long_name or just short_name
-        for section_pair in section_pairs:
-            if ':' in section_pair:
-                section_tuple = section_pair.split(':')
-                sections_dict[section_tuple[0].strip()] = section_tuple[1].strip()
-            else:
-                sections_dict[section_pair] = section_pair
-    return sections_dict
 
 
 class ProfileGenerate(AuthorCommonCommand):
@@ -80,6 +54,9 @@ class ProfileGenerate(AuthorCommonCommand):
         self.add_argument('-n', '--name', help=name_help_str, required=True, type=str)
         self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
         self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
+        self.add_argument(
+            '-fo', '--force-overwrite', help=const.HELP_FO_OUTPUT, required=False, action='store_true', default=False
+        )
         self.add_argument(
             '-ohv',
             '--overwrite-header-values',
@@ -107,10 +84,15 @@ class ProfileGenerate(AuthorCommonCommand):
                 except YAMLError as e:
                     raise TrestleError(f'YAML error loading yaml header for ssp generation: {e}')
 
+            if args.force_overwrite:
+                try:
+                    logger.info(f'Overwriting the content in {args.output}.')
+                    clear_folder(pathlib.Path(args.output))
+                except TrestleError as e:  # pragma: no cover
+                    raise TrestleError(f'Unable to overwrite contents of {args.output}: {e}')
+
             # combine command line sections with any in the yaml header, with priority to command line
-            sections_dict: Optional[Dict[str, str]] = None
-            if args.sections:
-                sections_dict = sections_to_dict(args.sections)
+            sections_dict = comma_colon_sep_to_dict(args.sections)
 
             profile_path = trestle_root / f'profiles/{args.name}/profile.json'
 
@@ -123,7 +105,7 @@ class ProfileGenerate(AuthorCommonCommand):
                 yaml_header,
                 args.overwrite_header_values,
                 sections_dict,
-                args.required_sections
+                comma_sep_to_list(args.required_sections)
             )
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Generation of the profile markdown failed')
@@ -136,7 +118,7 @@ class ProfileGenerate(AuthorCommonCommand):
         yaml_header: dict,
         overwrite_header_values: bool,
         sections_dict: Optional[Dict[str, str]],
-        required_sections: Optional[str]
+        required_sections: Optional[List[str]]
     ) -> int:
         """Generate markdown for the controls in the profile.
 
@@ -147,7 +129,7 @@ class ProfileGenerate(AuthorCommonCommand):
             yaml_header: Dict to merge into the yaml header of the control markdown
             overwrite_header_values: Overwrite values in the markdown header but allow new items to be added
             sections_dict: Optional dict mapping section short names to long
-            required_sections: Optional comma-sep list of sections that get prompted for prose if not in the profile
+            required_sections: Optional list of sections that get prompted for prose if not in the profile
 
         Returns:
             0 on success, 1 on error
@@ -160,21 +142,18 @@ class ProfileGenerate(AuthorCommonCommand):
             catalog, inherited_props = ProfileResolver().get_resolved_profile_catalog_and_inherited_props(
                 trestle_root, profile_path, True, True, None, ParameterRep.LEAVE_MOUSTACHE
             )
-            yaml_header[const.TRESTLE_GLOBAL_TAG] = yaml_header.get(const.TRESTLE_GLOBAL_TAG, {})
-            yaml_header[const.TRESTLE_GLOBAL_TAG][const.PROFILE_TITLE] = profile.metadata.title
+            deep_set(yaml_header, [const.TRESTLE_GLOBAL_TAG, const.PROFILE, const.TITLE], profile.metadata.title)
 
-            catalog_interface = CatalogInterface(catalog)
-            part_id_map = catalog_interface.get_statement_part_id_map(False)
             context = ControlContext.generate(ContextPurpose.PROFILE, True, trestle_root, markdown_path)
-            context.yaml_header = yaml_header
+            context.cli_yaml_header = yaml_header
             context.sections_dict = sections_dict
-            context.additional_content = True
             context.profile = profile
             context.overwrite_header_values = overwrite_header_values
             context.set_parameters_flag = True
             context.required_sections = required_sections
             context.inherited_props = inherited_props
-            catalog_interface.write_catalog_as_markdown(context, part_id_map)
+            catalog_api = CatalogAPI(catalog=catalog, context=context)
+            catalog_api.write_catalog_as_markdown()
 
         except TrestleNotFoundError as e:
             raise TrestleError(f'Profile {profile_path} not found, error {e}')
@@ -217,8 +196,8 @@ class ProfileAssemble(AuthorCommonCommand):
                 set_parameters_flag=args.set_parameters,
                 regenerate=args.regenerate,
                 version=args.version,
-                sections_dict=sections_to_dict(args.sections),
-                required_sections=args.required_sections,
+                sections_dict=comma_colon_sep_to_dict(args.sections),
+                required_sections=comma_sep_to_list(args.required_sections),
                 allowed_sections=args.allowed_sections
             )
         except Exception as e:  # pragma: no cover
@@ -312,8 +291,8 @@ class ProfileAssemble(AuthorCommonCommand):
         set_parameters_flag: bool,
         regenerate: bool,
         version: Optional[str],
-        sections_dict: Optional[Dict[str, str]],
-        required_sections: Optional[str],
+        sections_dict: Dict[str, str],
+        required_sections: List[str],
         allowed_sections: Optional[List[str]]
     ) -> int:
         """
@@ -328,7 +307,7 @@ class ProfileAssemble(AuthorCommonCommand):
             regenerate: Whether to regenerate the uuid's in the profile
             version: Optional version for the assembled profile
             sections_dict: Optional map of short name to long name for sections
-            required_sections: Optional List of required sections in assembled profile, as comma-separated short names
+            required_sections: List of required sections in assembled profile, as comma-separated short names
             allowed_sections: Optional list of section short names that are allowed, as comma-separated short names
 
         Returns:
@@ -349,7 +328,7 @@ class ProfileAssemble(AuthorCommonCommand):
         if not parent_prof_name:
             parent_prof_name = assem_prof_name
 
-        parent_prof_path = ModelUtils.full_path_for_top_level_model(trestle_root, parent_prof_name, prof.Profile)
+        parent_prof_path = ModelUtils.get_model_path_for_name_and_class(trestle_root, parent_prof_name, prof.Profile)
         if parent_prof_path is None:
             raise TrestleError(f'Profile {parent_prof_name} does not exist.  An existing profile must be provided.')
 
@@ -357,22 +336,19 @@ class ProfileAssemble(AuthorCommonCommand):
         new_content_type = FileContentType.path_to_content_type(parent_prof_path)
 
         catalog = ProfileResolver.get_resolved_profile_catalog(trestle_root, parent_prof_path)
-        catalog_interface = CatalogInterface(catalog)
-        label_map = catalog_interface.get_statement_part_id_map(True)
 
-        required_sections_list = required_sections.split(',') if required_sections else []
+        context = ControlContext.generate(
+            ContextPurpose.PROFILE, to_markdown=False, trestle_root=trestle_root, md_root=md_dir
+        )
+        context.sections_dict = sections_dict
+        context.required_sections = required_sections
 
         # load the editable sections of the markdown and create Adds for them
         # then overwrite the Adds in the existing profile with the new ones
         # keep track if any changes were made
-        md_dir = trestle_root / md_name
-        found_alters, param_dict, param_map = CatalogInterface.read_additional_content(
-            md_dir,
-            required_sections_list,
-            label_map,
-            sections_dict,
-            False
-        )
+        catalog_api = CatalogAPI(catalog=catalog, context=context)
+        found_alters, param_dict, param_map = catalog_api.read_additional_content_from_md(label_as_key=True)
+
         # technically if allowed sections is [] it means no sections are allowed
         if allowed_sections is not None:
             for bad_part in [part for alter in found_alters for add in as_list(alter.adds)
@@ -388,7 +364,7 @@ class ProfileAssemble(AuthorCommonCommand):
 
         parent_prof.metadata.oscal_version = OSCAL_VERSION
 
-        assem_prof_path = ModelUtils.path_for_top_level_model(
+        assem_prof_path = ModelUtils.get_model_path_for_name_and_class(
             trestle_root, assem_prof_name, prof.Profile, new_content_type
         )
 
@@ -429,9 +405,41 @@ class ProfileResolve(AuthorCommonCommand):
             default=False
         )
         self.add_argument(
+            '-sl',
+            '--show-labels',
+            help='Show labels for parameters in prose instead of values',
+            required=False,
+            action='store_true',
+            default=False
+        )
+        self.add_argument(
             '-bf',
             '--bracket-format',
             help='With -sv, allows brackets around value, e.g. [.] or ((.)), with the dot representing the value.',
+            required=False,
+            type=str,
+            default=''
+        )
+        self.add_argument(
+            '-vap',
+            '--value-assigned-prefix',
+            help='With -sv, places a prefix in front of the parameter string if a value has been assigned.',
+            required=False,
+            type=str,
+            default=''
+        )
+        self.add_argument(
+            '-vnap',
+            '--value-not-assigned-prefix',
+            help='With -sv, places a prefix in front of the parameter string if a value has *not* been assigned.',
+            required=False,
+            type=str,
+            default=''
+        )
+        self.add_argument(
+            '-lp',
+            '--label-prefix',
+            help='With -sl, places a prefix in front of the parameter label.',
             required=False,
             type=str,
             default=''
@@ -445,8 +453,22 @@ class ProfileResolve(AuthorCommonCommand):
             catalog_name = args.output
             show_values = args.show_values
             param_format = args.bracket_format
+            value_assigned_prefix = args.value_assigned_prefix
+            value_not_assigned_prefix = args.value_not_assigned_prefix
+            label_prefix = args.label_prefix
+            show_labels = args.show_labels
 
-            return self.resolve_profile(trestle_root, profile_path, catalog_name, show_values, param_format)
+            return self.resolve_profile(
+                trestle_root,
+                profile_path,
+                catalog_name,
+                show_values,
+                param_format,
+                value_assigned_prefix,
+                value_not_assigned_prefix,
+                show_labels,
+                label_prefix
+            )
 
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Generation of the resolved profile catalog failed')
@@ -457,7 +479,11 @@ class ProfileResolve(AuthorCommonCommand):
         profile_path: pathlib.Path,
         catalog_name: str,
         show_values: bool,
-        bracket_format: str
+        bracket_format: str,
+        value_assigned_prefix: Optional[str],
+        value_not_assigned_prefix: Optional[str],
+        show_labels: bool,
+        label_prefix: Optional[str]
     ) -> int:
         """Create resolved profile catalog from given profile.
 
@@ -467,17 +493,42 @@ class ProfileResolve(AuthorCommonCommand):
             catalog_name: Name of the resolved profile catalog
             show_values: If true, show values of parameters in prose rather than original {{}} form
             bracket_format: String representing brackets around value, e.g. [.] or ((.))
+            value_assigned_prefix: Prefix placed in front of param string if a value was assigned
+            value_not_assigned_prefix: Prefix placed in front of param string if a value was *not* assigned
+            show_labels: Show labels for parameters and not values
+            label_prefix: Prefix placed in front of param label
 
         Returns:
             0 on success and raises exception on error
         """
         if not profile_path.exists():
             raise TrestleNotFoundError(f'Cannot resolve profile catalog: profile {profile_path} does not exist.')
-        param_rep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES if show_values else ParameterRep.LEAVE_MOUSTACHE
+
+        param_rep = ParameterRep.LEAVE_MOUSTACHE
+        if show_values:
+            param_rep = ParameterRep.ASSIGNMENT_FORM
+            if label_prefix or show_labels:
+                raise TrestleError('Use of show-values is not compatible with show-labels or label-prefix')
+        elif value_assigned_prefix or value_not_assigned_prefix:
+            raise TrestleError('Use of value-assigned-prefix or value-not-assigned-prefix requires show-values')
+        if show_labels:
+            param_rep = ParameterRep.LABEL_FORM
+            # overload value_not_assigned_prefix to use the label_prefix value
+            value_not_assigned_prefix = label_prefix
+        elif label_prefix:
+            raise TrestleError('Use of label-prefix requires show-labels')
 
         bracket_format = none_if_empty(bracket_format)
         catalog = ProfileResolver().get_resolved_profile_catalog(
-            trestle_root, profile_path, False, False, bracket_format, param_rep
+            trestle_root,
+            profile_path,
+            False,
+            False,
+            bracket_format,
+            param_rep,
+            False,
+            value_assigned_prefix,
+            value_not_assigned_prefix
         )
         ModelUtils.save_top_level_model(catalog, trestle_root, catalog_name, FileContentType.JSON)
 

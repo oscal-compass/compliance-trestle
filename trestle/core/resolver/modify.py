@@ -22,7 +22,7 @@ from trestle.common.common_types import OBT
 from trestle.common.const import RESOLUTION_SOURCE, TRESTLE_INHERITED_PROPS_TRACKER
 from trestle.common.err import TrestleNotFoundError
 from trestle.common.list_utils import as_list, get_item_from_list, none_if_empty
-from trestle.core.catalog_interface import CatalogInterface
+from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.control_interface import ParameterRep
 from trestle.core.pipeline import Pipeline
 from trestle.oscal import OSCAL_VERSION, common
@@ -41,7 +41,9 @@ class Modify(Pipeline.Filter):
         block_params: bool = False,
         params_format: str = None,
         param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES,
-        show_value_warnings: bool = False
+        show_value_warnings: bool = False,
+        value_assigned_prefix: Optional[str] = None,
+        value_not_assigned_prefix: Optional[str] = None
     ) -> None:
         """Initialize the filter."""
         self._profile = profile
@@ -52,6 +54,8 @@ class Modify(Pipeline.Filter):
         self._params_format = params_format
         self._param_rep = param_rep
         self.show_value_warnings = show_value_warnings
+        self._value_assigned_prefix = value_assigned_prefix
+        self._value_not_assigned_prefix = value_not_assigned_prefix
         logger.debug(f'modify initialize filter with profile {profile.metadata.title}')
 
     @staticmethod
@@ -308,7 +312,11 @@ class Modify(Pipeline.Filter):
         if self._change_prose:
             # go through all controls and fix the prose based on param values
             self._catalog_interface._change_prose_with_param_values(
-                self._params_format, self._param_rep, self.show_value_warnings
+                self._params_format,
+                self._param_rep,
+                self.show_value_warnings,
+                self._value_assigned_prefix,
+                self._value_not_assigned_prefix
             )
 
         catalog = self._catalog_interface.get_catalog()

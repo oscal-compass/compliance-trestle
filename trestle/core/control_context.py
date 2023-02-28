@@ -21,6 +21,7 @@ from enum import Enum
 from typing import Any, Dict, List, Optional
 
 from trestle.common.list_utils import as_dict
+from trestle.core.control_interface import CompDict
 from trestle.oscal import component as comp
 from trestle.oscal import profile as prof
 
@@ -43,21 +44,24 @@ class ControlContext:
     trestle_root: pathlib.Path
     md_root: pathlib.Path
     prompt_responses: bool
-    additional_content: bool
     overwrite_header_values: bool
     set_parameters_flag: bool
-    yaml_header: Optional[Dict[Any, Any]] = None
+    cli_yaml_header: Optional[Dict[Any, Any]] = None
     sections_dict: Optional[Dict[str, str]] = None
     profile: Optional[prof.Profile] = None
-    required_sections: Optional[str] = None
-    allowed_sections: Optional[str] = None
+    required_sections: Optional[List[str]] = None
+    allowed_sections: Optional[List[str]] = None
     comp_def: Optional[comp.ComponentDefinition] = None
     comp_name: Optional[str] = None
+    component: Optional[comp.DefinedComponent] = None
+    comp_def_name_list: Optional[List[str]] = None
     inherited_props: Optional[Dict[str, Any]] = None
-    rules_dict: Optional[Dict[str, Dict[str, str]]] = None
+    rules_dict: Optional[Dict[str, Dict[str, Any]]] = None
     rules_params_dict: Optional[Dict[str, Dict[str, Any]]] = None
-    rules_param_vals: Optional[List[Dict[str, str]]] = None
     control_implementation: Optional[comp.ControlImplementation] = None
+    uri_name_map: Optional[Dict[str, str]] = None
+    comp_dict: Optional[CompDict] = None
+    merged_header: Optional[Dict[str, Any]] = None
 
     @classmethod
     def generate(
@@ -67,21 +71,24 @@ class ControlContext:
         trestle_root: pathlib.Path,
         md_root: pathlib.Path,
         prompt_responses=False,
-        additional_content=False,
         overwrite_header_values=False,
         set_parameters_flag=False,
-        yaml_header: Optional[Dict[Any, Any]] = None,
+        cli_yaml_header: Optional[Dict[Any, Any]] = None,
         sections_dict: Optional[Dict[str, str]] = None,
         profile: Optional[prof.Profile] = None,
-        required_sections: Optional[str] = None,
-        allowed_sections: Optional[str] = None,
+        required_sections: Optional[List[str]] = None,
+        allowed_sections: Optional[List[str]] = None,
         comp_def: Optional[comp.ComponentDefinition] = None,
         comp_name: Optional[str] = None,
+        component: Optional[comp.DefinedComponent] = None,
+        comp_def_name_list: Optional[List[str]] = None,
         inherited_props: Optional[Dict[str, Any]] = None,
-        rules_dict: Optional[Dict[str, Dict[str, str]]] = None,
+        rules_dict: Optional[Dict[str, Dict[str, Any]]] = None,
         rules_params_dict: Optional[Dict[str, Dict[str, Any]]] = None,
-        rules_param_vals: Optional[List[Dict[str, str]]] = None,
-        control_implementation: Optional[comp.ControlImplementation] = None
+        control_implementation: Optional[comp.ControlImplementation] = None,
+        uri_name_map: Optional[Dict[str, str]] = None,
+        comp_dict: Optional[CompDict] = None,
+        merged_header: Optional[Dict[str, Any]] = None
     ) -> ControlContext:
         """Generate control context of the needed type."""
         context = cls(
@@ -90,24 +97,27 @@ class ControlContext:
             trestle_root,
             md_root,
             prompt_responses,
-            additional_content,
             overwrite_header_values,
             set_parameters_flag,
-            yaml_header=yaml_header,
+            cli_yaml_header=cli_yaml_header,
             sections_dict=sections_dict,
             profile=profile,
             required_sections=required_sections,
             allowed_sections=allowed_sections,
             comp_def=comp_def,
             comp_name=comp_name,
+            component=component,
+            comp_def_name_list=comp_def_name_list,
             inherited_props=inherited_props,
             rules_dict=rules_dict,
             rules_params_dict=rules_params_dict,
-            rules_param_vals=rules_param_vals,
-            control_implementation=control_implementation
+            control_implementation=control_implementation,
+            uri_name_map=uri_name_map,
+            comp_dict=comp_dict
         )
-        context.yaml_header = as_dict(yaml_header)
+        context.cli_yaml_header = as_dict(cli_yaml_header)
         context.sections_dict = as_dict(sections_dict)
+        context.merged_header = as_dict(merged_header)
         # catalog generate always sets params
         if to_markdown:
             context.set_parameters = True
@@ -122,20 +132,23 @@ class ControlContext:
             context.trestle_root,
             context.md_root,
             context.prompt_responses,
-            context.additional_content,
             context.overwrite_header_values,
             context.set_parameters_flag,
-            yaml_header=copy.deepcopy(context.yaml_header),
+            cli_yaml_header=copy.deepcopy(context.cli_yaml_header),
             sections_dict=copy.deepcopy(context.sections_dict),
             profile=context.profile,
             required_sections=context.required_sections,
             allowed_sections=context.allowed_sections,
             comp_def=context.comp_def,
             comp_name=context.comp_name,
+            component=context.component,
+            comp_def_name_list=context.comp_def_name_list,
             inherited_props=copy.deepcopy(context.inherited_props),
             rules_dict=copy.deepcopy(context.rules_dict),
             rules_params_dict=copy.deepcopy(context.rules_params_dict),
-            rules_param_vals=context.rules_param_vals,
-            control_implementation=copy.deepcopy(context.control_implementation)
+            control_implementation=copy.deepcopy(context.control_implementation),
+            uri_name_map=context.uri_name_map,
+            comp_dict=copy.deepcopy(context.comp_dict),
+            merged_header=copy.deepcopy(context.merged_header)
         )
         return new_context

@@ -23,7 +23,7 @@ from typing import Dict, Iterable, List, Optional, Tuple
 
 import trestle.core.markdown.markdown_const as md_const
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import delete_list_from_list
+from trestle.common.list_utils import as_filtered_list, delete_list_from_list
 
 logger = logging.getLogger(__name__)
 
@@ -81,12 +81,12 @@ class MarkdownNode:
         if not strict_matching:
             if not any([key in el for el in self.content.subnodes_keys]):
                 return None
-            elif [key in el for el in self.content.subnodes_keys].count(True) > 1:
+            elif len(as_filtered_list(self.content.subnodes_keys, lambda el: key in el)) > 1:
                 logger.warning(f'Multiple nodes for {key} were found, only the first one will be returned.')
         else:
             if key not in self.content.subnodes_keys:
                 return None
-            elif self.content.subnodes_keys.index(key) > 1:
+            elif len(as_filtered_list(self.content.subnodes_keys, lambda el: el == key)) > 1:
                 logger.warning(f'Multiple nodes for {key} were found, only the first one will be returned.')
 
         return self._rec_traverse(self, key, strict_matching)

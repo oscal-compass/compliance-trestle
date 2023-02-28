@@ -47,9 +47,12 @@ class MarkdownProcessor:
         except ValueError as e:
             raise TrestleError(f'Not a valid Github Flavored markdown: {e}.')
 
-    def process_markdown(self, md_path: pathlib.Path) -> Tuple[Dict, MarkdownNode]:
+    def process_markdown(self,
+                         md_path: pathlib.Path,
+                         read_header: bool = True,
+                         read_body: bool = True) -> Tuple[Dict, MarkdownNode]:
         """Parse the markdown and builds the tree to operate over it."""
-        header, markdown_wo_header = self.read_markdown_wo_processing(md_path)
+        header, markdown_wo_header = self.read_markdown_wo_processing(md_path, read_header, read_body)
 
         _ = self.render_gfm_to_html(markdown_wo_header)
 
@@ -57,12 +60,19 @@ class MarkdownProcessor:
         tree = MarkdownNode.build_tree_from_markdown(lines, self.governed_header)
         return header, tree
 
-    def read_markdown_wo_processing(self, md_path: pathlib.Path) -> Tuple[Dict, str]:
+    def read_markdown_wo_processing(self,
+                                    md_path: pathlib.Path,
+                                    read_header: bool = True,
+                                    read_body: bool = True) -> Tuple[Dict, str]:
         """Read markdown header to dictionary and body to string."""
         try:
             contents = frontmatter.loads(md_path.open('r', encoding=const.FILE_ENCODING).read())
-            header = contents.metadata
-            markdown_wo_header = contents.content
+            header = {}
+            markdown_wo_header = ''
+            if read_header:
+                header = contents.metadata
+            if read_body:
+                markdown_wo_header = contents.content
 
             return header, markdown_wo_header
         except UnicodeDecodeError as e:

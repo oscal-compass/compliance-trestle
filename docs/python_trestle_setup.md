@@ -66,7 +66,8 @@ usage: trestle [-h]
                ...
 ```
 
-<details>
+<details markdown>
+
 <summary>Full help text</summary>
 
 ```bash

@@ -1,0 +1,350 @@
+{
+  "component-definition": {
+    "uuid": "2652b814-2a6b-4b6d-a0ae-8bc7a007209f",
+    "metadata": {
+      "title": "comp def b",
+      "last-modified": "2021-07-19T14:03:03+00:00",
+      "version": "0.21.0",
+      "oscal-version": "1.0.2",
+      "roles": [
+        {
+          "id": "prepared-by",
+          "title": "Indicates the organization that created this content."
+        },
+        {
+          "id": "prepared-for",
+          "title": "Indicates the organization for which this content was created.."
+        },
+        {
+          "id": "content-approver",
+          "title": "Indicates the organization responsible for all content represented in the \"document\"."
+        }
+      ],
+      "parties": [
+        {
+          "uuid": "ce1f379a-fcdd-485a-a7b7-6f02c0763dd2",
+          "type": "organization",
+          "name": "ACME",
+          "remarks": "ACME company"
+        },
+        {
+          "uuid": "481856b6-16e4-4993-a3ed-2fb242ce235b",
+          "type": "organization",
+          "name": "Customer",
+          "remarks": "Customer for the Component Definition"
+        },
+        {
+          "uuid": "2dc8b17f-daca-44a1-8a1d-c290120ea5e2",
+          "type": "organization",
+          "name": "ISV",
+          "remarks": "ISV for the Component Definition"
+        }
+      ],
+      "responsible-parties": [
+        {
+          "role-id": "prepared-by",
+          "party-uuids": [
+            "ce1f379a-fcdd-485a-a7b7-6f02c0763dd2"
+          ]
+        },
+        {
+          "role-id": "prepared-for",
+          "party-uuids": [
+            "481856b6-16e4-4993-a3ed-2fb242ce235b",
+            "2dc8b17f-daca-44a1-8a1d-c290120ea5e2"
+          ]
+        },
+        {
+          "role-id": "content-approver",
+          "party-uuids": [
+            "ce1f379a-fcdd-485a-a7b7-6f02c0763dd2"
+          ]
+        }
+      ]
+    },
+    "components": [
+      {
+        "uuid": "8220b305-0271-45f9-8a21-40ab6f197f75",
+        "type": "Service",
+        "title": "comp_ba",
+        "description": "comp ba",
+        "props":[
+          {
+            "name": "Rule_Id",
+            "ns": "http://comp_ns",
+            "value": "top_shared_rule_1",
+            "class": "Rule_Id",
+            "remarks": "rule_1"
+          },
+          {
+            "name": "Rule_Description",
+            "ns": "http://comp_ns",
+            "value": "top shared rule 1 in ba",
+            "remarks": "rule_1"
+          }
+        ],
+        "control-implementations": [
+          {
+            "uuid": "76e89b67-3d6b-463d-90df-ec56a46c6069",
+            "source": "trestle://profiles/comp_prof_ba/profile.json",
+            "description": "trestle comp prof ba",
+            "props": [
+              {
+                "name": "profile_name",
+                "ns": "https://trestle/prof_ns",
+                "value": "trestle prof ba",
+                "class": "trestle_profile_name"
+              },
+              {
+                "name": "Rule_Id",
+                "ns": "http://comp_ns",
+                "value": "comp_rule_ba_1",
+                "class": "Rule_Id",
+                "remarks": "rule_2"
+              },
+              {
+                "name": "Rule_Description",
+                "ns": "http://comp_ns",
+                "value": "comp rule ba 1",
+                "remarks": "rule_2"
+              },
+              {
+                "name": "Rule_Id",
+                "ns": "http://comp_ns",
+                "value": "comp_rule_ba_2",
+                "class": "Rule_Id",
+                "remarks": "rule_3"
+              },
+              {
+                "name": "Rule_Description",
+                "ns": "http://comp_ns",
+                "value": "comp rule ba 2",
+                "class": "Rule_Description",
+                "remarks": "rule_3"
+              },
+              {
+                "name": "Parameter_Id",
+                "ns": "http://comp_ns",
+                "value": "shared_param_1",
+                "class": "Parameter_Id",
+                "remarks": "rule_1"
+              },
+              {
+                "name": "Parameter_Description",
+                "ns": "http://comp_ns",
+                "value": "shared param 1 in ba",
+                "class": "Parameter_Description",
+                "remarks": "rule_1"
+              },
+              {
+                "name": "Parameter_Value_Alternatives",
+                "ns": "http://comp_ns",
+                "value": "[\"shared_param_1_ba_opt_1\", \"shared_param_1_ba_opt_2\"]",
+                "class": "Parameter_Value_Alternatives",
+                "remarks": "rule_1"
+              }
+            ],
+            "set-parameters": [
+              {
+                "param-id": "shared_param_1",
+                "values": [
+                  "shared_param_1_ba_opt_1"
+                ],
+                "remarks": "set shared param ba 1"
+              }
+            ],
+            "implemented-requirements": [
+              {
+                "uuid": "ca5ea4c5-ba51-4b1d-932a-5606891b7600",
+                "control-id": "ac-6.7",
+                "description": "imp req prose for ac-6.7 from comp ba",
+                "props": [
+                  {
+                    "name": "Rule_Id",
+                    "value": "top_shared_rule_1"
+                  },
+                  {
+                    "name": "implementation-status",
+                    "value": "implemented"
+                  }
+                ],
+                "responsible-roles": [
+                  {
+                    "role-id": "prepared-by",
+                    "party-uuids": [
+                      "ce1f379a-fcdd-485a-a7b7-6f02c0763dd2"
+                    ]
+                  },
+                  {
+                    "role-id": "prepared-for",
+                    "party-uuids": [
+                      "481856b6-16e4-4993-a3ed-2fb242ce235b",
+                      "2dc8b17f-daca-44a1-8a1d-c290120ea5e2"
+                    ]
+                  },
+                  {
+                    "role-id": "content-approver",
+                    "party-uuids": [
+                      "ce1f379a-fcdd-485a-a7b7-6f02c0763dd2"
+                    ]
+                  }
+                ],
+                "statements": [
+                  {
+                    "statement-id": "ac-6.7_smt.a",
+                    "uuid": "2652b814-2a6b-4b6d-a0ae-8bc7a0072600",
+                    "description": "statement prose for part a. from comp ba",
+                    "props": [
+                      {
+                        "name": "Rule_Id",
+                        "value": "comp_rule_ba_1"
+                      },
+                      {
+                        "name": "implementation-status",
+                        "value": "partial"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+         }
+        ]
+      },
+      {
+        "uuid": "8220b305-0271-45f9-8a21-40ab6f197f76",
+        "type": "Service",
+        "title": "comp_bb",
+        "description": "comp bb",
+        "props":[
+          {
+            "name": "Rule_Id",
+            "ns": "http://comp_ns",
+            "value": "top_shared_rule_1",
+            "class": "Rule_Id",
+            "remarks": "rule_1"
+          },
+          {
+            "name": "Rule_Description",
+            "ns": "http://comp_ns",
+            "value": "top shared rule 1 in bb",
+            "remarks": "rule_1"
+          }
+        ],
+        "control-implementations": [
+          {
+            "uuid": "76e89b67-3d6b-463d-90df-ec56a46c6069",
+            "source": "trestle://profiles/comp_prof_ab/profile.json",
+            "description": "trestle comp prof bb",
+            "props": [
+              {
+                "name": "profile_name",
+                "ns": "https://trestle/prof_ns",
+                "value": "trestle prof bb",
+                "class": "trestle_profile_name"
+              },
+              {
+                "name": "Rule_Id",
+                "ns": "http://comp_ns",
+                "value": "comp_rule_bb_1",
+                "class": "Rule_Id",
+                "remarks": "rule_2"
+              },
+              {
+                "name": "Rule_Description",
+                "ns": "http://comp_ns",
+                "value": "comp rule bb 1",
+                "remarks": "rule_2"
+              },
+              {
+                "name": "Parameter_Id",
+                "ns": "http://comp_ns",
+                "value": "shared_param_1",
+                "class": "Parameter_Id",
+                "remarks": "rule_1"
+              },
+              {
+                "name": "Parameter_Description",
+                "ns": "http://comp_ns",
+                "value": "shared param 1 in bb",
+                "class": "Parameter_Description",
+                "remarks": "rule_1"
+              },
+              {
+                "name": "Parameter_Value_Alternatives",
+                "ns": "http://comp_ns",
+                "value": "[\"shared_param_1_bb_opt_1\", \"shared_param_1_bb_opt_2\"]",
+                "class": "Parameter_Value_Alternatives",
+                "remarks": "rule_1"
+              }
+            ],
+            "set-parameters": [
+              {
+                "param-id": "shared_param_1",
+                "values": [
+                  "shared_param_1_bb_opt_2"
+                ],
+                "remarks": "set param bb 1"
+              }
+            ],
+            "implemented-requirements": [
+              {
+                "uuid": "ca5ea4c5-ba51-4b1d-932a-5606891b7601",
+                "control-id": "at-2",
+                "description": "imp req prose for at-2 from comp bb",
+                "props": [
+                  {
+                    "name": "Rule_Id",
+                    "value": "rule_1"
+                  },
+                  {
+                    "name": "implementation-status",
+                    "value": "implemented"
+                  }
+                ],
+                "responsible-roles": [
+                  {
+                    "role-id": "prepared-by",
+                    "party-uuids": [
+                      "ce1f379a-fcdd-485a-a7b7-6f02c0763dd2"
+                    ]
+                  },
+                  {
+                    "role-id": "prepared-for",
+                    "party-uuids": [
+                      "481856b6-16e4-4993-a3ed-2fb242ce235b",
+                      "2dc8b17f-daca-44a1-8a1d-c290120ea5e2"
+                    ]
+                  },
+                  {
+                    "role-id": "content-approver",
+                    "party-uuids": [
+                      "ce1f379a-fcdd-485a-a7b7-6f02c0763dd2"
+                    ]
+                  }
+                ],
+                "statements": [
+                  {
+                    "statement-id": "at-2_smt.b",
+                    "uuid": "2652b814-2a6b-4b6d-a0ae-8bc7a0072601",
+                    "description": "statement prose for part b. from comp ab",
+                    "props": [
+                      {
+                        "name": "Rule_Id",
+                        "value": "rule_2"
+                      },
+                      {
+                        "name": "implementation-status",
+                        "value": "implemented"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+         }
+        ]
+      }
+    ]
+  }
+}
