@@ -18,6 +18,7 @@ import configparser
 import csv
 import datetime
 import logging
+import os
 import pathlib
 import sys
 import traceback
@@ -26,6 +27,8 @@ from math import log10
 from typing import Iterator, List, Optional
 
 from trestle.common.list_utils import as_list
+from trestle.core.catalog.catalog_interface import CatalogInterface
+from trestle.core.profile_resolver import ProfileResolver
 from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.common import Metadata
 from trestle.oscal.common import Property
@@ -111,7 +114,8 @@ class CsvToOscalComponentDefinition(TaskBase):
         logger.info(text1 + text2)
         text1 = '  csv-file             = '
         text2 = '(required) the path of the csv file.'
-        logger.info(text1 + text2)
+        text3 = ' [1st row are column headings; 2nd row are column descriptions; 3rd row and beyond is data]'
+        logger.info(text1 + text2 + text3)
         text1 = '  required columns:      '
         for text2 in CsvColumn.columns_required:
             logger.info(text1 + text2)
@@ -131,6 +135,9 @@ class CsvToOscalComponentDefinition(TaskBase):
         logger.info(text1 + text2)
         text1 = '  output-overwrite     = '
         text2 = '(optional) true [default] or false; replace existing output when true.'
+        logger.info(text1 + text2)
+        text1 = '  validate-controls    = '
+        text2 = '(optional) on, warn, or off [default]; validate controls exist in resolved profile.'
         logger.info(text1 + text2)
 
     def configure(self) -> bool:
@@ -170,6 +177,10 @@ class CsvToOscalComponentDefinition(TaskBase):
             if not self._cd_path.exists():
                 logger.warning('"component-definition" not found')
                 return False
+        # workspace
+        self._workspace = os.getcwd()
+        # validate_controls
+        self._validate_controls = self._config.get('validate-controls', 'off')
         return True
 
     def get_class(self, name: str) -> str:
@@ -209,6 +220,10 @@ class CsvToOscalComponentDefinition(TaskBase):
         self._cd_mgr = _CdMgr(self._cd_path, self._title, self._timestamp, self._version)
         # fetch csv
         self._csv_mgr = _CsvMgr(self._csv_path)
+        # create resolved profile -> catalog helper
+        profile_list = self._csv_mgr.get_profile_list()
+        self._resolved_profile_catalog_helper = _ResolvedProfileCatalogHelper(profile_list, self._workspace)
+        self._unresolved_controls = []
         # calculate deletion, addition & modification rule lists
         rules = self._calculate_rules()
         # calculate deletion, addition & modification set-parameter lists
@@ -230,6 +245,12 @@ class CsvToOscalComponentDefinition(TaskBase):
         self.control_mappings_add(control_mappings[1])
         # note: control mappings mod is currently not possible
         # note: add/del user columns not currently supported
+        if len(self._unresolved_controls) > 0:
+            text = f'Unresolved controls: {self._unresolved_controls}'
+            if self._validate_controls == 'warn':
+                logger.warn(text)
+            elif self._validate_controls == 'on':
+                raise RuntimeError(text)
         # prepare new/revised component definition
         component_definition = self._cd_mgr.get_component_definition()
         # write OSCAL ComponentDefinition to file
@@ -542,6 +563,10 @@ class CsvToOscalComponentDefinition(TaskBase):
         self, control_implementation: ControlImplementation, control_id: str
     ) -> ImplementedRequirement:
         """Find or create implemented requirement."""
+        if self._validate_controls != 'off':
+            if not self._resolved_profile_catalog_helper.validate(control_id):
+                if control_id not in self._unresolved_controls:
+                    self._unresolved_controls.append(control_id)
         for implemented_requirement in control_implementation.implemented_requirements:
             if implemented_requirement.control_id == control_id:
                 return implemented_requirement
@@ -854,6 +879,39 @@ class _RuleSetMgr():
             if key in c1 or key in c2:
                 continue
             rval.append(self._props[key])
+        return rval
+
+
+class _ResolvedProfileCatalogHelper():
+    """Resolved Profile Catalog Helper."""
+
+    def __init__(self, profile_list: List[str], root: str = '.') -> None:
+        """Initialize."""
+        self._profile_list = profile_list
+        self._root = root
+        self._profile_map = {}
+        self._control_list = []
+        self._init = False
+
+    def _initialize(self):
+        if not self._init:
+            for profile in self._profile_list:
+                catalog = ProfileResolver.get_resolved_profile_catalog(
+                    pathlib.Path(self._root),
+                    pathlib.Path(profile),
+                )
+                self._profile_map[profile] = catalog
+                controls = CatalogInterface.get_control_ids_from_catalog(catalog)
+                self._control_list += controls
+            logger.debug(f'resolved controls: {self._control_list}')
+            self._init = True
+
+    def validate(self, control_id: str) -> bool:
+        """Validate control_id."""
+        self._initialize()
+        rval = True
+        if control_id not in self._control_list:
+            rval = False
         return rval
 
 
@@ -1282,6 +1340,7 @@ class _CsvMgr():
         self._csv_rules_map = {}
         self._csv_set_params_map = {}
         self._csv_controls_map = {}
+        self._csv_profile_list = []
         for row_num, row in self.row_generator():
             self._check_row_minimum_requirements(row_num, row)
             component_title = self.get_row_value(row, f'{COMPONENT_TITLE}')
@@ -1297,6 +1356,8 @@ class _CsvMgr():
             logger.debug(f'csv-rules: {key} {self._csv_rules_map[key][0]}')
             # set parameters, by component
             source = self.get_row_value(row, PROFILE_SOURCE)
+            if source not in self._csv_profile_list:
+                self._csv_profile_list.append(source)
             description = self.get_row_value(row, PROFILE_DESCRIPTION)
             param_id = self.get_row_value(row, PARAMETER_ID)
             if param_id:
@@ -1319,6 +1380,10 @@ class _CsvMgr():
         """Get rule_key."""
         return (component_title, component_type, rule_id)
 
+    def get_profile_list(self):
+        """Get profile list."""
+        return [] + self._csv_profile_list
+
     def row_generator(self) -> [int, Iterator[List[str]]]:
         """Generate rows."""
         index = 0
@@ -1326,7 +1391,7 @@ class _CsvMgr():
             index += 1
             if index < 3:
                 continue
-            control_mappings = self.get_row_value(row, CONTROL_ID_LIST)
+            control_mappings = self.get_row_value(row, CONTROL_ID_LIST).strip()
             if not len(control_mappings):
                 continue
             logger.debug(f'row_gen: {index} {row}')
