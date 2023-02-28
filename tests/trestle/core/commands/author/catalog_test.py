@@ -644,12 +644,9 @@ Test 1
 Here goes a long paragraph. Test 2
 
 Test 3
-Test 4
-"""
+Test 4"""
 
     file_utils.insert_text_in_file(md_path, '## Control Statement', control_statement_prose)
-    md_api = MarkdownAPI()
-    header, tree = md_api.processor.process_markdown(md_path)
 
     catalog_assemble = 'trestle author catalog-assemble -o my_catalog -m md_catalog'
     test_utils.execute_command_and_assert(catalog_assemble, 0, monkeypatch)
