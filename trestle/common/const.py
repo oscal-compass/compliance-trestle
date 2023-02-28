@@ -456,6 +456,8 @@ TRESTLE_INHERITED_PROPS_TAG = TRESTLE_TAG + 'inherited-props'
 
 CONTROL_OBJECTIVE_HEADER = '## Control Objective'
 
+CONTROL_STATEMENT_HEADER = '## Control Statement'
+
 CONTROL_HEADER = '## Control'
 
 REPLACE_ME = 'REPLACE_ME'

@@ -1,4 +1,4 @@
-Trestle was designed and opensourced by a team based at [IBM Research](https://www.research.ibm.com/) and others around the world.  The list includes:
+Trestle was designed and open sourced by a team based at [IBM Research](https://www.research.ibm.com/) and others around the world.  The list includes:
 
 Christopher Butler - [butler54](https://github.com/butler54)
 
@@ -17,3 +17,7 @@ Nebula Alam - [aNebula](https://github.com/aNebula)
 Vikas Agarwal [vikas-agarwal76](https://github.com/vikas-agarwal76)
 
 Lou Degenaro [degenaro](https://github.com/degenaro)
+
+Ekaterina Nikonova [enikonovad](https://github.com/enikonovad)
+
+Alejandro Jose Leiva Palomo [AleJo2995](https://github.com/AleJo2995)
