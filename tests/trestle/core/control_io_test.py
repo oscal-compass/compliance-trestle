@@ -425,7 +425,7 @@ def test_read_control_statement():
     part = ControlReader._read_control_statement_or_objective(
         '## Control Statement', statement_text.split('\n'), 'xy-9'
     )
-    assert part.prose == '  The org:'
+    assert part.prose == 'The org:'
 
 
 def test_read_control_objective():
@@ -433,7 +433,7 @@ def test_read_control_objective():
     part = ControlReader._read_control_statement_or_objective(
         '## Control Objective', statement_text.split('\n'), 'xy-9'
     )
-    assert part.prose == '  Confirm the org:'
+    assert part.prose == 'Confirm the org:'
 
     with pytest.raises(TrestleError):
         ControlReader._read_control_statement_or_objective('## Non existing', statement_text.split('\n'), 'xy-9')
