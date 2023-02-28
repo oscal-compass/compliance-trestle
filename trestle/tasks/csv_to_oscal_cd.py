@@ -114,7 +114,8 @@ class CsvToOscalComponentDefinition(TaskBase):
         logger.info(text1 + text2)
         text1 = '  csv-file             = '
         text2 = '(required) the path of the csv file.'
-        logger.info(text1 + text2)
+        text3 = ' [1st row are column headings; 2nd row are column descriptions; 3rd row and beyond is data]'
+        logger.info(text1 + text2 + text3)
         text1 = '  required columns:      '
         for text2 in CsvColumn.columns_required:
             logger.info(text1 + text2)
