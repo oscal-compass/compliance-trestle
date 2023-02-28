@@ -1109,13 +1109,23 @@ class ControlInterface:
                     if set_param.param_id not in (control_imp_rule_param_ids + imp_req_rule_param_ids):
                         continue
                     found = False
-                    for dest_param in imp_req.set_parameters:
+                    for dest_param in as_list(imp_req.set_parameters):
                         if dest_param.param_id != set_param.param_id:
                             continue
                         dest_param.values = set_param.values
                         found = True
                         break
                     # if rule parameter val was not already set by a set_param, make new set_param for it
+                    if found:
+                        continue
+                    # but first check if the parameter was already set with the same value in the control_imp
+                    # if so we don't need to insert a new set_param in imp_req
+                    for dest_param in as_list(control_imp.set_parameters):
+                        if dest_param.param_id != set_param.param_id:
+                            continue
+                        if dest_param.values == set_param.values:
+                            found = True
+                            break
                     if found:
                         continue
                     imp_req.set_parameters = as_list(imp_req.set_parameters)

@@ -228,9 +228,6 @@ class CatalogWriter():
             control_id = control.id
             context.comp_dict = self._catalog_interface._control_comp_dicts.get(control_id, {})
             control_file_path = self._catalog_interface.get_control_file_path(context.md_root, control_id)
-            if not control_file_path:
-                logger.warning(f'Control {control_id} referenced by component is not in the resolved catalog.')
-                continue
             control_file_path.parent.mkdir(exist_ok=True, parents=True)
             # the catalog interface is from the resolved profile catalog
             control = self._catalog_interface.get_control(control_id)
@@ -279,6 +276,10 @@ class CatalogWriter():
         control_ids_in_comp_imp = [
             imp_req.control_id for imp_req in as_list(context.control_implementation.implemented_requirements)
         ]
+
+        missing_controls = set(control_ids_in_comp_imp).difference(self._catalog_interface.get_control_ids())
+        if missing_controls:
+            logger.warning(f'Component {context.comp_name} references controls {missing_controls} not in profile.')
 
         # get top level rule info applying to all controls
         comp_rules_dict, comp_rules_params_dict, _ = ControlInterface.get_rules_and_params_dict_from_item(context.component)  # noqa E501
