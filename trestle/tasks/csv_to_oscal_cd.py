@@ -892,7 +892,7 @@ class _ResolvedProfileCatalogHelper():
         self._root = root
         self._init = False
 
-    def _initilaize(self):
+    def _initialize(self):
         if not self._init:
             self._profile_map = {}
             self._control_list = []
@@ -942,7 +942,7 @@ class _ResolvedProfileCatalogHelper():
 
     def validate(self, control_id: str) -> bool:
         """Validate control_id."""
-        self._initilaize()
+        self._initialize()
         rval = True
         if control_id not in self._control_list:
             rval = False
