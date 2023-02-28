@@ -18,8 +18,6 @@ import pathlib
 
 from _pytest.monkeypatch import MonkeyPatch
 
-import pytest
-
 from tests import test_utils
 from tests.test_utils import FileChecker, setup_for_ssp
 
@@ -624,7 +622,7 @@ def test_merge_imp_req() -> None:
     assert imp_req_a.statements[0].by_components[0].description == prose
 
 
-def test_ssp_warning_missing_control(tmp_trestle_dir: pathlib.Path, caplog: pytest.LogCaptureFixture) -> None:
+def test_ssp_warning_missing_control(tmp_trestle_dir: pathlib.Path, capsys) -> None:
     """Test ssp success when profile missing control."""
     gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
     prof_path = tmp_trestle_dir / 'profiles/comp_prof/profile.json'
@@ -632,4 +630,5 @@ def test_ssp_warning_missing_control(tmp_trestle_dir: pathlib.Path, caplog: pyte
     test_utils.delete_line_in_file(prof_path, 'ac-1')
     ssp_gen = SSPGenerate()
     assert ssp_gen._run(gen_args) == 0
-    assert 'Component comp_aa references control ac-1 not in profile.' in caplog.text
+    _, err = capsys.readouterr()
+    assert 'Component comp_aa references control ac-1 not in profile.' in err

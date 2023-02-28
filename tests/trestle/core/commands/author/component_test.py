@@ -19,8 +19,6 @@ from typing import Any, Dict
 
 from _pytest.monkeypatch import MonkeyPatch
 
-import pytest
-
 from tests import test_utils
 
 import trestle.core.generic_oscal as generic
@@ -176,9 +174,7 @@ def test_generic_oscal() -> None:
     assert cont_imp.description == ''
 
 
-def test_component_generate_missing_control(
-    tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch, caplog: pytest.LogCaptureFixture
-) -> None:
+def test_component_generate_missing_control(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch, capsys) -> None:
     """Test component generate succeeds when profile missing control."""
     comp_name = test_utils.setup_component_generate(tmp_trestle_dir)
 
@@ -189,4 +185,5 @@ def test_component_generate_missing_control(
 
     # confirm success when profile is missing a needed control
     test_utils.execute_command_and_assert(generate_cmd, 0, monkeypatch)
-    assert "Component comp_aa references controls {'ac-1'} not in profile." in caplog.text
+    _, err = capsys.readouterr()
+    assert "Component comp_aa references controls {'ac-1'} not in profile." in err
