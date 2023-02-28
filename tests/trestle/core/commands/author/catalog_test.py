@@ -625,3 +625,39 @@ def test_catalog_assemble_subgroups(
     test_utils.execute_command_and_assert(catalog_generate, 0, monkeypatch)
     catalog_assemble = 'trestle author catalog-assemble -m md_catalog -o my_catalog -vv'
     test_utils.execute_command_and_assert(catalog_assemble, 0, monkeypatch)
+
+
+def test_catalog_multiline_statement(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test catalog-assemble with multiline prose for control statement."""
+    catalog = cat.Catalog.oscal_read(test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME)
+    ModelUtils.save_top_level_model(catalog, tmp_trestle_dir, 'my_catalog', FileContentType.JSON)
+
+    catalog_generate = 'trestle author catalog-generate -n my_catalog -o md_catalog'
+    test_utils.execute_command_and_assert(catalog_generate, 0, monkeypatch)
+    md_path = tmp_trestle_dir / 'md_catalog/ac/ac-2.md'
+    assert md_path.exists()
+
+    control_statement_prose = """The organization:
+
+Test 1
+
+Here goes a long paragraph. Test 2
+
+Test 3
+Test 4
+
+
+"""
+
+    file_utils.insert_text_in_file(md_path, '## Control Statement', control_statement_prose)
+
+    catalog_assemble = 'trestle author catalog-assemble -o my_catalog -m md_catalog'
+    test_utils.execute_command_and_assert(catalog_assemble, 0, monkeypatch)
+
+    catalog, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'my_catalog', cat.Catalog)
+
+    assert catalog
+    assert catalog.groups[0].controls[1].parts[0].prose == control_statement_prose.strip('\n')
+    assert catalog.groups[0].controls[1].parts[0].parts[
+        0
+    ].prose == 'Define and document the types of accounts allowed and specifically prohibited for use within the system;'  # noqa E501
