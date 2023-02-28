@@ -59,6 +59,7 @@ class CatalogInterface():
         group_title: title of the group
         group_class: class of the group
         path: path of parent groups leading to this control - without the final control_id, or [''] if in cat list
+        important to remember that controls may not be in a group
         control: the control itself
         """
 
