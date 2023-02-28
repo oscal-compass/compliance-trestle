@@ -1,6 +1,6 @@
 # xy-1 - \[My Group Title\]  Fancy Control
 
-## Control Statement
+## Control statement
 The organisation:
 - Does Foo
 - Does Bar

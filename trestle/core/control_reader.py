@@ -220,7 +220,7 @@ class ControlReader():
     @staticmethod
     def _read_control_statement_or_objective(key: str, lines: List[str], control_id: str) -> common.Part:
         """Read control statement or objective, raise an error if not found."""
-        matching_idx = [i for i, line in enumerate(lines) if line.startswith(key)]
+        matching_idx = [i for i, line in enumerate(lines) if line.lower().startswith(key.lower())]
         if len(matching_idx) == 0:
             raise TrestleError(f'Heading {key} was not found in control {control_id}.')
         if len(matching_idx) > 1:
