@@ -72,8 +72,7 @@ class ControlReader():
                 return ii
             # if line is indented it must start with -
             if line[ii] != ' ':
-                break
-        raise TrestleError(f'List elements must start with -: {line}')
+                return ii
 
     @staticmethod
     def _get_next_line(ii: int, lines: List[str]) -> Tuple[int, str]:
@@ -85,11 +84,11 @@ class ControlReader():
         return -1, ''
 
     @staticmethod
-    def _get_next_indent(ii: int, lines: List[str]) -> Tuple[int, int, str]:
+    def _get_next_indent(ii: int, lines: List[str], skip_empty_lines: bool = True) -> Tuple[int, int, str]:
         """Seek to next content line.  ii remains at line read."""
         while 0 <= ii < len(lines):
             line = lines[ii]
-            if line:
+            if line and not line.isspace():
                 if line[0] == '#':
                     return ii, -1, line
                 indent = ControlReader._indent(line)
@@ -102,6 +101,8 @@ class ControlReader():
                         raise TrestleError(f'Invalid line {line}')
                     return ii, indent, line[start:]
                 return ii, indent, line
+            elif not skip_empty_lines:
+                return ii, -1, line
             ii += 1
         return ii, -1, ''
 
@@ -217,73 +218,53 @@ class ControlReader():
                 return ii, parts
 
     @staticmethod
-    def _read_control_statement(ii: int, lines: List[str], control_id: str) -> Tuple[int, common.Part]:
-        """Search for the Control statement and read until next ## Control."""
-        while 0 <= ii < len(lines) and not lines[ii].startswith(const.CONTROL_HEADER):
-            ii += 1
-        if ii >= len(lines):
-            raise TrestleError(f'Control statement not found for control {control_id}')
-        ii += 1
+    def _read_control_statement_or_objective(key: str, lines: List[str], control_id: str) -> common.Part:
+        """Read control statement or objective, raise an error if not found."""
+        matching_idx = [i for i, line in enumerate(lines) if line.lower().startswith(key.lower())]
+        if len(matching_idx) == 0:
+            raise TrestleError(f'Heading {key} was not found in control {control_id}.')
+        if len(matching_idx) > 1:
+            raise TrestleError(f'Multiple headings {key} are found in control {control_id}. Only one allowed.')
 
-        ii, line = ControlReader._get_next_line(ii, lines)
-        if ii < 0:
-            # This means no statement and control withdrawn (this happens in NIST catalog)
-            return ii, None
-        if line and line[0] == ' ' and line.lstrip()[0] != '-':
-            # prose that appears indented but has no - : treat it as the normal statement prose
-            line = line.lstrip()
-            indent = -1
-            ii += 1
+        starting_line = matching_idx[0] + 1
+        prose = []
+
+        if key == const.CONTROL_STATEMENT_HEADER:
+            statement_id = ControlInterface.create_statement_id(control_id)
+            a_part = common.Part(name=const.STATEMENT, id=statement_id)
+        elif key == const.CONTROL_OBJECTIVE_HEADER:
+            a_part = common.Part(name='objective', id=f'{control_id}_obj')
         else:
-            ii, indent, line = ControlReader._get_next_indent(ii, lines)
+            raise TrestleError(f'Reading control with heading {key} is not supported.')
 
-        statement_id = ControlInterface.create_statement_id(control_id)
-        statement_part = common.Part(name=const.STATEMENT, id=statement_id)
-        # first line is either statement prose or start of statement parts
-        if indent < 0:
-            statement_part.prose = line
-            ii += 1
-        # we have absorbed possible statement prose.
-        # now just read parts recursively
-        # if there was no statement prose, this will re-read the line just read
-        # as the start of the statement's parts
-        ii, parts = ControlReader._read_parts(0, ii, lines, statement_part.id, [])
-        statement_part.parts = none_if_empty(parts)
-        return ii, statement_part
+        for i in range(starting_line, len(lines)):
+            line = lines[i]
+            if not line:
+                prose.append(line)
+                continue
 
-    @staticmethod
-    def _read_control_objective(ii: int, lines: List[str], control_id: str) -> Tuple[int, Optional[common.Part]]:
-        ii_orig = ii
-        while 0 <= ii < len(lines) and not lines[ii].startswith(const.CONTROL_OBJECTIVE_HEADER):
-            ii += 1
+            indent = ControlReader._indent(line)
+            if indent < 0:
+                prose.append(line)
+            else:
+                if line.lstrip()[0] != '-':
+                    # Prose that appears indented but has no - : treat it as the normal statement prose
+                    prose.append(line)
+                    continue
 
-        if ii >= len(lines):
-            return ii_orig, None
-        ii += 1
+                # Read parts
+                _, parts = ControlReader._read_parts(0, i, lines, a_part.id, [])
+                a_part.parts = none_if_empty(parts)
 
-        ii, line = ControlReader._get_next_line(ii, lines)
-        if ii < 0:
-            raise TrestleError(f'Unable to parse objective from control markdown {control_id}')
-        if line and line[0] == ' ' and line.lstrip()[0] != '-':
-            # prose that appears indented but has no - : treat it as the normal objective prose
-            line = line.lstrip()
-            indent = -1
-            ii += 1
-        else:
-            ii, indent, line = ControlReader._get_next_indent(ii, lines)
+                break
+        if prose:
+            # Delete all leading and trailing new lines before and after the text
+            str_prose = '\n'.join(prose)
+            str_prose = str_prose.strip()
+            if str_prose:
+                a_part.prose = str_prose
 
-        objective_part = common.Part(name='objective', id=f'{control_id}_obj')
-        # first line is either objective prose or start of objective parts
-        if indent < 0:
-            objective_part.prose = line
-            ii += 1
-        # we have absorbed possible objective prose.
-        # now just read parts recursively
-        # if there was no objective prose, this will re-read the line just read
-        # as the start of the objective's parts
-        ii, parts = ControlReader._read_parts(0, ii, lines, objective_part.id, [])
-        objective_part.parts = parts if parts else None
-        return ii, objective_part
+        return a_part
 
     @staticmethod
     def _read_sections(ii: int, lines: List[str], control_id: str,
@@ -831,16 +812,15 @@ class ControlReader():
             raise TrestleError(f'Control markdown: {control_path} contains no control statements.')
 
         control_statement = control_tree.get_node_for_key(control_headers[0])
-        rc, statement_part = ControlReader._read_control_statement(
-            0, control_statement.content.raw_text.split('\n'), control.id
+        statement_part = ControlReader._read_control_statement_or_objective(
+            const.CONTROL_STATEMENT_HEADER, control_statement.content.raw_text.split('\n'), control.id
         )
-        if rc < 0:
-            return control, group_title
+
         control.parts = [statement_part] if statement_part else None
         control_objective = control_tree.get_node_for_key(const.CONTROL_OBJECTIVE_HEADER)
         if control_objective is not None:
-            _, objective_part = ControlReader._read_control_objective(
-                0, control_objective.content.raw_text.split('\n'), control.id
+            objective_part = ControlReader._read_control_statement_or_objective(
+                const.CONTROL_OBJECTIVE_HEADER, control_objective.content.raw_text.split('\n'), control.id
             )
             if objective_part:
                 if control.parts:

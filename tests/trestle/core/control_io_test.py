@@ -255,9 +255,6 @@ def test_control_failures(tmp_path: pathlib.Path) -> None:
     with pytest.raises(TrestleError):
         ControlReader._indent('')
 
-    with pytest.raises(TrestleError):
-        ControlReader._indent('  foo')
-
 
 def test_bad_unicode_in_file(tmp_path: pathlib.Path) -> None:
     """Test error on read of bad unicode in control markdown."""
@@ -425,17 +422,21 @@ statement_text = """
 
 def test_read_control_statement():
     """Test read control statement."""
-    _, part = ControlReader._read_control_statement(0, statement_text.split('\n'), 'xy-9')
+    part = ControlReader._read_control_statement_or_objective(
+        '## Control Statement', statement_text.split('\n'), 'xy-9'
+    )
     assert part.prose == 'The org:'
 
 
 def test_read_control_objective():
     """Test read control objective."""
-    _, part = ControlReader._read_control_objective(13, statement_text.split('\n'), 'xy-9')
+    part = ControlReader._read_control_statement_or_objective(
+        '## Control Objective', statement_text.split('\n'), 'xy-9'
+    )
     assert part.prose == 'Confirm the org:'
 
-    _, part = ControlReader._read_control_objective(16, statement_text.split('\n'), 'xy-9')
-    assert part is None
+    with pytest.raises(TrestleError):
+        ControlReader._read_control_statement_or_objective('## Non existing', statement_text.split('\n'), 'xy-9')
 
 
 section_text = """
