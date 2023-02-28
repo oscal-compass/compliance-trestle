@@ -644,7 +644,10 @@ Test 1
 Here goes a long paragraph. Test 2
 
 Test 3
-Test 4"""
+Test 4
+
+
+"""
 
     file_utils.insert_text_in_file(md_path, '## Control Statement', control_statement_prose)
 
@@ -654,7 +657,7 @@ Test 4"""
     catalog, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'my_catalog', cat.Catalog)
 
     assert catalog
-    assert catalog.groups[0].controls[1].parts[0].prose == control_statement_prose
+    assert catalog.groups[0].controls[1].parts[0].prose == control_statement_prose.strip('\n')
     assert catalog.groups[0].controls[1].parts[0].parts[
         0
     ].prose == 'Define and document the types of accounts allowed and specifically prohibited for use within the system;'  # noqa E501

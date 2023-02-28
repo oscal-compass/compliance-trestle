@@ -258,15 +258,12 @@ class ControlReader():
 
                 break
         if prose:
-            # The first and last spaces in the prose is added by control_writer
-            # Delete them to avoid duplication
-            if not prose[0]:
-                del prose[0]
-            if prose and not prose[len(prose) - 1]:
-                del prose[len(prose) - 1]
+            # Delete all leading and trailing new lines before and after the text
+            str_prose = '\n'.join(prose)
+            str_prose = str_prose.strip()
+            if str_prose:
+                a_part.prose = str_prose
 
-            if prose:
-                a_part.prose = '\n'.join(prose)
         return a_part
 
     @staticmethod
