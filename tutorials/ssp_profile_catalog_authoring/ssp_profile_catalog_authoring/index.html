@@ -12,8 +12,14 @@
       
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring/">
       
+      
+        <link rel="prev" href="../../../trestle_author/">
+      
+      
+        <link rel="next" href="../../task.transformer-construction/transformer-construction/">
+      
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.3.1, mkdocs-material-8.3.9">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.15">
     
     
       
@@ -21,17 +27,13 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.1d29e8d0.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.113286f1.min.css">
       
         
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.cbb835fc.min.css">
-        
-          
-          
-          <meta name="theme-color" content="#009485">
-        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.a0c5b2b5.min.css">
       
       
+
     
     
     
@@ -46,7 +48,7 @@
     
       <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("../../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
   
@@ -56,10 +58,13 @@
   
 
 
-  <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-XT3KGMHSY8"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&gtag("event","search",{search_term:this.value})}),"undefined"!=typeof location$&&location$.subscribe(function(e){gtag("config","G-XT3KGMHSY8",{page_path:e.pathname})})})</script>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XT3KGMHSY8"></script>
+  <script id="__analytics">function __md_analytics(){function n(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],n("js",new Date),n("config","G-XT3KGMHSY8"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&n("event","search",{search_term:this.value})}),document$.subscribe(function(){var a=document.forms.feedback;if(void 0!==a)for(var e of a.querySelectorAll("[type=submit]"))e.addEventListener("click",function(e){e.preventDefault();var t=document.location.pathname,e=this.getAttribute("data-md-value");n("event","feedback",{page:t,data:e}),a.firstElementChild.disabled=!0;e=a.querySelector(".md-feedback__note [data-md-value='"+e+"']");e&&(e.hidden=!1)}),a.hidden=!1}),location$.subscribe(function(e){n("config","G-XT3KGMHSY8",{page_path:e.pathname})})});var e=document.createElement("script");e.async=!0,e.src="https://www.googletagmanager.com/gtag/js?id=G-XT3KGMHSY8",document.getElementById("__analytics").insertAdjacentElement("afterEnd",e)}</script>
 
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
 
+    
     
     
   </head>
@@ -136,7 +141,7 @@
       </label>
       <nav class="md-search__options" aria-label="Search">
         
-        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
         </button>
       </nav>
@@ -148,7 +153,7 @@
           <div class="md-search-result__meta">
             Initializing search
           </div>
-          <ol class="md-search-result__list"></ol>
+          <ol class="md-search-result__list" role="presentation"></ol>
         </div>
       </div>
     </div>
@@ -160,7 +165,7 @@
         <a href="https://github.com/IBM/compliance-trestle" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.3.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     IBM/compliance-trestle
@@ -179,7 +184,7 @@
           
             
 <nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
-  <div class="md-tabs__inner md-grid">
+  <div class="md-grid">
     <ul class="md-tabs__list">
       
         
@@ -342,7 +347,7 @@
       <a href="https://github.com/IBM/compliance-trestle" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.3.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     IBM/compliance-trestle
@@ -395,17 +400,18 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
       
       
       
-      
-        <label class="md-nav__link" for="__nav_3">
+        <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
           Tutorials
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Tutorials" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           Tutorials
@@ -451,17 +457,18 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_3" type="checkbox" id="__nav_3_3" checked>
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" checked>
       
       
       
-      
-        <label class="md-nav__link" for="__nav_3_3">
+        <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
           Trestle Authoring
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Trestle Authoring" data-md-level="2">
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_3_3">
           <span class="md-nav__icon md-icon"></span>
           Trestle Authoring
@@ -491,7 +498,7 @@
   
     <li class="md-nav__item md-nav__item--active">
       
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
         
@@ -567,17 +574,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_4" type="checkbox" id="__nav_3_4" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_3_4">
+        <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
           Trestle Transformers and Tasks
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Trestle Transformers and Tasks" data-md-level="2">
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3_4">
           <span class="md-nav__icon md-icon"></span>
           Trestle Transformers and Tasks
@@ -592,6 +600,20 @@
     <li class="md-nav__item">
       <a href="../../task.transformer-construction/transformer-construction/" class="md-nav__link">
         Transformer construction
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../task.csv-to-oscal-cd/transformation/" class="md-nav__link">
+        Task - task.csv-to-oscal-cd
       </a>
     </li>
   
@@ -656,17 +678,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_5" type="checkbox" id="__nav_3_5" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_3_5">
+        <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
           Trestle command-line interface (CLI)
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Trestle command-line interface (CLI)" data-md-level="2">
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3_5">
           <span class="md-nav__icon md-icon"></span>
           Trestle command-line interface (CLI)
@@ -725,17 +748,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_4">
+        <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
           Contributing
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Contributing" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_4">
           <span class="md-nav__icon md-icon"></span>
           Contributing
@@ -901,17 +925,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_7">
+        <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
           Plugins
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Plugins" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_7">
           <span class="md-nav__icon md-icon"></span>
           Plugins
@@ -964,17 +989,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9" type="checkbox" id="__nav_9" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9">
+        <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
           Reference
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Reference" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9">
           <span class="md-nav__icon md-icon"></span>
           Reference
@@ -1004,17 +1030,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2" type="checkbox" id="__nav_9_2" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2">
+        <label class="md-nav__link" for="__nav_9_2" id="__nav_9_2_label" tabindex="0">
           trestle API reference
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="trestle API reference" data-md-level="2">
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_9_2_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2">
           <span class="md-nav__icon md-icon"></span>
           trestle API reference
@@ -1044,17 +1071,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_2" type="checkbox" id="__nav_9_2_2" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_2" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_2">
+        <label class="md-nav__link" for="__nav_9_2_2" id="__nav_9_2_2_label" tabindex="0">
           common
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="common" data-md-level="3">
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_9_2_2_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_2">
           <span class="md-nav__icon md-icon"></span>
           common
@@ -1231,17 +1259,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3" type="checkbox" id="__nav_9_2_3" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3">
+        <label class="md-nav__link" for="__nav_9_2_3" id="__nav_9_2_3_label" tabindex="0">
           core
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="core" data-md-level="3">
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_9_2_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_3">
           <span class="md-nav__icon md-icon"></span>
           core
@@ -1281,10 +1310,100 @@
   
   
   
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_9_2_3_3" id="__nav_9_2_3_3_label" tabindex="0">
+          catalog
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_9_2_3_3_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_9_2_3_3">
+          <span class="md-nav__icon md-icon"></span>
+          catalog
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../../../api_reference/trestle.core.catalog_interface/" class="md-nav__link">
+      <a href="../../../api_reference/trestle.core.catalog.catalog_api/" class="md-nav__link">
+        catalog_api
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.catalog.catalog_interface/" class="md-nav__link">
         catalog_interface
       </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.catalog.catalog_merger/" class="md-nav__link">
+        catalog_merger
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.catalog.catalog_reader/" class="md-nav__link">
+        catalog_reader
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.catalog.catalog_writer/" class="md-nav__link">
+        catalog_writer
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
     </li>
   
 
@@ -1313,17 +1432,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3_5" type="checkbox" id="__nav_9_2_3_5" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_5" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3_5">
+        <label class="md-nav__link" for="__nav_9_2_3_5" id="__nav_9_2_3_5_label" tabindex="0">
           commands
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="commands" data-md-level="4">
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_9_2_3_5_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_3_5">
           <span class="md-nav__icon md-icon"></span>
           commands
@@ -1367,17 +1487,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3_5_3" type="checkbox" id="__nav_9_2_3_5_3" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_5_3" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3_5_3">
+        <label class="md-nav__link" for="__nav_9_2_3_5_3" id="__nav_9_2_3_5_3_label" tabindex="0">
           author
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="author" data-md-level="5">
+      <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_9_2_3_5_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_3_5_3">
           <span class="md-nav__icon md-icon"></span>
           author
@@ -1547,17 +1668,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3_5_3_12" type="checkbox" id="__nav_9_2_3_5_3_12" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_5_3_12" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3_5_3_12">
+        <label class="md-nav__link" for="__nav_9_2_3_5_3_12" id="__nav_9_2_3_5_3_12_label" tabindex="0">
           versioning
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="versioning" data-md-level="6">
+      <nav class="md-nav" data-md-level="6" aria-labelledby="__nav_9_2_3_5_3_12_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_3_5_3_12">
           <span class="md-nav__icon md-icon"></span>
           versioning
@@ -1615,17 +1737,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3_5_5" type="checkbox" id="__nav_9_2_3_5_5" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_5_5" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3_5_5">
+        <label class="md-nav__link" for="__nav_9_2_3_5_5" id="__nav_9_2_3_5_5_label" tabindex="0">
           common
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="common" data-md-level="5">
+      <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_9_2_3_5_5_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_3_5_5">
           <span class="md-nav__icon md-icon"></span>
           common
@@ -2019,17 +2142,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3_17" type="checkbox" id="__nav_9_2_3_17" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_17" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3_17">
+        <label class="md-nav__link" for="__nav_9_2_3_17" id="__nav_9_2_3_17_label" tabindex="0">
           markdown
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="markdown" data-md-level="4">
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_9_2_3_17_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_3_17">
           <span class="md-nav__icon md-icon"></span>
           markdown
@@ -2136,17 +2260,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3_18" type="checkbox" id="__nav_9_2_3_18" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_18" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3_18">
+        <label class="md-nav__link" for="__nav_9_2_3_18" id="__nav_9_2_3_18_label" tabindex="0">
           models
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="models" data-md-level="4">
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_9_2_3_18_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_3_18">
           <span class="md-nav__icon md-icon"></span>
           models
@@ -2309,17 +2434,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3_24" type="checkbox" id="__nav_9_2_3_24" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_24" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3_24">
+        <label class="md-nav__link" for="__nav_9_2_3_24" id="__nav_9_2_3_24_label" tabindex="0">
           remote
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="remote" data-md-level="4">
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_9_2_3_24_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_3_24">
           <span class="md-nav__icon md-icon"></span>
           remote
@@ -2370,17 +2496,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3_26" type="checkbox" id="__nav_9_2_3_26" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_26" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3_26">
+        <label class="md-nav__link" for="__nav_9_2_3_26" id="__nav_9_2_3_26_label" tabindex="0">
           resolver
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="resolver" data-md-level="4">
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_9_2_3_26_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_3_26">
           <span class="md-nav__icon md-icon"></span>
           resolver
@@ -2508,17 +2635,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_4" type="checkbox" id="__nav_9_2_4" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_4" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_4">
+        <label class="md-nav__link" for="__nav_9_2_4" id="__nav_9_2_4_label" tabindex="0">
           oscal
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="oscal" data-md-level="3">
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_9_2_4_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_4">
           <span class="md-nav__icon md-icon"></span>
           oscal
@@ -2653,17 +2781,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_5" type="checkbox" id="__nav_9_2_5" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_5" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_5">
+        <label class="md-nav__link" for="__nav_9_2_5" id="__nav_9_2_5_label" tabindex="0">
           tasks
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="tasks" data-md-level="3">
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_9_2_5_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_5">
           <span class="md-nav__icon md-icon"></span>
           tasks
@@ -2690,8 +2819,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../api_reference/trestle.tasks.csv_helper/" class="md-nav__link">
-        csv_helper
+      <a href="../../../api_reference/trestle.tasks.cis_xlsx_to_oscal_catalog/" class="md-nav__link">
+        cis_xlsx_to_oscal_catalog
       </a>
     </li>
   
@@ -2854,17 +2983,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_6" type="checkbox" id="__nav_9_2_6" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_6" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_6">
+        <label class="md-nav__link" for="__nav_9_2_6" id="__nav_9_2_6_label" tabindex="0">
           transforms
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="transforms" data-md-level="3">
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_9_2_6_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_6">
           <span class="md-nav__icon md-icon"></span>
           transforms
@@ -2880,17 +3010,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_6_1" type="checkbox" id="__nav_9_2_6_1" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_6_1" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_6_1">
+        <label class="md-nav__link" for="__nav_9_2_6_1" id="__nav_9_2_6_1_label" tabindex="0">
           implementations
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="implementations" data-md-level="4">
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_9_2_6_1_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_6_1">
           <span class="md-nav__icon md-icon"></span>
           implementations
@@ -3063,10 +3194,11 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
                 
+                  
 
 
 <h1 id="tutorial-catalog-component-profile-and-ssp-authoring">Tutorial: Catalog, Component, Profile and SSP Authoring<a class="headerlink" href="#tutorial-catalog-component-profile-and-ssp-authoring" title="Permanent link">¤</a></h1>
@@ -3087,18 +3219,18 @@
 <li><code>profile-generate</code> takes a given Profile and converts the controls represented by its resolved profile catalog to individual controls in markdown format, with sections corresponding to the content that the Profile adds to the Catalog, along with both the current values of parameters in the resolved profile catalog - and the values that are being modified by the given profile's SetParameters.  The user may edit the content or add more, and <code>profile-assemble</code> then gathers the updated content and creates a new OSCAL Profile that includes those changes.</li>
 <li><code>profile-resolve</code> is special as an authoring tool because it does not involve markdown and instead it simply creates a JSON resolved profile catalog from a specified JSON profile in the trestle directory.  There are options to specify whether or not parameters get replace in the control prose or not, along with any special brackets that might be desired to indicate the parameters embedded in the prose.</li>
 <li><code>component-generate</code> takes a given ComponentDefinition file and represents all the controls in markdown in separate directories for each Component in the file.  This allows editing of the prose on a per-component basis.  <code>component-assemble</code> then assembles the markdown for all controls in all component directories into a new, or the same, ComponentDefinition file.</li>
-<li><code>ssp-generate</code> takes a given Profile and its resolved profile catalog, and represents the individual controls as markdown files with sections that prompt for prose regarding the implementation response for items in the statement of the control.  <code>ssp-assemble</code> then gathers the response sections and creates an OSCAL System Security Plan comprising the resolved profile catalog and the implementation responses.</li>
-<li><code>ssp-filter</code> takes a given ssp and filters its contents based on the controls included in a provided profile.</li>
+<li><code>ssp-generate</code> takes a given Profile and its resolved profile catalog, and represents the individual controls as markdown files with sections that prompt for prose regarding the implementation response for items in the statement of the control.  <code>ssp-assemble</code> then gathers the response sections and creates an OSCAL System Security Plan comprising the resolved profile catalog and the implementation responses.  Both commands may also include a list of component definitions representing the components referred to in the ssp.  Rules, parameters and status associated with the implemented requirements are stored in the SetParameters and Properties of the components in the component definitions and represented in the markdown, allowing changes to be made to the parameter values and status.  These edits are then included in the assembled SSP.  Note that the rules themselves may not be edited and strictly correspond to what is in the component definition.</li>
+<li><code>ssp-filter</code> takes a given ssp and filters its contents based on the controls included in a provided profile, or in a list of components to be included in the final ssp.</li>
 </ol>
 <p>In summary, the <code>catalog</code> tools allow conversion of a Catalog to markdown for editing - and back again to a Catalog.  The <code>profile</code> tools similarly convert a Profile's resolved profile catalog to markdown and allow conversion to a new Profile with modified additions that get applied in resolving the profile catalog.  <code>component</code> tools perform similarly for ComponentDefinitions.  Finally, the <code>ssp</code> tools allow the addition of implementation prose to the markdown of a system security plan, which is then assembled into a JSON SSP on a by-component basis.</p>
-<p>Note that version 1.x of trestle creates SSP's by adding prose directly to the SSP markdown on a per-component basis - but there is no connection with separate ComponentDefinition JSON files.  This will be changed in version 2 so that control responses can be added to the ComponentDefinition and then merged to create the SSP markdown.</p>
+<p>Note that the original ssp implementation in trestle created SSP's by adding prose directly to the SSP markdown on a per-component basis, and there was no connection with separate ComponentDefinition JSON files.  This is now changed so that control responses can be added to the ComponentDefinition and then merged to create the SSP markdown.  In addition, rules and status are captured in the component definition as properties that propogate via markdown into the assembled SSP.  The OSCAL schema doesn't include a form of implementation status for components in the component definition, which is why trestle embeds the status value in the properties.  Similarly, rules and rule parameter values are not currently part of the schema, so they are also embedded in properties.</p>
 </details>
 <details>
 <summary>Some details of the author commands</summary>
 <p>The markdown files for controls usually have a YAML header at the top containing metadata about the control.  Sometimes that information is read-only and intended as additional information useful during markdown editing, but in other cases the content may be edited and incorporated as new values for the control after <code>-assemble</code>.  In addition, most <code>-generate</code> commands allow specifying a separate YAML header file containing information either needed by the command, or intended to be incorporated into the header of each control markdown file.  When generating markdown a YAML header may be optionally provided, and if so, the option <code>--overwrite-header-values</code> will cause the values in the provided YAML header to overwrite the value in the markdown file's header for any items that are common.  Otherwise the provided YAML header will simply insert any values not already in the markdown header. By default, Trestle will preserve the history of the changes in generated markdowns, however <code>--force-overwrite</code> option can be used to overwrite markdowns with content from JSON. Note that this option will completely delete all existing markdowns (in the given <code>output</code> folder) without saving any changes. To save the changes, run assemble first.
 Similarly, when assembling to JSON, the <code>--set-parameters</code> option will cause any changes in the header to take effect and change values in the assembled JSON for the control.  The changes can including setting parameter and property values.  The <code>--set-parameters</code> option is available only for <code>catalog-assemble</code> and <code>profile-assemble</code>.</p>
 <p>As described earlier, the authoring tools are designed to work well in a CI/CD environment where changes are made in a pipeline by people with different responsibilities and authority.  In this setting, changes to documents can trigger changes downstream, e.g. the editing of a control would cause an update in the catalog, which could then flow down to an updated SSP.  These changes can occur automatically via actions that restrict the potential changes to the generated documents.  Examples are the <code>--set-parameters</code> option on the <code>-assemble</code> tools, and both <code>--required-sections</code> and <code>allowed-sections</code> for <code>profile-assemble</code>.  If a document change triggers an assemble action, changes to parameters can only occur if the action has <code>--set-parameters</code> in the command.  Similarly, <code>profile-assemble</code> will fail if the sections do not meet the requirements specified in the command options.  Another feature of the <code>-assemble</code> tools is that they won't create a new OSCAL file if the output already exists and its content would not be changed.  This prevents undesired triggering of downstream actions when there is no actual change in content.</p>
-<p>For a complete standalone demonstration of the SSP generation process with trestle, please see the <a href="https://github.com/IBM/compliance-trestle-ssp-demo">Trestle SSP Demo</a>.  It shows the complete flow from OSCAL json files to a finished Word .docx file.  Note that the procedure will change in version 2.x to one based on ComponentDefintion.</p>
+<p>There is a standalone demonstration of the SSP generation process with trestle in the <a href="https://github.com/IBM/compliance-trestle-ssp-demo">Trestle SSP Demo</a>, but it currently represents the earlier version of ssp authoring with trestle - prior to the link with component definitions and rules.  Nonetheless it captures the flow from OSCAL json files to a finished Word .docx file.</p>
 </details>
 <details>
 <summary>Background on underlying concepts</summary>
@@ -3118,25 +3250,22 @@ Similarly, when assembling to JSON, the <code>--set-parameters</code> option wil
 </details>
 <h2 id="the-author-commands-for-markdown-generation-and-assembly-to-json">The author commands for markdown generation and assembly (to JSON)<a class="headerlink" href="#the-author-commands-for-markdown-generation-and-assembly-to-json" title="Permanent link">¤</a></h2>
 <details>
-<summary>`trestle author catalog-generate` and `trestle author catalog-assemble`</summary>
+<summary>trestle author catalog-generate and trestle author catalog-assemble</summary>
 <p><code>catalog-generate</code> takes an existing json catalog and writes it out as markdown files for each control in a user-specified directory.  That directory will contain subdirectories for each group in the catalog, and those directories may contain subdirectories for groups within groups.  But controls containing controls are always split out into a series of controls in the same directory - and each control markdown file corresponds to a single control.</p>
 <p>We now look at the contents of a typical control markdown file.</p>
 <p>A Control may contain many parts, but only one of them is a Statement, which describes the function of the control.  The statement itself is broken down into separate items, each of which may contain parameter id's in "moustache" (<code>{{}}</code>) brackets.  Below is an example of a control as generated in markdown form by the <code>catalog-generate</code> command.</p>
 <details>
 <summary>Control example</summary>
 <div class="highlight"><pre><span></span><code>---
-control-origination:
-  <span class="k">-</span> Service Provider Corporate
-  <span class="k">-</span> Service Provider System Specific
-responsible-roles:
-  <span class="k">-</span> Customer
 x-trestle-set-params:
   ac-1_prm_1:
-    values: new value
+    values:
+<span class="w">      </span><span class="k">-</span><span class="w"> </span>new value
   ac-1_prm_2:
     values:
   ac-1_prm_3:
-    values: added param 3 value
+    values:
+<span class="w">      </span><span class="k">-</span><span class="w"> </span>added param 3 value
   ac-1_prm_4:
     values:
   ac-1_prm_5:
@@ -3145,29 +3274,30 @@ x-trestle-set-params:
     values:
   ac-1_prm_7:
     values:
-<span class="gu">sort-id: ac-01</span>
+x-trestle-global:
+<span class="gu">  sort-id: ac-01</span>
 <span class="gu">---</span>
 
 <span class="gh"># ac-1 - \[Access Control\] Policy and Procedures</span>
 
 <span class="gu">## Control Statement</span>
 
-<span class="k">-</span> \[a.\] Develop, document, and disseminate to {{ insert: param, ac-1_prm_1 }}:
+<span class="k">-</span><span class="w"> </span>\[a.\] Develop, document, and disseminate to {{ insert: param, ac-1_prm_1 }}:
 
-  <span class="k">-</span> \[1.\]  {{ insert: param, ac-1_prm_2 }} access control policy that:
+<span class="w">  </span><span class="k">-</span><span class="w"> </span>\[1.\]  {{ insert: param, ac-1_prm_2 }} access control policy that:
 
-    <span class="k">-</span> \[(a)\] Addresses purpose, scope, roles, responsibilities, management commitment, coordination among organizational entities, and compliance; and
-    <span class="k">-</span> \[(b)\] Is consistent with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines; and
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>\[(a)\] Addresses purpose, scope, roles, responsibilities, management commitment, coordination among organizational entities, and compliance; and
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>\[(b)\] Is consistent with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines; and
 
-  <span class="k">-</span> \[2.\] Procedures to facilitate the implementation of the access control policy and the associated access controls;
+<span class="w">  </span><span class="k">-</span><span class="w"> </span>\[2.\] Procedures to facilitate the implementation of the access control policy and the associated access controls;
 
-<span class="k">-</span> \[b.\] Designate an {{ insert: param, ac-1_prm_3 }} to manage the development, documentation, and dissemination of the access control policy and procedures; and
+<span class="k">-</span><span class="w"> </span>\[b.\] Designate an {{ insert: param, ac-1_prm_3 }} to manage the development, documentation, and dissemination of the access control policy and procedures; and
 
-<span class="k">-</span> \[c.\] Review and update the current access control:
+<span class="k">-</span><span class="w"> </span>\[c.\] Review and update the current access control:
 
-  <span class="k">-</span> \[1.\] Policy {{ insert: param, ac-1_prm_4 }} and following {{ insert: param, ac-1_prm_5 }}; and
-  <span class="k">-</span> \[2.\] Procedures {{ insert: param, ac-1_prm_6 }} and following {{ insert: param, ac-1_prm_7 }}.
-<span class="k">-</span> \[d\] My added item
+<span class="w">  </span><span class="k">-</span><span class="w"> </span>\[1.\] Policy {{ insert: param, ac-1_prm_4 }} and following {{ insert: param, ac-1_prm_5 }}; and
+<span class="w">  </span><span class="k">-</span><span class="w"> </span>\[2.\] Procedures {{ insert: param, ac-1_prm_6 }} and following {{ insert: param, ac-1_prm_7 }}.
+<span class="k">-</span><span class="w"> </span>\[d\] My added item
 
 <span class="gu">## Control guidance</span>
 
@@ -3183,6 +3313,7 @@ Access control policy and procedures address the controls in the AC family that 
 <p>In the control markdown example above, the header contains some arbitrary values along with a special <code>x-trestle-set-params</code> section containing parameters for some of the parameters in the control.  Any parameters for the control in the catalog will appear in the markdown header automatically during <code>catalog-generate</code>.  These values may be changed and values for other parameters may be inserted into the markdown header for later use during <code>catalog-assemble</code>.</p>
 <p>Parameters in the header are shown with a subset of their full OSCAL attributes in order to convey any values they may have along with descriptive text.  This amounts to the parameter id, its label if present, any values if present, and any select if present.  When a select is present the list of choices is provided along with the how-many option.  Note that values is a list in OSCAL, but in many cases it is a list of only one item.  As a result, for convenience the values: dictionary may either have one string value (on the same line with <code>values:</code>) or as an indented <code>-</code> list of multiple values underneath <code>values:</code>.  Multiple examples are evident in the sample above, including ac-1_prm_3, which only has a label and no values.</p>
 <p>Another important item in the header is the sort-id for the control.  This specifies how the controls and their parameters are ordered in any aggregated list operation.  If it is not specified for a control, the control's id is used for sorting.</p>
+<p>As with the other -generate tools, the <code>--force-overwrite</code> option will cause the destination markdown directory to be erased prior to generating the new markdown, so that any prior edits to the markdown will be erased.</p>
 <p><code>catalog-assemble</code> is run with the command <code>catalog-assemble --markdown my_md --output my_new_catalog</code>.  This will read the markdown for each control and create a new catalog based on any edits to the markdown.  Note that you may optionally provide a <code>--name</code> option specifying an original json catalog into which the updated controls are inserted, and the resulting catalog can either replace the original one or output to a different json file.  New controls may be added but existing controls may not be removed and new groups cannot be added when you are updating an existing catalog.  The main benefit of updating an existing catalog is that the original metadata and other contents of the catalog json file will be retained.  Note that you cannot create new controls that contain controls, but if an original json catalog contains controls with child controls, you can edit and update all of them as individual markdown files.  You have the option to specify a new <code>--version</code> for the catalog, and an option to regenerate the uuid's in the catalog.  Finally, you have the option to use the parameters in the markdown header to update the values in the control.  Any parameters and their values present will be added to the control, and any not present will be removed.  The parameters themselves are still present but their values are removed.</p>
 <p>In a typical <code>generate-edit-assemble</code> cycle, the cycle would start with an original json file containing source content and metadata and use that to generate an initial markdown directory of controls.  After editing the controls they would be assembled into into a new json file with a different name.  But once that new file exists, it can be used as the source for the next generation and the original source document is no longer needed or referred to.  For the <code>catalog-</code> editing cycle it would go as:</p>
 <div class="highlight"><pre><span></span><code>trestle author catalog-generate --name orig_catalog --output md_catalog
@@ -3196,45 +3327,58 @@ trestle author catalog-assemble --markdown md_catalog --output assembled_catalog
 <p><em>Special Note about assemble</em>: In order to avoid triggering actions when a new file is created that has no actual changes in it, <code>catalog-assemble</code> and the other <code>-assemble</code> tools below will check to see if the output file already exists, and if so it will be examined for changes relative to the newly assembled one.  If there are no changes the file will not be written out.  Note that the check happens <em>before</em> any possible <code>--regeneration</code> of uuid's, and <em>after</em> any possible <code>--version</code> change.  This avoids the creation of a new file and new uuid's if there is no change to the version or other file contents relative to the existing output file, but if the specified <code>--version</code> is different from the one in the existing output file, or there is any other difference in the model, a new file will be written out.</p>
 </details>
 <details>
-<summary>`trestle author profile-generate` and `trestle author profile-assemble`</summary>
+<summary>trestle author profile-generate and trestle author profile-assemble</summary>
 <p>The background text above conveys how a profile pulls controls from catalogs and makes modifications to them, and the <code>trestle profile</code> tools let you change the way those modifications are made.  In addition to selecting controls and setting parameters, a profile may add new parts to a control that provide additional guidance specific to a certain use case.  <code>profile-generate</code> is run with the command, <code>trestle author profile-generate --name profile_name --output markdown_dir</code>.  It will load the specified profile name from the trestle workspace (it must have been imported into the trestle workspace prior) and create its corresponding resolved profile catalog - but <em>without</em> applying any of its <code>Adds</code> of additonal guidance content or <code>SetParameters</code>.  It will make all other modifications, but the <code>Adds</code> and <code>SetParameters</code> are kept separate, as shown below:</p>
 <details>
 <summary>Example of control markdown after `profile-generate`</summary>
 <div class="highlight"><pre><span></span><code>---
-control-origination:
-  <span class="k">-</span> Service Provider Corporate
-  <span class="k">-</span> Service Provider System Specific
-responsible-roles:
-  <span class="k">-</span> Customer
 x-trestle-set-params:
+  # You may set values for parameters in the assembled Profile by adding
+  #
+  # profile-values:
+  #   - value 1
+  #   - value 2
+  #
+  # in the section under a parameter name
+  # The values list refers to the values in the catalog, and the profile-values represent values
+  # in SetParameters of the Profile.
+  #
   ac-1_prm_1:
     label: label from edit
-    profile-values: all personnel
-    values: Param_1_value_in_catalog
+    profile-values:
+<span class="w">      </span><span class="k">-</span><span class="w"> </span>all personnel
+    values:
+<span class="w">      </span><span class="k">-</span><span class="w"> </span>Param_1_value_in_catalog
     display-name: Pretty ac-1 prm 1
   ac-1_prm_2:
     profile-values:
-      <span class="k">-</span> Organization-level
-      <span class="k">-</span> System-level
+<span class="w">      </span><span class="k">-</span><span class="w"> </span>Organization-level
+<span class="w">      </span><span class="k">-</span><span class="w"> </span>System-level
     values:
     display-name: Pretty ac-1 prm 2
   ac-1_prm_3:
-    profile-values: new value
+    profile-values:
+<span class="w">      </span><span class="k">-</span><span class="w"> </span>new value
     values:
   ac-1_prm_4:
+    profile-values:
     values:
   ac-1_prm_5:
-    profile-values: all meetings
+    profile-values:
+<span class="w">      </span><span class="k">-</span><span class="w"> </span>all meetings
     values:
   ac-1_prm_6:
-    profile-values: monthly
+    profile-values:
+<span class="w">      </span><span class="k">-</span><span class="w"> </span>monthly
     values:
   ac-1_prm_7:
     values:
 x-trestle-global:
-  profile-title: Trestle test profile
-sort-id: ac-01
+  profile:
+    title: Trestle test profile
+  sort-id: ac-01
 x-trestle-sections:
+  guidance: Guidance
   implgdn: Implementation Guidance
   expevid: Expected Evidence
   my_guidance: My Guidance
@@ -3257,12 +3401,13 @@ x-trestle-add-props:
   #     value: new property value
   #     smt-part: b.
   #
-  <span class="k">-</span> name: prop_with_ns
+<span class="w">  </span><span class="k">-</span><span class="w"> </span>name: prop_with_ns
     value: prop with ns
     ns: https://my_new_namespace
-  <span class="k">-</span> name: prop_added_to_statement_part_b
-    value: the prop value
-    smt-part: b.
+<span class="w">  </span><span class="k">-</span><span class="w"> </span>name: prop_with_no_ns
+    value: prop with no ns
+<span class="gu">    ns: https://my_added_namespace</span>
+<span class="gu">---</span>
 
 ---
 
@@ -3270,21 +3415,21 @@ x-trestle-add-props:
 
 <span class="gu">## Control Statement</span>
 
-<span class="k">-</span> \[a.\] Develop, document, and disseminate to {{ insert: param, ac-1_prm_1 }}:
+<span class="k">-</span><span class="w"> </span>\[a.\] Develop, document, and disseminate to {{ insert: param, ac-1_prm_1 }}:
 
-  <span class="k">-</span> \[1.\]  {{ insert: param, ac-1_prm_2 }} access control policy that:
+<span class="w">  </span><span class="k">-</span><span class="w"> </span>\[1.\]  {{ insert: param, ac-1_prm_2 }} access control policy that:
 
-    <span class="k">-</span> \[(a)\] Addresses purpose, scope, roles, responsibilities, management commitment, coordination among organizational entities, and compliance; and
-    <span class="k">-</span> \[(b)\] Is consistent with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines; and
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>\[(a)\] Addresses purpose, scope, roles, responsibilities, management commitment, coordination among organizational entities, and compliance; and
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>\[(b)\] Is consistent with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines; and
 
-  <span class="k">-</span> \[2.\] Procedures to facilitate the implementation of the access control policy and the associated access controls;
+<span class="w">  </span><span class="k">-</span><span class="w"> </span>\[2.\] Procedures to facilitate the implementation of the access control policy and the associated access controls;
 
-<span class="k">-</span> \[b.\] Designate an {{ insert: param, ac-1_prm_3 }} to manage the development, documentation, and dissemination of the access control policy and procedures; and
+<span class="k">-</span><span class="w"> </span>\[b.\] Designate an {{ insert: param, ac-1_prm_3 }} to manage the development, documentation, and dissemination of the access control policy and procedures; and
 
-<span class="k">-</span> \[c.\] Review and update the current access control:
+<span class="k">-</span><span class="w"> </span>\[c.\] Review and update the current access control:
 
-  <span class="k">-</span> \[1.\] Policy {{ insert: param, ac-1_prm_4 }} and following {{ insert: param, ac-1_prm_5 }}; and
-  <span class="k">-</span> \[2.\] Procedures {{ insert: param, ac-1_prm_6 }} and following {{ insert: param, ac-1_prm_7 }}.
+<span class="w">  </span><span class="k">-</span><span class="w"> </span>\[1.\] Policy {{ insert: param, ac-1_prm_4 }} and following {{ insert: param, ac-1_prm_5 }}; and
+<span class="w">  </span><span class="k">-</span><span class="w"> </span>\[2.\] Procedures {{ insert: param, ac-1_prm_6 }} and following {{ insert: param, ac-1_prm_7 }}.
 
 <span class="gu">## Control guidance</span>
 
@@ -3351,9 +3496,9 @@ Prose added as a sub-part to Part a. of the control
 <p>The <code>x-trestle-add-props</code> key of the yaml header allows addition of properties to the SetParameters of the profile, comprising <code>name</code>, <code>value</code>, and optionally a namespace <code>ns</code> value.  The properties may be added at the control level, or attached to a top level statment part by adding a value, <code>smt-part</code> with value <code>a.</code>, <code>b.</code> or any other label for one of the top level statement parts.</p>
 <p>For convenience, the <code>x-trestle-global</code> key of the yaml header contains the <code>profile-title</code> of the profile used to generate the markdown.</p>
 <p>Keep in mind that the header in the <code>profile-</code> tools corresponds to the <code>SetParameters</code> in the profile - and not simply the <code>Parameters</code> in the control.  For convenience the current incoming values of the control parameters, as set by any upstream profiles, are shown as <code>values</code> - but anything else associated with a parameter, such as <code>profile-values</code>, <code>label</code>, <code>choice</code> will be added to the profile's <code>SetParameters</code> during <code>profile-assemble</code> (if you use the <code>--set-parameters</code> flag.)  So entries should be set there only if you want the profile to enforce those entries as <code>SetParameters</code>.</p>
-<p>As with <code>catalog-assemble</code> described above, a new file is written out only if there are changes to the model relative to an existing output file.</p>
+<p>As with <code>catalog-assemble</code> described above, a new file is written out only if there are changes to the model relative to an existing output file, and during generate, <code>--force-overwrite</code> will first erase any existing markdown so that fresh markdown is created.</p>
 <details>
-<summary>Use of Sections in `profile-generate` and `profile-assemble`</summary>
+<summary>Use of Sections in profile-generate and profile-assemble</summary>
 <p>The addition of guidance sections in the <code>profile</code> tools requires special handling because the corresponding parts have both a name and a title, where the name is a short form used as an id in the json schema, while the title is the readable form intended for final presentation.  An example is <code>ImplGuidance</code> vs. <code>Implementation Guidance</code>.  The trestle authoring tools strive to make the markdown as readable as possible, therefore the headings for sections use the title - which means somehow there is a need for a mapping from the short name to the long title for each section.  This mapping is provided in several ways:  During <code>profile-generate</code> you may provide a <code>--sections "ImplGuidance:Implementation Guidance,ExpEvidence:Expected Evidence"</code> option that would provide title values for <code>ImplGuidance</code> and <code>ExpEvidence</code>.  This dictionary mapping is then inserted into the yaml header of each control's markdown.  You may also add this mapping directly to a yaml file that is passed in during <code>profile-generate</code>, which is preferable if the list of sections is long.  The sections should be entered in the yaml header in a section titled, <code>x-trestle-sections</code>.</p>
 <p>There is also a <code>--required-sections</code> option during both <code>profile-generate</code> and <code>profile-assemble</code>.  This option expects a list of sections as <em>comma-separated short names</em>, e.g. <code>--required-sections "ImplGuidance,ExpEvidence"</code>.  During <code>profile-generate</code> any required sections will have in the markdown a prompt created for guidance prose to be entered.  And during <code>profile-assemble</code> if required sections are specified, those sections must have prose filled in or it will fail with error.</p>
 <p>Finally, <code>profile-assemble</code> also has an <code>--allowed-sections</code> option that restricts any added guidance to only those allowed sections - and if disallowed sections are present it will fail with error.  If <code>--allowed-sections</code> is not specified then any sections found in the markdown will be added to the assembled profile.</p>
@@ -3394,194 +3539,126 @@ Prose added as a sub-part to Part a. of the control
 </details>
 </details>
 <details>
-<summary>`trestle author ssp-generate` and `trestle author ssp-assemble`</summary>
-<p>The <code>ssp-generate</code> sub-command creates a partial SSP (System Security Plan) from a profile and optional yaml header file.  <code>ssp-assemble</code> (described below) can later assemble the markdown files into a single json SSP file.  The profile contains a list of imports that are either a direct reference to a catalog, or an indirect reference via a profile.
-There may be multiple imports of either type, and referenced profiles may themselves import either catalogs or profiles.  Each profile involved may specify
-the controls that should be imported, along with any modifications to those controls.  This command internally creates a resolved profile catalog and generates a
-directory containing a set of markdown files, one for each control in the resolved catalog.  Each markdown file has the optional yaml header embedded
-at the start of the file.</p>
-<p>Example usage for creation of the markdown:</p>
-<p><code>trestle author ssp-generate --profile my_prof --yaml /my_yaml_dir/header.yaml --sections 'ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence' --output my_ssp</code></p>
-<p>In this example the profile has previously been imported into the trestle directory.  The profile itself must be in the trestle directory, but the imported catalogs and profiles may be URI's with href's as described below.</p>
-<p>The <code>-s --sections</code> argument specifies the name of Parts in the control for which the corresponding prose should be included in the control's markdown file.  The concept is the same as above with <code>profile</code> tools in providing a mapping between all possible short names for guidance and their corresponding long versions that should appear in the markdown headings.  In addition, <code>ssp-generate</code> has an <code>--allowed-sections</code> option that specifies a list of section short names that will be included in the markdown.  This provides a means for filtering the guidance that appears in the markdown for the controls.  Note that unlike in <code>profile-assemble</code> there is no error if sections are present in the control that are not among the "allowed" sections.  For <code>ssp-generate</code> the allowed sections simply provide a means for filtering the guidance.  If you do not specify <code>--allowed-sections</code> then all sections present in the control will appear in the markdown.</p>
-<p>The generated markdown output will be placed in the trestle subdirectory <code>my_ssp</code> with a subdirectory
-for each control group.</p>
-<p>If the imported catalogs or profiles are not at the URI pointed to by the Import href of the profile then the href should be changed using the <code>trestle href</code> command.</p>
-<p>Similar to <code>catalog-generate</code>, the <code>--yaml</code> and <code>--overwrite-header-values</code> flag may be specified to let the input yaml header overwrite values already specified in the header of the control markdown file. Similarly, <code>--force-overwrite</code> option can be used to overwrite markdowns with content from JSON.</p>
-<p>The resulting files look like this:</p>
-<details>
-<summary>Example of control markdown after `ssp-generate`</summary>
-<div class="highlight"><pre><span></span><code>---
-control-origination:
-  <span class="k">-</span> Service Provider Corporate
-  <span class="k">-</span> Service Provider System Specific
-responsible-roles:
-  <span class="k">-</span> Customer
-x-trestle-set-params:
-  ac-1_prm_1:
-    values: Param_1_value_in_catalog
-  ac-1_prm_2:
-    values:
-  ac-1_prm_3:
-    values:
-  ac-1_prm_4:
-    values:
-  ac-1_prm_5:
-    values:
-  ac-1_prm_6:
-    values:
-  ac-1_prm_7:
-    values:
-sort-id: ac-01
-x-trestle-sections:
-  ImplGuidance: Implementation Guidance
-  ExpectedEvidence: Expected Evidence
-<span class="gu">  guidance: Guidance</span>
-<span class="gu">---</span>
-
-<span class="gh"># ac-1 - \[Access Control\] Policy and Procedures</span>
-
-<span class="gu">## Control Statement</span>
-
-<span class="k">-</span> \[a.\] Develop, document, and disseminate to Param_1_value_in_catalog:
-
-  <span class="k">-</span> \[1.\] Organization-level; Mission/business process-level; System-level access control policy that:
-
-    <span class="k">-</span> \[(a)\] Addresses purpose, scope, roles, responsibilities, management commitment, coordination among organizational entities, and compliance; and
-    <span class="k">-</span> \[(b)\] Is consistent with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines; and
-
-  <span class="k">-</span> \[2.\] Procedures to facilitate the implementation of the access control policy and the associated access controls;
-
-<span class="k">-</span> \[b.\] Designate an organization-defined official to manage the development, documentation, and dissemination of the access control policy and procedures; and
-
-<span class="k">-</span> \[c.\] Review and update the current access control:
-
-  <span class="k">-</span> \[1.\] Policy organization-defined frequency and following organization-defined events; and
-  <span class="k">-</span> \[2.\] Procedures organization-defined frequency and following organization-defined events.
-
-<span class="gu">## Control Guidance</span>
-
-Access control policy and procedures address the controls in the AC family that are implemented within systems and organizations. The risk management strategy is an important factor in establishing such policies and procedures. Policies and procedures contribute to security and privacy assurance. Therefore, it is important that security and privacy programs collaborate on the development of access control policy and procedures. Security and privacy program policies and procedures at the organization level are preferable, in general, and may obviate the need for mission- or system-specific policies and procedures. The policy can be included as part of the general security and privacy policy or be represented by multiple policies reflecting the complex nature of organizations. Procedures can be established for security and privacy programs, for mission or business processes, and for systems, if needed. Procedures describe how the policies or controls are implemented and can be directed at the individual or role that is the object of the procedure. Procedures can be documented in system security and privacy plans or in one or more separate documents. Events that may precipitate an update to access control policy and procedures include assessment or audit findings, security incidents or breaches, or changes in laws, executive orders, directives, regulations, policies, standards, and guidelines. Simply restating controls does not constitute an organizational policy or procedure.
-
-______________________________________________________________________
-
-<span class="gu">## What is the solution and how is it implemented?</span>
-
-Top level response prose for the overall control and component This System
-
-<span class="gu">### Implementation Status: planned</span>
-
-______________________________________________________________________
-
-<span class="gu">## Implementation a.</span>
-
-Implementation response prose for component This System and corresponding status
-
-<span class="gu">#### Implementation Status: planned</span>
-
-______________________________________________________________________
-
-<span class="gu">## Implementation b.</span>
-
-Implementation response prose for component This System and corresponding status
-
-<span class="gu">#### Implementation Status: planned</span>
-
-<span class="gu">### ACME Component</span>
-
-Implementation response prose for ACME component and corresponding status
-
-<span class="gu">#### Implementation Status: planned</span>
-
-______________________________________________________________________
-
-<span class="gu">## Implementation c.</span>
-
-Implementation response prose for component This System and corresponding status
-
-<span class="gu">#### Implementation Status: planned</span>
-
-______________________________________________________________________
+<summary>trestle author profile-resolve</summary>
+<p>The <code>trestle author profile-resolve</code> command is different from the <code>generate/assemble</code> commands because it doesn't involve markdown and instead
+it takes an input profile and creates the corresponding resolved profile catalog in <code>JSON</code> format.  In addition, it has several options for how
+parameters are represented in prose of the controls, and whether or not those values are substituted.</p>
+<p>As an example, the prose in the statement for control <code>AC-1</code> is:</p>
+<p><code>Develops, documents, and disseminates to {{ insert: param, ac-1_prm_1 }}:</code></p>
+<p>The parameter <code>ac-1_prm_1</code> has a label: <code>organization-defined personnel or roles</code> and it may or may not have a value assigned
+by the profile being resolved.  Suppose it has been assigned the value, <code>my prm 1 value</code>.  In that case we can either leave the prose
+as-is (with the parameter in "moustache" form) in the resolved catalog, or we can substitute the value, or we can substitute the descriptive label.  trestle
+supports all these options, along with an optional prefix to specify whether a value has been assigned or not - typically using the name of the organization responsible.</p>
+<p>The <code>--show-value -sv</code> option will cause the value for the parameter to be substituted in the prose if it is available - otherwise the list of selection options if
+it has any, or simply the label prose if it has no options.</p>
+<p>The <code>--value-assigned-prefix -vap</code> option adds a prefix to the value if the value is being assigned by the profile, and the <code>--value-not-assigned-prefix -vnap</code> will assign a prefix
+to parameters that do not have values assigned, along with the descriptive parameter label.</p>
+<p>Finally, the <code>--bracket-format -bf</code> option specifies how the parameter representation will be wrapped in braces.  The specification is done by placing characters around a single <code>.</code>
+symbol representing the parameter string, e.g. <code>[.]</code> will place square brackets around the parameter.</p>
+<p>Note that these options that specify how the parameter is represented all require <code>--show-value</code> to be True, otherwise the raw prose with the moustache is produced.</p>
+<p>As an example, if we use options</p>
+<p><code>trestle author profile-resolve -n my_profile -o my_resolved_catalog -sv -bf [.] -vap "ACME Assignment:" -vnap "Assignment:"</code></p>
+<p>the above prose would become:</p>
+<p><code>Develops, documents, and disseminates to [ACME Assignment: my prm 1 value]:</code></p>
+<p>(Note that you need appropriate use of quotation marks in the command for any strings that include spaces or special characters.)</p>
+<p>And if the parameter did not have a value assigned the result would be:</p>
+<p><code>Develops, documents, and disseminates to [Assignment: organization-defined personell or roles]:</code></p>
+<p>Finally, if the parameter already had a value specified in the catalog, the value would be shown by itself in braces:</p>
+<p><code>Develops, documents, and disseminates to [value in catalog]:</code></p>
+<p>Similar substitution happens when a parameter has choices that themselves reference a parameter, such as:</p>
+<div class="highlight"><pre><span></span><code>&quot;id&quot;: &quot;ac-4.4_prm_1&quot;,
+&quot;select&quot;: {
+  &quot;how-many&quot;: &quot;one-or-more&quot;,
+  &quot;choice&quot;: [
+    &quot;decrypting the information&quot;,
+    &quot;blocking the flow of the encrypted information&quot;,
+    &quot;terminating communications sessions attempting to pass encrypted information&quot;,
+    &quot; {{ insert: param, ac-4.4_prm_2 }} &quot;
+  ]
 </code></pre></div>
-</details>
-<p>Each label in the ssp is wrapped in <code>\[ \]</code> to indicate it comes directly from the label in the control and is not generated by the markdown viewer.  Keep in mind that the actual label is the same but with the <code>\[ \]</code> removed.</p>
-<p>Note that for each statement in the control description there is a corresponding response section in which to provide a detailed response for later inclusion in the final ssp as the control implementation.</p>
-<p>Also note that the optional final sections are provided, and labeled using the title for the corresponding section.</p>
-<p>In addition, this is the only control markdown where the moustache (<code>{{}}</code>) items have been replaced by the corresponding parameter values in the final resolved profile catalog, so that the prose corresponds to the final intended control and its implementation.</p>
-<p>The markdown can have guidance per-component in the control, as shown by the line, <code>### ACME Component</code>.  Any prose directly under a <code>##</code> implementation section will apply to the overall system component, but sections in a sub-header of the form <code>###</code> will only apply to that particular component.</p>
-<p>After generating the markdown for the resolved profile catalog you may then edit the files and provide text in the sections with <code>Add control implementation...</code> in them.  But do not remove the horizontal rule
-lines or modify/remove the lines with <code>###</code> in them, corresponding to system components.</p>
-<p>If you edit the control markdown files you may run <code>ssp-generate</code> again and your edits will not be overwritten.  When writing out the markdown for a control, any existing markdown for that control will be read and the response text for each part will be re-inserted into the new markdown file.  If the new markdown has added parts the original responses will be placed correctly in the new file, but if any part is removed from the source control json file then any corresponding prose will be lost after the next <code>ssp-generate</code>.</p>
-<h2 id="trestle-author-ssp-assemble"><code>trestle author ssp-assemble</code><a class="headerlink" href="#trestle-author-ssp-assemble" title="Permanent link">¤</a></h2>
-<p>After manually edting the markdown and providing the responses for the control implementation requirements, the markdown can be assembled into a single json SSP file with:</p>
-<p><code>trestle author ssp-assemble --markdown my_ssp --output my_json_ssp</code></p>
-<p>This will assemble the markdown files in the my_ssp directory and create a json SSP with name my_json_ssp in the system-security-plans directory.</p>
-<p>As indicated for <code>ssp-generate</code>, please do not alter any of the horizontal rule lines or lines indicating the part or control id, e.g. <code>### ACME Component</code>.  You may run <code>ssp-generate</code> and <code>ssp-assemble</code> repeatedly for the same markdown directory, allowing a continuous editing and updating cycle.</p>
-<p>As with all the <code>assemble</code> tools, you may optionally specify a <code>--name</code> for a corresponding json file into which the updates will be inserted, thereby preserving metadata and other aspects of the model.  The result can overwrite the provided model or get directed to a new model.  And the version may be updated and the uuid's regenerated.  As with the other <code>-assemble</code> tools, if an output file already exists, a new one will only be written if there are changes to the model relative to the existing file.  See <code>catalog-assemble</code> for more details.</p>
+<p>If the statement prose for AC-4.4 is:</p>
+<p><code>The information system prevents encrypted information from bypassing content-checking mechanisms by {{ insert: param, ac-4.4_prm_1 }}.</code></p>
+<p>and if a value <code>pulling the plug</code> has been assigned to ac-4.4_prm_2, the prose will be:</p>
+<p><code>The information system prevents encrypted information from bypassing content-checking mechanisms by [Selection (one or more): decrypting the information, blocking the flow of the encrypted information, terminating the communications sessions attempting to pass encrypted information, [ACME Assignment: pulling the plug]].</code></p>
+<p>There is a separate option from <code>--show-values</code> that will instead show only the descriptive labels for the parameters - again with an optional prefix.  The options are <code>--show-labels -sl</code>
+and <code>--label-prefix -lp</code>.  Note that there is no need for "assigned" or "not assigned" because no values are being shown - just the labels.</p>
+<p>If we resolve the profile with options <code>--show-labels --label-prefix "Label:" --bracket-format [.]</code> the resulting prose from earlier would be:</p>
+<p><code>Develops, documents, and disseminates to [Label: organization-defined personnel or roles]:</code></p>
+<p>and any value present for the parameter would be ignored.</p>
+<p>Similar options apply to the <code>jinja</code> authoring commands.</p>
 </details>
 <details>
-<summary>`trestle author ssp-filter`</summary>
-<p>Once you have an SSP in the trestle directory you can filter its contents with a profile by using the command <code>trestle author ssp-filter</code>.  The SSP is assumed to contain a superset of the controls needed by the profile, and the filter operation will generate a new SSP with only those controls needed by the profile.  The filter command is invoked as:</p>
-<p><code>trestle author ssp-filter --name my_ssp --profile my_profile --output my_culled_ssp</code></p>
-<p>Both the SSP and profile must be present in the trestle directory.  This command will generate a new SSP in the directory.  If the profile makes reference to a control not in the SSP then the routine will fail with an error message.</p>
-</details>
-<details>
-<summary>`trestle author component-generate`</summary>
+<summary>trestle author component-generate</summary>
 <p>The <code>trestle author component-generate</code> command takes a JSON ComponentDefinition file and creates markdown for its controls in separate directories for each of the DefinedComponents in the file.  This allows specifying the implementation response and status for each component separately in separate markdown files for a control.  In addition, the markdown captures Rules in the control that specify descriptions and parameter values that apply to the expected responses.</p>
 <p>The command has few options compared to other author commands and only requires specifying <code>--name</code> and <code>--output</code> for the ComponentDefinition and output markdown directory, respectively.</p>
 <p>Here is an example of the generated markdown for the component <code>OSCO</code> in the ComponentDefinition file.  Note that this file will be under the subdirectory <code>OSCO/source_name</code> of the specified output directory - and any other DefinedComponents will have corresponding subdirectories level with the <code>OSCO</code> one.  Here <code>source_name</code> refers to the name of the profile or catalog in the ComponentDefinition that is the source for this control.  The control markdown files are written into directories split by both component name and source name.  If the source refers to a general uri and not a named profile or catalog in the trestle directory, then names such as <code>source_001</code> and <code>source_002</code> are assigned.  The actual source title can be found in the yaml header of any of the control markdown files.</p>
 <details>
-<summary>Example of control markdown after `component-generate`</summary>
+<summary>Example of control markdown after component-generate</summary>
 <div class="highlight"><pre><span></span><code>---
 x-trestle-comp-def-rules:
-  <span class="k">-</span> name: XCCDF
-    description: The XCCDF must be compliant
+  comp_aa:
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>name: top_shared_rule_1
+      description: top shared rule 1 in aa
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>name: comp_rule_aa_1
+      description: comp rule aa 1
 x-trestle-rules-params:
-  <span class="k">-</span> name: foo_length
-    description: minimum_foo_length
-    rule-id: XCCDF
-    options: &#39;[&quot;6&quot;, &quot;9&quot;]&#39;
-x-trestle-comp-def-param-vals:
-  quantity_available: &#39;500&#39;
-  foo_length: &#39;6&#39;
-x-trestle-global:
-  profile-title: NIST Special Publication 800-53 Revision 5 MODERATE IMPACT BASELINE
-x-trestle-set-params:
+  comp_aa:
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>name: shared_param_1
+      description: shared param 1 in aa
+      options: &#39;[&quot;shared_param_1_aa_opt_1&quot;, &quot;shared_param_1_aa_opt_2&quot;]&#39;
+      rule-id: top_shared_rule_1
+x-trestle-comp-def-rules-param-vals:
+  # You may set new values for rule parameters by adding
+  #
+  # component-values:
+  #   - value 1
+  #   - value 2
+  #
+  # below a section of values:
+  # The values list refers to the values as set by the components, and the component-values are the new values
+  # to be placed in SetParameters of the component definition.
+  #
+  comp_aa:
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>name: shared_param_1
+      values:
+<span class="w">        </span><span class="k">-</span><span class="w"> </span>shared_param_1_aa_opt_1
+x-trestle-param-values:
   ac-1_prm_1:
-    values: Param_1_value_in_catalog
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>prof_aa val 1
   ac-1_prm_2:
-    values:
   ac-1_prm_3:
-    values:
   ac-1_prm_4:
-    values:
   ac-1_prm_5:
-    values:
   ac-1_prm_6:
-    values:
   ac-1_prm_7:
-<span class="gu">    values:</span>
+x-trestle-global:
+  profile:
+    title: comp prof aa
+    href: trestle://profiles/comp_prof_aa/profile.json
+<span class="gu">  sort-id: ac-01</span>
 <span class="gu">---</span>
 
 <span class="gh"># ac-1 - \[Access Control\] Policy and Procedures</span>
 
 <span class="gu">## Control Statement</span>
 
-<span class="k">-</span> \[a.\] Develop, document, and disseminate to Param_1_value_in_catalog:
+The organization:
 
-  <span class="k">-</span> \[1.\] Organization-level; Mission/business process-level; System-level access control policy that:
+<span class="k">-</span><span class="w"> </span>\[a.\] Develop, document, and disseminate to prof_aa val 1:
 
-    <span class="k">-</span> \[(a)\] Addresses purpose, scope, roles, responsibilities, management commitment, coordination among organizational entities, and compliance; and
-    <span class="k">-</span> \[(b)\] Is consistent with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines; and
+<span class="w">  </span><span class="k">-</span><span class="w"> </span>\[1.\] Organization-level; Mission/business process-level; System-level access control policy that:
 
-  <span class="k">-</span> \[2.\] Procedures to facilitate the implementation of the access control policy and the associated access controls;
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>\[(a)\] Addresses purpose, scope, roles, responsibilities, management commitment, coordination among organizational entities, and compliance; and
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>\[(b)\] Is consistent with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines; and
 
-<span class="k">-</span> \[b.\] Designate an organization-defined official to manage the development, documentation, and dissemination of the access control policy and procedures; and
+<span class="w">  </span><span class="k">-</span><span class="w"> </span>\[2.\] Procedures to facilitate the implementation of the access control policy and the associated access controls;
 
-<span class="k">-</span> \[c.\] Review and update the current access control:
+<span class="k">-</span><span class="w"> </span>\[b.\] Designate an organization-defined official to manage the development, documentation, and dissemination of the access control policy and procedures; and
 
-  <span class="k">-</span> \[1.\] Policy organization-defined frequency and following organization-defined events; and
-  <span class="k">-</span> \[2.\] Procedures organization-defined frequency and following organization-defined events.
+<span class="k">-</span><span class="w"> </span>\[c.\] Review and update the current access control:
+
+<span class="w">  </span><span class="k">-</span><span class="w"> </span>\[1.\] Policy organization-defined frequency and following organization-defined events; and
+<span class="w">  </span><span class="k">-</span><span class="w"> </span>\[2.\] Procedures organization-defined frequency and following organization-defined events.
 
 <span class="gu">## Control guidance</span>
 
@@ -3595,157 +3672,373 @@ ______________________________________________________________________
 
 &lt;!-- Note that the list of rules under ### Rules: is read-only and changes will not be captured after assembly to JSON --&gt;
 
-Ensure that the API server pod specification file permissions are set to 567 or more restrictive
+imp req prose for ac-1 from comp aa
 
 <span class="gu">### Rules:</span>
 
-  <span class="k">-</span> XCCDF
+<span class="w">  </span><span class="k">-</span><span class="w"> </span>top_shared_rule_1
 
 <span class="gu">### Implementation Status: implemented</span>
 
-<span class="gu">### Implementation Status Remarks: ac1 remark</span>
-
 ______________________________________________________________________
 
-<span class="gu">## Implementation b.</span>
+<span class="gu">## Implementation for part a.</span>
 
-Implement as needed for OSCO
+statement prose for part a. from comp aa
 
 <span class="gu">### Rules:</span>
 
-  <span class="k">-</span> XCCDF
+<span class="w">  </span><span class="k">-</span><span class="w"> </span>comp_rule_aa_1
 
 <span class="gu">### Implementation Status: partial</span>
+
+______________________________________________________________________
 </code></pre></div>
 </details>
 <p>There is no direct way to specify rules in the ComponentDefinition, so they are specified via properties as shown here:</p>
 <details>
-<summary>Representation of rules in the `props` of a `ComponentDefinition`</summary>
-<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="w"></span>
-<span class="w">  </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Rule_Id&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;ns&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://foo_ns&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;XCCDF&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Rule_Id&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;remarks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;rule_1&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="p">},</span><span class="w"></span>
-<span class="w">  </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Rule_Description&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;ns&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://foo_ns&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The XCCDF must be compliant&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;remarks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;rule_1&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="p">},</span><span class="w"></span>
-<span class="w">  </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Parameter_Id&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;ns&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://foo_ns&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;foo_length&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Parameter_Id&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;remarks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;rule_1&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="p">},</span><span class="w"></span>
-<span class="w">  </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Parameter_Description&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;ns&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://foo_ns&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;minimum_foo_length&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Parameter_Description&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;remarks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;rule_1&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="p">},</span><span class="w"></span>
-<span class="w">  </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Parameter_Value_Alternatives&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;ns&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://foo_ns&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[\&quot;6\&quot;, \&quot;9\&quot;]&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Parameter_Value_Alternatives&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;remarks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;rule_1&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="p">]</span><span class="w"></span>
+<summary>Representation of rules in the props of a ComponentDefinition</summary>
+<div class="highlight"><pre><span></span><code><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Rule_Id&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;ns&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://comp_ns&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;comp_rule_aa_1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Rule_Id&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;remarks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;rule_2&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Rule_Description&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;ns&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://comp_ns&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;comp rule aa 1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;remarks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;rule_2&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Rule_Id&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;ns&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://comp_ns&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;comp_rule_aa_2&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Rule_Id&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;remarks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;rule_3&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Rule_Description&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;ns&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://comp_ns&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;comp rule aa 2&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Rule_Description&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;remarks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;rule_3&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Parameter_Id&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;ns&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://comp_ns&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;shared_param_1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Parameter_Id&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;remarks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;rule_1&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Parameter_Description&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;ns&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://comp_ns&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;shared param 1 in aa&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Parameter_Description&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;remarks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;rule_1&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Parameter_Value_Alternatives&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;ns&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://comp_ns&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[\&quot;shared_param_1_aa_opt_1\&quot;, \&quot;shared_param_1_aa_opt_2\&quot;]&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Parameter_Value_Alternatives&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;remarks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;rule_1&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">],</span>
+<span class="nt">&quot;set-parameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;param-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;shared_param_1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;values&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="s2">&quot;shared_param_1_aa_opt_1&quot;</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;remarks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;set shared param aa 1&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">]</span>
 </code></pre></div>
 </details>
-<p>In this scheme the rules have a <code>Rule_Id</code> (<code>XCCDF</code> in this example) and an associated tag (<code>rule_1</code>) in the <code>remarks</code> section that binds the name to the description: <code>Rule_Description</code>=<code>The XCCDF must be compliant</code>.  In addition, rules may be associated with parameters specified here with <code>Parameter_id</code>=<code>foo_length</code>, <code>Parameter_Description</code>=<code>minimum_foo_length</code>, and <code>Parameter_Value_Alternatives</code>=<code>[\"6\", \"9\"]</code>.  <code>Parameter_Value_Alternatives</code> corresponds to possible Choices for the parameter value.</p>
+<p>In this scheme the rules have a <code>Rule_Id</code> (e.g. <code>comp_rule_aa_1</code> in this example) and an associated tag (<code>rule_2</code>) in the <code>remarks</code> section that binds the name to the description: <code>Rule_Description</code>=<code>comp rule aa 1</code>.  In addition, rules may be associated with parameters specified here with <code>Parameter_id</code>=<code>shared_param_1</code>, <code>Parameter_Description</code>=<code>shared param 1 in aa</code>, and <code>Parameter_Value_Alternatives</code>=<code>[\"shared_param_1_aa_opt_1\", \"shared_param_1_aa_opt_2\"]</code>.  <code>Parameter_Value_Alternatives</code> corresponds to possible Choices for the parameter value.</p>
+<p>Also shown in this JSON excerpt is a normal set-parameter used to set the value of a parameter associated with a rule id.  Thus the setting of the parameter follows the normal OSCAL schema for setting a parameter value, while the specification of the parameter and its options is specified via linked properties.</p>
 <p>The markdown header lists all the rules that apply to this control, along with their descriptions, and for each implementation response, the rules that apply to it are shown.  The association of an ImplementedRequirement with a rule is again done with properties as shown here:</p>
 <details>
-<summary>Linking of `ImplementedRequirement` to a rule</summary>
-<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;implemented-requirements&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
-<span class="w">    </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="nt">&quot;uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ca5ea4c5-ba51-4b1d-932a-5606891b7486&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="nt">&quot;control-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ac-1&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ensure that the API server pod specification file permissions are set to 644 or more restrictive&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="nt">&quot;props&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
-<span class="w">        </span><span class="p">{</span><span class="w"></span>
-<span class="w">          </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Rule_Id&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;XCCDF&quot;</span><span class="w"></span>
-<span class="w">        </span><span class="p">},</span><span class="w"></span>
-<span class="w">        </span><span class="p">{</span><span class="w"></span>
-<span class="w">          </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;implementation-status&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;implemented&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="nt">&quot;remarks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ac1 remark&quot;</span><span class="w"></span>
-<span class="w">        </span><span class="p">}</span><span class="w"></span>
-<span class="w">      </span><span class="p">]</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="w">  </span><span class="p">]</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<summary>Linking of ImplementedRequirement to a rule</summary>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;implemented-requirements&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ca5ea4c5-ba51-4b1d-932a-5606891b7500&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;control-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ac-1&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;imp req prose for ac-1 from comp aa&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;props&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Rule_Id&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;top_shared_rule_1&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;implementation-status&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;implemented&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 </details>
 <p>The values for rule parameters are specified using the normal <code>SetParameter</code> mechanism in the ControlImplementation, but it's important to note that there are two different types of <code>SetParameter</code>: Those that apply to the normal parameters of the control, and those that apply strictly to the rules.</p>
 <p>Note that markdown for a control is only created if there are rules associated with the control, and within the markdown the only parts written out that
 prompt for responses are parts that have rules assigned.  Thus the output markdown directory may be highly pruned of both controls and groups of controls if only some controls have rules associated.</p>
-<p>In addition, the rules should be regarded as read-only from the editing perspective, and you cannot change the rules associated with a control or its parts.</p>
+<p>In addition, the rules should be regarded as read-only from the editing perspective, and you cannot change the rules associated with a control or its parts.  But you may edit the rule parameter values as described in the comments of the markdown file under
+<code>x-trestle-comp-def-rules-param-vals</code>.  You may also edit the prose and implementation status associated with a statement part at the bottom of the markdown file.</p>
 <p><code>trestle author component-assemble</code></p>
-<p>The <code>component-assemble</code> command will assemble the markdown into a ComponentDefinition file containing all the DefinedComponents in the markdown, and as usual it can either overwrite the original JSON file or create a new one.  Edits made to the prose, status and values in the markdown and header will be captured in the assembled file, but the list of rules attached to each ImplementedRequirement may is <em>readonly</em> and new rule associations cannot be made via markdown.</p>
-<p>As mentioned above, trestle version 1.x allows generation and assembly of markdown for ComponentDefinitions, but it will not be hooked in to ssp authoring until version 2.x, expected shortly.</p>
+<p>The <code>component-assemble</code> command will assemble the markdown into a ComponentDefinition file containing all the DefinedComponents in the markdown, and as usual it can either overwrite the original JSON file or create a new one.  Edits made to the prose, status and rule parameter values in the markdown and header will be captured in the assembled file, but the list of rules attached with each ImplementedRequirement is <em>readonly</em> and new rule associations cannot be made via markdown.</p>
 </details>
 <details>
-<summary>Summary of options used by the `catalog`, `profile`, `component` and `ssp` authoring tools.</summary>
+<summary>trestle author ssp-generate and trestle author ssp-assemble</summary>
+<p>The <code>ssp-generate</code> command creates markdown for an SSP (System Security Plan) from a profile, optional component definitions, and optional yaml header file.  <code>ssp-assemble</code> (described below) can then assemble the markdown files into a single json SSP file.  The profile contains a list of imports that are either a direct reference to a catalog, or an indirect reference via a profile.
+There may be multiple imports of either type, and referenced profiles may themselves import either catalogs or profiles.  Each profile involved may specify
+the controls that should be imported, along with any modifications to those controls.  This command internally creates a resolved profile catalog and generates a
+directory containing a set of markdown files, one for each control in the resolved catalog.  Each markdown file has the optional yaml header embedded
+at the start of the file.</p>
+<p>The component definitions specify the components of the SSP, along with metadata associated with rules and status for the implemented requirements.  The rules, rule parameters, and status values are encoded by properties within the components as described above for <code>component-generate</code>.</p>
+<p>Example usage for creation of the markdown:</p>
+<p><code>trestle author ssp-generate --profile my_prof --compdefs "compdef_a,compdef_b" --yaml /my_yaml_dir/header.yaml --output my_ssp</code></p>
+<p>In this example the profile and component definitions have previously been imported into the trestle directory.  The profile itself must be in the trestle directory, but the imported catalogs and profiles may be URI's with href's as described below.</p>
+<p>The generated markdown output will be placed in the trestle subdirectory <code>my_ssp</code> with a subdirectory
+for each control group.</p>
+<p>If the imported catalogs or profiles are not at the URI pointed to by the Import href of the profile then the href should be changed using the <code>trestle href</code> command.</p>
+<p>Similar to <code>catalog-generate</code>, the <code>--yaml</code> and <code>--overwrite-header-values</code> flag may be specified to let the input yaml header overwrite values already specified in the header of the control markdown file. Also, the <code>--force-overwrite</code> option can be used to overwrite markdowns with content from JSON.</p>
+<p>The resulting files look like this:</p>
+<details>
+<summary>Example of control markdown after ssp-generate</summary>
+<div class="highlight"><pre><span></span><code>---
+x-trestle-comp-def-rules:
+  comp_aa:
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>name: top_shared_rule_1
+      description: top shared rule 1 in aa
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>name: comp_rule_aa_1
+      description: comp rule aa 1
+  comp_ab:
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>name: top_shared_rule_1
+      description: top shared rule 1 in ab
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>name: comp_rule_ab_1
+      description: comp rule ab 1
+  comp_ba:
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>name: top_shared_rule_1
+      description: top shared rule 1 in ba
+  comp_bb:
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>name: top_shared_rule_1
+      description: top shared rule 1 in bb
+x-trestle-rules-params:
+  comp_aa:
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>name: shared_param_1
+      description: shared param 1 in aa
+      options: &#39;[&quot;shared_param_1_aa_opt_1&quot;, &quot;shared_param_1_aa_opt_2&quot;]&#39;
+      rule-id: top_shared_rule_1
+  comp_ab:
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>name: shared_param_1
+      description: shared param 1 in ab
+      options: &#39;[&quot;shared_param_1_ab_opt_1&quot;, &quot;shared_param_1_ab_opt_2&quot;]&#39;
+      rule-id: top_shared_rule_1
+  comp_ba:
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>name: shared_param_1
+      description: shared param 1 in ba
+      options: &#39;[&quot;shared_param_1_ba_opt_1&quot;, &quot;shared_param_1_ba_opt_2&quot;]&#39;
+      rule-id: top_shared_rule_1
+  comp_bb:
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>name: shared_param_1
+      description: shared param 1 in bb
+      options: &#39;[&quot;shared_param_1_bb_opt_1&quot;, &quot;shared_param_1_bb_opt_2&quot;]&#39;
+      rule-id: top_shared_rule_1
+x-trestle-comp-def-rules-param-vals:
+  # You may set new values for rule parameters by adding
+  #
+  # ssp-values:
+  #   - value 1
+  #   - value 2
+  #
+  # below a section of values:
+  # The values list refers to the values as set by the components, and the ssp-values are the new values
+  # to be placed in SetParameters of the SSP.
+  #
+  comp_aa:
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>name: shared_param_1
+      values:
+<span class="w">        </span><span class="k">-</span><span class="w"> </span>shared_param_1_aa_opt_1
+      ssp-values:
+<span class="w">        </span><span class="k">-</span><span class="w"> </span>shared_param_1_aa_opt_2
+  comp_ab:
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>name: shared_param_1
+      values:
+<span class="w">        </span><span class="k">-</span><span class="w"> </span>shared_param_1_ab_opt_2
+x-trestle-set-params:
+  # You may set values for parameters in the assembled SSP by adding
+  #
+  # ssp-values:
+  #   - value 1
+  #   - value 2
+  #
+  # below a section of values:
+  # The values list refers to the values in the resolved profile catalog, and the ssp-values represent new values
+  # to be placed in SetParameters of the SSP.
+  #
+  ac-1_prm_1:
+    values:
+<span class="w">      </span><span class="k">-</span><span class="w"> </span>comp_prof val 1
+    display-name: AC-1 (a) (1)
+  ac-1_prm_2:
+    values:
+  ac-1_prm_3:
+    values:
+  ac-1_prm_4:
+    values:
+  ac-1_prm_5:
+    values:
+  ac-1_prm_6:
+    values:
+  ac-1_prm_7:
+    values:
+x-trestle-global:
+  profile:
+    title: comp prof aa
+    href: trestle://profiles/comp_prof/profile.json
+<span class="gu">  sort-id: ac-01</span>
+<span class="gu">---</span>
+
+<span class="gh"># ac-1 - \[Access Control\] Policy and Procedures</span>
+
+<span class="gu">## Control Statement</span>
+
+The organization:
+
+<span class="k">-</span><span class="w"> </span>\[a.\] Develop, document, and disseminate to [comp_prof val 1]:
+
+<span class="w">  </span><span class="k">-</span><span class="w"> </span>\[1.\] [Organization-level; Mission/business process-level; System-level] access control policy that:
+
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>\[(a)\] Addresses purpose, scope, roles, responsibilities, management commitment, coordination among organizational entities, and compliance; and
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>\[(b)\] Is consistent with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines; and
+
+<span class="w">  </span><span class="k">-</span><span class="w"> </span>\[2.\] Procedures to facilitate the implementation of the access control policy and the associated access controls;
+
+<span class="k">-</span><span class="w"> </span>\[b.\] Designate an [organization-defined official] to manage the development, documentation, and dissemination of the access control policy and procedures; and
+
+<span class="k">-</span><span class="w"> </span>\[c.\] Review and update the current access control:
+
+<span class="w">  </span><span class="k">-</span><span class="w"> </span>\[1.\] Policy [organization-defined frequency] and following [organization-defined events]; and
+<span class="w">  </span><span class="k">-</span><span class="w"> </span>\[2.\] Procedures [organization-defined frequency] and following [organization-defined events].
+
+<span class="gu">## Control guidance</span>
+
+Access control policy and procedures address the controls in the AC family that are implemented within systems and organizations. The risk management strategy is an important factor in establishing such policies and procedures. Policies and procedures contribute to security and privacy assurance. Therefore, it is important that security and privacy programs collaborate on the development of access control policy and procedures. Security and privacy program policies and procedures at the organization level are preferable, in general, and may obviate the need for mission- or system-specific policies and procedures. The policy can be included as part of the general security and privacy policy or be represented by multiple policies reflecting the complex nature of organizations. Procedures can be established for security and privacy programs, for mission or business processes, and for systems, if needed. Procedures describe how the policies or controls are implemented and can be directed at the individual or role that is the object of the procedure. Procedures can be documented in system security and privacy plans or in one or more separate documents. Events that may precipitate an update to access control policy and procedures include assessment or audit findings, security incidents or breaches, or changes in laws, executive orders, directives, regulations, policies, standards, and guidelines. Simply restating controls does not constitute an organizational policy or procedure.
+
+______________________________________________________________________
+
+<span class="gu">## What is the solution and how is it implemented?</span>
+
+&lt;!-- For implementation status enter one of: implemented, partial, planned, alternative, not-applicable --&gt;
+
+&lt;!-- Note that the list of rules under ### Rules: is read-only and changes will not be captured after assembly to JSON --&gt;
+
+<span class="gu">### This System</span>
+
+&lt;!-- Add implementation prose for the main This System component for control: ac-1 --&gt;
+
+<span class="gu">#### Implementation Status: planned</span>
+
+<span class="gu">### comp_aa</span>
+
+imp req prose for ac-1 from comp aa
+
+<span class="gu">#### Rules:</span>
+
+<span class="w">  </span><span class="k">-</span><span class="w"> </span>top_shared_rule_1
+
+<span class="gu">#### Implementation Status: implemented</span>
+
+<span class="gu">### comp_ab</span>
+
+&lt;!-- Add control implementation description here for control: ac-1 --&gt;
+
+<span class="gu">#### Rules:</span>
+
+<span class="w">  </span><span class="k">-</span><span class="w"> </span>top_shared_rule_1
+
+<span class="gu">#### Implementation Status: implemented</span>
+
+______________________________________________________________________
+
+<span class="gu">## Implementation for part a.</span>
+
+<span class="gu">### comp_aa</span>
+
+statement prose for part a. from comp aa
+
+<span class="gu">#### Rules:</span>
+
+<span class="w">  </span><span class="k">-</span><span class="w"> </span>comp_rule_aa_1
+
+<span class="gu">#### Implementation Status: partial</span>
+
+<span class="gu">### comp_ab</span>
+
+&lt;!-- Add control implementation description here for item a. --&gt;
+
+<span class="gu">#### Rules:</span>
+
+<span class="w">  </span><span class="k">-</span><span class="w"> </span>comp_rule_ab_1
+
+<span class="gu">#### Implementation Status: partial</span>
+
+______________________________________________________________________
+</code></pre></div>
+</details>
+<p>\
+Each label in the ssp is wrapped in <code>\[ \]</code> to indicate it comes directly from the label in the control and is not generated by the markdown viewer.  Keep in mind that the actual label is the same but with the <code>\[ \]</code> removed.</p>
+<p>Note that for each statement in the control description there is a corresponding response section in which to provide a detailed response for later inclusion in the final ssp as the control implementation.</p>
+<p>Also note that the optional final sections are provided, and labeled using the title for the corresponding section.</p>
+<p>In addition, this is the only control markdown where the moustache (<code>{{}}</code>) items have been replaced by the corresponding parameter values in the final resolved profile catalog, surrounded by brackets, so that the prose corresponds to the final intended control and its implementation.</p>
+<p>The markdown can have guidance per-component in the control, as shown by the line, <code>### ACME Component</code>.  Any prose directly under a <code>##</code> implementation section will apply to the overall system component, but sections in a sub-header of the form <code>###</code> will only apply to that particular component.</p>
+<p>After generating the markdown for the resolved profile catalog you may then edit the files and provide text in the sections with <code>Add control implementation...</code> in them.  But do not remove the horizontal rule
+lines or modify/remove the lines with <code>###</code> in them, corresponding to system components.</p>
+<p>If you edit the control markdown files you may run <code>ssp-generate</code> again and your edits will not be overwritten.  When writing out the markdown for a control, any existing markdown for that control will be read and the response text for each part will be re-inserted into the new markdown file.  If the new markdown has added parts the original responses will be placed correctly in the new file, but if any part is removed from the source control json file then any corresponding prose will be lost after the next <code>ssp-generate</code>.</p>
+<h2 id="trestle-author-ssp-assemble"><code>trestle author ssp-assemble</code><a class="headerlink" href="#trestle-author-ssp-assemble" title="Permanent link">¤</a></h2>
+<p>After manually edting the markdown and providing the responses for the control implementation requirements, the markdown can be assembled into a single json SSP file with:</p>
+<p><code>trestle author ssp-assemble --markdown my_ssp --output my_json_ssp</code></p>
+<p>This will assemble the markdown files in the my_ssp directory and create a json SSP with name my_json_ssp in the system-security-plans directory.</p>
+<p>As indicated for <code>ssp-generate</code>, please do not alter any of the horizontal rule lines or lines indicating the part or control id, e.g. <code>### ACME Component</code>.  You may run <code>ssp-generate</code> and <code>ssp-assemble</code> repeatedly for the same markdown directory, allowing a continuous editing and updating cycle.</p>
+<p>As with all the <code>assemble</code> tools, you may optionally specify a <code>--name</code> for a corresponding json file into which the updates will be inserted, thereby preserving metadata and other aspects of the model.  The result can overwrite the provided model or get directed to a new model.  And the version may be updated and the uuid's regenerated.  As with the other <code>-assemble</code> tools, if an output file already exists, a new one will only be written if there are changes to the model relative to the existing file.  See <code>catalog-assemble</code> for more details.</p>
+</details>
+<details>
+<summary>trestle author ssp-filter</summary>
+<p>Once you have an SSP in the trestle directory you can filter its contents with a profile or list of components by using the command <code>trestle author ssp-filter</code>.  The SSP is assumed to contain a superset of the controls needed by the profile if a profile is specified, and the filter operation will generate a new SSP with only those controls needed by the profile.  If a list of component names is provided, only the specified components will appear in the system implementation of the ssp.</p>
+<p>The filter command is invoked as:</p>
+<p><code>trestle author ssp-filter --name my_ssp --profile my_profile --components comp_a:comp_b --output my_culled_ssp</code></p>
+<p>Both the SSP and profile must be present in the trestle directory.  This command will generate a new SSP in the directory.  If the profile makes reference to a control not in the SSP then the routine will fail with an error message.  Similarly, if one of the components is not present in the ssp the routine will also fail.</p>
+</details>
+<details>
+<summary>Summary of options used by the catalog, profile, component and ssp authoring tools.</summary>
 <p>The provided options for the generation and assembly of documents in the ssp workflow is rich and powerful, but can also be confusing.  To help see how they all relate please consult the following diagram showing the required and optional command line arguments for each command.  The checkboxes indicate required and the open circles represent optional.</p>
 <p>The options shown are fairly consistent across the <code>-generate</code> and <code>-assemble</code> functions, but some clarification may be needed.  For <code>catalog-assemble</code> and <code>profile-assemble</code> you have the option to use an existing json file as a parent model into which new content is inserted - in memory - and the final model may either be written back into that same json file, or a different one - based on <code>--output</code>.  If you just want to keep editing and modifying the same original json file you can specify <code>--name</code> and <code>--output</code> to be the same, original json file.  But you could also direct it to a new json file while still using an original file as the "parent."  A key benefit of referencing an original json file is the resuse of metadata and backmatter - along with everything else separate from the controls.</p>
 <p><code>ssp-generate</code> is special because it starts with a profile rather than an ssp, whereas <code>catalog-generate</code> and <code>profile-generate</code> both start with a parent model of the same type.  Nonetheless, you still have an option during <code>ssp-assemble</code> to use a given json file as the template into which new content is inserted, and once again you may overwrite that original json file or direct it to a new one using <code>--output</code>.</p>
 <p><img alt="Table of authoring tool options" src="../trestle_ssp_author_options.png" /></p>
 </details>
 
-              
-            </article>
-            
-          </div>
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
       </main>
       
         <footer class="md-footer">
-  
-    
-    <nav class="md-footer__inner md-grid" aria-label="Footer" >
-      
-        
-        <a href="../../../trestle_author/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Governance of Authored Documents" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              Governance of Authored Documents
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../../task.transformer-construction/transformer-construction/" class="md-footer__link md-footer__link--next" aria-label="Next: Transformer construction" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              Transformer construction
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -3767,10 +4060,11 @@ prompt for responses are parts that have rules assigned.  Thus the output markdo
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.6c7ad80a.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
       
     
   </body>

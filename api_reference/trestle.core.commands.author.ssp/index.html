@@ -12,8 +12,14 @@
       
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.author.ssp/">
       
+      
+        <link rel="prev" href="../trestle.core.commands.author.profile/">
+      
+      
+        <link rel="next" href="../trestle.core.commands.author.versioning.template_versioning/">
+      
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.3.1, mkdocs-material-8.3.9">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.15">
     
     
       
@@ -21,17 +27,13 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.1d29e8d0.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.cbb835fc.min.css">
-        
-          
-          
-          <meta name="theme-color" content="#009485">
-        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
       
       
+
     
     
     
@@ -46,7 +48,7 @@
     
       <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
   
@@ -56,10 +58,13 @@
   
 
 
-  <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-XT3KGMHSY8"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&gtag("event","search",{search_term:this.value})}),"undefined"!=typeof location$&&location$.subscribe(function(e){gtag("config","G-XT3KGMHSY8",{page_path:e.pathname})})})</script>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XT3KGMHSY8"></script>
+  <script id="__analytics">function __md_analytics(){function n(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],n("js",new Date),n("config","G-XT3KGMHSY8"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&n("event","search",{search_term:this.value})}),document$.subscribe(function(){var a=document.forms.feedback;if(void 0!==a)for(var e of a.querySelectorAll("[type=submit]"))e.addEventListener("click",function(e){e.preventDefault();var t=document.location.pathname,e=this.getAttribute("data-md-value");n("event","feedback",{page:t,data:e}),a.firstElementChild.disabled=!0;e=a.querySelector(".md-feedback__note [data-md-value='"+e+"']");e&&(e.hidden=!1)}),a.hidden=!1}),location$.subscribe(function(e){n("config","G-XT3KGMHSY8",{page_path:e.pathname})})});var e=document.createElement("script");e.async=!0,e.src="https://www.googletagmanager.com/gtag/js?id=G-XT3KGMHSY8",document.getElementById("__analytics").insertAdjacentElement("afterEnd",e)}</script>
 
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
 
+    
     
     
   </head>
@@ -136,7 +141,7 @@
       </label>
       <nav class="md-search__options" aria-label="Search">
         
-        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
         </button>
       </nav>
@@ -148,7 +153,7 @@
           <div class="md-search-result__meta">
             Initializing search
           </div>
-          <ol class="md-search-result__list"></ol>
+          <ol class="md-search-result__list" role="presentation"></ol>
         </div>
       </div>
     </div>
@@ -160,7 +165,7 @@
         <a href="https://github.com/IBM/compliance-trestle" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.3.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     IBM/compliance-trestle
@@ -179,7 +184,7 @@
           
             
 <nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
-  <div class="md-tabs__inner md-grid">
+  <div class="md-grid">
     <ul class="md-tabs__list">
       
         
@@ -342,7 +347,7 @@
       <a href="https://github.com/IBM/compliance-trestle" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.3.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     IBM/compliance-trestle
@@ -393,17 +398,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_3">
+        <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
           Tutorials
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Tutorials" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           Tutorials
@@ -447,17 +453,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_3" type="checkbox" id="__nav_3_3" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_3_3">
+        <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
           Trestle Authoring
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Trestle Authoring" data-md-level="2">
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3_3">
           <span class="md-nav__icon md-icon"></span>
           Trestle Authoring
@@ -508,17 +515,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_4" type="checkbox" id="__nav_3_4" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_3_4">
+        <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
           Trestle Transformers and Tasks
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Trestle Transformers and Tasks" data-md-level="2">
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3_4">
           <span class="md-nav__icon md-icon"></span>
           Trestle Transformers and Tasks
@@ -533,6 +541,20 @@
     <li class="md-nav__item">
       <a href="../../tutorials/task.transformer-construction/transformer-construction/" class="md-nav__link">
         Transformer construction
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/task.csv-to-oscal-cd/transformation/" class="md-nav__link">
+        Task - task.csv-to-oscal-cd
       </a>
     </li>
   
@@ -597,17 +619,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_5" type="checkbox" id="__nav_3_5" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_3_5">
+        <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
           Trestle command-line interface (CLI)
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Trestle command-line interface (CLI)" data-md-level="2">
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3_5">
           <span class="md-nav__icon md-icon"></span>
           Trestle command-line interface (CLI)
@@ -666,17 +689,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_4">
+        <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
           Contributing
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Contributing" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_4">
           <span class="md-nav__icon md-icon"></span>
           Contributing
@@ -842,17 +866,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_7">
+        <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
           Plugins
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Plugins" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_7">
           <span class="md-nav__icon md-icon"></span>
           Plugins
@@ -907,17 +932,18 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9" type="checkbox" id="__nav_9" checked>
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" checked>
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9">
+        <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
           Reference
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Reference" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_9">
           <span class="md-nav__icon md-icon"></span>
           Reference
@@ -949,17 +975,18 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2" type="checkbox" id="__nav_9_2" checked>
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2" checked>
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2">
+        <label class="md-nav__link" for="__nav_9_2" id="__nav_9_2_label" tabindex="0">
           trestle API reference
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="trestle API reference" data-md-level="2">
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_9_2_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_9_2">
           <span class="md-nav__icon md-icon"></span>
           trestle API reference
@@ -989,17 +1016,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_2" type="checkbox" id="__nav_9_2_2" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_2" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_2">
+        <label class="md-nav__link" for="__nav_9_2_2" id="__nav_9_2_2_label" tabindex="0">
           common
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="common" data-md-level="3">
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_9_2_2_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_2">
           <span class="md-nav__icon md-icon"></span>
           common
@@ -1178,17 +1206,18 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3" type="checkbox" id="__nav_9_2_3" checked>
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3" checked>
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3">
+        <label class="md-nav__link" for="__nav_9_2_3" id="__nav_9_2_3_label" tabindex="0">
           core
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="core" data-md-level="3">
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_9_2_3_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_9_2_3">
           <span class="md-nav__icon md-icon"></span>
           core
@@ -1228,10 +1257,100 @@
   
   
   
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_9_2_3_3" id="__nav_9_2_3_3_label" tabindex="0">
+          catalog
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_9_2_3_3_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_9_2_3_3">
+          <span class="md-nav__icon md-icon"></span>
+          catalog
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../trestle.core.catalog_interface/" class="md-nav__link">
+      <a href="../trestle.core.catalog.catalog_api/" class="md-nav__link">
+        catalog_api
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.catalog.catalog_interface/" class="md-nav__link">
         catalog_interface
       </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.catalog.catalog_merger/" class="md-nav__link">
+        catalog_merger
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.catalog.catalog_reader/" class="md-nav__link">
+        catalog_reader
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.catalog.catalog_writer/" class="md-nav__link">
+        catalog_writer
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
     </li>
   
 
@@ -1262,17 +1381,18 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3_5" type="checkbox" id="__nav_9_2_3_5" checked>
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_5" checked>
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3_5">
+        <label class="md-nav__link" for="__nav_9_2_3_5" id="__nav_9_2_3_5_label" tabindex="0">
           commands
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="commands" data-md-level="4">
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_9_2_3_5_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_9_2_3_5">
           <span class="md-nav__icon md-icon"></span>
           commands
@@ -1318,17 +1438,18 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3_5_3" type="checkbox" id="__nav_9_2_3_5_3" checked>
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_5_3" checked>
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3_5_3">
+        <label class="md-nav__link" for="__nav_9_2_3_5_3" id="__nav_9_2_3_5_3_label" tabindex="0">
           author
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="author" data-md-level="5">
+      <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_9_2_3_5_3_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_9_2_3_5_3">
           <span class="md-nav__icon md-icon"></span>
           author
@@ -1484,7 +1605,7 @@
   
     <li class="md-nav__item md-nav__item--active">
       
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
       
@@ -1641,17 +1762,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3_5_3_12" type="checkbox" id="__nav_9_2_3_5_3_12" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_5_3_12" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3_5_3_12">
+        <label class="md-nav__link" for="__nav_9_2_3_5_3_12" id="__nav_9_2_3_5_3_12_label" tabindex="0">
           versioning
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="versioning" data-md-level="6">
+      <nav class="md-nav" data-md-level="6" aria-labelledby="__nav_9_2_3_5_3_12_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_3_5_3_12">
           <span class="md-nav__icon md-icon"></span>
           versioning
@@ -1709,17 +1831,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3_5_5" type="checkbox" id="__nav_9_2_3_5_5" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_5_5" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3_5_5">
+        <label class="md-nav__link" for="__nav_9_2_3_5_5" id="__nav_9_2_3_5_5_label" tabindex="0">
           common
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="common" data-md-level="5">
+      <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_9_2_3_5_5_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_3_5_5">
           <span class="md-nav__icon md-icon"></span>
           common
@@ -2113,17 +2236,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3_17" type="checkbox" id="__nav_9_2_3_17" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_17" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3_17">
+        <label class="md-nav__link" for="__nav_9_2_3_17" id="__nav_9_2_3_17_label" tabindex="0">
           markdown
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="markdown" data-md-level="4">
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_9_2_3_17_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_3_17">
           <span class="md-nav__icon md-icon"></span>
           markdown
@@ -2230,17 +2354,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3_18" type="checkbox" id="__nav_9_2_3_18" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_18" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3_18">
+        <label class="md-nav__link" for="__nav_9_2_3_18" id="__nav_9_2_3_18_label" tabindex="0">
           models
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="models" data-md-level="4">
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_9_2_3_18_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_3_18">
           <span class="md-nav__icon md-icon"></span>
           models
@@ -2403,17 +2528,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3_24" type="checkbox" id="__nav_9_2_3_24" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_24" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3_24">
+        <label class="md-nav__link" for="__nav_9_2_3_24" id="__nav_9_2_3_24_label" tabindex="0">
           remote
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="remote" data-md-level="4">
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_9_2_3_24_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_3_24">
           <span class="md-nav__icon md-icon"></span>
           remote
@@ -2464,17 +2590,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3_26" type="checkbox" id="__nav_9_2_3_26" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_26" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3_26">
+        <label class="md-nav__link" for="__nav_9_2_3_26" id="__nav_9_2_3_26_label" tabindex="0">
           resolver
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="resolver" data-md-level="4">
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_9_2_3_26_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_3_26">
           <span class="md-nav__icon md-icon"></span>
           resolver
@@ -2602,17 +2729,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_4" type="checkbox" id="__nav_9_2_4" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_4" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_4">
+        <label class="md-nav__link" for="__nav_9_2_4" id="__nav_9_2_4_label" tabindex="0">
           oscal
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="oscal" data-md-level="3">
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_9_2_4_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_4">
           <span class="md-nav__icon md-icon"></span>
           oscal
@@ -2747,17 +2875,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_5" type="checkbox" id="__nav_9_2_5" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_5" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_5">
+        <label class="md-nav__link" for="__nav_9_2_5" id="__nav_9_2_5_label" tabindex="0">
           tasks
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="tasks" data-md-level="3">
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_9_2_5_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_5">
           <span class="md-nav__icon md-icon"></span>
           tasks
@@ -2784,8 +2913,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.tasks.csv_helper/" class="md-nav__link">
-        csv_helper
+      <a href="../trestle.tasks.cis_xlsx_to_oscal_catalog/" class="md-nav__link">
+        cis_xlsx_to_oscal_catalog
       </a>
     </li>
   
@@ -2948,17 +3077,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_6" type="checkbox" id="__nav_9_2_6" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_6" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_6">
+        <label class="md-nav__link" for="__nav_9_2_6" id="__nav_9_2_6_label" tabindex="0">
           transforms
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="transforms" data-md-level="3">
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_9_2_6_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_6">
           <span class="md-nav__icon md-icon"></span>
           transforms
@@ -2974,17 +3104,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_6_1" type="checkbox" id="__nav_9_2_6_1" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_6_1" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_6_1">
+        <label class="md-nav__link" for="__nav_9_2_6_1" id="__nav_9_2_6_1_label" tabindex="0">
           implementations
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="implementations" data-md-level="4">
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_9_2_6_1_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_6_1">
           <span class="md-nav__icon md-icon"></span>
           implementations
@@ -3247,10 +3378,11 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
                 
+                  
 
 
   <h1>ssp</h1>
@@ -3318,7 +3450,7 @@ SSPAssemble            (<a class="autorefs autorefs-internal" title="trestle.cor
         <details class="quote">
           <summary>Source code in <code>trestle/core/commands/author/ssp.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">SSPAssemble</span><span class="p">(</span><span class="n">AuthorCommonCommand</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Assemble markdown files of controls into an SSP json file.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Assemble markdown files of controls into an SSP json file.&quot;&quot;&quot;</span>
 
     <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;ssp-assemble&#39;</span>
 
@@ -3331,51 +3463,198 @@ SSPAssemble            (<a class="autorefs autorefs-internal" title="trestle.cor
         <span class="n">file_help_str</span> <span class="o">=</span> <span class="s1">&#39;Name of the input markdown file directory&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-m&#39;</span><span class="p">,</span> <span class="s1">&#39;--markdown&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">file_help_str</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
         <span class="n">output_help_str</span> <span class="o">=</span> <span class="s1">&#39;Name of the output generated json SSP&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-cd&#39;</span><span class="p">,</span> <span class="s1">&#39;--compdefs&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">HELP_COMPDEFS</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="s1">&#39;--output&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">output_help_str</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-r&#39;</span><span class="p">,</span> <span class="s1">&#39;--regenerate&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">HELP_REGENERATE</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-vn&#39;</span><span class="p">,</span> <span class="s1">&#39;--version&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">HELP_VERSION</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_merge_imp_reqs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ssp</span><span class="p">:</span> <span class="n">ossp</span><span class="o">.</span><span class="n">SystemSecurityPlan</span><span class="p">,</span> <span class="n">imp_reqs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ossp</span><span class="o">.</span><span class="n">ImplementedRequirement</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Merge the new imp_reqs into the ssp and optionally regenerate uuids.</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_ssp_component</span><span class="p">(</span><span class="n">ssp</span><span class="p">:</span> <span class="n">ossp</span><span class="o">.</span><span class="n">SystemSecurityPlan</span><span class="p">,</span> <span class="n">gen_comp</span><span class="p">:</span> <span class="n">generic</span><span class="o">.</span><span class="n">GenericComponent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ossp</span><span class="o">.</span><span class="n">SystemComponent</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">ssp</span><span class="o">.</span><span class="n">system_implementation</span><span class="o">.</span><span class="n">components</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">component</span><span class="o">.</span><span class="n">title</span> <span class="o">==</span> <span class="n">gen_comp</span><span class="o">.</span><span class="n">title</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">component</span>
+        <span class="n">new_component</span> <span class="o">=</span> <span class="n">gen_comp</span><span class="o">.</span><span class="n">as_system_component</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">new_component</span>
 
-<span class="sd">        If a statement has same id and same by_comp uuid as ssp, use the ssp version with new description.</span>
-<span class="sd">        Otherwise just insert the statement.</span>
-<span class="sd">        When the statement was loaded it had access to the current components so the uuids should match.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">id_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ossp</span><span class="o">.</span><span class="n">Statement</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">control_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ossp</span><span class="o">.</span><span class="n">ImplementedRequirement</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">imp_req</span> <span class="ow">in</span> <span class="n">ssp</span><span class="o">.</span><span class="n">control_implementation</span><span class="o">.</span><span class="n">implemented_requirements</span><span class="p">:</span>
-            <span class="n">control_map</span><span class="p">[</span><span class="n">imp_req</span><span class="o">.</span><span class="n">control_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">imp_req</span>
-            <span class="k">for</span> <span class="n">statement</span> <span class="ow">in</span> <span class="n">imp_req</span><span class="o">.</span><span class="n">statements</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">by_comp</span> <span class="ow">in</span> <span class="n">statement</span><span class="o">.</span><span class="n">by_components</span><span class="p">:</span>
-                    <span class="n">id_</span> <span class="o">=</span> <span class="n">statement</span><span class="o">.</span><span class="n">statement_id</span>
-                    <span class="k">if</span> <span class="n">id_</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">id_map</span><span class="p">:</span>
-                        <span class="n">id_map</span><span class="p">[</span><span class="n">id_</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-                    <span class="n">id_map</span><span class="p">[</span><span class="n">id_</span><span class="p">][</span><span class="n">by_comp</span><span class="o">.</span><span class="n">component_uuid</span><span class="p">]</span> <span class="o">=</span> <span class="n">statement</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_merge_by_comps</span><span class="p">(</span><span class="n">stat</span><span class="p">:</span> <span class="n">ossp</span><span class="o">.</span><span class="n">Statement</span><span class="p">,</span> <span class="n">statement</span><span class="p">:</span> <span class="n">ossp</span><span class="o">.</span><span class="n">Statement</span><span class="p">,</span> <span class="n">set_params</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ossp</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">by_comp</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">statement</span><span class="o">.</span><span class="n">by_components</span><span class="p">):</span>
+            <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">for</span> <span class="n">dest_by_comp</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">stat</span><span class="o">.</span><span class="n">by_components</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">dest_by_comp</span><span class="o">.</span><span class="n">component_uuid</span> <span class="o">==</span> <span class="n">by_comp</span><span class="o">.</span><span class="n">component_uuid</span><span class="p">:</span>
+                    <span class="n">dest_by_comp</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">by_comp</span><span class="o">.</span><span class="n">description</span>
+                    <span class="n">dest_by_comp</span><span class="o">.</span><span class="n">props</span> <span class="o">=</span> <span class="n">as_list</span><span class="p">(</span><span class="n">dest_by_comp</span><span class="o">.</span><span class="n">props</span><span class="p">)</span>
+                    <span class="n">dest_by_comp</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">as_list</span><span class="p">(</span><span class="n">statement</span><span class="o">.</span><span class="n">props</span><span class="p">))</span>
+                    <span class="n">dest_by_comp</span><span class="o">.</span><span class="n">props</span> <span class="o">=</span> <span class="n">none_if_empty</span><span class="p">(</span><span class="n">ControlInterface</span><span class="o">.</span><span class="n">clean_props</span><span class="p">(</span><span class="n">by_comp</span><span class="o">.</span><span class="n">props</span><span class="p">))</span>
+                    <span class="n">dest_by_comp</span><span class="o">.</span><span class="n">implementation_status</span> <span class="o">=</span> <span class="n">by_comp</span><span class="o">.</span><span class="n">implementation_status</span>
+                    <span class="n">dest_by_comp</span><span class="o">.</span><span class="n">set_parameters</span> <span class="o">=</span> <span class="n">none_if_empty</span><span class="p">(</span><span class="n">set_params</span><span class="p">)</span>
+                    <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">break</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+                <span class="n">stat</span><span class="o">.</span><span class="n">by_components</span> <span class="o">=</span> <span class="n">as_list</span><span class="p">(</span><span class="n">stat</span><span class="o">.</span><span class="n">by_components</span><span class="p">)</span>
+                <span class="n">by_comp</span><span class="o">.</span><span class="n">set_parameters</span> <span class="o">=</span> <span class="n">none_if_empty</span><span class="p">(</span><span class="n">set_params</span><span class="p">)</span>
+                <span class="n">stat</span><span class="o">.</span><span class="n">by_components</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">by_comp</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">imp_req</span> <span class="ow">in</span> <span class="n">imp_reqs</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">imp_req</span><span class="o">.</span><span class="n">control_id</span> <span class="ow">in</span> <span class="n">control_map</span><span class="p">:</span>
-                <span class="n">imp_req</span><span class="o">.</span><span class="n">uuid</span> <span class="o">=</span> <span class="n">control_map</span><span class="p">[</span><span class="n">imp_req</span><span class="o">.</span><span class="n">control_id</span><span class="p">]</span><span class="o">.</span><span class="n">uuid</span>
-            <span class="k">for</span> <span class="n">statement</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">imp_req</span><span class="o">.</span><span class="n">statements</span><span class="p">):</span>
-                <span class="n">id_</span> <span class="o">=</span> <span class="n">statement</span><span class="o">.</span><span class="n">statement_id</span>
-                <span class="c1"># for each statement id match the statement per component to the original</span>
-                <span class="k">if</span> <span class="n">id_</span> <span class="ow">in</span> <span class="n">id_map</span><span class="p">:</span>
-                    <span class="n">comp_dict</span> <span class="o">=</span> <span class="n">id_map</span><span class="p">[</span><span class="n">id_</span><span class="p">]</span>
-                    <span class="k">for</span> <span class="n">by_comp</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">statement</span><span class="o">.</span><span class="n">by_components</span><span class="p">):</span>
-                        <span class="k">if</span> <span class="n">by_comp</span><span class="o">.</span><span class="n">component_uuid</span> <span class="ow">in</span> <span class="n">comp_dict</span><span class="p">:</span>
-                            <span class="n">statement</span><span class="o">.</span><span class="n">uuid</span> <span class="o">=</span> <span class="n">comp_dict</span><span class="p">[</span><span class="n">by_comp</span><span class="o">.</span><span class="n">component_uuid</span><span class="p">]</span><span class="o">.</span><span class="n">uuid</span>
-                            <span class="k">for</span> <span class="n">orig_by_comp</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">comp_dict</span><span class="p">[</span><span class="n">by_comp</span><span class="o">.</span><span class="n">component_uuid</span><span class="p">]</span><span class="o">.</span><span class="n">by_components</span><span class="p">):</span>
-                                <span class="k">if</span> <span class="n">orig_by_comp</span><span class="o">.</span><span class="n">component_uuid</span> <span class="o">==</span> <span class="n">by_comp</span><span class="o">.</span><span class="n">component_uuid</span><span class="p">:</span>
-                                    <span class="n">by_comp</span><span class="o">.</span><span class="n">uuid</span> <span class="o">=</span> <span class="n">orig_by_comp</span><span class="o">.</span><span class="n">uuid</span>
-                                    <span class="k">break</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_merge_statement</span><span class="p">(</span>
+        <span class="n">imp_req</span><span class="p">:</span> <span class="n">ossp</span><span class="o">.</span><span class="n">ImplementedRequirement</span><span class="p">,</span>
+        <span class="n">statement</span><span class="p">:</span> <span class="n">generic</span><span class="o">.</span><span class="n">GenericStatement</span><span class="p">,</span>
+        <span class="n">set_params</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ossp</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">],</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge the generic statement into the statements of the imp_req.&quot;&quot;&quot;</span>
+        <span class="c1"># if the statement id is already in the imp_req, merge its by_comps into the existing statement</span>
+        <span class="k">for</span> <span class="n">stat</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">imp_req</span><span class="o">.</span><span class="n">statements</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">stat</span><span class="o">.</span><span class="n">statement_id</span> <span class="o">==</span> <span class="n">statement</span><span class="o">.</span><span class="n">statement_id</span><span class="p">:</span>
+                <span class="n">SSPAssemble</span><span class="o">.</span><span class="n">_merge_by_comps</span><span class="p">(</span><span class="n">stat</span><span class="p">,</span> <span class="n">statement</span><span class="p">,</span> <span class="n">set_params</span><span class="p">)</span>
+                <span class="k">return</span>
+        <span class="c1"># otherwise just ad the statement - but only if it has by_comps</span>
+        <span class="k">if</span> <span class="n">statement</span><span class="o">.</span><span class="n">by_components</span><span class="p">:</span>
+            <span class="n">imp_req</span><span class="o">.</span><span class="n">statements</span> <span class="o">=</span> <span class="n">as_list</span><span class="p">(</span><span class="n">imp_req</span><span class="o">.</span><span class="n">statements</span><span class="p">)</span>
+            <span class="n">imp_req</span><span class="o">.</span><span class="n">statements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span>
 
-        <span class="n">changed</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">control_implementation</span><span class="o">.</span><span class="n">implemented_requirements</span> <span class="o">!=</span> <span class="n">imp_reqs</span>
-        <span class="n">ssp</span><span class="o">.</span><span class="n">control_implementation</span><span class="o">.</span><span class="n">implemented_requirements</span> <span class="o">=</span> <span class="n">imp_reqs</span>
-        <span class="k">return</span> <span class="n">changed</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_merge_imp_req_into_imp_req</span><span class="p">(</span>
+        <span class="n">imp_req</span><span class="p">:</span> <span class="n">ossp</span><span class="o">.</span><span class="n">ImplementedRequirement</span><span class="p">,</span>
+        <span class="n">gen_imp_req</span><span class="p">:</span> <span class="n">generic</span><span class="o">.</span><span class="n">GenericImplementedRequirement</span><span class="p">,</span>
+        <span class="n">set_params</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ossp</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge comp def imp req into existing imp req.&quot;&quot;&quot;</span>
+        <span class="c1"># convert generic imp req from comp defs into ssp form</span>
+        <span class="n">src_imp_req</span> <span class="o">=</span> <span class="n">gen_imp_req</span><span class="o">.</span><span class="n">as_ssp</span><span class="p">()</span>
+        <span class="n">imp_req</span><span class="o">.</span><span class="n">props</span> <span class="o">=</span> <span class="n">none_if_empty</span><span class="p">(</span>
+            <span class="n">ControlInterface</span><span class="o">.</span><span class="n">clean_props</span><span class="p">(</span><span class="n">gen_imp_req</span><span class="o">.</span><span class="n">props</span><span class="p">,</span> <span class="n">remove_imp_status</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">remove_all_rule_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">statement</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">src_imp_req</span><span class="o">.</span><span class="n">statements</span><span class="p">):</span>
+            <span class="n">SSPAssemble</span><span class="o">.</span><span class="n">_merge_statement</span><span class="p">(</span><span class="n">imp_req</span><span class="p">,</span> <span class="n">statement</span><span class="p">,</span> <span class="n">set_params</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_params_for_rules</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">ControlContext</span><span class="p">,</span> <span class="n">rules_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                              <span class="n">set_params</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ossp</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ossp</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all set_params needed by the rules along with non-rule set_params.&quot;&quot;&quot;</span>
+        <span class="n">needed_param_ids</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">rule_dict</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">rules_params_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">comp_name</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="c1"># find param_ids needed by rules</span>
+        <span class="k">for</span> <span class="n">rule_id</span> <span class="ow">in</span> <span class="n">rules_list</span><span class="p">:</span>
+            <span class="c1"># get list of param_ids associated with this rule_id</span>
+            <span class="n">param_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">param</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">rule_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">param</span><span class="p">[</span><span class="s1">&#39;rule-id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">rule_id</span><span class="p">]</span>
+            <span class="n">needed_param_ids</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">param_ids</span><span class="p">)</span>
+        <span class="n">all_rule_param_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">param</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">rule_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+        <span class="c1"># any set_param that isn&#39;t associated with a rule should be included as a normal control set param with no rule</span>
+        <span class="k">for</span> <span class="n">set_param</span> <span class="ow">in</span> <span class="n">set_params</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">set_param</span><span class="o">.</span><span class="n">param_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">all_rule_param_ids</span><span class="p">:</span>
+                <span class="n">needed_param_ids</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">set_param</span><span class="o">.</span><span class="n">param_id</span><span class="p">)</span>
+        <span class="n">param_ids_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">needed_param_ids</span><span class="p">)</span>
+        <span class="n">needed_set_params</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ossp</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">param_id</span> <span class="ow">in</span> <span class="n">param_ids_list</span><span class="p">:</span>
+            <span class="n">set_param</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">for</span> <span class="n">sp</span> <span class="ow">in</span> <span class="n">set_params</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">sp</span><span class="o">.</span><span class="n">param_id</span> <span class="o">==</span> <span class="n">param_id</span><span class="p">:</span>
+                    <span class="n">set_param</span> <span class="o">=</span> <span class="n">sp</span>
+                    <span class="k">break</span>
+            <span class="k">if</span> <span class="n">set_param</span><span class="p">:</span>
+                <span class="n">needed_set_params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">set_param</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No set param found for param </span><span class="si">{</span><span class="n">param_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">needed_set_params</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_add_imp_req_to_ssp</span><span class="p">(</span>
+        <span class="n">ssp</span><span class="p">:</span> <span class="n">ossp</span><span class="o">.</span><span class="n">SystemSecurityPlan</span><span class="p">,</span>
+        <span class="n">gen_comp</span><span class="p">:</span> <span class="n">generic</span><span class="o">.</span><span class="n">GenericComponent</span><span class="p">,</span>
+        <span class="n">gen_imp_req</span><span class="p">:</span> <span class="n">generic</span><span class="o">.</span><span class="n">GenericImplementedRequirement</span><span class="p">,</span>
+        <span class="n">set_params</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ossp</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">],</span>
+        <span class="n">context</span><span class="p">:</span> <span class="n">ControlContext</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add imp req from control implementation into new ssp being assembled.&quot;&quot;&quot;</span>
+        <span class="c1"># the incoming gen_imp_req comes directly from the comp def</span>
+        <span class="c1"># but the imp_req here is pulled from the ssp and created if not already there</span>
+        <span class="n">imp_req</span> <span class="o">=</span> <span class="n">CatalogReader</span><span class="o">.</span><span class="n">_get_imp_req_for_control</span><span class="p">(</span><span class="n">ssp</span><span class="p">,</span> <span class="n">gen_imp_req</span><span class="o">.</span><span class="n">control_id</span><span class="p">)</span>
+        <span class="n">local_set_params</span> <span class="o">=</span> <span class="n">as_list</span><span class="p">(</span><span class="n">set_params</span><span class="p">)[:]</span>
+        <span class="n">local_set_params</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">as_list</span><span class="p">(</span><span class="n">imp_req</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">))</span>
+        <span class="n">local_set_params</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">uniquify_set_params</span><span class="p">(</span><span class="n">local_set_params</span><span class="p">)</span>
+        <span class="c1"># get any rules set at control level, if present</span>
+        <span class="n">rules_list</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">get_rule_list_for_item</span><span class="p">(</span><span class="n">gen_imp_req</span><span class="p">)</span>
+        <span class="c1"># There should be no rule content at top level of imp_req in ssp so strip them out</span>
+        <span class="n">imp_req</span><span class="o">.</span><span class="n">props</span> <span class="o">=</span> <span class="n">none_if_empty</span><span class="p">(</span>
+            <span class="n">ControlInterface</span><span class="o">.</span><span class="n">clean_props</span><span class="p">(</span><span class="n">gen_imp_req</span><span class="o">.</span><span class="n">props</span><span class="p">,</span> <span class="n">remove_imp_status</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">remove_all_rule_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="c1"># if we have rules applying or need to make set_params, we need to make a by_comp</span>
+        <span class="n">control_set_params</span> <span class="o">=</span> <span class="n">SSPAssemble</span><span class="o">.</span><span class="n">_get_params_for_rules</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">rules_list</span><span class="p">,</span> <span class="n">local_set_params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rules_list</span> <span class="ow">or</span> <span class="n">control_set_params</span><span class="p">:</span>
+            <span class="n">by_comp</span> <span class="o">=</span> <span class="n">gens</span><span class="o">.</span><span class="n">generate_sample_model</span><span class="p">(</span><span class="n">ossp</span><span class="o">.</span><span class="n">ByComponent</span><span class="p">)</span>
+            <span class="n">by_comp</span><span class="o">.</span><span class="n">component_uuid</span> <span class="o">=</span> <span class="n">gen_comp</span><span class="o">.</span><span class="n">uuid</span>
+            <span class="n">by_comp</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">gen_imp_req</span><span class="o">.</span><span class="n">description</span>
+            <span class="n">by_comp</span><span class="o">.</span><span class="n">set_parameters</span> <span class="o">=</span> <span class="n">none_if_empty</span><span class="p">(</span><span class="n">control_set_params</span><span class="p">)</span>
+            <span class="n">by_comp</span><span class="o">.</span><span class="n">implementation_status</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">get_status_from_props</span><span class="p">(</span><span class="n">gen_imp_req</span><span class="p">)</span>
+            <span class="n">by_comp</span><span class="o">.</span><span class="n">props</span> <span class="o">=</span> <span class="n">none_if_empty</span><span class="p">(</span><span class="n">ControlInterface</span><span class="o">.</span><span class="n">clean_props</span><span class="p">(</span><span class="n">gen_imp_req</span><span class="o">.</span><span class="n">props</span><span class="p">))</span>
+            <span class="n">imp_req</span><span class="o">.</span><span class="n">by_components</span> <span class="o">=</span> <span class="n">as_list</span><span class="p">(</span><span class="n">imp_req</span><span class="o">.</span><span class="n">by_components</span><span class="p">)</span>
+            <span class="n">imp_req</span><span class="o">.</span><span class="n">by_components</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">by_comp</span><span class="p">)</span>
+        <span class="c1"># each statement in ci corresponds to by_comp in an ssp imp req</span>
+        <span class="c1"># so insert the new by_comp directly into the ssp, generating parts as needed</span>
+        <span class="n">imp_req</span><span class="o">.</span><span class="n">statements</span> <span class="o">=</span> <span class="n">as_list</span><span class="p">(</span><span class="n">imp_req</span><span class="o">.</span><span class="n">statements</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">statement</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">gen_imp_req</span><span class="o">.</span><span class="n">statements</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">item_has_rules</span><span class="p">(</span><span class="n">statement</span><span class="p">):</span>
+                <span class="n">imp_req</span> <span class="o">=</span> <span class="n">CatalogReader</span><span class="o">.</span><span class="n">_get_imp_req_for_statement</span><span class="p">(</span><span class="n">ssp</span><span class="p">,</span> <span class="n">gen_imp_req</span><span class="o">.</span><span class="n">control_id</span><span class="p">,</span> <span class="n">statement</span><span class="o">.</span><span class="n">statement_id</span><span class="p">)</span>
+                <span class="n">by_comp</span> <span class="o">=</span> <span class="n">CatalogReader</span><span class="o">.</span><span class="n">_get_by_comp_from_imp_req</span><span class="p">(</span><span class="n">imp_req</span><span class="p">,</span> <span class="n">statement</span><span class="o">.</span><span class="n">statement_id</span><span class="p">,</span> <span class="n">gen_comp</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
+                <span class="n">by_comp</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">statement</span><span class="o">.</span><span class="n">description</span>
+                <span class="n">by_comp</span><span class="o">.</span><span class="n">props</span> <span class="o">=</span> <span class="n">none_if_empty</span><span class="p">(</span><span class="n">ControlInterface</span><span class="o">.</span><span class="n">clean_props</span><span class="p">(</span><span class="n">statement</span><span class="o">.</span><span class="n">props</span><span class="p">))</span>
+                <span class="n">rules_list</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">get_rule_list_for_item</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span>
+                <span class="n">by_comp</span><span class="o">.</span><span class="n">set_parameters</span> <span class="o">=</span> <span class="n">none_if_empty</span><span class="p">(</span>
+                    <span class="n">SSPAssemble</span><span class="o">.</span><span class="n">_get_params_for_rules</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">rules_list</span><span class="p">,</span> <span class="n">local_set_params</span><span class="p">)</span>
+                <span class="p">)</span>
+        <span class="n">imp_req</span><span class="o">.</span><span class="n">statements</span> <span class="o">=</span> <span class="n">none_if_empty</span><span class="p">(</span><span class="n">imp_req</span><span class="o">.</span><span class="n">statements</span><span class="p">)</span>
+        <span class="n">ssp</span><span class="o">.</span><span class="n">control_implementation</span><span class="o">.</span><span class="n">implemented_requirements</span> <span class="o">=</span> <span class="n">as_list</span><span class="p">(</span>
+            <span class="n">ssp</span><span class="o">.</span><span class="n">control_implementation</span><span class="o">.</span><span class="n">implemented_requirements</span>
+        <span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_merge_imp_req_into_ssp</span><span class="p">(</span>
+        <span class="n">ssp</span><span class="p">:</span> <span class="n">ossp</span><span class="o">.</span><span class="n">SystemSecurityPlan</span><span class="p">,</span>
+        <span class="n">gen_imp_req</span><span class="p">:</span> <span class="n">generic</span><span class="o">.</span><span class="n">GenericImplementedRequirement</span><span class="p">,</span>
+        <span class="n">set_params</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ossp</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge the new imp_reqs into the ssp.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">imp_req</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">ssp</span><span class="o">.</span><span class="n">control_implementation</span><span class="o">.</span><span class="n">implemented_requirements</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">imp_req</span><span class="o">.</span><span class="n">control_id</span> <span class="o">==</span> <span class="n">gen_imp_req</span><span class="o">.</span><span class="n">control_id</span><span class="p">:</span>
+                <span class="n">SSPAssemble</span><span class="o">.</span><span class="n">_merge_imp_req_into_imp_req</span><span class="p">(</span><span class="n">imp_req</span><span class="p">,</span> <span class="n">gen_imp_req</span><span class="p">,</span> <span class="n">set_params</span><span class="p">)</span>
+                <span class="k">return</span>
+        <span class="n">new_imp_req</span> <span class="o">=</span> <span class="n">gen_imp_req</span><span class="o">.</span><span class="n">as_ssp</span><span class="p">()</span>
+        <span class="n">imp_req</span><span class="o">.</span><span class="n">props</span> <span class="o">=</span> <span class="n">none_if_empty</span><span class="p">(</span>
+            <span class="n">ControlInterface</span><span class="o">.</span><span class="n">clean_props</span><span class="p">(</span><span class="n">gen_imp_req</span><span class="o">.</span><span class="n">props</span><span class="p">,</span> <span class="n">remove_imp_status</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">remove_all_rule_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">ssp</span><span class="o">.</span><span class="n">control_implementation</span><span class="o">.</span><span class="n">implemented_requirements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_imp_req</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_merge_comp_defs</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">ssp</span><span class="p">:</span> <span class="n">ossp</span><span class="o">.</span><span class="n">SystemSecurityPlan</span><span class="p">,</span> <span class="n">comp_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">generic</span><span class="o">.</span><span class="n">GenericComponent</span><span class="p">],</span> <span class="n">context</span><span class="p">:</span> <span class="n">ControlContext</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge the original generic comp defs into the ssp.&quot;&quot;&quot;</span>
+        <span class="n">all_comps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ossp</span><span class="o">.</span><span class="n">SystemComponent</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># determine if this is a new and empty ssp</span>
+        <span class="n">new_ssp</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">ssp</span><span class="o">.</span><span class="n">control_implementation</span><span class="o">.</span><span class="n">implemented_requirements</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">gen_comp</span> <span class="ow">in</span> <span class="n">comp_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">comp_name</span> <span class="o">=</span> <span class="n">gen_comp</span><span class="o">.</span><span class="n">title</span>
+            <span class="n">all_ci_props</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">com</span><span class="o">.</span><span class="n">Property</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">ssp_comp</span> <span class="o">=</span> <span class="n">SSPAssemble</span><span class="o">.</span><span class="n">_get_ssp_component</span><span class="p">(</span><span class="n">ssp</span><span class="p">,</span> <span class="n">gen_comp</span><span class="p">)</span>
+            <span class="n">set_params</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ossp</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">ci</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">gen_comp</span><span class="o">.</span><span class="n">control_implementations</span><span class="p">):</span>
+                <span class="n">all_ci_props</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">as_list</span><span class="p">(</span><span class="n">ci</span><span class="o">.</span><span class="n">props</span><span class="p">))</span>
+                <span class="c1"># get the list of set_params in the control implementation - for this component</span>
+                <span class="k">for</span> <span class="n">sp</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">ci</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">):</span>
+                    <span class="n">set_params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">to_ssp</span><span class="p">())</span>
+                <span class="k">for</span> <span class="n">imp_req</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">ci</span><span class="o">.</span><span class="n">implemented_requirements</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">new_ssp</span><span class="p">:</span>
+                        <span class="n">SSPAssemble</span><span class="o">.</span><span class="n">_add_imp_req_to_ssp</span><span class="p">(</span><span class="n">ssp</span><span class="p">,</span> <span class="n">gen_comp</span><span class="p">,</span> <span class="n">imp_req</span><span class="p">,</span> <span class="n">set_params</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">SSPAssemble</span><span class="o">.</span><span class="n">_merge_imp_req_into_ssp</span><span class="p">(</span><span class="n">ssp</span><span class="p">,</span> <span class="n">imp_req</span><span class="p">,</span> <span class="n">set_params</span><span class="p">)</span>
+            <span class="n">ssp_comp</span><span class="o">.</span><span class="n">props</span> <span class="o">=</span> <span class="n">as_list</span><span class="p">(</span><span class="n">gen_comp</span><span class="o">.</span><span class="n">props</span><span class="p">)</span>
+            <span class="n">ssp_comp</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">all_ci_props</span><span class="p">)</span>
+            <span class="n">ssp_comp</span><span class="o">.</span><span class="n">props</span> <span class="o">=</span> <span class="n">none_if_empty</span><span class="p">(</span><span class="n">ControlInterface</span><span class="o">.</span><span class="n">clean_props</span><span class="p">(</span><span class="n">ssp_comp</span><span class="o">.</span><span class="n">props</span><span class="p">))</span>
+            <span class="n">all_comps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ssp_comp</span><span class="p">)</span>
+
+        <span class="n">ssp</span><span class="o">.</span><span class="n">system_implementation</span><span class="o">.</span><span class="n">components</span> <span class="o">=</span> <span class="n">none_if_empty</span><span class="p">(</span><span class="n">all_comps</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_generate_roles_in_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ssp</span><span class="p">:</span> <span class="n">ossp</span><span class="o">.</span><span class="n">SystemSecurityPlan</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Find all roles referenced by imp reqs and create role in metadata as needed.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find all roles referenced by imp reqs and create role in metadata as needed.&quot;&quot;&quot;</span>
         <span class="n">metadata</span> <span class="o">=</span> <span class="n">ssp</span><span class="o">.</span><span class="n">metadata</span>
         <span class="n">metadata</span><span class="o">.</span><span class="n">roles</span> <span class="o">=</span> <span class="n">as_list</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">roles</span><span class="p">)</span>
         <span class="n">known_role_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">role</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">role</span> <span class="ow">in</span> <span class="n">metadata</span><span class="o">.</span><span class="n">roles</span><span class="p">]</span>
@@ -3391,6 +3670,30 @@ SSPAssemble            (<a class="autorefs autorefs-internal" title="trestle.cor
         <span class="n">metadata</span><span class="o">.</span><span class="n">roles</span> <span class="o">=</span> <span class="n">none_if_empty</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">roles</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">changed</span>
 
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_build_comp_dict_from_comp_defs</span><span class="p">(</span>
+        <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">comp_def_name_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">create_sys_comp</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">generic</span><span class="o">.</span><span class="n">GenericComponent</span><span class="p">]:</span>
+        <span class="n">comp_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">generic</span><span class="o">.</span><span class="n">GenericComponent</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">comp_name</span> <span class="ow">in</span> <span class="n">comp_def_name_list</span><span class="p">:</span>
+            <span class="n">comp_def</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">load_model_for_class</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">comp_name</span><span class="p">,</span> <span class="n">comp</span><span class="o">.</span><span class="n">ComponentDefinition</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">def_comp</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">comp_def</span><span class="o">.</span><span class="n">components</span><span class="p">):</span>
+                <span class="n">gen_def_comp</span> <span class="o">=</span> <span class="n">generic</span><span class="o">.</span><span class="n">GenericComponent</span><span class="o">.</span><span class="n">from_defined_component</span><span class="p">(</span><span class="n">def_comp</span><span class="p">)</span>
+                <span class="n">comp_dict</span><span class="p">[</span><span class="n">def_comp</span><span class="o">.</span><span class="n">title</span><span class="p">]</span> <span class="o">=</span> <span class="n">gen_def_comp</span>
+        <span class="k">if</span> <span class="n">create_sys_comp</span><span class="p">:</span>
+            <span class="n">sys_comp</span> <span class="o">=</span> <span class="n">generic</span><span class="o">.</span><span class="n">GenericComponent</span><span class="o">.</span><span class="n">generate</span><span class="p">()</span>
+            <span class="n">sys_comp</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">THIS_SYSTEM_AS_KEY</span>
+            <span class="n">sys_comp</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">SSP_MAIN_COMP_NAME</span>
+            <span class="n">comp_dict</span><span class="p">[</span><span class="n">sys_comp</span><span class="o">.</span><span class="n">title</span><span class="p">]</span> <span class="o">=</span> <span class="n">sys_comp</span>
+        <span class="k">return</span> <span class="n">comp_dict</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_this_system_as_gen_comp</span><span class="p">(</span><span class="n">ssp</span><span class="p">:</span> <span class="n">ossp</span><span class="o">.</span><span class="n">SystemSecurityPlan</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">generic</span><span class="o">.</span><span class="n">GenericComponent</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">ssp</span><span class="o">.</span><span class="n">system_implementation</span><span class="o">.</span><span class="n">components</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">component</span><span class="o">.</span><span class="n">title</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">SSP_MAIN_COMP_NAME</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">generic</span><span class="o">.</span><span class="n">GenericComponent</span><span class="o">.</span><span class="n">from_defined_component</span><span class="p">(</span><span class="n">component</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
     <span class="k">def</span> <span class="nf">_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">log</span><span class="o">.</span><span class="n">set_log_level_from_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
@@ -3405,85 +3708,75 @@ SSPAssemble            (<a class="autorefs autorefs-internal" title="trestle.cor
                 <span class="n">orig_ssp_name</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">name</span>
             <span class="n">new_ssp_name</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">output</span>
 
+            <span class="n">_</span><span class="p">,</span> <span class="n">profile_href</span> <span class="o">=</span> <span class="n">ComponentAssemble</span><span class="o">.</span><span class="n">_get_profile_title_and_href_from_dir</span><span class="p">(</span><span class="n">md_path</span><span class="p">)</span>
+            <span class="n">res_cat</span> <span class="o">=</span> <span class="n">ProfileResolver</span><span class="o">.</span><span class="n">get_resolved_profile_catalog</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_href</span><span class="p">)</span>
+            <span class="n">catalog_interface</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="p">(</span><span class="n">res_cat</span><span class="p">)</span>
+
             <span class="n">new_file_content_type</span> <span class="o">=</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">JSON</span>
 
             <span class="c1"># if output ssp already exists, load it to see if new one is different</span>
             <span class="n">existing_ssp</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ossp</span><span class="o">.</span><span class="n">SystemSecurityPlan</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="n">new_ssp_path</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">full_path_for_top_level_model</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">new_ssp_name</span><span class="p">,</span> <span class="n">ossp</span><span class="o">.</span><span class="n">SystemSecurityPlan</span><span class="p">)</span>
+            <span class="n">new_ssp_path</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">get_model_path_for_name_and_class</span><span class="p">(</span>
+                <span class="n">trestle_root</span><span class="p">,</span> <span class="n">new_ssp_name</span><span class="p">,</span> <span class="n">ossp</span><span class="o">.</span><span class="n">SystemSecurityPlan</span>
+            <span class="p">)</span>
             <span class="k">if</span> <span class="n">new_ssp_path</span><span class="p">:</span>
                 <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">existing_ssp</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">load_distributed</span><span class="p">(</span><span class="n">new_ssp_path</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">)</span>
                 <span class="n">new_file_content_type</span> <span class="o">=</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">path_to_content_type</span><span class="p">(</span><span class="n">new_ssp_path</span><span class="p">)</span>
 
             <span class="n">ssp</span><span class="p">:</span> <span class="n">ossp</span><span class="o">.</span><span class="n">SystemSecurityPlan</span>
-            <span class="n">comp_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">generic</span><span class="o">.</span><span class="n">GenericComponent</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
             <span class="c1"># if orig ssp exists - need to load it rather than instantiate new one</span>
-            <span class="n">orig_ssp_path</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">full_path_for_top_level_model</span><span class="p">(</span>
+            <span class="n">orig_ssp_path</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">get_model_path_for_name_and_class</span><span class="p">(</span>
                 <span class="n">trestle_root</span><span class="p">,</span> <span class="n">orig_ssp_name</span><span class="p">,</span> <span class="n">ossp</span><span class="o">.</span><span class="n">SystemSecurityPlan</span>
             <span class="p">)</span>
 
             <span class="n">context</span> <span class="o">=</span> <span class="n">ControlContext</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">ContextPurpose</span><span class="o">.</span><span class="n">SSP</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">md_path</span><span class="p">)</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">comp_def_name_list</span> <span class="o">=</span> <span class="n">comma_sep_to_list</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">compdefs</span><span class="p">)</span>
+            <span class="n">part_id_map_by_id</span> <span class="o">=</span> <span class="n">catalog_interface</span><span class="o">.</span><span class="n">get_statement_part_id_map</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">catalog_interface</span><span class="o">.</span><span class="n">generate_control_rule_info</span><span class="p">(</span><span class="n">part_id_map_by_id</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
 
-            <span class="c1"># need to load imp_reqs from markdown but need component first</span>
+            <span class="c1"># load all original comp defs</span>
+            <span class="c1"># only additions from markdown will be imp_req prose and status</span>
+            <span class="c1"># and param vals</span>
+            <span class="c1"># if this is a new ssp then create system component in the comp_dict</span>
+            <span class="n">comp_dict</span> <span class="o">=</span> <span class="n">SSPAssemble</span><span class="o">.</span><span class="n">_build_comp_dict_from_comp_defs</span><span class="p">(</span>
+                <span class="n">trestle_root</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">comp_def_name_list</span><span class="p">,</span> <span class="ow">not</span> <span class="n">orig_ssp_path</span>
+            <span class="p">)</span>
+
+            <span class="n">part_id_map_by_label</span> <span class="o">=</span> <span class="n">catalog_interface</span><span class="o">.</span><span class="n">get_statement_part_id_map</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="c1"># if ssp already exists use it as container for new content</span>
             <span class="k">if</span> <span class="n">orig_ssp_path</span><span class="p">:</span>
                 <span class="c1"># load the existing json ssp</span>
                 <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">ssp</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">load_distributed</span><span class="p">(</span><span class="n">orig_ssp_path</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">ssp</span><span class="o">.</span><span class="n">system_implementation</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
-                    <span class="n">comp_dict</span><span class="p">[</span><span class="n">component</span><span class="o">.</span><span class="n">title</span><span class="p">]</span> <span class="o">=</span> <span class="n">generic</span><span class="o">.</span><span class="n">GenericComponent</span><span class="o">.</span><span class="n">from_system_component</span><span class="p">(</span><span class="n">component</span><span class="p">)</span>
-                <span class="c1"># read the new imp reqs from markdown and have them reference existing components</span>
-                <span class="n">imp_reqs</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">read_catalog_imp_reqs</span><span class="p">(</span><span class="n">md_path</span><span class="p">,</span> <span class="n">comp_dict</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
-                <span class="n">new_imp_reqs</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="k">for</span> <span class="n">imp_req</span> <span class="ow">in</span> <span class="n">imp_reqs</span><span class="p">:</span>
-                    <span class="n">new_imp_reqs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">imp_req</span><span class="o">.</span><span class="n">as_ssp</span><span class="p">())</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_merge_imp_reqs</span><span class="p">(</span><span class="n">ssp</span><span class="p">,</span> <span class="n">new_imp_reqs</span><span class="p">)</span>
+                <span class="c1"># add the This System comp to the comp dict so its uuid is known</span>
+                <span class="n">sys_comp</span> <span class="o">=</span> <span class="n">SSPAssemble</span><span class="o">.</span><span class="n">_get_this_system_as_gen_comp</span><span class="p">(</span><span class="n">ssp</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">sys_comp</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Original ssp has no system component.&#39;</span><span class="p">)</span>
+                <span class="n">comp_dict</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SSP_MAIN_COMP_NAME</span><span class="p">]</span> <span class="o">=</span> <span class="n">sys_comp</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_merge_comp_defs</span><span class="p">(</span><span class="n">ssp</span><span class="p">,</span> <span class="n">comp_dict</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+                <span class="n">CatalogReader</span><span class="o">.</span><span class="n">read_ssp_md_content</span><span class="p">(</span><span class="n">md_path</span><span class="p">,</span> <span class="n">ssp</span><span class="p">,</span> <span class="n">comp_dict</span><span class="p">,</span> <span class="n">part_id_map_by_label</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+
                 <span class="n">new_file_content_type</span> <span class="o">=</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">path_to_content_type</span><span class="p">(</span><span class="n">orig_ssp_path</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># create a sample ssp to hold all the parts</span>
                 <span class="n">ssp</span> <span class="o">=</span> <span class="n">gens</span><span class="o">.</span><span class="n">generate_sample_model</span><span class="p">(</span><span class="n">ossp</span><span class="o">.</span><span class="n">SystemSecurityPlan</span><span class="p">)</span>
-                <span class="c1"># load the imp_reqs from markdown and create components as needed, referenced by ### headers</span>
-                <span class="n">imp_reqs</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">read_catalog_imp_reqs</span><span class="p">(</span><span class="n">md_path</span><span class="p">,</span> <span class="n">comp_dict</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
-                <span class="n">new_imp_reqs</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="k">for</span> <span class="n">imp_req</span> <span class="ow">in</span> <span class="n">imp_reqs</span><span class="p">:</span>
-                    <span class="n">new_imp_reqs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">imp_req</span><span class="o">.</span><span class="n">as_ssp</span><span class="p">())</span>
+                <span class="n">ssp</span><span class="o">.</span><span class="n">control_implementation</span><span class="o">.</span><span class="n">implemented_requirements</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">ssp</span><span class="o">.</span><span class="n">control_implementation</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">SSP_SYSTEM_CONTROL_IMPLEMENTATION_TEXT</span>
+                <span class="n">ssp</span><span class="o">.</span><span class="n">system_implementation</span><span class="o">.</span><span class="n">components</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_merge_comp_defs</span><span class="p">(</span><span class="n">ssp</span><span class="p">,</span> <span class="n">comp_dict</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+                <span class="n">CatalogReader</span><span class="o">.</span><span class="n">read_ssp_md_content</span><span class="p">(</span><span class="n">md_path</span><span class="p">,</span> <span class="n">ssp</span><span class="p">,</span> <span class="n">comp_dict</span><span class="p">,</span> <span class="n">part_id_map_by_label</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
 
-                <span class="c1"># create system implementation</span>
-                <span class="n">system_imp</span><span class="p">:</span> <span class="n">ossp</span><span class="o">.</span><span class="n">SystemImplementation</span> <span class="o">=</span> <span class="n">gens</span><span class="o">.</span><span class="n">generate_sample_model</span><span class="p">(</span><span class="n">ossp</span><span class="o">.</span><span class="n">SystemImplementation</span><span class="p">)</span>
-                <span class="n">ssp</span><span class="o">.</span><span class="n">system_implementation</span> <span class="o">=</span> <span class="n">system_imp</span>
-
-                <span class="c1"># create a control implementation to hold the implementated requirements</span>
-                <span class="n">control_imp</span><span class="p">:</span> <span class="n">ossp</span><span class="o">.</span><span class="n">ControlImplementation</span> <span class="o">=</span> <span class="n">gens</span><span class="o">.</span><span class="n">generate_sample_model</span><span class="p">(</span><span class="n">ossp</span><span class="o">.</span><span class="n">ControlImplementation</span><span class="p">)</span>
-                <span class="n">control_imp</span><span class="o">.</span><span class="n">implemented_requirements</span> <span class="o">=</span> <span class="n">new_imp_reqs</span>
-                <span class="n">control_imp</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">SSP_SYSTEM_CONTROL_IMPLEMENTATION_TEXT</span>
-
-                <span class="c1"># insert the parts into the ssp</span>
-                <span class="n">ssp</span><span class="o">.</span><span class="n">control_implementation</span> <span class="o">=</span> <span class="n">control_imp</span>
-                <span class="n">ssp</span><span class="o">.</span><span class="n">system_implementation</span> <span class="o">=</span> <span class="n">system_imp</span>
-
-                <span class="c1"># we don&#39;t have access to the original profile so we don&#39;t know the href</span>
                 <span class="n">import_profile</span><span class="p">:</span> <span class="n">ossp</span><span class="o">.</span><span class="n">ImportProfile</span> <span class="o">=</span> <span class="n">gens</span><span class="o">.</span><span class="n">generate_sample_model</span><span class="p">(</span><span class="n">ossp</span><span class="o">.</span><span class="n">ImportProfile</span><span class="p">)</span>
                 <span class="n">import_profile</span><span class="o">.</span><span class="n">href</span> <span class="o">=</span> <span class="s1">&#39;REPLACE_ME&#39;</span>
                 <span class="n">ssp</span><span class="o">.</span><span class="n">import_profile</span> <span class="o">=</span> <span class="n">import_profile</span>
 
             <span class="c1"># now that we know the complete list of needed components, add them to the sys_imp</span>
             <span class="c1"># TODO if the ssp already existed then components may need to be removed if not ref&#39;d by imp_reqs</span>
-            <span class="n">component_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ossp</span><span class="o">.</span><span class="n">SystemComponent</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="n">comp_dict</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-                <span class="c1"># need to skip the component corresponding to statement level prose</span>
-                <span class="k">if</span> <span class="n">comp</span><span class="o">.</span><span class="n">title</span><span class="p">:</span>
-                    <span class="n">component_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">comp</span><span class="o">.</span><span class="n">as_system_component</span><span class="p">())</span>
-            <span class="k">if</span> <span class="n">ssp</span><span class="o">.</span><span class="n">system_implementation</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
-                <span class="c1"># reconstruct list with same order as existing, but add/remove components as needed</span>
-                <span class="n">new_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ossp</span><span class="o">.</span><span class="n">SystemComponent</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="n">ssp</span><span class="o">.</span><span class="n">system_implementation</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">comp</span> <span class="ow">in</span> <span class="n">component_list</span><span class="p">:</span>
-                        <span class="n">new_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">comp</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="n">component_list</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">comp</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">new_list</span><span class="p">:</span>
-                        <span class="n">new_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">comp</span><span class="p">)</span>
-                <span class="n">ssp</span><span class="o">.</span><span class="n">system_implementation</span><span class="o">.</span><span class="n">components</span> <span class="o">=</span> <span class="n">new_list</span>
-            <span class="k">elif</span> <span class="n">component_list</span><span class="p">:</span>
-                <span class="n">ssp</span><span class="o">.</span><span class="n">system_implementation</span><span class="o">.</span><span class="n">components</span> <span class="o">=</span> <span class="n">component_list</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_generate_roles_in_metadata</span><span class="p">(</span><span class="n">ssp</span><span class="p">)</span>
+
+            <span class="n">ssp</span><span class="o">.</span><span class="n">import_profile</span><span class="o">.</span><span class="n">href</span> <span class="o">=</span> <span class="n">profile_href</span>
 
             <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">version</span><span class="p">:</span>
                 <span class="n">ssp</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="n">com</span><span class="o">.</span><span class="n">Version</span><span class="p">(</span><span class="n">__root__</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">version</span><span class="p">)</span>
@@ -3566,7 +3859,7 @@ SSPFilter            (<a class="autorefs autorefs-internal" title="trestle.core.
         <details class="quote">
           <summary>Source code in <code>trestle/core/commands/author/ssp.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">SSPFilter</span><span class="p">(</span><span class="n">AuthorCommonCommand</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Filter the controls in an ssp based on files included by profile and/or list of component names.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter the controls in an ssp based on files included by profile and/or list of component names.&quot;&quot;&quot;</span>
 
     <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;ssp-filter&#39;</span>
 
@@ -3609,11 +3902,11 @@ SSPFilter            (<a class="autorefs autorefs-internal" title="trestle.core.
         <span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
         <span class="n">components</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Filter the ssp based on controls included by the profile and/or components and output new ssp.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            trestle_root: root directory of the trestle project</span>
+<span class="sd">            trestle_root: root directory of the trestle workspace</span>
 <span class="sd">            ssp_name: name of the ssp model</span>
 <span class="sd">            profile_name: name of the optional profile model used for filtering</span>
 <span class="sd">            out_name: name of the output ssp model with filtered controls</span>
@@ -3627,7 +3920,7 @@ SSPFilter            (<a class="autorefs autorefs-internal" title="trestle.core.
         <span class="c1"># load the ssp</span>
         <span class="n">ssp</span><span class="p">:</span> <span class="n">ossp</span><span class="o">.</span><span class="n">SystemSecurityPlan</span>
         <span class="n">ssp</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">load_validate_model_name</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">ssp_name</span><span class="p">,</span> <span class="n">ossp</span><span class="o">.</span><span class="n">SystemSecurityPlan</span><span class="p">,</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">JSON</span><span class="p">)</span>
-        <span class="n">profile_path</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">path_for_top_level_model</span><span class="p">(</span>
+        <span class="n">profile_path</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">get_model_path_for_name_and_class</span><span class="p">(</span>
             <span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_name</span><span class="p">,</span> <span class="n">prof</span><span class="o">.</span><span class="n">Profile</span><span class="p">,</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">JSON</span>
         <span class="p">)</span>
 
@@ -3637,6 +3930,12 @@ SSPFilter            (<a class="autorefs autorefs-internal" title="trestle.core.
             <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">ssp</span><span class="o">.</span><span class="n">system_implementation</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">simplify_name</span><span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">title</span><span class="p">)</span> <span class="ow">in</span> <span class="n">raw_comp_names</span><span class="p">:</span>
                     <span class="n">comp_uuids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">comp_uuids</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">components</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;Unable to filter the ssp because one of the components </span><span class="si">{</span><span class="n">components</span><span class="si">}</span><span class="s1"> is not in the ssp.&#39;</span>
+                <span class="p">)</span>
+
             <span class="c1"># imp_reqs can be by comp</span>
             <span class="c1"># and imp_reqs can have statements that are by comp</span>
             <span class="k">if</span> <span class="n">comp_uuids</span><span class="p">:</span>
@@ -3646,7 +3945,7 @@ SSPFilter            (<a class="autorefs autorefs-internal" title="trestle.core.
                     <span class="n">new_by_comps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ossp</span><span class="o">.</span><span class="n">ByComponent</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
                     <span class="c1"># by_comps is optional</span>
                     <span class="k">for</span> <span class="n">by_comp</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">imp_req</span><span class="o">.</span><span class="n">by_components</span><span class="p">):</span>
-                        <span class="k">if</span> <span class="n">by_comp</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">uuid</span> <span class="ow">in</span> <span class="n">comp_uuids</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">by_comp</span><span class="o">.</span><span class="n">component_uuid</span> <span class="ow">in</span> <span class="n">comp_uuids</span><span class="p">:</span>
                             <span class="n">new_by_comps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">by_comp</span><span class="p">)</span>
                     <span class="n">imp_req</span><span class="o">.</span><span class="n">by_components</span> <span class="o">=</span> <span class="n">none_if_empty</span><span class="p">(</span><span class="n">new_by_comps</span><span class="p">)</span>
                     <span class="n">new_imp_reqs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">imp_req</span><span class="p">)</span>
@@ -3662,16 +3961,16 @@ SSPFilter            (<a class="autorefs autorefs-internal" title="trestle.core.
                 <span class="n">ssp</span><span class="o">.</span><span class="n">control_implementation</span><span class="o">.</span><span class="n">implemented_requirements</span> <span class="o">=</span> <span class="n">new_imp_reqs</span>
                 <span class="c1"># now remove any unused components from the ssp</span>
                 <span class="n">new_comp_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ossp</span><span class="o">.</span><span class="n">SystemComponent</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="n">ssp</span><span class="o">.</span><span class="n">system_implementation</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">comp</span><span class="o">.</span><span class="n">uuid</span> <span class="ow">in</span> <span class="n">comp_uuids</span><span class="p">:</span>
-                        <span class="n">new_comp_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">comp</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">comp_</span> <span class="ow">in</span> <span class="n">ssp</span><span class="o">.</span><span class="n">system_implementation</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">comp_</span><span class="o">.</span><span class="n">uuid</span> <span class="ow">in</span> <span class="n">comp_uuids</span><span class="p">:</span>
+                        <span class="n">new_comp_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">comp_</span><span class="p">)</span>
                 <span class="n">ssp</span><span class="o">.</span><span class="n">system_implementation</span><span class="o">.</span><span class="n">components</span> <span class="o">=</span> <span class="n">new_comp_list</span>
 
         <span class="c1"># filter by controls in profile</span>
         <span class="k">if</span> <span class="n">profile_name</span><span class="p">:</span>
             <span class="n">prof_resolver</span> <span class="o">=</span> <span class="n">ProfileResolver</span><span class="p">()</span>
             <span class="n">catalog</span> <span class="o">=</span> <span class="n">prof_resolver</span><span class="o">.</span><span class="n">get_resolved_profile_catalog</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_path</span><span class="p">,</span> <span class="n">show_value_warnings</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="n">catalog_interface</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="p">(</span><span class="n">catalog</span><span class="p">)</span>
+            <span class="n">catalog_api</span> <span class="o">=</span> <span class="n">CatalogAPI</span><span class="p">(</span><span class="n">catalog</span><span class="o">=</span><span class="n">catalog</span><span class="p">)</span>
 
             <span class="c1"># The input ssp should reference a superset of the controls referenced by the profile</span>
             <span class="c1"># Need to cull references in the ssp to controls not in the profile</span>
@@ -3681,7 +3980,7 @@ SSPFilter            (<a class="autorefs autorefs-internal" title="trestle.core.
 
             <span class="n">new_set_params</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ossp</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">set_param</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">control_imp</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">):</span>
-                <span class="n">control</span> <span class="o">=</span> <span class="n">catalog_interface</span><span class="o">.</span><span class="n">get_control_by_param_id</span><span class="p">(</span><span class="n">set_param</span><span class="o">.</span><span class="n">param_id</span><span class="p">)</span>
+                <span class="n">control</span> <span class="o">=</span> <span class="n">catalog_api</span><span class="o">.</span><span class="n">_catalog_interface</span><span class="o">.</span><span class="n">get_control_by_param_id</span><span class="p">(</span><span class="n">set_param</span><span class="o">.</span><span class="n">param_id</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">control</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">new_set_params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">set_param</span><span class="p">)</span>
                     <span class="n">ssp_control_ids</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
@@ -3689,14 +3988,14 @@ SSPFilter            (<a class="autorefs autorefs-internal" title="trestle.core.
 
             <span class="n">new_imp_requirements</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ossp</span><span class="o">.</span><span class="n">ImplementedRequirement</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">imp_requirement</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">control_imp</span><span class="o">.</span><span class="n">implemented_requirements</span><span class="p">):</span>
-                <span class="n">control</span> <span class="o">=</span> <span class="n">catalog_interface</span><span class="o">.</span><span class="n">get_control</span><span class="p">(</span><span class="n">imp_requirement</span><span class="o">.</span><span class="n">control_id</span><span class="p">)</span>
+                <span class="n">control</span> <span class="o">=</span> <span class="n">catalog_api</span><span class="o">.</span><span class="n">_catalog_interface</span><span class="o">.</span><span class="n">get_control</span><span class="p">(</span><span class="n">imp_requirement</span><span class="o">.</span><span class="n">control_id</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">control</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">new_imp_requirements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">imp_requirement</span><span class="p">)</span>
                     <span class="n">ssp_control_ids</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
             <span class="n">control_imp</span><span class="o">.</span><span class="n">implemented_requirements</span> <span class="o">=</span> <span class="n">new_imp_requirements</span>
 
             <span class="c1"># make sure all controls in the profile have implemented reqs in the final ssp</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">ssp_control_ids</span><span class="o">.</span><span class="n">issuperset</span><span class="p">(</span><span class="n">catalog_interface</span><span class="o">.</span><span class="n">get_control_ids</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">ssp_control_ids</span><span class="o">.</span><span class="n">issuperset</span><span class="p">(</span><span class="n">catalog_api</span><span class="o">.</span><span class="n">_catalog_interface</span><span class="o">.</span><span class="n">get_control_ids</span><span class="p">()):</span>
                 <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Unable to filter the ssp because the profile references controls not in it.&#39;</span><span class="p">)</span>
 
             <span class="n">ssp</span><span class="o">.</span><span class="n">control_implementation</span> <span class="o">=</span> <span class="n">control_imp</span>
@@ -3704,7 +4003,9 @@ SSPFilter            (<a class="autorefs autorefs-internal" title="trestle.core.
         <span class="k">if</span> <span class="n">version</span><span class="p">:</span>
             <span class="n">ssp</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="n">com</span><span class="o">.</span><span class="n">Version</span><span class="p">(</span><span class="n">__root__</span><span class="o">=</span><span class="n">version</span><span class="p">)</span>
 
-        <span class="n">existing_ssp_path</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">full_path_for_top_level_model</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">out_name</span><span class="p">,</span> <span class="n">ossp</span><span class="o">.</span><span class="n">SystemSecurityPlan</span><span class="p">)</span>
+        <span class="n">existing_ssp_path</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">get_model_path_for_name_and_class</span><span class="p">(</span>
+            <span class="n">trestle_root</span><span class="p">,</span> <span class="n">out_name</span><span class="p">,</span> <span class="n">ossp</span><span class="o">.</span><span class="n">SystemSecurityPlan</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="n">existing_ssp_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">existing_ssp</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">load_validate_model_name</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">out_name</span><span class="p">,</span> <span class="n">ossp</span><span class="o">.</span><span class="n">SystemSecurityPlan</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">models_are_equivalent</span><span class="p">(</span><span class="n">existing_ssp</span><span class="p">,</span> <span class="n">ssp</span><span class="p">):</span>
@@ -3780,7 +4081,7 @@ SSPFilter            (<a class="autorefs autorefs-internal" title="trestle.core.
       <tr>
         <td><code>trestle_root</code></td>
         <td><code>Path</code></td>
-        <td><p>root directory of the trestle project</p></td>
+        <td><p>root directory of the trestle workspace</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
@@ -3848,11 +4149,11 @@ SSPFilter            (<a class="autorefs autorefs-internal" title="trestle.core.
     <span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="n">components</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Filter the ssp based on controls included by the profile and/or components and output new ssp.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        trestle_root: root directory of the trestle project</span>
+<span class="sd">        trestle_root: root directory of the trestle workspace</span>
 <span class="sd">        ssp_name: name of the ssp model</span>
 <span class="sd">        profile_name: name of the optional profile model used for filtering</span>
 <span class="sd">        out_name: name of the output ssp model with filtered controls</span>
@@ -3866,7 +4167,7 @@ SSPFilter            (<a class="autorefs autorefs-internal" title="trestle.core.
     <span class="c1"># load the ssp</span>
     <span class="n">ssp</span><span class="p">:</span> <span class="n">ossp</span><span class="o">.</span><span class="n">SystemSecurityPlan</span>
     <span class="n">ssp</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">load_validate_model_name</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">ssp_name</span><span class="p">,</span> <span class="n">ossp</span><span class="o">.</span><span class="n">SystemSecurityPlan</span><span class="p">,</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">JSON</span><span class="p">)</span>
-    <span class="n">profile_path</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">path_for_top_level_model</span><span class="p">(</span>
+    <span class="n">profile_path</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">get_model_path_for_name_and_class</span><span class="p">(</span>
         <span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_name</span><span class="p">,</span> <span class="n">prof</span><span class="o">.</span><span class="n">Profile</span><span class="p">,</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">JSON</span>
     <span class="p">)</span>
 
@@ -3876,6 +4177,12 @@ SSPFilter            (<a class="autorefs autorefs-internal" title="trestle.core.
         <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">ssp</span><span class="o">.</span><span class="n">system_implementation</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">simplify_name</span><span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">title</span><span class="p">)</span> <span class="ow">in</span> <span class="n">raw_comp_names</span><span class="p">:</span>
                 <span class="n">comp_uuids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">comp_uuids</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">components</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Unable to filter the ssp because one of the components </span><span class="si">{</span><span class="n">components</span><span class="si">}</span><span class="s1"> is not in the ssp.&#39;</span>
+            <span class="p">)</span>
+
         <span class="c1"># imp_reqs can be by comp</span>
         <span class="c1"># and imp_reqs can have statements that are by comp</span>
         <span class="k">if</span> <span class="n">comp_uuids</span><span class="p">:</span>
@@ -3885,7 +4192,7 @@ SSPFilter            (<a class="autorefs autorefs-internal" title="trestle.core.
                 <span class="n">new_by_comps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ossp</span><span class="o">.</span><span class="n">ByComponent</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="c1"># by_comps is optional</span>
                 <span class="k">for</span> <span class="n">by_comp</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">imp_req</span><span class="o">.</span><span class="n">by_components</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="n">by_comp</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">uuid</span> <span class="ow">in</span> <span class="n">comp_uuids</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">by_comp</span><span class="o">.</span><span class="n">component_uuid</span> <span class="ow">in</span> <span class="n">comp_uuids</span><span class="p">:</span>
                         <span class="n">new_by_comps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">by_comp</span><span class="p">)</span>
                 <span class="n">imp_req</span><span class="o">.</span><span class="n">by_components</span> <span class="o">=</span> <span class="n">none_if_empty</span><span class="p">(</span><span class="n">new_by_comps</span><span class="p">)</span>
                 <span class="n">new_imp_reqs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">imp_req</span><span class="p">)</span>
@@ -3901,16 +4208,16 @@ SSPFilter            (<a class="autorefs autorefs-internal" title="trestle.core.
             <span class="n">ssp</span><span class="o">.</span><span class="n">control_implementation</span><span class="o">.</span><span class="n">implemented_requirements</span> <span class="o">=</span> <span class="n">new_imp_reqs</span>
             <span class="c1"># now remove any unused components from the ssp</span>
             <span class="n">new_comp_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ossp</span><span class="o">.</span><span class="n">SystemComponent</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="n">ssp</span><span class="o">.</span><span class="n">system_implementation</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">comp</span><span class="o">.</span><span class="n">uuid</span> <span class="ow">in</span> <span class="n">comp_uuids</span><span class="p">:</span>
-                    <span class="n">new_comp_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">comp</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">comp_</span> <span class="ow">in</span> <span class="n">ssp</span><span class="o">.</span><span class="n">system_implementation</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">comp_</span><span class="o">.</span><span class="n">uuid</span> <span class="ow">in</span> <span class="n">comp_uuids</span><span class="p">:</span>
+                    <span class="n">new_comp_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">comp_</span><span class="p">)</span>
             <span class="n">ssp</span><span class="o">.</span><span class="n">system_implementation</span><span class="o">.</span><span class="n">components</span> <span class="o">=</span> <span class="n">new_comp_list</span>
 
     <span class="c1"># filter by controls in profile</span>
     <span class="k">if</span> <span class="n">profile_name</span><span class="p">:</span>
         <span class="n">prof_resolver</span> <span class="o">=</span> <span class="n">ProfileResolver</span><span class="p">()</span>
         <span class="n">catalog</span> <span class="o">=</span> <span class="n">prof_resolver</span><span class="o">.</span><span class="n">get_resolved_profile_catalog</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_path</span><span class="p">,</span> <span class="n">show_value_warnings</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">catalog_interface</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="p">(</span><span class="n">catalog</span><span class="p">)</span>
+        <span class="n">catalog_api</span> <span class="o">=</span> <span class="n">CatalogAPI</span><span class="p">(</span><span class="n">catalog</span><span class="o">=</span><span class="n">catalog</span><span class="p">)</span>
 
         <span class="c1"># The input ssp should reference a superset of the controls referenced by the profile</span>
         <span class="c1"># Need to cull references in the ssp to controls not in the profile</span>
@@ -3920,7 +4227,7 @@ SSPFilter            (<a class="autorefs autorefs-internal" title="trestle.core.
 
         <span class="n">new_set_params</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ossp</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">set_param</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">control_imp</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">):</span>
-            <span class="n">control</span> <span class="o">=</span> <span class="n">catalog_interface</span><span class="o">.</span><span class="n">get_control_by_param_id</span><span class="p">(</span><span class="n">set_param</span><span class="o">.</span><span class="n">param_id</span><span class="p">)</span>
+            <span class="n">control</span> <span class="o">=</span> <span class="n">catalog_api</span><span class="o">.</span><span class="n">_catalog_interface</span><span class="o">.</span><span class="n">get_control_by_param_id</span><span class="p">(</span><span class="n">set_param</span><span class="o">.</span><span class="n">param_id</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">control</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">new_set_params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">set_param</span><span class="p">)</span>
                 <span class="n">ssp_control_ids</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
@@ -3928,14 +4235,14 @@ SSPFilter            (<a class="autorefs autorefs-internal" title="trestle.core.
 
         <span class="n">new_imp_requirements</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ossp</span><span class="o">.</span><span class="n">ImplementedRequirement</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">imp_requirement</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">control_imp</span><span class="o">.</span><span class="n">implemented_requirements</span><span class="p">):</span>
-            <span class="n">control</span> <span class="o">=</span> <span class="n">catalog_interface</span><span class="o">.</span><span class="n">get_control</span><span class="p">(</span><span class="n">imp_requirement</span><span class="o">.</span><span class="n">control_id</span><span class="p">)</span>
+            <span class="n">control</span> <span class="o">=</span> <span class="n">catalog_api</span><span class="o">.</span><span class="n">_catalog_interface</span><span class="o">.</span><span class="n">get_control</span><span class="p">(</span><span class="n">imp_requirement</span><span class="o">.</span><span class="n">control_id</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">control</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">new_imp_requirements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">imp_requirement</span><span class="p">)</span>
                 <span class="n">ssp_control_ids</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
         <span class="n">control_imp</span><span class="o">.</span><span class="n">implemented_requirements</span> <span class="o">=</span> <span class="n">new_imp_requirements</span>
 
         <span class="c1"># make sure all controls in the profile have implemented reqs in the final ssp</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">ssp_control_ids</span><span class="o">.</span><span class="n">issuperset</span><span class="p">(</span><span class="n">catalog_interface</span><span class="o">.</span><span class="n">get_control_ids</span><span class="p">()):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ssp_control_ids</span><span class="o">.</span><span class="n">issuperset</span><span class="p">(</span><span class="n">catalog_api</span><span class="o">.</span><span class="n">_catalog_interface</span><span class="o">.</span><span class="n">get_control_ids</span><span class="p">()):</span>
             <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Unable to filter the ssp because the profile references controls not in it.&#39;</span><span class="p">)</span>
 
         <span class="n">ssp</span><span class="o">.</span><span class="n">control_implementation</span> <span class="o">=</span> <span class="n">control_imp</span>
@@ -3943,7 +4250,9 @@ SSPFilter            (<a class="autorefs autorefs-internal" title="trestle.core.
     <span class="k">if</span> <span class="n">version</span><span class="p">:</span>
         <span class="n">ssp</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="n">com</span><span class="o">.</span><span class="n">Version</span><span class="p">(</span><span class="n">__root__</span><span class="o">=</span><span class="n">version</span><span class="p">)</span>
 
-    <span class="n">existing_ssp_path</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">full_path_for_top_level_model</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">out_name</span><span class="p">,</span> <span class="n">ossp</span><span class="o">.</span><span class="n">SystemSecurityPlan</span><span class="p">)</span>
+    <span class="n">existing_ssp_path</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">get_model_path_for_name_and_class</span><span class="p">(</span>
+        <span class="n">trestle_root</span><span class="p">,</span> <span class="n">out_name</span><span class="p">,</span> <span class="n">ossp</span><span class="o">.</span><span class="n">SystemSecurityPlan</span>
+    <span class="p">)</span>
     <span class="k">if</span> <span class="n">existing_ssp_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">existing_ssp</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">load_validate_model_name</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">out_name</span><span class="p">,</span> <span class="n">ossp</span><span class="o">.</span><span class="n">SystemSecurityPlan</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">models_are_equivalent</span><span class="p">(</span><span class="n">existing_ssp</span><span class="p">,</span> <span class="n">ssp</span><span class="p">):</span>
@@ -3996,14 +4305,17 @@ SSPGenerate            (<a class="autorefs autorefs-internal" title="trestle.cor
         <details class="quote">
           <summary>Source code in <code>trestle/core/commands/author/ssp.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">SSPGenerate</span><span class="p">(</span><span class="n">AuthorCommonCommand</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Generate SSP in markdown form from a Profile.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate SSP in markdown form from a Profile.&quot;&quot;&quot;</span>
 
     <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;ssp-generate&#39;</span>
 
     <span class="k">def</span> <span class="nf">_init_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">file_help_str</span> <span class="o">=</span> <span class="s1">&#39;Name of the profile model in the trestle workspace&#39;</span>
+        <span class="n">file_help_str</span> <span class="o">=</span> <span class="s1">&#39;Main profile href, or name of the profile model in the trestle workspace&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-p&#39;</span><span class="p">,</span> <span class="s1">&#39;--profile&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">file_help_str</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="s1">&#39;--output&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">HELP_MARKDOWN_NAME</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="s1">&#39;--output&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Name of the output generated ssp markdown folder&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span>
+        <span class="p">)</span>  <span class="c1"># noqa E501</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-cd&#39;</span><span class="p">,</span> <span class="s1">&#39;--compdefs&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">HELP_COMPDEFS</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-y&#39;</span><span class="p">,</span> <span class="s1">&#39;--yaml-header&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">HELP_YAML_PATH</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="s1">&#39;-fo&#39;</span><span class="p">,</span> <span class="s1">&#39;--force-overwrite&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">HELP_FO_OUTPUT</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span>
@@ -4016,14 +4328,6 @@ SSPGenerate            (<a class="autorefs autorefs-internal" title="trestle.cor
             <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">False</span>
         <span class="p">)</span>
-        <span class="n">sections_help_str</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s1">&#39;Comma separated list of section:alias pairs.  Provides mapping of short names to long for markdown.&#39;</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-s&#39;</span><span class="p">,</span> <span class="s1">&#39;--sections&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">sections_help_str</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
-        <span class="n">allowed_sections_help_str</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s1">&#39;Comma separated list of section short names to include in the markdown.  Others will not appear.&#39;</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-as&#39;</span><span class="p">,</span> <span class="s1">&#39;--allowed-sections&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">allowed_sections_help_str</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
@@ -4032,15 +4336,6 @@ SSPGenerate            (<a class="autorefs autorefs-internal" title="trestle.cor
             <span class="k">if</span> <span class="ow">not</span> <span class="n">file_utils</span><span class="o">.</span><span class="n">is_directory_name_allowed</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">output</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">output</span><span class="si">}</span><span class="s1"> is not an allowed directory name&#39;</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">force_overwrite</span><span class="p">:</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Overwriting the content of </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">output</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
-                    <span class="n">clear_folder</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">output</span><span class="p">))</span>
-                <span class="k">except</span> <span class="n">TrestleError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-                    <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unable to overwrite contents of </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">output</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-
-            <span class="n">profile_path</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="sa">f</span><span class="s1">&#39;profiles/</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">profile</span><span class="si">}</span><span class="s1">/profile.json&#39;</span>
-
             <span class="n">yaml_header</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">yaml_header</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
@@ -4048,43 +4343,95 @@ SSPGenerate            (<a class="autorefs autorefs-internal" title="trestle.cor
                     <span class="n">yaml</span> <span class="o">=</span> <span class="n">YAML</span><span class="p">()</span>
                     <span class="n">yaml_header</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">yaml_header</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">))</span>
                 <span class="k">except</span> <span class="n">YAMLError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;YAML error loading yaml header for ssp generation: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;YAML error loading yaml header </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">yaml_header</span><span class="si">}</span><span class="s1"> for ssp generation: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-            <span class="n">markdown_path</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="n">args</span><span class="o">.</span><span class="n">output</span>
+            <span class="n">compdef_name_list</span> <span class="o">=</span> <span class="n">comma_sep_to_list</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">compdefs</span><span class="p">)</span>
 
-            <span class="n">profile_resolver</span> <span class="o">=</span> <span class="n">ProfileResolver</span><span class="p">()</span>
+            <span class="n">md_path</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="n">args</span><span class="o">.</span><span class="n">output</span>
 
-            <span class="c1"># in ssp context we want to see missing value warnings</span>
-            <span class="n">resolved_catalog</span> <span class="o">=</span> <span class="n">profile_resolver</span><span class="o">.</span><span class="n">get_resolved_profile_catalog</span><span class="p">(</span>
-                <span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_path</span><span class="p">,</span> <span class="n">show_value_warnings</span><span class="o">=</span><span class="kc">True</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_ssp_markdown</span><span class="p">(</span>
+                <span class="n">trestle_root</span><span class="p">,</span>
+                <span class="n">args</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span>
+                <span class="n">compdef_name_list</span><span class="p">,</span>
+                <span class="n">md_path</span><span class="p">,</span>
+                <span class="n">yaml_header</span><span class="p">,</span>
+                <span class="n">args</span><span class="o">.</span><span class="n">overwrite_header_values</span><span class="p">,</span>
+                <span class="n">args</span><span class="o">.</span><span class="n">force_overwrite</span>
             <span class="p">)</span>
-            <span class="n">catalog_interface</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="p">(</span><span class="n">resolved_catalog</span><span class="p">)</span>
-
-            <span class="n">sections_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">sections</span><span class="p">:</span>
-                <span class="n">sections_dict</span> <span class="o">=</span> <span class="n">sections_to_dict</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">sections</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">const</span><span class="o">.</span><span class="n">STATEMENT</span> <span class="ow">in</span> <span class="n">sections_dict</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Statement is not allowed as a section name.&#39;</span><span class="p">)</span>
-                <span class="c1"># add any existing sections from the controls but only have short names</span>
-                <span class="n">control_section_short_names</span> <span class="o">=</span> <span class="n">catalog_interface</span><span class="o">.</span><span class="n">get_sections</span><span class="p">()</span>
-                <span class="k">for</span> <span class="n">short_name</span> <span class="ow">in</span> <span class="n">control_section_short_names</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">short_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sections_dict</span><span class="p">:</span>
-                        <span class="n">sections_dict</span><span class="p">[</span><span class="n">short_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">short_name</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ssp sections dict: </span><span class="si">{</span><span class="n">sections_dict</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-
-            <span class="n">context</span> <span class="o">=</span> <span class="n">ControlContext</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">ContextPurpose</span><span class="o">.</span><span class="n">SSP</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">markdown_path</span><span class="p">)</span>
-            <span class="n">context</span><span class="o">.</span><span class="n">yaml_header</span> <span class="o">=</span> <span class="n">yaml_header</span>
-            <span class="n">context</span><span class="o">.</span><span class="n">sections_dict</span> <span class="o">=</span> <span class="n">sections_dict</span>
-            <span class="n">context</span><span class="o">.</span><span class="n">prompt_responses</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="n">context</span><span class="o">.</span><span class="n">overwrite_header_values</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">overwrite_header_values</span>
-            <span class="n">context</span><span class="o">.</span><span class="n">allowed_sections</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">allowed_sections</span>
-
-            <span class="n">catalog_interface</span><span class="o">.</span><span class="n">write_catalog_as_markdown</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">catalog_interface</span><span class="o">.</span><span class="n">get_statement_part_id_map</span><span class="p">(</span><span class="kc">False</span><span class="p">))</span>
-
-            <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">SUCCESS</span><span class="o">.</span><span class="n">value</span>
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
             <span class="k">return</span> <span class="n">handle_generic_command_exception</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="s1">&#39;Error while writing markdown from catalog&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_generate_ssp_markdown</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
+        <span class="n">profile_name_or_href</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">compdef_name_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">md_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
+        <span class="n">yaml_header</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">overwrite_header_values</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">force_overwrite</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate the ssp markdown from the profile and compdefs.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">        Get RPC from profile.</span>
+<span class="sd">        For each compdef:</span>
+<span class="sd">            For each comp:</span>
+<span class="sd">                Load top level rules</span>
+<span class="sd">                for each control_imp:</span>
+<span class="sd">                    Load rules params values</span>
+<span class="sd">                    For each imp_req (bound to 1 control):</span>
+<span class="sd">                        Load control level rules and status</span>
+<span class="sd">                        Load part level rules</span>
+<span class="sd">                        If rules apply then write out control and add to list written out</span>
+<span class="sd">                        If control exists, read it and insert content</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">force_overwrite</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Overwriting the content in </span><span class="si">{</span><span class="n">md_path</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+                <span class="n">clear_folder</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">md_path</span><span class="p">))</span>
+            <span class="k">except</span> <span class="n">TrestleError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+                <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unable to overwrite contents of </span><span class="si">{</span><span class="n">md_path</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">context</span> <span class="o">=</span> <span class="n">ControlContext</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">ContextPurpose</span><span class="o">.</span><span class="n">SSP</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">md_path</span><span class="p">)</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">cli_yaml_header</span> <span class="o">=</span> <span class="n">yaml_header</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">sections_dict</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">prompt_responses</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">overwrite_header_values</span> <span class="o">=</span> <span class="n">overwrite_header_values</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">allowed_sections</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">comp_def_name_list</span> <span class="o">=</span> <span class="n">compdef_name_list</span>
+
+        <span class="c1"># if file not recognized as URI form, assume it represents name of file in trestle directory</span>
+        <span class="n">profile_in_trestle_dir</span> <span class="o">=</span> <span class="s1">&#39;://&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">profile_name_or_href</span>
+        <span class="n">profile_href</span> <span class="o">=</span> <span class="n">profile_name_or_href</span>
+        <span class="k">if</span> <span class="n">profile_in_trestle_dir</span><span class="p">:</span>
+            <span class="n">local_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;profiles/</span><span class="si">{</span><span class="n">profile_name_or_href</span><span class="si">}</span><span class="s1">/profile.json&#39;</span>
+            <span class="n">profile_href</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_HREF_HEADING</span> <span class="o">+</span> <span class="n">local_path</span>
+            <span class="n">profile_path</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="n">local_path</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">load_distributed</span><span class="p">(</span><span class="n">profile_path</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fetcher</span> <span class="o">=</span> <span class="n">FetcherFactory</span><span class="o">.</span><span class="n">get_fetcher</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_href</span><span class="p">)</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">profile</span><span class="p">:</span> <span class="n">prof</span><span class="o">.</span><span class="n">Profile</span> <span class="o">=</span> <span class="n">fetcher</span><span class="o">.</span><span class="n">get_oscal</span><span class="p">()</span>
+            <span class="n">profile_path</span> <span class="o">=</span> <span class="n">profile_href</span>
+
+        <span class="n">profile_resolver</span> <span class="o">=</span> <span class="n">ProfileResolver</span><span class="p">()</span>
+        <span class="c1"># in ssp context we want to see missing value warnings</span>
+        <span class="n">resolved_catalog</span> <span class="o">=</span> <span class="n">profile_resolver</span><span class="o">.</span><span class="n">get_resolved_profile_catalog</span><span class="p">(</span>
+            <span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_path</span><span class="p">,</span> <span class="n">block_params</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">params_format</span><span class="o">=</span><span class="s1">&#39;[.]&#39;</span><span class="p">,</span> <span class="n">show_value_warnings</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+
+        <span class="n">catalog_api</span> <span class="o">=</span> <span class="n">CatalogAPI</span><span class="p">(</span><span class="n">catalog</span><span class="o">=</span><span class="n">resolved_catalog</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">)</span>
+
+        <span class="n">context</span><span class="o">.</span><span class="n">cli_yaml_header</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_GLOBAL_TAG</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">profile_header</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="n">context</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="s1">&#39;href&#39;</span><span class="p">:</span> <span class="n">profile_href</span><span class="p">}</span>
+
+        <span class="n">context</span><span class="o">.</span><span class="n">cli_yaml_header</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_GLOBAL_TAG</span><span class="p">][</span><span class="n">const</span><span class="o">.</span><span class="n">PROFILE</span><span class="p">]</span> <span class="o">=</span> <span class="n">profile_header</span>
+
+        <span class="n">catalog_api</span><span class="o">.</span><span class="n">write_catalog_as_markdown</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">SUCCESS</span><span class="o">.</span><span class="n">value</span>
 </code></pre></div>
         </details>
 
@@ -4140,51 +4487,22 @@ SSPGenerate            (<a class="autorefs autorefs-internal" title="trestle.cor
 
 <p>handler: python</p>
 
-              
-            </article>
-            
-          </div>
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
       </main>
       
         <footer class="md-footer">
-  
-    
-    <nav class="md-footer__inner md-grid" aria-label="Footer" >
-      
-        
-        <a href="../trestle.core.commands.author.profile/" class="md-footer__link md-footer__link--prev" aria-label="Previous: profile" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              profile
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../trestle.core.commands.author.versioning.template_versioning/" class="md-footer__link md-footer__link--next" aria-label="Next: template_versioning" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              template_versioning
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -4206,10 +4524,11 @@ SSPGenerate            (<a class="autorefs autorefs-internal" title="trestle.cor
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.6c7ad80a.min.js"></script>
+      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
       
     
   </body>

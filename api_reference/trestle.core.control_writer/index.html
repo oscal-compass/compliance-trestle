@@ -12,8 +12,14 @@
       
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.control_writer/">
       
+      
+        <link rel="prev" href="../trestle.core.control_reader/">
+      
+      
+        <link rel="next" href="../trestle.core.docs_control_writer/">
+      
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.3.1, mkdocs-material-8.3.9">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.15">
     
     
       
@@ -21,17 +27,13 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.1d29e8d0.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.cbb835fc.min.css">
-        
-          
-          
-          <meta name="theme-color" content="#009485">
-        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
       
       
+
     
     
     
@@ -46,7 +48,7 @@
     
       <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
   
@@ -56,10 +58,13 @@
   
 
 
-  <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-XT3KGMHSY8"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&gtag("event","search",{search_term:this.value})}),"undefined"!=typeof location$&&location$.subscribe(function(e){gtag("config","G-XT3KGMHSY8",{page_path:e.pathname})})})</script>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XT3KGMHSY8"></script>
+  <script id="__analytics">function __md_analytics(){function n(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],n("js",new Date),n("config","G-XT3KGMHSY8"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&n("event","search",{search_term:this.value})}),document$.subscribe(function(){var a=document.forms.feedback;if(void 0!==a)for(var e of a.querySelectorAll("[type=submit]"))e.addEventListener("click",function(e){e.preventDefault();var t=document.location.pathname,e=this.getAttribute("data-md-value");n("event","feedback",{page:t,data:e}),a.firstElementChild.disabled=!0;e=a.querySelector(".md-feedback__note [data-md-value='"+e+"']");e&&(e.hidden=!1)}),a.hidden=!1}),location$.subscribe(function(e){n("config","G-XT3KGMHSY8",{page_path:e.pathname})})});var e=document.createElement("script");e.async=!0,e.src="https://www.googletagmanager.com/gtag/js?id=G-XT3KGMHSY8",document.getElementById("__analytics").insertAdjacentElement("afterEnd",e)}</script>
 
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
 
+    
     
     
   </head>
@@ -136,7 +141,7 @@
       </label>
       <nav class="md-search__options" aria-label="Search">
         
-        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
         </button>
       </nav>
@@ -148,7 +153,7 @@
           <div class="md-search-result__meta">
             Initializing search
           </div>
-          <ol class="md-search-result__list"></ol>
+          <ol class="md-search-result__list" role="presentation"></ol>
         </div>
       </div>
     </div>
@@ -160,7 +165,7 @@
         <a href="https://github.com/IBM/compliance-trestle" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.3.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     IBM/compliance-trestle
@@ -179,7 +184,7 @@
           
             
 <nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
-  <div class="md-tabs__inner md-grid">
+  <div class="md-grid">
     <ul class="md-tabs__list">
       
         
@@ -342,7 +347,7 @@
       <a href="https://github.com/IBM/compliance-trestle" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.3.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     IBM/compliance-trestle
@@ -393,17 +398,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_3">
+        <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
           Tutorials
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Tutorials" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           Tutorials
@@ -447,17 +453,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_3" type="checkbox" id="__nav_3_3" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_3_3">
+        <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
           Trestle Authoring
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Trestle Authoring" data-md-level="2">
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3_3">
           <span class="md-nav__icon md-icon"></span>
           Trestle Authoring
@@ -508,17 +515,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_4" type="checkbox" id="__nav_3_4" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_3_4">
+        <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
           Trestle Transformers and Tasks
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Trestle Transformers and Tasks" data-md-level="2">
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3_4">
           <span class="md-nav__icon md-icon"></span>
           Trestle Transformers and Tasks
@@ -533,6 +541,20 @@
     <li class="md-nav__item">
       <a href="../../tutorials/task.transformer-construction/transformer-construction/" class="md-nav__link">
         Transformer construction
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/task.csv-to-oscal-cd/transformation/" class="md-nav__link">
+        Task - task.csv-to-oscal-cd
       </a>
     </li>
   
@@ -597,17 +619,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_5" type="checkbox" id="__nav_3_5" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_3_5">
+        <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
           Trestle command-line interface (CLI)
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Trestle command-line interface (CLI)" data-md-level="2">
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3_5">
           <span class="md-nav__icon md-icon"></span>
           Trestle command-line interface (CLI)
@@ -666,17 +689,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_4">
+        <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
           Contributing
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Contributing" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_4">
           <span class="md-nav__icon md-icon"></span>
           Contributing
@@ -842,17 +866,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_7">
+        <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
           Plugins
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Plugins" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_7">
           <span class="md-nav__icon md-icon"></span>
           Plugins
@@ -907,17 +932,18 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9" type="checkbox" id="__nav_9" checked>
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" checked>
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9">
+        <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
           Reference
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Reference" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_9">
           <span class="md-nav__icon md-icon"></span>
           Reference
@@ -949,17 +975,18 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2" type="checkbox" id="__nav_9_2" checked>
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2" checked>
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2">
+        <label class="md-nav__link" for="__nav_9_2" id="__nav_9_2_label" tabindex="0">
           trestle API reference
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="trestle API reference" data-md-level="2">
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_9_2_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_9_2">
           <span class="md-nav__icon md-icon"></span>
           trestle API reference
@@ -989,17 +1016,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_2" type="checkbox" id="__nav_9_2_2" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_2" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_2">
+        <label class="md-nav__link" for="__nav_9_2_2" id="__nav_9_2_2_label" tabindex="0">
           common
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="common" data-md-level="3">
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_9_2_2_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_2">
           <span class="md-nav__icon md-icon"></span>
           common
@@ -1178,17 +1206,18 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3" type="checkbox" id="__nav_9_2_3" checked>
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3" checked>
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3">
+        <label class="md-nav__link" for="__nav_9_2_3" id="__nav_9_2_3_label" tabindex="0">
           core
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="core" data-md-level="3">
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_9_2_3_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_9_2_3">
           <span class="md-nav__icon md-icon"></span>
           core
@@ -1228,10 +1257,100 @@
   
   
   
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_9_2_3_3" id="__nav_9_2_3_3_label" tabindex="0">
+          catalog
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_9_2_3_3_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_9_2_3_3">
+          <span class="md-nav__icon md-icon"></span>
+          catalog
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../trestle.core.catalog_interface/" class="md-nav__link">
+      <a href="../trestle.core.catalog.catalog_api/" class="md-nav__link">
+        catalog_api
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.catalog.catalog_interface/" class="md-nav__link">
         catalog_interface
       </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.catalog.catalog_merger/" class="md-nav__link">
+        catalog_merger
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.catalog.catalog_reader/" class="md-nav__link">
+        catalog_reader
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.catalog.catalog_writer/" class="md-nav__link">
+        catalog_writer
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
     </li>
   
 
@@ -1260,17 +1379,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3_5" type="checkbox" id="__nav_9_2_3_5" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_5" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3_5">
+        <label class="md-nav__link" for="__nav_9_2_3_5" id="__nav_9_2_3_5_label" tabindex="0">
           commands
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="commands" data-md-level="4">
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_9_2_3_5_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_3_5">
           <span class="md-nav__icon md-icon"></span>
           commands
@@ -1314,17 +1434,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3_5_3" type="checkbox" id="__nav_9_2_3_5_3" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_5_3" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3_5_3">
+        <label class="md-nav__link" for="__nav_9_2_3_5_3" id="__nav_9_2_3_5_3_label" tabindex="0">
           author
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="author" data-md-level="5">
+      <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_9_2_3_5_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_3_5_3">
           <span class="md-nav__icon md-icon"></span>
           author
@@ -1494,17 +1615,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3_5_3_12" type="checkbox" id="__nav_9_2_3_5_3_12" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_5_3_12" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3_5_3_12">
+        <label class="md-nav__link" for="__nav_9_2_3_5_3_12" id="__nav_9_2_3_5_3_12_label" tabindex="0">
           versioning
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="versioning" data-md-level="6">
+      <nav class="md-nav" data-md-level="6" aria-labelledby="__nav_9_2_3_5_3_12_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_3_5_3_12">
           <span class="md-nav__icon md-icon"></span>
           versioning
@@ -1562,17 +1684,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3_5_5" type="checkbox" id="__nav_9_2_3_5_5" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_5_5" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3_5_5">
+        <label class="md-nav__link" for="__nav_9_2_3_5_5" id="__nav_9_2_3_5_5_label" tabindex="0">
           common
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="common" data-md-level="5">
+      <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_9_2_3_5_5_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_3_5_5">
           <span class="md-nav__icon md-icon"></span>
           common
@@ -1854,7 +1977,7 @@
   
     <li class="md-nav__item md-nav__item--active">
       
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
       
@@ -2069,17 +2192,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3_17" type="checkbox" id="__nav_9_2_3_17" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_17" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3_17">
+        <label class="md-nav__link" for="__nav_9_2_3_17" id="__nav_9_2_3_17_label" tabindex="0">
           markdown
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="markdown" data-md-level="4">
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_9_2_3_17_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_3_17">
           <span class="md-nav__icon md-icon"></span>
           markdown
@@ -2186,17 +2310,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3_18" type="checkbox" id="__nav_9_2_3_18" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_18" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3_18">
+        <label class="md-nav__link" for="__nav_9_2_3_18" id="__nav_9_2_3_18_label" tabindex="0">
           models
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="models" data-md-level="4">
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_9_2_3_18_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_3_18">
           <span class="md-nav__icon md-icon"></span>
           models
@@ -2359,17 +2484,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3_24" type="checkbox" id="__nav_9_2_3_24" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_24" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3_24">
+        <label class="md-nav__link" for="__nav_9_2_3_24" id="__nav_9_2_3_24_label" tabindex="0">
           remote
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="remote" data-md-level="4">
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_9_2_3_24_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_3_24">
           <span class="md-nav__icon md-icon"></span>
           remote
@@ -2420,17 +2546,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3_26" type="checkbox" id="__nav_9_2_3_26" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_26" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3_26">
+        <label class="md-nav__link" for="__nav_9_2_3_26" id="__nav_9_2_3_26_label" tabindex="0">
           resolver
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="resolver" data-md-level="4">
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_9_2_3_26_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_3_26">
           <span class="md-nav__icon md-icon"></span>
           resolver
@@ -2558,17 +2685,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_4" type="checkbox" id="__nav_9_2_4" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_4" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_4">
+        <label class="md-nav__link" for="__nav_9_2_4" id="__nav_9_2_4_label" tabindex="0">
           oscal
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="oscal" data-md-level="3">
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_9_2_4_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_4">
           <span class="md-nav__icon md-icon"></span>
           oscal
@@ -2703,17 +2831,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_5" type="checkbox" id="__nav_9_2_5" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_5" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_5">
+        <label class="md-nav__link" for="__nav_9_2_5" id="__nav_9_2_5_label" tabindex="0">
           tasks
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="tasks" data-md-level="3">
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_9_2_5_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_5">
           <span class="md-nav__icon md-icon"></span>
           tasks
@@ -2740,8 +2869,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.tasks.csv_helper/" class="md-nav__link">
-        csv_helper
+      <a href="../trestle.tasks.cis_xlsx_to_oscal_catalog/" class="md-nav__link">
+        cis_xlsx_to_oscal_catalog
       </a>
     </li>
   
@@ -2904,17 +3033,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_6" type="checkbox" id="__nav_9_2_6" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_6" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_6">
+        <label class="md-nav__link" for="__nav_9_2_6" id="__nav_9_2_6_label" tabindex="0">
           transforms
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="transforms" data-md-level="3">
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_9_2_6_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_6">
           <span class="md-nav__icon md-icon"></span>
           transforms
@@ -2930,17 +3060,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_6_1" type="checkbox" id="__nav_9_2_6_1" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_6_1" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_6_1">
+        <label class="md-nav__link" for="__nav_9_2_6_1" id="__nav_9_2_6_1_label" tabindex="0">
           implementations
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="implementations" data-md-level="4">
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_9_2_6_1_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_6_1">
           <span class="md-nav__icon md-icon"></span>
           implementations
@@ -3163,10 +3294,11 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
                 
+                  
 
 
   <h1>control_writer</h1>
@@ -3233,14 +3365,14 @@ ControlWriter        </code>
         <details class="quote">
           <summary>Source code in <code>trestle/core/control_writer.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ControlWriter</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Class to write controls as markdown.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to write controls as markdown.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize the class.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the class.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MDWriter</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">_add_part_and_its_items</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">item_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;For a given control add its one statement and its items to the md file after replacing params.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;For a given control add its one statement and its items to the md file after replacing params.&quot;&quot;&quot;</span>
         <span class="n">items</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">control</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">control</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
@@ -3248,8 +3380,7 @@ ControlWriter        </code>
                     <span class="c1"># If the part has prose write it as a raw line and not list element</span>
                     <span class="n">skip_id</span> <span class="o">=</span> <span class="n">part</span><span class="o">.</span><span class="n">id</span>
                     <span class="k">if</span> <span class="n">part</span><span class="o">.</span><span class="n">prose</span><span class="p">:</span>
-                        <span class="c1"># need to avoid split lines in statement items</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_line</span><span class="p">(</span><span class="n">part</span><span class="o">.</span><span class="n">prose</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;  &#39;</span><span class="p">))</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_line</span><span class="p">(</span><span class="n">part</span><span class="o">.</span><span class="n">prose</span><span class="p">)</span>
                     <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ControlInterface</span><span class="o">.</span><span class="n">get_part</span><span class="p">(</span><span class="n">part</span><span class="p">,</span> <span class="n">item_type</span><span class="p">,</span> <span class="n">skip_id</span><span class="p">))</span>
             <span class="c1"># unwrap the list if it is many levels deep</span>
             <span class="k">while</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -3262,7 +3393,7 @@ ControlWriter        </code>
             <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">add_yaml_header</span><span class="p">(</span><span class="n">yaml_header</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_add_control_statement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">,</span> <span class="n">group_title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">print_group_title</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Add the control statement and items to the md file.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add the control statement and items to the md file.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_paragraph</span><span class="p">()</span>
         <span class="n">control_id</span> <span class="o">=</span> <span class="n">control</span><span class="o">.</span><span class="n">id</span>
         <span class="n">group_name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -3293,7 +3424,7 @@ ControlWriter        </code>
                     <span class="k">return</span>
 
     <span class="k">def</span> <span class="nf">_add_sections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">,</span> <span class="n">allowed_sections</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Add the extra control sections after the main ones.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add the extra control sections after the main ones.&quot;&quot;&quot;</span>
         <span class="n">skip_section_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">STATEMENT</span><span class="p">,</span> <span class="s1">&#39;item&#39;</span><span class="p">,</span> <span class="s1">&#39;objective&#39;</span><span class="p">]</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">_</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">prose</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">get_section</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="n">skip_section_list</span><span class="p">)</span>
@@ -3314,10 +3445,7 @@ ControlWriter        </code>
 
     <span class="k">def</span> <span class="nf">_insert_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">:</span> <span class="n">ImplementationStatus</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_header</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">IMPLEMENTATION_STATUS_HEADER</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">status</span><span class="o">.</span><span class="n">state</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">status</span><span class="o">.</span><span class="n">remarks</span> <span class="ow">and</span> <span class="n">status</span><span class="o">.</span><span class="n">remarks</span><span class="o">.</span><span class="n">__root__</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_header</span><span class="p">(</span>
-                <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">IMPLEMENTATION_STATUS_REMARKS_HEADER</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">status</span><span class="o">.</span><span class="n">remarks</span><span class="o">.</span><span class="n">__root__</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="p">)</span>
+        <span class="c1"># this used to output remarks also</span>
 
     <span class="k">def</span> <span class="nf">_insert_rules</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rules</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">rules</span><span class="p">:</span>
@@ -3326,59 +3454,79 @@ ControlWriter        </code>
             <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_list</span><span class="p">(</span><span class="n">rules</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">set_indent_level</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_has_prose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">part_label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">comp_dict</span><span class="p">:</span> <span class="n">CompDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">dic</span> <span class="ow">in</span> <span class="n">comp_dict</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">part_label</span> <span class="ow">in</span> <span class="n">dic</span> <span class="ow">and</span> <span class="n">dic</span><span class="p">[</span><span class="n">part_label</span><span class="p">]</span><span class="o">.</span><span class="n">prose</span><span class="p">:</span>
-                <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">return</span> <span class="kc">False</span>
-
-    <span class="k">def</span> <span class="nf">_insert_comp_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">part_label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">comp_info</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ComponentImpInfo</span><span class="p">],</span> <span class="n">comp_def_format</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Insert prose and status from the component info.&quot;&quot;&quot;</span>
-        <span class="n">level</span> <span class="o">=</span> <span class="mi">3</span> <span class="k">if</span> <span class="n">comp_def_format</span> <span class="k">else</span> <span class="mi">4</span>
+    <span class="k">def</span> <span class="nf">_insert_comp_info</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">part_label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">comp_info</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ComponentImpInfo</span><span class="p">],</span> <span class="n">context</span><span class="p">:</span> <span class="n">ControlContext</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Insert prose and status from the component info.&quot;&quot;&quot;</span>
+        <span class="n">level</span> <span class="o">=</span> <span class="mi">3</span> <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">purpose</span> <span class="o">==</span> <span class="n">ContextPurpose</span><span class="o">.</span><span class="n">COMPONENT</span> <span class="k">else</span> <span class="mi">4</span>
         <span class="k">if</span> <span class="n">part_label</span> <span class="ow">in</span> <span class="n">comp_info</span><span class="p">:</span>
             <span class="n">info</span> <span class="o">=</span> <span class="n">comp_info</span><span class="p">[</span><span class="n">part_label</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">comp_def_format</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">info</span><span class="o">.</span><span class="n">rules</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">purpose</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ContextPurpose</span><span class="o">.</span><span class="n">COMPONENT</span><span class="p">,</span> <span class="n">ContextPurpose</span><span class="o">.</span><span class="n">SSP</span><span class="p">]</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">info</span><span class="o">.</span><span class="n">rules</span><span class="p">:</span>
                 <span class="k">return</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_paragraph</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_line</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">prose</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">prose</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_line</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">prose</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_line</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">part_label</span><span class="si">}</span><span class="s1"> --&gt;&#39;</span><span class="p">)</span>
+
             <span class="bp">self</span><span class="o">.</span><span class="n">_insert_rules</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">rules</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_insert_status</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_insert_status</span><span class="p">(</span><span class="n">ImplementationStatus</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">STATUS_PLANNED</span><span class="p">),</span> <span class="n">level</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_add_component_control_prompts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">comp_dict</span><span class="p">:</span> <span class="n">CompDict</span><span class="p">,</span> <span class="n">comp_def_format</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Add prompts to the markdown for the control itself, per component.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">comp_def_format</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_paraline</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">STATUS_PROMPT</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_paraline</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">RULES_WARNING</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_paragraph</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">_add_component_control_prompts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">comp_dict</span><span class="p">:</span> <span class="n">CompDict</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ControlContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add prompts to the markdown for the control itself, per component.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">purpose</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ContextPurpose</span><span class="o">.</span><span class="n">COMPONENT</span><span class="p">,</span> <span class="n">ContextPurpose</span><span class="o">.</span><span class="n">SSP</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_paraline</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">STATUS_PROMPT</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_paraline</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">RULES_WARNING</span><span class="p">)</span>
         <span class="n">did_write</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="n">level</span> <span class="o">=</span> <span class="mi">3</span>
-        <span class="k">for</span> <span class="n">comp_info</span> <span class="ow">in</span> <span class="p">[</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">dic</span> <span class="ow">in</span> <span class="n">comp_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="s1">&#39;&#39;</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">]:</span>
-            <span class="c1"># is this control-level guidance for this component</span>
-            <span class="c1"># create new heading for this component and add guidance</span>
-            <span class="n">prose</span> <span class="o">=</span> <span class="n">comp_info</span><span class="o">.</span><span class="n">prose</span> <span class="k">if</span> <span class="n">comp_info</span><span class="o">.</span><span class="n">prose</span> <span class="o">!=</span> <span class="n">control_id</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
-            <span class="c1"># only write out the prompt first time</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">prose</span><span class="p">:</span>
-                <span class="n">prose</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">control_id</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="k">if</span> <span class="n">prose</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_paraline</span><span class="p">(</span><span class="n">prose</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_insert_rules</span><span class="p">(</span><span class="n">comp_info</span><span class="o">.</span><span class="n">rules</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_insert_status</span><span class="p">(</span><span class="n">comp_info</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span>
+        <span class="c1"># do special handling for This System</span>
+        <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">purpose</span> <span class="o">==</span> <span class="n">ContextPurpose</span><span class="o">.</span><span class="n">SSP</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_paragraph</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_header</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">SSP_MAIN_COMP_NAME</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_paragraph</span><span class="p">()</span>
+            <span class="n">prose</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">SSP_ADD_THIS_SYSTEM_IMPLEMENTATION_FOR_CONTROL_TEXT</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">control_id</span><span class="si">}</span><span class="s1"> --&gt;&#39;</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">ImplementationStatus</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">STATUS_PLANNED</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">const</span><span class="o">.</span><span class="n">SSP_MAIN_COMP_NAME</span> <span class="ow">in</span> <span class="n">comp_dict</span><span class="p">:</span>
+                <span class="n">comp_info</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">comp_dict</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SSP_MAIN_COMP_NAME</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">comp_info</span><span class="o">.</span><span class="n">prose</span><span class="p">:</span>
+                    <span class="n">prose</span> <span class="o">=</span> <span class="n">comp_info</span><span class="o">.</span><span class="n">prose</span>
+                <span class="n">status</span> <span class="o">=</span> <span class="n">comp_info</span><span class="o">.</span><span class="n">status</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_paraline</span><span class="p">(</span><span class="n">prose</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_insert_status</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
             <span class="n">did_write</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">sorted_comp_names</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">comp_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">comp_name</span> <span class="ow">in</span> <span class="n">sorted_comp_names</span><span class="p">:</span>
+            <span class="n">dic</span> <span class="o">=</span> <span class="n">comp_dict</span><span class="p">[</span><span class="n">comp_name</span><span class="p">]</span>
+            <span class="c1"># This System already handled</span>
+            <span class="k">if</span> <span class="n">comp_name</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">SSP_MAIN_COMP_NAME</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">for</span> <span class="n">comp_info</span> <span class="ow">in</span> <span class="p">[</span><span class="n">val</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">dic</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">]:</span>
+                <span class="c1"># don&#39;t output component name for component markdown since only one component</span>
+                <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">purpose</span> <span class="o">!=</span> <span class="n">ContextPurpose</span><span class="o">.</span><span class="n">COMPONENT</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_header</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">comp_name</span><span class="p">)</span>
+                <span class="n">prose</span> <span class="o">=</span> <span class="n">comp_info</span><span class="o">.</span><span class="n">prose</span> <span class="k">if</span> <span class="n">comp_info</span><span class="o">.</span><span class="n">prose</span> <span class="o">!=</span> <span class="n">control_id</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">prose</span><span class="p">:</span>
+                    <span class="n">prose</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">control_id</span><span class="si">}</span><span class="s1"> --&gt;&#39;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_paraline</span><span class="p">(</span><span class="n">prose</span><span class="p">)</span>
+                <span class="n">level</span> <span class="o">=</span> <span class="mi">3</span> <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">purpose</span> <span class="o">==</span> <span class="n">ContextPurpose</span><span class="o">.</span><span class="n">COMPONENT</span> <span class="k">else</span> <span class="mi">4</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_insert_rules</span><span class="p">(</span><span class="n">comp_info</span><span class="o">.</span><span class="n">rules</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_insert_status</span><span class="p">(</span><span class="n">comp_info</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span>
+                <span class="n">did_write</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="n">did_write</span>
 
     <span class="k">def</span> <span class="nf">_add_implementation_response_prompts</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">control</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">,</span> <span class="n">comp_dict</span><span class="p">:</span> <span class="n">CompDict</span><span class="p">,</span> <span class="n">comp_def_format</span><span class="o">=</span><span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">control</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">,</span> <span class="n">comp_dict</span><span class="p">:</span> <span class="n">CompDict</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ControlContext</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Add the response request text for all parts to the markdown along with the header.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add the response request text for all parts to the markdown along with the header.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_hr</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_paragraph</span><span class="p">()</span>
         <span class="c1"># top level request for implementation details</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_header</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">SSP_MD_IMPLEMENTATION_QUESTION</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="c1"># write out control level prose and status</span>
-        <span class="n">did_write_part</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_component_control_prompts</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">comp_dict</span><span class="p">,</span> <span class="n">comp_def_format</span><span class="p">)</span>
+        <span class="n">did_write_part</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_component_control_prompts</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">comp_dict</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
 
         <span class="c1"># if the control has no parts written out then enter implementation in the top level entry</span>
         <span class="c1"># but if it does have parts written out, leave top level blank and provide details in the parts</span>
@@ -3393,39 +3541,42 @@ ControlWriter        </code>
                         <span class="c1"># if no label guess the label from the sub-part id</span>
                         <span class="n">part_label</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">get_label</span><span class="p">(</span><span class="n">prt</span><span class="p">)</span>
                         <span class="n">part_label</span> <span class="o">=</span> <span class="n">prt</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">part_label</span> <span class="k">else</span> <span class="n">part_label</span>
-                        <span class="c1"># for comp def only write out part if rules apply to it</span>
-                        <span class="k">if</span> <span class="n">comp_def_format</span><span class="p">:</span>
-                            <span class="c1"># for comp_def there is only one component in the comp_dict</span>
-                            <span class="n">dic</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">comp_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
-                            <span class="k">if</span> <span class="p">(</span><span class="n">part_label</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">dic</span><span class="p">[</span><span class="n">part_label</span><span class="p">]</span><span class="o">.</span><span class="n">rules</span><span class="p">):</span>
-                                <span class="k">continue</span>
+                        <span class="c1"># only write out part if rules apply to it</span>
+                        <span class="n">rules_apply</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">dic</span> <span class="ow">in</span> <span class="n">comp_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                            <span class="k">if</span> <span class="n">part_label</span> <span class="ow">in</span> <span class="n">dic</span> <span class="ow">and</span> <span class="n">dic</span><span class="p">[</span><span class="n">part_label</span><span class="p">]</span><span class="o">.</span><span class="n">rules</span><span class="p">:</span>
+                                <span class="n">rules_apply</span> <span class="o">=</span> <span class="kc">True</span>
+                                <span class="k">break</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">rules_apply</span><span class="p">:</span>
+                            <span class="k">continue</span>
                         <span class="k">if</span> <span class="ow">not</span> <span class="n">did_write_part</span><span class="p">:</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_line</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">SSP_MD_LEAVE_BLANK_TEXT</span><span class="p">)</span>
                             <span class="c1"># insert extra line to make mdformat happy</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">_add_line_raw</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_hr</span><span class="p">()</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_header</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Implementation for part </span><span class="si">{</span><span class="n">part_label</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_prose</span><span class="p">(</span><span class="n">part_label</span><span class="p">,</span> <span class="n">comp_dict</span><span class="p">):</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_line</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">prt</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                         <span class="n">wrote_label_content</span> <span class="o">=</span> <span class="kc">False</span>
-                        <span class="k">for</span> <span class="n">comp_name</span><span class="p">,</span> <span class="n">dic</span> <span class="ow">in</span> <span class="n">comp_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                        <span class="n">sorted_comp_names</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">comp_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                        <span class="k">for</span> <span class="n">comp_name</span> <span class="ow">in</span> <span class="n">sorted_comp_names</span><span class="p">:</span>
+                            <span class="n">dic</span> <span class="o">=</span> <span class="n">comp_dict</span><span class="p">[</span><span class="n">comp_name</span><span class="p">]</span>
+                            <span class="k">if</span> <span class="n">comp_name</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">SSP_MAIN_COMP_NAME</span><span class="p">:</span>
+                                <span class="k">continue</span>
                             <span class="k">if</span> <span class="n">part_label</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
-                                <span class="k">if</span> <span class="n">comp_name</span> <span class="o">!=</span> <span class="n">const</span><span class="o">.</span><span class="n">SSP_MAIN_COMP_NAME</span><span class="p">:</span>
-                                    <span class="c1"># insert the component name for ssp but not for comp_def</span>
-                                    <span class="c1"># because there should only be one component in generated comp_def markdown</span>
-                                    <span class="k">if</span> <span class="ow">not</span> <span class="n">comp_def_format</span><span class="p">:</span>
-                                        <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_header</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">comp_name</span><span class="p">)</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">_insert_comp_info</span><span class="p">(</span><span class="n">part_label</span><span class="p">,</span> <span class="n">dic</span><span class="p">,</span> <span class="n">comp_def_format</span><span class="p">)</span>
-                            <span class="n">wrote_label_content</span> <span class="o">=</span> <span class="kc">True</span>
+                                <span class="c1"># insert the component name for ssp but not for comp_def</span>
+                                <span class="c1"># because there should only be one component in generated comp_def markdown</span>
+                                <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">purpose</span> <span class="o">!=</span> <span class="n">ContextPurpose</span><span class="o">.</span><span class="n">COMPONENT</span><span class="p">:</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_header</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">comp_name</span><span class="p">)</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">_insert_comp_info</span><span class="p">(</span><span class="n">part_label</span><span class="p">,</span> <span class="n">dic</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+                                <span class="n">wrote_label_content</span> <span class="o">=</span> <span class="kc">True</span>
                         <span class="k">if</span> <span class="ow">not</span> <span class="n">wrote_label_content</span><span class="p">:</span>
-                            <span class="n">level</span> <span class="o">=</span> <span class="mi">3</span> <span class="k">if</span> <span class="n">comp_def_format</span> <span class="k">else</span> <span class="mi">4</span>
+                            <span class="n">level</span> <span class="o">=</span> <span class="mi">3</span> <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">purpose</span> <span class="o">==</span> <span class="n">ContextPurpose</span><span class="o">.</span><span class="n">COMPONENT</span> <span class="k">else</span> <span class="mi">4</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">_insert_status</span><span class="p">(</span><span class="n">ImplementationStatus</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">STATUS_PLANNED</span><span class="p">),</span> <span class="n">level</span><span class="p">)</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_paragraph</span><span class="p">()</span>
                         <span class="n">did_write_part</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="c1"># if we loaded nothing for this control yet then it must need a fresh prompt for the control statement</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">comp_dict</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">did_write_part</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_line</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">comp_def_format</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_line</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1"> --&gt;&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">purpose</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ContextPurpose</span><span class="o">.</span><span class="n">COMPONENT</span><span class="p">,</span> <span class="n">ContextPurpose</span><span class="o">.</span><span class="n">SSP</span><span class="p">]:</span>
                 <span class="n">status</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">get_status_from_props</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_insert_status</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">did_write_part</span><span class="p">:</span>
@@ -3434,7 +3585,7 @@ ControlWriter        </code>
                 <span class="k">if</span> <span class="n">part_label</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">comp_name</span> <span class="o">!=</span> <span class="n">const</span><span class="o">.</span><span class="n">SSP_MAIN_COMP_NAME</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_header</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">comp_name</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_insert_comp_info</span><span class="p">(</span><span class="n">part_label</span><span class="p">,</span> <span class="n">dic</span><span class="p">,</span> <span class="n">comp_def_format</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_insert_comp_info</span><span class="p">(</span><span class="n">part_label</span><span class="p">,</span> <span class="n">dic</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_hr</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_dump_subpart_infos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">part</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -3605,12 +3756,19 @@ ControlWriter        </code>
         <span class="k">return</span> <span class="n">added_sections</span>
 
     <span class="k">def</span> <span class="nf">_prompt_required_sections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">required_sections</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">added_sections</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Add prompts for any required sections that haven&#39;t already been written out.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add prompts for any required sections that haven&#39;t already been written out.&quot;&quot;&quot;</span>
         <span class="n">missing_sections</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">required_sections</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">added_sections</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">missing_sections</span><span class="p">:</span>
             <span class="n">section_title</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sections_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">section</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_header</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Control </span><span class="si">{</span><span class="n">section_title</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_line</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">section_title</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_line</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">section_title</span><span class="si">}</span><span class="s1"> --&gt;&#39;</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_merge_headers</span><span class="p">(</span><span class="n">memory_header</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">md_header</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+                       <span class="n">context</span><span class="p">:</span> <span class="n">ControlContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="n">merged_header</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">md_header</span><span class="p">)</span>
+        <span class="n">ControlInterface</span><span class="o">.</span><span class="n">merge_dicts_deep</span><span class="p">(</span><span class="n">merged_header</span><span class="p">,</span> <span class="n">memory_header</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">merged_header</span>
 
     <span class="k">def</span> <span class="nf">write_control_for_editing</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -3621,7 +3779,7 @@ ControlWriter        </code>
         <span class="n">part_id_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
         <span class="n">found_alters</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">prof</span><span class="o">.</span><span class="n">Alter</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Write out the control in markdown format into the specified directory.</span>
 
 <span class="sd">        Args:</span>
@@ -3646,39 +3804,54 @@ ControlWriter        </code>
         <span class="k">if</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">is_withdrawn</span><span class="p">(</span><span class="n">control</span><span class="p">):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Not writing out control </span><span class="si">{</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1"> since it is marked Withdrawn.&#39;</span><span class="p">)</span>
             <span class="k">return</span>
+
         <span class="n">control_file</span> <span class="o">=</span> <span class="n">dest_path</span> <span class="o">/</span> <span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">id</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">MARKDOWN_FILE_EXT</span><span class="p">)</span>
-        <span class="c1"># first read the existing markdown header and content if it exists</span>
-        <span class="n">comp_dict</span><span class="p">,</span> <span class="n">header</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">read_all_implementation_prose_and_header</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="n">control_file</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
-        <span class="c1"># only write control for component markdown if rules apply to it</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">purpose</span> <span class="o">==</span> <span class="n">ContextPurpose</span><span class="o">.</span><span class="n">COMPONENT</span> <span class="ow">and</span> <span class="n">context</span><span class="o">.</span><span class="n">to_markdown</span>
-                <span class="ow">and</span> <span class="n">const</span><span class="o">.</span><span class="n">COMP_DEF_RULES_TAG</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">header</span><span class="p">):</span>
-            <span class="k">return</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span> <span class="o">=</span> <span class="n">MDWriter</span><span class="p">(</span><span class="n">control_file</span><span class="p">)</span>
+        <span class="c1"># read the existing markdown header and content if it exists</span>
+        <span class="n">md_header</span><span class="p">,</span> <span class="n">comp_dict</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">read_control_info_from_md</span><span class="p">(</span><span class="n">control_file</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+        <span class="c1"># replace the memory comp_dict with the md one if control exists</span>
+        <span class="k">if</span> <span class="n">comp_dict</span><span class="p">:</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">comp_dict</span> <span class="o">=</span> <span class="n">comp_dict</span>
+
+        <span class="n">header_comment_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_ADD_PROPS_TAG</span><span class="p">:</span> <span class="n">const</span><span class="o">.</span><span class="n">YAML_PROPS_COMMENT</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">to_markdown</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">purpose</span> <span class="o">==</span> <span class="n">ContextPurpose</span><span class="o">.</span><span class="n">PROFILE</span><span class="p">:</span>
+                <span class="n">header_comment_dict</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SET_PARAMS_TAG</span><span class="p">]</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">YAML_PROFILE_VALUES_COMMENT</span>
+            <span class="k">elif</span> <span class="n">context</span><span class="o">.</span><span class="n">purpose</span> <span class="o">==</span> <span class="n">ContextPurpose</span><span class="o">.</span><span class="n">SSP</span><span class="p">:</span>
+                <span class="n">header_comment_dict</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SET_PARAMS_TAG</span><span class="p">]</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">YAML_SSP_VALUES_COMMENT</span>
+                <span class="n">header_comment_dict</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">COMP_DEF_RULES_PARAM_VALS_TAG</span><span class="p">]</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">YAML_RULE_PARAM_VALUES_SSP_COMMENT</span>
+            <span class="k">elif</span> <span class="n">context</span><span class="o">.</span><span class="n">purpose</span> <span class="o">==</span> <span class="n">ContextPurpose</span><span class="o">.</span><span class="n">COMPONENT</span><span class="p">:</span>
+                <span class="n">header_comment_dict</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">COMP_DEF_RULES_PARAM_VALS_TAG</span>
+                                    <span class="p">]</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">YAML_RULE_PARAM_VALUES_COMPONENT_COMMENT</span>
+
+        <span class="c1"># begin adding info to the md file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span> <span class="o">=</span> <span class="n">MDWriter</span><span class="p">(</span><span class="n">control_file</span><span class="p">,</span> <span class="n">header_comment_dict</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sections_dict</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">sections_dict</span>
 
-        <span class="n">merged_header</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">merged_header</span> <span class="o">=</span> <span class="n">ControlWriter</span><span class="o">.</span><span class="n">_merge_headers</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">merged_header</span><span class="p">,</span> <span class="n">md_header</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
         <span class="c1"># if the control has an explicitly defined sort-id and there is none in the yaml_header, then insert it</span>
         <span class="c1"># in the yaml header and allow overwrite_header_values to control whether it overwrites an existing one</span>
         <span class="c1"># in the markdown header</span>
-        <span class="n">context</span><span class="o">.</span><span class="n">yaml_header</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">yaml_header</span> <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">yaml_header</span> <span class="k">else</span> <span class="p">{}</span>
-        <span class="n">sort_id</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">get_sort_id</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">sort_id</span> <span class="ow">and</span> <span class="n">const</span><span class="o">.</span><span class="n">SORT_ID</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">yaml_header</span><span class="p">:</span>
-            <span class="n">context</span><span class="o">.</span><span class="n">yaml_header</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SORT_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">sort_id</span>
-        <span class="n">ControlInterface</span><span class="o">.</span><span class="n">merge_dicts_deep</span><span class="p">(</span><span class="n">merged_header</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">yaml_header</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">overwrite_header_values</span><span class="p">)</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">cli_yaml_header</span> <span class="o">=</span> <span class="n">as_dict</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">cli_yaml_header</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">purpose</span> <span class="o">!=</span> <span class="n">ContextPurpose</span><span class="o">.</span><span class="n">PROFILE</span><span class="p">:</span>
+            <span class="n">ControlInterface</span><span class="o">.</span><span class="n">merge_dicts_deep</span><span class="p">(</span>
+                <span class="n">context</span><span class="o">.</span><span class="n">merged_header</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">cli_yaml_header</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">overwrite_header_values</span>
+            <span class="p">)</span>
         <span class="c1"># the global contents are special and get overwritten on generate</span>
-        <span class="n">global_contents</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">yaml_header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_GLOBAL_TAG</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">global_contents</span><span class="p">:</span>
-            <span class="n">merged_header</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_GLOBAL_TAG</span><span class="p">]</span> <span class="o">=</span> <span class="n">global_contents</span>
+        <span class="n">set_or_pop</span><span class="p">(</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">merged_header</span><span class="p">,</span>
+            <span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_GLOBAL_TAG</span><span class="p">,</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">cli_yaml_header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_GLOBAL_TAG</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">sort_id</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">get_sort_id</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sort_id</span><span class="p">:</span>
+            <span class="n">deep_set</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">merged_header</span><span class="p">,</span> <span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_GLOBAL_TAG</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">SORT_ID</span><span class="p">],</span> <span class="n">sort_id</span><span class="p">)</span>
 
         <span class="c1"># merge any provided sections with sections in the header, with priority to the one from context (e.g. CLI)</span>
-        <span class="n">header_sections_dict</span> <span class="o">=</span> <span class="n">merged_header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">SECTIONS_TAG</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">header_sections_dict</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">merged_header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">SECTIONS_TAG</span><span class="p">,</span> <span class="p">{})</span>
         <span class="n">merged_sections_dict</span> <span class="o">=</span> <span class="n">merge_dicts</span><span class="p">(</span><span class="n">header_sections_dict</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">sections_dict</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">merged_sections_dict</span><span class="p">:</span>
-            <span class="n">merged_header</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SECTIONS_TAG</span><span class="p">]</span> <span class="o">=</span> <span class="n">merged_sections_dict</span>
+        <span class="n">set_or_pop</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">merged_header</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">SECTIONS_TAG</span><span class="p">,</span> <span class="n">merged_sections_dict</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">purpose</span> <span class="o">==</span> <span class="n">ContextPurpose</span><span class="o">.</span><span class="n">COMPONENT</span> <span class="ow">and</span> <span class="n">const</span><span class="o">.</span><span class="n">SORT_ID</span> <span class="ow">in</span> <span class="n">merged_header</span><span class="p">:</span>
-            <span class="k">del</span> <span class="n">merged_header</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SORT_ID</span><span class="p">]</span>
-
+        <span class="c1"># now begin filling in content from the control in memory</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_control_statement</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="n">group_title</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_control_objective</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
@@ -3688,17 +3861,17 @@ ControlWriter        </code>
 
         <span class="c1"># prompt responses for imp reqs using special format if comp_def mode</span>
         <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">prompt_responses</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_add_implementation_response_prompts</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="n">comp_dict</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">comp_def</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_implementation_response_prompts</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">comp_dict</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
 
-        <span class="c1"># only used for profile-generate</span>
+        <span class="c1"># for profile generate</span>
         <span class="c1"># add sections corresponding to added parts in the profile</span>
         <span class="n">added_sections</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">additional_content</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">purpose</span> <span class="o">==</span> <span class="n">ContextPurpose</span><span class="o">.</span><span class="n">PROFILE</span><span class="p">:</span>
             <span class="n">added_sections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_additional_content</span><span class="p">(</span>
-                <span class="n">control</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span> <span class="n">merged_header</span><span class="p">,</span> <span class="n">part_id_map</span><span class="p">,</span> <span class="n">found_alters</span>
+                <span class="n">control</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">merged_header</span><span class="p">,</span> <span class="n">part_id_map</span><span class="p">,</span> <span class="n">found_alters</span>
             <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add_yaml_header</span><span class="p">(</span><span class="n">merged_header</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_yaml_header</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">merged_header</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">required_sections</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_prompt_required_sections</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">required_sections</span><span class="p">,</span> <span class="n">added_sections</span><span class="p">)</span>
@@ -3739,7 +3912,7 @@ ControlWriter        </code>
         <details class="quote">
           <summary>Source code in <code>trestle/core/control_writer.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Initialize the class.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the class.&quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MDWriter</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 </code></pre></div>
         </details>
@@ -3847,7 +4020,7 @@ Controls are checked if they are marked withdrawn, and if so they are not writte
     <span class="n">part_id_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
     <span class="n">found_alters</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">prof</span><span class="o">.</span><span class="n">Alter</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Write out the control in markdown format into the specified directory.</span>
 
 <span class="sd">    Args:</span>
@@ -3872,39 +4045,54 @@ Controls are checked if they are marked withdrawn, and if so they are not writte
     <span class="k">if</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">is_withdrawn</span><span class="p">(</span><span class="n">control</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Not writing out control </span><span class="si">{</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1"> since it is marked Withdrawn.&#39;</span><span class="p">)</span>
         <span class="k">return</span>
+
     <span class="n">control_file</span> <span class="o">=</span> <span class="n">dest_path</span> <span class="o">/</span> <span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">id</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">MARKDOWN_FILE_EXT</span><span class="p">)</span>
-    <span class="c1"># first read the existing markdown header and content if it exists</span>
-    <span class="n">comp_dict</span><span class="p">,</span> <span class="n">header</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">read_all_implementation_prose_and_header</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="n">control_file</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
-    <span class="c1"># only write control for component markdown if rules apply to it</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">purpose</span> <span class="o">==</span> <span class="n">ContextPurpose</span><span class="o">.</span><span class="n">COMPONENT</span> <span class="ow">and</span> <span class="n">context</span><span class="o">.</span><span class="n">to_markdown</span>
-            <span class="ow">and</span> <span class="n">const</span><span class="o">.</span><span class="n">COMP_DEF_RULES_TAG</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">header</span><span class="p">):</span>
-        <span class="k">return</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span> <span class="o">=</span> <span class="n">MDWriter</span><span class="p">(</span><span class="n">control_file</span><span class="p">)</span>
+    <span class="c1"># read the existing markdown header and content if it exists</span>
+    <span class="n">md_header</span><span class="p">,</span> <span class="n">comp_dict</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">read_control_info_from_md</span><span class="p">(</span><span class="n">control_file</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+    <span class="c1"># replace the memory comp_dict with the md one if control exists</span>
+    <span class="k">if</span> <span class="n">comp_dict</span><span class="p">:</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">comp_dict</span> <span class="o">=</span> <span class="n">comp_dict</span>
+
+    <span class="n">header_comment_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_ADD_PROPS_TAG</span><span class="p">:</span> <span class="n">const</span><span class="o">.</span><span class="n">YAML_PROPS_COMMENT</span><span class="p">}</span>
+    <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">to_markdown</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">purpose</span> <span class="o">==</span> <span class="n">ContextPurpose</span><span class="o">.</span><span class="n">PROFILE</span><span class="p">:</span>
+            <span class="n">header_comment_dict</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SET_PARAMS_TAG</span><span class="p">]</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">YAML_PROFILE_VALUES_COMMENT</span>
+        <span class="k">elif</span> <span class="n">context</span><span class="o">.</span><span class="n">purpose</span> <span class="o">==</span> <span class="n">ContextPurpose</span><span class="o">.</span><span class="n">SSP</span><span class="p">:</span>
+            <span class="n">header_comment_dict</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SET_PARAMS_TAG</span><span class="p">]</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">YAML_SSP_VALUES_COMMENT</span>
+            <span class="n">header_comment_dict</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">COMP_DEF_RULES_PARAM_VALS_TAG</span><span class="p">]</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">YAML_RULE_PARAM_VALUES_SSP_COMMENT</span>
+        <span class="k">elif</span> <span class="n">context</span><span class="o">.</span><span class="n">purpose</span> <span class="o">==</span> <span class="n">ContextPurpose</span><span class="o">.</span><span class="n">COMPONENT</span><span class="p">:</span>
+            <span class="n">header_comment_dict</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">COMP_DEF_RULES_PARAM_VALS_TAG</span>
+                                <span class="p">]</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">YAML_RULE_PARAM_VALUES_COMPONENT_COMMENT</span>
+
+    <span class="c1"># begin adding info to the md file</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span> <span class="o">=</span> <span class="n">MDWriter</span><span class="p">(</span><span class="n">control_file</span><span class="p">,</span> <span class="n">header_comment_dict</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_sections_dict</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">sections_dict</span>
 
-    <span class="n">merged_header</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+    <span class="n">context</span><span class="o">.</span><span class="n">merged_header</span> <span class="o">=</span> <span class="n">ControlWriter</span><span class="o">.</span><span class="n">_merge_headers</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">merged_header</span><span class="p">,</span> <span class="n">md_header</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
     <span class="c1"># if the control has an explicitly defined sort-id and there is none in the yaml_header, then insert it</span>
     <span class="c1"># in the yaml header and allow overwrite_header_values to control whether it overwrites an existing one</span>
     <span class="c1"># in the markdown header</span>
-    <span class="n">context</span><span class="o">.</span><span class="n">yaml_header</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">yaml_header</span> <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">yaml_header</span> <span class="k">else</span> <span class="p">{}</span>
-    <span class="n">sort_id</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">get_sort_id</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">sort_id</span> <span class="ow">and</span> <span class="n">const</span><span class="o">.</span><span class="n">SORT_ID</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">yaml_header</span><span class="p">:</span>
-        <span class="n">context</span><span class="o">.</span><span class="n">yaml_header</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SORT_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">sort_id</span>
-    <span class="n">ControlInterface</span><span class="o">.</span><span class="n">merge_dicts_deep</span><span class="p">(</span><span class="n">merged_header</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">yaml_header</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">overwrite_header_values</span><span class="p">)</span>
+    <span class="n">context</span><span class="o">.</span><span class="n">cli_yaml_header</span> <span class="o">=</span> <span class="n">as_dict</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">cli_yaml_header</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">purpose</span> <span class="o">!=</span> <span class="n">ContextPurpose</span><span class="o">.</span><span class="n">PROFILE</span><span class="p">:</span>
+        <span class="n">ControlInterface</span><span class="o">.</span><span class="n">merge_dicts_deep</span><span class="p">(</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">merged_header</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">cli_yaml_header</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">overwrite_header_values</span>
+        <span class="p">)</span>
     <span class="c1"># the global contents are special and get overwritten on generate</span>
-    <span class="n">global_contents</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">yaml_header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_GLOBAL_TAG</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">global_contents</span><span class="p">:</span>
-        <span class="n">merged_header</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_GLOBAL_TAG</span><span class="p">]</span> <span class="o">=</span> <span class="n">global_contents</span>
+    <span class="n">set_or_pop</span><span class="p">(</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">merged_header</span><span class="p">,</span>
+        <span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_GLOBAL_TAG</span><span class="p">,</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">cli_yaml_header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_GLOBAL_TAG</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">sort_id</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">get_sort_id</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sort_id</span><span class="p">:</span>
+        <span class="n">deep_set</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">merged_header</span><span class="p">,</span> <span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_GLOBAL_TAG</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">SORT_ID</span><span class="p">],</span> <span class="n">sort_id</span><span class="p">)</span>
 
     <span class="c1"># merge any provided sections with sections in the header, with priority to the one from context (e.g. CLI)</span>
-    <span class="n">header_sections_dict</span> <span class="o">=</span> <span class="n">merged_header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">SECTIONS_TAG</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="n">header_sections_dict</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">merged_header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">SECTIONS_TAG</span><span class="p">,</span> <span class="p">{})</span>
     <span class="n">merged_sections_dict</span> <span class="o">=</span> <span class="n">merge_dicts</span><span class="p">(</span><span class="n">header_sections_dict</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">sections_dict</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">merged_sections_dict</span><span class="p">:</span>
-        <span class="n">merged_header</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SECTIONS_TAG</span><span class="p">]</span> <span class="o">=</span> <span class="n">merged_sections_dict</span>
+    <span class="n">set_or_pop</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">merged_header</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">SECTIONS_TAG</span><span class="p">,</span> <span class="n">merged_sections_dict</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">purpose</span> <span class="o">==</span> <span class="n">ContextPurpose</span><span class="o">.</span><span class="n">COMPONENT</span> <span class="ow">and</span> <span class="n">const</span><span class="o">.</span><span class="n">SORT_ID</span> <span class="ow">in</span> <span class="n">merged_header</span><span class="p">:</span>
-        <span class="k">del</span> <span class="n">merged_header</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SORT_ID</span><span class="p">]</span>
-
+    <span class="c1"># now begin filling in content from the control in memory</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_add_control_statement</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="n">group_title</span><span class="p">)</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">_add_control_objective</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
@@ -3914,17 +4102,17 @@ Controls are checked if they are marked withdrawn, and if so they are not writte
 
     <span class="c1"># prompt responses for imp reqs using special format if comp_def mode</span>
     <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">prompt_responses</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add_implementation_response_prompts</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="n">comp_dict</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">comp_def</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_implementation_response_prompts</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">comp_dict</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
 
-    <span class="c1"># only used for profile-generate</span>
+    <span class="c1"># for profile generate</span>
     <span class="c1"># add sections corresponding to added parts in the profile</span>
     <span class="n">added_sections</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">additional_content</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">purpose</span> <span class="o">==</span> <span class="n">ContextPurpose</span><span class="o">.</span><span class="n">PROFILE</span><span class="p">:</span>
         <span class="n">added_sections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_additional_content</span><span class="p">(</span>
-            <span class="n">control</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span> <span class="n">merged_header</span><span class="p">,</span> <span class="n">part_id_map</span><span class="p">,</span> <span class="n">found_alters</span>
+            <span class="n">control</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">merged_header</span><span class="p">,</span> <span class="n">part_id_map</span><span class="p">,</span> <span class="n">found_alters</span>
         <span class="p">)</span>
 
-    <span class="bp">self</span><span class="o">.</span><span class="n">_add_yaml_header</span><span class="p">(</span><span class="n">merged_header</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_add_yaml_header</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">merged_header</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">required_sections</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prompt_required_sections</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">required_sections</span><span class="p">,</span> <span class="n">added_sections</span><span class="p">)</span>
@@ -3960,51 +4148,22 @@ Controls are checked if they are marked withdrawn, and if so they are not writte
 
 <p>handler: python</p>
 
-              
-            </article>
-            
-          </div>
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
       </main>
       
         <footer class="md-footer">
-  
-    
-    <nav class="md-footer__inner md-grid" aria-label="Footer" >
-      
-        
-        <a href="../trestle.core.control_reader/" class="md-footer__link md-footer__link--prev" aria-label="Previous: control_reader" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              control_reader
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../trestle.core.docs_control_writer/" class="md-footer__link md-footer__link--next" aria-label="Next: docs_control_writer" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              docs_control_writer
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -4026,10 +4185,11 @@ Controls are checked if they are marked withdrawn, and if so they are not writte
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.6c7ad80a.min.js"></script>
+      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
       
     
   </body>

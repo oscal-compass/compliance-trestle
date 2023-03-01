@@ -12,8 +12,14 @@
       
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.oscal.common/">
       
+      
+        <link rel="prev" href="../trestle.oscal.catalog/">
+      
+      
+        <link rel="next" href="../trestle.oscal.component/">
+      
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.3.1, mkdocs-material-8.3.9">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.15">
     
     
       
@@ -21,17 +27,13 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.1d29e8d0.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.cbb835fc.min.css">
-        
-          
-          
-          <meta name="theme-color" content="#009485">
-        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
       
       
+
     
     
     
@@ -46,7 +48,7 @@
     
       <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
   
@@ -56,10 +58,13 @@
   
 
 
-  <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-XT3KGMHSY8"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&gtag("event","search",{search_term:this.value})}),"undefined"!=typeof location$&&location$.subscribe(function(e){gtag("config","G-XT3KGMHSY8",{page_path:e.pathname})})})</script>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XT3KGMHSY8"></script>
+  <script id="__analytics">function __md_analytics(){function n(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],n("js",new Date),n("config","G-XT3KGMHSY8"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&n("event","search",{search_term:this.value})}),document$.subscribe(function(){var a=document.forms.feedback;if(void 0!==a)for(var e of a.querySelectorAll("[type=submit]"))e.addEventListener("click",function(e){e.preventDefault();var t=document.location.pathname,e=this.getAttribute("data-md-value");n("event","feedback",{page:t,data:e}),a.firstElementChild.disabled=!0;e=a.querySelector(".md-feedback__note [data-md-value='"+e+"']");e&&(e.hidden=!1)}),a.hidden=!1}),location$.subscribe(function(e){n("config","G-XT3KGMHSY8",{page_path:e.pathname})})});var e=document.createElement("script");e.async=!0,e.src="https://www.googletagmanager.com/gtag/js?id=G-XT3KGMHSY8",document.getElementById("__analytics").insertAdjacentElement("afterEnd",e)}</script>
 
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
 
+    
     
     
   </head>
@@ -136,7 +141,7 @@
       </label>
       <nav class="md-search__options" aria-label="Search">
         
-        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
         </button>
       </nav>
@@ -148,7 +153,7 @@
           <div class="md-search-result__meta">
             Initializing search
           </div>
-          <ol class="md-search-result__list"></ol>
+          <ol class="md-search-result__list" role="presentation"></ol>
         </div>
       </div>
     </div>
@@ -160,7 +165,7 @@
         <a href="https://github.com/IBM/compliance-trestle" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.3.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     IBM/compliance-trestle
@@ -179,7 +184,7 @@
           
             
 <nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
-  <div class="md-tabs__inner md-grid">
+  <div class="md-grid">
     <ul class="md-tabs__list">
       
         
@@ -342,7 +347,7 @@
       <a href="https://github.com/IBM/compliance-trestle" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.3.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     IBM/compliance-trestle
@@ -393,17 +398,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_3">
+        <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
           Tutorials
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Tutorials" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           Tutorials
@@ -447,17 +453,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_3" type="checkbox" id="__nav_3_3" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_3_3">
+        <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
           Trestle Authoring
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Trestle Authoring" data-md-level="2">
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3_3">
           <span class="md-nav__icon md-icon"></span>
           Trestle Authoring
@@ -508,17 +515,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_4" type="checkbox" id="__nav_3_4" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_3_4">
+        <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
           Trestle Transformers and Tasks
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Trestle Transformers and Tasks" data-md-level="2">
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3_4">
           <span class="md-nav__icon md-icon"></span>
           Trestle Transformers and Tasks
@@ -533,6 +541,20 @@
     <li class="md-nav__item">
       <a href="../../tutorials/task.transformer-construction/transformer-construction/" class="md-nav__link">
         Transformer construction
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/task.csv-to-oscal-cd/transformation/" class="md-nav__link">
+        Task - task.csv-to-oscal-cd
       </a>
     </li>
   
@@ -597,17 +619,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_5" type="checkbox" id="__nav_3_5" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_3_5">
+        <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
           Trestle command-line interface (CLI)
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Trestle command-line interface (CLI)" data-md-level="2">
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3_5">
           <span class="md-nav__icon md-icon"></span>
           Trestle command-line interface (CLI)
@@ -666,17 +689,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_4">
+        <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
           Contributing
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Contributing" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_4">
           <span class="md-nav__icon md-icon"></span>
           Contributing
@@ -842,17 +866,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_7">
+        <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
           Plugins
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Plugins" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_7">
           <span class="md-nav__icon md-icon"></span>
           Plugins
@@ -907,17 +932,18 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9" type="checkbox" id="__nav_9" checked>
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" checked>
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9">
+        <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
           Reference
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Reference" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_9">
           <span class="md-nav__icon md-icon"></span>
           Reference
@@ -949,17 +975,18 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2" type="checkbox" id="__nav_9_2" checked>
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2" checked>
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2">
+        <label class="md-nav__link" for="__nav_9_2" id="__nav_9_2_label" tabindex="0">
           trestle API reference
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="trestle API reference" data-md-level="2">
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_9_2_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_9_2">
           <span class="md-nav__icon md-icon"></span>
           trestle API reference
@@ -989,17 +1016,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_2" type="checkbox" id="__nav_9_2_2" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_2" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_2">
+        <label class="md-nav__link" for="__nav_9_2_2" id="__nav_9_2_2_label" tabindex="0">
           common
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="common" data-md-level="3">
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_9_2_2_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_2">
           <span class="md-nav__icon md-icon"></span>
           common
@@ -1176,17 +1204,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3" type="checkbox" id="__nav_9_2_3" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3">
+        <label class="md-nav__link" for="__nav_9_2_3" id="__nav_9_2_3_label" tabindex="0">
           core
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="core" data-md-level="3">
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_9_2_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_3">
           <span class="md-nav__icon md-icon"></span>
           core
@@ -1226,10 +1255,100 @@
   
   
   
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_9_2_3_3" id="__nav_9_2_3_3_label" tabindex="0">
+          catalog
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_9_2_3_3_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_9_2_3_3">
+          <span class="md-nav__icon md-icon"></span>
+          catalog
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../trestle.core.catalog_interface/" class="md-nav__link">
+      <a href="../trestle.core.catalog.catalog_api/" class="md-nav__link">
+        catalog_api
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.catalog.catalog_interface/" class="md-nav__link">
         catalog_interface
       </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.catalog.catalog_merger/" class="md-nav__link">
+        catalog_merger
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.catalog.catalog_reader/" class="md-nav__link">
+        catalog_reader
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.catalog.catalog_writer/" class="md-nav__link">
+        catalog_writer
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
     </li>
   
 
@@ -1258,17 +1377,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3_5" type="checkbox" id="__nav_9_2_3_5" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_5" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3_5">
+        <label class="md-nav__link" for="__nav_9_2_3_5" id="__nav_9_2_3_5_label" tabindex="0">
           commands
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="commands" data-md-level="4">
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_9_2_3_5_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_3_5">
           <span class="md-nav__icon md-icon"></span>
           commands
@@ -1312,17 +1432,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3_5_3" type="checkbox" id="__nav_9_2_3_5_3" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_5_3" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3_5_3">
+        <label class="md-nav__link" for="__nav_9_2_3_5_3" id="__nav_9_2_3_5_3_label" tabindex="0">
           author
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="author" data-md-level="5">
+      <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_9_2_3_5_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_3_5_3">
           <span class="md-nav__icon md-icon"></span>
           author
@@ -1492,17 +1613,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3_5_3_12" type="checkbox" id="__nav_9_2_3_5_3_12" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_5_3_12" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3_5_3_12">
+        <label class="md-nav__link" for="__nav_9_2_3_5_3_12" id="__nav_9_2_3_5_3_12_label" tabindex="0">
           versioning
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="versioning" data-md-level="6">
+      <nav class="md-nav" data-md-level="6" aria-labelledby="__nav_9_2_3_5_3_12_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_3_5_3_12">
           <span class="md-nav__icon md-icon"></span>
           versioning
@@ -1560,17 +1682,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3_5_5" type="checkbox" id="__nav_9_2_3_5_5" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_5_5" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3_5_5">
+        <label class="md-nav__link" for="__nav_9_2_3_5_5" id="__nav_9_2_3_5_5_label" tabindex="0">
           common
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="common" data-md-level="5">
+      <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_9_2_3_5_5_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_3_5_5">
           <span class="md-nav__icon md-icon"></span>
           common
@@ -1964,17 +2087,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3_17" type="checkbox" id="__nav_9_2_3_17" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_17" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3_17">
+        <label class="md-nav__link" for="__nav_9_2_3_17" id="__nav_9_2_3_17_label" tabindex="0">
           markdown
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="markdown" data-md-level="4">
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_9_2_3_17_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_3_17">
           <span class="md-nav__icon md-icon"></span>
           markdown
@@ -2081,17 +2205,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3_18" type="checkbox" id="__nav_9_2_3_18" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_18" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3_18">
+        <label class="md-nav__link" for="__nav_9_2_3_18" id="__nav_9_2_3_18_label" tabindex="0">
           models
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="models" data-md-level="4">
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_9_2_3_18_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_3_18">
           <span class="md-nav__icon md-icon"></span>
           models
@@ -2254,17 +2379,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3_24" type="checkbox" id="__nav_9_2_3_24" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_24" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3_24">
+        <label class="md-nav__link" for="__nav_9_2_3_24" id="__nav_9_2_3_24_label" tabindex="0">
           remote
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="remote" data-md-level="4">
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_9_2_3_24_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_3_24">
           <span class="md-nav__icon md-icon"></span>
           remote
@@ -2315,17 +2441,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_3_26" type="checkbox" id="__nav_9_2_3_26" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_3_26" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_3_26">
+        <label class="md-nav__link" for="__nav_9_2_3_26" id="__nav_9_2_3_26_label" tabindex="0">
           resolver
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="resolver" data-md-level="4">
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_9_2_3_26_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_3_26">
           <span class="md-nav__icon md-icon"></span>
           resolver
@@ -2455,17 +2582,18 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_4" type="checkbox" id="__nav_9_2_4" checked>
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_4" checked>
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_4">
+        <label class="md-nav__link" for="__nav_9_2_4" id="__nav_9_2_4_label" tabindex="0">
           oscal
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="oscal" data-md-level="3">
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_9_2_4_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_9_2_4">
           <span class="md-nav__icon md-icon"></span>
           oscal
@@ -2523,7 +2651,7 @@
   
     <li class="md-nav__item md-nav__item--active">
       
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
       
@@ -7696,17 +7824,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_5" type="checkbox" id="__nav_9_2_5" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_5" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_5">
+        <label class="md-nav__link" for="__nav_9_2_5" id="__nav_9_2_5_label" tabindex="0">
           tasks
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="tasks" data-md-level="3">
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_9_2_5_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_5">
           <span class="md-nav__icon md-icon"></span>
           tasks
@@ -7733,8 +7862,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.tasks.csv_helper/" class="md-nav__link">
-        csv_helper
+      <a href="../trestle.tasks.cis_xlsx_to_oscal_catalog/" class="md-nav__link">
+        cis_xlsx_to_oscal_catalog
       </a>
     </li>
   
@@ -7897,17 +8026,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_6" type="checkbox" id="__nav_9_2_6" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_6" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_6">
+        <label class="md-nav__link" for="__nav_9_2_6" id="__nav_9_2_6_label" tabindex="0">
           transforms
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="transforms" data-md-level="3">
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_9_2_6_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_6">
           <span class="md-nav__icon md-icon"></span>
           transforms
@@ -7923,17 +8053,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_6_1" type="checkbox" id="__nav_9_2_6_1" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_2_6_1" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_9_2_6_1">
+        <label class="md-nav__link" for="__nav_9_2_6_1" id="__nav_9_2_6_1_label" tabindex="0">
           implementations
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="implementations" data-md-level="4">
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_9_2_6_1_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_9_2_6_1">
           <span class="md-nav__icon md-icon"></span>
           implementations
@@ -13149,10 +13280,11 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
                 
+                  
 
 
   <h1>common</h1>
@@ -13277,7 +13409,7 @@ Address            (<a class="autorefs autorefs-internal" title="trestle.core.ba
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Address</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A postal address for the location.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -13520,7 +13652,7 @@ AssessmentPart            (<a class="autorefs autorefs-internal" title="trestle.
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">AssessmentPart</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A partition of an assessment plan or results or a child of another part.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -13845,7 +13977,7 @@ AssessmentPlatform            (<a class="autorefs autorefs-internal" title="tres
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">AssessmentPlatform</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Used to represent the toolset used to perform aspects of the assessment.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -14075,7 +14207,7 @@ AssessmentSubject            (<a class="autorefs autorefs-internal" title="trest
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">AssessmentSubject</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Identifies system elements being assessed, such as components, inventory items, and locations. In the assessment plan, this identifies a planned assessment subject. In the assessment results this is an actual assessment subject, and reflects any changes from the plan. exactly what will be the focus of this assessment. Any subjects not identified in this way are out-of-scope.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -14350,7 +14482,7 @@ AssessmentSubjectPlaceholder            (<a class="autorefs autorefs-internal" t
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">AssessmentSubjectPlaceholder</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Used when the assessment subjects will be determined as part of one or more other assessment activities. These assessment subjects will be recorded in the assessment results in the assessment log.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -14581,7 +14713,7 @@ AssociatedActivity            (<a class="autorefs autorefs-internal" title="tres
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">AssociatedActivity</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Identifies an individual activity to be performed as part of a task.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -14807,7 +14939,7 @@ AtFrequency            (<a class="autorefs autorefs-internal" title="trestle.cor
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">AtFrequency</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The task is intended to occur at the specified frequency.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -14945,7 +15077,7 @@ AuthorizedPrivilege            (<a class="autorefs autorefs-internal" title="tre
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">AuthorizedPrivilege</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Identifies a specific system privilege held by the user, along with an associated description and/or rationale for the privilege.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -15107,7 +15239,7 @@ BackMatter            (<a class="autorefs autorefs-internal" title="trestle.core
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">BackMatter</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A collection of resources, which may be included directly or by reference.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -15213,7 +15345,7 @@ Base64            (<a class="autorefs autorefs-internal" title="trestle.core.bas
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Base64</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The Base64 alphabet in RFC 2045 - aligned with XSD.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -15377,7 +15509,7 @@ Citation            (<a class="autorefs autorefs-internal" title="trestle.core.b
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Citation</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A citation consisting of end note text and optional structured bibliographic data.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -15529,7 +15661,7 @@ ControlObjectiveSelection            (<a class="autorefs autorefs-internal" titl
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ControlObjectiveSelection</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Identifies the control objectives of the assessment. In the assessment plan, these are the planned objectives. In the assessment results, these are the assessed objectives, and reflects any changes from the plan.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -15772,7 +15904,7 @@ Dependency            (<a class="autorefs autorefs-internal" title="trestle.core
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Dependency</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Used to indicate that a task is dependent on another task.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -15908,7 +16040,7 @@ DocumentId            (<a class="autorefs autorefs-internal" title="trestle.core
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">DocumentId</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A document identifier qualified by an identifier scheme. A document identifier provides a globally unique identifier with a cross-instance scope that is used for a group of documents that are to be treated as different versions of the same document. If this element does not appear, or if the value of this element is empty, the value of &quot;document-id&quot; is equal to the value of the &quot;uuid&quot; flag of the top-level root element.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -16119,7 +16251,7 @@ ExternalId            (<a class="autorefs autorefs-internal" title="trestle.core
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ExternalId</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An identifier for a person or organization using a designated scheme. e.g. an Open Researcher and Contributor ID (ORCID)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -16254,7 +16386,7 @@ Facet            (<a class="autorefs autorefs-internal" title="trestle.core.base
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Facet</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An individual characteristic that is part of a larger set produced by the same actor.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -16565,7 +16697,7 @@ Hash            (<a class="autorefs autorefs-internal" title="trestle.core.base_
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Hash</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A representation of a cryptographic digest generated over a resource using a specified hash algorithm.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -16694,7 +16826,7 @@ HowMany            (<span title="enum.Enum">Enum</span>)
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">HowMany</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Describes the number of selections that must occur. Without this setting, only one value should be assumed to be permitted.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -16784,7 +16916,7 @@ IdentifiedSubject            (<a class="autorefs autorefs-internal" title="trest
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">IdentifiedSubject</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Used to detail assessment subjects that were identfied by this task.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -16923,7 +17055,7 @@ ImplementationStatus            (<a class="autorefs autorefs-internal" title="tr
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ImplementationStatus</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Indicates the degree to which the a given control is implemented.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -17060,7 +17192,7 @@ ImplementedComponent            (<a class="autorefs autorefs-internal" title="tr
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ImplementedComponent</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The set of components that are implemented in a given system inventory item.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -17264,7 +17396,7 @@ ImportSsp            (<a class="autorefs autorefs-internal" title="trestle.core.
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ImportSsp</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Used by the assessment plan and POA&amp;M to import information about the system.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -17398,7 +17530,7 @@ IncludeAll            (<a class="autorefs autorefs-internal" title="trestle.core
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">IncludeAll</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Include all controls from the imported catalog or profile resources.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -17483,7 +17615,7 @@ InventoryItem            (<a class="autorefs autorefs-internal" title="trestle.c
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">InventoryItem</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A single managed inventory item within the system.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -17813,7 +17945,7 @@ Link            (<a class="autorefs autorefs-internal" title="trestle.core.base_
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Link</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A reference to a local or remote resource</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -18012,7 +18144,7 @@ LocalObjective            (<a class="autorefs autorefs-internal" title="trestle.
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">LocalObjective</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A local definition of a control objective for this assessment. Uses catalog syntax for control objective and assessment actions.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -18245,7 +18377,7 @@ Location            (<a class="autorefs autorefs-internal" title="trestle.core.b
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Location</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A location, with associated metadata that can be referenced.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -18621,7 +18753,7 @@ LoggedBy            (<a class="autorefs autorefs-internal" title="trestle.core.b
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">LoggedBy</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Used to indicate who created a log entry in what role.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -18846,7 +18978,7 @@ Metadata            (<a class="autorefs autorefs-internal" title="trestle.core.b
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Metadata</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Provides information about the publication and availability of the containing document.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -19247,7 +19379,7 @@ MitigatingFactor            (<a class="autorefs autorefs-internal" title="trestl
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">MitigatingFactor</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Describes an existing mitigating factor that may affect the overall determination of the risk, with an optional link to an implementation statement in the SSP.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -19487,7 +19619,7 @@ OnDate            (<a class="autorefs autorefs-internal" title="trestle.core.bas
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">OnDate</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The task is intended to occur on the specified date.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -19599,7 +19731,7 @@ OriginActor            (<a class="autorefs autorefs-internal" title="trestle.cor
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">OriginActor</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The actor that produces an observation, a finding, or a risk. One or more actor type can be used to specify a person that is using a tool.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -19930,7 +20062,7 @@ Parameter            (<a class="autorefs autorefs-internal" title="trestle.core.
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Parameter</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters provide a mechanism for the dynamic assignment of value(s) in a control.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -20318,7 +20450,7 @@ ParameterConstraint            (<a class="autorefs autorefs-internal" title="tre
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ParameterConstraint</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A formal or informal expression of a constraint or test</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -20451,7 +20583,7 @@ ParameterGuideline            (<a class="autorefs autorefs-internal" title="tres
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ParameterGuideline</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A prose statement that provides a recommendation for the use of a parameter.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -20563,7 +20695,7 @@ ParameterSelection            (<a class="autorefs autorefs-internal" title="tres
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ParameterSelection</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Presenting a choice among alternatives</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -20771,7 +20903,7 @@ Part            (<a class="autorefs autorefs-internal" title="trestle.core.base_
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Part</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A partition of a control&#39;s definition or a child of another part.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -21097,7 +21229,7 @@ Party            (<a class="autorefs autorefs-internal" title="trestle.core.base
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Party</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A responsible entity which is either a person or an organization.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -21572,7 +21704,7 @@ PortRange            (<a class="autorefs autorefs-internal" title="trestle.core.
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">PortRange</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Where applicable this is the IPv4 port range on which the service operates.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -21733,7 +21865,7 @@ Property            (<a class="autorefs autorefs-internal" title="trestle.core.b
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Property</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair. The value of a property is a simple scalar value, which may be expressed as a list of values.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -21989,7 +22121,7 @@ Protocol            (<a class="autorefs autorefs-internal" title="trestle.core.b
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Protocol</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Information about the protocol used to provide a service.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -22258,7 +22390,7 @@ RelatedObservation1            (<a class="autorefs autorefs-internal" title="tre
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">RelatedObservation1</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Relates the finding to a set of referenced observations that were used to determine the finding.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -22373,7 +22505,7 @@ RelatedResponse            (<a class="autorefs autorefs-internal" title="trestle
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">RelatedResponse</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Identifies an individual risk response that this log entry is for.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -22576,7 +22708,7 @@ RelatedRisk            (<a class="autorefs autorefs-internal" title="trestle.cor
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">RelatedRisk</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Relates the finding to a set of referenced risks that were used to determine the finding.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -22690,7 +22822,7 @@ RelatedTask            (<a class="autorefs autorefs-internal" title="trestle.cor
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">RelatedTask</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Identifies an individual task for which the containing object is a consequence of.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -22942,7 +23074,7 @@ RelevantEvidence            (<a class="autorefs autorefs-internal" title="trestl
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">RelevantEvidence</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Links this observation to relevant evidence.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -23223,7 +23355,7 @@ RequiredAsset            (<a class="autorefs autorefs-internal" title="trestle.c
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">RequiredAsset</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Identifies an asset required to achieve remediation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -23481,7 +23613,7 @@ Resource            (<a class="autorefs autorefs-internal" title="trestle.core.b
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Resource</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A resource associated with content in the containing document. A resource may be directly included in the document base64 encoded or may point to one or more equivalent internet resources.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -23792,7 +23924,7 @@ ResponsibleParty            (<a class="autorefs autorefs-internal" title="trestl
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ResponsibleParty</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A reference to a set of organizations or persons that have responsibility for performing a referenced role in the context of the containing object.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -23997,7 +24129,7 @@ ResponsibleRole            (<a class="autorefs autorefs-internal" title="trestle
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ResponsibleRole</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A reference to one or more roles with responsibility for performing a function relative to the containing object.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -24201,7 +24333,7 @@ Revision            (<a class="autorefs autorefs-internal" title="trestle.core.b
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Revision</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An entry in a sequential list of revisions to the containing document in reverse chronological order (i.e., most recent previous revision first).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -24546,7 +24678,7 @@ Rlink            (<a class="autorefs autorefs-internal" title="trestle.core.base
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Rlink</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A pointer to an external resource with an optional hash for verification and change detection.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -24709,7 +24841,7 @@ Role            (<a class="autorefs autorefs-internal" title="trestle.core.base_
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Role</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Defines a function assumed or expected to be assumed by a party in a specific situation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -25053,7 +25185,7 @@ SelectObjectiveById            (<a class="autorefs autorefs-internal" title="tre
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">SelectObjectiveById</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Used to select a control objective for inclusion/exclusion based on the control objective&#39;s identifier.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -25169,7 +25301,7 @@ SelectSubjectById            (<a class="autorefs autorefs-internal" title="trest
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">SelectSubjectById</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Identifies a set of assessment subjects to include/exclude by UUID.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -25382,7 +25514,7 @@ Source            (<a class="autorefs autorefs-internal" title="trestle.core.bas
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Source</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Assessment subjects will be identified while conducting the referenced activity-instance.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -25577,7 +25709,7 @@ SubjectReference            (<a class="autorefs autorefs-internal" title="trestl
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">SubjectReference</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A human-oriented identifier reference to a resource. Use type to indicate whether the identified resource is a component, inventory item, location, user, or something else.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -25817,7 +25949,7 @@ SystemId            (<a class="autorefs autorefs-internal" title="trestle.core.b
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">SystemId</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A human-oriented, globally unique identifier with cross-instance scope that can be used to reference this system identification property elsewhere in this or other OSCAL instances. When referencing an externally defined system identification, the system identification must be used in the context of the external / imported OSCAL instance (e.g., uri-reference). This string should be assigned per-subject, which means it should be consistently used to identify the same system across revisions of the document.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -25952,7 +26084,7 @@ SystemUser            (<a class="autorefs autorefs-internal" title="trestle.core
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">SystemUser</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A type of user that interacts with the system based on an associated role.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -26259,7 +26391,7 @@ Task            (<a class="autorefs autorefs-internal" title="trestle.core.base_
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Task</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Represents a scheduled event or milestone, which may be associated with a series of assessment actions.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -26655,7 +26787,7 @@ TelephoneNumber            (<a class="autorefs autorefs-internal" title="trestle
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">TelephoneNumber</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Contact number by telephone.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -26787,7 +26919,7 @@ Test            (<a class="autorefs autorefs-internal" title="trestle.core.base_
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Test</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A test expression which is expected to be evaluated by a tool.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -26921,7 +27053,7 @@ ThreatId            (<a class="autorefs autorefs-internal" title="trestle.core.b
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ThreatId</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A pointer, by ID, to an externally-defined threat.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -27083,7 +27215,7 @@ Timing            (<a class="autorefs autorefs-internal" title="trestle.core.bas
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Timing</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The timing under which the task is intended to occur.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -27248,7 +27380,7 @@ Transport            (<span title="enum.Enum">Enum</span>)
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Transport</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Indicates the transport type.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -27335,7 +27467,7 @@ Type            (<span title="enum.Enum">Enum</span>)
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Type</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A category describing the kind of party the object describes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -27422,7 +27554,7 @@ Type1            (<span title="enum.Enum">Enum</span>)
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Type1</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Identifies the type of the target.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -27589,7 +27721,7 @@ Type3            (<span title="enum.Enum">Enum</span>)
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Type3</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The kind of actor.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -27695,7 +27827,7 @@ Unit            (<span title="enum.Enum">Enum</span>)
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Unit</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The unit of time for the period.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -27861,7 +27993,7 @@ UsesComponent            (<a class="autorefs autorefs-internal" title="trestle.c
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">UsesComponent</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The set of components that are used by the assessment platform.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -28215,7 +28347,7 @@ WithinDateRange            (<a class="autorefs autorefs-internal" title="trestle
         <details class="quote">
           <summary>Source code in <code>trestle/oscal/common.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">WithinDateRange</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The task is intended to occur within the specified date range.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -28344,51 +28476,22 @@ Config        </code>
 
 <p>handler: python</p>
 
-              
-            </article>
-            
-          </div>
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
       </main>
       
         <footer class="md-footer">
-  
-    
-    <nav class="md-footer__inner md-grid" aria-label="Footer" >
-      
-        
-        <a href="../trestle.oscal.catalog/" class="md-footer__link md-footer__link--prev" aria-label="Previous: catalog" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              catalog
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../trestle.oscal.component/" class="md-footer__link md-footer__link--next" aria-label="Next: component" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              component
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -28410,10 +28513,11 @@ Config        </code>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.6c7ad80a.min.js"></script>
+      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
       
     
   </body>
