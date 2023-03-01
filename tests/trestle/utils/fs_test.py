@@ -676,7 +676,7 @@ def test_make_hidden_file(tmp_path: pathlib.Path) -> None:
 def test_full_path_for_top_level_model(tmp_trestle_dir: pathlib.Path, sample_catalog_minimal: catalog.Catalog) -> None:
     """Test full path for top level model."""
     ModelUtils.save_top_level_model(sample_catalog_minimal, tmp_trestle_dir, 'mycat', FileContentType.JSON)
-    cat_path = ModelUtils.full_path_for_top_level_model(tmp_trestle_dir, 'mycat', catalog.Catalog)
+    cat_path = ModelUtils.get_model_path_for_name_and_class(tmp_trestle_dir, 'mycat', catalog.Catalog)
     assert cat_path == tmp_trestle_dir / 'catalogs/mycat/catalog.json'
 
 

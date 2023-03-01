@@ -182,12 +182,12 @@ class Merge(Pipeline.Filter):
             if self._profile.merge.as_is is not None:
                 as_is = self._profile.merge.as_is
             if self._profile.merge.combine is None:
-                logger.warning('Profile has merge but no combine so defaulting to combine/merge.')
+                logger.debug('Profile has merge but no combine so defaulting to combine/merge.')
                 merge_method = 'merge'
             else:
                 merge_combine = self._profile.merge.combine
                 if merge_combine.method is None:
-                    logger.warning('Profile has merge combine but no method.  Defaulting to merge.')
+                    logger.debug('Profile has merge combine but no method.  Defaulting to merge.')
                     merge_method = 'merge'
                 else:
                     merge_method = merge_combine.method

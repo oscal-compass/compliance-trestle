@@ -71,7 +71,7 @@ class CatalogGenerate(AuthorCommonCommand):
 
             if args.force_overwrite:
                 try:
-                    logger.debug(f'Overwriting the content in {args.output} folder.')
+                    logger.info(f'Overwriting the content in {args.output} folder.')
                     clear_folder(pathlib.Path(args.output))
                 except TrestleError as e:  # pragma: no cover
                     raise TrestleError(f'Unable to overwrite contents in {args.output} folder: {e}')
@@ -187,7 +187,7 @@ class CatalogAssemble(AuthorCommonCommand):
             0 on success, 1 otherwise
 
         Notes:
-            If the destination catalog_name model already exists in the trestle project, it is overwritten.
+            If the destination catalog_name model already exists in the trestle workspace, it is overwritten.
             If a parent catalog is not specified, the assembled catalog will be used as the parent if it exists.
             If no parent catalog name is available, the catalog is created anew using only the markdown content.
         """
@@ -203,7 +203,7 @@ class CatalogAssemble(AuthorCommonCommand):
             raise TrestleError(f'Error reading catalog from markdown {md_dir}: {e}')
 
         # this is None if it doesn't exist yet
-        assem_cat_path = ModelUtils.full_path_for_top_level_model(trestle_root, assem_cat_name, Catalog)
+        assem_cat_path = ModelUtils.get_model_path_for_name_and_class(trestle_root, assem_cat_name, Catalog)
         logger.debug(f'assem_cat_path is {assem_cat_path}')
 
         # if original cat is not specified, use the assembled cat but only if it already exists
@@ -246,7 +246,9 @@ class CatalogAssemble(AuthorCommonCommand):
         md_catalog.metadata.oscal_version = OSCAL_VERSION
 
         # we still may not know the assem_cat_path but can now create it with file content type
-        assem_cat_path = ModelUtils.path_for_top_level_model(trestle_root, assem_cat_name, Catalog, new_content_type)
+        assem_cat_path = ModelUtils.get_model_path_for_name_and_class(
+            trestle_root, assem_cat_name, Catalog, new_content_type
+        )
 
         if assem_cat_path.parent.exists():
             logger.info('Creating catalog from markdown and destination catalog exists, so updating.')

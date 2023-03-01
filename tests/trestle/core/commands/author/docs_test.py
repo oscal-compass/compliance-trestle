@@ -443,7 +443,7 @@ def test_e2e_backward_compatibility(
     tmp_trestle_dir: pathlib.Path,
     monkeypatch: MonkeyPatch
 ) -> None:
-    """Same as E2E test but pretend like workspace existed and needs to be updated."""
+    """Same as E2E test but pretend like trestle workspace existed and needs to be updated."""
     # Note testdata_dir must be before tmp_trestle_dir in the argument order.
     recurse_flag = '-r' if recurse else ''
     command_string_setup = f'trestle author docs setup -tn {task_name}'

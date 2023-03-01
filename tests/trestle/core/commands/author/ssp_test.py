@@ -309,7 +309,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     )
     assert ssp_assemble._run(args) == 0
 
-    orig_ssp, orig_ssp_path = ModelUtils.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+    orig_ssp, orig_ssp_path = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     orig_uuid = orig_ssp.uuid
     assert len(orig_ssp.system_implementation.components) == 5
     assert orig_ssp.metadata.version == new_version
@@ -345,7 +345,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     # confirm the file was not written out since no change
     assert orig_ssp_path.stat().st_mtime == orig_file_creation
 
-    repeat_ssp, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+    repeat_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     assert len(repeat_ssp.system_implementation.components) == 5
     assert repeat_ssp.metadata.version == new_version
 
@@ -432,7 +432,7 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
     assert ssp_assemble._run(args) == 0
 
     ssp: ossp.SystemSecurityPlan
-    ssp, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
+    ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
 
     assert len(ssp.control_implementation.implemented_requirements) == 7
 
@@ -452,7 +452,7 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
 
-    ssp, _ = ModelUtils.load_top_level_model(
+    ssp, _ = ModelUtils.load_model_for_class(
         tmp_trestle_dir,
         filtered_name,
         ossp.SystemSecurityPlan,
@@ -479,7 +479,7 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
 
-    ssp, _ = ModelUtils.load_top_level_model(
+    ssp, _ = ModelUtils.load_model_for_class(
         tmp_trestle_dir,
         filtered_name,
         ossp.SystemSecurityPlan,
@@ -555,7 +555,7 @@ def test_ssp_assemble_header_metadata(tmp_trestle_dir: pathlib.Path, monkeypatch
     test_utils.execute_command_and_assert(ssp_assemble, 0, monkeypatch)
 
     # read the assembled ssp and confirm roles are in metadata
-    ssp, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
+    ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
     # FIXME assert len(ssp.metadata.roles) == 2
 
 
@@ -620,3 +620,15 @@ def test_merge_imp_req() -> None:
     imp_req_b.statements = [statement]
     SSPAssemble._merge_imp_req_into_imp_req(imp_req_a, imp_req_b, [])
     assert imp_req_a.statements[0].by_components[0].description == prose
+
+
+def test_ssp_warning_missing_control(tmp_trestle_dir: pathlib.Path, capsys) -> None:
+    """Test ssp success when profile missing control."""
+    gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
+    prof_path = tmp_trestle_dir / 'profiles/comp_prof/profile.json'
+    # remove the reference to control ac-1
+    test_utils.delete_line_in_file(prof_path, 'ac-1')
+    ssp_gen = SSPGenerate()
+    assert ssp_gen._run(gen_args) == 0
+    _, err = capsys.readouterr()
+    assert 'Component comp_aa references control ac-1 not in profile.' in err

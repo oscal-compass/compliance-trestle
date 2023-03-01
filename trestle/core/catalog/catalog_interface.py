@@ -22,7 +22,7 @@ from typing import Any, Callable, Dict, Iterator, List, Optional, Set, Tuple
 import trestle.common.const as const
 import trestle.oscal.catalog as cat
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import as_dict, as_filtered_list, as_list, delete_item_from_list, deep_append, deep_get, deep_set, get_item_from_list, none_if_empty, set_or_pop  # noqa E501
+from trestle.common.list_utils import as_dict, as_filtered_list, as_list, deep_append, deep_get, deep_set, deep_update, delete_item_from_list, get_item_from_list, none_if_empty, set_or_pop  # noqa E501
 from trestle.common.model_utils import ModelUtils
 from trestle.core.control_context import ControlContext
 from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlInterface
@@ -59,6 +59,7 @@ class CatalogInterface():
         group_title: title of the group
         group_class: class of the group
         path: path of parent groups leading to this control - without the final control_id, or [''] if in cat list
+        important to remember that controls may not be in a group and are directly attached to cat
         control: the control itself
         """
 
@@ -222,8 +223,7 @@ class CatalogInterface():
         if group.controls:
             controls.extend(CatalogInterface._get_all_controls_in_list(group.controls, recurse))
         for sub_group in as_list(group.groups):
-            if sub_group.controls:
-                controls.extend(CatalogInterface._get_all_controls_in_group(sub_group, recurse))
+            controls.extend(CatalogInterface._get_all_controls_in_group(sub_group, recurse))
         return controls
 
     def get_sorted_controls_in_group(self, group_id: str) -> List[cat.Control]:
@@ -767,7 +767,8 @@ class CatalogInterface():
         id_map: Dict[str, pathlib.Path] = {'': md_path}
         for gdir in md_path.rglob('*'):
             if gdir.is_dir():
-                id_map[gdir.stem] = gdir
+                dir_name = gdir.parts[-1]
+                id_map[dir_name] = gdir
         # rebuild the dict by inserting items in manner sorted by key
         sorted_id_map: Dict[str, pathlib.Path] = {}
         for key in sorted(id_map):
@@ -807,7 +808,12 @@ class CatalogInterface():
         comp_rules_params_dict.update(control_imp_rules_params_dict)
         context.rules_params_dict[context.comp_name] = comp_rules_params_dict
         ci_set_params = ControlInterface.get_set_params_from_item(context.control_implementation)
+        catalog_control_ids = self.get_control_ids()
         for imp_req in as_list(context.control_implementation.implemented_requirements):
+            if imp_req.control_id not in catalog_control_ids:
+                logger.warning(
+                    f'Component {context.component.title} references control {imp_req.control_id} not in profile.'
+                )
             control_part_id_map = part_id_map.get(imp_req.control_id, {})
             # find if any rules apply to this control, including in statements
             control_rules, statement_rules, ir_props = ControlInterface.get_rule_list_for_imp_req(imp_req)
@@ -856,7 +862,7 @@ class CatalogInterface():
         context.rules_dict = {}
         context.rules_params_dict = {}
         for comp_def_name in context.comp_def_name_list:
-            context.comp_def, _ = ModelUtils.load_top_level_model(
+            context.comp_def, _ = ModelUtils.load_model_for_class(
                 context.trestle_root,
                 comp_def_name,
                 comp.ComponentDefinition
@@ -867,7 +873,7 @@ class CatalogInterface():
                 # get top level rule info applying to all controls from the component props
                 comp_rules_dict, comp_rules_params_dict, comp_rules_props = ControlInterface.get_rules_and_params_dict_from_item(component)  # noqa E501
                 context.rules_dict[context.comp_name] = comp_rules_dict
-                context.rules_params_dict.update(comp_rules_params_dict)
+                deep_update(context.rules_params_dict, [context.comp_name], comp_rules_params_dict)
                 for control_imp in as_list(component.control_implementations):
                     context.control_implementation = control_imp
                     self._add_control_imp_comp_info(context, part_id_map, comp_rules_props)

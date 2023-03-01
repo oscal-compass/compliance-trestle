@@ -255,9 +255,6 @@ def test_control_failures(tmp_path: pathlib.Path) -> None:
     with pytest.raises(TrestleError):
         ControlReader._indent('')
 
-    with pytest.raises(TrestleError):
-        ControlReader._indent('  foo')
-
 
 def test_bad_unicode_in_file(tmp_path: pathlib.Path) -> None:
     """Test error on read of bad unicode in control markdown."""
@@ -311,7 +308,7 @@ def test_merge_dicts_deep_empty() -> None:
 def test_get_control_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
     """Test getting the param dict of a control."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
-    prof_a_path = ModelUtils.path_for_top_level_model(
+    prof_a_path = ModelUtils.get_model_path_for_name_and_class(
         tmp_trestle_dir, 'test_profile_a', prof.Profile, FileContentType.JSON
     )
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
@@ -425,17 +422,21 @@ statement_text = """
 
 def test_read_control_statement():
     """Test read control statement."""
-    _, part = ControlReader._read_control_statement(0, statement_text.split('\n'), 'xy-9')
+    part = ControlReader._read_control_statement_or_objective(
+        '## Control Statement', statement_text.split('\n'), 'xy-9'
+    )
     assert part.prose == 'The org:'
 
 
 def test_read_control_objective():
     """Test read control objective."""
-    _, part = ControlReader._read_control_objective(13, statement_text.split('\n'), 'xy-9')
+    part = ControlReader._read_control_statement_or_objective(
+        '## Control Objective', statement_text.split('\n'), 'xy-9'
+    )
     assert part.prose == 'Confirm the org:'
 
-    _, part = ControlReader._read_control_objective(16, statement_text.split('\n'), 'xy-9')
-    assert part is None
+    with pytest.raises(TrestleError):
+        ControlReader._read_control_statement_or_objective('## Non existing', statement_text.split('\n'), 'xy-9')
 
 
 section_text = """

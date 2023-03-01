@@ -3,6 +3,48 @@
 
 <!--next-version-placeholder-->
 
+## v2.0.0 (2023-03-01)
+### Feature
+* Cd resolved profile controls check ([#1309](https://github.com/IBM/compliance-trestle/issues/1309)) ([`638dd53`](https://github.com/IBM/compliance-trestle/commit/638dd5384c6588ad9bb88726c8d716cfc6e4b03b))
+* Add ability to view version of the individual OSCAL object ([#1298](https://github.com/IBM/compliance-trestle/issues/1298)) ([`cf2af61`](https://github.com/IBM/compliance-trestle/commit/cf2af617fad82ccdfbebcd48948dd8a67512e7aa))
+* New format csv to oscal component definition ([#1285](https://github.com/IBM/compliance-trestle/issues/1285)) ([`9572c4b`](https://github.com/IBM/compliance-trestle/commit/9572c4b83c03eaec6518333670fa8d6c80cafbf2))
+* Allow remote profiles to reference catalogs and profiles by relative path in href ([#1288](https://github.com/IBM/compliance-trestle/issues/1288)) ([`0a7e2cf`](https://github.com/IBM/compliance-trestle/commit/0a7e2cf47680c19ef406aeb49afc35412478fc57))
+* CIS spread sheet to OSCAL catalog ([#1270](https://github.com/IBM/compliance-trestle/issues/1270)) ([`ba9dec0`](https://github.com/IBM/compliance-trestle/commit/ba9dec0f4799b68160bd0e2aee66423763df21a6))
+* Csv to oscal cd reconcile3 ([#1272](https://github.com/IBM/compliance-trestle/issues/1272)) ([`a19e7be`](https://github.com/IBM/compliance-trestle/commit/a19e7be1ce8b8fb267bfd797ddcad742fdf4fcfd))
+* SSP cli changes to load comp defs ([#1264](https://github.com/IBM/compliance-trestle/issues/1264)) ([`2835eed`](https://github.com/IBM/compliance-trestle/commit/2835eed4bf700ca0f90120063a707fb811f610fb))
+* Ssp based on components and refactor ([#1261](https://github.com/IBM/compliance-trestle/issues/1261)) ([`f0de73a`](https://github.com/IBM/compliance-trestle/commit/f0de73ad2152be75f456ff5a1b273d6c1d21988b))
+* Create separate markdown directories per source ([#1242](https://github.com/IBM/compliance-trestle/issues/1242)) ([`3ffbdb0`](https://github.com/IBM/compliance-trestle/commit/3ffbdb04da1c72aba7b1304c0060d948d5501608))
+* Add force-overwrite for generate ([#1241](https://github.com/IBM/compliance-trestle/issues/1241)) ([`d7612a9`](https://github.com/IBM/compliance-trestle/commit/d7612a9a769d72e7a0338506aed4013b299519a7))
+
+### Fix
+* BREAKING CHANGE ([#1311](https://github.com/IBM/compliance-trestle/issues/1311)) ([`cb86284`](https://github.com/IBM/compliance-trestle/commit/cb86284f1d6ee0299dc41d7d0fe66bb61139ce5a))
+* Codeql update from v1 to v2 ([#1310](https://github.com/IBM/compliance-trestle/issues/1310)) ([`6731560`](https://github.com/IBM/compliance-trestle/commit/6731560201a596a986906086bf1d337d5495a816))
+* Give warnings when component references control not loaded by profile for comp-gen and ssp-gen ([#1305](https://github.com/IBM/compliance-trestle/issues/1305)) ([`429b3c1`](https://github.com/IBM/compliance-trestle/commit/429b3c19023f4232b0853818c6039629dce4dc26))
+* Temporary fix for the multiline control statement in catalog-assemble ([#1308](https://github.com/IBM/compliance-trestle/issues/1308)) ([`7a7aa8c`](https://github.com/IBM/compliance-trestle/commit/7a7aa8cf53c8361d79cc837615bbf7fae3b134c9))
+* Boost test coverage for component generate and assemble ([#1306](https://github.com/IBM/compliance-trestle/issues/1306)) ([`52b863b`](https://github.com/IBM/compliance-trestle/commit/52b863b2ea684073afdb2ca85af7114ad43ac51c))
+* Ssp-generate error with components ([#1303](https://github.com/IBM/compliance-trestle/issues/1303)) ([`7a49a0a`](https://github.com/IBM/compliance-trestle/commit/7a49a0a5e4a273755a2f6279a1cb51000cf02d40))
+* Adding multiple value set to rule param values during component … ([#1301](https://github.com/IBM/compliance-trestle/issues/1301)) ([`c357e15`](https://github.com/IBM/compliance-trestle/commit/c357e15691bb9eee553c8531edd1f4ce024f60a3))
+* Change python badge for addressing current python supported versions ([#1300](https://github.com/IBM/compliance-trestle/issues/1300)) ([`7a8d895`](https://github.com/IBM/compliance-trestle/commit/7a8d895d5ca16e9c7ebbcf3c862c14721d4a6421))
+* Allow edit of rule param values during component assemble ([#1299](https://github.com/IBM/compliance-trestle/issues/1299)) ([`041a2c3`](https://github.com/IBM/compliance-trestle/commit/041a2c3d567b91404a7bc63ebdb9689b8a447463))
+* Adding new components via markdown caused error ([#1294](https://github.com/IBM/compliance-trestle/issues/1294)) ([`39fd590`](https://github.com/IBM/compliance-trestle/commit/39fd590c85b7e2cf9b0e7770596def8c41e8ae98))
+* Problem in cat assemble with subgroups ([#1291](https://github.com/IBM/compliance-trestle/issues/1291)) ([`88337a4`](https://github.com/IBM/compliance-trestle/commit/88337a4b16a24c8391a60e99347aa34cdb65307f))
+* Assignment representation for ssp was not doing the right things ([#1273](https://github.com/IBM/compliance-trestle/issues/1273)) ([`cac2aa3`](https://github.com/IBM/compliance-trestle/commit/cac2aa351530f76834d53d10e08252ffb0786327))
+* Remove attrs version pinning ([#1280](https://github.com/IBM/compliance-trestle/issues/1280)) ([`8260e03`](https://github.com/IBM/compliance-trestle/commit/8260e03cddcf682ebdf931f2b262f58156c8f56c))
+* Fix typo in the curl ([#1278](https://github.com/IBM/compliance-trestle/issues/1278)) ([`d7576d5`](https://github.com/IBM/compliance-trestle/commit/d7576d5cc4e8536b1f94ca668b3b7b87e01f3148))
+* Rules at component level2 ([#1259](https://github.com/IBM/compliance-trestle/issues/1259)) ([`3633d1f`](https://github.com/IBM/compliance-trestle/commit/3633d1f0f4bcd7ee481f7db382aab2b23e91687f))
+* Trestle task csv-to-oscal-cd cannot handle whitespace ([#1252](https://github.com/IBM/compliance-trestle/issues/1252)) ([`ac4b5e0`](https://github.com/IBM/compliance-trestle/commit/ac4b5e08a8233d7f807cd6824197dca45f12b17b))
+* Fix docs template validate flags ([#1245](https://github.com/IBM/compliance-trestle/issues/1245)) ([`6eac0c2`](https://github.com/IBM/compliance-trestle/commit/6eac0c2c620d933761e9660021a5005490bf5ea5))
+* Adjust documentation ([#1248](https://github.com/IBM/compliance-trestle/issues/1248)) ([`5b31925`](https://github.com/IBM/compliance-trestle/commit/5b31925ac82042db98467552bfef415796ca57d3))
+* Update flake8 in precommit ([#1246](https://github.com/IBM/compliance-trestle/issues/1246)) ([`a63b094`](https://github.com/IBM/compliance-trestle/commit/a63b094ef05924ba8a8a600ff7ec5192bfe285d8))
+
+### Breaking
+* Breaking release of Trestle ([`cb86284`](https://github.com/IBM/compliance-trestle/commit/cb86284f1d6ee0299dc41d7d0fe66bb61139ce5a))
+
+### Documentation
+* Update maintainers.md for missed contributors ([#1304](https://github.com/IBM/compliance-trestle/issues/1304)) ([`5443597`](https://github.com/IBM/compliance-trestle/commit/5443597b0b4cd826b58320e787f47d59f84fe06b))
+* Change trestle project references to workspace ([#1276](https://github.com/IBM/compliance-trestle/issues/1276)) ([`2f1b4fd`](https://github.com/IBM/compliance-trestle/commit/2f1b4fd79bb67c509ee7f7c4f0d3a14502d0c71f))
+* Create tutorial for task csv-to-cd (2) ([#1257](https://github.com/IBM/compliance-trestle/issues/1257)) ([`d31df9f`](https://github.com/IBM/compliance-trestle/commit/d31df9fb3ac4049f4710c2c9655ef8b1d17575e8))
+
 ## v1.2.0 (2022-11-07)
 ### Feature
 * Allow trestle init to specify the purpose of initialisation ([#1228](https://github.com/IBM/compliance-trestle/issues/1228)) ([`8d02b68`](https://github.com/IBM/compliance-trestle/commit/8d02b68d5cae32273e179494bafb235c2a004a22))

@@ -195,7 +195,7 @@ class JinjaCmd(CommandPlusDocs):
             # name lookup
             ssp_data, _ = load_validate_model_name(trestle_root, ssp, SystemSecurityPlan)
             lut['ssp'] = ssp_data
-            profile_path = ModelUtils.full_path_for_top_level_model(trestle_root, profile, Profile)
+            profile_path = ModelUtils.get_model_path_for_name_and_class(trestle_root, profile, Profile)
             profile_resolver = ProfileResolver()
             resolved_catalog = profile_resolver.get_resolved_profile_catalog(
                 trestle_root,
@@ -243,7 +243,7 @@ class JinjaCmd(CommandPlusDocs):
         template_folder = pathlib.Path.cwd()
 
         # Output to multiple markdown files
-        profile, profile_path = ModelUtils.load_top_level_model(trestle_root, profile_name, Profile)
+        profile, profile_path = ModelUtils.load_model_for_class(trestle_root, profile_name, Profile)
         profile_resolver = ProfileResolver()
         resolved_catalog = profile_resolver.get_resolved_profile_catalog(
             trestle_root,

@@ -135,7 +135,7 @@ class SSPGenerate(AuthorCommonCommand):
         """
         if force_overwrite:
             try:
-                logger.debug(f'Overwriting the content of {md_path}.')
+                logger.info(f'Overwriting the content in {md_path}.')
                 clear_folder(pathlib.Path(md_path))
             except TrestleError as e:  # pragma: no cover
                 raise TrestleError(f'Unable to overwrite contents of {md_path}: {e}')
@@ -406,7 +406,7 @@ class SSPAssemble(AuthorCommonCommand):
     ) -> Dict[str, generic.GenericComponent]:
         comp_dict: Dict[str, generic.GenericComponent] = {}
         for comp_name in comp_def_name_list:
-            comp_def, _ = ModelUtils.load_top_level_model(trestle_root, comp_name, comp.ComponentDefinition)
+            comp_def, _ = ModelUtils.load_model_for_class(trestle_root, comp_name, comp.ComponentDefinition)
             for def_comp in as_list(comp_def.components):
                 gen_def_comp = generic.GenericComponent.from_defined_component(def_comp)
                 comp_dict[def_comp.title] = gen_def_comp
@@ -446,7 +446,9 @@ class SSPAssemble(AuthorCommonCommand):
 
             # if output ssp already exists, load it to see if new one is different
             existing_ssp: Optional[ossp.SystemSecurityPlan] = None
-            new_ssp_path = ModelUtils.full_path_for_top_level_model(trestle_root, new_ssp_name, ossp.SystemSecurityPlan)
+            new_ssp_path = ModelUtils.get_model_path_for_name_and_class(
+                trestle_root, new_ssp_name, ossp.SystemSecurityPlan
+            )
             if new_ssp_path:
                 _, _, existing_ssp = ModelUtils.load_distributed(new_ssp_path, trestle_root)
                 new_file_content_type = FileContentType.path_to_content_type(new_ssp_path)
@@ -454,7 +456,7 @@ class SSPAssemble(AuthorCommonCommand):
             ssp: ossp.SystemSecurityPlan
 
             # if orig ssp exists - need to load it rather than instantiate new one
-            orig_ssp_path = ModelUtils.full_path_for_top_level_model(
+            orig_ssp_path = ModelUtils.get_model_path_for_name_and_class(
                 trestle_root, orig_ssp_name, ossp.SystemSecurityPlan
             )
 
@@ -574,7 +576,7 @@ class SSPFilter(AuthorCommonCommand):
         Filter the ssp based on controls included by the profile and/or components and output new ssp.
 
         Args:
-            trestle_root: root directory of the trestle project
+            trestle_root: root directory of the trestle workspace
             ssp_name: name of the ssp model
             profile_name: name of the optional profile model used for filtering
             out_name: name of the output ssp model with filtered controls
@@ -588,7 +590,7 @@ class SSPFilter(AuthorCommonCommand):
         # load the ssp
         ssp: ossp.SystemSecurityPlan
         ssp, _ = load_validate_model_name(trestle_root, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
-        profile_path = ModelUtils.path_for_top_level_model(
+        profile_path = ModelUtils.get_model_path_for_name_and_class(
             trestle_root, profile_name, prof.Profile, FileContentType.JSON
         )
 
@@ -671,7 +673,9 @@ class SSPFilter(AuthorCommonCommand):
         if version:
             ssp.metadata.version = version
 
-        existing_ssp_path = ModelUtils.full_path_for_top_level_model(trestle_root, out_name, ossp.SystemSecurityPlan)
+        existing_ssp_path = ModelUtils.get_model_path_for_name_and_class(
+            trestle_root, out_name, ossp.SystemSecurityPlan
+        )
         if existing_ssp_path is not None:
             existing_ssp, _ = load_validate_model_name(trestle_root, out_name, ossp.SystemSecurityPlan)
             if ModelUtils.models_are_equivalent(existing_ssp, ssp):

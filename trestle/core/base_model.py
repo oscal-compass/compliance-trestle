@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """
-Pydantic base model for use within trestle project and associated configuration.
+Pydantic base model for use within a trestle workspace and associated configuration.
 
 The heart of the current OSCAL model within trestle is based on pydantic
 (https://pydantic-docs.helpmanual.io/) which itself is a veneer on-top of python

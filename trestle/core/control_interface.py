@@ -1091,22 +1091,57 @@ class ControlInterface:
             have the same source and specify the same control
         """
         for control_imp in as_list(component.control_implementations):
+            _, control_imp_param_dict, _ = ControlInterface.get_rules_and_params_dict_from_item(control_imp)
+            control_imp_rule_param_ids = [d['name'] for d in control_imp_param_dict.values()]
             if profile_title != ModelUtils.get_title_from_model_uri(trestle_root, control_imp.source):
                 continue
             for imp_req in as_list(control_imp.implemented_requirements):
-                if imp_req.control_id == new_imp_req.control_id:
-                    status = ControlInterface.get_status_from_props(new_imp_req)
-                    ControlInterface.insert_status_in_props(imp_req, status)
-                    imp_req.description = new_imp_req.description
-                    statement_dict = {stat.statement_id: stat for stat in as_list(imp_req.statements)}
-                    new_statements: List[comp.Statement] = []
-                    for statement in as_list(new_imp_req.statements):
-                        # get the original version of the statement if available, or use new one
-                        stat = statement_dict.get(statement.statement_id, statement)
-                        # update the description and status from markdown
-                        stat.description = statement.description
-                        ControlInterface._copy_status_in_props(stat, statement)
-                        new_statements.append(stat)
-                    imp_req.statements = none_if_empty(new_statements)
-                    return
-        logger.warning(f'Unable to add imp req for control {new_imp_req.control_id} and source: {profile_title}')
+                if imp_req.control_id != new_imp_req.control_id:
+                    continue
+                _, imp_req_param_dict, _ = ControlInterface.get_rules_and_params_dict_from_item(imp_req)
+                imp_req_rule_param_ids = [d['name'] for d in imp_req_param_dict]
+                status = ControlInterface.get_status_from_props(new_imp_req)
+                ControlInterface.insert_status_in_props(imp_req, status)
+                imp_req.description = new_imp_req.description
+                statement_dict = {stat.statement_id: stat for stat in as_list(imp_req.statements)}
+                # update set parameter values with values from markdown - but only for rule param vals
+                for set_param in as_list(new_imp_req.set_parameters):
+                    if set_param.param_id not in (control_imp_rule_param_ids + imp_req_rule_param_ids):
+                        continue
+                    found = False
+                    for dest_param in as_list(imp_req.set_parameters):
+                        if dest_param.param_id != set_param.param_id:
+                            continue
+                        dest_param.values = set_param.values
+                        found = True
+                        break
+                    # if rule parameter val was not already set by a set_param, make new set_param for it
+                    if found:
+                        continue
+                    # but first check if the parameter was already set with the same value in the control_imp
+                    # if so we don't need to insert a new set_param in imp_req
+                    for dest_param in as_list(control_imp.set_parameters):
+                        if dest_param.param_id != set_param.param_id:
+                            continue
+                        if dest_param.values == set_param.values:
+                            found = True
+                            break
+                    if found:
+                        continue
+                    imp_req.set_parameters = as_list(imp_req.set_parameters)
+                    imp_req.set_parameters.append(
+                        comp.SetParameter(param_id=set_param.param_id, values=set_param.values)
+                    )
+                new_statements: List[comp.Statement] = []
+                for statement in as_list(new_imp_req.statements):
+                    # get the original version of the statement if available, or use new one
+                    stat = statement_dict.get(statement.statement_id, statement)
+                    # update the description and status from markdown
+                    stat.description = statement.description
+                    ControlInterface._copy_status_in_props(stat, statement)
+                    new_statements.append(stat)
+                imp_req.statements = none_if_empty(new_statements)
+                return
+        logger.warning(
+            f'Unable to add imp req for component {component.title} control {new_imp_req.control_id} and source: {profile_title}'  # noqa E501
+        )

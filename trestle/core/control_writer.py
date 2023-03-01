@@ -46,8 +46,7 @@ class ControlWriter():
                     # If the part has prose write it as a raw line and not list element
                     skip_id = part.id
                     if part.prose:
-                        # need to avoid split lines in statement items
-                        self._md_file.new_line(part.prose.replace('\n', '  '))
+                        self._md_file.new_line(part.prose)
                     items.append(ControlInterface.get_part(part, item_type, skip_id))
             # unwrap the list if it is many levels deep
             while not isinstance(items, str) and len(items) == 1:
@@ -485,7 +484,10 @@ class ControlWriter():
                 header_comment_dict[const.SET_PARAMS_TAG] = const.YAML_PROFILE_VALUES_COMMENT
             elif context.purpose == ContextPurpose.SSP:
                 header_comment_dict[const.SET_PARAMS_TAG] = const.YAML_SSP_VALUES_COMMENT
-                header_comment_dict[const.COMP_DEF_RULES_PARAM_VALS_TAG] = const.YAML_RULE_PARAM_VALUES_COMMENT
+                header_comment_dict[const.COMP_DEF_RULES_PARAM_VALS_TAG] = const.YAML_RULE_PARAM_VALUES_SSP_COMMENT
+            elif context.purpose == ContextPurpose.COMPONENT:
+                header_comment_dict[const.COMP_DEF_RULES_PARAM_VALS_TAG
+                                    ] = const.YAML_RULE_PARAM_VALUES_COMPONENT_COMMENT
 
         # begin adding info to the md file
         self._md_file = MDWriter(control_file, header_comment_dict)

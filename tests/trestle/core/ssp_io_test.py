@@ -106,8 +106,10 @@ def test_ssp_get_control_response(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
     command_ssp_assem = f'trestle author ssp-assemble -m my_ssp -o ssp_json -cd {args.compdefs}'
     execute_command_and_assert(command_ssp_assem, 0, monkeypatch)
 
-    ssp_obj, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, 'ssp_json', SystemSecurityPlan, FileContentType.JSON)
-    profile_path = ModelUtils.path_for_top_level_model(tmp_trestle_dir, prof_name, Profile, FileContentType.JSON)
+    ssp_obj, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'ssp_json', SystemSecurityPlan, FileContentType.JSON)
+    profile_path = ModelUtils.get_model_path_for_name_and_class(
+        tmp_trestle_dir, prof_name, Profile, FileContentType.JSON
+    )
     resolved_catalog = profile_resolver.ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, profile_path)
     ssp_io = SSPMarkdownWriter(tmp_trestle_dir)
     ssp_io.set_catalog(resolved_catalog)
@@ -128,8 +130,10 @@ def test_ssp_get_control_response(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
     substitute_text_in_file(ac1_path, orig_a_prose, new_a_prose)
 
     execute_command_and_assert(command_ssp_assem, 0, monkeypatch)
-    ssp_obj, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, 'ssp_json', SystemSecurityPlan, FileContentType.JSON)
-    profile_path = ModelUtils.path_for_top_level_model(tmp_trestle_dir, prof_name, Profile, FileContentType.JSON)
+    ssp_obj, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'ssp_json', SystemSecurityPlan, FileContentType.JSON)
+    profile_path = ModelUtils.get_model_path_for_name_and_class(
+        tmp_trestle_dir, prof_name, Profile, FileContentType.JSON
+    )
     resolved_catalog = profile_resolver.ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, profile_path)
     ssp_io = SSPMarkdownWriter(tmp_trestle_dir)
     ssp_io.set_catalog(resolved_catalog)

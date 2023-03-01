@@ -113,7 +113,9 @@ class CatalogReader():
             control_list = sorted(control_list_raw, key=lambda control: ControlInterface.get_sort_id(control))
             if group_id:
                 if not group_title:
-                    logger.warning(f'No group title found in controls for group {group_id}')
+                    logger.warning(
+                        f'No group title found in controls for group {group_id}.  The title will be recovered if assembling into an existing catalog with the group title defined.'  # noqa E501
+                    )
                 new_group = cat.Group(id=group_id, title=group_title)
                 new_group.controls = none_if_empty(control_list)
                 groups.append(new_group)

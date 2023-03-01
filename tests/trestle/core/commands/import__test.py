@@ -207,7 +207,7 @@ def test_import_bad_working_directory(tmp_path: pathlib.Path, monkeypatch: Monke
 
 
 def test_import_from_inside_trestle_project_is_bad(tmp_trestle_dir: pathlib.Path) -> None:
-    """Test for attempting import from a trestle project directory."""
+    """Test for attempting import from a trestle workspace directory."""
     sample_file = open('infile.json', 'w+', encoding=const.FILE_ENCODING)
     sample_file.write('{}')
     sample_file.close()
@@ -347,7 +347,7 @@ def test_import_load_profile(tmp_trestle_dir: pathlib.Path) -> None:
     i = importcmd.ImportCmd()
     assert i._run(args) == 0
 
-    loaded_profile, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, 'my_prof', Profile)
+    loaded_profile, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'my_prof', Profile)
     assert len(loaded_profile.modify.set_parameters[1].constraints) == 1
 
 
@@ -377,5 +377,5 @@ def test_import_load_mapping(tmp_trestle_dir: pathlib.Path) -> None:
     i = importcmd.ImportCmd()
     assert i._run(args) == 0
 
-    loaded_mapping_collection, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, 'my_mapping_collection', MappingCollection)  # noqa E501
+    loaded_mapping_collection, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'my_mapping_collection', MappingCollection)  # noqa E501
     assert loaded_mapping_collection.mappings[0].maps[0].relationship.type == 'brother'
