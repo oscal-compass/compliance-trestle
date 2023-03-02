@@ -85,14 +85,15 @@ class Modify(Pipeline.Filter):
         for index in range(len(parts_list)):
             # find the matching part
             if parts_list[index].id == add.by_id:
-                if add.position == AFTER:
-                    for offset, new_item in enumerate(as_list(add.parts)):
-                        parts_list.insert(index + 1 + offset, new_item)
-                    added_parts = True
-                elif add.position == BEFORE:
-                    for offset, new_item in enumerate(as_list(add.parts)):
-                        parts_list.insert(index + offset, new_item)
-                    added_parts = True
+                if add.position and add.position.value:
+                    if add.position.value == AFTER:
+                        for offset, new_item in enumerate(as_list(add.parts)):
+                            parts_list.insert(index + 1 + offset, new_item)
+                        added_parts = True
+                    elif add.position.value == BEFORE:
+                        for offset, new_item in enumerate(as_list(add.parts)):
+                            parts_list.insert(index + offset, new_item)
+                        added_parts = True
                 # if starting or ending or None, the adds go directly into this part according to type
                 Modify._add_adds_to_part(parts_list[index], add, added_parts)
                 return True
@@ -113,7 +114,7 @@ class Modify(Pipeline.Filter):
         return False
 
     @staticmethod
-    def _add_attr_to_part(part: common.Part, items: List[OBT], attr: str, position: str) -> None:
+    def _add_attr_to_part(part: common.Part, items: List[OBT], attr: str, position: Optional[prof.Position]) -> None:
         attr_list = as_list(getattr(part, attr, None))
         # position may be None and if so will go at end
         if position in ['starting', 'before']:

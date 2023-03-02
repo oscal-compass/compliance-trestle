@@ -36,46 +36,24 @@ from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
 import trestle.oscal.common as common
 
 
-class Status1(OscalBaseModel):
+class State1(Enum):
     """
-    A determination of if the objective is satisfied or not within a given system.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    state: constr(
-        regex=
-        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    ) = Field(
-        ...,
-        description='An indication as to whether the objective is satisfied or not.',
-        title='Objective Status State',
-    )
-    reason: Optional[constr(
-        regex=
-        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    )] = Field(
-        None,
-        description="The reason the objective was given it's status.",
-        title='Objective Status Reason',
-    )
-    remarks: Optional[str] = None
-
-
-class Status(OscalBaseModel):
-    """
-    Describes the operational status of the system component.
+    An indication as to whether the objective is satisfied or not.
     """
 
-    class Config:
-        extra = Extra.forbid
+    satisfied = 'satisfied'
+    not_satisfied = 'not-satisfied'
 
-    state: constr(
-        regex=
-        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    ) = Field(..., description='The operational status.', title='State')
-    remarks: Optional[str] = None
+
+class State(Enum):
+    """
+    The operational status.
+    """
+
+    under_development = 'under-development'
+    operational = 'operational'
+    disposition = 'disposition'
+    other = 'other'
 
 
 class SelectControlById(OscalBaseModel):
@@ -93,7 +71,7 @@ class SelectControlById(OscalBaseModel):
         ...,
         alias='control-id',
         description=
-        'A reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).',
+        'A human-oriented identifier reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).',
         title='Control Identifier Reference',
     )
     statement_ids: Optional[List[constr(
@@ -140,24 +118,6 @@ class RelatedObservation(OscalBaseModel):
     )
 
 
-class RelatedFinding(OscalBaseModel):
-    """
-    Relates the poam-item to referenced finding(s).
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    finding_uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        alias='finding-uuid',
-        description='A machine-oriented identifier reference to a finding defined in the list of findings.',
-        title='Finding Universally Unique Identifier Reference',
-    )
-
-
 class Origin1(OscalBaseModel):
     """
     Identifies the source of the finding, such as a tool, interviewed person, or activity.
@@ -181,134 +141,12 @@ class Origin(OscalBaseModel):
     actors: List[common.OriginActor] = Field(...)
 
 
-class Observation(OscalBaseModel):
-    """
-    Describes an individual observation.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
+class Method(OscalBaseModel):
+    __root__: constr(regex=r'^\S(.*\S)?$') = Field(
         ...,
-        description=
-        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this observation elsewhere in this or other OSCAL instances. The locally defined UUID of the observation can be used to reference the data item locally or globally (e.g., in an imorted OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
-        title='Observation Universally Unique Identifier',
+        description='Identifies how the observation was made.',
+        title='Observation Method',
     )
-    title: Optional[str] = Field(None, description='The title for this observation.', title='Observation Title')
-    description: str = Field(
-        ...,
-        description='A human-readable description of this assessment observation.',
-        title='Observation Description',
-    )
-    props: Optional[List[common.Property]] = Field(None)
-    links: Optional[List[common.Link]] = Field(None)
-    methods: List[constr(regex=r'^\S(.*\S)?$')] = Field(...)
-    types: Optional[List[constr(
-        regex=
-        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    )]] = Field(None)
-    origins: Optional[List[Origin1]] = Field(None)
-    subjects: Optional[List[common.SubjectReference]] = Field(None)
-    relevant_evidence: Optional[List[common.RelevantEvidence]] = Field(None, alias='relevant-evidence')
-    collected: datetime = Field(
-        ...,
-        description='Date/time stamp identifying when the finding information was collected.',
-        title='Collected Field',
-    )
-    expires: Optional[datetime] = Field(
-        None,
-        description=
-        'Date/time identifying when the finding information is out-of-date and no longer valid. Typically used with continuous assessment scenarios.',
-        title='Expires Field',
-    )
-    remarks: Optional[str] = None
-
-
-class FindingTarget(OscalBaseModel):
-    """
-    Captures an assessor's conclusions regarding the degree to which an objective is satisfied.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    type: constr(regex=r'^\S(.*\S)?$') = Field(
-        ...,
-        description='Identifies the type of the target.',
-        title='Finding Target Type',
-    )
-    target_id: constr(
-        regex=
-        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    ) = Field(
-        ...,
-        alias='target-id',
-        description='A machine-oriented identifier reference for a specific target qualified by the type.',
-        title='Finding Target Identifier Reference',
-    )
-    title: Optional[str] = Field(
-        None,
-        description='The title for this objective status.',
-        title='Objective Status Title',
-    )
-    description: Optional[str] = Field(
-        None,
-        description=
-        "A human-readable description of the assessor's conclusions regarding the degree to which an objective is satisfied.",
-        title='Objective Status Description',
-    )
-    props: Optional[List[common.Property]] = Field(None)
-    links: Optional[List[common.Link]] = Field(None)
-    status: Status1 = Field(
-        ...,
-        description='A determination of if the objective is satisfied or not within a given system.',
-        title='Objective Status',
-    )
-    implementation_status: Optional[common.ImplementationStatus] = Field(None, alias='implementation-status')
-    remarks: Optional[str] = None
-
-
-class Finding(OscalBaseModel):
-    """
-    Describes an individual finding.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description=
-        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this finding in this or other OSCAL instances. The locally defined UUID of the finding can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
-        title='Finding Universally Unique Identifier',
-    )
-    title: str = Field(..., description='The title for this finding.', title='Finding Title')
-    description: str = Field(
-        ...,
-        description='A human-readable description of this finding.',
-        title='Finding Description',
-    )
-    props: Optional[List[common.Property]] = Field(None)
-    links: Optional[List[common.Link]] = Field(None)
-    origins: Optional[List[Origin1]] = Field(None)
-    target: FindingTarget
-    implementation_statement_uuid: Optional[constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    )] = Field(
-        None,
-        alias='implementation-statement-uuid',
-        description=
-        'A machine-oriented identifier reference to the implementation statement in the SSP to which this finding is related.',
-        title='Implementation Statement UUID',
-    )
-    related_observations: Optional[List[RelatedObservation1]] = Field(None, alias='related-observations')
-    related_risks: Optional[List[common.RelatedRisk]] = Field(None, alias='related-risks')
-    remarks: Optional[str] = None
 
 
 class Entry(OscalBaseModel):
@@ -392,6 +230,42 @@ class Characterization(OscalBaseModel):
     facets: List[common.Facet] = Field(...)
 
 
+class Status1(OscalBaseModel):
+    """
+    A determination of if the objective is satisfied or not within a given system.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    state: State1 = Field(
+        ...,
+        description='An indication as to whether the objective is satisfied or not.',
+        title='Objective Status State',
+    )
+    reason: Optional[constr(
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+    )] = Field(
+        None,
+        description="The reason the objective was given it's status.",
+        title='Objective Status Reason',
+    )
+    remarks: Optional[str] = None
+
+
+class Status(OscalBaseModel):
+    """
+    Describes the operational status of the system component.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    state: State = Field(..., description='The operational status.', title='State')
+    remarks: Optional[str] = None
+
+
 class SystemComponent(OscalBaseModel):
     """
     A defined component that can be part of an implemented system.
@@ -440,18 +314,6 @@ class SystemComponent(OscalBaseModel):
     remarks: Optional[str] = None
 
 
-class AssessmentAssets(OscalBaseModel):
-    """
-    Identifies the assets used to perform this assessment, such as the assessment team, scanning tools, and assumptions.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    components: Optional[List[SystemComponent]] = Field(None)
-    assessment_platforms: List[common.AssessmentPlatform] = Field(..., alias='assessment-platforms')
-
-
 class LocalDefinitions(OscalBaseModel):
     """
     Allows components, and inventory-items to be defined within the POA&M for circumstances where no OSCAL-based SSP exists, or is not delivered with the POA&M.
@@ -462,7 +324,6 @@ class LocalDefinitions(OscalBaseModel):
 
     components: Optional[List[SystemComponent]] = Field(None)
     inventory_items: Optional[List[common.InventoryItem]] = Field(None, alias='inventory-items')
-    assessment_assets: Optional[AssessmentAssets] = Field(None, alias='assessment-assets')
     remarks: Optional[str] = None
 
 
@@ -620,9 +481,54 @@ class PoamItem(OscalBaseModel):
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     origins: Optional[List[Origin]] = Field(None)
-    related_findings: Optional[List[RelatedFinding]] = Field(None, alias='related-findings')
     related_observations: Optional[List[RelatedObservation]] = Field(None, alias='related-observations')
     related_risks: Optional[List[common.RelatedRisk]] = Field(None, alias='related-risks')
+    remarks: Optional[str] = None
+
+
+class Observation(OscalBaseModel):
+    """
+    Describes an individual observation.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description=
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this observation elsewhere in this or other OSCAL instances. The locally defined UUID of the observation can be used to reference the data item locally or globally (e.g., in an imorted OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
+        title='Observation Universally Unique Identifier',
+    )
+    title: Optional[str] = Field(None, description='The title for this observation.', title='Observation Title')
+    description: str = Field(
+        ...,
+        description='A human-readable description of this assessment observation.',
+        title='Observation Description',
+    )
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
+    methods: List[Method] = Field(...)
+    types: Optional[List[constr(
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+    )]] = Field(None)
+    origins: Optional[List[Origin1]] = Field(None)
+    subjects: Optional[List[common.SubjectReference]] = Field(None)
+    relevant_evidence: Optional[List[common.RelevantEvidence]] = Field(None, alias='relevant-evidence')
+    collected: datetime = Field(
+        ...,
+        description='Date/time stamp identifying when the finding information was collected.',
+        title='Collected Field',
+    )
+    expires: Optional[datetime] = Field(
+        None,
+        description=
+        'Date/time identifying when the finding information is out-of-date and no longer valid. Typically used with continuous assessment scenarios.',
+        title='Expires Field',
+    )
     remarks: Optional[str] = None
 
 
@@ -648,7 +554,6 @@ class PlanOfActionAndMilestones(OscalBaseModel):
     local_definitions: Optional[LocalDefinitions] = Field(None, alias='local-definitions')
     observations: Optional[List[Observation]] = Field(None)
     risks: Optional[List[Risk]] = Field(None)
-    findings: Optional[List[Finding]] = Field(None)
     poam_items: List[PoamItem] = Field(..., alias='poam-items')
     back_matter: Optional[common.BackMatter] = Field(None, alias='back-matter')
 

@@ -76,12 +76,12 @@ def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
     ac_33 = interface.get_control('ac-3.3')
     assert ac_33.params[0].props[0].name == 'set_param_prof_b_prop'
     assert ac_33.params[0].props[0].value == 'set param prof b prop value'
-    assert ac_33.props[0].name == 'add_prof_b_prop'
-    assert ac_33.props[0].value == 'add prof b prop value'
+    assert ac_33.props[2].name == 'add_prof_b_prop'
+    assert ac_33.props[2].value == 'add prof b prop value'
 
     control = interface.get_control('a-1')
-    assert control.parts[0].parts[0].id == 'a-1_deep'
-    assert control.parts[0].parts[0].prose == 'Extra added part in subpart'
+    assert control.parts[0].parts[1].id == 'a-1_deep'
+    assert control.parts[0].parts[1].prose == 'Extra added part in subpart'
 
     assert cat.metadata.title == test_prof.metadata.title
     assert cat.metadata.oscal_version.__root__ == OSCAL_VERSION
@@ -155,14 +155,14 @@ def test_all_positions_for_alter_can_be_resolved(tmp_trestle_dir: pathlib.Path) 
     control_a1 = interface.get_control('ac-1')
     control_a2 = interface.get_control('ac-2')
 
-    assert control_a1.parts[0].id == 'ac-1_first_lev1'
-    assert control_a1.parts[1].parts[3].id == 'ac-1_last_lev2'
-    assert control_a1.parts[2].id == 'ac-1_after1_ac-1_smt_lev1'
-    assert control_a1.parts[3].id == 'ac-1_after2_ac-1_smt_lev1'
-    assert control_a1.parts[1].parts[0].parts[1].id == 'ac-1_smt_before1_a.2_lev3'
-    assert control_a1.parts[1].parts[0].parts[2].id == 'ac-1_smt_before2_a.2_lev3'
-    assert control_a1.parts[1].parts[0].parts[3].parts[0].id == 'ac-1_smt_inside1_at_the_end_a.2_lev4'
-    assert control_a1.parts[1].parts[0].parts[3].parts[1].id == 'ac-1_smt_inside2_at_the_end_a.2_lev4'
+    assert control_a1.parts[4].id == 'ac-1_first_lev1'
+    assert control_a1.parts[0].parts[3].id == 'ac-1_last_lev2'
+    assert control_a1.parts[1].id == 'ac-1_after1_ac-1_smt_lev1'
+    assert control_a1.parts[2].id == 'ac-1_after2_ac-1_smt_lev1'
+    assert control_a1.parts[0].parts[0].parts[1].id == 'ac-1_smt_before1_a.2_lev3'
+    assert control_a1.parts[0].parts[0].parts[2].id == 'ac-1_smt_before2_a.2_lev3'
+    assert control_a1.parts[0].parts[0].parts[3].parts[0].id == 'ac-1_smt_inside1_at_the_end_a.2_lev4'
+    assert control_a1.parts[0].parts[0].parts[3].parts[1].id == 'ac-1_smt_inside2_at_the_end_a.2_lev4'
     assert control_a2.parts[0].id == 'ac-2_implgdn_lev1'
 
 
@@ -196,7 +196,7 @@ def test_profile_resolver_merge(sample_catalog_rich_controls: cat.Catalog) -> No
     assert catalog_interface.get_control(control_id).parts[-1].name == 'foo'
 
     # add part to first control and merge but with use-first.  The part should not be there at end.
-    method = 'use_first'
+    method = prof.Method.use_first
     combine = prof.Combine(method=method)
     profile.merge = prof.Merge(combine=combine)
     merge = Merge(profile)

@@ -47,19 +47,24 @@ class TermsAndConditions(OscalBaseModel):
     parts: Optional[List[common.AssessmentPart]] = Field(None)
 
 
-class Status1(OscalBaseModel):
+class State1(Enum):
     """
-    Describes the operational status of the system component.
+    The operational status.
     """
 
-    class Config:
-        extra = Extra.forbid
+    under_development = 'under-development'
+    operational = 'operational'
+    disposition = 'disposition'
+    other = 'other'
 
-    state: constr(
-        regex=
-        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    ) = Field(..., description='The operational status.', title='State')
-    remarks: Optional[str] = None
+
+class State(Enum):
+    """
+    An indication as to whether the objective is satisfied or not.
+    """
+
+    satisfied = 'satisfied'
+    not_satisfied = 'not-satisfied'
 
 
 class Status(OscalBaseModel):
@@ -70,10 +75,7 @@ class Status(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    state: constr(
-        regex=
-        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    ) = Field(
+    state: State = Field(
         ...,
         description='An indication as to whether the objective is satisfied or not.',
         title='Objective Status State',
@@ -104,7 +106,7 @@ class SelectControlById(OscalBaseModel):
         ...,
         alias='control-id',
         description=
-        'A reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).',
+        'A human-oriented identifier reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).',
         title='Control Identifier Reference',
     )
     statement_ids: Optional[List[constr(
@@ -145,6 +147,14 @@ class Origin(OscalBaseModel):
     related_tasks: Optional[List[common.RelatedTask]] = Field(None, alias='related-tasks')
 
 
+class Method(OscalBaseModel):
+    __root__: constr(regex=r'^\S(.*\S)?$') = Field(
+        ...,
+        description='Identifies how the observation was made.',
+        title='Observation Method',
+    )
+
+
 class Observation(OscalBaseModel):
     """
     Describes an individual observation.
@@ -169,7 +179,7 @@ class Observation(OscalBaseModel):
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
-    methods: List[constr(regex=r'^\S(.*\S)?$')] = Field(...)
+    methods: List[Method] = Field(...)
     types: Optional[List[constr(
         regex=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
@@ -188,90 +198,6 @@ class Observation(OscalBaseModel):
         'Date/time identifying when the finding information is out-of-date and no longer valid. Typically used with continuous assessment scenarios.',
         title='Expires Field',
     )
-    remarks: Optional[str] = None
-
-
-class FindingTarget(OscalBaseModel):
-    """
-    Captures an assessor's conclusions regarding the degree to which an objective is satisfied.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    type: constr(regex=r'^\S(.*\S)?$') = Field(
-        ...,
-        description='Identifies the type of the target.',
-        title='Finding Target Type',
-    )
-    target_id: constr(
-        regex=
-        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    ) = Field(
-        ...,
-        alias='target-id',
-        description='A machine-oriented identifier reference for a specific target qualified by the type.',
-        title='Finding Target Identifier Reference',
-    )
-    title: Optional[str] = Field(
-        None,
-        description='The title for this objective status.',
-        title='Objective Status Title',
-    )
-    description: Optional[str] = Field(
-        None,
-        description=
-        "A human-readable description of the assessor's conclusions regarding the degree to which an objective is satisfied.",
-        title='Objective Status Description',
-    )
-    props: Optional[List[common.Property]] = Field(None)
-    links: Optional[List[common.Link]] = Field(None)
-    status: Status = Field(
-        ...,
-        description='A determination of if the objective is satisfied or not within a given system.',
-        title='Objective Status',
-    )
-    implementation_status: Optional[common.ImplementationStatus] = Field(None, alias='implementation-status')
-    remarks: Optional[str] = None
-
-
-class Finding(OscalBaseModel):
-    """
-    Describes an individual finding.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description=
-        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this finding in this or other OSCAL instances. The locally defined UUID of the finding can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
-        title='Finding Universally Unique Identifier',
-    )
-    title: str = Field(..., description='The title for this finding.', title='Finding Title')
-    description: str = Field(
-        ...,
-        description='A human-readable description of this finding.',
-        title='Finding Description',
-    )
-    props: Optional[List[common.Property]] = Field(None)
-    links: Optional[List[common.Link]] = Field(None)
-    origins: Optional[List[Origin]] = Field(None)
-    target: FindingTarget
-    implementation_statement_uuid: Optional[constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    )] = Field(
-        None,
-        alias='implementation-statement-uuid',
-        description=
-        'A machine-oriented identifier reference to the implementation statement in the SSP to which this finding is related.',
-        title='Implementation Statement UUID',
-    )
-    related_observations: Optional[List[RelatedObservation]] = Field(None, alias='related-observations')
-    related_risks: Optional[List[common.RelatedRisk]] = Field(None, alias='related-risks')
     remarks: Optional[str] = None
 
 
@@ -354,6 +280,18 @@ class Characterization(OscalBaseModel):
     links: Optional[List[common.Link]] = Field(None)
     origin: Origin
     facets: List[common.Facet] = Field(...)
+
+
+class Status1(OscalBaseModel):
+    """
+    Describes the operational status of the system component.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    state: State1 = Field(..., description='The operational status.', title='State')
+    remarks: Optional[str] = None
 
 
 class SystemComponent(OscalBaseModel):

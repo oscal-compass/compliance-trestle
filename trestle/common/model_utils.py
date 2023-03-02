@@ -535,6 +535,8 @@ class ModelUtils:
         main_fields = ['id', 'label', 'values', 'select', 'choice', 'how_many']
         if isinstance(obj, common.Remarks):
             return obj.__root__
+        if isinstance(obj, common.HowMany):
+            return obj.value
         # it is either a string already or we cast it to string
         if not hasattr(obj, const.FIELDS_SET):
             return str(obj)
@@ -578,9 +580,9 @@ class ModelUtils:
     def _string_to_howmany(count_str: str) -> Optional[str]:
         clean_str = count_str.lower().strip().replace('-', ' ').replace('_', ' ')
         if clean_str == const.ONE:
-            return const.ONE
+            return common.HowMany.one
         if clean_str == const.ONE_OR_MORE_SPACED:
-            return const.ONE_OR_MORE_HYPHENED
+            return common.HowMany.one_or_more
         return None
 
     @staticmethod
@@ -633,7 +635,7 @@ class ModelUtils:
     def last_modified_at_time(timestamp: Optional[datetime] = None) -> common.LastModified:
         """Generate a LastModified set to timestamp or now."""
         timestamp = timestamp if timestamp else datetime.now().astimezone()
-        return common.LastModified(__root__=timestamp)
+        return timestamp
 
     @staticmethod
     def update_last_modified(model: TopLevelOscalModel, timestamp: Optional[datetime] = None) -> None:
