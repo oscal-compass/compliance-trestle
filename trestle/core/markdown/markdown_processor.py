@@ -25,7 +25,8 @@ import frontmatter
 
 from trestle.common import const
 from trestle.common.err import TrestleError
-from trestle.core.markdown.markdown_node import MarkdownNode
+from trestle.core.markdown.control_markdown_node import ControlMarkdownNode, tree_context
+from trestle.core.markdown.docs_markdown_node import DocsMarkdownNode
 
 from yaml.scanner import ScannerError
 
@@ -50,15 +51,33 @@ class MarkdownProcessor:
     def process_markdown(self,
                          md_path: pathlib.Path,
                          read_header: bool = True,
-                         read_body: bool = True) -> Tuple[Dict, MarkdownNode]:
+                         read_body: bool = True) -> Tuple[Dict, DocsMarkdownNode]:
         """Parse the markdown and builds the tree to operate over it."""
         header, markdown_wo_header = self.read_markdown_wo_processing(md_path, read_header, read_body)
 
         _ = self.render_gfm_to_html(markdown_wo_header)
 
         lines = markdown_wo_header.split('\n')
-        tree = MarkdownNode.build_tree_from_markdown(lines, self.governed_header)
+        tree = DocsMarkdownNode.build_tree_from_markdown(lines, self.governed_header)
         return header, tree
+
+    def process_control_markdown(self,
+                                 md_path: pathlib.Path,
+                                 read_header: bool = True,
+                                 read_body: bool = True) -> Tuple[Dict, ControlMarkdownNode]:
+        """Parse control markdown and build tree with identified OSCAL components."""
+        try:
+            header, markdown_wo_header = self.read_markdown_wo_processing(md_path, read_header, read_body)
+
+            _ = self.render_gfm_to_html(markdown_wo_header)
+
+            lines = markdown_wo_header.split('\n')
+            tree = ControlMarkdownNode.build_tree_from_markdown(lines)
+            tree_context.reset()
+            return header, tree
+        except TrestleError as e:
+            logger.error(f'Error while reading control markdown: {md_path}: {e}')
+            raise e
 
     def read_markdown_wo_processing(self,
                                     md_path: pathlib.Path,

@@ -25,7 +25,7 @@ from trestle.core import profile_resolver
 from trestle.core.commands.author.ssp import SSPGenerate
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_reader import ControlReader
-from trestle.core.markdown.markdown_node import MarkdownNode
+from trestle.core.markdown.docs_markdown_node import DocsMarkdownNode
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.remote import cache
 from trestle.core.ssp_io import SSPMarkdownWriter
@@ -117,7 +117,7 @@ def test_ssp_get_control_response(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
 
     md_text = ssp_io.get_control_response('ac-1', 1, True)
     assert md_text
-    tree = MarkdownNode.build_tree_from_markdown(md_text.split('\n'))
+    tree = DocsMarkdownNode.build_tree_from_markdown(md_text.split('\n'))
 
     assert tree.get_node_for_key('## Implementation for part a.')
     assert len(list(tree.get_all_headers_for_level(2))) == 1
@@ -156,7 +156,7 @@ def test_writers(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monk
     assert not output
 
     output = ssp_io._write_list_with_header('Sample list', ['1', '2', '3'], 2)
-    tree = MarkdownNode.build_tree_from_markdown(output.split('\n'))
+    tree = DocsMarkdownNode.build_tree_from_markdown(output.split('\n'))
     node = tree.get_node_for_key('### Sample list')
     assert node
     assert node.content.text == ['', '- 1', '', '- 2', '', '- 3']
@@ -165,7 +165,7 @@ def test_writers(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monk
     assert not output
 
     output = ssp_io._write_table_with_header('Sample table', [['1', '2', '3'], ['4', '5', '6']], ['c1', 'c2', 'c3'], 0)
-    tree = MarkdownNode.build_tree_from_markdown(output.split('\n'))
+    tree = DocsMarkdownNode.build_tree_from_markdown(output.split('\n'))
     node = tree.get_node_for_key('# Sample table')
     assert node
     assert node.content.tables[0] == '| c1 | c2 | c3 |'
@@ -175,7 +175,7 @@ def test_writers(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monk
     assert not output
 
     output = ssp_io._write_str_with_header('Some text', 'this is a text.', 5)
-    tree = MarkdownNode.build_tree_from_markdown(output.split('\n'))
+    tree = DocsMarkdownNode.build_tree_from_markdown(output.split('\n'))
     node = tree.get_node_for_key('###### Some text')
     assert node
     assert node.content.raw_text == '###### Some text\n\nthis is a text.'

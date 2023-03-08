@@ -22,7 +22,7 @@ from typing import Any, Dict, List, Optional
 import trestle.core.markdown.markdown_const as md_const
 from trestle.common.err import TrestleError
 from trestle.core.commands.author.consts import START_TEMPLATE_VERSION, TEMPLATE_VERSION_HEADER
-from trestle.core.markdown.markdown_node import MarkdownNode
+from trestle.core.markdown.docs_markdown_node import DocsMarkdownNode
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +34,7 @@ class MarkdownValidator:
         self,
         tmp_path: pathlib.Path,
         template_header: Dict,
-        template_tree: MarkdownNode,
+        template_tree: DocsMarkdownNode,
         validate_yaml_header: bool,
         validate_md_body: bool,
         governed_section: Optional[str] = None
@@ -64,7 +64,7 @@ class MarkdownValidator:
                         self._ignore_headers.append(key2.lower())
 
     def is_valid_against_template(
-        self, instance: pathlib.Path, instance_header: Dict, instance_tree: MarkdownNode
+        self, instance: pathlib.Path, instance_header: Dict, instance_tree: DocsMarkdownNode
     ) -> bool:
         """
         Validate instance markdown against template.

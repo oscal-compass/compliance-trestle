@@ -39,8 +39,8 @@ from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.commands.author.profile import ProfileAssemble, ProfileGenerate
 from trestle.core.control_interface import ControlInterface
+from trestle.core.markdown.docs_markdown_node import DocsMarkdownNode
 from trestle.core.markdown.markdown_api import MarkdownAPI
-from trestle.core.markdown.markdown_node import MarkdownNode
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 
@@ -736,7 +736,7 @@ More evidence
 def test_adding_removing_sections(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test the profile generate and assemble in cycles, with incremental changes."""
 
-    def generate_assemble(md_path: pathlib.Path) -> MarkdownNode:
+    def generate_assemble(md_path: pathlib.Path) -> DocsMarkdownNode:
         prof_assemble = f'trestle author profile-assemble -n main_profile -m {md_name} -o main_profile'
         test_utils.execute_command_and_assert(prof_assemble, 0, monkeypatch)
 
