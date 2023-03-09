@@ -19,7 +19,6 @@ from typing import Iterator, List, Optional, Tuple, Union
 import trestle.oscal.catalog as cat
 import trestle.oscal.common as com
 import trestle.oscal.profile as prof
-from trestle.common import const
 from trestle.common.common_types import OBT
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list, none_if_empty
@@ -69,9 +68,9 @@ class Merge(Pipeline.Filter):
             id_ = getattr(item, NAME, None)
         return id_
 
-    def _merge_lists(self, dest: List[OBT], src: List[OBT], merge_method: str) -> None:
+    def _merge_lists(self, dest: List[OBT], src: List[OBT], merge_method: Optional[prof.Method]) -> None:
         added_items = []
-        if merge_method == const.KEEP:
+        if merge_method == prof.Method.keep:
             dest.extend(src)
             return
         for item in src:
@@ -83,7 +82,7 @@ class Merge(Pipeline.Filter):
                     for other in dest:
                         other_id = self._get_id(other)
                         if other_id == item_id:
-                            if merge_method == 'merge':
+                            if merge_method == prof.Method.merge:
                                 self._merge_items(other, item, merge_method)
                             merged = True
                             break
@@ -93,7 +92,7 @@ class Merge(Pipeline.Filter):
         dest.extend(added_items)
 
     def _merge_attrs(
-        self, dest: Union[OBT, List[OBT]], src: Union[OBT, List[OBT]], attr: str, merge_method: str
+        self, dest: Union[OBT, List[OBT]], src: Union[OBT, List[OBT]], attr: str, merge_method: Optional[prof.Method]
     ) -> None:
         """Merge this attr of src into the attr of dest."""
         src_attr = getattr(src, attr, None)
@@ -107,13 +106,13 @@ class Merge(Pipeline.Filter):
             self._merge_lists(dest_attr, src_attr, merge_method)
             setattr(dest, attr, dest_attr)
             return
-        if dest_attr and merge_method == 'use_first':
+        if dest_attr and merge_method == prof.Method.use_first:
             return
-        if dest_attr == src_attr and merge_method != 'keep':
+        if dest_attr == src_attr and merge_method not in [None, prof.Method.keep]:
             return
         setattr(dest, attr, src_attr)
 
-    def _merge_items(self, dest: OBT, src: OBT, merge_method: str) -> None:
+    def _merge_items(self, dest: OBT, src: OBT, merge_method: Optional[prof.Method]) -> None:
         """Merge two items recursively."""
         for field in src.__fields_set__:
             self._merge_attrs(dest, src, field, merge_method)
@@ -148,8 +147,11 @@ class Merge(Pipeline.Filter):
         catalog.groups = None
         return catalog
 
-    def _merge_two_catalogs(self, dest: cat.Catalog, src: cat.Catalog, merge_method: str, as_is: bool) -> cat.Catalog:
-        # merge_method is use_first, merge, or keep
+    def _merge_two_catalogs(
+        self, dest: cat.Catalog, src: cat.Catalog, merge_method: Optional[prof.Method], as_is: bool
+    ) -> cat.Catalog:
+        # merge_method is use_first, merge, keep
+        # no combine or merge_method equates to merge_method=keep
         # if as_is is false, the result is flattened
 
         dest = self._flatten_catalog(dest, as_is)
@@ -174,7 +176,7 @@ class Merge(Pipeline.Filter):
         local_cat = catalog.copy(deep=True)
         local_merged = merged.copy(deep=True) if merged else None
 
-        merge_method = 'keep'
+        merge_method = prof.Method.keep
         as_is = False
         if self._profile.merge is not None:
             if self._profile.merge.custom is not None:
@@ -183,14 +185,14 @@ class Merge(Pipeline.Filter):
                 as_is = self._profile.merge.as_is
             if self._profile.merge.combine is None:
                 logger.debug('Profile has merge but no combine so defaulting to combine/merge.')
-                merge_method = 'merge'
+                merge_method = prof.Method.merge
             else:
                 merge_combine = self._profile.merge.combine
                 if merge_combine.method is None:
                     logger.debug('Profile has merge combine but no method.  Defaulting to merge.')
-                    merge_method = 'merge'
+                    merge_method = prof.Method.merge
                 else:
-                    merge_method = merge_combine.method.value
+                    merge_method = merge_combine.method
 
         if local_merged is None:
             return self._flatten_catalog(local_cat, as_is)

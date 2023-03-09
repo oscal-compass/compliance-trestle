@@ -549,13 +549,6 @@ ONE_OR_MORE_HYPHENED = 'one-or-more'
 
 ONE_OR_MORE_SPACED = 'one or more'
 
-KEEP = 'keep'
-
-MERGE = 'merge'
-
-BEFORE = 'before'
-
-AFTER = 'after'
 VALUE_ASSIGNED_PREFIX = 'value-assigned-prefix'
 
 VALUE_NOT_ASSIGNED_PREFIX = 'value-not-assigned-prefix'
