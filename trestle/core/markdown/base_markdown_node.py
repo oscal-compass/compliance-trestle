@@ -137,14 +137,6 @@ class BaseMarkdownNode:
         # go through all contents and modify headers
         self._rec_traverse_header_update(self, header_map)
 
-    def get_count_of_subnodes(self, recurse=True) -> int:
-        """Get count of subnodes with optional recursion."""
-        count = len(self.subnodes)
-        if recurse:
-            for subnode in self.subnodes:
-                count += subnode.get_count_of_subnodes(True)
-        return count
-
     def delete_nodes_text(self, keys: List[str], strict_matching: bool = True) -> List[str]:
         """Remove text from this node that is found in matching subnodes."""
         text_lines = self.content.raw_text.split('\n')
@@ -164,37 +156,10 @@ class BaseMarkdownNode:
         level: int,
         governed_header: Optional[str] = None
     ) -> Tuple[BaseMarkdownNode, int]:
-        """
-        Build a tree from the markdown recursively.
-
-        The tree is contructed with valid headers as node's keys
-        and node's content contains everything that is under that header.
-        The subsections are placed into node's children with the same structure.
-
-        A header is valid iff the line starts with # and it is not:
-          1. Inside of the html blocks
-          2. Inside single lined in the <> tags
-          3. Inside the html comment
-          4. Inside any table, code block or blockquotes
-        """
+        """Build a tree from the markdown recursively."""
         content = BaseSectionContent()
         node_children = []
         i = starting_line
-
-        while True:
-            if i >= len(lines):
-                break
-            line = lines[i].strip(' ')
-            header_lvl = self._get_header_level_if_valid(line)
-
-            if header_lvl is not None:
-                if header_lvl >= level + 1:
-                    # build subtree
-                    subtree, i = self._build_tree(lines, line, i + 1, level + 1, governed_header)
-                    node_children.append(subtree)
-                    content.union(subtree)
-                else:
-                    break  # level of the header is above or equal to the current level, subtree is over
 
         first_line_to_grab = starting_line - 1 if starting_line else 0
         content.raw_text = '\n'.join(lines[first_line_to_grab:i])

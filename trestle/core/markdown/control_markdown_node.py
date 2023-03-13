@@ -63,7 +63,6 @@ class ControlSectionContent(BaseSectionContent):
     def union(self, node: ControlMarkdownNode) -> None:
         """Unites contents together."""
         super().union(node)
-        pass
 
 
 class ControlMarkdownNode(BaseMarkdownNode):
@@ -105,7 +104,7 @@ class ControlMarkdownNode(BaseMarkdownNode):
         is_control_statement = root_key.lower() == '## control statement'
         is_control_objective = root_key.lower() == '## control objective'
         is_control_guidance = root_key.lower() == '## control guidance'
-        _ = f'# {const.EDITABLE_CONTENT}'.lower() in root_key.lower()  # TODO, currently handled by control_reader
+        _ = f'# {const.EDITABLE_CONTENT}'.lower() in root_key.lower()  # currently handled by control_reader
         is_generic_control_part = '## control' in root_key.lower(
         ) and not (is_control_guidance or is_control_objective or is_control_statement)
 
@@ -132,9 +131,15 @@ class ControlMarkdownNode(BaseMarkdownNode):
             content.control_group = tree_context.control_group
             content.control_title = tree_context.control_title
 
-        while True:
-            if i >= len(lines):
-                break
+        def _strip_prose_or_none(part: Optional[common.Part]):
+            if part and part.prose:
+                part.prose = part.prose.strip() if part.prose.strip() else None
+
+        def _add_child_prose_if_need(part: common.Part, text: str, should_add: bool):
+            if should_add:
+                part.prose += text
+
+        while i < len(lines):
             line = lines[i].strip(' ')
             header_lvl = self._get_header_level_if_valid(line)
 
@@ -146,65 +151,49 @@ class ControlMarkdownNode(BaseMarkdownNode):
                             f'Please delete this subsection and refer to docs on the required format.'
                         )
                     # build subtree
-                    subtree, i = self._build_tree(lines, line, i + 1, level + 1, governed_header)
+                    subtree, i = self._build_tree(lines, line, i + 1, level + 1)
                     node_children.append(subtree)
                     content.union(subtree)
                     # Control parts can have general markdown in the prose, if we are in the control part
                     # add its contents under the prose of a parent
-                    if is_control_statement:
-                        content.statement_part.prose += subtree.content.raw_text
-                    if is_control_objective:
-                        content.objective_part.prose += subtree.content.raw_text
-                    if is_control_guidance:
-                        content.guidance_part.prose += subtree.content.raw_text
+                    _add_child_prose_if_need(content.statement_part, subtree.content.raw_text, is_control_statement)
+                    _add_child_prose_if_need(content.objective_part, subtree.content.raw_text, is_control_objective)
+                    _add_child_prose_if_need(content.guidance_part, subtree.content.raw_text, is_control_guidance)
                     if is_generic_control_part:
-                        content.other_parts[-1].prose += subtree.content.raw_text
+                        _add_child_prose_if_need(
+                            content.other_parts[-1], subtree.content.raw_text, is_generic_control_part
+                        )
                     continue
                 else:
                     i -= 1  # need to revert back one line to properly handle next heading
                     break  # level of the header is above or equal to the current level, subtree is over
             if is_control_statement:
                 # Read control statement to a part object
-                if not content.statement_part:
-                    if not tree_context.control_id:
-                        raise TrestleError(
-                            'Unexpected error, control id, group and title should be before ## Control statement.'
-                            'However, none was found.'
-                        )
-                    statement_id = ControlInterface.create_statement_id(tree_context.control_id)
-                    content.statement_part = common.Part(name=const.STATEMENT, id=statement_id, prose='')
-
+                statement_id = ControlInterface.create_statement_id(tree_context.control_id)
+                content.statement_part = self._create_part_if_needed(
+                    content.statement_part, const.STATEMENT, statement_id
+                )
                 i = self._process_part_line(i, line, lines, content.statement_part)
+                continue
 
-            elif is_control_objective:
+            if is_control_objective:
                 # Read control objective to a part object
-                if not content.objective_part:
-                    if not tree_context.control_id:
-                        raise TrestleError(
-                            'Unexpected error, control id, group and title should be before ## Control objective.'
-                            'However, none was found.'
-                        )
-                    content.objective_part = common.Part(
-                        name='objective', id=f'{tree_context.control_id}_obj', prose=''
-                    )
-
+                content.objective_part = self._create_part_if_needed(
+                    content.objective_part, 'objective', f'{tree_context.control_id}_obj'
+                )
                 i = self._process_part_line(i, line, lines, content.objective_part)
+                continue
 
-            elif is_control_guidance:
+            if is_control_guidance:
                 # Read control guidance to a part object
-                if not content.guidance_part:
-                    if not tree_context.control_id:
-                        raise TrestleError(
-                            'Unexpected error, control id, group and title should be before ## Control guidance.'
-                            'However, none was found.'
-                        )
-
-                    guidance_id = ControlInterface.strip_to_make_ncname(tree_context.control_id + '_gdn')
-                    content.guidance_part = common.Part(id=guidance_id, name=control_md_heading_label_ncname, prose='')
-
+                guidance_id = ControlInterface.strip_to_make_ncname(tree_context.control_id + '_gdn')
+                content.guidance_part = self._create_part_if_needed(
+                    content.guidance_part, control_md_heading_label_ncname, guidance_id
+                )
                 i = self._process_part_line(i, line, lines, content.guidance_part, read_parts=False)
+                continue
 
-            elif is_generic_control_part:
+            if is_generic_control_part:
                 # Read other control parts to a part objects
                 if not content.other_parts:
                     if not tree_context.control_id:
@@ -220,15 +209,13 @@ class ControlMarkdownNode(BaseMarkdownNode):
                     content.other_parts.append(a_part)
 
                 i = self._process_part_line(i, line, lines, content.other_parts[-1], read_parts=False)
-            else:
-                i += 1
+                continue
+
+            # Nothing to do, simply increment
+            i += 1
 
         first_line_to_grab = starting_line - 1 if starting_line else 0
         content.raw_text = '\n'.join(lines[first_line_to_grab:i])
-
-        def _strip_prose_or_none(part: Optional[common.Part]):
-            if part and part.prose:
-                part.prose = part.prose.strip() if part.prose.strip() else None
 
         _strip_prose_or_none(content.statement_part)
         _strip_prose_or_none(content.objective_part)
@@ -268,6 +255,19 @@ class ControlMarkdownNode(BaseMarkdownNode):
                 all_other_nodes.append(section_node)
 
         return all_other_nodes
+
+    def _create_part_if_needed(self, content_part: common.Part, part_name: str, part_id: str, prose: str = ''):
+        """Create a new part if does not exist."""
+        if not content_part:
+            if not tree_context.control_id:
+                raise TrestleError(
+                    f'Unexpected error, control id, group and title should be before ## Control {part_name}.'
+                    'However, none was found.'
+                )
+
+            content_part = common.Part(name=part_name, id=part_id, prose=prose)
+
+        return content_part
 
     def _process_part_line(
         self, line_idx: int, line: str, lines: List[str], part: common.Part, read_parts: bool = True
