@@ -282,7 +282,7 @@ class HTTPSFetcher(FetcherBase):
             auth = HTTPBasicAuth(self._username, self._password)
 
         try:
-            response = requests.get(self._url, auth=auth, verify=verify)
+            response = requests.get(self._url, auth=auth, verify=verify, timeout=10)
         except Exception as e:
             raise TrestleError(f'Cache update failure to connect via HTTPS: {self._url} ({e})')
 
