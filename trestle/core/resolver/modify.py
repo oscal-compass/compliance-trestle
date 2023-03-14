@@ -113,7 +113,7 @@ class Modify(Pipeline.Filter):
         return False
 
     @staticmethod
-    def _add_attr_to_part(part: common.Part, items: List[OBT], attr: str, position: prof.Position) -> None:
+    def _add_attr_to_part(part: common.Part, items: List[OBT], attr: str, position: Optional[prof.Position]) -> None:
         attr_list = as_list(getattr(part, attr, None))
         # position may be None and if so will go at end
         if position in [prof.Position.starting, prof.Position.before]:

@@ -324,7 +324,7 @@ def test_get_control_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
     ) == 'organization-defined events'
     param = control.params[0]
     param.values = None
-    param.select = common.ParameterSelection(how_many=common.HowMany.one_or_more, choice=['choice 1', 'choice 2'])
+    param.select = common.ParameterSelection(how_many=const.ONE_OR_MORE_HYPHENED, choice=['choice 1', 'choice 2'])
     param_dict = ControlInterface.get_control_param_dict(control, False)
     assert ControlInterface.param_to_str(
         param_dict['ac-1_prm_1'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
@@ -386,7 +386,7 @@ def test_write_control_header_params(overwrite_header_values, tmp_path: pathlib.
         assert header_2['foo'] == 'new bar'
         assert header_2['special'] == 'new value to ignore'
         assert header_2['none-thing'] == 'none value to ignore'
-        assert 'orig' in orig_control_read.params[0].values[0].__root__
+        assert 'orig' in orig_control_read.params[0].values[0]
     new_control_read, _ = ControlReader.read_control(control_path, True)
     # insert the new param in the orig control so we can compare the two controls
     orig_control_read.params.append(new_control_read.params[1])

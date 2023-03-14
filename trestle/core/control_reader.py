@@ -314,8 +314,8 @@ class ControlReader:
 
         for _, param_dict_list in md_header.get(const.COMP_DEF_RULES_PARAM_VALS_TAG, {}).items():
             for param_dict in param_dict_list:
-                values = [common.Value(__root__=value) for value in param_dict.get(const.VALUES, [])]
-                comp_values = [common.Value(__root__=value) for value in param_dict.get(const.COMPONENT_VALUES, [])]
+                values = param_dict.get(const.VALUES, [])
+                comp_values = param_dict.get(const.COMPONENT_VALUES, [])
                 values = comp_values if comp_values else values
                 set_param = ossp.SetParameter(param_id=param_dict['name'], values=values)
                 imp_req.set_parameters.append(set_param)
@@ -512,14 +512,16 @@ class ControlReader:
 
         # add the parts and props at control level
         if control_parts or props:
-            adds.append(prof.Add(parts=none_if_empty(control_parts), props=none_if_empty(props), position='ending'))
+            adds.append(
+                prof.Add(parts=none_if_empty(control_parts), props=none_if_empty(props), position=prof.Position.ending)
+            )
 
         # add the parts and props at the part level, by-id
         by_ids = set(by_id_parts.keys()).union(props_by_id.keys())
         for by_id in sorted(by_ids):
             parts = by_id_parts.get(by_id, None)
             props = props_by_id.get(by_id, None)
-            adds.append(prof.Add(parts=parts, props=props, position='ending', by_id=by_id))
+            adds.append(prof.Add(parts=parts, props=props, position=prof.Position.ending, by_id=by_id))
 
         new_alters = []
         if adds:

@@ -705,7 +705,7 @@ class CatalogInterface():
         all_set_params = self.get_control_comp_set_params(control_id)
         for comp_name, param_list in all_set_params.items():
             for param in param_list:
-                param_vals = none_if_empty([value.__root__ for value in as_list(param.values)])
+                param_vals = none_if_empty(as_list(param.values))
                 rule_name = deep_get(param_id_rule_name_map, [comp_name, param.param_id], None)
                 if rule_name:
                     param_dict = {'name': param.param_id}

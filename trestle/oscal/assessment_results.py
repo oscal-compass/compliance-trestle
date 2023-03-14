@@ -27,7 +27,7 @@ from __future__ import annotations
 import re
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr, validator
 
@@ -74,7 +74,12 @@ class SelectControlById(OscalBaseModel):
         'A human-oriented identifier reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).',
         title='Control Identifier Reference',
     )
-    statement_ids: Optional[List[common.StatementId]] = Field(None, alias='statement-ids')
+    statement_ids: Optional[List[constr(
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+    )]] = Field(
+        None, alias='statement-ids'
+    )
 
 
 class RelatedObservation(OscalBaseModel):
@@ -86,7 +91,7 @@ class RelatedObservation(OscalBaseModel):
         extra = Extra.forbid
 
     observation_uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         alias='observation-uuid',
@@ -128,7 +133,7 @@ class ImportAp(OscalBaseModel):
         description='A resolvable URL reference to the assessment plan governing the assessment activities.',
         title='Assessment Plan Reference',
     )
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class Entry1(OscalBaseModel):
@@ -140,7 +145,7 @@ class Entry1(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -167,9 +172,14 @@ class Entry1(OscalBaseModel):
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     logged_by: Optional[List[common.LoggedBy]] = Field(None, alias='logged-by')
-    status_change: Optional[common.RiskStatus] = Field(None, alias='status-change')
+    status_change: Optional[constr(
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+    )] = Field(
+        None, alias='status-change'
+    )
     related_responses: Optional[List[common.RelatedResponse]] = Field(None, alias='related-responses')
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class Entry(OscalBaseModel):
@@ -181,7 +191,7 @@ class Entry(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -209,7 +219,7 @@ class Entry(OscalBaseModel):
     links: Optional[List[common.Link]] = Field(None)
     logged_by: Optional[List[common.LoggedBy]] = Field(None, alias='logged-by')
     related_tasks: Optional[List[common.RelatedTask]] = Field(None, alias='related-tasks')
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class ControlSelection(OscalBaseModel):
@@ -230,7 +240,7 @@ class ControlSelection(OscalBaseModel):
     include_all: Optional[common.IncludeAll] = Field(None, alias='include-all')
     include_controls: Optional[List[SelectControlById]] = Field(None, alias='include-controls')
     exclude_controls: Optional[List[SelectControlById]] = Field(None, alias='exclude-controls')
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class Characterization(OscalBaseModel):
@@ -279,7 +289,7 @@ class Status1(OscalBaseModel):
         extra = Extra.forbid
 
     state: State1 = Field(..., description='The operational status.', title='State')
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class SystemComponent(OscalBaseModel):
@@ -291,7 +301,7 @@ class SystemComponent(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -327,7 +337,7 @@ class SystemComponent(OscalBaseModel):
     )
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
     protocols: Optional[List[common.Protocol]] = Field(None)
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class Status(OscalBaseModel):
@@ -351,7 +361,7 @@ class Status(OscalBaseModel):
         description="The reason the objective was given it's status.",
         title='Objective Status Reason',
     )
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class FindingTarget(OscalBaseModel):
@@ -395,7 +405,7 @@ class FindingTarget(OscalBaseModel):
         title='Objective Status',
     )
     implementation_status: Optional[common.ImplementationStatus] = Field(None, alias='implementation-status')
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class Finding(OscalBaseModel):
@@ -407,7 +417,7 @@ class Finding(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -425,7 +435,7 @@ class Finding(OscalBaseModel):
     origins: Optional[List[Origin]] = Field(None)
     target: FindingTarget
     implementation_statement_uuid: Optional[constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     )] = Field(
         None,
         alias='implementation-statement-uuid',
@@ -435,7 +445,7 @@ class Finding(OscalBaseModel):
     )
     related_observations: Optional[List[RelatedObservation]] = Field(None, alias='related-observations')
     related_risks: Optional[List[common.RelatedRisk]] = Field(None, alias='related-risks')
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class RiskLog(OscalBaseModel):
@@ -468,7 +478,7 @@ class ReviewedControls(OscalBaseModel):
     control_objective_selections: Optional[List[common.ControlObjectiveSelection]] = Field(
         None, alias='control-objective-selections'
     )
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class Response(OscalBaseModel):
@@ -480,7 +490,7 @@ class Response(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -507,7 +517,7 @@ class Response(OscalBaseModel):
     origins: Optional[List[Origin]] = Field(None)
     required_assets: Optional[List[common.RequiredAsset]] = Field(None, alias='required-assets')
     tasks: Optional[List[common.Task]] = Field(None)
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class Risk(OscalBaseModel):
@@ -519,7 +529,7 @@ class Risk(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -540,7 +550,10 @@ class Risk(OscalBaseModel):
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
-    status: common.RiskStatus
+    status: constr(
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+    )
     origins: Optional[List[Origin]] = Field(None)
     threat_ids: Optional[List[common.ThreatId]] = Field(None, alias='threat-ids')
     characterizations: Optional[List[Characterization]] = Field(None)
@@ -557,7 +570,7 @@ class Risk(OscalBaseModel):
         description='A log of all risk-related tasks taken.',
         title='Risk Log',
     )
-    related_observations: Optional[List[common.RelatedObservation1]] = Field(None, alias='related-observations')
+    related_observations: Optional[List[RelatedObservation]] = Field(None, alias='related-observations')
 
 
 class Observation(OscalBaseModel):
@@ -569,7 +582,7 @@ class Observation(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -585,22 +598,25 @@ class Observation(OscalBaseModel):
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     methods: List[Method] = Field(...)
-    types: Optional[List[common.Type2]] = Field(None)
+    types: Optional[List[constr(
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+    )]] = Field(None)
     origins: Optional[List[Origin]] = Field(None)
     subjects: Optional[List[common.SubjectReference]] = Field(None)
     relevant_evidence: Optional[List[common.RelevantEvidence]] = Field(None, alias='relevant-evidence')
     collected: datetime = Field(
         ...,
         description='Date/time stamp identifying when the finding information was collected.',
-        title='collected field',
+        title='Collected Field',
     )
     expires: Optional[datetime] = Field(
         None,
         description=
         'Date/time identifying when the finding information is out-of-date and no longer valid. Typically used with continuous assessment scenarios.',
-        title='expires field',
+        title='Expires Field',
     )
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class AssessmentAssets(OscalBaseModel):
@@ -639,7 +655,7 @@ class Result(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -683,7 +699,7 @@ class Result(OscalBaseModel):
     observations: Optional[List[Observation]] = Field(None)
     risks: Optional[List[Risk]] = Field(None)
     findings: Optional[List[Finding]] = Field(None)
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class Step(OscalBaseModel):
@@ -695,7 +711,7 @@ class Step(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -712,7 +728,7 @@ class Step(OscalBaseModel):
     links: Optional[List[common.Link]] = Field(None)
     reviewed_controls: Optional[ReviewedControls] = Field(None, alias='reviewed-controls')
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class Activity(OscalBaseModel):
@@ -724,7 +740,7 @@ class Activity(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -746,7 +762,7 @@ class Activity(OscalBaseModel):
     steps: Optional[List[Step]] = Field(None)
     related_controls: Optional[ReviewedControls] = Field(None, alias='related-controls')
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class LocalDefinitions(OscalBaseModel):
@@ -759,7 +775,7 @@ class LocalDefinitions(OscalBaseModel):
 
     objectives_and_methods: Optional[List[common.LocalObjective]] = Field(None, alias='objectives-and-methods')
     activities: Optional[List[Activity]] = Field(None)
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class AssessmentResults(OscalBaseModel):
@@ -771,7 +787,7 @@ class AssessmentResults(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=

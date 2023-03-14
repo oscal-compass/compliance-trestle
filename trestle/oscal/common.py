@@ -27,7 +27,7 @@ from __future__ import annotations
 import re
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr, validator
 
@@ -54,7 +54,7 @@ class Address(OscalBaseModel):
     )] = Field(
         None, description='Indicates the type of address.', title='Address Type'
     )
-    addr_lines: Optional[List[AddrLine]] = Field(None, alias='addr-lines')
+    addr_lines: Optional[List[constr(regex=r'^\S(.*\S)?$')]] = Field(None, alias='addr-lines')
     city: Optional[constr(regex=r'^\S(.*\S)?$')] = Field(
         None,
         description='City, town or geographical region for the mailing address.',
@@ -110,6 +110,15 @@ class Version(OscalBaseModel):
 class Value(OscalBaseModel):
     __root__: constr(regex=r'^\S(.*\S)?$'
                      ) = Field(..., description='A parameter value or set of values.', title='Parameter Value')
+
+
+class Url(OscalBaseModel):
+    __root__: AnyUrl = Field(
+        ...,
+        description=
+        'The uniform resource locator (URL) for a web site or Internet presence associated with the location.',
+        title='Location URL',
+    )
 
 
 class Unit(Enum):
@@ -195,6 +204,22 @@ class ThreatId(OscalBaseModel):
     id: str
 
 
+class Test(OscalBaseModel):
+    """
+    A test expression which is expected to be evaluated by a tool.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    expression: constr(regex=r'^\S(.*\S)?$') = Field(
+        ...,
+        description='A formal (executable) expression of a constraint',
+        title='Constraint test',
+    )
+    remarks: Optional[str] = None
+
+
 class TelephoneNumber(OscalBaseModel):
     """
     Contact number by telephone.
@@ -246,7 +271,7 @@ class Source(OscalBaseModel):
         extra = Extra.forbid
 
     task_uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         alias='task-uuid',
@@ -313,30 +338,13 @@ class RelatedRisk(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    risk_uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-                      ) = Field(
-                          ...,
-                          alias='risk-uuid',
-                          description='A machine-oriented identifier reference to a risk defined in the list of risks.',
-                          title='Risk Universally Unique Identifier Reference',
-                      )
-
-
-class RelatedObservation1(OscalBaseModel):
-    """
-    Relates the finding to a set of referenced observations that were used to determine the finding.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    observation_uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    risk_uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        alias='observation-uuid',
-        description='A machine-oriented identifier reference to an observation defined in the list of observations.',
-        title='Observation Universally Unique Identifier Reference',
+        alias='risk-uuid',
+        description='A machine-oriented identifier reference to a risk defined in the list of risks.',
+        title='Risk Universally Unique Identifier Reference',
     )
 
 
@@ -367,7 +375,7 @@ class Property(OscalBaseModel):
         title='Property Name',
     )
     uuid: Optional[constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     )] = Field(
         None,
         description=
@@ -395,7 +403,7 @@ class Property(OscalBaseModel):
         "A textual label that provides a sub-type or characterization of the property's name. This can be used to further distinguish or discriminate between the semantics of multiple properties of the same object with the same name and ns.",
         title='Property Class',
     )
-    remarks: Optional[Remarks] = None
+    remarks: Optional[str] = None
 
 
 class PortRange(OscalBaseModel):
@@ -428,7 +436,7 @@ class Protocol(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: Optional[constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     )] = Field(
         None,
         description=
@@ -451,7 +459,7 @@ class Protocol(OscalBaseModel):
 
 class PartyUuid(OscalBaseModel):
     __root__: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -478,6 +486,22 @@ class ParameterGuideline(OscalBaseModel):
         description='Prose permits multiple paragraphs, lists, tables etc.',
         title='Guideline Text',
     )
+
+
+class ParameterConstraint(OscalBaseModel):
+    """
+    A formal or informal expression of a constraint or test
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    description: Optional[str] = Field(
+        None,
+        description='A textual summary of the constraint to be applied.',
+        title='Constraint Description',
+    )
+    tests: Optional[List[Test]] = Field(None)
 
 
 class OscalVersion(OscalBaseModel):
@@ -513,7 +537,7 @@ class OnDate(OscalBaseModel):
 
 class MemberOfOrganization(OscalBaseModel):
     __root__: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -531,7 +555,7 @@ class LoggedBy(OscalBaseModel):
         extra = Extra.forbid
 
     party_uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         alias='party-uuid',
@@ -551,7 +575,7 @@ class LoggedBy(OscalBaseModel):
 
 class LocationUuid(OscalBaseModel):
     __root__: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -629,7 +653,7 @@ class ImportSsp(OscalBaseModel):
         description='A resolvable URL reference to the system security plan for the system being assessed.',
         title='System Security Plan Reference',
     )
-    remarks: Optional[Remarks] = None
+    remarks: Optional[str] = None
 
 
 class ImplementationStatus(OscalBaseModel):
@@ -648,7 +672,7 @@ class ImplementationStatus(OscalBaseModel):
         description='Identifies the implementation status of the control or control objective.',
         title='Implementation State',
     )
-    remarks: Optional[Remarks] = None
+    remarks: Optional[str] = None
 
 
 class HowMany(Enum):
@@ -707,7 +731,7 @@ class Facet(OscalBaseModel):
                   ) = Field(..., description='Indicates the value of the facet.', title='Facet Value')
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
-    remarks: Optional[Remarks] = None
+    remarks: Optional[str] = None
 
 
 class ExternalId(OscalBaseModel):
@@ -759,14 +783,15 @@ class Dependency(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    task_uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-                      ) = Field(
-                          ...,
-                          alias='task-uuid',
-                          description='A machine-oriented identifier reference to a unique task.',
-                          title='Task Universally Unique Identifier Reference',
-                      )
-    remarks: Optional[Remarks] = None
+    task_uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        alias='task-uuid',
+        description='A machine-oriented identifier reference to a unique task.',
+        title='Task Universally Unique Identifier Reference',
+    )
+    remarks: Optional[str] = None
 
 
 class ControlObjectiveSelection(OscalBaseModel):
@@ -787,7 +812,7 @@ class ControlObjectiveSelection(OscalBaseModel):
     include_all: Optional[IncludeAll] = Field(None, alias='include-all')
     include_objectives: Optional[List[SelectObjectiveById]] = Field(None, alias='include-objectives')
     exclude_objectives: Optional[List[SelectObjectiveById]] = Field(None, alias='exclude-objectives')
-    remarks: Optional[Remarks] = None
+    remarks: Optional[str] = None
 
 
 class Citation(OscalBaseModel):
@@ -845,7 +870,7 @@ class AuthorizedPrivilege(OscalBaseModel):
         description="A summary of the privilege's purpose within the system.",
         title='Privilege Description',
     )
-    functions_performed: List[FunctionPerformed] = Field(..., alias='functions-performed')
+    functions_performed: List[constr(regex=r'^\S(.*\S)?$')] = Field(..., alias='functions-performed')
 
 
 class AtFrequency(OscalBaseModel):
@@ -875,7 +900,7 @@ class AssessmentSubjectPlaceholder(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -890,7 +915,7 @@ class AssessmentSubjectPlaceholder(OscalBaseModel):
     sources: List[Source] = Field(...)
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
-    remarks: Optional[Remarks] = None
+    remarks: Optional[str] = None
 
 
 class AssessmentPart(OscalBaseModel):
@@ -902,7 +927,7 @@ class AssessmentPart(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: Optional[constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     )] = Field(
         None,
         description=
@@ -976,38 +1001,6 @@ class Timing(OscalBaseModel):
     )
 
 
-class Test(OscalBaseModel):
-    """
-    A test expression which is expected to be evaluated by a tool.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    expression: constr(regex=r'^\S(.*\S)?$') = Field(
-        ...,
-        description='A formal (executable) expression of a constraint',
-        title='Constraint test',
-    )
-    remarks: Optional[Remarks] = None
-
-
-class ParameterConstraint(OscalBaseModel):
-    """
-    A formal or informal expression of a constraint or test
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    description: Optional[str] = Field(
-        None,
-        description='A textual summary of the constraint to be applied.',
-        title='Constraint Description',
-    )
-    tests: Optional[List[Test]] = Field(None)
-
-
 class SystemUser(OscalBaseModel):
     """
     A type of user that interacts with the system based on an associated role.
@@ -1017,7 +1010,7 @@ class SystemUser(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -1042,9 +1035,14 @@ class SystemUser(OscalBaseModel):
     )
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
-    role_ids: Optional[List[RoleId]] = Field(None, alias='role-ids')
+    role_ids: Optional[List[constr(
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+    )]] = Field(
+        None, alias='role-ids'
+    )
     authorized_privileges: Optional[List[AuthorizedPrivilege]] = Field(None, alias='authorized-privileges')
-    remarks: Optional[Remarks] = None
+    remarks: Optional[str] = None
 
 
 class SubjectReference(OscalBaseModel):
@@ -1056,7 +1054,7 @@ class SubjectReference(OscalBaseModel):
         extra = Extra.forbid
 
     subject_uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         alias='subject-uuid',
@@ -1079,7 +1077,7 @@ class SubjectReference(OscalBaseModel):
     )
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
-    remarks: Optional[Remarks] = None
+    remarks: Optional[str] = None
 
 
 class MitigatingFactor(OscalBaseModel):
@@ -1091,7 +1089,7 @@ class MitigatingFactor(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -1099,7 +1097,7 @@ class MitigatingFactor(OscalBaseModel):
         title='Mitigating Factor Universally Unique Identifier',
     )
     implementation_uuid: Optional[constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     )] = Field(
         None,
         alias='implementation-uuid',
@@ -1126,7 +1124,7 @@ class SelectSubjectById(OscalBaseModel):
         extra = Extra.forbid
 
     subject_uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         alias='subject-uuid',
@@ -1144,7 +1142,7 @@ class SelectSubjectById(OscalBaseModel):
     )
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
-    remarks: Optional[Remarks] = None
+    remarks: Optional[str] = None
 
 
 class AssessmentSubject(OscalBaseModel):
@@ -1174,7 +1172,7 @@ class AssessmentSubject(OscalBaseModel):
     include_all: Optional[IncludeAll] = Field(None, alias='include-all')
     include_subjects: Optional[List[SelectSubjectById]] = Field(None, alias='include-subjects')
     exclude_subjects: Optional[List[SelectSubjectById]] = Field(None, alias='exclude-subjects')
-    remarks: Optional[Remarks] = None
+    remarks: Optional[str] = None
 
 
 class Role(OscalBaseModel):
@@ -1212,7 +1210,7 @@ class Role(OscalBaseModel):
     )
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
-    remarks: Optional[Remarks] = None
+    remarks: Optional[str] = None
 
 
 class Rlink(OscalBaseModel):
@@ -1247,7 +1245,7 @@ class Resource(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -1277,7 +1275,7 @@ class Resource(OscalBaseModel):
         description='The Base64 alphabet in RFC 2045 - aligned with XSD.',
         title='Base64',
     )
-    remarks: Optional[Remarks] = None
+    remarks: Optional[str] = None
 
 
 class BackMatter(OscalBaseModel):
@@ -1304,13 +1302,13 @@ class Revision(OscalBaseModel):
         description='A name given to the document revision, which may be used by a tool for display and navigation.',
         title='Document Title',
     )
-    published: Optional[Published] = None
-    last_modified: Optional[LastModified] = Field(None, alias='last-modified')
-    version: Version
+    published: Optional[datetime] = None
+    last_modified: Optional[datetime] = Field(None, alias='last-modified')
+    version: constr(regex=r'^\S(.*\S)?$')
     oscal_version: Optional[OscalVersion] = Field(None, alias='oscal-version')
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
-    remarks: Optional[Remarks] = None
+    remarks: Optional[str] = None
 
 
 class ResponsibleRole(OscalBaseModel):
@@ -1332,8 +1330,12 @@ class ResponsibleRole(OscalBaseModel):
     )
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
-    party_uuids: Optional[List[PartyUuid]] = Field(None, alias='party-uuids')
-    remarks: Optional[Remarks] = None
+    party_uuids: Optional[List[constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    )]] = Field(
+        None, alias='party-uuids'
+    )
+    remarks: Optional[str] = None
 
 
 class ResponsibleParty(OscalBaseModel):
@@ -1353,10 +1355,12 @@ class ResponsibleParty(OscalBaseModel):
         description='A human-oriented identifier reference to roles served by the user.',
         title='Responsible Role',
     )
-    party_uuids: List[PartyUuid] = Field(..., alias='party-uuids')
+    party_uuids: List[constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    )] = Field(..., alias='party-uuids')
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
-    remarks: Optional[Remarks] = None
+    remarks: Optional[str] = None
 
 
 class RequiredAsset(OscalBaseModel):
@@ -1368,7 +1372,7 @@ class RequiredAsset(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -1388,7 +1392,7 @@ class RequiredAsset(OscalBaseModel):
     )
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
-    remarks: Optional[Remarks] = None
+    remarks: Optional[str] = None
 
 
 class RelevantEvidence(OscalBaseModel):
@@ -1411,7 +1415,7 @@ class RelevantEvidence(OscalBaseModel):
     )
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
-    remarks: Optional[Remarks] = None
+    remarks: Optional[str] = None
 
 
 class Party(OscalBaseModel):
@@ -1423,7 +1427,7 @@ class Party(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -1449,12 +1453,20 @@ class Party(OscalBaseModel):
     external_ids: Optional[List[ExternalId]] = Field(None, alias='external-ids')
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
-    email_addresses: Optional[List[EmailAddress]] = Field(None, alias='email-addresses')
+    email_addresses: Optional[List[EmailStr]] = Field(None, alias='email-addresses')
     telephone_numbers: Optional[List[TelephoneNumber]] = Field(None, alias='telephone-numbers')
     addresses: Optional[List[Address]] = Field(None)
-    location_uuids: Optional[List[LocationUuid]] = Field(None, alias='location-uuids')
-    member_of_organizations: Optional[List[MemberOfOrganization]] = Field(None, alias='member-of-organizations')
-    remarks: Optional[Remarks] = None
+    location_uuids: Optional[List[constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    )]] = Field(
+        None, alias='location-uuids'
+    )
+    member_of_organizations: Optional[List[constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    )]] = Field(
+        None, alias='member-of-organizations'
+    )
+    remarks: Optional[str] = None
 
 
 class Part(OscalBaseModel):
@@ -1539,7 +1551,7 @@ class LocalObjective(OscalBaseModel):
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
     parts: List[Part] = Field(...)
-    remarks: Optional[Remarks] = None
+    remarks: Optional[str] = None
 
 
 class ParameterSelection(OscalBaseModel):
@@ -1611,9 +1623,9 @@ class Parameter(OscalBaseModel):
     )
     constraints: Optional[List[ParameterConstraint]] = Field(None)
     guidelines: Optional[List[ParameterGuideline]] = Field(None)
-    values: Optional[List[ParameterValue]] = Field(None)
+    values: Optional[List[constr(regex=r'^\S(.*\S)?$')]] = Field(None)
     select: Optional[ParameterSelection] = None
-    remarks: Optional[Remarks] = None
+    remarks: Optional[str] = None
 
 
 class OriginActor(OscalBaseModel):
@@ -1626,7 +1638,7 @@ class OriginActor(OscalBaseModel):
 
     type: Type3 = Field(..., description='The kind of actor.', title='Actor Type')
     actor_uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         alias='actor-uuid',
@@ -1655,7 +1667,7 @@ class Location(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -1668,12 +1680,12 @@ class Location(OscalBaseModel):
         title='Location Title',
     )
     address: Address
-    email_addresses: Optional[List[EmailAddress]] = Field(None, alias='email-addresses')
+    email_addresses: Optional[List[EmailStr]] = Field(None, alias='email-addresses')
     telephone_numbers: Optional[List[TelephoneNumber]] = Field(None, alias='telephone-numbers')
-    urls: Optional[List[AnyUrl]] = Field(None)
+    urls: Optional[List[Url]] = Field(None)
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
-    remarks: Optional[Remarks] = None
+    remarks: Optional[str] = None
 
 
 class Metadata(OscalBaseModel):
@@ -1689,9 +1701,9 @@ class Metadata(OscalBaseModel):
         description='A name given to the document, which may be used by a tool for display and navigation.',
         title='Document Title',
     )
-    published: Optional[Published] = None
-    last_modified: LastModified = Field(..., alias='last-modified')
-    version: Version
+    published: Optional[datetime] = None
+    last_modified: datetime = Field(..., alias='last-modified')
+    version: constr(regex=r'^\S(.*\S)?$')
     oscal_version: OscalVersion = Field(..., alias='oscal-version')
     revisions: Optional[List[Revision]] = Field(None)
     document_ids: Optional[List[DocumentId]] = Field(None, alias='document-ids')
@@ -1701,7 +1713,7 @@ class Metadata(OscalBaseModel):
     locations: Optional[List[Location]] = Field(None)
     parties: Optional[List[Party]] = Field(None)
     responsible_parties: Optional[List[ResponsibleParty]] = Field(None, alias='responsible-parties')
-    remarks: Optional[Remarks] = None
+    remarks: Optional[str] = None
 
 
 class ImplementedComponent(OscalBaseModel):
@@ -1713,7 +1725,7 @@ class ImplementedComponent(OscalBaseModel):
         extra = Extra.forbid
 
     component_uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         alias='component-uuid',
@@ -1724,7 +1736,7 @@ class ImplementedComponent(OscalBaseModel):
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
     responsible_parties: Optional[List[ResponsibleParty]] = Field(None, alias='responsible-parties')
-    remarks: Optional[Remarks] = None
+    remarks: Optional[str] = None
 
 
 class InventoryItem(OscalBaseModel):
@@ -1736,7 +1748,7 @@ class InventoryItem(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -1752,7 +1764,7 @@ class InventoryItem(OscalBaseModel):
     links: Optional[List[Link]] = Field(None)
     responsible_parties: Optional[List[ResponsibleParty]] = Field(None, alias='responsible-parties')
     implemented_components: Optional[List[ImplementedComponent]] = Field(None, alias='implemented-components')
-    remarks: Optional[Remarks] = None
+    remarks: Optional[str] = None
 
 
 class IdentifiedSubject(OscalBaseModel):
@@ -1764,7 +1776,7 @@ class IdentifiedSubject(OscalBaseModel):
         extra = Extra.forbid
 
     subject_placeholder_uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         alias='subject-placeholder-uuid',
@@ -1783,13 +1795,14 @@ class RelatedTask(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    task_uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-                      ) = Field(
-                          ...,
-                          alias='task-uuid',
-                          description='A machine-oriented identifier reference to a unique task.',
-                          title='Task Universally Unique Identifier Reference',
-                      )
+    task_uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        alias='task-uuid',
+        description='A machine-oriented identifier reference to a unique task.',
+        title='Task Universally Unique Identifier Reference',
+    )
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
     responsible_parties: Optional[List[ResponsibleParty]] = Field(None, alias='responsible-parties')
@@ -1800,7 +1813,7 @@ class RelatedTask(OscalBaseModel):
         description='Used to detail assessment subjects that were identfied by this task.',
         title='Identified Subject',
     )
-    remarks: Optional[Remarks] = None
+    remarks: Optional[str] = None
 
 
 class RelatedResponse(OscalBaseModel):
@@ -1812,7 +1825,7 @@ class RelatedResponse(OscalBaseModel):
         extra = Extra.forbid
 
     response_uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         alias='response-uuid',
@@ -1822,7 +1835,7 @@ class RelatedResponse(OscalBaseModel):
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
     related_tasks: Optional[List[RelatedTask]] = Field(None, alias='related-tasks')
-    remarks: Optional[Remarks] = None
+    remarks: Optional[str] = None
 
 
 class AssociatedActivity(OscalBaseModel):
@@ -1834,7 +1847,7 @@ class AssociatedActivity(OscalBaseModel):
         extra = Extra.forbid
 
     activity_uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         alias='activity-uuid',
@@ -1845,7 +1858,7 @@ class AssociatedActivity(OscalBaseModel):
     links: Optional[List[Link]] = Field(None)
     responsible_roles: Optional[List[ResponsibleRole]] = Field(None, alias='responsible-roles')
     subjects: List[AssessmentSubject] = Field(...)
-    remarks: Optional[Remarks] = None
+    remarks: Optional[str] = None
 
 
 class Task(OscalBaseModel):
@@ -1857,7 +1870,7 @@ class Task(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -1886,7 +1899,7 @@ class Task(OscalBaseModel):
     associated_activities: Optional[List[AssociatedActivity]] = Field(None, alias='associated-activities')
     subjects: Optional[List[AssessmentSubject]] = Field(None)
     responsible_roles: Optional[List[ResponsibleRole]] = Field(None, alias='responsible-roles')
-    remarks: Optional[Remarks] = None
+    remarks: Optional[str] = None
 
 
 class UsesComponent(OscalBaseModel):
@@ -1898,7 +1911,7 @@ class UsesComponent(OscalBaseModel):
         extra = Extra.forbid
 
     component_uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         alias='component-uuid',
@@ -1909,7 +1922,7 @@ class UsesComponent(OscalBaseModel):
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
     responsible_parties: Optional[List[ResponsibleParty]] = Field(None, alias='responsible-parties')
-    remarks: Optional[Remarks] = None
+    remarks: Optional[str] = None
 
 
 class AssessmentPlatform(OscalBaseModel):
@@ -1921,7 +1934,7 @@ class AssessmentPlatform(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -1936,7 +1949,7 @@ class AssessmentPlatform(OscalBaseModel):
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
     uses_components: Optional[List[UsesComponent]] = Field(None, alias='uses-components')
-    remarks: Optional[Remarks] = None
+    remarks: Optional[str] = None
 
 
 AssessmentPart.update_forward_refs()

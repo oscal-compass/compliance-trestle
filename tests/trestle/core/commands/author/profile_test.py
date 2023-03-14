@@ -272,24 +272,24 @@ def test_profile_generate_assemble(
     # get the set_params from the assembled profile
     set_params = profile.modify.set_parameters
     if set_parameters_flag:
-        assert set_params[2].values[0].__root__ == 'new value'
+        assert set_params[2].values[0] == 'new value'
         assert set_params[1].props[0].ns == const.TRESTLE_GENERIC_NS
         assert len(set_params) == 15
     else:
         # the original profile did not have ns set for this display name
         # confirm the namespace is not defined unless set_parameters_flag is True
         # i.e. the setting of ns for display-name is not automatic unless set-parameters is true
-        assert set_params[2].values[0].__root__ == 'officer'
+        assert set_params[2].values[0] == 'officer'
         assert set_params[1].props[0].ns is None
         assert len(set_params) == 15
     assert set_params[0].param_id == 'ac-1_prm_1'
-    assert set_params[0].values[0].__root__ == 'all personnel'
+    assert set_params[0].values[0] == 'all personnel'
     assert set_params[0].props[0].name == const.DISPLAY_NAME
     assert set_params[0].props[0].value.startswith('Pretty')
     assert set_params[0].props[0].ns == const.TRESTLE_GENERIC_NS
     assert set_params[1].param_id == 'ac-1_prm_2'
-    assert set_params[1].values[0].__root__ == 'Organization-level'
-    assert set_params[1].values[1].__root__ == 'System-level'
+    assert set_params[1].values[0] == 'Organization-level'
+    assert set_params[1].values[1] == 'System-level'
     assert set_params[1].props[0].name == const.DISPLAY_NAME
     assert set_params[2].param_id == 'ac-1_prm_3'
     add = profile.modify.alters[0].adds[0]
@@ -381,19 +381,19 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
         set_params = profile.modify.set_parameters
 
         assert len(set_params) == 15
-        assert set_params[0].values[0].__root__ == 'all personnel'
+        assert set_params[0].values[0] == 'all personnel'
         # the label is present in the header so it ends up in the set_parameter
         assert set_params[0].label == 'label from edit'
         assert set_params[1].param_id == 'ac-1_prm_2'
-        assert set_params[1].values[0].__root__ == 'Organization-level'
-        assert set_params[1].values[1].__root__ == 'System-level'
-        assert set_params[2].values[0].__root__ == 'new value'
-        assert profile.metadata.version.__root__ == new_version
+        assert set_params[1].values[0] == 'Organization-level'
+        assert set_params[1].values[1] == 'System-level'
+        assert set_params[2].values[0] == 'new value'
+        assert profile.metadata.version == new_version
         if ohv:
-            assert set_params[4].values[0].__root__ == 'no meetings from cli yaml'
+            assert set_params[4].values[0] == 'no meetings from cli yaml'
             assert set_params[4].label == 'meetings cancelled from cli yaml'
         else:
-            assert set_params[4].values[0].__root__ == 'all meetings'
+            assert set_params[4].values[0] == 'all meetings'
             assert set_params[4].label is None
 
         catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, assembled_prof_dir / 'profile.json')
@@ -632,7 +632,7 @@ def test_profile_alter_props(tmp_trestle_dir: pathlib.Path) -> None:
     )
     adds = profile.modify.alters[0].adds
     assert len(adds) == 5
-    assert adds[0].position == prof.Position.ending
+    assert adds[0].position.value == 'ending'
     assert adds[0].by_id is None
     assert len(adds[0].parts) == 2
     assert len(adds[0].props) == 2
@@ -698,7 +698,7 @@ More evidence
     )
     adds = profile.modify.alters[0].adds
     assert len(adds) == 6
-    assert adds[0].position == prof.Position.ending
+    assert adds[0].position.value == 'ending'
     assert adds[1].by_id == 'ac-1_expevid'
     assert adds[2].by_id == 'ac-1_smt.a'
     assert adds[3].by_id == 'ac-1_smt.b'
@@ -857,7 +857,7 @@ def test_profile_generate_updates_statement(tmp_trestle_dir: pathlib.Path, monke
     # and change a parameter value on a control
     main_prof, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'main_profile', prof.Profile, FileContentType.JSON)
     main_prof.modify.alters[0].adds[0].parts.append(com.Part(id='ac-1_wombat', name='wombat', prose='Assess wombats.'))
-    main_prof.modify.set_parameters[2].values = [com.ParameterValue(__root__='echidna')]
+    main_prof.modify.set_parameters[2].values = ['echidna']
     ModelUtils.save_top_level_model(main_prof, tmp_trestle_dir, 'main_profile', FileContentType.JSON)
 
     # now add a part to the catalog
@@ -885,7 +885,7 @@ def test_profile_generate_updates_statement(tmp_trestle_dir: pathlib.Path, monke
         FileContentType.JSON
     )
     ac1 = resolved_cat.groups[0].controls[0]
-    assert ac1.params[2].values[0].__root__ == 'echidna'
+    assert ac1.params[2].values[0] == 'echidna'
     assert ac1.parts[3].id == 'ac-1_wombat'
     assert ac1.parts[5].id == 'ac-1_koala'
 

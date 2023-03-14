@@ -397,7 +397,7 @@ class ControlInterface:
         for prop in as_list(item.props):
             if prop.name == const.RULE_ID:
                 name = prop.value
-                id_ = string_from_root(prop.remarks)
+                id_ = prop.remarks
                 rules_props.append(prop)
             elif prop.name == const.RULE_DESCRIPTION:
                 desc = prop.value
@@ -448,7 +448,7 @@ class ControlInterface:
         props = []
         for prop in as_list(item.props):
             if prop.name == const.PARAMETER_ID:
-                rule_id = string_from_root(prop.remarks)
+                rule_id = prop.remarks
                 param_name = prop.value
                 if rule_id in params:
                     raise TrestleError(f'Duplicate param {param_name} found for rule {rule_id}')
@@ -456,14 +456,14 @@ class ControlInterface:
                 params[rule_id] = {'name': param_name}
                 props.append(prop)
             elif prop.name == const.PARAMETER_DESCRIPTION:
-                rule_id = string_from_root(prop.remarks)
+                rule_id = prop.remarks
                 if rule_id in params:
                     params[rule_id]['description'] = prop.value
                     props.append(prop)
                 else:
                     raise TrestleError(f'Param description for rule {rule_id} found with no param_id')
             elif prop.name == const.PARAMETER_VALUE_ALTERNATIVES:
-                rule_id = string_from_root(prop.remarks)
+                rule_id = prop.remarks
                 if rule_id in params:
                     params[rule_id]['options'] = prop.value
                     props.append(prop)
@@ -625,7 +625,7 @@ class ControlInterface:
     @staticmethod
     def _param_values_as_str_list(param: common.Parameter) -> List[str]:
         """Convert param values to list of strings."""
-        return [val.__root__ for val in as_list(param.values)]
+        return as_list(param.values)
 
     @staticmethod
     def _param_values_as_str(param: common.Parameter, brackets=False) -> Optional[str]:
@@ -642,7 +642,7 @@ class ControlInterface:
             how_many_str = ''
             # if all values are specified there is no how_many string and parens are dropped.  See ac-2.2
             if param.select.how_many:
-                how_many_str = ' (one)' if param.select.how_many == common.HowMany.one else ' (one or more)'
+                how_many_str = ' (one)' if param.select.how_many == const.ONE else ' (one or more)'
             choices_str = '; '.join(as_list(param.select.choice))
             choices_str = f'[{choices_str}]' if brackets else choices_str
             choices_str = f'Selection{how_many_str}: {choices_str}' if verbose else choices_str
@@ -1026,7 +1026,7 @@ class ControlInterface:
         ]
         # reverse the list so the latest items are kept
         for prop in reversed(as_list(props)):
-            prop_tuple = (prop.name, as_string(prop.value), as_string(prop.ns), string_from_root(prop.remarks))
+            prop_tuple = (prop.name, as_string(prop.value), as_string(prop.ns), prop.remarks)
             if prop_tuple in found_props or (prop.name == const.IMPLEMENTATION_STATUS and remove_imp_status):
                 continue
             if remove_all_rule_info and prop.name in rule_tag_list:
@@ -1043,9 +1043,9 @@ class ControlInterface:
         culled_props: List[common.Property] = []
         for prop in as_list(props):
             if prop.value in rules and prop.remarks:
-                needed_rule_ids.add(string_from_root(prop.remarks))
+                needed_rule_ids.add(prop.remarks)
         for prop in as_list(props):
-            if prop.value in rules or string_from_root(prop.remarks) in needed_rule_ids:
+            if prop.value in rules or prop.remarks in needed_rule_ids:
                 culled_props.append(prop)
         return culled_props
 
