@@ -169,13 +169,6 @@ def test_classname_to_alias() -> None:
     json_alias = str_utils.classname_to_alias(full_classname, AliasMode.FIELD)
     assert json_alias == 'property'
 
-    short_classname = common.MemberOfOrganization.__name__
-    full_classname = f'{module_name}.{short_classname}'
-    json_alias = str_utils.classname_to_alias(short_classname, AliasMode.JSON)
-    assert json_alias == 'member-of-organization'
-    json_alias = str_utils.classname_to_alias(full_classname, AliasMode.FIELD)
-    assert json_alias == 'member_of_organization'
-
 
 def test_snake_to_upper_camel() -> None:
     """Ensure Snake to upper camel behaves correctly."""
@@ -218,8 +211,8 @@ def test_parameter_to_dict() -> None:
     test1 = common.Test(expression='not too big', remarks='test for 1')
     test2 = common.Test(expression='keep it small', remarks='test for 2')
     constraints = [common.ParameterConstraint(description='my constraints', tests=[test1, test2])]
-    sel = common.ParameterSelection(how_many=common.HowMany.one_or_more, choice=['one', 'two', 'three'])
-    values = [common.ParameterValue(__root__='one'), common.ParameterValue(__root__='two')]
+    sel = common.ParameterSelection(how_many=const.ONE_OR_MORE_HYPHENED, choice=['one', 'two', 'three'])
+    values = ['one', 'two']
     prop1 = common.Property(name='prop1', value='value1')
     prop2 = common.Property(name='prop2', value='value2', remarks='remark2')
     param = common.Parameter(
@@ -255,21 +248,21 @@ def test_parameter_to_dict() -> None:
         _ = ModelUtils.dict_to_parameter(dict_copy)
 
     # confirm values must be among allowed choices or give warning
-    sel = common.ParameterSelection(how_many=common.HowMany.one_or_more, choice=['one', 'two', 'three'])
+    sel = common.ParameterSelection(how_many=const.ONE_OR_MORE_HYPHENED, choice=['one', 'two', 'three'])
     param = common.Parameter(id='param1', label='label1', select=sel, values=['two', 'five'])
     param_dict = ModelUtils.parameter_to_dict(param, False)
     new_param = ModelUtils.dict_to_parameter(param_dict)
     assert param == new_param
 
     # confirm only one item if HowMany is one or give warning
-    sel = common.ParameterSelection(how_many=common.HowMany.one, choice=['one', 'two', 'three'])
+    sel = common.ParameterSelection(how_many='one', choice=['one', 'two', 'three'])
     param = common.Parameter(id='param1', label='label1', select=sel, values=['two', 'three'])
     param_dict = ModelUtils.parameter_to_dict(param, False)
     new_param = ModelUtils.dict_to_parameter(param_dict)
     assert param == new_param
 
     # confirm special handling for one value works
-    sel = common.ParameterSelection(how_many=common.HowMany.one, choice=['one', 'two', 'three'])
+    sel = common.ParameterSelection(how_many='one', choice=['one', 'two', 'three'])
     param = common.Parameter(id='param1', label='label1', select=sel, values=['two'])
     param_dict = ModelUtils.parameter_to_dict(param, False)
     assert param == ModelUtils.dict_to_parameter(param_dict)
@@ -299,15 +292,15 @@ def test_objects_differ(simplified_nist_catalog: catalog.Catalog) -> None:
     ModelUtils.update_last_modified(cat_b)
     assert ModelUtils._objects_differ(simplified_nist_catalog, cat_b, [], [], False)
     assert not ModelUtils._objects_differ(
-        simplified_nist_catalog, cat_b, [common.LastModified], ['last-modified'], False
+        simplified_nist_catalog, cat_b, [common.LastModified], ['last_modified'], False
     )
     cat_c, _, _ = ModelUtils.regenerate_uuids(cat_b)
-    assert ModelUtils._objects_differ(simplified_nist_catalog, cat_c, [common.LastModified], ['last-modified'], False)
+    assert ModelUtils._objects_differ(simplified_nist_catalog, cat_c, [common.LastModified], ['last_modified'], False)
     assert not ModelUtils._objects_differ(
-        simplified_nist_catalog, cat_c, [common.LastModified, common.PartyUuid], ['last-modified', 'uuid'], False
+        simplified_nist_catalog, cat_c, [common.LastModified], ['last_modified', 'uuid', 'party_uuids'], False
     )
     assert not ModelUtils._objects_differ(
-        simplified_nist_catalog, cat_c, [common.LastModified], ['last-modified'], True
+        simplified_nist_catalog, cat_c, [common.LastModified], ['last_modified'], True
     )
 
 

@@ -1,0 +1,44 @@
+{
+  "mapping-collection": {
+    "uuid": "A0000000-0000-4000-8000-000000000050",
+    "metadata": {
+      "title": "Trestle test mapping-collection",
+      "last-modified": "2021-01-01T00:00:00.000+00:00",
+      "version": "2021-01-01",
+      "oscal-version": "1.0.4"
+    },
+    "mappings": [
+      {
+        "uuid":"A0000000-0000-4000-8000-000000000060",
+        "source-resource": {
+          "type": "SemanticType",
+          "href": "https://foo/bar.json"
+        },
+        "target-resource": {
+          "type": "SemanticType",
+          "href": "https://dog/cat.json"
+        },
+        "maps": [
+          {
+            "uuid":"A0000000-0000-4000-8000-000000000070",
+            "relationship": {
+              "type": "brother"
+            },
+            "sources": [
+              {
+                "type": "SemanticType",
+                "id_ref": "IdRefSource"
+              }
+            ],
+            "targets": [
+              {
+                "type": "SemanticType",
+                "id_ref": "IdRefTarget"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

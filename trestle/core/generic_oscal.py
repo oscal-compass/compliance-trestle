@@ -66,7 +66,7 @@ class GenericByComponent(TrestleBaseModel):
     implementation_status: Optional[common.ImplementationStatus] = Field(None, alias='implementation-status')
     # removed export, inherited, satisfied
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
     @staticmethod
     def generate() -> GenericByComponent:
@@ -124,7 +124,7 @@ class GenericStatement(TrestleBaseModel):
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
     # ssp has following
     by_components: Optional[List[GenericByComponent]] = Field(None, alias='by-components')
 
@@ -184,7 +184,7 @@ class GenericComponent(TrestleBaseModel):
     protocols: Optional[List[common.Protocol]] = Field(None)
     # ssp does not have a list of ci's but it does have one ci
     control_implementations: Optional[List[GenericControlImplementation]] = Field(None, alias='control-implementations')
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
     # ssp has
     status: common.ImplementationStatus
 
@@ -222,7 +222,7 @@ class GenericComponent(TrestleBaseModel):
                 f'SystemComponent status {status_str} not recognized.  Setting to {const.STATUS_OPERATIONAL}'
             )
             status_str = const.STATUS_OPERATIONAL
-        class_dict['status'] = ossp.Status(state=ossp.State1(status_str), remarks=self.status.remarks)
+        class_dict['status'] = ossp.Status(state=status_str, remarks=self.status.remarks)
         return ossp.SystemComponent(**class_dict)
 
     @staticmethod
@@ -246,8 +246,8 @@ class GenericSetParameter(TrestleBaseModel):
         "A human-oriented reference to a parameter within a control, who's catalog has been imported into the current implementation context.",  # noqa E501
         title='Parameter ID',
     )
-    values: List[common.Value] = Field(...)
-    remarks: Optional[common.Remarks] = None
+    values: List[str] = Field(...)
+    remarks: Optional[str] = None
 
     @staticmethod
     def from_defined_component(sp: comp.SetParameter):
@@ -293,7 +293,7 @@ class GenericImplementedRequirement(TrestleBaseModel):
     set_parameters: Optional[List[GenericSetParameter]] = Field(None, alias='set-parameters')
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
     statements: Optional[List[GenericStatement]] = Field(None)
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
     # ssp has following
     by_components: Optional[List[GenericByComponent]] = Field(None, alias='by-components')
 

@@ -27,7 +27,7 @@ from __future__ import annotations
 import re
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr, validator
 
@@ -104,7 +104,7 @@ class SetParameter(OscalBaseModel):
     )
     constraints: Optional[List[common.ParameterConstraint]] = Field(None)
     guidelines: Optional[List[common.ParameterGuideline]] = Field(None)
-    values: Optional[List[common.ParameterValue]] = Field(None)
+    values: Optional[List[constr(regex=r'^\S(.*\S)?$')]] = Field(None)
     select: Optional[common.ParameterSelection] = None
 
 
@@ -433,7 +433,7 @@ class Profile(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=

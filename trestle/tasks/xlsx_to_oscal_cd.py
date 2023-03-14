@@ -26,7 +26,6 @@ from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.common import Metadata
 from trestle.oscal.common import Party
 from trestle.oscal.common import Property
-from trestle.oscal.common import Remarks
 from trestle.oscal.common import ResponsibleParty
 from trestle.oscal.common import ResponsibleRole
 from trestle.oscal.common import Role
@@ -199,14 +198,14 @@ class XlsxToOscalComponentDefinition(TaskBase):
                 class_=self._get_class_for_property_name('goal_name_id'),
                 value=goal_name_id,
                 ns=self._get_namespace(),
-                remarks=Remarks(__root__=str(goal_remarks))
+                remarks=str(goal_remarks)
             )
             prop2 = Property(
                 name='goal_version',
                 class_=self._get_class_for_property_name('goal_version'),
                 value=self._get_goal_version(),
                 ns=self._get_namespace(),
-                remarks=Remarks(__root__=str(goal_name_id))
+                remarks=str(goal_name_id)
             )
             props = [prop1, prop2]
             control_id, _ = self.catalog_interface.get_control_id_and_status(control)

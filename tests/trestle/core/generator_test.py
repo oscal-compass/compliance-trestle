@@ -57,7 +57,6 @@ def test_get_sample_value_by_type() -> None:
     assert gens.generate_sample_value_by_type(ConstrainedStr, '') == 'REPLACE_ME'
     assert gens.generate_sample_value_by_type(ConstrainedStr, 'oarty-uuid') == const.SAMPLE_UUID_STR
     uuid_ = gens.generate_sample_value_by_type(ConstrainedStr, 'uuid')
-    assert gens.generate_sample_value_by_type(common.Type, '') == common.Type('person')
     assert is_valid_uuid(uuid_) and str(uuid_) != const.SAMPLE_UUID_STR
     assert gens.generate_sample_value_by_type(ConstrainedStr, 'date_authorized') == date.today().isoformat()
     assert gens.generate_sample_value_by_type(pydantic.networks.EmailStr,
@@ -157,11 +156,6 @@ def test_gen_date_authorized() -> None:
     assert model
 
 
-def test_gen_moo() -> None:
-    """Member of organisation is the one case where __root__ is a uuid constr."""
-    _ = gens.generate_sample_model(common.MemberOfOrganization)
-
-
 def test_gen_control() -> None:
     """Make sure recursion is not going crazy."""
     _ = gens.generate_sample_model(catalog.Control, include_optional=True, depth=100)
@@ -171,3 +165,9 @@ def test_ensure_optional_exists() -> None:
     """Explicit test to ensure that optional variables are populated."""
     my_catalog = gens.generate_sample_model(catalog.Catalog, include_optional=True, depth=-1)
     assert type(my_catalog.controls[0]) == catalog.Control
+
+
+def test_gen_party() -> None:
+    """Test generation of a party."""
+    my_party = gens.generate_sample_model(common.Party, include_optional=True, depth=-1)
+    assert my_party

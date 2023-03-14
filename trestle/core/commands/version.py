@@ -50,7 +50,7 @@ class VersionCmd(CommandBase):
         if not (oscal_object.metadata or oscal_object.metadata.version):
             raise TrestleError(f'Unable to determine the version. Metadata version is missing in model: {obj_path}.')
 
-        return oscal_object.metadata.version.__root__
+        return oscal_object.metadata.version
 
     def _run(self, args: argparse.Namespace) -> int:
         try:

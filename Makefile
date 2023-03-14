@@ -17,6 +17,16 @@
 submodules: 
 	git submodule update --init
 
+# switch the nist oscal submodules to the develop branch to work with future oscal schemas
+nist-dev:
+	git submodule set-branch --branch develop nist-source
+	git submodule update --remote
+
+# switch the nist oscal submodules back to the default supported release tag
+nist-default:
+	git submodule set-branch --branch release-1.0 nist-source
+	git submodule update --remote
+
 develop: submodules
 	python -m pip install -e .[dev] --upgrade --upgrade-strategy eager --
 

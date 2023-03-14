@@ -574,9 +574,9 @@ def controls_equivalent(a: cat.Control, b: cat.Control, strong: bool = True) -> 
             logger.error(f'control {a.id} has different param counts: {n_params_a} vs. {n_params_b}')
             return False
     a_param_values = [param.values for param in list_utils.as_list(a.params) if param.values is not None]
-    a_vals = [param_value.__root__ for param_values in a_param_values for param_value in param_values]
+    a_vals = [param_value for param_values in a_param_values for param_value in param_values]
     b_param_values = [param.values for param in list_utils.as_list(b.params) if param.values is not None]
-    b_vals = [param_value.__root__ for param_values in b_param_values for param_value in param_values]
+    b_vals = [param_value for param_values in b_param_values for param_value in param_values]
 
     # sub-controls are not checked here
     if a_vals == b_vals:

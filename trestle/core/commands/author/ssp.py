@@ -509,7 +509,7 @@ class SSPAssemble(AuthorCommonCommand):
             ssp.import_profile.href = profile_href
 
             if args.version:
-                ssp.metadata.version = com.Version(__root__=args.version)
+                ssp.metadata.version = args.version
 
             if ModelUtils.models_are_equivalent(existing_ssp, ssp):
                 logger.info('No changes to assembled ssp so ssp not written out.')
@@ -671,7 +671,7 @@ class SSPFilter(AuthorCommonCommand):
             ssp.control_implementation = control_imp
 
         if version:
-            ssp.metadata.version = com.Version(__root__=version)
+            ssp.metadata.version = version
 
         existing_ssp_path = ModelUtils.get_model_path_for_name_and_class(
             trestle_root, out_name, ossp.SystemSecurityPlan

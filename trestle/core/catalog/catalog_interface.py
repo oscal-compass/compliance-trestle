@@ -59,6 +59,7 @@ class CatalogInterface():
         group_title: title of the group
         group_class: class of the group
         path: path of parent groups leading to this control - without the final control_id, or [''] if in cat list
+        important to remember that controls may not be in a group and are directly attached to cat
         control: the control itself
         """
 
@@ -704,7 +705,7 @@ class CatalogInterface():
         all_set_params = self.get_control_comp_set_params(control_id)
         for comp_name, param_list in all_set_params.items():
             for param in param_list:
-                param_vals = none_if_empty([value.__root__ for value in as_list(param.values)])
+                param_vals = none_if_empty(as_list(param.values))
                 rule_name = deep_get(param_id_rule_name_map, [comp_name, param.param_id], None)
                 if rule_name:
                     param_dict = {'name': param.param_id}

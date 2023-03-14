@@ -36,7 +36,7 @@ from trestle.common.str_utils import AliasMode, alias_to_classname
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.remote import cache
-from trestle.oscal import common
+from trestle.oscal import assessment_plan, assessment_results, common, poam
 
 logger = logging.getLogger(__name__)
 
@@ -533,10 +533,10 @@ class ModelUtils:
             The converted parameter as dictionary
         """
         main_fields = ['id', 'label', 'values', 'select', 'choice', 'how_many']
-        if isinstance(obj, common.HowMany):
-            return obj.name
-        if isinstance(obj, common.Remarks) or isinstance(obj, common.ParameterValue):
+        if isinstance(obj, common.Remarks):
             return obj.__root__
+        if isinstance(obj, common.HowMany):
+            return obj.value
         # it is either a string already or we cast it to string
         if not hasattr(obj, const.FIELDS_SET):
             return str(obj)
@@ -577,12 +577,12 @@ class ModelUtils:
         return res
 
     @staticmethod
-    def _string_to_howmany(count_str: str) -> Optional[common.HowMany]:
+    def _string_to_howmany(count_str: str) -> Optional[str]:
         clean_str = count_str.lower().strip().replace('-', ' ').replace('_', ' ')
-        if clean_str == 'one or more':
-            return common.HowMany.one_or_more
-        elif clean_str == 'one':
+        if clean_str == const.ONE:
             return common.HowMany.one
+        if clean_str == const.ONE_OR_MORE_SPACED:
+            return common.HowMany.one_or_more
         return None
 
     @staticmethod
@@ -613,7 +613,7 @@ class ModelUtils:
             if how_many is None:
                 raise TrestleError(f'Unrecognized HowMany value {how_many} in Parameter: should be one-or-more or one.')
             param_dict['select']['how_many'] = how_many
-            if how_many == common.HowMany.one and len(values) > 1:
+            if how_many == const.ONE and len(values) > 1:
                 logger.warning(f'Parameter specifies HowMany=1 but has {len(values)} values given.')
             choices = param_dict['select'].get('choice', [])
             if choices and values:
@@ -635,12 +635,13 @@ class ModelUtils:
     def last_modified_at_time(timestamp: Optional[datetime] = None) -> common.LastModified:
         """Generate a LastModified set to timestamp or now."""
         timestamp = timestamp if timestamp else datetime.now().astimezone()
-        return common.LastModified(__root__=timestamp)
+        return timestamp
 
     @staticmethod
     def update_last_modified(model: TopLevelOscalModel, timestamp: Optional[datetime] = None) -> None:
         """Update the LastModified timestamp in top level model to now."""
-        model.metadata.last_modified = ModelUtils.last_modified_at_time(timestamp)
+        timestamp = timestamp if timestamp else datetime.now().astimezone()
+        model.metadata.last_modified = timestamp
 
     @staticmethod
     def model_age(model: TopLevelOscalModel) -> int:
@@ -648,7 +649,7 @@ class ModelUtils:
         # default to one year if no last_modified
         age_seconds = const.DAY_SECONDS * 365
         if model.metadata.last_modified:
-            dt = datetime.now().astimezone() - model.metadata.last_modified.__root__
+            dt = datetime.now().astimezone() - model.metadata.last_modified
             age_seconds = dt.seconds
         return age_seconds
 
@@ -907,14 +908,16 @@ class ModelUtils:
         uuid_type_list = [
             common.LastModified,
             common.LocationUuid,
-            common.MemberOfOrganization,
             common.PartyUuid,
             common.RelatedRisk,
-            common.RelatedObservation1,
-            common.Source
+            common.Source,
+            assessment_plan.RelatedObservation,
+            assessment_results.RelatedObservation,
+            poam.RelatedObservation,
+            poam.RelatedObservation1
         ]
         type_list = uuid_type_list if ignore_all_uuid else [common.LastModified]
-        return not ModelUtils._objects_differ(model_a, model_b, type_list, ['last-modified'], ignore_all_uuid)
+        return not ModelUtils._objects_differ(model_a, model_b, type_list, ['last_modified'], ignore_all_uuid)
 
     @staticmethod
     def get_title_from_model_uri(trestle_root: pathlib.Path, uri: str) -> str:
