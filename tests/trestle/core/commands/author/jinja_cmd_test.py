@@ -22,7 +22,7 @@ from tests.test_utils import execute_command_and_assert, setup_for_ssp
 
 from trestle.core.commands.author.jinja import _number_captions
 from trestle.core.commands.author.ssp import SSPGenerate
-from trestle.core.markdown.markdown_node import MarkdownNode
+from trestle.core.markdown.docs_markdown_node import DocsMarkdownNode
 
 
 def setup_ssp(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch):
@@ -49,7 +49,7 @@ def test_jinja_ssp_output(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.P
 
     with open('output_file.md') as test_output:
         output = test_output.read()
-        tree = MarkdownNode.build_tree_from_markdown(output.split('\n'))
+        tree = DocsMarkdownNode.build_tree_from_markdown(output.split('\n'))
         assert tree
         node1 = tree.get_node_for_key('# A')
         node2 = tree.get_node_for_key('# C')
@@ -70,7 +70,7 @@ def test_jinja_lookup_table(
 
     with open('output_file.md') as test_output:
         output = test_output.read()
-        tree = MarkdownNode.build_tree_from_markdown(output.split('\n'))
+        tree = DocsMarkdownNode.build_tree_from_markdown(output.split('\n'))
         assert tree
         node1 = tree.get_node_for_key('### Substitutions')
         node2 = tree.get_node_for_key('# B')
@@ -101,7 +101,7 @@ def test_params_formatting(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.
 
     with open('output.md') as test_output:
         output = test_output.read()
-        tree = MarkdownNode.build_tree_from_markdown(output.split('\n'))
+        tree = DocsMarkdownNode.build_tree_from_markdown(output.split('\n'))
         assert tree
         parent = tree.get_node_for_key('### AC-1 - Policy and Procedures')
         child1 = parent.get_node_for_key('#### AC-1 Summary information')
@@ -114,7 +114,7 @@ def test_params_formatting(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.
 
     with open('output.md') as test_output:
         output = test_output.read()
-        tree = MarkdownNode.build_tree_from_markdown(output.split('\n'))
+        tree = DocsMarkdownNode.build_tree_from_markdown(output.split('\n'))
         assert tree
         parent = tree.get_node_for_key('### AC-1 - Policy and Procedures')
         child1 = parent.get_node_for_key('#### AC-1 Summary information')
@@ -137,7 +137,7 @@ def test_jinja_profile_docs(
     for md_control in (tmp_trestle_dir / 'controls' / 'ac').iterdir():
         with open(md_control) as md_file:
             contents = md_file.read()
-            tree = MarkdownNode.build_tree_from_markdown(contents.split('\n'))
+            tree = DocsMarkdownNode.build_tree_from_markdown(contents.split('\n'))
             assert tree
             node1 = tree.get_node_for_key('# Control Page')
             assert node1
@@ -165,7 +165,7 @@ def test_jinja_profile_docs_with_group_title(
     md_control = tmp_trestle_dir / 'controls' / 'ac' / 'ac-1.md'
     with open(md_control) as md_file:
         contents = md_file.read()
-        tree = MarkdownNode.build_tree_from_markdown(contents.split('\n'))
+        tree = DocsMarkdownNode.build_tree_from_markdown(contents.split('\n'))
         assert tree
         node1 = tree.get_node_for_key('# Control Page')
         assert node1
@@ -195,7 +195,7 @@ def test_jinja_profile_docs_with_selected_sections(
     md_control = tmp_trestle_dir / 'controls' / 'ac' / 'ac-1.md'
     with open(md_control) as md_file:
         contents = md_file.read()
-        tree = MarkdownNode.build_tree_from_markdown(contents.split('\n'))
+        tree = DocsMarkdownNode.build_tree_from_markdown(contents.split('\n'))
         assert tree
         node1 = tree.get_node_for_key('# Control Page')
         assert node1
@@ -223,7 +223,7 @@ def test_jinja_profile_docs_with_selected_sections_and_multiple_parts(
     md_control = tmp_trestle_dir / 'controls' / 'ac' / 'ac-1.md'
     with open(md_control) as md_file:
         contents = md_file.read()
-        tree = MarkdownNode.build_tree_from_markdown(contents.split('\n'))
+        tree = DocsMarkdownNode.build_tree_from_markdown(contents.split('\n'))
         assert tree
         node1 = tree.get_node_for_key('## The above the line guidance')
         assert node1

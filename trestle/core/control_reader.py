@@ -15,7 +15,6 @@
 import logging
 import pathlib
 import re
-import string
 from typing import Any, Dict, List, Optional, Tuple
 
 import trestle.core.generic_oscal as generic
@@ -29,8 +28,8 @@ from trestle.common.str_utils import spaces_and_caps_to_snake
 from trestle.core import generators as gens
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlInterface
+from trestle.core.markdown.control_markdown_node import ControlMarkdownNode
 from trestle.core.markdown.markdown_api import MarkdownAPI
-from trestle.core.markdown.markdown_processor import MarkdownNode
 from trestle.oscal import common
 from trestle.oscal import component as comp
 from trestle.oscal import profile as prof
@@ -39,269 +38,8 @@ from trestle.oscal import ssp as ossp
 logger = logging.getLogger(__name__)
 
 
-class ControlReader():
+class ControlReader:
     """Class to read controls from markdown."""
-
-    @staticmethod
-    def _parse_control_title_line(line: str) -> Tuple[int, str, str]:
-        """Process the title line and extract the control id, group title (in brackets) and control title."""
-        if line.count('-') == 0:
-            raise TrestleError(f'Markdown control title format error, missing - after control id: {line}')
-        split_line = line.split()
-        if len(split_line) < 3 or split_line[2] != '-':
-            raise TrestleError(f'Cannot parse control markdown title for control_id group and title: {line}')
-        # first token after the #
-        control_id = split_line[1]
-        group_title_start = line.find('\[')
-        group_title_end = line.find('\]')
-        if group_title_start < 0 or group_title_end < 0 or group_title_start > group_title_end:
-            raise TrestleError(f'unable to read group title for control {control_id}')
-        group_title = line[group_title_start + 2:group_title_end].strip()
-        control_title = line[group_title_end + 2:].strip()
-        return control_id, group_title, control_title
-
-    @staticmethod
-    def _indent(line: str) -> int:
-        """Measure indent of non-empty line."""
-        if not line:
-            raise TrestleError('Empty line queried for indent.')
-        if line[0] not in [' ', '-']:
-            return -1
-        for ii in range(len(line)):
-            if line[ii] == '-':
-                return ii
-            # if line is indented it must start with -
-            if line[ii] != ' ':
-                return ii
-
-    @staticmethod
-    def _get_next_line(ii: int, lines: List[str]) -> Tuple[int, str]:
-        while ii < len(lines):
-            line = lines[ii]
-            if line:
-                return ii, line
-            ii += 1
-        return -1, ''
-
-    @staticmethod
-    def _get_next_indent(ii: int, lines: List[str], skip_empty_lines: bool = True) -> Tuple[int, int, str]:
-        """Seek to next content line.  ii remains at line read."""
-        while 0 <= ii < len(lines):
-            line = lines[ii]
-            if line and not line.isspace():
-                if line[0] == '#':
-                    return ii, -1, line
-                indent = ControlReader._indent(line)
-                if indent >= 0:
-                    # extract text after -
-                    start = indent + 1
-                    while start < len(line) and line[start] == ' ':
-                        start += 1
-                    if start >= len(line):
-                        raise TrestleError(f'Invalid line {line}')
-                    return ii, indent, line[start:]
-                return ii, indent, line
-            elif not skip_empty_lines:
-                return ii, -1, line
-            ii += 1
-        return ii, -1, ''
-
-    @staticmethod
-    def _read_part_id_prose(line: str) -> Tuple[str, str]:
-        """Extract the part id letter or number and prose from line."""
-        start = line.find('\\[')
-        end = line.find('\\]')
-        prose = line.strip() if start < 0 else line[end + 2:].strip()
-        id_ = '' if start < 0 or end < 0 else line[start + 2:end]
-        return id_, prose
-
-    @staticmethod
-    def _bump_label(label: str) -> str:
-        """
-        Find next label given a string of 1 or more pure letters or digits.
-
-        The input must be either a string of digits or a string of ascii letters - or empty string.
-        """
-        if not label:
-            return 'a'
-        if label[0] in string.digits:
-            return str(int(label) + 1)
-        if len(label) == 1 and label[0].lower() < 'z':
-            return chr(ord(label[0]) + 1)
-        # if this happens to be a string of letters, force it lowercase and bump
-        label = label.lower()
-        factor = 1
-        value = 0
-        # delta is needed because a counts as 0 when first value on right, but 1 for all others
-        delta = 0
-        for letter in label[::-1]:
-            value += (ord(letter) - ord('a') + delta) * factor
-            factor *= 26
-            delta = 1
-
-        value += 1
-
-        new_label = ''
-        delta = 0
-        while value > 0:
-            new_label += chr(ord('a') + value % 26 - delta)
-            value = value // 26
-            delta = 1
-        return new_label[::-1]
-
-    @staticmethod
-    def _create_next_label(prev_label: str, indent: int) -> str:
-        """
-        Create new label at indent level based on previous label if available.
-
-        If previous label is available, make this the next one in the sequence.
-        Otherwise start with a or 1 on alternate levels of indentation.
-        If alphabetic label reaches z, next one is aa.
-        Numeric ranges from 1 to 9, then 10 etc.
-        """
-        if not prev_label:
-            # assume indent goes in steps of 2
-            return ['a', '1'][(indent // 2) % 2]
-        label_prefix = ''
-        label_suffix = prev_label
-        is_char = prev_label[-1] in string.ascii_letters
-        # if it isn't ending in letter or digit just append 'a' to end
-        if not is_char and prev_label[-1] not in string.digits:
-            return prev_label + 'a'
-        # break in middle of string if mixed types
-        if len(prev_label) > 1:
-            ii = len(prev_label) - 1
-            while ii >= 0:
-                if prev_label[ii] not in string.ascii_letters + string.digits:
-                    break
-                if (prev_label[ii] in string.ascii_letters) != is_char:
-                    break
-                ii -= 1
-            if ii >= 0:
-                label_prefix = prev_label[:(ii + 1)]
-                label_suffix = prev_label[(ii + 1):]
-
-        return label_prefix + ControlReader._bump_label(label_suffix)
-
-    @staticmethod
-    def _read_parts(indent: int, ii: int, lines: List[str], parent_id: str,
-                    parts: List[common.Part]) -> Tuple[int, List[common.Part]]:
-        """If indentation level goes up or down, create new list or close current one."""
-        while True:
-            ii, new_indent, line = ControlReader._get_next_indent(ii, lines)
-            if new_indent < 0:
-                # we are done reading control statement
-                return ii, parts
-            if new_indent == indent:
-                # create new item part and add to current list of parts
-                id_text, prose = ControlReader._read_part_id_prose(line)
-                # id_text is the part id and needs to be as a label property value
-                # if none is there then create one from previous part, or use default
-                if not id_text:
-                    prev_label = ControlInterface.get_label(parts[-1]) if parts else ''
-                    id_text = ControlReader._create_next_label(prev_label, indent)
-                id_ = ControlInterface.strip_to_make_ncname(parent_id.rstrip('.') + '.' + id_text.strip('.'))
-                name = 'objective' if id_.find('_obj') > 0 else 'item'
-                prop = common.Property(name='label', value=id_text)
-                part = common.Part(name=name, id=id_, prose=prose, props=[prop])
-                parts.append(part)
-                ii += 1
-            elif new_indent > indent:
-                # add new list of parts to last part and continue
-                if len(parts) == 0:
-                    raise TrestleError(f'Improper indentation structure: {line}')
-                ii, new_parts = ControlReader._read_parts(new_indent, ii, lines, parts[-1].id, [])
-                if new_parts:
-                    parts[-1].parts = new_parts
-            else:
-                # return list of sub-parts
-                return ii, parts
-
-    @staticmethod
-    def _read_control_statement_or_objective(key: str, lines: List[str], control_id: str) -> common.Part:
-        """Read control statement or objective, raise an error if not found."""
-        matching_idx = [i for i, line in enumerate(lines) if line.lower().startswith(key.lower())]
-        if len(matching_idx) == 0:
-            raise TrestleError(f'Heading {key} was not found in control {control_id}.')
-        if len(matching_idx) > 1:
-            raise TrestleError(f'Multiple headings {key} are found in control {control_id}. Only one allowed.')
-
-        starting_line = matching_idx[0] + 1
-        prose = []
-
-        if key == const.CONTROL_STATEMENT_HEADER:
-            statement_id = ControlInterface.create_statement_id(control_id)
-            a_part = common.Part(name=const.STATEMENT, id=statement_id)
-        elif key == const.CONTROL_OBJECTIVE_HEADER:
-            a_part = common.Part(name='objective', id=f'{control_id}_obj')
-        else:
-            raise TrestleError(f'Reading control with heading {key} is not supported.')
-
-        for i in range(starting_line, len(lines)):
-            line = lines[i]
-            if not line:
-                prose.append(line)
-                continue
-
-            indent = ControlReader._indent(line)
-            if indent < 0:
-                prose.append(line)
-            else:
-                if line.lstrip()[0] != '-':
-                    # Prose that appears indented but has no - : treat it as the normal statement prose
-                    prose.append(line)
-                    continue
-
-                # Read parts
-                _, parts = ControlReader._read_parts(0, i, lines, a_part.id, [])
-                a_part.parts = none_if_empty(parts)
-
-                break
-        if prose:
-            # Delete all leading and trailing new lines before and after the text
-            str_prose = '\n'.join(prose)
-            str_prose = str_prose.strip()
-            if str_prose:
-                a_part.prose = str_prose
-
-        return a_part
-
-    @staticmethod
-    def _read_sections(ii: int, lines: List[str], control_id: str,
-                       control_parts: List[common.Part]) -> Tuple[int, Optional[List[common.Part]]]:
-        """Read all sections following the section separated by ## Control."""
-        new_parts = []
-        prefix = const.CONTROL_HEADER + ' '
-        while 0 <= ii < len(lines):
-            line = lines[ii]
-            if line.startswith('## What is the solution') or line.startswith(f'# {const.EDITABLE_CONTENT}'):
-                ii += 1
-                continue
-            if not line:
-                ii += 1
-                continue
-            if line and not line.startswith(prefix):
-                # the control has no sections to read, so exit the loop
-                break
-            label = line[len(prefix):].strip()
-            prose = ''
-            ii += 1
-            while 0 <= ii < len(lines) and not lines[ii].startswith(prefix) and not lines[ii].startswith(
-                    f'# {const.EDITABLE_CONTENT}'):
-                prose = '\n'.join([prose, lines[ii]])
-                ii += 1
-            if prose:
-                if label.lower() == 'guidance':
-                    id_ = ControlInterface.strip_to_make_ncname(control_id + '_gdn')
-                else:
-                    id_ = ControlInterface.strip_to_make_ncname(control_id + '_' + label)
-                label = ControlInterface.strip_to_make_ncname(label)
-                new_parts.append(common.Part(id=id_, name=label, prose=prose.strip('\n')))
-        if new_parts:
-            control_parts = [] if not control_parts else control_parts
-            control_parts.extend(new_parts)
-        control_parts = none_if_empty(control_parts)
-        return ii, control_parts
 
     @staticmethod
     def _clean_prose(prose: List[str]) -> List[str]:
@@ -336,7 +74,7 @@ class ControlReader():
         comp_name: Optional[str],
         label: str,
         comp_dict: CompDict,
-        node: MarkdownNode,
+        node: ControlMarkdownNode,
         control_id: str,
         comp_list: List[str],
         context: ControlContext
@@ -591,7 +329,7 @@ class ControlReader():
     @staticmethod
     def _add_control_part(
         control_id: str,
-        subnode: MarkdownNode,
+        subnode: ControlMarkdownNode,
         required_sections_list: List[str],
         sections_dict: Dict[str, str],
         snake_dict: Dict[str, str],
@@ -627,7 +365,7 @@ class ControlReader():
 
     @staticmethod
     def _add_sub_parts(part_id: str,
-                       node: MarkdownNode,
+                       node: ControlMarkdownNode,
                        fixed_part_name: Optional[str] = None) -> Optional[List[common.Part]]:
         if not node.subnodes:
             return None
@@ -651,7 +389,7 @@ class ControlReader():
     @staticmethod
     def _add_sub_part(
         control_id: str,
-        subnode: MarkdownNode,
+        subnode: ControlMarkdownNode,
         label_map: Dict[str, str],
         by_id_parts: Dict[str, List[common.Part]],
         sections_dict: Dict[str, str]
@@ -802,39 +540,49 @@ class ControlReader():
         """Read the control and group title from the markdown file."""
         control = gens.generate_sample_model(cat.Control)
         md_api = MarkdownAPI()
-        yaml_header, control_tree = md_api.processor.process_markdown(control_path)
+        yaml_header, control_tree = md_api.processor.process_control_markdown(control_path)
         control_titles = list(control_tree.get_all_headers_for_level(1))
         if len(control_titles) == 0:
             raise TrestleError(f'Control markdown: {control_path} contains no control title.')
+        if len(control_titles) > 1:
+            raise TrestleError(f'Control markdown: {control_path} contains multiple control titles {control_titles}.')
 
-        control.id, group_title, control.title = ControlReader._parse_control_title_line(control_titles[0])
+        control.id = control_tree.subnodes[0].content.control_id
+        group_title = control_tree.subnodes[0].content.control_group
+        control.title = control_tree.subnodes[0].content.control_title
 
-        control_headers = list(control_tree.get_all_headers_for_level(2))
-        if len(control_headers) == 0:
-            raise TrestleError(f'Control markdown: {control_path} contains no control statements.')
-
-        control_statement = control_tree.get_node_for_key(control_headers[0])
-        statement_part = ControlReader._read_control_statement_or_objective(
-            const.CONTROL_STATEMENT_HEADER, control_statement.content.raw_text.split('\n'), control.id
-        )
+        control_statement = control_tree.get_control_statement()
+        statement_part = control_statement.content.statement_part
 
         control.parts = [statement_part] if statement_part else None
-        control_objective = control_tree.get_node_for_key(const.CONTROL_OBJECTIVE_HEADER)
+        control_objective = control_tree.get_control_objective()
         if control_objective is not None:
-            objective_part = ControlReader._read_control_statement_or_objective(
-                const.CONTROL_OBJECTIVE_HEADER, control_objective.content.raw_text.split('\n'), control.id
-            )
+            objective_part = control_objective.content.objective_part
             if objective_part:
                 if control.parts:
                     control.parts.append(objective_part)
                 else:
                     control.parts = [objective_part]
-        for header_key in control_tree.get_all_headers_for_key(const.CONTROL_HEADER, False):
-            if header_key not in {control_headers[0], const.CONTROL_OBJECTIVE_HEADER, control_titles[0]}:
-                section_node = control_tree.get_node_for_key(header_key)
-                _, control.parts = ControlReader._read_sections(
-                    0, section_node.content.raw_text.split('\n'), control.id, control.parts
-                )
+
+        control_guidance = control_tree.get_control_guidance()
+        if control_guidance is not None:
+            guidance_part = control_guidance.content.guidance_part
+            if guidance_part:
+                if control.parts:
+                    control.parts.append(guidance_part)
+                else:
+                    control.parts = [guidance_part]
+
+        all_other_parts = []
+        for section_node in control_tree.get_other_control_parts():
+            parts = section_node.content.other_parts
+            all_other_parts.extend(parts)
+        if all_other_parts:
+            if control.parts:
+                control.parts.extend(all_other_parts)
+            else:
+                control.parts = all_other_parts
+
         if set_parameters_flag:
             params: Dict[str, str] = yaml_header.get(const.SET_PARAMS_TAG, [])
             if params:
