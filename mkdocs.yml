@@ -121,9 +121,11 @@ nav:
       - jinja: api_reference/trestle.core.jinja.md
       - links_validator: api_reference/trestle.core.links_validator.md
       - markdown:
+        - base_markdown_node: api_reference/trestle.core.markdown.base_markdown_node.md
+        - control_markdown_node: api_reference/trestle.core.markdown.control_markdown_node.md
+        - docs_markdown_node: api_reference/trestle.core.markdown.docs_markdown_node.md
         - markdown_api: api_reference/trestle.core.markdown.markdown_api.md
         - markdown_const: api_reference/trestle.core.markdown.markdown_const.md
-        - markdown_node: api_reference/trestle.core.markdown.markdown_node.md
         - markdown_processor: api_reference/trestle.core.markdown.markdown_processor.md
         - markdown_validator: api_reference/trestle.core.markdown.markdown_validator.md
         - md_writer: api_reference/trestle.core.markdown.md_writer.md

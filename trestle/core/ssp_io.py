@@ -22,7 +22,7 @@ from trestle.common.list_utils import as_list
 from trestle.core.catalog import catalog_interface
 from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.docs_control_writer import DocsControlWriter
-from trestle.core.markdown.markdown_node import MarkdownNode
+from trestle.core.markdown.docs_markdown_node import DocsMarkdownNode
 from trestle.core.markdown.md_writer import MDWriter
 from trestle.oscal import ssp
 from trestle.oscal.catalog import Catalog
@@ -165,7 +165,7 @@ class SSPMarkdownWriter():
         for line in params_lines:
             clean_lines.append(line.replace('{{', '[[').replace('}}', ']]'))
 
-        tree = MarkdownNode.build_tree_from_markdown(clean_lines)
+        tree = DocsMarkdownNode.build_tree_from_markdown(clean_lines)
         tree.change_header_level_by(level)
         return tree.content.raw_text
 
@@ -265,7 +265,7 @@ class SSPMarkdownWriter():
 
         lines = md_writer.get_lines()
 
-        tree = MarkdownNode.build_tree_from_markdown(lines)
+        tree = DocsMarkdownNode.build_tree_from_markdown(lines)
         tree.change_header_level_by(level)
 
         return tree.content.raw_text
@@ -342,7 +342,7 @@ class SSPMarkdownWriter():
         return ''
 
     def _build_tree_and_adjust(self, lines: List[str], level: int) -> str:
-        tree = MarkdownNode.build_tree_from_markdown(lines)
+        tree = DocsMarkdownNode.build_tree_from_markdown(lines)
         tree.change_header_level_by(level)
 
         return tree.content.raw_text

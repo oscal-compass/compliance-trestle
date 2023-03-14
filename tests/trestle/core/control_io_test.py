@@ -33,6 +33,7 @@ from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_interface import ControlInterface, ParameterRep
 from trestle.core.control_reader import ControlReader
 from trestle.core.control_writer import ControlWriter
+from trestle.core.markdown.control_markdown_node import ControlMarkdownNode, tree_context
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.markdown.markdown_processor import MarkdownProcessor
 from trestle.core.models.file_content_type import FileContentType
@@ -226,7 +227,7 @@ def test_read_control_no_label(testdata_dir: pathlib.Path) -> None:
 )
 def test_bump_label(prev_label, bumped_label) -> None:
     """Test bumping of label strings."""
-    assert ControlReader._bump_label(prev_label) == bumped_label
+    assert ControlMarkdownNode._bump_label(prev_label) == bumped_label
 
 
 @pytest.mark.parametrize(
@@ -240,7 +241,7 @@ def test_bump_label(prev_label, bumped_label) -> None:
 )
 def test_create_next_label(prev_label, next_label, indent) -> None:
     """Test bumping of label strings."""
-    assert ControlReader._create_next_label(prev_label, indent) == next_label
+    assert ControlMarkdownNode._create_next_label(prev_label, indent) == next_label
 
 
 def test_control_failures(tmp_path: pathlib.Path) -> None:
@@ -253,7 +254,7 @@ def test_control_failures(tmp_path: pathlib.Path) -> None:
         ControlInterface.strip_to_make_ncname('1@')
 
     with pytest.raises(TrestleError):
-        ControlReader._indent('')
+        ControlMarkdownNode._indent('')
 
 
 def test_bad_unicode_in_file(tmp_path: pathlib.Path) -> None:
@@ -422,21 +423,18 @@ statement_text = """
 
 def test_read_control_statement():
     """Test read control statement."""
-    part = ControlReader._read_control_statement_or_objective(
-        '## Control Statement', statement_text.split('\n'), 'xy-9'
-    )
+    tree = ControlMarkdownNode.build_tree_from_markdown(statement_text.split('\n'))
+    part = tree.get_control_statement().content.statement_part
+    tree_context.reset()
     assert part.prose == 'The org:'
 
 
 def test_read_control_objective():
     """Test read control objective."""
-    part = ControlReader._read_control_statement_or_objective(
-        '## Control Objective', statement_text.split('\n'), 'xy-9'
-    )
+    tree = ControlMarkdownNode.build_tree_from_markdown(statement_text.split('\n'))
+    part = tree.get_control_objective().content.objective_part
+    tree_context.reset()
     assert part.prose == 'Confirm the org:'
-
-    with pytest.raises(TrestleError):
-        ControlReader._read_control_statement_or_objective('## Non existing', statement_text.split('\n'), 'xy-9')
 
 
 section_text = """
@@ -448,8 +446,10 @@ foo
 
 def test_read_sections():
     """Test read control sections."""
-    _, parts = ControlReader._read_sections(0, section_text.split('\n'), 'xy-9', [])
-    assert parts is None
+    tree = ControlMarkdownNode.build_tree_from_markdown(statement_text.split('\n'))
+    parts = tree.get_other_control_parts()
+    tree_context.reset()
+    assert not parts
 
 
 indent_text = """
@@ -460,26 +460,26 @@ indent_text = """
 
 def test_indent_label():
     """Test indent and label routines."""
-    _, b, _ = ControlReader._get_next_indent(0, indent_text.split('\n'))
+    _, b, _ = ControlMarkdownNode._get_next_indent(0, indent_text.split('\n'))
     assert b == 4
 
     with pytest.raises(TrestleError):
-        ControlReader._get_next_indent(0, ['    -'])
+        ControlMarkdownNode._get_next_indent(0, ['    -'])
 
-    assert ControlReader._create_next_label('foo-', 0) == 'foo-a'
-    assert ControlReader._create_next_label('foo-a', 0) == 'foo-b'
+    assert ControlMarkdownNode._create_next_label('foo-', 0) == 'foo-a'
+    assert ControlMarkdownNode._create_next_label('foo-a', 0) == 'foo-b'
 
 
 def test_parse_control_title_failures():
     """Test parse control title failures."""
     with pytest.raises(TrestleError):
-        ControlReader._parse_control_title_line('')
+        ControlMarkdownNode._parse_control_title_line('')
 
     with pytest.raises(TrestleError):
-        ControlReader._parse_control_title_line('foo - bar')
+        ControlMarkdownNode._parse_control_title_line('foo - bar')
 
     with pytest.raises(TrestleError):
-        ControlReader._parse_control_title_line('foo-1 and - bar')
+        ControlMarkdownNode._parse_control_title_line('foo-1 and - bar')
 
 
 def test_bad_header():
