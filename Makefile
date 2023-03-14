@@ -22,8 +22,8 @@ nist-dev:
 	git submodule set-branch --branch develop nist-source
 	git submodule update --remote
 
-# switch the nist oscal submodules back to the main (normal) supported release tag
-nist-main:
+# switch the nist oscal submodules back to the default supported release tag
+nist-default:
 	git submodule set-branch --branch release-1.0 nist-source
 	git submodule update --remote
 

@@ -70,8 +70,6 @@ def generate_sample_value_by_type(
             return const.SAMPLE_UUID_STR
         if field_name == 'date_authorized':
             return str(date.today().isoformat())
-        if field_name == 'date_datatype':
-            return '2023-01-01'
         if field_name == 'oscal_version':
             return OSCAL_VERSION
         if 'uuid' in field_name:

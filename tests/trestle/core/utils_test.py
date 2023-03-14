@@ -211,7 +211,7 @@ def test_parameter_to_dict() -> None:
     test1 = common.Test(expression='not too big', remarks='test for 1')
     test2 = common.Test(expression='keep it small', remarks='test for 2')
     constraints = [common.ParameterConstraint(description='my constraints', tests=[test1, test2])]
-    sel = common.ParameterSelection(how_many='one-or-more', choice=['one', 'two', 'three'])
+    sel = common.ParameterSelection(how_many=const.ONE_OR_MORE_HYPHENED, choice=['one', 'two', 'three'])
     values = ['one', 'two']
     prop1 = common.Property(name='prop1', value='value1')
     prop2 = common.Property(name='prop2', value='value2', remarks='remark2')
@@ -248,7 +248,7 @@ def test_parameter_to_dict() -> None:
         _ = ModelUtils.dict_to_parameter(dict_copy)
 
     # confirm values must be among allowed choices or give warning
-    sel = common.ParameterSelection(how_many='one-or-more', choice=['one', 'two', 'three'])
+    sel = common.ParameterSelection(how_many=const.ONE_OR_MORE_HYPHENED, choice=['one', 'two', 'three'])
     param = common.Parameter(id='param1', label='label1', select=sel, values=['two', 'five'])
     param_dict = ModelUtils.parameter_to_dict(param, False)
     new_param = ModelUtils.dict_to_parameter(param_dict)
