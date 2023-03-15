@@ -68,6 +68,7 @@ Note that __root__ classes in the other oscal .py files are left as-is since the
 if at all in the trestle code - but they could also be removed by extensions to this script.
 
 NOTE: The routine is fully automatic except the new Mapping class requires a slight manual edit to MappingCollection.
+TODO: change the name at the bottom of the mapping.py file.
 
 """
 
