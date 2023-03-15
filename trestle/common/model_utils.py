@@ -535,8 +535,6 @@ class ModelUtils:
         main_fields = ['id', 'label', 'values', 'select', 'choice', 'how_many']
         if isinstance(obj, common.Remarks):
             return obj.__root__
-        if isinstance(obj, common.HowMany):
-            return obj.value
         # it is either a string already or we cast it to string
         if not hasattr(obj, const.FIELDS_SET):
             return str(obj)
@@ -580,9 +578,9 @@ class ModelUtils:
     def _string_to_howmany(count_str: str) -> Optional[str]:
         clean_str = count_str.lower().strip().replace('-', ' ').replace('_', ' ')
         if clean_str == const.ONE:
-            return common.HowMany.one
+            return const.ONE
         if clean_str == const.ONE_OR_MORE_SPACED:
-            return common.HowMany.one_or_more
+            return const.ONE_OR_MORE_HYPHENED
         return None
 
     @staticmethod

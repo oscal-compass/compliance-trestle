@@ -19,7 +19,7 @@ from typing import Iterator, List, Optional
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
 from trestle.common.common_types import OBT
-from trestle.common.const import RESOLUTION_SOURCE, TRESTLE_INHERITED_PROPS_TRACKER
+from trestle.common.const import AFTER, BEFORE, RESOLUTION_SOURCE, STARTING, TRESTLE_INHERITED_PROPS_TRACKER
 from trestle.common.err import TrestleNotFoundError
 from trestle.common.list_utils import as_list, get_item_from_list, none_if_empty
 from trestle.core.catalog.catalog_interface import CatalogInterface
@@ -85,11 +85,11 @@ class Modify(Pipeline.Filter):
         for index in range(len(parts_list)):
             # find the matching part
             if parts_list[index].id == add.by_id:
-                if add.position == prof.Position.after:
+                if add.position == AFTER:
                     for offset, new_item in enumerate(as_list(add.parts)):
                         parts_list.insert(index + 1 + offset, new_item)
                     added_parts = True
-                elif add.position == prof.Position.before:
+                elif add.position == BEFORE:
                     for offset, new_item in enumerate(as_list(add.parts)):
                         parts_list.insert(index + offset, new_item)
                     added_parts = True
@@ -113,10 +113,10 @@ class Modify(Pipeline.Filter):
         return False
 
     @staticmethod
-    def _add_attr_to_part(part: common.Part, items: List[OBT], attr: str, position: Optional[prof.Position]) -> None:
+    def _add_attr_to_part(part: common.Part, items: List[OBT], attr: str, position: Optional[str]) -> None:
         attr_list = as_list(getattr(part, attr, None))
         # position may be None and if so will go at end
-        if position in [prof.Position.starting, prof.Position.before]:
+        if position in [STARTING, BEFORE]:
             items.extend(attr_list)
             attr_list = items
         else:
@@ -124,12 +124,10 @@ class Modify(Pipeline.Filter):
         setattr(part, attr, attr_list)
 
     @staticmethod
-    def _add_attr_to_control(
-        control: cat.Control, items: List[OBT], attr: str, position: Optional[prof.Position]
-    ) -> None:
+    def _add_attr_to_control(control: cat.Control, items: List[OBT], attr: str, position: Optional[str]) -> None:
         attr_list = as_list(getattr(control, attr, None))
         # if position is None it will add to end
-        if position in [prof.Position.starting, prof.Position.before]:
+        if position in [STARTING, BEFORE]:
             items.extend(attr_list)
             attr_list = items
         else:

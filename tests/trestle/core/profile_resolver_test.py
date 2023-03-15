@@ -24,7 +24,7 @@ import pytest
 
 from tests import test_utils
 
-from trestle.common.const import RESOLUTION_SOURCE
+from trestle.common.const import RESOLUTION_SOURCE, USE_FIRST
 from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.core import generators as gens
@@ -196,7 +196,7 @@ def test_profile_resolver_merge(sample_catalog_rich_controls: cat.Catalog) -> No
     assert catalog_interface.get_control(control_id).parts[-1].name == 'foo'
 
     # add part to first control and merge but with use-first.  The part should not be there at end.
-    method = prof.Method.use_first
+    method = USE_FIRST
     combine = prof.Combine(method=method)
     profile.merge = prof.Merge(combine=combine)
     merge = Merge(profile)
