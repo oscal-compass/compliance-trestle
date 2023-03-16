@@ -553,3 +553,7 @@ ONE_OR_MORE_SPACED = 'one or more'
 VALUE_ASSIGNED_PREFIX = 'value-assigned-prefix'
 
 VALUE_NOT_ASSIGNED_PREFIX = 'value-not-assigned-prefix'
+
+CONTROL_IMPLEMENTATION = 'control-implementation'
+
+IMPLEMENTED_REQUIREMENT = 'implemented-requirement'

@@ -28,8 +28,10 @@ from tests import test_utils
 
 import trestle.common.const as const
 import trestle.oscal.assessment_plan as ap
+import trestle.oscal.component as comp
 from trestle import cli
 from trestle.cli import Trestle
+from trestle.common import model_utils
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.commands.split import SplitCmd
 from trestle.core.generators import generate_sample_model
@@ -40,6 +42,8 @@ from trestle.oscal.common import ResponsibleParty, Role
 from trestle.oscal.component import ComponentDefinition, ControlImplementation
 
 test_data_dir = pathlib.Path('tests/data').resolve()
+
+md_path = 'md_comp'
 
 
 @pytest.mark.parametrize(
@@ -286,9 +290,69 @@ def test_validate_catalog_params(sample_catalog_rich_controls: Catalog) -> None:
     assert not validator.model_is_valid(sample_catalog_rich_controls, False)
 
 
-def test_rules_validator(sample_catalog_rich_controls: Catalog) -> None:
+def test_rules_validator(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test validation of rules in catalog."""
+    args = argparse.Namespace(mode=const.VAL_MODE_RULES)
+    validator: Validator = validator_factory.get(args)
+
+    comp_name = test_utils.setup_component_generate(tmp_trestle_dir)
+
+    orig_component, _ = model_utils.ModelUtils.load_model_for_class(
+        tmp_trestle_dir, comp_name, comp.ComponentDefinition
+    )
+
+    generate_cmd = f'trestle author component-generate -n {comp_name} -o {md_path}'
+
+    # generate the md first time
+    test_utils.execute_command_and_assert(generate_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
+    assem_name = 'assem_comp'
+    # confirm assembled is identical except for uuids
+    assemble_cmd = f'trestle author component-assemble -m {md_path} -n {comp_name} -o {assem_name}'
+    test_utils.execute_command_and_assert(assemble_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
+    assem_component, assem_comp_path = model_utils.ModelUtils.load_model_for_class(
+        tmp_trestle_dir, assem_name, comp.ComponentDefinition
+    )
+
+    assert validator.model_is_valid(assem_component, True)
+
+
+def test_rules_validator_unhappy(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test validation of rules in catalog."""
     # FIXME use model with complex rules and param values
     args = argparse.Namespace(mode=const.VAL_MODE_RULES)
     validator: Validator = validator_factory.get(args)
-    assert validator.model_is_valid(sample_catalog_rich_controls, True)
+
+    comp_name = test_utils.setup_component_generate(tmp_trestle_dir)
+
+    orig_component, _ = model_utils.ModelUtils.load_model_for_class(
+        tmp_trestle_dir, comp_name, comp.ComponentDefinition
+    )
+
+    generate_cmd = f'trestle author component-generate -n {comp_name} -o {md_path}'
+
+    # generate the md first time
+    test_utils.execute_command_and_assert(generate_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
+    assem_name = 'assem_comp'
+    # confirm assembled is identical except for uuids
+    assemble_cmd = f'trestle author component-assemble -m {md_path} -n {comp_name} -o {assem_name}'
+    test_utils.execute_command_and_assert(assemble_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
+    assem_component, assem_comp_path = model_utils.ModelUtils.load_model_for_class(
+        tmp_trestle_dir, assem_name, comp.ComponentDefinition
+    )
+    # tests implemented requirement/control warns user about unmatched values with alternative values
+    assem_component.components[0].control_implementations[0].implemented_requirements[0].set_parameters[0].values[
+        0] = 'inserted value'
+    assert validator.model_is_valid(assem_component, True)
+
+    # tests implemented requirement/control warns user about unmatched values with alternative values
+    assem_component.components[1].control_implementations[0].implemented_requirements[0].set_parameters = [
+        {
+            'param-id': 'shared_param_1', 'values': ['shared_param_1_aa_opt_1'], 'remarks': 'set shared param aa 1'
+        },
+    ]
+    assem_component.components[1].control_implementations[0].implemented_requirements[1].set_parameters = [
+        {
+            'param-id': 'shared_param_1', 'values': ['value1'], 'remarks': 'set shared param aa 1'
+        },
+    ]
+    assert not validator.model_is_valid(assem_component, True)
