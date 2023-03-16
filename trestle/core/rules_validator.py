@@ -36,7 +36,7 @@ class RulesValidator(Validator):
 
         args:
             existing_param: Existing rule param values list.
-            shared_param: Current rule param values list.
+            shared_param_values: Current rule param values list.
 
         returns:
             Difference between values if exist
