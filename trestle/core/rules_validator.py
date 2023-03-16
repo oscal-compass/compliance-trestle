@@ -30,7 +30,7 @@ class RulesValidator(Validator):
     """Validator to confirm all rule parameter values are consistent."""
 
     @staticmethod
-    def val_diff_param_values(existing_param: list, shared_param_values: list) -> bool:
+    def val_diff_param_values(existing_param: list, shared_param_values: list) -> list:
         """
         Test differences between rule param values.
 
