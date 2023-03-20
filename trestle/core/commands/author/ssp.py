@@ -355,7 +355,11 @@ class SSPAssemble(AuthorCommonCommand):
         ssp.control_implementation.implemented_requirements.append(new_imp_req)
 
     def _merge_comp_defs(
-        self, ssp: ossp.SystemSecurityPlan, comp_dict: Dict[str, generic.GenericComponent], context: ControlContext
+        self,
+        ssp: ossp.SystemSecurityPlan,
+        comp_dict: Dict[str, generic.GenericComponent],
+        context: ControlContext,
+        catalog_interface: CatalogInterface
     ) -> None:
         """Merge the original generic comp defs into the ssp."""
         all_comps: List[ossp.SystemComponent] = []
@@ -372,6 +376,9 @@ class SSPAssemble(AuthorCommonCommand):
                 for sp in as_list(ci.set_parameters):
                     set_params.append(sp.to_ssp())
                 for imp_req in as_list(ci.implemented_requirements):
+                    # ignore any controls not in the ssp profile (resolved catalog)
+                    if not catalog_interface.get_control(imp_req.control_id):
+                        continue
                     if new_ssp:
                         SSPAssemble._add_imp_req_to_ssp(ssp, gen_comp, imp_req, set_params, context)
                     else:
@@ -485,7 +492,7 @@ class SSPAssemble(AuthorCommonCommand):
                     raise TrestleError('Original ssp has no system component.')
                 comp_dict[const.SSP_MAIN_COMP_NAME] = sys_comp
 
-                self._merge_comp_defs(ssp, comp_dict, context)
+                self._merge_comp_defs(ssp, comp_dict, context, catalog_interface)
                 CatalogReader.read_ssp_md_content(md_path, ssp, comp_dict, part_id_map_by_label, context)
 
                 new_file_content_type = FileContentType.path_to_content_type(orig_ssp_path)
@@ -495,7 +502,7 @@ class SSPAssemble(AuthorCommonCommand):
                 ssp.control_implementation.implemented_requirements = []
                 ssp.control_implementation.description = const.SSP_SYSTEM_CONTROL_IMPLEMENTATION_TEXT
                 ssp.system_implementation.components = []
-                self._merge_comp_defs(ssp, comp_dict, context)
+                self._merge_comp_defs(ssp, comp_dict, context, catalog_interface)
                 CatalogReader.read_ssp_md_content(md_path, ssp, comp_dict, part_id_map_by_label, context)
 
                 import_profile: ossp.ImportProfile = gens.generate_sample_model(ossp.ImportProfile)
