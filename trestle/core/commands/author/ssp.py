@@ -378,6 +378,7 @@ class SSPAssemble(AuthorCommonCommand):
                 for imp_req in as_list(ci.implemented_requirements):
                     # ignore any controls not in the ssp profile (resolved catalog)
                     if not catalog_interface.get_control(imp_req.control_id):
+                        logger.debug(f'Ignoring imp_req for control {imp_req.control_id} not in ssp profile')
                         continue
                     if new_ssp:
                         SSPAssemble._add_imp_req_to_ssp(ssp, gen_comp, imp_req, set_params, context)
