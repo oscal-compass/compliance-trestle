@@ -20,7 +20,7 @@ import pkgutil
 import sys
 import uuid
 from datetime import date, datetime
-from typing import Any, Dict, List
+from typing import Any, List
 
 import pydantic.networks
 from pydantic import ConstrainedStr
@@ -52,9 +52,9 @@ def test_get_sample_value_by_type() -> None:
     assert type(gens.generate_sample_value_by_type(datetime, '')) == datetime
     assert gens.generate_sample_value_by_type(bool, '') is False
     assert gens.generate_sample_value_by_type(int, '') == 0
-    assert gens.generate_sample_value_by_type(str, '') == 'REPLACE_ME'
+    assert gens.generate_sample_value_by_type(str, '') == const.REPLACE_ME
     assert gens.generate_sample_value_by_type(float, '') == 0.0
-    assert gens.generate_sample_value_by_type(ConstrainedStr, '') == 'REPLACE_ME'
+    assert gens.generate_sample_value_by_type(ConstrainedStr, '') == const.REPLACE_ME
     assert gens.generate_sample_value_by_type(ConstrainedStr, 'oarty-uuid') == const.SAMPLE_UUID_STR
     uuid_ = gens.generate_sample_value_by_type(ConstrainedStr, 'uuid')
     assert is_valid_uuid(uuid_) and str(uuid_) != const.SAMPLE_UUID_STR
@@ -84,9 +84,9 @@ def test_generate_sample_model() -> None:
     expected_ctlg_dict = {
         'uuid': 'ea784488-49a1-4ee5-9830-38058c7c10a4',
         'metadata': {
-            'title': 'REPLACE_ME',
+            'title': const.REPLACE_ME,
             'last-modified': '2020-10-21T06:52:10.387+00:00',
-            'version': 'REPLACE_ME',
+            'version': const.REPLACE_ME,
             'oscal-version': oscal.OSCAL_VERSION
         }
     }
@@ -105,21 +105,11 @@ def test_generate_sample_model() -> None:
     assert expected_ctlg == actual_ctlg
 
     # Test list type models
-    expected_role = common.Role(**{'id': 'REPLACE_ME', 'title': 'REPLACE_ME'})
+    expected_role = common.Role(**{'id': const.REPLACE_ME, 'title': const.REPLACE_ME})
     list_role = gens.generate_sample_model(List[common.Role])
     assert type(list_role) is list
     actual_role = list_role[0]
     assert expected_role == actual_role
-
-    # Test dict type models
-    if False:
-        party_uuid = common.PartyUuid(__root__=const.SAMPLE_UUID_STR)
-        expected_rp = {'role_id': 'REPLACE_ME', 'party-uuids': [party_uuid]}
-        expected_rp = common.ResponsibleParty(**expected_rp)
-        expected_rp_dict = {'REPLACE_ME': expected_rp}
-        actual_rp_dict = gens.generate_sample_model(Dict[str, common.ResponsibleParty])
-        assert type(actual_rp_dict) is dict
-        assert expected_rp_dict == actual_rp_dict
 
 
 def test_get_all_sample_models() -> None:
