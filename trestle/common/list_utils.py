@@ -100,6 +100,16 @@ def delete_item_from_list(item_list: List[TG], value: TG2, key: Callable[[TG], T
     return item_list
 
 
+def delete_items_from_list(item_list: List[TG], values: List[TG2], key: Callable[[TG], TG2]) -> List[TG]:
+    """Remove the first matching item if it is present in a list based on the callable key matching the query value."""
+    keys = [key(item) for item in item_list]
+    for value in values:
+        if value in keys:
+            index = keys.index(value)
+            del item_list[index]
+    return item_list or []
+
+
 def get_item_from_list(item_list: Optional[List[TG]],
                        value: TG2,
                        key: Callable[[TG], TG2],

@@ -29,7 +29,7 @@ import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
 from trestle.common import const, file_utils, log
 from trestle.common.err import TrestleError, handle_generic_command_exception
-from trestle.common.list_utils import as_list, comma_sep_to_list, none_if_empty
+from trestle.common.list_utils import as_list, comma_sep_to_list, delete_items_from_list, none_if_empty
 from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog.catalog_api import CatalogAPI
@@ -383,6 +383,18 @@ class SSPAssemble(AuthorCommonCommand):
                     if new_ssp:
                         SSPAssemble._add_imp_req_to_ssp(ssp, gen_comp, imp_req, set_params, context)
                     else:
+                        # compile all new uuids for new component definitions
+                        comp_uuids = [x.uuid for x in comp_dict.values()]
+                        for imp_requirement in as_list(ssp.control_implementation.implemented_requirements):
+                            difference = [
+                                x.component_uuid
+                                for x in imp_requirement.by_components
+                                if x.component_uuid not in comp_uuids
+                            ]
+                            if difference:
+                                imp_requirement.by_components = delete_items_from_list(
+                                    imp_requirement.by_components, difference, lambda bc: bc.component_uuid
+                                )
                         SSPAssemble._merge_imp_req_into_ssp(ssp, imp_req, set_params)
             ssp_comp.props = as_list(gen_comp.props)
             ssp_comp.props.extend(all_ci_props)
@@ -493,6 +505,13 @@ class SSPAssemble(AuthorCommonCommand):
                     raise TrestleError('Original ssp has no system component.')
                 comp_dict[const.SSP_MAIN_COMP_NAME] = sys_comp
 
+                # Verifies older compdefs in an ssp no longer exist in newly provided ones
+                comp_titles = [x.title for x in comp_dict.values()]
+                difference = [x.title for x in ssp.system_implementation.components if x.title not in comp_titles]
+                if difference:
+                    ssp.system_implementation.components = delete_items_from_list(
+                        ssp.system_implementation.components, difference, lambda bc: bc.title
+                    )
                 self._merge_comp_defs(ssp, comp_dict, context, catalog_interface)
                 CatalogReader.read_ssp_md_content(md_path, ssp, comp_dict, part_id_map_by_label, context)
 
