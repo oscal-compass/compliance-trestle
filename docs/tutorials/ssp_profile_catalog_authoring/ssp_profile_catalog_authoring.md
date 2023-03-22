@@ -1,4 +1,4 @@
-# Tutorial: Catalog, Component, Profile and SSP Authoring
+# Tutorial: Catalog, Profile, ComponentDefinition, and SSP Authoring
 
 ## Introduction and background
 
@@ -524,7 +524,7 @@ Similar options apply to the `jinja` authoring commands.
 
 <details markdown>
 
-<summary>trestle author component-generate</summary>
+<summary>trestle author component-generate and component-assemble</summary>
 
 The `trestle author component-generate` command takes a JSON ComponentDefinition file and creates markdown for its controls in separate directories for each of the DefinedComponents in the file.  This allows specifying the implementation response and status for each component separately in separate markdown files for a control.  In addition, the markdown captures Rules in the control that specify descriptions and parameter values that apply to the expected responses.
 

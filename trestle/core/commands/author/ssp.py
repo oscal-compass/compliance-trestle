@@ -498,6 +498,12 @@ class SSPAssemble(AuthorCommonCommand):
 
                 new_file_content_type = FileContentType.path_to_content_type(orig_ssp_path)
             else:
+                if not args.compdefs:
+                    logger.warning(
+                        'No comp_defs have been specified and a destination SSP does not exist.  If you want the full '
+                        'set of components in the SSP you should specify the needed comp_def names.  The SSP '
+                        'will now attempt to be assembled without them but may fail.'
+                    )
                 # create a sample ssp to hold all the parts
                 ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
                 ssp.control_implementation.implemented_requirements = []
