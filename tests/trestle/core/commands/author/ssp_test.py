@@ -342,34 +342,6 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     )
     assert ssp_assemble._run(args) == 0
 
-    # Tests the removal of component definitions that are no longer valid for an ssp
-    orig_ssp, orig_ssp_path = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
-    imp_reqs = orig_ssp.control_implementation.implemented_requirements
-    components = orig_ssp.system_implementation.components
-
-    component_imp = generic.GenericComponent.generate()
-    component_imp.uuid = '46b7a556-72bb-4281-b805-a8f4030ca0e3'
-    component_imp.title = 'foo'
-    components.append(component_imp)
-
-    by_comp = generic.GenericByComponent.generate()
-    by_comp.component_uuid = '46b7a556-72bb-4281-b805-a8f4030ca0e3'
-    imp_reqs[0].by_components.append(by_comp)
-
-    # now assemble it again but don't regen uuid's and don't change version
-    ssp_assemble = SSPAssemble()
-    args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir,
-        markdown=ssp_name,
-        output=ssp_name,
-        verbose=0,
-        regenerate=False,
-        name=None,
-        version=new_version,
-        compdefs=args_compdefs
-    )
-    assert ssp_assemble._run(args) == 0
-
     # confirm the file was not written out since no change
     assert orig_ssp_path.stat().st_mtime == orig_file_creation
 
@@ -393,6 +365,36 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert orig_uuid == test_utils.get_model_uuid(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     # confirm the file was not written out since no change
     assert orig_ssp_path.stat().st_mtime == orig_file_creation
+
+    # Tests the removal of component definitions that are no longer valid for an ssp
+    orig_ssp, orig_ssp_path = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+    imp_reqs = orig_ssp.control_implementation.implemented_requirements
+    components = orig_ssp.system_implementation.components
+
+    component_imp = gens.generate_sample_model(ossp.SystemComponent)
+    component_imp.uuid = '46b7a556-72bb-4281-b805-a8f4030ca0e3'
+    component_imp.title = 'foo'
+    components.append(component_imp)
+
+    by_comp = gens.generate_sample_model(ossp.ByComponent)
+    by_comp.component_uuid = '46b7a556-72bb-4281-b805-a8f4030ca0e3'
+    imp_reqs[0].by_components.append(by_comp)
+
+    ModelUtils.save_top_level_model(orig_ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
+
+    # now assemble it again but don't regen uuid's and don't change version
+    ssp_assemble = SSPAssemble()
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        markdown=ssp_name,
+        output=ssp_name,
+        verbose=0,
+        regenerate=False,
+        name=None,
+        version=new_version,
+        compdefs=args_compdefs
+    )
+    assert ssp_assemble._run(args) == 0
 
     # assemble it again but give new version and regen uuid's
     args = argparse.Namespace(
