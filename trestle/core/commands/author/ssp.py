@@ -533,7 +533,7 @@ class SSPAssemble(AuthorCommonCommand):
                 CatalogReader.read_ssp_md_content(md_path, ssp, comp_dict, part_id_map_by_label, context)
 
                 import_profile: ossp.ImportProfile = gens.generate_sample_model(ossp.ImportProfile)
-                import_profile.href = 'REPLACE_ME'
+                import_profile.href = const.REPLACE_ME
                 ssp.import_profile = import_profile
 
             # now that we know the complete list of needed components, add them to the sys_imp

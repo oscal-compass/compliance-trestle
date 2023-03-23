@@ -25,7 +25,7 @@ nav:
   - Compliance posture: tutorials/continuous-compliance/continuous-compliance.md
   - Trestle Authoring:
     - Governance of Authored Documents: trestle_author.md
-    - SSP, Catalog, and Profile Authoring: tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring.md
+    - Catalog, Profile, ComponentDefinition, and SSP Authoring: tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring.md
   - Trestle Transformers and Tasks:
     - Transformer construction: tutorials/task.transformer-construction/transformer-construction.md
     - Task - task.csv-to-oscal-cd: tutorials/task.csv-to-oscal-cd/transformation.md
