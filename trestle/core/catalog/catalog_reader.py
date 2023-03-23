@@ -360,6 +360,12 @@ class CatalogReader():
                 control_id = control_file.stem
                 md_header, control_comp_dict = CatalogReader._read_comp_info_from_md(control_file, context)
                 for comp_name, comp_info_dict in control_comp_dict.items():
+                    if comp_name not in comp_dict:
+                        err_msg = f'Control {control_id} references component {comp_name} not defined in a component-definition.'  # noqa E501
+                        # give added guidance if no comp defs were specified at command line
+                        if not context.comp_def_name_list:
+                            err_msg += '  Please specify the names of any component-definitions needed for assembly.'
+                        raise TrestleError(err_msg)
                     CatalogReader._update_ssp_with_comp_info(
                         ssp, control_id, comp_dict[comp_name], comp_info_dict, part_id_map_by_label
                     )

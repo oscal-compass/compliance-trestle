@@ -25,7 +25,7 @@ import trestle.core.generators as gens
 import trestle.core.generic_oscal as generic
 import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
-from trestle.common import const, file_utils
+from trestle.common import const, file_utils, list_utils
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.author.ssp import SSPAssemble, SSPFilter, SSPGenerate
 from trestle.core.control_context import ContextPurpose, ControlContext
@@ -321,6 +321,9 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert imp_reqs[0].by_components[0].set_parameters[1].param_id == 'shared_param_1'
     assert imp_reqs[0].by_components[0].set_parameters[1].values[0] == 'shared_param_1_aa_opt_2'
     assert imp_reqs[0].set_parameters[0].values[0] == 'my ssp val'
+
+    by_comp = orig_ssp.control_implementation.implemented_requirements[0].by_components[2]
+    assert by_comp.description == prose_sys
 
     orig_file_creation = orig_ssp_path.stat().st_mtime
 
@@ -668,3 +671,55 @@ def test_ssp_warning_missing_control(tmp_trestle_dir: pathlib.Path, capsys) -> N
     assert ssp_gen._run(gen_args) == 0
     _, err = capsys.readouterr()
     assert 'Component comp_aa references control ac-1 not in profile.' in err
+
+
+def test_ssp_assemble_no_comps(tmp_trestle_dir: pathlib.Path, capsys) -> None:
+    """Test ssp assemble with no compdefs."""
+    gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
+    gen_args.compdefs = None
+    gen_args.yaml_header = None
+
+    ssp_gen = SSPGenerate()
+    assert ssp_gen._run(gen_args) == 0
+
+    prose_sys = 'My response for This System'
+
+    # edit it a bit
+    ac_1_path = tmp_trestle_dir / ssp_name / 'ac/ac-1.md'
+    assert test_utils.substitute_text_in_file(
+        ac_1_path, '<!-- Add implementation prose for the main This System component for control: ac-1 -->', prose_sys
+    )
+    # change status for sys comp
+    assert test_utils.substitute_text_in_file(ac_1_path, 'Status: planned', 'Status: alternative')
+
+    # now assemble the edited controls into json ssp
+    ssp_assemble = SSPAssemble()
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        markdown=ssp_name,
+        output=ssp_name,
+        verbose=0,
+        regenerate=False,
+        version=None,
+        name=None,
+        compdefs=None
+    )
+    assert ssp_assemble._run(args) == 0
+
+    assem_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+    assert len(assem_ssp.system_implementation.components) == 1
+    # following tests pass on windows but not others
+    imp_req = list_utils.get_item_from_list(
+        assem_ssp.control_implementation.implemented_requirements, 'ac-1', lambda x: x.control_id
+    )
+    by_comp = imp_req.by_components[0]
+    assert by_comp.description == prose_sys
+    assert by_comp.implementation_status.state == 'alternative'
+
+    assert test_utils.replace_line_in_file_after_tag(
+        ac_1_path, 'Status: alternative', '\n### Bad Component\n\n#### Status planned\n'
+    )
+    assert ssp_assemble._run(args) == 1
+    _, err = capsys.readouterr()
+    assert 'Control ac-1 references component Bad Component not defined' in err
+    assert 'Please specify the names of any component-definitions' in err
