@@ -395,6 +395,12 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
         compdefs=args_compdefs
     )
     assert ssp_assemble._run(args) == 0
+    # loads edited ssp again
+    edited_ssp, edited_ssp_path = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+    components = edited_ssp.system_implementation.components
+    imp_reqs = edited_ssp.control_implementation.implemented_requirements
+    assert not components.__contains__(component_imp)
+    assert not imp_reqs[0].by_components.__contains__(by_comp)
 
     # assemble it again but give new version and regen uuid's
     args = argparse.Namespace(
