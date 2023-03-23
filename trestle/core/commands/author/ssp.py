@@ -29,7 +29,7 @@ import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
 from trestle.common import const, file_utils, log
 from trestle.common.err import TrestleError, handle_generic_command_exception
-from trestle.common.list_utils import as_list, comma_sep_to_list, delete_items_from_list, none_if_empty
+from trestle.common.list_utils import as_list, comma_sep_to_list, delete_list_from_list, none_if_empty
 from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog.catalog_api import CatalogAPI
@@ -387,19 +387,23 @@ class SSPAssemble(AuthorCommonCommand):
                         comp_uuids = [x.uuid for x in comp_dict.values()]
                         for imp_requirement in as_list(ssp.control_implementation.implemented_requirements):
                             diffs = [
-                                x.component_uuid
-                                for x in imp_requirement.by_components
-                                if x.component_uuid not in comp_uuids
+                                by_component
+                                for by_component in imp_requirement.by_components
+                                if by_component.component_uuid not in comp_uuids
                             ]
-                            for diff in diffs:
-                                logger.warning(
-                                    f'By_component {diff} removed from implemented requirement '
-                                    f'{imp_requirement.control_id} '
-                                )
                             if diffs:
-                                imp_requirement.by_components = delete_items_from_list(
-                                    imp_requirement.by_components, diffs, lambda bc: bc.component_uuid
-                                )
+                                for diff in diffs:
+                                    logger.warning(
+                                        f'By_component {diff.component_uuid} removed from implemented requirement '
+                                        f'{imp_requirement.control_id} '
+                                    )
+                                index_list = [
+                                    imp_requirement.by_components.index(value)
+                                    for value in diffs
+                                    if value in imp_requirement.by_components
+                                ]
+                                delete_list_from_list(imp_requirement.by_components, index_list)
+
                         SSPAssemble._merge_imp_req_into_ssp(ssp, imp_req, set_params)
             ssp_comp.props = as_list(gen_comp.props)
             ssp_comp.props.extend(all_ci_props)
@@ -512,13 +516,18 @@ class SSPAssemble(AuthorCommonCommand):
 
                 # Verifies older compdefs in an ssp no longer exist in newly provided ones
                 comp_titles = [x.title for x in comp_dict.values()]
-                diffs = [x.title for x in ssp.system_implementation.components if x.title not in comp_titles]
+                ssp_sys_imp_comps = ssp.system_implementation.components
+                diffs = [x for x in ssp_sys_imp_comps if x.title not in comp_titles]
                 if diffs:
                     for diff in diffs:
-                        logger.warning(f'Component named: {diff} was removed from system components from ssp')
-                    ssp.system_implementation.components = delete_items_from_list(
-                        ssp.system_implementation.components, diffs, lambda bc: bc.title
-                    )
+                        logger.warning(f'Component named: {diff.title} was removed from system components from ssp')
+                    index_list = [
+                        ssp_sys_imp_comps.index(value)
+                        for value in diffs
+                        if value in ssp_sys_imp_comps
+                    ]
+                    delete_list_from_list(ssp.system_implementation.components, index_list)
+
                 self._merge_comp_defs(ssp, comp_dict, context, catalog_interface)
                 CatalogReader.read_ssp_md_content(md_path, ssp, comp_dict, part_id_map_by_label, context)
 
