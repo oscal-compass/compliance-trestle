@@ -673,11 +673,15 @@ def test_ssp_assemble_no_comps(tmp_trestle_dir: pathlib.Path, capsys) -> None:
     assem_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     assert len(assem_ssp.system_implementation.components) == 1
     # following tests pass on windows but not others
-    # FIXME by_comp = assem_ssp.control_implementation.implemented_requirements[0].by_components[0]
-    # FIXME assert by_comp.description == prose_sys
-    # FIXME assert by_comp.implementation_status.state == 'alternative'
+    test_ok = False
+    for imp_req in assem_ssp.control_implementation.implemented_requirements:
+        by_comp = imp_req.by_components[0]
+        if by_comp.description == prose_sys and by_comp.implementation_status.state == 'alternative':
+            test_ok = True
+            break
+    assert test_ok
 
-    test_utils.replace_line_in_file_after_tag(
+    assert test_utils.replace_line_in_file_after_tag(
         ac_1_path, 'Status: alternative', '\n### Bad Component\n\n#### Status planned\n'
     )
     assert ssp_assemble._run(args) == 1
