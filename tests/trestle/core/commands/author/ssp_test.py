@@ -25,7 +25,7 @@ import trestle.core.generators as gens
 import trestle.core.generic_oscal as generic
 import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
-from trestle.common import const, file_utils
+from trestle.common import const, file_utils, list_utils
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.author.ssp import SSPAssemble, SSPFilter, SSPGenerate
 from trestle.core.control_context import ContextPurpose, ControlContext
@@ -673,13 +673,12 @@ def test_ssp_assemble_no_comps(tmp_trestle_dir: pathlib.Path, capsys) -> None:
     assem_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     assert len(assem_ssp.system_implementation.components) == 1
     # following tests pass on windows but not others
-    test_ok = False
-    for imp_req in assem_ssp.control_implementation.implemented_requirements:
-        by_comp = imp_req.by_components[0]
-        if by_comp.description == prose_sys and by_comp.implementation_status.state == 'alternative':
-            test_ok = True
-            break
-    assert test_ok
+    imp_req = list_utils.get_item_from_list(
+        assem_ssp.control_implementation.implemented_requirements, 'ac-1', lambda x: x.control_id
+    )
+    by_comp = imp_req.by_components[0]
+    assert by_comp.description == prose_sys
+    assert by_comp.implementation_status.state == 'alternative'
 
     assert test_utils.replace_line_in_file_after_tag(
         ac_1_path, 'Status: alternative', '\n### Bad Component\n\n#### Status planned\n'
