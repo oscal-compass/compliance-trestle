@@ -387,15 +387,15 @@ class SSPAssemble(AuthorCommonCommand):
                         comp_uuids = [x.uuid for x in comp_dict.values()]
                         for imp_requirement in as_list(ssp.control_implementation.implemented_requirements):
                             diffs = [
-                                by_component
-                                for by_component in imp_requirement.by_components
+                                by_component for by_component in imp_requirement.by_components
                                 if by_component.component_uuid not in comp_uuids
                             ]
                             if diffs:
                                 for diff in diffs:
                                     logger.warning(
                                         f'By_component {diff.component_uuid} removed from implemented requirement '
-                                        f'{imp_requirement.control_id} '
+                                        f'{imp_requirement.control_id} because the corresponding component is not in '
+                                        'the specified compdefs '
                                     )
                                 index_list = [
                                     imp_requirement.by_components.index(value)
@@ -520,12 +520,12 @@ class SSPAssemble(AuthorCommonCommand):
                 diffs = [x for x in ssp_sys_imp_comps if x.title not in comp_titles]
                 if diffs:
                     for diff in diffs:
-                        logger.warning(f'Component named: {diff.title} was removed from system components from ssp')
-                    index_list = [
-                        ssp_sys_imp_comps.index(value)
-                        for value in diffs
-                        if value in ssp_sys_imp_comps
-                    ]
+                        logger.warning(
+                            f'Component named: {diff.title} was removed from system components from ssp '
+                            'because the corresponding component is not in '
+                            'the specified compdefs '
+                        )
+                    index_list = [ssp_sys_imp_comps.index(value) for value in diffs if value in ssp_sys_imp_comps]
                     delete_list_from_list(ssp.system_implementation.components, index_list)
 
                 self._merge_comp_defs(ssp, comp_dict, context, catalog_interface)
