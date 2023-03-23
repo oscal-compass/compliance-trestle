@@ -322,6 +322,9 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert imp_reqs[0].by_components[0].set_parameters[1].values[0] == 'shared_param_1_aa_opt_2'
     assert imp_reqs[0].set_parameters[0].values[0] == 'my ssp val'
 
+    by_comp = orig_ssp.control_implementation.implemented_requirements[0].by_components[2]
+    assert by_comp.description == prose_sys
+
     orig_file_creation = orig_ssp_path.stat().st_mtime
 
     # now write it back out and confirm text is still there
@@ -673,7 +676,9 @@ def test_ssp_assemble_no_comps(tmp_trestle_dir: pathlib.Path, capsys) -> None:
     assert by_comp.description == prose_sys
     assert by_comp.implementation_status.state == 'alternative'
 
-    test_utils.replace_line_in_file_after_tag(ac_1_path, 'alternative', '\n### Bad Component\n\n#### Status planned\n')
+    test_utils.replace_line_in_file_after_tag(
+        ac_1_path, 'Status: alternative', '\n### Bad Component\n\n#### Status planned\n'
+    )
     assert ssp_assemble._run(args) == 1
     _, err = capsys.readouterr()
     assert 'Control ac-1 references component Bad Component not defined' in err
