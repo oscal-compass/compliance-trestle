@@ -371,10 +371,10 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     imp_reqs = orig_ssp.control_implementation.implemented_requirements
     components = orig_ssp.system_implementation.components
 
-    component_imp = gens.generate_sample_model(ossp.SystemComponent)
-    component_imp.uuid = '46b7a556-72bb-4281-b805-a8f4030ca0e3'
-    component_imp.title = 'foo'
-    components.append(component_imp)
+    new_component = gens.generate_sample_model(ossp.SystemComponent)
+    new_component.uuid = '46b7a556-72bb-4281-b805-a8f4030ca0e3'
+    new_component.title = 'foo'
+    components.append(new_component)
 
     by_comp = gens.generate_sample_model(ossp.ByComponent)
     by_comp.component_uuid = '46b7a556-72bb-4281-b805-a8f4030ca0e3'
@@ -399,8 +399,8 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     edited_ssp, edited_ssp_path = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     components = edited_ssp.system_implementation.components
     imp_reqs = edited_ssp.control_implementation.implemented_requirements
-    assert not components.__contains__(component_imp)
-    assert not imp_reqs[0].by_components.__contains__(by_comp)
+    assert not [x for x in components if x.uuid == '46b7a556-72bb-4281-b805-a8f4030ca0e3']
+    assert not [x for x in imp_reqs[0].by_components if x.component_uuid == '46b7a556-72bb-4281-b805-a8f4030ca0e3']
 
     # assemble it again but give new version and regen uuid's
     args = argparse.Namespace(
