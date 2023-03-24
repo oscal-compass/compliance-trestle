@@ -14,7 +14,6 @@
 """Handle reading of writing controls from markdown."""
 import logging
 import pathlib
-import re
 from typing import Any, Dict, List, Optional, Tuple
 
 import trestle.core.generic_oscal as generic
@@ -22,9 +21,8 @@ import trestle.oscal.catalog as cat
 from trestle.common import const
 from trestle.common.common_types import TypeWithProps
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import as_list, deep_get, delete_list_from_list, merge_dicts, none_if_empty
+from trestle.common.list_utils import as_list, deep_get, delete_list_from_list, none_if_empty
 from trestle.common.model_utils import ModelUtils
-from trestle.common.str_utils import spaces_and_caps_to_snake
 from trestle.core import generators as gens
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlInterface
@@ -327,102 +325,6 @@ class ControlReader:
         return sort_id, imp_req
 
     @staticmethod
-    def _add_control_part(
-        control_id: str,
-        subnode: ControlMarkdownNode,
-        required_sections_list: List[str],
-        sections_dict: Dict[str, str],
-        snake_dict: Dict[str, str],
-        control_parts: List[common.Part],
-        found_sections: List[str],
-        write_mode: bool
-    ) -> bool:
-        match = re.match(const.CONTROL_REGEX, subnode.key)
-        if match:
-            part_name_raw = match.groups(0)[0]
-            prose = ControlReader._clean_prose(subnode.content.text)
-            prose = '\n'.join(prose)
-            # prose may be empty but make part anyway if it was in markdown
-            # it also may contain sub-parts
-            part_name_snake = spaces_and_caps_to_snake(part_name_raw)
-            part_name = snake_dict.get(part_name_snake, part_name_snake)
-            # if section is required and it hasn't been edited with prose raise error
-            if not write_mode and part_name in required_sections_list and prose.startswith(
-                    const.PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT):
-                missing_section = sections_dict.get(part_name, part_name)
-                raise TrestleError(f'Control {control_id} is missing prose for required section {missing_section}')
-            id_ = f'{control_id}_{part_name}'
-            # use sections dict to find correct title otherwise leave it None
-            part_title = sections_dict.get(part_name, None)
-            part = common.Part(id=id_, name=part_name, prose=prose, title=part_title)
-            part.parts = ControlReader._add_sub_parts(part.id, subnode)
-            control_parts.append(part)
-            # for required sections, only count them as found if they contain prose
-            # if not (part_name in required_sections_list and not prose):
-            found_sections.append(part_name)
-            return True
-        return False
-
-    @staticmethod
-    def _add_sub_parts(part_id: str,
-                       node: ControlMarkdownNode,
-                       fixed_part_name: Optional[str] = None) -> Optional[List[common.Part]]:
-        if not node.subnodes:
-            return None
-        parts = []
-        for subnode in node.subnodes:
-            # the count of hashes should be correct based on parsing already down by the markdown parser
-            match = re.match(const.AFTER_HASHES_REGEX, subnode.key)
-            if not match:
-                raise TrestleError(f'Unexpected editable header {subnode.key} found in part {part_id}')
-            part_name = match.groups(0)[0]
-            part_name_snake = spaces_and_caps_to_snake(part_name)
-            id_ = part_id + '.' + part_name_snake
-            prose_lines = ControlReader._clean_prose(subnode.content.text)
-            prose = '\n'.join(prose_lines)
-            final_part_name = fixed_part_name if fixed_part_name else part_name_snake
-            part = common.Part(id=id_, name=final_part_name, prose=prose)
-            part.parts = ControlReader._add_sub_parts(part.id, subnode, fixed_part_name)
-            parts.append(part)
-        return parts
-
-    @staticmethod
-    def _add_sub_part(
-        control_id: str,
-        subnode: ControlMarkdownNode,
-        label_map: Dict[str, str],
-        by_id_parts: Dict[str, List[common.Part]],
-        sections_dict: Dict[str, str]
-    ) -> None:
-        """Add subnode contents to the list of by_id statement parts for the top level of the control."""
-        match = re.match(const.PART_REGEX, subnode.key)
-        if not match:
-            raise TrestleError(f'Unexpected editable header {subnode.key} found in control {control_id}')
-        by_part_label = match.groups(0)[0]
-        control_label_map = label_map.get(control_id, None)
-        if control_label_map is None:
-            raise TrestleError(f'No label map found for control {control_id}')
-        by_part_id = control_label_map.get(by_part_label, None)
-        if by_part_id is None:
-            raise TrestleError(f'No part id found for label {by_part_label} in control {control_id}')
-        inv_map = {v: k for k, v in sections_dict.items()} if sections_dict else {}
-        for node2 in as_list(subnode.subnodes):
-            hash_pattern = '### '
-            if node2.key.startswith(hash_pattern):
-                part_name = spaces_and_caps_to_snake(node2.key.replace(hash_pattern, '', 1).strip())
-                part_name = inv_map.get(part_name, part_name)
-                prose = ControlReader._clean_prose(node2.content.text)
-                prose = '\n'.join(prose)
-                id_ = f'{by_part_id}.{part_name}'
-                part = common.Part(id=id_, name=part_name, prose=prose)
-                part.parts = ControlReader._add_sub_parts(part.id, node2)
-            else:
-                raise TrestleError(f'Unexpected header {node2.key} found in control {control_id}')
-            if by_part_id not in by_id_parts:
-                by_id_parts[by_part_id] = []
-            by_id_parts[by_part_id].append(part)
-
-    @staticmethod
     def _get_props_list(control_id: str, label_map: Dict[str, str],
                         yaml_header: Dict[str, Any]) -> Tuple[List[common.Property], Dict[str, List[common.Property]]]:
         """Get the list of props in the yaml header of this control as separate lists with and without by_id."""
@@ -446,27 +348,17 @@ class ControlReader:
     def read_editable_content(
         control_path: pathlib.Path,
         required_sections_list: List[str],
-        label_map: Dict[str, Dict[str, str]],
-        sections_dict: Dict[str, str],
+        part_label_to_id_map: Dict[str, Dict[str, str]],
+        cli_section_dict: Dict[str, str],
         write_mode: bool
     ) -> Tuple[str, List[prof.Alter], Dict[str, Any]]:
         """Get parts for the markdown control corresponding to Editable Content - along with the set-parameter dict."""
         control_id = control_path.stem
-        new_alters: List[prof.Alter] = []
-        snake_dict: Dict[str, str] = {}
 
         md_api = MarkdownAPI()
-        yaml_header, control_tree = md_api.processor.process_markdown(control_path)
+        yaml_header, control_tree = md_api.processor.process_control_markdown(control_path, cli_section_dict, part_label_to_id_map)  # noqa: E501
         # extract the sort_id if present in header
         sort_id = yaml_header.get(const.SORT_ID, control_id)
-        # merge the incoming sections_dict with the one in the header, with priority to incoming
-        header_sections_dict: Dict[str, str] = yaml_header.get(const.SECTIONS_TAG, {})
-        merged_sections_dict = merge_dicts(header_sections_dict, sections_dict)
-        # query header for mapping of short to long section names
-        # create reverse lookup of long snake name to short name needed for part
-        for key, value in merged_sections_dict.items():
-            snake_dict[spaces_and_caps_to_snake(value)] = key
-        found_sections: List[str] = []
 
         editable_node = None
         for header in list(control_tree.get_all_headers_for_level(1)):
@@ -476,21 +368,17 @@ class ControlReader:
         if not editable_node:
             return sort_id, [], {}
 
-        control_parts = []
-        by_id_parts = {}
-        for subnode in editable_node.subnodes:
-            # check if it is a part added directly to the list of parts for the control
-            if not ControlReader._add_control_part(control_id,
-                                                   subnode,
-                                                   required_sections_list,
-                                                   merged_sections_dict,
-                                                   snake_dict,
-                                                   control_parts,
-                                                   found_sections,
-                                                   write_mode):
-                # otherwise add it to the list of new parts to be added to the sub-parts of a part based on by-id
-                ControlReader._add_sub_part(control_id, subnode, label_map, by_id_parts, merged_sections_dict)
+        editable_parts = control_tree.get_editable_parts_and_subparts()
+        by_id_parts = control_tree.get_by_id_parts()
+        found_sections = [p.name for p in editable_parts]
 
+        # Validate that all required sections have a prose
+        for editable_part in editable_parts:
+            if not write_mode and editable_part.name in required_sections_list and editable_part.prose.startswith(
+                    const.PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT):
+                raise TrestleError(f'Control {control_id} is missing prose for required section {editable_part.title}')
+
+        # Validate that all required sections are present
         missing_sections = set(required_sections_list) - set(found_sections)
         if missing_sections:
             raise TrestleError(f'Control {control_id} is missing required sections {missing_sections}')
@@ -500,7 +388,7 @@ class ControlReader:
         if header_params:
             param_dict.update(header_params)
 
-        props, props_by_id = ControlReader._get_props_list(control_id, label_map, yaml_header)
+        props, props_by_id = ControlReader._get_props_list(control_id, part_label_to_id_map, yaml_header)
 
         # When adding props without by_id it can either be starting or ending and we default to ending
         # This is the default behavior as described for implicit binding in
@@ -511,9 +399,11 @@ class ControlReader:
         adds: List[prof.Add] = []
 
         # add the parts and props at control level
-        if control_parts or props:
+        if editable_parts or props:
             adds.append(
-                prof.Add(parts=none_if_empty(control_parts), props=none_if_empty(props), position=prof.Position.ending)
+                prof.Add(
+                    parts=none_if_empty(editable_parts), props=none_if_empty(props), position=prof.Position.ending
+                )
             )
 
         # add the parts and props at the part level, by-id
@@ -552,12 +442,12 @@ class ControlReader:
         control.title = control_tree.subnodes[0].content.control_title
 
         control_statement = control_tree.get_control_statement()
-        statement_part = control_statement.content.statement_part
+        statement_part = control_statement.content.a_part
 
         control.parts = [statement_part] if statement_part else None
         control_objective = control_tree.get_control_objective()
         if control_objective is not None:
-            objective_part = control_objective.content.objective_part
+            objective_part = control_objective.content.a_part
             if objective_part:
                 if control.parts:
                     control.parts.append(objective_part)
@@ -566,7 +456,7 @@ class ControlReader:
 
         control_guidance = control_tree.get_control_guidance()
         if control_guidance is not None:
-            guidance_part = control_guidance.content.guidance_part
+            guidance_part = control_guidance.content.a_part
             if guidance_part:
                 if control.parts:
                     control.parts.append(guidance_part)
@@ -575,8 +465,8 @@ class ControlReader:
 
         all_other_parts = []
         for section_node in control_tree.get_other_control_parts():
-            parts = section_node.content.other_parts
-            all_other_parts.extend(parts)
+            parts = section_node.content.a_part
+            all_other_parts.extend([parts])
         if all_other_parts:
             if control.parts:
                 control.parts.extend(all_other_parts)

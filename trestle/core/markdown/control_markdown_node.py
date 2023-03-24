@@ -17,14 +17,17 @@
 from __future__ import annotations
 
 import logging
+import re
 import string
 from typing import List, Optional, Tuple
 
 from trestle.common import const
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import none_if_empty
+from trestle.common.list_utils import as_filtered_list, as_list, none_if_empty
+from trestle.common.str_utils import spaces_and_caps_to_snake
 from trestle.core.control_interface import ControlInterface
 from trestle.core.markdown.base_markdown_node import BaseMarkdownNode, BaseSectionContent
+from trestle.core.markdown.markdown_const import HTML_COMMENT_END_REGEX, HTML_COMMENT_START
 from trestle.oscal import common
 
 logger = logging.getLogger(__name__)
@@ -38,12 +41,16 @@ class TreeContext:
         self.control_id = ''
         self.control_group = ''
         self.control_title = ''
+        self.part_label_to_id_map = None
+        self.section_to_part_name_map = None
 
     def reset(self):
         """Reset global control tree context."""
         self.control_id = ''
         self.control_group = ''
         self.control_title = ''
+        self.part_label_to_id_map = None
+        self.section_to_part_name_map = None
 
 
 tree_context = TreeContext()
@@ -55,10 +62,8 @@ class ControlSectionContent(BaseSectionContent):
     def __init__(self):
         """Initialize section content."""
         super(ControlSectionContent, self).__init__()
-        self.statement_part = None
-        self.objective_part = None
-        self.guidance_part = None
-        self.other_parts = []
+        self.a_part = None
+        self.by_id_name = ''
 
     def union(self, node: ControlMarkdownNode) -> None:
         """Unites contents together."""
@@ -73,14 +78,12 @@ class ControlMarkdownNode(BaseMarkdownNode):
         super(ControlMarkdownNode, self).__init__(key, content, starting_line)
         self.content: ControlSectionContent = content
 
-    def _build_tree(
-        self,
-        lines: List[str],
-        root_key: str,
-        starting_line: int,
-        level: int,
-        governed_header: Optional[str] = None
-    ) -> Tuple[ControlMarkdownNode, int]:
+    def _build_tree(self,
+                    lines: List[str],
+                    root_key: str,
+                    starting_line: int,
+                    level: int,
+                    parent_part_id: str = '') -> Tuple[ControlMarkdownNode, int]:
         """
         Build a tree from the markdown recursively.
 
@@ -104,17 +107,26 @@ class ControlMarkdownNode(BaseMarkdownNode):
         is_control_statement = root_key.lower() == '## control statement'
         is_control_objective = root_key.lower() == '## control objective'
         is_control_guidance = root_key.lower() == '## control guidance'
-        _ = f'# {const.EDITABLE_CONTENT}'.lower() in root_key.lower()  # currently handled by control_reader
+        is_editable_by_id_part = self._does_contain(root_key.lower(), const.PART_REGEX)
+        is_editable_content = f'# {const.EDITABLE_CONTENT}'.lower() in root_key.lower(
+        )  # currently handled by control_reader
         is_generic_control_part = '## control' in root_key.lower(
         ) and not (is_control_guidance or is_control_objective or is_control_statement)
+        is_generic_subpart = '### ' in root_key.lower() and not (
+            is_generic_control_part or is_control_guidance or is_control_objective or is_control_statement
+            or is_editable_by_id_part
+        )
 
-        if is_control_guidance or is_generic_control_part:
-            prefix = const.CONTROL_HEADER + ' '
-            control_md_heading_label = root_key[len(prefix):].strip()
-            control_md_heading_label_ncname = ControlInterface.strip_to_make_ncname(control_md_heading_label)
+        part_id, part_name, part_title, by_id_part = self._get_part_info_from_section_name(root_key, parent_part_id,
+                                                                                           is_control_statement,
+                                                                                           is_control_objective,
+                                                                                           is_control_guidance,
+                                                                                           is_editable_by_id_part,
+                                                                                           is_generic_control_part,
+                                                                                           is_generic_subpart)
 
         current_key_lvl = self._get_header_level_if_valid(root_key)
-        if current_key_lvl and current_key_lvl == 1:
+        if current_key_lvl and current_key_lvl == 1 and not is_editable_content:
             # Parse control title
             if tree_context.control_id:
                 logger.debug(
@@ -151,64 +163,43 @@ class ControlMarkdownNode(BaseMarkdownNode):
                             f'Please delete this subsection and refer to docs on the required format.'
                         )
                     # build subtree
-                    subtree, i = self._build_tree(lines, line, i + 1, level + 1)
+                    subtree, i = self._build_tree(lines, line, i + 1, level + 1, part_id)
                     node_children.append(subtree)
                     content.union(subtree)
+                    if content.a_part and subtree.content.a_part and not (is_control_statement or is_control_guidance
+                                                                          or is_control_objective):
+                        content.a_part.parts = as_list(content.a_part.parts)
+                        content.a_part.parts.append(subtree.content.a_part)
                     # Control parts can have general markdown in the prose, if we are in the control part
                     # add its contents under the prose of a parent
-                    _add_child_prose_if_need(content.statement_part, subtree.content.raw_text, is_control_statement)
-                    _add_child_prose_if_need(content.objective_part, subtree.content.raw_text, is_control_objective)
-                    _add_child_prose_if_need(content.guidance_part, subtree.content.raw_text, is_control_guidance)
-                    if is_generic_control_part:
-                        _add_child_prose_if_need(
-                            content.other_parts[-1], subtree.content.raw_text, is_generic_control_part
-                        )
+                    _add_child_prose_if_need(
+                        content.a_part,
+                        subtree.content.raw_text, (is_control_statement or is_control_objective or is_control_guidance)
+                    )
                     continue
                 else:
                     i -= 1  # need to revert back one line to properly handle next heading
                     break  # level of the header is above or equal to the current level, subtree is over
-            if is_control_statement:
-                # Read control statement to a part object
-                statement_id = ControlInterface.create_statement_id(tree_context.control_id)
-                content.statement_part = self._create_part_if_needed(
-                    content.statement_part, const.STATEMENT, statement_id
-                )
-                i = self._process_part_line(i, line, lines, content.statement_part)
+            if is_control_statement or is_control_objective:
+                # Read control statement or objective to a part object
+                content.a_part = self._create_part_if_needed(content.a_part, part_name, part_id)
+                i = self._process_part_line(i, line, lines, content.a_part)
                 continue
 
-            if is_control_objective:
-                # Read control objective to a part object
-                content.objective_part = self._create_part_if_needed(
-                    content.objective_part, 'objective', f'{tree_context.control_id}_obj'
-                )
-                i = self._process_part_line(i, line, lines, content.objective_part)
+            if is_control_guidance or is_editable_by_id_part or is_generic_control_part:
+                # Read control guidance, part or control part to a part object
+                content.a_part = self._create_part_if_needed(content.a_part, part_name, part_id)
+                content.a_part.title = part_title
+                if by_id_part:
+                    content.by_id_name = by_id_part
+                i = self._process_part_line(i, line, lines, content.a_part, read_parts=False)
                 continue
 
-            if is_control_guidance:
-                # Read control guidance to a part object
-                guidance_id = ControlInterface.strip_to_make_ncname(tree_context.control_id + '_gdn')
-                content.guidance_part = self._create_part_if_needed(
-                    content.guidance_part, control_md_heading_label_ncname, guidance_id
-                )
-                i = self._process_part_line(i, line, lines, content.guidance_part, read_parts=False)
-                continue
-
-            if is_generic_control_part:
-                # Read other control parts to a part objects
-                if not content.other_parts:
-                    if not tree_context.control_id:
-                        raise TrestleError(
-                            'Unexpected error, control id, group and title should be before ## Control parts.'
-                            'However, none was found.'
-                        )
-
-                    part_id = ControlInterface.strip_to_make_ncname(
-                        tree_context.control_id + '_' + control_md_heading_label
-                    )
-                    a_part = common.Part(id=part_id, name=control_md_heading_label_ncname, prose='')
-                    content.other_parts.append(a_part)
-
-                i = self._process_part_line(i, line, lines, content.other_parts[-1], read_parts=False)
+            if is_generic_subpart:
+                # Read generic subpart
+                content.a_part = self._create_part_if_needed(content.a_part, part_name, part_id)
+                content.a_part.title = part_title
+                i = self._process_part_line(i, line, lines, content.a_part, read_parts=False)
                 continue
 
             # Nothing to do, simply increment
@@ -217,11 +208,7 @@ class ControlMarkdownNode(BaseMarkdownNode):
         first_line_to_grab = starting_line - 1 if starting_line else 0
         content.raw_text = '\n'.join(lines[first_line_to_grab:i])
 
-        _strip_prose_or_none(content.statement_part)
-        _strip_prose_or_none(content.objective_part)
-        _strip_prose_or_none(content.guidance_part)
-        for some_part in content.other_parts:
-            _strip_prose_or_none(some_part)
+        _strip_prose_or_none(content.a_part)
 
         md_node = ControlMarkdownNode(key=root_key, content=content, starting_line=first_line_to_grab)
         md_node.subnodes = node_children
@@ -238,6 +225,117 @@ class ControlMarkdownNode(BaseMarkdownNode):
     def get_control_guidance(self) -> Optional[ControlMarkdownNode]:
         """Get control guidance node."""
         return self.get_node_for_key('## Control Guidance')
+
+    def get_by_id_parts(self) -> dict[str, list[common.Part]]:
+        """Get by id editable parts."""
+        part_id_to_parts_map = {}
+        for node_key in as_filtered_list(self.content.subnodes_keys, lambda k: re.match(const.PART_REGEX, k.lower())):
+            # A by id part section
+            part_node = self.get_node_for_key(node_key)
+            if not part_node.content.a_part:
+                raise TrestleError(f'Error no part was found in section {part_node.key}.')
+            if part_node.content.by_id_name not in part_id_to_parts_map:
+                part_id_to_parts_map[part_node.content.by_id_name] = []
+            for subpart in part_node.subnodes:
+                # We only care about subsections of ## Part section
+                if subpart.content.a_part:
+                    part_id_to_parts_map[part_node.content.by_id_name].append(subpart.content.a_part)
+
+        return part_id_to_parts_map
+
+    def get_editable_parts_and_subparts(self) -> Optional[list[common.Part]]:
+        """Get editable parts and subparts if exist."""
+        by_id_parts = self.get_by_id_parts()
+        exclude_parts_id = list(by_id_parts.keys())
+        editable_node = self.get_node_for_key(f'# {const.EDITABLE_CONTENT}')
+        parts = self._get_subparts(editable_node, exclude_parts_id)
+        return parts
+
+    def _get_subparts(self,
+                      control_node: ControlMarkdownNode,
+                      exclude_ids: list[str] = None) -> Optional[list[common.Part]]:
+        """Get subparts of the control part node if exists."""
+        if not control_node:
+            raise TrestleError('No control node was provided to extract subparts.')
+        parts = []
+        for editable_part in as_filtered_list(control_node.subnodes, lambda p: p.content.a_part is not None):
+            if editable_part.content.a_part.id not in exclude_ids:
+                parts.append(editable_part.content.a_part)
+        return parts
+
+    def _get_part_info_from_section_name(
+        self,
+        root_key,
+        parent_id,
+        is_control_statement,
+        is_control_objective,
+        is_control_guidance,
+        is_editable_by_id_part,
+        is_generic_control_part,
+        is_generic_subpart
+    ) -> tuple[str, str, str, str]:
+        """Get part information such as id, name and title based on the section heading."""
+        part_id = ''
+        part_name = ''
+        part_title = None
+        by_part_id = None  # special case used for ## Part
+
+        if is_control_guidance or is_generic_control_part:
+            prefix = const.CONTROL_HEADER + ' '
+            control_md_heading_label = root_key[len(prefix):].strip()
+            control_md_heading_label_ncname = ControlInterface.strip_to_make_ncname(control_md_heading_label)
+            control_md_heading_label_snakename = spaces_and_caps_to_snake(control_md_heading_label)
+
+        if is_control_statement:
+            part_id = ControlInterface.create_statement_id(tree_context.control_id)
+            part_name = const.STATEMENT
+
+        if is_control_objective:
+            part_id = f'{tree_context.control_id}_obj'
+            part_name = 'objective'
+
+        if is_control_guidance:
+            # Read control guidance to a part object
+            part_id = ControlInterface.strip_to_make_ncname(tree_context.control_id + '_gdn')
+            part_name = control_md_heading_label_ncname
+
+        if is_editable_by_id_part:
+            # Read editable part
+            by_part_label = re.match(const.PART_REGEX, root_key.lower()).groups(0)[0]
+            control_label_map = tree_context.part_label_to_id_map.get(tree_context.control_id, None)
+            if control_label_map is None:
+                raise TrestleError(f'No label map found for control {tree_context.control_id}')
+            by_part_id = control_label_map.get(by_part_label, None)
+            if by_part_id is None:
+                raise TrestleError(f'No part id found for label {by_part_label} in control {tree_context.control_id}')
+
+            part_name = spaces_and_caps_to_snake(root_key.replace('#', '').replace('.', '').strip())
+            part_id = f'{by_part_id}'
+            part_title = root_key.replace('#', '').strip()
+
+        if is_generic_control_part:
+            # Read other control parts to a part objects
+            part_name = control_md_heading_label_snakename
+            if tree_context.section_to_part_name_map:
+                if control_md_heading_label in tree_context.section_to_part_name_map:
+                    part_name = tree_context.section_to_part_name_map[control_md_heading_label]
+
+                part_id = f'{tree_context.control_id}_{part_name}'
+                part_title = control_md_heading_label
+            else:
+                part_id = spaces_and_caps_to_snake(tree_context.control_id + '_' + control_md_heading_label)
+
+        if is_generic_subpart:
+            # Read other control parts to a part objects
+            match = re.match(const.AFTER_HASHES_REGEX, root_key)
+            if not match:
+                raise TrestleError(f'Unexpected editable header {root_key} found in part {part_id}')
+            part_name_raw = match.groups(0)[0]
+            part_name = spaces_and_caps_to_snake(part_name_raw)
+            parent_suffix = parent_id + '.' if parent_id else ''
+            part_id = parent_suffix + part_name
+
+        return part_id, part_name, part_title, by_part_id
 
     def get_other_control_parts(self) -> List[Optional[ControlMarkdownNode]]:
         """Get all other control parts that are not statement, guidance or objective."""
@@ -257,7 +355,7 @@ class ControlMarkdownNode(BaseMarkdownNode):
         return all_other_nodes
 
     def _create_part_if_needed(self, content_part: common.Part, part_name: str, part_id: str, prose: str = ''):
-        """Create a new part if does not exist."""
+        """Create a new part if does not exist or return existing part."""
         if not content_part:
             if not tree_context.control_id:
                 raise TrestleError(
@@ -272,7 +370,18 @@ class ControlMarkdownNode(BaseMarkdownNode):
     def _process_part_line(
         self, line_idx: int, line: str, lines: List[str], part: common.Part, read_parts: bool = True
     ) -> int:
-        """Process line for the part."""
+        """
+        Process line for the part.
+
+        If the read_parts is given and the line starts with '-' then
+        the markdown list will be read to the subparts of the given part.
+        """
+        if self._does_start_with(line, HTML_COMMENT_START):
+            comment_lines, line_idx = self._read_html_block(lines, line, line_idx + 1, HTML_COMMENT_END_REGEX)
+            if line_idx >= len(lines):
+                return line_idx
+            line = lines[line_idx]
+
         if not line:
             # Empty line
             part.prose += '\n'

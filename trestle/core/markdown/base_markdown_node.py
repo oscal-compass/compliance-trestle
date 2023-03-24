@@ -53,11 +53,11 @@ class BaseMarkdownNode:
         self.starting_line = starting_line
 
     @classmethod
-    def build_tree_from_markdown(cls, lines: List[str], governed_header: Optional[str] = None):
+    def build_tree_from_markdown(cls, lines: List[str]):
         """Construct a tree out of the given markdown."""
         ob = cls.__new__(cls)
         start_level = ob._get_max_header_lvl(lines)
-        ob, _ = ob._build_tree(lines, 'root', 0, start_level, governed_header)
+        ob, _ = ob._build_tree(lines, 'root', 0, start_level)
         return ob
 
     def get_all_headers_for_level(self, level: int) -> Iterable[str]:
@@ -148,14 +148,8 @@ class BaseMarkdownNode:
             delete_list_from_list(text_lines, list(range(node.starting_line, last_line)))
         return text_lines
 
-    def _build_tree(
-        self,
-        lines: List[str],
-        root_key: str,
-        starting_line: int,
-        level: int,
-        governed_header: Optional[str] = None
-    ) -> Tuple[BaseMarkdownNode, int]:
+    def _build_tree(self, lines: List[str], root_key: str, starting_line: int,
+                    level: int) -> Tuple[BaseMarkdownNode, int]:
         """Build a tree from the markdown recursively."""
         content = BaseSectionContent()
         node_children = []
