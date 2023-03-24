@@ -19,7 +19,7 @@ from __future__ import annotations
 import logging
 import re
 import string
-from typing import List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from trestle.common import const
 from trestle.common.err import TrestleError
@@ -226,7 +226,7 @@ class ControlMarkdownNode(BaseMarkdownNode):
         """Get control guidance node."""
         return self.get_node_for_key('## Control Guidance')
 
-    def get_by_id_parts(self) -> dict[str, list[common.Part]]:
+    def get_by_id_parts(self) -> Dict[str, List[common.Part]]:
         """Get by id editable parts."""
         part_id_to_parts_map = {}
         for node_key in as_filtered_list(self.content.subnodes_keys, lambda k: re.match(const.PART_REGEX, k.lower())):
@@ -243,7 +243,7 @@ class ControlMarkdownNode(BaseMarkdownNode):
 
         return part_id_to_parts_map
 
-    def get_editable_parts_and_subparts(self) -> Optional[list[common.Part]]:
+    def get_editable_parts_and_subparts(self) -> Optional[List[common.Part]]:
         """Get editable parts and subparts if exist."""
         by_id_parts = self.get_by_id_parts()
         exclude_parts_id = list(by_id_parts.keys())
@@ -253,7 +253,7 @@ class ControlMarkdownNode(BaseMarkdownNode):
 
     def _get_subparts(self,
                       control_node: ControlMarkdownNode,
-                      exclude_ids: list[str] = None) -> Optional[list[common.Part]]:
+                      exclude_ids: List[str] = None) -> Optional[List[common.Part]]:
         """Get subparts of the control part node if exists."""
         if not control_node:
             raise TrestleError('No control node was provided to extract subparts.')
@@ -273,7 +273,7 @@ class ControlMarkdownNode(BaseMarkdownNode):
         is_editable_by_id_part,
         is_generic_control_part,
         is_generic_subpart
-    ) -> tuple[str, str, str, str]:
+    ) -> Tuple[str, str, str, str]:
         """Get part information such as id, name and title based on the section heading."""
         part_id = ''
         part_name = ''
