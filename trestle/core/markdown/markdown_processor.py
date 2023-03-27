@@ -65,8 +65,8 @@ class MarkdownProcessor:
     def process_control_markdown(
         self,
         md_path: pathlib.Path,
-        cli_section_dict: dict[str, str] = None,
-        part_label_to_id_map: dict[str, str] = None
+        cli_section_dict: Dict[str, str] = None,
+        part_label_to_id_map: Dict[str, str] = None
     ) -> Tuple[Dict, ControlMarkdownNode]:
         """Parse control markdown and build tree with identified OSCAL components."""
         try:
