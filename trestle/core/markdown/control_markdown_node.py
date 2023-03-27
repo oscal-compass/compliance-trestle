@@ -28,7 +28,7 @@ from trestle.common.list_utils import as_filtered_list, as_list, none_if_empty
 from trestle.common.str_utils import spaces_and_caps_to_snake
 from trestle.core.control_interface import ControlInterface
 from trestle.core.markdown.base_markdown_node import BaseMarkdownNode, BaseSectionContent
-from trestle.core.markdown.markdown_const import HTML_COMMENT_END_REGEX, HTML_COMMENT_START
+from trestle.core.markdown.markdown_const import CODEBLOCK_DEF, HTML_COMMENT_END_REGEX, HTML_COMMENT_START
 from trestle.oscal import common
 
 logger = logging.getLogger(__name__)
@@ -400,6 +400,13 @@ class ControlMarkdownNode(BaseMarkdownNode):
             if line_idx >= len(lines):
                 return line_idx
             line = lines[line_idx]
+
+        if self._does_start_with(line, CODEBLOCK_DEF):
+            code_lines, line_idx = self._read_code_lines(lines, line, line_idx + 1)
+            if line_idx >= len(lines):
+                return line_idx
+            line = lines[line_idx]
+            part.prose += '\n'.join(code_lines)
 
         if not line:
             # Empty line
