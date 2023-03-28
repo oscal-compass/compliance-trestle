@@ -386,24 +386,17 @@ class SSPAssemble(AuthorCommonCommand):
                         # compile all new uuids for new component definitions
                         comp_uuids = [x.uuid for x in comp_dict.values()]
                         for imp_requirement in as_list(ssp.control_implementation.implemented_requirements):
-                            diffs = [
-                                by_component for by_component in imp_requirement.by_components
-                                if by_component.component_uuid not in comp_uuids
-                            ]
-                            if diffs:
-                                for diff in diffs:
+                            to_delete = []
+                            for i, by_comp in enumerate(imp_requirement.by_components):
+                                if by_comp.component_uuid not in comp_uuids:
                                     logger.warning(
-                                        f'By_component {diff.component_uuid} removed from implemented requirement '
+                                        f'By_component {by_comp.component_uuid} removed from implemented requirement '
                                         f'{imp_requirement.control_id} because the corresponding component is not in '
                                         'the specified compdefs '
                                     )
-                                index_list = [
-                                    imp_requirement.by_components.index(value)
-                                    for value in diffs
-                                    if value in imp_requirement.by_components
-                                ]
-                                delete_list_from_list(imp_requirement.by_components, index_list)
-
+                                    to_delete.append(i)
+                            if to_delete:
+                                delete_list_from_list(imp_requirement.by_components, to_delete)
                         SSPAssemble._merge_imp_req_into_ssp(ssp, imp_req, set_params)
             ssp_comp.props = as_list(gen_comp.props)
             ssp_comp.props.extend(all_ci_props)
