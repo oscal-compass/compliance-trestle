@@ -442,12 +442,12 @@ class ControlReader:
         control.title = control_tree.subnodes[0].content.control_title
 
         control_statement = control_tree.get_control_statement()
-        statement_part = control_statement.content.a_part
+        statement_part = control_statement.content.part
 
         control.parts = [statement_part] if statement_part else None
         control_objective = control_tree.get_control_objective()
         if control_objective is not None:
-            objective_part = control_objective.content.a_part
+            objective_part = control_objective.content.part
             if objective_part:
                 if control.parts:
                     control.parts.append(objective_part)
@@ -456,7 +456,7 @@ class ControlReader:
 
         control_guidance = control_tree.get_control_guidance()
         if control_guidance is not None:
-            guidance_part = control_guidance.content.a_part
+            guidance_part = control_guidance.content.part
             if guidance_part:
                 if control.parts:
                     control.parts.append(guidance_part)
@@ -465,7 +465,7 @@ class ControlReader:
 
         all_other_parts = []
         for section_node in control_tree.get_other_control_parts():
-            parts = section_node.content.a_part
+            parts = section_node.content.part
             all_other_parts.extend([parts])
         if all_other_parts:
             if control.parts:

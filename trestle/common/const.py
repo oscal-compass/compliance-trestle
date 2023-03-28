@@ -228,9 +228,9 @@ WINDOWS_DRIVE_LETTER_REGEX = r'[A-Za-z]:'
 # need to strip white space from end of value
 PROPERTY_REGEX = r'(?:###\s+Property\s+)([^\s]*)\s*:\s+(.*)'
 
-PART_REGEX = r'(?:##\s+part\s+)(.*)'
+PART_REGEX = r'(?i)(?:##\s+part\s+)(.*)'
 
-CONTROL_REGEX = r'(?:##\s+Control\s+)(.*)'
+CONTROL_REGEX = r'(?i)(?:##\s+Control\s+)(.*)'
 
 AFTER_HASHES_REGEX = r'(?:##*\s+)(.*)'
 

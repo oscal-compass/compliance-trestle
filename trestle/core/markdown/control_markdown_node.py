@@ -45,16 +45,18 @@ class ControlSectionType(Enum):
     5 - Control foo
     6 - ### foo
     7 - # Editable content
+
+    Matching is case-insensitive.
     """
 
-    control_statement = 1
-    control_objective = 2
-    control_guidance = 3
-    editable_by_id_part = 4
-    generic_control_part = 5
-    generic_subpart = 6
-    editable_content = 7
-    undefined = 8
+    STATEMENT = 1
+    OBJECTIVE = 2
+    GUIDANCE = 3
+    EDITABLE_BY_ID_PART = 4
+    GENERIC_CONTROL_PART = 5
+    GENERIC_SUBPART = 6
+    EDITABLE_CONTENT = 7
+    UNDEFINED = 8
 
 
 class TreeContext:
@@ -84,9 +86,14 @@ class ControlSectionContent(BaseSectionContent):
     """A content of the node."""
 
     def __init__(self):
-        """Initialize section content."""
+        """Initialize section content.
+
+        Attributes:
+            part: A part that is found in markdown. A part is defined in markdown by two or more # symbols
+            by_id_name: Required for parts defined as ## Part a in a markdown
+        """
         super(ControlSectionContent, self).__init__()
-        self.a_part = None
+        self.part = None
         self.by_id_name = ''
 
     def union(self, node: ControlMarkdownNode) -> None:
@@ -134,7 +141,7 @@ class ControlMarkdownNode(BaseMarkdownNode):
                                                                                            section_heading_type)
 
         current_key_lvl = self._get_header_level_if_valid(root_key)
-        if current_key_lvl and current_key_lvl == 1 and section_heading_type != ControlSectionType.editable_content:
+        if current_key_lvl and current_key_lvl == 1 and section_heading_type != ControlSectionType.EDITABLE_CONTENT:
             # Parse control title
             if tree_context.control_id:
                 logger.debug(
@@ -165,8 +172,7 @@ class ControlMarkdownNode(BaseMarkdownNode):
 
             if header_lvl is not None:
                 if header_lvl >= level + 1:
-                    if section_heading_type in [ControlSectionType.control_statement,
-                                                ControlSectionType.control_objective]:
+                    if section_heading_type in [ControlSectionType.STATEMENT, ControlSectionType.OBJECTIVE]:
                         raise TrestleError(
                             f'Control Statement or Objective sections cannot contain subsections but found: {line}.'
                             f'Please delete this subsection and refer to docs on the required format.'
@@ -175,41 +181,40 @@ class ControlMarkdownNode(BaseMarkdownNode):
                     subtree, i = self._build_tree(lines, line, i + 1, level + 1, part_id)
                     node_children.append(subtree)
                     content.union(subtree)
-                    if content.a_part and subtree.content.a_part and section_heading_type not in [
-                            ControlSectionType.control_statement,
-                            ControlSectionType.control_objective,
-                            ControlSectionType.control_guidance
+                    if content.part and subtree.content.part and section_heading_type not in [
+                            ControlSectionType.STATEMENT, ControlSectionType.OBJECTIVE, ControlSectionType.GUIDANCE
                     ]:
                         # Control statement, objective and guidance have special treatment
                         # in those sections any subsections go to the prose rather than subparts.
-                        content.a_part.parts = as_list(content.a_part.parts)
-                        content.a_part.parts.append(subtree.content.a_part)
+                        content.part.parts = as_list(content.part.parts)
+                        content.part.parts.append(subtree.content.part)
                     # Control parts can have general markdown in the prose, if we are in the control part
                     # add its contents under the prose of a parent
                     _add_child_prose_if_need(
-                        content.a_part,
+                        content.part,
                         subtree.content.raw_text,
-                        section_heading_type in [
-                            ControlSectionType.control_statement,
-                            ControlSectionType.control_objective,
-                            ControlSectionType.control_guidance
-                        ]
+                        section_heading_type
+                        in [ControlSectionType.STATEMENT, ControlSectionType.OBJECTIVE, ControlSectionType.GUIDANCE]
                     )
                     continue
                 else:
                     i -= 1  # need to revert back one line to properly handle next heading
                     break  # level of the header is above or equal to the current level, subtree is over
 
-            if section_heading_type not in [ControlSectionType.undefined, ControlSectionType.editable_content]:
+            if section_heading_type == ControlSectionType.UNDEFINED:
+                logger.warning(
+                    f'Undefined section {root_key} is found in the markdown for control {tree_context.control_id}. '
+                    f'This section will be ignored. Please make sure the spelling is correct.'
+                )
+
+            if section_heading_type not in [ControlSectionType.UNDEFINED, ControlSectionType.EDITABLE_CONTENT]:
                 # Read part
-                content.a_part = self._create_part_if_needed(content.a_part, part_name, part_id)
-                content.a_part.title = part_title
-                read_parts = section_heading_type in [
-                    ControlSectionType.control_statement, ControlSectionType.control_objective
-                ]
-                if by_id_part and section_heading_type == ControlSectionType.editable_by_id_part:
+                content.part = self._create_part_if_needed(content.part, part_name, part_id)
+                content.part.title = part_title
+                read_parts = section_heading_type in [ControlSectionType.STATEMENT, ControlSectionType.OBJECTIVE]
+                if by_id_part and section_heading_type == ControlSectionType.EDITABLE_BY_ID_PART:
                     content.by_id_name = by_id_part
-                i = self._process_part_line(i, line, lines, content.a_part, read_parts=read_parts)
+                i = self._process_part_line(i, line, lines, content.part, read_parts=read_parts)
                 continue
 
             # Nothing to do, simply increment
@@ -218,7 +223,7 @@ class ControlMarkdownNode(BaseMarkdownNode):
         first_line_to_grab = starting_line - 1 if starting_line else 0
         content.raw_text = '\n'.join(lines[first_line_to_grab:i])
 
-        _strip_prose_or_none(content.a_part)
+        _strip_prose_or_none(content.part)
 
         md_node = ControlMarkdownNode(key=root_key, content=content, starting_line=first_line_to_grab)
         md_node.subnodes = node_children
@@ -239,17 +244,17 @@ class ControlMarkdownNode(BaseMarkdownNode):
     def get_by_id_parts(self) -> Dict[str, List[common.Part]]:
         """Get by id editable parts."""
         part_id_to_parts_map = {}
-        for node_key in as_filtered_list(self.content.subnodes_keys, lambda k: re.match(const.PART_REGEX, k.lower())):
+        for node_key in as_filtered_list(self.content.subnodes_keys, lambda k: re.match(const.PART_REGEX, k)):
             # A by id part section
             part_node = self.get_node_for_key(node_key)
-            if not part_node.content.a_part:
+            if not part_node.content.part:
                 raise TrestleError(f'Error no part was found in section {part_node.key}.')
             if part_node.content.by_id_name not in part_id_to_parts_map:
                 part_id_to_parts_map[part_node.content.by_id_name] = []
             for subpart in part_node.subnodes:
                 # We only care about subsections of ## Part section
-                if subpart.content.a_part:
-                    part_id_to_parts_map[part_node.content.by_id_name].append(subpart.content.a_part)
+                if subpart.content.part:
+                    part_id_to_parts_map[part_node.content.by_id_name].append(subpart.content.part)
 
         return part_id_to_parts_map
 
@@ -266,59 +271,63 @@ class ControlMarkdownNode(BaseMarkdownNode):
                       exclude_ids: List[str] = None) -> Optional[List[common.Part]]:
         """Get subparts of the control part node if exists."""
         if not control_node:
-            raise TrestleError('No control node was provided to extract subparts.')
+            raise TrestleError(
+                'No control node was provided to extract subparts. '
+                'Please make sure your markdown contains # Editable Content section.'
+            )
         parts = []
-        for editable_part in as_filtered_list(control_node.subnodes, lambda p: p.content.a_part is not None):
-            if editable_part.content.a_part.id not in exclude_ids:
-                parts.append(editable_part.content.a_part)
+        for editable_part in as_filtered_list(control_node.subnodes, lambda p: p.content.part is not None):
+            if editable_part.content.part.id not in exclude_ids:
+                parts.append(editable_part.content.part)
         return parts
 
     def _get_section_heading_type(self, root_key: str) -> ControlSectionType:
         """Determine the section type based on the heading."""
         if root_key.lower() == '## control statement':
-            return ControlSectionType.control_statement
+            return ControlSectionType.STATEMENT
         elif root_key.lower() == '## control objective':
-            return ControlSectionType.control_objective
+            return ControlSectionType.OBJECTIVE
         elif root_key.lower() == '## control guidance':
-            return ControlSectionType.control_guidance
-        elif self._does_contain(root_key.lower(), const.PART_REGEX):
-            return ControlSectionType.editable_by_id_part
+            return ControlSectionType.GUIDANCE
+        elif self._does_contain(root_key, const.PART_REGEX):
+            return ControlSectionType.EDITABLE_BY_ID_PART
         elif f'# {const.EDITABLE_CONTENT}'.lower() in root_key.lower():
-            return ControlSectionType.editable_content
-        elif '## control' in root_key.lower():
-            return ControlSectionType.generic_control_part
+            return ControlSectionType.EDITABLE_CONTENT
+        elif self._does_contain(root_key, const.CONTROL_REGEX):
+            return ControlSectionType.GENERIC_CONTROL_PART
         elif '### ' in root_key.lower():
-            return ControlSectionType.generic_subpart
+            return ControlSectionType.GENERIC_SUBPART
 
-        return ControlSectionType.undefined
+        return ControlSectionType.UNDEFINED
 
-    def _get_part_info_from_section_name(self, root_key, parent_id, section_heading_type) -> Tuple[str, str, str, str]:
+    def _get_part_info_from_section_name(self, root_key: str, parent_id: str,
+                                         section_heading_type: ControlSectionType) -> Tuple[str, str, str, str]:
         """Get part information such as id, name and title based on the section heading."""
         part_id = ''
         part_name = ''
         part_title = None
         by_part_id = None  # special case used for ## Part
 
-        if section_heading_type in [ControlSectionType.control_guidance, ControlSectionType.generic_control_part]:
+        if section_heading_type in [ControlSectionType.GUIDANCE, ControlSectionType.GENERIC_CONTROL_PART]:
             prefix = const.CONTROL_HEADER + ' '
             control_md_heading_label = root_key[len(prefix):].strip()
             control_md_heading_label_ncname = ControlInterface.strip_to_make_ncname(control_md_heading_label)
             control_md_heading_label_snakename = spaces_and_caps_to_snake(control_md_heading_label)
 
-        if section_heading_type == ControlSectionType.control_statement:
+        if section_heading_type == ControlSectionType.STATEMENT:
             part_id = ControlInterface.create_statement_id(tree_context.control_id)
             part_name = const.STATEMENT
 
-        if section_heading_type == ControlSectionType.control_objective:
+        if section_heading_type == ControlSectionType.OBJECTIVE:
             part_id = f'{tree_context.control_id}_obj'
             part_name = 'objective'
 
-        if section_heading_type == ControlSectionType.control_guidance:
+        if section_heading_type == ControlSectionType.GUIDANCE:
             # Read control guidance to a part object
             part_id = ControlInterface.strip_to_make_ncname(tree_context.control_id + '_gdn')
             part_name = control_md_heading_label_ncname
 
-        if section_heading_type == ControlSectionType.editable_by_id_part:
+        if section_heading_type == ControlSectionType.EDITABLE_BY_ID_PART:
             # Read editable part
             by_part_label = re.match(const.PART_REGEX, root_key.lower()).groups(0)[0]
             control_label_map = tree_context.part_label_to_id_map.get(tree_context.control_id, None)
@@ -332,7 +341,7 @@ class ControlMarkdownNode(BaseMarkdownNode):
             part_id = f'{by_part_id}'
             part_title = root_key.replace('#', '').strip()
 
-        if section_heading_type == ControlSectionType.generic_control_part:
+        if section_heading_type == ControlSectionType.GENERIC_CONTROL_PART:
             # Read other control parts to a part objects
             part_name = control_md_heading_label_snakename
             if tree_context.section_to_part_name_map:
@@ -344,7 +353,7 @@ class ControlMarkdownNode(BaseMarkdownNode):
             else:
                 part_id = spaces_and_caps_to_snake(tree_context.control_id + '_' + control_md_heading_label)
 
-        if section_heading_type == ControlSectionType.generic_subpart:
+        if section_heading_type == ControlSectionType.GENERIC_SUBPART:
             # Read other control parts to a part objects
             match = re.match(const.AFTER_HASHES_REGEX, root_key)
             if not match:

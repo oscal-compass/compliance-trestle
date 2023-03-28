@@ -19,6 +19,7 @@ from __future__ import annotations
 import logging
 import math
 import re
+from abc import abstractmethod
 from typing import Dict, Iterable, List, Optional, Tuple
 
 import trestle.core.markdown.markdown_const as md_const
@@ -148,18 +149,11 @@ class BaseMarkdownNode:
             delete_list_from_list(text_lines, list(range(node.starting_line, last_line)))
         return text_lines
 
+    @abstractmethod
     def _build_tree(self, lines: List[str], root_key: str, starting_line: int,
                     level: int) -> Tuple[BaseMarkdownNode, int]:
         """Build a tree from the markdown recursively."""
-        content = BaseSectionContent()
-        node_children = []
-        i = starting_line
-
-        first_line_to_grab = starting_line - 1 if starting_line else 0
-        content.raw_text = '\n'.join(lines[first_line_to_grab:i])
-        md_node = BaseMarkdownNode(key=root_key, content=content, starting_line=first_line_to_grab)
-        md_node.subnodes = node_children
-        return (md_node, i)
+        pass
 
     def _modify_header_level(self, header: str, delta_level: int) -> str:
         """Modify header level by specified level."""

@@ -424,7 +424,7 @@ statement_text = """
 def test_read_control_statement():
     """Test read control statement."""
     tree = ControlMarkdownNode.build_tree_from_markdown(statement_text.split('\n'))
-    part = tree.get_control_statement().content.a_part
+    part = tree.get_control_statement().content.part
     tree_context.reset()
     assert part.prose == 'The org:'
 
@@ -432,7 +432,7 @@ def test_read_control_statement():
 def test_read_control_objective():
     """Test read control objective."""
     tree = ControlMarkdownNode.build_tree_from_markdown(statement_text.split('\n'))
-    part = tree.get_control_objective().content.a_part
+    part = tree.get_control_objective().content.part
     tree_context.reset()
     assert part.prose == 'Confirm the org:'
 
