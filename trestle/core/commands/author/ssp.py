@@ -45,6 +45,8 @@ from trestle.core.control_reader import ControlReader
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.remote.cache import FetcherFactory
+from trestle.core.validator import Validator
+from trestle.core.validator_factory import validator_factory
 
 logger = logging.getLogger(__name__)
 
@@ -526,6 +528,12 @@ class SSPAssemble(AuthorCommonCommand):
             if args.regenerate:
                 ssp, _, _ = ModelUtils.regenerate_uuids(ssp)
             ModelUtils.update_last_modified(ssp)
+
+            # args_validate = argparse.Namespace(mode=const.VAL_MODE_RULES)
+            # validator: Validator = validator_factory.get(args_validate)
+            # if not validator.model_is_valid(ssp, True):
+            #     logger.warning('Validation of file to be imported did not pass.  Import failed.')
+            #     return CmdReturnCodes.COMMAND_ERROR.value
 
             # write out the ssp as json
             ModelUtils.save_top_level_model(ssp, trestle_root, new_ssp_name, new_file_content_type)

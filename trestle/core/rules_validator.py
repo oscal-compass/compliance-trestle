@@ -25,6 +25,8 @@ from trestle.oscal.ssp import SystemSecurityPlan
 
 logger = logging.getLogger(__name__)
 
+shared_params = {}
+
 
 class RulesValidator(Validator):
     """Validator to confirm all rule parameter values are consistent."""
@@ -50,6 +52,51 @@ class RulesValidator(Validator):
             # if there´s a difference in params, log error
             return difference
 
+    @staticmethod
+    def return_dict_ids(item: list) -> list:
+        """
+        Retrieve dictionry of ids
+
+        args:
+            item: abstrac element where rule param ids are going to be retrieved
+
+        returns:
+            A list of rule parameter ids
+        """
+        _, param_dict, _ = ControlInterface.get_rules_and_params_dict_from_item(item)
+        return [d['name'] for d in param_dict.values()]
+
+    @staticmethod
+    def add_shared_param(self, item: list, parent: list = None, bottom_level: bool = False) -> None:
+        """
+        Add a rule shared parameter to the rule shared parameters list
+
+        args:
+            existing_param: Existing rule param values list.
+            shared_param_values: Current rule param values list.
+
+        returns:
+            Difference between values if exist
+        """
+        if parent:
+            parent_ids = self.return_dict_ids(parent)
+        param_ids = self.return_dict_ids(item)
+        for set_param in as_list(item.set_parameters):
+            if set_param.param_id not in (param_ids + parent_ids):
+                continue
+            # adds shared param
+            if not bottom_level:
+                shared_params[set_param.param_id].append({item.control_id: set_param.values})
+            diff = self.val_diff_param_values(shared_params, set_param.values)
+            if not diff:
+                shared_params[set_param.param_id].append({item.control_id: set_param.values})
+            logger.error(
+                f'Rule parameter value: {diff} provided for: {set_param.param_id} in '
+                f'control: {item.control_id} in component: {parent.title} is not consistent with '
+                'other values provided across controls. Invalid model'
+            )
+            return False
+
     def model_is_valid(self, model: TopLevelOscalModel, quiet: bool) -> bool:
         """
         Test if the model is valid.
@@ -65,81 +112,10 @@ class RulesValidator(Validator):
         if not isinstance(model, (SystemSecurityPlan, ComponentDefinition)):
             return True
         # iterate by each component defined
-        for component in as_list(model.components):
-            shared_params = {}
+        for component in as_list(model.system_implementation.components):
             # iterate by each control implementation within the component
             for control_imp in as_list(component.control_implementations):
-                _, param_dict, _ = ControlInterface.get_rules_and_params_dict_from_item(control_imp)
-                control_imp_rule_param_ids = [d['name'] for d in param_dict.values()]
-                for set_param in as_list(control_imp.set_parameters):
-                    # if not a rule parameter then ignore
-                    if set_param.param_id not in (control_imp_rule_param_ids):
-                        continue
-                    opts_for_parameter = [p['options'] for p in param_dict.values() if p['name'] == set_param.param_id]
-                    shared_params = {
-                        set_param.param_id: [
-                            {
-                                'level': 'ci',
-                                'control_id': '',
-                                'values': set_param.values,
-                                'options': opts_for_parameter
-                            }
-                        ]
-                    }
+                self.add_shared_param(control_imp)
                 for imp_req in as_list(control_imp.implemented_requirements):
-                    # gets a set of rules for each catalog
-                    _, imp_param_dict, _ = ControlInterface.get_rules_and_params_dict_from_item(imp_req)
-                    imp_req_rule_param_ids = [d['name'] for d in imp_param_dict.values()]
-                    if not imp_req.set_parameters:
-                        # filters param values for current control implementation
-                        for shared_param_id in as_list(shared_params):
-                            shared_param = [x for x in shared_params[shared_param_id] if x['level'] == 'ci'][0]
-                            diff = self.val_diff_param_values(shared_params[shared_param_id], shared_param['values'])
-                            if diff:
-                                logger.error(
-                                    f'Rule parameter value: {diff} provided for: {shared_param_id} in '
-                                    f'control: {imp_req.control_id} in component: {component.title} is not consistent '
-                                    'with other values provided across controls. Invalid model'
-                                )
-                                return False
-                            shared_params[shared_param_id].append(
-                                {
-                                    'level': 'ip', 'control_id': imp_req.control_id, 'values': shared_param['values']
-                                }
-                            )
-                        continue
-                    for set_param in as_list(imp_req.set_parameters):
-                        # if not a rule parameter then ignore
-                        if set_param.param_id not in (control_imp_rule_param_ids + imp_req_rule_param_ids):
-                            continue
-                        # gets existing param if exists
-                        existing_params = [x for x in shared_params[set_param.param_id] if x['level'] != 'ci']
-                        if not existing_params:
-                            # adds a non exisitng param across controls for revision
-                            shared_params[set_param.param_id].append(
-                                {
-                                    'level': 'ip', 'control_id': imp_req.control_id, 'values': set_param.values
-                                }
-                            )
-                            opts_for_param = [
-                                p['options'] for p in shared_params[set_param.param_id] if p['level'] == 'ci'
-                            ][0]
-                            # validates if param value exist inside value alternatives for the param
-                            for value in set_param.values:
-                                if value not in opts_for_param[0]:
-                                    logger.warning(
-                                        f'Rule parameter value: {value} for parameter: {set_param.param_id} in '
-                                        f'control {imp_req.control_id} for component: {component.title} '
-                                        f'is not in the alternatives provided by default: {opts_for_param[0]} '
-                                        'for the control implementation'
-                                    )
-                            continue
-                        diff = self.val_diff_param_values(existing_params, set_param.values)
-                        if diff:
-                            logger.error(
-                                f'Rule parameter value: {diff} provided for: {set_param.param_id} in '
-                                f'control: {imp_req.control_id} in component: {component.title} is not consistent with '
-                                'other values provided across controls. Invalid model'
-                            )
-                            return False
+                    self.add_shared_param(imp_req, control_imp, True)
         return True
