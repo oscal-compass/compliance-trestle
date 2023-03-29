@@ -1010,13 +1010,13 @@ If you do not specify component-defintions during assembly, the markdown should 
 
 <summary>trestle author ssp-filter</summary>
 
-Once you have an SSP in the trestle directory you can filter its contents with a profile or list of components by using the command `trestle author ssp-filter`.  The SSP is assumed to contain a superset of the controls needed by the profile if a profile is specified, and the filter operation will generate a new SSP with only those controls needed by the profile.  If a list of component names is provided, only the specified components will appear in the system implementation of the ssp.
+Once you have an SSP in the trestle directory you can filter its contents with a profile, list of components, or list of implementation status values by using the command `trestle author ssp-filter`.  The SSP is assumed to contain a superset of the controls needed by the profile if a profile is specified, and the filter operation will generate a new SSP with only those controls needed by the profile.  If a list of component names is provided, only the specified components will appear in the system implementation of the ssp. If a list of implementation statuses is provided, controls with implementation information including those those statuses will appear in the system implementation of the ssp.
 
 The filter command is invoked as:
 
-`trestle author ssp-filter --name my_ssp --profile my_profile --components comp_a:comp_b --output my_culled_ssp`
+`trestle author ssp-filter --name my_ssp --profile my_profile --components comp_a:comp_b --implementation-status "planned,partial" --output my_culled_ssp`
 
-Both the SSP and profile must be present in the trestle directory.  This command will generate a new SSP in the directory.  If the profile makes reference to a control not in the SSP then the routine will fail with an error message.  Similarly, if one of the components is not present in the ssp the routine will also fail.
+Both the SSP and profile must be present in the trestle directory.  This command will generate a new SSP in the directory.  If the profile makes reference to a control not in the SSP then the routine will fail with an error message.  Similarly, if one of the components is not present in the ssp the routine will also fail. The implementation statuses must be one of the allowed values as defined in the OSCAL SSP JSON format reference. Those include the following: implemented, partial, planned, alternative, and not-applicable. If an invalid value is provided, an error is returned.
 
 </details>
 
