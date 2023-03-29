@@ -23,25 +23,24 @@ from typing import Optional
 from trestle.common import const
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
-from trestle.transforms.implementations.osco import OscoTransformer
+from trestle.transforms.implementations.xccdf import XccdfTransformer
 
 logger = logging.getLogger(__name__)
 
 
-# deprecated - use XccdfResultToOscalAR instead
-class OscoResultToOscalAR(TaskBase):
+class XccdfResultToOscalAR(TaskBase):
     """
-    Task to convert Osco result to OSCAL json.
+    Task to convert Xccdf result to OSCAL json.
 
     Attributes:
         name: Name of the task.
     """
 
-    name = 'osco-result-to-oscal-ar'
+    name = 'xccdf-result-to-oscal-ar'
 
     def __init__(self, config_object: Optional[configparser.SectionProxy]) -> None:
         """
-        Initialize trestle task osco-result-to-oscal-ar.
+        Initialize trestle task xccdf-result-to-oscal-ar.
 
         Args:
             config_object: Config section associated with the task.
@@ -53,15 +52,15 @@ class OscoResultToOscalAR(TaskBase):
         logger.info(f'Help information for {self.name} task.')
         logger.info('')
         logger.info(
-            'Purpose: Transform Osco files into Open Security Controls Assessment Language (OSCAL) '
+            'Purpose: Transform Xccdf files into Open Security Controls Assessment Language (OSCAL) '
             + 'partial results files.'
         )
         logger.info('')
-        logger.info('Configuration flags sit under [task.osco-result-to-oscal-ar]:')
+        logger.info('Configuration flags sit under [task.xccdf-result-to-oscal-ar]:')
         logger.info(
             '  checking  = (optional) True indicates perform strict checking of OSCAL properties, default is False.'
         )
-        logger.info('  input-dir = (required) the path of the input directory comprising Osco results.')
+        logger.info('  input-dir = (required) the path of the input directory comprising Xccdf results.')
         logger.info(
             '  output-dir = (required) the path of the output directory comprising synthesized OSCAL .json files.'
         )
@@ -71,12 +70,12 @@ class OscoResultToOscalAR(TaskBase):
         )
         logger.info(
             '  timestamp = (optional) timestamp for the Observations in ISO 8601 format, such as '
-            + ' 2021-01-04T00:05:23+04:00 for example; if not specified then value for "Timestamp" key in the Osco '
+            + ' 2021-01-04T00:05:23+04:00 for example; if not specified then value for "Timestamp" key in the Xccdf '
             + ' result is used if present, otherwise current time is used.'
         )
         logger.info('')
         logger.info(
-            'Operation: A transformation is performed on one or more Osco input files to produce output in OSCAL '
+            'Operation: A transformation is performed on one or more Xccdf input files to produce output in OSCAL '
             + 'partial results format.'
         )
 
@@ -130,7 +129,7 @@ class OscoResultToOscalAR(TaskBase):
         timestamp = self._config.get('timestamp')
         if timestamp is not None:
             try:
-                OscoTransformer.set_timestamp(timestamp)
+                XccdfTransformer.set_timestamp(timestamp)
             except Exception:
                 logger.warning('config invalid "timestamp"')
                 return TaskOutcome(mode + 'failure')
@@ -145,16 +144,16 @@ class OscoResultToOscalAR(TaskBase):
             if ifile.suffix not in ['.json', '.jsn', '.yaml', '.yml', '.xml']:
                 continue
             blob = self._read_file(ifile)
-            osco_transformer = OscoTransformer()
-            osco_transformer.set_modes(modes)
-            results = osco_transformer.transform(blob)
+            xccdf_transformer = XccdfTransformer()
+            xccdf_transformer.set_modes(modes)
+            results = xccdf_transformer.transform(blob)
             oname = ifile.stem + '.oscal' + '.json'
             ofile = opth / oname
             if not self._overwrite and pathlib.Path(ofile).exists():
                 logger.warning(f'output: {ofile} already exists')
                 return TaskOutcome(mode + 'failure')
             self._write_file(results, ofile)
-            self._show_analysis(osco_transformer)
+            self._show_analysis(xccdf_transformer)
         return TaskOutcome(mode + 'success')
 
     def _read_file(self, ifile: str) -> str:
@@ -172,9 +171,9 @@ class OscoResultToOscalAR(TaskBase):
                 logger.info(f'output: {ofile}')
             result.oscal_write(pathlib.Path(ofile))
 
-    def _show_analysis(self, osco_transformer: OscoTransformer) -> None:
+    def _show_analysis(self, xccdf_transformer: XccdfTransformer) -> None:
         """Show analysis."""
         if not self._simulate and self._verbose:
-            analysis = osco_transformer.analysis
+            analysis = xccdf_transformer.analysis
             for line in analysis:
                 logger.info(line)

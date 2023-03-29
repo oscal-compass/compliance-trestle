@@ -12,21 +12,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Facilitate OSCAL-OSCO transformation."""
+"""Facilitate OSCAL-XCCDF transformation."""
 
 import base64
 import bz2
 import json
 import logging
 import uuid
-from typing import Any, Dict, Iterator, List, Tuple, ValuesView
+from typing import Any, Dict, Iterator, List, ValuesView
 from xml.etree.ElementTree import Element  # noqa: S405 - used for typing only
 
 from defusedxml import ElementTree
 
 from ruamel.yaml import YAML
 
-from trestle.common.list_utils import as_list
 from trestle.oscal.assessment_results import ControlSelection
 from trestle.oscal.assessment_results import LocalDefinitions1
 from trestle.oscal.assessment_results import Observation
@@ -35,18 +34,15 @@ from trestle.oscal.assessment_results import ReviewedControls
 from trestle.oscal.assessment_results import Status1
 from trestle.oscal.assessment_results import SystemComponent
 from trestle.oscal.common import ImplementedComponent, InventoryItem, Property, SubjectReference
-from trestle.oscal.profile import Profile
 from trestle.transforms.results import Results
-from trestle.transforms.transformer_factory import FromOscalTransformer
 from trestle.transforms.transformer_factory import ResultsTransformer
 from trestle.transforms.transformer_helper import TransformerHelper
 
 logger = logging.getLogger(__name__)
 
 
-# deprecated - use XccdfResultToOscalARTransformer instead
-class OscoResultToOscalARTransformer(ResultsTransformer):
-    """Interface for Osco transformer."""
+class XccdfResultToOscalARTransformer(ResultsTransformer):
+    """Interface for Xccdf transformer."""
 
     def __init__(self) -> None:
         """Initialize."""
@@ -72,7 +68,7 @@ class OscoResultToOscalARTransformer(ResultsTransformer):
 
         The expected blob is a string that is one of:
             - data from OpenShift Compliance Operator (json, yaml, xml)
-            - data from Auditree OSCO fetcher/check (json)
+            - data from Auditree XCCDF fetcher/check (json)
         """
         results = None
         self._results_factory = _OscalResultsFactory(self.get_timestamp(), self.checking)
@@ -138,13 +134,12 @@ class OscoResultToOscalARTransformer(ResultsTransformer):
         return results
 
 
-# deprecated(details - use XccdfResultToOscalARTransformer instead
-class OscoTransformer(OscoResultToOscalARTransformer):
+class XccdfTransformer(XccdfResultToOscalARTransformer):
     """Legacy class name."""
 
 
 class RuleUse():
-    """Represents one rule of OSCO data."""
+    """Represents one rule of XCCDF data."""
 
     def __init__(self, args: Dict[str, str]) -> None:
         """Initialize given specified args."""
@@ -175,12 +170,12 @@ class RuleUse():
         return rval
 
 
-class _ComplianceOperatorResult():
-    """Represents one result of OSCO data."""
+class _XccdfResult():
+    """Represents one result of XCCDF data."""
 
-    def __init__(self, osco_xml: str) -> None:
+    def __init__(self, xccdf_xml: str) -> None:
         """Initialize given specified args."""
-        self.osco_xml = osco_xml
+        self.xccdf_xml = xccdf_xml
 
     def _get_version(self, root: Element) -> str:
         """Extract version from the XML."""
@@ -290,7 +285,7 @@ class _ComplianceOperatorResult():
 
     def _parse_xml(self) -> Iterator[RuleUse]:
         """Parse the stringified XML."""
-        results = self.osco_xml
+        results = self.xccdf_xml
         root = ElementTree.fromstring(results, forbid_dtd=True)
         version = self._get_version(root)
         id_ = self._get_id(root)
@@ -334,7 +329,7 @@ class _ComplianceOperatorResult():
 
 
 class _OscalResultsFactory():
-    """Build OSCO OSCAL entities."""
+    """Build XCCDF OSCAL entities."""
 
     default_timestamp = ResultsTransformer.get_timestamp()
 
@@ -345,7 +340,7 @@ class _OscalResultsFactory():
         self._result_properties_list: List[Property] = []
         self._component_map: Dict[str, SystemComponent] = {}
         self._inventory_map: Dict[str, InventoryItem] = {}
-        self._ns = 'https://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco'
+        self._ns = 'https://ibm.github.io/compliance-trestle/schemas/oscal/ar/xccdf'
         self._checking = checking
 
     @property
@@ -398,8 +393,8 @@ class _OscalResultsFactory():
         # produce result
         prop = Result(
             uuid=str(uuid.uuid4()),
-            title='OpenShift Compliance Operator',
-            description='OpenShift Compliance Operator Scan Results',
+            title='XCCDF',
+            description='XCCDF Scan Results',
             start=self._timestamp,
             end=self._timestamp,
             reviewed_controls=self.reviewed_controls,
@@ -423,7 +418,7 @@ class _OscalResultsFactory():
     def _component_extract(self, rule_use: RuleUse) -> None:
         """Extract component from RuleUse."""
         _type = 'Service'
-        _title = f'Red Hat OpenShift Kubernetes Service Compliance Operator for {rule_use.target_type}'
+        _title = f'{rule_use.target_type}'
         _desc = _title
         for component in self._component_map.values():
             if component.type == _type and component.title == _title and component.description == _desc:
@@ -547,7 +542,7 @@ class _OscalResultsFactory():
         props.append(Property.construct(name='id', value=rule_use.id_, ns=self._ns, class_='scc_predefined_profile'))
         return props
 
-    def _process(self, co_result: _ComplianceOperatorResult) -> None:
+    def _process(self, co_result: _XccdfResult) -> None:
         """Process ingested data."""
         rule_use_generator = co_result.rule_use_generator()
         for rule_use in rule_use_generator:
@@ -555,152 +550,23 @@ class _OscalResultsFactory():
             self._inventory_extract(rule_use)
             self._observation_extract(rule_use)
 
-    def ingest(self, osco_data: Dict[str, Any]) -> None:
-        """Process OSCO json."""
-        if 'data' not in osco_data.keys():
+    def ingest(self, xccdf_data: Dict[str, Any]) -> None:
+        """Process XCCDF json."""
+        if 'data' not in xccdf_data.keys():
             return
-        if 'results' not in osco_data['data']:
+        if 'results' not in xccdf_data['data']:
             return
-        results = osco_data['data']['results']
+        results = xccdf_data['data']['results']
         self.ingest_xml(results)
 
-    def ingest_xml(self, osco_xml: str) -> None:
-        """Process OSCO xml."""
-        if not osco_xml.startswith('<?xml'):
-            osco_xml = bz2.decompress(base64.b64decode(osco_xml))
-        co_result = _ComplianceOperatorResult(osco_xml)
+    def ingest_xml(self, xccdf_xml: str) -> None:
+        """Process XCCDF xml."""
+        if not xccdf_xml.startswith('<?xml'):
+            xccdf_xml = bz2.decompress(base64.b64decode(xccdf_xml))
+        co_result = _XccdfResult(xccdf_xml)
         self._process(co_result)
 
 
 def _remove_namespace(subject: str) -> str:
     """If a namespace is present in the subject string, remove it."""
     return subject.rsplit('}').pop()
-
-
-class OscalProfileToOscoProfileTransformer(FromOscalTransformer):
-    """Interface for Oscal Profile to Osco Profile transformer."""
-
-    def __init__(
-        self,
-        extends='ocp4-cis-node',
-        api_version='compliance.openshift.io/v1alpha1',
-        kind='TailoredProfile',
-        name='customized-tailored-profile',
-        namespace='openshift-compliance',
-    ) -> None:
-        """Initialize."""
-        self._extends = extends
-        self._api_version = api_version
-        self._kind = kind
-        self._name = name
-        self._namespace = namespace
-
-    def transform(self, profile: Profile) -> str:
-        """Transform the Profile into a OSCO yaml."""
-        self._profile = profile
-        self._osco_version = self._get_normalized_version('osco_version', '0.1.46')
-        # set values
-        set_values = self._get_set_values()
-        # spec
-        if self._osco_version < (0, 1, 40):
-            # for versions prior to 0.1.40, exclude 'description'
-            spec = {
-                'extends': self._get_metadata_prop_value('base_profile_mnemonic', self._extends),
-                'title': self._profile.metadata.title,
-                'setValues': set_values,
-            }
-        else:
-            # for versions 0.1.40 and beyond, include 'description'
-            spec = {
-                'description': self._get_metadata_prop_value('profile_mnemonic', self._name),
-                'extends': self._get_metadata_prop_value('base_profile_mnemonic', self._extends),
-                'title': self._profile.metadata.title,
-                'setValues': set_values,
-            }
-        disable_rules = self._get_disable_rules()
-        if disable_rules:
-            spec['disableRules'] = disable_rules
-        # yaml data
-        ydata = {
-            'apiVersion': self._api_version,
-            'kind': self._kind,
-            'metadata': {
-                'name': self._get_metadata_prop_value('profile_mnemonic', self._name),
-                'namespace': self._namespace,
-            },
-            'spec': spec,
-        }
-        return json.dumps(ydata)
-
-    def _get_normalized_version(self, prop_name, prop_default) -> Tuple[int, int, int]:
-        """Get normalized version.
-
-        Normalize the "x.y.z" string value to an integer: 1,000,000*x + 1,000*y + z.
-        """
-        try:
-            vparts = self._get_metadata_prop_value(prop_name, prop_default).split('.')
-            normalized_version = (int(vparts[0]), int(vparts[1]), int(vparts[2]))
-        except Exception:
-            logger.warning(f'metadata prop name={prop_name} value error')
-            vparts = prop_default.split('.')
-            normalized_version = (int(vparts[0]), int(vparts[1]), int(vparts[2]))
-        return normalized_version
-
-    def _get_set_values(self) -> List[Dict]:
-        """Extract set_paramater name/value pairs from profile."""
-        set_values = []
-        # for check versions prior to 0.1.59 include parameters
-        # for later versions parameters should not be specified, caveat emptor
-        if self._profile.modify is not None:
-            for set_parameter in as_list(self._profile.modify.set_parameters):
-                name = self._format_osco_rule_name(set_parameter.param_id)
-                parameter_value = set_parameter.values[0]
-                value = parameter_value
-                rationale = self._get_rationale_for_set_value()
-                set_value = {'name': name, 'value': value, 'rationale': rationale}
-                set_values.append(set_value)
-        return set_values
-
-    def _format_osco_rule_name(self, name: str) -> str:
-        """Format for OSCO.
-
-        1. remove prefix xccdf_org.ssgproject.content_rule_
-        2. change underscores to dashes
-        3. add prefix ocp4-
-        """
-        normalized_name = name.replace('xccdf_org.ssgproject.content_rule_', '').replace('_', '-')
-        if not normalized_name.startswith('ocp4-'):
-            normalized_name = f'ocp4-{normalized_name}'
-        return normalized_name
-
-    def _get_metadata_prop_value(self, name: str, default_: str) -> str:
-        """Extract metadata prop or else default if not present."""
-        for prop in as_list(self._profile.metadata.props):
-            if prop.name == name:
-                return prop.value
-        logger.info(f'using default: {name} = {default_}')
-        return default_
-
-    def _get_disable_rules(self) -> List[str]:
-        """Extract disabled rules."""
-        value = []
-        for _import in as_list(self._profile.imports):
-            for control in as_list(_import.exclude_controls):
-                self._add_disable_rules_for_control(value, control)
-        return value
-
-    def _add_disable_rules_for_control(self, value, control):
-        """Extract disabled rules for control."""
-        for with_id in as_list(control.with_ids):
-            name = self._format_osco_rule_name(with_id.__root__)
-            rationale = self._get_rationale_for_disable_rule()
-            entry = {'name': name, 'rationale': rationale}
-            value.append(entry)
-
-    def _get_rationale_for_set_value(self) -> str:
-        """Rationale for set value."""
-        return 'not determinable from specification'
-
-    def _get_rationale_for_disable_rule(self) -> str:
-        """Rationale for disable rule."""
-        return 'not determinable from specification'
