@@ -17,7 +17,6 @@
 import base64
 import bz2
 import json
-import logging
 import uuid
 from typing import Any, Dict, Iterator, List, Optional, ValuesView
 from xml.etree.ElementTree import Element  # noqa: S405 - used for typing only
@@ -37,8 +36,6 @@ from trestle.oscal.common import ImplementedComponent, InventoryItem, Property, 
 from trestle.transforms.results import Results
 from trestle.transforms.transformer_factory import ResultsTransformer
 from trestle.transforms.transformer_helper import TransformerHelper
-
-logger = logging.getLogger(__name__)
 
 
 class XccdfResultToOscalARTransformer(ResultsTransformer):
