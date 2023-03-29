@@ -90,6 +90,25 @@ class XccdfResultToOscalARTransformer(ResultsTransformer):
         results.__root__.append(self._results_factory.result)
         return results
 
+    def _ingest_configmaps(self, jdata: str) -> None:
+        """Ingest configmaps."""
+        items = jdata['items']
+        for item in items:
+            if 'data' in item.keys():
+                data = item['data']
+                if 'results' in data:
+                    resource = item
+                    self._results_factory.ingest(resource)
+
+    def _ingest_auditree(self, jdata: str) -> None:
+        """Ingest auditree."""
+        for key in jdata.keys():
+            for group in jdata[key]:
+                for cluster in jdata[key][group]:
+                    if 'resources' in cluster:
+                        for resource in cluster['resources']:
+                            self._results_factory.ingest(resource)
+
     def _ingest_json(self, blob: str) -> Optional[Results]:
         """Ingest json data."""
         try:
@@ -97,21 +116,10 @@ class XccdfResultToOscalARTransformer(ResultsTransformer):
             jdata = json.loads(blob)
             # https://docs.openshift.com/container-platform/3.7/rest_api/api/v1.ConfigMap.html#Get-api-v1-namespaces-namespace-configmaps-name
             if 'kind' in jdata.keys() and jdata['kind'] == 'ConfigMapList' and 'items' in jdata.keys():
-                items = jdata['items']
-                for item in items:
-                    if 'data' in item.keys():
-                        data = item['data']
-                        if 'results' in data:
-                            resource = item
-                            self._results_factory.ingest(resource)
+                self._ingest_configmaps(jdata)
             # https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/kubernetes/fetchers/fetch_cluster_resource.py
             else:
-                for key in jdata.keys():
-                    for group in jdata[key]:
-                        for cluster in jdata[key][group]:
-                            if 'resources' in cluster:
-                                for resource in cluster['resources']:
-                                    self._results_factory.ingest(resource)
+                self._ingest_auditree(jdata)
         except json.decoder.JSONDecodeError:
             return None
         results = Results()
