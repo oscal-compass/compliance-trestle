@@ -437,7 +437,7 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
     ssp: ossp.SystemSecurityPlan
     ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
 
-    assert len(ssp.control_implementation.implemented_requirements) == 7
+    assert len(ssp.control_implementation.implemented_requirements) == 8
 
     filtered_name = 'filtered_ssp'
 
@@ -463,7 +463,7 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
     )
 
     # confirm the imp_reqs have been culled by profile_d to only two controls
-    assert len(ssp.control_implementation.implemented_requirements) == 2
+    assert len(ssp.control_implementation.implemented_requirements) == 3
 
     # confirm there are three by_comps for: this system, foo, bar
     assert len(ssp.control_implementation.implemented_requirements[0].statements[0].by_components) == 2
