@@ -19,7 +19,7 @@ import bz2
 import json
 import logging
 import uuid
-from typing import Any, Dict, Iterator, List, ValuesView
+from typing import Any, Dict, Iterator, List, Optional, ValuesView
 from xml.etree.ElementTree import Element  # noqa: S405 - used for typing only
 
 from defusedxml import ElementTree
@@ -70,17 +70,15 @@ class XccdfResultToOscalARTransformer(ResultsTransformer):
             - data from OpenShift Compliance Operator (json, yaml, xml)
             - data from Auditree XCCDF fetcher/check (json)
         """
-        results = None
         self._results_factory = _OscalResultsFactory(self.get_timestamp(), self.checking)
-        if results is None:
-            results = self._ingest_xml(blob)
+        results = self._ingest_xml(blob)
         if results is None:
             results = self._ingest_json(blob)
         if results is None:
             results = self._ingest_yaml(blob)
         return results
 
-    def _ingest_xml(self, blob: str) -> Results:
+    def _ingest_xml(self, blob: str) -> Optional[Results]:
         """Ingest xml data."""
         # ?xml data
         if blob.startswith('<?xml'):
@@ -92,7 +90,7 @@ class XccdfResultToOscalARTransformer(ResultsTransformer):
         results.__root__.append(self._results_factory.result)
         return results
 
-    def _ingest_json(self, blob: str) -> Results:
+    def _ingest_json(self, blob: str) -> Optional[Results]:
         """Ingest json data."""
         try:
             # ? configmaps or auditree data
@@ -128,7 +126,7 @@ class XccdfResultToOscalARTransformer(ResultsTransformer):
             resource = yaml.load(blob)
             self._results_factory.ingest(resource)
         except Exception as e:
-            raise e
+            raise RuntimeError(e)
         results = Results()
         results.__root__.append(self._results_factory.result)
         return results
