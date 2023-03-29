@@ -233,6 +233,9 @@ class SSPMarkdownWriter():
             return ''
 
         md_writer = MDWriter(None)
+        # if a control has no statement sub-parts then get the response bycomps from the imp_req itself
+        # otherwise get them from the statements in the imp_req
+        # an imp_req and a statement are both things that can have bycomps
         has_bycomps = control_impl_req.statements if control_impl_req.statements else [control_impl_req]
         for has_bycomp in has_bycomps:
             statement_id = getattr(has_bycomp, 'statement_id', f'{control_id}_smt')
