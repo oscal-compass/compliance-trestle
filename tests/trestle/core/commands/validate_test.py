@@ -25,16 +25,19 @@ from _pytest.monkeypatch import MonkeyPatch
 import pytest
 
 from tests import test_utils
+from tests.test_utils import setup_for_ssp
 
 import trestle.common.const as const
 import trestle.oscal.assessment_plan as ap
-import trestle.oscal.component as comp
+import trestle.oscal.ssp as ossp
 from trestle import cli
 from trestle.cli import Trestle
-from trestle.common import model_utils
+from trestle.common.model_utils import ModelUtils
+from trestle.core.commands.author.ssp import SSPAssemble, SSPGenerate
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.commands.split import SplitCmd
 from trestle.core.generators import generate_sample_model
+from trestle.core.models.file_content_type import FileContentType
 from trestle.core.validator import Validator
 from trestle.core.validator_factory import validator_factory
 from trestle.oscal.catalog import Catalog
@@ -290,69 +293,111 @@ def test_validate_catalog_params(sample_catalog_rich_controls: Catalog) -> None:
     assert not validator.model_is_valid(sample_catalog_rich_controls, False)
 
 
-def test_rules_validator(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
-    """Test validation of rules in catalog."""
+def test_rules_validator_unhappy(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test validation of rules in SSP."""
     args = argparse.Namespace(mode=const.VAL_MODE_RULES)
     validator: Validator = validator_factory.get(args)
+    prof_name = 'comp_prof'
+    ssp_name = 'my_ssp'
 
-    comp_name = test_utils.setup_component_generate(tmp_trestle_dir)
+    gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
+    args_compdefs = gen_args.compdefs
 
-    orig_component, _ = model_utils.ModelUtils.load_model_for_class(
-        tmp_trestle_dir, comp_name, comp.ComponentDefinition
+    # first create the markdown
+    ssp_gen = SSPGenerate()
+    assert ssp_gen._run(gen_args) == 0
+
+    # nassemble the ssp
+    ssp_assemble = SSPAssemble()
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        markdown=ssp_name,
+        output=ssp_name,
+        verbose=0,
+        regenerate=False,
+        version=None,
+        name=None,
+        compdefs=args_compdefs
     )
+    assert ssp_assemble._run(args) == 0
 
-    generate_cmd = f'trestle author component-generate -n {comp_name} -o {md_path}'
+    orig_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
 
-    # generate the md first time
-    test_utils.execute_command_and_assert(generate_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
-    assem_name = 'assem_comp'
-    # confirm assembled is identical except for uuids
-    assemble_cmd = f'trestle author component-assemble -m {md_path} -n {comp_name} -o {assem_name}'
-    test_utils.execute_command_and_assert(assemble_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
-    assem_component, assem_comp_path = model_utils.ModelUtils.load_model_for_class(
-        tmp_trestle_dir, assem_name, comp.ComponentDefinition
+    by_components = orig_ssp.control_implementation.implemented_requirements[1].by_components
+    set_parameter = orig_ssp.control_implementation.implemented_requirements[0].by_components[0].set_parameters[1]
+    props = orig_ssp.control_implementation.implemented_requirements[0].by_components[0].props
+    by_components[0].props = props
+    by_components[0].set_parameters = []
+    by_components[0].set_parameters.append(set_parameter)
+    by_components[0].set_parameters[0].values.append('shared_param_1_ab_opt_2')
+
+    ModelUtils.save_top_level_model(orig_ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
+    assert not validator.model_is_valid(orig_ssp, True, tmp_trestle_dir)
+    # test 2 different controls have different rule parameter values
+    by_components = orig_ssp.control_implementation.implemented_requirements[0].by_components
+    by_components[1].set_parameters[0].values.append('shared_param_1_ab_opt_1')
+
+    ModelUtils.save_top_level_model(orig_ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
+    assert not validator.model_is_valid(orig_ssp, True, tmp_trestle_dir)
+    # test a by_component statement param value is added and 
+    # reassemble the ssp again to clean values
+    ssp_assemble = SSPAssemble()
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        markdown=ssp_name,
+        output=ssp_name,
+        verbose=0,
+        regenerate=False,
+        version=None,
+        name=None,
+        compdefs=args_compdefs
     )
+    assert ssp_assemble._run(args) == 0
+    # load new ssp
+    new_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
 
-    assert validator.model_is_valid(assem_component, True)
+    by_components = new_ssp.control_implementation.implemented_requirements[0].statements[0].by_components
+    by_components[1].set_parameters = []
+    set_parameter.values = ['shared_param_1_ab_opt_3']
+    # adds a new set parameter to set parameters array for current by component
+    by_components[1].set_parameters.append(set_parameter)
+    by_components = new_ssp.control_implementation.implemented_requirements[1].statements[0].by_components
+    by_components[0].set_parameters = []
+    set_parameter = new_ssp.control_implementation.implemented_requirements[0].by_components[0].set_parameters[1]
+    by_components[0].set_parameters.append(set_parameter)
+
+    ModelUtils.save_top_level_model(new_ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
+    assert not validator.model_is_valid(new_ssp, True, tmp_trestle_dir)
 
 
-def test_rules_validator_unhappy(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
-    """Test validation of rules in catalog."""
-    # FIXME use model with complex rules and param values
+def test_rules_validator_happy(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test validation of rules in SSP."""
     args = argparse.Namespace(mode=const.VAL_MODE_RULES)
     validator: Validator = validator_factory.get(args)
+    prof_name = 'comp_prof'
+    ssp_name = 'new_ssp'
 
-    comp_name = test_utils.setup_component_generate(tmp_trestle_dir)
+    gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
+    args_compdefs = gen_args.compdefs
 
-    orig_component, _ = model_utils.ModelUtils.load_model_for_class(
-        tmp_trestle_dir, comp_name, comp.ComponentDefinition
+    # first create the markdown
+    ssp_gen = SSPGenerate()
+    assert ssp_gen._run(gen_args) == 0
+
+    # now assemble the edited controls into json ssp
+    ssp_assemble = SSPAssemble()
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        markdown=ssp_name,
+        output=ssp_name,
+        verbose=0,
+        regenerate=False,
+        version=None,
+        name=None,
+        compdefs=args_compdefs
     )
+    assert ssp_assemble._run(args) == 0
 
-    generate_cmd = f'trestle author component-generate -n {comp_name} -o {md_path}'
+    new_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
 
-    # generate the md first time
-    test_utils.execute_command_and_assert(generate_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
-    assem_name = 'assem_comp'
-    # confirm assembled is identical except for uuids
-    assemble_cmd = f'trestle author component-assemble -m {md_path} -n {comp_name} -o {assem_name}'
-    test_utils.execute_command_and_assert(assemble_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
-    assem_component, assem_comp_path = model_utils.ModelUtils.load_model_for_class(
-        tmp_trestle_dir, assem_name, comp.ComponentDefinition
-    )
-    # tests implemented requirement/control warns user about unmatched values with alternative values
-    assem_component.components[0].control_implementations[0].implemented_requirements[0].set_parameters[0].values[
-        0] = 'inserted value'
-    assert validator.model_is_valid(assem_component, True)
-
-    # tests implemented requirement/control warns user about unmatched values with alternative values
-    assem_component.components[1].control_implementations[0].implemented_requirements[0].set_parameters = [
-        {
-            'param-id': 'shared_param_1', 'values': ['shared_param_1_aa_opt_1'], 'remarks': 'set shared param aa 1'
-        },
-    ]
-    assem_component.components[1].control_implementations[0].implemented_requirements[1].set_parameters = [
-        {
-            'param-id': 'shared_param_1', 'values': ['value1'], 'remarks': 'set shared param aa 1'
-        },
-    ]
-    assert not validator.model_is_valid(assem_component, True)
+    assert not validator.model_is_valid(new_ssp, True, tmp_trestle_dir)
