@@ -563,8 +563,8 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         FileContentType.JSON
     )
 
-    # confirm the imp_reqs have been culled by impl_status to four controls
-    assert len(ssp.control_implementation.implemented_requirements) == 4
+    # confirm the imp_reqs have been culled by impl_status to five controls
+    assert len(ssp.control_implementation.implemented_requirements) == 5
     # confirm there are is two by_comps for the first impl_req
     assert len(ssp.control_implementation.implemented_requirements[0].by_components) == 2
 
