@@ -141,6 +141,13 @@ class ControlMarkdownNode(BaseMarkdownNode):
                                                                                            section_heading_type)
 
         current_key_lvl = self._get_header_level_if_valid(root_key)
+
+        if section_heading_type == ControlSectionType.UNDEFINED and tree_context.control_id:
+            logger.warning(
+                f'Undefined section {root_key} is found in the markdown for control {tree_context.control_id}. '
+                f'This section will be ignored. Please make sure the spelling is correct.'
+            )
+
         if current_key_lvl and current_key_lvl == 1 and section_heading_type != ControlSectionType.EDITABLE_CONTENT:
             # Parse control title
             if tree_context.control_id:
@@ -200,12 +207,6 @@ class ControlMarkdownNode(BaseMarkdownNode):
                 else:
                     i -= 1  # need to revert back one line to properly handle next heading
                     break  # level of the header is above or equal to the current level, subtree is over
-
-            if section_heading_type == ControlSectionType.UNDEFINED:
-                logger.warning(
-                    f'Undefined section {root_key} is found in the markdown for control {tree_context.control_id}. '
-                    f'This section will be ignored. Please make sure the spelling is correct.'
-                )
 
             if section_heading_type not in [ControlSectionType.UNDEFINED, ControlSectionType.EDITABLE_CONTENT]:
                 # Read part
@@ -423,7 +424,7 @@ class ControlMarkdownNode(BaseMarkdownNode):
             line_idx += 1
             return line_idx
 
-        if line.lstrip()[0] != '-':
+        if line.lstrip()[0] != '-' or not read_parts:
             # Line of text in prose
             part.prose += line + '\n'
             line_idx += 1
