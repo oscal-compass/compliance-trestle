@@ -16,6 +16,7 @@ import logging
 import pathlib
 from typing import Dict, List, Optional
 
+from trestle.common.common_types import TypeWithByComps
 from trestle.common.const import CONTROL_ORIGINATION, IMPLEMENTATION_STATUS, SSP_MAIN_COMP_NAME
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list
@@ -26,7 +27,6 @@ from trestle.core.markdown.docs_markdown_node import DocsMarkdownNode
 from trestle.core.markdown.md_writer import MDWriter
 from trestle.oscal import ssp
 from trestle.oscal.catalog import Catalog
-from trestle.oscal.ssp import Statement
 
 logger = logging.getLogger(__name__)
 
@@ -233,35 +233,38 @@ class SSPMarkdownWriter():
             return ''
 
         md_writer = MDWriter(None)
-        if control_impl_req.statements:
-            for statement in control_impl_req.statements:
-                statement_id = statement.statement_id
-                label = statement_id
-                part_name = None
+        # if a control has no statement sub-parts then get the response bycomps from the imp_req itself
+        # otherwise get them from the statements in the imp_req
+        # an imp_req and a statement are both things that can have bycomps
+        has_bycomps = control_impl_req.statements if control_impl_req.statements else [control_impl_req]
+        for has_bycomp in has_bycomps:
+            statement_id = getattr(has_bycomp, 'statement_id', f'{control_id}_smt')
+            label = statement_id
+            part_name = None
 
-                # look up label for this statement
-                if control.parts:
-                    found_label, part = self._catalog_interface.get_statement_label_if_exists(control_id, statement_id)
-                    if found_label:
-                        label = found_label
-                        part_name = part.name
+            # look up label for this statement
+            if control.parts:
+                found_label, part = self._catalog_interface.get_statement_label_if_exists(control_id, statement_id)
+                if found_label:
+                    label = found_label
+                    part_name = part.name
 
-                response_per_component = self._get_responses_by_components(statement, write_empty_responses)
+            response_per_component = self._get_responses_by_components(has_bycomp, write_empty_responses)
 
-                if response_per_component or (not response_per_component and write_empty_responses):
-                    if part_name and part_name == 'item':
-                        # print part header only if subitem
-                        header = f'Implementation for part {label}'
-                        md_writer.new_header(level=1, title=header)
-                    for idx, component_key in enumerate(response_per_component):
-                        if component_key == SSP_MAIN_COMP_NAME and idx == 0:
-                            # special case ignore header but print contents
-                            md_writer.new_paragraph()
-                        elif show_comp:
-                            md_writer.new_header(level=2, title=component_key)
-                        md_writer.set_indent_level(-1)
-                        md_writer.new_line(response_per_component[component_key])
-                        md_writer.set_indent_level(-1)
+            if response_per_component or (not response_per_component and write_empty_responses):
+                if part_name and part_name == 'item':
+                    # print part header only if subitem
+                    header = f'Implementation for part {label}'
+                    md_writer.new_header(level=1, title=header)
+                for idx, component_key in enumerate(response_per_component):
+                    if component_key == SSP_MAIN_COMP_NAME and idx == 0:
+                        # special case ignore header but print contents
+                        md_writer.new_paragraph()
+                    elif show_comp:
+                        md_writer.new_header(level=2, title=component_key)
+                    md_writer.set_indent_level(-1)
+                    md_writer.new_line(response_per_component[component_key])
+                    md_writer.set_indent_level(-1)
 
         lines = md_writer.get_lines()
 
@@ -270,26 +273,25 @@ class SSPMarkdownWriter():
 
         return tree.content.raw_text
 
-    def _get_responses_by_components(self, statement: Statement, write_empty_responses: bool) -> Dict[str, str]:
+    def _get_responses_by_components(self, has_bycomps: TypeWithByComps, write_empty_responses: bool) -> Dict[str, str]:
         """Get response per component, substitute component id with title if possible."""
         response_per_component = {}
-        if statement.by_components:
-            for component in statement.by_components:
-                # look up component title
-                subheader = component.component_uuid
-                response = ''
-                if self._ssp.system_implementation.components:
-                    for comp in self._ssp.system_implementation.components:
-                        if comp.uuid == component.component_uuid:
-                            title = comp.title
-                            if title:
-                                subheader = title
-                if component.description:
-                    response = component.description
+        for component in as_list(has_bycomps.by_components):
+            # look up component title
+            subheader = component.component_uuid
+            response = ''
+            if self._ssp.system_implementation.components:
+                for comp in self._ssp.system_implementation.components:
+                    if comp.uuid == component.component_uuid:
+                        title = comp.title
+                        if title:
+                            subheader = title
+            if component.description:
+                response = component.description
 
-                if response or (not response and write_empty_responses):
-                    if subheader:
-                        response_per_component[subheader] = response
+            if response or (not response and write_empty_responses):
+                if subheader:
+                    response_per_component[subheader] = response
 
         return response_per_component
 
