@@ -28,6 +28,7 @@ from tests import test_utils
 from tests.test_utils import setup_for_ssp
 
 import trestle.common.const as const
+import trestle.core.generators as gens
 import trestle.oscal.assessment_plan as ap
 import trestle.oscal.ssp as ossp
 from trestle import cli
@@ -313,6 +314,10 @@ def test_rules_validator_happy(tmp_trestle_dir: pathlib.Path, monkeypatch: Monke
 
     new_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
 
+    new_ssp.control_implementation.implemented_requirements[1].by_components[0].set_parameters[1].values[
+        0] = 'shared_param_1_aa_opt_1'
+    ModelUtils.save_top_level_model(new_ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
+
     assert validator.model_is_valid(new_ssp, True, tmp_trestle_dir)
 
 
@@ -337,14 +342,14 @@ def test_rules_validator_unhappy(tmp_trestle_dir: pathlib.Path, monkeypatch: Mon
     orig_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     # starts editing by grabbing by components from second imp req
     by_components = orig_ssp.control_implementation.implemented_requirements[1].by_components
-    # creates a shallow copy of set parameters to avoid changing original value
-    set_parameter = orig_ssp.control_implementation.implemented_requirements[0].by_components[0].set_parameters[1].copy(
-    )
-    by_components[0].set_parameters = []
+
+    new_set_parameter = gens.generate_sample_model(ossp.SetParameter)
+    new_set_parameter.values = ['shared_param_1_ab_opt_3']
+    new_set_parameter.param_id = 'shared_param_1'
+
+    by_components[1].set_parameters = []
     # appends new set parameter
-    by_components[0].set_parameters.append(set_parameter)
-    # modifies values in it
-    by_components[0].set_parameters[0].values.append('shared_param_1_ab_opt_2')
+    by_components[1].set_parameters.append(new_set_parameter)
 
     ModelUtils.save_top_level_model(orig_ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
     assert not validator.model_is_valid(orig_ssp, True, tmp_trestle_dir)
@@ -364,13 +369,14 @@ def test_rules_validator_unhappy(tmp_trestle_dir: pathlib.Path, monkeypatch: Mon
     by_components = new_ssp.control_implementation.implemented_requirements[0].statements[0].by_components
     by_components[1].set_parameters = []
     # addes new value to current set parameter values
-    set_parameter.values = ['shared_param_1_ab_opt_3']
+    new_set_parameter.values = ['shared_param_1_ab_opt_3']
     # adds a new set parameter to set parameters array for current by component in statement
-    by_components[1].set_parameters.append(set_parameter)
-    by_components = new_ssp.control_implementation.implemented_requirements[1].statements[0].by_components
+    by_components[1].set_parameters.append(new_set_parameter)
+    by_components = new_ssp.control_implementation.implemented_requirements[2].statements[0].by_components
     by_components[0].set_parameters = []
-    set_parameter = new_ssp.control_implementation.implemented_requirements[0].by_components[0].set_parameters[1].copy()
-    by_components[0].set_parameters.append(set_parameter)
+    new_set_parameter = new_ssp.control_implementation.implemented_requirements[0].by_components[0].set_parameters[
+        1].copy()
+    by_components[0].set_parameters.append(new_set_parameter)
 
     ModelUtils.save_top_level_model(new_ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
     assert not validator.model_is_valid(new_ssp, True, tmp_trestle_dir)
