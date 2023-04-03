@@ -317,7 +317,7 @@ Access control policy and procedures address the controls in the AC family that 
 <!-- Each addition must have a heading either of the form ## Control my_addition_name -->
 <!-- or ## Part a. (where the a. refers to one of the control statement labels.) -->
 <!-- "## Control" parts are new parts added after the statement part. -->
-<!-- "## Part" parts are new parts added into the top-level statement part with that label. -->
+<!-- "## Part" parts are new subparts added into the existing top-level statement part with that label. -->
 <!-- Subparts may be added with nested hash levels of the form ### My Subpart Name -->
 <!-- underneath the parent ## Control or ## Part being added -->
 <!-- See https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring for guidance. -->
