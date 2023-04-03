@@ -1010,7 +1010,7 @@ If you do not specify component-defintions during assembly, the markdown should 
 
 <summary>trestle author ssp-filter</summary>
 
-Once you have an SSP in the trestle directory you can filter its contents with a profile, list of components, or list of implementation status values by using the command `trestle author ssp-filter`.  The SSP is assumed to contain a superset of the controls needed by the profile if a profile is specified, and the filter operation will generate a new SSP with only those controls needed by the profile.  If a list of component names is provided, only the specified components will appear in the system implementation of the ssp. If a list of implementation statuses is provided, controls with implementation information including those those statuses will appear in the system implementation of the ssp.
+Once you have an SSP in the trestle directory you can filter its contents with a profile, list of components, or list of implementation status values by using the command `trestle author ssp-filter`.  The SSP is assumed to contain a superset of the controls needed by the profile if a profile is specified, and the filter operation will generate a new SSP with only those controls needed by the profile.  If a list of component names is provided, only the specified components will appear in the system implementation of the ssp. If a list of implementation statuses is provided, controls with implementations including those statuses will appear in the control implementation of the ssp.
 
 The filter command is invoked as:
 
