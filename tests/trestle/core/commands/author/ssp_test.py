@@ -368,7 +368,6 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert orig_uuid == test_utils.get_model_uuid(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     # confirm the file was not written out since no change
     assert orig_ssp_path.stat().st_mtime == orig_file_creation
-
     # assemble it again but give new version and regen uuid's
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
@@ -384,6 +383,42 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert orig_uuid != test_utils.get_model_uuid(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     # confirm the file was not written out since no change
     assert orig_ssp_path.stat().st_mtime > orig_file_creation
+
+
+def test_ssp_assemble_remove_comp_defs(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Tests the removal of component definitions that are no longer valid for an ssp."""
+    gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
+    # first create the markdown
+    ssp_gen = SSPGenerate()
+    assert ssp_gen._run(gen_args) == 0
+
+    # first assemble
+    ssp_assemble = f'trestle author ssp-assemble -m {ssp_name} -o {ssp_name} -cd {gen_args.compdefs}'
+    test_utils.execute_command_and_assert(ssp_assemble, 0, monkeypatch)
+    # modify component uuids for testing removal
+    orig_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+    imp_reqs = orig_ssp.control_implementation.implemented_requirements
+    components = orig_ssp.system_implementation.components
+    generic_uuid = '46b7a556-72bb-4281-b805-a8f4030ca0e3'
+    new_component = gens.generate_sample_model(ossp.SystemComponent)
+    new_component.uuid = generic_uuid
+    new_component.title = 'foo'
+    components.append(new_component)
+    by_comp = gens.generate_sample_model(ossp.ByComponent)
+    by_comp.component_uuid = generic_uuid
+    imp_reqs[0].by_components.append(by_comp)
+
+    ModelUtils.save_top_level_model(orig_ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
+    # reassemble with changes
+    ssp_assemble = f'trestle author ssp-assemble -m {ssp_name} -o {ssp_name} -cd {gen_args.compdefs}'
+    test_utils.execute_command_and_assert(ssp_assemble, 0, monkeypatch)
+
+    # loads edited ssp again
+    edited_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+    components = edited_ssp.system_implementation.components
+    imp_reqs = edited_ssp.control_implementation.implemented_requirements
+    assert not [x for x in components if x.uuid == generic_uuid]
+    assert not [x for x in imp_reqs[0].by_components if x.component_uuid == generic_uuid]
 
 
 def test_ssp_generate_bad_name(tmp_trestle_dir: pathlib.Path) -> None:
@@ -437,7 +472,7 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
     ssp: ossp.SystemSecurityPlan
     ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
 
-    assert len(ssp.control_implementation.implemented_requirements) == 7
+    assert len(ssp.control_implementation.implemented_requirements) == 8
 
     filtered_name = 'filtered_ssp'
 
@@ -463,7 +498,7 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
     )
 
     # confirm the imp_reqs have been culled by profile_d to only two controls
-    assert len(ssp.control_implementation.implemented_requirements) == 2
+    assert len(ssp.control_implementation.implemented_requirements) == 3
 
     # confirm there are three by_comps for: this system, foo, bar
     assert len(ssp.control_implementation.implemented_requirements[0].statements[0].by_components) == 2

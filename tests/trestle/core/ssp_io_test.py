@@ -123,6 +123,10 @@ def test_ssp_get_control_response(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
     assert len(list(tree.get_all_headers_for_level(2))) == 1
     assert len(list(tree.get_all_headers_for_level(3))) == 2
 
+    md_text = ssp_io.get_control_response('ac-3', 1, True)
+    assert md_text
+    tree = DocsMarkdownNode.build_tree_from_markdown(md_text.split('\n'))
+
     # change responses
     new_imp_prose = 'edited imp req prose'
     new_a_prose = 'edited a prose'
