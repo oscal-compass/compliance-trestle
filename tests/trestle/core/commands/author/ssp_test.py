@@ -623,7 +623,7 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 1
 
-    # now filter without an invalid implementation status to trigger error
+    # now filter with an invalid implementation status to trigger error
     bad_impl = 'impl_bad'
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
