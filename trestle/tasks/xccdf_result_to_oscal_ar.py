@@ -18,7 +18,7 @@ import configparser
 import logging
 import pathlib
 import traceback
-from typing import Optional
+from typing import Dict, Optional
 
 from trestle.common import const
 from trestle.tasks.base_task import TaskBase
@@ -26,6 +26,10 @@ from trestle.tasks.base_task import TaskOutcome
 from trestle.transforms.implementations.xccdf import XccdfTransformer
 
 logger = logging.getLogger(__name__)
+
+default_type = 'Validator'
+default_title = 'XCCDF'
+default_description = 'XCCDF Scan Results'
 
 
 class XccdfResultToOscalAR(TaskBase):
@@ -49,6 +53,8 @@ class XccdfResultToOscalAR(TaskBase):
 
     def print_info(self) -> None:
         """Print the help string."""
+        opt = '(optional)'
+        req = '(required)'
         logger.info(f'Help information for {self.name} task.')
         logger.info('')
         logger.info(
@@ -57,22 +63,41 @@ class XccdfResultToOscalAR(TaskBase):
         )
         logger.info('')
         logger.info('Configuration flags sit under [task.xccdf-result-to-oscal-ar]:')
-        logger.info(
-            '  checking  = (optional) True indicates perform strict checking of OSCAL properties, default is False.'
-        )
-        logger.info('  input-dir = (required) the path of the input directory comprising Xccdf results.')
-        logger.info(
-            '  output-dir = (required) the path of the output directory comprising synthesized OSCAL .json files.'
-        )
-        logger.info('  output-overwrite = (optional) true [default] or false; replace existing output when true.')
-        logger.info(
-            '  quiet = (optional) true or false [default]; display file creations and rules analysis when false.'
-        )
-        logger.info(
-            '  timestamp = (optional) timestamp for the Observations in ISO 8601 format, such as '
-            + ' 2021-01-04T00:05:23+04:00 for example; if not specified then value for "Timestamp" key in the Xccdf '
-            + ' result is used if present, otherwise current time is used.'
-        )
+        #
+        t1 = f'  input-dir              = {req} '
+        t2 = 'the path of the input directory comprising Xccdf results.'
+        logger.info(f'{t1}{t2}')
+        t1 = f'  output-dir             = {req} '
+        t2 = 'the path of the output directory comprising synthesized OSCAL .json files.'
+        logger.info(f'{t1}{t2}')
+        t1 = f'  checking               = {opt} '
+        t2 = 'True indicates perform strict checking of OSCAL properties, default is False.'
+        logger.info(f'{t1}{t2}')
+        t1 = f'  output-overwrite       = {opt} '
+        t2 = 'true [default] or false; replace existing output when true.'
+        logger.info(f'{t1}{t2}')
+        t1 = f'  quiet                  = {opt} '
+        t2 = 'true or false [default]; display file creations and rules analysis when false.'
+        logger.info(f'{t1}{t2}')
+        t1 = f'  title                  = {opt} '
+        t2 = f'default={default_title}.'
+        logger.info(f'{t1}{t2}')
+        t1 = f'  description            = {opt} '
+        t2 = f'default={default_description}.'
+        logger.info(f'{t1}{t2}')
+        t1 = f'  type                   = {opt} '
+        t2 = f'default={default_type}.'
+        logger.info(f'{t1}{t2}')
+        t1 = f'  property-name-to-class = {opt} '
+        t2 = 'list of name:class pairs for tagging named property with class, '
+        t3 = 'e.g. "target:scc_inventory_item_id, version:scc_check_version".'
+        logger.info(f'{t1}{t2}{t3}')
+        t1 = f'  timestamp              = {opt} '
+        t2 = 'timestamp for the Observations in ISO 8601 format, such as '
+        t3 = ' 2021-01-04T00:05:23+04:00 for example; if not specified then value for "Timestamp" key in the Xccdf '
+        t4 = ' result is used if present, otherwise current time is used.'
+        logger.info(f'{t1}{t2}{t3}{t4}')
+        #
         logger.info('')
         logger.info(
             'Operation: A transformation is performed on one or more Xccdf input files to produce output in OSCAL '
@@ -125,6 +150,12 @@ class XccdfResultToOscalAR(TaskBase):
         self._overwrite = self._config.getboolean('output-overwrite', True)
         quiet = self._config.get('quiet', False)
         self._verbose = not self._simulate and not quiet
+        # title, description, type
+        title = self._config.get('title', default_title)
+        description = self._config.get('description', default_description)
+        type_ = self._config.get('type', default_type)
+        # property-name-to-class
+        tags = self._get_tags()
         # config optional timestamp
         timestamp = self._config.get('timestamp')
         if timestamp is not None:
@@ -145,7 +176,11 @@ class XccdfResultToOscalAR(TaskBase):
                 continue
             blob = self._read_file(ifile)
             xccdf_transformer = XccdfTransformer()
+            xccdf_transformer.set_title(title)
+            xccdf_transformer.set_description(description)
+            xccdf_transformer.set_type(type_)
             xccdf_transformer.set_modes(modes)
+            xccdf_transformer.set_tags(tags)
             results = xccdf_transformer.transform(blob)
             oname = ifile.stem + '.oscal' + '.json'
             ofile = opth / oname
@@ -155,6 +190,20 @@ class XccdfResultToOscalAR(TaskBase):
             self._write_file(results, ofile)
             self._show_analysis(xccdf_transformer)
         return TaskOutcome(mode + 'success')
+
+    def _get_tags(self) -> Dict:
+        """Get property name to class tags, if any."""
+        tags = {}
+        data = self._config.get('property-name-to-class')
+        if data is not None:
+            for item in data.split(','):
+                item = item.strip()
+                parts = item.split(':')
+                if len(parts) == 2:
+                    name = parts[0]
+                    value = parts[1]
+                    tags[name] = value
+        return tags
 
     def _read_file(self, ifile: str) -> str:
         """Read raw input file."""

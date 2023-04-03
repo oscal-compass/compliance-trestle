@@ -25,6 +25,7 @@ from defusedxml import ElementTree
 
 from ruamel.yaml import YAML
 
+from trestle.oscal.assessment_results import AssessmentAssets
 from trestle.oscal.assessment_results import ControlSelection
 from trestle.oscal.assessment_results import LocalDefinitions1
 from trestle.oscal.assessment_results import Observation
@@ -32,7 +33,7 @@ from trestle.oscal.assessment_results import Result
 from trestle.oscal.assessment_results import ReviewedControls
 from trestle.oscal.assessment_results import Status1
 from trestle.oscal.assessment_results import SystemComponent
-from trestle.oscal.common import ImplementedComponent, InventoryItem, Property, SubjectReference
+from trestle.oscal.common import AssessmentPlatform, ImplementedComponent, InventoryItem, Property, SubjectReference
 from trestle.transforms.results import Results
 from trestle.transforms.transformer_factory import ResultsTransformer
 from trestle.transforms.transformer_helper import TransformerHelper
@@ -55,6 +56,27 @@ class XccdfResultToOscalARTransformer(ResultsTransformer):
         """Return checking."""
         return self._modes.get('checking', False)
 
+    @property
+    def tags(self):
+        """Return tags."""
+        return self._tags
+
+    def set_tags(self, tags: Dict[str, str]) -> None:
+        """Keep tags info (property name to property class)."""
+        self._tags = tags
+
+    def set_title(self, title: str) -> None:
+        """Keep title info."""
+        self._title = title
+
+    def set_description(self, description: str) -> None:
+        """Keep description info."""
+        self._description = description
+
+    def set_type(self, type_: str) -> None:
+        """Keep type info."""
+        self._type = type_
+
     def set_modes(self, modes: Dict[str, Any]) -> None:
         """Keep modes info."""
         if modes is not None:
@@ -67,7 +89,9 @@ class XccdfResultToOscalARTransformer(ResultsTransformer):
             - data from OpenShift Compliance Operator (json, yaml, xml)
             - data from Auditree XCCDF fetcher/check (json)
         """
-        self._results_factory = _OscalResultsFactory(self.get_timestamp(), self.checking)
+        self._results_factory = _OscalResultsFactory(
+            self._title, self._description, self._type, self.get_timestamp(), self.checking, self.tags
+        )
         results = self._ingest_xml(blob)
         if results is None:
             results = self._ingest_json(blob)
@@ -171,6 +195,11 @@ class RuleUse():
             # OpenScap 1.3.5
             rval = self.host_name + ':' + self.target_type
         return rval
+
+    @property
+    def ns(self):
+        """Derive namespace."""
+        return f'https://ibm.github.io/compliance-trestle/schemas/oscal/ar/{self.scanner_name}'
 
 
 class _XccdfResult():
@@ -336,15 +365,26 @@ class _OscalResultsFactory():
 
     default_timestamp = ResultsTransformer.get_timestamp()
 
-    def __init__(self, timestamp: str = default_timestamp, checking: bool = False) -> None:
+    def __init__(
+        self,
+        title: str,
+        description: str,
+        type_: str,
+        timestamp: str = default_timestamp,
+        checking: bool = False,
+        tags: Dict = None
+    ) -> None:
         """Initialize."""
+        self._title = title
+        self._description = description
+        self._type = type_
         self._timestamp = timestamp
         self._observation_list: List[Observation] = []
-        self._result_properties_list: List[Property] = []
+        self._assessment_asset_properties_list: List[Property] = []
         self._component_map: Dict[str, SystemComponent] = {}
         self._inventory_map: Dict[str, InventoryItem] = {}
-        self._ns = 'https://ibm.github.io/compliance-trestle/schemas/oscal/ar/xccdf'
         self._checking = checking
+        self._tags = tags
 
     @property
     def components(self) -> List[SystemComponent]:
@@ -368,7 +408,54 @@ class _OscalResultsFactory():
         """OSCAL local definitions."""
         prop = LocalDefinitions1()
         prop.components = self.components
+        prop.assessment_assets = self.assessment_assets
         prop.inventory_items = list(self.inventory)
+        return prop
+
+    @property
+    def assessment_assets(self) -> AssessmentAssets:
+        """OSCAL assessment_assets."""
+        _status = Status1(state='operational')
+        component = SystemComponent(
+            uuid=str(uuid.uuid4()),
+            type=f'{self._type}',
+            title=f'{self.scanner}',
+            description=f'{self.scanner}',
+            status=_status,
+        )
+        if self.assessment_asset_properties:
+            component.props = []
+            for prop in self.assessment_asset_properties:
+                if prop.name == 'time':
+                    continue
+                component.props.append(prop)
+        components = [component]
+        assessment_platform = AssessmentPlatform(uuid=str(uuid.uuid4()))
+        assessment_platforms = [assessment_platform]
+        prop = AssessmentAssets(
+            components=components,
+            assessment_platforms=assessment_platforms,
+        )
+        return prop
+
+    @property
+    def scanner(self) -> str:
+        prop = 'openScap'
+        if self.assessment_asset_properties:
+            for aa_prop in self.assessment_asset_properties:
+                if aa_prop.name == 'scanner_name':
+                    prop = aa_prop.value
+                    break
+        return prop
+
+    @property
+    def time(self) -> str:
+        prop = self._timestamp
+        if self.assessment_asset_properties:
+            for aa_prop in self.assessment_asset_properties:
+                if aa_prop.name == 'time':
+                    prop = aa_prop.value
+                    break
         return prop
 
     @property
@@ -377,9 +464,9 @@ class _OscalResultsFactory():
         return self._observation_list
 
     @property
-    def result_properties(self) -> List[Property]:
-        """OSCAL result properties."""
-        return self._result_properties_list
+    def assessment_asset_properties(self) -> List[Property]:
+        """OSCAL assessment asset properties."""
+        return self._assessment_asset_properties_list
 
     @property
     def reviewed_controls(self) -> ReviewedControls:
@@ -392,18 +479,18 @@ class _OscalResultsFactory():
         """OSCAL result."""
         # perform result properties aggregation
         if self.observations:
-            self._result_properties_list = TransformerHelper().remove_common_observation_properties(self.observations)
+            self._assessment_asset_properties_list = TransformerHelper().remove_common_observation_properties(
+                self.observations
+            )
         # produce result
         prop = Result(
             uuid=str(uuid.uuid4()),
-            title='XCCDF',
-            description='XCCDF Scan Results',
-            start=self._timestamp,
-            end=self._timestamp,
+            title=f'{self._title}',
+            description=f'{self._description}',
+            start=self.time,
+            end=self.time,
             reviewed_controls=self.reviewed_controls,
         )
-        if self.result_properties:
-            prop.props = self.result_properties
         if self.inventory:
             prop.local_definitions = self.local_definitions
         if self.observations:
@@ -450,42 +537,29 @@ class _OscalResultsFactory():
 
     def _get_inventory_properties(self, rule_use):
         """Get inventory properties."""
+        props = []
+        if rule_use.host_name is None:
+            props.append(self._mk_prop('target', rule_use.target, rule_use.ns, self._tags.get('target')))
+            props.append(self._mk_prop('target_type', rule_use.target_type, rule_use.ns, self._tags.get('')))
+        else:
+            props.append(self._mk_prop('target', rule_use.target, rule_use.ns, self._tags.get('')))
+            props.append(self._mk_prop('target_type', rule_use.target_type, rule_use.ns, self._tags.get('')))
+            props.append(self._mk_prop('host_name', rule_use.host_name, rule_use.ns, self._tags.get('host_name')))
+        return props
+
+    def _mk_prop(self, name: str, value: str, ns: str, class_: str) -> Property:
+        """Make property."""
         if self._checking:
-            return self._get_inventory_properties_checked(rule_use)
+            if ns and class_:
+                prop = Property(name=name, value=value, ns=ns, class_=class_)
+            elif ns:
+                prop = Property(name=name, value=value, ns=ns)
         else:
-            return self._get_inventory_properties_unchecked(rule_use)
-
-    def _get_inventory_properties_checked(self, rule_use):
-        """Get inventory properties, with checking."""
-        props = []
-        if rule_use.host_name is None:
-            props.append(Property(name='target', value=rule_use.target, ns=self._ns, class_='scc_inventory_item_id'))
-            props.append(Property(name='target_type', value=rule_use.target_type, ns=self._ns))
-        else:
-            props.append(Property(name='target', value=rule_use.target, ns=self._ns))
-            props.append(Property(name='target_type', value=rule_use.target_type, ns=self._ns))
-            props.append(
-                Property(name='host_name', value=rule_use.host_name, ns=self._ns, class_='scc_inventory_item_id')
-            )
-        return props
-
-    def _get_inventory_properties_unchecked(self, rule_use):
-        """Get observation properties, without checking."""
-        props = []
-        if rule_use.host_name is None:
-            props.append(
-                Property.construct(name='target', value=rule_use.target, ns=self._ns, class_='scc_inventory_item_id')
-            )
-            props.append(Property.construct(name='target_type', value=rule_use.target_type, ns=self._ns))
-        else:
-            props.append(Property.construct(name='target', value=rule_use.target, ns=self._ns))
-            props.append(Property.construct(name='target_type', value=rule_use.target_type, ns=self._ns))
-            props.append(
-                Property.construct(
-                    name='host_name', value=rule_use.host_name, ns=self._ns, class_='scc_inventory_item_id'
-                )
-            )
-        return props
+            if ns and class_:
+                prop = Property.construct(name=name, value=value, ns=ns, class_=class_)
+            elif ns:
+                prop = Property.construct(name=name, value=value, ns=ns)
+        return prop
 
     def _get_inventory_ref(self, rule_use: RuleUse) -> str:
         """Get inventory reference for specified RuleUse."""
@@ -504,45 +578,18 @@ class _OscalResultsFactory():
 
     def _get_observation_properties(self, rule_use):
         """Get observation properties."""
-        if self._checking:
-            return self._get_observation_properties_checked(rule_use)
-        else:
-            return self._get_observation_properties_unchecked(rule_use)
-
-    def _get_observation_properties_checked(self, rule_use):
-        """Get observation properties, with checking."""
         props = []
-        props.append(Property(name='scanner_name', value=rule_use.scanner_name, ns=self._ns))
-        props.append(Property(name='scanner_version', value=rule_use.scanner_version, ns=self._ns))
-        props.append(Property(name='idref', value=rule_use.idref, ns=self._ns, class_='scc_check_name_id'))
-        props.append(Property(name='version', value=rule_use.version, ns=self._ns, class_='scc_check_version'))
-        props.append(Property(name='result', value=rule_use.result, ns=self._ns, class_='scc_result'))
-        props.append(Property(name='time', value=rule_use.time, ns=self._ns, class_='scc_timestamp'))
-        props.append(Property(name='severity', value=rule_use.severity, ns=self._ns, class_='scc_check_severity'))
-        props.append(Property(name='weight', value=rule_use.weight, ns=self._ns))
-        props.append(Property(name='benchmark_id', value=rule_use.benchmark_id, ns=self._ns))
-        props.append(Property(name='benchmark_href', value=rule_use.benchmark_href, ns=self._ns))
-        props.append(Property(name='id', value=rule_use.id_, ns=self._ns, class_='scc_predefined_profile'))
-        return props
-
-    def _get_observation_properties_unchecked(self, rule_use):
-        """Get observation properties, without checking."""
-        props = []
-        props.append(Property.construct(name='scanner_name', value=rule_use.scanner_name, ns=self._ns))
-        props.append(Property.construct(name='scanner_version', value=rule_use.scanner_version, ns=self._ns))
-        props.append(Property.construct(name='idref', value=rule_use.idref, ns=self._ns, class_='scc_check_name_id'))
-        props.append(
-            Property.construct(name='version', value=rule_use.version, ns=self._ns, class_='scc_check_version')
-        )
-        props.append(Property.construct(name='result', value=rule_use.result, ns=self._ns, class_='scc_result'))
-        props.append(Property.construct(name='time', value=rule_use.time, ns=self._ns, class_='scc_timestamp'))
-        props.append(
-            Property.construct(name='severity', value=rule_use.severity, ns=self._ns, class_='scc_check_severity')
-        )
-        props.append(Property.construct(name='weight', value=rule_use.weight, ns=self._ns))
-        props.append(Property.construct(name='benchmark_id', value=rule_use.benchmark_id, ns=self._ns))
-        props.append(Property.construct(name='benchmark_href', value=rule_use.benchmark_href, ns=self._ns))
-        props.append(Property.construct(name='id', value=rule_use.id_, ns=self._ns, class_='scc_predefined_profile'))
+        props.append(self._mk_prop('scanner_name', rule_use.scanner_name, rule_use.ns, self._tags.get('')))
+        props.append(self._mk_prop('scanner_version', rule_use.scanner_version, rule_use.ns, self._tags.get('')))
+        props.append(self._mk_prop('idref', rule_use.idref, rule_use.ns, self._tags.get('idref')))
+        props.append(self._mk_prop('version', rule_use.version, rule_use.ns, self._tags.get('version')))
+        props.append(self._mk_prop('result', rule_use.result, rule_use.ns, self._tags.get('result')))
+        props.append(self._mk_prop('time', rule_use.time, rule_use.ns, self._tags.get('time')))
+        props.append(self._mk_prop('severity', rule_use.severity, rule_use.ns, self._tags.get('severity')))
+        props.append(self._mk_prop('weight', rule_use.weight, rule_use.ns, self._tags.get('')))
+        props.append(self._mk_prop('benchmark_id', rule_use.benchmark_id, rule_use.ns, self._tags.get('')))
+        props.append(self._mk_prop('benchmark_href', rule_use.benchmark_href, rule_use.ns, self._tags.get('')))
+        props.append(self._mk_prop('id', rule_use.id_, rule_use.ns, self._tags.get('id')))
         return props
 
     def _process(self, co_result: _XccdfResult) -> None:
