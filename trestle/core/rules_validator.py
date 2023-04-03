@@ -16,6 +16,7 @@
 """Validate by confirming rule parameter values are consistent."""
 import logging
 import pathlib
+from typing import List
 
 from trestle.common.common_types import TopLevelOscalModel
 from trestle.common.common_types import TypeWithSetParams
@@ -23,7 +24,7 @@ from trestle.common.list_utils import as_list, deep_set, get_item_from_list
 from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.validator import Validator
-from trestle.oscal.ssp import SystemSecurityPlan
+from trestle.oscal.ssp import ByComponent, ImplementedRequirement, Statement, SystemComponent, SystemSecurityPlan
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +33,32 @@ class RulesValidator(Validator):
     """Validator to confirm all rule parameter values are consistent."""
 
     rule_param_values_dict = {}
+
+    def iter_and_add(
+        self,
+        by_components: List[ByComponent],
+        components: List[SystemComponent],
+        cat_int: CatalogInterface,
+        imp_requirement: ImplementedRequirement,
+        statement: Statement = None
+    ) -> None:
+        """
+        Iterate all by components in an object and add the rule shared parameter values to list.
+
+        args:
+            by_components: A list of by components.
+            components: Components defined at System implementation level.
+            cat_int: Instance of catalog interface with controls catalog loaded.
+            imp_requirement: Current implemented requirement.
+            statement: Statement if iterating by statements.
+        """
+        for by_component in as_list(by_components):
+            component = get_item_from_list(components, by_component.component_uuid, lambda x: x.uuid)
+            # first adds implmented requirement set params
+            if not statement:
+                self.add_shared_param(imp_requirement, imp_requirement.control_id, cat_int, component.title)
+            # then  adds by components set params per requirement
+            self.add_shared_param(by_component, imp_requirement.control_id, cat_int, component.title)
 
     def add_shared_param(
         self, item: TypeWithSetParams, control_id: str, cat_int: CatalogInterface, comp_name: str = ''
@@ -67,29 +94,22 @@ class RulesValidator(Validator):
             return True
 
         components = as_list(model.system_implementation.components)
-        profile_resolver = ProfileResolver()
-        catalog = profile_resolver.get_resolved_profile_catalog(trestle_root, model.import_profile.href)
-        catalog_interface = CatalogInterface(catalog)
+        profile_catalog = ProfileResolver().get_resolved_profile_catalog(trestle_root, model.import_profile.href)
+        catalog_interface = CatalogInterface(profile_catalog)
         # iterate by each implemented requirement defined
         for imp_req in as_list(model.control_implementation.implemented_requirements):
             # iterate by each by_component in each implemented requirement
-            for by_component in as_list(imp_req.by_components):
-                component = get_item_from_list(components, by_component.component_uuid, lambda x: x.uuid)
-                self.add_shared_param(imp_req, imp_req.control_id, catalog_interface, component.title)
-                self.add_shared_param(by_component, imp_req.control_id, catalog_interface, component.title)
+            self.iter_and_add(imp_req.by_components, components, catalog_interface, imp_req)
             # includes rule param values in each by_component present in statements
             for statement in as_list(imp_req.statements):
-                for by_comp in as_list(statement.by_components):
-                    component = get_item_from_list(components, by_component.component_uuid, lambda x: x.uuid)
-                    self.add_shared_param(by_comp, imp_req.control_id, catalog_interface, component.title)
+                self.iter_and_add(statement.by_components, components, catalog_interface, imp_req, statement)
         if not self.rule_param_values_dict:
             return True
         # compare all values in shared paramerets by component basis
         for shared_param, values_dict in as_list(self.rule_param_values_dict.items()):
             for comp_name, value_dict in values_dict.items():
                 expected_value = next(iter(value_dict.values()))
-                all_equal = all(value == expected_value for value in value_dict.values())
-                if not all_equal:
+                if not all(value == expected_value for value in value_dict.values()):
                     logger.error(
                         f'Rule parameter values for param: {shared_param} in '
                         f' {comp_name} is not consistent with '
