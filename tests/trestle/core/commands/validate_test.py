@@ -30,6 +30,7 @@ from tests.test_utils import setup_for_ssp
 import trestle.common.const as const
 import trestle.core.generators as gens
 import trestle.oscal.assessment_plan as ap
+import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
 from trestle import cli
 from trestle.cli import Trestle
@@ -230,7 +231,11 @@ def test_validate_direct(sample_catalog_minimal: Catalog, tmp_trestle_dir: pathl
     assert validator.model_is_valid(sample_catalog_minimal, True, tmp_trestle_dir)
 
 
-def test_validate_dup_uuids(sample_component_definition: ComponentDefinition, tmp_trestle_dir: pathlib.Path) -> None:
+def test_validate_dup_uuids(
+    sample_component_definition: ComponentDefinition,
+    tmp_trestle_dir: pathlib.Path,
+    sample_trestle_profile: prof.Profile
+) -> None:
     """Test validation of comp def with duplicate uuids."""
     args = argparse.Namespace(mode=const.VAL_MODE_ALL, quiet=True)
     validator = validator_factory.get(args)
@@ -255,6 +260,14 @@ def test_validate_dup_uuids(sample_component_definition: ComponentDefinition, tm
     sample_component_definition.components[1].control_implementations[0].uuid = sample_component_definition.components[
         0].uuid
     assert not validator.model_is_valid(sample_component_definition, True, tmp_trestle_dir)
+
+    assert validator.model_is_valid(sample_trestle_profile, True, tmp_trestle_dir)
+
+    # add extra set_param with duplicate param_id and confirm it is not valid
+    set_param = sample_trestle_profile.modify.set_parameters[0].copy()
+    set_param.values = ['foo']
+    sample_trestle_profile.modify.set_parameters.append(set_param)
+    assert not validator.model_is_valid(sample_trestle_profile, True, tmp_trestle_dir)
 
 
 def test_validate_distributed(

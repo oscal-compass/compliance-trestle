@@ -39,6 +39,8 @@ class DuplicatesValidator(Validator):
         """
         if not ModelUtils.has_no_duplicate_values_by_name(model, 'uuid'):
             return False
+        # only profile, comp-def and ssp have set-params and only set-params have param_id
+        # param_id is required to be unique in profiles but not in other models
         if isinstance(model, Profile):
             return ModelUtils.has_no_duplicate_values_by_name(model, 'param_id')
         return True

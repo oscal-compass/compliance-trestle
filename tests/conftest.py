@@ -111,6 +111,14 @@ def sample_profile():
 
 
 @pytest.fixture(scope='function')
+def sample_trestle_profile():
+    """Return a hand curated profile for testing."""
+    file_path = pathlib.Path(test_utils.JSON_TEST_DATA_PATH) / 'simple_test_profile.json'
+    profile_obj = Profile.oscal_read(file_path)
+    return profile_obj
+
+
+@pytest.fixture(scope='function')
 def simplified_nist_catalog():
     """Return a simplified nist catalog."""
     file_path = pathlib.Path(test_utils.JSON_TEST_DATA_PATH) / test_utils.SIMPLIFIED_NIST_CATALOG_NAME
