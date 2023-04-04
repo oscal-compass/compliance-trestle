@@ -597,17 +597,23 @@ class SSPFilter(AuthorCommonCommand):
 
             if not (args.components or args.implementation_status or args.profile):
                 logger.warning(
-                    'You must specify either a profile, list of component names'
+                    'You must specify at least one, or a combination of: profile, list of component names'
                     ', or list of implementation statuses for ssp-filter.'
                 )
-                return 1
+                return CmdReturnCodes.COMMAND_ERROR.value
 
             if args.components:
                 comp_names = args.components.split(':')
 
             if args.implementation_status:
                 impl_status_values = args.implementation_status.split(',')
-                allowed_is_values = {'planned', 'partial', 'implemented', 'alternative', 'not-applicable'}
+                allowed_is_values = {
+                    const.STATUS_PLANNED,
+                    const.STATUS_PARTIAL,
+                    const.STATUS_IMPLEMENTED,
+                    const.STATUS_ALTERNATIVE,
+                    const.STATUS_NOT_APPLICABLE
+                }
                 allowed_is_string = ', '.join(str(item) for item in allowed_is_values)
                 for impl_status in impl_status_values:
                     if impl_status not in allowed_is_values:
@@ -615,7 +621,7 @@ class SSPFilter(AuthorCommonCommand):
                             f'Provided implementation status "{impl_status}" is invalid.\n'
                             f'Please use the following for ssp-filter: {allowed_is_string}'
                         )
-                        return 1
+                        return CmdReturnCodes.COMMAND_ERROR.value
 
             return self.filter_ssp(
                 trestle_root,
