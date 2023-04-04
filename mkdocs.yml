@@ -147,7 +147,7 @@ nav:
         - merge: api_reference/trestle.core.resolver.merge.md
         - modify: api_reference/trestle.core.resolver.modify.md
         - prune: api_reference/trestle.core.resolver.prune.md
-      - rules_validator: api_reference/trestle.core.rules_validator.md
+      - rule_parameters_validator: api_reference/trestle.core.rule_parameters_validator.md
       - ssp_io: api_reference/trestle.core.ssp_io.md
       - trestle_base_model: api_reference/trestle.core.trestle_base_model.md
       - validator: api_reference/trestle.core.validator.md

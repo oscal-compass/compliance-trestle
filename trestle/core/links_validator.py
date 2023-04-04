@@ -15,7 +15,8 @@
 # limitations under the License.
 """Validate catalog by confirming control links match resources in backmatter."""
 import logging
-from typing import List, Set
+import pathlib
+from typing import List, Optional, Set
 
 from trestle.common.common_types import TopLevelOscalModel
 from trestle.common.model_utils import ModelUtils
@@ -27,7 +28,9 @@ logger = logging.getLogger(__name__)
 class LinksValidator(Validator):
     """Validator to confirm all uuids in links and prose match resources in backmatter."""
 
-    def model_is_valid(self, model: TopLevelOscalModel, quiet: bool) -> bool:
+    def model_is_valid(
+        self, model: TopLevelOscalModel, quiet: bool, trestle_root: Optional[pathlib.Path] = None
+    ) -> bool:
         """
         Test if the model is valid.
 

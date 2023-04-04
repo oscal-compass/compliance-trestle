@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Validate by confirming no duplicate uuids."""
+import pathlib
+from typing import Optional
 
 from trestle.common.model_utils import ModelUtils
 from trestle.core.base_model import OscalBaseModel
@@ -23,7 +25,7 @@ from trestle.core.validator import Validator
 class DuplicatesValidator(Validator):
     """Validator to check for duplicate uuids and param_ids in the model."""
 
-    def model_is_valid(self, model: OscalBaseModel, quiet: bool) -> bool:
+    def model_is_valid(self, model: OscalBaseModel, quiet: bool, trestle_root: Optional[pathlib.Path] = None) -> bool:
         """
         Test if the model is valid and contains no duplicate uuids or param_ids.
 

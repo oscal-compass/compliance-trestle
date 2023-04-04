@@ -223,38 +223,38 @@ def test_oscal_incorrect_fields_validator(tmp_trestle_dir: pathlib.Path, monkeyp
     assert rc == 1
 
 
-def test_validate_direct(sample_catalog_minimal: Catalog) -> None:
+def test_validate_direct(sample_catalog_minimal: Catalog, tmp_trestle_dir: pathlib.Path) -> None:
     """Test a validator by invoking it directly without CLI."""
     args = argparse.Namespace(mode=const.VAL_MODE_ALL, quiet=True)
     validator: Validator = validator_factory.get(args)
-    assert validator.model_is_valid(sample_catalog_minimal, True)
+    assert validator.model_is_valid(sample_catalog_minimal, True, tmp_trestle_dir)
 
 
-def test_validate_dup_uuids(sample_component_definition: ComponentDefinition) -> None:
+def test_validate_dup_uuids(sample_component_definition: ComponentDefinition, tmp_trestle_dir: pathlib.Path) -> None:
     """Test validation of comp def with duplicate uuids."""
     args = argparse.Namespace(mode=const.VAL_MODE_ALL, quiet=True)
     validator = validator_factory.get(args)
 
     # confirm the comp_def is valid
-    assert validator.model_is_valid(sample_component_definition, False)
+    assert validator.model_is_valid(sample_component_definition, False, tmp_trestle_dir)
 
     # force two components to have same uuid and confirm invalid
     sample_component_definition.components[1].uuid = sample_component_definition.components[0].uuid
-    assert not validator.model_is_valid(sample_component_definition, True)
+    assert not validator.model_is_valid(sample_component_definition, True, tmp_trestle_dir)
 
     # restore uuid to unique value and confirm it is valid again
     sample_component_definition.components[1].uuid = str(uuid4())
-    assert validator.model_is_valid(sample_component_definition, False)
+    assert validator.model_is_valid(sample_component_definition, False, tmp_trestle_dir)
 
     # add a control implementation to one of the components and confirm valid
     control_imp: ControlImplementation = generate_sample_model(ControlImplementation)
     sample_component_definition.components[1].control_implementations = [control_imp]
-    assert validator.model_is_valid(sample_component_definition, True)
+    assert validator.model_is_valid(sample_component_definition, True, tmp_trestle_dir)
 
     # force the control implementation to have same uuid as the first component and confirm invalid
     sample_component_definition.components[1].control_implementations[0].uuid = sample_component_definition.components[
         0].uuid
-    assert not validator.model_is_valid(sample_component_definition, True)
+    assert not validator.model_is_valid(sample_component_definition, True, tmp_trestle_dir)
 
 
 def test_validate_distributed(
@@ -288,13 +288,13 @@ def test_validate_catalog_params(sample_catalog_rich_controls: Catalog) -> None:
     """Test validation of unique param ids in catalog."""
     args = argparse.Namespace(mode=const.VAL_MODE_CATALOG)
     validator: Validator = validator_factory.get(args)
-    assert validator.model_is_valid(sample_catalog_rich_controls, True)
+    assert validator.model_is_valid(sample_catalog_rich_controls, True, None)
     param_0_id = sample_catalog_rich_controls.groups[0].controls[0].params[0].id
     sample_catalog_rich_controls.groups[0].controls[0].params[1].id = param_0_id
-    assert not validator.model_is_valid(sample_catalog_rich_controls, False)
+    assert not validator.model_is_valid(sample_catalog_rich_controls, False, None)
 
 
-def test_rules_validator_happy(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+def test_rule_param_values_validator_happy(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test validation of rules in SSP."""
     args = argparse.Namespace(mode=const.VAL_MODE_RULES)
     validator: Validator = validator_factory.get(args)
@@ -321,7 +321,37 @@ def test_rules_validator_happy(tmp_trestle_dir: pathlib.Path, monkeypatch: Monke
     assert validator.model_is_valid(new_ssp, True, tmp_trestle_dir)
 
 
-def test_rules_validator_unhappy(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+def test_validate_ssp_with_no_profile(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test validation of rules in SSP."""
+    args = argparse.Namespace(mode=const.VAL_MODE_RULES)
+    validator: Validator = validator_factory.get(args)
+    prof_name = 'comp_prof'
+    ssp_name = 'new_ssp'
+
+    gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
+    args_compdefs = gen_args.compdefs
+
+    # first create the markdown
+    ssp_gen = SSPGenerate()
+    assert ssp_gen._run(gen_args) == 0
+
+    # first ssp assembly
+    ssp_assemble = f'trestle author ssp-assemble -m {ssp_name} -o {ssp_name} -cd {args_compdefs}'
+    test_utils.execute_command_and_assert(ssp_assemble, 0, monkeypatch)
+
+    new_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+
+    original_href = new_ssp.import_profile.href
+    # sets href for given profile to empty to test if no given profile has been given to an ssp
+    new_ssp.import_profile.href = ''
+    ModelUtils.save_top_level_model(new_ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
+
+    assert not validator.model_is_valid(new_ssp, True, tmp_trestle_dir)
+    new_ssp.import_profile.href = original_href
+    ModelUtils.save_top_level_model(new_ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
+
+
+def test_rule_param_values_validator_unhappy(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test validation of rules in SSP."""
     args = argparse.Namespace(mode=const.VAL_MODE_RULES)
     validator: Validator = validator_factory.get(args)
@@ -342,20 +372,8 @@ def test_rules_validator_unhappy(tmp_trestle_dir: pathlib.Path, monkeypatch: Mon
     orig_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     # starts editing by grabbing by components from second imp req
     by_components = orig_ssp.control_implementation.implemented_requirements[1].by_components
-
-    new_set_parameter = gens.generate_sample_model(ossp.SetParameter)
-    new_set_parameter.values = ['shared_param_1_ab_opt_3']
-    new_set_parameter.param_id = 'shared_param_1'
-
-    by_components[1].set_parameters = []
-    # appends new set parameter
-    by_components[1].set_parameters.append(new_set_parameter)
-
-    ModelUtils.save_top_level_model(orig_ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
-    assert not validator.model_is_valid(orig_ssp, True, tmp_trestle_dir)
-    # test 2 different controls have different rule parameter values
-    by_components = orig_ssp.control_implementation.implemented_requirements[0].by_components
-    by_components[1].set_parameters[0].values.append('shared_param_1_ab_opt_1')
+    # changes values for set parameter to test inequality
+    by_components[0].set_parameters[1].values = ['shared_param_1_ab_opt_3']
 
     ModelUtils.save_top_level_model(orig_ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
     assert not validator.model_is_valid(orig_ssp, True, tmp_trestle_dir)
@@ -368,8 +386,11 @@ def test_rules_validator_unhappy(tmp_trestle_dir: pathlib.Path, monkeypatch: Mon
     # grabs by component elements at statement level
     by_components = new_ssp.control_implementation.implemented_requirements[0].statements[0].by_components
     by_components[1].set_parameters = []
-    # addes new value to current set parameter values
+
+    new_set_parameter = gens.generate_sample_model(ossp.SetParameter)
     new_set_parameter.values = ['shared_param_1_ab_opt_3']
+    new_set_parameter.param_id = 'shared_param_1'
+    # addes new value to current set parameter values
     # adds a new set parameter to set parameters array for current by component in statement
     by_components[1].set_parameters.append(new_set_parameter)
     by_components = new_ssp.control_implementation.implemented_requirements[2].statements[0].by_components
