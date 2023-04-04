@@ -25,19 +25,23 @@ from trestle.core.commands.author.ssp import SSPGenerate
 from trestle.core.markdown.docs_markdown_node import DocsMarkdownNode
 
 
-def setup_ssp(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch):
+def setup_ssp(testdata_dirx: pathlib.Path, tmp_trestle_dirx: pathlib.Path, monkeypatchx: MonkeyPatch):
     """Prepare repository for docs generation."""
-    args, _ = setup_for_ssp(tmp_trestle_dir, 'comp_prof', 'my_ssp')
+    args, _ = setup_for_ssp(tmp_trestle_dirx, 'comp_prof', 'my_ssp')
     ssp_cmd = SSPGenerate()
     assert ssp_cmd._run(args) == 0
 
-    command_ssp_gen = f'trestle author ssp-assemble -m my_ssp -o ssp_json -cd {args.compdefs} -vv'
-    execute_command_and_assert(command_ssp_gen, 0, monkeypatch)
+    pytest_cwd = pathlib.Path.cwd()
+    os.chdir(str(tmp_trestle_dirx))
+    command_ssp_assem = f'trestle author ssp-assemble -m my_ssp -o ssp_json -cd {args.compdefs} -vv'
+    execute_command_and_assert(command_ssp_assem, 0, monkeypatchx)
 
-    for file_name in os.listdir(testdata_dir / 'jinja'):
-        full_file_name = os.path.join(testdata_dir / 'jinja', file_name)
+    os.chdir(str(pytest_cwd))
+
+    for file_name in os.listdir(testdata_dirx / 'jinja'):
+        full_file_name = os.path.join(testdata_dirx / 'jinja', file_name)
         if os.path.isfile(full_file_name):
-            shutil.copy(full_file_name, tmp_trestle_dir)
+            shutil.copy(full_file_name, tmp_trestle_dirx)
 
 
 def test_jinja_ssp_output(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
