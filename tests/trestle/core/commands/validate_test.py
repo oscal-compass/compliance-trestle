@@ -30,12 +30,11 @@ from tests.test_utils import setup_for_ssp
 import trestle.common.const as const
 import trestle.core.generators as gens
 import trestle.oscal.assessment_plan as ap
-import trestle.oscal.ssp as ossp
 import trestle.oscal.profile as prof
+import trestle.oscal.ssp as ossp
 from trestle import cli
 from trestle.cli import Trestle
 from trestle.common.model_utils import ModelUtils
-from trestle.core.commands.author.ssp import SSPGenerate
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.commands.split import SplitCmd
 from trestle.core.generators import generate_sample_model
@@ -231,7 +230,6 @@ def test_validate_direct(sample_catalog_minimal: Catalog, tmp_trestle_dir: pathl
     assert validator.model_is_valid(sample_catalog_minimal, True, tmp_trestle_dir)
 
 
-
 def test_validate_dup_uuids(
     sample_component_definition: ComponentDefinition, sample_trestle_profile: prof.Profile
 ) -> None:
@@ -248,21 +246,21 @@ def test_validate_dup_uuids(
 
     # force two components to have same uuid and confirm invalid
     sample_component_definition.components[1].uuid = sample_component_definition.components[0].uuid
-    assert not validator.model_is_valid(sample_component_definition, True, tmp_trestle_dir)
+    assert not validator.model_is_valid(sample_component_definition, True, None)
 
     # restore uuid to unique value and confirm it is valid again
     sample_component_definition.components[1].uuid = str(uuid4())
-    assert validator.model_is_valid(sample_component_definition, False, tmp_trestle_dir)
+    assert validator.model_is_valid(sample_component_definition, False, None)
 
     # add a control implementation to one of the components and confirm valid
     control_imp: ControlImplementation = generate_sample_model(ControlImplementation)
     sample_component_definition.components[1].control_implementations = [control_imp]
-    assert validator.model_is_valid(sample_component_definition, True, tmp_trestle_dir)
+    assert validator.model_is_valid(sample_component_definition, True, None)
 
     # force the control implementation to have same uuid as the first component and confirm invalid
     sample_component_definition.components[1].control_implementations[0].uuid = sample_component_definition.components[
         0].uuid
-    assert not validator.model_is_valid(sample_component_definition, True, tmp_trestle_dir)
+    assert not validator.model_is_valid(sample_component_definition, True, None)
 
     assert validator.model_is_valid(sample_trestle_profile, True)
 
@@ -319,15 +317,7 @@ def test_rule_param_values_validator_happy(tmp_trestle_dir: pathlib.Path, monkey
     ssp_name = 'new_ssp'
 
     gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
-    args_compdefs = gen_args.compdefs
-
-    # first create the markdown
-    ssp_gen = SSPGenerate()
-    assert ssp_gen._run(gen_args) == 0
-
-    # first ssp assembly
-    ssp_assemble = f'trestle author ssp-assemble -m {ssp_name} -o {ssp_name} -cd {args_compdefs}'
-    test_utils.execute_command_and_assert(ssp_assemble, 0, monkeypatch)
+    test_utils.gen_and_assemble_first_ssp(prof_name, ssp_name, gen_args, tmp_trestle_dir, monkeypatch)
 
     new_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
 
@@ -346,15 +336,7 @@ def test_validate_ssp_with_no_profile(tmp_trestle_dir: pathlib.Path, monkeypatch
     ssp_name = 'new_ssp'
 
     gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
-    args_compdefs = gen_args.compdefs
-
-    # first create the markdown
-    ssp_gen = SSPGenerate()
-    assert ssp_gen._run(gen_args) == 0
-
-    # first ssp assembly
-    ssp_assemble = f'trestle author ssp-assemble -m {ssp_name} -o {ssp_name} -cd {args_compdefs}'
-    test_utils.execute_command_and_assert(ssp_assemble, 0, monkeypatch)
+    test_utils.gen_and_assemble_first_ssp(prof_name, ssp_name, gen_args, tmp_trestle_dir, monkeypatch)
 
     new_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
 
@@ -364,6 +346,10 @@ def test_validate_ssp_with_no_profile(tmp_trestle_dir: pathlib.Path, monkeypatch
     ModelUtils.save_top_level_model(new_ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
 
     assert not validator.model_is_valid(new_ssp, True, tmp_trestle_dir)
+
+    validate_command = f'trestle validate -t system-security-plan -n {ssp_name}'
+    test_utils.execute_command_and_assert(validate_command, 4, monkeypatch)
+
     new_ssp.import_profile.href = original_href
     ModelUtils.save_top_level_model(new_ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
 
@@ -377,14 +363,7 @@ def test_rule_param_values_validator_unhappy(tmp_trestle_dir: pathlib.Path, monk
 
     gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
     args_compdefs = gen_args.compdefs
-
-    # first create the markdown
-    ssp_gen = SSPGenerate()
-    assert ssp_gen._run(gen_args) == 0
-
-    # first ssp assembly
-    ssp_assemble = f'trestle author ssp-assemble -m {ssp_name} -o {ssp_name} -cd {args_compdefs}'
-    test_utils.execute_command_and_assert(ssp_assemble, 0, monkeypatch)
+    test_utils.gen_and_assemble_first_ssp(prof_name, ssp_name, gen_args, tmp_trestle_dir, monkeypatch)
 
     orig_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     # starts editing by grabbing by components from second imp req

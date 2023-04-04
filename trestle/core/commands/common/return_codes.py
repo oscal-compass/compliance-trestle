@@ -42,4 +42,3 @@ class CmdReturnCodes(enum.Enum):
     IO_ERROR = 6
     AUTH_ERROR = 7
     UNKNOWN_ERROR = 8
-    INVALID_MODEL = 9
