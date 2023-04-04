@@ -230,7 +230,11 @@ def test_validate_dup_uuids(
     args = argparse.Namespace(mode=const.VAL_MODE_ALL, quiet=True)
     validator = validator_factory.get(args)
 
-    # confirm the comp_def is valid
+    # confirm the comp_def has duplicate param_ids (REPLACE_ME)
+    ci = sample_component_definition.components[0].control_implementations[0]
+    assert ci.set_parameters[0].param_id == ci.implemented_requirements[0].set_parameters[0].param_id
+
+    # confirm the comp_def is valid despite duplicate param_ids (this is allowed for compdef and ssp)
     assert validator.model_is_valid(sample_component_definition, False)
 
     # force two components to have same uuid and confirm invalid
