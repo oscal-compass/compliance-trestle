@@ -556,10 +556,6 @@ class SSPAssemble(AuthorCommonCommand):
             if args.regenerate:
                 ssp, _, _ = ModelUtils.regenerate_uuids(ssp)
             ModelUtils.update_last_modified(ssp)
-            # validates if ssp doesn´t have a profile a provides warning
-            if not ssp.import_profile.href:
-                logger.error('No profile given for current SSP. Model is invalid')
-                return CmdReturnCodes.OSCAL_VALIDATION_ERROR.value
             # validate model rules before saving
             args_validate = argparse.Namespace(mode=const.VAL_MODE_RULES)
             validator: Validator = validator_factory.get(args_validate)
