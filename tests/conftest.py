@@ -111,6 +111,14 @@ def sample_profile():
 
 
 @pytest.fixture(scope='function')
+def sample_trestle_profile():
+    """Return a hand curated profile for testing."""
+    file_path = pathlib.Path(test_utils.JSON_TEST_DATA_PATH) / 'simple_test_profile.json'
+    profile_obj = Profile.oscal_read(file_path)
+    return profile_obj
+
+
+@pytest.fixture(scope='function')
 def simplified_nist_catalog():
     """Return a simplified nist catalog."""
     file_path = pathlib.Path(test_utils.JSON_TEST_DATA_PATH) / test_utils.SIMPLIFIED_NIST_CATALOG_NAME
@@ -186,8 +194,8 @@ def sample_catalog_subgroups():
 def sample_component_definition():
     """Return a valid ComponentDefinition object with some contents."""
     # one component has no properties - the other has two
-    def_comp1: DefinedComponent = gens.generate_sample_model(DefinedComponent)
-    def_comp2: DefinedComponent = gens.generate_sample_model(DefinedComponent)
+    def_comp1: DefinedComponent = gens.generate_sample_model(DefinedComponent, True, 3)
+    def_comp2: DefinedComponent = gens.generate_sample_model(DefinedComponent, True, 3)
     prop_1 = common.Property(name='prop_1', value='prop_1_value')
     prop_2 = common.Property(name='prop_2', value='prop_2_value')
     def_comp2.props = [prop_1, prop_2]

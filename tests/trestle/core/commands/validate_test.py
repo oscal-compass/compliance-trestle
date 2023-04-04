@@ -28,6 +28,7 @@ from tests import test_utils
 
 import trestle.common.const as const
 import trestle.oscal.assessment_plan as ap
+import trestle.oscal.profile as prof
 from trestle import cli
 from trestle.cli import Trestle
 from trestle.core.commands.common.return_codes import CmdReturnCodes
@@ -222,12 +223,18 @@ def test_validate_direct(sample_catalog_minimal: Catalog) -> None:
     assert validator.model_is_valid(sample_catalog_minimal, True)
 
 
-def test_validate_dup_uuids(sample_component_definition: ComponentDefinition) -> None:
+def test_validate_dup_uuids(
+    sample_component_definition: ComponentDefinition, sample_trestle_profile: prof.Profile
+) -> None:
     """Test validation of comp def with duplicate uuids."""
     args = argparse.Namespace(mode=const.VAL_MODE_ALL, quiet=True)
     validator = validator_factory.get(args)
 
-    # confirm the comp_def is valid
+    # confirm the comp_def has duplicate param_ids (REPLACE_ME)
+    ci = sample_component_definition.components[0].control_implementations[0]
+    assert ci.set_parameters[0].param_id == ci.implemented_requirements[0].set_parameters[0].param_id
+
+    # confirm the comp_def is valid despite duplicate param_ids (this is allowed for compdef and ssp)
     assert validator.model_is_valid(sample_component_definition, False)
 
     # force two components to have same uuid and confirm invalid
@@ -247,6 +254,15 @@ def test_validate_dup_uuids(sample_component_definition: ComponentDefinition) ->
     sample_component_definition.components[1].control_implementations[0].uuid = sample_component_definition.components[
         0].uuid
     assert not validator.model_is_valid(sample_component_definition, True)
+
+    assert validator.model_is_valid(sample_trestle_profile, True)
+
+    # add extra set_param with duplicate param_id and confirm it is not valid
+    # only profile has this additional test
+    set_param = sample_trestle_profile.modify.set_parameters[0].copy()
+    set_param.values = ['foo']
+    sample_trestle_profile.modify.set_parameters.append(set_param)
+    assert not validator.model_is_valid(sample_trestle_profile, True)
 
 
 def test_validate_distributed(
