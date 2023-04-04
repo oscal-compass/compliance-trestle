@@ -31,7 +31,7 @@ def setup_ssp(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeyp
     ssp_cmd = SSPGenerate()
     assert ssp_cmd._run(args) == 0
 
-    command_ssp_gen = f'trestle author ssp-assemble -m my_ssp -o ssp_json -cd {args.compdefs}'
+    command_ssp_gen = f'trestle author ssp-assemble -m my_ssp -o ssp_json -cd {args.compdefs} -vv'
     execute_command_and_assert(command_ssp_gen, 0, monkeypatch)
 
     for file_name in os.listdir(testdata_dir / 'jinja'):
