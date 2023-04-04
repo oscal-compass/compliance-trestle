@@ -369,6 +369,7 @@ def test_rule_param_values_validator_unhappy(tmp_trestle_dir: pathlib.Path, monk
     # starts editing by grabbing by components from second imp req
     by_components = orig_ssp.control_implementation.implemented_requirements[1].by_components
     # changes values for set parameter to test inequality
+    old_values = by_components[0].set_parameters[1].values.copy()
     by_components[0].set_parameters[1].values = ['shared_param_1_ab_opt_3']
 
     ModelUtils.save_top_level_model(orig_ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
@@ -397,3 +398,9 @@ def test_rule_param_values_validator_unhappy(tmp_trestle_dir: pathlib.Path, monk
 
     ModelUtils.save_top_level_model(new_ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
     assert not validator.model_is_valid(new_ssp, True, tmp_trestle_dir)
+    # cleaning up the mess
+    new_ssp.control_implementation.implemented_requirements[0].statements[0].by_components[1].set_parameters = None
+    new_ssp.control_implementation.implemented_requirements[2].statements[0].by_components[0] = None
+    new_ssp.control_implementation.implemented_requirements[1].by_components[0].set_parameters[1].values = old_values
+
+    ModelUtils.save_top_level_model(new_ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
