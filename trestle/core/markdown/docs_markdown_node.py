@@ -56,6 +56,14 @@ class DocsMarkdownNode(BaseMarkdownNode):
         super(DocsMarkdownNode, self).__init__(key, content, starting_line)
         self.content: DocsSectionContent = content
 
+    @classmethod
+    def build_tree_from_markdown(cls, lines: List[str], governed_header: Optional[str] = None):
+        """Construct a tree out of the given markdown."""
+        ob = cls.__new__(cls)
+        start_level = ob._get_max_header_lvl(lines)
+        ob, _ = ob._build_tree(lines, 'root', 0, start_level, governed_header)
+        return ob
+
     def _build_tree(
         self,
         lines: List[str],
