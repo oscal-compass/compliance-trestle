@@ -118,7 +118,7 @@ class RuleParametersValidator(Validator):
                     if not all(value == expected_value for value in value_dict.values()):
                         logger.error(
                             f'Rule parameter values for param: {shared_param} in '
-                            f' {comp_name} is not consistent with '
+                            f' {comp_name} are not consistent with '
                             'other values provided across controls. Invalid model'
                         )
                         return False
