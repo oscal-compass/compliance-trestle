@@ -322,8 +322,7 @@ def test_rule_param_values_validator_happy(tmp_trestle_dir: pathlib.Path, monkey
     new_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     imp_reqs = new_ssp.control_implementation.implemented_requirements
     imp_req = next((i_req for i_req in imp_reqs if i_req.control_id == 'ac-3'), None)
-    imp_req.by_components[0].set_parameters[1].values[
-        0] = 'shared_param_1_aa_opt_1'
+    imp_req.by_components[0].set_parameters[1].values[0] = 'shared_param_1_aa_opt_1'
     ModelUtils.save_top_level_model(new_ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
 
     assert validator.model_is_valid(new_ssp, True, tmp_trestle_dir)
@@ -376,7 +375,7 @@ def test_rule_param_values_validator_unhappy(tmp_trestle_dir: pathlib.Path, monk
 
     ModelUtils.save_top_level_model(orig_ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
     assert not validator.model_is_valid(orig_ssp, True, tmp_trestle_dir)
-    
+
     # test a by_component statement param value is added and
     # reassemble ssp
     ssp_assemble = f'trestle author ssp-assemble -m {ssp_name} -o {ssp_name} -cd {args_compdefs}'
