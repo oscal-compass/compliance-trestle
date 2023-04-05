@@ -78,7 +78,7 @@ class Prune(Pipeline.Filter):
 
         if not set(include_ids).issuperset(set(exclude_ids)):
             logger.debug(f'include_ids is not a superset of exclude_ids in import {self._import.href}')
-        return [id_ for id_ in include_ids if id_ not in exclude_ids]
+        return sorted([id_ for id_ in include_ids if id_ not in exclude_ids])
 
     def _prune_control(self, needed_ids: List[str], control: cat.Control, exclude_ids: List[str]) -> cat.Control:
         """

@@ -424,7 +424,7 @@ class ControlWriter():
     def _prompt_required_sections(self, required_sections: List[str], added_sections: List[str]) -> None:
         """Add prompts for any required sections that haven't already been written out."""
         missing_sections = set(required_sections).difference(added_sections)
-        for section in missing_sections:
+        for section in sorted(missing_sections):
             section_title = self._sections_dict.get(section, section)
             self._md_file.new_header(2, f'Control {section_title}')
             self._md_file.new_line(f'{const.PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT}: {section_title} -->')

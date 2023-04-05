@@ -292,7 +292,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
         ac_1_path, 'ac-1_prm_2:', '    values:\n    ssp-values:\n      - my ssp val\n'
     )
     assert test_utils.replace_line_in_file_after_tag(
-        ac_1_path, '- shared_param_1_aa_opt_1', '      ssp-values:\n        - shared_param_1_aa_opt_2\n  comp_ab:\n'
+        ac_1_path, '- shared_param_1_aa_opt_1', '      ssp-values:\n        - shared_param_1_aa_opt_1\n  comp_ab:\n'
     )
 
     # now assemble the edited controls into json ssp
@@ -319,7 +319,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert imp_req.statements[0].by_components[0].description == prose_aa_a
 
     assert imp_reqs[0].by_components[0].set_parameters[1].param_id == 'shared_param_1'
-    assert imp_reqs[0].by_components[0].set_parameters[1].values[0] == 'shared_param_1_aa_opt_2'
+    assert imp_reqs[0].by_components[0].set_parameters[1].values[0] == 'shared_param_1_aa_opt_1'
     assert imp_reqs[0].set_parameters[0].values[0] == 'my ssp val'
 
     by_comp = orig_ssp.control_implementation.implemented_requirements[0].by_components[2]

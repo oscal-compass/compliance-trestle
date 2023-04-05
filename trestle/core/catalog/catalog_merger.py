@@ -97,7 +97,7 @@ class CatalogMerger():
         handled_ids = set(cat_interface._control_dict.keys())
         orig_ids = set(self._catalog_interface._control_dict.keys())
         extra_ids = orig_ids.difference(handled_ids)
-        for extra_id in extra_ids:
+        for extra_id in sorted(extra_ids):
             self._catalog_interface._control_dict.pop(extra_id)
 
         self._catalog_interface.update_catalog_controls()

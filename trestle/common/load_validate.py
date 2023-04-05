@@ -34,7 +34,7 @@ def load_validate_model_path(trestle_root: Path, model_path: Path) -> TopLevelOs
     _, _, model = ModelUtils.load_distributed(model_path, trestle_root)
     args = argparse.Namespace(mode=const.VAL_MODE_ALL, quiet=True)
     validator: Validator = validator_factory.get(args)
-    if not validator.model_is_valid(model, True):
+    if not validator.model_is_valid(model, True, trestle_root):
         logger.warning(f'Model loaded at {model_path} fails validation, but is being loaded anyway.')
     return model
 
