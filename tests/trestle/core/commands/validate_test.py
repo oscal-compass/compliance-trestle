@@ -317,7 +317,7 @@ def test_rule_param_values_validator_happy(tmp_trestle_dir: pathlib.Path, monkey
     ssp_name = 'new_ssp'
 
     gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
-    test_utils.gen_and_assemble_first_ssp(prof_name, ssp_name, gen_args, tmp_trestle_dir, monkeypatch)
+    test_utils.gen_and_assemble_first_ssp(prof_name, ssp_name, gen_args, monkeypatch)
 
     new_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     imp_reqs = new_ssp.control_implementation.implemented_requirements
@@ -326,32 +326,6 @@ def test_rule_param_values_validator_happy(tmp_trestle_dir: pathlib.Path, monkey
     ModelUtils.save_top_level_model(new_ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
 
     assert validator.model_is_valid(new_ssp, True, tmp_trestle_dir)
-
-
-def test_validate_ssp_with_no_profile(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
-    """Test validation of rules in SSP."""
-    args = argparse.Namespace(mode=const.VAL_MODE_RULES)
-    validator: Validator = validator_factory.get(args)
-    prof_name = 'comp_prof'
-    ssp_name = 'new_ssp'
-
-    gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
-    test_utils.gen_and_assemble_first_ssp(prof_name, ssp_name, gen_args, tmp_trestle_dir, monkeypatch)
-
-    new_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
-
-    original_href = new_ssp.import_profile.href
-    # sets href for given profile to empty to test if no given profile has been given to an ssp
-    new_ssp.import_profile.href = ''
-    ModelUtils.save_top_level_model(new_ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
-
-    assert not validator.model_is_valid(new_ssp, True, tmp_trestle_dir)
-
-    validate_command = f'trestle validate -t system-security-plan -n {ssp_name}'
-    test_utils.execute_command_and_assert(validate_command, 4, monkeypatch)
-
-    new_ssp.import_profile.href = original_href
-    ModelUtils.save_top_level_model(new_ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
 
 
 def test_rule_param_values_validator_unhappy(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
@@ -363,7 +337,7 @@ def test_rule_param_values_validator_unhappy(tmp_trestle_dir: pathlib.Path, monk
 
     gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
     args_compdefs = gen_args.compdefs
-    test_utils.gen_and_assemble_first_ssp(prof_name, ssp_name, gen_args, tmp_trestle_dir, monkeypatch)
+    test_utils.gen_and_assemble_first_ssp(prof_name, ssp_name, gen_args, monkeypatch)
 
     orig_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     # starts editing by grabbing by components from second imp req
@@ -388,22 +362,48 @@ def test_rule_param_values_validator_unhappy(tmp_trestle_dir: pathlib.Path, monk
     by_components = imp_req_ac.statements[0].by_components
     by_components[1].set_parameters = []
 
-    new_set_parameter = gens.generate_sample_model(ossp.SetParameter)
-    new_set_parameter.values = ['shared_param_1_ab_opt_3']
-    new_set_parameter.param_id = 'shared_param_1'
+    new_set_parameter_a = gens.generate_sample_model(ossp.SetParameter)
+    new_set_parameter_a.values = ['shared_param_1_ab_opt_3']
+    new_set_parameter_a.param_id = 'shared_param_1'
     # addes new value to current set parameter values
     # adds a new set parameter to set parameters array for current by component in statement
-    by_components[1].set_parameters.append(new_set_parameter)
+    by_components[1].set_parameters.append(new_set_parameter_a)
     imp_reqs = new_ssp.control_implementation.implemented_requirements
     imp_req_at = next((i_req for i_req in imp_reqs if i_req.control_id == 'at-1'), None)
     by_components = imp_req_at.statements[0].by_components
     by_components[0].set_parameters = []
-    new_set_parameter_one = gens.generate_sample_model(ossp.SetParameter)
-    new_set_parameter_one.values = ['shared_param_1_ab_opt_1']
-    new_set_parameter_one.param_id = 'shared_param_1'
-    by_components[0].set_parameters.append(new_set_parameter_one)
+    new_set_parameter_b = gens.generate_sample_model(ossp.SetParameter)
+    new_set_parameter_b.values = ['shared_param_1_ab_opt_1']
+    new_set_parameter_b.param_id = 'shared_param_1'
+    by_components[0].set_parameters.append(new_set_parameter_b)
 
     ModelUtils.save_top_level_model(new_ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
     assert not validator.model_is_valid(new_ssp, True, tmp_trestle_dir)
     # cleaning up the mess
-    test_utils.gen_and_assemble_first_ssp(prof_name, ssp_name, gen_args, tmp_trestle_dir, monkeypatch)
+    test_utils.gen_and_assemble_first_ssp(prof_name, ssp_name, gen_args, monkeypatch)
+
+
+def test_validate_ssp_with_no_profile(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test validation of rules in SSP."""
+    args = argparse.Namespace(mode=const.VAL_MODE_RULES)
+    validator: Validator = validator_factory.get(args)
+    prof_name = 'comp_prof'
+    ssp_name = 'new_ssp'
+
+    gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
+    test_utils.gen_and_assemble_first_ssp(prof_name, ssp_name, gen_args, monkeypatch)
+
+    new_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+
+    original_href = new_ssp.import_profile.href
+    # sets href for given profile to empty to test if no given profile has been given to an ssp
+    new_ssp.import_profile.href = ''
+    ModelUtils.save_top_level_model(new_ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
+
+    assert not validator.model_is_valid(new_ssp, True, tmp_trestle_dir)
+
+    validate_command = f'trestle validate -t system-security-plan -n {ssp_name}'
+    test_utils.execute_command_and_assert(validate_command, 4, monkeypatch)
+
+    new_ssp.import_profile.href = original_href
+    ModelUtils.save_top_level_model(new_ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)

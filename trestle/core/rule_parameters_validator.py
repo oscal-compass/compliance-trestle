@@ -20,11 +20,11 @@ from typing import List, Optional
 
 from trestle.common.common_types import TopLevelOscalModel
 from trestle.common.common_types import TypeWithSetParams
-from trestle.common.list_utils import as_list, deep_set, get_item_from_list
+from trestle.common.list_utils import as_list, deep_set
 from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.validator import Validator
-from trestle.oscal.ssp import ByComponent, ImplementedRequirement, Statement, SystemComponent, SystemSecurityPlan
+from trestle.oscal.ssp import ByComponent, ImplementedRequirement, Statement, SystemSecurityPlan
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +39,6 @@ class RuleParametersValidator(Validator):
     def _iter_and_add(
         self,
         by_components: List[ByComponent],
-        components: List[SystemComponent],
         cat_int: CatalogInterface,
         imp_requirement: ImplementedRequirement,
         statement: Optional[Statement] = None
@@ -49,20 +48,18 @@ class RuleParametersValidator(Validator):
 
         args:
             by_components: A list of by components.
-            components: Components defined at System implementation level.
             cat_int: Instance of catalog interface with controls catalog loaded.
             imp_requirement: Current implemented requirement.
             statement: Statement if iterating by statements.
         """
         for by_component in as_list(by_components):
-            component = get_item_from_list(components, by_component.component_uuid, lambda x: x.uuid)
             # first adds implmented requirement set params
             if not statement:
-                self._add_shared_param(imp_requirement, imp_requirement.control_id, cat_int, component.title)
+                self._add_rule_params(imp_requirement, imp_requirement.control_id, cat_int, by_component.component_uuid)
             # then  adds by components set params per requirement
-            self._add_shared_param(by_component, imp_requirement.control_id, cat_int, component.title)
+            self._add_rule_params(by_component, imp_requirement.control_id, cat_int, by_component.component_uuid)
 
-    def _add_shared_param(
+    def _add_rule_params(
         self, item: TypeWithSetParams, control_id: str, cat_int: CatalogInterface, comp_name: str = ''
     ) -> None:
         """
@@ -75,6 +72,7 @@ class RuleParametersValidator(Validator):
             comp_name: Component name to save.
         """
         for set_param in as_list(item.set_parameters):
+            # validates if current param_id is or not associated with a control so we can assume it´s a rule param
             control = cat_int.get_control_by_param_id(set_param.param_id)
             if not control:
                 deep_set(self._rule_param_values_dict, [set_param.param_id, comp_name, control_id], set_param.values)
@@ -97,19 +95,18 @@ class RuleParametersValidator(Validator):
         if not isinstance(model, SystemSecurityPlan):
             return True
 
-        components = as_list(model.system_implementation.components)
         if not model.import_profile.href:
             logger.info(f'INVALID: Model {model.metadata.title} has no referenced profile')
             return False
         profile_catalog = ProfileResolver().get_resolved_profile_catalog(trestle_root, model.import_profile.href)
         catalog_interface = CatalogInterface(profile_catalog)
         # iterate by each implemented requirement defined
-        for imp_req in as_list(model.control_implementation.implemented_requirements):
+        for imp_req in model.control_implementation.implemented_requirements:
             # iterate by each by_component in each implemented requirement
-            self._iter_and_add(imp_req.by_components, components, catalog_interface, imp_req)
+            self._iter_and_add(imp_req.by_components, catalog_interface, imp_req)
             # includes rule param values in each by_component present in statements
             for statement in as_list(imp_req.statements):
-                self._iter_and_add(statement.by_components, components, catalog_interface, imp_req, statement)
+                self._iter_and_add(statement.by_components, catalog_interface, imp_req, statement)
         if self._rule_param_values_dict:
             # compare all values in shared paramerets by component basis
             for shared_param, values_dict in self._rule_param_values_dict.items():

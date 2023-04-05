@@ -560,7 +560,10 @@ class SSPAssemble(AuthorCommonCommand):
             args_validate = argparse.Namespace(mode=const.VAL_MODE_RULES)
             validator: Validator = validator_factory.get(args_validate)
             if not validator.model_is_valid(ssp, True, trestle_root):
-                logger.warning('Validation of file to be imported did not pass.  Import failed.')
+                logger.error(
+                    'Validation of file to be imported did not pass. Rule parameter values validation failed, '
+                    'please check values are correct for shared parameters in current model'
+                )
                 return CmdReturnCodes.COMMAND_ERROR.value
             # write out the ssp as json
             ModelUtils.save_top_level_model(ssp, trestle_root, new_ssp_name, new_file_content_type)

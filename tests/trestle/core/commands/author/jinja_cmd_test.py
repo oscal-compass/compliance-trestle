@@ -25,14 +25,14 @@ from trestle.core.commands.author.ssp import SSPGenerate
 from trestle.core.markdown.docs_markdown_node import DocsMarkdownNode
 
 
-def setup_ssp(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatchx: MonkeyPatch):
+def setup_ssp(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch):
     """Prepare repository for docs generation."""
     args, _ = setup_for_ssp(tmp_trestle_dir, 'comp_prof', 'my_ssp')
     ssp_cmd = SSPGenerate()
     assert ssp_cmd._run(args) == 0
 
     command_ssp_assem = f'trestle author ssp-assemble -m my_ssp -o ssp_json -cd {args.compdefs} -vv'
-    execute_command_and_assert(command_ssp_assem, 0, monkeypatchx)
+    execute_command_and_assert(command_ssp_assem, 0, monkeypatch)
 
     for file_name in os.listdir(testdata_dir / 'jinja'):
         full_file_name = os.path.join(testdata_dir / 'jinja', file_name)

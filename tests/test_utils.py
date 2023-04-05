@@ -603,9 +603,7 @@ def catalog_interface_equivalent(cat_int_a: CatalogInterface, cat_b: cat.Catalog
     return True
 
 
-def gen_and_assemble_first_ssp(
-    prof_name: str, ssp_name: str, gen_args: Any, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
-) -> None:
+def gen_and_assemble_first_ssp(prof_name: str, ssp_name: str, gen_args: Any, monkeypatch: MonkeyPatch) -> None:
     """Test equivalence of catalog dict contents in various ways."""
     # first create the markdown
     ssp_gen = SSPGenerate()
