@@ -437,7 +437,7 @@ class ControlInterface:
             stat_rules, statement_props = ControlInterface.get_rule_list_for_item(statement)
             statement_rules.update(stat_rules)
             rule_props.extend(statement_props)
-        return comp_rules, list(statement_rules), rule_props
+        return comp_rules, sorted(statement_rules), rule_props
 
     @staticmethod
     def get_params_dict_from_item(item: TypeWithProps) -> Tuple[Dict[str, Dict[str, str]], List[common.Property]]:

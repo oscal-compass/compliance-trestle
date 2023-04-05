@@ -320,8 +320,9 @@ def test_rule_param_values_validator_happy(tmp_trestle_dir: pathlib.Path, monkey
     test_utils.gen_and_assemble_first_ssp(prof_name, ssp_name, gen_args, tmp_trestle_dir, monkeypatch)
 
     new_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
-
-    new_ssp.control_implementation.implemented_requirements[1].by_components[0].set_parameters[1].values[
+    imp_reqs = new_ssp.control_implementation.implemented_requirements
+    imp_req = next((i_req for i_req in imp_reqs if i_req.control_id == 'ac-3'), None)
+    imp_req.by_components[0].set_parameters[1].values[
         0] = 'shared_param_1_aa_opt_1'
     ModelUtils.save_top_level_model(new_ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
 
@@ -367,12 +368,15 @@ def test_rule_param_values_validator_unhappy(tmp_trestle_dir: pathlib.Path, monk
 
     orig_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     # starts editing by grabbing by components from second imp req
-    by_components = orig_ssp.control_implementation.implemented_requirements[1].by_components
+    imp_reqs = orig_ssp.control_implementation.implemented_requirements
+    imp_req = next((i_req for i_req in imp_reqs if i_req.control_id == 'ac-3'), None)
+    by_components = imp_req.by_components
     # changes values for set parameter to test inequality
     by_components[0].set_parameters[1].values = ['shared_param_1_ab_opt_3']
 
     ModelUtils.save_top_level_model(orig_ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
     assert not validator.model_is_valid(orig_ssp, True, tmp_trestle_dir)
+    
     # test a by_component statement param value is added and
     # reassemble ssp
     ssp_assemble = f'trestle author ssp-assemble -m {ssp_name} -o {ssp_name} -cd {args_compdefs}'
@@ -380,7 +384,9 @@ def test_rule_param_values_validator_unhappy(tmp_trestle_dir: pathlib.Path, monk
     # load new ssp
     new_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     # grabs by component elements at statement level
-    by_components = new_ssp.control_implementation.implemented_requirements[0].statements[0].by_components
+    imp_reqs = new_ssp.control_implementation.implemented_requirements
+    imp_req_ac = next((i_req for i_req in imp_reqs if i_req.control_id == 'ac-1'), None)
+    by_components = imp_req_ac.statements[0].by_components
     by_components[1].set_parameters = []
 
     new_set_parameter = gens.generate_sample_model(ossp.SetParameter)
@@ -389,11 +395,14 @@ def test_rule_param_values_validator_unhappy(tmp_trestle_dir: pathlib.Path, monk
     # addes new value to current set parameter values
     # adds a new set parameter to set parameters array for current by component in statement
     by_components[1].set_parameters.append(new_set_parameter)
-    by_components = new_ssp.control_implementation.implemented_requirements[2].statements[0].by_components
+    imp_reqs = new_ssp.control_implementation.implemented_requirements
+    imp_req_at = next((i_req for i_req in imp_reqs if i_req.control_id == 'at-1'), None)
+    by_components = imp_req_at.statements[0].by_components
     by_components[0].set_parameters = []
-    new_set_parameter = new_ssp.control_implementation.implemented_requirements[0].by_components[0].set_parameters[
-        1].copy()
-    by_components[0].set_parameters.append(new_set_parameter)
+    new_set_parameter_one = gens.generate_sample_model(ossp.SetParameter)
+    new_set_parameter_one.values = ['shared_param_1_ab_opt_1']
+    new_set_parameter_one.param_id = 'shared_param_1'
+    by_components[0].set_parameters.append(new_set_parameter_one)
 
     ModelUtils.save_top_level_model(new_ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
     assert not validator.model_is_valid(new_ssp, True, tmp_trestle_dir)
