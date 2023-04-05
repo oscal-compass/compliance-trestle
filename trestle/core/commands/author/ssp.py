@@ -565,7 +565,12 @@ class SSPAssemble(AuthorCommonCommand):
 
 
 class SSPFilter(AuthorCommonCommand):
-    """Filter the controls in an ssp based on files included by profile and/or list of component names."""
+    """
+    Filter the controls in an ssp.
+
+    The filtered ssp is based on controls included by the following:
+    profile, components, and/or implementation status.
+    """
 
     name = 'ssp-filter'
 
@@ -580,20 +585,53 @@ class SSPFilter(AuthorCommonCommand):
         self.add_argument('-vn', '--version', help=const.HELP_VERSION, required=False, type=str)
         comp_help_str = 'Colon-delimited list of component names to include in filtered ssp.'
         self.add_argument('-c', '--components', help=comp_help_str, required=False, type=str)
+        is_help_str = 'Comma-delimited list of control implementation statuses to include in filtered ssp.'
+        self.add_argument('-is', '--implementation-status', help=is_help_str, required=False, type=str)
 
     def _run(self, args: argparse.Namespace) -> int:
         try:
             log.set_log_level_from_args(args)
             trestle_root = pathlib.Path(args.trestle_root)
             comp_names: Optional[List[str]] = None
+            impl_status_values: Optional[List[str]] = None
+
+            if not (args.components or args.implementation_status or args.profile):
+                logger.warning(
+                    'You must specify at least one, or a combination of: profile, list of component names'
+                    ', or list of implementation statuses for ssp-filter.'
+                )
+                return CmdReturnCodes.COMMAND_ERROR.value
+
             if args.components:
                 comp_names = args.components.split(':')
-            elif not args.profile:
-                logger.warning('You must specify either a profile or list of component names for ssp-filter.')
-                return 1
+
+            if args.implementation_status:
+                impl_status_values = args.implementation_status.split(',')
+                allowed_is_values = {
+                    const.STATUS_PLANNED,
+                    const.STATUS_PARTIAL,
+                    const.STATUS_IMPLEMENTED,
+                    const.STATUS_ALTERNATIVE,
+                    const.STATUS_NOT_APPLICABLE
+                }
+                allowed_is_string = ', '.join(str(item) for item in allowed_is_values)
+                for impl_status in impl_status_values:
+                    if impl_status not in allowed_is_values:
+                        logger.warning(
+                            f'Provided implementation status "{impl_status}" is invalid.\n'
+                            f'Please use the following for ssp-filter: {allowed_is_string}'
+                        )
+                        return CmdReturnCodes.COMMAND_ERROR.value
 
             return self.filter_ssp(
-                trestle_root, args.name, args.profile, args.output, args.regenerate, args.version, comp_names
+                trestle_root,
+                args.name,
+                args.profile,
+                args.output,
+                args.regenerate,
+                args.version,
+                comp_names,
+                impl_status_values
             )
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Error generating the filtered ssp')
@@ -606,10 +644,14 @@ class SSPFilter(AuthorCommonCommand):
         out_name: str,
         regenerate: bool,
         version: Optional[str],
-        components: Optional[List[str]] = None
+        components: Optional[List[str]] = None,
+        implementation_status: Optional[List[str]] = None
     ) -> int:
         """
-        Filter the ssp based on controls included by the profile and/or components and output new ssp.
+        Filter the ssp and output new ssp.
+
+        The filtered ssp is based on controls included by the following:
+        profile, components, and/or implementation status.
 
         Args:
             trestle_root: root directory of the trestle workspace
@@ -619,6 +661,7 @@ class SSPFilter(AuthorCommonCommand):
             regenerate: whether to regenerate the uuid's in the ssp
             version: new version for the model
             components: optional list of component names used for filtering
+            implementation_status: optional list of implementation statuses for filtering
 
         Returns:
             0 on success, 1 otherwise
@@ -705,6 +748,35 @@ class SSPFilter(AuthorCommonCommand):
                 raise TrestleError('Unable to filter the ssp because the profile references controls not in it.')
 
             ssp.control_implementation = control_imp
+
+        # filter implemented requirements and statements by component implementation status
+        # this will remove any implemented requirements without statements or by_component fields set
+        if implementation_status:
+            new_imp_reqs: List[ossp.ImplementedRequirement] = []
+            # these are all required to be present
+            for imp_req in ssp.control_implementation.implemented_requirements:
+                new_by_comps: List[ossp.ByComponent] = []
+                # by_comps is optional
+                for by_comp in as_list(imp_req.by_components):
+                    if by_comp.implementation_status.state in implementation_status:
+                        new_by_comps.append(by_comp)
+                imp_req.by_components = none_if_empty(new_by_comps)
+
+                new_statements: List[ossp.Statement] = []
+                for statement in as_list(imp_req.statements):
+                    new_by_comps: List[ossp.ByComponent] = []
+                    for by_comp in as_list(statement.by_components):
+                        if by_comp.implementation_status.state in implementation_status:
+                            new_by_comps.append(by_comp)
+                    statement.by_components = none_if_empty(new_by_comps)
+                    if statement.by_components is not None:
+                        new_statements.append(statement)
+                imp_req.statements = none_if_empty(new_statements)
+
+                if imp_req.by_components is not None or imp_req.statements is not None:
+                    new_imp_reqs.append(imp_req)
+
+            ssp.control_implementation.implemented_requirements = new_imp_reqs
 
         if version:
             ssp.metadata.version = version
