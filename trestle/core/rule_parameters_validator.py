@@ -16,7 +16,7 @@
 """Validate by confirming rule parameter values are consistent."""
 import logging
 import pathlib
-from typing import List, Optional
+from typing import Optional
 
 from trestle.common.common_types import TopLevelOscalModel
 from trestle.common.common_types import TypeWithSetParams
@@ -24,7 +24,7 @@ from trestle.common.list_utils import as_list, deep_set
 from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.validator import Validator
-from trestle.oscal.ssp import ByComponent, ImplementedRequirement, Statement, SystemSecurityPlan
+from trestle.oscal.ssp import ImplementedRequirement, SystemSecurityPlan
 
 logger = logging.getLogger(__name__)
 
@@ -36,31 +36,33 @@ class RuleParametersValidator(Validator):
         """Initialize rule param values dictionary."""
         self._rule_param_values_dict = {}
 
-    def _iter_and_add(
+    def _add_imp_req_rule_params_to_dict(
         self,
-        by_components: List[ByComponent],
-        cat_int: CatalogInterface,
         imp_requirement: ImplementedRequirement,
-        statement: Optional[Statement] = None
+        cat_int: CatalogInterface,
     ) -> None:
         """
         Iterate all by components in an object and add the rule shared parameter values to list.
 
         args:
-            by_components: A list of by components.
-            cat_int: Instance of catalog interface with controls catalog loaded.
             imp_requirement: Current implemented requirement.
-            statement: Statement if iterating by statements.
+            cat_int: Instance of catalog interface with controls catalog loaded.
         """
-        for by_component in as_list(by_components):
-            # first adds implmented requirement set params
-            if not statement:
-                self._add_rule_params(imp_requirement, imp_requirement.control_id, cat_int, by_component.component_uuid)
-            # then  adds by components set params per requirement
+        for by_component in as_list(imp_requirement.by_components):
+            # adds rule param values present in set parameters for current imp req
+            self._add_rule_params(imp_requirement, imp_requirement.control_id, cat_int, by_component.component_uuid)
+            # adds rule param values present in set parameters for current by_component in by_components list
+            # in the current implemented requirement
             self._add_rule_params(by_component, imp_requirement.control_id, cat_int, by_component.component_uuid)
+            for statement in as_list(imp_requirement.statements):
+                # iterates by each by component inclded at each statemtent set for current imp req
+                for by_comp in as_list(statement.by_components):
+                    # adds rule param values present in set parameters for current by_component in by_components list
+                    # of current statement in current implemented requirement
+                    self._add_rule_params(by_comp, imp_requirement.control_id, cat_int, by_comp.component_uuid)
 
     def _add_rule_params(
-        self, item: TypeWithSetParams, control_id: str, cat_int: CatalogInterface, comp_name: str = ''
+        self, item: TypeWithSetParams, control_id: str, cat_int: CatalogInterface, comp_uuid: str = ''
     ) -> None:
         """
         Add a rule shared parameter to the rule shared parameters list.
@@ -69,13 +71,13 @@ class RuleParametersValidator(Validator):
             item: Generic item to iterate over parameters.
             control_id: Current control id.
             cat_int: Instance of catalog interface with controls catalog loaded.
-            comp_name: Component name to save.
+            comp_uuid: Component uuid to save.
         """
         for set_param in as_list(item.set_parameters):
             # validates if current param_id is or not associated with a control so we can assume it´s a rule param
             control = cat_int.get_control_by_param_id(set_param.param_id)
             if not control:
-                deep_set(self._rule_param_values_dict, [set_param.param_id, comp_name, control_id], set_param.values)
+                deep_set(self._rule_param_values_dict, [set_param.param_id, comp_uuid, control_id], set_param.values)
 
     def model_is_valid(
         self, model: TopLevelOscalModel, quiet: bool, trestle_root: Optional[pathlib.Path] = None
@@ -102,11 +104,8 @@ class RuleParametersValidator(Validator):
         catalog_interface = CatalogInterface(profile_catalog)
         # iterate by each implemented requirement defined
         for imp_req in model.control_implementation.implemented_requirements:
-            # iterate by each by_component in each implemented requirement
-            self._iter_and_add(imp_req.by_components, catalog_interface, imp_req)
-            # includes rule param values in each by_component present in statements
-            for statement in as_list(imp_req.statements):
-                self._iter_and_add(statement.by_components, catalog_interface, imp_req, statement)
+            # adds rule param values to dict by implemented requirement basis
+            self._add_imp_req_rule_params_to_dict(imp_req, catalog_interface)
         if self._rule_param_values_dict:
             # compare all values in shared paramerets by component basis
             for shared_param, values_dict in self._rule_param_values_dict.items():
