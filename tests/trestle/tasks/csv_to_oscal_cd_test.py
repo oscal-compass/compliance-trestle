@@ -53,7 +53,7 @@ def _validate_ocp(tmp_path: pathlib.Path) -> None:
     cd = ComponentDefinition.oscal_read(fp)
     # spot check
     assert cd.metadata.title == 'Component definition for CIS Red Hat OpenShift Container Platform 4 Benchmark profiles'
-    assert cd.metadata.version.__root__ == 'V1.1'
+    assert cd.metadata.version == 'V1.1'
     assert len(cd.components) == 1
     component = cd.components[0]
     assert len(component.props) == 429
@@ -63,10 +63,10 @@ def _validate_ocp(tmp_path: pathlib.Path) -> None:
     assert component.props[0].ns == 'http://ibm.github.io/compliance-trestle/schemas/oscal/cd'
     assert component.props[0].value == 'xccdf_org.ssgproject.content_rule_api_server_anonymous_auth'
     assert component.props[0].class_ == 'scc_class'
-    assert component.props[0].remarks.__root__ == 'rule_set_000'
+    assert component.props[0].remarks == 'rule_set_000'
     assert component.props[1].name == 'Rule_Description'
     assert component.props[1].value == 'Ensure that the --anonymous-auth argument is set to false'
-    assert component.props[1].remarks.__root__ == 'rule_set_000'
+    assert component.props[1].remarks == 'rule_set_000'
     assert component.props[2].name == 'Parameter_Id'
     assert component.props[2].value == 'scan_interval_max'
     assert component.props[3].name == 'Parameter_Description'
@@ -77,10 +77,10 @@ def _validate_ocp(tmp_path: pathlib.Path) -> None:
     assert component.props[5].value == '300000100'
     assert component.props[6].name == 'Rule_Id'
     assert component.props[6].value == 'xccdf_org.ssgproject.content_rule_api_server_basic_auth'
-    assert component.props[6].remarks.__root__ == 'rule_set_001'
+    assert component.props[6].remarks == 'rule_set_001'
     assert component.props[428].name == 'Rule_Description'
     assert component.props[428].value == 'Ensure that the --protect-kernel-defaults argument is set to true'
-    assert component.props[428].remarks.__root__ == 'rule_set_200'
+    assert component.props[428].remarks == 'rule_set_200'
     assert component.props[0].name == 'Rule_Id'
     assert len(component.control_implementations) == 2
     assert component.control_implementations[0].description == 'ocp4'
@@ -105,7 +105,7 @@ def _validate_bp(tmp_path: pathlib.Path) -> None:
     cd = ComponentDefinition.oscal_read(fp)
     # spot check
     assert cd.metadata.title == 'Component definition for Best Practices'
-    assert cd.metadata.version.__root__ == 'V1.1'
+    assert cd.metadata.version == 'V1.1'
     assert len(cd.components) == 1
     component = cd.components[0]
     assert len(component.props) == 62
@@ -512,7 +512,7 @@ def test_execute_delete_rule(tmp_path: pathlib.Path) -> None:
     assert component.props[0].ns == 'http://abc.github.io/compliance-trestle/schemas/oscal/cd'
     assert component.props[0].value == 'iam_admin_role_users_per_account_maxcount'
     assert component.props[0].class_ == 'scc_class'
-    assert component.props[0].remarks.__root__ == 'rule_set_01'
+    assert component.props[0].remarks == 'rule_set_01'
 
 
 def test_execute_delete_all_rules_with_params(tmp_path: pathlib.Path) -> None:
@@ -606,43 +606,43 @@ def test_execute_add_rule(tmp_path: pathlib.Path) -> None:
     assert component.props[pc - 1].name == 'Fetcher_Description'
     assert component.props[pc - 1].ns == 'https://abc.com/add-namespace'
     assert component.props[pc - 1].value == 'add-fetcher-description'
-    assert component.props[pc - 1].remarks.__root__ == 'rule_set_10'
+    assert component.props[pc - 1].remarks == 'rule_set_10'
     assert component.props[pc - 2].name == 'Fetcher'
     assert component.props[pc - 2].ns == 'https://abc.com/add-namespace'
     assert component.props[pc - 2].value == 'add-fetcher'
-    assert component.props[pc - 2].remarks.__root__ == 'rule_set_10'
+    assert component.props[pc - 2].remarks == 'rule_set_10'
     assert component.props[pc - 3].name == 'Reference_Id'
     assert component.props[pc - 3].ns == 'https://abc.com/add-namespace'
     assert component.props[pc - 3].value == 'add-reference-id'
-    assert component.props[pc - 3].remarks.__root__ == 'rule_set_10'
+    assert component.props[pc - 3].remarks == 'rule_set_10'
     assert component.props[pc - 4].name == 'Check_Description'
     assert component.props[pc - 4].ns == 'https://abc.com/add-namespace'
     assert component.props[pc - 4].value == 'add-check-description'
-    assert component.props[pc - 4].remarks.__root__ == 'rule_set_10'
+    assert component.props[pc - 4].remarks == 'rule_set_10'
     assert component.props[pc - 5].name == 'Check_Id'
     assert component.props[pc - 5].ns == 'https://abc.com/add-namespace'
     assert component.props[pc - 5].value == 'add-check-id'
-    assert component.props[pc - 5].remarks.__root__ == 'rule_set_10'
+    assert component.props[pc - 5].remarks == 'rule_set_10'
     assert component.props[pc - 6].name == 'Parameter_Value_Alternatives'
     assert component.props[pc - 6].ns == 'https://abc.com/add-namespace'
     assert component.props[pc - 6].value == 'add-parameter-value-alternatives'
-    assert component.props[pc - 6].remarks.__root__ == 'rule_set_10'
+    assert component.props[pc - 6].remarks == 'rule_set_10'
     assert component.props[pc - 7].name == 'Parameter_Description'
     assert component.props[pc - 7].ns == 'https://abc.com/add-namespace'
     assert component.props[pc - 7].value == 'add-parameter-description'
-    assert component.props[pc - 7].remarks.__root__ == 'rule_set_10'
+    assert component.props[pc - 7].remarks == 'rule_set_10'
     assert component.props[pc - 8].name == 'Parameter_Id'
     assert component.props[pc - 8].ns == 'https://abc.com/add-namespace'
     assert component.props[pc - 8].value == 'add-parameter-id'
-    assert component.props[pc - 8].remarks.__root__ == 'rule_set_10'
+    assert component.props[pc - 8].remarks == 'rule_set_10'
     assert component.props[pc - 9].name == 'Rule_Description'
     assert component.props[pc - 9].ns == 'https://abc.com/add-namespace'
     assert component.props[pc - 9].value == 'add-rule-description'
-    assert component.props[pc - 9].remarks.__root__ == 'rule_set_10'
+    assert component.props[pc - 9].remarks == 'rule_set_10'
     assert component.props[pc - 10].name == 'Rule_Id'
     assert component.props[pc - 10].ns == 'https://abc.com/add-namespace'
     assert component.props[pc - 10].value == 'add-rule-id'
-    assert component.props[pc - 10].remarks.__root__ == 'rule_set_10'
+    assert component.props[pc - 10].remarks == 'rule_set_10'
     assert len(component.control_implementations) == 2
     assert len(component.control_implementations[0].set_parameters) == 4
     assert len(component.control_implementations[1].set_parameters) == 1
@@ -691,7 +691,7 @@ def test_execute_change_param_default_value(tmp_path: pathlib.Path) -> None:
     set_parameters = component.control_implementations[0].set_parameters
     assert len(set_parameters) == 4
     assert len(set_parameters[0].values) == 1
-    assert set_parameters[0].values[0].__root__ == '20'
+    assert set_parameters[0].values[0] == '20'
 
 
 def test_execute_delete_param(tmp_path: pathlib.Path) -> None:
@@ -721,7 +721,7 @@ def test_execute_delete_param(tmp_path: pathlib.Path) -> None:
     assert component.props[22].ns == 'http://abc.github.io/compliance-trestle/schemas/oscal/cd'
     assert component.props[22].value == 'api_keys_rotated_days'
     assert component.props[22].class_ == 'scc_class'
-    assert component.props[22].remarks.__root__ == 'rule_set_04'
+    assert component.props[22].remarks == 'rule_set_04'
 
 
 def test_execute_delete_params(tmp_path: pathlib.Path) -> None:
@@ -772,19 +772,19 @@ def test_execute_add_param(tmp_path: pathlib.Path) -> None:
     component = cd.components[0]
     assert component.props[2].name == 'Parameter_Id'
     assert component.props[2].value == 'add-parameter-id'
-    assert component.props[2].remarks.__root__ == 'rule_set_00'
+    assert component.props[2].remarks == 'rule_set_00'
     assert component.props[3].name == 'Parameter_Description'
     assert component.props[3].value == 'add-parameter-description'
-    assert component.props[3].remarks.__root__ == 'rule_set_00'
+    assert component.props[3].remarks == 'rule_set_00'
     assert component.props[4].name == 'Parameter_Value_Alternatives'
     assert component.props[4].value == 'add-parameter-value-alternatives'
-    assert component.props[4].remarks.__root__ == 'rule_set_00'
-    assert component.props[4].remarks.__root__ == 'rule_set_00'
+    assert component.props[4].remarks == 'rule_set_00'
+    assert component.props[4].remarks == 'rule_set_00'
     set_parameters = component.control_implementations[0].set_parameters
     assert len(set_parameters) == 5
     assert set_parameters[4].param_id == 'add-parameter-id'
     assert len(set_parameters[4].values) == 1
-    assert set_parameters[4].values[0].__root__ == 'add-parameter-default-value'
+    assert set_parameters[4].values[0] == 'add-parameter-default-value'
 
 
 def test_execute_delete_all_control_id_list(tmp_path: pathlib.Path) -> None:

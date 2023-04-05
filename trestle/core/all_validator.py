@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Validate based on all registered validators."""
+import pathlib
+from typing import Optional
 
 import trestle.core.validator_factory as vfact
 from trestle.core.base_model import OscalBaseModel
@@ -29,7 +31,7 @@ class AllValidator(Validator):
         """Return information on which validation failed."""
         return self.last_failure_msg
 
-    def model_is_valid(self, model: OscalBaseModel, quiet: bool) -> bool:
+    def model_is_valid(self, model: OscalBaseModel, quiet: bool, trestle_root: Optional[pathlib.Path] = None) -> bool:
         """
         Validate an oscal model against all available validators in the trestle library.
 
@@ -42,7 +44,7 @@ class AllValidator(Validator):
         """
         self.last_failure_msg = self.__doc__
         for val in vfact.validator_factory.get_all():
-            if val != self and not val.model_is_valid(model, quiet):
+            if val != self and not val.model_is_valid(model, quiet, trestle_root):
                 self.last_failure_msg = val.error_msg()
                 return False
         return True

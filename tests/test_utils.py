@@ -36,6 +36,7 @@ from trestle.common.str_utils import AliasMode
 from trestle.core import generators
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.catalog.catalog_interface import CatalogInterface
+from trestle.core.commands.author.ssp import SSPGenerate
 from trestle.core.commands.href import HrefCmd
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.models.file_content_type import FileContentType
@@ -574,9 +575,9 @@ def controls_equivalent(a: cat.Control, b: cat.Control, strong: bool = True) -> 
             logger.error(f'control {a.id} has different param counts: {n_params_a} vs. {n_params_b}')
             return False
     a_param_values = [param.values for param in list_utils.as_list(a.params) if param.values is not None]
-    a_vals = [param_value.__root__ for param_values in a_param_values for param_value in param_values]
+    a_vals = [param_value for param_values in a_param_values for param_value in param_values]
     b_param_values = [param.values for param in list_utils.as_list(b.params) if param.values is not None]
-    b_vals = [param_value.__root__ for param_values in b_param_values for param_value in param_values]
+    b_vals = [param_value for param_values in b_param_values for param_value in param_values]
 
     # sub-controls are not checked here
     if a_vals == b_vals:
@@ -600,6 +601,17 @@ def catalog_interface_equivalent(cat_int_a: CatalogInterface, cat_b: cat.Catalog
             logger.error(f'controls differ: {a.id}')
             return False
     return True
+
+
+def gen_and_assemble_first_ssp(prof_name: str, ssp_name: str, gen_args: Any, monkeypatch: MonkeyPatch) -> None:
+    """Test equivalence of catalog dict contents in various ways."""
+    # first create the markdown
+    ssp_gen = SSPGenerate()
+    assert ssp_gen._run(gen_args) == 0
+
+    # first ssp assembly
+    ssp_assemble = f'trestle author ssp-assemble -m {ssp_name} -o {ssp_name} -cd {gen_args.compdefs}'
+    execute_command_and_assert(ssp_assemble, 0, monkeypatch)
 
 
 class FileChecker:

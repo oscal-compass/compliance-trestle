@@ -27,7 +27,7 @@ from __future__ import annotations
 import re
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr, validator
 
@@ -54,7 +54,7 @@ class Statement(OscalBaseModel):
         title='Control Statement Reference',
     )
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -69,7 +69,7 @@ class Statement(OscalBaseModel):
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class State(Enum):
@@ -92,7 +92,7 @@ class Status(OscalBaseModel):
         extra = Extra.forbid
 
     state: State = Field(..., description='The operational status.', title='State')
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class SetParameter(OscalBaseModel):
@@ -113,8 +113,8 @@ class SetParameter(OscalBaseModel):
         "A human-oriented reference to a parameter within a control, who's catalog has been imported into the current implementation context.",
         title='Parameter ID',
     )
-    values: List[common.Value] = Field(...)
-    remarks: Optional[common.Remarks] = None
+    values: List[constr(regex=r'^\S(.*\S)?$')] = Field(...)
+    remarks: Optional[str] = None
 
 
 class IncorporatesComponent(OscalBaseModel):
@@ -126,7 +126,7 @@ class IncorporatesComponent(OscalBaseModel):
         extra = Extra.forbid
 
     component_uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         alias='component-uuid',
@@ -165,7 +165,7 @@ class ImplementedRequirement(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -185,7 +185,7 @@ class ImplementedRequirement(OscalBaseModel):
     description: str = Field(
         ...,
         description=
-        'A description of how the specified control is implemented for the containing component or capability.',
+        'A suggestion for how the specified control may be implemented if the containing component or capability is instantiated in a system security plan.',
         title='Control Implementation Description',
     )
     props: Optional[List[common.Property]] = Field(None)
@@ -193,7 +193,7 @@ class ImplementedRequirement(OscalBaseModel):
     set_parameters: Optional[List[SetParameter]] = Field(None, alias='set-parameters')
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
     statements: Optional[List[Statement]] = Field(None)
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class ControlImplementation(OscalBaseModel):
@@ -205,7 +205,7 @@ class ControlImplementation(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -239,7 +239,7 @@ class Capability(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -256,7 +256,7 @@ class Capability(OscalBaseModel):
     links: Optional[List[common.Link]] = Field(None)
     incorporates_components: Optional[List[IncorporatesComponent]] = Field(None, alias='incorporates-components')
     control_implementations: Optional[List[ControlImplementation]] = Field(None, alias='control-implementations')
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class DefinedComponent(OscalBaseModel):
@@ -268,7 +268,7 @@ class DefinedComponent(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -300,7 +300,7 @@ class DefinedComponent(OscalBaseModel):
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
     protocols: Optional[List[common.Protocol]] = Field(None)
     control_implementations: Optional[List[ControlImplementation]] = Field(None, alias='control-implementations')
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class ComponentDefinition(OscalBaseModel):
@@ -312,7 +312,7 @@ class ComponentDefinition(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=

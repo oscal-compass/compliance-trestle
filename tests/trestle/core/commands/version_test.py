@@ -21,6 +21,9 @@ from _pytest.monkeypatch import MonkeyPatch
 from tests import test_utils
 from tests.test_utils import execute_command_and_assert
 
+from trestle import __version__
+from trestle.oscal import OSCAL_VERSION
+
 
 def test_version(monkeypatch: MonkeyPatch) -> None:
     """Test version output."""
@@ -45,7 +48,7 @@ def test_oscal_obj_version(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPat
     testcmd = 'trestle version'
     execute_command_and_assert(testcmd, 0, monkeypatch)
     output, _ = capsys.readouterr()
-    assert 'Trestle version v1.2.0 based on OSCAL version 1.0.2' in output
+    assert f'Trestle version v{__version__} based on OSCAL version {OSCAL_VERSION}' in output
 
     testcmd = 'trestle version -n complex_cat -t catalog'
     execute_command_and_assert(testcmd, 0, monkeypatch)

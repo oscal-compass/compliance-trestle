@@ -22,7 +22,6 @@ from uuid import uuid4
 
 import trestle.common.const as const
 import trestle.common.log as log
-import trestle.oscal.common as com
 import trestle.oscal.component as comp
 from trestle.common import file_utils
 from trestle.common.err import TrestleError, handle_generic_command_exception
@@ -230,7 +229,7 @@ class ComponentAssemble(AuthorCommonCommand):
         ComponentAssemble.assemble_comp_def_into_parent(parent_comp, md_dir, context)
 
         if version:
-            parent_comp.metadata.version = com.Version(__root__=version)
+            parent_comp.metadata.version = version
 
         assem_comp_path = ModelUtils.get_model_path_for_name_and_class(
             trestle_root, assem_comp_name, comp.ComponentDefinition, new_content_type

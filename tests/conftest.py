@@ -111,6 +111,14 @@ def sample_profile():
 
 
 @pytest.fixture(scope='function')
+def sample_trestle_profile():
+    """Return a hand curated profile for testing."""
+    file_path = pathlib.Path(test_utils.JSON_TEST_DATA_PATH) / 'simple_test_profile.json'
+    profile_obj = Profile.oscal_read(file_path)
+    return profile_obj
+
+
+@pytest.fixture(scope='function')
 def simplified_nist_catalog():
     """Return a simplified nist catalog."""
     file_path = pathlib.Path(test_utils.JSON_TEST_DATA_PATH) / test_utils.SIMPLIFIED_NIST_CATALOG_NAME
@@ -147,8 +155,8 @@ def sample_catalog_rich_controls():
     """Return a catalog with controls in groups and in the catalog itself."""
     catalog_obj = gens.generate_sample_model(cat.Catalog)
 
-    param_0 = common.Parameter(id='param_0', values=[common.ParameterValue(__root__='param_0_val')])
-    param_1 = common.Parameter(id='param_1', values=[common.ParameterValue(__root__='param_1_val')])
+    param_0 = common.Parameter(id='param_0', values=['param_0_val'])
+    param_1 = common.Parameter(id='param_1', values=['param_1_val'])
     control_a = cat.Control(id='control_a', title='this is control a', params=[param_0, param_1])
     control_b = cat.Control(id='control_b', title='this is control b')
     group = cat.Group(id='xy', title='The xy control group', controls=[control_a, control_b])
@@ -186,8 +194,8 @@ def sample_catalog_subgroups():
 def sample_component_definition():
     """Return a valid ComponentDefinition object with some contents."""
     # one component has no properties - the other has two
-    def_comp1: DefinedComponent = gens.generate_sample_model(DefinedComponent)
-    def_comp2: DefinedComponent = gens.generate_sample_model(DefinedComponent)
+    def_comp1: DefinedComponent = gens.generate_sample_model(DefinedComponent, True, 3)
+    def_comp2: DefinedComponent = gens.generate_sample_model(DefinedComponent, True, 3)
     prop_1 = common.Property(name='prop_1', value='prop_1_value')
     prop_2 = common.Property(name='prop_2', value='prop_2_value')
     def_comp2.props = [prop_1, prop_2]

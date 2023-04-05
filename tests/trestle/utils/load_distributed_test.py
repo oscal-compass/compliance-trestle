@@ -76,9 +76,10 @@ def test_load_list_group(testdata_dir, tmp_trestle_dir):
     actual_model_type, _, actual_groups = ModelUtils._load_list(catalog_dir / 'groups', tmp_trestle_dir)
 
     # load_list is expected to return a list of array, instead of an instance of Groups class
-    expected_groups = (actual_model_type.oscal_read(testdata_dir / 'split_merge/load_distributed/groups.json')).__root__
+    expected_groups = (actual_model_type.oscal_read(testdata_dir / 'split_merge/load_distributed/groups.json'))
 
-    assert actual_groups == expected_groups
+    # FIXME confirm this is correct.  __root__ was not needed prior to updating oscal to dev branch
+    assert actual_groups == expected_groups.__root__
 
 
 def test_load_distributed(testdata_dir, tmp_trestle_dir):

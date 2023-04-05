@@ -25,8 +25,7 @@ from jinja2.ext import Extension
 from jinja2.parser import Parser
 
 from trestle.common import err
-from trestle.core.markdown import markdown_const
-from trestle.core.markdown import markdown_node
+from trestle.core.markdown import docs_markdown_node, markdown_const
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +33,7 @@ logger = logging.getLogger(__name__)
 def adjust_heading_level(input_md: str, expected: int) -> str:
     """Adjust the header level of a markdown string such that the most significant header matches the expected #'s."""
     output_md = input_md
-    mdn = markdown_node.MarkdownNode.build_tree_from_markdown(input_md.split('\n'))
+    mdn = docs_markdown_node.DocsMarkdownNode.build_tree_from_markdown(input_md.split('\n'))
     if mdn.subnodes:
         mdn_top_heading = mdn.subnodes[0].get_node_header_lvl()
         delta = int(expected) - mdn_top_heading
@@ -113,7 +112,7 @@ class MDSectionInclude(TrestleJinjaExtension):
         fm = frontmatter.loads(md_content)
         if not fm.metadata == {}:
             logger.warning('Non zero metadata on MD section include - ignoring')
-        full_md = markdown_node.MarkdownNode.build_tree_from_markdown(fm.content.split('\n'))
+        full_md = docs_markdown_node.DocsMarkdownNode.build_tree_from_markdown(fm.content.split('\n'))
         md_section = full_md.get_node_for_key(section_title.value, strict_matching=True)
         # adjust
         if kwargs is not None:

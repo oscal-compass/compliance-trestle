@@ -58,10 +58,6 @@ def generate_sample_value_by_type(
         return False
     if type_ is int:
         return 0
-    if type_ is str:
-        if field_name == 'oscal_version':
-            return OSCAL_VERSION
-        return 'REPLACE_ME'
     if type_ is float:
         return 0.00
     if safe_is_sub(type_, ConstrainedStr) or (hasattr(type_, '__name__') and 'ConstrainedStr' in type_.__name__):
@@ -69,6 +65,9 @@ def generate_sample_value_by_type(
         # TODO: handle regex directly
         if 'uuid' == field_name:
             return str(uuid.uuid4())
+        # some things like location_uuid in lists arrive here with field_name=''
+        if type_.regex and type_.regex.pattern.startswith('^[0-9A-Fa-f]{8}'):
+            return const.SAMPLE_UUID_STR
         if field_name == 'date_authorized':
             return str(date.today().isoformat())
         if field_name == 'oscal_version':
@@ -78,7 +77,7 @@ def generate_sample_value_by_type(
         # Only case where are UUID is required but not in name.
         if field_name.rstrip('s') == 'member_of_organization':
             return const.SAMPLE_UUID_STR
-        return 'REPLACE_ME'
+        return const.REPLACE_ME
     if hasattr(type_, '__name__') and 'ConstrainedIntValue' in type_.__name__:
         # create an int value as close to the floor as possible does not test upper bound
         multiple = type_.multiple_of if type_.multiple_of else 1  # default to every integer
@@ -91,6 +90,10 @@ def generate_sample_value_by_type(
     if safe_is_sub(type_, Enum):
         # keys and values diverge due to hypens in oscal names
         return type_(list(type_.__members__.values())[0])
+    if type_ is str:
+        if field_name == 'oscal_version':
+            return OSCAL_VERSION
+        return const.REPLACE_ME
     if type_ is pydantic.networks.EmailStr:
         return pydantic.networks.EmailStr('dummy@sample.com')
     if type_ is pydantic.networks.AnyUrl:
@@ -171,10 +174,10 @@ def generate_sample_model(
         if model_type is list:
             return [generate_sample_value_by_type(model, '')]
         if model_type is dict:
-            return {'REPLACE_ME': generate_sample_value_by_type(model, '')}
+            return {const.REPLACE_ME: generate_sample_value_by_type(model, '')}
         raise err.TrestleError('Unhandled collection type.')
     if model_type is list:
         return [model(**model_dict)]
     if model_type is dict:
-        return {'REPLACE_ME': model(**model_dict)}
+        return {const.REPLACE_ME: model(**model_dict)}
     return model(**model_dict)

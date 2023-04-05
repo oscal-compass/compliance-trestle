@@ -21,8 +21,8 @@ import frontmatter
 import pytest
 
 import trestle.common.const as const
+from trestle.core.markdown.docs_markdown_node import DocsMarkdownNode, DocsSectionContent
 from trestle.core.markdown.markdown_api import MarkdownAPI
-from trestle.core.markdown.markdown_node import MarkdownNode, SectionContent
 
 
 @pytest.mark.parametrize('md_path', [(pathlib.Path('tests/data/markdown/valid_complex_md.md'))])
@@ -32,7 +32,7 @@ def test_tree_text_equal_to_md(md_path: pathlib.Path) -> None:
     markdown_wo_header = contents.content
     lines = markdown_wo_header.split('\n')
 
-    tree: MarkdownNode = MarkdownNode.build_tree_from_markdown(lines)
+    tree: DocsMarkdownNode = DocsMarkdownNode.build_tree_from_markdown(lines)
     assert markdown_wo_header == tree.content.raw_text
 
 
@@ -43,10 +43,10 @@ def test_md_get_node_for_key(md_path: pathlib.Path) -> None:
     markdown_wo_header = contents.content
     lines = markdown_wo_header.split('\n')
 
-    tree: MarkdownNode = MarkdownNode.build_tree_from_markdown(lines)
+    tree: DocsMarkdownNode = DocsMarkdownNode.build_tree_from_markdown(lines)
     assert tree.get_node_for_key('header1') is None
     assert tree.get_node_for_key('nonexisting header') is None
-    node: MarkdownNode = tree.get_node_for_key('# 2. MD Header 2 Blockquotes')
+    node: DocsMarkdownNode = tree.get_node_for_key('# 2. MD Header 2 Blockquotes')
     assert node is not None
     # Assert returned node has content
     assert node.key == '# 2. MD Header 2 Blockquotes'
@@ -71,7 +71,7 @@ def test_md_content_is_correct(md_path: pathlib.Path) -> None:
     markdown_wo_header = contents.content
     lines = markdown_wo_header.split('\n')
 
-    tree: MarkdownNode = MarkdownNode.build_tree_from_markdown(lines)
+    tree: DocsMarkdownNode = DocsMarkdownNode.build_tree_from_markdown(lines)
     assert tree is not None
     assert len(tree.content.subnodes_keys) == 28
     assert tree.content.raw_text == markdown_wo_header
@@ -90,7 +90,7 @@ def test_md_headers_in_html_blocks_are_ignored(md_path: pathlib.Path) -> None:
     markdown_wo_header = contents.content
     lines = markdown_wo_header.split('\n')
 
-    tree: MarkdownNode = MarkdownNode.build_tree_from_markdown(lines)
+    tree: DocsMarkdownNode = DocsMarkdownNode.build_tree_from_markdown(lines)
     assert tree is not None
     tricky_node = tree.get_node_for_key('1.3', strict_matching=False)
     assert tricky_node.key == '## 1.3 MD Subheader 1.3 HTML'
@@ -191,7 +191,7 @@ def test_modify_subtree(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Pat
 
 def test_get_header_level() -> None:
     """Test get header level."""
-    node = MarkdownNode('foo', SectionContent(), 0)
+    node = DocsMarkdownNode('foo', DocsSectionContent(), 0)
     assert node._get_header_level_if_valid('') is None
     assert node._get_header_level_if_valid('# ') == 1
     assert node._get_header_level_if_valid(' # ## ') is None

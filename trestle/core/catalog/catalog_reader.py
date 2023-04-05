@@ -250,7 +250,7 @@ class CatalogReader():
         item: Union[ossp.ImplementedRequirement, ossp.ByComponent],
         rule_id: str,
         param_name: str,
-        param_values: List[com.Value],
+        param_values: List[str],
         comp_uuid: str
     ) -> None:
         for by_comp in as_list(item.by_components):
@@ -282,7 +282,7 @@ class CatalogReader():
         rules_dict = md_header.get(const.RULES_PARAMS_TAG, {})
         comp_rules_params = rules_dict.get(comp_name, [])
         param_name = param_dict['name']
-        param_values = [com.Value(__root__=param_val) for param_val in param_dict['values']]
+        param_values = param_dict['values']
         for comp_rule_param in comp_rules_params:
             if comp_rule_param['name'] == param_name:
                 rule_id = comp_rule_param[const.HEADER_RULE_ID]
@@ -295,7 +295,7 @@ class CatalogReader():
     @staticmethod
     def _add_set_params_to_item(param_dict: Dict[str, str], item: TypeWithSetParams, param_id: str) -> None:
         value_list = param_dict[const.SSP_VALUES]
-        param_values = [com.Value(__root__=value) for value in value_list]
+        param_values = value_list
         new_sp_list = []
         for sp in as_list(item.set_parameters):
             if sp.param_id != param_id:
@@ -360,6 +360,12 @@ class CatalogReader():
                 control_id = control_file.stem
                 md_header, control_comp_dict = CatalogReader._read_comp_info_from_md(control_file, context)
                 for comp_name, comp_info_dict in control_comp_dict.items():
+                    if comp_name not in comp_dict:
+                        err_msg = f'Control {control_id} references component {comp_name} not defined in a component-definition.'  # noqa E501
+                        # give added guidance if no comp defs were specified at command line
+                        if not context.comp_def_name_list:
+                            err_msg += '  Please specify the names of any component-definitions needed for assembly.'
+                        raise TrestleError(err_msg)
                     CatalogReader._update_ssp_with_comp_info(
                         ssp, control_id, comp_dict[comp_name], comp_info_dict, part_id_map_by_label
                     )

@@ -27,7 +27,7 @@ from __future__ import annotations
 import re
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr, validator
 
@@ -86,8 +86,8 @@ class SetParameter(OscalBaseModel):
         "A human-oriented reference to a parameter within a control, who's catalog has been imported into the current implementation context.",
         title='Parameter ID',
     )
-    values: List[common.Value] = Field(...)
-    remarks: Optional[common.Remarks] = None
+    values: List[constr(regex=r'^\S(.*\S)?$')] = Field(...)
+    remarks: Optional[str] = None
 
 
 class Selected(OscalBaseModel):
@@ -138,7 +138,7 @@ class Satisfied(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -146,7 +146,7 @@ class Satisfied(OscalBaseModel):
         title='Satisfied Universally Unique Identifier',
     )
     responsibility_uuid: Optional[constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     )] = Field(
         None,
         alias='responsibility-uuid',
@@ -163,7 +163,7 @@ class Satisfied(OscalBaseModel):
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class Responsibility(OscalBaseModel):
@@ -175,7 +175,7 @@ class Responsibility(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -183,7 +183,7 @@ class Responsibility(OscalBaseModel):
         title='Responsibility Universally Unique Identifier',
     )
     provided_uuid: Optional[constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     )] = Field(
         None,
         alias='provided-uuid',
@@ -200,7 +200,7 @@ class Responsibility(OscalBaseModel):
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class Provided(OscalBaseModel):
@@ -212,7 +212,7 @@ class Provided(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -228,7 +228,7 @@ class Provided(OscalBaseModel):
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class Inherited(OscalBaseModel):
@@ -240,7 +240,7 @@ class Inherited(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -248,7 +248,7 @@ class Inherited(OscalBaseModel):
         title='Inherited Universally Unique Identifier',
     )
     provided_uuid: Optional[constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     )] = Field(
         None,
         alias='provided-uuid',
@@ -286,10 +286,10 @@ class ImportProfile(OscalBaseModel):
 
     href: str = Field(
         ...,
-        description="A resolvable URL reference to the profile to use as the system's control baseline.",
+        description="A resolvable URL reference to the profile or catalog to use as the system's control baseline.",
         title='Profile Reference',
     )
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class Export(OscalBaseModel):
@@ -310,7 +310,7 @@ class Export(OscalBaseModel):
     links: Optional[List[common.Link]] = Field(None)
     provided: Optional[List[Provided]] = Field(None)
     responsibilities: Optional[List[Responsibility]] = Field(None)
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class Diagram(OscalBaseModel):
@@ -322,7 +322,7 @@ class Diagram(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -333,7 +333,7 @@ class Diagram(OscalBaseModel):
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     caption: Optional[str] = Field(None, description='A brief caption to annotate the diagram.', title='Caption')
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class DateAuthorized(OscalBaseModel):
@@ -363,7 +363,7 @@ class DataFlow(OscalBaseModel):
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     diagrams: Optional[List[Diagram]] = Field(None)
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class Categorization(OscalBaseModel):
@@ -391,7 +391,7 @@ class ByComponent(OscalBaseModel):
         extra = Extra.forbid
 
     component_uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         alias='component-uuid',
@@ -399,7 +399,7 @@ class ByComponent(OscalBaseModel):
         title='Component Universally Unique Identifier Reference',
     )
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -424,7 +424,7 @@ class ByComponent(OscalBaseModel):
     inherited: Optional[List[Inherited]] = Field(None)
     satisfied: Optional[List[Satisfied]] = Field(None)
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class Base(OscalBaseModel):
@@ -466,7 +466,7 @@ class AuthorizationBoundary(OscalBaseModel):
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     diagrams: Optional[List[Diagram]] = Field(None)
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class Status1(OscalBaseModel):
@@ -478,7 +478,7 @@ class Status1(OscalBaseModel):
         extra = Extra.forbid
 
     state: State = Field(..., description='The current operating status.', title='State')
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class Status(OscalBaseModel):
@@ -490,7 +490,7 @@ class Status(OscalBaseModel):
         extra = Extra.forbid
 
     state: State1 = Field(..., description='The operational status.', title='State')
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class SystemComponent(OscalBaseModel):
@@ -502,7 +502,7 @@ class SystemComponent(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -538,7 +538,7 @@ class SystemComponent(OscalBaseModel):
     )
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
     protocols: Optional[List[common.Protocol]] = Field(None)
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class Statement(OscalBaseModel):
@@ -559,7 +559,7 @@ class Statement(OscalBaseModel):
         title='Control Statement Reference',
     )
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -570,19 +570,19 @@ class Statement(OscalBaseModel):
     links: Optional[List[common.Link]] = Field(None)
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
     by_components: Optional[List[ByComponent]] = Field(None, alias='by-components')
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class ImplementedRequirement(OscalBaseModel):
     """
-    Describes how the system satisfies an individual control.
+    Describes how the system satisfies the requirements of an individual control.
     """
 
     class Config:
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -605,7 +605,7 @@ class ImplementedRequirement(OscalBaseModel):
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
     statements: Optional[List[Statement]] = Field(None)
     by_components: Optional[List[ByComponent]] = Field(None, alias='by-components')
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class ControlImplementation(OscalBaseModel):
@@ -642,7 +642,7 @@ class NetworkArchitecture(OscalBaseModel):
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     diagrams: Optional[List[Diagram]] = Field(None)
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class LeveragedAuthorization(OscalBaseModel):
@@ -654,7 +654,7 @@ class LeveragedAuthorization(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=
@@ -669,7 +669,7 @@ class LeveragedAuthorization(OscalBaseModel):
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     party_uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         alias='party-uuid',
@@ -677,7 +677,7 @@ class LeveragedAuthorization(OscalBaseModel):
         title='party-uuid field',
     )
     date_authorized: DateAuthorized = Field(..., alias='date-authorized')
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class SystemImplementation(OscalBaseModel):
@@ -694,7 +694,7 @@ class SystemImplementation(OscalBaseModel):
     users: List[common.SystemUser] = Field(...)
     components: List[SystemComponent] = Field(...)
     inventory_items: Optional[List[common.InventoryItem]] = Field(None, alias='inventory-items')
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class IntegrityImpact(OscalBaseModel):
@@ -736,7 +736,7 @@ class InformationType(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: Optional[constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     )] = Field(
         None,
         description=
@@ -832,7 +832,7 @@ class SystemCharacteristics(OscalBaseModel):
     network_architecture: Optional[NetworkArchitecture] = Field(None, alias='network-architecture')
     data_flow: Optional[DataFlow] = Field(None, alias='data-flow')
     responsible_parties: Optional[List[common.ResponsibleParty]] = Field(None, alias='responsible-parties')
-    remarks: Optional[common.Remarks] = None
+    remarks: Optional[str] = None
 
 
 class SystemSecurityPlan(OscalBaseModel):
@@ -844,7 +844,7 @@ class SystemSecurityPlan(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description=

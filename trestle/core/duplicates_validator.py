@@ -14,16 +14,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Validate by confirming no duplicate uuids."""
+import pathlib
+from typing import Optional
 
 from trestle.common.model_utils import ModelUtils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.validator import Validator
+from trestle.oscal.profile import Profile
 
 
 class DuplicatesValidator(Validator):
     """Validator to check for duplicate uuids and param_ids in the model."""
 
-    def model_is_valid(self, model: OscalBaseModel, quiet: bool) -> bool:
+    def model_is_valid(self, model: OscalBaseModel, quiet: bool, trestle_root: Optional[pathlib.Path] = None) -> bool:
         """
         Test if the model is valid and contains no duplicate uuids or param_ids.
 
@@ -36,4 +39,8 @@ class DuplicatesValidator(Validator):
         """
         if not ModelUtils.has_no_duplicate_values_by_name(model, 'uuid'):
             return False
-        return ModelUtils.has_no_duplicate_values_by_name(model, 'param_id')
+        # only profile, comp-def and ssp have set-params and only set-params have param_id
+        # param_id is required to be unique in profiles but not in other models
+        if isinstance(model, Profile):
+            return ModelUtils.has_no_duplicate_values_by_name(model, 'param_id')
+        return True

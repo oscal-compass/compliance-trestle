@@ -25,7 +25,7 @@ nav:
   - Compliance posture: tutorials/continuous-compliance/continuous-compliance.md
   - Trestle Authoring:
     - Governance of Authored Documents: trestle_author.md
-    - SSP, Catalog, and Profile Authoring: tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring.md
+    - Catalog, Profile, ComponentDefinition, and SSP Authoring: tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring.md
   - Trestle Transformers and Tasks:
     - Transformer construction: tutorials/task.transformer-construction/transformer-construction.md
     - Task - task.csv-to-oscal-cd: tutorials/task.csv-to-oscal-cd/transformation.md
@@ -121,9 +121,11 @@ nav:
       - jinja: api_reference/trestle.core.jinja.md
       - links_validator: api_reference/trestle.core.links_validator.md
       - markdown:
+        - base_markdown_node: api_reference/trestle.core.markdown.base_markdown_node.md
+        - control_markdown_node: api_reference/trestle.core.markdown.control_markdown_node.md
+        - docs_markdown_node: api_reference/trestle.core.markdown.docs_markdown_node.md
         - markdown_api: api_reference/trestle.core.markdown.markdown_api.md
         - markdown_const: api_reference/trestle.core.markdown.markdown_const.md
-        - markdown_node: api_reference/trestle.core.markdown.markdown_node.md
         - markdown_processor: api_reference/trestle.core.markdown.markdown_processor.md
         - markdown_validator: api_reference/trestle.core.markdown.markdown_validator.md
         - md_writer: api_reference/trestle.core.markdown.md_writer.md
@@ -145,6 +147,7 @@ nav:
         - merge: api_reference/trestle.core.resolver.merge.md
         - modify: api_reference/trestle.core.resolver.modify.md
         - prune: api_reference/trestle.core.resolver.prune.md
+      - rule_parameters_validator: api_reference/trestle.core.rule_parameters_validator.md
       - ssp_io: api_reference/trestle.core.ssp_io.md
       - trestle_base_model: api_reference/trestle.core.trestle_base_model.md
       - validator: api_reference/trestle.core.validator.md

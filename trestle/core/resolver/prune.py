@@ -56,14 +56,14 @@ class Prune(Pipeline.Filter):
             for select_control in select_list:
                 if select_control.matching is not None:
                     raise TrestleError('Profiles with SelectControlById based on matching are not supported.')
-                include_children = select_control.with_child_controls == prof.WithChildControls.yes
+                include_children = select_control.with_child_controls == 'yes'
                 if select_control.with_ids:
-                    new_ids = [withid.__root__ for withid in select_control.with_ids]
+                    new_ids = select_control.with_ids
                     for id_ in new_ids:
                         control_ids.append(id_)
                         if include_children:
                             control_ids.extend(self._catalog_interface.get_dependent_control_ids(id_))
-        return control_ids
+        return [control_id.__root__ for control_id in control_ids]
 
     def _find_needed_control_ids(self) -> List[str]:
         """Get list of control_ids needed by profile and corresponding groups."""
@@ -78,7 +78,7 @@ class Prune(Pipeline.Filter):
 
         if not set(include_ids).issuperset(set(exclude_ids)):
             logger.debug(f'include_ids is not a superset of exclude_ids in import {self._import.href}')
-        return [id_ for id_ in include_ids if id_ not in exclude_ids]
+        return sorted([id_ for id_ in include_ids if id_ not in exclude_ids])
 
     def _prune_control(self, needed_ids: List[str], control: cat.Control, exclude_ids: List[str]) -> cat.Control:
         """

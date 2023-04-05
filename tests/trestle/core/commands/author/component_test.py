@@ -95,7 +95,7 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
         )
         for ii in range(3):
             assert assem_component.components[0].control_implementations[0].implemented_requirements[0].set_parameters[
-                0].values[ii].__root__ == f'inserted value {ii}'
+                0].values[ii] == f'inserted value {ii}'
 
         statement = assem_component.components[0].control_implementations[0].implemented_requirements[0].statements[0]
         assert statement.description == new_prose

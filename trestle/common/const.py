@@ -174,6 +174,7 @@ VAL_MODE_CATALOG = 'catalog'
 VAL_MODE_DUPLICATES = 'duplicates'
 VAL_MODE_LINKS = 'links'
 VAL_MODE_REFS = 'refs'
+VAL_MODE_RULES = 'rules'
 VAL_MODE_ALL = 'all'
 
 IOF_SHORT = '-iof'
@@ -228,9 +229,9 @@ WINDOWS_DRIVE_LETTER_REGEX = r'[A-Za-z]:'
 # need to strip white space from end of value
 PROPERTY_REGEX = r'(?:###\s+Property\s+)([^\s]*)\s*:\s+(.*)'
 
-PART_REGEX = r'(?:##\s+Part\s+)(.*)'
+PART_REGEX = r'(?i)(?:##\s+part\s+)(.*)'
 
-CONTROL_REGEX = r'(?:##\s+Control\s+)(.*)'
+CONTROL_REGEX = r'(?i)(?:##\s+Control\s+)(.*)'
 
 AFTER_HASHES_REGEX = r'(?:##*\s+)(.*)'
 
@@ -543,6 +544,16 @@ PARAMETER_DESCRIPTION = 'Parameter_Description'
 
 PARAMETER_VALUE_ALTERNATIVES = 'Parameter_Value_Alternatives'
 
+ONE = 'one'
+
+ONE_OR_MORE_HYPHENED = 'one-or-more'
+
+ONE_OR_MORE_SPACED = 'one or more'
+
 VALUE_ASSIGNED_PREFIX = 'value-assigned-prefix'
 
 VALUE_NOT_ASSIGNED_PREFIX = 'value-not-assigned-prefix'
+
+CONTROL_IMPLEMENTATION = 'control-implementation'
+
+IMPLEMENTED_REQUIREMENT = 'implemented-requirement'

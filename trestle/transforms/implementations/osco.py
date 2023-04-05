@@ -653,7 +653,7 @@ class OscalProfileToOscoProfileTransformer(FromOscalTransformer):
             for set_parameter in as_list(self._profile.modify.set_parameters):
                 name = self._format_osco_rule_name(set_parameter.param_id)
                 parameter_value = set_parameter.values[0]
-                value = parameter_value.__root__
+                value = parameter_value
                 rationale = self._get_rationale_for_set_value()
                 set_value = {'name': name, 'value': value, 'rationale': rationale}
                 set_values.append(set_value)
