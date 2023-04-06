@@ -19,7 +19,7 @@
         <link rel="next" href="../trestle.core.catalog.catalog_writer/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.15">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.5">
     
     
       
@@ -27,7 +27,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7a7fce14.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
@@ -492,7 +492,7 @@
   
     <li class="md-nav__item">
       <a href="../../tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring/" class="md-nav__link">
-        SSP, Catalog, and Profile Authoring
+        Catalog, Profile, ComponentDefinition, and SSP Authoring
       </a>
     </li>
   
@@ -2239,6 +2239,48 @@
   
   
     <li class="md-nav__item">
+      <a href="../trestle.core.markdown.base_markdown_node/" class="md-nav__link">
+        base_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.markdown.control_markdown_node/" class="md-nav__link">
+        control_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.markdown.docs_markdown_node/" class="md-nav__link">
+        docs_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../trestle.core.markdown.markdown_api/" class="md-nav__link">
         markdown_api
       </a>
@@ -2255,20 +2297,6 @@
     <li class="md-nav__item">
       <a href="../trestle.core.markdown.markdown_const/" class="md-nav__link">
         markdown_const
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../trestle.core.markdown.markdown_node/" class="md-nav__link">
-        markdown_node
       </a>
     </li>
   
@@ -2631,6 +2659,20 @@
           
         </ul>
       </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.rule_parameters_validator/" class="md-nav__link">
+        rule_parameters_validator
+      </a>
     </li>
   
 
@@ -3624,7 +3666,7 @@ reading catalog from markdown.</p>
         <span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ossp</span><span class="o">.</span><span class="n">ImplementedRequirement</span><span class="p">,</span> <span class="n">ossp</span><span class="o">.</span><span class="n">ByComponent</span><span class="p">],</span>
         <span class="n">rule_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">param_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">param_values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">com</span><span class="o">.</span><span class="n">Value</span><span class="p">],</span>
+        <span class="n">param_values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
         <span class="n">comp_uuid</span><span class="p">:</span> <span class="nb">str</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">by_comp</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">by_components</span><span class="p">):</span>
@@ -3656,7 +3698,7 @@ reading catalog from markdown.</p>
         <span class="n">rules_dict</span> <span class="o">=</span> <span class="n">md_header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">RULES_PARAMS_TAG</span><span class="p">,</span> <span class="p">{})</span>
         <span class="n">comp_rules_params</span> <span class="o">=</span> <span class="n">rules_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">comp_name</span><span class="p">,</span> <span class="p">[])</span>
         <span class="n">param_name</span> <span class="o">=</span> <span class="n">param_dict</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
-        <span class="n">param_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">com</span><span class="o">.</span><span class="n">Value</span><span class="p">(</span><span class="n">__root__</span><span class="o">=</span><span class="n">param_val</span><span class="p">)</span> <span class="k">for</span> <span class="n">param_val</span> <span class="ow">in</span> <span class="n">param_dict</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">]]</span>
+        <span class="n">param_values</span> <span class="o">=</span> <span class="n">param_dict</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">comp_rule_param</span> <span class="ow">in</span> <span class="n">comp_rules_params</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">comp_rule_param</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">param_name</span><span class="p">:</span>
                 <span class="n">rule_id</span> <span class="o">=</span> <span class="n">comp_rule_param</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">HEADER_RULE_ID</span><span class="p">]</span>
@@ -3669,7 +3711,7 @@ reading catalog from markdown.</p>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_add_set_params_to_item</span><span class="p">(</span><span class="n">param_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">item</span><span class="p">:</span> <span class="n">TypeWithSetParams</span><span class="p">,</span> <span class="n">param_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">value_list</span> <span class="o">=</span> <span class="n">param_dict</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SSP_VALUES</span><span class="p">]</span>
-        <span class="n">param_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">com</span><span class="o">.</span><span class="n">Value</span><span class="p">(</span><span class="n">__root__</span><span class="o">=</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">value_list</span><span class="p">]</span>
+        <span class="n">param_values</span> <span class="o">=</span> <span class="n">value_list</span>
         <span class="n">new_sp_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">sp</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">sp</span><span class="o">.</span><span class="n">param_id</span> <span class="o">!=</span> <span class="n">param_id</span><span class="p">:</span>
@@ -3734,6 +3776,12 @@ reading catalog from markdown.</p>
                 <span class="n">control_id</span> <span class="o">=</span> <span class="n">control_file</span><span class="o">.</span><span class="n">stem</span>
                 <span class="n">md_header</span><span class="p">,</span> <span class="n">control_comp_dict</span> <span class="o">=</span> <span class="n">CatalogReader</span><span class="o">.</span><span class="n">_read_comp_info_from_md</span><span class="p">(</span><span class="n">control_file</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">comp_name</span><span class="p">,</span> <span class="n">comp_info_dict</span> <span class="ow">in</span> <span class="n">control_comp_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">comp_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">comp_dict</span><span class="p">:</span>
+                        <span class="n">err_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Control </span><span class="si">{</span><span class="n">control_id</span><span class="si">}</span><span class="s1"> references component </span><span class="si">{</span><span class="n">comp_name</span><span class="si">}</span><span class="s1"> not defined in a component-definition.&#39;</span>  <span class="c1"># noqa E501</span>
+                        <span class="c1"># give added guidance if no comp defs were specified at command line</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">context</span><span class="o">.</span><span class="n">comp_def_name_list</span><span class="p">:</span>
+                            <span class="n">err_msg</span> <span class="o">+=</span> <span class="s1">&#39;  Please specify the names of any component-definitions needed for assembly.&#39;</span>
+                        <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="n">err_msg</span><span class="p">)</span>
                     <span class="n">CatalogReader</span><span class="o">.</span><span class="n">_update_ssp_with_comp_info</span><span class="p">(</span>
                         <span class="n">ssp</span><span class="p">,</span> <span class="n">control_id</span><span class="p">,</span> <span class="n">comp_dict</span><span class="p">[</span><span class="n">comp_name</span><span class="p">],</span> <span class="n">comp_info_dict</span><span class="p">,</span> <span class="n">part_id_map_by_label</span>
                     <span class="p">)</span>
@@ -4110,6 +4158,12 @@ know controlid and comp name in comp_dict</p>
             <span class="n">control_id</span> <span class="o">=</span> <span class="n">control_file</span><span class="o">.</span><span class="n">stem</span>
             <span class="n">md_header</span><span class="p">,</span> <span class="n">control_comp_dict</span> <span class="o">=</span> <span class="n">CatalogReader</span><span class="o">.</span><span class="n">_read_comp_info_from_md</span><span class="p">(</span><span class="n">control_file</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">comp_name</span><span class="p">,</span> <span class="n">comp_info_dict</span> <span class="ow">in</span> <span class="n">control_comp_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">comp_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">comp_dict</span><span class="p">:</span>
+                    <span class="n">err_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Control </span><span class="si">{</span><span class="n">control_id</span><span class="si">}</span><span class="s1"> references component </span><span class="si">{</span><span class="n">comp_name</span><span class="si">}</span><span class="s1"> not defined in a component-definition.&#39;</span>  <span class="c1"># noqa E501</span>
+                    <span class="c1"># give added guidance if no comp defs were specified at command line</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">context</span><span class="o">.</span><span class="n">comp_def_name_list</span><span class="p">:</span>
+                        <span class="n">err_msg</span> <span class="o">+=</span> <span class="s1">&#39;  Please specify the names of any component-definitions needed for assembly.&#39;</span>
+                    <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="n">err_msg</span><span class="p">)</span>
                 <span class="n">CatalogReader</span><span class="o">.</span><span class="n">_update_ssp_with_comp_info</span><span class="p">(</span>
                     <span class="n">ssp</span><span class="p">,</span> <span class="n">control_id</span><span class="p">,</span> <span class="n">comp_dict</span><span class="p">[</span><span class="n">comp_name</span><span class="p">],</span> <span class="n">comp_info_dict</span><span class="p">,</span> <span class="n">part_id_map_by_label</span>
                 <span class="p">)</span>
@@ -4185,7 +4239,7 @@ know controlid and comp name in comp_dict</p>
     <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
+      <script src="../../assets/javascripts/bundle.407015b8.min.js"></script>
       
     
   </body>

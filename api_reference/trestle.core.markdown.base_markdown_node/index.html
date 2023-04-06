@@ -10,24 +10,24 @@
       
       
       
-        <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.markdown.markdown_node/">
+        <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.markdown.base_markdown_node/">
       
       
-        <link rel="prev" href="../trestle.core.markdown.markdown_const/">
+        <link rel="prev" href="../trestle.core.links_validator/">
       
       
-        <link rel="next" href="../trestle.core.markdown.markdown_processor/">
+        <link rel="next" href="../trestle.core.markdown.control_markdown_node/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.15">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.5">
     
     
       
-        <title>markdown_node - Compliance Trestle</title>
+        <title>base_markdown_node - Compliance Trestle</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7a7fce14.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
@@ -85,7 +85,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#trestle.core.markdown.markdown_node" class="md-skip">
+        <a href="#trestle.core.markdown.base_markdown_node" class="md-skip">
           Skip to content
         </a>
       
@@ -118,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              markdown_node
+              base_markdown_node
             
           </span>
         </div>
@@ -492,7 +492,7 @@
   
     <li class="md-nav__item">
       <a href="../../tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring/" class="md-nav__link">
-        SSP, Catalog, and Profile Authoring
+        Catalog, Profile, ComponentDefinition, and SSP Authoring
       </a>
     </li>
   
@@ -2113,34 +2113,6 @@
               
   
   
-  
-    <li class="md-nav__item">
-      <a href="../trestle.core.markdown.markdown_api/" class="md-nav__link">
-        markdown_api
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../trestle.core.markdown.markdown_const/" class="md-nav__link">
-        markdown_const
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
     
   
   
@@ -2151,12 +2123,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          markdown_node
+          base_markdown_node
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        markdown_node
+        base_markdown_node
       </a>
       
         
@@ -2173,22 +2145,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node" class="md-nav__link">
-    markdown_node
+  <a href="#trestle.core.markdown.base_markdown_node" class="md-nav__link">
+    base_markdown_node
   </a>
   
-    <nav class="md-nav" aria-label="markdown_node">
+    <nav class="md-nav" aria-label="base_markdown_node">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.logger" class="md-nav__link">
+  <a href="#trestle.core.markdown.base_markdown_node.logger" class="md-nav__link">
     logger
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node-classes" class="md-nav__link">
+  <a href="#trestle.core.markdown.base_markdown_node-classes" class="md-nav__link">
     Classes
   </a>
   
@@ -2196,15 +2168,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.MarkdownNode" class="md-nav__link">
-    MarkdownNode
+  <a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode" class="md-nav__link">
+    BaseMarkdownNode
   </a>
   
-    <nav class="md-nav" aria-label="MarkdownNode">
+    <nav class="md-nav" aria-label="BaseMarkdownNode">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.MarkdownNode-methods" class="md-nav__link">
+  <a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode-methods" class="md-nav__link">
     Methods
   </a>
   
@@ -2212,70 +2184,63 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.MarkdownNode.__init__" class="md-nav__link">
+  <a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode.__init__" class="md-nav__link">
     __init__()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.MarkdownNode.build_tree_from_markdown" class="md-nav__link">
+  <a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode.build_tree_from_markdown" class="md-nav__link">
     build_tree_from_markdown()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.MarkdownNode.change_header_level_by" class="md-nav__link">
+  <a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode.change_header_level_by" class="md-nav__link">
     change_header_level_by()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.MarkdownNode.delete_nodes_text" class="md-nav__link">
+  <a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode.delete_nodes_text" class="md-nav__link">
     delete_nodes_text()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.MarkdownNode.get_all_headers_for_key" class="md-nav__link">
+  <a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode.get_all_headers_for_key" class="md-nav__link">
     get_all_headers_for_key()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.MarkdownNode.get_all_headers_for_level" class="md-nav__link">
+  <a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode.get_all_headers_for_level" class="md-nav__link">
     get_all_headers_for_level()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.MarkdownNode.get_all_nodes_for_keys" class="md-nav__link">
+  <a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode.get_all_nodes_for_keys" class="md-nav__link">
     get_all_nodes_for_keys()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.MarkdownNode.get_count_of_subnodes" class="md-nav__link">
-    get_count_of_subnodes()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.MarkdownNode.get_node_for_key" class="md-nav__link">
+  <a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode.get_node_for_key" class="md-nav__link">
     get_node_for_key()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.MarkdownNode.get_node_header_lvl" class="md-nav__link">
+  <a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode.get_node_header_lvl" class="md-nav__link">
     get_node_header_lvl()
   </a>
   
@@ -2292,15 +2257,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.SectionContent" class="md-nav__link">
-    SectionContent
+  <a href="#trestle.core.markdown.base_markdown_node.BaseSectionContent" class="md-nav__link">
+    BaseSectionContent
   </a>
   
-    <nav class="md-nav" aria-label="SectionContent">
+    <nav class="md-nav" aria-label="BaseSectionContent">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.SectionContent-methods" class="md-nav__link">
+  <a href="#trestle.core.markdown.base_markdown_node.BaseSectionContent-methods" class="md-nav__link">
     Methods
   </a>
   
@@ -2308,14 +2273,14 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.SectionContent.__init__" class="md-nav__link">
+  <a href="#trestle.core.markdown.base_markdown_node.BaseSectionContent.__init__" class="md-nav__link">
     __init__()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.SectionContent.union" class="md-nav__link">
+  <a href="#trestle.core.markdown.base_markdown_node.BaseSectionContent.union" class="md-nav__link">
     union()
   </a>
   
@@ -2345,6 +2310,62 @@
   
 </nav>
       
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.markdown.control_markdown_node/" class="md-nav__link">
+        control_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.markdown.docs_markdown_node/" class="md-nav__link">
+        docs_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.markdown.markdown_api/" class="md-nav__link">
+        markdown_api
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.markdown.markdown_const/" class="md-nav__link">
+        markdown_const
+      </a>
     </li>
   
 
@@ -2706,6 +2727,20 @@
           
         </ul>
       </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.rule_parameters_validator/" class="md-nav__link">
+        rule_parameters_validator
+      </a>
     </li>
   
 
@@ -3312,22 +3347,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node" class="md-nav__link">
-    markdown_node
+  <a href="#trestle.core.markdown.base_markdown_node" class="md-nav__link">
+    base_markdown_node
   </a>
   
-    <nav class="md-nav" aria-label="markdown_node">
+    <nav class="md-nav" aria-label="base_markdown_node">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.logger" class="md-nav__link">
+  <a href="#trestle.core.markdown.base_markdown_node.logger" class="md-nav__link">
     logger
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node-classes" class="md-nav__link">
+  <a href="#trestle.core.markdown.base_markdown_node-classes" class="md-nav__link">
     Classes
   </a>
   
@@ -3335,15 +3370,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.MarkdownNode" class="md-nav__link">
-    MarkdownNode
+  <a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode" class="md-nav__link">
+    BaseMarkdownNode
   </a>
   
-    <nav class="md-nav" aria-label="MarkdownNode">
+    <nav class="md-nav" aria-label="BaseMarkdownNode">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.MarkdownNode-methods" class="md-nav__link">
+  <a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode-methods" class="md-nav__link">
     Methods
   </a>
   
@@ -3351,70 +3386,63 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.MarkdownNode.__init__" class="md-nav__link">
+  <a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode.__init__" class="md-nav__link">
     __init__()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.MarkdownNode.build_tree_from_markdown" class="md-nav__link">
+  <a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode.build_tree_from_markdown" class="md-nav__link">
     build_tree_from_markdown()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.MarkdownNode.change_header_level_by" class="md-nav__link">
+  <a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode.change_header_level_by" class="md-nav__link">
     change_header_level_by()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.MarkdownNode.delete_nodes_text" class="md-nav__link">
+  <a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode.delete_nodes_text" class="md-nav__link">
     delete_nodes_text()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.MarkdownNode.get_all_headers_for_key" class="md-nav__link">
+  <a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode.get_all_headers_for_key" class="md-nav__link">
     get_all_headers_for_key()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.MarkdownNode.get_all_headers_for_level" class="md-nav__link">
+  <a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode.get_all_headers_for_level" class="md-nav__link">
     get_all_headers_for_level()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.MarkdownNode.get_all_nodes_for_keys" class="md-nav__link">
+  <a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode.get_all_nodes_for_keys" class="md-nav__link">
     get_all_nodes_for_keys()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.MarkdownNode.get_count_of_subnodes" class="md-nav__link">
-    get_count_of_subnodes()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.MarkdownNode.get_node_for_key" class="md-nav__link">
+  <a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode.get_node_for_key" class="md-nav__link">
     get_node_for_key()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.MarkdownNode.get_node_header_lvl" class="md-nav__link">
+  <a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode.get_node_header_lvl" class="md-nav__link">
     get_node_header_lvl()
   </a>
   
@@ -3431,15 +3459,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.SectionContent" class="md-nav__link">
-    SectionContent
+  <a href="#trestle.core.markdown.base_markdown_node.BaseSectionContent" class="md-nav__link">
+    BaseSectionContent
   </a>
   
-    <nav class="md-nav" aria-label="SectionContent">
+    <nav class="md-nav" aria-label="BaseSectionContent">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.SectionContent-methods" class="md-nav__link">
+  <a href="#trestle.core.markdown.base_markdown_node.BaseSectionContent-methods" class="md-nav__link">
     Methods
   </a>
   
@@ -3447,14 +3475,14 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.SectionContent.__init__" class="md-nav__link">
+  <a href="#trestle.core.markdown.base_markdown_node.BaseSectionContent.__init__" class="md-nav__link">
     __init__()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.core.markdown.markdown_node.SectionContent.union" class="md-nav__link">
+  <a href="#trestle.core.markdown.base_markdown_node.BaseSectionContent.union" class="md-nav__link">
     union()
   </a>
   
@@ -3495,22 +3523,22 @@
                   
 
 
-  <h1>markdown_node</h1>
+  <h1>base_markdown_node</h1>
 
 <div class="doc doc-object doc-module">
 
 
 
-<h2 id="trestle.core.markdown.markdown_node" class="doc doc-heading">
-        <code>trestle.core.markdown.markdown_node</code>
+<h2 id="trestle.core.markdown.base_markdown_node" class="doc doc-heading">
+        <code>trestle.core.markdown.base_markdown_node</code>
 
 
 
-<a href="#trestle.core.markdown.markdown_node" class="headerlink" title="Permanent link">¤</a></h2>
+<a href="#trestle.core.markdown.base_markdown_node" class="headerlink" title="Permanent link">¤</a></h2>
 
     <div class="doc doc-contents first">
 
-      <p>A markdown node.</p>
+      <p>A base markdown node.</p>
 
 
 
@@ -3525,11 +3553,11 @@
 
 
 
-<h4 id="trestle.core.markdown.markdown_node.logger" class="doc doc-heading">
+<h4 id="trestle.core.markdown.base_markdown_node.logger" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">logger</span></code>
 
 
-<a href="#trestle.core.markdown.markdown_node.logger" class="headerlink" title="Permanent link">¤</a></h4>
+<a href="#trestle.core.markdown.base_markdown_node.logger" class="headerlink" title="Permanent link">¤</a></h4>
 
     <div class="doc doc-contents ">
 
@@ -3538,42 +3566,42 @@
   </div>
 
 
-<h3 id="trestle.core.markdown.markdown_node-classes">Classes<a href="#trestle.core.markdown.markdown_node-classes" class="headerlink" title="Permanent link">¤</a></h3>
+<h3 id="trestle.core.markdown.base_markdown_node-classes">Classes<a href="#trestle.core.markdown.base_markdown_node-classes" class="headerlink" title="Permanent link">¤</a></h3>
 
   <div class="doc doc-object doc-class">
 
 
 
-<h4 id="trestle.core.markdown.markdown_node.MarkdownNode" class="doc doc-heading">
+<h4 id="trestle.core.markdown.base_markdown_node.BaseMarkdownNode" class="doc doc-heading">
         <code>
-MarkdownNode        </code>
+BaseMarkdownNode        </code>
 
 
 
-<a href="#trestle.core.markdown.markdown_node.MarkdownNode" class="headerlink" title="Permanent link">¤</a></h4>
+<a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode" class="headerlink" title="Permanent link">¤</a></h4>
 
     <div class="doc doc-contents ">
 
       <p>Markdown will be read to the tree.</p>
 
         <details class="quote">
-          <summary>Source code in <code>trestle/core/markdown/markdown_node.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">MarkdownNode</span><span class="p">:</span>
+          <summary>Source code in <code>trestle/core/markdown/base_markdown_node.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">BaseMarkdownNode</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Markdown will be read to the tree.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="n">SectionContent</span><span class="p">,</span> <span class="n">starting_line</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="n">BaseSectionContent</span><span class="p">,</span> <span class="n">starting_line</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize markdown node.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">subnodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MarkdownNode</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">subnodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseMarkdownNode</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">key</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="n">content</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">starting_line</span> <span class="o">=</span> <span class="n">starting_line</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">build_tree_from_markdown</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">governed_header</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">build_tree_from_markdown</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct a tree out of the given markdown.&quot;&quot;&quot;</span>
         <span class="n">ob</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
         <span class="n">start_level</span> <span class="o">=</span> <span class="n">ob</span><span class="o">.</span><span class="n">_get_max_header_lvl</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
-        <span class="n">ob</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">ob</span><span class="o">.</span><span class="n">_build_tree</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="s1">&#39;root&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">start_level</span><span class="p">,</span> <span class="n">governed_header</span><span class="p">)</span>
+        <span class="n">ob</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">ob</span><span class="o">.</span><span class="n">_build_tree</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="s1">&#39;root&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">start_level</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ob</span>
 
     <span class="k">def</span> <span class="nf">get_all_headers_for_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
@@ -3582,17 +3610,17 @@ MarkdownNode        </code>
             <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">header</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_header_level_if_valid</span><span class="p">(</span><span class="n">header</span><span class="p">)</span> <span class="o">==</span> <span class="n">level</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">)</span>
         <span class="p">)</span><span class="o">.</span><span class="fm">__iter__</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">get_node_for_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">strict_matching</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MarkdownNode</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a first node for the given key, substring matching is supported.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">get_node_for_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">strict_matching</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseMarkdownNode</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a first node for the given key, substring matching is supported. The method is case insensitive.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">strict_matching</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">([</span><span class="n">key</span> <span class="ow">in</span> <span class="n">el</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">([</span><span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">el</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">]):</span>
                 <span class="k">return</span> <span class="kc">None</span>
-            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">as_filtered_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">el</span><span class="p">:</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">el</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">as_filtered_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">el</span><span class="p">:</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">el</span><span class="o">.</span><span class="n">lower</span><span class="p">()))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Multiple nodes for </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1"> were found, only the first one will be returned.&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">el</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">]:</span>
                 <span class="k">return</span> <span class="kc">None</span>
-            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">as_filtered_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">el</span><span class="p">:</span> <span class="n">el</span> <span class="o">==</span> <span class="n">key</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">as_filtered_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">el</span><span class="p">:</span> <span class="n">el</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Multiple nodes for </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1"> were found, only the first one will be returned.&#39;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rec_traverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">strict_matching</span><span class="p">)</span>
@@ -3602,7 +3630,7 @@ MarkdownNode        </code>
         <span class="n">keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
         <span class="n">strict_matching</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">stop_recurse_on_first_match</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">MarkdownNode</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseMarkdownNode</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return all nodes for the given keys, substring matching is supported.</span>
 
@@ -3653,14 +3681,6 @@ MarkdownNode        </code>
         <span class="c1"># go through all contents and modify headers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rec_traverse_header_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">header_map</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">get_count_of_subnodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get count of subnodes with optional recursion.&quot;&quot;&quot;</span>
-        <span class="n">count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subnodes</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">recurse</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">subnode</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subnodes</span><span class="p">:</span>
-                <span class="n">count</span> <span class="o">+=</span> <span class="n">subnode</span><span class="o">.</span><span class="n">get_count_of_subnodes</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">count</span>
-
     <span class="k">def</span> <span class="nf">delete_nodes_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">strict_matching</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove text from this node that is found in matching subnodes.&quot;&quot;&quot;</span>
         <span class="n">text_lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">raw_text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -3672,76 +3692,11 @@ MarkdownNode        </code>
             <span class="n">delete_list_from_list</span><span class="p">(</span><span class="n">text_lines</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">starting_line</span><span class="p">,</span> <span class="n">last_line</span><span class="p">)))</span>
         <span class="k">return</span> <span class="n">text_lines</span>
 
-    <span class="k">def</span> <span class="nf">_build_tree</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-        <span class="n">root_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">starting_line</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">governed_header</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">MarkdownNode</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Build a tree from the markdown recursively.</span>
-
-<span class="sd">        The tree is contructed with valid headers as node&#39;s keys</span>
-<span class="sd">        and node&#39;s content contains everything that is under that header.</span>
-<span class="sd">        The subsections are placed into node&#39;s children with the same structure.</span>
-
-<span class="sd">        A header is valid iff the line starts with # and it is not:</span>
-<span class="sd">          1. Inside of the html blocks</span>
-<span class="sd">          2. Inside single lined in the &lt;&gt; tags</span>
-<span class="sd">          3. Inside the html comment</span>
-<span class="sd">          4. Inside any table, code block or blockquotes</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">content</span> <span class="o">=</span> <span class="n">SectionContent</span><span class="p">()</span>
-        <span class="n">node_children</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="n">starting_line</span>
-
-        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
-                <span class="k">break</span>
-            <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
-            <span class="n">header_lvl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_header_level_if_valid</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">header_lvl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">header_lvl</span> <span class="o">&gt;=</span> <span class="n">level</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="c1"># build subtree</span>
-                    <span class="n">subtree</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_tree</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">level</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">governed_header</span><span class="p">)</span>
-                    <span class="n">node_children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">subtree</span><span class="p">)</span>
-                    <span class="n">content</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">subtree</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">break</span>  <span class="c1"># level of the header is above or equal to the current level, subtree is over</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_does_start_with</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">md_const</span><span class="o">.</span><span class="n">CODEBLOCK_DEF</span><span class="p">):</span>
-                <span class="n">code_lines</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_code_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-                <span class="n">content</span><span class="o">.</span><span class="n">code_lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">code_lines</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_does_start_with</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">md_const</span><span class="o">.</span><span class="n">HTML_COMMENT_START</span><span class="p">):</span>
-                <span class="n">html_lines</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_html_block</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">md_const</span><span class="o">.</span><span class="n">HTML_COMMENT_END_REGEX</span><span class="p">)</span>
-                <span class="n">content</span><span class="o">.</span><span class="n">html_lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">html_lines</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_does_contain</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">md_const</span><span class="o">.</span><span class="n">HTML_TAG_REGEX_START</span><span class="p">):</span>
-                <span class="n">html_lines</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_html_block</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">md_const</span><span class="o">.</span><span class="n">HTML_TAG_REGEX_END</span><span class="p">)</span>
-                <span class="n">content</span><span class="o">.</span><span class="n">html_lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">html_lines</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_does_start_with</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">md_const</span><span class="o">.</span><span class="n">TABLE_SYMBOL</span><span class="p">):</span>
-                <span class="n">table_block</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_table_block</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-                <span class="n">content</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">table_block</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_does_start_with</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">md_const</span><span class="o">.</span><span class="n">BLOCKQUOTE_CHAR</span><span class="p">):</span>
-                <span class="n">content</span><span class="o">.</span><span class="n">blockquotes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">elif</span> <span class="n">governed_header</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_does_contain</span><span class="p">(</span>
-                    <span class="n">root_key</span><span class="p">,</span> <span class="sa">fr</span><span class="s1">&#39;^[#]+ </span><span class="si">{</span><span class="n">governed_header</span><span class="si">}</span><span class="s1">$&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_does_contain</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">md_const</span><span class="o">.</span><span class="n">GOVERNED_DOC_REGEX</span><span class="p">):</span>
-                <span class="n">regexp</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">md_const</span><span class="o">.</span><span class="n">GOVERNED_DOC_REGEX</span><span class="p">)</span>
-                <span class="n">match</span> <span class="o">=</span> <span class="n">regexp</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-                <span class="n">header</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
-                <span class="n">content</span><span class="o">.</span><span class="n">governed_document</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
-                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">content</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-
-        <span class="n">first_line_to_grab</span> <span class="o">=</span> <span class="n">starting_line</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">starting_line</span> <span class="k">else</span> <span class="mi">0</span>
-        <span class="n">content</span><span class="o">.</span><span class="n">raw_text</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">first_line_to_grab</span><span class="p">:</span><span class="n">i</span><span class="p">])</span>
-        <span class="n">md_node</span> <span class="o">=</span> <span class="n">MarkdownNode</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">root_key</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">,</span> <span class="n">starting_line</span><span class="o">=</span><span class="n">first_line_to_grab</span><span class="p">)</span>
-        <span class="n">md_node</span><span class="o">.</span><span class="n">subnodes</span> <span class="o">=</span> <span class="n">node_children</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">md_node</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_build_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">root_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">starting_line</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                    <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">BaseMarkdownNode</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build a tree from the markdown recursively.&quot;&quot;&quot;</span>
+        <span class="k">pass</span>
 
     <span class="k">def</span> <span class="nf">_modify_header_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">header</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">delta_level</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Modify header level by specified level.&quot;&quot;&quot;</span>
@@ -3789,7 +3744,7 @@ MarkdownNode        </code>
         <span class="n">regexp</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">regexp</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_read_code_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">_read_code_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read code block.&quot;&quot;&quot;</span>
         <span class="n">code_lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="p">]</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
@@ -3803,7 +3758,7 @@ MarkdownNode        </code>
                 <span class="k">break</span>
         <span class="k">return</span> <span class="n">code_lines</span><span class="p">,</span> <span class="n">i</span>
 
-    <span class="k">def</span> <span class="nf">_read_html_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">ending_regex</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">_read_html_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">ending_regex</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read html block.&quot;&quot;&quot;</span>
         <span class="n">html_block</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_does_contain</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;&lt;br[ /]*&gt;&#39;</span><span class="p">):</span>
@@ -3821,7 +3776,7 @@ MarkdownNode        </code>
                 <span class="k">break</span>
         <span class="k">return</span> <span class="n">html_block</span><span class="p">,</span> <span class="n">i</span>
 
-    <span class="k">def</span> <span class="nf">_read_table_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">_read_table_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read table.&quot;&quot;&quot;</span>
         <span class="n">table_block</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="p">]</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
@@ -3836,16 +3791,18 @@ MarkdownNode        </code>
             <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">return</span> <span class="n">table_block</span><span class="p">,</span> <span class="n">i</span>
 
-    <span class="k">def</span> <span class="nf">_rec_traverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">MarkdownNode</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">strict_matching</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MarkdownNode</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">_rec_traverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">BaseMarkdownNode</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">strict_matching</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseMarkdownNode</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Recursevely traverses the tree and searches for the given key.</span>
 
 <span class="sd">        If strict matching is turned off, node will be matched if key is a substring of the node&#39;s header.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="n">node</span><span class="o">.</span><span class="n">key</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">strict_matching</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">key</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">node</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">strict_matching</span> <span class="ow">and</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()):</span>
             <span class="k">return</span> <span class="n">node</span>
-        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">strict_matching</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">([</span><span class="n">key</span> <span class="ow">in</span> <span class="n">el</span>
-                                         <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">]))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">key</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">strict_matching</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">([</span><span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">el</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+                                         <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">]))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span>
+                                             <span class="n">el</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span>
+                                         <span class="p">]):</span>
             <span class="k">for</span> <span class="n">subnode</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">subnodes</span><span class="p">:</span>
                 <span class="n">matched_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rec_traverse</span><span class="p">(</span><span class="n">subnode</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">strict_matching</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">matched_node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -3854,15 +3811,15 @@ MarkdownNode        </code>
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">_rec_traverse_all</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">MarkdownNode</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">strict_matching</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">stop_recurse_on_first_match</span><span class="p">:</span> <span class="nb">bool</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">MarkdownNode</span><span class="p">]:</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">BaseMarkdownNode</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">strict_matching</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">stop_recurse_on_first_match</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseMarkdownNode</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Recursevely traverse the tree and find all nodes matching the keys.</span>
 
 <span class="sd">        If strict matching is turned off, nodes will be matched if key is a substring of the node&#39;s header.</span>
 <span class="sd">        stop_recurse_on_first_match will return only the highest level key match and not any subnodes</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">found_nodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MarkdownNode</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">found_nodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseMarkdownNode</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="n">node</span><span class="o">.</span><span class="n">key</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">strict_matching</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">key</span><span class="p">):</span>
                 <span class="n">found_nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
@@ -3873,7 +3830,7 @@ MarkdownNode        </code>
             <span class="n">found_nodes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">matched_nodes</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">found_nodes</span>
 
-    <span class="k">def</span> <span class="nf">_rec_traverse_header_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">MarkdownNode</span><span class="p">,</span> <span class="n">header_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_rec_traverse_header_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">BaseMarkdownNode</span><span class="p">,</span> <span class="n">header_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Recursively traverse tree and update the contents.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">node</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">key</span> <span class="o">!=</span> <span class="s1">&#39;root&#39;</span><span class="p">:</span>
@@ -3930,30 +3887,30 @@ MarkdownNode        </code>
 
 
 
-<h5 id="trestle.core.markdown.markdown_node.MarkdownNode-methods">Methods<a href="#trestle.core.markdown.markdown_node.MarkdownNode-methods" class="headerlink" title="Permanent link">¤</a></h5>
+<h5 id="trestle.core.markdown.base_markdown_node.BaseMarkdownNode-methods">Methods<a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode-methods" class="headerlink" title="Permanent link">¤</a></h5>
 
   <div class="doc doc-object doc-method">
 
 
 
-<h6 id="trestle.core.markdown.markdown_node.MarkdownNode.__init__" class="doc doc-heading">
+<h6 id="trestle.core.markdown.base_markdown_node.BaseMarkdownNode.__init__" class="doc doc-heading">
 <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">starting_line</span><span class="p">)</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-special"><code>special</code></small>
   </span>
 
-<a href="#trestle.core.markdown.markdown_node.MarkdownNode.__init__" class="headerlink" title="Permanent link">¤</a></h6>
+<a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode.__init__" class="headerlink" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
       <p>Initialize markdown node.</p>
 
         <details class="quote">
-          <summary>Source code in <code>trestle/core/markdown/markdown_node.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="n">SectionContent</span><span class="p">,</span> <span class="n">starting_line</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+          <summary>Source code in <code>trestle/core/markdown/base_markdown_node.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="n">BaseSectionContent</span><span class="p">,</span> <span class="n">starting_line</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize markdown node.&quot;&quot;&quot;</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">subnodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MarkdownNode</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">subnodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseMarkdownNode</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">key</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="n">content</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">starting_line</span> <span class="o">=</span> <span class="n">starting_line</span>
@@ -3969,27 +3926,27 @@ MarkdownNode        </code>
 
 
 
-<h6 id="trestle.core.markdown.markdown_node.MarkdownNode.build_tree_from_markdown" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">build_tree_from_markdown</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">governed_header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<h6 id="trestle.core.markdown.base_markdown_node.BaseMarkdownNode.build_tree_from_markdown" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">build_tree_from_markdown</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-classmethod"><code>classmethod</code></small>
   </span>
 
-<a href="#trestle.core.markdown.markdown_node.MarkdownNode.build_tree_from_markdown" class="headerlink" title="Permanent link">¤</a></h6>
+<a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode.build_tree_from_markdown" class="headerlink" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
       <p>Construct a tree out of the given markdown.</p>
 
         <details class="quote">
-          <summary>Source code in <code>trestle/core/markdown/markdown_node.py</code></summary>
+          <summary>Source code in <code>trestle/core/markdown/base_markdown_node.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">build_tree_from_markdown</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">governed_header</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">build_tree_from_markdown</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Construct a tree out of the given markdown.&quot;&quot;&quot;</span>
     <span class="n">ob</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
     <span class="n">start_level</span> <span class="o">=</span> <span class="n">ob</span><span class="o">.</span><span class="n">_get_max_header_lvl</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
-    <span class="n">ob</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">ob</span><span class="o">.</span><span class="n">_build_tree</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="s1">&#39;root&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">start_level</span><span class="p">,</span> <span class="n">governed_header</span><span class="p">)</span>
+    <span class="n">ob</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">ob</span><span class="o">.</span><span class="n">_build_tree</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="s1">&#39;root&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">start_level</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ob</span>
 </code></pre></div>
         </details>
@@ -4003,11 +3960,11 @@ MarkdownNode        </code>
 
 
 
-<h6 id="trestle.core.markdown.markdown_node.MarkdownNode.change_header_level_by" class="doc doc-heading">
+<h6 id="trestle.core.markdown.base_markdown_node.BaseMarkdownNode.change_header_level_by" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">change_header_level_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delta_level</span><span class="p">)</span></code>
 
 
-<a href="#trestle.core.markdown.markdown_node.MarkdownNode.change_header_level_by" class="headerlink" title="Permanent link">¤</a></h6>
+<a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode.change_header_level_by" class="headerlink" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
@@ -4034,7 +3991,7 @@ MarkdownNode        </code>
   </tbody>
 </table>
         <details class="quote">
-          <summary>Source code in <code>trestle/core/markdown/markdown_node.py</code></summary>
+          <summary>Source code in <code>trestle/core/markdown/base_markdown_node.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">change_header_level_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delta_level</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Change all headers in the tree by specified level up or down.</span>
@@ -4067,18 +4024,18 @@ MarkdownNode        </code>
 
 
 
-<h6 id="trestle.core.markdown.markdown_node.MarkdownNode.delete_nodes_text" class="doc doc-heading">
+<h6 id="trestle.core.markdown.base_markdown_node.BaseMarkdownNode.delete_nodes_text" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">delete_nodes_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">strict_matching</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
 
 
-<a href="#trestle.core.markdown.markdown_node.MarkdownNode.delete_nodes_text" class="headerlink" title="Permanent link">¤</a></h6>
+<a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode.delete_nodes_text" class="headerlink" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
       <p>Remove text from this node that is found in matching subnodes.</p>
 
         <details class="quote">
-          <summary>Source code in <code>trestle/core/markdown/markdown_node.py</code></summary>
+          <summary>Source code in <code>trestle/core/markdown/base_markdown_node.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">delete_nodes_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">strict_matching</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove text from this node that is found in matching subnodes.&quot;&quot;&quot;</span>
     <span class="n">text_lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">raw_text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -4101,18 +4058,18 @@ MarkdownNode        </code>
 
 
 
-<h6 id="trestle.core.markdown.markdown_node.MarkdownNode.get_all_headers_for_key" class="doc doc-heading">
+<h6 id="trestle.core.markdown.base_markdown_node.BaseMarkdownNode.get_all_headers_for_key" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">get_all_headers_for_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">strict_matching</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
 
 
-<a href="#trestle.core.markdown.markdown_node.MarkdownNode.get_all_headers_for_key" class="headerlink" title="Permanent link">¤</a></h6>
+<a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode.get_all_headers_for_key" class="headerlink" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
       <p>Return all headers contained in the node with a given key.</p>
 
         <details class="quote">
-          <summary>Source code in <code>trestle/core/markdown/markdown_node.py</code></summary>
+          <summary>Source code in <code>trestle/core/markdown/base_markdown_node.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_all_headers_for_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">strict_matching</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return all headers contained in the node with a given key.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">strict_matching</span><span class="p">:</span>
@@ -4131,18 +4088,18 @@ MarkdownNode        </code>
 
 
 
-<h6 id="trestle.core.markdown.markdown_node.MarkdownNode.get_all_headers_for_level" class="doc doc-heading">
+<h6 id="trestle.core.markdown.base_markdown_node.BaseMarkdownNode.get_all_headers_for_level" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">get_all_headers_for_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span></code>
 
 
-<a href="#trestle.core.markdown.markdown_node.MarkdownNode.get_all_headers_for_level" class="headerlink" title="Permanent link">¤</a></h6>
+<a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode.get_all_headers_for_level" class="headerlink" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
       <p>Return all headers per specified level of hierarchy.</p>
 
         <details class="quote">
-          <summary>Source code in <code>trestle/core/markdown/markdown_node.py</code></summary>
+          <summary>Source code in <code>trestle/core/markdown/base_markdown_node.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_all_headers_for_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return all headers per specified level of hierarchy.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span>
@@ -4160,11 +4117,11 @@ MarkdownNode        </code>
 
 
 
-<h6 id="trestle.core.markdown.markdown_node.MarkdownNode.get_all_nodes_for_keys" class="doc doc-heading">
+<h6 id="trestle.core.markdown.base_markdown_node.BaseMarkdownNode.get_all_nodes_for_keys" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">get_all_nodes_for_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">strict_matching</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stop_recurse_on_first_match</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 
-<a href="#trestle.core.markdown.markdown_node.MarkdownNode.get_all_nodes_for_keys" class="headerlink" title="Permanent link">¤</a></h6>
+<a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode.get_all_nodes_for_keys" class="headerlink" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
@@ -4203,13 +4160,13 @@ MarkdownNode        </code>
 </table>      <p>Returns: List of found markdown nodes</p>
 
         <details class="quote">
-          <summary>Source code in <code>trestle/core/markdown/markdown_node.py</code></summary>
+          <summary>Source code in <code>trestle/core/markdown/base_markdown_node.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_all_nodes_for_keys</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="n">strict_matching</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">stop_recurse_on_first_match</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">MarkdownNode</span><span class="p">]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseMarkdownNode</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return all nodes for the given keys, substring matching is supported.</span>
 
@@ -4239,60 +4196,29 @@ MarkdownNode        </code>
 
 
 
-<h6 id="trestle.core.markdown.markdown_node.MarkdownNode.get_count_of_subnodes" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">get_count_of_subnodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
-
-
-<a href="#trestle.core.markdown.markdown_node.MarkdownNode.get_count_of_subnodes" class="headerlink" title="Permanent link">¤</a></h6>
-
-    <div class="doc doc-contents ">
-
-      <p>Get count of subnodes with optional recursion.</p>
-
-        <details class="quote">
-          <summary>Source code in <code>trestle/core/markdown/markdown_node.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_count_of_subnodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get count of subnodes with optional recursion.&quot;&quot;&quot;</span>
-    <span class="n">count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subnodes</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">recurse</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">subnode</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subnodes</span><span class="p">:</span>
-            <span class="n">count</span> <span class="o">+=</span> <span class="n">subnode</span><span class="o">.</span><span class="n">get_count_of_subnodes</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">count</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-method">
-
-
-
-<h6 id="trestle.core.markdown.markdown_node.MarkdownNode.get_node_for_key" class="doc doc-heading">
+<h6 id="trestle.core.markdown.base_markdown_node.BaseMarkdownNode.get_node_for_key" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">get_node_for_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">strict_matching</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
 
 
-<a href="#trestle.core.markdown.markdown_node.MarkdownNode.get_node_for_key" class="headerlink" title="Permanent link">¤</a></h6>
+<a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode.get_node_for_key" class="headerlink" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
-      <p>Return a first node for the given key, substring matching is supported.</p>
+      <p>Return a first node for the given key, substring matching is supported. The method is case insensitive.</p>
 
         <details class="quote">
-          <summary>Source code in <code>trestle/core/markdown/markdown_node.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_node_for_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">strict_matching</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MarkdownNode</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a first node for the given key, substring matching is supported.&quot;&quot;&quot;</span>
+          <summary>Source code in <code>trestle/core/markdown/base_markdown_node.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_node_for_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">strict_matching</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseMarkdownNode</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a first node for the given key, substring matching is supported. The method is case insensitive.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">strict_matching</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">([</span><span class="n">key</span> <span class="ow">in</span> <span class="n">el</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">([</span><span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">el</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">]):</span>
             <span class="k">return</span> <span class="kc">None</span>
-        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">as_filtered_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">el</span><span class="p">:</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">el</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">as_filtered_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">el</span><span class="p">:</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">el</span><span class="o">.</span><span class="n">lower</span><span class="p">()))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Multiple nodes for </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1"> were found, only the first one will be returned.&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">el</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">]:</span>
             <span class="k">return</span> <span class="kc">None</span>
-        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">as_filtered_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">el</span><span class="p">:</span> <span class="n">el</span> <span class="o">==</span> <span class="n">key</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">as_filtered_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">el</span><span class="p">:</span> <span class="n">el</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Multiple nodes for </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1"> were found, only the first one will be returned.&#39;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rec_traverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">strict_matching</span><span class="p">)</span>
@@ -4308,18 +4234,18 @@ MarkdownNode        </code>
 
 
 
-<h6 id="trestle.core.markdown.markdown_node.MarkdownNode.get_node_header_lvl" class="doc doc-heading">
+<h6 id="trestle.core.markdown.base_markdown_node.BaseMarkdownNode.get_node_header_lvl" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">get_node_header_lvl</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
 
 
-<a href="#trestle.core.markdown.markdown_node.MarkdownNode.get_node_header_lvl" class="headerlink" title="Permanent link">¤</a></h6>
+<a href="#trestle.core.markdown.base_markdown_node.BaseMarkdownNode.get_node_header_lvl" class="headerlink" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
       <p>Return current node header level.</p>
 
         <details class="quote">
-          <summary>Source code in <code>trestle/core/markdown/markdown_node.py</code></summary>
+          <summary>Source code in <code>trestle/core/markdown/base_markdown_node.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_node_header_lvl</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return current node header level.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_header_level_if_valid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
@@ -4345,42 +4271,32 @@ MarkdownNode        </code>
 
 
 
-<h4 id="trestle.core.markdown.markdown_node.SectionContent" class="doc doc-heading">
+<h4 id="trestle.core.markdown.base_markdown_node.BaseSectionContent" class="doc doc-heading">
         <code>
-SectionContent        </code>
+BaseSectionContent        </code>
 
 
 
-<a href="#trestle.core.markdown.markdown_node.SectionContent" class="headerlink" title="Permanent link">¤</a></h4>
+<a href="#trestle.core.markdown.base_markdown_node.BaseSectionContent" class="headerlink" title="Permanent link">¤</a></h4>
 
     <div class="doc doc-contents ">
 
       <p>A content of the node.</p>
 
         <details class="quote">
-          <summary>Source code in <code>trestle/core/markdown/markdown_node.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">SectionContent</span><span class="p">:</span>
+          <summary>Source code in <code>trestle/core/markdown/base_markdown_node.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">BaseSectionContent</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A content of the node.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize section content.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tables</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">code_lines</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">html_lines</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">blockquotes</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">raw_text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">subnodes_keys</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">governed_document</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">def</span> <span class="nf">union</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">MarkdownNode</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">union</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">BaseMarkdownNode</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Unites contents together.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">code_lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">code_lines</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">html_lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">html_lines</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">tables</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">blockquotes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">blockquotes</span><span class="p">)</span>
 </code></pre></div>
         </details>
 
@@ -4394,37 +4310,31 @@ SectionContent        </code>
 
 
 
-<h5 id="trestle.core.markdown.markdown_node.SectionContent-methods">Methods<a href="#trestle.core.markdown.markdown_node.SectionContent-methods" class="headerlink" title="Permanent link">¤</a></h5>
+<h5 id="trestle.core.markdown.base_markdown_node.BaseSectionContent-methods">Methods<a href="#trestle.core.markdown.base_markdown_node.BaseSectionContent-methods" class="headerlink" title="Permanent link">¤</a></h5>
 
   <div class="doc doc-object doc-method">
 
 
 
-<h6 id="trestle.core.markdown.markdown_node.SectionContent.__init__" class="doc doc-heading">
+<h6 id="trestle.core.markdown.base_markdown_node.BaseSectionContent.__init__" class="doc doc-heading">
 <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-special"><code>special</code></small>
   </span>
 
-<a href="#trestle.core.markdown.markdown_node.SectionContent.__init__" class="headerlink" title="Permanent link">¤</a></h6>
+<a href="#trestle.core.markdown.base_markdown_node.BaseSectionContent.__init__" class="headerlink" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
       <p>Initialize section content.</p>
 
         <details class="quote">
-          <summary>Source code in <code>trestle/core/markdown/markdown_node.py</code></summary>
+          <summary>Source code in <code>trestle/core/markdown/base_markdown_node.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize section content.&quot;&quot;&quot;</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">tables</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">code_lines</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">html_lines</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">blockquotes</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">raw_text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">subnodes_keys</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">governed_document</span> <span class="o">=</span> <span class="p">[]</span>
 </code></pre></div>
         </details>
     </div>
@@ -4437,26 +4347,22 @@ SectionContent        </code>
 
 
 
-<h6 id="trestle.core.markdown.markdown_node.SectionContent.union" class="doc doc-heading">
+<h6 id="trestle.core.markdown.base_markdown_node.BaseSectionContent.union" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">union</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span></code>
 
 
-<a href="#trestle.core.markdown.markdown_node.SectionContent.union" class="headerlink" title="Permanent link">¤</a></h6>
+<a href="#trestle.core.markdown.base_markdown_node.BaseSectionContent.union" class="headerlink" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
       <p>Unites contents together.</p>
 
         <details class="quote">
-          <summary>Source code in <code>trestle/core/markdown/markdown_node.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">union</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">MarkdownNode</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+          <summary>Source code in <code>trestle/core/markdown/base_markdown_node.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">union</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">BaseMarkdownNode</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Unites contents together.&quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">code_lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">code_lines</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">html_lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">html_lines</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">tables</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">blockquotes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">blockquotes</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -4528,7 +4434,7 @@ SectionContent        </code>
     <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
+      <script src="../../assets/javascripts/bundle.407015b8.min.js"></script>
       
     
   </body>

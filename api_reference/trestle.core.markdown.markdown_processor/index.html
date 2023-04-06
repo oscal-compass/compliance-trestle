@@ -13,13 +13,13 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.markdown.markdown_processor/">
       
       
-        <link rel="prev" href="../trestle.core.markdown.markdown_node/">
+        <link rel="prev" href="../trestle.core.markdown.markdown_const/">
       
       
         <link rel="next" href="../trestle.core.markdown.markdown_validator/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.15">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.5">
     
     
       
@@ -27,7 +27,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7a7fce14.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
@@ -492,7 +492,7 @@
   
     <li class="md-nav__item">
       <a href="../../tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring/" class="md-nav__link">
-        SSP, Catalog, and Profile Authoring
+        Catalog, Profile, ComponentDefinition, and SSP Authoring
       </a>
     </li>
   
@@ -2115,6 +2115,48 @@
   
   
     <li class="md-nav__item">
+      <a href="../trestle.core.markdown.base_markdown_node/" class="md-nav__link">
+        base_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.markdown.control_markdown_node/" class="md-nav__link">
+        control_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.markdown.docs_markdown_node/" class="md-nav__link">
+        docs_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../trestle.core.markdown.markdown_api/" class="md-nav__link">
         markdown_api
       </a>
@@ -2131,20 +2173,6 @@
     <li class="md-nav__item">
       <a href="../trestle.core.markdown.markdown_const/" class="md-nav__link">
         markdown_const
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../trestle.core.markdown.markdown_node/" class="md-nav__link">
-        markdown_node
       </a>
     </li>
   
@@ -2235,6 +2263,13 @@
           <li class="md-nav__item">
   <a href="#trestle.core.markdown.markdown_processor.MarkdownProcessor.fetch_value_from_header" class="md-nav__link">
     fetch_value_from_header()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.markdown.markdown_processor.MarkdownProcessor.process_control_markdown" class="md-nav__link">
+    process_control_markdown()
   </a>
   
 </li>
@@ -2631,6 +2666,20 @@
           
         </ul>
       </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.rule_parameters_validator/" class="md-nav__link">
+        rule_parameters_validator
+      </a>
     </li>
   
 
@@ -3290,6 +3339,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#trestle.core.markdown.markdown_processor.MarkdownProcessor.process_control_markdown" class="md-nav__link">
+    process_control_markdown()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#trestle.core.markdown.markdown_processor.MarkdownProcessor.process_markdown" class="md-nav__link">
     process_markdown()
   </a>
@@ -3426,15 +3482,43 @@ MarkdownProcessor        </code>
     <span class="k">def</span> <span class="nf">process_markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                          <span class="n">md_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
                          <span class="n">read_header</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-                         <span class="n">read_body</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">MarkdownNode</span><span class="p">]:</span>
+                         <span class="n">read_body</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">DocsMarkdownNode</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse the markdown and builds the tree to operate over it.&quot;&quot;&quot;</span>
         <span class="n">header</span><span class="p">,</span> <span class="n">markdown_wo_header</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_markdown_wo_processing</span><span class="p">(</span><span class="n">md_path</span><span class="p">,</span> <span class="n">read_header</span><span class="p">,</span> <span class="n">read_body</span><span class="p">)</span>
 
         <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_gfm_to_html</span><span class="p">(</span><span class="n">markdown_wo_header</span><span class="p">)</span>
 
         <span class="n">lines</span> <span class="o">=</span> <span class="n">markdown_wo_header</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">tree</span> <span class="o">=</span> <span class="n">MarkdownNode</span><span class="o">.</span><span class="n">build_tree_from_markdown</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">governed_header</span><span class="p">)</span>
+        <span class="n">tree</span> <span class="o">=</span> <span class="n">DocsMarkdownNode</span><span class="o">.</span><span class="n">build_tree_from_markdown</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">governed_header</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">header</span><span class="p">,</span> <span class="n">tree</span>
+
+    <span class="k">def</span> <span class="nf">process_control_markdown</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">md_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
+        <span class="n">cli_section_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">part_label_to_id_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">ControlMarkdownNode</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse control markdown and build tree with identified OSCAL components.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">header</span><span class="p">,</span> <span class="n">markdown_wo_header</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_markdown_wo_processing</span><span class="p">(</span><span class="n">md_path</span><span class="p">,</span> <span class="n">read_header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">read_body</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="n">section_to_part_name_map</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">if</span> <span class="n">cli_section_dict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Read x-trestle-sections to the dictionary and merge it with CLI provided dictionary</span>
+                <span class="n">yaml_header_sections_dict</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">SECTIONS_TAG</span><span class="p">,</span> <span class="p">{})</span>
+                <span class="n">merged_dict</span> <span class="o">=</span> <span class="n">merge_dicts</span><span class="p">(</span><span class="n">yaml_header_sections_dict</span><span class="p">,</span> <span class="n">cli_section_dict</span><span class="p">)</span>
+                <span class="n">section_to_part_name_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">merged_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_gfm_to_html</span><span class="p">(</span><span class="n">markdown_wo_header</span><span class="p">)</span>
+
+            <span class="n">lines</span> <span class="o">=</span> <span class="n">markdown_wo_header</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">tree_context</span><span class="o">.</span><span class="n">section_to_part_name_map</span> <span class="o">=</span> <span class="n">section_to_part_name_map</span>
+            <span class="n">tree_context</span><span class="o">.</span><span class="n">part_label_to_id_map</span> <span class="o">=</span> <span class="n">part_label_to_id_map</span>
+            <span class="n">tree</span> <span class="o">=</span> <span class="n">ControlMarkdownNode</span><span class="o">.</span><span class="n">build_tree_from_markdown</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+            <span class="n">tree_context</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">header</span><span class="p">,</span> <span class="n">tree</span>
+        <span class="k">except</span> <span class="n">TrestleError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error while reading control markdown: </span><span class="si">{</span><span class="n">md_path</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">e</span>
 
     <span class="k">def</span> <span class="nf">read_markdown_wo_processing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                                     <span class="n">md_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
@@ -3552,6 +3636,57 @@ MarkdownProcessor        </code>
 
 
 
+<h6 id="trestle.core.markdown.markdown_processor.MarkdownProcessor.process_control_markdown" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">process_control_markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">md_path</span><span class="p">,</span> <span class="n">cli_section_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">part_label_to_id_map</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+
+<a href="#trestle.core.markdown.markdown_processor.MarkdownProcessor.process_control_markdown" class="headerlink" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+      <p>Parse control markdown and build tree with identified OSCAL components.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/markdown/markdown_processor.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">process_control_markdown</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">md_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
+    <span class="n">cli_section_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">part_label_to_id_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">ControlMarkdownNode</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse control markdown and build tree with identified OSCAL components.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">header</span><span class="p">,</span> <span class="n">markdown_wo_header</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_markdown_wo_processing</span><span class="p">(</span><span class="n">md_path</span><span class="p">,</span> <span class="n">read_header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">read_body</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">section_to_part_name_map</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">cli_section_dict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Read x-trestle-sections to the dictionary and merge it with CLI provided dictionary</span>
+            <span class="n">yaml_header_sections_dict</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">SECTIONS_TAG</span><span class="p">,</span> <span class="p">{})</span>
+            <span class="n">merged_dict</span> <span class="o">=</span> <span class="n">merge_dicts</span><span class="p">(</span><span class="n">yaml_header_sections_dict</span><span class="p">,</span> <span class="n">cli_section_dict</span><span class="p">)</span>
+            <span class="n">section_to_part_name_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">merged_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_gfm_to_html</span><span class="p">(</span><span class="n">markdown_wo_header</span><span class="p">)</span>
+
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">markdown_wo_header</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">tree_context</span><span class="o">.</span><span class="n">section_to_part_name_map</span> <span class="o">=</span> <span class="n">section_to_part_name_map</span>
+        <span class="n">tree_context</span><span class="o">.</span><span class="n">part_label_to_id_map</span> <span class="o">=</span> <span class="n">part_label_to_id_map</span>
+        <span class="n">tree</span> <span class="o">=</span> <span class="n">ControlMarkdownNode</span><span class="o">.</span><span class="n">build_tree_from_markdown</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+        <span class="n">tree_context</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">header</span><span class="p">,</span> <span class="n">tree</span>
+    <span class="k">except</span> <span class="n">TrestleError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error while reading control markdown: </span><span class="si">{</span><span class="n">md_path</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">e</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
 <h6 id="trestle.core.markdown.markdown_processor.MarkdownProcessor.process_markdown" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">process_markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">md_path</span><span class="p">,</span> <span class="n">read_header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">read_body</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
 
@@ -3567,14 +3702,14 @@ MarkdownProcessor        </code>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">process_markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                      <span class="n">md_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
                      <span class="n">read_header</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-                     <span class="n">read_body</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">MarkdownNode</span><span class="p">]:</span>
+                     <span class="n">read_body</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">DocsMarkdownNode</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse the markdown and builds the tree to operate over it.&quot;&quot;&quot;</span>
     <span class="n">header</span><span class="p">,</span> <span class="n">markdown_wo_header</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_markdown_wo_processing</span><span class="p">(</span><span class="n">md_path</span><span class="p">,</span> <span class="n">read_header</span><span class="p">,</span> <span class="n">read_body</span><span class="p">)</span>
 
     <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_gfm_to_html</span><span class="p">(</span><span class="n">markdown_wo_header</span><span class="p">)</span>
 
     <span class="n">lines</span> <span class="o">=</span> <span class="n">markdown_wo_header</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="n">tree</span> <span class="o">=</span> <span class="n">MarkdownNode</span><span class="o">.</span><span class="n">build_tree_from_markdown</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">governed_header</span><span class="p">)</span>
+    <span class="n">tree</span> <span class="o">=</span> <span class="n">DocsMarkdownNode</span><span class="o">.</span><span class="n">build_tree_from_markdown</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">governed_header</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">header</span><span class="p">,</span> <span class="n">tree</span>
 </code></pre></div>
         </details>
@@ -3726,7 +3861,7 @@ MarkdownProcessor        </code>
     <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
+      <script src="../../assets/javascripts/bundle.407015b8.min.js"></script>
       
     
   </body>

@@ -13,13 +13,13 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.ssp_io/">
       
       
-        <link rel="prev" href="../trestle.core.resolver.prune/">
+        <link rel="prev" href="../trestle.core.rule_parameters_validator/">
       
       
         <link rel="next" href="../trestle.core.trestle_base_model/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.15">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.5">
     
     
       
@@ -27,7 +27,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7a7fce14.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
@@ -492,7 +492,7 @@
   
     <li class="md-nav__item">
       <a href="../../tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring/" class="md-nav__link">
-        SSP, Catalog, and Profile Authoring
+        Catalog, Profile, ComponentDefinition, and SSP Authoring
       </a>
     </li>
   
@@ -2113,6 +2113,48 @@
   
   
     <li class="md-nav__item">
+      <a href="../trestle.core.markdown.base_markdown_node/" class="md-nav__link">
+        base_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.markdown.control_markdown_node/" class="md-nav__link">
+        control_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.markdown.docs_markdown_node/" class="md-nav__link">
+        docs_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../trestle.core.markdown.markdown_api/" class="md-nav__link">
         markdown_api
       </a>
@@ -2129,20 +2171,6 @@
     <li class="md-nav__item">
       <a href="../trestle.core.markdown.markdown_const/" class="md-nav__link">
         markdown_const
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../trestle.core.markdown.markdown_node/" class="md-nav__link">
-        markdown_node
       </a>
     </li>
   
@@ -2505,6 +2533,20 @@
           
         </ul>
       </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.rule_parameters_validator/" class="md-nav__link">
+        rule_parameters_validator
+      </a>
     </li>
   
 
@@ -3611,7 +3653,7 @@ SSPMarkdownWriter        </code>
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">params_lines</span><span class="p">:</span>
             <span class="n">clean_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;{{&#39;</span><span class="p">,</span> <span class="s1">&#39;[[&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;}}&#39;</span><span class="p">,</span> <span class="s1">&#39;]]&#39;</span><span class="p">))</span>
 
-        <span class="n">tree</span> <span class="o">=</span> <span class="n">MarkdownNode</span><span class="o">.</span><span class="n">build_tree_from_markdown</span><span class="p">(</span><span class="n">clean_lines</span><span class="p">)</span>
+        <span class="n">tree</span> <span class="o">=</span> <span class="n">DocsMarkdownNode</span><span class="o">.</span><span class="n">build_tree_from_markdown</span><span class="p">(</span><span class="n">clean_lines</span><span class="p">)</span>
         <span class="n">tree</span><span class="o">.</span><span class="n">change_header_level_by</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">tree</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">raw_text</span>
 
@@ -3679,63 +3721,65 @@ SSPMarkdownWriter        </code>
             <span class="k">return</span> <span class="s1">&#39;&#39;</span>
 
         <span class="n">md_writer</span> <span class="o">=</span> <span class="n">MDWriter</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">control_impl_req</span><span class="o">.</span><span class="n">statements</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">statement</span> <span class="ow">in</span> <span class="n">control_impl_req</span><span class="o">.</span><span class="n">statements</span><span class="p">:</span>
-                <span class="n">statement_id</span> <span class="o">=</span> <span class="n">statement</span><span class="o">.</span><span class="n">statement_id</span>
-                <span class="n">label</span> <span class="o">=</span> <span class="n">statement_id</span>
-                <span class="n">part_name</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># if a control has no statement sub-parts then get the response bycomps from the imp_req itself</span>
+        <span class="c1"># otherwise get them from the statements in the imp_req</span>
+        <span class="c1"># an imp_req and a statement are both things that can have bycomps</span>
+        <span class="n">has_bycomps</span> <span class="o">=</span> <span class="n">control_impl_req</span><span class="o">.</span><span class="n">statements</span> <span class="k">if</span> <span class="n">control_impl_req</span><span class="o">.</span><span class="n">statements</span> <span class="k">else</span> <span class="p">[</span><span class="n">control_impl_req</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">has_bycomp</span> <span class="ow">in</span> <span class="n">has_bycomps</span><span class="p">:</span>
+            <span class="n">statement_id</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">has_bycomp</span><span class="p">,</span> <span class="s1">&#39;statement_id&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">control_id</span><span class="si">}</span><span class="s1">_smt&#39;</span><span class="p">)</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="n">statement_id</span>
+            <span class="n">part_name</span> <span class="o">=</span> <span class="kc">None</span>
 
-                <span class="c1"># look up label for this statement</span>
-                <span class="k">if</span> <span class="n">control</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
-                    <span class="n">found_label</span><span class="p">,</span> <span class="n">part</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog_interface</span><span class="o">.</span><span class="n">get_statement_label_if_exists</span><span class="p">(</span><span class="n">control_id</span><span class="p">,</span> <span class="n">statement_id</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">found_label</span><span class="p">:</span>
-                        <span class="n">label</span> <span class="o">=</span> <span class="n">found_label</span>
-                        <span class="n">part_name</span> <span class="o">=</span> <span class="n">part</span><span class="o">.</span><span class="n">name</span>
+            <span class="c1"># look up label for this statement</span>
+            <span class="k">if</span> <span class="n">control</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
+                <span class="n">found_label</span><span class="p">,</span> <span class="n">part</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog_interface</span><span class="o">.</span><span class="n">get_statement_label_if_exists</span><span class="p">(</span><span class="n">control_id</span><span class="p">,</span> <span class="n">statement_id</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">found_label</span><span class="p">:</span>
+                    <span class="n">label</span> <span class="o">=</span> <span class="n">found_label</span>
+                    <span class="n">part_name</span> <span class="o">=</span> <span class="n">part</span><span class="o">.</span><span class="n">name</span>
 
-                <span class="n">response_per_component</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_responses_by_components</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="n">write_empty_responses</span><span class="p">)</span>
+            <span class="n">response_per_component</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_responses_by_components</span><span class="p">(</span><span class="n">has_bycomp</span><span class="p">,</span> <span class="n">write_empty_responses</span><span class="p">)</span>
 
-                <span class="k">if</span> <span class="n">response_per_component</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">response_per_component</span> <span class="ow">and</span> <span class="n">write_empty_responses</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="n">part_name</span> <span class="ow">and</span> <span class="n">part_name</span> <span class="o">==</span> <span class="s1">&#39;item&#39;</span><span class="p">:</span>
-                        <span class="c1"># print part header only if subitem</span>
-                        <span class="n">header</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Implementation for part </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s1">&#39;</span>
-                        <span class="n">md_writer</span><span class="o">.</span><span class="n">new_header</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">header</span><span class="p">)</span>
-                    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">component_key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">response_per_component</span><span class="p">):</span>
-                        <span class="k">if</span> <span class="n">component_key</span> <span class="o">==</span> <span class="n">SSP_MAIN_COMP_NAME</span> <span class="ow">and</span> <span class="n">idx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                            <span class="c1"># special case ignore header but print contents</span>
-                            <span class="n">md_writer</span><span class="o">.</span><span class="n">new_paragraph</span><span class="p">()</span>
-                        <span class="k">elif</span> <span class="n">show_comp</span><span class="p">:</span>
-                            <span class="n">md_writer</span><span class="o">.</span><span class="n">new_header</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">component_key</span><span class="p">)</span>
-                        <span class="n">md_writer</span><span class="o">.</span><span class="n">set_indent_level</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-                        <span class="n">md_writer</span><span class="o">.</span><span class="n">new_line</span><span class="p">(</span><span class="n">response_per_component</span><span class="p">[</span><span class="n">component_key</span><span class="p">])</span>
-                        <span class="n">md_writer</span><span class="o">.</span><span class="n">set_indent_level</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">response_per_component</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">response_per_component</span> <span class="ow">and</span> <span class="n">write_empty_responses</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">part_name</span> <span class="ow">and</span> <span class="n">part_name</span> <span class="o">==</span> <span class="s1">&#39;item&#39;</span><span class="p">:</span>
+                    <span class="c1"># print part header only if subitem</span>
+                    <span class="n">header</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Implementation for part </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s1">&#39;</span>
+                    <span class="n">md_writer</span><span class="o">.</span><span class="n">new_header</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">header</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">component_key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">response_per_component</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">component_key</span> <span class="o">==</span> <span class="n">SSP_MAIN_COMP_NAME</span> <span class="ow">and</span> <span class="n">idx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="c1"># special case ignore header but print contents</span>
+                        <span class="n">md_writer</span><span class="o">.</span><span class="n">new_paragraph</span><span class="p">()</span>
+                    <span class="k">elif</span> <span class="n">show_comp</span><span class="p">:</span>
+                        <span class="n">md_writer</span><span class="o">.</span><span class="n">new_header</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">component_key</span><span class="p">)</span>
+                    <span class="n">md_writer</span><span class="o">.</span><span class="n">set_indent_level</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="n">md_writer</span><span class="o">.</span><span class="n">new_line</span><span class="p">(</span><span class="n">response_per_component</span><span class="p">[</span><span class="n">component_key</span><span class="p">])</span>
+                    <span class="n">md_writer</span><span class="o">.</span><span class="n">set_indent_level</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="n">lines</span> <span class="o">=</span> <span class="n">md_writer</span><span class="o">.</span><span class="n">get_lines</span><span class="p">()</span>
 
-        <span class="n">tree</span> <span class="o">=</span> <span class="n">MarkdownNode</span><span class="o">.</span><span class="n">build_tree_from_markdown</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+        <span class="n">tree</span> <span class="o">=</span> <span class="n">DocsMarkdownNode</span><span class="o">.</span><span class="n">build_tree_from_markdown</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
         <span class="n">tree</span><span class="o">.</span><span class="n">change_header_level_by</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">tree</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">raw_text</span>
 
-    <span class="k">def</span> <span class="nf">_get_responses_by_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statement</span><span class="p">:</span> <span class="n">Statement</span><span class="p">,</span> <span class="n">write_empty_responses</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">_get_responses_by_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">has_bycomps</span><span class="p">:</span> <span class="n">TypeWithByComps</span><span class="p">,</span> <span class="n">write_empty_responses</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get response per component, substitute component id with title if possible.&quot;&quot;&quot;</span>
         <span class="n">response_per_component</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">if</span> <span class="n">statement</span><span class="o">.</span><span class="n">by_components</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">statement</span><span class="o">.</span><span class="n">by_components</span><span class="p">:</span>
-                <span class="c1"># look up component title</span>
-                <span class="n">subheader</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">component_uuid</span>
-                <span class="n">response</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssp</span><span class="o">.</span><span class="n">system_implementation</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
-                    <span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssp</span><span class="o">.</span><span class="n">system_implementation</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">comp</span><span class="o">.</span><span class="n">uuid</span> <span class="o">==</span> <span class="n">component</span><span class="o">.</span><span class="n">component_uuid</span><span class="p">:</span>
-                            <span class="n">title</span> <span class="o">=</span> <span class="n">comp</span><span class="o">.</span><span class="n">title</span>
-                            <span class="k">if</span> <span class="n">title</span><span class="p">:</span>
-                                <span class="n">subheader</span> <span class="o">=</span> <span class="n">title</span>
-                <span class="k">if</span> <span class="n">component</span><span class="o">.</span><span class="n">description</span><span class="p">:</span>
-                    <span class="n">response</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">description</span>
+        <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">has_bycomps</span><span class="o">.</span><span class="n">by_components</span><span class="p">):</span>
+            <span class="c1"># look up component title</span>
+            <span class="n">subheader</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">component_uuid</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssp</span><span class="o">.</span><span class="n">system_implementation</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssp</span><span class="o">.</span><span class="n">system_implementation</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">comp</span><span class="o">.</span><span class="n">uuid</span> <span class="o">==</span> <span class="n">component</span><span class="o">.</span><span class="n">component_uuid</span><span class="p">:</span>
+                        <span class="n">title</span> <span class="o">=</span> <span class="n">comp</span><span class="o">.</span><span class="n">title</span>
+                        <span class="k">if</span> <span class="n">title</span><span class="p">:</span>
+                            <span class="n">subheader</span> <span class="o">=</span> <span class="n">title</span>
+            <span class="k">if</span> <span class="n">component</span><span class="o">.</span><span class="n">description</span><span class="p">:</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">description</span>
 
-                <span class="k">if</span> <span class="n">response</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">response</span> <span class="ow">and</span> <span class="n">write_empty_responses</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="n">subheader</span><span class="p">:</span>
-                        <span class="n">response_per_component</span><span class="p">[</span><span class="n">subheader</span><span class="p">]</span> <span class="o">=</span> <span class="n">response</span>
+            <span class="k">if</span> <span class="n">response</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">response</span> <span class="ow">and</span> <span class="n">write_empty_responses</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">subheader</span><span class="p">:</span>
+                    <span class="n">response_per_component</span><span class="p">[</span><span class="n">subheader</span><span class="p">]</span> <span class="o">=</span> <span class="n">response</span>
 
         <span class="k">return</span> <span class="n">response_per_component</span>
 
@@ -3788,7 +3832,7 @@ SSPMarkdownWriter        </code>
         <span class="k">return</span> <span class="s1">&#39;&#39;</span>
 
     <span class="k">def</span> <span class="nf">_build_tree_and_adjust</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="n">tree</span> <span class="o">=</span> <span class="n">MarkdownNode</span><span class="o">.</span><span class="n">build_tree_from_markdown</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+        <span class="n">tree</span> <span class="o">=</span> <span class="n">DocsMarkdownNode</span><span class="o">.</span><span class="n">build_tree_from_markdown</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
         <span class="n">tree</span><span class="o">.</span><span class="n">change_header_level_by</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">tree</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">raw_text</span>
@@ -3954,39 +3998,42 @@ SSPMarkdownWriter        </code>
         <span class="k">return</span> <span class="s1">&#39;&#39;</span>
 
     <span class="n">md_writer</span> <span class="o">=</span> <span class="n">MDWriter</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">control_impl_req</span><span class="o">.</span><span class="n">statements</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">statement</span> <span class="ow">in</span> <span class="n">control_impl_req</span><span class="o">.</span><span class="n">statements</span><span class="p">:</span>
-            <span class="n">statement_id</span> <span class="o">=</span> <span class="n">statement</span><span class="o">.</span><span class="n">statement_id</span>
-            <span class="n">label</span> <span class="o">=</span> <span class="n">statement_id</span>
-            <span class="n">part_name</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1"># if a control has no statement sub-parts then get the response bycomps from the imp_req itself</span>
+    <span class="c1"># otherwise get them from the statements in the imp_req</span>
+    <span class="c1"># an imp_req and a statement are both things that can have bycomps</span>
+    <span class="n">has_bycomps</span> <span class="o">=</span> <span class="n">control_impl_req</span><span class="o">.</span><span class="n">statements</span> <span class="k">if</span> <span class="n">control_impl_req</span><span class="o">.</span><span class="n">statements</span> <span class="k">else</span> <span class="p">[</span><span class="n">control_impl_req</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">has_bycomp</span> <span class="ow">in</span> <span class="n">has_bycomps</span><span class="p">:</span>
+        <span class="n">statement_id</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">has_bycomp</span><span class="p">,</span> <span class="s1">&#39;statement_id&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">control_id</span><span class="si">}</span><span class="s1">_smt&#39;</span><span class="p">)</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">statement_id</span>
+        <span class="n">part_name</span> <span class="o">=</span> <span class="kc">None</span>
 
-            <span class="c1"># look up label for this statement</span>
-            <span class="k">if</span> <span class="n">control</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
-                <span class="n">found_label</span><span class="p">,</span> <span class="n">part</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog_interface</span><span class="o">.</span><span class="n">get_statement_label_if_exists</span><span class="p">(</span><span class="n">control_id</span><span class="p">,</span> <span class="n">statement_id</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">found_label</span><span class="p">:</span>
-                    <span class="n">label</span> <span class="o">=</span> <span class="n">found_label</span>
-                    <span class="n">part_name</span> <span class="o">=</span> <span class="n">part</span><span class="o">.</span><span class="n">name</span>
+        <span class="c1"># look up label for this statement</span>
+        <span class="k">if</span> <span class="n">control</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
+            <span class="n">found_label</span><span class="p">,</span> <span class="n">part</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog_interface</span><span class="o">.</span><span class="n">get_statement_label_if_exists</span><span class="p">(</span><span class="n">control_id</span><span class="p">,</span> <span class="n">statement_id</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">found_label</span><span class="p">:</span>
+                <span class="n">label</span> <span class="o">=</span> <span class="n">found_label</span>
+                <span class="n">part_name</span> <span class="o">=</span> <span class="n">part</span><span class="o">.</span><span class="n">name</span>
 
-            <span class="n">response_per_component</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_responses_by_components</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="n">write_empty_responses</span><span class="p">)</span>
+        <span class="n">response_per_component</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_responses_by_components</span><span class="p">(</span><span class="n">has_bycomp</span><span class="p">,</span> <span class="n">write_empty_responses</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">response_per_component</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">response_per_component</span> <span class="ow">and</span> <span class="n">write_empty_responses</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">part_name</span> <span class="ow">and</span> <span class="n">part_name</span> <span class="o">==</span> <span class="s1">&#39;item&#39;</span><span class="p">:</span>
-                    <span class="c1"># print part header only if subitem</span>
-                    <span class="n">header</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Implementation for part </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s1">&#39;</span>
-                    <span class="n">md_writer</span><span class="o">.</span><span class="n">new_header</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">header</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">component_key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">response_per_component</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="n">component_key</span> <span class="o">==</span> <span class="n">SSP_MAIN_COMP_NAME</span> <span class="ow">and</span> <span class="n">idx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                        <span class="c1"># special case ignore header but print contents</span>
-                        <span class="n">md_writer</span><span class="o">.</span><span class="n">new_paragraph</span><span class="p">()</span>
-                    <span class="k">elif</span> <span class="n">show_comp</span><span class="p">:</span>
-                        <span class="n">md_writer</span><span class="o">.</span><span class="n">new_header</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">component_key</span><span class="p">)</span>
-                    <span class="n">md_writer</span><span class="o">.</span><span class="n">set_indent_level</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-                    <span class="n">md_writer</span><span class="o">.</span><span class="n">new_line</span><span class="p">(</span><span class="n">response_per_component</span><span class="p">[</span><span class="n">component_key</span><span class="p">])</span>
-                    <span class="n">md_writer</span><span class="o">.</span><span class="n">set_indent_level</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">response_per_component</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">response_per_component</span> <span class="ow">and</span> <span class="n">write_empty_responses</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">part_name</span> <span class="ow">and</span> <span class="n">part_name</span> <span class="o">==</span> <span class="s1">&#39;item&#39;</span><span class="p">:</span>
+                <span class="c1"># print part header only if subitem</span>
+                <span class="n">header</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Implementation for part </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="n">md_writer</span><span class="o">.</span><span class="n">new_header</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">header</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">component_key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">response_per_component</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">component_key</span> <span class="o">==</span> <span class="n">SSP_MAIN_COMP_NAME</span> <span class="ow">and</span> <span class="n">idx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="c1"># special case ignore header but print contents</span>
+                    <span class="n">md_writer</span><span class="o">.</span><span class="n">new_paragraph</span><span class="p">()</span>
+                <span class="k">elif</span> <span class="n">show_comp</span><span class="p">:</span>
+                    <span class="n">md_writer</span><span class="o">.</span><span class="n">new_header</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">component_key</span><span class="p">)</span>
+                <span class="n">md_writer</span><span class="o">.</span><span class="n">set_indent_level</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">md_writer</span><span class="o">.</span><span class="n">new_line</span><span class="p">(</span><span class="n">response_per_component</span><span class="p">[</span><span class="n">component_key</span><span class="p">])</span>
+                <span class="n">md_writer</span><span class="o">.</span><span class="n">set_indent_level</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="n">lines</span> <span class="o">=</span> <span class="n">md_writer</span><span class="o">.</span><span class="n">get_lines</span><span class="p">()</span>
 
-    <span class="n">tree</span> <span class="o">=</span> <span class="n">MarkdownNode</span><span class="o">.</span><span class="n">build_tree_from_markdown</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+    <span class="n">tree</span> <span class="o">=</span> <span class="n">DocsMarkdownNode</span><span class="o">.</span><span class="n">build_tree_from_markdown</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
     <span class="n">tree</span><span class="o">.</span><span class="n">change_header_level_by</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">tree</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">raw_text</span>
@@ -4416,7 +4463,7 @@ Using a LUT to map between structured data fields, defined by FedRAMP and histor
     <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
+      <script src="../../assets/javascripts/bundle.407015b8.min.js"></script>
       
     
   </body>

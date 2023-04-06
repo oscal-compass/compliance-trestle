@@ -19,7 +19,7 @@
         <link rel="next" href="../trestle.core.generic_oscal/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.15">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.5">
     
     
       
@@ -27,7 +27,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7a7fce14.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
@@ -492,7 +492,7 @@
   
     <li class="md-nav__item">
       <a href="../../tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring/" class="md-nav__link">
-        SSP, Catalog, and Profile Authoring
+        Catalog, Profile, ComponentDefinition, and SSP Authoring
       </a>
     </li>
   
@@ -2204,6 +2204,48 @@
   
   
     <li class="md-nav__item">
+      <a href="../trestle.core.markdown.base_markdown_node/" class="md-nav__link">
+        base_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.markdown.control_markdown_node/" class="md-nav__link">
+        control_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.markdown.docs_markdown_node/" class="md-nav__link">
+        docs_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../trestle.core.markdown.markdown_api/" class="md-nav__link">
         markdown_api
       </a>
@@ -2220,20 +2262,6 @@
     <li class="md-nav__item">
       <a href="../trestle.core.markdown.markdown_const/" class="md-nav__link">
         markdown_const
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../trestle.core.markdown.markdown_node/" class="md-nav__link">
-        markdown_node
       </a>
     </li>
   
@@ -2596,6 +2624,20 @@
           
         </ul>
       </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.rule_parameters_validator/" class="md-nav__link">
+        rule_parameters_validator
+      </a>
     </li>
   
 
@@ -3474,12 +3516,12 @@
         <span class="k">if</span> <span class="n">model_type</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">generate_sample_value_by_type</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)]</span>
         <span class="k">if</span> <span class="n">model_type</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;REPLACE_ME&#39;</span><span class="p">:</span> <span class="n">generate_sample_value_by_type</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)}</span>
+            <span class="k">return</span> <span class="p">{</span><span class="n">const</span><span class="o">.</span><span class="n">REPLACE_ME</span><span class="p">:</span> <span class="n">generate_sample_value_by_type</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)}</span>
         <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Unhandled collection type.&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">model_type</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">model</span><span class="p">(</span><span class="o">**</span><span class="n">model_dict</span><span class="p">)]</span>
     <span class="k">if</span> <span class="n">model_type</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;REPLACE_ME&#39;</span><span class="p">:</span> <span class="n">model</span><span class="p">(</span><span class="o">**</span><span class="n">model_dict</span><span class="p">)}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">const</span><span class="o">.</span><span class="n">REPLACE_ME</span><span class="p">:</span> <span class="n">model</span><span class="p">(</span><span class="o">**</span><span class="n">model_dict</span><span class="p">)}</span>
     <span class="k">return</span> <span class="n">model</span><span class="p">(</span><span class="o">**</span><span class="n">model_dict</span><span class="p">)</span>
 </code></pre></div>
         </details>
@@ -3521,10 +3563,6 @@
         <span class="k">return</span> <span class="kc">False</span>
     <span class="k">if</span> <span class="n">type_</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="mi">0</span>
-    <span class="k">if</span> <span class="n">type_</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">field_name</span> <span class="o">==</span> <span class="s1">&#39;oscal_version&#39;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">OSCAL_VERSION</span>
-        <span class="k">return</span> <span class="s1">&#39;REPLACE_ME&#39;</span>
     <span class="k">if</span> <span class="n">type_</span> <span class="ow">is</span> <span class="nb">float</span><span class="p">:</span>
         <span class="k">return</span> <span class="mf">0.00</span>
     <span class="k">if</span> <span class="n">safe_is_sub</span><span class="p">(</span><span class="n">type_</span><span class="p">,</span> <span class="n">ConstrainedStr</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">type_</span><span class="p">,</span> <span class="s1">&#39;__name__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="s1">&#39;ConstrainedStr&#39;</span> <span class="ow">in</span> <span class="n">type_</span><span class="o">.</span><span class="vm">__name__</span><span class="p">):</span>
@@ -3532,6 +3570,9 @@
         <span class="c1"># TODO: handle regex directly</span>
         <span class="k">if</span> <span class="s1">&#39;uuid&#39;</span> <span class="o">==</span> <span class="n">field_name</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+        <span class="c1"># some things like location_uuid in lists arrive here with field_name=&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">type_</span><span class="o">.</span><span class="n">regex</span> <span class="ow">and</span> <span class="n">type_</span><span class="o">.</span><span class="n">regex</span><span class="o">.</span><span class="n">pattern</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;^[0-9A-Fa-f]</span><span class="si">{8}</span><span class="s1">&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">SAMPLE_UUID_STR</span>
         <span class="k">if</span> <span class="n">field_name</span> <span class="o">==</span> <span class="s1">&#39;date_authorized&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">())</span>
         <span class="k">if</span> <span class="n">field_name</span> <span class="o">==</span> <span class="s1">&#39;oscal_version&#39;</span><span class="p">:</span>
@@ -3541,7 +3582,7 @@
         <span class="c1"># Only case where are UUID is required but not in name.</span>
         <span class="k">if</span> <span class="n">field_name</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;s&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;member_of_organization&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">SAMPLE_UUID_STR</span>
-        <span class="k">return</span> <span class="s1">&#39;REPLACE_ME&#39;</span>
+        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">REPLACE_ME</span>
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">type_</span><span class="p">,</span> <span class="s1">&#39;__name__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="s1">&#39;ConstrainedIntValue&#39;</span> <span class="ow">in</span> <span class="n">type_</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span>
         <span class="c1"># create an int value as close to the floor as possible does not test upper bound</span>
         <span class="n">multiple</span> <span class="o">=</span> <span class="n">type_</span><span class="o">.</span><span class="n">multiple_of</span> <span class="k">if</span> <span class="n">type_</span><span class="o">.</span><span class="n">multiple_of</span> <span class="k">else</span> <span class="mi">1</span>  <span class="c1"># default to every integer</span>
@@ -3554,6 +3595,10 @@
     <span class="k">if</span> <span class="n">safe_is_sub</span><span class="p">(</span><span class="n">type_</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
         <span class="c1"># keys and values diverge due to hypens in oscal names</span>
         <span class="k">return</span> <span class="n">type_</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">type_</span><span class="o">.</span><span class="n">__members__</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">type_</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">field_name</span> <span class="o">==</span> <span class="s1">&#39;oscal_version&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">OSCAL_VERSION</span>
+        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">REPLACE_ME</span>
     <span class="k">if</span> <span class="n">type_</span> <span class="ow">is</span> <span class="n">pydantic</span><span class="o">.</span><span class="n">networks</span><span class="o">.</span><span class="n">EmailStr</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">pydantic</span><span class="o">.</span><span class="n">networks</span><span class="o">.</span><span class="n">EmailStr</span><span class="p">(</span><span class="s1">&#39;dummy@sample.com&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">type_</span> <span class="ow">is</span> <span class="n">pydantic</span><span class="o">.</span><span class="n">networks</span><span class="o">.</span><span class="n">AnyUrl</span><span class="p">:</span>
@@ -3651,7 +3696,7 @@
     <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
+      <script src="../../assets/javascripts/bundle.407015b8.min.js"></script>
       
     
   </body>

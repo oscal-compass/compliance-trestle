@@ -19,7 +19,7 @@
         <link rel="next" href="../trestle.core.control_writer/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.15">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.5">
     
     
       
@@ -27,7 +27,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7a7fce14.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
@@ -492,7 +492,7 @@
   
     <li class="md-nav__item">
       <a href="../../tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring/" class="md-nav__link">
-        SSP, Catalog, and Profile Authoring
+        Catalog, Profile, ComponentDefinition, and SSP Authoring
       </a>
     </li>
   
@@ -2237,6 +2237,48 @@
   
   
     <li class="md-nav__item">
+      <a href="../trestle.core.markdown.base_markdown_node/" class="md-nav__link">
+        base_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.markdown.control_markdown_node/" class="md-nav__link">
+        control_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.markdown.docs_markdown_node/" class="md-nav__link">
+        docs_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../trestle.core.markdown.markdown_api/" class="md-nav__link">
         markdown_api
       </a>
@@ -2253,20 +2295,6 @@
     <li class="md-nav__item">
       <a href="../trestle.core.markdown.markdown_const/" class="md-nav__link">
         markdown_const
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../trestle.core.markdown.markdown_node/" class="md-nav__link">
-        markdown_node
       </a>
     </li>
   
@@ -2629,6 +2657,20 @@
           
         </ul>
       </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.rule_parameters_validator/" class="md-nav__link">
+        rule_parameters_validator
+      </a>
     </li>
   
 
@@ -3406,269 +3448,8 @@ ControlReader        </code>
 
         <details class="quote">
           <summary>Source code in <code>trestle/core/control_reader.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ControlReader</span><span class="p">():</span>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ControlReader</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to read controls from markdown.&quot;&quot;&quot;</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_parse_control_title_line</span><span class="p">(</span><span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Process the title line and extract the control id, group title (in brackets) and control title.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Markdown control title format error, missing - after control id: </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">split_line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">split_line</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">3</span> <span class="ow">or</span> <span class="n">split_line</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cannot parse control markdown title for control_id group and title: </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="c1"># first token after the #</span>
-        <span class="n">control_id</span> <span class="o">=</span> <span class="n">split_line</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">group_title_start</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;\[&#39;</span><span class="p">)</span>
-        <span class="n">group_title_end</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;\]&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">group_title_start</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">group_title_end</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">group_title_start</span> <span class="o">&gt;</span> <span class="n">group_title_end</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;unable to read group title for control </span><span class="si">{</span><span class="n">control_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">group_title</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="n">group_title_start</span> <span class="o">+</span> <span class="mi">2</span><span class="p">:</span><span class="n">group_title_end</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-        <span class="n">control_title</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="n">group_title_end</span> <span class="o">+</span> <span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">control_id</span><span class="p">,</span> <span class="n">group_title</span><span class="p">,</span> <span class="n">control_title</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_indent</span><span class="p">(</span><span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Measure indent of non-empty line.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Empty line queried for indent.&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">]:</span>
-            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)):</span>
-            <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">ii</span>
-            <span class="c1"># if line is indented it must start with -</span>
-            <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39; &#39;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">ii</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_get_next_line</span><span class="p">(</span><span class="n">ii</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-        <span class="k">while</span> <span class="n">ii</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
-            <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">line</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">ii</span><span class="p">,</span> <span class="n">line</span>
-            <span class="n">ii</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;&#39;</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_get_next_indent</span><span class="p">(</span><span class="n">ii</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">skip_empty_lines</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Seek to next content line.  ii remains at line read.&quot;&quot;&quot;</span>
-        <span class="k">while</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">ii</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
-            <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">line</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">isspace</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;#&#39;</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="n">ii</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">line</span>
-                <span class="n">indent</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">_indent</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">indent</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="c1"># extract text after -</span>
-                    <span class="n">start</span> <span class="o">=</span> <span class="n">indent</span> <span class="o">+</span> <span class="mi">1</span>
-                    <span class="k">while</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="ow">and</span> <span class="n">line</span><span class="p">[</span><span class="n">start</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39; &#39;</span><span class="p">:</span>
-                        <span class="n">start</span> <span class="o">+=</span> <span class="mi">1</span>
-                    <span class="k">if</span> <span class="n">start</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
-                        <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Invalid line </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                    <span class="k">return</span> <span class="n">ii</span><span class="p">,</span> <span class="n">indent</span><span class="p">,</span> <span class="n">line</span><span class="p">[</span><span class="n">start</span><span class="p">:]</span>
-                <span class="k">return</span> <span class="n">ii</span><span class="p">,</span> <span class="n">indent</span><span class="p">,</span> <span class="n">line</span>
-            <span class="k">elif</span> <span class="ow">not</span> <span class="n">skip_empty_lines</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">ii</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">line</span>
-            <span class="n">ii</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">return</span> <span class="n">ii</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;&#39;</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_read_part_id_prose</span><span class="p">(</span><span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract the part id letter or number and prose from line.&quot;&quot;&quot;</span>
-        <span class="n">start</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">[&#39;</span><span class="p">)</span>
-        <span class="n">end</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">]&#39;</span><span class="p">)</span>
-        <span class="n">prose</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">line</span><span class="p">[</span><span class="n">end</span> <span class="o">+</span> <span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-        <span class="n">id_</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">end</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">line</span><span class="p">[</span><span class="n">start</span> <span class="o">+</span> <span class="mi">2</span><span class="p">:</span><span class="n">end</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">id_</span><span class="p">,</span> <span class="n">prose</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_bump_label</span><span class="p">(</span><span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Find next label given a string of 1 or more pure letters or digits.</span>
-
-<span class="sd">        The input must be either a string of digits or a string of ascii letters - or empty string.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">label</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s1">&#39;a&#39;</span>
-        <span class="k">if</span> <span class="n">label</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">string</span><span class="o">.</span><span class="n">digits</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">label</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">label</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">label</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">&lt;</span> <span class="s1">&#39;z&#39;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">chr</span><span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="n">label</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="c1"># if this happens to be a string of letters, force it lowercase and bump</span>
-        <span class="n">label</span> <span class="o">=</span> <span class="n">label</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-        <span class="n">factor</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="c1"># delta is needed because a counts as 0 when first value on right, but 1 for all others</span>
-        <span class="n">delta</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">label</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
-            <span class="n">value</span> <span class="o">+=</span> <span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="n">letter</span><span class="p">)</span> <span class="o">-</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">delta</span><span class="p">)</span> <span class="o">*</span> <span class="n">factor</span>
-            <span class="n">factor</span> <span class="o">*=</span> <span class="mi">26</span>
-            <span class="n">delta</span> <span class="o">=</span> <span class="mi">1</span>
-
-        <span class="n">value</span> <span class="o">+=</span> <span class="mi">1</span>
-
-        <span class="n">new_label</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-        <span class="n">delta</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">while</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">new_label</span> <span class="o">+=</span> <span class="nb">chr</span><span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">value</span> <span class="o">%</span> <span class="mi">26</span> <span class="o">-</span> <span class="n">delta</span><span class="p">)</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">//</span> <span class="mi">26</span>
-            <span class="n">delta</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="k">return</span> <span class="n">new_label</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_create_next_label</span><span class="p">(</span><span class="n">prev_label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create new label at indent level based on previous label if available.</span>
-
-<span class="sd">        If previous label is available, make this the next one in the sequence.</span>
-<span class="sd">        Otherwise start with a or 1 on alternate levels of indentation.</span>
-<span class="sd">        If alphabetic label reaches z, next one is aa.</span>
-<span class="sd">        Numeric ranges from 1 to 9, then 10 etc.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">prev_label</span><span class="p">:</span>
-            <span class="c1"># assume indent goes in steps of 2</span>
-            <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">][(</span><span class="n">indent</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span><span class="p">]</span>
-        <span class="n">label_prefix</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-        <span class="n">label_suffix</span> <span class="o">=</span> <span class="n">prev_label</span>
-        <span class="n">is_char</span> <span class="o">=</span> <span class="n">prev_label</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="n">string</span><span class="o">.</span><span class="n">ascii_letters</span>
-        <span class="c1"># if it isn&#39;t ending in letter or digit just append &#39;a&#39; to end</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_char</span> <span class="ow">and</span> <span class="n">prev_label</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">string</span><span class="o">.</span><span class="n">digits</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">prev_label</span> <span class="o">+</span> <span class="s1">&#39;a&#39;</span>
-        <span class="c1"># break in middle of string if mixed types</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">prev_label</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">ii</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">prev_label</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
-            <span class="k">while</span> <span class="n">ii</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">prev_label</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">string</span><span class="o">.</span><span class="n">ascii_letters</span> <span class="o">+</span> <span class="n">string</span><span class="o">.</span><span class="n">digits</span><span class="p">:</span>
-                    <span class="k">break</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">prev_label</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="ow">in</span> <span class="n">string</span><span class="o">.</span><span class="n">ascii_letters</span><span class="p">)</span> <span class="o">!=</span> <span class="n">is_char</span><span class="p">:</span>
-                    <span class="k">break</span>
-                <span class="n">ii</span> <span class="o">-=</span> <span class="mi">1</span>
-            <span class="k">if</span> <span class="n">ii</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">label_prefix</span> <span class="o">=</span> <span class="n">prev_label</span><span class="p">[:(</span><span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
-                <span class="n">label_suffix</span> <span class="o">=</span> <span class="n">prev_label</span><span class="p">[(</span><span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):]</span>
-
-        <span class="k">return</span> <span class="n">label_prefix</span> <span class="o">+</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">_bump_label</span><span class="p">(</span><span class="n">label_suffix</span><span class="p">)</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_read_parts</span><span class="p">(</span><span class="n">indent</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">ii</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">parent_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                    <span class="n">parts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Part</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Part</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;If indentation level goes up or down, create new list or close current one.&quot;&quot;&quot;</span>
-        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="n">ii</span><span class="p">,</span> <span class="n">new_indent</span><span class="p">,</span> <span class="n">line</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">_get_next_indent</span><span class="p">(</span><span class="n">ii</span><span class="p">,</span> <span class="n">lines</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">new_indent</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="c1"># we are done reading control statement</span>
-                <span class="k">return</span> <span class="n">ii</span><span class="p">,</span> <span class="n">parts</span>
-            <span class="k">if</span> <span class="n">new_indent</span> <span class="o">==</span> <span class="n">indent</span><span class="p">:</span>
-                <span class="c1"># create new item part and add to current list of parts</span>
-                <span class="n">id_text</span><span class="p">,</span> <span class="n">prose</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">_read_part_id_prose</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-                <span class="c1"># id_text is the part id and needs to be as a label property value</span>
-                <span class="c1"># if none is there then create one from previous part, or use default</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">id_text</span><span class="p">:</span>
-                    <span class="n">prev_label</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">get_label</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="k">if</span> <span class="n">parts</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
-                    <span class="n">id_text</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">_create_next_label</span><span class="p">(</span><span class="n">prev_label</span><span class="p">,</span> <span class="n">indent</span><span class="p">)</span>
-                <span class="n">id_</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">strip_to_make_ncname</span><span class="p">(</span><span class="n">parent_id</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">id_text</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">))</span>
-                <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;objective&#39;</span> <span class="k">if</span> <span class="n">id_</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;_obj&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;item&#39;</span>
-                <span class="n">prop</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">Property</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">id_text</span><span class="p">)</span>
-                <span class="n">part</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">Part</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="n">id_</span><span class="p">,</span> <span class="n">prose</span><span class="o">=</span><span class="n">prose</span><span class="p">,</span> <span class="n">props</span><span class="o">=</span><span class="p">[</span><span class="n">prop</span><span class="p">])</span>
-                <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">part</span><span class="p">)</span>
-                <span class="n">ii</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">elif</span> <span class="n">new_indent</span> <span class="o">&gt;</span> <span class="n">indent</span><span class="p">:</span>
-                <span class="c1"># add new list of parts to last part and continue</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Improper indentation structure: </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                <span class="n">ii</span><span class="p">,</span> <span class="n">new_parts</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">_read_parts</span><span class="p">(</span><span class="n">new_indent</span><span class="p">,</span> <span class="n">ii</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span> <span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="p">[])</span>
-                <span class="k">if</span> <span class="n">new_parts</span><span class="p">:</span>
-                    <span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">parts</span> <span class="o">=</span> <span class="n">new_parts</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># return list of sub-parts</span>
-                <span class="k">return</span> <span class="n">ii</span><span class="p">,</span> <span class="n">parts</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_read_control_statement_or_objective</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">Part</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read control statement or objective, raise an error if not found.&quot;&quot;&quot;</span>
-        <span class="n">matching_idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">())]</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">matching_idx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Heading </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1"> was not found in control </span><span class="si">{</span><span class="n">control_id</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">matching_idx</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Multiple headings </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1"> are found in control </span><span class="si">{</span><span class="n">control_id</span><span class="si">}</span><span class="s1">. Only one allowed.&#39;</span><span class="p">)</span>
-
-        <span class="n">starting_line</span> <span class="o">=</span> <span class="n">matching_idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
-        <span class="n">prose</span> <span class="o">=</span> <span class="p">[]</span>
-
-        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">CONTROL_STATEMENT_HEADER</span><span class="p">:</span>
-            <span class="n">statement_id</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">create_statement_id</span><span class="p">(</span><span class="n">control_id</span><span class="p">)</span>
-            <span class="n">a_part</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">Part</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">STATEMENT</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="n">statement_id</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">CONTROL_OBJECTIVE_HEADER</span><span class="p">:</span>
-            <span class="n">a_part</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">Part</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;objective&#39;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">control_id</span><span class="si">}</span><span class="s1">_obj&#39;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Reading control with heading </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1"> is not supported.&#39;</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">starting_line</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)):</span>
-            <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
-                <span class="n">prose</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-                <span class="k">continue</span>
-
-            <span class="n">indent</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">_indent</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">indent</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">prose</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
-                    <span class="c1"># Prose that appears indented but has no - : treat it as the normal statement prose</span>
-                    <span class="n">prose</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-                    <span class="k">continue</span>
-
-                <span class="c1"># Read parts</span>
-                <span class="n">_</span><span class="p">,</span> <span class="n">parts</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">_read_parts</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span> <span class="n">a_part</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="p">[])</span>
-                <span class="n">a_part</span><span class="o">.</span><span class="n">parts</span> <span class="o">=</span> <span class="n">none_if_empty</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
-
-                <span class="k">break</span>
-        <span class="k">if</span> <span class="n">prose</span><span class="p">:</span>
-            <span class="c1"># Delete all leading and trailing new lines before and after the text</span>
-            <span class="n">str_prose</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">prose</span><span class="p">)</span>
-            <span class="n">str_prose</span> <span class="o">=</span> <span class="n">str_prose</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">str_prose</span><span class="p">:</span>
-                <span class="n">a_part</span><span class="o">.</span><span class="n">prose</span> <span class="o">=</span> <span class="n">str_prose</span>
-
-        <span class="k">return</span> <span class="n">a_part</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_read_sections</span><span class="p">(</span><span class="n">ii</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                       <span class="n">control_parts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Part</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Part</span><span class="p">]]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read all sections following the section separated by ## Control.&quot;&quot;&quot;</span>
-        <span class="n">new_parts</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">prefix</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">CONTROL_HEADER</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span>
-        <span class="k">while</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">ii</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
-            <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;## What is the solution&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;# </span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">EDITABLE_CONTENT</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">):</span>
-                <span class="n">ii</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="k">continue</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
-                <span class="n">ii</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="k">continue</span>
-            <span class="k">if</span> <span class="n">line</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">prefix</span><span class="p">):</span>
-                <span class="c1"># the control has no sections to read, so exit the loop</span>
-                <span class="k">break</span>
-            <span class="n">label</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">prefix</span><span class="p">):]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-            <span class="n">prose</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-            <span class="n">ii</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">while</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">ii</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">lines</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">lines</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">&#39;# </span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">EDITABLE_CONTENT</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">):</span>
-                <span class="n">prose</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">prose</span><span class="p">,</span> <span class="n">lines</span><span class="p">[</span><span class="n">ii</span><span class="p">]])</span>
-                <span class="n">ii</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">if</span> <span class="n">prose</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">label</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;guidance&#39;</span><span class="p">:</span>
-                    <span class="n">id_</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">strip_to_make_ncname</span><span class="p">(</span><span class="n">control_id</span> <span class="o">+</span> <span class="s1">&#39;_gdn&#39;</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">id_</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">strip_to_make_ncname</span><span class="p">(</span><span class="n">control_id</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">label</span><span class="p">)</span>
-                <span class="n">label</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">strip_to_make_ncname</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
-                <span class="n">new_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">Part</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">prose</span><span class="o">=</span><span class="n">prose</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)))</span>
-        <span class="k">if</span> <span class="n">new_parts</span><span class="p">:</span>
-            <span class="n">control_parts</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">control_parts</span> <span class="k">else</span> <span class="n">control_parts</span>
-            <span class="n">control_parts</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">new_parts</span><span class="p">)</span>
-        <span class="n">control_parts</span> <span class="o">=</span> <span class="n">none_if_empty</span><span class="p">(</span><span class="n">control_parts</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">ii</span><span class="p">,</span> <span class="n">control_parts</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_clean_prose</span><span class="p">(</span><span class="n">prose</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
@@ -3703,7 +3484,7 @@ ControlReader        </code>
         <span class="n">comp_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
         <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">comp_dict</span><span class="p">:</span> <span class="n">CompDict</span><span class="p">,</span>
-        <span class="n">node</span><span class="p">:</span> <span class="n">MarkdownNode</span><span class="p">,</span>
+        <span class="n">node</span><span class="p">:</span> <span class="n">ControlMarkdownNode</span><span class="p">,</span>
         <span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">comp_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
         <span class="n">context</span><span class="p">:</span> <span class="n">ControlContext</span>
@@ -3943,8 +3724,8 @@ ControlReader        </code>
 
         <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">param_dict_list</span> <span class="ow">in</span> <span class="n">md_header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">COMP_DEF_RULES_PARAM_VALS_TAG</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">param_dict</span> <span class="ow">in</span> <span class="n">param_dict_list</span><span class="p">:</span>
-                <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Value</span><span class="p">(</span><span class="n">__root__</span><span class="o">=</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">param_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">VALUES</span><span class="p">,</span> <span class="p">[])]</span>
-                <span class="n">comp_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Value</span><span class="p">(</span><span class="n">__root__</span><span class="o">=</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">param_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">COMPONENT_VALUES</span><span class="p">,</span> <span class="p">[])]</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="n">param_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">VALUES</span><span class="p">,</span> <span class="p">[])</span>
+                <span class="n">comp_values</span> <span class="o">=</span> <span class="n">param_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">COMPONENT_VALUES</span><span class="p">,</span> <span class="p">[])</span>
                 <span class="n">values</span> <span class="o">=</span> <span class="n">comp_values</span> <span class="k">if</span> <span class="n">comp_values</span> <span class="k">else</span> <span class="n">values</span>
                 <span class="n">set_param</span> <span class="o">=</span> <span class="n">ossp</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">(</span><span class="n">param_id</span><span class="o">=</span><span class="n">param_dict</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">)</span>
                 <span class="n">imp_req</span><span class="o">.</span><span class="n">set_parameters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">set_param</span><span class="p">)</span>
@@ -3954,102 +3735,6 @@ ControlReader        </code>
         <span class="n">ControlReader</span><span class="o">.</span><span class="n">_insert_header_content</span><span class="p">(</span><span class="n">imp_req</span><span class="p">,</span> <span class="n">md_header</span><span class="p">,</span> <span class="n">control_id</span><span class="p">)</span>
         <span class="n">sort_id</span> <span class="o">=</span> <span class="n">md_header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">SORT_ID</span><span class="p">,</span> <span class="n">control_id</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">sort_id</span><span class="p">,</span> <span class="n">imp_req</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_add_control_part</span><span class="p">(</span>
-        <span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">subnode</span><span class="p">:</span> <span class="n">MarkdownNode</span><span class="p">,</span>
-        <span class="n">required_sections_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-        <span class="n">sections_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-        <span class="n">snake_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-        <span class="n">control_parts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Part</span><span class="p">],</span>
-        <span class="n">found_sections</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-        <span class="n">write_mode</span><span class="p">:</span> <span class="nb">bool</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">CONTROL_REGEX</span><span class="p">,</span> <span class="n">subnode</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
-            <span class="n">part_name_raw</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">prose</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">_clean_prose</span><span class="p">(</span><span class="n">subnode</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
-            <span class="n">prose</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">prose</span><span class="p">)</span>
-            <span class="c1"># prose may be empty but make part anyway if it was in markdown</span>
-            <span class="c1"># it also may contain sub-parts</span>
-            <span class="n">part_name_snake</span> <span class="o">=</span> <span class="n">spaces_and_caps_to_snake</span><span class="p">(</span><span class="n">part_name_raw</span><span class="p">)</span>
-            <span class="n">part_name</span> <span class="o">=</span> <span class="n">snake_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">part_name_snake</span><span class="p">,</span> <span class="n">part_name_snake</span><span class="p">)</span>
-            <span class="c1"># if section is required and it hasn&#39;t been edited with prose raise error</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">write_mode</span> <span class="ow">and</span> <span class="n">part_name</span> <span class="ow">in</span> <span class="n">required_sections_list</span> <span class="ow">and</span> <span class="n">prose</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span>
-                    <span class="n">const</span><span class="o">.</span><span class="n">PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT</span><span class="p">):</span>
-                <span class="n">missing_section</span> <span class="o">=</span> <span class="n">sections_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">part_name</span><span class="p">,</span> <span class="n">part_name</span><span class="p">)</span>
-                <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Control </span><span class="si">{</span><span class="n">control_id</span><span class="si">}</span><span class="s1"> is missing prose for required section </span><span class="si">{</span><span class="n">missing_section</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="n">id_</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">control_id</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">part_name</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="c1"># use sections dict to find correct title otherwise leave it None</span>
-            <span class="n">part_title</span> <span class="o">=</span> <span class="n">sections_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">part_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-            <span class="n">part</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">Part</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">part_name</span><span class="p">,</span> <span class="n">prose</span><span class="o">=</span><span class="n">prose</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">part_title</span><span class="p">)</span>
-            <span class="n">part</span><span class="o">.</span><span class="n">parts</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">_add_sub_parts</span><span class="p">(</span><span class="n">part</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">subnode</span><span class="p">)</span>
-            <span class="n">control_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">part</span><span class="p">)</span>
-            <span class="c1"># for required sections, only count them as found if they contain prose</span>
-            <span class="c1"># if not (part_name in required_sections_list and not prose):</span>
-            <span class="n">found_sections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">part_name</span><span class="p">)</span>
-            <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">return</span> <span class="kc">False</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_add_sub_parts</span><span class="p">(</span><span class="n">part_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                       <span class="n">node</span><span class="p">:</span> <span class="n">MarkdownNode</span><span class="p">,</span>
-                       <span class="n">fixed_part_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Part</span><span class="p">]]:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">subnodes</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
-        <span class="n">parts</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">subnode</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">subnodes</span><span class="p">:</span>
-            <span class="c1"># the count of hashes should be correct based on parsing already down by the markdown parser</span>
-            <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">AFTER_HASHES_REGEX</span><span class="p">,</span> <span class="n">subnode</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">match</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unexpected editable header </span><span class="si">{</span><span class="n">subnode</span><span class="o">.</span><span class="n">key</span><span class="si">}</span><span class="s1"> found in part </span><span class="si">{</span><span class="n">part_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="n">part_name</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">part_name_snake</span> <span class="o">=</span> <span class="n">spaces_and_caps_to_snake</span><span class="p">(</span><span class="n">part_name</span><span class="p">)</span>
-            <span class="n">id_</span> <span class="o">=</span> <span class="n">part_id</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">part_name_snake</span>
-            <span class="n">prose_lines</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">_clean_prose</span><span class="p">(</span><span class="n">subnode</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
-            <span class="n">prose</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">prose_lines</span><span class="p">)</span>
-            <span class="n">final_part_name</span> <span class="o">=</span> <span class="n">fixed_part_name</span> <span class="k">if</span> <span class="n">fixed_part_name</span> <span class="k">else</span> <span class="n">part_name_snake</span>
-            <span class="n">part</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">Part</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">final_part_name</span><span class="p">,</span> <span class="n">prose</span><span class="o">=</span><span class="n">prose</span><span class="p">)</span>
-            <span class="n">part</span><span class="o">.</span><span class="n">parts</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">_add_sub_parts</span><span class="p">(</span><span class="n">part</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">subnode</span><span class="p">,</span> <span class="n">fixed_part_name</span><span class="p">)</span>
-            <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">part</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">parts</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_add_sub_part</span><span class="p">(</span>
-        <span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">subnode</span><span class="p">:</span> <span class="n">MarkdownNode</span><span class="p">,</span>
-        <span class="n">label_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-        <span class="n">by_id_parts</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Part</span><span class="p">]],</span>
-        <span class="n">sections_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add subnode contents to the list of by_id statement parts for the top level of the control.&quot;&quot;&quot;</span>
-        <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">PART_REGEX</span><span class="p">,</span> <span class="n">subnode</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">match</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unexpected editable header </span><span class="si">{</span><span class="n">subnode</span><span class="o">.</span><span class="n">key</span><span class="si">}</span><span class="s1"> found in control </span><span class="si">{</span><span class="n">control_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">by_part_label</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">control_label_map</span> <span class="o">=</span> <span class="n">label_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">control_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">control_label_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No label map found for control </span><span class="si">{</span><span class="n">control_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">by_part_id</span> <span class="o">=</span> <span class="n">control_label_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">by_part_label</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">by_part_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No part id found for label </span><span class="si">{</span><span class="n">by_part_label</span><span class="si">}</span><span class="s1"> in control </span><span class="si">{</span><span class="n">control_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">inv_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">sections_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span> <span class="k">if</span> <span class="n">sections_dict</span> <span class="k">else</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">node2</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">subnode</span><span class="o">.</span><span class="n">subnodes</span><span class="p">):</span>
-            <span class="n">hash_pattern</span> <span class="o">=</span> <span class="s1">&#39;### &#39;</span>
-            <span class="k">if</span> <span class="n">node2</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">hash_pattern</span><span class="p">):</span>
-                <span class="n">part_name</span> <span class="o">=</span> <span class="n">spaces_and_caps_to_snake</span><span class="p">(</span><span class="n">node2</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">hash_pattern</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
-                <span class="n">part_name</span> <span class="o">=</span> <span class="n">inv_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">part_name</span><span class="p">,</span> <span class="n">part_name</span><span class="p">)</span>
-                <span class="n">prose</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">_clean_prose</span><span class="p">(</span><span class="n">node2</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
-                <span class="n">prose</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">prose</span><span class="p">)</span>
-                <span class="n">id_</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">by_part_id</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">part_name</span><span class="si">}</span><span class="s1">&#39;</span>
-                <span class="n">part</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">Part</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">part_name</span><span class="p">,</span> <span class="n">prose</span><span class="o">=</span><span class="n">prose</span><span class="p">)</span>
-                <span class="n">part</span><span class="o">.</span><span class="n">parts</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">_add_sub_parts</span><span class="p">(</span><span class="n">part</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">node2</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unexpected header </span><span class="si">{</span><span class="n">node2</span><span class="o">.</span><span class="n">key</span><span class="si">}</span><span class="s1"> found in control </span><span class="si">{</span><span class="n">control_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">by_part_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">by_id_parts</span><span class="p">:</span>
-                <span class="n">by_id_parts</span><span class="p">[</span><span class="n">by_part_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="n">by_id_parts</span><span class="p">[</span><span class="n">by_part_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">part</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_get_props_list</span><span class="p">(</span><span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">label_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
@@ -4075,27 +3760,17 @@ ControlReader        </code>
     <span class="k">def</span> <span class="nf">read_editable_content</span><span class="p">(</span>
         <span class="n">control_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
         <span class="n">required_sections_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-        <span class="n">label_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
-        <span class="n">sections_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+        <span class="n">part_label_to_id_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
+        <span class="n">cli_section_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
         <span class="n">write_mode</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">prof</span><span class="o">.</span><span class="n">Alter</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get parts for the markdown control corresponding to Editable Content - along with the set-parameter dict.&quot;&quot;&quot;</span>
         <span class="n">control_id</span> <span class="o">=</span> <span class="n">control_path</span><span class="o">.</span><span class="n">stem</span>
-        <span class="n">new_alters</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">prof</span><span class="o">.</span><span class="n">Alter</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">snake_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="n">md_api</span> <span class="o">=</span> <span class="n">MarkdownAPI</span><span class="p">()</span>
-        <span class="n">yaml_header</span><span class="p">,</span> <span class="n">control_tree</span> <span class="o">=</span> <span class="n">md_api</span><span class="o">.</span><span class="n">processor</span><span class="o">.</span><span class="n">process_markdown</span><span class="p">(</span><span class="n">control_path</span><span class="p">)</span>
+        <span class="n">yaml_header</span><span class="p">,</span> <span class="n">control_tree</span> <span class="o">=</span> <span class="n">md_api</span><span class="o">.</span><span class="n">processor</span><span class="o">.</span><span class="n">process_control_markdown</span><span class="p">(</span><span class="n">control_path</span><span class="p">,</span> <span class="n">cli_section_dict</span><span class="p">,</span> <span class="n">part_label_to_id_map</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
         <span class="c1"># extract the sort_id if present in header</span>
         <span class="n">sort_id</span> <span class="o">=</span> <span class="n">yaml_header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">SORT_ID</span><span class="p">,</span> <span class="n">control_id</span><span class="p">)</span>
-        <span class="c1"># merge the incoming sections_dict with the one in the header, with priority to incoming</span>
-        <span class="n">header_sections_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">yaml_header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">SECTIONS_TAG</span><span class="p">,</span> <span class="p">{})</span>
-        <span class="n">merged_sections_dict</span> <span class="o">=</span> <span class="n">merge_dicts</span><span class="p">(</span><span class="n">header_sections_dict</span><span class="p">,</span> <span class="n">sections_dict</span><span class="p">)</span>
-        <span class="c1"># query header for mapping of short to long section names</span>
-        <span class="c1"># create reverse lookup of long snake name to short name needed for part</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">merged_sections_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">snake_dict</span><span class="p">[</span><span class="n">spaces_and_caps_to_snake</span><span class="p">(</span><span class="n">value</span><span class="p">)]</span> <span class="o">=</span> <span class="n">key</span>
-        <span class="n">found_sections</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="n">editable_node</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">for</span> <span class="n">header</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">control_tree</span><span class="o">.</span><span class="n">get_all_headers_for_level</span><span class="p">(</span><span class="mi">1</span><span class="p">)):</span>
@@ -4105,21 +3780,17 @@ ControlReader        </code>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">editable_node</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">sort_id</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{}</span>
 
-        <span class="n">control_parts</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">by_id_parts</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">subnode</span> <span class="ow">in</span> <span class="n">editable_node</span><span class="o">.</span><span class="n">subnodes</span><span class="p">:</span>
-            <span class="c1"># check if it is a part added directly to the list of parts for the control</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">_add_control_part</span><span class="p">(</span><span class="n">control_id</span><span class="p">,</span>
-                                                   <span class="n">subnode</span><span class="p">,</span>
-                                                   <span class="n">required_sections_list</span><span class="p">,</span>
-                                                   <span class="n">merged_sections_dict</span><span class="p">,</span>
-                                                   <span class="n">snake_dict</span><span class="p">,</span>
-                                                   <span class="n">control_parts</span><span class="p">,</span>
-                                                   <span class="n">found_sections</span><span class="p">,</span>
-                                                   <span class="n">write_mode</span><span class="p">):</span>
-                <span class="c1"># otherwise add it to the list of new parts to be added to the sub-parts of a part based on by-id</span>
-                <span class="n">ControlReader</span><span class="o">.</span><span class="n">_add_sub_part</span><span class="p">(</span><span class="n">control_id</span><span class="p">,</span> <span class="n">subnode</span><span class="p">,</span> <span class="n">label_map</span><span class="p">,</span> <span class="n">by_id_parts</span><span class="p">,</span> <span class="n">merged_sections_dict</span><span class="p">)</span>
+        <span class="n">editable_parts</span> <span class="o">=</span> <span class="n">control_tree</span><span class="o">.</span><span class="n">get_editable_parts_and_subparts</span><span class="p">()</span>
+        <span class="n">by_id_parts</span> <span class="o">=</span> <span class="n">control_tree</span><span class="o">.</span><span class="n">get_by_id_parts</span><span class="p">()</span>
+        <span class="n">found_sections</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">editable_parts</span><span class="p">]</span>
 
+        <span class="c1"># Validate that all required sections have a prose</span>
+        <span class="k">for</span> <span class="n">editable_part</span> <span class="ow">in</span> <span class="n">editable_parts</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">write_mode</span> <span class="ow">and</span> <span class="n">editable_part</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">required_sections_list</span> <span class="ow">and</span> <span class="n">editable_part</span><span class="o">.</span><span class="n">prose</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span>
+                    <span class="n">const</span><span class="o">.</span><span class="n">PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Control </span><span class="si">{</span><span class="n">control_id</span><span class="si">}</span><span class="s1"> is missing prose for required section </span><span class="si">{</span><span class="n">editable_part</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Validate that all required sections are present</span>
         <span class="n">missing_sections</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">required_sections_list</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">found_sections</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">missing_sections</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Control </span><span class="si">{</span><span class="n">control_id</span><span class="si">}</span><span class="s1"> is missing required sections </span><span class="si">{</span><span class="n">missing_sections</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -4129,7 +3800,7 @@ ControlReader        </code>
         <span class="k">if</span> <span class="n">header_params</span><span class="p">:</span>
             <span class="n">param_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">header_params</span><span class="p">)</span>
 
-        <span class="n">props</span><span class="p">,</span> <span class="n">props_by_id</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">_get_props_list</span><span class="p">(</span><span class="n">control_id</span><span class="p">,</span> <span class="n">label_map</span><span class="p">,</span> <span class="n">yaml_header</span><span class="p">)</span>
+        <span class="n">props</span><span class="p">,</span> <span class="n">props_by_id</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">_get_props_list</span><span class="p">(</span><span class="n">control_id</span><span class="p">,</span> <span class="n">part_label_to_id_map</span><span class="p">,</span> <span class="n">yaml_header</span><span class="p">)</span>
 
         <span class="c1"># When adding props without by_id it can either be starting or ending and we default to ending</span>
         <span class="c1"># This is the default behavior as described for implicit binding in</span>
@@ -4140,15 +3811,19 @@ ControlReader        </code>
         <span class="n">adds</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">prof</span><span class="o">.</span><span class="n">Add</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="c1"># add the parts and props at control level</span>
-        <span class="k">if</span> <span class="n">control_parts</span> <span class="ow">or</span> <span class="n">props</span><span class="p">:</span>
-            <span class="n">adds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prof</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">parts</span><span class="o">=</span><span class="n">none_if_empty</span><span class="p">(</span><span class="n">control_parts</span><span class="p">),</span> <span class="n">props</span><span class="o">=</span><span class="n">none_if_empty</span><span class="p">(</span><span class="n">props</span><span class="p">),</span> <span class="n">position</span><span class="o">=</span><span class="s1">&#39;ending&#39;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">editable_parts</span> <span class="ow">or</span> <span class="n">props</span><span class="p">:</span>
+            <span class="n">adds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">prof</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span>
+                    <span class="n">parts</span><span class="o">=</span><span class="n">none_if_empty</span><span class="p">(</span><span class="n">editable_parts</span><span class="p">),</span> <span class="n">props</span><span class="o">=</span><span class="n">none_if_empty</span><span class="p">(</span><span class="n">props</span><span class="p">),</span> <span class="n">position</span><span class="o">=</span><span class="n">prof</span><span class="o">.</span><span class="n">Position</span><span class="o">.</span><span class="n">ending</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
 
         <span class="c1"># add the parts and props at the part level, by-id</span>
         <span class="n">by_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">by_id_parts</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">props_by_id</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="k">for</span> <span class="n">by_id</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">by_ids</span><span class="p">):</span>
             <span class="n">parts</span> <span class="o">=</span> <span class="n">by_id_parts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">by_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
             <span class="n">props</span> <span class="o">=</span> <span class="n">props_by_id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">by_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-            <span class="n">adds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prof</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">parts</span><span class="o">=</span><span class="n">parts</span><span class="p">,</span> <span class="n">props</span><span class="o">=</span><span class="n">props</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">&#39;ending&#39;</span><span class="p">,</span> <span class="n">by_id</span><span class="o">=</span><span class="n">by_id</span><span class="p">))</span>
+            <span class="n">adds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prof</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">parts</span><span class="o">=</span><span class="n">parts</span><span class="p">,</span> <span class="n">props</span><span class="o">=</span><span class="n">props</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">prof</span><span class="o">.</span><span class="n">Position</span><span class="o">.</span><span class="n">ending</span><span class="p">,</span> <span class="n">by_id</span><span class="o">=</span><span class="n">by_id</span><span class="p">))</span>
 
         <span class="n">new_alters</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">adds</span><span class="p">:</span>
@@ -4167,39 +3842,49 @@ ControlReader        </code>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read the control and group title from the markdown file.&quot;&quot;&quot;</span>
         <span class="n">control</span> <span class="o">=</span> <span class="n">gens</span><span class="o">.</span><span class="n">generate_sample_model</span><span class="p">(</span><span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">)</span>
         <span class="n">md_api</span> <span class="o">=</span> <span class="n">MarkdownAPI</span><span class="p">()</span>
-        <span class="n">yaml_header</span><span class="p">,</span> <span class="n">control_tree</span> <span class="o">=</span> <span class="n">md_api</span><span class="o">.</span><span class="n">processor</span><span class="o">.</span><span class="n">process_markdown</span><span class="p">(</span><span class="n">control_path</span><span class="p">)</span>
+        <span class="n">yaml_header</span><span class="p">,</span> <span class="n">control_tree</span> <span class="o">=</span> <span class="n">md_api</span><span class="o">.</span><span class="n">processor</span><span class="o">.</span><span class="n">process_control_markdown</span><span class="p">(</span><span class="n">control_path</span><span class="p">)</span>
         <span class="n">control_titles</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">control_tree</span><span class="o">.</span><span class="n">get_all_headers_for_level</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">control_titles</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Control markdown: </span><span class="si">{</span><span class="n">control_path</span><span class="si">}</span><span class="s1"> contains no control title.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">control_titles</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Control markdown: </span><span class="si">{</span><span class="n">control_path</span><span class="si">}</span><span class="s1"> contains multiple control titles </span><span class="si">{</span><span class="n">control_titles</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
 
-        <span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">group_title</span><span class="p">,</span> <span class="n">control</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">_parse_control_title_line</span><span class="p">(</span><span class="n">control_titles</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">control</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">control_tree</span><span class="o">.</span><span class="n">subnodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">control_id</span>
+        <span class="n">group_title</span> <span class="o">=</span> <span class="n">control_tree</span><span class="o">.</span><span class="n">subnodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">control_group</span>
+        <span class="n">control</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">control_tree</span><span class="o">.</span><span class="n">subnodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">control_title</span>
 
-        <span class="n">control_headers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">control_tree</span><span class="o">.</span><span class="n">get_all_headers_for_level</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">control_headers</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Control markdown: </span><span class="si">{</span><span class="n">control_path</span><span class="si">}</span><span class="s1"> contains no control statements.&#39;</span><span class="p">)</span>
-
-        <span class="n">control_statement</span> <span class="o">=</span> <span class="n">control_tree</span><span class="o">.</span><span class="n">get_node_for_key</span><span class="p">(</span><span class="n">control_headers</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="n">statement_part</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">_read_control_statement_or_objective</span><span class="p">(</span>
-            <span class="n">const</span><span class="o">.</span><span class="n">CONTROL_STATEMENT_HEADER</span><span class="p">,</span> <span class="n">control_statement</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">raw_text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">),</span> <span class="n">control</span><span class="o">.</span><span class="n">id</span>
-        <span class="p">)</span>
+        <span class="n">control_statement</span> <span class="o">=</span> <span class="n">control_tree</span><span class="o">.</span><span class="n">get_control_statement</span><span class="p">()</span>
+        <span class="n">statement_part</span> <span class="o">=</span> <span class="n">control_statement</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">part</span>
 
         <span class="n">control</span><span class="o">.</span><span class="n">parts</span> <span class="o">=</span> <span class="p">[</span><span class="n">statement_part</span><span class="p">]</span> <span class="k">if</span> <span class="n">statement_part</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="n">control_objective</span> <span class="o">=</span> <span class="n">control_tree</span><span class="o">.</span><span class="n">get_node_for_key</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">CONTROL_OBJECTIVE_HEADER</span><span class="p">)</span>
+        <span class="n">control_objective</span> <span class="o">=</span> <span class="n">control_tree</span><span class="o">.</span><span class="n">get_control_objective</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">control_objective</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">objective_part</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">_read_control_statement_or_objective</span><span class="p">(</span>
-                <span class="n">const</span><span class="o">.</span><span class="n">CONTROL_OBJECTIVE_HEADER</span><span class="p">,</span> <span class="n">control_objective</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">raw_text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">),</span> <span class="n">control</span><span class="o">.</span><span class="n">id</span>
-            <span class="p">)</span>
+            <span class="n">objective_part</span> <span class="o">=</span> <span class="n">control_objective</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">part</span>
             <span class="k">if</span> <span class="n">objective_part</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">control</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
                     <span class="n">control</span><span class="o">.</span><span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">objective_part</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">control</span><span class="o">.</span><span class="n">parts</span> <span class="o">=</span> <span class="p">[</span><span class="n">objective_part</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">header_key</span> <span class="ow">in</span> <span class="n">control_tree</span><span class="o">.</span><span class="n">get_all_headers_for_key</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">CONTROL_HEADER</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">header_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="n">control_headers</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">const</span><span class="o">.</span><span class="n">CONTROL_OBJECTIVE_HEADER</span><span class="p">,</span> <span class="n">control_titles</span><span class="p">[</span><span class="mi">0</span><span class="p">]}:</span>
-                <span class="n">section_node</span> <span class="o">=</span> <span class="n">control_tree</span><span class="o">.</span><span class="n">get_node_for_key</span><span class="p">(</span><span class="n">header_key</span><span class="p">)</span>
-                <span class="n">_</span><span class="p">,</span> <span class="n">control</span><span class="o">.</span><span class="n">parts</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">_read_sections</span><span class="p">(</span>
-                    <span class="mi">0</span><span class="p">,</span> <span class="n">section_node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">raw_text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">),</span> <span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">control</span><span class="o">.</span><span class="n">parts</span>
-                <span class="p">)</span>
+
+        <span class="n">control_guidance</span> <span class="o">=</span> <span class="n">control_tree</span><span class="o">.</span><span class="n">get_control_guidance</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">control_guidance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">guidance_part</span> <span class="o">=</span> <span class="n">control_guidance</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">part</span>
+            <span class="k">if</span> <span class="n">guidance_part</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">control</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
+                    <span class="n">control</span><span class="o">.</span><span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">guidance_part</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">control</span><span class="o">.</span><span class="n">parts</span> <span class="o">=</span> <span class="p">[</span><span class="n">guidance_part</span><span class="p">]</span>
+
+        <span class="n">all_other_parts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">section_node</span> <span class="ow">in</span> <span class="n">control_tree</span><span class="o">.</span><span class="n">get_other_control_parts</span><span class="p">():</span>
+            <span class="n">parts</span> <span class="o">=</span> <span class="n">section_node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">part</span>
+            <span class="n">all_other_parts</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">parts</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">all_other_parts</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">control</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
+                <span class="n">control</span><span class="o">.</span><span class="n">parts</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">all_other_parts</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">control</span><span class="o">.</span><span class="n">parts</span> <span class="o">=</span> <span class="n">all_other_parts</span>
+
         <span class="k">if</span> <span class="n">set_parameters_flag</span><span class="p">:</span>
             <span class="n">params</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">yaml_header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">SET_PARAMS_TAG</span><span class="p">,</span> <span class="p">[])</span>
             <span class="k">if</span> <span class="n">params</span><span class="p">:</span>
@@ -4254,39 +3939,49 @@ ControlReader        </code>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Read the control and group title from the markdown file.&quot;&quot;&quot;</span>
     <span class="n">control</span> <span class="o">=</span> <span class="n">gens</span><span class="o">.</span><span class="n">generate_sample_model</span><span class="p">(</span><span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">)</span>
     <span class="n">md_api</span> <span class="o">=</span> <span class="n">MarkdownAPI</span><span class="p">()</span>
-    <span class="n">yaml_header</span><span class="p">,</span> <span class="n">control_tree</span> <span class="o">=</span> <span class="n">md_api</span><span class="o">.</span><span class="n">processor</span><span class="o">.</span><span class="n">process_markdown</span><span class="p">(</span><span class="n">control_path</span><span class="p">)</span>
+    <span class="n">yaml_header</span><span class="p">,</span> <span class="n">control_tree</span> <span class="o">=</span> <span class="n">md_api</span><span class="o">.</span><span class="n">processor</span><span class="o">.</span><span class="n">process_control_markdown</span><span class="p">(</span><span class="n">control_path</span><span class="p">)</span>
     <span class="n">control_titles</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">control_tree</span><span class="o">.</span><span class="n">get_all_headers_for_level</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">control_titles</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Control markdown: </span><span class="si">{</span><span class="n">control_path</span><span class="si">}</span><span class="s1"> contains no control title.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">control_titles</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Control markdown: </span><span class="si">{</span><span class="n">control_path</span><span class="si">}</span><span class="s1"> contains multiple control titles </span><span class="si">{</span><span class="n">control_titles</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
 
-    <span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">group_title</span><span class="p">,</span> <span class="n">control</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">_parse_control_title_line</span><span class="p">(</span><span class="n">control_titles</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">control</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">control_tree</span><span class="o">.</span><span class="n">subnodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">control_id</span>
+    <span class="n">group_title</span> <span class="o">=</span> <span class="n">control_tree</span><span class="o">.</span><span class="n">subnodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">control_group</span>
+    <span class="n">control</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">control_tree</span><span class="o">.</span><span class="n">subnodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">control_title</span>
 
-    <span class="n">control_headers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">control_tree</span><span class="o">.</span><span class="n">get_all_headers_for_level</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">control_headers</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Control markdown: </span><span class="si">{</span><span class="n">control_path</span><span class="si">}</span><span class="s1"> contains no control statements.&#39;</span><span class="p">)</span>
-
-    <span class="n">control_statement</span> <span class="o">=</span> <span class="n">control_tree</span><span class="o">.</span><span class="n">get_node_for_key</span><span class="p">(</span><span class="n">control_headers</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">statement_part</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">_read_control_statement_or_objective</span><span class="p">(</span>
-        <span class="n">const</span><span class="o">.</span><span class="n">CONTROL_STATEMENT_HEADER</span><span class="p">,</span> <span class="n">control_statement</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">raw_text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">),</span> <span class="n">control</span><span class="o">.</span><span class="n">id</span>
-    <span class="p">)</span>
+    <span class="n">control_statement</span> <span class="o">=</span> <span class="n">control_tree</span><span class="o">.</span><span class="n">get_control_statement</span><span class="p">()</span>
+    <span class="n">statement_part</span> <span class="o">=</span> <span class="n">control_statement</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">part</span>
 
     <span class="n">control</span><span class="o">.</span><span class="n">parts</span> <span class="o">=</span> <span class="p">[</span><span class="n">statement_part</span><span class="p">]</span> <span class="k">if</span> <span class="n">statement_part</span> <span class="k">else</span> <span class="kc">None</span>
-    <span class="n">control_objective</span> <span class="o">=</span> <span class="n">control_tree</span><span class="o">.</span><span class="n">get_node_for_key</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">CONTROL_OBJECTIVE_HEADER</span><span class="p">)</span>
+    <span class="n">control_objective</span> <span class="o">=</span> <span class="n">control_tree</span><span class="o">.</span><span class="n">get_control_objective</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">control_objective</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">objective_part</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">_read_control_statement_or_objective</span><span class="p">(</span>
-            <span class="n">const</span><span class="o">.</span><span class="n">CONTROL_OBJECTIVE_HEADER</span><span class="p">,</span> <span class="n">control_objective</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">raw_text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">),</span> <span class="n">control</span><span class="o">.</span><span class="n">id</span>
-        <span class="p">)</span>
+        <span class="n">objective_part</span> <span class="o">=</span> <span class="n">control_objective</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">part</span>
         <span class="k">if</span> <span class="n">objective_part</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">control</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
                 <span class="n">control</span><span class="o">.</span><span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">objective_part</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">control</span><span class="o">.</span><span class="n">parts</span> <span class="o">=</span> <span class="p">[</span><span class="n">objective_part</span><span class="p">]</span>
-    <span class="k">for</span> <span class="n">header_key</span> <span class="ow">in</span> <span class="n">control_tree</span><span class="o">.</span><span class="n">get_all_headers_for_key</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">CONTROL_HEADER</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">header_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="n">control_headers</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">const</span><span class="o">.</span><span class="n">CONTROL_OBJECTIVE_HEADER</span><span class="p">,</span> <span class="n">control_titles</span><span class="p">[</span><span class="mi">0</span><span class="p">]}:</span>
-            <span class="n">section_node</span> <span class="o">=</span> <span class="n">control_tree</span><span class="o">.</span><span class="n">get_node_for_key</span><span class="p">(</span><span class="n">header_key</span><span class="p">)</span>
-            <span class="n">_</span><span class="p">,</span> <span class="n">control</span><span class="o">.</span><span class="n">parts</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">_read_sections</span><span class="p">(</span>
-                <span class="mi">0</span><span class="p">,</span> <span class="n">section_node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">raw_text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">),</span> <span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">control</span><span class="o">.</span><span class="n">parts</span>
-            <span class="p">)</span>
+
+    <span class="n">control_guidance</span> <span class="o">=</span> <span class="n">control_tree</span><span class="o">.</span><span class="n">get_control_guidance</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">control_guidance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">guidance_part</span> <span class="o">=</span> <span class="n">control_guidance</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">part</span>
+        <span class="k">if</span> <span class="n">guidance_part</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">control</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
+                <span class="n">control</span><span class="o">.</span><span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">guidance_part</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">control</span><span class="o">.</span><span class="n">parts</span> <span class="o">=</span> <span class="p">[</span><span class="n">guidance_part</span><span class="p">]</span>
+
+    <span class="n">all_other_parts</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">section_node</span> <span class="ow">in</span> <span class="n">control_tree</span><span class="o">.</span><span class="n">get_other_control_parts</span><span class="p">():</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="n">section_node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">part</span>
+        <span class="n">all_other_parts</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">parts</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">all_other_parts</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">control</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
+            <span class="n">control</span><span class="o">.</span><span class="n">parts</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">all_other_parts</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">control</span><span class="o">.</span><span class="n">parts</span> <span class="o">=</span> <span class="n">all_other_parts</span>
+
     <span class="k">if</span> <span class="n">set_parameters_flag</span><span class="p">:</span>
         <span class="n">params</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">yaml_header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">SET_PARAMS_TAG</span><span class="p">,</span> <span class="p">[])</span>
         <span class="k">if</span> <span class="n">params</span><span class="p">:</span>
@@ -4440,7 +4135,7 @@ Adds to the passed in comp_dict.</p></td>
 
 
 <h6 id="trestle.core.control_reader.ControlReader.read_editable_content" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">read_editable_content</span><span class="p">(</span><span class="n">control_path</span><span class="p">,</span> <span class="n">required_sections_list</span><span class="p">,</span> <span class="n">label_map</span><span class="p">,</span> <span class="n">sections_dict</span><span class="p">,</span> <span class="n">write_mode</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">read_editable_content</span><span class="p">(</span><span class="n">control_path</span><span class="p">,</span> <span class="n">required_sections_list</span><span class="p">,</span> <span class="n">part_label_to_id_map</span><span class="p">,</span> <span class="n">cli_section_dict</span><span class="p">,</span> <span class="n">write_mode</span><span class="p">)</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-staticmethod"><code>staticmethod</code></small>
@@ -4458,27 +4153,17 @@ Adds to the passed in comp_dict.</p></td>
 <span class="k">def</span> <span class="nf">read_editable_content</span><span class="p">(</span>
     <span class="n">control_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
     <span class="n">required_sections_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-    <span class="n">label_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
-    <span class="n">sections_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+    <span class="n">part_label_to_id_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
+    <span class="n">cli_section_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
     <span class="n">write_mode</span><span class="p">:</span> <span class="nb">bool</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">prof</span><span class="o">.</span><span class="n">Alter</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get parts for the markdown control corresponding to Editable Content - along with the set-parameter dict.&quot;&quot;&quot;</span>
     <span class="n">control_id</span> <span class="o">=</span> <span class="n">control_path</span><span class="o">.</span><span class="n">stem</span>
-    <span class="n">new_alters</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">prof</span><span class="o">.</span><span class="n">Alter</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">snake_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="n">md_api</span> <span class="o">=</span> <span class="n">MarkdownAPI</span><span class="p">()</span>
-    <span class="n">yaml_header</span><span class="p">,</span> <span class="n">control_tree</span> <span class="o">=</span> <span class="n">md_api</span><span class="o">.</span><span class="n">processor</span><span class="o">.</span><span class="n">process_markdown</span><span class="p">(</span><span class="n">control_path</span><span class="p">)</span>
+    <span class="n">yaml_header</span><span class="p">,</span> <span class="n">control_tree</span> <span class="o">=</span> <span class="n">md_api</span><span class="o">.</span><span class="n">processor</span><span class="o">.</span><span class="n">process_control_markdown</span><span class="p">(</span><span class="n">control_path</span><span class="p">,</span> <span class="n">cli_section_dict</span><span class="p">,</span> <span class="n">part_label_to_id_map</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
     <span class="c1"># extract the sort_id if present in header</span>
     <span class="n">sort_id</span> <span class="o">=</span> <span class="n">yaml_header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">SORT_ID</span><span class="p">,</span> <span class="n">control_id</span><span class="p">)</span>
-    <span class="c1"># merge the incoming sections_dict with the one in the header, with priority to incoming</span>
-    <span class="n">header_sections_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">yaml_header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">SECTIONS_TAG</span><span class="p">,</span> <span class="p">{})</span>
-    <span class="n">merged_sections_dict</span> <span class="o">=</span> <span class="n">merge_dicts</span><span class="p">(</span><span class="n">header_sections_dict</span><span class="p">,</span> <span class="n">sections_dict</span><span class="p">)</span>
-    <span class="c1"># query header for mapping of short to long section names</span>
-    <span class="c1"># create reverse lookup of long snake name to short name needed for part</span>
-    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">merged_sections_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">snake_dict</span><span class="p">[</span><span class="n">spaces_and_caps_to_snake</span><span class="p">(</span><span class="n">value</span><span class="p">)]</span> <span class="o">=</span> <span class="n">key</span>
-    <span class="n">found_sections</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="n">editable_node</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">for</span> <span class="n">header</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">control_tree</span><span class="o">.</span><span class="n">get_all_headers_for_level</span><span class="p">(</span><span class="mi">1</span><span class="p">)):</span>
@@ -4488,21 +4173,17 @@ Adds to the passed in comp_dict.</p></td>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">editable_node</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">sort_id</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{}</span>
 
-    <span class="n">control_parts</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">by_id_parts</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">subnode</span> <span class="ow">in</span> <span class="n">editable_node</span><span class="o">.</span><span class="n">subnodes</span><span class="p">:</span>
-        <span class="c1"># check if it is a part added directly to the list of parts for the control</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">_add_control_part</span><span class="p">(</span><span class="n">control_id</span><span class="p">,</span>
-                                               <span class="n">subnode</span><span class="p">,</span>
-                                               <span class="n">required_sections_list</span><span class="p">,</span>
-                                               <span class="n">merged_sections_dict</span><span class="p">,</span>
-                                               <span class="n">snake_dict</span><span class="p">,</span>
-                                               <span class="n">control_parts</span><span class="p">,</span>
-                                               <span class="n">found_sections</span><span class="p">,</span>
-                                               <span class="n">write_mode</span><span class="p">):</span>
-            <span class="c1"># otherwise add it to the list of new parts to be added to the sub-parts of a part based on by-id</span>
-            <span class="n">ControlReader</span><span class="o">.</span><span class="n">_add_sub_part</span><span class="p">(</span><span class="n">control_id</span><span class="p">,</span> <span class="n">subnode</span><span class="p">,</span> <span class="n">label_map</span><span class="p">,</span> <span class="n">by_id_parts</span><span class="p">,</span> <span class="n">merged_sections_dict</span><span class="p">)</span>
+    <span class="n">editable_parts</span> <span class="o">=</span> <span class="n">control_tree</span><span class="o">.</span><span class="n">get_editable_parts_and_subparts</span><span class="p">()</span>
+    <span class="n">by_id_parts</span> <span class="o">=</span> <span class="n">control_tree</span><span class="o">.</span><span class="n">get_by_id_parts</span><span class="p">()</span>
+    <span class="n">found_sections</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">editable_parts</span><span class="p">]</span>
 
+    <span class="c1"># Validate that all required sections have a prose</span>
+    <span class="k">for</span> <span class="n">editable_part</span> <span class="ow">in</span> <span class="n">editable_parts</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">write_mode</span> <span class="ow">and</span> <span class="n">editable_part</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">required_sections_list</span> <span class="ow">and</span> <span class="n">editable_part</span><span class="o">.</span><span class="n">prose</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span>
+                <span class="n">const</span><span class="o">.</span><span class="n">PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Control </span><span class="si">{</span><span class="n">control_id</span><span class="si">}</span><span class="s1"> is missing prose for required section </span><span class="si">{</span><span class="n">editable_part</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Validate that all required sections are present</span>
     <span class="n">missing_sections</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">required_sections_list</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">found_sections</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">missing_sections</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Control </span><span class="si">{</span><span class="n">control_id</span><span class="si">}</span><span class="s1"> is missing required sections </span><span class="si">{</span><span class="n">missing_sections</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -4512,7 +4193,7 @@ Adds to the passed in comp_dict.</p></td>
     <span class="k">if</span> <span class="n">header_params</span><span class="p">:</span>
         <span class="n">param_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">header_params</span><span class="p">)</span>
 
-    <span class="n">props</span><span class="p">,</span> <span class="n">props_by_id</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">_get_props_list</span><span class="p">(</span><span class="n">control_id</span><span class="p">,</span> <span class="n">label_map</span><span class="p">,</span> <span class="n">yaml_header</span><span class="p">)</span>
+    <span class="n">props</span><span class="p">,</span> <span class="n">props_by_id</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">_get_props_list</span><span class="p">(</span><span class="n">control_id</span><span class="p">,</span> <span class="n">part_label_to_id_map</span><span class="p">,</span> <span class="n">yaml_header</span><span class="p">)</span>
 
     <span class="c1"># When adding props without by_id it can either be starting or ending and we default to ending</span>
     <span class="c1"># This is the default behavior as described for implicit binding in</span>
@@ -4523,15 +4204,19 @@ Adds to the passed in comp_dict.</p></td>
     <span class="n">adds</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">prof</span><span class="o">.</span><span class="n">Add</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="c1"># add the parts and props at control level</span>
-    <span class="k">if</span> <span class="n">control_parts</span> <span class="ow">or</span> <span class="n">props</span><span class="p">:</span>
-        <span class="n">adds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prof</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">parts</span><span class="o">=</span><span class="n">none_if_empty</span><span class="p">(</span><span class="n">control_parts</span><span class="p">),</span> <span class="n">props</span><span class="o">=</span><span class="n">none_if_empty</span><span class="p">(</span><span class="n">props</span><span class="p">),</span> <span class="n">position</span><span class="o">=</span><span class="s1">&#39;ending&#39;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">editable_parts</span> <span class="ow">or</span> <span class="n">props</span><span class="p">:</span>
+        <span class="n">adds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">prof</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span>
+                <span class="n">parts</span><span class="o">=</span><span class="n">none_if_empty</span><span class="p">(</span><span class="n">editable_parts</span><span class="p">),</span> <span class="n">props</span><span class="o">=</span><span class="n">none_if_empty</span><span class="p">(</span><span class="n">props</span><span class="p">),</span> <span class="n">position</span><span class="o">=</span><span class="n">prof</span><span class="o">.</span><span class="n">Position</span><span class="o">.</span><span class="n">ending</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
 
     <span class="c1"># add the parts and props at the part level, by-id</span>
     <span class="n">by_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">by_id_parts</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">props_by_id</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
     <span class="k">for</span> <span class="n">by_id</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">by_ids</span><span class="p">):</span>
         <span class="n">parts</span> <span class="o">=</span> <span class="n">by_id_parts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">by_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">props</span> <span class="o">=</span> <span class="n">props_by_id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">by_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">adds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prof</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">parts</span><span class="o">=</span><span class="n">parts</span><span class="p">,</span> <span class="n">props</span><span class="o">=</span><span class="n">props</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">&#39;ending&#39;</span><span class="p">,</span> <span class="n">by_id</span><span class="o">=</span><span class="n">by_id</span><span class="p">))</span>
+        <span class="n">adds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prof</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">parts</span><span class="o">=</span><span class="n">parts</span><span class="p">,</span> <span class="n">props</span><span class="o">=</span><span class="n">props</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">prof</span><span class="o">.</span><span class="n">Position</span><span class="o">.</span><span class="n">ending</span><span class="p">,</span> <span class="n">by_id</span><span class="o">=</span><span class="n">by_id</span><span class="p">))</span>
 
     <span class="n">new_alters</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">if</span> <span class="n">adds</span><span class="p">:</span>
@@ -4669,8 +4354,8 @@ This is only used during component assemble and only for updating one component.
 
     <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">param_dict_list</span> <span class="ow">in</span> <span class="n">md_header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">COMP_DEF_RULES_PARAM_VALS_TAG</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">for</span> <span class="n">param_dict</span> <span class="ow">in</span> <span class="n">param_dict_list</span><span class="p">:</span>
-            <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Value</span><span class="p">(</span><span class="n">__root__</span><span class="o">=</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">param_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">VALUES</span><span class="p">,</span> <span class="p">[])]</span>
-            <span class="n">comp_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Value</span><span class="p">(</span><span class="n">__root__</span><span class="o">=</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">param_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">COMPONENT_VALUES</span><span class="p">,</span> <span class="p">[])]</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">param_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">VALUES</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="n">comp_values</span> <span class="o">=</span> <span class="n">param_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">COMPONENT_VALUES</span><span class="p">,</span> <span class="p">[])</span>
             <span class="n">values</span> <span class="o">=</span> <span class="n">comp_values</span> <span class="k">if</span> <span class="n">comp_values</span> <span class="k">else</span> <span class="n">values</span>
             <span class="n">set_param</span> <span class="o">=</span> <span class="n">ossp</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">(</span><span class="n">param_id</span><span class="o">=</span><span class="n">param_dict</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">)</span>
             <span class="n">imp_req</span><span class="o">.</span><span class="n">set_parameters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">set_param</span><span class="p">)</span>
@@ -4782,7 +4467,7 @@ This is only used during component assemble and only for updating one component.
     <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
+      <script src="../../assets/javascripts/bundle.407015b8.min.js"></script>
       
     
   </body>

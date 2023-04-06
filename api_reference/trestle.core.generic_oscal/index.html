@@ -19,7 +19,7 @@
         <link rel="next" href="../trestle.core.jinja/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.15">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.5">
     
     
       
@@ -27,7 +27,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7a7fce14.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
@@ -492,7 +492,7 @@
   
     <li class="md-nav__item">
       <a href="../../tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring/" class="md-nav__link">
-        SSP, Catalog, and Profile Authoring
+        Catalog, Profile, ComponentDefinition, and SSP Authoring
       </a>
     </li>
   
@@ -2865,6 +2865,48 @@
   
   
     <li class="md-nav__item">
+      <a href="../trestle.core.markdown.base_markdown_node/" class="md-nav__link">
+        base_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.markdown.control_markdown_node/" class="md-nav__link">
+        control_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.markdown.docs_markdown_node/" class="md-nav__link">
+        docs_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../trestle.core.markdown.markdown_api/" class="md-nav__link">
         markdown_api
       </a>
@@ -2881,20 +2923,6 @@
     <li class="md-nav__item">
       <a href="../trestle.core.markdown.markdown_const/" class="md-nav__link">
         markdown_const
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../trestle.core.markdown.markdown_node/" class="md-nav__link">
-        markdown_node
       </a>
     </li>
   
@@ -3257,6 +3285,20 @@
           
         </ul>
       </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.rule_parameters_validator/" class="md-nav__link">
+        rule_parameters_validator
+      </a>
     </li>
   
 
@@ -4716,7 +4758,7 @@ GenericByComponent            (<a class="autorefs autorefs-internal" title="tres
     <span class="n">implementation_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">ImplementationStatus</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;implementation-status&#39;</span><span class="p">)</span>
     <span class="c1"># removed export, inherited, satisfied</span>
     <span class="n">responsible_roles</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">ResponsibleRole</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;responsible-roles&#39;</span><span class="p">)</span>
-    <span class="n">remarks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Remarks</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">remarks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">generate</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">GenericByComponent</span><span class="p">:</span>
@@ -4869,7 +4911,7 @@ GenericByComponent            (<a class="autorefs autorefs-internal" title="tres
 
 
 <h6 id="trestle.core.generic_oscal.GenericByComponent.remarks" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">remarks</span><span class="p">:</span> <span class="n">Remarks</span></code>
+<code class="highlight language-python"><span class="n">remarks</span><span class="p">:</span> <span class="nb">str</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-pydantic-field"><code>pydantic-field</code></small>
@@ -5097,7 +5139,7 @@ GenericComponent            (<a class="autorefs autorefs-internal" title="trestl
     <span class="n">protocols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Protocol</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
     <span class="c1"># ssp does not have a list of ci&#39;s but it does have one ci</span>
     <span class="n">control_implementations</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">GenericControlImplementation</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;control-implementations&#39;</span><span class="p">)</span>
-    <span class="n">remarks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Remarks</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">remarks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="c1"># ssp has</span>
     <span class="n">status</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">ImplementationStatus</span>
 
@@ -5135,7 +5177,7 @@ GenericComponent            (<a class="autorefs autorefs-internal" title="trestl
                 <span class="sa">f</span><span class="s1">&#39;SystemComponent status </span><span class="si">{</span><span class="n">status_str</span><span class="si">}</span><span class="s1"> not recognized.  Setting to </span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">STATUS_OPERATIONAL</span><span class="si">}</span><span class="s1">&#39;</span>
             <span class="p">)</span>
             <span class="n">status_str</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">STATUS_OPERATIONAL</span>
-        <span class="n">class_dict</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ossp</span><span class="o">.</span><span class="n">Status</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">ossp</span><span class="o">.</span><span class="n">State1</span><span class="p">(</span><span class="n">status_str</span><span class="p">),</span> <span class="n">remarks</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">remarks</span><span class="p">)</span>
+        <span class="n">class_dict</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ossp</span><span class="o">.</span><span class="n">Status</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">status_str</span><span class="p">,</span> <span class="n">remarks</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">remarks</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ossp</span><span class="o">.</span><span class="n">SystemComponent</span><span class="p">(</span><span class="o">**</span><span class="n">class_dict</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
@@ -5290,7 +5332,7 @@ GenericComponent            (<a class="autorefs autorefs-internal" title="trestl
 
 
 <h6 id="trestle.core.generic_oscal.GenericComponent.remarks" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">remarks</span><span class="p">:</span> <span class="n">Remarks</span></code>
+<code class="highlight language-python"><span class="n">remarks</span><span class="p">:</span> <span class="nb">str</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-pydantic-field"><code>pydantic-field</code></small>
@@ -5480,7 +5522,7 @@ GenericComponent            (<a class="autorefs autorefs-internal" title="trestl
             <span class="sa">f</span><span class="s1">&#39;SystemComponent status </span><span class="si">{</span><span class="n">status_str</span><span class="si">}</span><span class="s1"> not recognized.  Setting to </span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">STATUS_OPERATIONAL</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="p">)</span>
         <span class="n">status_str</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">STATUS_OPERATIONAL</span>
-    <span class="n">class_dict</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ossp</span><span class="o">.</span><span class="n">Status</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">ossp</span><span class="o">.</span><span class="n">State1</span><span class="p">(</span><span class="n">status_str</span><span class="p">),</span> <span class="n">remarks</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">remarks</span><span class="p">)</span>
+    <span class="n">class_dict</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ossp</span><span class="o">.</span><span class="n">Status</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">status_str</span><span class="p">,</span> <span class="n">remarks</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">remarks</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ossp</span><span class="o">.</span><span class="n">SystemComponent</span><span class="p">(</span><span class="o">**</span><span class="n">class_dict</span><span class="p">)</span>
 </code></pre></div>
         </details>
@@ -6031,7 +6073,7 @@ GenericImplementedRequirement            (<a class="autorefs autorefs-internal" 
     <span class="n">set_parameters</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">GenericSetParameter</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;set-parameters&#39;</span><span class="p">)</span>
     <span class="n">responsible_roles</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">ResponsibleRole</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;responsible-roles&#39;</span><span class="p">)</span>
     <span class="n">statements</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">GenericStatement</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-    <span class="n">remarks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Remarks</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">remarks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="c1"># ssp has following</span>
     <span class="n">by_components</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">GenericByComponent</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;by-components&#39;</span><span class="p">)</span>
 
@@ -6185,7 +6227,7 @@ GenericImplementedRequirement            (<a class="autorefs autorefs-internal" 
 
 
 <h6 id="trestle.core.generic_oscal.GenericImplementedRequirement.remarks" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">remarks</span><span class="p">:</span> <span class="n">Remarks</span></code>
+<code class="highlight language-python"><span class="n">remarks</span><span class="p">:</span> <span class="nb">str</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-pydantic-field"><code>pydantic-field</code></small>
@@ -6435,8 +6477,8 @@ GenericSetParameter            (<a class="autorefs autorefs-internal" title="tre
         <span class="s2">&quot;A human-oriented reference to a parameter within a control, who&#39;s catalog has been imported into the current implementation context.&quot;</span><span class="p">,</span>  <span class="c1"># noqa E501</span>
         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Parameter ID&#39;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Value</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-    <span class="n">remarks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Remarks</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+    <span class="n">remarks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_defined_component</span><span class="p">(</span><span class="n">sp</span><span class="p">:</span> <span class="n">comp</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">):</span>
@@ -6487,7 +6529,7 @@ GenericSetParameter            (<a class="autorefs autorefs-internal" title="tre
 
 
 <h6 id="trestle.core.generic_oscal.GenericSetParameter.remarks" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">remarks</span><span class="p">:</span> <span class="n">Remarks</span></code>
+<code class="highlight language-python"><span class="n">remarks</span><span class="p">:</span> <span class="nb">str</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-pydantic-field"><code>pydantic-field</code></small>
@@ -6508,7 +6550,7 @@ GenericSetParameter            (<a class="autorefs autorefs-internal" title="tre
 
 
 <h6 id="trestle.core.generic_oscal.GenericSetParameter.values" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">trestle</span><span class="o">.</span><span class="n">oscal</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">Value</span><span class="p">]</span></code>
+<code class="highlight language-python"><span class="n">values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-pydantic-field"><code>pydantic-field</code></small>
@@ -6648,7 +6690,7 @@ GenericStatement            (<a class="autorefs autorefs-internal" title="trestl
     <span class="n">props</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Property</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">links</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Link</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">responsible_roles</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">ResponsibleRole</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;responsible-roles&#39;</span><span class="p">)</span>
-    <span class="n">remarks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Remarks</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">remarks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="c1"># ssp has following</span>
     <span class="n">by_components</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">GenericByComponent</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;by-components&#39;</span><span class="p">)</span>
 
@@ -6772,7 +6814,7 @@ GenericStatement            (<a class="autorefs autorefs-internal" title="trestl
 
 
 <h6 id="trestle.core.generic_oscal.GenericStatement.remarks" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">remarks</span><span class="p">:</span> <span class="n">Remarks</span></code>
+<code class="highlight language-python"><span class="n">remarks</span><span class="p">:</span> <span class="nb">str</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-pydantic-field"><code>pydantic-field</code></small>
@@ -6962,7 +7004,7 @@ GenericStatement            (<a class="autorefs autorefs-internal" title="trestl
     <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
+      <script src="../../assets/javascripts/bundle.407015b8.min.js"></script>
       
     
   </body>

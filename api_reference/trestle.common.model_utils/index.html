@@ -19,7 +19,7 @@
         <link rel="next" href="../trestle.common.str_utils/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.15">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.5">
     
     
       
@@ -27,7 +27,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7a7fce14.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
@@ -492,7 +492,7 @@
   
     <li class="md-nav__item">
       <a href="../../tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring/" class="md-nav__link">
-        SSP, Catalog, and Profile Authoring
+        Catalog, Profile, ComponentDefinition, and SSP Authoring
       </a>
     </li>
   
@@ -2370,6 +2370,48 @@
   
   
     <li class="md-nav__item">
+      <a href="../trestle.core.markdown.base_markdown_node/" class="md-nav__link">
+        base_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.markdown.control_markdown_node/" class="md-nav__link">
+        control_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.markdown.docs_markdown_node/" class="md-nav__link">
+        docs_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../trestle.core.markdown.markdown_api/" class="md-nav__link">
         markdown_api
       </a>
@@ -2386,20 +2428,6 @@
     <li class="md-nav__item">
       <a href="../trestle.core.markdown.markdown_const/" class="md-nav__link">
         markdown_const
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../trestle.core.markdown.markdown_node/" class="md-nav__link">
-        markdown_node
       </a>
     </li>
   
@@ -2762,6 +2790,20 @@
           
         </ul>
       </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.rule_parameters_validator/" class="md-nav__link">
+        rule_parameters_validator
+      </a>
     </li>
   
 
@@ -4164,10 +4206,10 @@ ModelUtils        </code>
 <span class="sd">            The converted parameter as dictionary</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">main_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="s1">&#39;values&#39;</span><span class="p">,</span> <span class="s1">&#39;select&#39;</span><span class="p">,</span> <span class="s1">&#39;choice&#39;</span><span class="p">,</span> <span class="s1">&#39;how_many&#39;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">common</span><span class="o">.</span><span class="n">HowMany</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">name</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">common</span><span class="o">.</span><span class="n">Remarks</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">common</span><span class="o">.</span><span class="n">ParameterValue</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">common</span><span class="o">.</span><span class="n">Remarks</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">__root__</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">common</span><span class="o">.</span><span class="n">HowMany</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">value</span>
         <span class="c1"># it is either a string already or we cast it to string</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">FIELDS_SET</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
@@ -4208,12 +4250,12 @@ ModelUtils        </code>
         <span class="k">return</span> <span class="n">res</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_string_to_howmany</span><span class="p">(</span><span class="n">count_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">HowMany</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">_string_to_howmany</span><span class="p">(</span><span class="n">count_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="n">clean_str</span> <span class="o">=</span> <span class="n">count_str</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">clean_str</span> <span class="o">==</span> <span class="s1">&#39;one or more&#39;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">common</span><span class="o">.</span><span class="n">HowMany</span><span class="o">.</span><span class="n">one_or_more</span>
-        <span class="k">elif</span> <span class="n">clean_str</span> <span class="o">==</span> <span class="s1">&#39;one&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">clean_str</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">common</span><span class="o">.</span><span class="n">HowMany</span><span class="o">.</span><span class="n">one</span>
+        <span class="k">if</span> <span class="n">clean_str</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_OR_MORE_SPACED</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">common</span><span class="o">.</span><span class="n">HowMany</span><span class="o">.</span><span class="n">one_or_more</span>
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="nd">@staticmethod</span>
@@ -4244,7 +4286,7 @@ ModelUtils        </code>
             <span class="k">if</span> <span class="n">how_many</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unrecognized HowMany value </span><span class="si">{</span><span class="n">how_many</span><span class="si">}</span><span class="s1"> in Parameter: should be one-or-more or one.&#39;</span><span class="p">)</span>
             <span class="n">param_dict</span><span class="p">[</span><span class="s1">&#39;select&#39;</span><span class="p">][</span><span class="s1">&#39;how_many&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">how_many</span>
-            <span class="k">if</span> <span class="n">how_many</span> <span class="o">==</span> <span class="n">common</span><span class="o">.</span><span class="n">HowMany</span><span class="o">.</span><span class="n">one</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">how_many</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Parameter specifies HowMany=1 but has </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span><span class="si">}</span><span class="s1"> values given.&#39;</span><span class="p">)</span>
             <span class="n">choices</span> <span class="o">=</span> <span class="n">param_dict</span><span class="p">[</span><span class="s1">&#39;select&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;choice&#39;</span><span class="p">,</span> <span class="p">[])</span>
             <span class="k">if</span> <span class="n">choices</span> <span class="ow">and</span> <span class="n">values</span><span class="p">:</span>
@@ -4266,12 +4308,13 @@ ModelUtils        </code>
     <span class="k">def</span> <span class="nf">last_modified_at_time</span><span class="p">(</span><span class="n">timestamp</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">LastModified</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a LastModified set to timestamp or now.&quot;&quot;&quot;</span>
         <span class="n">timestamp</span> <span class="o">=</span> <span class="n">timestamp</span> <span class="k">if</span> <span class="n">timestamp</span> <span class="k">else</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">astimezone</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">common</span><span class="o">.</span><span class="n">LastModified</span><span class="p">(</span><span class="n">__root__</span><span class="o">=</span><span class="n">timestamp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">timestamp</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">update_last_modified</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">TopLevelOscalModel</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the LastModified timestamp in top level model to now.&quot;&quot;&quot;</span>
-        <span class="n">model</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">last_modified</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">last_modified_at_time</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">timestamp</span> <span class="k">if</span> <span class="n">timestamp</span> <span class="k">else</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">astimezone</span><span class="p">()</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">last_modified</span> <span class="o">=</span> <span class="n">timestamp</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">model_age</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">TopLevelOscalModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -4279,7 +4322,7 @@ ModelUtils        </code>
         <span class="c1"># default to one year if no last_modified</span>
         <span class="n">age_seconds</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">DAY_SECONDS</span> <span class="o">*</span> <span class="mi">365</span>
         <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">last_modified</span><span class="p">:</span>
-            <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">astimezone</span><span class="p">()</span> <span class="o">-</span> <span class="n">model</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">last_modified</span><span class="o">.</span><span class="n">__root__</span>
+            <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">astimezone</span><span class="p">()</span> <span class="o">-</span> <span class="n">model</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">last_modified</span>
             <span class="n">age_seconds</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">seconds</span>
         <span class="k">return</span> <span class="n">age_seconds</span>
 
@@ -4538,14 +4581,16 @@ ModelUtils        </code>
         <span class="n">uuid_type_list</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">common</span><span class="o">.</span><span class="n">LastModified</span><span class="p">,</span>
             <span class="n">common</span><span class="o">.</span><span class="n">LocationUuid</span><span class="p">,</span>
-            <span class="n">common</span><span class="o">.</span><span class="n">MemberOfOrganization</span><span class="p">,</span>
             <span class="n">common</span><span class="o">.</span><span class="n">PartyUuid</span><span class="p">,</span>
             <span class="n">common</span><span class="o">.</span><span class="n">RelatedRisk</span><span class="p">,</span>
-            <span class="n">common</span><span class="o">.</span><span class="n">RelatedObservation1</span><span class="p">,</span>
-            <span class="n">common</span><span class="o">.</span><span class="n">Source</span>
+            <span class="n">common</span><span class="o">.</span><span class="n">Source</span><span class="p">,</span>
+            <span class="n">assessment_plan</span><span class="o">.</span><span class="n">RelatedObservation</span><span class="p">,</span>
+            <span class="n">assessment_results</span><span class="o">.</span><span class="n">RelatedObservation</span><span class="p">,</span>
+            <span class="n">poam</span><span class="o">.</span><span class="n">RelatedObservation</span><span class="p">,</span>
+            <span class="n">poam</span><span class="o">.</span><span class="n">RelatedObservation1</span>
         <span class="p">]</span>
         <span class="n">type_list</span> <span class="o">=</span> <span class="n">uuid_type_list</span> <span class="k">if</span> <span class="n">ignore_all_uuid</span> <span class="k">else</span> <span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">LastModified</span><span class="p">]</span>
-        <span class="k">return</span> <span class="ow">not</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">_objects_differ</span><span class="p">(</span><span class="n">model_a</span><span class="p">,</span> <span class="n">model_b</span><span class="p">,</span> <span class="n">type_list</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;last-modified&#39;</span><span class="p">],</span> <span class="n">ignore_all_uuid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">_objects_differ</span><span class="p">(</span><span class="n">model_a</span><span class="p">,</span> <span class="n">model_b</span><span class="p">,</span> <span class="n">type_list</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;last_modified&#39;</span><span class="p">],</span> <span class="n">ignore_all_uuid</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_title_from_model_uri</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -4660,7 +4705,7 @@ But if it is a list of strings is regarded as a list of values and is converted 
         <span class="k">if</span> <span class="n">how_many</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unrecognized HowMany value </span><span class="si">{</span><span class="n">how_many</span><span class="si">}</span><span class="s1"> in Parameter: should be one-or-more or one.&#39;</span><span class="p">)</span>
         <span class="n">param_dict</span><span class="p">[</span><span class="s1">&#39;select&#39;</span><span class="p">][</span><span class="s1">&#39;how_many&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">how_many</span>
-        <span class="k">if</span> <span class="n">how_many</span> <span class="o">==</span> <span class="n">common</span><span class="o">.</span><span class="n">HowMany</span><span class="o">.</span><span class="n">one</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">how_many</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Parameter specifies HowMany=1 but has </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span><span class="si">}</span><span class="s1"> values given.&#39;</span><span class="p">)</span>
         <span class="n">choices</span> <span class="o">=</span> <span class="n">param_dict</span><span class="p">[</span><span class="s1">&#39;select&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;choice&#39;</span><span class="p">,</span> <span class="p">[])</span>
         <span class="k">if</span> <span class="n">choices</span> <span class="ow">and</span> <span class="n">values</span><span class="p">:</span>
@@ -5432,7 +5477,7 @@ path passed in as a parameter.</p>
 <span class="k">def</span> <span class="nf">last_modified_at_time</span><span class="p">(</span><span class="n">timestamp</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">LastModified</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a LastModified set to timestamp or now.&quot;&quot;&quot;</span>
     <span class="n">timestamp</span> <span class="o">=</span> <span class="n">timestamp</span> <span class="k">if</span> <span class="n">timestamp</span> <span class="k">else</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">astimezone</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">common</span><span class="o">.</span><span class="n">LastModified</span><span class="p">(</span><span class="n">__root__</span><span class="o">=</span><span class="n">timestamp</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">timestamp</span>
 </code></pre></div>
         </details>
     </div>
@@ -5753,7 +5798,7 @@ But the file content type should be specified if it is somehow known.</p>
     <span class="c1"># default to one year if no last_modified</span>
     <span class="n">age_seconds</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">DAY_SECONDS</span> <span class="o">*</span> <span class="mi">365</span>
     <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">last_modified</span><span class="p">:</span>
-        <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">astimezone</span><span class="p">()</span> <span class="o">-</span> <span class="n">model</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">last_modified</span><span class="o">.</span><span class="n">__root__</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">astimezone</span><span class="p">()</span> <span class="o">-</span> <span class="n">model</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">last_modified</span>
         <span class="n">age_seconds</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">seconds</span>
     <span class="k">return</span> <span class="n">age_seconds</span>
 </code></pre></div>
@@ -5833,14 +5878,16 @@ special handling is required if a model has had uuids regenerated - when checkin
     <span class="n">uuid_type_list</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">common</span><span class="o">.</span><span class="n">LastModified</span><span class="p">,</span>
         <span class="n">common</span><span class="o">.</span><span class="n">LocationUuid</span><span class="p">,</span>
-        <span class="n">common</span><span class="o">.</span><span class="n">MemberOfOrganization</span><span class="p">,</span>
         <span class="n">common</span><span class="o">.</span><span class="n">PartyUuid</span><span class="p">,</span>
         <span class="n">common</span><span class="o">.</span><span class="n">RelatedRisk</span><span class="p">,</span>
-        <span class="n">common</span><span class="o">.</span><span class="n">RelatedObservation1</span><span class="p">,</span>
-        <span class="n">common</span><span class="o">.</span><span class="n">Source</span>
+        <span class="n">common</span><span class="o">.</span><span class="n">Source</span><span class="p">,</span>
+        <span class="n">assessment_plan</span><span class="o">.</span><span class="n">RelatedObservation</span><span class="p">,</span>
+        <span class="n">assessment_results</span><span class="o">.</span><span class="n">RelatedObservation</span><span class="p">,</span>
+        <span class="n">poam</span><span class="o">.</span><span class="n">RelatedObservation</span><span class="p">,</span>
+        <span class="n">poam</span><span class="o">.</span><span class="n">RelatedObservation1</span>
     <span class="p">]</span>
     <span class="n">type_list</span> <span class="o">=</span> <span class="n">uuid_type_list</span> <span class="k">if</span> <span class="n">ignore_all_uuid</span> <span class="k">else</span> <span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">LastModified</span><span class="p">]</span>
-    <span class="k">return</span> <span class="ow">not</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">_objects_differ</span><span class="p">(</span><span class="n">model_a</span><span class="p">,</span> <span class="n">model_b</span><span class="p">,</span> <span class="n">type_list</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;last-modified&#39;</span><span class="p">],</span> <span class="n">ignore_all_uuid</span><span class="p">)</span>
+    <span class="k">return</span> <span class="ow">not</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">_objects_differ</span><span class="p">(</span><span class="n">model_a</span><span class="p">,</span> <span class="n">model_b</span><span class="p">,</span> <span class="n">type_list</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;last_modified&#39;</span><span class="p">],</span> <span class="n">ignore_all_uuid</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -6084,7 +6131,8 @@ If the model directory does not exist, it is created.</p>
           <div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
 <span class="k">def</span> <span class="nf">update_last_modified</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">TopLevelOscalModel</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Update the LastModified timestamp in top level model to now.&quot;&quot;&quot;</span>
-    <span class="n">model</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">last_modified</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">last_modified_at_time</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span>
+    <span class="n">timestamp</span> <span class="o">=</span> <span class="n">timestamp</span> <span class="k">if</span> <span class="n">timestamp</span> <span class="k">else</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">astimezone</span><span class="p">()</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">last_modified</span> <span class="o">=</span> <span class="n">timestamp</span>
 </code></pre></div>
         </details>
     </div>
@@ -6156,7 +6204,7 @@ If the model directory does not exist, it is created.</p>
     <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
+      <script src="../../assets/javascripts/bundle.407015b8.min.js"></script>
       
     
   </body>

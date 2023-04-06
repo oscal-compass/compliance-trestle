@@ -19,7 +19,7 @@
         <link rel="next" href="../trestle.core.control_reader/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.15">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.5">
     
     
       
@@ -27,7 +27,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7a7fce14.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
@@ -492,7 +492,7 @@
   
     <li class="md-nav__item">
       <a href="../../tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring/" class="md-nav__link">
-        SSP, Catalog, and Profile Authoring
+        Catalog, Profile, ComponentDefinition, and SSP Authoring
       </a>
     </li>
   
@@ -2674,6 +2674,48 @@
   
   
     <li class="md-nav__item">
+      <a href="../trestle.core.markdown.base_markdown_node/" class="md-nav__link">
+        base_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.markdown.control_markdown_node/" class="md-nav__link">
+        control_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.markdown.docs_markdown_node/" class="md-nav__link">
+        docs_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../trestle.core.markdown.markdown_api/" class="md-nav__link">
         markdown_api
       </a>
@@ -2690,20 +2732,6 @@
     <li class="md-nav__item">
       <a href="../trestle.core.markdown.markdown_const/" class="md-nav__link">
         markdown_const
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../trestle.core.markdown.markdown_node/" class="md-nav__link">
-        markdown_node
       </a>
     </li>
   
@@ -3066,6 +3094,20 @@
           
         </ul>
       </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.rule_parameters_validator/" class="md-nav__link">
+        rule_parameters_validator
+      </a>
     </li>
   
 
@@ -4798,7 +4840,7 @@ ControlInterface        </code>
         <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">props</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">RULE_ID</span><span class="p">:</span>
                 <span class="n">name</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">value</span>
-                <span class="n">id_</span> <span class="o">=</span> <span class="n">string_from_root</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">remarks</span><span class="p">)</span>
+                <span class="n">id_</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">remarks</span>
                 <span class="n">rules_props</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">RULE_DESCRIPTION</span><span class="p">:</span>
                 <span class="n">desc</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">value</span>
@@ -4838,7 +4880,7 @@ ControlInterface        </code>
             <span class="n">stat_rules</span><span class="p">,</span> <span class="n">statement_props</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">get_rule_list_for_item</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span>
             <span class="n">statement_rules</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">stat_rules</span><span class="p">)</span>
             <span class="n">rule_props</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">statement_props</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">comp_rules</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">statement_rules</span><span class="p">),</span> <span class="n">rule_props</span>
+        <span class="k">return</span> <span class="n">comp_rules</span><span class="p">,</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">statement_rules</span><span class="p">),</span> <span class="n">rule_props</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_params_dict_from_item</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">TypeWithProps</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span> <span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Property</span><span class="p">]]:</span>
@@ -4849,7 +4891,7 @@ ControlInterface        </code>
         <span class="n">props</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">props</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">PARAMETER_ID</span><span class="p">:</span>
-                <span class="n">rule_id</span> <span class="o">=</span> <span class="n">string_from_root</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">remarks</span><span class="p">)</span>
+                <span class="n">rule_id</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">remarks</span>
                 <span class="n">param_name</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">value</span>
                 <span class="k">if</span> <span class="n">rule_id</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Duplicate param </span><span class="si">{</span><span class="n">param_name</span><span class="si">}</span><span class="s1"> found for rule </span><span class="si">{</span><span class="n">rule_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -4857,14 +4899,14 @@ ControlInterface        </code>
                 <span class="n">params</span><span class="p">[</span><span class="n">rule_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">param_name</span><span class="p">}</span>
                 <span class="n">props</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">PARAMETER_DESCRIPTION</span><span class="p">:</span>
-                <span class="n">rule_id</span> <span class="o">=</span> <span class="n">string_from_root</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">remarks</span><span class="p">)</span>
+                <span class="n">rule_id</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">remarks</span>
                 <span class="k">if</span> <span class="n">rule_id</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
                     <span class="n">params</span><span class="p">[</span><span class="n">rule_id</span><span class="p">][</span><span class="s1">&#39;description&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">value</span>
                     <span class="n">props</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Param description for rule </span><span class="si">{</span><span class="n">rule_id</span><span class="si">}</span><span class="s1"> found with no param_id&#39;</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">PARAMETER_VALUE_ALTERNATIVES</span><span class="p">:</span>
-                <span class="n">rule_id</span> <span class="o">=</span> <span class="n">string_from_root</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">remarks</span><span class="p">)</span>
+                <span class="n">rule_id</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">remarks</span>
                 <span class="k">if</span> <span class="n">rule_id</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
                     <span class="n">params</span><span class="p">[</span><span class="n">rule_id</span><span class="p">][</span><span class="s1">&#39;options&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">value</span>
                     <span class="n">props</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
@@ -5026,7 +5068,7 @@ ControlInterface        </code>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_param_values_as_str_list</span><span class="p">(</span><span class="n">param</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">Parameter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert param values to list of strings.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">val</span><span class="o">.</span><span class="n">__root__</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">values</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">as_list</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_param_values_as_str</span><span class="p">(</span><span class="n">param</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">Parameter</span><span class="p">,</span> <span class="n">brackets</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
@@ -5043,7 +5085,7 @@ ControlInterface        </code>
             <span class="n">how_many_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
             <span class="c1"># if all values are specified there is no how_many string and parens are dropped.  See ac-2.2</span>
             <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">select</span><span class="o">.</span><span class="n">how_many</span><span class="p">:</span>
-                <span class="n">how_many_str</span> <span class="o">=</span> <span class="s1">&#39; (one)&#39;</span> <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">select</span><span class="o">.</span><span class="n">how_many</span> <span class="o">==</span> <span class="n">common</span><span class="o">.</span><span class="n">HowMany</span><span class="o">.</span><span class="n">one</span> <span class="k">else</span> <span class="s1">&#39; (one or more)&#39;</span>
+                <span class="n">how_many_str</span> <span class="o">=</span> <span class="s1">&#39; (one)&#39;</span> <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">select</span><span class="o">.</span><span class="n">how_many</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE</span> <span class="k">else</span> <span class="s1">&#39; (one or more)&#39;</span>
             <span class="n">choices_str</span> <span class="o">=</span> <span class="s1">&#39;; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">as_list</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">select</span><span class="o">.</span><span class="n">choice</span><span class="p">))</span>
             <span class="n">choices_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;[</span><span class="si">{</span><span class="n">choices_str</span><span class="si">}</span><span class="s1">]&#39;</span> <span class="k">if</span> <span class="n">brackets</span> <span class="k">else</span> <span class="n">choices_str</span>
             <span class="n">choices_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Selection</span><span class="si">{</span><span class="n">how_many_str</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">choices_str</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">verbose</span> <span class="k">else</span> <span class="n">choices_str</span>
@@ -5427,7 +5469,7 @@ ControlInterface        </code>
         <span class="p">]</span>
         <span class="c1"># reverse the list so the latest items are kept</span>
         <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">as_list</span><span class="p">(</span><span class="n">props</span><span class="p">)):</span>
-            <span class="n">prop_tuple</span> <span class="o">=</span> <span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">as_string</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">value</span><span class="p">),</span> <span class="n">as_string</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">ns</span><span class="p">),</span> <span class="n">string_from_root</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">remarks</span><span class="p">))</span>
+            <span class="n">prop_tuple</span> <span class="o">=</span> <span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">as_string</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">value</span><span class="p">),</span> <span class="n">as_string</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">ns</span><span class="p">),</span> <span class="n">prop</span><span class="o">.</span><span class="n">remarks</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">prop_tuple</span> <span class="ow">in</span> <span class="n">found_props</span> <span class="ow">or</span> <span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">IMPLEMENTATION_STATUS</span> <span class="ow">and</span> <span class="n">remove_imp_status</span><span class="p">):</span>
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="n">remove_all_rule_info</span> <span class="ow">and</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">rule_tag_list</span><span class="p">:</span>
@@ -5444,9 +5486,9 @@ ControlInterface        </code>
         <span class="n">culled_props</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Property</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">props</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="n">rules</span> <span class="ow">and</span> <span class="n">prop</span><span class="o">.</span><span class="n">remarks</span><span class="p">:</span>
-                <span class="n">needed_rule_ids</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">string_from_root</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">remarks</span><span class="p">))</span>
+                <span class="n">needed_rule_ids</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">remarks</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">props</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="n">rules</span> <span class="ow">or</span> <span class="n">string_from_root</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">remarks</span><span class="p">)</span> <span class="ow">in</span> <span class="n">needed_rule_ids</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="n">rules</span> <span class="ow">or</span> <span class="n">prop</span><span class="o">.</span><span class="n">remarks</span> <span class="ow">in</span> <span class="n">needed_rule_ids</span><span class="p">:</span>
                 <span class="n">culled_props</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">culled_props</span>
 
@@ -5635,7 +5677,7 @@ ControlInterface        </code>
     <span class="p">]</span>
     <span class="c1"># reverse the list so the latest items are kept</span>
     <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">as_list</span><span class="p">(</span><span class="n">props</span><span class="p">)):</span>
-        <span class="n">prop_tuple</span> <span class="o">=</span> <span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">as_string</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">value</span><span class="p">),</span> <span class="n">as_string</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">ns</span><span class="p">),</span> <span class="n">string_from_root</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">remarks</span><span class="p">))</span>
+        <span class="n">prop_tuple</span> <span class="o">=</span> <span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">as_string</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">value</span><span class="p">),</span> <span class="n">as_string</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">ns</span><span class="p">),</span> <span class="n">prop</span><span class="o">.</span><span class="n">remarks</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">prop_tuple</span> <span class="ow">in</span> <span class="n">found_props</span> <span class="ow">or</span> <span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">IMPLEMENTATION_STATUS</span> <span class="ow">and</span> <span class="n">remove_imp_status</span><span class="p">):</span>
             <span class="k">continue</span>
         <span class="k">if</span> <span class="n">remove_all_rule_info</span> <span class="ow">and</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">rule_tag_list</span><span class="p">:</span>
@@ -5710,9 +5752,9 @@ ControlInterface        </code>
     <span class="n">culled_props</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Property</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">props</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="n">rules</span> <span class="ow">and</span> <span class="n">prop</span><span class="o">.</span><span class="n">remarks</span><span class="p">:</span>
-            <span class="n">needed_rule_ids</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">string_from_root</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">remarks</span><span class="p">))</span>
+            <span class="n">needed_rule_ids</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">remarks</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">props</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="n">rules</span> <span class="ow">or</span> <span class="n">string_from_root</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">remarks</span><span class="p">)</span> <span class="ow">in</span> <span class="n">needed_rule_ids</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="n">rules</span> <span class="ow">or</span> <span class="n">prop</span><span class="o">.</span><span class="n">remarks</span> <span class="ow">in</span> <span class="n">needed_rule_ids</span><span class="p">:</span>
             <span class="n">culled_props</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">culled_props</span>
 </code></pre></div>
@@ -5991,7 +6033,7 @@ ControlInterface        </code>
     <span class="n">props</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">props</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">PARAMETER_ID</span><span class="p">:</span>
-            <span class="n">rule_id</span> <span class="o">=</span> <span class="n">string_from_root</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">remarks</span><span class="p">)</span>
+            <span class="n">rule_id</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">remarks</span>
             <span class="n">param_name</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">value</span>
             <span class="k">if</span> <span class="n">rule_id</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Duplicate param </span><span class="si">{</span><span class="n">param_name</span><span class="si">}</span><span class="s1"> found for rule </span><span class="si">{</span><span class="n">rule_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -5999,14 +6041,14 @@ ControlInterface        </code>
             <span class="n">params</span><span class="p">[</span><span class="n">rule_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">param_name</span><span class="p">}</span>
             <span class="n">props</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">PARAMETER_DESCRIPTION</span><span class="p">:</span>
-            <span class="n">rule_id</span> <span class="o">=</span> <span class="n">string_from_root</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">remarks</span><span class="p">)</span>
+            <span class="n">rule_id</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">remarks</span>
             <span class="k">if</span> <span class="n">rule_id</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
                 <span class="n">params</span><span class="p">[</span><span class="n">rule_id</span><span class="p">][</span><span class="s1">&#39;description&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">value</span>
                 <span class="n">props</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Param description for rule </span><span class="si">{</span><span class="n">rule_id</span><span class="si">}</span><span class="s1"> found with no param_id&#39;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">PARAMETER_VALUE_ALTERNATIVES</span><span class="p">:</span>
-            <span class="n">rule_id</span> <span class="o">=</span> <span class="n">string_from_root</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">remarks</span><span class="p">)</span>
+            <span class="n">rule_id</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">remarks</span>
             <span class="k">if</span> <span class="n">rule_id</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
                 <span class="n">params</span><span class="p">[</span><span class="n">rule_id</span><span class="p">][</span><span class="s1">&#39;options&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">value</span>
                 <span class="n">props</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
@@ -6222,7 +6264,7 @@ Return list of string formatted labels and associated descriptive prose</p>
         <span class="n">stat_rules</span><span class="p">,</span> <span class="n">statement_props</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">get_rule_list_for_item</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span>
         <span class="n">statement_rules</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">stat_rules</span><span class="p">)</span>
         <span class="n">rule_props</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">statement_props</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">comp_rules</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">statement_rules</span><span class="p">),</span> <span class="n">rule_props</span>
+    <span class="k">return</span> <span class="n">comp_rules</span><span class="p">,</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">statement_rules</span><span class="p">),</span> <span class="n">rule_props</span>
 </code></pre></div>
         </details>
     </div>
@@ -6335,7 +6377,7 @@ Return list of string formatted labels and associated descriptive prose</p>
     <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">props</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">RULE_ID</span><span class="p">:</span>
             <span class="n">name</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">value</span>
-            <span class="n">id_</span> <span class="o">=</span> <span class="n">string_from_root</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">remarks</span><span class="p">)</span>
+            <span class="n">id_</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">remarks</span>
             <span class="n">rules_props</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">RULE_DESCRIPTION</span><span class="p">:</span>
             <span class="n">desc</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">value</span>
@@ -7937,7 +7979,7 @@ PartInfo        </code>
     <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
+      <script src="../../assets/javascripts/bundle.407015b8.min.js"></script>
       
     
   </body>

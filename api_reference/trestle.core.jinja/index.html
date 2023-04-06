@@ -19,7 +19,7 @@
         <link rel="next" href="../trestle.core.links_validator/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.15">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.5">
     
     
       
@@ -27,7 +27,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7a7fce14.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
@@ -492,7 +492,7 @@
   
     <li class="md-nav__item">
       <a href="../../tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring/" class="md-nav__link">
-        SSP, Catalog, and Profile Authoring
+        Catalog, Profile, ComponentDefinition, and SSP Authoring
       </a>
     </li>
   
@@ -2412,6 +2412,48 @@
   
   
     <li class="md-nav__item">
+      <a href="../trestle.core.markdown.base_markdown_node/" class="md-nav__link">
+        base_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.markdown.control_markdown_node/" class="md-nav__link">
+        control_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.markdown.docs_markdown_node/" class="md-nav__link">
+        docs_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../trestle.core.markdown.markdown_api/" class="md-nav__link">
         markdown_api
       </a>
@@ -2428,20 +2470,6 @@
     <li class="md-nav__item">
       <a href="../trestle.core.markdown.markdown_const/" class="md-nav__link">
         markdown_const
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../trestle.core.markdown.markdown_node/" class="md-nav__link">
-        markdown_node
       </a>
     </li>
   
@@ -2804,6 +2832,20 @@
           
         </ul>
       </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.rule_parameters_validator/" class="md-nav__link">
+        rule_parameters_validator
+      </a>
     </li>
   
 
@@ -4232,7 +4274,7 @@ MDSectionInclude            (<a class="autorefs autorefs-internal" title="trestl
         <span class="n">fm</span> <span class="o">=</span> <span class="n">frontmatter</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">md_content</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span> <span class="o">==</span> <span class="p">{}:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Non zero metadata on MD section include - ignoring&#39;</span><span class="p">)</span>
-        <span class="n">full_md</span> <span class="o">=</span> <span class="n">markdown_node</span><span class="o">.</span><span class="n">MarkdownNode</span><span class="o">.</span><span class="n">build_tree_from_markdown</span><span class="p">(</span><span class="n">fm</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span>
+        <span class="n">full_md</span> <span class="o">=</span> <span class="n">docs_markdown_node</span><span class="o">.</span><span class="n">DocsMarkdownNode</span><span class="o">.</span><span class="n">build_tree_from_markdown</span><span class="p">(</span><span class="n">fm</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span>
         <span class="n">md_section</span> <span class="o">=</span> <span class="n">full_md</span><span class="o">.</span><span class="n">get_node_for_key</span><span class="p">(</span><span class="n">section_title</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">strict_matching</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="c1"># adjust</span>
         <span class="k">if</span> <span class="n">kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -4376,7 +4418,7 @@ MDSectionInclude            (<a class="autorefs autorefs-internal" title="trestl
     <span class="n">fm</span> <span class="o">=</span> <span class="n">frontmatter</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">md_content</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span> <span class="o">==</span> <span class="p">{}:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Non zero metadata on MD section include - ignoring&#39;</span><span class="p">)</span>
-    <span class="n">full_md</span> <span class="o">=</span> <span class="n">markdown_node</span><span class="o">.</span><span class="n">MarkdownNode</span><span class="o">.</span><span class="n">build_tree_from_markdown</span><span class="p">(</span><span class="n">fm</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span>
+    <span class="n">full_md</span> <span class="o">=</span> <span class="n">docs_markdown_node</span><span class="o">.</span><span class="n">DocsMarkdownNode</span><span class="o">.</span><span class="n">build_tree_from_markdown</span><span class="p">(</span><span class="n">fm</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span>
     <span class="n">md_section</span> <span class="o">=</span> <span class="n">full_md</span><span class="o">.</span><span class="n">get_node_for_key</span><span class="p">(</span><span class="n">section_title</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">strict_matching</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="c1"># adjust</span>
     <span class="k">if</span> <span class="n">kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -4615,7 +4657,7 @@ TrestleJinjaExtension            (<span title="jinja2.ext.Extension">Extension</
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">adjust_heading_level</span><span class="p">(</span><span class="n">input_md</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">expected</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Adjust the header level of a markdown string such that the most significant header matches the expected #&#39;s.&quot;&quot;&quot;</span>
     <span class="n">output_md</span> <span class="o">=</span> <span class="n">input_md</span>
-    <span class="n">mdn</span> <span class="o">=</span> <span class="n">markdown_node</span><span class="o">.</span><span class="n">MarkdownNode</span><span class="o">.</span><span class="n">build_tree_from_markdown</span><span class="p">(</span><span class="n">input_md</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span>
+    <span class="n">mdn</span> <span class="o">=</span> <span class="n">docs_markdown_node</span><span class="o">.</span><span class="n">DocsMarkdownNode</span><span class="o">.</span><span class="n">build_tree_from_markdown</span><span class="p">(</span><span class="n">input_md</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">mdn</span><span class="o">.</span><span class="n">subnodes</span><span class="p">:</span>
         <span class="n">mdn_top_heading</span> <span class="o">=</span> <span class="n">mdn</span><span class="o">.</span><span class="n">subnodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_node_header_lvl</span><span class="p">()</span>
         <span class="n">delta</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">expected</span><span class="p">)</span> <span class="o">-</span> <span class="n">mdn_top_heading</span>
@@ -4683,7 +4725,7 @@ TrestleJinjaExtension            (<span title="jinja2.ext.Extension">Extension</
     <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
+      <script src="../../assets/javascripts/bundle.407015b8.min.js"></script>
       
     
   </body>

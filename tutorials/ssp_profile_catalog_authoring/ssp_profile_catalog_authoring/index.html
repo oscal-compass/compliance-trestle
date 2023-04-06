@@ -19,15 +19,15 @@
         <link rel="next" href="../../task.transformer-construction/transformer-construction/">
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.15">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.5">
     
     
       
-        <title>SSP, Catalog, and Profile Authoring - Compliance Trestle</title>
+        <title>Catalog, Profile, ComponentDefinition, and SSP Authoring - Compliance Trestle</title>
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.113286f1.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.7a7fce14.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.a0c5b2b5.min.css">
@@ -85,7 +85,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#tutorial-catalog-component-profile-and-ssp-authoring" class="md-skip">
+        <a href="#tutorial-catalog-profile-componentdefinition-and-ssp-authoring" class="md-skip">
           Skip to content
         </a>
       
@@ -118,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              SSP, Catalog, and Profile Authoring
+              Catalog, Profile, ComponentDefinition, and SSP Authoring
             
           </span>
         </div>
@@ -505,12 +505,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          SSP, Catalog, and Profile Authoring
+          Catalog, Profile, ComponentDefinition, and SSP Authoring
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        SSP, Catalog, and Profile Authoring
+        Catalog, Profile, ComponentDefinition, and SSP Authoring
       </a>
       
         
@@ -2166,6 +2166,48 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.markdown.base_markdown_node/" class="md-nav__link">
+        base_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.markdown.control_markdown_node/" class="md-nav__link">
+        control_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.markdown.docs_markdown_node/" class="md-nav__link">
+        docs_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../api_reference/trestle.core.markdown.markdown_api/" class="md-nav__link">
         markdown_api
       </a>
@@ -2182,20 +2224,6 @@
     <li class="md-nav__item">
       <a href="../../../api_reference/trestle.core.markdown.markdown_const/" class="md-nav__link">
         markdown_const
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../api_reference/trestle.core.markdown.markdown_node/" class="md-nav__link">
-        markdown_node
       </a>
     </li>
   
@@ -2558,6 +2586,20 @@
           
         </ul>
       </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.rule_parameters_validator/" class="md-nav__link">
+        rule_parameters_validator
+      </a>
     </li>
   
 
@@ -3201,7 +3243,7 @@
                   
 
 
-<h1 id="tutorial-catalog-component-profile-and-ssp-authoring">Tutorial: Catalog, Component, Profile and SSP Authoring<a class="headerlink" href="#tutorial-catalog-component-profile-and-ssp-authoring" title="Permanent link">¤</a></h1>
+<h1 id="tutorial-catalog-profile-componentdefinition-and-ssp-authoring">Tutorial: Catalog, Profile, ComponentDefinition, and SSP Authoring<a class="headerlink" href="#tutorial-catalog-profile-componentdefinition-and-ssp-authoring" title="Permanent link">¤</a></h1>
 <h2 id="introduction-and-background">Introduction and background<a class="headerlink" href="#introduction-and-background" title="Permanent link">¤</a></h2>
 <p>In addition to core functionality for automated processing of OSCAL documents, Trestle has authoring tools that allow conversion of OSCAL documents to markdown for easy editing - and conversion back to OSCAL for validation and automation.  A big part of compliance involves writing guidance prose associated with controls, along with the setting of parameters and properties for those controls.  This cannot be completely automated because it requires human editing, along with human approvals of those edits.  The purpose of the authoring tools is to allow selected edits of oscal documents guided by prompts for where content is required.  This serves to streamline the edit/approval process whereby the author is presented with one markdown document per control, and it provides a view of the the key information needed during the editing process.  This greatly simplifies the editing process compared to multiple authors working together on a single large JSON document.</p>
 <p>The key modes of authoring are <em>-generate</em> and <em>-assemble</em>.  During <em>-generate</em> a JSON document is converted to markdown format, allowing authors to add or edit prose and parameter values.  After editing, the markdown can then be <em>-assemble</em>d into the same or a new JSON document that captures the edit changes.  In a normal authoring cycle, the markdown is generated for the first time from a given JSON file, and after that there is a continuous process of editing and reassembling to keep the JSON up to date with the markdown edits.</p>
@@ -3219,7 +3261,7 @@
 <li><code>profile-generate</code> takes a given Profile and converts the controls represented by its resolved profile catalog to individual controls in markdown format, with sections corresponding to the content that the Profile adds to the Catalog, along with both the current values of parameters in the resolved profile catalog - and the values that are being modified by the given profile's SetParameters.  The user may edit the content or add more, and <code>profile-assemble</code> then gathers the updated content and creates a new OSCAL Profile that includes those changes.</li>
 <li><code>profile-resolve</code> is special as an authoring tool because it does not involve markdown and instead it simply creates a JSON resolved profile catalog from a specified JSON profile in the trestle directory.  There are options to specify whether or not parameters get replace in the control prose or not, along with any special brackets that might be desired to indicate the parameters embedded in the prose.</li>
 <li><code>component-generate</code> takes a given ComponentDefinition file and represents all the controls in markdown in separate directories for each Component in the file.  This allows editing of the prose on a per-component basis.  <code>component-assemble</code> then assembles the markdown for all controls in all component directories into a new, or the same, ComponentDefinition file.</li>
-<li><code>ssp-generate</code> takes a given Profile and its resolved profile catalog, and represents the individual controls as markdown files with sections that prompt for prose regarding the implementation response for items in the statement of the control.  <code>ssp-assemble</code> then gathers the response sections and creates an OSCAL System Security Plan comprising the resolved profile catalog and the implementation responses.  Both commands may also include a list of component definitions representing the components referred to in the ssp.  Rules, parameters and status associated with the implemented requirements are stored in the SetParameters and Properties of the components in the component definitions and represented in the markdown, allowing changes to be made to the parameter values and status.  These edits are then included in the assembled SSP.  Note that the rules themselves may not be edited and strictly correspond to what is in the component definition.</li>
+<li><code>ssp-generate</code> takes a given Profile and an optional list of component-definitions, and represents the individual controls as markdown files with sections that prompt for prose regarding the implementation response for items in the statement of the control, with separate response sections for each component.  <code>ssp-assemble</code> then gathers the response sections and creates an OSCAL System Security Plan comprising the resolved profile catalog and the implementation responses for each component.  The list of component-definitions is optional, but without them the SSP will only have one component: <code>This System</code>.  Rules, parameters and status associated with the implemented requirements are stored in the SetParameters and Properties of the components in the component definitions and represented in the markdown, allowing changes to be made to the parameter values and status.  These edits are then included in the assembled SSP.  Note that the rules themselves may not be edited and strictly correspond to what is in the component definitions.</li>
 <li><code>ssp-filter</code> takes a given ssp and filters its contents based on the controls included in a provided profile, or in a list of components to be included in the final ssp.</li>
 </ol>
 <p>In summary, the <code>catalog</code> tools allow conversion of a Catalog to markdown for editing - and back again to a Catalog.  The <code>profile</code> tools similarly convert a Profile's resolved profile catalog to markdown and allow conversion to a new Profile with modified additions that get applied in resolving the profile catalog.  <code>component</code> tools perform similarly for ComponentDefinitions.  Finally, the <code>ssp</code> tools allow the addition of implementation prose to the markdown of a system security plan, which is then assembled into a JSON SSP on a by-component basis.</p>
@@ -3447,7 +3489,7 @@ Access control policy and procedures address the controls in the AC family that 
 &lt;!-- Each addition must have a heading either of the form ## Control my_addition_name --&gt;
 &lt;!-- or ## Part a. (where the a. refers to one of the control statement labels.) --&gt;
 &lt;!-- &quot;## Control&quot; parts are new parts added after the statement part. --&gt;
-&lt;!-- &quot;## Part&quot; parts are new parts added into the top-level statement part with that label. --&gt;
+&lt;!-- &quot;## Part&quot; parts are new subparts added into the existing top-level statement part with that label. --&gt;
 &lt;!-- Subparts may be added with nested hash levels of the form ### My Subpart Name --&gt;
 &lt;!-- underneath the parent ## Control or ## Part being added --&gt;
 &lt;!-- See https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring for guidance. --&gt;
@@ -3588,7 +3630,7 @@ and <code>--label-prefix -lp</code>.  Note that there is no need for "assigned" 
 <p>Similar options apply to the <code>jinja</code> authoring commands.</p>
 </details>
 <details>
-<summary>trestle author component-generate</summary>
+<summary>trestle author component-generate and component-assemble</summary>
 <p>The <code>trestle author component-generate</code> command takes a JSON ComponentDefinition file and creates markdown for its controls in separate directories for each of the DefinedComponents in the file.  This allows specifying the implementation response and status for each component separately in separate markdown files for a control.  In addition, the markdown captures Rules in the control that specify descriptions and parameter values that apply to the expected responses.</p>
 <p>The command has few options compared to other author commands and only requires specifying <code>--name</code> and <code>--output</code> for the ComponentDefinition and output markdown directory, respectively.</p>
 <p>Here is an example of the generated markdown for the component <code>OSCO</code> in the ComponentDefinition file.  Note that this file will be under the subdirectory <code>OSCO/source_name</code> of the specified output directory - and any other DefinedComponents will have corresponding subdirectories level with the <code>OSCO</code> one.  Here <code>source_name</code> refers to the name of the profile or catalog in the ComponentDefinition that is the source for this control.  The control markdown files are written into directories split by both component name and source name.  If the source refers to a general uri and not a named profile or catalog in the trestle directory, then names such as <code>source_001</code> and <code>source_002</code> are assigned.  The actual source title can be found in the yaml header of any of the control markdown files.</p>
@@ -4003,17 +4045,18 @@ lines or modify/remove the lines with <code>###</code> in them, corresponding to
 <p>If you edit the control markdown files you may run <code>ssp-generate</code> again and your edits will not be overwritten.  When writing out the markdown for a control, any existing markdown for that control will be read and the response text for each part will be re-inserted into the new markdown file.  If the new markdown has added parts the original responses will be placed correctly in the new file, but if any part is removed from the source control json file then any corresponding prose will be lost after the next <code>ssp-generate</code>.</p>
 <h2 id="trestle-author-ssp-assemble"><code>trestle author ssp-assemble</code><a class="headerlink" href="#trestle-author-ssp-assemble" title="Permanent link">¤</a></h2>
 <p>After manually edting the markdown and providing the responses for the control implementation requirements, the markdown can be assembled into a single json SSP file with:</p>
-<p><code>trestle author ssp-assemble --markdown my_ssp --output my_json_ssp</code></p>
+<p><code>trestle author ssp-assemble --markdown my_ssp --compdefs my_compdef_a,my_compdef_b --output my_json_ssp</code></p>
 <p>This will assemble the markdown files in the my_ssp directory and create a json SSP with name my_json_ssp in the system-security-plans directory.</p>
 <p>As indicated for <code>ssp-generate</code>, please do not alter any of the horizontal rule lines or lines indicating the part or control id, e.g. <code>### ACME Component</code>.  You may run <code>ssp-generate</code> and <code>ssp-assemble</code> repeatedly for the same markdown directory, allowing a continuous editing and updating cycle.</p>
 <p>As with all the <code>assemble</code> tools, you may optionally specify a <code>--name</code> for a corresponding json file into which the updates will be inserted, thereby preserving metadata and other aspects of the model.  The result can overwrite the provided model or get directed to a new model.  And the version may be updated and the uuid's regenerated.  As with the other <code>-assemble</code> tools, if an output file already exists, a new one will only be written if there are changes to the model relative to the existing file.  See <code>catalog-assemble</code> for more details.</p>
+<p>If you do not specify component-defintions during assembly, the markdown should not refer to any components other than <code>This System</code>.  Thus you may first generate markdown with <code>ssp-generate</code> and no component-definitions specified - and then you may assemble that ssp with <code>ssp-assemble</code> and no component-definitions specified - but only if there are no components other than <code>This System</code> referenced in the markdown.  You may add new component implementation details to the markdown later, but any new components must be defined in a component-defintion file, and that file must be specified when <code>ssp-assemble</code> is run.</p>
 </details>
 <details>
 <summary>trestle author ssp-filter</summary>
-<p>Once you have an SSP in the trestle directory you can filter its contents with a profile or list of components by using the command <code>trestle author ssp-filter</code>.  The SSP is assumed to contain a superset of the controls needed by the profile if a profile is specified, and the filter operation will generate a new SSP with only those controls needed by the profile.  If a list of component names is provided, only the specified components will appear in the system implementation of the ssp.</p>
+<p>Once you have an SSP in the trestle directory you can filter its contents with a profile, list of components, or list of implementation status values by using the command <code>trestle author ssp-filter</code>.  The SSP is assumed to contain a superset of the controls needed by the profile if a profile is specified, and the filter operation will generate a new SSP with only those controls needed by the profile.  If a list of component names is provided, only the specified components will appear in the system implementation of the ssp. If a list of implementation statuses is provided, controls with implementations including those statuses will appear in the control implementation of the ssp.</p>
 <p>The filter command is invoked as:</p>
-<p><code>trestle author ssp-filter --name my_ssp --profile my_profile --components comp_a:comp_b --output my_culled_ssp</code></p>
-<p>Both the SSP and profile must be present in the trestle directory.  This command will generate a new SSP in the directory.  If the profile makes reference to a control not in the SSP then the routine will fail with an error message.  Similarly, if one of the components is not present in the ssp the routine will also fail.</p>
+<p><code>trestle author ssp-filter --name my_ssp --profile my_profile --components comp_a:comp_b --implementation-status "planned,partial" --output my_culled_ssp</code></p>
+<p>The SSP must be present in the trestle workspace and, if filtering by profile, that profile must also be in the trestle workspace. This command will generate a new SSP in the workspace. If the profile makes reference to a control not in the SSP then the routine will fail with an error message.  Similarly, if one of the components is not present in the ssp the routine will also fail. The implementation statuses must be one of the allowed values as defined in the OSCAL SSP JSON format reference. Those include the following: implemented, partial, planned, alternative, and not-applicable. If an invalid value is provided, an error is returned.</p>
 </details>
 <details>
 <summary>Summary of options used by the catalog, profile, component and ssp authoring tools.</summary>
@@ -4064,7 +4107,7 @@ lines or modify/remove the lines with <code>###</code> in them, corresponding to
     <script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.407015b8.min.js"></script>
       
     
   </body>

@@ -19,7 +19,7 @@
         <link rel="next" href="../trestle.core.resolver.modify/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.15">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.5">
     
     
       
@@ -27,7 +27,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7a7fce14.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
@@ -492,7 +492,7 @@
   
     <li class="md-nav__item">
       <a href="../../tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring/" class="md-nav__link">
-        SSP, Catalog, and Profile Authoring
+        Catalog, Profile, ComponentDefinition, and SSP Authoring
       </a>
     </li>
   
@@ -2113,6 +2113,48 @@
   
   
     <li class="md-nav__item">
+      <a href="../trestle.core.markdown.base_markdown_node/" class="md-nav__link">
+        base_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.markdown.control_markdown_node/" class="md-nav__link">
+        control_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.markdown.docs_markdown_node/" class="md-nav__link">
+        docs_markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../trestle.core.markdown.markdown_api/" class="md-nav__link">
         markdown_api
       </a>
@@ -2129,20 +2171,6 @@
     <li class="md-nav__item">
       <a href="../trestle.core.markdown.markdown_const/" class="md-nav__link">
         markdown_const
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../trestle.core.markdown.markdown_node/" class="md-nav__link">
-        markdown_node
       </a>
     </li>
   
@@ -2666,6 +2694,20 @@
           
         </ul>
       </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.rule_parameters_validator/" class="md-nav__link">
+        rule_parameters_validator
+      </a>
     </li>
   
 
@@ -3644,7 +3686,7 @@ Now the controls must be gathered, merged, and grouped based on the merge settin
             <span class="n">id_</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">NAME</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">id_</span>
 
-    <span class="k">def</span> <span class="nf">_merge_lists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dest</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">OBT</span><span class="p">],</span> <span class="n">src</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">OBT</span><span class="p">],</span> <span class="n">merge_method</span><span class="p">:</span> <span class="n">prof</span><span class="o">.</span><span class="n">Method</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_merge_lists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dest</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">OBT</span><span class="p">],</span> <span class="n">src</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">OBT</span><span class="p">],</span> <span class="n">merge_method</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">prof</span><span class="o">.</span><span class="n">Method</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">added_items</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">merge_method</span> <span class="o">==</span> <span class="n">prof</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">keep</span><span class="p">:</span>
             <span class="n">dest</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
@@ -3668,7 +3710,7 @@ Now the controls must be gathered, merged, and grouped based on the merge settin
         <span class="n">dest</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">added_items</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_merge_attrs</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">dest</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">OBT</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">OBT</span><span class="p">]],</span> <span class="n">src</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">OBT</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">OBT</span><span class="p">]],</span> <span class="n">attr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">merge_method</span><span class="p">:</span> <span class="n">prof</span><span class="o">.</span><span class="n">Method</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">dest</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">OBT</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">OBT</span><span class="p">]],</span> <span class="n">src</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">OBT</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">OBT</span><span class="p">]],</span> <span class="n">attr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">merge_method</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">prof</span><span class="o">.</span><span class="n">Method</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge this attr of src into the attr of dest.&quot;&quot;&quot;</span>
         <span class="n">src_attr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -3684,16 +3726,16 @@ Now the controls must be gathered, merged, and grouped based on the merge settin
             <span class="k">return</span>
         <span class="k">if</span> <span class="n">dest_attr</span> <span class="ow">and</span> <span class="n">merge_method</span> <span class="o">==</span> <span class="n">prof</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">use_first</span><span class="p">:</span>
             <span class="k">return</span>
-        <span class="k">if</span> <span class="n">dest_attr</span> <span class="o">==</span> <span class="n">src_attr</span> <span class="ow">and</span> <span class="n">merge_method</span> <span class="o">!=</span> <span class="n">prof</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">keep</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">dest_attr</span> <span class="o">==</span> <span class="n">src_attr</span> <span class="ow">and</span> <span class="n">merge_method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">prof</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">keep</span><span class="p">]:</span>
             <span class="k">return</span>
         <span class="nb">setattr</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">src_attr</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_merge_items</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dest</span><span class="p">:</span> <span class="n">OBT</span><span class="p">,</span> <span class="n">src</span><span class="p">:</span> <span class="n">OBT</span><span class="p">,</span> <span class="n">merge_method</span><span class="p">:</span> <span class="n">prof</span><span class="o">.</span><span class="n">Method</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_merge_items</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dest</span><span class="p">:</span> <span class="n">OBT</span><span class="p">,</span> <span class="n">src</span><span class="p">:</span> <span class="n">OBT</span><span class="p">,</span> <span class="n">merge_method</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">prof</span><span class="o">.</span><span class="n">Method</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge two items recursively.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">src</span><span class="o">.</span><span class="n">__fields_set__</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_merge_attrs</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">merge_method</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_group_contents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Group</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Parameter</span><span class="p">]]:</span>
+    <span class="k">def</span> <span class="nf">_group_contents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Group</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">com</span><span class="o">.</span><span class="n">Parameter</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get flattened content of group and its groups recursively.&quot;&quot;&quot;</span>
         <span class="n">controls</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">[]</span>
@@ -3724,9 +3766,10 @@ Now the controls must be gathered, merged, and grouped based on the merge settin
         <span class="k">return</span> <span class="n">catalog</span>
 
     <span class="k">def</span> <span class="nf">_merge_two_catalogs</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">dest</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Catalog</span><span class="p">,</span> <span class="n">src</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Catalog</span><span class="p">,</span> <span class="n">merge_method</span><span class="p">:</span> <span class="n">prof</span><span class="o">.</span><span class="n">Method</span><span class="p">,</span> <span class="n">as_is</span><span class="p">:</span> <span class="nb">bool</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">dest</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Catalog</span><span class="p">,</span> <span class="n">src</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Catalog</span><span class="p">,</span> <span class="n">merge_method</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">prof</span><span class="o">.</span><span class="n">Method</span><span class="p">],</span> <span class="n">as_is</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cat</span><span class="o">.</span><span class="n">Catalog</span><span class="p">:</span>
-        <span class="c1"># merge_method is use_first, merge, or keep</span>
+        <span class="c1"># merge_method is use_first, merge, keep</span>
+        <span class="c1"># no combine or merge_method equates to merge_method=keep</span>
         <span class="c1"># if as_is is false, the result is flattened</span>
 
         <span class="n">dest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flatten_catalog</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="n">as_is</span><span class="p">)</span>
@@ -3936,7 +3979,7 @@ The way groups, lists of controls, and controls themselves get merged is specifi
     <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
+      <script src="../../assets/javascripts/bundle.407015b8.min.js"></script>
       
     
   </body>
