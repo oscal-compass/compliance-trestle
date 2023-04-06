@@ -112,6 +112,14 @@ class JinjaCmd(CommandPlusDocs):
             logger.debug(f'Starting {self.name} command')
             input_path = pathlib.Path(args.input)
             output_path = pathlib.Path(args.output)
+
+            logger.debug(f'input_path: {input_path}')
+            logger.debug(f'output_path: {output_path}')
+            logger.debug(f'system_security_plan path: {args.system_security_plan}')
+            logger.debug(f'profile: {args.profile}')
+            logger.debug(f'docs_profile: {args.docs_profile}')
+            logger.debug(f'lookup_table: {args.look_up_table}')
+
             if args.system_security_plan and args.docs_profile:
                 raise TrestleIncorrectArgsError('Output to multiple files is possible with profile only.')
 
@@ -124,8 +132,19 @@ class JinjaCmd(CommandPlusDocs):
                 lookup_table_path = pathlib.Path.cwd() / lut_table
                 lut = JinjaCmd.load_LUT(lookup_table_path, args.external_lut_prefix)
 
-            if args.system_security_plan:
-                return JinjaCmd.jinja_ify(
+            if args.profile and args.docs_profile:
+                return JinjaCmd.jinja_multiple_md(
+                    pathlib.Path(args.trestle_root),
+                    input_path,
+                    output_path,
+                    args.profile,
+                    lut,
+                    parameters_formatting=args.bracket_format,
+                    value_assigned_prefix=args.value_assigned_prefix,
+                    value_not_assigned_prefix=args.value_not_assigned_prefix
+                )
+
+            return JinjaCmd.jinja_ify(
                     pathlib.Path(args.trestle_root),
                     input_path,
                     output_path,
@@ -137,17 +156,7 @@ class JinjaCmd(CommandPlusDocs):
                     value_assigned_prefix=args.value_assigned_prefix,
                     value_not_assigned_prefix=args.value_not_assigned_prefix
                 )
-            elif args.profile and args.docs_profile:
-                return JinjaCmd.jinja_multiple_md(
-                    pathlib.Path(args.trestle_root),
-                    input_path,
-                    output_path,
-                    args.profile,
-                    lut,
-                    parameters_formatting=args.bracket_format,
-                    value_assigned_prefix=args.value_assigned_prefix,
-                    value_not_assigned_prefix=args.value_not_assigned_prefix
-                )
+
 
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Error while generating markdown via Jinja template')
@@ -218,15 +227,15 @@ class JinjaCmd(CommandPlusDocs):
             lut['control_writer'] = DocsControlWriter()
             lut['ssp_md_writer'] = ssp_writer
 
-            output = JinjaCmd.render_template(template, lut, template_folder)
+        output = JinjaCmd.render_template(template, lut, template_folder)
 
-            output_file = trestle_root / r_output_file
-            if number_captions:
-                output_file.open('w', encoding=const.FILE_ENCODING).write(_number_captions(output))
-            else:
-                output_file.open('w', encoding=const.FILE_ENCODING).write(output)
+        output_file = trestle_root / r_output_file
+        if number_captions:
+            output_file.open('w', encoding=const.FILE_ENCODING).write(_number_captions(output))
+        else:
+            output_file.open('w', encoding=const.FILE_ENCODING).write(output)
 
-            return CmdReturnCodes.SUCCESS.value
+        return CmdReturnCodes.SUCCESS.value
 
     @staticmethod
     def jinja_multiple_md(
