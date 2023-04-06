@@ -136,15 +136,23 @@ jobs:
     name: Merge main -> develop
     runs-on: ubuntu-latest
     needs: deploy
-    concurrency: 
+    concurrency:
       group: ${{ github.ref }}-${{ github.workflow }}-${{ github.job }}-main
       cancel-in-progress: true
     if: github.ref == 'refs/heads/main'
     steps:
-    - uses: tukasz/direct-merge-action@master
+    - uses: actions/checkout@v2
       with:
-        GITHUB_TOKEN: ${{ secrets.ADMIN_PAT }}
-        source-branch: main
-        target-branch: develop
-        commit-message: "chore: Merge back version tags and changelog into develop."
-
+        submodules: true
+        ref: main
+        fetch-depth: 0
+        token: ${{ secrets.ADMIN_PAT }}
+    - name: Configure Git
+      run: |
+        git config user.name "Vikas Agarwal"
+        git config user.email "<>"
+    - name: Merge Main to Develop
+      run: |
+        git checkout develop
+        git merge --no-ff main -m "chore: Merge back version tags and changelog into develop."
+        git push origin develop
