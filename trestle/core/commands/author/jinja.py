@@ -145,18 +145,17 @@ class JinjaCmd(CommandPlusDocs):
                 )
 
             return JinjaCmd.jinja_ify(
-                    pathlib.Path(args.trestle_root),
-                    input_path,
-                    output_path,
-                    args.system_security_plan,
-                    args.profile,
-                    lut,
-                    number_captions=args.number_captions,
-                    parameters_formatting=args.bracket_format,
-                    value_assigned_prefix=args.value_assigned_prefix,
-                    value_not_assigned_prefix=args.value_not_assigned_prefix
-                )
-
+                pathlib.Path(args.trestle_root),
+                input_path,
+                output_path,
+                args.system_security_plan,
+                args.profile,
+                lut,
+                number_captions=args.number_captions,
+                parameters_formatting=args.bracket_format,
+                value_assigned_prefix=args.value_assigned_prefix,
+                value_not_assigned_prefix=args.value_not_assigned_prefix
+            )
 
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Error while generating markdown via Jinja template')
