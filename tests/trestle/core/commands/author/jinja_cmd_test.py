@@ -259,8 +259,9 @@ def test_jinja_with_template_only(
     testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
 ) -> None:
     """
-    Test jinja output with only input template. Oscal profile, docs profile and ssp
-    have not been provided as input.
+    Test jinja output with only input template.
+
+    Oscal profile, docs profile and ssp have not been provided as input.
     """
     input_template = 'ssp_template_no_input_profile_ssp.md.jinja'
 
