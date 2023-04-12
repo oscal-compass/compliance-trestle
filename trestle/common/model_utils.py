@@ -153,7 +153,7 @@ class ModelUtils:
                 else:
                     primary_model_dict[alias] = instance
 
-            merged_model_instance = merged_model_type(**primary_model_dict)  # type: ignore
+            merged_model_instance = merged_model_type(**primary_model_dict)
             return merged_model_type, merged_model_alias, merged_model_instance
         return primary_model_type, primary_model_alias, primary_model_instance
 

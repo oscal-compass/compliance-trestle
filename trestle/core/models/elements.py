@@ -575,9 +575,7 @@ class Element:
             else:
                 dynamic_passer = {}
                 dynamic_passer['TransientField'] = (self._elem.__class__, Field(self, alias=self._wrapper_alias))
-                wrapper_model = create_model(
-                    'TransientModel', __base__=OscalBaseModel, **dynamic_passer
-                )  # type: ignore
+                wrapper_model = create_model('TransientModel', __base__=OscalBaseModel, **dynamic_passer)
                 wrapped_model = wrapper_model.construct(**{self._wrapper_alias: self._elem})
                 json_data = wrapped_model.oscal_serialize_json(pretty=pretty, wrapped=False)
         return json_data

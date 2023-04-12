@@ -258,6 +258,8 @@ class HTTPSFetcher(FetcherBase):
                 f'Cache request for invalid input URI: password found '
                 f'but username not found via environment variable {self._uri}'
             )
+        if u.hostname is None:
+            raise TrestleError(f'Cache request for {self._uri} requires hostname')
         https_cached_dir = self._trestle_cache_path / u.hostname
         # Skip any number of back- or forward slashes preceding the URI path (u.path)
         path_parent = pathlib.Path(u.path[re.search('[^/\\\\]', u.path).span()[0]:]).parent

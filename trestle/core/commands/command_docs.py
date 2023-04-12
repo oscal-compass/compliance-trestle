@@ -18,7 +18,9 @@
 Improves parsing until such a point as ILCLI is fixed.
 """
 
+import argparse
 import logging
+from typing import Optional, TextIO
 
 from ilcli import Command
 
@@ -35,7 +37,14 @@ class CommandBase(Command):
     """
 
     # Example commands extedning from this class - init', 'trestle', 'version', 'partial-object-validate'
-    def __init__(self, parser=None, parent=None, name=None, out=None, err=None) -> None:
+    def __init__(
+        self,
+        parser: Optional[argparse.ArgumentParser] = None,
+        parent: Optional[Command] = None,
+        name: Optional[str] = None,
+        out: Optional[TextIO] = None,
+        err: Optional[TextIO] = None
+    ) -> None:
         """Override default ILCLI behaviour to include class documentation in command help description."""
         super(CommandBase, self).__init__(parser, parent, name, out, err)
         self.parser.description = self.__doc__
@@ -48,14 +57,16 @@ class CommandPlusDocs(CommandBase):
     All commands that extend this class will validate the state of trestle workspace.
     """
 
-    def _validate_arguments(self, args):
+    def _validate_arguments(self, args: argparse.ArgumentParser) -> int:
         """Check trestle-root argument is a valid trestle root directory."""
-        root = file_utils.extract_trestle_project_root(args.trestle_root)
+        root = file_utils.extract_trestle_project_root(args.trestle_root)  # type: ignore
         if root is None:
-            logger.error(f'Given directory {args.trestle_root} is not in a valid trestle root directory')
+            logger.error(
+                f'Given directory {args.trestle_root} is not in a valid trestle root directory'
+            )  # type: ignore
             return CmdReturnCodes.TRESTLE_ROOT_ERROR.value
-        is_oscal_dir_valid = file_utils.check_oscal_directories(args.trestle_root)
+        is_oscal_dir_valid = file_utils.check_oscal_directories(args.trestle_root)  # type: ignore
         if not is_oscal_dir_valid:
             return CmdReturnCodes.TRESTLE_ROOT_ERROR.value
-        args.trestle_root = root
+        args.trestle_root = root  # type: ignore
         return CmdReturnCodes.SUCCESS.value
