@@ -21,7 +21,7 @@ import re
 import uuid
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple, Type, Union, cast
+from typing import Any, Dict, List, Optional, Set, Tuple, Type, Union
 
 from pydantic import BaseModel, create_model
 
@@ -49,7 +49,9 @@ class ModelUtils:
         abs_path: Path,
         abs_trestle_root: Path,
         collection_type: Optional[Type[Any]] = None
-    ) -> Tuple[Type[OscalBaseModel], str, Union[OscalBaseModel, List[OscalBaseModel], Dict[str, OscalBaseModel]]]:
+    ) -> Tuple[Type[OscalBaseModel],
+               str,
+               Optional[Union[OscalBaseModel, List[OscalBaseModel], Dict[str, OscalBaseModel]]]]:
         """
         Given path to a model, load the model.
 
@@ -90,7 +92,7 @@ class ModelUtils:
 
         # Get current model
         primary_model_type, primary_model_alias = ModelUtils.get_stripped_model_type(abs_path, abs_trestle_root)
-        primary_model_instance: Optional[OscalBaseModel] = None
+        primary_model_instance: Optional[Union[OscalBaseModel, List[OscalBaseModel], Dict[str, OscalBaseModel]]] = None
 
         # is this an attempt to load an actual json or yaml file?
         content_type = FileContentType.path_to_content_type(abs_path)
@@ -171,17 +173,20 @@ class ModelUtils:
 
         Note:  This does not validate the model.  If you want to validate the model use the load_validate utilities.
         """
-        root_model_path = ModelUtils._root_path_for_top_level_model(trestle_root, model_name, model_class)
+        root_model_path = ModelUtils._root_path_for_top_level_model(
+            trestle_root, model_name, model_class
+        )  # type: ignore
         if file_content_type is None:
             file_content_type = FileContentType.path_to_content_type(root_model_path)
         if not FileContentType.is_readable_file(file_content_type):
             raise TrestleError(f'Unable to load model {model_name} without specifying json or yaml.')
         full_model_path = root_model_path.with_suffix(FileContentType.to_file_extension(file_content_type))
         _, _, model = ModelUtils.load_distributed(full_model_path, trestle_root)
-        return model, full_model_path
+        return model, full_model_path  # type: ignore
 
     @staticmethod
-    def load_model_for_type(trestle_root: pathlib.Path, model_type: str, model_name: str) -> Tuple[TG, pathlib.Path]:
+    def load_model_for_type(trestle_root: pathlib.Path, model_type: str,
+                            model_name: str) -> Tuple[TopLevelOscalModel, pathlib.Path]:
         """Load model for the given type and name."""
         dir_name = ModelUtils.model_type_to_model_dir(model_type)
         model_path = trestle_root / dir_name / model_name
@@ -191,7 +196,7 @@ class ModelUtils:
 
         _, _, oscal_object = ModelUtils.load_distributed(model_path, trestle_root)
 
-        return oscal_object, model_path
+        return oscal_object, model_path  # type: ignore
 
     @staticmethod
     def save_top_level_model(
@@ -273,7 +278,6 @@ class ModelUtils:
             logger.debug(f'collection field type class name {class_name} and alias {malias}')
             model_type = create_model(class_name, __base__=OscalBaseModel, __root__=(singular_model_type, ...))
             logger.debug(f'model_type created: {model_type}')
-            model_type = cast(Type[OscalBaseModel], model_type)
             return model_type, model_alias
 
         malias = model_alias.split('.')[-1]
@@ -573,16 +577,16 @@ class ModelUtils:
         """
         res = ModelUtils._parameter_to_dict_recurse(obj, partial)
         if 'values' not in res:
-            res['values'] = None
+            res['values'] = None  # type: ignore
         return res
 
     @staticmethod
     def _string_to_howmany(count_str: str) -> Optional[str]:
         clean_str = count_str.lower().strip().replace('-', ' ').replace('_', ' ')
         if clean_str == const.ONE:
-            return common.HowMany.one
+            return common.HowMany.one  # type: ignore
         if clean_str == const.ONE_OR_MORE_SPACED:
-            return common.HowMany.one_or_more
+            return common.HowMany.one_or_more  # type: ignore
         return None
 
     @staticmethod
@@ -632,7 +636,7 @@ class ModelUtils:
         return param
 
     @staticmethod
-    def last_modified_at_time(timestamp: Optional[datetime] = None) -> common.LastModified:
+    def last_modified_at_time(timestamp: Optional[datetime] = None) -> datetime:
         """Generate a LastModified set to timestamp or now."""
         timestamp = timestamp if timestamp else datetime.now().astimezone()
         return timestamp
@@ -684,7 +688,7 @@ class ModelUtils:
         set_loe = set(loe)
         if len(loe) == len(set_loe):
             return True
-        items = {}
+        items: Dict[str, Any] = {}
         for item in loe:
             items[item] = items.get(item, 0) + 1
         # now print items
@@ -865,7 +869,7 @@ class ModelUtils:
             fields_b = ModelUtils.fields_set_non_none(obj_b)
             if fields_a != fields_b:
                 return True
-            for field in list_utils.as_filtered_list(fields_a, lambda f: f not in ignore_name_list):
+            for field in list_utils.as_filtered_list(fields_a, lambda f: f not in ignore_name_list):  # type: ignore
                 if ignore_all_uuid and 'uuid' in field:
                     continue
                 if ModelUtils._objects_differ(getattr(obj_a, field),

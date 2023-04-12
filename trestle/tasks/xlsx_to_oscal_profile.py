@@ -14,13 +14,14 @@
 # limitations under the License.
 """OSCAL transformation tasks."""
 
+# mypy: ignore-errors
 import configparser
 import datetime
 import logging
 import pathlib
 import traceback
 import uuid
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.common import Metadata
@@ -201,7 +202,7 @@ class XlsxToOscalProfile(TaskBase):
                 check_name_id_list.append(check_name_id)
         return sorted(check_name_id_list)
 
-    def _control_sort_key(self, control: str) -> (str, int, int):
+    def _control_sort_key(self, control: str) -> Tuple[str, int, int]:
         """Fabricate sort key."""
         k1 = control.split('-')[0]
         k2 = int(control.split('-')[1].split('.')[0])

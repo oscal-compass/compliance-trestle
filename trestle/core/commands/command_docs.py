@@ -61,9 +61,7 @@ class CommandPlusDocs(CommandBase):
         """Check trestle-root argument is a valid trestle root directory."""
         root = file_utils.extract_trestle_project_root(args.trestle_root)  # type: ignore
         if root is None:
-            logger.error(
-                f'Given directory {args.trestle_root} is not in a valid trestle root directory'
-            )  # type: ignore
+            logger.error(f'Given directory {args.trestle_root} is not in a valid trestle root directory')
             return CmdReturnCodes.TRESTLE_ROOT_ERROR.value
         is_oscal_dir_valid = file_utils.check_oscal_directories(args.trestle_root)  # type: ignore
         if not is_oscal_dir_valid:

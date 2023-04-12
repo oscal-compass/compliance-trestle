@@ -29,7 +29,7 @@ import re
 from abc import ABC, abstractmethod
 from enum import Enum
 from io import StringIO
-from typing import Any, Dict, Tuple, Type
+from typing import Any, Dict, Optional, Tuple, Type, Union
 from urllib import parse
 
 import paramiko
@@ -105,7 +105,7 @@ class FetcherBase(ABC):
                 ) from e  # noqa E501
         return False
 
-    def get_raw(self, force_update=False) -> Dict[str, Any]:
+    def get_raw(self, force_update: bool = False) -> Dict[str, Any]:
         """Retrieve the raw dictionary representing the underlying object."""
         self._update_cache(force_update)
         # Return results in the cache, whether yaml or json, or whatever is supported by fs.load_file().
@@ -118,7 +118,9 @@ class FetcherBase(ABC):
                 raise TrestleError(f'Cache get failure for {self._uri}: {e}.') from e
         return raw_data
 
-    def get_oscal_with_model_type(self, model_type: Type[OscalBaseModel], force_update=False) -> OscalBaseModel:
+    def get_oscal_with_model_type(self,
+                                  model_type: Type[OscalBaseModel],
+                                  force_update: bool = False) -> Optional[OscalBaseModel]:
         """Retrieve the cached file as a particular OSCAL model.
 
         Arguments:
@@ -135,7 +137,7 @@ class FetcherBase(ABC):
             logger.debug(f'get_oscal failed, error loading cache file for {self._uri} as {model_type}')
             raise TrestleError(f'get_oscal failure for {self._uri}: {e}.') from e
 
-    def get_oscal(self, force_update=False) -> Tuple[OscalBaseModel, str]:
+    def get_oscal(self, force_update: bool = False) -> Tuple[OscalBaseModel, str]:
         """Retrieve the cached file and model name without knowing its model type."""
         model_dict = self.get_raw(force_update)
         root_key = parser.root_key(model_dict)
@@ -199,7 +201,7 @@ class LocalFetcher(FetcherBase):
         # set the cached path to be the actual file path
         self._cached_object_path = self._abs_path
 
-    def _is_stale(self):
+    def _is_stale(self) -> bool:
         # Local file is always stale.
         return True
 
@@ -439,7 +441,7 @@ class FetcherFactory:
         return True
 
     @classmethod
-    def get_fetcher(cls, trestle_root: pathlib.Path, uri: str) -> FetcherBase:
+    def get_fetcher(cls, trestle_root: pathlib.Path, uri: str) -> Union[LocalFetcher, SFTPFetcher, HTTPSFetcher]:
         """Return an instantiated fetcher object based on the type of URI.
 
         Args:
@@ -456,4 +458,4 @@ class FetcherFactory:
             FetcherFactory.UriType.TRESTLE: LocalFetcher,
         }
         uri_type = cls.get_uri_type(uri)
-        return fetcher_dict[uri_type](trestle_root, uri)
+        return fetcher_dict[uri_type](trestle_root, uri)  # type: ignore
