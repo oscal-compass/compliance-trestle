@@ -132,7 +132,7 @@ class DocsControlWriter(ControlWriter):
         return []
 
     def _add_control_statement(
-        self, control: cat.Control, group_title: str, print_group_title=True, tag_pattern: str = None
+        self, control: cat.Control, group_title: str, print_group_title: bool = True, tag_pattern: str = None
     ) -> None:
         """Add the control statement and items to the md file."""
         self._md_file.new_paragraph()
@@ -206,7 +206,7 @@ class DocsControlWriter(ControlWriter):
         tag_pattern: Optional[str] = None,
         section_prefix: str = '',
         heading_level: int = 2
-    ):
+    ) -> None:
         section_title = self._sections_dict.get(section_name, part_info.name)
 
         heading_title = f'{section_title}'

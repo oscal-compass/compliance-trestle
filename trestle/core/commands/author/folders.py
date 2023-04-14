@@ -19,7 +19,7 @@ import logging
 import pathlib
 import re
 import shutil
-from typing import List
+from typing import Any, Dict, List
 
 import trestle.core.commands.author.consts as author_const
 import trestle.core.draw_io as draw_io
@@ -195,7 +195,7 @@ class Folders(AuthorCommonCommand):
             1. All template files from the specified version are present in the task
             2. All of the instances are valid
         """
-        all_versioned_templates = {}
+        all_versioned_templates: Dict[str, Any] = {}
         instance_version = template_version
         instance_file_names: List[pathlib.Path] = []
         # Fetch all instances versions and build dictionary of required template files

@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 class MarkdownAPI:
     """A common API that wraps around the existing markdown functionality."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize markdown API."""
         self.processor = MarkdownProcessor()
         self.validator = None

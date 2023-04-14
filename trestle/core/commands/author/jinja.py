@@ -51,7 +51,7 @@ class JinjaCmd(CommandPlusDocs):
 
     name = 'jinja'
 
-    def _init_arguments(self):
+    def _init_arguments(self) -> None:
         self.add_argument('-i', '--input', help='Input jinja template, relative to trestle root', required=True)
         self.add_argument('-o', '--output', help='Output template, relative to trestle root.', required=True)
         self.add_argument(
@@ -106,7 +106,7 @@ class JinjaCmd(CommandPlusDocs):
             required=False
         )
 
-    def _run(self, args: argparse.Namespace):
+    def _run(self, args: argparse.Namespace) -> None:
         try:
             log.set_log_level_from_args(args)
             logger.debug(f'Starting {self.name} command')
@@ -150,7 +150,9 @@ class JinjaCmd(CommandPlusDocs):
                 )
 
         except Exception as e:  # pragma: no cover
-            return handle_generic_command_exception(e, logger, 'Error while generating markdown via Jinja template')
+            return handle_generic_command_exception(  # type: ignore
+                e, logger, 'Error while generating markdown via Jinja template'
+            )
 
     @staticmethod
     def load_LUT(path: pathlib.Path, prefix: Optional[str]) -> Dict[str, Any]:  # noqa: N802
@@ -226,7 +228,7 @@ class JinjaCmd(CommandPlusDocs):
             else:
                 output_file.open('w', encoding=const.FILE_ENCODING).write(output)
 
-            return CmdReturnCodes.SUCCESS.value
+        return CmdReturnCodes.SUCCESS.value
 
     @staticmethod
     def jinja_multiple_md(
