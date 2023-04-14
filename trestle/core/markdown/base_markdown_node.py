@@ -70,7 +70,7 @@ class BaseMarkdownNode:
     def get_node_for_key(self, key: str, strict_matching: bool = True) -> Optional[BaseMarkdownNode]:
         """Return a first node for the given key, substring matching is supported. The method is case insensitive."""
         if not strict_matching:
-            if not any([key.lower() in el.lower() for el in self.content.subnodes_keys]):
+            if not any(key.lower() in el.lower() for el in self.content.subnodes_keys):
                 return None
             elif len(as_filtered_list(self.content.subnodes_keys, lambda el: key.lower() in el.lower())) > 1:
                 logger.warning(f'Multiple nodes for {key} were found, only the first one will be returned.')
@@ -99,7 +99,7 @@ class BaseMarkdownNode:
         Returns: List of found markdown nodes
         """
         if not strict_matching:
-            if not any([key in el for el in self.content.subnodes_keys for key in keys]):
+            if not any(key in el for el in self.content.subnodes_keys for key in keys):
                 return []
         elif not set(keys).intersection(self.content.subnodes_keys):
             return []
@@ -256,8 +256,8 @@ class BaseMarkdownNode:
         """
         if key.lower() == node.key.lower() or (not strict_matching and key.lower() in node.key.lower()):
             return node
-        if (not strict_matching and any([key.lower() in el.lower()
-                                         for el in node.content.subnodes_keys])) or (key.lower() in [
+        if (not strict_matching and any(key.lower() in el.lower()
+                                         for el in node.content.subnodes_keys)) or (key.lower() in [
                                              el.lower() for el in node.content.subnodes_keys
                                          ]):
             for subnode in node.subnodes:
