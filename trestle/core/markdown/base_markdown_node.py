@@ -257,9 +257,9 @@ class BaseMarkdownNode:
         if key.lower() == node.key.lower() or (not strict_matching and key.lower() in node.key.lower()):
             return node
         if (not strict_matching and any(key.lower() in el.lower()
-                                         for el in node.content.subnodes_keys)) or (key.lower() in [
-                                             el.lower() for el in node.content.subnodes_keys
-                                         ]):
+                                        for el in node.content.subnodes_keys)) or (key.lower() in [
+                                            el.lower() for el in node.content.subnodes_keys
+                                        ]):
             for subnode in node.subnodes:
                 matched_node = self._rec_traverse(subnode, key, strict_matching)
                 if matched_node is not None:
