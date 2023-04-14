@@ -31,8 +31,8 @@ def setup_ssp(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeyp
     ssp_cmd = SSPGenerate()
     assert ssp_cmd._run(args) == 0
 
-    command_ssp_assem = f'trestle author ssp-assemble -m my_ssp -o ssp_json -cd {args.compdefs} -vv'
-    execute_command_and_assert(command_ssp_assem, 0, monkeypatch)
+    command_ssp_gen = f'trestle author ssp-assemble -m my_ssp -o ssp_json -cd {args.compdefs}'
+    execute_command_and_assert(command_ssp_gen, 0, monkeypatch)
 
     for file_name in os.listdir(testdata_dir / 'jinja'):
         full_file_name = os.path.join(testdata_dir / 'jinja', file_name)
@@ -253,3 +253,27 @@ def test_jinja_profile_docs_fails(
     input_template = 'profile_to_docs_invalid.md.jinja'
     command_jinja = f'trestle author jinja -i {input_template} -o controls -p main_profile --docs-profile'
     execute_command_and_assert(command_jinja, 1, monkeypatch)
+
+
+def test_jinja_with_template_only(
+    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """
+    Test jinja output with only input template.
+
+    Oscal profile, docs profile and ssp have not been provided as input.
+    """
+    input_template = 'ssp_template_no_input_profile_ssp.md.jinja'
+
+    setup_ssp(testdata_dir, tmp_trestle_dir, monkeypatch)
+
+    command_jinja = f'trestle author jinja -i {input_template} -o output.md -v'
+    execute_command_and_assert(command_jinja, 0, monkeypatch)
+
+    with open('output.md', 'r') as md_file:
+        content = md_file.read()
+        tree = DocsMarkdownNode.build_tree_from_markdown(content.split('\n'))
+        assert tree
+        node1 = tree.get_node_for_key('# A')
+        node2 = tree.get_node_for_key('# C')
+        assert node1.subnodes[0].key == node2.subnodes[0].key

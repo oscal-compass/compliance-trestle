@@ -32,6 +32,8 @@ _*/
 #OS X 
 .DS_Store
 
+# pyenv file to fix local python version
+.python-version
 
 build
 dist
