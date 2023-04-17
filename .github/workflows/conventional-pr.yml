@@ -9,6 +9,7 @@ on:
     branches:
       - 'develop'
       - 'main'
+      - 'fix/change-lint-title-action'
 jobs:
   lint:
     if: ${{ github.head_ref != 'develop' }}
