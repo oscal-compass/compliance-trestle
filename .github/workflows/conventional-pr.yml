@@ -17,7 +17,13 @@ jobs:
     steps:
       # Please look up the latest version from
       # https://github.com/amannn/action-semantic-pull-request/releases
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
         with:
+          submodules: true
+          ref: main
           fetch-depth: 0
+          token: ${{ secrets.ADMIN_PAT }}
       - uses: wagoid/commitlint-github-action@v5
+        with:
+          configFile: commitlint.config.js
+          token: ${{ secrets.ADMIN_PAT }}
