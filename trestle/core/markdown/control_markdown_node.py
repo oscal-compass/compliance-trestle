@@ -462,6 +462,11 @@ class ControlMarkdownNode(BaseMarkdownNode):
                 name = 'objective' if id_.find('_obj') > 0 else 'item'
                 prop = common.Property(name='label', value=id_text)
                 part = common.Part(name=name, id=id_, prose=prose, props=[prop])
+                if id_ in [p.id for p in parts]:
+                    raise TrestleError(
+                        f'Duplicate part id {id_} is found in markdown '
+                        f'{tree_context.control_id}. Please correct the part label in line {line}.'
+                    )
                 parts.append(part)
                 ii += 1
             elif new_indent > indent:
