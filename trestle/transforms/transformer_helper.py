@@ -15,7 +15,7 @@
 # limitations under the License.
 """Transformer helper functions."""
 
-# mypy: ignore-errors
+# mypy: ignore-errors  # noqa E800
 from typing import Any, Dict, List, Optional
 
 from trestle.common.err import TrestleError
@@ -56,7 +56,7 @@ class PropertyAccounting():
 
     def count_property(
         self,
-        group: Optional[str] = None,
+        group: str,
         name: Optional[str] = None,
         value: Optional[str] = None,
         class_: Optional[str] = None,
@@ -64,8 +64,6 @@ class PropertyAccounting():
     ) -> None:
         """Property accounting."""
         key = _segment_separator.join([str(name), str(value), str(class_), str(ns)])
-        if not group:
-            raise TrestleError('count_property created with group=None')
         if group not in self._property_map:
             self._property_map[group] = {}
         if key not in self._property_map[group]:
@@ -74,7 +72,7 @@ class PropertyAccounting():
 
     def is_common_property(
         self,
-        group: Optional[str] = None,
+        group: str,
         name: Optional[str] = None,
         value: Optional[str] = None,
         class_: Optional[str] = None,
@@ -83,8 +81,6 @@ class PropertyAccounting():
         """Check for common property."""
         rval = False
         key = _segment_separator.join([str(name), str(value), str(class_), str(ns)])
-        if not group:
-            raise TrestleError('is_common_property created with group=None')
         if group in self._group_map and key in self._property_map[group]:
             rval = self._group_map[group] == self._property_map[group][key]
         return rval
