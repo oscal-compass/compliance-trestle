@@ -205,7 +205,8 @@ class SSPAssemble(AuthorCommonCommand):
         for component in as_list(ssp.system_implementation.components):
             if component.title == gen_comp.title:
                 return component
-        # if this is a new system component assign its status as operational because markdown doesnt have its status
+        # if this is a new system component assign its status as operational by default
+        # the status of the system components are not stored in the markdown
         gen_comp.status.state = const.STATUS_OPERATIONAL
         new_component = gen_comp.as_system_component()
         return new_component
