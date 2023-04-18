@@ -18,7 +18,7 @@ import argparse
 import logging
 import sys
 from types import TracebackType
-from typing import Type
+from typing import Optional, Type
 
 # Singleton logger instance
 # All other CLI sub module will inherit settings of this logger as long as
@@ -77,7 +77,9 @@ def set_global_logging_levels(level: int = logging.INFO) -> None:
     _logger.addHandler(console_debug_handler)
 
 
-def _exception_handler(exception_type: Type[Exception], exception: Exception, traceback: TracebackType) -> None:
+def _exception_handler(
+    exception_type: Type[BaseException], exception: BaseException, traceback: Optional[TracebackType]
+) -> None:
     """Empty exception handler to prevent stack traceback in quiet mode."""
     logging.warning(exception)
 

@@ -91,7 +91,7 @@ class CatalogMerger():
                 new_control_handle = copy.deepcopy(control_handle)
                 new_control_handle.control = src
                 # add the control and its handle to the param_dict
-                self._catalog_interface._control_dict[src.id] = new_control_handle
+                self._catalog_interface._control_dict[src.id] = new_control_handle  # type: ignore
 
         # now need to cull any controls that are not in the src catalog
         handled_ids = set(cat_interface._control_dict.keys())

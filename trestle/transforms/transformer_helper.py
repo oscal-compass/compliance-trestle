@@ -14,10 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Transformer helper functions."""
-from typing import Any
-from typing import Dict
-from typing import List
 
+# mypy: ignore-errors  # noqa E800
+from typing import Any, Dict, List, Optional
+
+from trestle.common.err import TrestleError
+from trestle.common.list_utils import as_list
 from trestle.oscal.assessment_results import Observation
 from trestle.oscal.common import Property
 
@@ -42,16 +44,23 @@ class PropertyAccounting():
     def __init__(self) -> None:
         """Initialize."""
         self._group_map: Dict[str, int] = {}
-        self._property_map: Dict[str, Dict[str:int]] = {}
+        self._property_map: Dict[str, Dict[str, int]] = {}
 
-    def count_group(self, group: str = None) -> None:
+    def count_group(self, group: Optional[str] = None) -> None:
         """Group accounting."""
+        if not group:
+            raise TrestleError('count_group created with group=None')
         if group not in self._group_map:
             self._group_map[group] = 0
         self._group_map[group] += 1
 
     def count_property(
-        self, group: str = None, name: str = None, value: str = None, class_: str = None, ns: str = None
+        self,
+        group: str,
+        name: Optional[str] = None,
+        value: Optional[str] = None,
+        class_: Optional[str] = None,
+        ns: Optional[str] = None
     ) -> None:
         """Property accounting."""
         key = _segment_separator.join([str(name), str(value), str(class_), str(ns)])
@@ -62,7 +71,12 @@ class PropertyAccounting():
         self._property_map[group][key] += 1
 
     def is_common_property(
-        self, group: str = None, name: str = None, value: str = None, class_: str = None, ns: str = None
+        self,
+        group: str,
+        name: Optional[str] = None,
+        value: Optional[str] = None,
+        class_: Optional[str] = None,
+        ns: Optional[str] = None
     ) -> bool:
         """Check for common property."""
         rval = False
@@ -102,7 +116,13 @@ class PropertyManager():
         """Cache hits."""
         return self._hits
 
-    def materialize(self, name: str = None, value: str = None, class_: str = None, ns: str = None) -> Property:
+    def materialize(
+        self,
+        name: Optional[str] = None,
+        value: Optional[str] = None,
+        class_: Optional[str] = None,
+        ns: Optional[str] = None
+    ) -> Property:
         """Get property from cache or create new property."""
         self._requests += 1
         # try fetch from cache
@@ -117,9 +137,16 @@ class PropertyManager():
         return prop
 
     def put_common_property(
-        self, group: str = None, name: str = None, value: str = None, class_: str = None, ns: str = None
-    ) -> Property:
+        self,
+        group: Optional[str] = None,
+        name: Optional[str] = None,
+        value: Optional[str] = None,
+        class_: Optional[str] = None,
+        ns: Optional[str] = None
+    ) -> None:
         """Remember common property."""
+        if not group:
+            raise TrestleError('put_common_property created with group=None')
         if group not in self._map_common:
             self._map_common[group] = {}
         key = _segment_separator.join([str(name), str(value), str(class_), str(ns)])
@@ -127,18 +154,26 @@ class PropertyManager():
             prop = self.materialize(name, value, class_, ns)
             self._map_common[group][key] = prop
 
-    def get_common_properties(self, group: str = None) -> List[Property]:
+    def get_common_properties(self, group: Optional[str] = None) -> Optional[List[Property]]:
         """Recall common properties for the group."""
         rval = None
+        if not group:
+            raise TrestleError('get_common_properties created with group=None')
         if group in self._map_common:
             rval = list(self._map_common[group].values())
         return rval
 
-    def _create(self, name: str = None, value: str = None, class_: str = None, ns: str = None) -> Property:
+    def _create(
+        self,
+        name: Optional[str] = None,
+        value: Optional[str] = None,
+        class_: Optional[str] = None,
+        ns: Optional[str] = None
+    ) -> Property:
         """Create new property."""
         if self._checking:
-            return Property(name=name, value=value, class_=class_, ns=ns)
-        return Property.construct(name=name, value=value, class_=class_, ns=ns)
+            return Property(name=name, value=value, class_=class_, ns=ns)  # type: ignore
+        return Property.construct(name=name, value=value, class_=class_, ns=ns)  # type: ignore
 
 
 class TransformerHelper():
@@ -157,7 +192,7 @@ class TransformerHelper():
                 continue
             # remove property from each observation and keep one instance
             for observation in observations:
-                for prop in observation.props:
+                for prop in as_list(observation.props):
                     if key == f'{prop.name}:{prop.value}:{prop.class_}':
                         props[key] = prop
                         observation.props.remove(prop)
@@ -168,7 +203,7 @@ class TransformerHelper():
         # return list of removed properties
         return common_props
 
-    def _get_property_occurrence_counts(self, observations: List[Observation]):
+    def _get_property_occurrence_counts(self, observations: List[Observation]) -> Dict[str, Property]:
         """Count each property occurrence in each observation."""
         property_occurences = {}
         for observation in observations:

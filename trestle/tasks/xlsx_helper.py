@@ -14,6 +14,7 @@
 # limitations under the License.
 """XLSX utilities."""
 
+# mypy: ignore-errors
 import logging
 import pathlib
 import string

@@ -32,10 +32,10 @@ logger = logging.getLogger(__name__)
 class BaseSectionContent:
     """A content of the node."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize section content."""
         self.raw_text = ''
-        self.subnodes_keys = []
+        self.subnodes_keys: List[str] = []
 
     def union(self, node: BaseMarkdownNode) -> None:
         """Unites contents together."""
@@ -54,7 +54,7 @@ class BaseMarkdownNode:
         self.starting_line = starting_line
 
     @classmethod
-    def build_tree_from_markdown(cls, lines: List[str]):
+    def build_tree_from_markdown(cls, lines: List[str]) -> BaseMarkdownNode:
         """Construct a tree out of the given markdown."""
         ob = cls.__new__(cls)
         start_level = ob._get_max_header_lvl(lines)
@@ -320,7 +320,7 @@ class BaseMarkdownNode:
         for subnode in node.subnodes:
             self._rec_traverse_header_update(subnode, header_map)
 
-    def _get_max_header_lvl(self, lines: List[str]):
+    def _get_max_header_lvl(self, lines: List[str]) -> int:
         """Go through all lines to determine highest header level. Less # means higher."""
         min_lvl = math.inf
         for line in lines:

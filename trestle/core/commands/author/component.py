@@ -238,13 +238,13 @@ class ComponentAssemble(AuthorCommonCommand):
         if not version and assem_comp_path.exists():
             _, _, existing_comp = ModelUtils.load_distributed(assem_comp_path, trestle_root)
             # comp def will change statement uuids so need to ignore them in comparison
-            if ModelUtils.models_are_equivalent(existing_comp, parent_comp, True):
+            if ModelUtils.models_are_equivalent(existing_comp, parent_comp, True):  # type: ignore
                 logger.info('Assembled component definition is no different from existing version, so no update.')
                 return CmdReturnCodes.SUCCESS.value
 
         if regenerate:
             parent_comp, _, _ = ModelUtils.regenerate_uuids(parent_comp)
-        ModelUtils.update_last_modified(parent_comp)
+        ModelUtils.update_last_modified(parent_comp)  # type: ignore
 
         if assem_comp_path.parent.exists():
             logger.info(
@@ -253,7 +253,7 @@ class ComponentAssemble(AuthorCommonCommand):
             shutil.rmtree(str(assem_comp_path.parent))
 
         assem_comp_path.parent.mkdir(parents=True, exist_ok=True)
-        parent_comp.oscal_write(assem_comp_path)
+        parent_comp.oscal_write(assem_comp_path)  # type: ignore
         return CmdReturnCodes.SUCCESS.value
 
     @staticmethod
