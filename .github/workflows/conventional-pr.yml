@@ -7,8 +7,6 @@ on:
       - edited
       - synchronize
     branches:
-      - 'develop'
-      - 'main'
       - 'fix/change-lint-title-action'
 jobs:
   lint:
