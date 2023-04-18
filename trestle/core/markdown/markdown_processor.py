@@ -81,6 +81,7 @@ class MarkdownProcessor:
             _ = self.render_gfm_to_html(markdown_wo_header)
 
             lines = markdown_wo_header.split('\n')
+            tree_context.reset()
             tree_context.section_to_part_name_map = section_to_part_name_map
             tree_context.part_label_to_id_map = part_label_to_id_map
             tree = ControlMarkdownNode.build_tree_from_markdown(lines)
