@@ -7,7 +7,7 @@ on:
       - edited
       - synchronize
     branches:
-      - 'fix/change-lint-title-action'
+      - ' fix/testing-new-lint-action'
 jobs:
   lint:
     if: ${{ github.head_ref != 'develop' }}
