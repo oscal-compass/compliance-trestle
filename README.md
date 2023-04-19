@@ -14,7 +14,7 @@ Trestle is designed to operate as a CICD pipeline running on top of compliance a
 
 It also provides tooling to manage OSCAL documents in a more human-friendly manner. By splitting large OSCAL data structures into smaller and easier to edit sub-structures, creation and maintenance of these artifacts can follow normal `git` workflows including peer review via pull request, versioning, releases/tagging.
 
-Trestle provides three separate but related functions in the compliance space: 
+Trestle provides three separate but related functions in the compliance space:  
 
 - Manage OSCAL documents to allow editing and manipulation while making sure the schemas are enforced
 - Transform documents from other formats to OSCAL
