@@ -8,13 +8,13 @@
 ![[Pypi](https://pypi.org/project/compliance-trestle/)](https://img.shields.io/pypi/dm/compliance-trestle)
 ![GitHub Actions status](https://img.shields.io/github/workflow/status/IBM/compliance-trestle/Trestle%20PR%20pipeline?event=push)
 
-Trestle is an ensemble of tools that enable the creation, validation, and governance of documentation artifacts for compliance needs. It leverages NIST's [OSCAL](https://pages.nist.gov/OSCAL/documentation/) as a standard data format for interchange between tools and people, and provides an opinionated approach to OSCAL adoption.
+Trestle is an ensemble of tools that enable the creation, validation, and governance of documentation artifacts for compliance needs. It leverages NIST's [OSCAL](https://pages.nist.gov/OSCAL/documentation/) as a standard data format for interchange between tools and people, and provides an opinionated approach to OSCAL adoption.  
 
 Trestle is designed to operate as a CICD pipeline running on top of compliance artifacts in `git`, to provide transparency for the state of compliance across multiple stakeholders in an environment friendly to developers. Trestle passes the generated artifacts on to tools that orchestrate the enforcement, measurement, and reporting of compliance.
 
 It also provides tooling to manage OSCAL documents in a more human-friendly manner. By splitting large OSCAL data structures into smaller and easier to edit sub-structures, creation and maintenance of these artifacts can follow normal `git` workflows including peer review via pull request, versioning, releases/tagging.
 
-Trestle provides three separate but related functions in the compliance space:
+Trestle provides three separate but related functions in the compliance space: 
 
 - Manage OSCAL documents to allow editing and manipulation while making sure the schemas are enforced
 - Transform documents from other formats to OSCAL
@@ -27,7 +27,7 @@ Trestle provides tooling to help orchestrate the compliance process across a num
 - Provide governance for markdown documents and enforce consistency of format and content based on specified templates
 - Tooling manage authoring and governance of markdown and drawio files withn a repository.
 - Support within trestle to streamline management within a managed git environment.
-- An underlying object model that supports developers interacting with OSCAL artefacts.
+- An underlying object model that supports developers interacting with OSCAL artefacts.  
 
 ## Important Note:
 
