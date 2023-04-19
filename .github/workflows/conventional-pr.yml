@@ -7,8 +7,6 @@ on:
       - edited
       - synchronize
     branches:
-      - 'develop'
-      - 'main'
       - 'fix/change-lint-title-action'
 jobs:
   lint:
@@ -23,7 +21,17 @@ jobs:
           ref: main
           fetch-depth: 0
           token: ${{ secrets.ADMIN_PAT }}
-      - uses: wagoid/commitlint-github-action@v5
-        with:
-          configFile: commitlint.config.js
-          token: ${{ secrets.ADMIN_PAT }}
+      - name: Install required dependencies
+        run: |
+          apt update
+          apt install -y sudo
+          sudo apt install -y git curl
+          curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+          sudo DEBIAN_FRONTEND=noninteractive apt install -y nodejs
+      - name: Install commitlint
+        run: |
+          npm install conventional-changelog-conventionalcommits
+          npm install commitlint@latest
+      - name: Validate PR commits with commitlint
+        if: github.event_name == 'pull_request'
+        run: npx commitlint --from ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }} --to ${{ github.event.pull_request.head.sha }} --verbose
