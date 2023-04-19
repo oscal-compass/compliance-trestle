@@ -27,7 +27,7 @@ Trestle provides tooling to help orchestrate the compliance process across a num
 - Provide governance for markdown documents and enforce consistency of format and content based on specified templates
 - Tooling manage authoring and governance of markdown and drawio files withn a repository.
 - Support within trestle to streamline management within a managed git environment.
-- An underlying object model that supports developers interacting with OSCAL artefacts. 
+- An underlying object model that supports developers interacting with OSCAL artefacts.  
 
 ## Important Note:
 
