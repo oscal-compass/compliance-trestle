@@ -14,13 +14,14 @@
 # limitations under the License.
 """OSCAL transformation tasks."""
 
+# mypy: ignore-errors
 import configparser
 import datetime
 import logging
 import pathlib
 import traceback
 import uuid
-from typing import List, Optional, ValuesView
+from typing import List, Optional, Tuple, ValuesView
 
 from pydantic import BaseModel, Field
 
@@ -200,7 +201,7 @@ class Ocp4CisProfileToOscalCatalog(TaskBase):
             key = self._get_key(name)
             self._node_map[key] = Node(name=name, description=description)
 
-    def _get_key(self, name: str) -> (int, int, int):
+    def _get_key(self, name: str) -> Tuple[int, int, int]:
         """Convert name to desired sortable key."""
         parts = name.split('.')
         if len(parts) == 1:

@@ -18,7 +18,7 @@
 import argparse
 import logging
 import pathlib
-from typing import List
+from typing import List, Optional, Union
 
 import trestle.common.log as log
 from trestle.common.err import TrestleError, TrestleIncorrectArgsError, handle_generic_command_exception
@@ -74,7 +74,7 @@ class DescribeCmd(CommandPlusDocs):
         return text
 
     @classmethod
-    def _description_text(cls, sub_model: OscalBaseModel) -> str:
+    def _description_text(cls, sub_model: Optional[Union[OscalBaseModel, List[OscalBaseModel]]]) -> str:
         clip_string = 100
         if sub_model is None:
             return 'None'
@@ -84,7 +84,8 @@ class DescribeCmd(CommandPlusDocs):
             text = f'list of {n_items} items of type {type_text}'
             return text
         if type(sub_model) is str:
-            return sub_model if len(sub_model) < clip_string else sub_model[:clip_string] + '[truncated]'
+            return sub_model if len(sub_model
+                                    ) < clip_string else sub_model[:clip_string] + '[truncated]'  # type: ignore
         if hasattr(sub_model, 'type_'):
             return cls._clean_type_string(str(sub_model.type_))
         return cls._clean_type_string(str(type(sub_model)))

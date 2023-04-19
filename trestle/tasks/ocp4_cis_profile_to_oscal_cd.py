@@ -14,6 +14,7 @@
 # limitations under the License.
 """OSCAL transformation tasks."""
 
+# mypy: ignore-errors
 import configparser
 import datetime
 import json

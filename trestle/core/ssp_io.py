@@ -85,7 +85,7 @@ class SSPMarkdownWriter():
         )
         return self._build_tree_and_adjust(md_list.split('\n'), level)
 
-    def get_fedramp_control_tables(self, control_id: str, level: int, label_column=False) -> str:
+    def get_fedramp_control_tables(self, control_id: str, level: int, label_column: bool = False) -> str:
         """Get the fedramp metadata as markdown tables, with optional third label column for params.
 
         The fedramp metadata has the following elements:
@@ -150,7 +150,7 @@ class SSPMarkdownWriter():
 
         return ''
 
-    def _parameter_table(self, control_id: str, level: int, label_column=False) -> str:
+    def _parameter_table(self, control_id: str, level: int, label_column: bool = False) -> str:
         """Print Param_id | ValueOrLabelOrChoices | Optional Label Column."""
         if not self._ssp:
             raise TrestleError('Cannot get parameter table, set SSP first.')
@@ -209,7 +209,9 @@ class SSPMarkdownWriter():
         md_list = self._write_list_with_header('FedRamp Control Origination.', control_origination, level)
         return md_list
 
-    def get_control_response(self, control_id: str, level: int, write_empty_responses=False, show_comp=True) -> str:
+    def get_control_response(
+        self, control_id: str, level: int, write_empty_responses: bool = False, show_comp: bool = True
+    ) -> str:
         """
         Get the full control implemented requirements, broken down based on the available control responses.
 
@@ -276,7 +278,7 @@ class SSPMarkdownWriter():
     def _get_responses_by_components(self, has_bycomps: TypeWithByComps, write_empty_responses: bool) -> Dict[str, str]:
         """Get response per component, substitute component id with title if possible."""
         response_per_component = {}
-        for component in as_list(has_bycomps.by_components):
+        for component in as_list(has_bycomps.by_components):  # type: ignore
             # look up component title
             subheader = component.component_uuid
             response = ''

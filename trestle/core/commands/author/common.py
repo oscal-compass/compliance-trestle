@@ -83,7 +83,7 @@ class AuthorCommonCommand(CommandPlusDocs):
 
         return CmdReturnCodes.SUCCESS.value
 
-    def _set_template_version_to_latest(self, args: argparse.Namespace, template_dir: pathlib.Path):
+    def _set_template_version_to_latest(self, args: argparse.Namespace, template_dir: pathlib.Path) -> None:
         """Set template version argument to the latest version if none was given."""
         if not TemplateVersioning.is_valid_version(args.template_version):
             raise TrestleError(f'Version {args.template_version} is invalid, version format should be: 0.0.1')

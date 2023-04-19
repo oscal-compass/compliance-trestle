@@ -16,7 +16,7 @@
 """Validate by confirming rule parameter values are consistent."""
 import logging
 import pathlib
-from typing import Optional
+from typing import Any, Dict, Optional
 
 from trestle.common.common_types import TopLevelOscalModel
 from trestle.common.common_types import TypeWithSetParams
@@ -32,9 +32,9 @@ logger = logging.getLogger(__name__)
 class RuleParametersValidator(Validator):
     """Validator to confirm all rule parameter values are consistent."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize rule param values dictionary."""
-        self._rule_param_values_dict = {}
+        self._rule_param_values_dict: Dict[str, Any] = {}
 
     def _add_imp_req_rule_params_to_dict(
         self,

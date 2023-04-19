@@ -17,7 +17,7 @@
 import argparse
 import logging
 import pathlib
-from typing import List
+from typing import List, Tuple
 
 import trestle.common.err as err
 import trestle.core.generators as gens
@@ -74,7 +74,7 @@ class Add():
         return CmdReturnCodes.SUCCESS.value
 
     @staticmethod
-    def add(element_path: ElementPath, parent_element: Element, include_optional: bool) -> None:
+    def add(element_path: ElementPath, parent_element: Element, include_optional: bool) -> Tuple[UpdateAction, Element]:
         """For a element_path, add a child model to the parent_element of a given parent_model.
 
         Args:

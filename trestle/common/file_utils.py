@@ -222,6 +222,7 @@ def load_file(file_path: pathlib.Path) -> Dict[str, Any]:
             return yaml.load(f)
         if content_type == FileContentType.JSON:
             return json.load(f)
+    return {}
 
 
 def get_contextual_file_type(path: pathlib.Path) -> FileContentType:

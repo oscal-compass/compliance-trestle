@@ -133,5 +133,5 @@ class HrefCmd(CommandPlusDocs):
         logger.info(f'{profile_data.imports[import_num].href}')
         logger.info(f'{new_href}')
         profile_data.imports[import_num].href = new_href
-        profile_data.oscal_write(profile_path)
+        profile_data.oscal_write(profile_path)  # type: ignore
         return CmdReturnCodes.SUCCESS.value
