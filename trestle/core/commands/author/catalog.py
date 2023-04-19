@@ -17,7 +17,7 @@ import argparse
 import logging
 import pathlib
 import shutil
-from typing import Optional
+from typing import Any, Dict, Optional
 
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
@@ -76,7 +76,7 @@ class CatalogGenerate(AuthorCommonCommand):
                 except TrestleError as e:  # pragma: no cover
                     raise TrestleError(f'Unable to overwrite contents in {args.output} folder: {e}')
 
-            yaml_header: dict = {}
+            yaml_header: Dict[str, Any] = {}
             if args.yaml_header:
                 try:
                     logging.debug(f'Loading yaml header file {args.yaml_header}')
@@ -100,7 +100,7 @@ class CatalogGenerate(AuthorCommonCommand):
         trestle_root: pathlib.Path,
         catalog_path: pathlib.Path,
         markdown_path: pathlib.Path,
-        yaml_header: dict,
+        yaml_header: Dict[str, Any],
         overwrite_header_values: bool
     ) -> int:
         """Generate markdown for the controls in the catalog."""
@@ -232,7 +232,7 @@ class CatalogAssemble(AuthorCommonCommand):
         if assem_cat_path:
             new_content_type = FileContentType.path_to_content_type(assem_cat_path)
             existing_cat = load_validate_model_path(trestle_root, assem_cat_path)
-            if ModelUtils.models_are_equivalent(existing_cat, md_catalog):
+            if ModelUtils.models_are_equivalent(existing_cat, md_catalog):  # type: ignore
                 logger.info('Assembled catalog is not different from existing version, so no update.')
                 return CmdReturnCodes.SUCCESS.value
             else:

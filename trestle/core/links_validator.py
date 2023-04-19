@@ -48,7 +48,12 @@ class LinksValidator(Validator):
         if model.back_matter and model.back_matter.resources:
             links = [res.uuid for res in model.back_matter.resources]
             seen: Set[str] = set()
-            dupes = [uuid for uuid in links if uuid in seen or seen.add(uuid)]
+            dupes: List[str] = []
+            for uuid in links:
+                if uuid in seen:
+                    dupes.append(uuid)
+                else:
+                    seen.add(uuid)
             if dupes:
                 if not quiet:
                     logger.warning(f'Backmatter has  {len(dupes)} duplicate link uuids.')

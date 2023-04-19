@@ -45,9 +45,9 @@ class VersionCmd(CommandBase):
 
     def _get_version(self, type_name: str, obj_name: str, trestle_root: pathlib.Path) -> str:
         """Fetch the version of the OSCAL object from its metadata."""
-        oscal_object, obj_path = ModelUtils.load_model_for_type(trestle_root, type_name, obj_name)
+        oscal_object, obj_path = ModelUtils.load_model_for_type(trestle_root, type_name, obj_name)  # type: ignore
 
-        if not (oscal_object.metadata or oscal_object.metadata.version):
+        if not (oscal_object.metadata or oscal_object.metadata.version):  # type: ignore
             raise TrestleError(f'Unable to determine the version. Metadata version is missing in model: {obj_path}.')
 
         return oscal_object.metadata.version
