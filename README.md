@@ -16,7 +16,7 @@ It also provides tooling to manage OSCAL documents in a more human-friendly mann
 
 Trestle provides three separate but related functions in the compliance space:  
 
-- Manage OSCAL documents to allow editing and manipulation while making sure the schemas are enforced
+- Manage OSCAL documents to allow editing and manipulation while making sure the schemas are enforced   
 - Transform documents from other formats to OSCAL
 - Provide support and governance to author compliance content as markdown and drawio.
 
