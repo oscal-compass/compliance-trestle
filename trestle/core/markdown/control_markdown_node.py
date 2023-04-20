@@ -459,7 +459,7 @@ class ControlMarkdownNode(BaseMarkdownNode):
                     prev_label = ControlInterface.get_label(parts[-1]) if parts else ''
                     id_text = ControlMarkdownNode._create_next_label(prev_label, indent)
                 id_ = ControlInterface.strip_to_make_ncname(parent_id.rstrip('.') + '.' + id_text.strip('.'))
-                name = 'objective' if id_.find('_obj') > 0 else 'item'
+                name = const.OBJECTIVE_PART if id_.find('_obj') > 0 else const.ITEM
                 prop = common.Property(name='label', value=id_text)
                 part = common.Part(name=name, id=id_, prose=prose, props=[prop])
                 if id_ in [p.id for p in parts]:

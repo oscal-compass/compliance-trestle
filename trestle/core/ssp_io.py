@@ -14,14 +14,15 @@
 """Handle direct IO for writing SSP responses as markdown."""
 import logging
 import pathlib
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 from trestle.common.common_types import TypeWithByComps
-from trestle.common.const import CONTROL_ORIGINATION, IMPLEMENTATION_STATUS, SSP_MAIN_COMP_NAME
+from trestle.common.const import CONTROL_ORIGINATION, IMPLEMENTATION_STATUS, ITEM, SSP_MAIN_COMP_NAME
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list
 from trestle.core.catalog import catalog_interface
 from trestle.core.catalog.catalog_interface import CatalogInterface
+from trestle.core.control_interface import ControlInterface
 from trestle.core.docs_control_writer import DocsControlWriter
 from trestle.core.markdown.docs_markdown_node import DocsMarkdownNode
 from trestle.core.markdown.md_writer import MDWriter
@@ -253,20 +254,26 @@ class SSPMarkdownWriter():
 
             response_per_component = self._get_responses_by_components(has_bycomp, write_empty_responses)
 
-            if response_per_component or (not response_per_component and write_empty_responses):
-                if part_name and part_name == 'item':
+            if response_per_component or write_empty_responses:
+                if part_name and part_name == ITEM:
                     # print part header only if subitem
                     header = f'Implementation for part {label}'
-                    md_writer.new_header(level=1, title=header)
-                for idx, component_key in enumerate(response_per_component):
-                    if component_key == SSP_MAIN_COMP_NAME and idx == 0:
-                        # special case ignore header but print contents
-                        md_writer.new_paragraph()
-                    elif show_comp:
-                        md_writer.new_header(level=2, title=component_key)
+                    md_writer.new_header(1, title=header)
+                for comp_name, comp_response in response_per_component.items():
+                    if not (show_comp or (comp_name == SSP_MAIN_COMP_NAME)):
+                        continue
+                    md_writer.new_header(1, title=f'Component: {comp_name}')
                     md_writer.set_indent_level(-1)
-                    md_writer.new_line(response_per_component[component_key])
+                    prose, rules, status = comp_response
+                    md_writer.new_line(prose)
                     md_writer.set_indent_level(-1)
+                    if rules:
+                        md_writer.new_header(2, title='Rules:')
+                        md_writer.set_indent_level(0)
+                        md_writer.new_list(rules)
+                        md_writer.set_indent_level(-1)
+                    if status:
+                        md_writer.new_header(2, title=f'Implementation Status: {status}')
 
         lines = md_writer.get_lines()
 
@@ -275,25 +282,31 @@ class SSPMarkdownWriter():
 
         return tree.content.raw_text
 
-    def _get_responses_by_components(self, has_bycomps: TypeWithByComps, write_empty_responses: bool) -> Dict[str, str]:
+    def _get_responses_by_components(self, has_bycomps: TypeWithByComps,
+                                     write_empty_responses: bool) -> Dict[str, Tuple[str, List[str], str]]:
         """Get response per component, substitute component id with title if possible."""
-        response_per_component = {}
-        for component in as_list(has_bycomps.by_components):  # type: ignore
+        response_per_component: Dict[str, Tuple[str, str]] = {}
+        for by_comp in as_list(has_bycomps.by_components):  # type: ignore
             # look up component title
-            subheader = component.component_uuid
-            response = ''
+            subheader = by_comp.component_uuid
+            prose = ''
+            status = ''
+            rules = []
             if self._ssp.system_implementation.components:
                 for comp in self._ssp.system_implementation.components:
-                    if comp.uuid == component.component_uuid:
+                    if comp.uuid == by_comp.component_uuid:
                         title = comp.title
                         if title:
                             subheader = title
-            if component.description:
-                response = component.description
+            if by_comp.description:
+                prose = by_comp.description
+            if by_comp.implementation_status:
+                status = by_comp.implementation_status.state
+            rules, _ = ControlInterface.get_rule_list_for_item(by_comp)
 
-            if response or (not response and write_empty_responses):
+            if prose or (not prose and write_empty_responses):
                 if subheader:
-                    response_per_component[subheader] = response
+                    response_per_component[subheader] = (prose, rules, status)
 
         return response_per_component
 
