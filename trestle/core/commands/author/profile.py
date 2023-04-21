@@ -74,7 +74,7 @@ class ProfileGenerate(AuthorCommonCommand):
             if not file_utils.is_directory_name_allowed(args.output):
                 raise TrestleError(f'{args.output} is not an allowed directory name')
 
-            yaml_header: dict = {}
+            yaml_header: Dict[str, Any] = {}
             if args.yaml_header:
                 try:
                     logging.debug(f'Loading yaml header file {args.yaml_header}')
@@ -114,7 +114,7 @@ class ProfileGenerate(AuthorCommonCommand):
         trestle_root: pathlib.Path,
         profile_path: pathlib.Path,
         markdown_path: pathlib.Path,
-        yaml_header: dict,
+        yaml_header: Dict[str, Any],
         overwrite_header_values: bool,
         sections_dict: Optional[Dict[str, str]],
         required_sections: Optional[List[str]]
@@ -350,8 +350,10 @@ class ProfileAssemble(AuthorCommonCommand):
 
         # technically if allowed sections is [] it means no sections are allowed
         if allowed_sections is not None:
-            for bad_part in [part for alter in found_alters for add in as_list(alter.adds)
-                             for part in as_filtered_list(add.parts, lambda a: a.name not in allowed_sections)]:
+            for bad_part in [
+                    part for alter in found_alters for add in as_list(alter.adds)
+                    for part in as_filtered_list(add.parts, lambda a: a.name not in allowed_sections)  # type: ignore
+            ]:
                 raise TrestleError(f'Profile has alter with name {bad_part.name} not in allowed sections.')
 
         ProfileAssemble._replace_alter_adds(parent_prof, found_alters)
@@ -369,20 +371,20 @@ class ProfileAssemble(AuthorCommonCommand):
 
         if assem_prof_path.exists():
             _, _, existing_prof = ModelUtils.load_distributed(assem_prof_path, trestle_root)
-            if ModelUtils.models_are_equivalent(existing_prof, parent_prof):
+            if ModelUtils.models_are_equivalent(existing_prof, parent_prof):  # type: ignore
                 logger.info('Assembled profile is no different from existing version, so no update.')
                 return CmdReturnCodes.SUCCESS.value
 
         if regenerate:
             parent_prof, _, _ = ModelUtils.regenerate_uuids(parent_prof)
-        ModelUtils.update_last_modified(parent_prof)
+        ModelUtils.update_last_modified(parent_prof)  # type: ignore
 
         if assem_prof_path.parent.exists():
             logger.info('Creating profile from markdown and destination profile exists, so updating.')
             shutil.rmtree(str(assem_prof_path.parent))
 
         assem_prof_path.parent.mkdir(parents=True, exist_ok=True)
-        parent_prof.oscal_write(assem_prof_path)
+        parent_prof.oscal_write(assem_prof_path)  # type: ignore
         return CmdReturnCodes.SUCCESS.value
 
 

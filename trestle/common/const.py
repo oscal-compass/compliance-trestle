@@ -174,6 +174,7 @@ VAL_MODE_CATALOG = 'catalog'
 VAL_MODE_DUPLICATES = 'duplicates'
 VAL_MODE_LINKS = 'links'
 VAL_MODE_REFS = 'refs'
+VAL_MODE_RULES = 'rules'
 VAL_MODE_ALL = 'all'
 
 IOF_SHORT = '-iof'
@@ -552,3 +553,7 @@ ONE_OR_MORE_SPACED = 'one or more'
 VALUE_ASSIGNED_PREFIX = 'value-assigned-prefix'
 
 VALUE_NOT_ASSIGNED_PREFIX = 'value-not-assigned-prefix'
+
+CONTROL_IMPLEMENTATION = 'control-implementation'
+
+IMPLEMENTED_REQUIREMENT = 'implemented-requirement'

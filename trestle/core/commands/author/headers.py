@@ -18,7 +18,7 @@ import argparse
 import logging
 import pathlib
 import re
-from typing import Dict, List
+from typing import Any, Dict, List
 
 import trestle.core.commands.author.consts as author_const
 from trestle.common import const, file_utils
@@ -177,7 +177,7 @@ class Headers(AuthorCommonCommand):
         ignore: str
     ) -> bool:
         """Validate a directory within the trestle workspace."""
-        all_versioned_templates = {}
+        all_versioned_templates: Dict[str, Any] = {}
         instance_version = template_version
         instance_file_names: List[pathlib.Path] = []
         # Fetch all instances versions and build dictionary of required template files
@@ -282,7 +282,7 @@ class Headers(AuthorCommonCommand):
 
     def _update_templates(
         self, all_versioned_templates: Dict[str, Dict[str, str]], templates: List[str], instance_version: str
-    ):
+    ) -> None:
         all_versioned_templates[instance_version] = {}
         all_drawio_templates = list(filter(lambda p: p.suffix == const.DRAWIO_FILE_EXT, templates))
         all_md_templates = list(filter(lambda p: p.suffix == const.MARKDOWN_FILE_EXT, templates))

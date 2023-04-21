@@ -144,8 +144,8 @@ class SplitCmd(CommandPlusDocs):
         # match paths to corresponding files since several paths may be split from the same file
         file_path_dict: Dict[str, str] = {}
         for file_path in file_path_list:
-            key = file_path[0]
-            path = file_path[1]
+            key = file_path[0]  # type: ignore
+            path = file_path[1]  # type: ignore
             if key not in file_path_dict:
                 file_path_dict[key] = path
             else:

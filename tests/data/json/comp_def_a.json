@@ -169,7 +169,7 @@
               {
                 "param-id": "shared_param_1",
                 "values": [
-                  "shared_param_1_aa_opt_3"
+                  "shared_param_1_aa_opt_1"
                 ],
                 "remarks": "set shared param aa 3"
               },
@@ -353,7 +353,7 @@
               {
                 "param-id": "shared_param_1",
                 "values": [
-                  "shared_param_1_ab_opt_2"
+                  "shared_param_1_ab_opt_1"
                 ],
                 "remarks": "set param ab 1"
               }

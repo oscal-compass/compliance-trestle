@@ -78,7 +78,7 @@ class Prune(Pipeline.Filter):
 
         if not set(include_ids).issuperset(set(exclude_ids)):
             logger.debug(f'include_ids is not a superset of exclude_ids in import {self._import.href}')
-        return [id_ for id_ in include_ids if id_ not in exclude_ids]
+        return sorted([id_ for id_ in include_ids if id_ not in exclude_ids])
 
     def _prune_control(self, needed_ids: List[str], control: cat.Control, exclude_ids: List[str]) -> cat.Control:
         """
@@ -99,7 +99,7 @@ class Prune(Pipeline.Filter):
         return control
 
     def _prune_controls(self, needed_ids: List[str]) -> List[str]:
-        loaded_ids = []
+        loaded_ids: List[str] = []
         final_ids: List[str] = []
         for control_id in needed_ids:
             if control_id not in loaded_ids:
@@ -187,7 +187,7 @@ class Prune(Pipeline.Filter):
 
         return new_cat
 
-    def process(self, catalog_iter: Iterator[cat.Catalog]) -> Iterator[cat.Catalog]:
+    def process(self, catalog_iter: Iterator[cat.Catalog]) -> Iterator[cat.Catalog]:  # type: ignore
         """
         Prune the catalog based on the include rule in the import_.
 

@@ -292,7 +292,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
         ac_1_path, 'ac-1_prm_2:', '    values:\n    ssp-values:\n      - my ssp val\n'
     )
     assert test_utils.replace_line_in_file_after_tag(
-        ac_1_path, '- shared_param_1_aa_opt_1', '      ssp-values:\n        - shared_param_1_aa_opt_2\n  comp_ab:\n'
+        ac_1_path, '- shared_param_1_aa_opt_1', '      ssp-values:\n        - shared_param_1_aa_opt_1\n  comp_ab:\n'
     )
 
     # now assemble the edited controls into json ssp
@@ -319,7 +319,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert imp_req.statements[0].by_components[0].description == prose_aa_a
 
     assert imp_reqs[0].by_components[0].set_parameters[1].param_id == 'shared_param_1'
-    assert imp_reqs[0].by_components[0].set_parameters[1].values[0] == 'shared_param_1_aa_opt_2'
+    assert imp_reqs[0].by_components[0].set_parameters[1].values[0] == 'shared_param_1_aa_opt_1'
     assert imp_reqs[0].set_parameters[0].values[0] == 'my ssp val'
 
     by_comp = orig_ssp.control_implementation.implemented_requirements[0].by_components[2]
@@ -485,7 +485,8 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         verbose=0,
         regenerate=False,
         version=None,
-        components=None
+        components=None,
+        implementation_status=None
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
@@ -512,7 +513,8 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         verbose=0,
         regenerate=True,
         version=None,
-        components='comp_aa'
+        components='comp_aa',
+        implementation_status=None
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
@@ -533,10 +535,63 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         verbose=0,
         regenerate=True,
         version=None,
-        components='comp_aa'
+        components='comp_aa',
+        implementation_status=None
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
+
+    # now filter the ssp by multiple implementation statuses
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        name=ssp_name,
+        profile=None,
+        output=filtered_name,
+        verbose=0,
+        regenerate=False,
+        version=None,
+        components=None,
+        implementation_status='not-applicable,implemented'
+    )
+    ssp_filter = SSPFilter()
+    assert ssp_filter._run(args) == 0
+
+    ssp, _ = ModelUtils.load_model_for_class(
+        tmp_trestle_dir,
+        filtered_name,
+        ossp.SystemSecurityPlan,
+        FileContentType.JSON
+    )
+
+    # confirm the imp_reqs have been culled by impl_status to five controls
+    assert len(ssp.control_implementation.implemented_requirements) == 5
+    # confirm there are is two by_comps for the first impl_req
+    assert len(ssp.control_implementation.implemented_requirements[0].by_components) == 2
+
+    # now filter the ssp by an implementation status that is unused
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        name=ssp_name,
+        profile=None,
+        output=filtered_name,
+        verbose=0,
+        regenerate=False,
+        version=None,
+        components=None,
+        implementation_status='not-applicable'
+    )
+    ssp_filter = SSPFilter()
+    assert ssp_filter._run(args) == 0
+
+    ssp, _ = ModelUtils.load_model_for_class(
+        tmp_trestle_dir,
+        filtered_name,
+        ossp.SystemSecurityPlan,
+        FileContentType.JSON
+    )
+
+    # confirm the imp_reqs have been culled by impl_status to zero controls
+    assert len(ssp.control_implementation.implemented_requirements) == 0
 
     # now filter without profile or components to trigger error
     args = argparse.Namespace(
@@ -564,6 +619,22 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         regenerate=True,
         version=None,
         components=None
+    )
+    ssp_filter = SSPFilter()
+    assert ssp_filter._run(args) == 1
+
+    # now filter with an invalid implementation status to trigger error
+    bad_impl = 'impl_bad'
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        name=ssp_name,
+        profile=None,
+        output=filtered_name,
+        verbose=0,
+        regenerate=True,
+        version=None,
+        components=None,
+        implementation_status=bad_impl
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 1

@@ -30,6 +30,7 @@ class CmdReturnCodes(enum.Enum):
     IO_ERROR - IO related errors, i.e. permission issue, non-existing file, etc
     AUTH_ERROR - Authenication error while accessing/storing cache
     UNKNOWN_ERROR - Unexpected error (unhandled by command)
+    INVALID_MODEL - Loaded model is invalid
     """
 
     SUCCESS = 0

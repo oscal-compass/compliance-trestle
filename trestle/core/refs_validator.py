@@ -14,6 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Validate by confirming all refs have corresponding id."""
+import pathlib
+from typing import Optional
+
 from trestle.common.common_types import TopLevelOscalModel
 from trestle.common.list_utils import as_list
 from trestle.core.validator import Validator
@@ -22,7 +25,9 @@ from trestle.core.validator import Validator
 class RefsValidator(Validator):
     """Validator to confirm all references in responsible parties are found in roles."""
 
-    def model_is_valid(self, model: TopLevelOscalModel, quiet: bool) -> bool:
+    def model_is_valid(
+        self, model: TopLevelOscalModel, quiet: bool, trestle_root: Optional[pathlib.Path] = None
+    ) -> bool:
         """
         Test if the model is valid.
 

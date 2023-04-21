@@ -52,13 +52,13 @@ class CatalogAPI():
         self._merger = CatalogMerger(self._catalog_interface)
         self._context = context
 
-    def update_context(self, context: ControlContext):
+    def update_context(self, context: ControlContext) -> None:
         """Update current context."""
         if not context:
             raise TrestleError('ControlContext cannot be empty.')
         self._context = context
 
-    def write_catalog_as_markdown(self, label_as_key=False) -> None:
+    def write_catalog_as_markdown(self, label_as_key: bool = False) -> None:
         """
         Write out the catalog controls from dict as markdown files to the specified directory.
 

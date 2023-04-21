@@ -14,6 +14,7 @@
 # limitations under the License.
 """Facilitate OSCAL-OSCO transformation."""
 
+# mypy: ignore-errors  # noqa E800
 import base64
 import bz2
 import json

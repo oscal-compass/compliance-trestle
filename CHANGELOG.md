@@ -3,6 +3,24 @@
 
 <!--next-version-placeholder-->
 
+## v2.1.0 (2023-04-06)
+### Feature
+* Validate SSP rule parameter values ([#1337](https://github.com/IBM/compliance-trestle/issues/1337)) ([`10dd58b`](https://github.com/IBM/compliance-trestle/commit/10dd58b552f8f9a4618daea27e6d0ccd002dbd80))
+* Adds implementation status to ssp-filter ([#1338](https://github.com/IBM/compliance-trestle/issues/1338)) ([`c33fc7d`](https://github.com/IBM/compliance-trestle/commit/c33fc7d2ac9b430349962a08263db94c660a5f1c))
+* Remove root references ([#1316](https://github.com/IBM/compliance-trestle/issues/1316)) ([`0dfdc79`](https://github.com/IBM/compliance-trestle/commit/0dfdc797090a5ccbc64b6ba0e2b2dd16464a65ae))
+
+### Fix
+* Comply with IBM Github action policy ([#1344](https://github.com/IBM/compliance-trestle/issues/1344)) ([`dd118f8`](https://github.com/IBM/compliance-trestle/commit/dd118f84a26ce0e83cc4249837f91a118ae1f487))
+* Duplicate param_id should be invalid only in profile ([#1341](https://github.com/IBM/compliance-trestle/issues/1341)) ([`0edbd81`](https://github.com/IBM/compliance-trestle/commit/0edbd81efdb164f56d90972aca8bbf7539a6ba57))
+* Remove components from ssp during ssp-assemble and give warning ([#1327](https://github.com/IBM/compliance-trestle/issues/1327)) ([`03d4f05`](https://github.com/IBM/compliance-trestle/commit/03d4f05a1d0bb0ef7c81e768238b67ae5cfbf5ca))
+* Get_control_response was missing prose if statement has no parts ([#1335](https://github.com/IBM/compliance-trestle/issues/1335)) ([`04c39d4`](https://github.com/IBM/compliance-trestle/commit/04c39d4fb2911456c93495dce743cf971dec6f82))
+* Better error handling when no comps specified during ssp-assemble - and added docs ([#1328](https://github.com/IBM/compliance-trestle/issues/1328)) ([`2ecdb98`](https://github.com/IBM/compliance-trestle/commit/2ecdb987f22f3da4592acd636637134161f05a0b))
+* Ssp assemble includes controls not in the profile ([#1325](https://github.com/IBM/compliance-trestle/issues/1325)) ([`138e95f`](https://github.com/IBM/compliance-trestle/commit/138e95fd0598008b082fdf79a0306f68979c2c8e))
+* Version test ([#1313](https://github.com/IBM/compliance-trestle/issues/1313)) ([`3c1d7bb`](https://github.com/IBM/compliance-trestle/commit/3c1d7bb439deab94851d2d0eb3b6a6766a0b5601))
+
+### Documentation
+* Fix refs to version numbers and update docs ([#1326](https://github.com/IBM/compliance-trestle/issues/1326)) ([`525f0f8`](https://github.com/IBM/compliance-trestle/commit/525f0f80de39dfe230ab3d95486533ab72473980))
+
 ## v2.0.0 (2023-03-01)
 ### Feature
 * Cd resolved profile controls check ([#1309](https://github.com/IBM/compliance-trestle/issues/1309)) ([`638dd53`](https://github.com/IBM/compliance-trestle/commit/638dd5384c6588ad9bb88726c8d716cfc6e4b03b))

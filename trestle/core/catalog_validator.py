@@ -15,6 +15,8 @@
 # limitations under the License.
 """Validate catalog by confirming no duplicate param ids."""
 import logging
+import pathlib
+from typing import Optional
 
 from trestle.common.common_types import TopLevelOscalModel
 from trestle.common.list_utils import as_list
@@ -28,7 +30,9 @@ logger = logging.getLogger(__name__)
 class CatalogValidator(Validator):
     """Validator to confirm all param ids in catalog are unique."""
 
-    def model_is_valid(self, model: TopLevelOscalModel, quiet: bool) -> bool:
+    def model_is_valid(
+        self, model: TopLevelOscalModel, quiet: bool, trestle_root: Optional[pathlib.Path] = None
+    ) -> bool:
         """
         Test if the model is valid.
 

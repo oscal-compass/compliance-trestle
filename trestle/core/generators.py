@@ -66,7 +66,7 @@ def generate_sample_value_by_type(
         if 'uuid' == field_name:
             return str(uuid.uuid4())
         # some things like location_uuid in lists arrive here with field_name=''
-        if type_.regex and type_.regex.pattern.startswith('^[0-9A-Fa-f]{8}'):
+        if type_.regex and type_.regex.pattern.startswith('^[0-9A-Fa-f]{8}'):  # type: ignore
             return const.SAMPLE_UUID_STR
         if field_name == 'date_authorized':
             return str(date.today().isoformat())
@@ -80,16 +80,16 @@ def generate_sample_value_by_type(
         return const.REPLACE_ME
     if hasattr(type_, '__name__') and 'ConstrainedIntValue' in type_.__name__:
         # create an int value as close to the floor as possible does not test upper bound
-        multiple = type_.multiple_of if type_.multiple_of else 1  # default to every integer
+        multiple = type_.multiple_of if type_.multiple_of else 1  # type: ignore # default to every integer
         # this command is a bit of a problem
-        floor = type_.ge if type_.ge else 0
-        floor = type_.gt + 1 if type_.gt else floor
+        floor = type_.ge if type_.ge else 0  # type: ignore
+        floor = type_.gt + 1 if type_.gt else floor  # type: ignore
         if math.remainder(floor, multiple) == 0:
             return floor
         return (floor + 1) * multiple
     if safe_is_sub(type_, Enum):
         # keys and values diverge due to hypens in oscal names
-        return type_(list(type_.__members__.values())[0])
+        return type_(list(type_.__members__.values())[0])  # type: ignore
     if type_ is str:
         if field_name == 'oscal_version':
             return OSCAL_VERSION
@@ -102,7 +102,7 @@ def generate_sample_value_by_type(
     if type_ is list:
         raise err.TrestleError(f'Unable to generate sample for type {type_}')
     # default to empty dict for anything else
-    return {}
+    return {}  # type: ignore
 
 
 def generate_sample_model(
@@ -129,23 +129,23 @@ def generate_sample_model(
     if utils.is_collection_field_type(model):  # type: ignore
         model_type = utils.get_origin(model)  # type: ignore
         model = utils.get_inner_type(model)  # type: ignore
-    model = cast(TG, model)
+    model = cast(TG, model)  # type: ignore
 
-    model_dict = {}
+    model_dict = {}  # type: ignore
     # this block is needed to avoid situations where an inbuilt is inside a list / dict.
     # the only time dict ever appears is with include_all, which is handled specially
     # the only type of collection possible after OSCAL 1.0.0 is list
     if safe_is_sub(model, OscalBaseModel):
-        for field in model.__fields__:
+        for field in model.__fields__:  # type: ignore
             if field == 'include_all':
                 if include_optional:
                     model_dict[field] = {}
                 continue
-            outer_type = model.__fields__[field].outer_type_
+            outer_type = model.__fields__[field].outer_type_  # type: ignore
             # next appears to be needed for python 3.7
             if utils.get_origin(outer_type) == Union:
                 outer_type = outer_type.__args__[0]
-            if model.__fields__[field].required or effective_optional:
+            if model.__fields__[field].required or effective_optional:  # type: ignore
                 # FIXME could be ForwardRef('SystemComponentStatus')
                 if utils.is_collection_field_type(outer_type):
                     inner_type = utils.get_inner_type(outer_type)
@@ -172,12 +172,12 @@ def generate_sample_model(
         # Note: this assumes list constrains in oscal are always 1 as a minimum size. if two this may still fail.
     else:
         if model_type is list:
-            return [generate_sample_value_by_type(model, '')]
+            return [generate_sample_value_by_type(model, '')]  # type: ignore
         if model_type is dict:
-            return {const.REPLACE_ME: generate_sample_value_by_type(model, '')}
+            return {const.REPLACE_ME: generate_sample_value_by_type(model, '')}  # type: ignore
         raise err.TrestleError('Unhandled collection type.')
     if model_type is list:
-        return [model(**model_dict)]
+        return [model(**model_dict)]  # type: ignore
     if model_type is dict:
-        return {const.REPLACE_ME: model(**model_dict)}
-    return model(**model_dict)
+        return {const.REPLACE_ME: model(**model_dict)}  # type: ignore
+    return model(**model_dict)  # type: ignore

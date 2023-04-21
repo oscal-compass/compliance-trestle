@@ -14,6 +14,7 @@
 # limitations under the License.
 """XLSX utilities."""
 
+# mypy: ignore-errors  # noqa E800
 import logging
 import pathlib
 import string

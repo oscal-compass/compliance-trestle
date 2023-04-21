@@ -178,7 +178,7 @@ class MergeCmd(CommandPlusDocs):
         if destination_model_object is not None:
             merged_dict = destination_model_object.__dict__
         merged_dict[target_model_alias] = target_model_object
-        merged_model_object = merged_model_type(**merged_dict)  # type: ignore
+        merged_model_object = merged_model_type(**merged_dict)
         merged_destination_element = Element(merged_model_object)
         # 5. Create action  plan
         trace.log(f'create path action clear content: {destination_model_path}')
