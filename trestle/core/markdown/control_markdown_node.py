@@ -418,7 +418,7 @@ class ControlMarkdownNode(BaseMarkdownNode):
             line = lines[line_idx]
             part.prose += '\n'.join(code_lines)
 
-        if not line:
+        if not line or not line.lstrip():
             # Empty line
             part.prose += '\n'
             line_idx += 1
@@ -485,14 +485,21 @@ class ControlMarkdownNode(BaseMarkdownNode):
         """Measure indent of non-empty line."""
         if not line:
             raise TrestleError('Empty line queried for indent.')
-        if line[0] not in [' ', '-']:
+        if line[0] not in [' ', '-', '\t']:
             return -1
+
+        indent = 0
         for ii in range(len(line)):
             if line[ii] == '-':
-                return ii
+                return indent
             # if line is indented it must start with -
-            if line[ii] != ' ':
+            if line[ii] == '\t':
+                # treat tab as two spaces
+                indent += 2
+            elif line[ii] != ' ':
                 break
+            else:
+                indent += 1
         raise TrestleError(f'List elements must start with -: {line}')
 
     @staticmethod
