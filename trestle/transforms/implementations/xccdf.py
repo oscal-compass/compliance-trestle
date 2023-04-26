@@ -12,22 +12,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Facilitate OSCAL-OSCO transformation."""
+"""Facilitate OSCAL-XCCDF transformation."""
 
-# mypy: ignore-errors  # noqa E800
 import base64
 import bz2
 import json
-import logging
 import uuid
-from typing import Any, Dict, Iterator, List, Tuple, ValuesView
+from typing import Any, Dict, Iterator, List, Optional, ValuesView
 from xml.etree.ElementTree import Element  # noqa: S405 - used for typing only
 
 from defusedxml import ElementTree
 
 from ruamel.yaml import YAML
 
-from trestle.common.list_utils import as_list
+from trestle.oscal.assessment_results import AssessmentAssets
 from trestle.oscal.assessment_results import ControlSelection
 from trestle.oscal.assessment_results import LocalDefinitions1
 from trestle.oscal.assessment_results import Observation
@@ -35,19 +33,14 @@ from trestle.oscal.assessment_results import Result
 from trestle.oscal.assessment_results import ReviewedControls
 from trestle.oscal.assessment_results import Status1
 from trestle.oscal.assessment_results import SystemComponent
-from trestle.oscal.common import ImplementedComponent, InventoryItem, Property, SubjectReference
-from trestle.oscal.profile import Profile
+from trestle.oscal.common import AssessmentPlatform, ImplementedComponent, InventoryItem, Property, SubjectReference
 from trestle.transforms.results import Results
-from trestle.transforms.transformer_factory import FromOscalTransformer
 from trestle.transforms.transformer_factory import ResultsTransformer
 from trestle.transforms.transformer_helper import TransformerHelper
 
-logger = logging.getLogger(__name__)
 
-
-# deprecated - use XccdfResultToOscalARTransformer instead
-class OscoResultToOscalARTransformer(ResultsTransformer):
-    """Interface for Osco transformer."""
+class XccdfResultToOscalARTransformer(ResultsTransformer):
+    """Interface for Xccdf transformer."""
 
     def __init__(self) -> None:
         """Initialize."""
@@ -63,6 +56,27 @@ class OscoResultToOscalARTransformer(ResultsTransformer):
         """Return checking."""
         return self._modes.get('checking', False)
 
+    @property
+    def tags(self):
+        """Return tags."""
+        return self._tags
+
+    def set_tags(self, tags: Dict[str, str]) -> None:
+        """Keep tags info (property name to property class)."""
+        self._tags = tags
+
+    def set_title(self, title: str) -> None:
+        """Keep title info."""
+        self._title = title
+
+    def set_description(self, description: str) -> None:
+        """Keep description info."""
+        self._description = description
+
+    def set_type(self, type_: str) -> None:
+        """Keep type info."""
+        self._type = type_
+
     def set_modes(self, modes: Dict[str, Any]) -> None:
         """Keep modes info."""
         if modes is not None:
@@ -73,19 +87,19 @@ class OscoResultToOscalARTransformer(ResultsTransformer):
 
         The expected blob is a string that is one of:
             - data from OpenShift Compliance Operator (json, yaml, xml)
-            - data from Auditree OSCO fetcher/check (json)
+            - data from Auditree XCCDF fetcher/check (json)
         """
-        results = None
-        self._results_factory = _OscalResultsFactory(self.get_timestamp(), self.checking)
-        if results is None:
-            results = self._ingest_xml(blob)
+        self._results_factory = _OscalResultsFactory(
+            self._title, self._description, self._type, self.get_timestamp(), self.checking, self.tags
+        )
+        results = self._ingest_xml(blob)
         if results is None:
             results = self._ingest_json(blob)
         if results is None:
             results = self._ingest_yaml(blob)
         return results
 
-    def _ingest_xml(self, blob: str) -> Results:
+    def _ingest_xml(self, blob: str) -> Optional[Results]:
         """Ingest xml data."""
         # ?xml data
         if blob.startswith('<?xml'):
@@ -97,28 +111,36 @@ class OscoResultToOscalARTransformer(ResultsTransformer):
         results.__root__.append(self._results_factory.result)
         return results
 
-    def _ingest_json(self, blob: str) -> Results:
+    def _ingest_configmaps(self, jdata: str) -> None:
+        """Ingest configmaps."""
+        items = jdata['items']
+        for item in items:
+            if 'data' in item.keys():
+                data = item['data']
+                if 'results' in data:
+                    resource = item
+                    self._results_factory.ingest(resource)
+
+    def _ingest_auditree(self, jdata: str) -> None:
+        """Ingest auditree."""
+        for key in jdata.keys():
+            for group in jdata[key]:
+                for cluster in jdata[key][group]:
+                    if 'resources' in cluster:
+                        for resource in cluster['resources']:
+                            self._results_factory.ingest(resource)
+
+    def _ingest_json(self, blob: str) -> Optional[Results]:
         """Ingest json data."""
         try:
             # ? configmaps or auditree data
             jdata = json.loads(blob)
             # https://docs.openshift.com/container-platform/3.7/rest_api/api/v1.ConfigMap.html#Get-api-v1-namespaces-namespace-configmaps-name
             if 'kind' in jdata.keys() and jdata['kind'] == 'ConfigMapList' and 'items' in jdata.keys():
-                items = jdata['items']
-                for item in items:
-                    if 'data' in item.keys():
-                        data = item['data']
-                        if 'results' in data:
-                            resource = item
-                            self._results_factory.ingest(resource)
+                self._ingest_configmaps(jdata)
             # https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/kubernetes/fetchers/fetch_cluster_resource.py
             else:
-                for key in jdata.keys():
-                    for group in jdata[key]:
-                        for cluster in jdata[key][group]:
-                            if 'resources' in cluster:
-                                for resource in cluster['resources']:
-                                    self._results_factory.ingest(resource)
+                self._ingest_auditree(jdata)
         except json.decoder.JSONDecodeError:
             return None
         results = Results()
@@ -133,19 +155,18 @@ class OscoResultToOscalARTransformer(ResultsTransformer):
             resource = yaml.load(blob)
             self._results_factory.ingest(resource)
         except Exception as e:
-            raise e
+            raise RuntimeError(e)
         results = Results()
         results.__root__.append(self._results_factory.result)
         return results
 
 
-# deprecated(details - use XccdfResultToOscalARTransformer instead
-class OscoTransformer(OscoResultToOscalARTransformer):
+class XccdfTransformer(XccdfResultToOscalARTransformer):
     """Legacy class name."""
 
 
 class RuleUse():
-    """Represents one rule of OSCO data."""
+    """Represents one rule of XCCDF data."""
 
     def __init__(self, args: Dict[str, str]) -> None:
         """Initialize given specified args."""
@@ -175,13 +196,18 @@ class RuleUse():
             rval = self.host_name + ':' + self.target_type
         return rval
 
+    @property
+    def ns(self):
+        """Derive namespace."""
+        return f'https://ibm.github.io/compliance-trestle/schemas/oscal/ar/{self.scanner_name}'
 
-class _ComplianceOperatorResult():
-    """Represents one result of OSCO data."""
 
-    def __init__(self, osco_xml: str) -> None:
+class _XccdfResult():
+    """Represents one result of XCCDF data."""
+
+    def __init__(self, xccdf_xml: str) -> None:
         """Initialize given specified args."""
-        self.osco_xml = osco_xml
+        self.xccdf_xml = xccdf_xml
 
     def _get_version(self, root: Element) -> str:
         """Extract version from the XML."""
@@ -291,7 +317,7 @@ class _ComplianceOperatorResult():
 
     def _parse_xml(self) -> Iterator[RuleUse]:
         """Parse the stringified XML."""
-        results = self.osco_xml
+        results = self.xccdf_xml
         root = ElementTree.fromstring(results, forbid_dtd=True)
         version = self._get_version(root)
         id_ = self._get_id(root)
@@ -335,19 +361,30 @@ class _ComplianceOperatorResult():
 
 
 class _OscalResultsFactory():
-    """Build OSCO OSCAL entities."""
+    """Build XCCDF OSCAL entities."""
 
     default_timestamp = ResultsTransformer.get_timestamp()
 
-    def __init__(self, timestamp: str = default_timestamp, checking: bool = False) -> None:
+    def __init__(
+        self,
+        title: str,
+        description: str,
+        type_: str,
+        timestamp: str = default_timestamp,
+        checking: bool = False,
+        tags: Dict = None
+    ) -> None:
         """Initialize."""
+        self._title = title
+        self._description = description
+        self._type = type_
         self._timestamp = timestamp
         self._observation_list: List[Observation] = []
-        self._result_properties_list: List[Property] = []
+        self._assessment_asset_properties_list: List[Property] = []
         self._component_map: Dict[str, SystemComponent] = {}
         self._inventory_map: Dict[str, InventoryItem] = {}
-        self._ns = 'https://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco'
         self._checking = checking
+        self._tags = tags
 
     @property
     def components(self) -> List[SystemComponent]:
@@ -371,7 +408,54 @@ class _OscalResultsFactory():
         """OSCAL local definitions."""
         prop = LocalDefinitions1()
         prop.components = self.components
+        prop.assessment_assets = self.assessment_assets
         prop.inventory_items = list(self.inventory)
+        return prop
+
+    @property
+    def assessment_assets(self) -> AssessmentAssets:
+        """OSCAL assessment_assets."""
+        _status = Status1(state='operational')
+        component = SystemComponent(
+            uuid=str(uuid.uuid4()),
+            type=f'{self._type}',
+            title=f'{self.scanner}',
+            description=f'{self.scanner}',
+            status=_status,
+        )
+        if self.assessment_asset_properties:
+            component.props = []
+            for prop in self.assessment_asset_properties:
+                if prop.name == 'time':
+                    continue
+                component.props.append(prop)
+        components = [component]
+        assessment_platform = AssessmentPlatform(uuid=str(uuid.uuid4()))
+        assessment_platforms = [assessment_platform]
+        prop = AssessmentAssets(
+            components=components,
+            assessment_platforms=assessment_platforms,
+        )
+        return prop
+
+    @property
+    def scanner(self) -> str:
+        prop = 'openScap'
+        if self.assessment_asset_properties:
+            for aa_prop in self.assessment_asset_properties:
+                if aa_prop.name == 'scanner_name':
+                    prop = aa_prop.value
+                    break
+        return prop
+
+    @property
+    def time(self) -> str:
+        prop = self._timestamp
+        if self.assessment_asset_properties:
+            for aa_prop in self.assessment_asset_properties:
+                if aa_prop.name == 'time':
+                    prop = aa_prop.value
+                    break
         return prop
 
     @property
@@ -380,9 +464,9 @@ class _OscalResultsFactory():
         return self._observation_list
 
     @property
-    def result_properties(self) -> List[Property]:
-        """OSCAL result properties."""
-        return self._result_properties_list
+    def assessment_asset_properties(self) -> List[Property]:
+        """OSCAL assessment asset properties."""
+        return self._assessment_asset_properties_list
 
     @property
     def reviewed_controls(self) -> ReviewedControls:
@@ -395,18 +479,18 @@ class _OscalResultsFactory():
         """OSCAL result."""
         # perform result properties aggregation
         if self.observations:
-            self._result_properties_list = TransformerHelper().remove_common_observation_properties(self.observations)
+            self._assessment_asset_properties_list = TransformerHelper().remove_common_observation_properties(
+                self.observations
+            )
         # produce result
         prop = Result(
             uuid=str(uuid.uuid4()),
-            title='OpenShift Compliance Operator',
-            description='OpenShift Compliance Operator Scan Results',
-            start=self._timestamp,
-            end=self._timestamp,
+            title=f'{self._title}',
+            description=f'{self._description}',
+            start=self.time,
+            end=self.time,
             reviewed_controls=self.reviewed_controls,
         )
-        if self.result_properties:
-            prop.props = self.result_properties
         if self.inventory:
             prop.local_definitions = self.local_definitions
         if self.observations:
@@ -424,7 +508,7 @@ class _OscalResultsFactory():
     def _component_extract(self, rule_use: RuleUse) -> None:
         """Extract component from RuleUse."""
         _type = 'Service'
-        _title = f'Red Hat OpenShift Kubernetes Service Compliance Operator for {rule_use.target_type}'
+        _title = f'{rule_use.target_type}'
         _desc = _title
         for component in self._component_map.values():
             if component.type == _type and component.title == _title and component.description == _desc:
@@ -453,42 +537,29 @@ class _OscalResultsFactory():
 
     def _get_inventory_properties(self, rule_use):
         """Get inventory properties."""
+        props = []
+        if rule_use.host_name is None:
+            props.append(self._mk_prop('target', rule_use.target, rule_use.ns, self._tags.get('target')))
+            props.append(self._mk_prop('target_type', rule_use.target_type, rule_use.ns, self._tags.get('')))
+        else:
+            props.append(self._mk_prop('target', rule_use.target, rule_use.ns, self._tags.get('')))
+            props.append(self._mk_prop('target_type', rule_use.target_type, rule_use.ns, self._tags.get('')))
+            props.append(self._mk_prop('host_name', rule_use.host_name, rule_use.ns, self._tags.get('host_name')))
+        return props
+
+    def _mk_prop(self, name: str, value: str, ns: str, class_: str) -> Property:
+        """Make property."""
         if self._checking:
-            return self._get_inventory_properties_checked(rule_use)
+            if ns and class_:
+                prop = Property(name=name, value=value, ns=ns, class_=class_)
+            elif ns:
+                prop = Property(name=name, value=value, ns=ns)
         else:
-            return self._get_inventory_properties_unchecked(rule_use)
-
-    def _get_inventory_properties_checked(self, rule_use):
-        """Get inventory properties, with checking."""
-        props = []
-        if rule_use.host_name is None:
-            props.append(Property(name='target', value=rule_use.target, ns=self._ns, class_='scc_inventory_item_id'))
-            props.append(Property(name='target_type', value=rule_use.target_type, ns=self._ns))
-        else:
-            props.append(Property(name='target', value=rule_use.target, ns=self._ns))
-            props.append(Property(name='target_type', value=rule_use.target_type, ns=self._ns))
-            props.append(
-                Property(name='host_name', value=rule_use.host_name, ns=self._ns, class_='scc_inventory_item_id')
-            )
-        return props
-
-    def _get_inventory_properties_unchecked(self, rule_use):
-        """Get observation properties, without checking."""
-        props = []
-        if rule_use.host_name is None:
-            props.append(
-                Property.construct(name='target', value=rule_use.target, ns=self._ns, class_='scc_inventory_item_id')
-            )
-            props.append(Property.construct(name='target_type', value=rule_use.target_type, ns=self._ns))
-        else:
-            props.append(Property.construct(name='target', value=rule_use.target, ns=self._ns))
-            props.append(Property.construct(name='target_type', value=rule_use.target_type, ns=self._ns))
-            props.append(
-                Property.construct(
-                    name='host_name', value=rule_use.host_name, ns=self._ns, class_='scc_inventory_item_id'
-                )
-            )
-        return props
+            if ns and class_:
+                prop = Property.construct(name=name, value=value, ns=ns, class_=class_)
+            elif ns:
+                prop = Property.construct(name=name, value=value, ns=ns)
+        return prop
 
     def _get_inventory_ref(self, rule_use: RuleUse) -> str:
         """Get inventory reference for specified RuleUse."""
@@ -507,48 +578,21 @@ class _OscalResultsFactory():
 
     def _get_observation_properties(self, rule_use):
         """Get observation properties."""
-        if self._checking:
-            return self._get_observation_properties_checked(rule_use)
-        else:
-            return self._get_observation_properties_unchecked(rule_use)
-
-    def _get_observation_properties_checked(self, rule_use):
-        """Get observation properties, with checking."""
         props = []
-        props.append(Property(name='scanner_name', value=rule_use.scanner_name, ns=self._ns))
-        props.append(Property(name='scanner_version', value=rule_use.scanner_version, ns=self._ns))
-        props.append(Property(name='idref', value=rule_use.idref, ns=self._ns, class_='scc_check_name_id'))
-        props.append(Property(name='version', value=rule_use.version, ns=self._ns, class_='scc_check_version'))
-        props.append(Property(name='result', value=rule_use.result, ns=self._ns, class_='scc_result'))
-        props.append(Property(name='time', value=rule_use.time, ns=self._ns, class_='scc_timestamp'))
-        props.append(Property(name='severity', value=rule_use.severity, ns=self._ns, class_='scc_check_severity'))
-        props.append(Property(name='weight', value=rule_use.weight, ns=self._ns))
-        props.append(Property(name='benchmark_id', value=rule_use.benchmark_id, ns=self._ns))
-        props.append(Property(name='benchmark_href', value=rule_use.benchmark_href, ns=self._ns))
-        props.append(Property(name='id', value=rule_use.id_, ns=self._ns, class_='scc_predefined_profile'))
+        props.append(self._mk_prop('scanner_name', rule_use.scanner_name, rule_use.ns, self._tags.get('')))
+        props.append(self._mk_prop('scanner_version', rule_use.scanner_version, rule_use.ns, self._tags.get('')))
+        props.append(self._mk_prop('idref', rule_use.idref, rule_use.ns, self._tags.get('idref')))
+        props.append(self._mk_prop('version', rule_use.version, rule_use.ns, self._tags.get('version')))
+        props.append(self._mk_prop('result', rule_use.result, rule_use.ns, self._tags.get('result')))
+        props.append(self._mk_prop('time', rule_use.time, rule_use.ns, self._tags.get('time')))
+        props.append(self._mk_prop('severity', rule_use.severity, rule_use.ns, self._tags.get('severity')))
+        props.append(self._mk_prop('weight', rule_use.weight, rule_use.ns, self._tags.get('')))
+        props.append(self._mk_prop('benchmark_id', rule_use.benchmark_id, rule_use.ns, self._tags.get('')))
+        props.append(self._mk_prop('benchmark_href', rule_use.benchmark_href, rule_use.ns, self._tags.get('')))
+        props.append(self._mk_prop('id', rule_use.id_, rule_use.ns, self._tags.get('id')))
         return props
 
-    def _get_observation_properties_unchecked(self, rule_use):
-        """Get observation properties, without checking."""
-        props = []
-        props.append(Property.construct(name='scanner_name', value=rule_use.scanner_name, ns=self._ns))
-        props.append(Property.construct(name='scanner_version', value=rule_use.scanner_version, ns=self._ns))
-        props.append(Property.construct(name='idref', value=rule_use.idref, ns=self._ns, class_='scc_check_name_id'))
-        props.append(
-            Property.construct(name='version', value=rule_use.version, ns=self._ns, class_='scc_check_version')
-        )
-        props.append(Property.construct(name='result', value=rule_use.result, ns=self._ns, class_='scc_result'))
-        props.append(Property.construct(name='time', value=rule_use.time, ns=self._ns, class_='scc_timestamp'))
-        props.append(
-            Property.construct(name='severity', value=rule_use.severity, ns=self._ns, class_='scc_check_severity')
-        )
-        props.append(Property.construct(name='weight', value=rule_use.weight, ns=self._ns))
-        props.append(Property.construct(name='benchmark_id', value=rule_use.benchmark_id, ns=self._ns))
-        props.append(Property.construct(name='benchmark_href', value=rule_use.benchmark_href, ns=self._ns))
-        props.append(Property.construct(name='id', value=rule_use.id_, ns=self._ns, class_='scc_predefined_profile'))
-        return props
-
-    def _process(self, co_result: _ComplianceOperatorResult) -> None:
+    def _process(self, co_result: _XccdfResult) -> None:
         """Process ingested data."""
         rule_use_generator = co_result.rule_use_generator()
         for rule_use in rule_use_generator:
@@ -556,152 +600,23 @@ class _OscalResultsFactory():
             self._inventory_extract(rule_use)
             self._observation_extract(rule_use)
 
-    def ingest(self, osco_data: Dict[str, Any]) -> None:
-        """Process OSCO json."""
-        if 'data' not in osco_data.keys():
+    def ingest(self, xccdf_data: Dict[str, Any]) -> None:
+        """Process XCCDF json."""
+        if 'data' not in xccdf_data.keys():
             return
-        if 'results' not in osco_data['data']:
+        if 'results' not in xccdf_data['data']:
             return
-        results = osco_data['data']['results']
+        results = xccdf_data['data']['results']
         self.ingest_xml(results)
 
-    def ingest_xml(self, osco_xml: str) -> None:
-        """Process OSCO xml."""
-        if not osco_xml.startswith('<?xml'):
-            osco_xml = bz2.decompress(base64.b64decode(osco_xml))
-        co_result = _ComplianceOperatorResult(osco_xml)
+    def ingest_xml(self, xccdf_xml: str) -> None:
+        """Process XCCDF xml."""
+        if not xccdf_xml.startswith('<?xml'):
+            xccdf_xml = bz2.decompress(base64.b64decode(xccdf_xml))
+        co_result = _XccdfResult(xccdf_xml)
         self._process(co_result)
 
 
 def _remove_namespace(subject: str) -> str:
     """If a namespace is present in the subject string, remove it."""
     return subject.rsplit('}').pop()
-
-
-class OscalProfileToOscoProfileTransformer(FromOscalTransformer):
-    """Interface for Oscal Profile to Osco Profile transformer."""
-
-    def __init__(
-        self,
-        extends='ocp4-cis-node',
-        api_version='compliance.openshift.io/v1alpha1',
-        kind='TailoredProfile',
-        name='customized-tailored-profile',
-        namespace='openshift-compliance',
-    ) -> None:
-        """Initialize."""
-        self._extends = extends
-        self._api_version = api_version
-        self._kind = kind
-        self._name = name
-        self._namespace = namespace
-
-    def transform(self, profile: Profile) -> str:
-        """Transform the Profile into a OSCO yaml."""
-        self._profile = profile
-        self._osco_version = self._get_normalized_version('osco_version', '0.1.46')
-        # set values
-        set_values = self._get_set_values()
-        # spec
-        if self._osco_version < (0, 1, 40):
-            # for versions prior to 0.1.40, exclude 'description'
-            spec = {
-                'extends': self._get_metadata_prop_value('base_profile_mnemonic', self._extends),
-                'title': self._profile.metadata.title,
-                'setValues': set_values,
-            }
-        else:
-            # for versions 0.1.40 and beyond, include 'description'
-            spec = {
-                'description': self._get_metadata_prop_value('profile_mnemonic', self._name),
-                'extends': self._get_metadata_prop_value('base_profile_mnemonic', self._extends),
-                'title': self._profile.metadata.title,
-                'setValues': set_values,
-            }
-        disable_rules = self._get_disable_rules()
-        if disable_rules:
-            spec['disableRules'] = disable_rules
-        # yaml data
-        ydata = {
-            'apiVersion': self._api_version,
-            'kind': self._kind,
-            'metadata': {
-                'name': self._get_metadata_prop_value('profile_mnemonic', self._name),
-                'namespace': self._namespace,
-            },
-            'spec': spec,
-        }
-        return json.dumps(ydata)
-
-    def _get_normalized_version(self, prop_name, prop_default) -> Tuple[int, int, int]:
-        """Get normalized version.
-
-        Normalize the "x.y.z" string value to an integer: 1,000,000*x + 1,000*y + z.
-        """
-        try:
-            vparts = self._get_metadata_prop_value(prop_name, prop_default).split('.')
-            normalized_version = (int(vparts[0]), int(vparts[1]), int(vparts[2]))
-        except Exception:
-            logger.warning(f'metadata prop name={prop_name} value error')
-            vparts = prop_default.split('.')
-            normalized_version = (int(vparts[0]), int(vparts[1]), int(vparts[2]))
-        return normalized_version
-
-    def _get_set_values(self) -> List[Dict]:
-        """Extract set_paramater name/value pairs from profile."""
-        set_values = []
-        # for check versions prior to 0.1.59 include parameters
-        # for later versions parameters should not be specified, caveat emptor
-        if self._profile.modify is not None:
-            for set_parameter in as_list(self._profile.modify.set_parameters):
-                name = self._format_osco_rule_name(set_parameter.param_id)
-                parameter_value = set_parameter.values[0]
-                value = parameter_value
-                rationale = self._get_rationale_for_set_value()
-                set_value = {'name': name, 'value': value, 'rationale': rationale}
-                set_values.append(set_value)
-        return set_values
-
-    def _format_osco_rule_name(self, name: str) -> str:
-        """Format for OSCO.
-
-        1. remove prefix xccdf_org.ssgproject.content_rule_
-        2. change underscores to dashes
-        3. add prefix ocp4-
-        """
-        normalized_name = name.replace('xccdf_org.ssgproject.content_rule_', '').replace('_', '-')
-        if not normalized_name.startswith('ocp4-'):
-            normalized_name = f'ocp4-{normalized_name}'
-        return normalized_name
-
-    def _get_metadata_prop_value(self, name: str, default_: str) -> str:
-        """Extract metadata prop or else default if not present."""
-        for prop in as_list(self._profile.metadata.props):
-            if prop.name == name:
-                return prop.value
-        logger.info(f'using default: {name} = {default_}')
-        return default_
-
-    def _get_disable_rules(self) -> List[str]:
-        """Extract disabled rules."""
-        value = []
-        for _import in as_list(self._profile.imports):
-            for control in as_list(_import.exclude_controls):
-                self._add_disable_rules_for_control(value, control)
-        return value
-
-    def _add_disable_rules_for_control(self, value, control):
-        """Extract disabled rules for control."""
-        for with_id in as_list(control.with_ids):
-            name = self._format_osco_rule_name(with_id.__root__)
-            rationale = self._get_rationale_for_disable_rule()
-            entry = {'name': name, 'rationale': rationale}
-            value.append(entry)
-
-    def _get_rationale_for_set_value(self) -> str:
-        """Rationale for set value."""
-        return 'not determinable from specification'
-
-    def _get_rationale_for_disable_rule(self) -> str:
-        """Rationale for disable rule."""
-        return 'not determinable from specification'
