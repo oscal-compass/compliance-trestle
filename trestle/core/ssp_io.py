@@ -211,7 +211,13 @@ class SSPMarkdownWriter():
         return md_list
 
     def get_control_response(
-        self, control_id: str, level: int, write_empty_responses: bool = False, show_comp: bool = True
+        self,
+        control_id: str,
+        level: int,
+        write_empty_responses: bool = False,
+        show_comp: bool = True,
+        show_rules: bool = False,
+        show_status: bool = True
     ) -> str:
         """
         Get the full control implemented requirements, broken down based on the available control responses.
@@ -267,12 +273,12 @@ class SSPMarkdownWriter():
                     prose, rules, status = comp_response
                     md_writer.new_line(prose)
                     md_writer.set_indent_level(-1)
-                    if rules:
+                    if rules and show_rules:
                         md_writer.new_header(2, title='Rules:')
                         md_writer.set_indent_level(0)
                         md_writer.new_list(rules)
                         md_writer.set_indent_level(-1)
-                    if status:
+                    if status and show_status:
                         md_writer.new_header(2, title=f'Implementation Status: {status}')
 
         lines = md_writer.get_lines()

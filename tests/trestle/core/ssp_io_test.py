@@ -115,7 +115,7 @@ def test_ssp_get_control_response(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
     ssp_io.set_catalog(resolved_catalog)
     ssp_io.set_ssp(ssp_obj)
 
-    md_text = ssp_io.get_control_response('ac-1', 1, True)
+    md_text = ssp_io.get_control_response('ac-1', 1, True, True, True)
     assert md_text
     tree = DocsMarkdownNode.build_tree_from_markdown(md_text.split('\n'))
 
