@@ -20,7 +20,7 @@ Trestle provides three separate but related functions in the compliance space:
 - Transform documents from other formats to OSCAL
 - Provide support and governance to author compliance content as markdown and drawio.  
 
-Trestle provides tooling to help orchestrate the compliance process across a number of dimensions:     
+Trestle provides tooling to help orchestrate the compliance process across a number of dimensions:      
 
 - Help manage OSCAL documents in a more human-friendly manner by expanding the large OSCAL data structures into smaller and easier to edit sub-structures while making sure the schemas are enforced.
 - Transform documents from other formats to OSCAL
