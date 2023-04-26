@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: true
-          ref: fix/change-lint-title-action
+          ref: main
           fetch-depth: 0
           token: ${{ secrets.ADMIN_PAT }}
       - name: Install required dependencies
@@ -32,10 +32,9 @@ jobs:
         run: |
           npm install conventional-changelog-conventionalcommits
           npm install commitlint@latest
-          npm install -g @commitlint/cli @commitlint/config-conventional
       - name: Validate current commit (last commit) with commitlint
         if: github.event_name == 'push'
         run: npx commitlint --from HEAD~1 --to HEAD --verbose
       - name: Validate PR commits with commitlint
         if: github.event_name == 'pull_request_target'
-        run: npx commitlint --from HEAD~1 --to HEAD~1 --verbose
+        run: npx commitlint --from ${{ github.event.commits[0].message }} --to ${{ github.event.commits[0].message }} --verbose
