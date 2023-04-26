@@ -38,4 +38,4 @@ jobs:
         run: npx commitlint --from HEAD~1 --to HEAD --verbose
       - name: Validate PR commits with commitlint
         if: github.event_name == 'pull_request_target'
-        run: npx commitlint --config commitlint.config.js --from ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }} --to ${{ github.event.pull_request.head.sha }} --verbose
+        run: npx commitlint --from HEAD~1 --to HEAD~1 --verbose
