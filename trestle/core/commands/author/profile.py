@@ -334,7 +334,9 @@ class ProfileAssemble(AuthorCommonCommand):
         parent_prof, parent_prof_path = load_validate_model_name(trestle_root, parent_prof_name, prof.Profile)
         new_content_type = FileContentType.path_to_content_type(parent_prof_path)
 
-        catalog = ProfileResolver.get_resolved_profile_catalog(trestle_root, parent_prof_path)
+        catalog = ProfileResolver.get_resolved_profile_catalog(
+            trestle_root, parent_prof_path, param_rep=ParameterRep.LEAVE_MOUSTACHE
+        )
 
         context = ControlContext.generate(
             ContextPurpose.PROFILE, to_markdown=False, trestle_root=trestle_root, md_root=md_dir

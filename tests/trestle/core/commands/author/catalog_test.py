@@ -420,7 +420,9 @@ def test_params_in_choice(
     ModelUtils.save_top_level_model(simplified_nist_catalog, tmp_trestle_dir, cat_name, FileContentType.JSON)
     ModelUtils.save_top_level_model(simplified_nist_profile, tmp_trestle_dir, prof_name, FileContentType.JSON)
     prof_path = ModelUtils.get_model_path_for_name_and_class(tmp_trestle_dir, prof_name, prof.Profile)
-    catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
+    catalog = ProfileResolver.get_resolved_profile_catalog(
+        tmp_trestle_dir, prof_path, param_rep=ParameterRep.VALUE_OR_LABEL_OR_CHOICES
+    )
     cat_interface = CatalogInterface(catalog)
     control = cat_interface.get_control('ac-4.4')
     val_3 = 'hacking the system'
@@ -462,7 +464,9 @@ def test_pulled_params_in_choice(
     shutil.copy(test_utils.JSON_TEST_DATA_PATH / (pull_prof_name + '.json'), prof_path)
 
     # get the resolved profile catalog
-    catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
+    catalog = ProfileResolver.get_resolved_profile_catalog(
+        tmp_trestle_dir, prof_path, param_rep=ParameterRep.VALUE_OR_LABEL_OR_CHOICES
+    )
     cat_interface = CatalogInterface(catalog)
 
     # check values
