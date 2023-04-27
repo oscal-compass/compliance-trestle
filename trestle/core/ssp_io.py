@@ -18,6 +18,7 @@ from typing import Dict, List, Optional, Tuple
 
 from trestle.common.common_types import TypeWithByComps
 from trestle.common.const import CONTROL_ORIGINATION, IMPLEMENTATION_STATUS, ITEM, SSP_MAIN_COMP_NAME
+from trestle.common.const import STATUS_OPERATIONAL
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list
 from trestle.core.catalog import catalog_interface
@@ -210,6 +211,29 @@ class SSPMarkdownWriter():
         md_list = self._write_list_with_header('FedRamp Control Origination.', control_origination, level)
         return md_list
 
+    @staticmethod
+    def _write_component_prompt(
+        md_writer: MDWriter,
+        comp_name: str,
+        prose: str,
+        rules: List[str],
+        status: str,
+        show_rules: bool,
+        show_status: bool
+    ) -> None:
+        header = f'Component: {comp_name}'
+        md_writer.new_header(1, header)
+        md_writer.set_indent_level(-1)
+        md_writer.new_line(prose)
+        md_writer.set_indent_level(-1)
+        if rules and show_rules:
+            md_writer.new_header(2, title='Rules:')
+            md_writer.set_indent_level(-1)
+            md_writer.new_list(rules)
+            md_writer.set_indent_level(-1)
+        if status and show_status:
+            md_writer.new_header(2, title=f'Implementation Status: {status}')
+
     def get_control_response(
         self,
         control_id: str,
@@ -229,23 +253,35 @@ class SSPMarkdownWriter():
             show_comp: show the component name in the response
 
         Notes:
-            For components the following structure is assumed:
-            'This System' is the default response, and other components are treated as sub-headings per response item.
+            This is intended to be invoked from a jinja template that has already written out the prompt for
+            control response
         """
         if not self._resolved_catalog:
             raise TrestleError('Cannot get control response, set resolved catalog first.')
 
         control = self._catalog_interface.get_control(control_id)
-        control_impl_req = self._control_implemented_req(control_id)
-        if not control_impl_req:
+        imp_req = self._control_implemented_req(control_id)
+        if not imp_req:
             logger.info(f'No implemented requirements found for the control {control_id}')
             return ''
 
         md_writer = MDWriter(None)
+
+        system_prose = ''
+        system_rules = []
+        system_status = STATUS_OPERATIONAL
+        imp_req_responses = self._get_responses_by_components(imp_req, write_empty_responses)
+        if SSP_MAIN_COMP_NAME in imp_req_responses:
+            system_prose, system_rules, system_status = imp_req_responses[SSP_MAIN_COMP_NAME]
+
+        SSPMarkdownWriter._write_component_prompt(
+            md_writer, SSP_MAIN_COMP_NAME, system_prose, system_rules, system_status, show_rules, show_status
+        )
+
         # if a control has no statement sub-parts then get the response bycomps from the imp_req itself
         # otherwise get them from the statements in the imp_req
         # an imp_req and a statement are both things that can have bycomps
-        has_bycomps = control_impl_req.statements if control_impl_req.statements else [control_impl_req]
+        has_bycomps = imp_req.statements if imp_req.statements else [imp_req]
         for has_bycomp in has_bycomps:
             statement_id = getattr(has_bycomp, 'statement_id', f'{control_id}_smt')
             label = statement_id
@@ -266,20 +302,13 @@ class SSPMarkdownWriter():
                     header = f'Implementation for part {label}'
                     md_writer.new_header(1, title=header)
                 for comp_name, comp_response in response_per_component.items():
-                    if not (show_comp or (comp_name == SSP_MAIN_COMP_NAME)):
+                    if comp_name == SSP_MAIN_COMP_NAME:
                         continue
-                    md_writer.new_header(1, title=f'Component: {comp_name}')
-                    md_writer.set_indent_level(-1)
                     prose, rules, status = comp_response
-                    md_writer.new_line(prose)
-                    md_writer.set_indent_level(-1)
-                    if rules and show_rules:
-                        md_writer.new_header(2, title='Rules:')
-                        md_writer.set_indent_level(0)
-                        md_writer.new_list(rules)
-                        md_writer.set_indent_level(-1)
-                    if status and show_status:
-                        md_writer.new_header(2, title=f'Implementation Status: {status}')
+                    if show_comp:
+                        SSPMarkdownWriter._write_component_prompt(
+                            md_writer, comp_name, prose, rules, status, show_rules, show_status
+                        )
 
         lines = md_writer.get_lines()
 
