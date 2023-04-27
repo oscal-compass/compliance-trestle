@@ -85,6 +85,34 @@ A collection of demos utilizing trestle can be found in the related project [com
 
 Compliance trestle is currently stable and is based on NIST OSCAL version 1.0.4, with active development continuing.
 
+## Community call
+
+We would like to share development in progress for compliance trestle, coming soon and get feedback from community on what features would they like to see in compliance trestle.\
+The community call will happen every Tuesday at 10am EST.\
+Meeting information:
+
+```
+Compliance Trestle Community Call
+Hosted by MANJIREE GADGIL
+
+https://ibm.webex.com/ibm/j.php?MTID=me7d6ad03018b0d69e41bc5629b62edab
+Tuesday, May 2, 2023 10:00 AM | 30 minutes | (UTC-04:00) Eastern Time (US & Canada)
+Occurs every 2 week(s) on Tuesday effective 5/2/2023 from 10:00 AM to 10:30 AM, (UTC-04:00) Eastern Time (US & Canada)
+Meeting number: 145 790 3833
+Password: BbPMgxJe763 (22764953 from phones and video systems)
+Agenda: We would like to share development in progress for compliance trestle, coming soon and get feedback from community on what features would they like to see in compliance trestle.
+
+Join by video system
+Dial 1457903833@ibm.webex.com
+You can also dial 173.243.2.68 and enter your meeting number.
+
+Join by phone
+1-844-531-0958 United States Toll Free
+1-669-234-1178 United States Toll
+
+Access code: 145 790 3833
+```
+
 ## Contributing to Trestle
 
 Our project welcomes external contributions. Please consult [contributing](https://ibm.github.io/compliance-trestle/contributing/mkdocs_contributing/) to get started.
