@@ -96,8 +96,8 @@ Compliance Trestle Community Call
 Hosted by MANJIREE GADGIL
 
 https://ibm.webex.com/ibm/j.php?MTID=m46740e85f87f290d0848c6941c489b0a
-Tuesday, May 2, 2023 10:20 AM | 30 minutes | (UTC-04:00) Eastern Time (US & Canada)
-Occurs every 2 week(s) on Tuesday effective 5/2/2023 from 10:20 AM to 10:50 AM, (UTC-04:00) Eastern Time (US & Canada)
+Tuesday, May 16, 2023 10:30 AM | 30 minutes | (UTC-04:00) Eastern Time (US & Canada)
+Occurs every 2 week(s) on Tuesday effective 5/16/2023 from 10:30 AM to 11:00 AM, (UTC-04:00) Eastern Time (US & Canada)
 
 Join by phone
 1-844-531-0958 United States Toll Free
