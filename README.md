@@ -88,29 +88,23 @@ Compliance trestle is currently stable and is based on NIST OSCAL version 1.0.4,
 ## Community call
 
 We would like to share development in progress for compliance trestle, coming soon and get feedback from community on what features would they like to see in compliance trestle.\
-The community call will happen every Tuesday at 10am EST.\
+The community call will happen every 2 week(s) on Tuesday at 10am EST.\
 Meeting information:
 
 ```
 Compliance Trestle Community Call
 Hosted by MANJIREE GADGIL
 
-https://ibm.webex.com/ibm/j.php?MTID=me7d6ad03018b0d69e41bc5629b62edab
-Tuesday, May 2, 2023 10:00 AM | 30 minutes | (UTC-04:00) Eastern Time (US & Canada)
-Occurs every 2 week(s) on Tuesday effective 5/2/2023 from 10:00 AM to 10:30 AM, (UTC-04:00) Eastern Time (US & Canada)
-Meeting number: 145 790 3833
-Password: BbPMgxJe763 (22764953 from phones and video systems)
-Agenda: We would like to share development in progress for compliance trestle, coming soon and get feedback from community on what features would they like to see in compliance trestle.
-
-Join by video system
-Dial 1457903833@ibm.webex.com
-You can also dial 173.243.2.68 and enter your meeting number.
+https://ibm.webex.com/ibm/j.php?MTID=m46740e85f87f290d0848c6941c489b0a
+Tuesday, May 2, 2023 10:20 AM | 30 minutes | (UTC-04:00) Eastern Time (US & Canada)
+Occurs every 2 week(s) on Tuesday effective 5/2/2023 from 10:20 AM to 10:50 AM, (UTC-04:00) Eastern Time (US & Canada)
 
 Join by phone
 1-844-531-0958 United States Toll Free
 1-669-234-1178 United States Toll
-
-Access code: 145 790 3833
+1-669-234-1178 United States Toll
+Host access code 979 191 85
+Attendee access code 979 379 85
 ```
 
 ## Contributing to Trestle
