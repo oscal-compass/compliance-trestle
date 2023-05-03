@@ -249,7 +249,7 @@ class CisXlsxToOscalCatalog(TaskBase):
         text2 = '(required) title of the CIS catalog.'
         logger.info(text1 + text2)
         text1 = '  version                = '
-        text2 = '(required) version :q!of the CIS catalog.'
+        text2 = '(required) version of the CIS catalog.'
         logger.info(text1 + text2)
         text1 = '  output-overwrite       = '
         text2 = '(optional) true [default] or false; replace existing output when true.'
