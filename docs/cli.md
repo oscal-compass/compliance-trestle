@@ -666,7 +666,8 @@ metadata:
   name: ssg-ocp4-ds-cis-111.222.333.444-pod
   namespace: openshift-compliance
   resourceVersion: '22693328'
-  selfLink: /api/v1/namespaces/openshift-compliance/configmaps/ssg-ocp4-ds-cis-111.222.333.444-pod
+  selfLink: 
+    /api/v1/namespaces/openshift-compliance/configmaps/ssg-ocp4-ds-cis-111.222.333.444-pod
   uid: 1da3ea81-0a25-4512-ad86-7ac360246b5d
 
 ```
