@@ -87,8 +87,8 @@ Compliance trestle is currently stable and is based on NIST OSCAL version 1.0.4,
 
 ## Community call
 
-We would like to share development in progress for compliance trestle, coming soon and get feedback from community on what features would they like to see in compliance trestle.\
-The community call will happen every 2 week(s) on Tuesday at 10am EST.\
+We would like to share development in progress for compliance trestle, coming soon and get feedback from community on what features would they like to see in compliance trestle.
+The community call will happen every 2 week(s) on Tuesday at 10am EST.
 Meeting information:
 
 ```
