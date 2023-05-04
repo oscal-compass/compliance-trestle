@@ -17,7 +17,7 @@ The objective here is to transform your compliance data into valid OSCAL, in par
 [SAR](https://pages.nist.gov/OSCAL/documentation/schema/assessment-results-layer/).
 
 Examples of existing transformers  included with trestle are for the
-OpenShift Compliance Operator [OSCO](https://github.com/IBM/compliance-trestle/blob/develop/trestle/tasks/osco_result_to_oscal_ar.py) and
+OpenShift Compliance Operator [OSCO](https://github.com/IBM/compliance-trestle/blob/develop/trestle/tasks/xccdf_result_to_oscal_ar.py) and
 [Tanium](https://github.com/IBM/compliance-trestle/blob/develop/trestle/tasks/tanium-result-to-oscal-ar.py).
 
 ## *Overview*
@@ -41,7 +41,7 @@ Other possible code stack configurations (not shown):
 For example, one could create an
 auditree-arboretum [harvest](https://github.com/ComplianceAsCode/auditree-harvest#report-development)
 report (file interface) that employs the trestle
-osco-result-to-oscal-ar transformation (data processing) module.
+xccdf-result-to-oscal-ar transformation (data processing) module.
 
 ## *Choose Mapping Strategy*
 
@@ -404,7 +404,7 @@ where 14 have result=PASS and 1 has result=FAIL, then the overall status for the
 ## *Examples*
 
 There are 2 transformers in trestle.
-The [osco-result-to-oscal-ar](https://github.com/IBM/compliance-trestle/blob/develop/trestle/tasks/osco_result_to_oscal_ar.py)
+The [xccdf-result-to-oscal-ar](https://github.com/IBM/compliance-trestle/blob/develop/trestle/tasks/xccdf_result_to_oscal_ar.py)
 transformer emits OSCAL Observations, the simplest partial result.
 
 The [tanium-result-to-oscal-ar](https://github.com/IBM/compliance-trestle/blob/develop/trestle/tasks/tanium-result-to-oscal-ar.py)
@@ -421,7 +421,7 @@ Table of approximate lines of code.
  <th style="text-align:right;border: 1px solid black;border-collapse: collapse;padding: 15px;background-color: #f1f1c1;">test cases
 
 <tr>
- <td style="text-align:right;border: 1px solid black;border-collapse: collapse;padding: 15px;">osco-result-to-oscal-ar
+ <td style="text-align:right;border: 1px solid black;border-collapse: collapse;padding: 15px;">xccdf-result-to-oscal-ar
  <td style="text-align:right;border: 1px solid black;border-collapse: collapse;padding: 15px;">Observations only
  <td style="text-align:right;border: 1px solid black;border-collapse: collapse;padding: 15px;">275
  <td style="text-align:right;border: 1px solid black;border-collapse: collapse;padding: 15px;">350
