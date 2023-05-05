@@ -93,7 +93,7 @@ Our project welcomes external contributions. Please consult [contributing](https
 
 If you would like to see the detailed LICENSE click [here](LICENSE).
 Consult [contributors](https://github.com/IBM/compliance-trestle/graphs/contributors) for a list of authors and [maintainers](MAINTAINERS.md) for the core team.
-
+ 
 ```text
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
