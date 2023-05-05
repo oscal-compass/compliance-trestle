@@ -21,8 +21,13 @@ jobs:
           ref: fix/change-lint-title-action
           fetch-depth: 0
           token: ${{ secrets.ADMIN_PAT }}
-      - name: Validate PR lint title
+      - name: Check PR title
+        id: check-pr-title
         run: |
           if [[ ${{ github.event.pull_request.title }} =~ ^(?<type>build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test|¯\\_\(ツ\)_\/¯)(?<scope>\(\w+\)?((?=:\s)|(?=!:\s)))?(?<breaking>!)?(?<subject>:\s.*)?|^(?<merge>Merge \w+) ]]; then
-              echo "Valid"
+              echo "match=true" >> $GITHUB_OUTPUT
           fi
+      - name: PR title is valid
+        if: steps.check-pr-title.outputs.match != 'true'
+        run: |
+          echo "PR title is not valid"
