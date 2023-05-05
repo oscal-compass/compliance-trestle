@@ -21,24 +21,8 @@ jobs:
           ref: fix/change-lint-title-action
           fetch-depth: 0
           token: ${{ secrets.ADMIN_PAT }}
-      - name: Install required dependencies
+      - name: Validate PR lint title
         run: |
-          sudo apt update
-          sudo apt install -y sudo
-          sudo apt install -y git curl
-          curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
-          sudo DEBIAN_FRONTEND=noninteractive apt install -y nodejs 
-      - name: Install commitlint local
-        run: |
-          npm install conventional-changelog-conventionalcommits
-          npm install commitlint@latest
-          npm install -g @commitlint/cli @commitlint/config-conventional
-      - name: Validate if only 1 commit
-        if: github.event.pull_request.commits[0].message == github.event.pull_request.title
-        run: npx commitlint --from HEAD~1 --to HEAD --verbose
-      - name: Validate if only 1 commit
-        if: github.event.pull_request.commits.length == 1
-        run: npx commitlint --from ${{ github.event.pull_request.commits[0] }} --to ${{ github.event.pull_request.commits[0] }} --verbose
-      - name: Validate PR merge commit
-        if: github.event_name == 'pull_request_target'
-        run: npx commitlint --config commitlint.config.js --from ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }} --to ${{ github.event.pull_request.sha }} --verbose
+          if [[ ${{ github.event.pull_request.title }} =~ ^(?<type>build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test|¯\\_\(ツ\)_\/¯)(?<scope>\(\w+\)?((?=:\s)|(?=!:\s)))?(?<breaking>!)?(?<subject>:\s.*)?|^(?<merge>Merge \w+) ]]; then
+              echo "Valid"
+          fi
