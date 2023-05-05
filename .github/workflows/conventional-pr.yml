@@ -24,7 +24,7 @@ jobs:
       - name: Check PR title
         id: check-pr-title
         run: |
-          if [[ ${{ github.event.pull_request.title }} =~ ^(?<type>build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test|¯\\_\(ツ\)_\/¯)(?<scope>\(\w+\)?((?=:\s)|(?=!:\s)))?(?<breaking>!)?(?<subject>:\s.*)?|^(?<merge>Merge \w+) ]]; then
+          if [[ contains(github.event.pull_request.title,^(?<type>build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test|¯\\_\(ツ\)_\/¯)(?<scope>\(\w+\)?((?=:\s)|(?=!:\s)))?(?<breaking>!)?(?<subject>:\s.*)?|^(?<merge>Merge \w+)) ]]; then
               echo "match=true" >> $GITHUB_OUTPUT
           fi
       - name: PR title is valid
