@@ -317,7 +317,7 @@ class CatalogInterface():
         label = ControlInterface.get_label(part)
         prose = '' if part.prose is None else part.prose
         items.append({'indent': indent, 'label': label, 'prose': prose})
-        for prt in as_filtered_list(part.parts, lambda p: p.name == 'item'):
+        for prt in as_filtered_list(part.parts, lambda p: p.name == const.ITEM):
             items.extend(CatalogInterface._get_statement_sub_parts(prt, indent + 1))
         return items
 
@@ -410,7 +410,7 @@ class CatalogInterface():
 
         def does_part_exists(part: common.Part) -> bool:
             does_match = False
-            if part.name and part.name in {const.STATEMENT, 'item'} and part.id == statement_id:
+            if part.name and part.name in {const.STATEMENT, const.ITEM} and part.id == statement_id:
                 does_match = True
             return does_match
 

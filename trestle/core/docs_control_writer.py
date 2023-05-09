@@ -159,7 +159,7 @@ class DocsControlWriter(ControlWriter):
             self._md_file.new_paragraph()
 
         self._md_file.set_indent_level(-1)
-        self._add_part_and_its_items(control, 'statement', 'item')
+        self._add_part_and_its_items(control, const.STATEMENT, const.ITEM)
         self._md_file.set_indent_level(-1)
 
     def _add_control_objective(self, control: cat.Control, tag_pattern: str = None) -> None:
@@ -244,5 +244,5 @@ class DocsControlWriter(ControlWriter):
         self._md_file.new_header(level=1, title=title)
         self._md_file.new_header(level=2, title='Control Statement')
         self._md_file.set_indent_level(-1)
-        self._add_part_and_its_items(control, 'statement', 'item')
+        self._add_part_and_its_items(control, const.STATEMENT, const.ITEM)
         self._md_file.set_indent_level(-1)

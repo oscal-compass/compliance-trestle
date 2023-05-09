@@ -115,13 +115,13 @@ def test_ssp_get_control_response(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
     ssp_io.set_catalog(resolved_catalog)
     ssp_io.set_ssp(ssp_obj)
 
-    md_text = ssp_io.get_control_response('ac-1', 1, True)
+    md_text = ssp_io.get_control_response('ac-1', 1, True, True, True)
     assert md_text
     tree = DocsMarkdownNode.build_tree_from_markdown(md_text.split('\n'))
 
     assert tree.get_node_for_key('## Implementation for part a.')
-    assert len(list(tree.get_all_headers_for_level(2))) == 1
-    assert len(list(tree.get_all_headers_for_level(3))) == 2
+    assert len(list(tree.get_all_headers_for_level(2))) == 4
+    assert len(list(tree.get_all_headers_for_level(3))) == 5
 
     md_text = ssp_io.get_control_response('ac-3', 1, True)
     assert md_text
@@ -144,13 +144,14 @@ def test_ssp_get_control_response(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
     ssp_io.set_ssp(ssp_obj)
 
     # confirm edited response is there and that comp name presence is controlled
-    md_text = ssp_io.get_control_response('ac-1', 2, False, False)
+    md_text = ssp_io.get_control_response('ac-1', 1, False, False)
     assert 'comp_aa' not in md_text
-    assert new_a_prose in md_text
+    assert new_a_prose not in md_text
 
-    md_text = ssp_io.get_control_response('ac-1', 2, False, True)
+    md_text = ssp_io.get_control_response('ac-1', 1, False, True)
     assert 'comp_aa' in md_text
     assert new_a_prose in md_text
+    assert '\n### Implementation Status: partial' in md_text
 
 
 def test_writers(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:

@@ -34,7 +34,7 @@ from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.cmd_utils import clear_folder
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_context import ContextPurpose, ControlContext
-from trestle.core.control_interface import ControlInterface
+from trestle.core.control_interface import ControlInterface, ParameterRep
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
@@ -120,7 +120,7 @@ class ComponentGenerate(AuthorCommonCommand):
                     name_index += 1
                 context.uri_name_map[source_profile_uri] = name
                 resolved_catalog = ProfileResolver.get_resolved_profile_catalog(
-                    context.trestle_root, source_profile_uri
+                    context.trestle_root, source_profile_uri, param_rep=ParameterRep.LEAVE_MOUSTACHE
                 )
                 local_catalog_api = CatalogAPI(resolved_catalog)
                 cat_api_dict[source_profile_uri] = local_catalog_api
