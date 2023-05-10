@@ -169,6 +169,10 @@
                   },
                   {
                     "name": "control-origination",
+                    "value": "system-specific"
+                  },
+                  {
+                    "name": "control-origination",
                     "value": "customer-configured"
                   }
                 ],

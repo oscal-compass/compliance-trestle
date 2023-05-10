@@ -833,6 +833,8 @@ class SSPFilter(AuthorCommonCommand):
                     for prop in imp_requirement.props:
                         if prop.name == const.CONTROL_ORIGINATION and prop.value in control_origination:
                             new_imp_reqs.append(imp_requirement)
+                            # only add the imp requirement one time
+                            break
 
             ssp.control_implementation.implemented_requirements = new_imp_reqs
 
