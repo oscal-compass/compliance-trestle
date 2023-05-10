@@ -613,15 +613,17 @@ CLI evocation:
 
 > trestle author ssp-filter
 
-The `ssp-filter` sub-command takes a given SSP and filters its contents based on a given profile, list of components, and/or control implementation status.
+The `ssp-filter` sub-command takes a given SSP and filters its contents based on a given profile, list of components, control implementation status and/or control origination.
 
 If filtering by profile, the SSP is assumed to contain a superset of controls needed by the profile, and the filter operation generates a new SSP with just the controls needed by that profile.  If the profile references a control not in the SSP, the routine fails with an error.
 
-If filtering by components, a colon-delimited list of components should be provided, with `This system` as the default name for the overall required component for the entire system.  Case and spaces are ignored in the component names, so the names could be specified as `--components "this system: my component"`.  The resulting, filtered ssp will have updated implementated requirements with filtered by_components on each requirement, and filtered by_components on each statement.
+If filtering by components, a colon-delimited list of components should be provided, with `This system` as the default name for the overall required component for the entire system.  Case and spaces are ignored in the component names, so the names could be specified as `--components "this system: my component"`.  The resulting, filtered ssp will have updated implemented requirements with filtered by_components on each requirement, and filtered by_components on each statement.
 
-If filtering by control implementation status, a comma-demilited list of implementation status values should be provided. These values must comply with the OSCAL SSP format references's allowed values, which are as follows: implemented, partial, planned, alternative, and not-applicable.
+If filtering by control implementation status, a comma-delimited list of implementation status values should be provided. These values must comply with the OSCAL SSP format references's allowed values, which are as follows: implemented, partial, planned, alternative, and not-applicable.
 
-You may filter by a combination of a profile, list of component names, and implementation statuses.
+If filtering by control origination, a comma-delimited list of control origination values should be provided. These values must comply with the OSCAL SSP format references's allowed values for the control origination property, which are as follows: system-specific, inherited, organization, customer-configured, and customer-provided.
+
+You may filter by a combination of a profile, list of component names, implementation statuses, and control origination values.
 
 As with the other related author commands, if an existing destination file already exists, it is not updated if no changes would be made.
 
