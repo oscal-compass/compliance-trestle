@@ -608,7 +608,7 @@ class SSPFilter(AuthorCommonCommand):
         is_help_str = 'Comma-delimited list of control implementation statuses to include in filtered ssp.'
         self.add_argument('-is', '--implementation-status', help=is_help_str, required=False, type=str)
         co_help_str = 'Comma-delimited list of control origination values to include in filtered ssp.'
-        self.add_argument('-co', '--control_origination', help=co_help_str, required=False, type=str)
+        self.add_argument('-co', '--control-origination', help=co_help_str, required=False, type=str)
 
     def _run(self, args: argparse.Namespace) -> int:
         try:
