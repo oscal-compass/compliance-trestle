@@ -589,7 +589,7 @@ class SSPFilter(AuthorCommonCommand):
     Filter the controls in an ssp.
 
     The filtered ssp is based on controls included by the following:
-    profile, components, and/or implementation status.
+    profile, components, implementation status, and/or control origination.
     """
 
     name = 'ssp-filter'
@@ -607,6 +607,8 @@ class SSPFilter(AuthorCommonCommand):
         self.add_argument('-c', '--components', help=comp_help_str, required=False, type=str)
         is_help_str = 'Comma-delimited list of control implementation statuses to include in filtered ssp.'
         self.add_argument('-is', '--implementation-status', help=is_help_str, required=False, type=str)
+        co_help_str = 'Comma-delimited list of control origination values to include in filtered ssp.'
+        self.add_argument('-co', '--control_origination', help=co_help_str, required=False, type=str)
 
     def _run(self, args: argparse.Namespace) -> int:
         try:
@@ -614,11 +616,12 @@ class SSPFilter(AuthorCommonCommand):
             trestle_root = pathlib.Path(args.trestle_root)
             comp_names: Optional[List[str]] = None
             impl_status_values: Optional[List[str]] = None
+            co_values: Optional[List[str]] = None
 
-            if not (args.components or args.implementation_status or args.profile):
+            if not (args.components or args.implementation_status or args.profile or args.control_origination):
                 logger.warning(
                     'You must specify at least one, or a combination of: profile, list of component names'
-                    ', or list of implementation statuses for ssp-filter.'
+                    ', list of implementation statuses, or list of control origination values for ssp-filter.'
                 )
                 return CmdReturnCodes.COMMAND_ERROR.value
 
@@ -643,6 +646,24 @@ class SSPFilter(AuthorCommonCommand):
                         )
                         return CmdReturnCodes.COMMAND_ERROR.value
 
+            if args.control_origination:
+                co_values = args.control_origination.split(',')
+                allowed_co_values = {
+                    const.ORIGINATION_ORGANIZATION,
+                    const.ORIGINATION_SYSTEM_SPECIFIC,
+                    const.ORIGINATION_INHERITED,
+                    const.ORIGINATION_CUSTOMER_CONFIGURED,
+                    const.ORIGINATION_CUSTOMER_PROVIDED
+                }
+                allowed_co_string = ', '.join(str(item) for item in allowed_co_values)
+                for co in co_values:
+                    if co not in allowed_co_values:
+                        logger.warning(
+                            f'Provided control origination "{co}" is invalid.\n'
+                            f'Please use the following for ssp-filter: {allowed_co_string}'
+                        )
+                        return CmdReturnCodes.COMMAND_ERROR.value
+
             return self.filter_ssp(
                 trestle_root,
                 args.name,
@@ -651,7 +672,8 @@ class SSPFilter(AuthorCommonCommand):
                 args.regenerate,
                 args.version,
                 comp_names,
-                impl_status_values
+                impl_status_values,
+                co_values
             )
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Error generating the filtered ssp')
@@ -665,13 +687,14 @@ class SSPFilter(AuthorCommonCommand):
         regenerate: bool,
         version: Optional[str],
         components: Optional[List[str]] = None,
-        implementation_status: Optional[List[str]] = None
+        implementation_status: Optional[List[str]] = None,
+        control_origination: Optional[List[str]] = None
     ) -> int:
         """
         Filter the ssp and output new ssp.
 
         The filtered ssp is based on controls included by the following:
-        profile, components, and/or implementation status.
+        profile, components, implementation status, and/or control origination.
 
         Args:
             trestle_root: root directory of the trestle workspace
@@ -682,6 +705,7 @@ class SSPFilter(AuthorCommonCommand):
             version: new version for the model
             components: optional list of component names used for filtering
             implementation_status: optional list of implementation statuses for filtering
+            control_origination: optional list of control origination values for filtering
 
         Returns:
             0 on success, 1 otherwise
@@ -795,6 +819,20 @@ class SSPFilter(AuthorCommonCommand):
 
                 if imp_req.by_components is not None or imp_req.statements is not None:
                     new_imp_reqs.append(imp_req)
+
+            ssp.control_implementation.implemented_requirements = new_imp_reqs
+
+        # filter implemented requirements by control origination property.
+        # this will remove any implemented requirements without the control origination
+        # property set
+        if control_origination:
+            new_imp_reqs: List[ossp.ImplementedRequirement] = []
+
+            for imp_requirement in ssp.control_implementation.implemented_requirements:
+                if imp_requirement.props:
+                    for prop in imp_requirement.props:
+                        if prop.name == const.CONTROL_ORIGINATION and prop.value in control_origination:
+                            new_imp_reqs.append(imp_requirement)
 
             ssp.control_implementation.implemented_requirements = new_imp_reqs
 
