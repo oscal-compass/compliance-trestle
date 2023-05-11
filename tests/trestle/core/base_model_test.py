@@ -256,7 +256,7 @@ def test_copy_to() -> None:
     # poam.RiskStatus (type str)
     # note the testing conduction
     remark = common.Remarks(__root__='hello')
-    _ = remark.copy_to(common.RiskStatus)
+    _ = remark.copy_to(common.URIReferenceDatatype)
 
 
 def test_copy_components() -> None:

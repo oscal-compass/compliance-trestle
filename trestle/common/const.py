@@ -557,3 +557,17 @@ VALUE_NOT_ASSIGNED_PREFIX = 'value-not-assigned-prefix'
 CONTROL_IMPLEMENTATION = 'control-implementation'
 
 IMPLEMENTED_REQUIREMENT = 'implemented-requirement'
+
+KEEP = 'keep'
+
+MERGE = 'merge'
+
+BEFORE = 'before'
+
+AFTER = 'after'
+
+STARTING = 'starting'
+
+ENDING = 'ending'
+
+USE_FIRST = 'use-first'

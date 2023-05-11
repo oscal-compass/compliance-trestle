@@ -632,7 +632,7 @@ def test_profile_alter_props(tmp_trestle_dir: pathlib.Path) -> None:
     )
     adds = profile.modify.alters[0].adds
     assert len(adds) == 5
-    assert adds[0].position.value == 'ending'
+    assert adds[0].position == const.ENDING
     assert adds[0].by_id is None
     assert len(adds[0].parts) == 2
     assert len(adds[0].props) == 2
@@ -698,7 +698,7 @@ More evidence
     )
     adds = profile.modify.alters[0].adds
     assert len(adds) == 6
-    assert adds[0].position.value == 'ending'
+    assert adds[0].position == const.ENDING
     assert adds[1].by_id == 'ac-1_expevid'
     assert adds[2].by_id == 'ac-1_smt.a'
     assert adds[3].by_id == 'ac-1_smt.b'

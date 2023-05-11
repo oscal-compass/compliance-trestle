@@ -539,8 +539,6 @@ class ModelUtils:
         main_fields = ['id', 'label', 'values', 'select', 'choice', 'how_many']
         if isinstance(obj, common.Remarks):
             return obj.__root__
-        if isinstance(obj, common.HowMany):
-            return obj.value
         # it is either a string already or we cast it to string
         if not hasattr(obj, const.FIELDS_SET):
             return str(obj)
@@ -584,9 +582,9 @@ class ModelUtils:
     def _string_to_howmany(count_str: str) -> Optional[str]:
         clean_str = count_str.lower().strip().replace('-', ' ').replace('_', ' ')
         if clean_str == const.ONE:
-            return common.HowMany.one  # type: ignore
+            return const.ONE  # type: ignore
         if clean_str == const.ONE_OR_MORE_SPACED:
-            return common.HowMany.one_or_more  # type: ignore
+            return const.ONE_OR_MORE_HYPHENED  # type: ignore
         return None
 
     @staticmethod
@@ -917,8 +915,7 @@ class ModelUtils:
             common.Source,
             assessment_plan.RelatedObservation,
             assessment_results.RelatedObservation,
-            poam.RelatedObservation,
-            poam.RelatedObservation1
+            poam.RelatedObservation
         ]
         type_list = uuid_type_list if ignore_all_uuid else [common.LastModified]
         return not ModelUtils._objects_differ(model_a, model_b, type_list, ['last_modified'], ignore_all_uuid)
