@@ -22,4 +22,4 @@ jobs:
     - name: Validate PR title
       run: |
         PR_TITLE=$(jq -r '.pull_request.title' "$GITHUB_EVENT_PATH")
-        echo "$PR_TITLE" | npx commitlint --config @commitlint/config-conventional
+        echo "$PR_TITLE" | npx commitlint --config commitlint.config.js
