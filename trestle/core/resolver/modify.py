@@ -40,7 +40,7 @@ class Modify(Pipeline.Filter):
         block_adds: bool = False,
         block_params: bool = False,
         params_format: str = None,
-        param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES,
+        param_rep: ParameterRep = ParameterRep.LEAVE_MOUSTACHE,
         show_value_warnings: bool = False,
         value_assigned_prefix: Optional[str] = None,
         value_not_assigned_prefix: Optional[str] = None

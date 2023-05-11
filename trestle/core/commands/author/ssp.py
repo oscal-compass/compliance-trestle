@@ -40,7 +40,7 @@ from trestle.core.commands.author.component import ComponentAssemble
 from trestle.core.commands.common.cmd_utils import clear_folder
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_context import ContextPurpose, ControlContext
-from trestle.core.control_interface import ControlInterface
+from trestle.core.control_interface import ControlInterface, ParameterRep
 from trestle.core.control_reader import ControlReader
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
@@ -166,7 +166,12 @@ class SSPGenerate(AuthorCommonCommand):
         profile_resolver = ProfileResolver()
         # in ssp context we want to see missing value warnings
         resolved_catalog = profile_resolver.get_resolved_profile_catalog(
-            trestle_root, profile_path, block_params=False, params_format='[.]', show_value_warnings=True
+            trestle_root,
+            profile_path,
+            block_params=False,
+            params_format='[.]',
+            param_rep=ParameterRep.ASSIGNMENT_FORM,
+            show_value_warnings=True
         )
 
         catalog_api = CatalogAPI(catalog=resolved_catalog, context=context)
@@ -466,7 +471,9 @@ class SSPAssemble(AuthorCommonCommand):
             new_ssp_name = args.output
 
             _, profile_href = ComponentAssemble._get_profile_title_and_href_from_dir(md_path)
-            res_cat = ProfileResolver.get_resolved_profile_catalog(trestle_root, profile_href)
+            res_cat = ProfileResolver.get_resolved_profile_catalog(
+                trestle_root, profile_href, param_rep=ParameterRep.LEAVE_MOUSTACHE
+            )
             catalog_interface = CatalogInterface(res_cat)
 
             new_file_content_type = FileContentType.JSON

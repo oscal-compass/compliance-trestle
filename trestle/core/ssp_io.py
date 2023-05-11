@@ -14,14 +14,16 @@
 """Handle direct IO for writing SSP responses as markdown."""
 import logging
 import pathlib
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 from trestle.common.common_types import TypeWithByComps
-from trestle.common.const import CONTROL_ORIGINATION, IMPLEMENTATION_STATUS, SSP_MAIN_COMP_NAME
+from trestle.common.const import CONTROL_ORIGINATION, IMPLEMENTATION_STATUS, ITEM, SSP_MAIN_COMP_NAME
+from trestle.common.const import STATUS_OPERATIONAL
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list
 from trestle.core.catalog import catalog_interface
 from trestle.core.catalog.catalog_interface import CatalogInterface
+from trestle.core.control_interface import ControlInterface
 from trestle.core.docs_control_writer import DocsControlWriter
 from trestle.core.markdown.docs_markdown_node import DocsMarkdownNode
 from trestle.core.markdown.md_writer import MDWriter
@@ -209,8 +211,37 @@ class SSPMarkdownWriter():
         md_list = self._write_list_with_header('FedRamp Control Origination.', control_origination, level)
         return md_list
 
+    @staticmethod
+    def _write_component_prompt(
+        md_writer: MDWriter,
+        comp_name: str,
+        prose: str,
+        rules: List[str],
+        status: str,
+        show_rules: bool,
+        show_status: bool
+    ) -> None:
+        header = f'Component: {comp_name}'
+        md_writer.new_header(1, header)
+        md_writer.set_indent_level(-1)
+        md_writer.new_line(prose)
+        md_writer.set_indent_level(-1)
+        if rules and show_rules:
+            md_writer.new_header(2, title='Rules:')
+            md_writer.set_indent_level(-1)
+            md_writer.new_list(rules)
+            md_writer.set_indent_level(-1)
+        if status and show_status:
+            md_writer.new_header(2, title=f'Implementation Status: {status}')
+
     def get_control_response(
-        self, control_id: str, level: int, write_empty_responses: bool = False, show_comp: bool = True
+        self,
+        control_id: str,
+        level: int,
+        write_empty_responses: bool = False,
+        show_comp: bool = True,
+        show_rules: bool = False,
+        show_status: bool = True
     ) -> str:
         """
         Get the full control implemented requirements, broken down based on the available control responses.
@@ -222,23 +253,35 @@ class SSPMarkdownWriter():
             show_comp: show the component name in the response
 
         Notes:
-            For components the following structure is assumed:
-            'This System' is the default response, and other components are treated as sub-headings per response item.
+            This is intended to be invoked from a jinja template that has already written out the prompt for
+            control response
         """
         if not self._resolved_catalog:
             raise TrestleError('Cannot get control response, set resolved catalog first.')
 
         control = self._catalog_interface.get_control(control_id)
-        control_impl_req = self._control_implemented_req(control_id)
-        if not control_impl_req:
+        imp_req = self._control_implemented_req(control_id)
+        if not imp_req:
             logger.info(f'No implemented requirements found for the control {control_id}')
             return ''
 
         md_writer = MDWriter(None)
+
+        system_prose = ''
+        system_rules = []
+        system_status = STATUS_OPERATIONAL
+        imp_req_responses = self._get_responses_by_components(imp_req, write_empty_responses)
+        if SSP_MAIN_COMP_NAME in imp_req_responses:
+            system_prose, system_rules, system_status = imp_req_responses[SSP_MAIN_COMP_NAME]
+
+        SSPMarkdownWriter._write_component_prompt(
+            md_writer, SSP_MAIN_COMP_NAME, system_prose, system_rules, system_status, show_rules, show_status
+        )
+
         # if a control has no statement sub-parts then get the response bycomps from the imp_req itself
         # otherwise get them from the statements in the imp_req
         # an imp_req and a statement are both things that can have bycomps
-        has_bycomps = control_impl_req.statements if control_impl_req.statements else [control_impl_req]
+        has_bycomps = imp_req.statements if imp_req.statements else [imp_req]
         for has_bycomp in has_bycomps:
             statement_id = getattr(has_bycomp, 'statement_id', f'{control_id}_smt')
             label = statement_id
@@ -253,20 +296,19 @@ class SSPMarkdownWriter():
 
             response_per_component = self._get_responses_by_components(has_bycomp, write_empty_responses)
 
-            if response_per_component or (not response_per_component and write_empty_responses):
-                if part_name and part_name == 'item':
+            if response_per_component or write_empty_responses:
+                if part_name and part_name == ITEM:
                     # print part header only if subitem
                     header = f'Implementation for part {label}'
-                    md_writer.new_header(level=1, title=header)
-                for idx, component_key in enumerate(response_per_component):
-                    if component_key == SSP_MAIN_COMP_NAME and idx == 0:
-                        # special case ignore header but print contents
-                        md_writer.new_paragraph()
-                    elif show_comp:
-                        md_writer.new_header(level=2, title=component_key)
-                    md_writer.set_indent_level(-1)
-                    md_writer.new_line(response_per_component[component_key])
-                    md_writer.set_indent_level(-1)
+                    md_writer.new_header(1, title=header)
+                for comp_name, comp_response in response_per_component.items():
+                    if comp_name == SSP_MAIN_COMP_NAME:
+                        continue
+                    prose, rules, status = comp_response
+                    if show_comp:
+                        SSPMarkdownWriter._write_component_prompt(
+                            md_writer, comp_name, prose, rules, status, show_rules, show_status
+                        )
 
         lines = md_writer.get_lines()
 
@@ -275,25 +317,31 @@ class SSPMarkdownWriter():
 
         return tree.content.raw_text
 
-    def _get_responses_by_components(self, has_bycomps: TypeWithByComps, write_empty_responses: bool) -> Dict[str, str]:
+    def _get_responses_by_components(self, has_bycomps: TypeWithByComps,
+                                     write_empty_responses: bool) -> Dict[str, Tuple[str, List[str], str]]:
         """Get response per component, substitute component id with title if possible."""
-        response_per_component = {}
-        for component in as_list(has_bycomps.by_components):  # type: ignore
+        response_per_component: Dict[str, Tuple[str, str]] = {}
+        for by_comp in as_list(has_bycomps.by_components):  # type: ignore
             # look up component title
-            subheader = component.component_uuid
-            response = ''
+            subheader = by_comp.component_uuid
+            prose = ''
+            status = ''
+            rules = []
             if self._ssp.system_implementation.components:
                 for comp in self._ssp.system_implementation.components:
-                    if comp.uuid == component.component_uuid:
+                    if comp.uuid == by_comp.component_uuid:
                         title = comp.title
                         if title:
                             subheader = title
-            if component.description:
-                response = component.description
+            if by_comp.description:
+                prose = by_comp.description
+            if by_comp.implementation_status:
+                status = by_comp.implementation_status.state
+            rules, _ = ControlInterface.get_rule_list_for_item(by_comp)
 
-            if response or (not response and write_empty_responses):
+            if prose or (not prose and write_empty_responses):
                 if subheader:
-                    response_per_component[subheader] = response
+                    response_per_component[subheader] = (prose, rules, status)
 
         return response_per_component
 
