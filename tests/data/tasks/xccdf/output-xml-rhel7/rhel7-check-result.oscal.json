@@ -1,0 +1,174 @@
+{
+  "results": [
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "XCCDF",
+      "description": "XCCDF Scan Results",
+      "start": "2021-06-08T02:35:55+00:00",
+      "end": "2021-06-08T02:35:55+00:00",
+      "local-definitions": {
+        "components": [
+          {
+            "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+            "type": "Service",
+            "title": "rhel7",
+            "description": "rhel7",
+            "status": {
+              "state": "operational"
+            }
+          }
+        ],
+        "inventory-items": [
+          {
+            "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+            "description": "inventory",
+            "props": [
+              {
+                "name": "target",
+                "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
+                "value": "kube-c18ler8d06m877hrn7jg-roks8-default-00000319.iks.mycorp",
+                "class": "scc_inventory_item_id"
+              },
+              {
+                "name": "target_type",
+                "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
+                "value": "rhel7"
+              }
+            ],
+            "implemented-components": [
+              {
+                "component-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821"
+              }
+            ]
+          }
+        ],
+        "assessment-assets": {
+          "components": [
+            {
+              "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "type": "Validator",
+              "title": "OpenSCAP",
+              "description": "OpenSCAP",
+              "props": [
+                {
+                  "name": "scanner_name",
+                  "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
+                  "value": "OpenSCAP"
+                },
+                {
+                  "name": "scanner_version",
+                  "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
+                  "value": "1.3.3"
+                },
+                {
+                  "name": "version",
+                  "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
+                  "value": "0.1.57",
+                  "class": "scc_check_version"
+                },
+                {
+                  "name": "severity",
+                  "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
+                  "value": "medium",
+                  "class": "scc_check_severity"
+                },
+                {
+                  "name": "weight",
+                  "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
+                  "value": "1.000000"
+                },
+                {
+                  "name": "benchmark_id",
+                  "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
+                  "value": "xccdf_org.ssgproject.content_benchmark_RHEL-7"
+                },
+                {
+                  "name": "benchmark_href",
+                  "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
+                  "value": "/content/ssg-rhel7-ds.xml"
+                },
+                {
+                  "name": "id",
+                  "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
+                  "value": "xccdf_org.open-scap_testresult_xccdf_org.ssgproject.content_profile_cis",
+                  "class": "scc_predefined_profile"
+                }
+              ],
+              "status": {
+                "state": "operational"
+              }
+            }
+          ],
+          "assessment-platforms": [
+            {
+              "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821"
+            }
+          ]
+        }
+      },
+      "reviewed-controls": {
+        "control-selections": [
+          {}
+        ]
+      },
+      "observations": [
+        {
+          "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+          "description": "xccdf_org.ssgproject.content_rule_prefer_64bit_os",
+          "props": [
+            {
+              "name": "idref",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
+              "value": "xccdf_org.ssgproject.content_rule_prefer_64bit_os",
+              "class": "scc_check_name_id"
+            },
+            {
+              "name": "result",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
+              "value": "notselected",
+              "class": "scc_result"
+            }
+          ],
+          "methods": [
+            "TEST-AUTOMATED"
+          ],
+          "subjects": [
+            {
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "type": "inventory-item"
+            }
+          ],
+          "collected": "2021-02-24T19:31:13+00:00"
+        },
+        {
+          "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+          "description": "xccdf_org.ssgproject.content_rule_disable_prelink",
+          "props": [
+            {
+              "name": "idref",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
+              "value": "xccdf_org.ssgproject.content_rule_disable_prelink",
+              "class": "scc_check_name_id"
+            },
+            {
+              "name": "result",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
+              "value": "pass",
+              "class": "scc_result"
+            }
+          ],
+          "methods": [
+            "TEST-AUTOMATED"
+          ],
+          "subjects": [
+            {
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "type": "inventory-item"
+            }
+          ],
+          "collected": "2021-02-24T19:31:13+00:00"
+        }
+      ]
+    }
+  ]
+}

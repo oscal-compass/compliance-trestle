@@ -171,6 +171,7 @@ nav:
       - osco_result_to_oscal_ar: api_reference/trestle.tasks.osco_result_to_oscal_ar.md
       - tanium_result_to_oscal_ar: api_reference/trestle.tasks.tanium_result_to_oscal_ar.md
       - transform: api_reference/trestle.tasks.transform.md
+      - xccdf_result_to_oscal_ar: api_reference/trestle.tasks.xccdf_result_to_oscal_ar.md
       - xlsx_helper: api_reference/trestle.tasks.xlsx_helper.md
       - xlsx_to_oscal_cd: api_reference/trestle.tasks.xlsx_to_oscal_cd.md
       - xlsx_to_oscal_profile: api_reference/trestle.tasks.xlsx_to_oscal_profile.md
@@ -178,6 +179,7 @@ nav:
       - implementations:
         - osco: api_reference/trestle.transforms.implementations.osco.md
         - tanium: api_reference/trestle.transforms.implementations.tanium.md
+        - xccdf: api_reference/trestle.transforms.implementations.xccdf.md
       - results: api_reference/trestle.transforms.results.md
       - transformer_factory: api_reference/trestle.transforms.transformer_factory.md
       - transformer_helper: api_reference/trestle.transforms.transformer_helper.md

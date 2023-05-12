@@ -28,6 +28,7 @@ from trestle.transforms.implementations.osco import OscoTransformer
 logger = logging.getLogger(__name__)
 
 
+# deprecated - use XccdfResultToOscalAR instead
 class OscoResultToOscalAR(TaskBase):
     """
     Task to convert Osco result to OSCAL json.

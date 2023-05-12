@@ -194,7 +194,9 @@ class Repository:
             raise TrestleError(f'Provided root directory {root_dir} is not a valid Trestle root directory.')
         self.root_dir = root_dir
 
-    def import_model(self, model: OscalBaseModel, name: str, content_type='json') -> ManagedOSCAL:
+    def import_model(
+        self, model: OscalBaseModel, name: str, content_type: FileContentType = FileContentType.JSON
+    ) -> ManagedOSCAL:
         """Import OSCAL object into trestle repository."""
         logger.debug(f'Importing model {name} of type {model.__class__.__name__}.')
         model_alias = classname_to_alias(model.__class__.__name__, AliasMode.JSON)
@@ -205,7 +207,7 @@ class Repository:
         plural_path = ModelUtils.model_type_to_model_dir(model_alias)
 
         desired_model_dir = self.root_dir / plural_path
-        desired_model_path = desired_model_dir / name / (model_alias + '.' + content_type)
+        desired_model_path = desired_model_dir / name / (model_alias + FileContentType.to_file_extension(content_type))
         desired_model_path = desired_model_path.resolve()
 
         if desired_model_path.exists():
@@ -253,7 +255,12 @@ class Repository:
         logger.debug(f'Model {name} of type {model.__class__.__name__} imported successfully.')
         return ManagedOSCAL(self.root_dir, model.__class__, name)
 
-    def load_and_import_model(self, model_path: pathlib.Path, name: str, content_type='json') -> ManagedOSCAL:
+    def load_and_import_model(
+        self,
+        model_path: pathlib.Path,
+        name: str,
+        content_type: FileContentType = FileContentType.JSON
+    ) -> ManagedOSCAL:
         """Load the model at the specified path into trestle with the specified name."""
         fetcher = cache.FetcherFactory.get_fetcher(self.root_dir, str(model_path))
         model, _ = fetcher.get_oscal(True)
@@ -310,7 +317,7 @@ class Repository:
         logger.debug(f'Model {name} deleted successfully.')
         return True
 
-    def assemble_model(self, model_type: Type[OscalBaseModel], name: str, extension='json') -> bool:
+    def assemble_model(self, model_type: Type[OscalBaseModel], name: str, extension: str = 'json') -> bool:
         """Assemble an OSCAL model in repository and publish it to 'dist' directory."""
         logger.debug(f'Assembling model {name} of type {model_type.__name__}.')
         success = False

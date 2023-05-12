@@ -132,7 +132,7 @@ class DocsControlWriter(ControlWriter):
         return []
 
     def _add_control_statement(
-        self, control: cat.Control, group_title: str, print_group_title=True, tag_pattern: str = None
+        self, control: cat.Control, group_title: str, print_group_title: bool = True, tag_pattern: str = None
     ) -> None:
         """Add the control statement and items to the md file."""
         self._md_file.new_paragraph()
@@ -159,7 +159,7 @@ class DocsControlWriter(ControlWriter):
             self._md_file.new_paragraph()
 
         self._md_file.set_indent_level(-1)
-        self._add_part_and_its_items(control, 'statement', 'item')
+        self._add_part_and_its_items(control, const.STATEMENT, const.ITEM)
         self._md_file.set_indent_level(-1)
 
     def _add_control_objective(self, control: cat.Control, tag_pattern: str = None) -> None:
@@ -206,7 +206,7 @@ class DocsControlWriter(ControlWriter):
         tag_pattern: Optional[str] = None,
         section_prefix: str = '',
         heading_level: int = 2
-    ):
+    ) -> None:
         section_title = self._sections_dict.get(section_name, part_info.name)
 
         heading_title = f'{section_title}'
@@ -244,5 +244,5 @@ class DocsControlWriter(ControlWriter):
         self._md_file.new_header(level=1, title=title)
         self._md_file.new_header(level=2, title='Control Statement')
         self._md_file.set_indent_level(-1)
-        self._add_part_and_its_items(control, 'statement', 'item')
+        self._add_part_and_its_items(control, const.STATEMENT, const.ITEM)
         self._md_file.set_indent_level(-1)
