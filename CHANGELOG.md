@@ -3,6 +3,21 @@
 
 <!--next-version-placeholder-->
 
+## v2.1.1 (2023-05-12)
+### Fix
+* Change lint title action ([#1352](https://github.com/IBM/compliance-trestle/issues/1352)) ([`5444206`](https://github.com/IBM/compliance-trestle/commit/5444206f8b8c8e6904ec180472c569e246255975))
+* Docs for task xlsx-result-to-oscal-ar replacing "osco" ([#1369](https://github.com/IBM/compliance-trestle/issues/1369)) ([`850ed0a`](https://github.com/IBM/compliance-trestle/commit/850ed0a99e0298496b0df1e91c22bd80c290b6e1))
+* Ssp response missing status and rules ([#1358](https://github.com/IBM/compliance-trestle/issues/1358)) ([`43daf5f`](https://github.com/IBM/compliance-trestle/commit/43daf5f9fca2495c1dbb8fa2ea39cb7184a9e191))
+* Xccdf to oscal-ar ([#1336](https://github.com/IBM/compliance-trestle/issues/1336)) ([`7305883`](https://github.com/IBM/compliance-trestle/commit/730588327ea54a5fc7a5d1f597a3ffeee92e0e48))
+* Handle tabs in statement prose and parts ([#1359](https://github.com/IBM/compliance-trestle/issues/1359)) ([`c34dbea`](https://github.com/IBM/compliance-trestle/commit/c34dbeaa7dd75cd614393c57cba97fa9e5c8d699))
+* Quiet warning about system component status as operational ([#1354](https://github.com/IBM/compliance-trestle/issues/1354)) ([`4313b85`](https://github.com/IBM/compliance-trestle/commit/4313b850403e49a1db8e00f91e264e89e3175238))
+* Raise error if duplicate parts are found in the control statement ([#1351](https://github.com/IBM/compliance-trestle/issues/1351)) ([`74bd4f5`](https://github.com/IBM/compliance-trestle/commit/74bd4f5e33c6d863fca3753955971ad460cac74a))
+* Update author jinja command and add test ([#1347](https://github.com/IBM/compliance-trestle/issues/1347)) ([`a0b1797`](https://github.com/IBM/compliance-trestle/commit/a0b17972d82e106500f69dbfa78f86b8cf2da085))
+
+### Documentation
+* Update community call webex link ([#1366](https://github.com/IBM/compliance-trestle/issues/1366)) ([`d5da18d`](https://github.com/IBM/compliance-trestle/commit/d5da18d8f64fc0328d1b6592f663554c8aed3c22))
+* Add community call information ([`b6d6451`](https://github.com/IBM/compliance-trestle/commit/b6d6451408b79171021e00d883132eed1f5871b6))
+
 ## v2.1.0 (2023-04-06)
 ### Feature
 * Validate SSP rule parameter values ([#1337](https://github.com/IBM/compliance-trestle/issues/1337)) ([`10dd58b`](https://github.com/IBM/compliance-trestle/commit/10dd58b552f8f9a4618daea27e6d0ccd002dbd80))

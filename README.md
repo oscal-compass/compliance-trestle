@@ -88,16 +88,16 @@ Compliance trestle is currently stable and is based on NIST OSCAL version 1.0.4,
 ## Community call
 
 We would like to share development in progress for compliance trestle, coming soon and get feedback from community on what features would they like to see in compliance trestle.\
-The community call will happen every 2 week(s) on Tuesday at 10am EST.\
+The community call will happen every 2 week(s) on Tuesday at 10.00am EST.\
 Meeting information:
 
 ```
 Compliance Trestle Community Call
 Hosted by MANJIREE GADGIL
 
-https://ibm.webex.com/ibm/j.php?MTID=m46740e85f87f290d0848c6941c489b0a
-Tuesday, May 16, 2023 10:30 AM | 30 minutes | (UTC-04:00) Eastern Time (US & Canada)
-Occurs every 2 week(s) on Tuesday effective 5/16/2023 from 10:30 AM to 11:00 AM, (UTC-04:00) Eastern Time (US & Canada)
+https://ibm.webex.com/ibm/j.php?MTID=mcf86d5904761ea884ec248c006fc3b81
+Tuesday, May 16, 2023 10:00 AM | 30 minutes | (UTC-04:00) Eastern Time (US & Canada)
+Occurs every 2 week(s) on Tuesday effective 5/16/2023 from 10:00 AM to 10:30 AM, (UTC-04:00) Eastern Time (US & Canada)
 
 Join by phone
 1-844-531-0958 United States Toll Free
