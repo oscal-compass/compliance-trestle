@@ -555,3 +555,15 @@ VALUE_NOT_ASSIGNED_PREFIX = 'value-not-assigned-prefix'
 CONTROL_IMPLEMENTATION = 'control-implementation'
 
 IMPLEMENTED_REQUIREMENT = 'implemented-requirement'
+
+# Following 5 are allowed control origination values for
+# SSP -> ControlImplementation -> ImplementedRequirements -> prop[@name='control-origination']/@value
+ORIGINATION_ORGANIZATION = 'organization'
+
+ORIGINATION_SYSTEM_SPECIFIC = 'system-specific'
+
+ORIGINATION_CUSTOMER_CONFIGURED = 'customer-configured'
+
+ORIGINATION_CUSTOMER_PROVIDED = 'customer-provided'
+
+ORIGINATION_INHERITED = 'inherited'
