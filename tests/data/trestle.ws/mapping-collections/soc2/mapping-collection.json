@@ -1,0 +1,254 @@
+{
+  "mapping-collection": {
+    "uuid": "9328e6b0-a064-467a-bce8-d12e3f2d8751",
+    "metadata": {
+      "title": "Mapping collection for SOC2 to Unified",
+      "last-modified": "2023-05-23T14:13:59+00:00",
+      "version": "V1.0",
+      "oscal-version": "1.0.4"
+    },
+    "mappings": [
+      {
+        "uuid": "60ee6e80-9e16-4ad3-ae25-09638e605fd5",
+        "source-resource": {
+          "type": "catalog",
+          "href": "catalogs/SOC2/catalog.json"
+        },
+        "target-resource": {
+          "type": "catalog",
+          "href": "catalogs/FedRAMP_rev5_HIGH/catalog.json"
+        },
+        "maps": [
+          {
+            "uuid": "0bc124ae-ef44-4d37-99da-fb31a0d3af59",
+            "props": [
+              {
+                "name": "control2control_map_percentage",
+                "value": "20%"
+              },
+              {
+                "name": "procedure2procedure_map_relationship",
+                "value": "subset-of"
+              },
+              {
+                "name": "procedure2procedure_map_percentage",
+                "value": "20%"
+              },
+              {
+                "name": "actualstatedatarequest2actualstatedatarequest_map_relationship",
+                "value": "subset-of"
+              },
+              {
+                "name": "actualstatedatarequest2actualstatedatarequest_map_percentage",
+                "value": "20%"
+              }
+            ],
+            "relationship": {
+              "type": "subset-of"
+            },
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "d4"
+              }
+            ],
+            "targets": [
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.a"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.b"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.c"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.d"
+              },
+              {
+                "type": "statement",
+                "id-ref": "si-2_smt.a"
+              }
+            ]
+          },
+          {
+            "uuid": "baac65ae-31ee-46df-8fd0-5ce80b026223",
+            "props": [
+              {
+                "name": "control2control_map_percentage",
+                "value": "10%"
+              },
+              {
+                "name": "procedure2procedure_map_relationship",
+                "value": "subset-of"
+              },
+              {
+                "name": "procedure2procedure_map_percentage",
+                "value": "10%"
+              },
+              {
+                "name": "actualstatedatarequest2actualstatedatarequest_map_relationship",
+                "value": "subset-of"
+              },
+              {
+                "name": "actualstatedatarequest2actualstatedatarequest_map_percentage",
+                "value": "10%"
+              }
+            ],
+            "relationship": {
+              "type": "subset-of"
+            },
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "d7"
+              }
+            ],
+            "targets": [
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.a"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.b"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.c"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.d"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.e"
+              },
+              {
+                "type": "statement",
+                "id-ref": "si-2_smt.a"
+              }
+            ]
+          },
+          {
+            "uuid": "662e4ced-570f-4508-b494-4dc0c82f89e0",
+            "props": [
+              {
+                "name": "control2control_map_percentage",
+                "value": "20%"
+              },
+              {
+                "name": "procedure2procedure_map_relationship",
+                "value": "subset-of"
+              },
+              {
+                "name": "procedure2procedure_map_percentage",
+                "value": "20%"
+              },
+              {
+                "name": "actualstatedatarequest2actualstatedatarequest_map_relationship",
+                "value": "subset-of"
+              },
+              {
+                "name": "actualstatedatarequest2actualstatedatarequest_map_percentage",
+                "value": "20%"
+              }
+            ],
+            "relationship": {
+              "type": "subset-of"
+            },
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "e8"
+              }
+            ],
+            "targets": [
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.a"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.b"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.c"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.d"
+              },
+              {
+                "type": "statement",
+                "id-ref": "si-2_smt.a"
+              }
+            ]
+          },
+          {
+            "uuid": "cb5e33c0-9ef0-422f-9195-2f8ccdf42861",
+            "props": [
+              {
+                "name": "control2control_map_percentage",
+                "value": "10%"
+              },
+              {
+                "name": "procedure2procedure_map_relationship",
+                "value": "subset-of"
+              },
+              {
+                "name": "procedure2procedure_map_percentage",
+                "value": "10%"
+              },
+              {
+                "name": "actualstatedatarequest2actualstatedatarequest_map_relationship",
+                "value": "subset-of"
+              },
+              {
+                "name": "actualstatedatarequest2actualstatedatarequest_map_percentage",
+                "value": "10%"
+              }
+            ],
+            "relationship": {
+              "type": "subset-of"
+            },
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "e9"
+              }
+            ],
+            "targets": [
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.a"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.b"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.c"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.d"
+              },
+              {
+                "type": "statement",
+                "id-ref": "si-2_smt.a"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

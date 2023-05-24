@@ -35,6 +35,7 @@ from trestle.oscal.mapping import Mapping
 from trestle.oscal.mapping import MappingCollection
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
+from trestle.tasks.utilities import HrefManager
 
 HEADER_DECORATION_CHAR = '$'
 SOURCE_RESOURCE = 'Source_Resource'
@@ -102,18 +103,6 @@ class CsvToOscalMappingCollection(TaskBase):
         for text2 in CsvColumn.columns_optional:
             logger.info(text1 + text2)
             text1 = '                         '
-        text1 = '  source-resource-type = '
-        text2 = '(optional) the source resource type.'
-        logger.info(text1 + text2)
-        text1 = '  target-resource-type = '
-        text2 = '(optional) the target resource type.'
-        logger.info(text1 + text2)
-        text1 = '  source-type          = '
-        text2 = '(optional) the source type.'
-        logger.info(text1 + text2)
-        text1 = '  target-type          = '
-        text2 = '(optional) the target type.'
-        logger.info(text1 + text2)
         text1 = '  output-dir           = '
         text2 = '(required) the path of the output directory for synthesized OSCAL .json files.'
         logger.info(text1 + text2)
@@ -138,12 +127,6 @@ class CsvToOscalMappingCollection(TaskBase):
         if self._version is None:
             logger.warning('config missing "version"')
             return False
-        # source/target resource type
-        self._source_resource_type = self._config.get('source-resource-type', 'unspecified')
-        self._target_resource_type = self._config.get('target-resource-type', 'unspecified')
-        # source/target type
-        self._source_type = self._config.get('source-type', 'unspecified')
-        self._target_type = self._config.get('target-type', 'unspecified')
         # config csv
         self._csv_file = self._config.get('csv-file')
         if self._csv_file is None:
@@ -196,29 +179,60 @@ class CsvToOscalMappingCollection(TaskBase):
         self._csv_mgr = _CsvMgr(self._csv_path)
         # Mapping Collection manager
         self._mc_mgr = _McMgr(ofile, title, version)
-        # populate mapping collection
+        # href manager
+        href_manager = HrefManager()
+        # accumulators for missing ids
+        ctl_missing_src = []
+        ctl_missing_tgt = []
+        # process each row of mapping csv
         for row in self._csv_mgr.row_generator():
-            src_resource_href = self._csv_mgr.get_cell(row, L_SOURCE_RESOURCE)
+            # tgt
             tgt_resource_href = self._csv_mgr.get_cell(row, L_TARGET_RESOURCE)
-            src_id_ref = self._csv_mgr.get_cell(row, MAP_SOURCE_ID_REF)
-            tgt_id_ref_list = self._csv_mgr.get_cell(row, L_MAP_TARGET_ID_REF_LIST).split()
-            relationship_type = self._csv_mgr.get_cell(row, L_MAP_RELATIONSHIP)
-            kvp_set = {}
-            for user_column_name in self._csv_mgr.get_user_column_names():
-                value = self._csv_mgr.get_cell(row, user_column_name)
-                kvp_set[user_column_name] = value
-            self._mc_mgr.add_mapping(
-                self._source_resource_type,
-                src_resource_href,
-                self._target_resource_type,
-                tgt_resource_href,
-                self._source_type,
-                src_id_ref,
-                self._target_type,
-                tgt_id_ref_list,
-                relationship_type,
-                kvp_set,
-            )
+            href_manager.add(tgt_resource_href)
+            tgt_id_list = self._csv_mgr.get_cell(row, L_MAP_TARGET_ID_REF_LIST).split()
+            tgt_id_ref_list = href_manager.get_id_list(tgt_resource_href, tgt_id_list)
+            # src
+            src_resource_href = self._csv_mgr.get_cell(row, L_SOURCE_RESOURCE)
+            href_manager.add(src_resource_href)
+            src_id = self._csv_mgr.get_cell(row, MAP_SOURCE_ID_REF)
+            src_id_ref = href_manager.get_id(src_resource_href, src_id)
+            # relationship mapping
+            if tgt_id_ref_list and src_id_ref:
+                src_resource_type = href_manager.get_type(src_resource_href)
+                tgt_resource_type = href_manager.get_type(tgt_resource_href)
+                relationship_type = self._csv_mgr.get_cell(row, L_MAP_RELATIONSHIP)
+                kvp_set = {}
+                for user_column_name in self._csv_mgr.get_user_column_names():
+                    value = self._csv_mgr.get_cell(row, user_column_name)
+                    kvp_set[user_column_name] = value
+                self._mc_mgr.add_mapping(
+                    src_resource_type,
+                    src_resource_href,
+                    tgt_resource_type,
+                    tgt_resource_href,
+                    src_id_ref,
+                    tgt_id_ref_list,
+                    relationship_type,
+                    kvp_set,
+                )
+            else:
+                # keep track of ids not found in specified corresponding href
+                if not tgt_id_ref_list:
+                    for tgt_id in tgt_id_list:
+                        if tgt_id not in ctl_missing_tgt:
+                            ctl_missing_tgt.append(tgt_id)
+                if not src_id_ref:
+                    if src_id not in ctl_missing_src:
+                        ctl_missing_src.append(src_id)
+        # issues?
+        text = ''
+        if ctl_missing_src:
+            text += f'source(s) missing from href: {ctl_missing_src}\n'
+        if ctl_missing_tgt:
+            text += f'target(s) missing from href: {ctl_missing_tgt}\n'
+        if text:
+            raise RuntimeError(text)
+        # fetch synthesized mapping collection
         mapping_collection = self._mc_mgr.get_mapping_collection()
         # write OSCAL mc to file
         if self._verbose:
@@ -237,15 +251,21 @@ class _McMgr():
         self._version = version
         self._map = {}
 
+    def _derive_id_ref_type(self, id_ref: str) -> str:
+        """Derive id_ref type."""
+        if 'smt' in id_ref:
+            rval = 'statement'
+        else:
+            rval = 'control'
+        return rval
+
     def add_mapping(
         self,
         src_resource_type: str,
         src_resource_href: str,
         tgt_resource_type: str,
         tgt_resource_href: str,
-        src_type: str,
         src_id_ref: str,
-        tgt_id_type: str,
         tgt_id_ref_list: List[str],
         relationship_type: str,
         kvp_set: Dict,
@@ -254,10 +274,12 @@ class _McMgr():
         mapping = self._get_mapping(src_resource_type, src_resource_href, tgt_resource_type, tgt_resource_href)
         sources = []
         targets = []
-        src_item = MappingItem(type=src_type, id_ref=src_id_ref)
+        id_ref_type = self._derive_id_ref_type(src_id_ref)
+        src_item = MappingItem(type=id_ref_type, id_ref=src_id_ref)
         sources.append(src_item)
         for tgt_id_ref in tgt_id_ref_list:
-            tgt_item = MappingItem(type=tgt_id_type, id_ref=tgt_id_ref)
+            id_ref_type = self._derive_id_ref_type(tgt_id_ref)
+            tgt_item = MappingItem(type=id_ref_type, id_ref=tgt_id_ref)
             targets.append(tgt_item)
         relationship = Relationship(type=relationship_type)
         map_ = Map(
@@ -270,6 +292,8 @@ class _McMgr():
         if kvp_set:
             for name in kvp_set:
                 value = kvp_set[name]
+                if not value:
+                    continue
                 prop = Property(name=name, value=value)
                 props.append(prop)
         if props:
@@ -343,15 +367,29 @@ class CsvColumn():
 class _CsvMgr():
     """Csv Manager."""
 
+    expected_encoding = 'utf-8'
+    alternate_encoding = 'Latin1'
+
     def __init__(self, csv_path: pathlib.Path) -> None:
         """Initialize."""
-        self._csv = []
-        with open(csv_path, 'r', newline='') as f:
-            csv_reader = csv.reader(f, delimiter=',', quoting=csv.QUOTE_MINIMAL)
-            for row in csv_reader:
-                self._csv.append(row)
+        self._ingest(csv_path)
         self._undecorate_header()
         self._verify()
+
+    def _ingest(self, csv_path: pathlib.Path) -> None:
+        try:
+            self._csv = []
+            with open(csv_path, 'r', newline='', encoding=self.expected_encoding) as f:
+                csv_reader = csv.reader(f, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+                for row in csv_reader:
+                    self._csv.append(row)
+        except Exception:
+            logger.warning(f'{csv_path} not {self.expected_encoding}')
+            self._csv = []
+            with open(csv_path, 'r', newline='', encoding=self.alternate_encoding) as f:
+                csv_reader = csv.reader(f, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+                for row in csv_reader:
+                    self._csv.append(row)
 
     def _get_normalized_column_name(self, column_name: str) -> str:
         """Get normalized column name."""
