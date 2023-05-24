@@ -21,3 +21,7 @@ Lou Degenaro [degenaro](https://github.com/degenaro)
 Ekaterina Nikonova [enikonovad](https://github.com/enikonovad)
 
 Alejandro Jose Leiva Palomo [AleJo2995](https://github.com/AleJo2995)
+
+Manjiree Gadgil [mrgadgil](https://github.com/mrgadgil)
+
+Jennifer Power [jpower432](https://github.com/jpower432)
