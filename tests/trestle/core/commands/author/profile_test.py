@@ -1067,6 +1067,21 @@ def test_profile_seed(tmp_trestle_dir: pathlib.Path):
     assert result_prof.imports[0].href == 'trestle://profiles/simple_test_profile_less/profile.json'
     assert len(result_prof.imports[0].include_controls[0].with_ids) == 1
 
+    # Test with a profile that has all controls filtered out
+    args = test_utils.setup_for_profile(tmp_trestle_dir, 'simple_test_profile_single', output_profile, 'leveraged_ssp')
+    prof_init = ProfileSeed()
+    assert prof_init._run(args) == 0
+
+    result_prof, _ = ModelUtils.load_model_for_class(
+        tmp_trestle_dir,
+        output_profile,
+        prof.Profile,
+        FileContentType.JSON
+    )
+
+    assert result_prof.imports[0].href == 'trestle://profiles/simple_test_profile_single/profile.json'
+    assert result_prof.imports[0].include_controls[0].with_ids is None
+
     # Test with version set
     args = test_utils.setup_for_profile(tmp_trestle_dir, 'simple_test_profile_less', output_profile, 'leveraged_ssp')
     prof_init = ProfileSeed()
