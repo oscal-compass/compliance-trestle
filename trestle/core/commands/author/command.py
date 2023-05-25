@@ -26,7 +26,7 @@ from trestle.core.commands.author.docs import Docs
 from trestle.core.commands.author.folders import Folders
 from trestle.core.commands.author.headers import Headers
 from trestle.core.commands.author.jinja import JinjaCmd
-from trestle.core.commands.author.profile import ProfileAssemble, ProfileGenerate, ProfileResolve
+from trestle.core.commands.author.profile import ProfileAssemble, ProfileGenerate, ProfileResolve, ProfileSeed
 from trestle.core.commands.author.ssp import SSPAssemble, SSPFilter, SSPGenerate
 from trestle.core.commands.command_docs import CommandPlusDocs
 
@@ -50,6 +50,7 @@ class AuthorCmd(CommandPlusDocs):
         ProfileAssemble,
         ProfileGenerate,
         ProfileResolve,
+        ProfileSeed,
         SSPAssemble,
         SSPFilter,
         SSPGenerate

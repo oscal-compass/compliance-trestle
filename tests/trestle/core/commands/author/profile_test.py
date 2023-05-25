@@ -37,7 +37,7 @@ from trestle.common.err import TrestleError
 from trestle.common.list_utils import comma_colon_sep_to_dict, comma_sep_to_list
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog.catalog_interface import CatalogInterface
-from trestle.core.commands.author.profile import ProfileAssemble, ProfileGenerate
+from trestle.core.commands.author.profile import ProfileAssemble, ProfileGenerate, ProfileSeed
 from trestle.core.control_interface import ControlInterface
 from trestle.core.markdown.docs_markdown_node import DocsMarkdownNode
 from trestle.core.markdown.markdown_api import MarkdownAPI
@@ -1016,3 +1016,78 @@ def test_profile_resolve_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
     test_utils.execute_command_and_assert(core_command + '-lp prefix', 1, monkeypatch)
     test_utils.execute_command_and_assert(core_command + '-vap prefix', 1, monkeypatch)
     test_utils.execute_command_and_assert(core_command + '-sl -vap prefix', 1, monkeypatch)
+
+
+def test_profile_seed(tmp_trestle_dir: pathlib.Path):
+    """Test profile initialization and seeding for various use cases."""
+    output_profile = 'my_profile'
+
+    # Test with a profile and ssp that has all controls with exported information
+    args = test_utils.setup_for_profile(tmp_trestle_dir, 'simple_test_profile', output_profile, 'leveraged_ssp')
+    prof_init = ProfileSeed()
+    assert prof_init._run(args) == 0
+
+    result_prof, _ = ModelUtils.load_model_for_class(
+        tmp_trestle_dir,
+        output_profile,
+        prof.Profile,
+        FileContentType.JSON
+    )
+
+    assert result_prof.imports[0].href == 'trestle://profiles/simple_test_profile/profile.json'
+    assert len(result_prof.imports[0].include_controls[0].with_ids) == 2
+
+    # Test with a profile that has more controls that the ssp
+    args = test_utils.setup_for_profile(tmp_trestle_dir, 'simple_test_profile_more', output_profile, 'leveraged_ssp')
+    prof_init = ProfileSeed()
+    assert prof_init._run(args) == 0
+
+    result_prof, _ = ModelUtils.load_model_for_class(
+        tmp_trestle_dir,
+        output_profile,
+        prof.Profile,
+        FileContentType.JSON
+    )
+
+    assert result_prof.imports[0].href == 'trestle://profiles/simple_test_profile_more/profile.json'
+    assert len(result_prof.imports[0].include_controls[0].with_ids) == 3
+
+    # Test with a profile that has less controls that the ssp
+    args = test_utils.setup_for_profile(tmp_trestle_dir, 'simple_test_profile_less', output_profile, 'leveraged_ssp')
+    prof_init = ProfileSeed()
+    assert prof_init._run(args) == 0
+
+    result_prof, _ = ModelUtils.load_model_for_class(
+        tmp_trestle_dir,
+        output_profile,
+        prof.Profile,
+        FileContentType.JSON
+    )
+
+    assert result_prof.imports[0].href == 'trestle://profiles/simple_test_profile_less/profile.json'
+    assert len(result_prof.imports[0].include_controls[0].with_ids) == 1
+
+    # Test with version set
+    args = test_utils.setup_for_profile(tmp_trestle_dir, 'simple_test_profile_less', output_profile, 'leveraged_ssp')
+    prof_init = ProfileSeed()
+    args.version = '1.0.0'
+    assert prof_init._run(args) == 0
+
+    result_prof, _ = ModelUtils.load_model_for_class(
+        tmp_trestle_dir,
+        output_profile,
+        prof.Profile,
+        FileContentType.JSON
+    )
+
+    assert result_prof.metadata.version == '1.0.0'
+
+    # Force a failure with non-existent profile
+    args.profile = 'bad_prof'
+    prof_init = ProfileSeed()
+    assert prof_init._run(args) == 1
+
+    # Force a failure with a cyclic dependency
+    args.output = args.profile
+    prof_init = ProfileSeed()
+    assert prof_init._run(args) == 1
