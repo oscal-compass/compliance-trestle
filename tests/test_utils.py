@@ -410,7 +410,7 @@ def setup_for_multi_profile(trestle_root: pathlib.Path, big_profile: bool, impor
 def setup_for_profile(
     tmp_trestle_dir: pathlib.Path, prof_name: str, output_name: str, ssp_name: str = ''
 ) -> argparse.Namespace:
-    """Create the ssp and parent profile for profile-init."""
+    """Create the ssp and parent profile for profile-seed."""
     load_from_json(tmp_trestle_dir, 'simplified_nist_catalog', 'nist_cat', cat.Catalog)
     if prof_name:
         load_from_json(tmp_trestle_dir, prof_name, prof_name, prof.Profile)

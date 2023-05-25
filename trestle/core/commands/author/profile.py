@@ -234,7 +234,6 @@ class ProfileAssemble(AuthorCommonCommand):
                 if alter.adds:
                     alter.adds.extend(new_alter.adds)
                 else:
-
                     alter.adds = new_alter.adds
                 # update the dict with the new alter with its added adds
                 alter_dict[new_alter.control_id] = alter
@@ -548,9 +547,9 @@ class ProfileSeed(AuthorCommonCommand):
     name = 'profile-seed'
 
     def _init_arguments(self) -> None:
-        ssp_help_str = 'Name of the source ssp model in the trestle workspace'
+        ssp_help_str = 'Name of the leveraged ssp model in the trestle workspace'
         self.add_argument('-s', '--ssp', help=ssp_help_str, required=True, type=str)
-        profile_help_str = 'Name of the source profile model in the trestle workspace'
+        profile_help_str = 'Name of the parent profile model in the trestle workspace'
         self.add_argument('-p', '--profile', help=profile_help_str, required=True, type=str)
         output_help_str = 'Name of the output generated json Profile'
         self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
