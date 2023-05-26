@@ -158,7 +158,7 @@
                 {
                   "component-uuid": "11111111-0000-4000-9001-000000000001",
                   "uuid": "11111111-0000-4000-9009-001001001001",
-                  "description": "Response for the \\\"This System\\\" component.\n\nOverall description of how \\\"This System\\\" satisfies AC-2, Part a.\n\nResponse for the \\\"This System\\\" component.\n\nOverall description of how \\\"This System\\\" satisfies AC-2, Part a.\n\nResponse for the \\\"This System\\\" component.\n\nOverall description of how \\\"This System\\\" satisfies AC-2, Part a.\n\nResponse for the \\\"This System\\\" component.\n\nOverall description of how \\\"This System\\\" satisfies AC-2, Part a.",
+                  "description": "Response for the \\\"This System\\\" component.\n\nOverall description of how \\\"This System\\\" satisfies AC-1, Part a.\n\nResponse for the \\\"This System\\\" component.\n\nOverall description of how \\\"This System\\\" satisfies AC-2, Part a.\n\nResponse for the \\\"This System\\\" component.\n\nOverall description of how \\\"This System\\\" satisfies AC-2, Part a.\n\nResponse for the \\\"This System\\\" component.\n\nOverall description of how \\\"This System\\\" satisfies AC-2, Part a.",
                   "implementation-status": {
                     "state": "implemented"
                   },
@@ -167,7 +167,7 @@
                     "provided": [
                       {
                         "uuid": "11111111-0000-4000-9009-001002002001",
-                        "description": "Consumer-appropriate description of what may be inherited.\n\nIn the context of the application component in satisfaction of AC-2, part a.",
+                        "description": "Consumer-appropriate description of what may be inherited.\n\nIn the context of the application component in satisfaction of AC-1, part a.",
                         "responsible-roles": [
                           {
                             "role-id": "poc-for-customers"
@@ -180,7 +180,7 @@
                 {
                   "component-uuid": "11111111-0000-4000-9001-000000000002",
                   "uuid": "11111111-0000-4000-9009-001001002005",
-                  "description": "Describes how the application satisfies AC-2, Part a.",
+                  "description": "Describes how the application satisfies AC-1, Part a.",
                   "implementation-status": {
                     "state": "implemented"
                   },
@@ -189,7 +189,7 @@
                     "provided": [
                       {
                         "uuid": "11111111-0000-4000-9009-001001002006",
-                        "description": "Consumer-appropriate description of what may be inherited.\n\nIn the context of the application component in satisfaction of AC-2, part a.",
+                        "description": "Consumer-appropriate description of what may be inherited.\n\nIn the context of the application component in satisfaction of AC-1, part a.",
                         "responsible-roles": [
                           {
                             "role-id": "poc-for-customers"
@@ -282,7 +282,7 @@
             {
               "component-uuid": "11111111-0000-4000-9001-000000000001",
               "uuid": "11111111-0000-4000-9009-001002001001",
-              "description": "Response for the \\\"This System\\\" component.\n\nOverall description of how \\\"This System\\\" satisfies AC-2, Part a.\n\nResponse for the \\\"This System\\\" component.\n\nOverall description of how \\\"This System\\\" satisfies AC-2, Part a.\n\nResponse for the \\\"This System\\\" component.\n\nOverall description of how \\\"This System\\\" satisfies AC-2, Part a.\n\nResponse for the \\\"This System\\\" component.\n\nOverall description of how \\\"This System\\\" satisfies AC-2, Part a.",
+              "description": "Response for the \\\"This System\\\" component.\n\nOverall description of how \\\"This System\\\" satisfies AC-2, Part a.\n\nResponse for the \\\"This System\\\" component.\n\nOverall description of how \\\"This System\\\" satisfies AC-2.1.\n\nResponse for the \\\"This System\\\" component.\n\nOverall description of how \\\"This System\\\" satisfies AC-2, Part a.\n\nResponse for the \\\"This System\\\" component.\n\nOverall description of how \\\"This System\\\" satisfies AC-2, Part a.",
               "implementation-status": {
                 "state": "planned"
               },
@@ -291,7 +291,7 @@
                 "provided": [
                   {
                     "uuid": "11111111-0000-4000-9009-001001002001",
-                    "description": "Consumer-appropriate description of what may be inherited.\n\nIn the context of the application component in satisfaction of AC-2, part a.",
+                    "description": "Consumer-appropriate description of what may be inherited.\n\nIn the context of the application component in satisfaction of AC-2.1.",
                     "responsible-roles": [
                       {
                         "role-id": "poc-for-customers"
@@ -313,7 +313,7 @@
                 "provided": [
                   {
                     "uuid": "11111111-0000-4000-9009-001001002004",
-                    "description": "Consumer-appropriate description of what may be inherited.\n\nIn the context of the application component in satisfaction of AC-2, part a.",
+                    "description": "Consumer-appropriate description of what may be inherited.\n\nIn the context of the application component in satisfaction of AC-2.1.",
                     "responsible-roles": [
                       {
                         "role-id": "poc-for-customers"
