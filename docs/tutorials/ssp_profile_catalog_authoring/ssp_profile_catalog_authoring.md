@@ -27,6 +27,7 @@ The author commands are:
 1. `catalog-generate` converts a control Catalog to individual controls in markdown format for addition or editing of guidance prose and parameters, with parameters stored in a yaml header at the top of the markdown file.  `catalog-assemble` then gathers the prose and parameters and updates the controls in the Catalog to make a new OSCAL Catalog.
 1. `profile-generate` takes a given Profile and converts the controls represented by its resolved profile catalog to individual controls in markdown format, with sections corresponding to the content that the Profile adds to the Catalog, along with both the current values of parameters in the resolved profile catalog - and the values that are being modified by the given profile's SetParameters.  The user may edit the content or add more, and `profile-assemble` then gathers the updated content and creates a new OSCAL Profile that includes those changes.
 1. `profile-resolve` is special as an authoring tool because it does not involve markdown and instead it simply creates a JSON resolved profile catalog from a specified JSON profile in the trestle directory.  There are options to specify whether or not parameters get replace in the control prose or not, along with any special brackets that might be desired to indicate the parameters embedded in the prose.
+1. `profile-seed` takes a given parent profile and filters its contents based on the inherited controls included in a given ssp to be include in the final profile.
 1. `component-generate` takes a given ComponentDefinition file and represents all the controls in markdown in separate directories for each Component in the file.  This allows editing of the prose on a per-component basis.  `component-assemble` then assembles the markdown for all controls in all component directories into a new, or the same, ComponentDefinition file.
 1. `ssp-generate` takes a given Profile and an optional list of component-definitions, and represents the individual controls as markdown files with sections that prompt for prose regarding the implementation response for items in the statement of the control, with separate response sections for each component.  `ssp-assemble` then gathers the response sections and creates an OSCAL System Security Plan comprising the resolved profile catalog and the implementation responses for each component.  The list of component-definitions is optional, but without them the SSP will only have one component: `This System`.  Rules, parameters and status associated with the implemented requirements are stored in the SetParameters and Properties of the components in the component definitions and represented in the markdown, allowing changes to be made to the parameter values and status.  These edits are then included in the assembled SSP.  Note that the rules themselves may not be edited and strictly correspond to what is in the component definitions.
 1. `ssp-filter` takes a given ssp and filters its contents based on the controls included in a provided profile, or in a list of components to be included in the final ssp.
@@ -519,6 +520,24 @@ If we resolve the profile with options `--show-labels --label-prefix "Label:" --
 and any value present for the parameter would be ignored.
 
 Similar options apply to the `jinja` authoring commands.
+
+</details>
+
+<details markdown>
+
+<summary>trestle author profile-seed</summary>
+
+The `trestle author profile-seed` command is different from the `generate/assemble` commands because it doesn't involve markdown and instead
+it takes an parent profile and ssp and creates child profile in `JSON` format.
+
+When utilizing a process with leveraged authorizations, use the command `trestle author profile-seed` to seed a profile with initial content using a parent profile and SSP with inheritable controls. The provided and responsibility statements for all `by-component` fields, as well as the implementation status, will be used to evaluate the leveraged SSP.
+To be filtered from the output profile (i.e. controls delta profile), all components must have exported provided statements, no exported responsibility statements, and an implementation status of `implemented`.
+
+The filter command is invoked as:
+
+`trestle author profile-seed --profile my_parent --ssp my_leveraged_ssp --output controls_delta_profile`
+
+Both the parent profile and the SSP must be present in the trestle workspace. This command produces a new workspace profile that imports the parent profile and filters the `with-ids` field in the import by the inherited controls from the SSP.
 
 </details>
 
