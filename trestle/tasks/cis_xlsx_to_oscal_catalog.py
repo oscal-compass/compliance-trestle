@@ -225,7 +225,7 @@ class CisXlsxToOscalCatalog(TaskBase):
 
     def __init__(self, config_object: Optional[configparser.SectionProxy]) -> None:
         """
-        Initialize trestle task ocp4-cis-profile-to-oscal-catalog.
+        Initialize trestle task.
 
         Args:
             config_object: Config section associated with the task.
