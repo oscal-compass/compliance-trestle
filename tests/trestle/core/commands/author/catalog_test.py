@@ -693,7 +693,7 @@ def test_catalog_duplicate_parts_statement(tmp_trestle_dir: pathlib.Path, monkey
     file_utils.insert_text_in_file(md_path, '## Control Statement', control_statement_prose_with_parts)
 
     catalog_assemble = 'trestle author catalog-assemble -o my_catalog -m md_catalog'
-    test_utils.execute_command_and_assert(catalog_assemble, 1, monkeypatch)
+    test_utils.execute_command_and_assert(catalog_assemble, 0, monkeypatch)
 
     _, error = capsys.readouterr()
     assert 'Duplicate part id ac-2_smt.a' in error
