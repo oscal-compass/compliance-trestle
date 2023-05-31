@@ -541,10 +541,10 @@ class ProfileResolve(AuthorCommonCommand):
         return CmdReturnCodes.SUCCESS.value
 
 
-class ProfileSeed(AuthorCommonCommand):
+class ProfileInherit(AuthorCommonCommand):
     """Generate and seed profile in JSON from a parent profile and leveraged ssp in the trestle workspace."""
 
-    name = 'profile-seed'
+    name = 'profile-inherit'
 
     def _init_arguments(self) -> None:
         ssp_help_str = 'Name of the leveraged ssp model in the trestle workspace'
@@ -634,7 +634,7 @@ class ProfileSeed(AuthorCommonCommand):
 
             by_comps = components_by_id[control_id]
 
-            if by_comps is None or not ProfileSeed._all_comps_match(by_comps):
+            if by_comps is None or not ProfileInherit._all_comps_match(by_comps):
                 controls.add(control_id)
 
         return sorted(controls)
@@ -714,7 +714,7 @@ class ProfileSeed(AuthorCommonCommand):
 
             # Filter controls based on what controls in the SSP have exported provided information with no
             # customer responsibility
-            with_ids = ProfileSeed.filter_controls_by_leveraged_ssp(leveraged_ssp, catalog_api)
+            with_ids = ProfileInherit.filter_controls_by_leveraged_ssp(leveraged_ssp, catalog_api)
             include_controls = gens.generate_sample_model(prof.SelectControlById)
             include_controls.with_ids = none_if_empty(with_ids)
             profile_import.include_controls = [include_controls]

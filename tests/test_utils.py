@@ -407,10 +407,10 @@ def setup_for_multi_profile(trestle_root: pathlib.Path, big_profile: bool, impor
     assert HrefCmd.change_import_href(trestle_root, main_profile_name, new_href, 0) == 0
 
 
-def setup_for_profile(
-    tmp_trestle_dir: pathlib.Path, prof_name: str, output_name: str, ssp_name: str = ''
+def setup_for_inherit(
+    tmp_trestle_dir: pathlib.Path, prof_name: str, output_name: str, ssp_name: str
 ) -> argparse.Namespace:
-    """Create the ssp and parent profile for profile-seed."""
+    """Create the ssp and parent profile for inherit commands."""
     load_from_json(tmp_trestle_dir, 'simplified_nist_catalog', 'nist_cat', cat.Catalog)
     if prof_name:
         load_from_json(tmp_trestle_dir, prof_name, prof_name, prof.Profile)
@@ -424,7 +424,6 @@ def setup_for_profile(
         ssp=ssp_name,
         version=None,
         verbose=0,
-        force_overwrite=None
     )
 
     return args
