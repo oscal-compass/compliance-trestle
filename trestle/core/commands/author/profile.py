@@ -542,7 +542,7 @@ class ProfileResolve(AuthorCommonCommand):
 
 
 class ProfileInherit(AuthorCommonCommand):
-    """Generate and seed profile in JSON from a parent profile and leveraged ssp in the trestle workspace."""
+    """Generate and populate profile in JSON from a parent profile and leveraged ssp in the trestle workspace."""
 
     name = 'profile-inherit'
 
@@ -563,7 +563,7 @@ class ProfileInherit(AuthorCommonCommand):
             if args.profile:
                 if args.profile == args.output:
                     logger.warning(f'Output profile {args.output} cannot equal parent')
-                    return CmdReturnCodes.COMMAND_ERROR.value
+                    return CmdReturnCodes.INCORRECT_ARGS.value
 
             return self.initialize_profile(
                 trestle_root=trestle_root,
@@ -573,15 +573,13 @@ class ProfileInherit(AuthorCommonCommand):
                 version=args.version
             )
         except Exception as e:  # pragma: no cover
-            return handle_generic_command_exception(e, logger, 'Profile initialization failed')
+            return handle_generic_command_exception(e, logger, 'Profile generation failed')
 
     @staticmethod
-    def _all_comps_match(all_comps: List[ssp.ByComponent]) -> bool:
-        # Fail fast by checking for any customer responsibilities
-        # Check any components don't have exported information.
-        # Check if any components specify consumer responsibilities.
-        # Check if any components do not have provided details.
-        # Check if component implementation statuses are not implemented
+    def _is_inherited(all_comps: List[ssp.ByComponent]) -> bool:
+        # Fail fast by checking for any non-compliant components.
+        # Must contain provided export statements, no responsibility
+        # statements, and be implemented.
         for comp in all_comps:
             if comp.export is None:
                 return False
@@ -598,22 +596,24 @@ class ProfileInherit(AuthorCommonCommand):
         return True
 
     @staticmethod
-    def filter_controls_by_leveraged_ssp(input_ssp: ssp.SystemSecurityPlan,
-                                         catalog_api: CatalogAPI) -> List[prof.WithId]:
-        """Filter controls in profile by SSP input.
+    def update_profile_import(
+        orig_prof_import: prof.Import, leveraged_ssp: ssp.SystemSecurityPlan, catalog_api: CatalogAPI
+    ) -> None:
+        """Add controls to different sections of a profile import based on catalog and leveraged SSP.
 
         Args:
-            input_ssp: SSP input for control filtering
+            orig_prof_import: The original profile import that will have the control selection updated.
+            leveraged_ssp: SSP input for control filtering
             catalog_api: Catalog API with access to controls that need to be filtered
 
         Returns:
-            A list of control ids from a catalog that are not covered by the input SSP
+            None
         """
-        controls: Set[prof.withId] = set()
+        exclude_with_ids: Set[prof.withId] = set()
         components_by_id: Dict(str, List[ssp.ByComponent]) = {}
 
         # Create dictionary containing all by-components by control for faster searching
-        for implemented_requirement in input_ssp.control_implementation.implemented_requirements:
+        for implemented_requirement in leveraged_ssp.control_implementation.implemented_requirements:
             components: List[ssp.ByComponent] = []
 
             if implemented_requirement.by_components:
@@ -624,20 +624,24 @@ class ProfileInherit(AuthorCommonCommand):
                         components.extend(stm.by_components)
             components_by_id[implemented_requirement.control_id] = none_if_empty(components)
 
-        # Looping by controls in the catalog because the returned ids should
+        # Looping by controls in the catalog because the ids in the profile should
         # be a subset of the catalog and not the ssp controls.
-        for control_id in catalog_api._catalog_interface.get_control_ids():
+        catalog_control_ids: Set[str] = set(catalog_api._catalog_interface.get_control_ids())
+        for control_id in catalog_control_ids:
 
             if control_id not in components_by_id:
-                controls.add(control_id)
                 continue
 
             by_comps = components_by_id[control_id]
+            if by_comps is not None and ProfileInherit._is_inherited(by_comps):
+                exclude_with_ids.add(control_id)
 
-            if by_comps is None or not ProfileInherit._all_comps_match(by_comps):
-                controls.add(control_id)
+        include_with_ids: Set[prof.withId] = catalog_control_ids - exclude_with_ids
 
-        return sorted(controls)
+        include_controls = [prof.SelectControlById(with_ids=sorted(include_with_ids))]
+        exclude_controls = [prof.SelectControlById(with_ids=sorted(exclude_with_ids))]
+        orig_prof_import.include_controls = include_controls
+        orig_prof_import.exclude_controls = exclude_controls
 
     def initialize_profile(
         self,
@@ -647,7 +651,7 @@ class ProfileInherit(AuthorCommonCommand):
         leveraged_ssp_name: str,
         version: Optional[str],
     ) -> int:
-        """Seed profile with controls from a parent profile, filtering by inherited controls.
+        """Initialize profile with controls from a parent profile, filtering by inherited controls.
 
         Args:
             trestle_root: Root directory of the trestle workspace
@@ -662,7 +666,9 @@ class ProfileInherit(AuthorCommonCommand):
         Notes:
             The profile model will either be updated or a new json profile created. This will overwrite
             any import information on an exiting profile, but will preserve control modifications and parameters.
-            Allowing profile updates ensure that SSP export updates can be incorporated into an existing profile.
+            Allowing profile updates ensure that SSP export updates can be incorporated into an existing profile. All
+            controls from the original profile will exists and will be grouped by included and excluded controls based
+            on inheritance information.
         """
         try:
             result_profile: prof.Profile
@@ -712,12 +718,9 @@ class ProfileInherit(AuthorCommonCommand):
             )
             catalog_api = CatalogAPI(catalog=catalog)
 
-            # Filter controls based on what controls in the SSP have exported provided information with no
+            # Sort controls based on what controls in the SSP have exported provided information with no
             # customer responsibility
-            with_ids = ProfileInherit.filter_controls_by_leveraged_ssp(leveraged_ssp, catalog_api)
-            include_controls = gens.generate_sample_model(prof.SelectControlById)
-            include_controls.with_ids = none_if_empty(with_ids)
-            profile_import.include_controls = [include_controls]
+            ProfileInherit.update_profile_import(profile_import, leveraged_ssp, catalog_api)
 
             result_profile.imports[0] = profile_import
 
@@ -732,5 +735,5 @@ class ProfileInherit(AuthorCommonCommand):
             ModelUtils.save_top_level_model(result_profile, trestle_root, output_prof_name, FileContentType.JSON)
 
         except TrestleError as e:
-            raise TrestleError(f'Error seeding profile {output_prof_name}: {e}')
+            raise TrestleError(f'Error initializing profile {output_prof_name}: {e}')
         return CmdReturnCodes.SUCCESS.value

@@ -1021,6 +1021,7 @@ def test_profile_resolve_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
 def test_profile_inherit(tmp_trestle_dir: pathlib.Path):
     """Test profile initialization and seeding for various use cases."""
     output_profile = 'my_profile'
+    excluded = prof.WithId(__root__='ac-1')
 
     # Test with a profile and ssp that has all controls with exported information
     args = test_utils.setup_for_inherit(tmp_trestle_dir, 'simple_test_profile', output_profile, 'leveraged_ssp')
@@ -1036,6 +1037,8 @@ def test_profile_inherit(tmp_trestle_dir: pathlib.Path):
 
     assert result_prof.imports[0].href == 'trestle://profiles/simple_test_profile/profile.json'
     assert len(result_prof.imports[0].include_controls[0].with_ids) == 2
+    assert len(result_prof.imports[0].exclude_controls[0].with_ids) == 1
+    assert result_prof.imports[0].exclude_controls[0].with_ids[0] == excluded
 
     # Test with a profile that has more controls that the ssp
     args = test_utils.setup_for_inherit(tmp_trestle_dir, 'simple_test_profile_more', output_profile, 'leveraged_ssp')
@@ -1051,6 +1054,8 @@ def test_profile_inherit(tmp_trestle_dir: pathlib.Path):
 
     assert result_prof.imports[0].href == 'trestle://profiles/simple_test_profile_more/profile.json'
     assert len(result_prof.imports[0].include_controls[0].with_ids) == 3
+    assert len(result_prof.imports[0].exclude_controls[0].with_ids) == 1
+    assert result_prof.imports[0].exclude_controls[0].with_ids[0] == excluded
 
     # Test with a profile that has less controls that the ssp
     args = test_utils.setup_for_inherit(tmp_trestle_dir, 'simple_test_profile_less', output_profile, 'leveraged_ssp')
@@ -1066,6 +1071,8 @@ def test_profile_inherit(tmp_trestle_dir: pathlib.Path):
 
     assert result_prof.imports[0].href == 'trestle://profiles/simple_test_profile_less/profile.json'
     assert len(result_prof.imports[0].include_controls[0].with_ids) == 1
+    assert len(result_prof.imports[0].exclude_controls[0].with_ids) == 1
+    assert result_prof.imports[0].exclude_controls[0].with_ids[0] == excluded
 
     # Test with a profile that has all controls filtered out
     args = test_utils.setup_for_inherit(tmp_trestle_dir, 'simple_test_profile_single', output_profile, 'leveraged_ssp')
@@ -1080,7 +1087,9 @@ def test_profile_inherit(tmp_trestle_dir: pathlib.Path):
     )
 
     assert result_prof.imports[0].href == 'trestle://profiles/simple_test_profile_single/profile.json'
-    assert result_prof.imports[0].include_controls[0].with_ids is None
+    assert len(result_prof.imports[0].include_controls[0].with_ids) == 0
+    assert len(result_prof.imports[0].exclude_controls[0].with_ids) == 1
+    assert result_prof.imports[0].exclude_controls[0].with_ids[0] == excluded
 
     # Test with version set
     args = test_utils.setup_for_inherit(tmp_trestle_dir, 'simple_test_profile_less', output_profile, 'leveraged_ssp')
@@ -1105,4 +1114,4 @@ def test_profile_inherit(tmp_trestle_dir: pathlib.Path):
     # Force a failure with a cyclic dependency
     args.output = args.profile
     prof_inherit = ProfileInherit()
-    assert prof_inherit._run(args) == 1
+    assert prof_inherit._run(args) == 2
