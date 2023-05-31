@@ -537,8 +537,35 @@ The filter command is invoked as:
 
 `trestle author profile-inherit --profile my_parent --ssp my_leveraged_ssp --output controls_delta_profile`
 
-Both the parent profile and the SSP must be present in the trestle workspace. This command produces a new workspace profile that imports the parent profile and filters the `with-ids` field in the import by the inherited controls from the SSP.
+Both the parent profile and the SSP must be present in the trestle workspace. This command produces a new workspace profile that imports the parent profile and filters the inherited controls from the SSP using the `exclude-controls` and `include-controls` fields in the profile import.
 
+<details markdown>
+
+<summary>Example imports generated from profile-inherit</summary>
+
+```json
+  "imports": [
+      {
+        "href": "trestle://profiles/controls_delta/profile.json",
+        "include-controls": [
+          {
+            "with-ids": [
+              "ac-2"
+            ]
+          }
+        ],
+        "exclude-controls": [
+          {
+            "with-ids": [
+              "ac-1"
+            ]
+          }
+        ]
+      }
+    ]
+```
+
+</details>
 </details>
 
 <details markdown>
