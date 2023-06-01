@@ -15,7 +15,9 @@
 """oscal-catalog-to-csv task tests."""
 
 import configparser
+import csv
 import pathlib
+from typing import Dict, List
 
 from _pytest.monkeypatch import MonkeyPatch
 
@@ -35,8 +37,50 @@ def monkey_exception():
     raise RuntimeError('foobar')
 
 
-def _validate(tmp_path: pathlib.Path, config: str) -> None:
+def _get_rows(csv_path: pathlib.Path) -> List[List[str]]:
+    """Get rows from csv file."""
+    rows = []
+    with open(csv_path, 'r', newline='') as f:
+        csv_reader = csv.reader(f, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+        for row in csv_reader:
+            rows.append(row)
+    return rows
+
+
+def _validate(tmp_path: pathlib.Path, config: str, section: Dict[str, str]) -> None:
     """Validate."""
+    ifile = section.get('input-file')
+    iname = ifile.split('.')[0]
+    oname = section.get('output-name', f'{iname}.csv')
+    opth = tmp_path / oname
+    rows = _get_rows(opth)
+    # spot check
+    if config == CONFIG_BY_CONTROL:
+        assert len(rows) == 1190
+        row = rows[0]
+        assert row[0] == 'Control Identifier'
+        assert row[1] == 'Control Title'
+        assert row[2] == 'Control Text'
+        row = rows[1]
+        assert row[0] == 'AC-1'
+        assert row[1] == 'Policy and Procedures'
+        assert row[
+            2
+        ] == 'a. Develop, document, and disseminate to [Assignment: organization-defined personnel or roles]: 1. [Selection (one or more): organization-level; mission/business process-level; system-level] access control policy that: 2. Procedures to facilitate the implementation of the access control policy and the associated access controls; b. Designate an [Assignment: official] to manage the development, documentation, and dissemination of the access control policy and procedures; and c. Review and update the current access control: 1. Policy [Assignment: frequency] and following [Assignment: events] ; and 2. Procedures [Assignment: frequency] and following [Assignment: events].'  # noqa
+    elif config == CONFIG_BY_STATEMENT:
+        assert len(rows) == 1750
+        row = rows[0]
+        assert row[0] == 'Control Identifier'
+        assert row[1] == 'Control Title'
+        assert row[2] == 'Statement Identifier'
+        assert row[3] == 'Statement Text'
+        row = rows[1]
+        assert row[0] == 'AC-1'
+        assert row[1] == 'Policy and Procedures'
+        assert row[2] == 'AC-1(a)'
+        assert row[
+            3
+        ] == 'a. Develop, document, and disseminate to [Assignment: organization-defined personnel or roles]: 1. [Selection (one or more): organization-level; mission/business process-level; system-level] access control policy that: 2. Procedures to facilitate the implementation of the access control policy and the associated access controls;'  # noqa
 
 
 def _test_init(tmp_path: pathlib.Path):
@@ -125,7 +169,7 @@ def test_execute(tmp_path: pathlib.Path):
         tgt = oscal_catalog_to_csv.OscalCatalogToCsv(section)
         retval = tgt.execute()
         assert retval == TaskOutcome.SUCCESS
-        _validate(tmp_path, config)
+        _validate(tmp_path, config, section)
 
 
 def test_no_overwrite(tmp_path: pathlib.Path):
