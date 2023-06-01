@@ -90,7 +90,7 @@ class CsvHelper:
 
     def write(self, rows: List[List[str]]) -> None:
         """Write csv file."""
-        with open(self.path, 'wt', encoding='utf-8') as output:
+        with open(self.path, 'w', encoding='utf-8') as output:
             csv_writer = csv.writer(output, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
             for row in rows:
                 csv_writer.writerow(row)
