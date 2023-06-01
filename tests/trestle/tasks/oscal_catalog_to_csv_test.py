@@ -25,6 +25,7 @@ from tests import test_utils
 
 import trestle.tasks.oscal_catalog_to_csv as oscal_catalog_to_csv
 from trestle.core.catalog.catalog_interface import CatalogInterface
+from trestle.oscal.common import HowMany
 from trestle.tasks.base_task import TaskOutcome
 
 CONFIG_BY_CONTROL = 'test-oscal-catalog-to-csv-rev-5-by-control.config'
@@ -236,6 +237,22 @@ def test_unresolved_param(tmp_path: pathlib.Path):
                 raise RuntimeError('huh?')
             except RuntimeError:
                 break
+
+
+def test_one_choice(tmp_path: pathlib.Path):
+    """Test one choice."""
+    for config in CONFIG_LIST:
+        _, section = _get_config_section_init(tmp_path, config)
+        ifile = section['input-file']
+        ipth = pathlib.Path(ifile)
+        catalog_helper = oscal_catalog_to_csv.CatalogHelper(ipth)
+        for control in catalog_helper.get_controls():
+            if control.params:
+                for param in control.params:
+                    if param.select:
+                        param.select.how_many = HowMany.one
+                        catalog_helper._get_parm_value(control, param.id)
+                        return
 
 
 def test_duplicate(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
