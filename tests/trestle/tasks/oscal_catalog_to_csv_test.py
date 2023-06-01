@@ -47,12 +47,11 @@ def _get_rows(csv_path: pathlib.Path) -> List[List[str]]:
     return rows
 
 
-def _validate(tmp_path: pathlib.Path, config: str, section: Dict[str, str]) -> None:
+def _validate(config: str, section: Dict[str, str]) -> None:
     """Validate."""
-    ifile = section.get('input-file')
-    iname = ifile.split('.')[0]
-    oname = section.get('output-name', f'{iname}.csv')
-    opth = tmp_path / oname
+    odir = section['output-dir']
+    oname = section['output-name']
+    opth = pathlib.Path(odir) / oname
     rows = _get_rows(opth)
     # spot check
     if config == CONFIG_BY_CONTROL:
@@ -166,10 +165,11 @@ def test_execute(tmp_path: pathlib.Path):
     for config in CONFIG_LIST:
         _, section = _get_config_section_init(tmp_path, config)
         section['output-dir'] = str(tmp_path)
+        section['output-name'] = f'{config}.csv'
         tgt = oscal_catalog_to_csv.OscalCatalogToCsv(section)
         retval = tgt.execute()
         assert retval == TaskOutcome.SUCCESS
-        _validate(tmp_path, config, section)
+        _validate(config, section)
 
 
 def test_no_overwrite(tmp_path: pathlib.Path):
