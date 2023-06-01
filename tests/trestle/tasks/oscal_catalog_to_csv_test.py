@@ -24,6 +24,7 @@ from _pytest.monkeypatch import MonkeyPatch
 from tests import test_utils
 
 import trestle.tasks.oscal_catalog_to_csv as oscal_catalog_to_csv
+from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.tasks.base_task import TaskOutcome
 
 CONFIG_BY_CONTROL = 'test-oscal-catalog-to-csv-rev-5-by-control.config'
@@ -35,6 +36,11 @@ CONFIG_LIST = [f'{CONFIG_BY_CONTROL}', f'{CONFIG_BY_STATEMENT}']
 def monkey_exception():
     """Monkey exception."""
     raise RuntimeError('foobar')
+
+
+def monkey_get_dependent_control_ids(self, control_id: str):
+    """Monkey get_dependent_control_ids."""
+    return ['parent', 'parent']
 
 
 def _get_rows(csv_path: pathlib.Path) -> List[List[str]]:
@@ -214,3 +220,14 @@ def test_derive_id(tmp_path: pathlib.Path):
         ids = ['ac-4.1_smt', 'ac-4.1_smt.a', 'ac-4.1_smt.a.b', 'ac-4.1_smt.a.b.c', 'ac-4.1_smt.a.b.c.d']
         for id_ in ids:
             catalog_helper._derive_id(id_)
+
+
+def test_duplicate(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
+    """Test duplicate."""
+    monkeypatch.setattr(CatalogInterface, 'get_dependent_control_ids', monkey_get_dependent_control_ids)
+    for config in CONFIG_LIST:
+        _, section = _get_config_section_init(tmp_path, config)
+        section['output-dir'] = str(tmp_path)
+        tgt = oscal_catalog_to_csv.OscalCatalogToCsv(section)
+        retval = tgt.execute()
+        assert retval == TaskOutcome.FAILURE

@@ -314,6 +314,16 @@ class ContentManager():
                 self.add(row)
         return self.rows
 
+    def _add_subparts_by_statement(self, control: Control, part: Part) -> None:
+        """Add subparts by statement."""
+        catalog_helper = self.catalog_helper
+        control_id = convert_control_id(control.id)
+        for subpart in part.parts:
+            if '_smt' in subpart.id:
+                statement_text = catalog_helper.get_statement_text_for_part(control, subpart)
+                row = [control_id, control.title, convert_smt_id(subpart.id), statement_text]
+                self.add(row)
+
     def _add_parts_by_statement(self, control: Control) -> None:
         """Add parts by statement."""
         catalog_helper = self.catalog_helper
@@ -323,11 +333,7 @@ class ContentManager():
                 if '_smt' not in part.id:
                     continue
                 if part.parts:
-                    for subpart in part.parts:
-                        if '_smt' in subpart.id:
-                            statement_text = catalog_helper.get_statement_text_for_part(control, subpart)
-                            row = [control_id, control.title, convert_smt_id(subpart.id), statement_text]
-                            self.add(row)
+                    self._add_subparts_by_statement(control, part)
                 else:
                     statement_text = catalog_helper.get_statement_text_for_part(control, part)
                     row = [control_id, control.title, convert_smt_id(part.id), statement_text]
@@ -348,6 +354,15 @@ class ContentManager():
                 self.add(row)
         return self.rows
 
+    def _add_subparts_by_control(self, control: Control, part: Part, control_text) -> str:
+        """Add subparts by control."""
+        catalog_helper = self.catalog_helper
+        for subpart in part.parts:
+            if '_smt' in subpart.id:
+                statement_text = catalog_helper.get_statement_text_for_part(control, subpart)
+                control_text = join_str(control_text, statement_text)
+        return control_text
+
     def _add_parts_by_control(self, control: Control) -> None:
         """Add parts by control."""
         catalog_helper = self.catalog_helper
@@ -358,10 +373,7 @@ class ContentManager():
                 if '_smt' not in part.id:
                     continue
                 if part.parts:
-                    for subpart in part.parts:
-                        if '_smt' in subpart.id:
-                            statement_text = catalog_helper.get_statement_text_for_part(control, subpart)
-                            control_text = join_str(control_text, statement_text)
+                    control_text = self._add_subparts_by_control(control, part, control_text)
                 else:
                     statement_text = catalog_helper.get_statement_text_for_part(control, part)
                     control_text = join_str(control_text, statement_text)
