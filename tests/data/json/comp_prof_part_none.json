@@ -1,0 +1,89 @@
+{
+"profile": {
+    "uuid": "A0000000-0000-4000-8000-000000000014",
+    "metadata": {
+    "title": "comp prof aa",
+    "last-modified": "2021-01-01T00:00:00.000+00:00",
+    "version": "2021-01-01",
+    "oscal-version": "1.0.0"
+    },
+    "imports": [
+    {
+        "href": "trestle://catalogs/simplified_nist_catalog/catalog.json",
+        "include-controls": [
+        {
+            "with-ids": [
+            "ac-1",
+            "ac-2",
+            "ac-2.1",
+            "ac-3",
+            "at-1",
+            "ac-6.7",
+            "ac-4",
+            "at-2"
+            ]
+        }
+        ]
+    }
+    ],
+    "merge": {
+    "as-is": true
+    },
+    "modify": {
+      "alters": [
+        {
+          "control-id": "ac-1",
+          "adds": [
+            {
+              "position": "ending",
+              "parts": [
+                {
+                  "id": "ac-1_instructions",
+                  "name": "instructions",
+                  "prose": "A set of instructions for executors to follow 1."
+                },
+                {
+                  "id": "ac-1_additional_instructions",
+                  "name": "additional_instructions",
+                  "parts": [
+                    {
+                      "id": "ac-1_additional_instructions.a",
+                      "name": "a",
+                      "parts": [
+                        {
+                          "id": "ac-1_additional_instructions.a.some_detail_add_instr_1",
+                          "name": "some_detail_add_instr_1"
+                        },
+                        {
+                          "id": "ac-1_additional_instructions.a.some_detail_add_instr_2",
+                          "name": "some_detail_add_instr_2",
+                          "prose": "More text on how to follow instructions - a2."
+                        }
+                      ]
+                    },
+                    {
+                      "id": "ac-1_additional_instructions.b",
+                      "name": "b",
+                      "parts": [
+                        {
+                          "id": "ac-1_additional_instructions.b.some_detail_add_instr_1",
+                          "name": "some_detail_add_instr_1",
+                          "prose": "More text on how to follow instructions - b1"
+                        },
+                        {
+                          "id": "ac-1_additional_instructions.b.some_detail_add_instr_1",
+                          "name": "some_detail_add_instr_2",
+                          "prose": "More text on how to follow instructions - b2"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
