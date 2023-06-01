@@ -29,6 +29,7 @@ from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.oscal.catalog import Catalog
 from trestle.oscal.catalog import Control
 from trestle.oscal.common import HowMany
+from trestle.oscal.common import Link
 from trestle.oscal.common import Parameter
 from trestle.oscal.common import Part
 from trestle.tasks.base_task import TaskBase
@@ -161,13 +162,17 @@ class CatalogHelper:
                 break
         return rval
 
+    def _link_generator(self, control: Control) -> Iterator[Link]:
+        """Link generator."""
+        if control.links:
+            for link in control.links:
+                yield link
+
     def _get_status(self, control: Control) -> Optional[str]:
         """Get status."""
         rval = None
-        if not control.links:
-            return rval
         ilist = None
-        for link in control.links:
+        for link in self._link_generator(control):
             if link.rel.lower() == 'moved-to':
                 moved = self._href_to_control(link.href)
                 rval = f': Moved to {moved}.'
