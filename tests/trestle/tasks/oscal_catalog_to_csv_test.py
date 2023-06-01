@@ -222,6 +222,22 @@ def test_derive_id(tmp_path: pathlib.Path):
             catalog_helper._derive_id(id_)
 
 
+def test_unresolved_param(tmp_path: pathlib.Path):
+    """Test unresolved param."""
+    for config in CONFIG_LIST:
+        _, section = _get_config_section_init(tmp_path, config)
+        ifile = section['input-file']
+        ipth = pathlib.Path(ifile)
+        catalog_helper = oscal_catalog_to_csv.CatalogHelper(ipth)
+        for control in catalog_helper.get_controls():
+            utext = 'foo {{ insert: param, xx-11_odp.02 }} bar'
+            try:
+                catalog_helper._resolve_parms(control, utext)
+                raise RuntimeError('huh?')
+            except RuntimeError:
+                break
+
+
 def test_duplicate(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test duplicate."""
     monkeypatch.setattr(CatalogInterface, 'get_dependent_control_ids', monkey_get_dependent_control_ids)
