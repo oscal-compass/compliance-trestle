@@ -217,7 +217,8 @@ class DocsControlWriter(ControlWriter):
         if tag_pattern:
             self._md_file.new_line(tag_pattern.replace('[.]', tag_section_name))
             self._md_file.new_paragraph()
-        self._md_file.new_line(part_info.prose)
+        prose = '' if part_info.prose is None else part_info.prose
+        self._md_file.new_line(prose)
         self._md_file.new_paragraph()
 
         for subpart_info in as_list(part_info.parts):
