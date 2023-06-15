@@ -1040,7 +1040,7 @@ def test_profile_inherit(tmp_trestle_dir: pathlib.Path):
     assert len(result_prof.imports[0].exclude_controls[0].with_ids) == 1
     assert result_prof.imports[0].exclude_controls[0].with_ids[0] == excluded
 
-    # Test with a profile that has more controls that the ssp
+    # Test with a profile that has more controls than the ssp
     args = test_utils.setup_for_inherit(tmp_trestle_dir, 'simple_test_profile_more', output_profile, 'leveraged_ssp')
     prof_inherit = ProfileInherit()
     assert prof_inherit._run(args) == 0
@@ -1057,7 +1057,7 @@ def test_profile_inherit(tmp_trestle_dir: pathlib.Path):
     assert len(result_prof.imports[0].exclude_controls[0].with_ids) == 1
     assert result_prof.imports[0].exclude_controls[0].with_ids[0] == excluded
 
-    # Test with a profile that has less controls that the ssp
+    # Test with a profile that has less controls than the ssp
     args = test_utils.setup_for_inherit(tmp_trestle_dir, 'simple_test_profile_less', output_profile, 'leveraged_ssp')
     prof_inherit = ProfileInherit()
     assert prof_inherit._run(args) == 0

@@ -614,15 +614,15 @@ class ProfileInherit(AuthorCommonCommand):
 
         # Create dictionary containing all by-components by control for faster searching
         for implemented_requirement in leveraged_ssp.control_implementation.implemented_requirements:
-            components: List[ssp.ByComponent] = []
+            by_components: List[ssp.ByComponent] = []
 
             if implemented_requirement.by_components:
-                components.extend(implemented_requirement.by_components)
+                by_components.extend(implemented_requirement.by_components)
             if implemented_requirement.statements:
                 for stm in implemented_requirement.statements:
                     if stm.by_components:
-                        components.extend(stm.by_components)
-            components_by_id[implemented_requirement.control_id] = none_if_empty(components)
+                        by_components.extend(stm.by_components)
+            components_by_id[implemented_requirement.control_id] = none_if_empty(by_components)
 
         # Looping by controls in the catalog because the ids in the profile should
         # be a subset of the catalog and not the ssp controls.
@@ -632,16 +632,14 @@ class ProfileInherit(AuthorCommonCommand):
             if control_id not in components_by_id:
                 continue
 
-            by_comps = components_by_id[control_id]
+            by_comps: Optional[List[ssp.ByComponent]] = components_by_id[control_id]
             if by_comps is not None and ProfileInherit._is_inherited(by_comps):
                 exclude_with_ids.add(control_id)
 
         include_with_ids: Set[prof.withId] = catalog_control_ids - exclude_with_ids
 
-        include_controls = [prof.SelectControlById(with_ids=sorted(include_with_ids))]
-        exclude_controls = [prof.SelectControlById(with_ids=sorted(exclude_with_ids))]
-        orig_prof_import.include_controls = include_controls
-        orig_prof_import.exclude_controls = exclude_controls
+        orig_prof_import.include_controls = [prof.SelectControlById(with_ids=sorted(include_with_ids))]
+        orig_prof_import.exclude_controls = [prof.SelectControlById(with_ids=sorted(exclude_with_ids))]
 
     def initialize_profile(
         self,
@@ -698,7 +696,7 @@ class ProfileInherit(AuthorCommonCommand):
                 )
 
             local_path = f'profiles/{parent_prof_name}/profile.json'
-            profile_import = gens.generate_sample_model(prof.Import)
+            profile_import: prof.Import = gens.generate_sample_model(prof.Import)
             profile_import.href = const.TRESTLE_HREF_HEADING + local_path
 
             leveraged_ssp: ssp.SystemSecurityPlan
