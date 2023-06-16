@@ -45,6 +45,7 @@ from trestle.oscal import catalog as cat
 from trestle.oscal import common
 from trestle.oscal import component as comp
 from trestle.oscal import profile as prof
+from trestle.oscal import ssp
 
 if file_utils.is_windows():  # pragma: no cover
     import win32api
@@ -404,6 +405,28 @@ def setup_for_multi_profile(trestle_root: pathlib.Path, big_profile: bool, impor
     else:
         new_href = str(cat_path.resolve())
     assert HrefCmd.change_import_href(trestle_root, main_profile_name, new_href, 0) == 0
+
+
+def setup_for_inherit(
+    tmp_trestle_dir: pathlib.Path, prof_name: str, output_name: str, ssp_name: str
+) -> argparse.Namespace:
+    """Create the ssp and parent profile for inherit commands."""
+    load_from_json(tmp_trestle_dir, 'simplified_nist_catalog', 'nist_cat', cat.Catalog)
+    if prof_name:
+        load_from_json(tmp_trestle_dir, prof_name, prof_name, prof.Profile)
+    if ssp_name:
+        load_from_json(tmp_trestle_dir, ssp_name, ssp_name, ssp.SystemSecurityPlan)
+
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        profile=prof_name,
+        output=output_name,
+        ssp=ssp_name,
+        version=None,
+        verbose=0,
+    )
+
+    return args
 
 
 def load_from_json(

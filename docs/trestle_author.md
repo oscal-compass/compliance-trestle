@@ -591,6 +591,21 @@ CLI evocation:
 
 The `profile` author commands allow you to edit additions made by a profile to its imported controls that end up in the final resolved profile catalog.  Only the additions may be edited or added to the generated markdown control files - and those additions can then be assembled into a new version of the original profile, with those additions.  For more details on its usage please see [the profile authoring tutorial](https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).
 
+### Profile generation with inheritance
+
+CLI evocation:
+
+> trestle author profile-inherit
+
+The `profile-inherit` sub-command takes a given parent profile and filters its imported controls based inherited controls from a given SSP.
+
+The leveraged SSP is evaluated based on whether provided and responsibility statements for all `by-component` fields are set for each applicable control, as well as the implementation status.
+All components must have exported provided statements, no exported responsibility statements, and an implementation status of `implemented` in order for a control to be filtered from the output profile (i.e. controls delta profile).
+
+As with the other related author commands, if an existing destination file already exists, it is not updated if no changes would be made.
+
+For more details on its usage please see [the ssp-filter tutorial](https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).
+
 ### SSP authoring
 
 CLI evocation:

@@ -14,17 +14,20 @@
 """Author commands to generate profile as markdown and assemble to json after edit."""
 
 import argparse
+import copy
 import logging
 import pathlib
 import shutil
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Set
 
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
 
 import trestle.common.const as const
 import trestle.common.log as log
+import trestle.core.generators as gens
 import trestle.oscal.profile as prof
+import trestle.oscal.ssp as ssp
 from trestle.common import file_utils
 from trestle.common.err import TrestleError, TrestleNotFoundError, handle_generic_command_exception
 from trestle.common.list_utils import as_filtered_list, as_list, comma_sep_to_list, comma_colon_sep_to_dict, deep_set, none_if_empty  # noqa E501
@@ -535,4 +538,200 @@ class ProfileResolve(AuthorCommonCommand):
         )
         ModelUtils.save_top_level_model(catalog, trestle_root, catalog_name, FileContentType.JSON)
 
+        return CmdReturnCodes.SUCCESS.value
+
+
+class ProfileInherit(AuthorCommonCommand):
+    """Generate and populate profile in JSON from a parent profile and leveraged ssp in the trestle workspace."""
+
+    name = 'profile-inherit'
+
+    def _init_arguments(self) -> None:
+        ssp_help_str = 'Name of the leveraged ssp model in the trestle workspace'
+        self.add_argument('-s', '--ssp', help=ssp_help_str, required=True, type=str)
+        profile_help_str = 'Name of the parent profile model in the trestle workspace'
+        self.add_argument('-p', '--profile', help=profile_help_str, required=True, type=str)
+        output_help_str = 'Name of the output generated json Profile'
+        self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
+        self.add_argument('-vn', '--version', help=const.HELP_VERSION, required=False, type=str)
+
+    def _run(self, args: argparse.Namespace) -> int:
+        try:
+            log.set_log_level_from_args(args)
+            trestle_root: pathlib.Path = args.trestle_root
+
+            if args.profile:
+                if args.profile == args.output:
+                    logger.warning(f'Output profile {args.output} cannot equal parent')
+                    return CmdReturnCodes.INCORRECT_ARGS.value
+
+            return self.initialize_profile(
+                trestle_root=trestle_root,
+                parent_prof_name=args.profile,
+                output_prof_name=args.output,
+                leveraged_ssp_name=args.ssp,
+                version=args.version
+            )
+        except Exception as e:  # pragma: no cover
+            return handle_generic_command_exception(e, logger, 'Profile generation failed')
+
+    @staticmethod
+    def _is_inherited(all_comps: List[ssp.ByComponent]) -> bool:
+        # Fail fast by checking for any non-compliant components.
+        # Must contain provided export statements, no responsibility
+        # statements, and be implemented.
+        for comp in all_comps:
+            if comp.export is None:
+                return False
+
+            if comp.export.responsibilities is not None:
+                return False
+
+            if comp.export.provided is None:
+                return False
+
+            if comp.implementation_status.state != const.STATUS_IMPLEMENTED:
+                return False
+
+        return True
+
+    @staticmethod
+    def update_profile_import(
+        orig_prof_import: prof.Import, leveraged_ssp: ssp.SystemSecurityPlan, catalog_api: CatalogAPI
+    ) -> None:
+        """Add controls to different sections of a profile import based on catalog and leveraged SSP.
+
+        Args:
+            orig_prof_import: The original profile import that will have the control selection updated.
+            leveraged_ssp: SSP input for control filtering
+            catalog_api: Catalog API with access to controls that need to be filtered
+
+        Returns:
+            None
+        """
+        exclude_with_ids: Set[prof.withId] = set()
+        components_by_id: Dict(str, List[ssp.ByComponent]) = {}
+
+        # Create dictionary containing all by-components by control for faster searching
+        for implemented_requirement in leveraged_ssp.control_implementation.implemented_requirements:
+            by_components: List[ssp.ByComponent] = []
+
+            if implemented_requirement.by_components:
+                by_components.extend(implemented_requirement.by_components)
+            if implemented_requirement.statements:
+                for stm in implemented_requirement.statements:
+                    if stm.by_components:
+                        by_components.extend(stm.by_components)
+            components_by_id[implemented_requirement.control_id] = none_if_empty(by_components)
+
+        # Looping by controls in the catalog because the ids in the profile should
+        # be a subset of the catalog and not the ssp controls.
+        catalog_control_ids: Set[str] = set(catalog_api._catalog_interface.get_control_ids())
+        for control_id in catalog_control_ids:
+
+            if control_id not in components_by_id:
+                continue
+
+            by_comps: Optional[List[ssp.ByComponent]] = components_by_id[control_id]
+            if by_comps is not None and ProfileInherit._is_inherited(by_comps):
+                exclude_with_ids.add(control_id)
+
+        include_with_ids: Set[prof.withId] = catalog_control_ids - exclude_with_ids
+
+        orig_prof_import.include_controls = [prof.SelectControlById(with_ids=sorted(include_with_ids))]
+        orig_prof_import.exclude_controls = [prof.SelectControlById(with_ids=sorted(exclude_with_ids))]
+
+    def initialize_profile(
+        self,
+        trestle_root: pathlib.Path,
+        parent_prof_name: str,
+        output_prof_name: str,
+        leveraged_ssp_name: str,
+        version: Optional[str],
+    ) -> int:
+        """Initialize profile with controls from a parent profile, filtering by inherited controls.
+
+        Args:
+            trestle_root: Root directory of the trestle workspace
+            parent_prof_name: Name of the parent profile in the trestle workspace
+            output_prof_name: Name of the output profile json file
+            leveraged_ssp_name: Name of the ssp in the trestle workspace for control filtering
+            version: Optional profile version
+
+        Returns:
+            0 on success, 1 on error
+
+        Notes:
+            The profile model will either be updated or a new json profile created. This will overwrite
+            any import information on an exiting profile, but will preserve control modifications and parameters.
+            Allowing profile updates ensure that SSP export updates can be incorporated into an existing profile. All
+            controls from the original profile will exists and will be grouped by included and excluded controls based
+            on inheritance information.
+        """
+        try:
+            result_profile: prof.Profile
+            existing_profile: Optional[prof.Profile] = None
+
+            existing_profile_path = ModelUtils.get_model_path_for_name_and_class(
+                trestle_root, output_prof_name, prof.Profile
+            )
+
+            # If a profile exists at the output path, use that as a starting point for a new profile.
+            # else create a new sample profile.
+            if existing_profile_path is not None:
+                existing_profile, _ = load_validate_model_name(trestle_root,
+                                                               output_prof_name,
+                                                               prof.Profile,
+                                                               FileContentType.JSON)
+                result_profile = copy.deepcopy(existing_profile)
+            else:
+                result_profile = gens.generate_sample_model(prof.Profile)
+
+            parent_prof_path = ModelUtils.get_model_path_for_name_and_class(
+                trestle_root, parent_prof_name, prof.Profile
+            )
+            if parent_prof_path is None:
+                raise TrestleNotFoundError(
+                    f'Profile {parent_prof_name} does not exist.  An existing profile must be provided.'
+                )
+
+            local_path = f'profiles/{parent_prof_name}/profile.json'
+            profile_import: prof.Import = gens.generate_sample_model(prof.Import)
+            profile_import.href = const.TRESTLE_HREF_HEADING + local_path
+
+            leveraged_ssp: ssp.SystemSecurityPlan
+            try:
+                leveraged_ssp, _ = load_validate_model_name(
+                    trestle_root,
+                    leveraged_ssp_name,
+                    ssp.SystemSecurityPlan,
+                    FileContentType.JSON
+                )
+            except TrestleNotFoundError as e:
+                raise TrestleError(f'SSP {leveraged_ssp_name} not found: {e}')
+
+            prof_resolver = ProfileResolver()
+            catalog = prof_resolver.get_resolved_profile_catalog(
+                trestle_root, parent_prof_path, show_value_warnings=True
+            )
+            catalog_api = CatalogAPI(catalog=catalog)
+
+            # Sort controls based on what controls in the SSP have exported provided information with no
+            # customer responsibility
+            ProfileInherit.update_profile_import(profile_import, leveraged_ssp, catalog_api)
+
+            result_profile.imports[0] = profile_import
+
+            if version:
+                result_profile.metadata.version = version
+
+            if ModelUtils.models_are_equivalent(existing_profile, result_profile):  # type: ignore
+                logger.info('Profile is no different from existing version, so no update.')
+                return CmdReturnCodes.SUCCESS.value
+
+            ModelUtils.update_last_modified(result_profile)  # type: ignore
+            ModelUtils.save_top_level_model(result_profile, trestle_root, output_prof_name, FileContentType.JSON)
+
+        except TrestleError as e:
+            raise TrestleError(f'Error initializing profile {output_prof_name}: {e}')
         return CmdReturnCodes.SUCCESS.value
