@@ -99,7 +99,7 @@ jobs:
           path: ~/Library/Caches/pip
         - os: windows-latest
           path: ~\AppData\Local\pip\Cache
-        python-version: [3.7, 3.8, 3.9]
+        python-version: [3.7.15, 3.8, 3.9]
     steps:
     - name: Don't mess with line endings
       run: |
@@ -122,16 +122,16 @@ jobs:
       run: |
         make develop
     - name: Pytest Fast
-      if: ${{ !(matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7') }}
+      if: ${{ !(matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7.15') }}
       run: |
         make test
     - name: Pytest Cov
-      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7' }}
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7.15' }}
       run: |
         make test-cov
 
     - name: Upload artifact
-      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7' }}
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7.15' }}
       uses: actions/upload-artifact@v2
       with:
         name: coverage
@@ -154,7 +154,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.7
+        python-version: 3.7.15
     - uses: actions/cache@v2
       with:
         path: ~/.cache/pip
@@ -178,7 +178,7 @@ jobs:
           -Dsonar.python.coverage.reportPaths=coverage.xml
           -Dsonar.tests=tests/
           -Dsonar.sources=trestle/ 
-          -Dsonar.python.version=3.7
+          -Dsonar.python.version=3.7.15
           -Dsonar.projectKey=compliance-trestle
           -Dsonar.organization=compliance-trestle
           -Dsonar.cpd.exclusions=trestle/oscal/*.py
