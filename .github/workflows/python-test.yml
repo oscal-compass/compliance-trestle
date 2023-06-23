@@ -104,12 +104,15 @@ jobs:
         - os: ubuntu-latest
           path: ~/.cache/pip
           python-version: 3.7
+        #
         - os: macos-latest
           path: ~/Library/Caches/pip
-          python-version: 3.7
+          python-version: 3.7.16
+        #
         - os: windows-latest
           path: ~\AppData\Local\pip\Cache
           python-version: 3.7
+        #
     steps:
     - name: Don't mess with line endings
       run: |
