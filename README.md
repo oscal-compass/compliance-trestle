@@ -88,23 +88,33 @@ Compliance trestle is currently stable and is based on NIST OSCAL version 1.0.4,
 ## Community call
 
 We would like to share development in progress for compliance trestle, coming soon and get feedback from community on what features would they like to see in compliance trestle.\
-The community call will happen every 2 week(s) on Tuesday at 10am EST.\
+The community call will happen every 2 week(s) on Tuesday at 10.00am EST.\
 Meeting information:
 
 ```
+You have been invited to Attend at the following event :
 Compliance Trestle Community Call
-Hosted by MANJIREE GADGIL
+Every 2nd week on Tuesday; from June 27th, 2023 at 10:00 am EST for 0.5 hour
 
-https://ibm.webex.com/ibm/j.php?MTID=m46740e85f87f290d0848c6941c489b0a
-Tuesday, May 16, 2023 10:30 AM | 30 minutes | (UTC-04:00) Eastern Time (US & Canada)
-Occurs every 2 week(s) on Tuesday effective 5/16/2023 from 10:30 AM to 11:00 AM, (UTC-04:00) Eastern Time (US & Canada)
+To join, select from the following options: 
 
-Join by phone
-1-844-531-0958 United States Toll Free
-1-669-234-1178 United States Toll
-1-669-234-1178 United States Toll
-Host access code 979 191 85
-Attendee access code 979 379 85
+1) Web Browser
+    a) https://primetime.bluejeans.com/a2m/live-event/dcwuavtj
+
+2) Laptop paired with room system (Best Experience)
+    a) Dial: meet@bjn.vc or 104.238.247.247 in the room system.
+    b) Go to https://primetime.bluejeans.com/a2m/live-event/dcwuavtj/room-system/
+    c) Enter the pairing code displayed on your room system's screen into your browser.
+
+3) Room System
+    a) Dial: meet@bjn.vc or 104.238.247.247 in the room system.
+    b) Enter Meeting ID : 499830564  and Passcode :  8231
+
+4) Joining via a mobile device?
+    a) Open this link : https://primetime.bluejeans.com/a2m/live-event/dcwuavtj 
+    b) Download the app if you don’t have it already 
+    c) Enter event ID : dcwuavtj
+
 ```
 
 ## Contributing to Trestle

@@ -167,6 +167,7 @@ nav:
       - csv_to_oscal_cd: api_reference/trestle.tasks.csv_to_oscal_cd.md
       - ocp4_cis_profile_to_oscal_catalog: api_reference/trestle.tasks.ocp4_cis_profile_to_oscal_catalog.md
       - ocp4_cis_profile_to_oscal_cd: api_reference/trestle.tasks.ocp4_cis_profile_to_oscal_cd.md
+      - oscal_catalog_to_csv: api_reference/trestle.tasks.oscal_catalog_to_csv.md
       - oscal_profile_to_osco_profile: api_reference/trestle.tasks.oscal_profile_to_osco_profile.md
       - osco_result_to_oscal_ar: api_reference/trestle.tasks.osco_result_to_oscal_ar.md
       - tanium_result_to_oscal_ar: api_reference/trestle.tasks.tanium_result_to_oscal_ar.md

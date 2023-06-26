@@ -486,7 +486,8 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         regenerate=False,
         version=None,
         components=None,
-        implementation_status=None
+        implementation_status=None,
+        control_origination=None
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
@@ -514,7 +515,8 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         regenerate=True,
         version=None,
         components='comp_aa',
-        implementation_status=None
+        implementation_status=None,
+        control_origination=None
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
@@ -536,7 +538,8 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         regenerate=True,
         version=None,
         components='comp_aa',
-        implementation_status=None
+        implementation_status=None,
+        control_origination=None
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
@@ -551,7 +554,8 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         regenerate=False,
         version=None,
         components=None,
-        implementation_status='not-applicable,implemented'
+        implementation_status='not-applicable,implemented',
+        control_origination=None
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
@@ -578,7 +582,8 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         regenerate=False,
         version=None,
         components=None,
-        implementation_status='not-applicable'
+        implementation_status='not-applicable',
+        control_origination=None
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
@@ -602,8 +607,11 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         verbose=0,
         regenerate=True,
         version=None,
-        components=None
+        components=None,
+        implementation_status=None,
+        control_origination=None
     )
+
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 1
 
@@ -618,7 +626,9 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         verbose=0,
         regenerate=True,
         version=None,
-        components=None
+        components=None,
+        implementation_status=None,
+        control_origination=None
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 1
@@ -634,7 +644,105 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         regenerate=True,
         version=None,
         components=None,
-        implementation_status=bad_impl
+        implementation_status=bad_impl,
+        control_origination=None
+    )
+    ssp_filter = SSPFilter()
+    assert ssp_filter._run(args) == 1
+
+
+def test_ssp_filter_control_origination(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test the ssp filter when filtering by control origination."""
+    gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
+    ssp_gen = SSPGenerate()
+    assert ssp_gen._run(gen_args) == 0
+
+    # create ssp from the markdown
+    ssp_assemble = SSPAssemble()
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        markdown=ssp_name,
+        output=ssp_name,
+        verbose=0,
+        name=None,
+        version=None,
+        regenerate=False,
+        compdefs=gen_args.compdefs
+    )
+    assert ssp_assemble._run(args) == 0
+
+    ssp: ossp.SystemSecurityPlan
+    ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
+
+    assert len(ssp.control_implementation.implemented_requirements) == 8
+
+    filtered_name = 'filtered_ssp'
+
+    # now filter the ssp by multiple control origination values
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        name=ssp_name,
+        profile=None,
+        output=filtered_name,
+        verbose=0,
+        regenerate=False,
+        version=None,
+        components=None,
+        implementation_status=None,
+        control_origination='customer-configured,system-specific'
+    )
+    ssp_filter = SSPFilter()
+    assert ssp_filter._run(args) == 0
+
+    ssp, _ = ModelUtils.load_model_for_class(
+        tmp_trestle_dir,
+        filtered_name,
+        ossp.SystemSecurityPlan,
+        FileContentType.JSON
+    )
+
+    # confirm the imp_reqs have been culled to two controls
+    assert len(ssp.control_implementation.implemented_requirements) == 2
+
+    # now filter the ssp by a control origination that is unused
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        name=ssp_name,
+        profile=None,
+        output=filtered_name,
+        verbose=0,
+        regenerate=False,
+        version=None,
+        components=None,
+        implementation_status=None,
+        control_origination='inherited'
+    )
+    ssp_filter = SSPFilter()
+    assert ssp_filter._run(args) == 0
+
+    ssp, _ = ModelUtils.load_model_for_class(
+        tmp_trestle_dir,
+        filtered_name,
+        ossp.SystemSecurityPlan,
+        FileContentType.JSON
+    )
+
+    # confirm the imp_reqs have been culled to zero controls
+    assert len(ssp.control_implementation.implemented_requirements) == 0
+
+    # filter with an invalid control origination to trigger error
+    bad_co = 'co_bad'
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        name=ssp_name,
+        profile=None,
+        output=filtered_name,
+        verbose=0,
+        regenerate=True,
+        version=None,
+        components=None,
+        implementation_status=None,
+        control_origination=bad_co
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 1
