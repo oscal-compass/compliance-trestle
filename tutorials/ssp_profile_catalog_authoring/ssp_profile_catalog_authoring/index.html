@@ -19,7 +19,7 @@
         <link rel="next" href="../../task.transformer-construction/transformer-construction/">
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.12">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.17">
     
     
       
@@ -27,10 +27,10 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.85bb2934.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.26e3688c.min.css">
       
         
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.a6bdf11c.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ecc896b0.min.css">
       
       
 
@@ -2919,6 +2919,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.tasks.oscal_catalog_to_csv/" class="md-nav__link">
+        oscal_catalog_to_csv
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../api_reference/trestle.tasks.oscal_profile_to_osco_profile/" class="md-nav__link">
         oscal_profile_to_osco_profile
       </a>
@@ -3290,6 +3304,7 @@
 <li><code>catalog-generate</code> converts a control Catalog to individual controls in markdown format for addition or editing of guidance prose and parameters, with parameters stored in a yaml header at the top of the markdown file.  <code>catalog-assemble</code> then gathers the prose and parameters and updates the controls in the Catalog to make a new OSCAL Catalog.</li>
 <li><code>profile-generate</code> takes a given Profile and converts the controls represented by its resolved profile catalog to individual controls in markdown format, with sections corresponding to the content that the Profile adds to the Catalog, along with both the current values of parameters in the resolved profile catalog - and the values that are being modified by the given profile's SetParameters.  The user may edit the content or add more, and <code>profile-assemble</code> then gathers the updated content and creates a new OSCAL Profile that includes those changes.</li>
 <li><code>profile-resolve</code> is special as an authoring tool because it does not involve markdown and instead it simply creates a JSON resolved profile catalog from a specified JSON profile in the trestle directory.  There are options to specify whether or not parameters get replace in the control prose or not, along with any special brackets that might be desired to indicate the parameters embedded in the prose.</li>
+<li><code>profile-inherit</code> takes a given parent profile and filters its contents based on the inherited controls included in a given ssp to be include in the final profile.</li>
 <li><code>component-generate</code> takes a given ComponentDefinition file and represents all the controls in markdown in separate directories for each Component in the file.  This allows editing of the prose on a per-component basis.  <code>component-assemble</code> then assembles the markdown for all controls in all component directories into a new, or the same, ComponentDefinition file.</li>
 <li><code>ssp-generate</code> takes a given Profile and an optional list of component-definitions, and represents the individual controls as markdown files with sections that prompt for prose regarding the implementation response for items in the statement of the control, with separate response sections for each component.  <code>ssp-assemble</code> then gathers the response sections and creates an OSCAL System Security Plan comprising the resolved profile catalog and the implementation responses for each component.  The list of component-definitions is optional, but without them the SSP will only have one component: <code>This System</code>.  Rules, parameters and status associated with the implemented requirements are stored in the SetParameters and Properties of the components in the component definitions and represented in the markdown, allowing changes to be made to the parameter values and status.  These edits are then included in the assembled SSP.  Note that the rules themselves may not be edited and strictly correspond to what is in the component definitions.</li>
 <li><code>ssp-filter</code> takes a given ssp and filters its contents based on the controls included in a provided profile, or in a list of components to be included in the final ssp.</li>
@@ -3658,6 +3673,39 @@ and <code>--label-prefix -lp</code>.  Note that there is no need for "assigned" 
 <p><code>Develops, documents, and disseminates to [Label: organization-defined personnel or roles]:</code></p>
 <p>and any value present for the parameter would be ignored.</p>
 <p>Similar options apply to the <code>jinja</code> authoring commands.</p>
+</details>
+<details>
+<summary>trestle author profile-inherit</summary>
+<p>The <code>trestle author profile-inherit</code> command is different from the <code>generate/assemble</code> commands because it doesn't involve markdown and instead
+it takes an parent profile and ssp and creates child profile in <code>JSON</code> format.</p>
+<p>When utilizing a process with leveraged authorizations, use the command <code>trestle author profile-inherit</code> to create a profile with initial content using a parent profile and SSP with inheritable controls. The provided and responsibility statements for all <code>by-component</code> fields, as well as the implementation status, will be used to evaluate the leveraged SSP.
+To be filtered from the output profile (i.e. controls delta profile), all components must have exported provided statements, no exported responsibility statements, and an implementation status of <code>implemented</code>.</p>
+<p>The filter command is invoked as:</p>
+<p><code>trestle author profile-inherit --profile my_parent --ssp my_leveraged_ssp --output controls_delta_profile</code></p>
+<p>Both the parent profile and the SSP must be present in the trestle workspace. This command produces a new workspace profile that imports the parent profile and filters the inherited controls from the SSP using the <code>exclude-controls</code> and <code>include-controls</code> fields in the profile import.</p>
+<details>
+<summary>Example imports generated from profile-inherit</summary>
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nt">&quot;imports&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;href&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;trestle://profiles/controls_delta/profile.json&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;include-controls&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">          </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;with-ids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">              </span><span class="s2">&quot;ac-2&quot;</span>
+<span class="w">            </span><span class="p">]</span>
+<span class="w">          </span><span class="p">}</span>
+<span class="w">        </span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;exclude-controls&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">          </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;with-ids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">              </span><span class="s2">&quot;ac-1&quot;</span>
+<span class="w">            </span><span class="p">]</span>
+<span class="w">          </span><span class="p">}</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+</code></pre></div>
+</details>
 </details>
 <details>
 <summary>trestle author component-generate and component-assemble</summary>
@@ -4083,10 +4131,10 @@ lines or modify/remove the lines with <code>###</code> in them, corresponding to
 </details>
 <details>
 <summary>trestle author ssp-filter</summary>
-<p>Once you have an SSP in the trestle directory you can filter its contents with a profile, list of components, or list of implementation status values by using the command <code>trestle author ssp-filter</code>.  The SSP is assumed to contain a superset of the controls needed by the profile if a profile is specified, and the filter operation will generate a new SSP with only those controls needed by the profile.  If a list of component names is provided, only the specified components will appear in the system implementation of the ssp. If a list of implementation statuses is provided, controls with implementations including those statuses will appear in the control implementation of the ssp.</p>
+<p>Once you have an SSP in the trestle directory you can filter its contents with a profile, list of components, list of implementation statuses, or list control origination values by using the command <code>trestle author ssp-filter</code>.  The SSP is assumed to contain a superset of the controls needed by the profile if a profile is specified, and the filter operation will generate a new SSP with only those controls needed by the profile.  If a list of component names is provided, only the specified components will appear in the system implementation of the ssp. If a list of implementation statuses is provided, controls with implementations including those statuses will appear in the control implementation of the ssp. Similarly, if a list of control origination values is provided, implemented requirements with a control origination property value included in the provided values will appear in the control implementation of the ssp.</p>
 <p>The filter command is invoked as:</p>
-<p><code>trestle author ssp-filter --name my_ssp --profile my_profile --components comp_a:comp_b --implementation-status "planned,partial" --output my_culled_ssp</code></p>
-<p>The SSP must be present in the trestle workspace and, if filtering by profile, that profile must also be in the trestle workspace. This command will generate a new SSP in the workspace. If the profile makes reference to a control not in the SSP then the routine will fail with an error message.  Similarly, if one of the components is not present in the ssp the routine will also fail. The implementation statuses must be one of the allowed values as defined in the OSCAL SSP JSON format reference. Those include the following: implemented, partial, planned, alternative, and not-applicable. If an invalid value is provided, an error is returned.</p>
+<p><code>trestle author ssp-filter --name my_ssp --profile my_profile --components comp_a:comp_b --implementation-status "planned,partial" --control-origination "customer-configured" --output my_culled_ssp</code></p>
+<p>The SSP must be present in the trestle workspace and, if filtering by profile, that profile must also be in the trestle workspace. This command will generate a new SSP in the workspace. If the profile makes reference to a control not in the SSP then the routine will fail with an error message.  Similarly, if one of the components is not present in the ssp the routine will also fail. The implementation statuses must be one of the allowed values as defined in the OSCAL SSP JSON format reference. Those include the following: implemented, partial, planned, alternative, and not-applicable. If an invalid value is provided, an error is returned. The control origination values also must be one of the allowed values as defined in the OSCAL SSP JSON format reference. Those include the following: system-specific, inherited, customer-configured, customer-provided, and organization. If an invalid value is provided, an error is returned.</p>
 </details>
 <details>
 <summary>Summary of options used by the catalog, profile, component and ssp authoring tools.</summary>
@@ -4137,7 +4185,7 @@ lines or modify/remove the lines with <code>###</code> in them, corresponding to
     <script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.c2be25ad.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.b425cdc4.min.js"></script>
       
     
   </body>

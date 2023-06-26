@@ -19,7 +19,7 @@
         <link rel="next" href="../trestle.core.commands.author.versioning.template_versioning/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.12">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.17">
     
     
       
@@ -27,10 +27,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.85bb2934.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.26e3688c.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.a6bdf11c.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ecc896b0.min.css">
       
       
 
@@ -3013,6 +3013,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../trestle.tasks.oscal_catalog_to_csv/" class="md-nav__link">
+        oscal_catalog_to_csv
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../trestle.tasks.oscal_profile_to_osco_profile/" class="md-nav__link">
         oscal_profile_to_osco_profile
       </a>
@@ -3977,7 +3991,7 @@ SSPFilter            (<a class="autorefs autorefs-internal" title="trestle.core.
 
       <p>Filter the controls in an ssp.</p>
 <p>The filtered ssp is based on controls included by the following:
-profile, components, and/or implementation status.</p>
+profile, components, implementation status, and/or control origination.</p>
 
         <details class="quote">
           <summary>Source code in <code>trestle/core/commands/author/ssp.py</code></summary>
@@ -3986,7 +4000,7 @@ profile, components, and/or implementation status.</p>
 <span class="sd">    Filter the controls in an ssp.</span>
 
 <span class="sd">    The filtered ssp is based on controls included by the following:</span>
-<span class="sd">    profile, components, and/or implementation status.</span>
+<span class="sd">    profile, components, implementation status, and/or control origination.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;ssp-filter&#39;</span>
@@ -4004,6 +4018,8 @@ profile, components, and/or implementation status.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-c&#39;</span><span class="p">,</span> <span class="s1">&#39;--components&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">comp_help_str</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
         <span class="n">is_help_str</span> <span class="o">=</span> <span class="s1">&#39;Comma-delimited list of control implementation statuses to include in filtered ssp.&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-is&#39;</span><span class="p">,</span> <span class="s1">&#39;--implementation-status&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">is_help_str</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+        <span class="n">co_help_str</span> <span class="o">=</span> <span class="s1">&#39;Comma-delimited list of control origination values to include in filtered ssp.&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-co&#39;</span><span class="p">,</span> <span class="s1">&#39;--control-origination&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">co_help_str</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
@@ -4011,11 +4027,12 @@ profile, components, and/or implementation status.</p>
             <span class="n">trestle_root</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">trestle_root</span><span class="p">)</span>
             <span class="n">comp_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">impl_status_values</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">co_values</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
 
-            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">components</span> <span class="ow">or</span> <span class="n">args</span><span class="o">.</span><span class="n">implementation_status</span> <span class="ow">or</span> <span class="n">args</span><span class="o">.</span><span class="n">profile</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">components</span> <span class="ow">or</span> <span class="n">args</span><span class="o">.</span><span class="n">implementation_status</span> <span class="ow">or</span> <span class="n">args</span><span class="o">.</span><span class="n">profile</span> <span class="ow">or</span> <span class="n">args</span><span class="o">.</span><span class="n">control_origination</span><span class="p">):</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                     <span class="s1">&#39;You must specify at least one, or a combination of: profile, list of component names&#39;</span>
-                    <span class="s1">&#39;, or list of implementation statuses for ssp-filter.&#39;</span>
+                    <span class="s1">&#39;, list of implementation statuses, or list of control origination values for ssp-filter.&#39;</span>
                 <span class="p">)</span>
                 <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
 
@@ -4040,6 +4057,24 @@ profile, components, and/or implementation status.</p>
                         <span class="p">)</span>
                         <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
 
+            <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">control_origination</span><span class="p">:</span>
+                <span class="n">co_values</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">control_origination</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+                <span class="n">allowed_co_values</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="n">const</span><span class="o">.</span><span class="n">ORIGINATION_ORGANIZATION</span><span class="p">,</span>
+                    <span class="n">const</span><span class="o">.</span><span class="n">ORIGINATION_SYSTEM_SPECIFIC</span><span class="p">,</span>
+                    <span class="n">const</span><span class="o">.</span><span class="n">ORIGINATION_INHERITED</span><span class="p">,</span>
+                    <span class="n">const</span><span class="o">.</span><span class="n">ORIGINATION_CUSTOMER_CONFIGURED</span><span class="p">,</span>
+                    <span class="n">const</span><span class="o">.</span><span class="n">ORIGINATION_CUSTOMER_PROVIDED</span>
+                <span class="p">}</span>
+                <span class="n">allowed_co_string</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">allowed_co_values</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">co</span> <span class="ow">in</span> <span class="n">co_values</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">co</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed_co_values</span><span class="p">:</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s1">&#39;Provided control origination &quot;</span><span class="si">{</span><span class="n">co</span><span class="si">}</span><span class="s1">&quot; is invalid.</span><span class="se">\n</span><span class="s1">&#39;</span>
+                            <span class="sa">f</span><span class="s1">&#39;Please use the following for ssp-filter: </span><span class="si">{</span><span class="n">allowed_co_string</span><span class="si">}</span><span class="s1">&#39;</span>
+                        <span class="p">)</span>
+                        <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_ssp</span><span class="p">(</span>
                 <span class="n">trestle_root</span><span class="p">,</span>
                 <span class="n">args</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
@@ -4048,7 +4083,8 @@ profile, components, and/or implementation status.</p>
                 <span class="n">args</span><span class="o">.</span><span class="n">regenerate</span><span class="p">,</span>
                 <span class="n">args</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
                 <span class="n">comp_names</span><span class="p">,</span>
-                <span class="n">impl_status_values</span>
+                <span class="n">impl_status_values</span><span class="p">,</span>
+                <span class="n">co_values</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
             <span class="k">return</span> <span class="n">handle_generic_command_exception</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="s1">&#39;Error generating the filtered ssp&#39;</span><span class="p">)</span>
@@ -4062,13 +4098,14 @@ profile, components, and/or implementation status.</p>
         <span class="n">regenerate</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
         <span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
         <span class="n">components</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">implementation_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">implementation_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">control_origination</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Filter the ssp and output new ssp.</span>
 
 <span class="sd">        The filtered ssp is based on controls included by the following:</span>
-<span class="sd">        profile, components, and/or implementation status.</span>
+<span class="sd">        profile, components, implementation status, and/or control origination.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            trestle_root: root directory of the trestle workspace</span>
@@ -4079,6 +4116,7 @@ profile, components, and/or implementation status.</p>
 <span class="sd">            version: new version for the model</span>
 <span class="sd">            components: optional list of component names used for filtering</span>
 <span class="sd">            implementation_status: optional list of implementation statuses for filtering</span>
+<span class="sd">            control_origination: optional list of control origination values for filtering</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            0 on success, 1 otherwise</span>
@@ -4195,6 +4233,22 @@ profile, components, and/or implementation status.</p>
 
             <span class="n">ssp</span><span class="o">.</span><span class="n">control_implementation</span><span class="o">.</span><span class="n">implemented_requirements</span> <span class="o">=</span> <span class="n">new_imp_reqs</span>
 
+        <span class="c1"># filter implemented requirements by control origination property.</span>
+        <span class="c1"># this will remove any implemented requirements without the control origination</span>
+        <span class="c1"># property set</span>
+        <span class="k">if</span> <span class="n">control_origination</span><span class="p">:</span>
+            <span class="n">new_imp_reqs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ossp</span><span class="o">.</span><span class="n">ImplementedRequirement</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">imp_requirement</span> <span class="ow">in</span> <span class="n">ssp</span><span class="o">.</span><span class="n">control_implementation</span><span class="o">.</span><span class="n">implemented_requirements</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">imp_requirement</span><span class="o">.</span><span class="n">props</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">imp_requirement</span><span class="o">.</span><span class="n">props</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">CONTROL_ORIGINATION</span> <span class="ow">and</span> <span class="n">prop</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="n">control_origination</span><span class="p">:</span>
+                            <span class="n">new_imp_reqs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">imp_requirement</span><span class="p">)</span>
+                            <span class="c1"># only add the imp requirement one time</span>
+                            <span class="k">break</span>
+
+            <span class="n">ssp</span><span class="o">.</span><span class="n">control_implementation</span><span class="o">.</span><span class="n">implemented_requirements</span> <span class="o">=</span> <span class="n">new_imp_reqs</span>
+
         <span class="k">if</span> <span class="n">version</span><span class="p">:</span>
             <span class="n">ssp</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="n">version</span>
 
@@ -4253,7 +4307,7 @@ profile, components, and/or implementation status.</p>
 
 
 <h6 id="trestle.core.commands.author.ssp.SSPFilter.filter_ssp" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">filter_ssp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">ssp_name</span><span class="p">,</span> <span class="n">profile_name</span><span class="p">,</span> <span class="n">out_name</span><span class="p">,</span> <span class="n">regenerate</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">components</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">implementation_status</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">filter_ssp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">ssp_name</span><span class="p">,</span> <span class="n">profile_name</span><span class="p">,</span> <span class="n">out_name</span><span class="p">,</span> <span class="n">regenerate</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">components</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">implementation_status</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">control_origination</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 
 <a href="#trestle.core.commands.author.ssp.SSPFilter.filter_ssp" class="headerlink" title="Permanent link">¤</a></h6>
@@ -4262,7 +4316,7 @@ profile, components, and/or implementation status.</p>
 
       <p>Filter the ssp and output new ssp.</p>
 <p>The filtered ssp is based on controls included by the following:
-profile, components, and/or implementation status.</p>
+profile, components, implementation status, and/or control origination.</p>
 
 <p><strong>Parameters:</strong></p>
 <table>
@@ -4323,6 +4377,12 @@ profile, components, and/or implementation status.</p>
         <td><p>optional list of implementation statuses for filtering</p></td>
         <td><code>None</code></td>
       </tr>
+      <tr>
+        <td><code>control_origination</code></td>
+        <td><code>Optional[List[str]]</code></td>
+        <td><p>optional list of control origination values for filtering</p></td>
+        <td><code>None</code></td>
+      </tr>
   </tbody>
 </table>
 <p><strong>Returns:</strong></p>
@@ -4351,13 +4411,14 @@ profile, components, and/or implementation status.</p>
     <span class="n">regenerate</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="n">components</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">implementation_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">implementation_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">control_origination</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Filter the ssp and output new ssp.</span>
 
 <span class="sd">    The filtered ssp is based on controls included by the following:</span>
-<span class="sd">    profile, components, and/or implementation status.</span>
+<span class="sd">    profile, components, implementation status, and/or control origination.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        trestle_root: root directory of the trestle workspace</span>
@@ -4368,6 +4429,7 @@ profile, components, and/or implementation status.</p>
 <span class="sd">        version: new version for the model</span>
 <span class="sd">        components: optional list of component names used for filtering</span>
 <span class="sd">        implementation_status: optional list of implementation statuses for filtering</span>
+<span class="sd">        control_origination: optional list of control origination values for filtering</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        0 on success, 1 otherwise</span>
@@ -4481,6 +4543,22 @@ profile, components, and/or implementation status.</p>
 
             <span class="k">if</span> <span class="n">imp_req</span><span class="o">.</span><span class="n">by_components</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">imp_req</span><span class="o">.</span><span class="n">statements</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">new_imp_reqs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">imp_req</span><span class="p">)</span>
+
+        <span class="n">ssp</span><span class="o">.</span><span class="n">control_implementation</span><span class="o">.</span><span class="n">implemented_requirements</span> <span class="o">=</span> <span class="n">new_imp_reqs</span>
+
+    <span class="c1"># filter implemented requirements by control origination property.</span>
+    <span class="c1"># this will remove any implemented requirements without the control origination</span>
+    <span class="c1"># property set</span>
+    <span class="k">if</span> <span class="n">control_origination</span><span class="p">:</span>
+        <span class="n">new_imp_reqs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ossp</span><span class="o">.</span><span class="n">ImplementedRequirement</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">imp_requirement</span> <span class="ow">in</span> <span class="n">ssp</span><span class="o">.</span><span class="n">control_implementation</span><span class="o">.</span><span class="n">implemented_requirements</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">imp_requirement</span><span class="o">.</span><span class="n">props</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">imp_requirement</span><span class="o">.</span><span class="n">props</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">CONTROL_ORIGINATION</span> <span class="ow">and</span> <span class="n">prop</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="n">control_origination</span><span class="p">:</span>
+                        <span class="n">new_imp_reqs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">imp_requirement</span><span class="p">)</span>
+                        <span class="c1"># only add the imp requirement one time</span>
+                        <span class="k">break</span>
 
         <span class="n">ssp</span><span class="o">.</span><span class="n">control_implementation</span><span class="o">.</span><span class="n">implemented_requirements</span> <span class="o">=</span> <span class="n">new_imp_reqs</span>
 
@@ -4770,7 +4848,7 @@ SSPGenerate            (<a class="autorefs autorefs-internal" title="trestle.cor
     <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.c2be25ad.min.js"></script>
+      <script src="../../assets/javascripts/bundle.b425cdc4.min.js"></script>
       
     
   </body>

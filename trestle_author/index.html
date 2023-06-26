@@ -19,7 +19,7 @@
         <link rel="next" href="../tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring/">
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.12">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.17">
     
     
       
@@ -27,10 +27,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.85bb2934.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.26e3688c.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.a6bdf11c.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ecc896b0.min.css">
       
       
 
@@ -882,6 +882,13 @@
           <li class="md-nav__item">
   <a href="#profile-authoring" class="md-nav__link">
     Profile authoring
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#profile-generation-with-inheritance" class="md-nav__link">
+    Profile generation with inheritance
   </a>
   
 </li>
@@ -3287,6 +3294,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../api_reference/trestle.tasks.oscal_catalog_to_csv/" class="md-nav__link">
+        oscal_catalog_to_csv
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../api_reference/trestle.tasks.oscal_profile_to_osco_profile/" class="md-nav__link">
         oscal_profile_to_osco_profile
       </a>
@@ -3976,6 +3997,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#profile-generation-with-inheritance" class="md-nav__link">
+    Profile generation with inheritance
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#ssp-authoring" class="md-nav__link">
     SSP authoring
   </a>
@@ -4462,6 +4490,16 @@ trestle<span class="w"> </span>author<span class="w"> </span>docs<span class="w"
 <p>trestle author profile-assemble</p>
 </blockquote>
 <p>The <code>profile</code> author commands allow you to edit additions made by a profile to its imported controls that end up in the final resolved profile catalog.  Only the additions may be edited or added to the generated markdown control files - and those additions can then be assembled into a new version of the original profile, with those additions.  For more details on its usage please see <a href="https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring">the profile authoring tutorial</a>.</p>
+<h3 id="profile-generation-with-inheritance">Profile generation with inheritance<a class="headerlink" href="#profile-generation-with-inheritance" title="Permanent link">¤</a></h3>
+<p>CLI evocation:</p>
+<blockquote>
+<p>trestle author profile-inherit</p>
+</blockquote>
+<p>The <code>profile-inherit</code> sub-command takes a given parent profile and filters its imported controls based inherited controls from a given SSP.</p>
+<p>The leveraged SSP is evaluated based on whether provided and responsibility statements for all <code>by-component</code> fields are set for each applicable control, as well as the implementation status.
+All components must have exported provided statements, no exported responsibility statements, and an implementation status of <code>implemented</code> in order for a control to be filtered from the output profile (i.e. controls delta profile).</p>
+<p>As with the other related author commands, if an existing destination file already exists, it is not updated if no changes would be made.</p>
+<p>For more details on its usage please see <a href="https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring">the ssp-filter tutorial</a>.</p>
 <h3 id="ssp-authoring">SSP authoring<a class="headerlink" href="#ssp-authoring" title="Permanent link">¤</a></h3>
 <p>CLI evocation:</p>
 <ol>
@@ -4483,11 +4521,12 @@ trestle<span class="w"> </span>author<span class="w"> </span>docs<span class="w"
 <blockquote>
 <p>trestle author ssp-filter</p>
 </blockquote>
-<p>The <code>ssp-filter</code> sub-command takes a given SSP and filters its contents based on a given profile, list of components, and/or control implementation status.</p>
+<p>The <code>ssp-filter</code> sub-command takes a given SSP and filters its contents based on a given profile, list of components, control implementation status and/or control origination.</p>
 <p>If filtering by profile, the SSP is assumed to contain a superset of controls needed by the profile, and the filter operation generates a new SSP with just the controls needed by that profile.  If the profile references a control not in the SSP, the routine fails with an error.</p>
-<p>If filtering by components, a colon-delimited list of components should be provided, with <code>This system</code> as the default name for the overall required component for the entire system.  Case and spaces are ignored in the component names, so the names could be specified as <code>--components "this system: my component"</code>.  The resulting, filtered ssp will have updated implementated requirements with filtered by_components on each requirement, and filtered by_components on each statement.</p>
-<p>If filtering by control implementation status, a comma-demilited list of implementation status values should be provided. These values must comply with the OSCAL SSP format references's allowed values, which are as follows: implemented, partial, planned, alternative, and not-applicable.</p>
-<p>You may filter by a combination of a profile, list of component names, and implementation statuses.</p>
+<p>If filtering by components, a colon-delimited list of components should be provided, with <code>This system</code> as the default name for the overall required component for the entire system.  Case and spaces are ignored in the component names, so the names could be specified as <code>--components "this system: my component"</code>.  The resulting, filtered ssp will have updated implemented requirements with filtered by_components on each requirement, and filtered by_components on each statement.</p>
+<p>If filtering by control implementation status, a comma-delimited list of implementation status values should be provided. These values must comply with the OSCAL SSP format references's allowed values, which are as follows: implemented, partial, planned, alternative, and not-applicable.</p>
+<p>If filtering by control origination, a comma-delimited list of control origination values should be provided. These values must comply with the OSCAL SSP format references's allowed values for the control origination property, which are as follows: system-specific, inherited, organization, customer-configured, and customer-provided.</p>
+<p>You may filter by a combination of a profile, list of component names, implementation statuses, and control origination values.</p>
 <p>As with the other related author commands, if an existing destination file already exists, it is not updated if no changes would be made.</p>
 <p>For more details on its usage please see <a href="https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring">the ssp-filter tutorial</a>.</p>
 </details>
@@ -4533,7 +4572,7 @@ trestle<span class="w"> </span>author<span class="w"> </span>docs<span class="w"
     <script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.c2be25ad.min.js"></script>
+      <script src="../assets/javascripts/bundle.b425cdc4.min.js"></script>
       
     
   </body>
