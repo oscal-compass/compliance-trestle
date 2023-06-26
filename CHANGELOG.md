@@ -3,6 +3,28 @@
 
 <!--next-version-placeholder-->
 
+## v2.2.0 (2023-06-26)
+
+### Feature
+
+* Add profile-inherit command ([#1392](https://github.com/IBM/compliance-trestle/issues/1392)) ([`3bd53ff`](https://github.com/IBM/compliance-trestle/commit/3bd53ff370cece77fc78082dbc04304af12c6647))
+* Oscal-catalog-to-csv ([#1396](https://github.com/IBM/compliance-trestle/issues/1396)) ([`5f59a7f`](https://github.com/IBM/compliance-trestle/commit/5f59a7fc7cf8b88a9f77ba4554dd493acff67114))
+* Adds control origination to ssp-filter ([#1375](https://github.com/IBM/compliance-trestle/issues/1375)) ([`509afa7`](https://github.com/IBM/compliance-trestle/commit/509afa7df124f8a6c3516ad06db256777baaef98))
+
+### Fix
+
+* Drop python 3.7 support as required  ([`cf4160b`](https://github.com/IBM/compliance-trestle/commit/cf4160bc25336cb9362150906a8aaeda308c4134))
+* Change the community call to use bluejeans events ([#1400](https://github.com/IBM/compliance-trestle/issues/1400)) ([`9380cc8`](https://github.com/IBM/compliance-trestle/commit/9380cc813f8b044640fecb4ee302207d3c66d29a))
+* Python 3.7.17 issue ([#1408](https://github.com/IBM/compliance-trestle/issues/1408)) ([`6849c3b`](https://github.com/IBM/compliance-trestle/commit/6849c3b01d0adfd1261b9929a7d5c1866dd38973))
+* Log warning for duplicate part ids when writing markdown from json ([#1395](https://github.com/IBM/compliance-trestle/issues/1395)) ([`760dd4b`](https://github.com/IBM/compliance-trestle/commit/760dd4b4dd6ac405df3db0c2d39d9973ab61a0f4))
+* Use empty string if prose in part is None while writing to markdown ([#1390](https://github.com/IBM/compliance-trestle/issues/1390)) ([`5427fbb`](https://github.com/IBM/compliance-trestle/commit/5427fbb445e9a54a2ede1caa7e15c15b8977dd10))
+* Some tests failing on linux ([#1387](https://github.com/IBM/compliance-trestle/issues/1387)) ([`f0ffdec`](https://github.com/IBM/compliance-trestle/commit/f0ffdecb963d7cd341b6b40be3a02efd3e76748d))
+* Update readme with webex details ([#1383](https://github.com/IBM/compliance-trestle/issues/1383)) ([`4263f1a`](https://github.com/IBM/compliance-trestle/commit/4263f1a72fa9a3ebea01b3b5c301cf89a962bf9c))
+
+### Documentation
+
+* Update maintainers list ([#1394](https://github.com/IBM/compliance-trestle/issues/1394)) ([`c53faa4`](https://github.com/IBM/compliance-trestle/commit/c53faa40ce23a5ad5476cbb6e2c3d32a8e6818dc))
+
 ## v2.1.1 (2023-05-12)
 ### Fix
 * Change lint title action ([#1352](https://github.com/IBM/compliance-trestle/issues/1352)) ([`5444206`](https://github.com/IBM/compliance-trestle/commit/5444206f8b8c8e6904ec180472c569e246255975))
