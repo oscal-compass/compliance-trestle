@@ -19,7 +19,7 @@ from typing import Any, Dict, List
 
 import trestle.common.const as const
 import trestle.oscal.catalog as cat
-from trestle.common.list_utils import as_list, deep_get, none_if_empty
+from trestle.common.list_utils import as_list, deep_get, delete_list_from_list, none_if_empty
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.catalog.catalog_merger import CatalogMerger
@@ -63,6 +63,15 @@ class CatalogWriter():
 
             # get all params and vals for this control from the resolved profile catalog with block adds in effect
             control_param_dict = ControlInterface.get_control_param_dict(control, False)
+            to_delete = []
+            # removes aggregate parameters to be non-editable in markdowns
+            for param_id, values_dict in control_param_dict.items():
+                for prop in as_list(values_dict.props):
+                    if prop.name == 'aggregates':
+                        to_delete.append(param_id)
+            unique_params_to_del = list(set(to_delete))
+            if unique_params_to_del:
+                delete_list_from_list(control_param_dict, unique_params_to_del)
 
             set_param_dict = self._construct_set_parameters_dict(profile_set_param_dict, control_param_dict, context)
 

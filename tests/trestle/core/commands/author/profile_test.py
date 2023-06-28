@@ -1115,3 +1115,55 @@ def test_profile_inherit(tmp_trestle_dir: pathlib.Path):
     args.output = args.profile
     prof_inherit = ProfileInherit()
     assert prof_inherit._run(args) == 2
+
+
+def test_profile_generate_assemble_parameter_aggregation(
+    tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """Test the profile markdown generator."""
+    _, assembled_prof_dir, _, markdown_path = setup_profile_generate(tmp_trestle_dir, 'simple_test_profile.json')
+    yaml_header_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
+    ac_path = markdown_path / 'ac'
+
+    nist_cat, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'nist_cat', cat.Catalog, FileContentType.JSON)
+
+    appended_prop = {'name': 'aggregates', 'value': 'at-02_odp.01'}
+    ac_1 = nist_cat.groups[0].controls[0]
+    ac_1.params[2].props = []
+    ac_1.params[2].props.append(appended_prop)
+    appended_extra_param = {
+        'id': 'at-02_odp.01',
+        'props': [{
+            'name': 'label', 'value': 'AT-02_ODP[01]', 'class': 'sp800-53a'
+        }],
+        'label': 'frequency',
+        'guidelines': [{
+            'prose': 'blah'
+        }]
+    }
+    ac_1.params.append(appended_extra_param)
+
+    ModelUtils.save_top_level_model(nist_cat, tmp_trestle_dir, 'nist_cat', FileContentType.JSON)
+
+    # convert resolved profile catalog to markdown then assemble it after adding an item to a control
+    # generate, edit, assemble
+    test_args = f'trestle author profile-generate -n {prof_name} -o {md_name} -rs NeededExtra'.split(  # noqa E501
+    )
+    test_args.extend(['-y', str(yaml_header_path)])
+    test_args.extend(['-s', all_sections_str])
+    monkeypatch.setattr(sys, 'argv', test_args)
+
+    assert Trestle().run() == 0
+
+    fc = test_utils.FileChecker(ac_path)
+
+    assert Trestle().run() == 0
+
+    assert fc.files_unchanged()
+
+    # assemble based on set_parameters_flag
+    test_args = f'trestle author profile-assemble -n {prof_name} -m {md_name} -o {assembled_prof_name}'.split()
+    test_args.append('-sp')
+    assembled_prof_dir.mkdir()
+    monkeypatch.setattr(sys, 'argv', test_args)
+    assert Trestle().run() == 0

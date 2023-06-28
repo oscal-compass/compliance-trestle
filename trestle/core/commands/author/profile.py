@@ -144,6 +144,7 @@ class ProfileGenerate(AuthorCommonCommand):
             catalog, inherited_props = ProfileResolver().get_resolved_profile_catalog_and_inherited_props(
                 trestle_root, profile_path, True, True, None, ParameterRep.LEAVE_MOUSTACHE
             )
+
             deep_set(yaml_header, [const.TRESTLE_GLOBAL_TAG, const.PROFILE, const.TITLE], profile.metadata.title)
 
             context = ControlContext.generate(ContextPurpose.PROFILE, True, trestle_root, markdown_path)
@@ -352,6 +353,20 @@ class ProfileAssemble(AuthorCommonCommand):
         # keep track if any changes were made
         catalog_api = CatalogAPI(catalog=catalog, context=context)
         found_alters, param_dict, param_map = catalog_api.read_additional_content_from_md(label_as_key=True)
+
+        for group in as_list(catalog.groups):
+            for control in as_list(group.controls):
+                for param in as_list(control.params):
+                    # verifies aggregated param is not on grabbed param dict
+                    if param.id not in list(param_dict.keys()):
+                        param.values = []
+                        for prop in as_list(param.props):
+                            if prop.name == 'aggregates':
+                                agg_param = [p for p in control.params if p.id == prop.value][0]
+                                param.values.append(agg_param.props[0].value)
+                                dict_param = ModelUtils.parameter_to_dict(param, False)
+                                param_dict[param.id] = dict_param
+                                param_map[param.id] = control.id
 
         # technically if allowed sections is [] it means no sections are allowed
         if allowed_sections is not None:
