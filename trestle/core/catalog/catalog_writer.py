@@ -65,10 +65,13 @@ class CatalogWriter():
             control_param_dict = ControlInterface.get_control_param_dict(control, False)
             to_delete = []
             # removes aggregate parameters to be non-editable in markdowns
+            props_by_param_ids = {}
             for param_id, values_dict in control_param_dict.items():
-                for prop in as_list(values_dict.props):
-                    if prop.name == 'aggregates':
-                        to_delete.append(param_id)
+                props_by_param_ids[param_id] = values_dict.props
+            for par_id, props_vals in props_by_param_ids.items():
+                agg_prop = [prop for prop in as_list(props_vals) if prop.name == 'aggregates']
+                if agg_prop:
+                    to_delete.append(par_id)
             unique_params_to_del = list(set(to_delete))
             if unique_params_to_del:
                 delete_list_from_list(control_param_dict, unique_params_to_del)
