@@ -80,18 +80,20 @@ class ControlWriter():
     def _add_control_objective(self, control: cat.Control) -> None:
         if control.parts:
             for part in control.parts:
-                if part.name == 'objective':
+                if part.name == const.OBJECTIVE_PART or part.name == const.ASSESMENT_OBJECTIVE_PART:
                     self._md_file.new_paragraph()
                     heading_title = 'Control Objective'
+                    if part.name == const.ASSESMENT_OBJECTIVE_PART:
+                        heading_title = 'Control Assessment Objective'
                     self._md_file.new_header(level=2, title=heading_title)
                     self._md_file.set_indent_level(-1)
-                    self._add_part_and_its_items(control, 'objective', 'objective')
+                    self._add_part_and_its_items(control, part.name, part.name)
                     self._md_file.set_indent_level(-1)
                     return
 
     def _add_sections(self, control: cat.Control, allowed_sections: Optional[List[str]]) -> None:
         """Add the extra control sections after the main ones."""
-        skip_section_list = [const.STATEMENT, const.ITEM, const.OBJECTIVE_PART]
+        skip_section_list = [const.STATEMENT, const.ITEM, const.OBJECTIVE_PART, const.ASSESMENT_OBJECTIVE_PART]
         while True:
             _, name, title, prose = ControlInterface.get_section(control, skip_section_list)
             if not name:

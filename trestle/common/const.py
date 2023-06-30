@@ -250,6 +250,7 @@ MARKDOWN_URL_REGEX = r'\[([^\]]+)\]\(([^)]+)\)'
 TEMPLATE_VERSION_REGEX = r'[0-9]+.[0-9]+.[0-9]+'
 
 OBJECTIVE_PART = 'objective'
+ASSESMENT_OBJECTIVE_PART = 'assessment-objective'
 TABLE_OF_PARAMS_PART = 'table_of_parameters'
 
 # extracts standalone uuid's from anywhere in string

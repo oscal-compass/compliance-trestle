@@ -28,6 +28,7 @@ from ruamel.yaml import YAML
 from tests import test_utils
 
 import trestle.common.const as const
+import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
 import trestle.oscal.common as com
 import trestle.oscal.profile as prof
@@ -1115,3 +1116,70 @@ def test_profile_inherit(tmp_trestle_dir: pathlib.Path):
     args.output = args.profile
     prof_inherit = ProfileInherit()
     assert prof_inherit._run(args) == 2
+
+
+def test_profile_generate_assesment_objectives(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test the profile markdown generator."""
+    _, _, _, _ = setup_profile_generate(tmp_trestle_dir, 'simple_test_profile.json')
+    yaml_header_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
+
+    profile, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'my_prof', prof.Profile, FileContentType.JSON)
+
+    # create with-id to load at-2 control with its corresponding assesment objectives
+    with_id_at_2 = gens.generate_sample_model(prof.WithId)
+    with_id_at_2.__root__ = 'at-2'
+
+    profile.imports[0].include_controls[0].with_ids.append(with_id_at_2)
+
+    ModelUtils.save_top_level_model(profile, tmp_trestle_dir, 'my_prof', FileContentType.JSON)
+
+    nist_cat, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'nist_cat', cat.Catalog, FileContentType.JSON)
+    # create assesment objectives json for adding it to the control in the catalog
+    assesment_objectives = {
+        'id': 'at-2_obj',
+        'name': 'assessment-objective',
+        'props': [{
+            'name': 'label', 'value': 'AT-02', 'class': 'sp800-53a'
+        }],
+        'parts': [
+            {
+                'id': 'at-2_obj.a',
+                'name': 'assessment-objective',
+                'props': [{
+                    'name': 'label', 'value': 'AT-02a.', 'class': 'sp800-53a'
+                }],
+                'parts': [
+                    {
+                        'id': 'at-2_obj.a.1-2',
+                        'name': 'assessment-objective',
+                        'props': [{
+                            'name': 'label', 'value': 'AT-02a.01[02]', 'class': 'sp800-53a'
+                        }],
+                        'prose': 'some example prose'
+                    },
+                    {
+                        'id': 'at-2_obj.a.1-3',
+                        'name': 'assessment-objective',
+                        'props': [{
+                            'name': 'label', 'value': 'AT-02a.01[03]', 'class': 'sp800-53a'
+                        }],
+                        'prose': 'some example prose'
+                    }
+                ]
+            }
+        ]
+    }
+
+    at_2 = nist_cat.groups[1].controls[1]
+    at_2.parts.append(assesment_objectives)
+    ModelUtils.save_top_level_model(nist_cat, tmp_trestle_dir, 'nist_cat', FileContentType.JSON)
+
+    # convert resolved profile catalog to markdown then assemble it after adding an item to a control
+    # generate, edit, assemble
+    test_args = f'trestle author profile-generate -n {prof_name} -o {md_name} -rs NeededExtra'.split(  # noqa E501
+    )
+    test_args.extend(['-y', str(yaml_header_path)])
+    test_args.extend(['-s', all_sections_str])
+    monkeypatch.setattr(sys, 'argv', test_args)
+
+    assert Trestle().run() == 0
