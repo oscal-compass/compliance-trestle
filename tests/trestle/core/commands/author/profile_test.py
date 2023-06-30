@@ -274,7 +274,7 @@ def test_profile_generate_assemble(
     if set_parameters_flag:
         assert set_params[2].values[0] == 'new value'
         assert set_params[1].props[0].ns == const.TRESTLE_GENERIC_NS
-        assert len(set_params) == 15
+        assert len(set_params) == 18
     else:
         # the original profile did not have ns set for this display name
         # confirm the namespace is not defined unless set_parameters_flag is True
@@ -380,7 +380,7 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
         )
         set_params = profile.modify.set_parameters
 
-        assert len(set_params) == 15
+        assert len(set_params) == 18
         assert set_params[0].values[0] == 'all personnel'
         # the label is present in the header so it ends up in the set_parameter
         assert set_params[0].label == 'label from edit'
@@ -1128,9 +1128,11 @@ def test_profile_generate_assemble_parameter_aggregation(
     nist_cat, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'nist_cat', cat.Catalog, FileContentType.JSON)
 
     appended_prop = {'name': 'aggregates', 'value': 'at-02_odp.01'}
+    appended_prop_2 = {'name': 'aggregates', 'value': 'at-03_odp.01'}
     ac_1 = nist_cat.groups[0].controls[0]
     ac_1.params[2].props = []
     ac_1.params[2].props.append(appended_prop)
+    ac_1.params[2].props.append(appended_prop_2)
     appended_extra_param = {
         'id': 'at-02_odp.01',
         'props': [{
@@ -1141,7 +1143,18 @@ def test_profile_generate_assemble_parameter_aggregation(
             'prose': 'blah'
         }]
     }
+    appended_extra_param_2 = {
+        'id': 'at-03_odp.01',
+        'props': [{
+            'name': 'label', 'value': 'AT-03_ODP[01]', 'class': 'sp800-53a'
+        }],
+        'label': 'frequency',
+        'guidelines': [{
+            'prose': 'blah'
+        }]
+    }
     ac_1.params.append(appended_extra_param)
+    ac_1.params.append(appended_extra_param_2)
 
     ModelUtils.save_top_level_model(nist_cat, tmp_trestle_dir, 'nist_cat', FileContentType.JSON)
 
@@ -1161,9 +1174,24 @@ def test_profile_generate_assemble_parameter_aggregation(
 
     assert fc.files_unchanged()
 
+    # edit parameter values
+    md_path = tmp_trestle_dir / 'my_md/ac/ac-1.md'
+    assert md_path.exists()
+    md_api = MarkdownAPI()
+    header, tree = md_api.processor.process_markdown(md_path)
+
+    assert header
+    header[const.SET_PARAMS_TAG]['at-02_odp.01'][const.VALUES] = ['Value 1', 'Value 2']
+    header[const.SET_PARAMS_TAG]['at-03_odp.01'][const.VALUES] = ['Value 3', 'Value 4', 'Value 5']
+
+    md_api.write_markdown_with_header(md_path, header, tree.content.raw_text)
+
     # assemble based on set_parameters_flag
     test_args = f'trestle author profile-assemble -n {prof_name} -m {md_name} -o {assembled_prof_name}'.split()
     test_args.append('-sp')
     assembled_prof_dir.mkdir()
     monkeypatch.setattr(sys, 'argv', test_args)
     assert Trestle().run() == 0
+
+    prof_generate = f'trestle author profile-generate -n {prof_name} -o {md_name} --force-overwrite'
+    test_utils.execute_command_and_assert(prof_generate, 0, monkeypatch)

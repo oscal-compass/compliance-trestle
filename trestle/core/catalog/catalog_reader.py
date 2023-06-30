@@ -74,8 +74,8 @@ class CatalogReader():
                     # if profile_values are present, overwrite values with them
                     if const.PROFILE_VALUES in param_dict:
                         param_dict[const.VALUES] = param_dict.pop(const.PROFILE_VALUES)
-                        final_param_dict[param_id] = param_dict
-                        param_sort_map[param_id] = sort_id
+                    final_param_dict[param_id] = param_dict
+                    param_sort_map[param_id] = sort_id
         new_alters: List[prof.Alter] = []
         # fill the alters according to the control sorting order
         for key in sorted(alters_map.keys()):
