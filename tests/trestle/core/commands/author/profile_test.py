@@ -1116,7 +1116,7 @@ def test_profile_inherit(tmp_trestle_dir: pathlib.Path):
     args.output = args.profile
     prof_inherit = ProfileInherit()
     assert prof_inherit._run(args) == 2
-    
+
 
 def test_profile_generate_assemble_parameter_aggregation(
     tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
@@ -1129,11 +1129,9 @@ def test_profile_generate_assemble_parameter_aggregation(
     nist_cat, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'nist_cat', cat.Catalog, FileContentType.JSON)
 
     appended_prop = {'name': 'aggregates', 'value': 'at-02_odp.01'}
-    appended_prop_2 = {'name': 'aggregates', 'value': 'at-03_odp.01'}
     ac_1 = nist_cat.groups[0].controls[0]
     ac_1.params[2].props = []
     ac_1.params[2].props.append(appended_prop)
-    ac_1.params[2].props.append(appended_prop_2)
     appended_extra_param = {
         'id': 'at-02_odp.01',
         'props': [{
@@ -1144,19 +1142,8 @@ def test_profile_generate_assemble_parameter_aggregation(
             'prose': 'blah'
         }]
     }
-    appended_extra_param_2 = {
-        'id': 'at-03_odp.01',
-        'props': [{
-            'name': 'label', 'value': 'AT-03_ODP[01]', 'class': 'sp800-53a'
-        }],
-        'label': 'frequency',
-        'guidelines': [{
-            'prose': 'blah'
-        }]
-    }
     ac_1.params.append(appended_extra_param)
-    ac_1.params.append(appended_extra_param_2)
-    
+
     ModelUtils.save_top_level_model(nist_cat, tmp_trestle_dir, 'nist_cat', FileContentType.JSON)
 
     # convert resolved profile catalog to markdown then assemble it after adding an item to a control
@@ -1168,7 +1155,20 @@ def test_profile_generate_assemble_parameter_aggregation(
     monkeypatch.setattr(sys, 'argv', test_args)
 
     assert Trestle().run() == 0
-    
+
+    fc = test_utils.FileChecker(ac_path)
+
+    assert Trestle().run() == 0
+
+    assert fc.files_unchanged()
+
+    # assemble based on set_parameters_flag
+    test_args = f'trestle author profile-assemble -n {prof_name} -m {md_name} -o {assembled_prof_name}'.split()
+    test_args.append('-sp')
+    assembled_prof_dir.mkdir()
+    monkeypatch.setattr(sys, 'argv', test_args)
+    assert Trestle().run() == 0
+
 
 def test_profile_generate_assesment_objectives(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test the profile markdown generator."""
@@ -1224,31 +1224,14 @@ def test_profile_generate_assesment_objectives(tmp_trestle_dir: pathlib.Path, mo
 
     at_2 = nist_cat.groups[1].controls[1]
     at_2.parts.append(assesment_objectives)
+    ModelUtils.save_top_level_model(nist_cat, tmp_trestle_dir, 'nist_cat', FileContentType.JSON)
 
-    fc = test_utils.FileChecker(ac_path)
-
-    assert Trestle().run() == 0
-
-    assert fc.files_unchanged()
-
-    # edit parameter values
-    md_path = tmp_trestle_dir / 'my_md/ac/ac-1.md'
-    assert md_path.exists()
-    md_api = MarkdownAPI()
-    header, tree = md_api.processor.process_markdown(md_path)
-
-    assert header
-    header[const.SET_PARAMS_TAG]['at-02_odp.01'][const.VALUES] = ['Value 1', 'Value 2']
-    header[const.SET_PARAMS_TAG]['at-03_odp.01'][const.VALUES] = ['Value 3', 'Value 4', 'Value 5']
-
-    md_api.write_markdown_with_header(md_path, header, tree.content.raw_text)
-
-    # assemble based on set_parameters_flag
-    test_args = f'trestle author profile-assemble -n {prof_name} -m {md_name} -o {assembled_prof_name}'.split()
-    test_args.append('-sp')
-    assembled_prof_dir.mkdir()
+    # convert resolved profile catalog to markdown then assemble it after adding an item to a control
+    # generate, edit, assemble
+    test_args = f'trestle author profile-generate -n {prof_name} -o {md_name} -rs NeededExtra'.split(  # noqa E501
+    )
+    test_args.extend(['-y', str(yaml_header_path)])
+    test_args.extend(['-s', all_sections_str])
     monkeypatch.setattr(sys, 'argv', test_args)
-    assert Trestle().run() == 0
 
-    prof_generate = f'trestle author profile-generate -n {prof_name} -o {md_name} --force-overwrite'
-    test_utils.execute_command_and_assert(prof_generate, 0, monkeypatch)
+    assert Trestle().run() == 0
