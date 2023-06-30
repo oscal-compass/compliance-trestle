@@ -83,13 +83,11 @@ class ControlWriter():
                 if part.name == const.OBJECTIVE_PART or part.name == const.ASSESMENT_OBJECTIVE_PART:
                     self._md_file.new_paragraph()
                     heading_title = 'Control Objective'
-                    part_name = const.OBJECTIVE_PART
                     if part.name == const.ASSESMENT_OBJECTIVE_PART:
                         heading_title = 'Control Assessment Objective'
-                        part_name = const.ASSESMENT_OBJECTIVE_PART
                     self._md_file.new_header(level=2, title=heading_title)
                     self._md_file.set_indent_level(-1)
-                    self._add_part_and_its_items(control, part_name, part_name)
+                    self._add_part_and_its_items(control, part.name, part.name)
                     self._md_file.set_indent_level(-1)
                     return
 
