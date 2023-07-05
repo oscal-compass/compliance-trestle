@@ -19,7 +19,7 @@
         <link rel="next" href="../trestle.core.catalog_validator/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.17">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.18">
     
     
       
@@ -3526,6 +3526,17 @@ catalog to markdown.</p>
 
             <span class="c1"># get all params and vals for this control from the resolved profile catalog with block adds in effect</span>
             <span class="n">control_param_dict</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">get_control_param_dict</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="n">to_delete</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="c1"># removes aggregate parameters to be non-editable in markdowns</span>
+            <span class="n">props_by_param_ids</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">param_id</span><span class="p">,</span> <span class="n">values_dict</span> <span class="ow">in</span> <span class="n">control_param_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">props_by_param_ids</span><span class="p">[</span><span class="n">param_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">prop</span> <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">values_dict</span><span class="o">.</span><span class="n">props</span><span class="p">)</span> <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;aggregates&#39;</span>
+                <span class="p">]</span>
+            <span class="n">to_delete</span> <span class="o">=</span> <span class="nb">list</span><span class="p">({</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">props_by_param_ids</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="p">[]}</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="n">unique_params_to_del</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">to_delete</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">unique_params_to_del</span><span class="p">:</span>
+                <span class="n">delete_list_from_list</span><span class="p">(</span><span class="n">control_param_dict</span><span class="p">,</span> <span class="n">unique_params_to_del</span><span class="p">)</span>
 
             <span class="n">set_param_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_set_parameters_dict</span><span class="p">(</span><span class="n">profile_set_param_dict</span><span class="p">,</span> <span class="n">control_param_dict</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
 
@@ -4125,6 +4136,17 @@ catalog to markdown.</p>
 
         <span class="c1"># get all params and vals for this control from the resolved profile catalog with block adds in effect</span>
         <span class="n">control_param_dict</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">get_control_param_dict</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">to_delete</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># removes aggregate parameters to be non-editable in markdowns</span>
+        <span class="n">props_by_param_ids</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">param_id</span><span class="p">,</span> <span class="n">values_dict</span> <span class="ow">in</span> <span class="n">control_param_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">props_by_param_ids</span><span class="p">[</span><span class="n">param_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">prop</span> <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">values_dict</span><span class="o">.</span><span class="n">props</span><span class="p">)</span> <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;aggregates&#39;</span>
+            <span class="p">]</span>
+        <span class="n">to_delete</span> <span class="o">=</span> <span class="nb">list</span><span class="p">({</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">props_by_param_ids</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="p">[]}</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">unique_params_to_del</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">to_delete</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">unique_params_to_del</span><span class="p">:</span>
+            <span class="n">delete_list_from_list</span><span class="p">(</span><span class="n">control_param_dict</span><span class="p">,</span> <span class="n">unique_params_to_del</span><span class="p">)</span>
 
         <span class="n">set_param_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_set_parameters_dict</span><span class="p">(</span><span class="n">profile_set_param_dict</span><span class="p">,</span> <span class="n">control_param_dict</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
 
@@ -4325,10 +4347,10 @@ for each compdef:
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.b425cdc4.min.js"></script>
+      <script src="../../assets/javascripts/bundle.220ee61c.min.js"></script>
       
     
   </body>

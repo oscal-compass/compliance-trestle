@@ -19,7 +19,7 @@
         <link rel="next" href="../trestle.tasks.ocp4_cis_profile_to_oscal_catalog/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.17">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.18">
     
     
       
@@ -5508,18 +5508,19 @@ CsvToOscalComponentDefinition            (<a class="autorefs autorefs-internal" 
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create create set parameters.&quot;&quot;&quot;</span>
         <span class="n">set_parameter</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csv_mgr</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">rule_key</span><span class="p">,</span> <span class="n">PARAMETER_ID</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csv_mgr</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">rule_key</span><span class="p">,</span> <span class="n">PARAMETER_VALUE_DEFAULT</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">and</span> <span class="n">value</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csv_mgr</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">rule_key</span><span class="p">,</span> <span class="n">PARAMETER_VALUE_DEFAULT</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
-                <span class="n">row_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csv_mgr</span><span class="o">.</span><span class="n">get_row_number</span><span class="p">(</span><span class="n">rule_key</span><span class="p">)</span>
-                <span class="n">column_name</span> <span class="o">=</span> <span class="n">PARAMETER_VALUE_DEFAULT</span>
-                <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;row &quot;</span><span class="si">{</span><span class="n">row_number</span><span class="si">}</span><span class="s1">&quot; missing value for &quot;</span><span class="si">{</span><span class="n">column_name</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
             <span class="n">values</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
             <span class="n">set_parameter</span> <span class="o">=</span> <span class="n">SetParameter</span><span class="p">(</span>
                 <span class="n">param_id</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
                 <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">,</span>
             <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">name</span><span class="p">:</span>
+            <span class="n">row_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csv_mgr</span><span class="o">.</span><span class="n">get_row_number</span><span class="p">(</span><span class="n">rule_key</span><span class="p">)</span>
+            <span class="n">column_name</span> <span class="o">=</span> <span class="n">PARAMETER_VALUE_DEFAULT</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;row &quot;</span><span class="si">{</span><span class="n">row_number</span><span class="si">}</span><span class="s1">&quot; missing value for &quot;</span><span class="si">{</span><span class="n">column_name</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">set_parameter</span>
 
     <span class="k">def</span> <span class="nf">_get_implemented_requirement</span><span class="p">(</span>
@@ -6518,10 +6519,10 @@ CsvToOscalComponentDefinition            (<a class="autorefs autorefs-internal" 
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.b425cdc4.min.js"></script>
+      <script src="../../assets/javascripts/bundle.220ee61c.min.js"></script>
       
     
   </body>

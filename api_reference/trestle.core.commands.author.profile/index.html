@@ -19,7 +19,7 @@
         <link rel="next" href="../trestle.core.commands.author.ssp/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.17">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.18">
     
     
       
@@ -3830,6 +3830,33 @@ ProfileAssemble            (<a class="autorefs autorefs-internal" title="trestle
         <span class="k">return</span> <span class="n">changed</span>
 
     <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_add_aggregated_parameter</span><span class="p">(</span>
+        <span class="n">param</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">param_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">controls</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">param_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add aggregated parameter value to original parameter.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># verifies aggregated param is not on grabbed param dict</span>
+        <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">param_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="n">param</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">agg_props</span> <span class="o">=</span> <span class="p">[</span><span class="n">prop</span> <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">param</span><span class="o">.</span><span class="n">props</span> <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;aggregates&#39;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">agg_props</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">param_dict</span><span class="p">[</span><span class="n">prop</span><span class="o">.</span><span class="n">value</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;values&#39;</span><span class="p">):</span>
+                    <span class="n">agg_param_values</span> <span class="o">=</span> <span class="n">param_dict</span><span class="p">[</span><span class="n">prop</span><span class="o">.</span><span class="n">value</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;values&#39;</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">agg_param_values</span><span class="p">):</span>
+                        <span class="n">param</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">agg_param_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">controls</span><span class="p">[</span><span class="n">control_id</span><span class="p">]</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">prop</span><span class="o">.</span><span class="n">value</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">param</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">agg_param_values</span><span class="o">.</span><span class="n">props</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+                <span class="n">dict_param</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">parameter_to_dict</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+                <span class="n">param_dict</span><span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">dict_param</span>
+                <span class="n">param_map</span><span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">control_id</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">assemble_profile</span><span class="p">(</span>
         <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
         <span class="n">parent_prof_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -3898,6 +3925,13 @@ ProfileAssemble            (<a class="autorefs autorefs-internal" title="trestle
         <span class="n">catalog_api</span> <span class="o">=</span> <span class="n">CatalogAPI</span><span class="p">(</span><span class="n">catalog</span><span class="o">=</span><span class="n">catalog</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">)</span>
         <span class="n">found_alters</span><span class="p">,</span> <span class="n">param_dict</span><span class="p">,</span> <span class="n">param_map</span> <span class="o">=</span> <span class="n">catalog_api</span><span class="o">.</span><span class="n">read_additional_content_from_md</span><span class="p">(</span><span class="n">label_as_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
+        <span class="n">controls</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">catalog</span><span class="o">.</span><span class="n">groups</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">control</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">controls</span><span class="p">):</span>
+                <span class="n">controls</span><span class="p">[</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">control</span><span class="o">.</span><span class="n">params</span>
+        <span class="k">for</span> <span class="n">control_id</span><span class="p">,</span> <span class="n">params</span> <span class="ow">in</span> <span class="n">controls</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+                <span class="n">ProfileAssemble</span><span class="o">.</span><span class="n">_add_aggregated_parameter</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">param_dict</span><span class="p">,</span> <span class="n">control_id</span><span class="p">,</span> <span class="n">controls</span><span class="p">,</span> <span class="n">param_map</span><span class="p">)</span>
         <span class="c1"># technically if allowed sections is [] it means no sections are allowed</span>
         <span class="k">if</span> <span class="n">allowed_sections</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">bad_part</span> <span class="ow">in</span> <span class="p">[</span>
@@ -4154,6 +4188,13 @@ in the assembled profile if the --set-parameters option is specified.</p>
     <span class="n">catalog_api</span> <span class="o">=</span> <span class="n">CatalogAPI</span><span class="p">(</span><span class="n">catalog</span><span class="o">=</span><span class="n">catalog</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">)</span>
     <span class="n">found_alters</span><span class="p">,</span> <span class="n">param_dict</span><span class="p">,</span> <span class="n">param_map</span> <span class="o">=</span> <span class="n">catalog_api</span><span class="o">.</span><span class="n">read_additional_content_from_md</span><span class="p">(</span><span class="n">label_as_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
+    <span class="n">controls</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">catalog</span><span class="o">.</span><span class="n">groups</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">control</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">controls</span><span class="p">):</span>
+            <span class="n">controls</span><span class="p">[</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">control</span><span class="o">.</span><span class="n">params</span>
+    <span class="k">for</span> <span class="n">control_id</span><span class="p">,</span> <span class="n">params</span> <span class="ow">in</span> <span class="n">controls</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+            <span class="n">ProfileAssemble</span><span class="o">.</span><span class="n">_add_aggregated_parameter</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">param_dict</span><span class="p">,</span> <span class="n">control_id</span><span class="p">,</span> <span class="n">controls</span><span class="p">,</span> <span class="n">param_map</span><span class="p">)</span>
     <span class="c1"># technically if allowed sections is [] it means no sections are allowed</span>
     <span class="k">if</span> <span class="n">allowed_sections</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">bad_part</span> <span class="ow">in</span> <span class="p">[</span>
@@ -4327,6 +4368,7 @@ ProfileGenerate            (<a class="autorefs autorefs-internal" title="trestle
             <span class="n">catalog</span><span class="p">,</span> <span class="n">inherited_props</span> <span class="o">=</span> <span class="n">ProfileResolver</span><span class="p">()</span><span class="o">.</span><span class="n">get_resolved_profile_catalog_and_inherited_props</span><span class="p">(</span>
                 <span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_path</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ParameterRep</span><span class="o">.</span><span class="n">LEAVE_MOUSTACHE</span>
             <span class="p">)</span>
+
             <span class="n">deep_set</span><span class="p">(</span><span class="n">yaml_header</span><span class="p">,</span> <span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_GLOBAL_TAG</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">PROFILE</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">TITLE</span><span class="p">],</span> <span class="n">profile</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
 
             <span class="n">context</span> <span class="o">=</span> <span class="n">ControlContext</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">ContextPurpose</span><span class="o">.</span><span class="n">PROFILE</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">markdown_path</span><span class="p">)</span>
@@ -4496,6 +4538,7 @@ ProfileGenerate            (<a class="autorefs autorefs-internal" title="trestle
         <span class="n">catalog</span><span class="p">,</span> <span class="n">inherited_props</span> <span class="o">=</span> <span class="n">ProfileResolver</span><span class="p">()</span><span class="o">.</span><span class="n">get_resolved_profile_catalog_and_inherited_props</span><span class="p">(</span>
             <span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_path</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ParameterRep</span><span class="o">.</span><span class="n">LEAVE_MOUSTACHE</span>
         <span class="p">)</span>
+
         <span class="n">deep_set</span><span class="p">(</span><span class="n">yaml_header</span><span class="p">,</span> <span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_GLOBAL_TAG</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">PROFILE</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">TITLE</span><span class="p">],</span> <span class="n">profile</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
 
         <span class="n">context</span> <span class="o">=</span> <span class="n">ControlContext</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">ContextPurpose</span><span class="o">.</span><span class="n">PROFILE</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">markdown_path</span><span class="p">)</span>
@@ -5514,10 +5557,10 @@ ProfileResolve            (<a class="autorefs autorefs-internal" title="trestle.
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.b425cdc4.min.js"></script>
+      <script src="../../assets/javascripts/bundle.220ee61c.min.js"></script>
       
     
   </body>
