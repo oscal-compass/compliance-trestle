@@ -443,6 +443,8 @@ VALUES = 'values'
 
 GUIDELINES = 'guidelines'
 
+LABEL = 'label'
+
 SECTIONS_TAG = TRESTLE_TAG + 'sections'
 
 EDITABLE_CONTENT = 'Editable Content'

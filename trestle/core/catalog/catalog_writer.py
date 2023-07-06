@@ -182,7 +182,9 @@ class CatalogWriter():
             new_dict.pop('id', None)
             if display_name:
                 new_dict[const.DISPLAY_NAME] = display_name
-            set_param_dict[param_id] = new_dict
+            key_order = (const.LABEL, const.GUIDELINES, const.PROFILE_VALUES, const.VALUES, const.DISPLAY_NAME)
+            ordered_dict = {k: new_dict[k] for k in key_order if k in new_dict.keys()}
+            set_param_dict[param_id] = ordered_dict
 
         return set_param_dict
 
