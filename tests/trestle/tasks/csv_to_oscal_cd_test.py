@@ -661,7 +661,7 @@ def test_execute_missing_param_default_value(tmp_path: pathlib.Path) -> None:
         mock_csv_reader.return_value = rows
         tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
         retval = tgt.execute()
-        assert retval == TaskOutcome.FAILURE
+        assert retval == TaskOutcome.SUCCESS
 
 
 def test_execute_change_param_default_value(tmp_path: pathlib.Path) -> None:

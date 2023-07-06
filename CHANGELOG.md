@@ -3,6 +3,15 @@
 
 <!--next-version-placeholder-->
 
+## v2.2.1 (2023-07-05)
+
+### Fix
+
+* Parameter value default is never required ([#1419](https://github.com/IBM/compliance-trestle/issues/1419)) ([`01434f1`](https://github.com/IBM/compliance-trestle/commit/01434f13b16054b035767985a9a02ed9fa91154f))
+* Pydantic 2.0.0 break unit tests ([#1418](https://github.com/IBM/compliance-trestle/issues/1418)) ([`2138831`](https://github.com/IBM/compliance-trestle/commit/2138831f9bb36c5f91ab17cccc4412128c468a82))
+* Adding parameter aggregation from other parameter values for given control ([#1412](https://github.com/IBM/compliance-trestle/issues/1412)) ([`7b8cad0`](https://github.com/IBM/compliance-trestle/commit/7b8cad03e05024a406742720e5abed2e3febdf6f))
+* Assessment objectives formatting in markdown is not correct ([#1414](https://github.com/IBM/compliance-trestle/issues/1414)) ([`dbfc1d6`](https://github.com/IBM/compliance-trestle/commit/dbfc1d6c59339a7f542f86cb74da4f05fe8a9a60))
+
 ## v2.2.0 (2023-06-26)
 
 ### Feature
