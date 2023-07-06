@@ -441,6 +441,8 @@ COMPONENT_VALUES = 'component-values'
 
 VALUES = 'values'
 
+GUIDELINES = 'guidelines'
+
 SECTIONS_TAG = TRESTLE_TAG + 'sections'
 
 EDITABLE_CONTENT = 'Editable Content'

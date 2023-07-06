@@ -173,7 +173,7 @@ class CatalogWriter():
                     # pull only the values from the actual control dict
                     # all the other elements are from the profile set_param
                     new_dict[const.VALUES] = orig_dict.get(const.VALUES, None)
-            else:
+                    new_dict[const.GUIDELINES] = orig_dict.get(const.GUIDELINES, None)
                 # if the profile doesnt change this param at all, show it in the header with values
                 tmp_dict = ModelUtils.parameter_to_dict(param_dict, True)
                 values = tmp_dict.get('values', None)
