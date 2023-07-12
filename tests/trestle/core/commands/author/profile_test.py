@@ -28,6 +28,7 @@ from ruamel.yaml import YAML
 from tests import test_utils
 
 import trestle.common.const as const
+import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
 import trestle.oscal.common as com
 import trestle.oscal.profile as prof
@@ -37,7 +38,7 @@ from trestle.common.err import TrestleError
 from trestle.common.list_utils import comma_colon_sep_to_dict, comma_sep_to_list
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog.catalog_interface import CatalogInterface
-from trestle.core.commands.author.profile import ProfileAssemble, ProfileGenerate
+from trestle.core.commands.author.profile import ProfileAssemble, ProfileGenerate, ProfileInherit
 from trestle.core.control_interface import ControlInterface
 from trestle.core.markdown.docs_markdown_node import DocsMarkdownNode
 from trestle.core.markdown.markdown_api import MarkdownAPI
@@ -274,7 +275,7 @@ def test_profile_generate_assemble(
     if set_parameters_flag:
         assert set_params[2].values[0] == 'new value'
         assert set_params[1].props[0].ns == const.TRESTLE_GENERIC_NS
-        assert len(set_params) == 15
+        assert len(set_params) == 18
     else:
         # the original profile did not have ns set for this display name
         # confirm the namespace is not defined unless set_parameters_flag is True
@@ -380,7 +381,7 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
         )
         set_params = profile.modify.set_parameters
 
-        assert len(set_params) == 15
+        assert len(set_params) == 18
         assert set_params[0].values[0] == 'all personnel'
         # the label is present in the header so it ends up in the set_parameter
         assert set_params[0].label == 'label from edit'
@@ -1016,3 +1017,221 @@ def test_profile_resolve_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
     test_utils.execute_command_and_assert(core_command + '-lp prefix', 1, monkeypatch)
     test_utils.execute_command_and_assert(core_command + '-vap prefix', 1, monkeypatch)
     test_utils.execute_command_and_assert(core_command + '-sl -vap prefix', 1, monkeypatch)
+
+
+def test_profile_inherit(tmp_trestle_dir: pathlib.Path):
+    """Test profile initialization and seeding for various use cases."""
+    output_profile = 'my_profile'
+    excluded = prof.WithId(__root__='ac-1')
+
+    # Test with a profile and ssp that has all controls with exported information
+    args = test_utils.setup_for_inherit(tmp_trestle_dir, 'simple_test_profile', output_profile, 'leveraged_ssp')
+    prof_inherit = ProfileInherit()
+    assert prof_inherit._run(args) == 0
+
+    result_prof, _ = ModelUtils.load_model_for_class(
+        tmp_trestle_dir,
+        output_profile,
+        prof.Profile,
+        FileContentType.JSON
+    )
+
+    assert result_prof.imports[0].href == 'trestle://profiles/simple_test_profile/profile.json'
+    assert len(result_prof.imports[0].include_controls[0].with_ids) == 2
+    assert len(result_prof.imports[0].exclude_controls[0].with_ids) == 1
+    assert result_prof.imports[0].exclude_controls[0].with_ids[0] == excluded
+
+    # Test with a profile that has more controls than the ssp
+    args = test_utils.setup_for_inherit(tmp_trestle_dir, 'simple_test_profile_more', output_profile, 'leveraged_ssp')
+    prof_inherit = ProfileInherit()
+    assert prof_inherit._run(args) == 0
+
+    result_prof, _ = ModelUtils.load_model_for_class(
+        tmp_trestle_dir,
+        output_profile,
+        prof.Profile,
+        FileContentType.JSON
+    )
+
+    assert result_prof.imports[0].href == 'trestle://profiles/simple_test_profile_more/profile.json'
+    assert len(result_prof.imports[0].include_controls[0].with_ids) == 3
+    assert len(result_prof.imports[0].exclude_controls[0].with_ids) == 1
+    assert result_prof.imports[0].exclude_controls[0].with_ids[0] == excluded
+
+    # Test with a profile that has less controls than the ssp
+    args = test_utils.setup_for_inherit(tmp_trestle_dir, 'simple_test_profile_less', output_profile, 'leveraged_ssp')
+    prof_inherit = ProfileInherit()
+    assert prof_inherit._run(args) == 0
+
+    result_prof, _ = ModelUtils.load_model_for_class(
+        tmp_trestle_dir,
+        output_profile,
+        prof.Profile,
+        FileContentType.JSON
+    )
+
+    assert result_prof.imports[0].href == 'trestle://profiles/simple_test_profile_less/profile.json'
+    assert len(result_prof.imports[0].include_controls[0].with_ids) == 1
+    assert len(result_prof.imports[0].exclude_controls[0].with_ids) == 1
+    assert result_prof.imports[0].exclude_controls[0].with_ids[0] == excluded
+
+    # Test with a profile that has all controls filtered out
+    args = test_utils.setup_for_inherit(tmp_trestle_dir, 'simple_test_profile_single', output_profile, 'leveraged_ssp')
+    prof_inherit = ProfileInherit()
+    assert prof_inherit._run(args) == 0
+
+    result_prof, _ = ModelUtils.load_model_for_class(
+        tmp_trestle_dir,
+        output_profile,
+        prof.Profile,
+        FileContentType.JSON
+    )
+
+    assert result_prof.imports[0].href == 'trestle://profiles/simple_test_profile_single/profile.json'
+    assert len(result_prof.imports[0].include_controls[0].with_ids) == 0
+    assert len(result_prof.imports[0].exclude_controls[0].with_ids) == 1
+    assert result_prof.imports[0].exclude_controls[0].with_ids[0] == excluded
+
+    # Test with version set
+    args = test_utils.setup_for_inherit(tmp_trestle_dir, 'simple_test_profile_less', output_profile, 'leveraged_ssp')
+    prof_inherit = ProfileInherit()
+    args.version = '1.0.0'
+    assert prof_inherit._run(args) == 0
+
+    result_prof, _ = ModelUtils.load_model_for_class(
+        tmp_trestle_dir,
+        output_profile,
+        prof.Profile,
+        FileContentType.JSON
+    )
+
+    assert result_prof.metadata.version == '1.0.0'
+
+    # Force a failure with non-existent profile
+    args.profile = 'bad_prof'
+    prof_inherit = ProfileInherit()
+    assert prof_inherit._run(args) == 1
+
+    # Force a failure with a cyclic dependency
+    args.output = args.profile
+    prof_inherit = ProfileInherit()
+    assert prof_inherit._run(args) == 2
+
+
+def test_profile_generate_assemble_parameter_aggregation(
+    tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """Test the profile markdown generator."""
+    _, assembled_prof_dir, _, markdown_path = setup_profile_generate(tmp_trestle_dir, 'simple_test_profile.json')
+    yaml_header_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
+    ac_path = markdown_path / 'ac'
+
+    nist_cat, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'nist_cat', cat.Catalog, FileContentType.JSON)
+
+    appended_prop = {'name': 'aggregates', 'value': 'at-02_odp.01'}
+    ac_1 = nist_cat.groups[0].controls[0]
+    ac_1.params[2].props = []
+    ac_1.params[2].props.append(appended_prop)
+    appended_extra_param = {
+        'id': 'at-02_odp.01',
+        'props': [{
+            'name': 'label', 'value': 'AT-02_ODP[01]', 'class': 'sp800-53a'
+        }],
+        'label': 'frequency',
+        'guidelines': [{
+            'prose': 'blah'
+        }]
+    }
+    ac_1.params.append(appended_extra_param)
+
+    ModelUtils.save_top_level_model(nist_cat, tmp_trestle_dir, 'nist_cat', FileContentType.JSON)
+
+    # convert resolved profile catalog to markdown then assemble it after adding an item to a control
+    # generate, edit, assemble
+    test_args = f'trestle author profile-generate -n {prof_name} -o {md_name} -rs NeededExtra'.split(  # noqa E501
+    )
+    test_args.extend(['-y', str(yaml_header_path)])
+    test_args.extend(['-s', all_sections_str])
+    monkeypatch.setattr(sys, 'argv', test_args)
+
+    assert Trestle().run() == 0
+
+    fc = test_utils.FileChecker(ac_path)
+
+    assert Trestle().run() == 0
+
+    assert fc.files_unchanged()
+
+    # assemble based on set_parameters_flag
+    test_args = f'trestle author profile-assemble -n {prof_name} -m {md_name} -o {assembled_prof_name}'.split()
+    test_args.append('-sp')
+    assembled_prof_dir.mkdir()
+    monkeypatch.setattr(sys, 'argv', test_args)
+    assert Trestle().run() == 0
+
+
+def test_profile_generate_assesment_objectives(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test the profile markdown generator."""
+    _, _, _, _ = setup_profile_generate(tmp_trestle_dir, 'simple_test_profile.json')
+    yaml_header_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
+
+    profile, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'my_prof', prof.Profile, FileContentType.JSON)
+
+    # create with-id to load at-2 control with its corresponding assesment objectives
+    with_id_at_2 = gens.generate_sample_model(prof.WithId)
+    with_id_at_2.__root__ = 'at-2'
+
+    profile.imports[0].include_controls[0].with_ids.append(with_id_at_2)
+
+    ModelUtils.save_top_level_model(profile, tmp_trestle_dir, 'my_prof', FileContentType.JSON)
+
+    nist_cat, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'nist_cat', cat.Catalog, FileContentType.JSON)
+    # create assesment objectives json for adding it to the control in the catalog
+    assesment_objectives = {
+        'id': 'at-2_obj',
+        'name': 'assessment-objective',
+        'props': [{
+            'name': 'label', 'value': 'AT-02', 'class': 'sp800-53a'
+        }],
+        'parts': [
+            {
+                'id': 'at-2_obj.a',
+                'name': 'assessment-objective',
+                'props': [{
+                    'name': 'label', 'value': 'AT-02a.', 'class': 'sp800-53a'
+                }],
+                'parts': [
+                    {
+                        'id': 'at-2_obj.a.1-2',
+                        'name': 'assessment-objective',
+                        'props': [{
+                            'name': 'label', 'value': 'AT-02a.01[02]', 'class': 'sp800-53a'
+                        }],
+                        'prose': 'some example prose'
+                    },
+                    {
+                        'id': 'at-2_obj.a.1-3',
+                        'name': 'assessment-objective',
+                        'props': [{
+                            'name': 'label', 'value': 'AT-02a.01[03]', 'class': 'sp800-53a'
+                        }],
+                        'prose': 'some example prose'
+                    }
+                ]
+            }
+        ]
+    }
+
+    at_2 = nist_cat.groups[1].controls[1]
+    at_2.parts.append(assesment_objectives)
+    ModelUtils.save_top_level_model(nist_cat, tmp_trestle_dir, 'nist_cat', FileContentType.JSON)
+
+    # convert resolved profile catalog to markdown then assemble it after adding an item to a control
+    # generate, edit, assemble
+    test_args = f'trestle author profile-generate -n {prof_name} -o {md_name} -rs NeededExtra'.split(  # noqa E501
+    )
+    test_args.extend(['-y', str(yaml_header_path)])
+    test_args.extend(['-s', all_sections_str])
+    monkeypatch.setattr(sys, 'argv', test_args)
+
+    assert Trestle().run() == 0

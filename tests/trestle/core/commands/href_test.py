@@ -24,6 +24,7 @@ from tests import test_utils
 
 from trestle.cli import Trestle
 from trestle.common.model_utils import ModelUtils
+from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.models.file_content_type import FileContentType
 from trestle.oscal import profile
 
@@ -70,19 +71,20 @@ def test_href_failures(
     tmp_path: pathlib.Path, keep_cwd: pathlib.Path, simplified_nist_profile: profile.Profile, monkeypatch: MonkeyPatch
 ) -> None:
     """Test href failure modes."""
+    cmd_string = 'trestle href -n my_test_model -hr foobar'
+
+    # not in trestle project so fail
+    monkeypatch.setattr(sys, 'argv', cmd_string.split())
+    monkeypatch.chdir(tmp_path)
+    rc = Trestle().run()
+    assert rc == CmdReturnCodes.TRESTLE_ROOT_ERROR.value
+
     # prepare trestle project dir with the file
     models_path, profile_path = test_utils.prepare_trestle_project_dir(
         tmp_path,
         FileContentType.JSON,
         simplified_nist_profile,
         test_utils.PROFILES_DIR)
-
-    cmd_string = 'trestle href -n my_test_model -hr foobar'
-
-    # not in trestle project so fail
-    monkeypatch.setattr(sys, 'argv', cmd_string.split())
-    rc = Trestle().run()
-    assert rc == 5
 
     os.chdir(models_path)
 
@@ -93,4 +95,4 @@ def test_href_failures(
     simplified_nist_profile.oscal_write(profile_path)
     monkeypatch.setattr(sys, 'argv', cmd_string.split())
     rc = Trestle().run()
-    assert rc == 1
+    assert rc == CmdReturnCodes.COMMAND_ERROR.value

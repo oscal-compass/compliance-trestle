@@ -169,7 +169,7 @@
               {
                 "param-id": "shared_param_1",
                 "values": [
-                  "shared_param_1_aa_opt_3"
+                  "shared_param_1_aa_opt_1"
                 ],
                 "remarks": "set shared param aa 3"
               },
@@ -246,6 +246,21 @@
                         "value": "partial"
                       }
                     ]
+                  }
+                ]
+              },
+              {
+                "uuid": "ca5ea4c5-ba51-4b1d-932a-5606891b7599",
+                "control-id": "ac-3",
+                "description": "imp req prose for ac-3 from comp aa",
+                "props": [
+                  {
+                    "name": "Rule_Id",
+                    "value": "top_shared_rule_1"
+                  },
+                  {
+                    "name": "implementation-status",
+                    "value": "implemented"
                   }
                 ]
               }
@@ -338,7 +353,7 @@
               {
                 "param-id": "shared_param_1",
                 "values": [
-                  "shared_param_1_ab_opt_2"
+                  "shared_param_1_ab_opt_1"
                 ],
                 "remarks": "set param ab 1"
               }

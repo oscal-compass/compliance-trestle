@@ -201,7 +201,7 @@ class Merge(Pipeline.Filter):
         # merge the incoming catalog with merged based on merge_method and as_is
         return self._merge_two_catalogs(local_merged, local_cat, merge_method, as_is)
 
-    def process(self, pipelines: List[Pipeline]) -> Iterator[cat.Catalog]:
+    def process(self, pipelines: List[Pipeline]) -> Iterator[cat.Catalog]:  # type: ignore
         """
         Merge the incoming catalogs.
 
@@ -213,4 +213,4 @@ class Merge(Pipeline.Filter):
         for pipeline in pipelines:
             catalog = next(pipeline.process(None))
             merged = self._merge_catalog(merged, catalog)
-        yield merged
+        yield merged  # type: ignore

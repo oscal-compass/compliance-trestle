@@ -177,14 +177,13 @@ ARG_MODE = 'mode'
 ARG_MODE_SHORT = 'm'
 ARG_DESC_MODE = 'Mode of the operation'
 
-ARG_ITEM = 'item'
-ARG_ITEM_SHORT = 'i'
-ARG_DESC_ITEM = 'Item used'
+ITEM = 'item'
 
 VAL_MODE_CATALOG = 'catalog'
 VAL_MODE_DUPLICATES = 'duplicates'
 VAL_MODE_LINKS = 'links'
 VAL_MODE_REFS = 'refs'
+VAL_MODE_RULES = 'rules'
 VAL_MODE_ALL = 'all'
 
 IOF_SHORT = '-iof'
@@ -239,9 +238,9 @@ WINDOWS_DRIVE_LETTER_REGEX = r'[A-Za-z]:'
 # need to strip white space from end of value
 PROPERTY_REGEX = r'(?:###\s+Property\s+)([^\s]*)\s*:\s+(.*)'
 
-PART_REGEX = r'(?:##\s+Part\s+)(.*)'
+PART_REGEX = r'(?i)(?:##\s+part\s+)(.*)'
 
-CONTROL_REGEX = r'(?:##\s+Control\s+)(.*)'
+CONTROL_REGEX = r'(?i)(?:##\s+Control\s+)(.*)'
 
 AFTER_HASHES_REGEX = r'(?:##*\s+)(.*)'
 
@@ -262,6 +261,7 @@ MARKDOWN_URL_REGEX = r'\[([^\]]+)\]\(([^)]+)\)'
 TEMPLATE_VERSION_REGEX = r'[0-9]+.[0-9]+.[0-9]+'
 
 OBJECTIVE_PART = 'objective'
+ASSESMENT_OBJECTIVE_PART = 'assessment-objective'
 TABLE_OF_PARAMS_PART = 'table_of_parameters'
 
 # extracts standalone uuid's from anywhere in string
@@ -285,7 +285,7 @@ CLOSE_COMMENT = ' -->'
 
 SSP_ADD_IMPLEMENTATION_FOR_STATEMENT_TEXT = SSP_ADD_IMPLEMENTATION_PREFIX + STATEMENT + CLOSE_COMMENT
 
-SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT = SSP_ADD_IMPLEMENTATION_PREFIX + 'item'
+SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT = SSP_ADD_IMPLEMENTATION_PREFIX + ITEM
 
 SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT = SSP_ADD_IMPLEMENTATION_PREFIX + 'control'
 
@@ -452,6 +452,10 @@ COMPONENT_VALUES = 'component-values'
 
 VALUES = 'values'
 
+GUIDELINES = 'guidelines'
+
+LABEL = 'label'
+
 SECTIONS_TAG = TRESTLE_TAG + 'sections'
 
 EDITABLE_CONTENT = 'Editable Content'
@@ -577,3 +581,19 @@ USE_FIRST = 'use-first'
 VALUE_ASSIGNED_PREFIX = 'value-assigned-prefix'
 
 VALUE_NOT_ASSIGNED_PREFIX = 'value-not-assigned-prefix'
+
+CONTROL_IMPLEMENTATION = 'control-implementation'
+
+IMPLEMENTED_REQUIREMENT = 'implemented-requirement'
+
+# Following 5 are allowed control origination values for
+# SSP -> ControlImplementation -> ImplementedRequirements -> prop[@name='control-origination']/@value
+ORIGINATION_ORGANIZATION = 'organization'
+
+ORIGINATION_SYSTEM_SPECIFIC = 'system-specific'
+
+ORIGINATION_CUSTOMER_CONFIGURED = 'customer-configured'
+
+ORIGINATION_CUSTOMER_PROVIDED = 'customer-provided'
+
+ORIGINATION_INHERITED = 'inherited'

@@ -14,6 +14,7 @@
 # limitations under the License.
 """OSCAL transformation tasks."""
 
+# mypy: ignore-errors  # noqa E800
 import configparser
 import datetime
 import logging
@@ -224,7 +225,7 @@ class CisXlsxToOscalCatalog(TaskBase):
 
     def __init__(self, config_object: Optional[configparser.SectionProxy]) -> None:
         """
-        Initialize trestle task ocp4-cis-profile-to-oscal-catalog.
+        Initialize trestle task.
 
         Args:
             config_object: Config section associated with the task.
@@ -248,7 +249,7 @@ class CisXlsxToOscalCatalog(TaskBase):
         text2 = '(required) title of the CIS catalog.'
         logger.info(text1 + text2)
         text1 = '  version                = '
-        text2 = '(required) version :q!of the CIS catalog.'
+        text2 = '(required) version of the CIS catalog.'
         logger.info(text1 + text2)
         text1 = '  output-overwrite       = '
         text2 = '(optional) true [default] or false; replace existing output when true.'

@@ -246,7 +246,7 @@ class CreatePathAction(Action):
 
         super().__init__(ActionType.CREATE_PATH, True)
 
-    def get_trestle_project_root(self) -> pathlib.Path:
+    def get_trestle_project_root(self) -> Optional[pathlib.Path]:
         """Return the trestle workspace root path."""
         return self._trestle_project_root
 
@@ -267,7 +267,7 @@ class CreatePathAction(Action):
             # create a path relative to the current
             # it starts with the project root, so we shall always create
             # sub directories or files relative to the project root
-            cur_path = cur_path / part
+            cur_path = cur_path / part  # type: ignore
 
             # create the sub_path file or directory if it does not exists already
             if cur_path.suffix != '':  # suffix will denote a file

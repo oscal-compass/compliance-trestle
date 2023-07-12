@@ -41,11 +41,11 @@ class Import(Pipeline.Filter):
         trestle_root: pathlib.Path,
         import_: prof.Import,
         uuid_chain: List[str],
-        change_prose=False,
+        change_prose: bool = False,
         block_adds: bool = False,
         block_params: bool = False,
         params_format: str = None,
-        param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES,
+        param_rep: ParameterRep = ParameterRep.LEAVE_MOUSTACHE,
         resources: Optional[List[Resource]] = None,
         show_value_warnings: bool = False,
         value_assigned_prefix: Optional[str] = None,
@@ -98,7 +98,7 @@ class Import(Pipeline.Filter):
             logger.debug('parent url root path %s', self._parent_url_root)
         logger.debug('import href is %s', self._import.href)
 
-    def process(self, _=None) -> Iterator[cat.Catalog]:
+    def process(self, _=None) -> Iterator[cat.Catalog]:  # type: ignore
         """Load href for catalog or profile and yield each import as catalog imported by its distinct pipeline."""
         logger.debug(f'import entering process with href {self._import.href}')
         fetcher = cache.FetcherFactory.get_fetcher(self._trestle_root, self._import.href)
@@ -108,7 +108,7 @@ class Import(Pipeline.Filter):
 
         if model_type == const.MODEL_TYPE_CATALOG:
             logger.debug(f'DIRECT YIELD in import of catalog {model.metadata.title}')
-            yield model
+            yield model  # type: ignore
         else:
             if model_type != const.MODEL_TYPE_PROFILE:
                 raise TrestleError(f'Improper model type {model_type} as profile import.')

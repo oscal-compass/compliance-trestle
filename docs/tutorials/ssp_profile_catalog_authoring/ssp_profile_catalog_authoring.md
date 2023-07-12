@@ -1,4 +1,4 @@
-# Tutorial: Catalog, Component, Profile and SSP Authoring
+# Tutorial: Catalog, Profile, ComponentDefinition, and SSP Authoring
 
 ## Introduction and background
 
@@ -27,8 +27,9 @@ The author commands are:
 1. `catalog-generate` converts a control Catalog to individual controls in markdown format for addition or editing of guidance prose and parameters, with parameters stored in a yaml header at the top of the markdown file.  `catalog-assemble` then gathers the prose and parameters and updates the controls in the Catalog to make a new OSCAL Catalog.
 1. `profile-generate` takes a given Profile and converts the controls represented by its resolved profile catalog to individual controls in markdown format, with sections corresponding to the content that the Profile adds to the Catalog, along with both the current values of parameters in the resolved profile catalog - and the values that are being modified by the given profile's SetParameters.  The user may edit the content or add more, and `profile-assemble` then gathers the updated content and creates a new OSCAL Profile that includes those changes.
 1. `profile-resolve` is special as an authoring tool because it does not involve markdown and instead it simply creates a JSON resolved profile catalog from a specified JSON profile in the trestle directory.  There are options to specify whether or not parameters get replace in the control prose or not, along with any special brackets that might be desired to indicate the parameters embedded in the prose.
+1. `profile-inherit` takes a given parent profile and filters its contents based on the inherited controls included in a given ssp to be include in the final profile.
 1. `component-generate` takes a given ComponentDefinition file and represents all the controls in markdown in separate directories for each Component in the file.  This allows editing of the prose on a per-component basis.  `component-assemble` then assembles the markdown for all controls in all component directories into a new, or the same, ComponentDefinition file.
-1. `ssp-generate` takes a given Profile and its resolved profile catalog, and represents the individual controls as markdown files with sections that prompt for prose regarding the implementation response for items in the statement of the control.  `ssp-assemble` then gathers the response sections and creates an OSCAL System Security Plan comprising the resolved profile catalog and the implementation responses.  Both commands may also include a list of component definitions representing the components referred to in the ssp.  Rules, parameters and status associated with the implemented requirements are stored in the SetParameters and Properties of the components in the component definitions and represented in the markdown, allowing changes to be made to the parameter values and status.  These edits are then included in the assembled SSP.  Note that the rules themselves may not be edited and strictly correspond to what is in the component definition.
+1. `ssp-generate` takes a given Profile and an optional list of component-definitions, and represents the individual controls as markdown files with sections that prompt for prose regarding the implementation response for items in the statement of the control, with separate response sections for each component.  `ssp-assemble` then gathers the response sections and creates an OSCAL System Security Plan comprising the resolved profile catalog and the implementation responses for each component.  The list of component-definitions is optional, but without them the SSP will only have one component: `This System`.  Rules, parameters and status associated with the implemented requirements are stored in the SetParameters and Properties of the components in the component definitions and represented in the markdown, allowing changes to be made to the parameter values and status.  These edits are then included in the assembled SSP.  Note that the rules themselves may not be edited and strictly correspond to what is in the component definitions.
 1. `ssp-filter` takes a given ssp and filters its contents based on the controls included in a provided profile, or in a list of components to be included in the final ssp.
 
 In summary, the `catalog` tools allow conversion of a Catalog to markdown for editing - and back again to a Catalog.  The `profile` tools similarly convert a Profile's resolved profile catalog to markdown and allow conversion to a new Profile with modified additions that get applied in resolving the profile catalog.  `component` tools perform similarly for ComponentDefinitions.  Finally, the `ssp` tools allow the addition of implementation prose to the markdown of a system security plan, which is then assembled into a JSON SSP on a by-component basis.
@@ -46,7 +47,7 @@ Similarly, when assembling to JSON, the `--set-parameters` option will cause any
 
 As described earlier, the authoring tools are designed to work well in a CI/CD environment where changes are made in a pipeline by people with different responsibilities and authority.  In this setting, changes to documents can trigger changes downstream, e.g. the editing of a control would cause an update in the catalog, which could then flow down to an updated SSP.  These changes can occur automatically via actions that restrict the potential changes to the generated documents.  Examples are the `--set-parameters` option on the `-assemble` tools, and both `--required-sections` and `allowed-sections` for `profile-assemble`.  If a document change triggers an assemble action, changes to parameters can only occur if the action has `--set-parameters` in the command.  Similarly, `profile-assemble` will fail if the sections do not meet the requirements specified in the command options.  Another feature of the `-assemble` tools is that they won't create a new OSCAL file if the output already exists and its content would not be changed.  This prevents undesired triggering of downstream actions when there is no actual change in content.
 
-There is a standalone demonstration of the SSP generation process with trestle in the [Trestle SSP Demo](https://github.com/IBM/compliance-trestle-ssp-demo), but it currently represents the earlier version of ssp authoring with trestle - prior to the link with component definitions and rules.  Nonetheless it captures the flow from OSCAL json files to a finished Word .docx file.
+There is a standalone demonstration of the SSP generation process with trestle in the [Trestle SSP Demo](https://github.com/IBM/compliance-trestle-ssp-demo) that captures the entire process of SSP authoring: from creation of a component definition from CSV file to a final formatted system security plan in Word (.docx) format.
 
 </details>
 
@@ -317,7 +318,7 @@ Access control policy and procedures address the controls in the AC family that 
 <!-- Each addition must have a heading either of the form ## Control my_addition_name -->
 <!-- or ## Part a. (where the a. refers to one of the control statement labels.) -->
 <!-- "## Control" parts are new parts added after the statement part. -->
-<!-- "## Part" parts are new parts added into the top-level statement part with that label. -->
+<!-- "## Part" parts are new subparts added into the existing top-level statement part with that label. -->
 <!-- Subparts may be added with nested hash levels of the form ### My Subpart Name -->
 <!-- underneath the parent ## Control or ## Part being added -->
 <!-- See https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring for guidance. -->
@@ -524,7 +525,52 @@ Similar options apply to the `jinja` authoring commands.
 
 <details markdown>
 
-<summary>trestle author component-generate</summary>
+<summary>trestle author profile-inherit</summary>
+
+The `trestle author profile-inherit` command is different from the `generate/assemble` commands because it doesn't involve markdown and instead
+it takes an parent profile and ssp and creates child profile in `JSON` format.
+
+When utilizing a process with leveraged authorizations, use the command `trestle author profile-inherit` to create a profile with initial content using a parent profile and SSP with inheritable controls. The provided and responsibility statements for all `by-component` fields, as well as the implementation status, will be used to evaluate the leveraged SSP.
+To be filtered from the output profile (i.e. controls delta profile), all components must have exported provided statements, no exported responsibility statements, and an implementation status of `implemented`.
+
+The filter command is invoked as:
+
+`trestle author profile-inherit --profile my_parent --ssp my_leveraged_ssp --output controls_delta_profile`
+
+Both the parent profile and the SSP must be present in the trestle workspace. This command produces a new workspace profile that imports the parent profile and filters the inherited controls from the SSP using the `exclude-controls` and `include-controls` fields in the profile import.
+
+<details markdown>
+
+<summary>Example imports generated from profile-inherit</summary>
+
+```json
+  "imports": [
+      {
+        "href": "trestle://profiles/controls_delta/profile.json",
+        "include-controls": [
+          {
+            "with-ids": [
+              "ac-2"
+            ]
+          }
+        ],
+        "exclude-controls": [
+          {
+            "with-ids": [
+              "ac-1"
+            ]
+          }
+        ]
+      }
+    ]
+```
+
+</details>
+</details>
+
+<details markdown>
+
+<summary>trestle author component-generate and component-assemble</summary>
 
 The `trestle author component-generate` command takes a JSON ComponentDefinition file and creates markdown for its controls in separate directories for each of the DefinedComponents in the file.  This allows specifying the implementation response and status for each component separately in separate markdown files for a control.  In addition, the markdown captures Rules in the control that specify descriptions and parameter values that apply to the expected responses.
 
@@ -994,7 +1040,7 @@ If you edit the control markdown files you may run `ssp-generate` again and your
 
 After manually edting the markdown and providing the responses for the control implementation requirements, the markdown can be assembled into a single json SSP file with:
 
-`trestle author ssp-assemble --markdown my_ssp --output my_json_ssp`
+`trestle author ssp-assemble --markdown my_ssp --compdefs my_compdef_a,my_compdef_b --output my_json_ssp`
 
 This will assemble the markdown files in the my_ssp directory and create a json SSP with name my_json_ssp in the system-security-plans directory.
 
@@ -1002,19 +1048,21 @@ As indicated for `ssp-generate`, please do not alter any of the horizontal rule 
 
 As with all the `assemble` tools, you may optionally specify a `--name` for a corresponding json file into which the updates will be inserted, thereby preserving metadata and other aspects of the model.  The result can overwrite the provided model or get directed to a new model.  And the version may be updated and the uuid's regenerated.  As with the other `-assemble` tools, if an output file already exists, a new one will only be written if there are changes to the model relative to the existing file.  See `catalog-assemble` for more details.
 
+If you do not specify component-defintions during assembly, the markdown should not refer to any components other than `This System`.  Thus you may first generate markdown with `ssp-generate` and no component-definitions specified - and then you may assemble that ssp with `ssp-assemble` and no component-definitions specified - but only if there are no components other than `This System` referenced in the markdown.  You may add new component implementation details to the markdown later, but any new components must be defined in a component-defintion file, and that file must be specified when `ssp-assemble` is run.
+
 </details>
 
 <details markdown>
 
 <summary>trestle author ssp-filter</summary>
 
-Once you have an SSP in the trestle directory you can filter its contents with a profile or list of components by using the command `trestle author ssp-filter`.  The SSP is assumed to contain a superset of the controls needed by the profile if a profile is specified, and the filter operation will generate a new SSP with only those controls needed by the profile.  If a list of component names is provided, only the specified components will appear in the system implementation of the ssp.
+Once you have an SSP in the trestle directory you can filter its contents with a profile, list of components, list of implementation statuses, or list control origination values by using the command `trestle author ssp-filter`.  The SSP is assumed to contain a superset of the controls needed by the profile if a profile is specified, and the filter operation will generate a new SSP with only those controls needed by the profile.  If a list of component names is provided, only the specified components will appear in the system implementation of the ssp. If a list of implementation statuses is provided, controls with implementations including those statuses will appear in the control implementation of the ssp. Similarly, if a list of control origination values is provided, implemented requirements with a control origination property value included in the provided values will appear in the control implementation of the ssp.
 
 The filter command is invoked as:
 
-`trestle author ssp-filter --name my_ssp --profile my_profile --components comp_a:comp_b --output my_culled_ssp`
+`trestle author ssp-filter --name my_ssp --profile my_profile --components comp_a:comp_b --implementation-status "planned,partial" --control-origination "customer-configured" --output my_culled_ssp`
 
-Both the SSP and profile must be present in the trestle directory.  This command will generate a new SSP in the directory.  If the profile makes reference to a control not in the SSP then the routine will fail with an error message.  Similarly, if one of the components is not present in the ssp the routine will also fail.
+The SSP must be present in the trestle workspace and, if filtering by profile, that profile must also be in the trestle workspace. This command will generate a new SSP in the workspace. If the profile makes reference to a control not in the SSP then the routine will fail with an error message.  Similarly, if one of the components is not present in the ssp the routine will also fail. The implementation statuses must be one of the allowed values as defined in the OSCAL SSP JSON format reference. Those include the following: implemented, partial, planned, alternative, and not-applicable. If an invalid value is provided, an error is returned. The control origination values also must be one of the allowed values as defined in the OSCAL SSP JSON format reference. Those include the following: system-specific, inherited, customer-configured, customer-provided, and organization. If an invalid value is provided, an error is returned.
 
 </details>
 

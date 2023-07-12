@@ -29,7 +29,7 @@ import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
 from trestle.common import const, file_utils, log
 from trestle.common.err import TrestleError, handle_generic_command_exception
-from trestle.common.list_utils import as_list, comma_sep_to_list, none_if_empty
+from trestle.common.list_utils import as_list, comma_sep_to_list, delete_list_from_list, none_if_empty
 from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog.catalog_api import CatalogAPI
@@ -40,11 +40,13 @@ from trestle.core.commands.author.component import ComponentAssemble
 from trestle.core.commands.common.cmd_utils import clear_folder
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_context import ContextPurpose, ControlContext
-from trestle.core.control_interface import ControlInterface
+from trestle.core.control_interface import ControlInterface, ParameterRep
 from trestle.core.control_reader import ControlReader
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.remote.cache import FetcherFactory
+from trestle.core.validator import Validator
+from trestle.core.validator_factory import validator_factory
 
 logger = logging.getLogger(__name__)
 
@@ -81,7 +83,7 @@ class SSPGenerate(AuthorCommonCommand):
             if not file_utils.is_directory_name_allowed(args.output):
                 raise TrestleError(f'{args.output} is not an allowed directory name')
 
-            yaml_header: dict = {}
+            yaml_header: Dict[str, Any] = {}
             if args.yaml_header:
                 try:
                     logging.debug(f'Loading yaml header file {args.yaml_header}')
@@ -158,13 +160,18 @@ class SSPGenerate(AuthorCommonCommand):
             _, _, context.profile = ModelUtils.load_distributed(profile_path, trestle_root)
         else:
             fetcher = FetcherFactory.get_fetcher(trestle_root, profile_href)
-            context.profile: prof.Profile = fetcher.get_oscal()
+            context.profile = fetcher.get_oscal()
             profile_path = profile_href
 
         profile_resolver = ProfileResolver()
         # in ssp context we want to see missing value warnings
         resolved_catalog = profile_resolver.get_resolved_profile_catalog(
-            trestle_root, profile_path, block_params=False, params_format='[.]', show_value_warnings=True
+            trestle_root,
+            profile_path,
+            block_params=False,
+            params_format='[.]',
+            param_rep=ParameterRep.ASSIGNMENT_FORM,
+            show_value_warnings=True
         )
 
         catalog_api = CatalogAPI(catalog=resolved_catalog, context=context)
@@ -203,11 +210,14 @@ class SSPAssemble(AuthorCommonCommand):
         for component in as_list(ssp.system_implementation.components):
             if component.title == gen_comp.title:
                 return component
+        # if this is a new system component assign its status as operational by default
+        # the status of the system components are not stored in the markdown
+        gen_comp.status.state = const.STATUS_OPERATIONAL
         new_component = gen_comp.as_system_component()
         return new_component
 
     @staticmethod
-    def _merge_by_comps(stat: ossp.Statement, statement: ossp.Statement, set_params: List[ossp.SetParameter]):
+    def _merge_by_comps(stat: ossp.Statement, statement: ossp.Statement, set_params: List[ossp.SetParameter]) -> None:
         for by_comp in as_list(statement.by_components):
             found = False
             for dest_by_comp in as_list(stat.by_components):
@@ -230,7 +240,7 @@ class SSPAssemble(AuthorCommonCommand):
         imp_req: ossp.ImplementedRequirement,
         statement: generic.GenericStatement,
         set_params: List[ossp.SetParameter],
-    ):
+    ) -> None:
         """Merge the generic statement into the statements of the imp_req."""
         # if the statement id is already in the imp_req, merge its by_comps into the existing statement
         for stat in as_list(imp_req.statements):
@@ -303,7 +313,7 @@ class SSPAssemble(AuthorCommonCommand):
         local_set_params.extend(as_list(imp_req.set_parameters))
         local_set_params = ControlInterface.uniquify_set_params(local_set_params)
         # get any rules set at control level, if present
-        rules_list, _ = ControlInterface.get_rule_list_for_item(gen_imp_req)
+        rules_list, _ = ControlInterface.get_rule_list_for_item(gen_imp_req)  # type: ignore
         # There should be no rule content at top level of imp_req in ssp so strip them out
         imp_req.props = none_if_empty(
             ControlInterface.clean_props(gen_imp_req.props, remove_imp_status=True, remove_all_rule_info=True)
@@ -315,7 +325,7 @@ class SSPAssemble(AuthorCommonCommand):
             by_comp.component_uuid = gen_comp.uuid
             by_comp.description = gen_imp_req.description
             by_comp.set_parameters = none_if_empty(control_set_params)
-            by_comp.implementation_status = ControlInterface.get_status_from_props(gen_imp_req)
+            by_comp.implementation_status = ControlInterface.get_status_from_props(gen_imp_req)  # type: ignore
             by_comp.props = none_if_empty(ControlInterface.clean_props(gen_imp_req.props))
             imp_req.by_components = as_list(imp_req.by_components)
             imp_req.by_components.append(by_comp)
@@ -323,12 +333,12 @@ class SSPAssemble(AuthorCommonCommand):
         # so insert the new by_comp directly into the ssp, generating parts as needed
         imp_req.statements = as_list(imp_req.statements)
         for statement in as_list(gen_imp_req.statements):
-            if ControlInterface.item_has_rules(statement):
+            if ControlInterface.item_has_rules(statement):  # type: ignore
                 imp_req = CatalogReader._get_imp_req_for_statement(ssp, gen_imp_req.control_id, statement.statement_id)
                 by_comp = CatalogReader._get_by_comp_from_imp_req(imp_req, statement.statement_id, gen_comp.uuid)
                 by_comp.description = statement.description
                 by_comp.props = none_if_empty(ControlInterface.clean_props(statement.props))
-                rules_list, _ = ControlInterface.get_rule_list_for_item(statement)
+                rules_list, _ = ControlInterface.get_rule_list_for_item(statement)  # type: ignore
                 by_comp.set_parameters = none_if_empty(
                     SSPAssemble._get_params_for_rules(context, rules_list, local_set_params)
                 )
@@ -383,6 +393,20 @@ class SSPAssemble(AuthorCommonCommand):
                     if new_ssp:
                         SSPAssemble._add_imp_req_to_ssp(ssp, gen_comp, imp_req, set_params, context)
                     else:
+                        # compile all new uuids for new component definitions
+                        comp_uuids = [x.uuid for x in comp_dict.values()]
+                        for imp_requirement in as_list(ssp.control_implementation.implemented_requirements):
+                            to_delete = []
+                            for i, by_comp in enumerate(imp_requirement.by_components):
+                                if by_comp.component_uuid not in comp_uuids:
+                                    logger.warning(
+                                        f'By_component {by_comp.component_uuid} removed from implemented requirement '
+                                        f'{imp_requirement.control_id} because the corresponding component is not in '
+                                        'the specified compdefs '
+                                    )
+                                    to_delete.append(i)
+                            if to_delete:
+                                delete_list_from_list(imp_requirement.by_components, to_delete)
                         SSPAssemble._merge_imp_req_into_ssp(ssp, imp_req, set_params)
             ssp_comp.props = as_list(gen_comp.props)
             ssp_comp.props.extend(all_ci_props)
@@ -447,7 +471,9 @@ class SSPAssemble(AuthorCommonCommand):
             new_ssp_name = args.output
 
             _, profile_href = ComponentAssemble._get_profile_title_and_href_from_dir(md_path)
-            res_cat = ProfileResolver.get_resolved_profile_catalog(trestle_root, profile_href)
+            res_cat = ProfileResolver.get_resolved_profile_catalog(
+                trestle_root, profile_href, param_rep=ParameterRep.LEAVE_MOUSTACHE
+            )
             catalog_interface = CatalogInterface(res_cat)
 
             new_file_content_type = FileContentType.JSON
@@ -493,6 +519,20 @@ class SSPAssemble(AuthorCommonCommand):
                     raise TrestleError('Original ssp has no system component.')
                 comp_dict[const.SSP_MAIN_COMP_NAME] = sys_comp
 
+                # Verifies older compdefs in an ssp no longer exist in newly provided ones
+                comp_titles = [x.title for x in comp_dict.values()]
+                ssp_sys_imp_comps = ssp.system_implementation.components
+                diffs = [x for x in ssp_sys_imp_comps if x.title not in comp_titles]
+                if diffs:
+                    for diff in diffs:
+                        logger.warning(
+                            f'Component named: {diff.title} was removed from system components from ssp '
+                            'because the corresponding component is not in '
+                            'the specified compdefs '
+                        )
+                    index_list = [ssp_sys_imp_comps.index(value) for value in diffs if value in ssp_sys_imp_comps]
+                    delete_list_from_list(ssp.system_implementation.components, index_list)
+
                 self._merge_comp_defs(ssp, comp_dict, context, catalog_interface)
                 CatalogReader.read_ssp_md_content(md_path, ssp, comp_dict, part_id_map_by_label, context)
 
@@ -507,7 +547,7 @@ class SSPAssemble(AuthorCommonCommand):
                 CatalogReader.read_ssp_md_content(md_path, ssp, comp_dict, part_id_map_by_label, context)
 
                 import_profile: ossp.ImportProfile = gens.generate_sample_model(ossp.ImportProfile)
-                import_profile.href = 'REPLACE_ME'
+                import_profile.href = const.REPLACE_ME
                 ssp.import_profile = import_profile
 
             # now that we know the complete list of needed components, add them to the sys_imp
@@ -526,7 +566,15 @@ class SSPAssemble(AuthorCommonCommand):
             if args.regenerate:
                 ssp, _, _ = ModelUtils.regenerate_uuids(ssp)
             ModelUtils.update_last_modified(ssp)
-
+            # validate model rules before saving
+            args_validate = argparse.Namespace(mode=const.VAL_MODE_RULES)
+            validator: Validator = validator_factory.get(args_validate)
+            if not validator.model_is_valid(ssp, True, trestle_root):
+                logger.error(
+                    'Validation of file to be imported did not pass. Rule parameter values validation failed, '
+                    'please check values are correct for shared parameters in current model'
+                )
+                return CmdReturnCodes.COMMAND_ERROR.value
             # write out the ssp as json
             ModelUtils.save_top_level_model(ssp, trestle_root, new_ssp_name, new_file_content_type)
 
@@ -537,7 +585,12 @@ class SSPAssemble(AuthorCommonCommand):
 
 
 class SSPFilter(AuthorCommonCommand):
-    """Filter the controls in an ssp based on files included by profile and/or list of component names."""
+    """
+    Filter the controls in an ssp.
+
+    The filtered ssp is based on controls included by the following:
+    profile, components, implementation status, and/or control origination.
+    """
 
     name = 'ssp-filter'
 
@@ -552,20 +605,75 @@ class SSPFilter(AuthorCommonCommand):
         self.add_argument('-vn', '--version', help=const.HELP_VERSION, required=False, type=str)
         comp_help_str = 'Colon-delimited list of component names to include in filtered ssp.'
         self.add_argument('-c', '--components', help=comp_help_str, required=False, type=str)
+        is_help_str = 'Comma-delimited list of control implementation statuses to include in filtered ssp.'
+        self.add_argument('-is', '--implementation-status', help=is_help_str, required=False, type=str)
+        co_help_str = 'Comma-delimited list of control origination values to include in filtered ssp.'
+        self.add_argument('-co', '--control-origination', help=co_help_str, required=False, type=str)
 
     def _run(self, args: argparse.Namespace) -> int:
         try:
             log.set_log_level_from_args(args)
             trestle_root = pathlib.Path(args.trestle_root)
             comp_names: Optional[List[str]] = None
+            impl_status_values: Optional[List[str]] = None
+            co_values: Optional[List[str]] = None
+
+            if not (args.components or args.implementation_status or args.profile or args.control_origination):
+                logger.warning(
+                    'You must specify at least one, or a combination of: profile, list of component names'
+                    ', list of implementation statuses, or list of control origination values for ssp-filter.'
+                )
+                return CmdReturnCodes.COMMAND_ERROR.value
+
             if args.components:
                 comp_names = args.components.split(':')
-            elif not args.profile:
-                logger.warning('You must specify either a profile or list of component names for ssp-filter.')
-                return 1
+
+            if args.implementation_status:
+                impl_status_values = args.implementation_status.split(',')
+                allowed_is_values = {
+                    const.STATUS_PLANNED,
+                    const.STATUS_PARTIAL,
+                    const.STATUS_IMPLEMENTED,
+                    const.STATUS_ALTERNATIVE,
+                    const.STATUS_NOT_APPLICABLE
+                }
+                allowed_is_string = ', '.join(str(item) for item in allowed_is_values)
+                for impl_status in impl_status_values:
+                    if impl_status not in allowed_is_values:
+                        logger.warning(
+                            f'Provided implementation status "{impl_status}" is invalid.\n'
+                            f'Please use the following for ssp-filter: {allowed_is_string}'
+                        )
+                        return CmdReturnCodes.COMMAND_ERROR.value
+
+            if args.control_origination:
+                co_values = args.control_origination.split(',')
+                allowed_co_values = {
+                    const.ORIGINATION_ORGANIZATION,
+                    const.ORIGINATION_SYSTEM_SPECIFIC,
+                    const.ORIGINATION_INHERITED,
+                    const.ORIGINATION_CUSTOMER_CONFIGURED,
+                    const.ORIGINATION_CUSTOMER_PROVIDED
+                }
+                allowed_co_string = ', '.join(str(item) for item in allowed_co_values)
+                for co in co_values:
+                    if co not in allowed_co_values:
+                        logger.warning(
+                            f'Provided control origination "{co}" is invalid.\n'
+                            f'Please use the following for ssp-filter: {allowed_co_string}'
+                        )
+                        return CmdReturnCodes.COMMAND_ERROR.value
 
             return self.filter_ssp(
-                trestle_root, args.name, args.profile, args.output, args.regenerate, args.version, comp_names
+                trestle_root,
+                args.name,
+                args.profile,
+                args.output,
+                args.regenerate,
+                args.version,
+                comp_names,
+                impl_status_values,
+                co_values
             )
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Error generating the filtered ssp')
@@ -578,10 +686,15 @@ class SSPFilter(AuthorCommonCommand):
         out_name: str,
         regenerate: bool,
         version: Optional[str],
-        components: Optional[List[str]] = None
+        components: Optional[List[str]] = None,
+        implementation_status: Optional[List[str]] = None,
+        control_origination: Optional[List[str]] = None
     ) -> int:
         """
-        Filter the ssp based on controls included by the profile and/or components and output new ssp.
+        Filter the ssp and output new ssp.
+
+        The filtered ssp is based on controls included by the following:
+        profile, components, implementation status, and/or control origination.
 
         Args:
             trestle_root: root directory of the trestle workspace
@@ -591,6 +704,8 @@ class SSPFilter(AuthorCommonCommand):
             regenerate: whether to regenerate the uuid's in the ssp
             version: new version for the model
             components: optional list of component names used for filtering
+            implementation_status: optional list of implementation statuses for filtering
+            control_origination: optional list of control origination values for filtering
 
         Returns:
             0 on success, 1 otherwise
@@ -678,6 +793,51 @@ class SSPFilter(AuthorCommonCommand):
 
             ssp.control_implementation = control_imp
 
+        # filter implemented requirements and statements by component implementation status
+        # this will remove any implemented requirements without statements or by_component fields set
+        if implementation_status:
+            new_imp_reqs: List[ossp.ImplementedRequirement] = []
+            # these are all required to be present
+            for imp_req in ssp.control_implementation.implemented_requirements:
+                new_by_comps: List[ossp.ByComponent] = []
+                # by_comps is optional
+                for by_comp in as_list(imp_req.by_components):
+                    if by_comp.implementation_status.state in implementation_status:
+                        new_by_comps.append(by_comp)
+                imp_req.by_components = none_if_empty(new_by_comps)
+
+                new_statements: List[ossp.Statement] = []
+                for statement in as_list(imp_req.statements):
+                    new_by_comps: List[ossp.ByComponent] = []
+                    for by_comp in as_list(statement.by_components):
+                        if by_comp.implementation_status.state in implementation_status:
+                            new_by_comps.append(by_comp)
+                    statement.by_components = none_if_empty(new_by_comps)
+                    if statement.by_components is not None:
+                        new_statements.append(statement)
+                imp_req.statements = none_if_empty(new_statements)
+
+                if imp_req.by_components is not None or imp_req.statements is not None:
+                    new_imp_reqs.append(imp_req)
+
+            ssp.control_implementation.implemented_requirements = new_imp_reqs
+
+        # filter implemented requirements by control origination property.
+        # this will remove any implemented requirements without the control origination
+        # property set
+        if control_origination:
+            new_imp_reqs: List[ossp.ImplementedRequirement] = []
+
+            for imp_requirement in ssp.control_implementation.implemented_requirements:
+                if imp_requirement.props:
+                    for prop in imp_requirement.props:
+                        if prop.name == const.CONTROL_ORIGINATION and prop.value in control_origination:
+                            new_imp_reqs.append(imp_requirement)
+                            # only add the imp requirement one time
+                            break
+
+            ssp.control_implementation.implemented_requirements = new_imp_reqs
+
         if version:
             ssp.metadata.version = version
 
@@ -686,7 +846,7 @@ class SSPFilter(AuthorCommonCommand):
         )
         if existing_ssp_path is not None:
             existing_ssp, _ = load_validate_model_name(trestle_root, out_name, ossp.SystemSecurityPlan)
-            if ModelUtils.models_are_equivalent(existing_ssp, ssp):
+            if ModelUtils.models_are_equivalent(existing_ssp, ssp):  # type: ignore
                 logger.info('No changes to filtered ssp so ssp not written out.')
                 return CmdReturnCodes.SUCCESS.value
 

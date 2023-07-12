@@ -14,6 +14,7 @@
 # limitations under the License.
 """Facilitate OSCAL-OSCO transformation."""
 
+# mypy: ignore-errors  # noqa E800
 import base64
 import bz2
 import json
@@ -44,6 +45,7 @@ from trestle.transforms.transformer_helper import TransformerHelper
 logger = logging.getLogger(__name__)
 
 
+# deprecated - use XccdfResultToOscalARTransformer instead
 class OscoResultToOscalARTransformer(ResultsTransformer):
     """Interface for Osco transformer."""
 
@@ -74,7 +76,7 @@ class OscoResultToOscalARTransformer(ResultsTransformer):
             - data from Auditree OSCO fetcher/check (json)
         """
         results = None
-        self._results_factory = OscalResultsFactory(self.get_timestamp(), self.checking)
+        self._results_factory = _OscalResultsFactory(self.get_timestamp(), self.checking)
         if results is None:
             results = self._ingest_xml(blob)
         if results is None:
@@ -137,6 +139,7 @@ class OscoResultToOscalARTransformer(ResultsTransformer):
         return results
 
 
+# deprecated(details - use XccdfResultToOscalARTransformer instead
 class OscoTransformer(OscoResultToOscalARTransformer):
     """Legacy class name."""
 
@@ -173,7 +176,7 @@ class RuleUse():
         return rval
 
 
-class ComplianceOperatorResult():
+class _ComplianceOperatorResult():
     """Represents one result of OSCO data."""
 
     def __init__(self, osco_xml: str) -> None:
@@ -331,7 +334,7 @@ class ComplianceOperatorResult():
         return self._parse_xml()
 
 
-class OscalResultsFactory():
+class _OscalResultsFactory():
     """Build OSCO OSCAL entities."""
 
     default_timestamp = ResultsTransformer.get_timestamp()
@@ -545,7 +548,7 @@ class OscalResultsFactory():
         props.append(Property.construct(name='id', value=rule_use.id_, ns=self._ns, class_='scc_predefined_profile'))
         return props
 
-    def _process(self, co_result: ComplianceOperatorResult) -> None:
+    def _process(self, co_result: _ComplianceOperatorResult) -> None:
         """Process ingested data."""
         rule_use_generator = co_result.rule_use_generator()
         for rule_use in rule_use_generator:
@@ -566,7 +569,7 @@ class OscalResultsFactory():
         """Process OSCO xml."""
         if not osco_xml.startswith('<?xml'):
             osco_xml = bz2.decompress(base64.b64decode(osco_xml))
-        co_result = ComplianceOperatorResult(osco_xml)
+        co_result = _ComplianceOperatorResult(osco_xml)
         self._process(co_result)
 
 

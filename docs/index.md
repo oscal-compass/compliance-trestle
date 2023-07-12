@@ -73,7 +73,7 @@ Trestle runs on most all python platforms (e.g. Linux, Mac, Windows) and is avai
 
 ## Development status
 
-Compliance trestle is currently stable and is based on NIST OSCAL version 1.0.2, with active development continuing.
+Compliance trestle is currently stable and is based on NIST OSCAL version 1.0.4, with active development continuing.
 
 ## Contributing to Trestle
 

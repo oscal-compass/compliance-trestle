@@ -14,6 +14,7 @@
 # limitations under the License.
 """OSCAL transformation tasks."""
 
+# mypy: ignore-errors  # noqa E800
 import configparser
 import csv
 import datetime
@@ -545,18 +546,19 @@ class CsvToOscalComponentDefinition(TaskBase):
         """Create create set parameters."""
         set_parameter = None
         name = self._csv_mgr.get_value(rule_key, PARAMETER_ID)
-        if name:
+        value = self._csv_mgr.get_value(rule_key, PARAMETER_VALUE_DEFAULT)
+        if name and value:
             value = self._csv_mgr.get_value(rule_key, PARAMETER_VALUE_DEFAULT)
-            if value == '':
-                row_number = self._csv_mgr.get_row_number(rule_key)
-                column_name = PARAMETER_VALUE_DEFAULT
-                text = f'row "{row_number}" missing value for "{column_name}"'
-                raise RuntimeError(text)
             values = value.split(',')
             set_parameter = SetParameter(
                 param_id=name,
                 values=values,
             )
+        elif name:
+            row_number = self._csv_mgr.get_row_number(rule_key)
+            column_name = PARAMETER_VALUE_DEFAULT
+            text = f'row "{row_number}" missing value for "{column_name}"'
+            logger.debug(text)
         return set_parameter
 
     def _get_implemented_requirement(

@@ -71,7 +71,7 @@ class ImportCmd(CommandPlusDocs):
             # this will do any needed fixes to the file, such as assign missing catalog group ids
             args_validate = argparse.Namespace(mode=const.VAL_MODE_ALL)
             validator: Validator = validator_factory.get(args_validate)
-            if not validator.model_is_valid(model_read, True):
+            if not validator.model_is_valid(model_read, True, trestle_root):  # type: ignore
                 logger.warning(f'Validation of file to be imported {input_uri} did not pass.  Import failed.')
                 return CmdReturnCodes.COMMAND_ERROR.value
 

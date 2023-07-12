@@ -1,0 +1,198 @@
+{
+  "profile": {
+    "uuid": "A0000000-0000-4000-8000-000000000051",
+    "metadata": {
+      "title": "Trestle test profile",
+      "last-modified": "2021-01-01T00:00:00.000+00:00",
+      "version": "2021-01-01",
+      "oscal-version": "1.0.0"
+    },
+    "imports": [
+      {
+        "href": "#657e15f4-bee9-45fb-a43d-44d7f7f2abfa",
+        "include-controls": [
+          {
+            "with-ids": [
+              "ac-1",
+              "ac-2",
+              "ac-2.1",
+              "ac-2.2"
+            ]
+          }
+        ]
+      }
+    ],
+    "merge": {
+      "combine": {
+        "method": "use-first"
+      },
+      "as-is": true
+    },
+    "modify": {
+      "set_parameters": [
+        {
+          "param_id": "ac-1_prm_1",
+          "props": [
+            {
+              "name": "display-name",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal",
+              "value": "Pretty ac-1 prm 1"
+            }
+          ],
+          "label": "label from profile",
+          "values": [
+            "all personnel"
+          ]
+        },
+        {
+          "param_id": "ac-1_prm_2",
+          "props": [
+            {
+              "name": "display-name",
+              "value": "Pretty ac-1 prm 2"
+            }
+          ],
+          "values": [
+                "Organization-level",
+                "System-level"
+          ]
+        },
+        {  "param_id": "ac-1_prm_3",
+            "values": [
+              "officer"
+            ]
+        },
+        {  "param_id": "ac-1_prm_4",
+            "values": [
+              "weekly"
+            ]
+        },
+        {  "param_id": "ac-1_prm_5",
+            "values": [
+              "all meetings"
+            ]
+        },
+        {  "param_id": "ac-1_prm_6",
+            "values": [
+              "monthly"
+            ]
+        },
+        {  "param_id": "ac-2_prm_1",
+            "values": [
+              "passwords"
+            ]
+        },
+        {  "param_id": "ac-2_prm_2",
+            "values": [
+              "approvals"
+            ]
+        },
+        {  "param_id": "ac-2_prm_3",
+            "values": [
+              "authorized personnel"
+            ]
+        },
+        {  "param_id": "ac-2_prm_4",
+            "values": [
+              "guidelines"
+            ]
+        },
+        {  "param_id": "ac-2_prm_5",
+            "values": [
+              "personnel"
+            ]
+        },
+        {  "param_id": "ac-2_prm_6",
+            "values": [
+              "one week"
+            ]
+        },
+        {  "param_id": "ac-2_prm_7",
+            "values": [
+              "one day"
+            ]
+        },
+        {  "param_id": "ac-2_prm_8",
+            "values": [
+              "one hour"
+            ]
+        },
+        {  "param_id": "ac-2_prm_9",
+            "values": [
+              "special needs"
+            ]
+        }
+      ],
+      "alters": [
+        {
+          "control_id": "ac-1",
+          "adds": [
+            {
+              "position": "after",
+              "by_id": "ac-1_smt",
+              "parts": [
+                {
+                  "id": "ac-1_implgdn",
+                  "name": "implgdn",
+                  "prose": "Do it carefully."
+                },
+                {
+                  "id": "ac-1_expevid",
+                  "name": "expevid",
+                  "prose": "Detailed logs."
+                }
+              ]
+            },
+            {
+              "position": "ending",
+              "props": [
+                {
+                  "name": "prop_with_ns",
+                  "value": "prop with ns",
+                  "ns": "https://my_namespace"
+                },
+                {
+                  "name": "prop_with_no_ns",
+                  "value": "prop with no ns"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "control_id": "ac-2",
+          "adds": [
+            {
+              "position": "after",
+              "by_id": "ac-2_smt",
+              "parts": [
+                {
+                  "id": "ac-2_implgdn",
+                  "name": "implgdn",
+                  "prose": "Maintain compliance"
+                },
+                {
+                  "id": "ac-2_expevid",
+                  "name": "expevid",
+                  "prose": "Daily logs."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "back_matter": {
+      "resources": [
+        {
+          "uuid": "657e15f4-bee9-45fb-a43d-44d7f7f2abfa",
+          "rlinks": [
+            {
+              "href": "trestle://catalogs/nist_cat/catalog.json"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

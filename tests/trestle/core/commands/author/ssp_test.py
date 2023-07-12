@@ -25,7 +25,7 @@ import trestle.core.generators as gens
 import trestle.core.generic_oscal as generic
 import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
-from trestle.common import const, file_utils
+from trestle.common import const, file_utils, list_utils
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.author.ssp import SSPAssemble, SSPFilter, SSPGenerate
 from trestle.core.control_context import ContextPurpose, ControlContext
@@ -292,7 +292,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
         ac_1_path, 'ac-1_prm_2:', '    values:\n    ssp-values:\n      - my ssp val\n'
     )
     assert test_utils.replace_line_in_file_after_tag(
-        ac_1_path, '- shared_param_1_aa_opt_1', '      ssp-values:\n        - shared_param_1_aa_opt_2\n  comp_ab:\n'
+        ac_1_path, '- shared_param_1_aa_opt_1', '      ssp-values:\n        - shared_param_1_aa_opt_1\n  comp_ab:\n'
     )
 
     # now assemble the edited controls into json ssp
@@ -319,8 +319,11 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert imp_req.statements[0].by_components[0].description == prose_aa_a
 
     assert imp_reqs[0].by_components[0].set_parameters[1].param_id == 'shared_param_1'
-    assert imp_reqs[0].by_components[0].set_parameters[1].values[0] == 'shared_param_1_aa_opt_2'
+    assert imp_reqs[0].by_components[0].set_parameters[1].values[0] == 'shared_param_1_aa_opt_1'
     assert imp_reqs[0].set_parameters[0].values[0] == 'my ssp val'
+
+    by_comp = orig_ssp.control_implementation.implemented_requirements[0].by_components[2]
+    assert by_comp.description == prose_sys
 
     orig_file_creation = orig_ssp_path.stat().st_mtime
 
@@ -365,7 +368,6 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert orig_uuid == test_utils.get_model_uuid(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     # confirm the file was not written out since no change
     assert orig_ssp_path.stat().st_mtime == orig_file_creation
-
     # assemble it again but give new version and regen uuid's
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
@@ -381,6 +383,42 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert orig_uuid != test_utils.get_model_uuid(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     # confirm the file was not written out since no change
     assert orig_ssp_path.stat().st_mtime > orig_file_creation
+
+
+def test_ssp_assemble_remove_comp_defs(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Tests the removal of component definitions that are no longer valid for an ssp."""
+    gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
+    # first create the markdown
+    ssp_gen = SSPGenerate()
+    assert ssp_gen._run(gen_args) == 0
+
+    # first assemble
+    ssp_assemble = f'trestle author ssp-assemble -m {ssp_name} -o {ssp_name} -cd {gen_args.compdefs}'
+    test_utils.execute_command_and_assert(ssp_assemble, 0, monkeypatch)
+    # modify component uuids for testing removal
+    orig_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+    imp_reqs = orig_ssp.control_implementation.implemented_requirements
+    components = orig_ssp.system_implementation.components
+    generic_uuid = '46b7a556-72bb-4281-b805-a8f4030ca0e3'
+    new_component = gens.generate_sample_model(ossp.SystemComponent)
+    new_component.uuid = generic_uuid
+    new_component.title = 'foo'
+    components.append(new_component)
+    by_comp = gens.generate_sample_model(ossp.ByComponent)
+    by_comp.component_uuid = generic_uuid
+    imp_reqs[0].by_components.append(by_comp)
+
+    ModelUtils.save_top_level_model(orig_ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
+    # reassemble with changes
+    ssp_assemble = f'trestle author ssp-assemble -m {ssp_name} -o {ssp_name} -cd {gen_args.compdefs}'
+    test_utils.execute_command_and_assert(ssp_assemble, 0, monkeypatch)
+
+    # loads edited ssp again
+    edited_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+    components = edited_ssp.system_implementation.components
+    imp_reqs = edited_ssp.control_implementation.implemented_requirements
+    assert not [x for x in components if x.uuid == generic_uuid]
+    assert not [x for x in imp_reqs[0].by_components if x.component_uuid == generic_uuid]
 
 
 def test_ssp_generate_bad_name(tmp_trestle_dir: pathlib.Path) -> None:
@@ -434,7 +472,7 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
     ssp: ossp.SystemSecurityPlan
     ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
 
-    assert len(ssp.control_implementation.implemented_requirements) == 7
+    assert len(ssp.control_implementation.implemented_requirements) == 8
 
     filtered_name = 'filtered_ssp'
 
@@ -447,7 +485,9 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         verbose=0,
         regenerate=False,
         version=None,
-        components=None
+        components=None,
+        implementation_status=None,
+        control_origination=None
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
@@ -460,7 +500,7 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
     )
 
     # confirm the imp_reqs have been culled by profile_d to only two controls
-    assert len(ssp.control_implementation.implemented_requirements) == 2
+    assert len(ssp.control_implementation.implemented_requirements) == 3
 
     # confirm there are three by_comps for: this system, foo, bar
     assert len(ssp.control_implementation.implemented_requirements[0].statements[0].by_components) == 2
@@ -474,7 +514,9 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         verbose=0,
         regenerate=True,
         version=None,
-        components='comp_aa'
+        components='comp_aa',
+        implementation_status=None,
+        control_origination=None
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
@@ -495,10 +537,66 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         verbose=0,
         regenerate=True,
         version=None,
-        components='comp_aa'
+        components='comp_aa',
+        implementation_status=None,
+        control_origination=None
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
+
+    # now filter the ssp by multiple implementation statuses
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        name=ssp_name,
+        profile=None,
+        output=filtered_name,
+        verbose=0,
+        regenerate=False,
+        version=None,
+        components=None,
+        implementation_status='not-applicable,implemented',
+        control_origination=None
+    )
+    ssp_filter = SSPFilter()
+    assert ssp_filter._run(args) == 0
+
+    ssp, _ = ModelUtils.load_model_for_class(
+        tmp_trestle_dir,
+        filtered_name,
+        ossp.SystemSecurityPlan,
+        FileContentType.JSON
+    )
+
+    # confirm the imp_reqs have been culled by impl_status to five controls
+    assert len(ssp.control_implementation.implemented_requirements) == 5
+    # confirm there are is two by_comps for the first impl_req
+    assert len(ssp.control_implementation.implemented_requirements[0].by_components) == 2
+
+    # now filter the ssp by an implementation status that is unused
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        name=ssp_name,
+        profile=None,
+        output=filtered_name,
+        verbose=0,
+        regenerate=False,
+        version=None,
+        components=None,
+        implementation_status='not-applicable',
+        control_origination=None
+    )
+    ssp_filter = SSPFilter()
+    assert ssp_filter._run(args) == 0
+
+    ssp, _ = ModelUtils.load_model_for_class(
+        tmp_trestle_dir,
+        filtered_name,
+        ossp.SystemSecurityPlan,
+        FileContentType.JSON
+    )
+
+    # confirm the imp_reqs have been culled by impl_status to zero controls
+    assert len(ssp.control_implementation.implemented_requirements) == 0
 
     # now filter without profile or components to trigger error
     args = argparse.Namespace(
@@ -509,8 +607,11 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         verbose=0,
         regenerate=True,
         version=None,
-        components=None
+        components=None,
+        implementation_status=None,
+        control_origination=None
     )
+
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 1
 
@@ -525,7 +626,123 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         verbose=0,
         regenerate=True,
         version=None,
-        components=None
+        components=None,
+        implementation_status=None,
+        control_origination=None
+    )
+    ssp_filter = SSPFilter()
+    assert ssp_filter._run(args) == 1
+
+    # now filter with an invalid implementation status to trigger error
+    bad_impl = 'impl_bad'
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        name=ssp_name,
+        profile=None,
+        output=filtered_name,
+        verbose=0,
+        regenerate=True,
+        version=None,
+        components=None,
+        implementation_status=bad_impl,
+        control_origination=None
+    )
+    ssp_filter = SSPFilter()
+    assert ssp_filter._run(args) == 1
+
+
+def test_ssp_filter_control_origination(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test the ssp filter when filtering by control origination."""
+    gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
+    ssp_gen = SSPGenerate()
+    assert ssp_gen._run(gen_args) == 0
+
+    # create ssp from the markdown
+    ssp_assemble = SSPAssemble()
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        markdown=ssp_name,
+        output=ssp_name,
+        verbose=0,
+        name=None,
+        version=None,
+        regenerate=False,
+        compdefs=gen_args.compdefs
+    )
+    assert ssp_assemble._run(args) == 0
+
+    ssp: ossp.SystemSecurityPlan
+    ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
+
+    assert len(ssp.control_implementation.implemented_requirements) == 8
+
+    filtered_name = 'filtered_ssp'
+
+    # now filter the ssp by multiple control origination values
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        name=ssp_name,
+        profile=None,
+        output=filtered_name,
+        verbose=0,
+        regenerate=False,
+        version=None,
+        components=None,
+        implementation_status=None,
+        control_origination='customer-configured,system-specific'
+    )
+    ssp_filter = SSPFilter()
+    assert ssp_filter._run(args) == 0
+
+    ssp, _ = ModelUtils.load_model_for_class(
+        tmp_trestle_dir,
+        filtered_name,
+        ossp.SystemSecurityPlan,
+        FileContentType.JSON
+    )
+
+    # confirm the imp_reqs have been culled to two controls
+    assert len(ssp.control_implementation.implemented_requirements) == 2
+
+    # now filter the ssp by a control origination that is unused
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        name=ssp_name,
+        profile=None,
+        output=filtered_name,
+        verbose=0,
+        regenerate=False,
+        version=None,
+        components=None,
+        implementation_status=None,
+        control_origination='inherited'
+    )
+    ssp_filter = SSPFilter()
+    assert ssp_filter._run(args) == 0
+
+    ssp, _ = ModelUtils.load_model_for_class(
+        tmp_trestle_dir,
+        filtered_name,
+        ossp.SystemSecurityPlan,
+        FileContentType.JSON
+    )
+
+    # confirm the imp_reqs have been culled to zero controls
+    assert len(ssp.control_implementation.implemented_requirements) == 0
+
+    # filter with an invalid control origination to trigger error
+    bad_co = 'co_bad'
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        name=ssp_name,
+        profile=None,
+        output=filtered_name,
+        verbose=0,
+        regenerate=True,
+        version=None,
+        components=None,
+        implementation_status=None,
+        control_origination=bad_co
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 1
@@ -632,3 +849,55 @@ def test_ssp_warning_missing_control(tmp_trestle_dir: pathlib.Path, capsys) -> N
     assert ssp_gen._run(gen_args) == 0
     _, err = capsys.readouterr()
     assert 'Component comp_aa references control ac-1 not in profile.' in err
+
+
+def test_ssp_assemble_no_comps(tmp_trestle_dir: pathlib.Path, capsys) -> None:
+    """Test ssp assemble with no compdefs."""
+    gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
+    gen_args.compdefs = None
+    gen_args.yaml_header = None
+
+    ssp_gen = SSPGenerate()
+    assert ssp_gen._run(gen_args) == 0
+
+    prose_sys = 'My response for This System'
+
+    # edit it a bit
+    ac_1_path = tmp_trestle_dir / ssp_name / 'ac/ac-1.md'
+    assert test_utils.substitute_text_in_file(
+        ac_1_path, '<!-- Add implementation prose for the main This System component for control: ac-1 -->', prose_sys
+    )
+    # change status for sys comp
+    assert test_utils.substitute_text_in_file(ac_1_path, 'Status: planned', 'Status: alternative')
+
+    # now assemble the edited controls into json ssp
+    ssp_assemble = SSPAssemble()
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        markdown=ssp_name,
+        output=ssp_name,
+        verbose=0,
+        regenerate=False,
+        version=None,
+        name=None,
+        compdefs=None
+    )
+    assert ssp_assemble._run(args) == 0
+
+    assem_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+    assert len(assem_ssp.system_implementation.components) == 1
+    # following tests pass on windows but not others
+    imp_req = list_utils.get_item_from_list(
+        assem_ssp.control_implementation.implemented_requirements, 'ac-1', lambda x: x.control_id
+    )
+    by_comp = imp_req.by_components[0]
+    assert by_comp.description == prose_sys
+    assert by_comp.implementation_status.state == 'alternative'
+
+    assert test_utils.replace_line_in_file_after_tag(
+        ac_1_path, 'Status: alternative', '\n### Bad Component\n\n#### Status planned\n'
+    )
+    assert ssp_assemble._run(args) == 1
+    _, err = capsys.readouterr()
+    assert 'Control ac-1 references component Bad Component not defined' in err
+    assert 'Please specify the names of any component-definitions' in err

@@ -420,7 +420,9 @@ def test_params_in_choice(
     ModelUtils.save_top_level_model(simplified_nist_catalog, tmp_trestle_dir, cat_name, FileContentType.JSON)
     ModelUtils.save_top_level_model(simplified_nist_profile, tmp_trestle_dir, prof_name, FileContentType.JSON)
     prof_path = ModelUtils.get_model_path_for_name_and_class(tmp_trestle_dir, prof_name, prof.Profile)
-    catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
+    catalog = ProfileResolver.get_resolved_profile_catalog(
+        tmp_trestle_dir, prof_path, param_rep=ParameterRep.VALUE_OR_LABEL_OR_CHOICES
+    )
     cat_interface = CatalogInterface(catalog)
     control = cat_interface.get_control('ac-4.4')
     val_3 = 'hacking the system'
@@ -462,7 +464,9 @@ def test_pulled_params_in_choice(
     shutil.copy(test_utils.JSON_TEST_DATA_PATH / (pull_prof_name + '.json'), prof_path)
 
     # get the resolved profile catalog
-    catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
+    catalog = ProfileResolver.get_resolved_profile_catalog(
+        tmp_trestle_dir, prof_path, param_rep=ParameterRep.VALUE_OR_LABEL_OR_CHOICES
+    )
     cat_interface = CatalogInterface(catalog)
 
     # check values
@@ -661,3 +665,72 @@ Test 4
     assert catalog.groups[0].controls[1].parts[0].parts[
         0
     ].prose == 'Define and document the types of accounts allowed and specifically prohibited for use within the system;'  # noqa E501
+
+
+def test_catalog_duplicate_parts_statement(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch, capsys) -> None:
+    """Test catalog-assemble with duplicate parts for control statement."""
+    catalog = cat.Catalog.oscal_read(test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME)
+    ModelUtils.save_top_level_model(catalog, tmp_trestle_dir, 'my_catalog', FileContentType.JSON)
+
+    catalog_generate = 'trestle author catalog-generate -n my_catalog -o md_catalog'
+    test_utils.execute_command_and_assert(catalog_generate, 0, monkeypatch)
+    md_path = tmp_trestle_dir / 'md_catalog/ac/ac-2.md'
+    assert md_path.exists()
+
+    control_statement_prose_with_parts = """The organization:
+
+- \[a\] Part A
+- \[a\] Part A Duplicate.
+  - \[a.1\] Documents 1
+  - \[a.2\] Documents 2
+    - \[a.2.1\] SubDocuments 1
+    - \[a.2.2\] SubDocuments 2
+- \[b\] Part 2.
+
+
+"""
+
+    file_utils.insert_text_in_file(md_path, '## Control Statement', control_statement_prose_with_parts)
+
+    catalog_assemble = 'trestle author catalog-assemble -o my_catalog -m md_catalog'
+    test_utils.execute_command_and_assert(catalog_assemble, 0, monkeypatch)
+
+    _, error = capsys.readouterr()
+    assert 'Duplicate part id ac-2_smt.a' in error
+
+
+def test_catalog_tab_in_statement(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch, capsys) -> None:
+    """Test catalog-assemble with tab characters in control statement and parts."""
+    catalog = cat.Catalog.oscal_read(test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME)
+    ModelUtils.save_top_level_model(catalog, tmp_trestle_dir, 'my_catalog', FileContentType.JSON)
+
+    catalog_generate = 'trestle author catalog-generate -n my_catalog -o md_catalog'
+    test_utils.execute_command_and_assert(catalog_generate, 0, monkeypatch)
+    md_path = tmp_trestle_dir / 'md_catalog/ac/ac-2.md'
+    assert md_path.exists()
+
+    control_statement_prose_with_parts = """The organization:
+\t
+\t
+\t
+- \[m\] Part M
+- \[n\] Part N
+\t- \[n.1\] Documents 1
+\t- \[n.2\] Documents 2
+\t\t- \[n.2.1\] SubDocuments 1
+\t\t- \[n.2.2\] SubDocuments 2
+- \[o\] Part O.
+\t
+\t
+\t
+"""
+
+    file_utils.insert_text_in_file(md_path, '## Control Statement', control_statement_prose_with_parts)
+
+    catalog_assemble = 'trestle author catalog-assemble -o my_catalog -m md_catalog'
+    test_utils.execute_command_and_assert(catalog_assemble, 0, monkeypatch)
+
+    catalog, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'my_catalog', cat.Catalog)
+    statement_part_n = catalog.groups[0].controls[1].parts[0].parts[1]
+    assert statement_part_n.id == 'ac-2_smt.n'
+    assert statement_part_n.parts[0].id == 'ac-2_smt.n.n.1'

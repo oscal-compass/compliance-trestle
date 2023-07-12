@@ -36,6 +36,7 @@ from trestle.common.str_utils import AliasMode
 from trestle.core import generators
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.catalog.catalog_interface import CatalogInterface
+from trestle.core.commands.author.ssp import SSPGenerate
 from trestle.core.commands.href import HrefCmd
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.models.file_content_type import FileContentType
@@ -44,6 +45,7 @@ from trestle.oscal import catalog as cat
 from trestle.oscal import common
 from trestle.oscal import component as comp
 from trestle.oscal import profile as prof
+from trestle.oscal import ssp
 
 if file_utils.is_windows():  # pragma: no cover
     import win32api
@@ -405,6 +407,28 @@ def setup_for_multi_profile(trestle_root: pathlib.Path, big_profile: bool, impor
     assert HrefCmd.change_import_href(trestle_root, main_profile_name, new_href, 0) == 0
 
 
+def setup_for_inherit(
+    tmp_trestle_dir: pathlib.Path, prof_name: str, output_name: str, ssp_name: str
+) -> argparse.Namespace:
+    """Create the ssp and parent profile for inherit commands."""
+    load_from_json(tmp_trestle_dir, 'simplified_nist_catalog', 'nist_cat', cat.Catalog)
+    if prof_name:
+        load_from_json(tmp_trestle_dir, prof_name, prof_name, prof.Profile)
+    if ssp_name:
+        load_from_json(tmp_trestle_dir, ssp_name, ssp_name, ssp.SystemSecurityPlan)
+
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        profile=prof_name,
+        output=output_name,
+        ssp=ssp_name,
+        version=None,
+        verbose=0,
+    )
+
+    return args
+
+
 def load_from_json(
     tmp_trestle_dir: pathlib.Path, file_prefix: str, model_name: str, model_type: OscalBaseModel
 ) -> None:
@@ -600,6 +624,17 @@ def catalog_interface_equivalent(cat_int_a: CatalogInterface, cat_b: cat.Catalog
             logger.error(f'controls differ: {a.id}')
             return False
     return True
+
+
+def gen_and_assemble_first_ssp(prof_name: str, ssp_name: str, gen_args: Any, monkeypatch: MonkeyPatch) -> None:
+    """Test equivalence of catalog dict contents in various ways."""
+    # first create the markdown
+    ssp_gen = SSPGenerate()
+    assert ssp_gen._run(gen_args) == 0
+
+    # first ssp assembly
+    ssp_assemble = f'trestle author ssp-assemble -m {ssp_name} -o {ssp_name} -cd {gen_args.compdefs}'
+    execute_command_and_assert(ssp_assemble, 0, monkeypatch)
 
 
 class FileChecker:

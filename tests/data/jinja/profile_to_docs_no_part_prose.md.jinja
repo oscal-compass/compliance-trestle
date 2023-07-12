@@ -1,0 +1,17 @@
+# Control Page
+
+{{
+control_writer.write_control_with_sections(control, profile, group_title,
+['statement', 'objective', 'ExpectedEvidence', 'guidance', 'table_of_parameters', 'instructions', 'additional_instructions'],
+{'statement':'Statement Header',
+'objective':'Control Objective Header',
+'guidance':'Implementation Guidance',
+'instructions': 'Instructions With Prose',
+'additional_instructions': 'Additional Instructions (No Prose)',
+'table_of_parameters':'Table of Control Parameters'
+},
+label_column=True,
+add_group_to_title=False
+)
+| safe
+}}

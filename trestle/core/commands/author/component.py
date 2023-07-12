@@ -34,7 +34,7 @@ from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.cmd_utils import clear_folder
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_context import ContextPurpose, ControlContext
-from trestle.core.control_interface import ControlInterface
+from trestle.core.control_interface import ControlInterface, ParameterRep
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
@@ -120,7 +120,7 @@ class ComponentGenerate(AuthorCommonCommand):
                     name_index += 1
                 context.uri_name_map[source_profile_uri] = name
                 resolved_catalog = ProfileResolver.get_resolved_profile_catalog(
-                    context.trestle_root, source_profile_uri
+                    context.trestle_root, source_profile_uri, param_rep=ParameterRep.LEAVE_MOUSTACHE
                 )
                 local_catalog_api = CatalogAPI(resolved_catalog)
                 cat_api_dict[source_profile_uri] = local_catalog_api
@@ -238,13 +238,13 @@ class ComponentAssemble(AuthorCommonCommand):
         if not version and assem_comp_path.exists():
             _, _, existing_comp = ModelUtils.load_distributed(assem_comp_path, trestle_root)
             # comp def will change statement uuids so need to ignore them in comparison
-            if ModelUtils.models_are_equivalent(existing_comp, parent_comp, True):
+            if ModelUtils.models_are_equivalent(existing_comp, parent_comp, True):  # type: ignore
                 logger.info('Assembled component definition is no different from existing version, so no update.')
                 return CmdReturnCodes.SUCCESS.value
 
         if regenerate:
             parent_comp, _, _ = ModelUtils.regenerate_uuids(parent_comp)
-        ModelUtils.update_last_modified(parent_comp)
+        ModelUtils.update_last_modified(parent_comp)  # type: ignore
 
         if assem_comp_path.parent.exists():
             logger.info(
@@ -253,7 +253,7 @@ class ComponentAssemble(AuthorCommonCommand):
             shutil.rmtree(str(assem_comp_path.parent))
 
         assem_comp_path.parent.mkdir(parents=True, exist_ok=True)
-        parent_comp.oscal_write(assem_comp_path)
+        parent_comp.oscal_write(assem_comp_path)  # type: ignore
         return CmdReturnCodes.SUCCESS.value
 
     @staticmethod

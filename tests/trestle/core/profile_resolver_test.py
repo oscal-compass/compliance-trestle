@@ -54,7 +54,9 @@ def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
 
     test_prof_name = 'test_profile_a'
     test_prof, test_prof_path = ModelUtils.load_model_for_class(tmp_trestle_dir, test_prof_name, prof.Profile)
-    cat = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, test_prof_path)
+    cat = ProfileResolver.get_resolved_profile_catalog(
+        tmp_trestle_dir, test_prof_path, param_rep=ParameterRep.VALUE_OR_LABEL_OR_CHOICES
+    )
     interface = CatalogInterface(cat)
     # added part ac-1_expevid from prof a
     list1 = find_string_in_all_controls_prose(interface, 'Detailed evidence logs')
@@ -287,7 +289,9 @@ def test_parameter_resolution(tmp_trestle_dir: pathlib.Path) -> None:
     profile_a_value = 'all alert personnel'
 
     # based on 800-53 rev 5
-    cat = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_e_path)
+    cat = ProfileResolver.get_resolved_profile_catalog(
+        tmp_trestle_dir, prof_e_path, param_rep=ParameterRep.VALUE_OR_LABEL_OR_CHOICES
+    )
     interface = CatalogInterface(cat)
     control = interface.get_control('ac-1')
     locations = interface.find_string_in_control(control, profile_e_parameter_string)
@@ -427,7 +431,9 @@ def test_profile_resolver_no_params(tmp_trestle_dir: pathlib.Path) -> None:
     simple_prof_path = test_utils.JSON_TEST_DATA_PATH / 'simple_test_profile_no_params.json'
     profile_path = profile_dir / 'profile.json'
     shutil.copy(simple_prof_path, profile_path)
-    catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, profile_path)
+    catalog = ProfileResolver.get_resolved_profile_catalog(
+        tmp_trestle_dir, profile_path, param_rep=ParameterRep.VALUE_OR_LABEL_OR_CHOICES
+    )
     catalog_str = catalog.oscal_serialize_json()
     # make sure no moustaches remain that would confuse jinja
     assert '{{' not in catalog_str

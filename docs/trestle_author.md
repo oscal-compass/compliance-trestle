@@ -591,6 +591,21 @@ CLI evocation:
 
 The `profile` author commands allow you to edit additions made by a profile to its imported controls that end up in the final resolved profile catalog.  Only the additions may be edited or added to the generated markdown control files - and those additions can then be assembled into a new version of the original profile, with those additions.  For more details on its usage please see [the profile authoring tutorial](https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).
 
+### Profile generation with inheritance
+
+CLI evocation:
+
+> trestle author profile-inherit
+
+The `profile-inherit` sub-command takes a given parent profile and filters its imported controls based inherited controls from a given SSP.
+
+The leveraged SSP is evaluated based on whether provided and responsibility statements for all `by-component` fields are set for each applicable control, as well as the implementation status.
+All components must have exported provided statements, no exported responsibility statements, and an implementation status of `implemented` in order for a control to be filtered from the output profile (i.e. controls delta profile).
+
+As with the other related author commands, if an existing destination file already exists, it is not updated if no changes would be made.
+
+For more details on its usage please see [the ssp-filter tutorial](https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).
+
 ### SSP authoring
 
 CLI evocation:
@@ -613,13 +628,17 @@ CLI evocation:
 
 > trestle author ssp-filter
 
-The `ssp-filter` sub-command takes a given SSP and filters its contents based on a given profile and/or list of components.
+The `ssp-filter` sub-command takes a given SSP and filters its contents based on a given profile, list of components, control implementation status and/or control origination.
 
 If filtering by profile, the SSP is assumed to contain a superset of controls needed by the profile, and the filter operation generates a new SSP with just the controls needed by that profile.  If the profile references a control not in the SSP, the routine fails with an error.
 
-If filtering by components, a colon-delimited list of components should be provided, with `This system` as the default name for the overall required component for the entire system.  Case and spaces are ignored in the component names, so the names could be specified as `--components "this system: my component"`.  The resulting, filtered ssp will have updated implementated requirements with filtered by_components on each requirement, and filtered by_components on each statement.
+If filtering by components, a colon-delimited list of components should be provided, with `This system` as the default name for the overall required component for the entire system.  Case and spaces are ignored in the component names, so the names could be specified as `--components "this system: my component"`.  The resulting, filtered ssp will have updated implemented requirements with filtered by_components on each requirement, and filtered by_components on each statement.
 
-You may filter by a combination of a profile and a list of component names.
+If filtering by control implementation status, a comma-delimited list of implementation status values should be provided. These values must comply with the OSCAL SSP format references's allowed values, which are as follows: implemented, partial, planned, alternative, and not-applicable.
+
+If filtering by control origination, a comma-delimited list of control origination values should be provided. These values must comply with the OSCAL SSP format references's allowed values for the control origination property, which are as follows: system-specific, inherited, organization, customer-configured, and customer-provided.
+
+You may filter by a combination of a profile, list of component names, implementation statuses, and control origination values.
 
 As with the other related author commands, if an existing destination file already exists, it is not updated if no changes would be made.
 

@@ -74,24 +74,26 @@ class ControlWriter():
         self._md_file.new_header(level=1, title=title)
         self._md_file.new_header(level=2, title=header_title)
         self._md_file.set_indent_level(-1)
-        self._add_part_and_its_items(control, const.STATEMENT, 'item')
+        self._add_part_and_its_items(control, const.STATEMENT, const.ITEM)
         self._md_file.set_indent_level(-1)
 
     def _add_control_objective(self, control: cat.Control) -> None:
         if control.parts:
             for part in control.parts:
-                if part.name == 'objective':
+                if part.name == const.OBJECTIVE_PART or part.name == const.ASSESMENT_OBJECTIVE_PART:
                     self._md_file.new_paragraph()
                     heading_title = 'Control Objective'
+                    if part.name == const.ASSESMENT_OBJECTIVE_PART:
+                        heading_title = 'Control Assessment Objective'
                     self._md_file.new_header(level=2, title=heading_title)
                     self._md_file.set_indent_level(-1)
-                    self._add_part_and_its_items(control, 'objective', 'objective')
+                    self._add_part_and_its_items(control, part.name, part.name)
                     self._md_file.set_indent_level(-1)
                     return
 
     def _add_sections(self, control: cat.Control, allowed_sections: Optional[List[str]]) -> None:
         """Add the extra control sections after the main ones."""
-        skip_section_list = [const.STATEMENT, 'item', 'objective']
+        skip_section_list = [const.STATEMENT, const.ITEM, const.OBJECTIVE_PART, const.ASSESMENT_OBJECTIVE_PART]
         while True:
             _, name, title, prose = ControlInterface.get_section(control, skip_section_list)
             if not name:
@@ -202,7 +204,7 @@ class ControlWriter():
             for part in control.parts:
                 if part.parts and part.name == const.STATEMENT:
                     for prt in part.parts:
-                        if prt.name != 'item':
+                        if prt.name != const.ITEM:
                             continue
                         # if no label guess the label from the sub-part id
                         part_label = ControlInterface.get_label(prt)
@@ -376,7 +378,7 @@ class ControlWriter():
                                         name = part.name
                                         # need special handling for statement parts because their name is 'item'
                                         # get the short name as last piece of the part id after the '.'
-                                        if name == 'item':
+                                        if name == const.ITEM:
                                             name = part.id.split('.')[-1]
                                         title = self._sections_dict.get(name, name) if self._sections_dict else name
                                         self._md_file.new_header(level=3, title=title)
@@ -424,7 +426,7 @@ class ControlWriter():
     def _prompt_required_sections(self, required_sections: List[str], added_sections: List[str]) -> None:
         """Add prompts for any required sections that haven't already been written out."""
         missing_sections = set(required_sections).difference(added_sections)
-        for section in missing_sections:
+        for section in sorted(missing_sections):
             section_title = self._sections_dict.get(section, section)
             self._md_file.new_header(2, f'Control {section_title}')
             self._md_file.new_line(f'{const.PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT}: {section_title} -->')
