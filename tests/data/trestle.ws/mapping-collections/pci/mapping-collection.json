@@ -1,0 +1,414 @@
+{
+  "mapping-collection": {
+    "uuid": "0850351c-1c74-421c-ad31-8df076b4a785",
+    "metadata": {
+      "title": "Mapping collection for PCI to Unified",
+      "last-modified": "2023-05-24T12:00:54+00:00",
+      "version": "V1.0",
+      "oscal-version": "1.0.4"
+    },
+    "mappings": [
+      {
+        "uuid": "8335c45f-e125-4eca-9208-55bde4a248b6",
+        "source-resource": {
+          "type": "catalog",
+          "href": "catalogs/PCI/catalog.json"
+        },
+        "target-resource": {
+          "type": "catalog",
+          "href": "catalogs/FedRAMP_rev5_HIGH/catalog.json"
+        },
+        "maps": [
+          {
+            "uuid": "b4385f95-f040-4440-bf0e-d23c425023a2",
+            "props": [
+              {
+                "name": "control2control_map_percentage",
+                "value": "50%"
+              },
+              {
+                "name": "procedure2procedure_map_relationship",
+                "value": "intersects-with"
+              },
+              {
+                "name": "procedure2procedure_map_percentage",
+                "value": "50%"
+              },
+              {
+                "name": "actualstatedatarequest2actualstatedatarequest_map_relationship",
+                "value": "intersects-with"
+              },
+              {
+                "name": "actualstatedatarequest2actualstatedatarequest_map_percentage",
+                "value": "50%"
+              }
+            ],
+            "relationship": {
+              "type": "intersects-with"
+            },
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "PCI-6.3.1"
+              }
+            ],
+            "targets": [
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.a"
+              }
+            ]
+          },
+          {
+            "uuid": "0cc6b7bf-6829-4046-b647-07dac4db8cc5",
+            "props": [
+              {
+                "name": "control2control_map_percentage",
+                "value": "90%"
+              },
+              {
+                "name": "procedure2procedure_map_relationship",
+                "value": "subset-of"
+              },
+              {
+                "name": "procedure2procedure_map_percentage",
+                "value": "90%"
+              },
+              {
+                "name": "actualstatedatarequest2actualstatedatarequest_map_relationship",
+                "value": "subset-of"
+              },
+              {
+                "name": "actualstatedatarequest2actualstatedatarequest_map_percentage",
+                "value": "90%"
+              }
+            ],
+            "relationship": {
+              "type": "subset-of"
+            },
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "PCI-6.3.3"
+              }
+            ],
+            "targets": [
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.d"
+              },
+              {
+                "type": "statement",
+                "id-ref": "si-2_smt.a"
+              },
+              {
+                "type": "statement",
+                "id-ref": "si-2_smt.c"
+              }
+            ]
+          },
+          {
+            "uuid": "079f3545-59df-48e6-b89f-9b465f47ffff",
+            "props": [
+              {
+                "name": "control2control_map_percentage",
+                "value": "10%"
+              },
+              {
+                "name": "procedure2procedure_map_relationship",
+                "value": "subset-of"
+              },
+              {
+                "name": "procedure2procedure_map_percentage",
+                "value": "10%"
+              },
+              {
+                "name": "actualstatedatarequest2actualstatedatarequest_map_relationship",
+                "value": "subset-of"
+              },
+              {
+                "name": "actualstatedatarequest2actualstatedatarequest_map_percentage",
+                "value": "10%"
+              }
+            ],
+            "relationship": {
+              "type": "subset-of"
+            },
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "PCI-6.4.1"
+              }
+            ],
+            "targets": [
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.a"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.b"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.c"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.d"
+              }
+            ]
+          },
+          {
+            "uuid": "5706e16a-60f0-4a78-bfcf-a119c48513ad",
+            "props": [
+              {
+                "name": "control2control_map_percentage",
+                "value": "10%"
+              },
+              {
+                "name": "procedure2procedure_map_relationship",
+                "value": "subset-of"
+              },
+              {
+                "name": "procedure2procedure_map_percentage",
+                "value": "10%"
+              },
+              {
+                "name": "actualstatedatarequest2actualstatedatarequest_map_relationship",
+                "value": "subset-of"
+              },
+              {
+                "name": "actualstatedatarequest2actualstatedatarequest_map_percentage",
+                "value": "10%"
+              }
+            ],
+            "relationship": {
+              "type": "subset-of"
+            },
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "PCI-11.3.1"
+              }
+            ],
+            "targets": [
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.a"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.b"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.c"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.d"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.f"
+              },
+              {
+                "type": "statement",
+                "id-ref": "si-2_smt.a"
+              }
+            ]
+          },
+          {
+            "uuid": "9464b856-9e4d-46ae-ace1-6878583645dc",
+            "props": [
+              {
+                "name": "control2control_map_percentage",
+                "value": "10%"
+              },
+              {
+                "name": "procedure2procedure_map_relationship",
+                "value": "subset-of"
+              },
+              {
+                "name": "procedure2procedure_map_percentage",
+                "value": "10%"
+              },
+              {
+                "name": "actualstatedatarequest2actualstatedatarequest_map_relationship",
+                "value": "subset-of"
+              },
+              {
+                "name": "actualstatedatarequest2actualstatedatarequest_map_percentage",
+                "value": "10%"
+              }
+            ],
+            "relationship": {
+              "type": "subset-of"
+            },
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "PCI-11.3.1.1"
+              }
+            ],
+            "targets": [
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.a"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.b"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.c"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.d"
+              }
+            ]
+          },
+          {
+            "uuid": "579eb4c9-25b3-4e2e-b503-3454d50dd198",
+            "props": [
+              {
+                "name": "control2control_map_percentage",
+                "value": "10%"
+              },
+              {
+                "name": "procedure2procedure_map_relationship",
+                "value": "subset-of"
+              },
+              {
+                "name": "procedure2procedure_map_percentage",
+                "value": "10%"
+              },
+              {
+                "name": "actualstatedatarequest2actualstatedatarequest_map_relationship",
+                "value": "subset-of"
+              },
+              {
+                "name": "actualstatedatarequest2actualstatedatarequest_map_percentage",
+                "value": "10%"
+              }
+            ],
+            "relationship": {
+              "type": "subset-of"
+            },
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "PCI-11.3.1.2"
+              }
+            ],
+            "targets": [
+              {
+                "type": "statement",
+                "id-ref": "ra-5.5_smt"
+              }
+            ]
+          },
+          {
+            "uuid": "ee3d87b1-7b2c-4c23-b1d8-9d34cc90ecd0",
+            "props": [
+              {
+                "name": "control2control_map_percentage",
+                "value": "10%"
+              },
+              {
+                "name": "procedure2procedure_map_relationship",
+                "value": "subset-of"
+              },
+              {
+                "name": "procedure2procedure_map_percentage",
+                "value": "10%"
+              },
+              {
+                "name": "actualstatedatarequest2actualstatedatarequest_map_relationship",
+                "value": "subset-of"
+              },
+              {
+                "name": "actualstatedatarequest2actualstatedatarequest_map_percentage",
+                "value": "10%"
+              }
+            ],
+            "relationship": {
+              "type": "subset-of"
+            },
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "PCI-11.3.1.3"
+              }
+            ],
+            "targets": [
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.a"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.b"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.c"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.d"
+              }
+            ]
+          },
+          {
+            "uuid": "b68c42f9-b38d-46a2-b382-c7ccface682a",
+            "props": [
+              {
+                "name": "control2control_map_percentage",
+                "value": "90%"
+              },
+              {
+                "name": "procedure2procedure_map_relationship",
+                "value": "subset-of"
+              },
+              {
+                "name": "procedure2procedure_map_percentage",
+                "value": "90%"
+              },
+              {
+                "name": "actualstatedatarequest2actualstatedatarequest_map_relationship",
+                "value": "subset-of"
+              },
+              {
+                "name": "actualstatedatarequest2actualstatedatarequest_map_percentage",
+                "value": "90%"
+              }
+            ],
+            "relationship": {
+              "type": "subset-of"
+            },
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "PCI-a1.2.3"
+              }
+            ],
+            "targets": [
+              {
+                "type": "statement",
+                "id-ref": "ra-5_smt.d"
+              },
+              {
+                "type": "statement",
+                "id-ref": "si-2_smt.a"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
