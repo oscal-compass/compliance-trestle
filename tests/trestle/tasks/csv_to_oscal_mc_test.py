@@ -73,7 +73,7 @@ def _validate_mc_pci(tmp_path: pathlib.Path) -> None:
 
 def _validate_mc_soc2(tmp_path: pathlib.Path, tgt_type: str = 'catalog') -> None:
     """Validate mc soc2."""
-    # read component-definition
+    # read mapping-collection
     fp = pathlib.Path(tmp_path) / 'mapping-collection.json'
     mc = MappingCollection.oscal_read(fp)
     # spot check
