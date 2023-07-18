@@ -59,7 +59,7 @@ class CsvHelper:
     ]
     head1 = [
         'A human readable name for the component.',  # noqa
-        'A description of the component including information about its function.'  # noqa
+        'A description of the component including information about its function.',  # noqa
         'A category describing the purpose of the component. ALLOWED VALUES interconnection:software:hardware:service:physical:process-procedure:plan:guidance:standard:validation:',  # noqa
         'A textual label that uniquely identifies a policy (desired state) that can be used to reference it elsewhere in this or other documents.',  # noqa
         'A description of the policy (desired state) including information about its purpose and scope.',  # noqa

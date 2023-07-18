@@ -46,7 +46,7 @@ def _validate(tmp_path: pathlib.Path) -> None:
     assert rows[0][13] == '$Check_Description'
     assert rows[1][0] == 'A human readable name for the component.'
     assert rows[1][
-        10
+        11
     ] == 'A list of textual labels that uniquely identify the controls or statements that the component implements.'
     assert rows[2][0] == 'billing'
     assert rows[11][3] == 'rule-a637949b-7e51-46c4-afd4-b96619001bf1'
