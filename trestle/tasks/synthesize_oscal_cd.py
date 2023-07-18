@@ -111,6 +111,8 @@ class CsvHelper:
             for control_implementation in defined_component.control_implementations:
                 rval = control_implementation.description
                 break
+        if not rval:
+            rval = self._get_profile_source(defined_component)
         return rval
 
     def _get_control_id_list(self, defined_component: DefinedComponent) -> str:
