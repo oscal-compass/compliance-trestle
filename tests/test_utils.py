@@ -441,10 +441,13 @@ def load_from_json(
     shutil.copy2(src_path, dst_path)
 
 
-def setup_for_ssp(tmp_trestle_dir: pathlib.Path,
-                  prof_name: str,
-                  output_name: str,
-                  use_yaml: bool = False) -> Tuple[argparse.Namespace, pathlib.Path]:
+def setup_for_ssp(
+    tmp_trestle_dir: pathlib.Path,
+    prof_name: str,
+    output_name: str,
+    use_yaml: bool = False,
+    leveraged_ssp_name: str = ''
+) -> Tuple[argparse.Namespace, pathlib.Path]:
     """Create the comp_def, profile and catalog content needed for ssp-generate."""
     comp_names = 'comp_def_a,comp_def_b'
     for comp_name in comp_names.split(','):
@@ -455,10 +458,15 @@ def setup_for_ssp(tmp_trestle_dir: pathlib.Path,
         load_from_json(tmp_trestle_dir, local_prof_name, local_prof_name, prof.Profile)
     load_from_json(tmp_trestle_dir, 'simplified_nist_catalog', 'simplified_nist_catalog', cat.Catalog)
     yaml_path = YAML_TEST_DATA_PATH / 'good_simple.yaml' if use_yaml else None
+
+    if leveraged_ssp_name:
+        load_from_json(tmp_trestle_dir, leveraged_ssp_name, leveraged_ssp_name, ssp.SystemSecurityPlan)
+
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
         profile=prof_name,
         compdefs=comp_names,
+        leveraged_ssp=leveraged_ssp_name,
         output=output_name,
         verbose=0,
         overwrite_header_values=False,
@@ -635,6 +643,29 @@ def gen_and_assemble_first_ssp(prof_name: str, ssp_name: str, gen_args: Any, mon
     # first ssp assembly
     ssp_assemble = f'trestle author ssp-assemble -m {ssp_name} -o {ssp_name} -cd {gen_args.compdefs}'
     execute_command_and_assert(ssp_assemble, 0, monkeypatch)
+
+
+def generate_test_by_comp() -> ssp.ByComponent:
+    """Generate a by-component assembly for testing."""
+    by_comp = generators.generate_sample_model(ssp.ByComponent)
+    by_comp.export = generators.generate_sample_model(ssp.Export)
+    by_comp.export.provided = []
+    by_comp.export.responsibilities = []
+
+    isolated_provided = generators.generate_sample_model(ssp.Provided)
+    isolated_responsibility = generators.generate_sample_model(ssp.Responsibility)
+
+    set_provided = generators.generate_sample_model(ssp.Provided)
+    set_responsibility = generators.generate_sample_model(ssp.Responsibility)
+
+    set_responsibility.provided_uuid = set_provided.uuid
+
+    by_comp.export.provided.append(isolated_provided)
+    by_comp.export.provided.append(set_provided)
+    by_comp.export.responsibilities.append(isolated_responsibility)
+    by_comp.export.responsibilities.append(set_responsibility)
+
+    return by_comp
 
 
 class FileChecker:

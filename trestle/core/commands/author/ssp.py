@@ -42,6 +42,7 @@ from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_interface import ControlInterface, ParameterRep
 from trestle.core.control_reader import ControlReader
+from trestle.core.crm.export_writer import ExportWriter
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.remote.cache import FetcherFactory
@@ -63,6 +64,10 @@ class SSPGenerate(AuthorCommonCommand):
             '-o', '--output', help='Name of the output generated ssp markdown folder', required=True, type=str
         )  # noqa E501
         self.add_argument('-cd', '--compdefs', help=const.HELP_COMPDEFS, required=False, type=str)
+
+        ls_help_str = 'Leveraged ssp with inheritable controls href or name in the trestle_workspace'
+        self.add_argument('-ls', '--leveraged-ssp', help=ls_help_str, required=False, type=str)
+
         self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
         self.add_argument(
             '-fo', '--force-overwrite', help=const.HELP_FO_OUTPUT, required=False, action='store_true', default=False
@@ -100,6 +105,7 @@ class SSPGenerate(AuthorCommonCommand):
                 trestle_root,
                 args.profile,
                 compdef_name_list,
+                args.leveraged_ssp,
                 md_path,
                 yaml_header,
                 args.overwrite_header_values,
@@ -114,6 +120,7 @@ class SSPGenerate(AuthorCommonCommand):
         trestle_root: pathlib.Path,
         profile_name_or_href: str,
         compdef_name_list: List[str],
+        leveraged_ssp_name_or_href: str,
         md_path: pathlib.Path,
         yaml_header: Dict[str, Any],
         overwrite_header_values: bool,
@@ -182,6 +189,28 @@ class SSPGenerate(AuthorCommonCommand):
         context.cli_yaml_header[const.TRESTLE_GLOBAL_TAG][const.PROFILE] = profile_header
 
         catalog_api.write_catalog_as_markdown()
+
+        # Generate inheritance view after controls view completes
+        if leveraged_ssp_name_or_href:
+            # if file not recognized as URI form, assume it represents name of file in trestle directory
+            ssp: ossp.SystemSecurityPlan
+            ssp_in_trestle_dir = '://' not in leveraged_ssp_name_or_href
+            ssp_href = leveraged_ssp_name_or_href
+            if ssp_in_trestle_dir:
+                local_path = f'{const.MODEL_DIR_SSP}/{leveraged_ssp_name_or_href}/system-security-plan.json'
+                ssp_path = trestle_root / local_path
+                _, _, ssp = ModelUtils.load_distributed(ssp_path, trestle_root)
+            else:
+                fetcher = FetcherFactory.get_fetcher(trestle_root, ssp_href)
+                ssp = fetcher.get_oscal()
+
+            inheritance_view_path: pathlib.Path = md_path.joinpath(const.INHERITANCE_VIEW_DIR)
+            inheritance_view_path.mkdir(exist_ok=True)
+            logger.debug(f'Creating content for inheritance view in {inheritance_view_path}')
+
+            export_writer: ExportWriter = ExportWriter(inheritance_view_path, ssp)
+
+            export_writer.write_exports_as_markdown()
 
         return CmdReturnCodes.SUCCESS.value
 
