@@ -173,6 +173,7 @@ class CatalogWriter():
                     # pull only the values from the actual control dict
                     # all the other elements are from the profile set_param
                     new_dict[const.VALUES] = orig_dict.get(const.VALUES, None)
+                    new_dict[const.GUIDELINES] = orig_dict.get(const.GUIDELINES, None)
             else:
                 # if the profile doesnt change this param at all, show it in the header with values
                 tmp_dict = ModelUtils.parameter_to_dict(param_dict, True)
@@ -181,7 +182,9 @@ class CatalogWriter():
             new_dict.pop('id', None)
             if display_name:
                 new_dict[const.DISPLAY_NAME] = display_name
-            set_param_dict[param_id] = new_dict
+            key_order = (const.LABEL, const.GUIDELINES, const.PROFILE_VALUES, const.VALUES, const.DISPLAY_NAME)
+            ordered_dict = {k: new_dict[k] for k in key_order if k in new_dict.keys()}
+            set_param_dict[param_id] = ordered_dict
 
         return set_param_dict
 
