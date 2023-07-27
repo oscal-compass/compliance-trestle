@@ -81,6 +81,13 @@ class Folders(AuthorCommonCommand):
             action='store_true'
         )
 
+        self.add_argument(
+            author_const.TEMPLATE_TYPE_VALIDATE_SHORT,
+            author_const.TEMPLATE_TYPE_VALIDATE_LONG,
+            help=author_const.TEMPLATE_TYPE_VALIDATE_HELP,
+            action='store_true'
+        )
+
     def _run(self, args: argparse.Namespace) -> int:
         try:
             if self._initialize(args):
@@ -102,7 +109,8 @@ class Folders(AuthorCommonCommand):
                     args.governed_heading,
                     args.readme_validate,
                     args.template_version,
-                    args.ignore
+                    args.ignore,
+                    args.validate_template_type
                 )
             else:
                 raise TrestleIncorrectArgsError(f'Unsupported mode: {args.mode} for folders command.')
@@ -186,12 +194,13 @@ class Folders(AuthorCommonCommand):
         governed_heading: str,
         readme_validate: bool,
         template_version: str,
-        ignore: str
+        ignore: str,
+        validate_by_type_field: bool,
     ) -> bool:
         """
         Validate instances against templates.
 
-        Validation will succeed iff:
+        Validation will succeed if:
             1. All template files from the specified version are present in the task
             2. All of the instances are valid
         """
@@ -217,8 +226,24 @@ class Folders(AuthorCommonCommand):
             if instance_file.suffix == const.MARKDOWN_FILE_EXT:
                 md_api = MarkdownAPI()
                 versioned_template_dir = None
+                # checks on naming template name out of type header if needed
+                if validate_by_type_field:
+                    template_name = md_api.processor.fetch_value_from_header(
+                        instance_file, author_const.TEMPLATE_TYPE_HEADER
+                    )
+                    if template_name is None:
+                        logger.warning(
+                            f'INVALID: Instance file {instance_file_name} does not have'
+                            f' {author_const.TEMPLATE_TYPE_HEADER}'
+                            ' field in its header and can not be validate using optional parameter validate'
+                            ' template type field'
+                        )
+                        return False
+                    template_name = template_name + '.md'
+                else:
+                    template_name = instance_file_name
                 if template_version != '':
-                    template_file = self.template_dir / instance_file_name
+                    template_file = self.template_dir / template_name
                     versioned_template_dir = self.template_dir
                 else:
                     instance_version = md_api.processor.fetch_value_from_header(
@@ -229,16 +254,44 @@ class Folders(AuthorCommonCommand):
                     versioned_template_dir = TemplateVersioning.get_versioned_template_dir(
                         self.template_dir, instance_version
                     )
-                    template_file = versioned_template_dir / instance_file_name
+                    template_file = versioned_template_dir / template_name
 
                 # Check if instance is in the available templates,
                 # additional files are allowed but should not be validated.
                 templates = self._get_templates(versioned_template_dir, readme_validate)
                 is_template_present = False
+                template_type_is_valid = False
                 for template in templates:
-                    if template.name == str(instance_file_name):
-                        is_template_present = True
-                        break
+                    # checks if valdation needs to check on x-trestle-template-type field on header
+                    if validate_by_type_field:
+                        # grabs template type out of template
+                        template_type = md_api.processor.fetch_value_from_header(
+                            template_file, author_const.TEMPLATE_TYPE_HEADER
+                        )
+                        # checks if template contains x-trestle-template-type field
+                        if template_type is not None:
+                            instance_template_type = md_api.processor.fetch_value_from_header(
+                                instance_file, author_const.TEMPLATE_TYPE_HEADER
+                            )
+                            if template_type == instance_template_type:
+                                is_template_present = True
+                                template_type_is_valid = True
+                            break
+                        # does not have x-trestle-template-type field and throws a warning
+                        else:
+                            logger.warning(
+                                f'INVALID: Template file {template_file} does not have'
+                                f' {author_const.TEMPLATE_TYPE_HEADER}'
+                                ' field in its header and can not be validate using optional parameter validate'
+                                ' template type field'
+                            )
+                            return False
+                    # validation through template type field is not needed and performs validation
+                    # through file name flow as usual
+                    else:
+                        if template.name == str(instance_file_name):
+                            is_template_present = True
+                            break
 
                 if not is_template_present:
                     logger.info(
@@ -252,7 +305,7 @@ class Folders(AuthorCommonCommand):
                         [t.relative_to(versioned_template_dir) for t in templates], False
                     )
 
-                if instance_file_name in all_versioned_templates[instance_version]:
+                if instance_file_name in all_versioned_templates[instance_version] or template_type_is_valid:
                     # validate
                     md_api.load_validator_with_template(
                         template_file, validate_header, not validate_only_header, governed_heading
@@ -266,7 +319,13 @@ class Folders(AuthorCommonCommand):
                     else:
                         logger.info(f'VALID: {instance_file}')
                     # mark template as present
-                    all_versioned_templates[instance_version][instance_file_name] = True
+                    if template_type_is_valid:
+                        template_file_name = [
+                            temp.relative_to(versioned_template_dir) for temp in templates if temp.name == template_name
+                        ]
+                        all_versioned_templates[instance_version][template_file_name[0]] = True
+                    else:
+                        all_versioned_templates[instance_version][instance_file_name] = True
 
             elif instance_file.suffix == const.DRAWIO_FILE_EXT:
                 drawio = draw_io.DrawIO(instance_file)
@@ -359,7 +418,8 @@ class Folders(AuthorCommonCommand):
         governed_heading: str,
         readme_validate: bool,
         template_version: str,
-        ignore: str
+        ignore: str,
+        validate_by_type_field: bool,
     ) -> int:
         """Validate task."""
         if not self.task_path.is_dir():
@@ -376,7 +436,8 @@ class Folders(AuthorCommonCommand):
                     governed_heading,
                     readme_validate,
                     template_version,
-                    ignore
+                    ignore,
+                    validate_by_type_field
                 )
                 if not result:
                     raise TrestleError(
