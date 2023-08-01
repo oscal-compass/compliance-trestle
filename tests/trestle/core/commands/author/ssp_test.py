@@ -276,7 +276,9 @@ def test_ssp_generate_with_inheritance(tmp_trestle_dir: pathlib.Path) -> None:
     md_api = MarkdownAPI()
     header, tree = md_api.processor.process_markdown(test_provided)
     assert tree is not None
-    assert header[const.TRESTLE_LEVERAGING_COMP_TAG]['name'] == 'REPLACE_ME'
+
+    comp_header_value = header[const.TRESTLE_LEVERAGING_COMP_TAG]
+    assert comp_header_value == [{'name': 'REPLACE_ME'}]
     assert header[const.TRESTLE_STATEMENT_TAG][const.PROVIDED_UUID] == expected_uuid
 
     expected_provided = """# Provided Statement Description
@@ -298,7 +300,9 @@ In the context of the application component in satisfaction of AC-2.1."""
     md_api = MarkdownAPI()
     header, tree = md_api.processor.process_markdown(test_provided)
     assert tree is not None
-    assert header[const.TRESTLE_LEVERAGING_COMP_TAG]['name'] == 'REPLACE_ME'
+
+    comp_header_value = header[const.TRESTLE_LEVERAGING_COMP_TAG]
+    assert comp_header_value == [{'name': 'REPLACE_ME'}]
     assert header[const.TRESTLE_STATEMENT_TAG][const.RESPONSIBILITY_UUID] == expected_uuid
 
     expected_responsibility = """# Responsibility Statement Description
@@ -325,7 +329,9 @@ In the context of the application component in satisfaction of AC-2, part a.
     md_api = MarkdownAPI()
     header, tree = md_api.processor.process_markdown(test_provided)
     assert tree is not None
-    assert header[const.TRESTLE_LEVERAGING_COMP_TAG]['name'] == 'REPLACE_ME'
+
+    comp_header_value = header[const.TRESTLE_LEVERAGING_COMP_TAG]
+    assert comp_header_value == [{'name': 'REPLACE_ME'}]
     assert header[const.TRESTLE_STATEMENT_TAG][const.PROVIDED_UUID] == expected_provided_uuid
     assert header[const.TRESTLE_STATEMENT_TAG][const.RESPONSIBILITY_UUID] == expected_responsibility_uuid
 

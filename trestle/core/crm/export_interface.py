@@ -28,7 +28,7 @@ class ExportInterface:
     """
     Interface to query exported provided and responsibility statements from.
 
-    The by-component export statement is parse and the responsibility and provided statement
+    The by-component export statement is parsed and the responsibility and provided statements
     are separated into three catagories:
 
     isolated responsibilities - A responsibility with no provided statement
@@ -56,7 +56,7 @@ class ExportInterface:
         return provided_dict
 
     def _create_responsibility_dict(self) -> Dict[uuid.UUID, ossp.Responsibility]:
-        responsibility_dict: Dict[uuid.UUID, ossp.Provided] = {}
+        responsibility_dict: Dict[uuid.UUID, ossp.Responsibility] = {}
         for responsibility in as_list(self._by_comp.export.responsibilities):
             responsibility_dict[responsibility.uuid] = responsibility
         return responsibility_dict
@@ -82,7 +82,7 @@ class ExportInterface:
                 all_responsibilities.append(resp)
         return all_responsibilities
 
-    def get_isolated_provided(self) -> List[ossp.Responsibility]:
+    def get_isolated_provided(self) -> List[ossp.Provided]:
         """Return all isolated exported provided capabilities."""
         all_provided: List[ossp.Provided] = []
         for provided in as_dict(self._provided_dict).values():

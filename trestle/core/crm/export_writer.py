@@ -23,7 +23,7 @@ import trestle.oscal.ssp as ossp
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list
 from trestle.core.crm.export_interface import ExportInterface
-from trestle.core.inheritance_writer import (
+from trestle.core.crm.leveraged_statements import (
     LeveragedStatements,
     StatementProvided,
     StatementResponsibility,
@@ -35,9 +35,9 @@ logger = logging.getLogger(__name__)
 
 class ExportWriter:
     """
-    Exported writer.
+    By-Component Assembly Exports writer.
 
-    Export writer handles all operation related writing provided and responsibility exported statements
+    Export writer handles all operations related to writing provided and responsibility exported statements
     to Markdown.
     """
 
@@ -49,13 +49,13 @@ class ExportWriter:
             root_path: A root path object where all markdown files and directories should be written.
             ssp: A system security plan with exports
         """
-        self._ssp = ssp
-        self._root_path = root_path
+        self._ssp: ossp.SystemSecurityPlan = ssp
+        self._root_path: pathlib.Path = root_path
 
     def write_exports_as_markdown(self) -> None:
         """Write export statement for leveraged SSP as the inheritance Markdown view."""
         # Find all the components and create paths for name
-        paths_by_comp: Dict[uuid.UUD, pathlib.Path] = {}
+        paths_by_comp: Dict[uuid.UUID, pathlib.Path] = {}
         for component in as_list(self._ssp.system_implementation.components):
             paths_by_comp[component.uuid] = self._root_path.joinpath(component.title)
 
@@ -70,7 +70,7 @@ class ExportWriter:
 
             for stm in as_list(implemented_requirement.statements):
                 statement_id = getattr(stm, 'statement_id', f'{implemented_requirement.control_id}_smt')
-                for by_comp in stm.by_components:
+                for by_comp in as_list(stm.by_components):
                     try:
                         comp_markdown_path: pathlib.Path = paths_by_comp[by_comp.component_uuid]
                         self._process_by_component(by_comp, comp_markdown_path, statement_id)
@@ -100,18 +100,16 @@ class ExportWriter:
         all_statements: Dict[str, LeveragedStatements] = {}
 
         for responsibility in export_interface.get_isolated_responsibilities():
-            responsibility_stm = StatementResponsibility(responsibility.uuid, responsibility.description)
-            all_statements[responsibility.uuid] = responsibility_stm
+            all_statements[responsibility.uuid
+                           ] = StatementResponsibility(responsibility.uuid, responsibility.description)
 
         for provided in export_interface.get_isolated_provided():
-            provided_stm = StatementProvided(provided.uuid, provided.description)
-            all_statements[provided.uuid] = provided_stm
+            all_statements[provided.uuid] = StatementProvided(provided.uuid, provided.description)
 
         for responsibility, provided in export_interface.get_export_sets():
-            set_stm = StatementTree(
+            path = f'{provided.uuid}_{responsibility.uuid}'
+            all_statements[path] = StatementTree(
                 provided.uuid, provided.description, responsibility.uuid, responsibility.description
             )
-            path = f'{provided.uuid}_{responsibility.uuid}'
-            all_statements[path] = set_stm
 
         return all_statements

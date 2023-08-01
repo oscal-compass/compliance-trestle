@@ -29,7 +29,7 @@ from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.core.crm.export_interface import ExportInterface
 from trestle.core.crm.export_writer import ExportWriter
-from trestle.core.inheritance_writer import (
+from trestle.core.crm.leveraged_statements import (
     LeveragedStatements,
     StatementProvided,
     StatementResponsibility,
