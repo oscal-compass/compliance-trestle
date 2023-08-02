@@ -124,10 +124,19 @@ class CsvToOscalComponentDefinition(TaskBase):
         logger.info(text1 + text2 + text3)
         text1 = '  required columns:      '
         for text2 in CsvColumn.get_required_column_names():
+            if text2 in ['Rule_Description', 'Profile_Source', 'Profile_Description', 'Control_Id_List']:
+                text2 += '*'
             logger.info(text1 + text2)
             text1 = '                         '
         text1 = '  optional columns:      '
         for text2 in CsvColumn.get_optional_column_names():
+            if text2 in ['Parameter_Id',
+                         'Parameter_Description',
+                         'Parameter_Value_Alternatives',
+                         'Parameter_Value_Default']:
+                text2 += '*'
+            if text2 in ['Check_Id', 'Check_Description']:
+                text2 += '+'
             logger.info(text1 + text2)
             text1 = '                         '
         text1 = '  output-dir           = '
@@ -144,6 +153,16 @@ class CsvToOscalComponentDefinition(TaskBase):
         logger.info(text1 + text2)
         text1 = '  validate-controls    = '
         text2 = '(optional) on, warn, or off [default]; validate controls exist in resolved profile.'
+        logger.info(text1 + text2)
+        # Notes
+        text1 = ''
+        text2 = ''
+        logger.info(text1 + text2)
+        text1 = 'Notes: '
+        text2 = '* column is ignored for validation component type'
+        logger.info(text1 + text2)
+        text1 = '       '
+        text2 = '+ column is required for validation component type'
         logger.info(text1 + text2)
 
     def configure(self) -> bool:
