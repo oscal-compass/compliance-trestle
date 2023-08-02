@@ -906,7 +906,7 @@ class _ResolvedProfileCatalogHelper():
             for profile in self._profile_list:
                 catalog = ProfileResolver.get_resolved_profile_catalog(
                     pathlib.Path(self._root),
-                    pathlib.Path(profile),
+                    profile,
                 )
                 self._profile_map[profile] = catalog
                 controls = CatalogInterface.get_control_ids_from_catalog(catalog)
