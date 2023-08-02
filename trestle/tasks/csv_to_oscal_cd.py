@@ -54,10 +54,15 @@ PROFILE_SOURCE = 'Profile_Source'
 PROFILE_DESCRIPTION = 'Profile_Description'
 CHECK_ID = 'Check_Id'
 CHECK_DESCRIPTION = 'Check_Description'
+FETCHER_ID = 'Fetcher_Id'
+FETCHER_DESCRIPTION = 'Fetcher_Description'
 PARAMETER_ID = 'Parameter_Id'
 PARAMETER_DESCRIPTION = 'Parameter_Description'
 PARAMETER_VALUE_DEFAULT = 'Parameter_Value_Default'
 PARAMETER_VALUE_ALTERNATIVES = 'Parameter_Value_Alternatives'
+
+validation = 'validation'
+prefix_rule_set = 'rule_set_'
 
 logger = logging.getLogger(__name__)
 
@@ -118,11 +123,11 @@ class CsvToOscalComponentDefinition(TaskBase):
         text3 = ' [1st row are column headings; 2nd row are column descriptions; 3rd row and beyond is data]'
         logger.info(text1 + text2 + text3)
         text1 = '  required columns:      '
-        for text2 in CsvColumn.columns_required:
+        for text2 in CsvColumn.get_required_column_names():
             logger.info(text1 + text2)
             text1 = '                         '
         text1 = '  optional columns:      '
-        for text2 in CsvColumn.columns_optional:
+        for text2 in CsvColumn.get_optional_column_names():
             logger.info(text1 + text2)
             text1 = '                         '
         text1 = '  output-dir           = '
@@ -464,18 +469,25 @@ class CsvToOscalComponentDefinition(TaskBase):
             # props
             component.props = as_list(component.props)
             component.props = component.props + self._create_rule_props(rule_key)
-            # control implementation
-            source = self._csv_mgr.get_value(rule_key, PROFILE_SOURCE)
-            description = self._csv_mgr.get_value(rule_key, PROFILE_DESCRIPTION)
-            control_implementation = self._get_control_implementation(component, source, description)
-            # set-parameter
-            set_parameter = self._create_set_parameter(rule_key)
-            if set_parameter:
-                control_implementation.set_parameters = as_list(control_implementation.set_parameters)
-                _OscalHelper.add_set_parameter(control_implementation.set_parameters, set_parameter)
-            # control-mappings
-            control_mappings = self._csv_mgr.get_value(rule_key, CONTROL_ID_LIST).split()
-            self._add_rule_prop(control_implementation, control_mappings, rule_key)
+            # additional props, when not validation component
+            if not self._is_validation(rule_key):
+                # control implementation
+                source = self._csv_mgr.get_value(rule_key, PROFILE_SOURCE)
+                description = self._csv_mgr.get_value(rule_key, PROFILE_DESCRIPTION)
+                control_implementation = self._get_control_implementation(component, source, description)
+                # set-parameter
+                set_parameter = self._create_set_parameter(rule_key)
+                if set_parameter:
+                    control_implementation.set_parameters = as_list(control_implementation.set_parameters)
+                    _OscalHelper.add_set_parameter(control_implementation.set_parameters, set_parameter)
+                # control-mappings
+                control_mappings = self._csv_mgr.get_value(rule_key, CONTROL_ID_LIST).split()
+                self._add_rule_prop(control_implementation, control_mappings, rule_key)
+
+    def _is_validation(self, rule_key: tuple) -> bool:
+        """Check for validation component."""
+        component_type = self._csv_mgr.get_value(rule_key, COMPONENT_TYPE)
+        return component_type.lower() == validation
 
     def _add_rule_prop(
         self, control_implementation: ControlImplementation, control_mappings: List[str], rule_key: tuple
@@ -506,26 +518,29 @@ class CsvToOscalComponentDefinition(TaskBase):
         rule_set = self._rule_set_id_mgr.get_next_rule_set_id()
         row_number = self._csv_mgr.get_row_number(rule_key)
         rule_set_mgr = _RuleSetMgr(row_number, rule_set)
-        column_names = CsvColumn.get_filtered_required_column_names() + CsvColumn.get_filtered_optional_column_names()
         namespace = self._get_namespace(rule_key)
+        if self._is_validation(rule_key):
+            column_names = CsvColumn.get_check_property_column_names()
+        else:
+            column_names = CsvColumn.get_rule_property_column_names()
         # req'd & optional props
         for column_name in column_names:
             prop_name = self._get_prop_name(column_name)
             prop_value = self._csv_mgr.get_value(rule_key, column_name).strip()
             rule_set_mgr.add_prop(prop_name, prop_value, namespace, self.get_class(prop_name))
-        # parameter columns
-        column_names = CsvColumn.get_parameter_column_names()
-        for column_name in column_names:
-            prop_name = self._get_prop_name(column_name)
-            prop_value = self._csv_mgr.get_value(rule_key, column_name).strip()
-            rule_set_mgr.add_prop(prop_name, prop_value, namespace, self.get_class(prop_name))
-        # user props
-        column_names = self._csv_mgr.get_user_column_names()
-        for column_name in column_names:
-            prop_name = self._get_prop_name(column_name)
-            prop_value = self._csv_mgr.get_value(rule_key, column_name).strip()
-            rule_set_mgr.add_prop(prop_name, prop_value, namespace, self.get_class(prop_name))
-        rule_set_mgr.validate()
+        if not self._is_validation(rule_key):
+            # parameter columns
+            column_names = CsvColumn.get_parameter_column_names()
+            for column_name in column_names:
+                prop_name = self._get_prop_name(column_name)
+                prop_value = self._csv_mgr.get_value(rule_key, column_name).strip()
+                rule_set_mgr.add_prop(prop_name, prop_value, namespace, self.get_class(prop_name))
+            # user props
+            column_names = self._csv_mgr.get_user_column_names()
+            for column_name in column_names:
+                prop_name = self._get_prop_name(column_name)
+                prop_value = self._csv_mgr.get_value(rule_key, column_name).strip()
+                rule_set_mgr.add_prop(prop_name, prop_value, namespace, self.get_class(prop_name))
         return rule_set_mgr.get_props()
 
     def _get_control_implementation(
@@ -832,7 +847,7 @@ class _RuleSetIdMgr():
 
     def get_next_rule_set_id(self) -> str:
         self._prev_rule_set_number += 1
-        rval = f'rule_set_{str(self._prev_rule_set_number).zfill(self._fill_sz)}'
+        rval = f'{prefix_rule_set}{str(self._prev_rule_set_number).zfill(self._fill_sz)}'
         return rval
 
 
@@ -856,15 +871,6 @@ class _RuleSetMgr():
                 remarks=self._rule_set,
             )
             self._props[name] = prop
-
-    def validate(self) -> None:
-        """Validate."""
-        if PARAMETER_ID not in self._props.keys():
-            forbidden = CsvColumn.get_parameter_dependent_column_names()
-            for name in self._props.keys():
-                if name in forbidden:
-                    text = f'row "{self._row_number}" invalid "{name}"'
-                    raise RuntimeError(text)
 
     def get_props(self) -> List[Property]:
         """Get props."""
@@ -1046,7 +1052,7 @@ class _CdMgr():
                     value = prop.remarks
                     self._cd_rules_map[key] = value
                     logger.debug(f'cd: {key} {self._cd_rules_map[key]}')
-                    rule_set_number = int(value.replace('rule_set_', ''))
+                    rule_set_number = int(value.replace(f'{prefix_rule_set}', ''))
                     if rule_set_number > self._max_rule_set_number:
                         self._max_rule_set_number = rule_set_number
 
@@ -1207,7 +1213,7 @@ class _CdMgr():
 class CsvColumn():
     """CsvColumn."""
 
-    columns_required = [
+    _columns_required = [
         f'{COMPONENT_TITLE}',
         f'{COMPONENT_DESCRIPTION}',
         f'{COMPONENT_TYPE}',
@@ -1219,8 +1225,80 @@ class CsvColumn():
         f'{NAMESPACE}',
     ]
 
+    _columns_optional = [
+        f'{PARAMETER_ID}',
+        f'{PARAMETER_DESCRIPTION}',
+        f'{PARAMETER_VALUE_ALTERNATIVES}',
+        f'{PARAMETER_VALUE_DEFAULT}',
+        f'{CHECK_ID}',
+        f'{CHECK_DESCRIPTION}',
+    ]
+
+    _columns_required_validation = [
+        f'{COMPONENT_TITLE}',
+        f'{COMPONENT_DESCRIPTION}',
+        f'{COMPONENT_TYPE}',
+        f'{RULE_ID}',
+        f'{NAMESPACE}',
+        f'{CHECK_ID}',
+        f'{CHECK_DESCRIPTION}',
+    ]
+
+    @staticmethod
+    def get_order(column_name: str) -> int:
+        """Get order for column_name."""
+        rval = sys.maxsize
+        columns_ordered = CsvColumn._columns_required + CsvColumn._columns_optional
+        if column_name in columns_ordered:
+            rval = columns_ordered.index(column_name)
+        return rval
+
+    @staticmethod
+    def get_required_column_names() -> List[str]:
+        """Get required column names."""
+        rval = []
+        rval += CsvColumn._columns_required
+        return rval
+
+    @staticmethod
+    def get_optional_column_names() -> List[str]:
+        """Get optional column names."""
+        rval = []
+        rval += CsvColumn._columns_optional
+        return rval
+
+    @staticmethod
+    def get_reserved_column_names() -> List[str]:
+        """Get reserved column names."""
+        rval = []
+        rval += CsvColumn._columns_required
+        rval += CsvColumn._columns_optional
+        return rval
+
+    @staticmethod
+    def get_required_column_names_validation() -> List[str]:
+        """Get required column names validation."""
+        rval = []
+        rval += CsvColumn._columns_required_validation
+        return rval
+
+    _rule_property_column_names = [
+        f'{RULE_ID}',
+        f'{RULE_DESCRIPTION}',
+        f'{PARAMETER_ID}',
+        f'{PARAMETER_DESCRIPTION}',
+        f'{PARAMETER_VALUE_ALTERNATIVES}',
+        f'{CHECK_ID}',
+        f'{CHECK_DESCRIPTION}',
+    ]
+
+    @staticmethod
+    def get_rule_property_column_names() -> List[str]:
+        """Get rule property column names."""
+        return CsvColumn._rule_property_column_names
+
     # columns required which do not become properties
-    columns_required_filtered = [
+    _columns_required_filtered = [
         f'{COMPONENT_TITLE}',
         f'{COMPONENT_DESCRIPTION}',
         f'{COMPONENT_TYPE}',
@@ -1230,69 +1308,23 @@ class CsvColumn():
         f'{NAMESPACE}',
     ]
 
-    columns_optional = [
-        f'{PARAMETER_ID}',
-        f'{PARAMETER_DESCRIPTION}',
-        f'{PARAMETER_VALUE_ALTERNATIVES}',
-        f'{PARAMETER_VALUE_DEFAULT}',
-        f'{CHECK_ID}',
-        f'{CHECK_DESCRIPTION}',
-    ]
-
     # optional columns which do not become properties, initially
-    columns_optional_filtered = [
+    _columns_optional_filtered = [
         f'{PARAMETER_ID}',
         f'{PARAMETER_DESCRIPTION}',
         f'{PARAMETER_VALUE_ALTERNATIVES}',
         f'{PARAMETER_VALUE_DEFAULT}',
     ]
 
-    # optional columns which do become properties, afterwards
-    columns_parameters = [
-        f'{PARAMETER_ID}',
-        f'{PARAMETER_DESCRIPTION}',
-        f'{PARAMETER_VALUE_ALTERNATIVES}',
-    ]
-
-    # optional columns which require Param_Id be present in the row
-    columns_parameters_dependent = [
-        f'{PARAMETER_DESCRIPTION}',
-        f'{PARAMETER_VALUE_ALTERNATIVES}',
-        f'{PARAMETER_VALUE_DEFAULT}',
-    ]
-
-    columns_filtered = columns_required_filtered + columns_optional_filtered
-
-    @staticmethod
-    def get_order(column_name: str) -> int:
-        """Get order for column_name."""
-        rval = sys.maxsize
-        columns_ordered = CsvColumn.columns_required + CsvColumn.columns_optional
-        if column_name in columns_ordered:
-            rval = columns_ordered.index(column_name)
-        return rval
-
-    @staticmethod
-    def get_required_column_names() -> List[str]:
-        """Get required column names."""
-        rval = []
-        rval += CsvColumn.columns_required
-        return rval
+    _columns_filtered = _columns_required_filtered + _columns_optional_filtered
 
     @staticmethod
     def get_filtered_required_column_names() -> List[str]:
         """Get filtered required column names."""
         rval = []
         for column_name in CsvColumn.get_required_column_names():
-            if column_name not in CsvColumn.columns_filtered:
+            if column_name not in CsvColumn._columns_filtered:
                 rval.append(column_name)
-        return rval
-
-    @staticmethod
-    def get_optional_column_names() -> List[str]:
-        """Get optional column names."""
-        rval = []
-        rval += CsvColumn.columns_optional
         return rval
 
     @staticmethod
@@ -1300,31 +1332,41 @@ class CsvColumn():
         """Get filtered optional column names."""
         rval = []
         for column_name in CsvColumn.get_optional_column_names():
-            if column_name not in CsvColumn.columns_filtered:
+            if column_name not in CsvColumn._columns_filtered:
                 rval.append(column_name)
         return rval
 
+    _check_property_column_names = [
+        f'{RULE_ID}',
+        f'{CHECK_ID}',
+        f'{CHECK_DESCRIPTION}',
+    ]
+
     @staticmethod
-    def get_reserved_column_names() -> List[str]:
-        """Get reserved column names."""
-        rval = []
-        rval += CsvColumn.columns_required
-        rval += CsvColumn.columns_optional
-        return rval
+    def get_check_property_column_names() -> List[str]:
+        """Get check property column names."""
+        return CsvColumn._check_property_column_names
+
+    # optional columns which do become properties, afterwards
+    _columns_parameters = [
+        f'{PARAMETER_ID}',
+        f'{PARAMETER_DESCRIPTION}',
+        f'{PARAMETER_VALUE_ALTERNATIVES}',
+    ]
 
     @staticmethod
     def get_parameter_column_names() -> List[str]:
         """Get parameter column names."""
         rval = []
-        rval += CsvColumn.columns_parameters
+        rval += CsvColumn._columns_parameters
         return rval
 
-    @staticmethod
-    def get_parameter_dependent_column_names() -> List[str]:
-        """Get parameter dependent column names."""
-        rval = []
-        rval += CsvColumn.columns_parameters_dependent
-        return rval
+    # optional columns which require Param_Id be present in the row
+    _columns_parameters_dependent = [
+        f'{PARAMETER_DESCRIPTION}',
+        f'{PARAMETER_VALUE_ALTERNATIVES}',
+        f'{PARAMETER_VALUE_DEFAULT}',
+    ]
 
 
 class _CsvMgr():
@@ -1344,6 +1386,8 @@ class _CsvMgr():
         self._csv_controls_map = {}
         self._csv_profile_list = []
         for row_num, row in self.row_generator():
+            if self._is_no_control(row):
+                continue
             self._check_row_minimum_requirements(row_num, row)
             component_title = self.get_row_value(row, f'{COMPONENT_TITLE}')
             component_type = self.get_row_value(row, f'{COMPONENT_TYPE}')
@@ -1393,19 +1437,41 @@ class _CsvMgr():
             index += 1
             if index < 3:
                 continue
-            control_mappings = self.get_row_value(row, CONTROL_ID_LIST).strip()
-            if not len(control_mappings):
-                continue
             logger.debug(f'row_gen: {index} {row}')
             yield index, row
 
     def _check_row_minimum_requirements(self, row_num: int, row: List) -> None:
         """Check row minimum requirements."""
-        for column_name in CsvColumn.get_required_column_names():
+        if self._is_component_type_validation(row):
+            column_names = CsvColumn.get_required_column_names_validation()
+        else:
+            column_names = CsvColumn.get_required_column_names()
+        for column_name in column_names:
             value = self.get_row_value(row, column_name)
             if value is None or value == '':
                 text = f'row "{row_num}" missing value for "{column_name}"'
                 raise RuntimeError(text)
+
+    def _is_no_control(self, row: List) -> bool:
+        """Check for no control."""
+        if self._is_component_type_validation(row):
+            rval = False
+        else:
+            control_id_list = self.get_row_value(row, f'{CONTROL_ID_LIST}')
+            if control_id_list.strip() == '':
+                rval = True
+            else:
+                rval = False
+        return rval
+
+    def _is_component_type_validation(self, row: List) -> bool:
+        """Check for component type validation."""
+        component_type = self.get_row_value(row, f'{COMPONENT_TYPE}')
+        if component_type.lower().strip() == validation:
+            rval = True
+        else:
+            rval = False
+        return rval
 
     def _undecorate_header(self) -> None:
         """Undecorate header."""
