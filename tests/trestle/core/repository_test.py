@@ -13,17 +13,25 @@
 # limitations under the License.
 """Tests for trestle Repository APIs."""
 
+import os
 import pathlib
 
 import pytest
 
 from tests import test_utils
 
+import trestle.common.const as const
 import trestle.oscal as oscal
 import trestle.oscal.catalog as cat
+import trestle.oscal.profile as prof
 from trestle.common.err import TrestleError
 from trestle.core import generators, parser
-from trestle.core.repository import ManagedOSCAL, Repository
+from trestle.core.repository import AgileAuthoring, ManagedOSCAL, Repository
+
+prof_name = 'comp_prof'
+ssp_name = 'my_ssp'
+cat_name = 'simplified_nist_catalog'
+md_dir = 'test_md'
 
 
 def test_repo(tmp_trestle_dir: pathlib.Path) -> None:
@@ -384,3 +392,75 @@ def test_managed_validate(tmp_trestle_dir: pathlib.Path) -> None:
     managed = repo.import_model(catalog_data, 'imported')
     success = managed.validate()
     assert success
+
+
+# Test default agile authoring paths to ensure call from repository are correct
+
+
+def test_agile_authoring_catalog(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test catalog generate and assemble through API."""
+    test_utils.load_from_json(tmp_trestle_dir, cat_name, cat_name, cat.Catalog)
+
+    authoring = AgileAuthoring(tmp_trestle_dir)
+
+    md_cat = os.path.join(md_dir, cat_name)
+    success = authoring.generate_catalog_markdown(cat_name, md_cat)
+
+    assert success
+    assert pathlib.Path(tmp_trestle_dir / md_cat).exists()
+
+    new_cat = 'temp_cat'
+    success = authoring.assemble_catalog_markdown(cat_name, new_cat, md_cat)
+    assert success
+    assert pathlib.Path(tmp_trestle_dir, const.MODEL_DIR_CATALOG, new_cat).exists()
+
+
+def test_agile_authoring_profile(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test profile generate and assemble through API."""
+    test_utils.load_from_json(tmp_trestle_dir, cat_name, cat_name, cat.Catalog)
+    test_utils.load_from_json(tmp_trestle_dir, prof_name, prof_name, prof.Profile)
+
+    authoring = AgileAuthoring(tmp_trestle_dir)
+
+    md_prof = os.path.join(md_dir, prof_name)
+    success = authoring.generate_profile_markdown(prof_name, md_prof)
+
+    assert success
+    assert pathlib.Path(tmp_trestle_dir / md_prof).exists()
+
+    new_prof = 'temp_prof'
+    success = authoring.assemble_profile_markdown(prof_name, new_prof, md_prof)
+    assert success
+    assert pathlib.Path(tmp_trestle_dir, const.MODEL_DIR_PROFILE, new_prof).exists()
+
+
+def test_agile_authoring_component(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test component generate and assemble through API."""
+    comp_name = test_utils.setup_component_generate(tmp_trestle_dir)
+    authoring = AgileAuthoring(tmp_trestle_dir)
+
+    md_comp = os.path.join(md_dir, comp_name)
+    success = authoring.generate_component_definition_markdown(comp_name, md_comp)
+
+    assert success
+    assert pathlib.Path(tmp_trestle_dir / md_comp).exists()
+
+    new_comp = 'temp_comp'
+    success = authoring.assemble_component_definition_markdown(comp_name, new_comp, md_comp)
+    assert success
+    assert pathlib.Path(tmp_trestle_dir, const.MODEL_DIR_COMPDEF, new_comp).exists()
+
+
+def test_agile_authoring_ssp(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test ssp generate and assemble through API."""
+    args, _ = test_utils.setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
+    authoring = AgileAuthoring(tmp_trestle_dir)
+
+    success = authoring.generate_ssp_markdown(args.profile, args.output, args.compdefs)
+
+    assert success
+    assert pathlib.Path(tmp_trestle_dir / args.output).exists()
+
+    success = authoring.assemble_ssp_markdown(ssp_name, ssp_name, args.output, args.compdefs)
+    assert success
+    assert pathlib.Path(tmp_trestle_dir, const.MODEL_DIR_SSP, args.output).exists()

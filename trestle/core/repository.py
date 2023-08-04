@@ -24,6 +24,10 @@ from typing import List, Optional, Type
 
 import trestle.common.const as const
 import trestle.core.commands.assemble as assemblecmd
+import trestle.core.commands.author.catalog as catalogauthorcmd
+import trestle.core.commands.author.component as componentauthorcmd
+import trestle.core.commands.author.profile as profileauthorcmd
+import trestle.core.commands.author.ssp as sspauthorcmd
 import trestle.core.commands.merge as mergecmd
 import trestle.core.commands.split as splitcmd
 import trestle.core.commands.validate as validatecmd
@@ -361,4 +365,287 @@ class Repository:
             raise TrestleError(f'Error in validating model: {e}')
 
         logger.debug(f'Model {name} validated successfully.')
+        return success
+
+
+class AgileAuthoring(Repository):
+    """
+    AgileAuthoring extends the Repository class for performing authoring specific operations on Trestle repository.
+
+    This class provides a set of APIs to perform generate and assemble authoring operations in the trestle repository
+    rather than using the command line.
+
+    """
+
+    def __init__(self, root_dir: pathlib.Path) -> None:
+        """Initialize trestle repository object."""
+        super().__init__(root_dir)
+
+    def assemble_catalog_markdown(
+        self,
+        name: str,
+        output: str,
+        markdown_dir: str,
+        set_parameters: bool = False,
+        regenerate: bool = False,
+        version: str = ''
+    ) -> bool:
+        """Assemble catalog markdown into OSCAL Catalog in JSON."""
+        logger.debug(f'Assembling model {name} of type catalog.')
+        success = False
+
+        verbose = log.get_current_verbosity_level(logger)
+        args = argparse.Namespace(
+            name=name,
+            output=output,
+            markdown=markdown_dir,
+            trestle_root=self.root_dir,
+            set_parameters=set_parameters,
+            regenerate=regenerate,
+            version=version,
+            verbose=verbose
+        )
+
+        try:
+            ret = catalogauthorcmd.CatalogAssemble()._run(args)
+            if ret == 0:
+                success = True
+        except Exception as e:
+            raise TrestleError(f'Error assembling catalog {name}: {e}')
+
+        logger.debug(f'Model {name} assembled successfully.')
+        return success
+
+    def assemble_profile_markdown(
+        self,
+        name: str,
+        output: str,
+        markdown_dir: str,
+        set_parameters: bool = False,
+        regenerate: bool = False,
+        version: str = '',
+        sections: str = '',
+        required_sections: str = '',
+        allowed_sections: str = ''
+    ) -> bool:
+        """Assemble profile markdown into OSCAL Profile in JSON."""
+        logger.debug(f'Assembling model {name} of type profile.')
+        success = False
+
+        verbose = log.get_current_verbosity_level(logger)
+        args = argparse.Namespace(
+            name=name,
+            output=output,
+            markdown=markdown_dir,
+            trestle_root=self.root_dir,
+            set_parameters=set_parameters,
+            regenerate=regenerate,
+            version=version,
+            sections=sections,
+            required_sections=required_sections,
+            allowed_sections=allowed_sections,
+            verbose=verbose
+        )
+
+        try:
+            ret = profileauthorcmd.ProfileAssemble()._run(args)
+            if ret == 0:
+                success = True
+        except Exception as e:
+            raise TrestleError(f'Error assembling profile {name}: {e}')
+
+        logger.debug(f'Model {name} assembled successfully.')
+        return success
+
+    def assemble_component_definition_markdown(
+        self, name: str, output: str, markdown_dir: str, regenerate: bool = False, version: str = ''
+    ) -> bool:
+        """Assemble component definition markdown into OSCAL Component Definition in JSON."""
+        logger.debug(f'Assembling model {name} of type component definition.')
+        success = False
+
+        verbose = log.get_current_verbosity_level(logger)
+        args = argparse.Namespace(
+            name=name,
+            output=output,
+            markdown=markdown_dir,
+            trestle_root=self.root_dir,
+            regenerate=regenerate,
+            version=version,
+            verbose=verbose
+        )
+
+        try:
+            ret = componentauthorcmd.ComponentAssemble()._run(args)
+            if ret == 0:
+                success = True
+        except Exception as e:
+            raise TrestleError(f'Error assembling component definition {name}: {e}')
+
+        logger.debug(f'Model {name} assembled successfully.')
+        return success
+
+    def assemble_ssp_markdown(
+        self,
+        name: str,
+        output: str,
+        markdown_dir: str,
+        compdefs: str,
+        regenerate: bool = False,
+        version: str = ''
+    ) -> bool:
+        """Assemble ssp markdown into OSCAL SSP in JSON."""
+        logger.debug(f'Assembling model {name} of type ssp.')
+        success = False
+
+        verbose = log.get_current_verbosity_level(logger)
+        args = argparse.Namespace(
+            name=name,
+            output=output,
+            markdown=markdown_dir,
+            compdefs=compdefs,
+            trestle_root=self.root_dir,
+            regenerate=regenerate,
+            version=version,
+            verbose=verbose
+        )
+
+        try:
+            ret = sspauthorcmd.SSPAssemble()._run(args)
+            if ret == 0:
+                success = True
+        except Exception as e:
+            raise TrestleError(f'Error assembling ssp {name}: {e}')
+
+        logger.debug(f'Model {name} assembled successfully.')
+        return success
+
+    def generate_catalog_markdown(
+        self,
+        name: str,
+        output: str,
+        force_overwrite: bool = False,
+        yaml_header: str = '',
+        overwrite_header_values: bool = False
+    ) -> bool:
+        """Generate catalog markdown from OSCAL Catalog in JSON."""
+        logger.debug(f'Generating markdown for {name} of type catalog.')
+        success = False
+
+        verbose = log.get_current_verbosity_level(logger)
+        args = argparse.Namespace(
+            name=name,
+            output=output,
+            trestle_root=self.root_dir,
+            force_overwrite=force_overwrite,
+            yaml_header=yaml_header,
+            overwrite_header_values=overwrite_header_values,
+            verbose=verbose
+        )
+
+        try:
+            ret = catalogauthorcmd.CatalogGenerate()._run(args)
+            if ret == 0:
+                success = True
+        except Exception as e:
+            raise TrestleError(f'Error generate markdown for catalog {name}: {e}')
+
+        logger.debug(f'Model {name} markdown generated successfully.')
+        return success
+
+    def generate_profile_markdown(
+        self,
+        name: str,
+        output: str,
+        force_overwrite: bool = False,
+        yaml_header: str = '',
+        overwrite_header_values: bool = False,
+        sections: str = '',
+        required_sections: str = ''
+    ) -> bool:
+        """Generate profile markdown from OSCAL Profile in JSON."""
+        logger.debug(f'Generating markdown for {name} of type profile.')
+        success = False
+
+        verbose = log.get_current_verbosity_level(logger)
+        args = argparse.Namespace(
+            name=name,
+            output=output,
+            trestle_root=self.root_dir,
+            force_overwrite=force_overwrite,
+            yaml_header=yaml_header,
+            overwrite_header_values=overwrite_header_values,
+            sections=sections,
+            required_sections=required_sections,
+            verbose=verbose
+        )
+
+        try:
+            ret = profileauthorcmd.ProfileGenerate()._run(args)
+            if ret == 0:
+                success = True
+        except Exception as e:
+            raise TrestleError(f'Error generate markdown for profile {name}: {e}')
+
+        logger.debug(f'Model {name} markdown generated successfully.')
+        return success
+
+    def generate_component_definition_markdown(
+        self,
+        name: str,
+        output: str,
+        force_overwrite: bool = False,
+    ) -> bool:
+        """Generate component definition markdown from OSCAL Component Definition in JSON."""
+        logger.debug(f'Generating markdown for {name} of type component definition.')
+        success = False
+
+        verbose = log.get_current_verbosity_level(logger)
+        args = argparse.Namespace(
+            name=name, output=output, trestle_root=self.root_dir, force_overwrite=force_overwrite, verbose=verbose
+        )
+
+        try:
+            ret = componentauthorcmd.ComponentGenerate()._run(args)
+            if ret == 0:
+                success = True
+        except Exception as e:
+            raise TrestleError(f'Error generating markdown for component definition {name}: {e}')
+
+        logger.debug(f'Model {name} markdown generated successfully.')
+        return success
+
+    def generate_ssp_markdown(
+        self,
+        profile: str,
+        output: str,
+        compdefs: str,
+        force_overwrite: bool = False,
+        yaml_header: str = '',
+        overwrite_header_values: bool = False
+    ) -> bool:
+        """Generate ssp markdown from OSCAL Profile and Component Definitions."""
+        logger.debug(f'Generating markdown for {output} of type ssp.')
+        success = False
+
+        verbose = log.get_current_verbosity_level(logger)
+        args = argparse.Namespace(
+            profile=profile,
+            output=output,
+            compdefs=compdefs,
+            trestle_root=self.root_dir,
+            force_overwrite=force_overwrite,
+            yaml_header=yaml_header,
+            overwrite_header_values=overwrite_header_values,
+            verbose=verbose
+        )
+
+        try:
+            ret = sspauthorcmd.SSPGenerate()._run(args)
+            if ret == 0:
+                success = True
+        except Exception as e:
+            raise TrestleError(f'Error in generating markdown for ssp {output}: {e}')
+
+        logger.debug(f'Model {output} markdown generated successfully.')
         return success
