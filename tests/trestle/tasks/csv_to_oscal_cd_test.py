@@ -1047,7 +1047,7 @@ def test_execute_validation(tmp_path: pathlib.Path) -> None:
     assert component.type == 'Validation'
     assert component.title == 'IAM'
     assert component.description == 'IAM'
-    assert len(component.props) == 3
+    assert len(component.props) == 6
     assert component.props[0].name == 'Rule_Id'
     assert component.props[0].value == 'validation-rule-id'
     assert component.props[0].class_ == 'scc_class'

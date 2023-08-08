@@ -554,12 +554,12 @@ class CsvToOscalComponentDefinition(TaskBase):
                 prop_name = self._get_prop_name(column_name)
                 prop_value = self._csv_mgr.get_value(rule_key, column_name).strip()
                 rule_set_mgr.add_prop(prop_name, prop_value, namespace, self.get_class(prop_name))
-            # user props
-            column_names = self._csv_mgr.get_user_column_names()
-            for column_name in column_names:
-                prop_name = self._get_prop_name(column_name)
-                prop_value = self._csv_mgr.get_value(rule_key, column_name).strip()
-                rule_set_mgr.add_prop(prop_name, prop_value, namespace, self.get_class(prop_name))
+        # user props
+        column_names = self._csv_mgr.get_user_column_names()
+        for column_name in column_names:
+            prop_name = self._get_prop_name(column_name)
+            prop_value = self._csv_mgr.get_value(rule_key, column_name).strip()
+            rule_set_mgr.add_prop(prop_name, prop_value, namespace, self.get_class(prop_name))
         return rule_set_mgr.get_props()
 
     def _get_control_implementation(
