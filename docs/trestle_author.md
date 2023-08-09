@@ -411,13 +411,9 @@ Running `trestle author docs validate -tn docs_task -gh="Governed section"` will
 
 ### Validating the documents against different templates
 
-Validation against multiple templates as stated before can be done, but there is another scenario that you can leverage on trestle to have more than 1 instance of a template existing in the task folder.
+Validation against multiple templates as stated before can be done, but there is another scenario that you can leverage on trestle to have multiple documents in the task folder corresponding to a 1 template.
 
-For that to happen you will need to provide your template with the following parameter at the yaml header level, matching the type of template to be implemented so the validation can occur:
-
-> x-trestle-template-type: insert_template_type_here
-
-Please, take into consideration that for the validation to happen you will need to provide the type in each template you want to implement as well as on each instance of the respective template. With that, you will be able to create more than 1 instance document per template and give the instance the name desired.
+Please, take into consideration that for the validation to happen you will need to provide each instance of the template with a field called `x-trestle-template-type: insert_template_type_here` in the yaml header matching with the template name. With that, you will be able to create more than 1 instance document per template and give the instance the name desired.
 
 For instance, let´s consider the next folder structure:
 
@@ -443,7 +439,7 @@ trestle_root
 
 ```
 
-If you noticed, names are no longer needed to match with exact template names, and that´s because validation will run through `x-trestle-template-type` field defined at the template header, not through the name.
+If you noticed, names are no longer needed to match with exact template names, and that´s because validation will run through `x-trestle-template-type` field defined at the instance header, not through the name.
 
 To validate the documents against their respective templates using `x-trestle-template-type`, run:
 

@@ -235,7 +235,7 @@ class Folders(AuthorCommonCommand):
                         logger.warning(
                             f'INVALID: Instance file {instance_file_name} does not have'
                             f' {author_const.TEMPLATE_TYPE_HEADER}'
-                            ' field in its header and can not be validate using optional parameter validate'
+                            ' field in its header and can not be validated using optional parameter validate'
                             ' template type field'
                         )
                         return False
@@ -264,28 +264,13 @@ class Folders(AuthorCommonCommand):
                 for template in templates:
                     # checks if valdation needs to check on x-trestle-template-type field on header
                     if validate_by_type_field:
-                        # grabs template type out of template
-                        template_type = md_api.processor.fetch_value_from_header(
-                            template_file, author_const.TEMPLATE_TYPE_HEADER
+                        instance_template_type = md_api.processor.fetch_value_from_header(
+                            instance_file, author_const.TEMPLATE_TYPE_HEADER
                         )
-                        # checks if template contains x-trestle-template-type field
-                        if template_type is not None:
-                            instance_template_type = md_api.processor.fetch_value_from_header(
-                                instance_file, author_const.TEMPLATE_TYPE_HEADER
-                            )
-                            if template_type == instance_template_type:
-                                is_template_present = True
-                                template_type_is_valid = True
+                        if template.stem == instance_template_type:
+                            is_template_present = True
+                            template_type_is_valid = True
                             break
-                        # does not have x-trestle-template-type field and throws a warning
-                        else:
-                            logger.warning(
-                                f'INVALID: Template file {template_file} does not have'
-                                f' {author_const.TEMPLATE_TYPE_HEADER}'
-                                ' field in its header and can not be validate using optional parameter validate'
-                                ' template type field'
-                            )
-                            return False
                     # validation through template type field is not needed and performs validation
                     # through file name flow as usual
                     else:
