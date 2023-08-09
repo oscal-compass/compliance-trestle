@@ -21,6 +21,7 @@ from typing import Any, Dict, List, Optional
 
 import trestle.core.markdown.markdown_const as md_const
 from trestle.common.err import TrestleError
+from trestle.common.list_utils import as_list
 from trestle.core.commands.author.consts import START_TEMPLATE_VERSION, TEMPLATE_VERSION_HEADER
 from trestle.core.markdown.docs_markdown_node import DocsMarkdownNode
 
@@ -202,30 +203,25 @@ class MarkdownValidator:
             )
             return False
         template_header_pointer = 0
+        present_keys = []
         for key in instance_keys:
             if template_header_pointer >= len(template_keys):
                 break
-            if key in template_keys and key != template_keys[template_header_pointer]:
-                logger.warning(
-                    f'Headings in the instance: {instance} were shuffled or modified. '
-                    f'\nInstance does not have required template heading '
-                    f'\"{template_keys[template_header_pointer]}\". '
-                    f'Check if this heading was modified/present in the instance.'
-                    f'\nPlease note that no changes to template headings are allowed, '
-                    f'including extra spaces.'
-                )
-                return False
-            elif key in template_keys and key == template_keys[template_header_pointer]:
+            if key in template_keys and key not in present_keys:
+                present_keys.append(template_keys[template_keys.index(key)])
                 template_header_pointer += 1
             elif re.search(md_const.SUBSTITUTION_REGEX, template_keys[template_header_pointer]) is not None:
+                present_keys.append(template_keys[template_header_pointer])
                 template_header_pointer += 1  # skip headers with substitutions
         if template_header_pointer != len(template_keys):
+            diff_keys = set(template_keys) - set(present_keys)
             logger.info(
                 f'Headings in the instance: {instance} were removed. '
                 f'Expected {len(template_keys)} headings, but found only {template_header_pointer}.'
             )
+            for result in as_list(diff_keys):
+                logger.info(f'Heading {result} in the instance: {instance} was removed or not present ')
             return False
-
         return True
 
     @classmethod
