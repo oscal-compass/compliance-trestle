@@ -697,4 +697,4 @@ def test_heading_levels_hierarchy(
     command_string_validate_content = 'trestle author folders validate -tn test_task -hv'
     monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
     rc = trestle.cli.Trestle().run()
-    assert rc == 1
+    assert rc == 0

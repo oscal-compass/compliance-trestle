@@ -213,8 +213,8 @@ class MarkdownValidator:
             elif re.search(md_const.SUBSTITUTION_REGEX, template_keys[template_header_pointer]) is not None:
                 present_keys.append(template_keys[template_header_pointer])
                 template_header_pointer += 1  # skip headers with substitutions
-        if template_header_pointer != len(template_keys):
-            diff_keys = set(template_keys) - set(present_keys)
+        diff_keys = set(template_keys) - set(present_keys)
+        if template_header_pointer != len(template_keys) and len(diff_keys) > 0:
             logger.info(
                 f'Headings in the instance: {instance} were removed. '
                 f'Expected {len(template_keys)} headings, but found only {template_header_pointer}.'
