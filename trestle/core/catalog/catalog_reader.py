@@ -357,8 +357,18 @@ class CatalogReader():
         """
         for group_path in CatalogInterface._get_group_ids_and_dirs(md_path).values():
             for control_file in group_path.glob('*.md'):
+                skip = False
+                for file in control_file.parents:
+                    if file.name == const.INHERITANCE_VIEW_DIR:
+                        skip = True
+                        break
+                if skip:
+                    continue
+
                 control_id = control_file.stem
+
                 md_header, control_comp_dict = CatalogReader._read_comp_info_from_md(control_file, context)
+
                 for comp_name, comp_info_dict in control_comp_dict.items():
                     if comp_name not in comp_dict:
                         err_msg = f'Control {control_id} references component {comp_name} not defined in a component-definition.'  # noqa E501

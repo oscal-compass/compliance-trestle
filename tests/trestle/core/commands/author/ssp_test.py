@@ -548,6 +548,30 @@ def test_ssp_generate_resolved_catalog(tmp_trestle_dir: pathlib.Path) -> None:
     resolved_catalog.oscal_write(new_catalog_path)
 
 
+def test_ssp_assemble_w_inhert(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test ssp assemble from cli."""
+    gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name, False, 'leveraged_ssp')
+    args_compdefs = gen_args.compdefs
+
+    # first create the markdown
+    ssp_gen = SSPGenerate()
+    assert ssp_gen._run(gen_args) == 0
+
+    # now assemble the edited controls into json ssp
+    ssp_assemble = SSPAssemble()
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        markdown=ssp_name,
+        output=ssp_name,
+        verbose=0,
+        regenerate=False,
+        name=None,
+        compdefs=args_compdefs,
+        version=None
+    )
+    assert ssp_assemble._run(args) == 0
+
+
 def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp filter."""
     # FIXME enhance coverage

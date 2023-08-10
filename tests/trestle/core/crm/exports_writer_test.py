@@ -27,7 +27,7 @@ import trestle.core.generators as gens
 import trestle.oscal.ssp as ossp
 from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
-from trestle.core.crm.export_interface import ExportInterface
+from trestle.core.crm.bycomp_interface import ByComponentInterface
 from trestle.core.crm.export_writer import ExportWriter
 from trestle.core.crm.leveraged_statements import (
     LeveragedStatements,
@@ -95,9 +95,9 @@ def test_statement_types_from_exports(tmp_trestle_dir: pathlib.Path) -> None:
     writer = ExportWriter(inherited_path, ssp)
 
     by_comp: ossp.ByComponent = test_utils.generate_test_by_comp()
-    export_interface: ExportInterface = ExportInterface(by_comp)
+    bycomp_interface: ByComponentInterface = ByComponentInterface(by_comp)
 
-    result_leveraged_statements = writer._statement_types_from_exports(export_interface)
+    result_leveraged_statements = writer._statement_types_from_exports(bycomp_interface)
     provided: List[StatementProvided] = []
     responsibility: List[StatementResponsibility] = []
     sets: List[StatementTree] = []
@@ -123,8 +123,8 @@ def test_statement_types_no_exports(tmp_trestle_dir: pathlib.Path) -> None:
     writer = ExportWriter(inherited_path, ssp)
 
     by_comp = gens.generate_sample_model(ossp.ByComponent)
-    export_interface: ExportInterface = ExportInterface(by_comp)
+    bycomp_interface: ByComponentInterface = ByComponentInterface(by_comp)
 
-    result_leveraged_statements = writer._statement_types_from_exports(export_interface)
+    result_leveraged_statements = writer._statement_types_from_exports(bycomp_interface)
 
     assert len(result_leveraged_statements) == 0

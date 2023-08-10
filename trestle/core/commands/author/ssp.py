@@ -15,6 +15,7 @@
 
 import argparse
 import logging
+import os
 import pathlib
 from typing import Any, Dict, List, Optional, Set
 
@@ -42,6 +43,7 @@ from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_interface import ControlInterface, ParameterRep
 from trestle.core.control_reader import ControlReader
+from trestle.core.crm.export_reader import ExportReader
 from trestle.core.crm.export_writer import ExportWriter
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
@@ -582,6 +584,12 @@ class SSPAssemble(AuthorCommonCommand):
             # now that we know the complete list of needed components, add them to the sys_imp
             # TODO if the ssp already existed then components may need to be removed if not ref'd by imp_reqs
             self._generate_roles_in_metadata(ssp)
+
+            # If this is a leveraging SSP, update it with the retrieved the exports from the leveraged SSP
+            ipath = pathlib.Path(md_path, const.INHERITANCE_VIEW_DIR)
+            if os.path.exists(ipath):
+                reader = ExportReader(ipath, ssp)
+                ssp = reader.read_exports_from_markdown()
 
             ssp.import_profile.href = profile_href
 

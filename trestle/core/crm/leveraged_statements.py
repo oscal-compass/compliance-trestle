@@ -197,7 +197,7 @@ class InheritanceInfo:
 class InheritanceMarkdownReader:
     """Class to read leveraged statement information from Markdown."""
 
-    def __init__(self, leveraged_statement_file: str) -> None:
+    def __init__(self, leveraged_statement_file: pathlib.Path) -> None:
         """Initialize the class."""
         # Save the file name for logging
         self._leveraged_statement_file = leveraged_statement_file
