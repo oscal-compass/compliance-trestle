@@ -576,14 +576,25 @@ class CsvToOscalComponentDefinition(TaskBase):
         component.control_implementations.append(control_implementation)
         return control_implementation
 
+    def _str_to_list(self, value: str) -> List[str]:
+        """Transform string to list."""
+        rval = []
+        if ',' in value:
+            values = value.split(',')
+            # remove leading/trailing whitespace
+            for v in values:
+                rval.append(v.strip())
+        else:
+            rval.append(value)
+        return rval
+
     def _create_set_parameter(self, rule_key: tuple) -> SetParameter:
         """Create create set parameters."""
         set_parameter = None
         name = self._csv_mgr.get_value(rule_key, PARAMETER_ID)
         value = self._csv_mgr.get_value(rule_key, PARAMETER_VALUE_DEFAULT)
         if name and value:
-            value = self._csv_mgr.get_value(rule_key, PARAMETER_VALUE_DEFAULT)
-            values = value.split(',')
+            values = self._str_to_list(value)
             set_parameter = SetParameter(
                 param_id=name,
                 values=values,
