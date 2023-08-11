@@ -577,15 +577,13 @@ class CsvToOscalComponentDefinition(TaskBase):
         return control_implementation
 
     def _str_to_list(self, value: str) -> List[str]:
-        """List to string."""
+        """Transform string to list."""
         rval = []
         if ',' in value:
             values = value.split(',')
-            # remove whitespace
+            # remove leading/trailing whitespace
             for v in values:
-                n = v.replace(' ', '')
-                n = n.strip()
-                rval.append(n)
+                rval.append(v.strip())
         else:
             rval.append(value)
         return rval
