@@ -442,6 +442,34 @@ def test_execute_bp_sample(tmp_path: pathlib.Path) -> None:
     _validate_bp(tmp_path)
 
 
+def test_execute_bp3_sample(tmp_path: pathlib.Path) -> None:
+    """Test execute bp3 sample."""
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    section['csv-file'] = 'tests/data/csv/bp.sample.v3.csv'
+    tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    # read component-definition
+    fp = pathlib.Path(tmp_path) / 'component-definition.json'
+    cd = ComponentDefinition.oscal_read(fp)
+    # spot check
+    component = cd.components[0]
+    assert len(component.props) == 59
+    assert len(component.control_implementations) == 1
+    ci = component.control_implementations[0]
+    assert len(ci.set_parameters) == 4
+    assert len(ci.set_parameters[0].values) == 1
+    assert len(ci.set_parameters[1].values) == 3
+    assert ci.set_parameters[1].values[0] == 'x'
+    assert ci.set_parameters[1].values[1] == 'y'
+    assert ci.set_parameters[1].values[2] == 'z'
+    assert len(ci.set_parameters[2].values) == 3
+    assert len(ci.set_parameters[3].values) == 3
+    assert ci.set_parameters[3].values[0] == '3'
+    assert ci.set_parameters[3].values[1] == '4'
+    assert ci.set_parameters[3].values[2] == '5'
+
+
 def test_execute_bp_cd(tmp_path: pathlib.Path) -> None:
     """Test execute bp cd."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
