@@ -411,9 +411,9 @@ Running `trestle author docs validate -tn docs_task -gh="Governed section"` will
 
 ### Validating the documents against different templates
 
-Validation against multiple templates as stated before can be done, but there is another scenario that you can leverage on trestle to have multiple documents in the task folder corresponding to a 1 template.
+Validation against multiple templates as stated before can be done, but there is another scenario that you can leverage on trestle to have multiple documents in the task folder corresponding to a single template.
 
-Please, take into consideration that for the validation to happen you will need to provide each instance of the template with a field called `x-trestle-template-type: insert_template_type_here` in the yaml header matching with the template name. With that, you will be able to create more than 1 instance document per template and give the instance the name desired.
+Please, take into consideration that for the validation to happen you will need to provide each instance document in the task folder a field called `x-trestle-template-type: insert_template_type_here` in the yaml header matching with the template name. With that, you will be able to create more than 1 instance document per template and give the instance the desired name.
 
 For instance, let´s consider the next folder structure:
 
