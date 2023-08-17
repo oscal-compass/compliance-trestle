@@ -679,7 +679,7 @@ def test_drawio_versioning_validation(
 def test_validate_template_with_type_field(
     testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
 ) -> None:
-    """Test behaviour when validating drawio instance."""
+    """Test behaviour when validating an instance with x-trestle-template-type field."""
     task_template_folder = tmp_trestle_dir / '.trestle/author/test_task/'
     test_template_folder = testdata_dir / 'author/governed_folders/template_folder_with_template_type'
     test_instances_folder = testdata_dir / 'author/governed_folders/good_instance_with_template_type'
@@ -709,7 +709,7 @@ def test_validate_template_with_type_field(
 def test_validate_template_with_type_field_unhappy(
     testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
 ) -> None:
-    """Test behaviour when validating drawio instance."""
+    """Test hunhappy behaviour when validating an instance with x-trestle-template-type field"""
     task_template_folder = tmp_trestle_dir / '.trestle/author/test_task/'
     test_template_folder = testdata_dir / 'author/governed_folders/template_folder_with_template_type'
     test_instances_folder = testdata_dir / 'author/governed_folders/good_instance_without_template_type'
