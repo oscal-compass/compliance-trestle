@@ -427,7 +427,7 @@ x-trestle-ignore:
 ---
 ```
 
- With that, you will be able to create more than 1 instance document per template and give the instance the desired name.
+With that, you will be able to create more than 1 instance document per template and give the instance the desired name.
 
 For instance, let´s consider the next folder structure:
 
