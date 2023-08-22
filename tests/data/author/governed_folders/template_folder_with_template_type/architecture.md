@@ -4,8 +4,7 @@ owner: tmp
 valid:
   from: null
   to: null
-x-trestle-ignore:
- - x-trestle-template-type
+x-trestle-template-type: architecture
 ---
 # System architecture
 

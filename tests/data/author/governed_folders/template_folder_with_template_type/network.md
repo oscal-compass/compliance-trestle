@@ -4,8 +4,7 @@ owner: tmp
 valid:
   from:
   to:
-x-trestle-ignore:
- - x-trestle-template-type
+x-trestle-template-type: network
 ---
 
 # Network architecture
