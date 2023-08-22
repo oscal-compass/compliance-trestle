@@ -644,8 +644,8 @@ class ProfileInherit(AuthorCommonCommand):
         Returns:
             None
         """
-        exclude_with_ids: Set[prof.withId] = set()
-        components_by_id: Dict(str, List[ssp.ByComponent]) = {}
+        exclude_with_ids: Set[str] = set()
+        components_by_id: Dict[str, List[ssp.ByComponent]] = {}
 
         # Create dictionary containing all by-components by control for faster searching
         for implemented_requirement in leveraged_ssp.control_implementation.implemented_requirements:
@@ -671,7 +671,7 @@ class ProfileInherit(AuthorCommonCommand):
             if by_comps is not None and ProfileInherit._is_inherited(by_comps):
                 exclude_with_ids.add(control_id)
 
-        include_with_ids: Set[prof.withId] = catalog_control_ids - exclude_with_ids
+        include_with_ids: Set[str] = catalog_control_ids - exclude_with_ids
 
         orig_prof_import.include_controls = [prof.SelectControlById(with_ids=sorted(include_with_ids))]
         orig_prof_import.exclude_controls = [prof.SelectControlById(with_ids=sorted(exclude_with_ids))]
@@ -760,11 +760,11 @@ class ProfileInherit(AuthorCommonCommand):
             if version:
                 result_profile.metadata.version = version
 
-            if ModelUtils.models_are_equivalent(existing_profile, result_profile):  # type: ignore
+            if ModelUtils.models_are_equivalent(existing_profile, result_profile):
                 logger.info('Profile is no different from existing version, so no update.')
                 return CmdReturnCodes.SUCCESS.value
 
-            ModelUtils.update_last_modified(result_profile)  # type: ignore
+            ModelUtils.update_last_modified(result_profile)
             ModelUtils.save_top_level_model(result_profile, trestle_root, output_prof_name, FileContentType.JSON)
 
         except TrestleError as e:
