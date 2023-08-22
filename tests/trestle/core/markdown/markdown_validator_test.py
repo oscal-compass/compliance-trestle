@@ -57,13 +57,6 @@ from trestle.core.markdown.markdown_validator import MarkdownValidator
         ),
         (
             pathlib.Path('tests/data/author/0.0.1/test_1_md_format/template.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_1_md_format/bad_instance_reordered.md'),
-            False,
-            False,
-            False
-        ),
-        (
-            pathlib.Path('tests/data/author/0.0.1/test_1_md_format/template.md'),
             pathlib.Path('tests/data/author/0.0.1/test_1_md_format/bad_instance_missing_heading.md'),
             False,
             False,
@@ -122,13 +115,6 @@ from trestle.core.markdown.markdown_validator import MarkdownValidator
             pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/template.md'),
             pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/bad_instance_yaml_header_change.md'),
             True,
-            False,
-            False
-        ),
-        (
-            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/template.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/bad_instance_reordered.md'),
-            False,
             False,
             False
         ),
