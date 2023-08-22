@@ -413,7 +413,11 @@ Running `trestle author docs validate -tn docs_task -gh="Governed section"` will
 
 Validation against multiple templates as stated before can be done, but there is another scenario that you can leverage on trestle to have multiple documents in the task folder corresponding to a single template.
 
-Please, take into consideration that for the validation to happen you will need to provide each instance document in the task folder a field called `x-trestle-template-type: insert_template_type_here` in the yaml header matching with the template name. Also, for the validation to work properly you will need to add in the template x-trestle-ignore field with the name of the x-trestle-template-type field name in order to pass checks properly. For example:
+For that to happen you will need to provide your template with the following parameter at the yaml header level, matching the type of template to be implemented so the validation can occur:
+
+> x-trestle-template-type: insert_template_type_here
+
+Please, take into consideration that for the validation to happen you will also need to provide each instance document in the task folder a field called `x-trestle-template-type: insert_template_type_here` in the yaml header matching with the template name.
 
 ```yaml
 ---
@@ -422,8 +426,7 @@ owner: tmp
 valid:
   from: null
   to: null
-x-trestle-ignore:
- - x-trestle-template-type
+x-trestle-template-type: insert_template_type_here
 ---
 ```
 
