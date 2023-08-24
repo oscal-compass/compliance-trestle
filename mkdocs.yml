@@ -113,6 +113,11 @@ nav:
       - control_interface: api_reference/trestle.core.control_interface.md
       - control_reader: api_reference/trestle.core.control_reader.md
       - control_writer: api_reference/trestle.core.control_writer.md
+      - crm:
+        - bycomp_interface: api_reference/trestle.core.crm.bycomp_interface.md
+        - export_reader: api_reference/trestle.core.crm.export_reader.md
+        - export_writer: api_reference/trestle.core.crm.export_writer.md
+        - leveraged_statements: api_reference/trestle.core.crm.leveraged_statements.md
       - docs_control_writer: api_reference/trestle.core.docs_control_writer.md
       - draw_io: api_reference/trestle.core.draw_io.md
       - duplicates_validator: api_reference/trestle.core.duplicates_validator.md
