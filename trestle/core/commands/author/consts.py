@@ -47,9 +47,14 @@ README_VALIDATE_FOLDERS_HELP = (
     'Enable to validate README.md files. Required if readme files are included in the' + 'template.'
 )
 
+TEMPLATE_TYPE_VALIDATE_SHORT = '-vtt'
+TEMPLATE_TYPE_VALIDATE_LONG = '--validate-template-type'
+TEMPLATE_TYPE_VALIDATE_HELP = 'Validate that template and instance files match with x-trestle-template-type field'
+
 START_TEMPLATE_VERSION = '0.0.1'  # first ever template version, all templates without version will be defaulted to this
 TRESTLE_RESOURCES = 'trestle.resources'
 TEMPLATE_VERSION_HEADER = 'x-trestle-template-version'
+TEMPLATE_TYPE_HEADER = 'x-trestle-template-type'
 
 # Governed heading - capability: To be removed
 GH_SHORT = '-gh'
