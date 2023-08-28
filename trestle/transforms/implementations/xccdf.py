@@ -111,7 +111,7 @@ class XccdfResultToOscalARTransformer(ResultsTransformer):
         results.__root__.append(self._results_factory.result)
         return results
 
-    def _ingest_configmaps(self, jdata: str) -> None:
+    def _ingest_configmaps(self, jdata: dict) -> None:
         """Ingest configmaps."""
         items = jdata['items']
         for item in items:
@@ -121,7 +121,7 @@ class XccdfResultToOscalARTransformer(ResultsTransformer):
                     resource = item
                     self._results_factory.ingest(resource)
 
-    def _ingest_auditree(self, jdata: str) -> None:
+    def _ingest_auditree(self, jdata: dict) -> None:
         """Ingest auditree."""
         for key in jdata.keys():
             for group in jdata[key]:
