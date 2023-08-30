@@ -181,6 +181,30 @@ def setup_profile_generate(trestle_root: pathlib.Path,
     return ac1_path, assembled_prof_dir, profile_path, markdown_path
 
 
+def setup_profile_generate_rev5(trestle_root: pathlib.Path,
+                                source_prof_name: str) -> Tuple[pathlib.Path, pathlib.Path, pathlib.Path, pathlib.Path]:
+    """Set up files for profile generate."""
+    nist_catalog_path = test_utils.JSON_TEST_DATA_PATH / test_utils.JSON_NIST_REV_5_CATALOG_NAME
+    trestle_cat_dir = trestle_root / 'catalogs/nist_cat'
+    trestle_cat_dir.mkdir(exist_ok=True, parents=True)
+    shutil.copy(nist_catalog_path, trestle_cat_dir / 'catalog.json')
+    profile_dir = trestle_root / f'profiles/{prof_name}'
+    profile_dir.mkdir(parents=True, exist_ok=True)
+    full_profile_dir = trestle_root / 'profiles/full_profile_rev5'
+    full_profile_dir.mkdir(parents=True, exist_ok=True)
+    # simple test profile sets values for ac-1 params 1-6 but not param_7
+    source_prof_path = test_utils.JSON_TEST_DATA_PATH / source_prof_name
+    profile_path = profile_dir / 'profile.json'
+    shutil.copy(source_prof_path, profile_path)
+    full_source_prof_path = test_utils.JSON_TEST_DATA_PATH / 'full_profile_rev5.json'
+    full_profile_path = full_profile_dir / 'profile.json'
+    shutil.copy(full_source_prof_path, full_profile_path)
+    markdown_path = trestle_root / md_name
+    ac1_path = markdown_path / 'ac/ac-1.md'
+    assembled_prof_dir = trestle_root / f'profiles/{assembled_prof_name}'
+    return ac1_path, assembled_prof_dir, profile_path, markdown_path
+
+
 @pytest.mark.parametrize('add_header', [True, False])
 @pytest.mark.parametrize('guid_dict', [my_guidance_dict, multi_guidance_dict, control_subparts_dict])
 @pytest.mark.parametrize('use_cli', [True, False])
@@ -1161,6 +1185,36 @@ def test_profile_generate_assemble_parameter_aggregation(
     assert Trestle().run() == 0
 
     assert fc.files_unchanged()
+
+    # assemble based on set_parameters_flag
+    test_args = f'trestle author profile-assemble -n {prof_name} -m {md_name} -o {assembled_prof_name}'.split()
+    test_args.append('-sp')
+    assembled_prof_dir.mkdir()
+    monkeypatch.setattr(sys, 'argv', test_args)
+    assert Trestle().run() == 0
+
+
+def test_profile_generate_assemble_rev_5(
+    tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """Test the profile markdown generator."""
+    _, assembled_prof_dir, _, markdown_path = setup_profile_generate_rev5(tmp_trestle_dir, 'test_profile_rev5.json')
+    yaml_header_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
+
+    # prof_a_path = ModelUtils.get_model_path_for_name_and_class(
+    #     tmp_trestle_dir, 'test_profile_a', prof.Profile, FileContentType.JSON
+    # )
+    # catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
+
+    # convert resolved profile catalog to markdown then assemble it after adding an item to a control
+    # generate, edit, assemble
+    test_args = f'trestle author profile-generate -n {prof_name} -o {md_name}'.split(  # noqa E501
+    )
+    test_args.extend(['-y', str(yaml_header_path)])
+    # test_args.extend(['-s', all_sections_str])
+    monkeypatch.setattr(sys, 'argv', test_args)
+
+    assert Trestle().run() == 0
 
     # assemble based on set_parameters_flag
     test_args = f'trestle author profile-assemble -n {prof_name} -m {md_name} -o {assembled_prof_name}'.split()
