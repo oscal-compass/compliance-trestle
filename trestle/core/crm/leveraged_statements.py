@@ -14,7 +14,6 @@
 """Handle writing of inherited statements to markdown."""
 import logging
 import pathlib
-import re
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
@@ -287,16 +286,25 @@ class InheritanceMarkdownReader:
     @staticmethod
     def strip_heading_and_comments(markdown_text: str) -> str:
         """Remove the heading and comments from lines to get the multi-line paragraph."""
-        heading_pattern = r'^#+.*$'
-        comment_pattern = r'<!--.*?-->'
+        lines = markdown_text.split('\n')
+        non_heading_comment_lines = []
+        inside_heading = False
+        inside_comment = False
 
-        # Remove headings and comments
-        markdown_text = re.sub(heading_pattern, '', markdown_text, flags=re.MULTILINE)
-        markdown_text = re.sub(comment_pattern, '', markdown_text, flags=re.DOTALL)
+        for line in lines:
+            if line.startswith('#'):
+                inside_heading = True
+            elif line.startswith('<!--'):
+                inside_comment = True
+                if line.rstrip().endswith('-->'):
+                    inside_comment = False
+                continue
+            elif line.strip() == '':
+                inside_heading = False
+                inside_comment = False
 
-        markdown_text = '\n'.join(line.strip() for line in markdown_text.splitlines())
+            if not inside_heading and not inside_comment:
+                non_heading_comment_lines.append(line)
 
-        # Remove consecutive empty lines
-        markdown_text = re.sub(r'\n{2,}', '\n\n', markdown_text)
-
-        return markdown_text.strip()
+        stripped_markdown = '\n'.join(non_heading_comment_lines).strip()
+        return stripped_markdown
