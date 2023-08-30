@@ -213,8 +213,8 @@ class InheritanceMarkdownReader:
         Read inheritance information from Markdown.
 
         Returns:
-            Optional InheritanceInfo - A list of mapped component titles, an optional satisfied statement and an optional
-            inherited statement
+            Optional InheritanceInfo - A list of mapped component titles, an optional satisfied statement and an
+            optional inherited statement
 
         Notes:
             Returns inheritance information in the context of the leveraging SSP. If no leveraging component titles are
