@@ -242,6 +242,20 @@ def replace_line_in_file_after_tag(file_path: pathlib.Path, tag: str, new_line: 
     return False
 
 
+def replace_in_file(file_path: pathlib.Path, search_text: str, replace_text: str) -> None:
+    """Replace all occurrences of search_text with replace_text in file_path."""
+    if not file_path.exists():
+        raise TrestleError(f'Test file {file_path} not found.')
+
+    with open(file_path, 'r') as file:
+        file_content = file.read()
+
+    updated_content = file_content.replace(search_text, replace_text)
+
+    with open(file_path, 'w') as file:
+        file.write(updated_content)
+
+
 def substitute_text_in_file(file_path: pathlib.Path, tag: str, new_str: str) -> bool:
     """Substitute first match of string with new string in file."""
     if not file_path.exists():

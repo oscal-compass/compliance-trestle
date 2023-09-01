@@ -548,14 +548,22 @@ def test_ssp_generate_resolved_catalog(tmp_trestle_dir: pathlib.Path) -> None:
     resolved_catalog.oscal_write(new_catalog_path)
 
 
-def test_ssp_assemble_w_inhert(tmp_trestle_dir: pathlib.Path) -> None:
-    """Test ssp assemble from cli."""
+def test_ssp_assemble_with_inheritance(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test ssp assemble from cli with inheritance view."""
     gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name, False, 'leveraged_ssp')
     args_compdefs = gen_args.compdefs
 
     # first create the markdown
     ssp_gen = SSPGenerate()
     assert ssp_gen._run(gen_args) == 0
+
+    this_system_dir = tmp_trestle_dir / ssp_name / const.INHERITANCE_VIEW_DIR / 'This System'
+
+    expected_uuid = '11111111-0000-4000-9009-001001002001'
+    ac_21 = this_system_dir / 'ac-2.1'
+    test_provided = ac_21 / f'{expected_uuid}.md'
+
+    test_utils.replace_in_file(test_provided, 'REPLACE_ME', 'comp_aa')
 
     # now assemble the edited controls into json ssp
     ssp_assemble = SSPAssemble()
@@ -570,6 +578,17 @@ def test_ssp_assemble_w_inhert(tmp_trestle_dir: pathlib.Path) -> None:
         version=None
     )
     assert ssp_assemble._run(args) == 0
+
+    ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
+
+    imp_reqs = ssp.control_implementation.implemented_requirements
+    imp_req = next((i_req for i_req in imp_reqs if i_req.control_id == 'ac-2.1'), None)
+    inherited = imp_req.by_components[1].inherited[0]  # type: ignore
+    assert inherited.description == (
+        'Consumer-appropriate description of what may be inherited.\n\n\
+In the context of the application component in satisfaction of AC-2.1.'
+    )
+    assert inherited.provided_uuid == expected_uuid
 
 
 def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
