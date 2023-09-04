@@ -1129,20 +1129,35 @@ def test_profile_generate_assemble_parameter_aggregation(
     nist_cat, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'nist_cat', cat.Catalog, FileContentType.JSON)
 
     appended_prop = {'name': 'aggregates', 'value': 'at-02_odp.01'}
+    second_appended_prop = {'name': 'aggregates', 'value': 'at-02_odp.02'}
     ac_1 = nist_cat.groups[0].controls[0]
-    ac_1.params[2].props = []
-    ac_1.params[2].props.append(appended_prop)
+    ac_1.params[6].props = []
+    ac_1.params[6].props.append(appended_prop)
+    ac_1.params[6].props.append(second_appended_prop)
     appended_extra_param = {
         'id': 'at-02_odp.01',
         'props': [{
             'name': 'label', 'value': 'AT-02_ODP[01]', 'class': 'sp800-53a'
         }],
         'label': 'frequency',
+        'values': ['value-1', 'value-2'],
+        'guidelines': [{
+            'prose': 'blah'
+        }]
+    }
+    second_appended_extra_param = {
+        'id': 'at-02_odp.02',
+        'props': [{
+            'name': 'label', 'value': 'AT-02_ODP[02]', 'class': 'sp800-53a'
+        }],
+        'label': 'frequency',
+        'values': ['value-3', 'value-4'],
         'guidelines': [{
             'prose': 'blah'
         }]
     }
     ac_1.params.append(appended_extra_param)
+    ac_1.params.append(second_appended_extra_param)
 
     ModelUtils.save_top_level_model(nist_cat, tmp_trestle_dir, 'nist_cat', FileContentType.JSON)
 

@@ -286,9 +286,7 @@ class ProfileAssemble(AuthorCommonCommand):
         return changed
 
     @staticmethod
-    def _add_aggregated_parameter(
-        param: Any, param_dict: Dict[str, Any], control_id: str, controls: Any, param_map: Dict[str, str]
-    ) -> None:
+    def _add_aggregated_parameter(param: Any, param_dict: Dict[str, Any]) -> None:
         """
         Add aggregated parameter value to original parameter.
 
@@ -296,20 +294,15 @@ class ProfileAssemble(AuthorCommonCommand):
             None
         """
         # verifies aggregated param is not on grabbed param dict
-        if param.id not in list(param_dict.keys()):
-            param.values = []
-            agg_props = [prop for prop in param.props if prop.name == 'aggregates']
-            for prop in as_list(agg_props):
-                if param_dict[prop.value].get('values'):
-                    agg_param_values = param_dict[prop.value].get('values')
-                    for value in as_list(agg_param_values):
-                        param.values.append(value)
-                else:
-                    agg_param_values = [p for p in controls[control_id] if p.id == prop.value][0]
-                    param.values.append(agg_param_values.props[0].value)
+        agg_props = [prop for prop in as_list(param.props) if prop.name == const.AGGREGATES]
+        for prop in as_list(agg_props):
+            if param_dict[prop.value].get('values'):
+                agg_param_values = param_dict[prop.value].get('values')
+                param.values = param.values if param.values is not None else []
+                for value in as_list(agg_param_values):
+                    param.values.append(value)
                 dict_param = ModelUtils.parameter_to_dict(param, False)
                 param_dict[param.id] = dict_param
-                param_map[param.id] = control_id
         return None
 
     @staticmethod
@@ -385,9 +378,9 @@ class ProfileAssemble(AuthorCommonCommand):
         for group in as_list(catalog.groups):
             for control in as_list(group.controls):
                 controls[control.id] = control.params
-        for control_id, params in controls.items():
+        for _, params in controls.items():
             for param in as_list(params):
-                ProfileAssemble._add_aggregated_parameter(param, param_dict, control_id, controls, param_map)
+                ProfileAssemble._add_aggregated_parameter(param, param_dict)
         # technically if allowed sections is [] it means no sections are allowed
         if allowed_sections is not None:
             for bad_part in [
