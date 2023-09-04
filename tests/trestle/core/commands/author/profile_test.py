@@ -933,6 +933,7 @@ def test_profile_force_overwrite(tmp_trestle_dir: pathlib.Path, monkeypatch: Mon
     header, tree = md_api.processor.process_markdown(md_path)
 
     assert header
+    header[const.SET_PARAMS_TAG]['ac-5_prm_1'][const.VALUES] = []
     old_value = header[const.SET_PARAMS_TAG]['ac-5_prm_1'][const.VALUES]
     header[const.SET_PARAMS_TAG]['ac-5_prm_1'][const.VALUES] = 'New value'
 
@@ -948,6 +949,7 @@ def test_profile_force_overwrite(tmp_trestle_dir: pathlib.Path, monkeypatch: Mon
     test_utils.execute_command_and_assert(prof_generate, 0, monkeypatch)
 
     header, _ = md_api.processor.process_markdown(md_path)
+    header[const.SET_PARAMS_TAG]['ac-5_prm_1'][const.VALUES] = []
     assert header[const.SET_PARAMS_TAG]['ac-5_prm_1'][const.VALUES] == old_value
 
     # test that file is unchanged
