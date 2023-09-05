@@ -200,6 +200,8 @@ plugins:
           - '!^__json'
           - '!^__config__'
           new_path_syntax: true
+    watch:
+    - trestle
 repo_name: IBM/compliance-trestle
 repo_url: https://github.com/IBM/compliance-trestle
 site_description: Documentation for compliance-trestle package.
@@ -214,5 +216,3 @@ theme:
     accent: purple
     primary: teal
     scheme: slate
-watch:
-  - trestle
