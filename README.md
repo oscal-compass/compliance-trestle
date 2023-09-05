@@ -92,28 +92,24 @@ The community call will happen every 2 week(s) on Tuesday at 10.00am EST.\
 Meeting information:
 
 ```
-You have been invited to Attend at the following event :
 Compliance Trestle Community Call
-Every 2nd week on Tuesday; from June 27th, 2023 at 10:00 am EST for 0.5 hour
+Hosted by Alejandro Leiva
 
-To join, select from the following options: 
+https://ibm.webex.com/ibm/j.php?MTID=m6de2a2c85eae39aa17fd19ea47097da3
+Tuesday, September 5, 2023 10:00 AM | 30 minutes | (UTC-04:00) Eastern Time (US & Canada)
+Occurs every 2 week(s) on Tuesday effective 9/5/2023 from 10:00 AM to 10:30 AM, (UTC-04:00) Eastern Time (US & Canada)
+Meeting number: 146 967 4515
+Password: HBkCAcJP283 (42522257 from phones and video systems)
 
-1) Web Browser
-    a) https://primetime.bluejeans.com/a2m/live-event/dcwuavtj
+Join by video system
+Dial 1469674515@ibm.webex.com
+You can also dial 173.243.2.68 and enter your meeting number.
 
-2) Laptop paired with room system (Best Experience)
-    a) Dial: meet@bjn.vc or 104.238.247.247 in the room system.
-    b) Go to https://primetime.bluejeans.com/a2m/live-event/dcwuavtj/room-system/
-    c) Enter the pairing code displayed on your room system's screen into your browser.
+Join by phone
+1-844-531-0958 United States Toll Free
+1-669-234-1178 United States Toll
 
-3) Room System
-    a) Dial: meet@bjn.vc or 104.238.247.247 in the room system.
-    b) Enter Meeting ID : 499830564  and Passcode :  8231
-
-4) Joining via a mobile device?
-    a) Open this link : https://primetime.bluejeans.com/a2m/live-event/dcwuavtj 
-    b) Download the app if you don’t have it already 
-    c) Enter event ID : dcwuavtj
+Access code: 146 967 4515
 
 ```
 
