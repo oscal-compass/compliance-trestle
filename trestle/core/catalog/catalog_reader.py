@@ -74,11 +74,13 @@ class CatalogReader():
                     param_dict[const.VALUES] = param_dict[const.VALUES] if const.VALUES in param_dict else []
                     # if profile_values are present, overwrite values with them
                     if const.PROFILE_VALUES in param_dict:
-                        param_dict[const.VALUES] = param_dict.pop(const.PROFILE_VALUES)
-                        param_dict[const.VALUES
-                                   ] = param_dict[const.VALUES] if param_dict[const.VALUES] is not None else []
-                    if not write_mode and '<REPLACE_ME>' in param_dict[const.VALUES]:
-                        param_dict[const.VALUES].remove('<REPLACE_ME>')
+                        if not write_mode and '<REPLACE_ME>' in param_dict[const.PROFILE_VALUES]:
+                            param_dict[const.PROFILE_VALUES].remove('<REPLACE_ME>')
+                        param_dict[const.VALUES] = param_dict[const.PROFILE_VALUES
+                                                              ] if param_dict[const.PROFILE_VALUES
+                                                                              ] != [] else param_dict[const.VALUES]
+                        if not write_mode:
+                            param_dict.pop(const.PROFILE_VALUES)
                     final_param_dict[param_id] = param_dict
                     param_sort_map[param_id] = sort_id
         new_alters: List[prof.Alter] = []
