@@ -3,6 +3,22 @@
 
 <!--next-version-placeholder-->
 
+## v2.3.0 (2023-09-06)
+### Feature
+* Extend multiple templates validation to trestle author folders ([#1430](https://github.com/IBM/compliance-trestle/issues/1430)) ([`c7bef58`](https://github.com/IBM/compliance-trestle/commit/c7bef589a6e671b96170e93feb88c6436a094da6))
+* Adds agile authoring functionality to public API in repository.py ([#1432](https://github.com/IBM/compliance-trestle/issues/1432)) ([`08b2559`](https://github.com/IBM/compliance-trestle/commit/08b255902efb911c99422d49920c5ddaea98ef32))
+* Support validation component_type for task csv-to-oscal-cd ([#1431](https://github.com/IBM/compliance-trestle/issues/1431)) ([`80aaa72`](https://github.com/IBM/compliance-trestle/commit/80aaa72fe96217d1c7dd93e4c1d5bd9c34cb012b))
+
+### Fix
+* Correcting typo ([`1810007`](https://github.com/IBM/compliance-trestle/commit/181000731ada7af1348219581994bd58f2285329))
+* Correcting python semantice release version ([`a8cb9b9`](https://github.com/IBM/compliance-trestle/commit/a8cb9b9f1f11485ac70fa2f35a3e52b917b7a783))
+* Moving watch config a level up ([#1447](https://github.com/IBM/compliance-trestle/issues/1447)) ([`ea5607f`](https://github.com/IBM/compliance-trestle/commit/ea5607f9f404f38da1abf1c40f907196ea79c567))
+* Xccdf parameter type ([#1440](https://github.com/IBM/compliance-trestle/issues/1440)) ([`431670c`](https://github.com/IBM/compliance-trestle/commit/431670cd468693ca4581ec43d8de5d32413ec113))
+* Headings levels validation is not working properly ([#1436](https://github.com/IBM/compliance-trestle/issues/1436)) ([`22b65a9`](https://github.com/IBM/compliance-trestle/commit/22b65a9b84af36d8c12c32c6e5c0dae88208ea49))
+* Default set-parameter values as list ([#1438](https://github.com/IBM/compliance-trestle/issues/1438)) ([`419025d`](https://github.com/IBM/compliance-trestle/commit/419025dfad47cf9f61b5e20a35a9683a84ed26e8))
+* Expected nist profile missing ([#1435](https://github.com/IBM/compliance-trestle/issues/1435)) ([`c96f9ce`](https://github.com/IBM/compliance-trestle/commit/c96f9ce82e453c83a07d9d4c1061833f38c7f104))
+* Provide description and meaning to parameters in markdown ([#1423](https://github.com/IBM/compliance-trestle/issues/1423)) ([`266f67b`](https://github.com/IBM/compliance-trestle/commit/266f67bd220e15922caacb4de0e702f4d0927ceb))
+
 ## v2.2.1 (2023-07-05)
 
 ### Fix
