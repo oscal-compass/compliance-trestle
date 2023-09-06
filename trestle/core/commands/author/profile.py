@@ -269,7 +269,6 @@ class ProfileAssemble(AuthorCommonCommand):
                     new_set_params.append(
                         prof.SetParameter(
                             param_id=key,
-                            label=param.label,
                             values=param.values,
                             select=param.select,
                             props=param.props
@@ -284,26 +283,6 @@ class ProfileAssemble(AuthorCommonCommand):
         if profile.modify:
             profile.modify.set_parameters = none_if_empty(profile.modify.set_parameters)
         return changed
-
-    @staticmethod
-    def _add_aggregated_parameter(param: Any, param_dict: Dict[str, Any]) -> None:
-        """
-        Add aggregated parameter value to original parameter.
-
-        Notes:
-            None
-        """
-        # verifies aggregated param is not on grabbed param dict
-        agg_props = [prop for prop in as_list(param.props) if prop.name == const.AGGREGATES]
-        for prop in as_list(agg_props):
-            if param_dict[prop.value].get('values'):
-                agg_param_values = param_dict[prop.value].get('values')
-                param.values = param.values if param.values is not None else []
-                for value in as_list(agg_param_values):
-                    param.values.append(value)
-                dict_param = ModelUtils.parameter_to_dict(param, False)
-                param_dict[param.id] = dict_param
-        return None
 
     @staticmethod
     def assemble_profile(
@@ -374,14 +353,6 @@ class ProfileAssemble(AuthorCommonCommand):
         catalog_api = CatalogAPI(catalog=catalog, context=context)
         found_alters, param_dict, param_map = catalog_api.read_additional_content_from_md(label_as_key=True)
 
-        controls = {}
-        for group in as_list(catalog.groups):
-            for control in as_list(group.controls):
-                controls[control.id] = control.params
-        for _, params in controls.items():
-            for param in as_list(params):
-                ProfileAssemble._add_aggregated_parameter(param, param_dict)
-        # technically if allowed sections is [] it means no sections are allowed
         if allowed_sections is not None:
             for bad_part in [
                     part for alter in found_alters for add in as_list(alter.adds)
