@@ -536,7 +536,7 @@ class ModelUtils:
         Returns:
             The converted parameter as dictionary
         """
-        main_fields = ['id', 'label', 'values', 'select', 'choice', 'how_many']
+        main_fields = ['id', 'label', 'values', 'select', 'choice', 'how_many', 'guidelines', 'prose']
         if isinstance(obj, common.Remarks):
             return obj.__root__
         if isinstance(obj, common.HowMany):
