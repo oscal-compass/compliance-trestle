@@ -184,11 +184,20 @@ class CatalogWriter():
                     props_to_add.append(prop.value)
                 new_dict[const.AGGREGATES] = props_to_add
                 new_dict.pop(const.PROFILE_VALUES, None)
+            alt_identifier = [prop for prop in as_list(param_dict.props) if prop.name == const.ALT_IDENTIFIER]
+            if alt_identifier != []:
+                new_dict[const.ALT_IDENTIFIER] = alt_identifier[0].value
             # adds display name, if no display name then do not add to dict
             if display_name != '' and display_name is not None:
                 new_dict[const.DISPLAY_NAME] = display_name
             key_order = (
-                const.LABEL, const.GUIDELINES, const.VALUES, const.AGGREGATES, const.DISPLAY_NAME, const.PROFILE_VALUES
+                const.LABEL,
+                const.GUIDELINES,
+                const.VALUES,
+                const.AGGREGATES,
+                const.DISPLAY_NAME,
+                const.ALT_IDENTIFIER,
+                const.PROFILE_VALUES
             )
             ordered_dict = {k: new_dict[k] for k in key_order if k in new_dict.keys()}
             set_param_dict[param_id] = ordered_dict

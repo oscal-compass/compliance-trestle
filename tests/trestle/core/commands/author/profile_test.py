@@ -1132,10 +1132,12 @@ def test_profile_generate_assemble_parameter_aggregation(
 
     appended_prop = {'name': 'aggregates', 'value': 'at-02_odp.01'}
     second_appended_prop = {'name': 'aggregates', 'value': 'at-02_odp.02'}
+    third_appended_prop = {'name': 'alt-identifier', 'value': 'this_is_an_identifier'}
     ac_1 = nist_cat.groups[0].controls[0]
     ac_1.params[6].props = []
     ac_1.params[6].props.append(appended_prop)
     ac_1.params[6].props.append(second_appended_prop)
+    ac_1.params[6].props.append(third_appended_prop)
     appended_extra_param = {
         'id': 'at-02_odp.01',
         'props': [{

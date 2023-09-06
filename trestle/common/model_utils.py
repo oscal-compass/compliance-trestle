@@ -631,6 +631,9 @@ class ModelUtils:
         if const.AGGREGATES in param_dict:
             # removing aggregates as this is prop just informative in markdown
             param_dict.pop(const.AGGREGATES)
+        if const.ALT_IDENTIFIER in param_dict:
+            # removing alt-identifier as this is prop just informative in markdown
+            param_dict.pop(const.ALT_IDENTIFIER)
 
         if 'ns' in param_dict:
             param_dict.pop('ns')
