@@ -172,7 +172,7 @@ class CatalogWriter():
                 values = tmp_dict.get('values', None)
                 # if values are None then don´t display them in the markdown
                 if values is not None:
-                    new_dict = {'id': param_id, 'values': values}
+                    new_dict = {'id': param_id, 'values': values, const.PROFILE_VALUES: ['<REPLACE_ME>']}
                 else:
                     new_dict = {'id': param_id, const.PROFILE_VALUES: ['<REPLACE_ME>']}
             new_dict.pop('id', None)
