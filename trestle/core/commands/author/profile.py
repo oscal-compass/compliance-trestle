@@ -269,6 +269,7 @@ class ProfileAssemble(AuthorCommonCommand):
                     new_set_params.append(
                         prof.SetParameter(
                             param_id=key,
+                            label=param.label,
                             values=param.values,
                             select=param.select,
                             props=param.props
