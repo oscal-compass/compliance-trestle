@@ -661,6 +661,32 @@ def test_execute_add_rule(tmp_path: pathlib.Path) -> None:
     assert len(component.control_implementations[1].set_parameters) == 1
 
 
+def test_execute_param_duplicate_value(tmp_path: pathlib.Path) -> None:
+    """Test execute param duplicate default value."""
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    # duplicate default param default value
+    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    row = rows[3]
+    assert row[13] == 'allowed_admins_per_account'
+    assert row[15] == '10'
+    row = rows[2]
+    row[13] = 'allowed_admins_per_account'
+    row[15] = '10'
+    rows[2] = row
+    with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
+        mock_csv_reader.return_value = rows
+        tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+        retval = tgt.execute()
+        assert retval == TaskOutcome.SUCCESS
+    row[15] = '11'
+    rows[2] = row
+    with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
+        mock_csv_reader.return_value = rows
+        tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+        retval = tgt.execute()
+        assert retval == TaskOutcome.FAILURE
+
+
 def test_execute_missing_param_default_value(tmp_path: pathlib.Path) -> None:
     """Test execute missing param default_value."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
