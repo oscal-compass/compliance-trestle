@@ -195,8 +195,8 @@ class CatalogWriter():
                 const.GUIDELINES,
                 const.VALUES,
                 const.AGGREGATES,
-                const.DISPLAY_NAME,
                 const.ALT_IDENTIFIER,
+                const.DISPLAY_NAME,
                 const.PROFILE_VALUES
             )
             ordered_dict = {k: new_dict[k] for k in key_order if k in new_dict.keys()}
