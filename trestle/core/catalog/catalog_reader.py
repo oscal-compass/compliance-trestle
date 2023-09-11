@@ -77,7 +77,8 @@ class CatalogReader():
                         if param_dict[const.PROFILE_VALUES] != [] and param_dict[const.PROFILE_VALUES] is not None:
                             if not write_mode and '<REPLACE_ME>' in param_dict[const.PROFILE_VALUES]:
                                 param_dict[const.PROFILE_VALUES].remove('<REPLACE_ME>')
-                            param_dict[const.VALUES] = param_dict[const.PROFILE_VALUES]
+                            if param_dict[const.PROFILE_VALUES] != [] and param_dict[const.PROFILE_VALUES] is not None:
+                                param_dict[const.VALUES] = param_dict[const.PROFILE_VALUES]
                         if not write_mode:
                             param_dict.pop(const.PROFILE_VALUES)
                     final_param_dict[param_id] = param_dict
