@@ -5288,7 +5288,7 @@
                           "value": "Requirement:"
                         }
                       ],
-                      "prose": "Control description should include how DNSSEC is implemented on recursive DNS servers to make DNSSEC requests when resolving DNS requests from internal components to domains external to the CSO boundary.* If the reply is signed, and fails DNSSEC, do not use the reply* If the reply is unsigned:    * CSP chooses the policy to apply  \n"
+                      "prose": "Control description should include how DNSSEC is implemented on recursive DNS servers to make DNSSEC requests when resolving DNS requests from internal components to domains external to the CSO boundary.\n\n* If the reply is signed, and fails DNSSEC, do not use the reply\n* If the reply is unsigned:    * CSP chooses the policy to apply  \n"
                     },
                     {
                       "id": "sc-21_fr_smt.2",
