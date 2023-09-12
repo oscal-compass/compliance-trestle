@@ -194,27 +194,60 @@ class SSPGenerate(AuthorCommonCommand):
 
         # Generate inheritance view after controls view completes
         if leveraged_ssp_name_or_href:
-            # if file not recognized as URI form, assume it represents name of file in trestle directory
-            ssp: ossp.SystemSecurityPlan
-            ssp_in_trestle_dir = '://' not in leveraged_ssp_name_or_href
-            ssp_href = leveraged_ssp_name_or_href
-            if ssp_in_trestle_dir:
-                local_path = f'{const.MODEL_DIR_SSP}/{leveraged_ssp_name_or_href}/system-security-plan.json'
-                ssp_path = trestle_root / local_path
-                _, _, ssp = ModelUtils.load_distributed(ssp_path, trestle_root)
-            else:
-                fetcher = FetcherFactory.get_fetcher(trestle_root, ssp_href)
-                ssp = fetcher.get_oscal()
-
-            inheritance_view_path: pathlib.Path = md_path.joinpath(const.INHERITANCE_VIEW_DIR)
-            inheritance_view_path.mkdir(exist_ok=True)
-            logger.debug(f'Creating content for inheritance view in {inheritance_view_path}')
-
-            export_writer: ExportWriter = ExportWriter(inheritance_view_path, ssp)
-
-            export_writer.write_exports_as_markdown()
+            self._generate_inheritance_markdown(trestle_root, leveraged_ssp_name_or_href, resolved_catalog, md_path)
 
         return CmdReturnCodes.SUCCESS.value
+
+    def _generate_inheritance_markdown(
+        self,
+        trestle_root: pathlib.Path,
+        leveraged_ssp_name_or_href: str,
+        resolved_catalog: CatalogInterface,
+        md_path: str
+    ) -> None:
+        """
+        Generate markdown for inheritance view.
+
+        Notes:
+            This will create the inheritance view markdown files in the same directory as the ssp markdown files.
+            The information will be from the leveraged ssp, but filtered by the chose profile to ensure only relevant
+            control are present for mapping.
+        """
+        # if file not recognized as URI form, assume it represents name of file in trestle directory
+        ssp: ossp.SystemSecurityPlan
+        ssp_in_trestle_dir = '://' not in leveraged_ssp_name_or_href
+        ssp_href = leveraged_ssp_name_or_href
+        if ssp_in_trestle_dir:
+            local_path = f'{const.MODEL_DIR_SSP}/{leveraged_ssp_name_or_href}/system-security-plan.json'
+            ssp_path = trestle_root / local_path
+            _, _, ssp = ModelUtils.load_distributed(ssp_path, trestle_root)
+        else:
+            fetcher = FetcherFactory.get_fetcher(trestle_root, ssp_href)
+            try:
+                ssp, _ = fetcher.get_oscal()
+            except TrestleError as e:
+                raise TrestleError(f'Unable to fetch ssp from {ssp_href}: {e}')
+
+        inheritance_view_path: pathlib.Path = md_path.joinpath(const.INHERITANCE_VIEW_DIR)
+        inheritance_view_path.mkdir(exist_ok=True)
+        logger.debug(f'Creating content for inheritance view in {inheritance_view_path}')
+
+        # Filter the ssp implemented requirement by the catalog specified
+        catalog_api: CatalogAPI = CatalogAPI(catalog=resolved_catalog)
+        control_imp: ossp.ControlImplementation = ssp.control_implementation
+
+        new_imp_requirements: List[ossp.ImplementedRequirement] = []
+        for imp_requirement in as_list(control_imp.implemented_requirements):
+            control = catalog_api._catalog_interface.get_control(imp_requirement.control_id)
+            if control is not None:
+                new_imp_requirements.append(imp_requirement)
+        control_imp.implemented_requirements = new_imp_requirements
+
+        ssp.control_implementation = control_imp
+
+        export_writer: ExportWriter = ExportWriter(inheritance_view_path, ssp)
+
+        export_writer.write_exports_as_markdown()
 
 
 class SSPAssemble(AuthorCommonCommand):
