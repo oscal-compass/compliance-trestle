@@ -51,35 +51,31 @@ class ExportWriter:
         self._ssp: ossp.SystemSecurityPlan = ssp
         self._root_path: pathlib.Path = root_path
 
+        # Find all the components and create paths for name
+        self._paths_by_comp: Dict[str, pathlib.Path] = {}
+        for component in as_list(self._ssp.system_implementation.components):
+            self._paths_by_comp[component.uuid] = self._root_path.joinpath(component.title)
+
     def write_exports_as_markdown(self) -> None:
         """Write export statement for leveraged SSP as the inheritance Markdown view."""
-        # Find all the components and create paths for name
-        paths_by_comp: Dict[str, pathlib.Path] = {}
-        for component in as_list(self._ssp.system_implementation.components):
-            paths_by_comp[component.uuid] = self._root_path.joinpath(component.title)
-
         # Process all information under exports in control implementation
         for implemented_requirement in as_list(self._ssp.control_implementation.implemented_requirements):
             for by_comp in as_list(implemented_requirement.by_components):
-                try:
-                    comp_markdown_path: pathlib.Path = paths_by_comp[by_comp.component_uuid]
-                    self._process_by_component(by_comp, comp_markdown_path, implemented_requirement.control_id)
-                except KeyError:
-                    raise TrestleError(f'Component id {by_comp.component_uuid} is not in the system implementation')
+                self._process_by_component(by_comp, implemented_requirement.control_id)
 
             for stm in as_list(implemented_requirement.statements):
                 statement_id = getattr(stm, 'statement_id', f'{implemented_requirement.control_id}_smt')
                 for by_comp in as_list(stm.by_components):
-                    try:
-                        comp_markdown_path: pathlib.Path = paths_by_comp[by_comp.component_uuid]
-                        self._process_by_component(by_comp, comp_markdown_path, statement_id)
-                    except KeyError:
-                        raise TrestleError(f'Component id {by_comp.uuid} is not in the system implementation')
+                    self._process_by_component(by_comp, statement_id)
 
-    def _process_by_component(self, by_comp: ossp.ByComponent, comp_path: pathlib.Path, control_id: str) -> None:
+    def _process_by_component(self, by_comp: ossp.ByComponent, control_id: str) -> None:
         """Complete the Markdown writing operations for each by-component assembly."""
-        export_interface: ByComponentInterface = ByComponentInterface(by_comp=by_comp)
+        if by_comp.component_uuid not in self._paths_by_comp:
+            raise TrestleError(f'Component id {by_comp.component_uuid} is not in the system implementation')
 
+        comp_path: pathlib.Path = self._paths_by_comp[by_comp.component_uuid]
+
+        export_interface: ByComponentInterface = ByComponentInterface(by_comp=by_comp)
         leveraged_statements: Dict[str, LeveragedStatements] = self._statement_types_from_exports(export_interface)
 
         # Only create the directory if leveraged statements exist. If not return.

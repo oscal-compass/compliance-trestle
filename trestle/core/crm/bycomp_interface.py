@@ -80,7 +80,6 @@ class ByComponentInterface:
             else:
                 existing_list: List[ossp.Responsibility] = responsibility_by_provided[responsibility.provided_uuid]
                 existing_list.append(responsibility)
-                responsibility_by_provided[responsibility.provided_uuid] = existing_list
         return responsibility_by_provided
 
     def _create_inherited_dict(self) -> Dict[str, ossp.Inherited]:
@@ -118,10 +117,9 @@ class ByComponentInterface:
 
             # Ensure the provided object exists in the dictionary.
             # If it doesn't this is a bug.
-            try:
-                provided = self._provided_dict[provided_uuid]
-            except KeyError:
+            if provided_uuid not in self._provided_dict:
                 raise TrestleError(f'Provided capability {provided_uuid} not found')
+            provided: ossp.Provided = self._provided_dict[provided_uuid]
 
             for responsibility in responsibilities:
                 shared_responsibility: Tuple[ossp.Responsibility, ossp.Provided] = (responsibility, provided)
