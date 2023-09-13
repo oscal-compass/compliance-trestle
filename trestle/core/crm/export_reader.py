@@ -40,7 +40,8 @@ class ExportReader:
     By-Component Assembly Exports Markdown reader.
 
     Export reader handles all operations related to reading authored inherited and satisfied statements from exports
-    in Markdown.
+    in Markdown. The reader will read all the markdown files in the exports directory and update the SSP with the
+    inheritance.
     """
 
     def __init__(self, root_path: pathlib.Path, ssp: ossp.SystemSecurityPlan):
@@ -49,7 +50,7 @@ class ExportReader:
 
         Arguments:
             root_path: A root path object where an SSP's inheritance markdown is located.
-            ssp: A system security plan with exports
+            ssp: A system security plan object that will be updated with the inheritance information.
         """
         self._ssp: ossp.SystemSecurityPlan = ssp
 
@@ -75,7 +76,7 @@ class ExportReader:
 
         # Process remaining markdown information that was not in the implemented requirements
         for control_id, by_comp_dict in markdown_dict.items():
-            logging.info(f'Adding control mapping {control_id} to implemented requirements')
+            logging.debug(f'Adding control mapping {control_id} to implemented requirements')
             self._add_control_mappings_to_implemented_requirements(control_id, by_comp_dict)
 
         impl_requirements: List[ossp.ImplementedRequirement] = []
