@@ -628,6 +628,12 @@ class ModelUtils:
         if const.DISPLAY_NAME in param_dict:
             display_name = param_dict.pop(const.DISPLAY_NAME)
             props.append(common.Property(name=const.DISPLAY_NAME, value=display_name, ns=const.TRESTLE_GENERIC_NS))
+        if const.AGGREGATES in param_dict:
+            # removing aggregates as this is prop just informative in markdown
+            param_dict.pop(const.AGGREGATES)
+        if const.ALT_IDENTIFIER in param_dict:
+            # removing alt-identifier as this is prop just informative in markdown
+            param_dict.pop(const.ALT_IDENTIFIER)
 
         if 'ns' in param_dict:
             param_dict.pop('ns')

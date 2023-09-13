@@ -409,6 +409,61 @@ Running `trestle author docs validate -tn docs_task -gh="Governed section"` will
 - If `--template-version 1.0.0` (`-tv`) is passed the header field `x-trestle-template-version` will be ignored and document will be forcefully validated against template of version `1.0.0`.
   Use this for testing purposes _only_ when you need to validate the document against a specific template. By default the template version will be determined based on `x-trestle-template-version` in the document.
 
+### Validating the documents against different templates
+
+Validation against multiple templates as stated before can be done, but there is another scenario that you can leverage on trestle to have multiple documents in the task folder corresponding to a single template.
+
+For that to happen you will need to provide your template with the following parameter at the yaml header level, matching the type of template to be implemented so the validation can occur:
+
+> x-trestle-template-type: insert_template_type_here
+
+Please, take into consideration that for the validation to happen you will also need to provide each instance document in the task folder a field called `x-trestle-template-type: insert_template_type_here` in the yaml header matching with the template name.
+
+```yaml
+---
+authors: tmp
+owner: tmp
+valid:
+  from: null
+  to: null
+x-trestle-template-type: insert_template_type_here
+---
+```
+
+With that, you will be able to create more than 1 instance document per template and give the instance the desired name.
+
+For instance, let´s consider the next folder structure:
+
+```text
+trestle_root
+┣ .trestle
+┃ ┣ author
+┃ ┃ ┣ my_task_2
+┃ ┃ ┃ ┣ 0.0.1
+┃ ┃ ┃ ┃ ┣ a_template.md
+┃ ┃ ┃ ┃ ┣ another_template.md
+┃ ┃ ┃ ┃ ┗ arhitecture.drawio
+┃ ┗ config.ini
+
+trestle_root
+ ┣ .trestle
+ ┣ my_task_2
+ ┃ ┣ sample_folder_0
+ ┃ ┃ ┣ a_template_1.md
+ ┃ ┃ ┣ a_template_2.md
+ ┃ ┃ ┣ arhitecture_1.drawio
+ ┃ ┃ ┗ another_template_123.md
+
+```
+
+If you noticed, names are no longer needed to match with exact template names, and that´s because validation will run through `x-trestle-template-type` field defined at the instance header, not through the name.
+
+To validate the documents against their respective templates using `x-trestle-template-type`, run:
+
+> trestle author folders validate -tn my_task_name -vtt
+
+Now, `-vtt` stands for validate template type. Validate template type option will provide you the ability to have more than 1 instance per template validated.
+
 </details>
 
 <details markdown>
