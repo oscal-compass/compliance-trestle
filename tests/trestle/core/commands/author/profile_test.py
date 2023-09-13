@@ -1194,24 +1194,16 @@ def test_profile_generate_assemble_parameter_aggregation(
     assert Trestle().run() == 0
 
 
-def test_profile_generate_assemble_rev_5(
-    tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
-) -> None:
+def test_profile_generate_assemble_rev_5(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test the profile markdown generator."""
     _, assembled_prof_dir, _, markdown_path = setup_profile_generate_rev5(tmp_trestle_dir, 'test_profile_rev5.json')
     yaml_header_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
-
-    # prof_a_path = ModelUtils.get_model_path_for_name_and_class(
-    #     tmp_trestle_dir, 'test_profile_a', prof.Profile, FileContentType.JSON
-    # )
-    # catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
 
     # convert resolved profile catalog to markdown then assemble it after adding an item to a control
     # generate, edit, assemble
     test_args = f'trestle author profile-generate -n {prof_name} -o {md_name}'.split(  # noqa E501
     )
     test_args.extend(['-y', str(yaml_header_path)])
-    # test_args.extend(['-s', all_sections_str])
     monkeypatch.setattr(sys, 'argv', test_args)
 
     assert Trestle().run() == 0
