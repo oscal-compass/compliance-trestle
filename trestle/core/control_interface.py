@@ -287,7 +287,17 @@ class ControlInterface:
             # top level prose has already been written out, if present
             # use presence of . in id to tell if this is top level prose
             if part.id != skip_id:
-                items.append(f'{wrapped_label}{pad}{prose}')
+                if '\n*' in prose:
+                    # it is multiline prose
+                    sub_items = []
+                    multi_prose = prose.split('\n*')
+                    items.append(f'{wrapped_label}{pad}{multi_prose[0]}')
+                    multi_prose.remove(multi_prose[0])
+                    for prose in multi_prose:
+                        sub_items.append(f'{prose}')
+                    items.append(sub_items)
+                else:
+                    items.append(f'{wrapped_label}{pad}{prose}')
             if part.parts:
                 sub_list = []
                 for prt in part.parts:
