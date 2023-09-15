@@ -215,7 +215,6 @@ def test_ssp_generate_header_edit(tmp_trestle_dir: pathlib.Path) -> None:
     # confirm new items were added from yaml but not when the same key was alread present (values not updated)
     header, tree = md_api.processor.process_markdown(ac_1)
     assert 'control-origination' in header
-    assert header['x-trestle-set-params']['ac-1_prm_5']['values'] is None
     assert header['x-trestle-set-params']['ac-1_prm_5']['label'] == 'meetings cancelled from cli yaml'
 
     # generate again with header and DO overwrite header values

@@ -583,6 +583,10 @@ VALUE_NOT_ASSIGNED_PREFIX = 'value-not-assigned-prefix'
 
 CONTROL_IMPLEMENTATION = 'control-implementation'
 
+AGGREGATES = 'aggregates'
+
+ALT_IDENTIFIER = 'alt-identifier'
+
 IMPLEMENTED_REQUIREMENT = 'implemented-requirement'
 
 # Following 5 are allowed control origination values for
