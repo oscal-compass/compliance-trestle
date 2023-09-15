@@ -79,11 +79,7 @@ class ExportReader:
             logging.debug(f'Adding control mapping {control_id} to implemented requirements')
             self._add_control_mappings_to_implemented_requirements(control_id, by_comp_dict)
 
-        impl_requirements: List[ossp.ImplementedRequirement] = []
-        for impl_req in self._implemented_requirements.values():
-            impl_requirements.append(impl_req)
-
-        self._ssp.control_implementation.implemented_requirements = impl_requirements
+        self._ssp.control_implementation.implemented_requirements = list(self._implemented_requirements.values())
         return self._ssp
 
     def _merge_exports_implemented_requirements(self, markdown_dict: InheritanceViewDict) -> None:
