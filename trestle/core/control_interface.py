@@ -120,7 +120,7 @@ class ControlInterface:
         b_clean = b_str.strip()
         if not b_clean:
             return a_clean
-        gap = '\n' if a_clean else ''
+        gap = '\n\n' if a_clean else ''
         return a_clean + gap + b_clean
 
     @staticmethod
