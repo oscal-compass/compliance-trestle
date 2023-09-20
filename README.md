@@ -95,21 +95,9 @@ Meeting information:
 Compliance Trestle Community Call
 Hosted by Alejandro Leiva
 
-https://ibm.webex.com/ibm/j.php?MTID=m6de2a2c85eae39aa17fd19ea47097da3
+https://ibm.webex.com/meet/alejandro.leiva.palomo
 Tuesday, September 5, 2023 10:00 AM | 30 minutes | (UTC-04:00) Eastern Time (US & Canada)
 Occurs every 2 week(s) on Tuesday effective 9/5/2023 from 10:00 AM to 10:30 AM, (UTC-04:00) Eastern Time (US & Canada)
-Meeting number: 146 967 4515
-Password: HBkCAcJP283 (42522257 from phones and video systems)
-
-Join by video system
-Dial 1469674515@ibm.webex.com
-You can also dial 173.243.2.68 and enter your meeting number.
-
-Join by phone
-1-844-531-0958 United States Toll Free
-1-669-234-1178 United States Toll
-
-Access code: 146 967 4515
 
 ```
 
