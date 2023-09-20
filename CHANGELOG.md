@@ -3,6 +3,13 @@
 
 <!--next-version-placeholder-->
 
+## v2.3.1 (2023-09-20)
+### Fix
+* Improper indentation structure validation not working ([#1451](https://github.com/IBM/compliance-trestle/issues/1451)) ([`2e6936a`](https://github.com/IBM/compliance-trestle/commit/2e6936a4705251fd8412fd67163a7cd9d801a4b8))
+* Fixing typo in encoding name ([#1448](https://github.com/IBM/compliance-trestle/issues/1448)) ([`bdf60b2`](https://github.com/IBM/compliance-trestle/commit/bdf60b26075f7250bcdbbe08745630b27042ad74))
+* Parameter aggregation fix ([#1443](https://github.com/IBM/compliance-trestle/issues/1443)) ([`dd9e3bc`](https://github.com/IBM/compliance-trestle/commit/dd9e3bc2ebaeab23f3c4fc0647ec3942d38bed16))
+* Prevent duplicates in set-parameters ([#1450](https://github.com/IBM/compliance-trestle/issues/1450)) ([`62e2f05`](https://github.com/IBM/compliance-trestle/commit/62e2f059dd2ae08616895ebdfd6e37258483019d))
+
 ## v2.3.0 (2023-09-06)
 ### Feature
 * Extend multiple templates validation to trestle author folders ([#1430](https://github.com/IBM/compliance-trestle/issues/1430)) ([`c7bef58`](https://github.com/IBM/compliance-trestle/commit/c7bef589a6e671b96170e93feb88c6436a094da6))
