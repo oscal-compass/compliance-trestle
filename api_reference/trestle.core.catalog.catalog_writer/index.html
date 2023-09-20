@@ -20,7 +20,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.0, mkdocs-material-9.2.8">
+      <meta name="generator" content="mkdocs-1.5.0, mkdocs-material-9.3.2">
     
     
       
@@ -28,7 +28,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.046329b4.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.30068a00.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.85d0ee34.min.css">
@@ -4603,18 +4603,6 @@ catalog to markdown.</p>
 
             <span class="c1"># get all params and vals for this control from the resolved profile catalog with block adds in effect</span>
             <span class="n">control_param_dict</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">get_control_param_dict</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-            <span class="n">to_delete</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="c1"># removes aggregate parameters to be non-editable in markdowns</span>
-            <span class="n">props_by_param_ids</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="k">for</span> <span class="n">param_id</span><span class="p">,</span> <span class="n">values_dict</span> <span class="ow">in</span> <span class="n">control_param_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">props_by_param_ids</span><span class="p">[</span><span class="n">param_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-                    <span class="n">prop</span> <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">values_dict</span><span class="o">.</span><span class="n">props</span><span class="p">)</span> <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;aggregates&#39;</span>
-                <span class="p">]</span>
-            <span class="n">to_delete</span> <span class="o">=</span> <span class="nb">list</span><span class="p">({</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">props_by_param_ids</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="p">[]}</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-            <span class="n">unique_params_to_del</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">to_delete</span><span class="p">))</span>
-            <span class="k">if</span> <span class="n">unique_params_to_del</span><span class="p">:</span>
-                <span class="n">delete_list_from_list</span><span class="p">(</span><span class="n">control_param_dict</span><span class="p">,</span> <span class="n">unique_params_to_del</span><span class="p">)</span>
-
             <span class="n">set_param_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_set_parameters_dict</span><span class="p">(</span><span class="n">profile_set_param_dict</span><span class="p">,</span> <span class="n">control_param_dict</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">set_param_dict</span><span class="p">:</span>
@@ -4714,15 +4702,43 @@ catalog to markdown.</p>
                     <span class="c1"># all the other elements are from the profile set_param</span>
                     <span class="n">new_dict</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">VALUES</span><span class="p">]</span> <span class="o">=</span> <span class="n">orig_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">VALUES</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
                     <span class="n">new_dict</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">GUIDELINES</span><span class="p">]</span> <span class="o">=</span> <span class="n">orig_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">GUIDELINES</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">new_dict</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">VALUES</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">new_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">VALUES</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">new_dict</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">GUIDELINES</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">new_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">GUIDELINES</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># if the profile doesnt change this param at all, show it in the header with values</span>
                 <span class="n">tmp_dict</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">parameter_to_dict</span><span class="p">(</span><span class="n">param_dict</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
                 <span class="n">values</span> <span class="o">=</span> <span class="n">tmp_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;values&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-                <span class="n">new_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">param_id</span><span class="p">,</span> <span class="s1">&#39;values&#39;</span><span class="p">:</span> <span class="n">values</span><span class="p">}</span>
+                <span class="c1"># if values are None then don´t display them in the markdown</span>
+                <span class="k">if</span> <span class="n">values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">new_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">param_id</span><span class="p">,</span> <span class="s1">&#39;values&#39;</span><span class="p">:</span> <span class="n">values</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">PROFILE_VALUES</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;&lt;REPLACE_ME&gt;&#39;</span><span class="p">]}</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">new_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">param_id</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">PROFILE_VALUES</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;&lt;REPLACE_ME&gt;&#39;</span><span class="p">]}</span>
             <span class="n">new_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">display_name</span><span class="p">:</span>
+            <span class="c1"># validates if there are aggregated parameter values to the current parameter</span>
+            <span class="n">aggregated_props</span> <span class="o">=</span> <span class="p">[</span><span class="n">prop</span> <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">param_dict</span><span class="o">.</span><span class="n">props</span><span class="p">)</span> <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">AGGREGATES</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">aggregated_props</span> <span class="o">!=</span> <span class="p">[]:</span>
+                <span class="n">props_to_add</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">aggregated_props</span><span class="p">:</span>
+                    <span class="n">props_to_add</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+                <span class="n">new_dict</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">AGGREGATES</span><span class="p">]</span> <span class="o">=</span> <span class="n">props_to_add</span>
+                <span class="n">new_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">PROFILE_VALUES</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">alt_identifier</span> <span class="o">=</span> <span class="p">[</span><span class="n">prop</span> <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">param_dict</span><span class="o">.</span><span class="n">props</span><span class="p">)</span> <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">ALT_IDENTIFIER</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">alt_identifier</span> <span class="o">!=</span> <span class="p">[]:</span>
+                <span class="n">new_dict</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">ALT_IDENTIFIER</span><span class="p">]</span> <span class="o">=</span> <span class="n">alt_identifier</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+            <span class="c1"># adds display name, if no display name then do not add to dict</span>
+            <span class="k">if</span> <span class="n">display_name</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span> <span class="ow">and</span> <span class="n">display_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">new_dict</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">DISPLAY_NAME</span><span class="p">]</span> <span class="o">=</span> <span class="n">display_name</span>
-            <span class="n">key_order</span> <span class="o">=</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">LABEL</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">GUIDELINES</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">PROFILE_VALUES</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">VALUES</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">DISPLAY_NAME</span><span class="p">)</span>
+            <span class="n">key_order</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">const</span><span class="o">.</span><span class="n">LABEL</span><span class="p">,</span>
+                <span class="n">const</span><span class="o">.</span><span class="n">GUIDELINES</span><span class="p">,</span>
+                <span class="n">const</span><span class="o">.</span><span class="n">VALUES</span><span class="p">,</span>
+                <span class="n">const</span><span class="o">.</span><span class="n">AGGREGATES</span><span class="p">,</span>
+                <span class="n">const</span><span class="o">.</span><span class="n">ALT_IDENTIFIER</span><span class="p">,</span>
+                <span class="n">const</span><span class="o">.</span><span class="n">DISPLAY_NAME</span><span class="p">,</span>
+                <span class="n">const</span><span class="o">.</span><span class="n">PROFILE_VALUES</span>
+            <span class="p">)</span>
             <span class="n">ordered_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">new_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">key_order</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">new_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
             <span class="n">set_param_dict</span><span class="p">[</span><span class="n">param_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">ordered_dict</span>
 
@@ -5216,18 +5232,6 @@ catalog to markdown.</p>
 
         <span class="c1"># get all params and vals for this control from the resolved profile catalog with block adds in effect</span>
         <span class="n">control_param_dict</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">get_control_param_dict</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        <span class="n">to_delete</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="c1"># removes aggregate parameters to be non-editable in markdowns</span>
-        <span class="n">props_by_param_ids</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">param_id</span><span class="p">,</span> <span class="n">values_dict</span> <span class="ow">in</span> <span class="n">control_param_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">props_by_param_ids</span><span class="p">[</span><span class="n">param_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">prop</span> <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">values_dict</span><span class="o">.</span><span class="n">props</span><span class="p">)</span> <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;aggregates&#39;</span>
-            <span class="p">]</span>
-        <span class="n">to_delete</span> <span class="o">=</span> <span class="nb">list</span><span class="p">({</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">props_by_param_ids</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="p">[]}</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-        <span class="n">unique_params_to_del</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">to_delete</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">unique_params_to_del</span><span class="p">:</span>
-            <span class="n">delete_list_from_list</span><span class="p">(</span><span class="n">control_param_dict</span><span class="p">,</span> <span class="n">unique_params_to_del</span><span class="p">)</span>
-
         <span class="n">set_param_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_set_parameters_dict</span><span class="p">(</span><span class="n">profile_set_param_dict</span><span class="p">,</span> <span class="n">control_param_dict</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">set_param_dict</span><span class="p">:</span>

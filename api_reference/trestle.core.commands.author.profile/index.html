@@ -20,7 +20,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.0, mkdocs-material-9.2.8">
+      <meta name="generator" content="mkdocs-1.5.0, mkdocs-material-9.3.2">
     
     
       
@@ -28,7 +28,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.046329b4.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.30068a00.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.85d0ee34.min.css">
@@ -4907,33 +4907,6 @@ ProfileAssemble            (<a class="autorefs autorefs-internal" title="trestle
         <span class="k">return</span> <span class="n">changed</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_add_aggregated_parameter</span><span class="p">(</span>
-        <span class="n">param</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">param_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">controls</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">param_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Add aggregated parameter value to original parameter.</span>
-
-<span class="sd">        Notes:</span>
-<span class="sd">            None</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># verifies aggregated param is not on grabbed param dict</span>
-        <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">param_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-            <span class="n">param</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="n">agg_props</span> <span class="o">=</span> <span class="p">[</span><span class="n">prop</span> <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">param</span><span class="o">.</span><span class="n">props</span> <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;aggregates&#39;</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">agg_props</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">param_dict</span><span class="p">[</span><span class="n">prop</span><span class="o">.</span><span class="n">value</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;values&#39;</span><span class="p">):</span>
-                    <span class="n">agg_param_values</span> <span class="o">=</span> <span class="n">param_dict</span><span class="p">[</span><span class="n">prop</span><span class="o">.</span><span class="n">value</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;values&#39;</span><span class="p">)</span>
-                    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">agg_param_values</span><span class="p">):</span>
-                        <span class="n">param</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">agg_param_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">controls</span><span class="p">[</span><span class="n">control_id</span><span class="p">]</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">prop</span><span class="o">.</span><span class="n">value</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-                    <span class="n">param</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">agg_param_values</span><span class="o">.</span><span class="n">props</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
-                <span class="n">dict_param</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">parameter_to_dict</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-                <span class="n">param_dict</span><span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">dict_param</span>
-                <span class="n">param_map</span><span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">control_id</span>
-        <span class="k">return</span> <span class="kc">None</span>
-
-    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">assemble_profile</span><span class="p">(</span>
         <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
         <span class="n">parent_prof_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -5002,14 +4975,6 @@ ProfileAssemble            (<a class="autorefs autorefs-internal" title="trestle
         <span class="n">catalog_api</span> <span class="o">=</span> <span class="n">CatalogAPI</span><span class="p">(</span><span class="n">catalog</span><span class="o">=</span><span class="n">catalog</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">)</span>
         <span class="n">found_alters</span><span class="p">,</span> <span class="n">param_dict</span><span class="p">,</span> <span class="n">param_map</span> <span class="o">=</span> <span class="n">catalog_api</span><span class="o">.</span><span class="n">read_additional_content_from_md</span><span class="p">(</span><span class="n">label_as_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="n">controls</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">catalog</span><span class="o">.</span><span class="n">groups</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">control</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">controls</span><span class="p">):</span>
-                <span class="n">controls</span><span class="p">[</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">control</span><span class="o">.</span><span class="n">params</span>
-        <span class="k">for</span> <span class="n">control_id</span><span class="p">,</span> <span class="n">params</span> <span class="ow">in</span> <span class="n">controls</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
-                <span class="n">ProfileAssemble</span><span class="o">.</span><span class="n">_add_aggregated_parameter</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">param_dict</span><span class="p">,</span> <span class="n">control_id</span><span class="p">,</span> <span class="n">controls</span><span class="p">,</span> <span class="n">param_map</span><span class="p">)</span>
-        <span class="c1"># technically if allowed sections is [] it means no sections are allowed</span>
         <span class="k">if</span> <span class="n">allowed_sections</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">bad_part</span> <span class="ow">in</span> <span class="p">[</span>
                     <span class="n">part</span> <span class="k">for</span> <span class="n">alter</span> <span class="ow">in</span> <span class="n">found_alters</span> <span class="k">for</span> <span class="n">add</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">alter</span><span class="o">.</span><span class="n">adds</span><span class="p">)</span>
@@ -5265,14 +5230,6 @@ in the assembled profile if the --set-parameters option is specified.</p>
     <span class="n">catalog_api</span> <span class="o">=</span> <span class="n">CatalogAPI</span><span class="p">(</span><span class="n">catalog</span><span class="o">=</span><span class="n">catalog</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">)</span>
     <span class="n">found_alters</span><span class="p">,</span> <span class="n">param_dict</span><span class="p">,</span> <span class="n">param_map</span> <span class="o">=</span> <span class="n">catalog_api</span><span class="o">.</span><span class="n">read_additional_content_from_md</span><span class="p">(</span><span class="n">label_as_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="n">controls</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">catalog</span><span class="o">.</span><span class="n">groups</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">control</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">controls</span><span class="p">):</span>
-            <span class="n">controls</span><span class="p">[</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">control</span><span class="o">.</span><span class="n">params</span>
-    <span class="k">for</span> <span class="n">control_id</span><span class="p">,</span> <span class="n">params</span> <span class="ow">in</span> <span class="n">controls</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
-            <span class="n">ProfileAssemble</span><span class="o">.</span><span class="n">_add_aggregated_parameter</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">param_dict</span><span class="p">,</span> <span class="n">control_id</span><span class="p">,</span> <span class="n">controls</span><span class="p">,</span> <span class="n">param_map</span><span class="p">)</span>
-    <span class="c1"># technically if allowed sections is [] it means no sections are allowed</span>
     <span class="k">if</span> <span class="n">allowed_sections</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">bad_part</span> <span class="ow">in</span> <span class="p">[</span>
                 <span class="n">part</span> <span class="k">for</span> <span class="n">alter</span> <span class="ow">in</span> <span class="n">found_alters</span> <span class="k">for</span> <span class="n">add</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">alter</span><span class="o">.</span><span class="n">adds</span><span class="p">)</span>

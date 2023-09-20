@@ -20,7 +20,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.0, mkdocs-material-9.2.8">
+      <meta name="generator" content="mkdocs-1.5.0, mkdocs-material-9.3.2">
     
     
       
@@ -28,7 +28,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.046329b4.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.30068a00.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.85d0ee34.min.css">
@@ -5684,7 +5684,7 @@ ControlInterface        </code>
         <span class="n">b_clean</span> <span class="o">=</span> <span class="n">b_str</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">b_clean</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">a_clean</span>
-        <span class="n">gap</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">a_clean</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">gap</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">a_clean</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
         <span class="k">return</span> <span class="n">a_clean</span> <span class="o">+</span> <span class="n">gap</span> <span class="o">+</span> <span class="n">b_clean</span>
 
     <span class="nd">@staticmethod</span>
@@ -5851,7 +5851,17 @@ ControlInterface        </code>
             <span class="c1"># top level prose has already been written out, if present</span>
             <span class="c1"># use presence of . in id to tell if this is top level prose</span>
             <span class="k">if</span> <span class="n">part</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="n">skip_id</span><span class="p">:</span>
-                <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">wrapped_label</span><span class="si">}{</span><span class="n">pad</span><span class="si">}{</span><span class="n">prose</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">*&#39;</span> <span class="ow">in</span> <span class="n">prose</span><span class="p">:</span>
+                    <span class="c1"># it is multiline prose</span>
+                    <span class="n">sub_items</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">multi_prose</span> <span class="o">=</span> <span class="n">prose</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">*&#39;</span><span class="p">)</span>
+                    <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">wrapped_label</span><span class="si">}{</span><span class="n">pad</span><span class="si">}{</span><span class="n">multi_prose</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">multi_prose</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">multi_prose</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="k">for</span> <span class="n">prose</span> <span class="ow">in</span> <span class="n">multi_prose</span><span class="p">:</span>
+                        <span class="n">sub_items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">prose</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sub_items</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">wrapped_label</span><span class="si">}{</span><span class="n">pad</span><span class="si">}{</span><span class="n">prose</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">part</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
                 <span class="n">sub_list</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="k">for</span> <span class="n">prt</span> <span class="ow">in</span> <span class="n">part</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
@@ -7234,7 +7244,17 @@ Return list of string formatted labels and associated descriptive prose</p>
         <span class="c1"># top level prose has already been written out, if present</span>
         <span class="c1"># use presence of . in id to tell if this is top level prose</span>
         <span class="k">if</span> <span class="n">part</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="n">skip_id</span><span class="p">:</span>
-            <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">wrapped_label</span><span class="si">}{</span><span class="n">pad</span><span class="si">}{</span><span class="n">prose</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">*&#39;</span> <span class="ow">in</span> <span class="n">prose</span><span class="p">:</span>
+                <span class="c1"># it is multiline prose</span>
+                <span class="n">sub_items</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">multi_prose</span> <span class="o">=</span> <span class="n">prose</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">*&#39;</span><span class="p">)</span>
+                <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">wrapped_label</span><span class="si">}{</span><span class="n">pad</span><span class="si">}{</span><span class="n">multi_prose</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">multi_prose</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">multi_prose</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">prose</span> <span class="ow">in</span> <span class="n">multi_prose</span><span class="p">:</span>
+                    <span class="n">sub_items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">prose</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sub_items</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">wrapped_label</span><span class="si">}{</span><span class="n">pad</span><span class="si">}{</span><span class="n">prose</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">part</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
             <span class="n">sub_list</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">prt</span> <span class="ow">in</span> <span class="n">part</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>

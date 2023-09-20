@@ -20,7 +20,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.0, mkdocs-material-9.2.8">
+      <meta name="generator" content="mkdocs-1.5.0, mkdocs-material-9.3.2">
     
     
       
@@ -28,7 +28,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.046329b4.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.30068a00.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.85d0ee34.min.css">
@@ -5422,6 +5422,12 @@ ModelUtils        </code>
         <span class="k">if</span> <span class="n">const</span><span class="o">.</span><span class="n">DISPLAY_NAME</span> <span class="ow">in</span> <span class="n">param_dict</span><span class="p">:</span>
             <span class="n">display_name</span> <span class="o">=</span> <span class="n">param_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">DISPLAY_NAME</span><span class="p">)</span>
             <span class="n">props</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">Property</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">DISPLAY_NAME</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">display_name</span><span class="p">,</span> <span class="n">ns</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_GENERIC_NS</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">const</span><span class="o">.</span><span class="n">AGGREGATES</span> <span class="ow">in</span> <span class="n">param_dict</span><span class="p">:</span>
+            <span class="c1"># removing aggregates as this is prop just informative in markdown</span>
+            <span class="n">param_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">AGGREGATES</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">const</span><span class="o">.</span><span class="n">ALT_IDENTIFIER</span> <span class="ow">in</span> <span class="n">param_dict</span><span class="p">:</span>
+            <span class="c1"># removing alt-identifier as this is prop just informative in markdown</span>
+            <span class="n">param_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">ALT_IDENTIFIER</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="s1">&#39;ns&#39;</span> <span class="ow">in</span> <span class="n">param_dict</span><span class="p">:</span>
             <span class="n">param_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;ns&#39;</span><span class="p">)</span>
@@ -5841,6 +5847,12 @@ But if it is a list of strings is regarded as a list of values and is converted 
     <span class="k">if</span> <span class="n">const</span><span class="o">.</span><span class="n">DISPLAY_NAME</span> <span class="ow">in</span> <span class="n">param_dict</span><span class="p">:</span>
         <span class="n">display_name</span> <span class="o">=</span> <span class="n">param_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">DISPLAY_NAME</span><span class="p">)</span>
         <span class="n">props</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">Property</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">DISPLAY_NAME</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">display_name</span><span class="p">,</span> <span class="n">ns</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_GENERIC_NS</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">const</span><span class="o">.</span><span class="n">AGGREGATES</span> <span class="ow">in</span> <span class="n">param_dict</span><span class="p">:</span>
+        <span class="c1"># removing aggregates as this is prop just informative in markdown</span>
+        <span class="n">param_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">AGGREGATES</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">const</span><span class="o">.</span><span class="n">ALT_IDENTIFIER</span> <span class="ow">in</span> <span class="n">param_dict</span><span class="p">:</span>
+        <span class="c1"># removing alt-identifier as this is prop just informative in markdown</span>
+        <span class="n">param_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">ALT_IDENTIFIER</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="s1">&#39;ns&#39;</span> <span class="ow">in</span> <span class="n">param_dict</span><span class="p">:</span>
         <span class="n">param_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;ns&#39;</span><span class="p">)</span>
