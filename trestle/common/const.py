@@ -490,15 +490,23 @@ YAML_SSP_VALUES_COMMENT = """  # You may set values for parameters in the assemb
   #
 """
 
-YAML_PROFILE_VALUES_COMMENT = """  # You may set values for parameters in the assembled Profile by adding
+YAML_PROFILE_VALUES_COMMENT = """    # This section contains the parameters that are part of this control.
+  # Each parameter has properties. Only the profile-values and display-name properties are editable.
+  # The other properties are informational.
   #
-  # profile-values:
-  #   - value 1
-  #   - value 2
+  # The values property for a parameter represents values inherited from the OSCAL catalog.
+  # To override the catalog settings, use bullets under profile-values as shown below:
   #
-  # below a section of values:
-  # The values list refers to the values in the catalog, and the profile-values represent values
-  # in SetParameters of the Profile.
+  #   profile-values:
+  #     - value 1
+  #     - value 2
+  #
+  # If the "- <REPLACE_ME>" placeholder appears under profile-values, it is the same as if
+  # the profile-values property were left empty.
+  #
+  # Some parameters may show an aggregates property which lists other parameters. This means
+  # the parameter value is made up of the values from the other parameters. For parameters
+  # that aggregate, profile-values is not applicable.
   #
 """
 
