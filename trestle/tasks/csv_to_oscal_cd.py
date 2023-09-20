@@ -331,7 +331,7 @@ class CsvToOscalComponentDefinition(TaskBase):
                 logger.debug(f'params mod: {key}')
             else:
                 add_set_params.append(key)
-                logger.debug(f'prams add: {key}')
+                logger.debug(f'params add: {key}')
         return (del_set_params, add_set_params, mod_set_params)
 
     def _calculate_control_mappings(self, mod_rules: List) -> tuple:
@@ -824,7 +824,17 @@ class _OscalHelper():
     @staticmethod
     def add_set_parameter(set_parameter_list: List[SetParameter], set_parameter: SetParameter) -> None:
         """Add set parameter."""
-        set_parameter_list.append(set_parameter)
+        add = True
+        # don't add duplicate
+        for sp in set_parameter_list:
+            if sp.param_id == set_parameter.param_id:
+                add = False
+                if sp.values != set_parameter.values:
+                    text = f'set-parameter id={sp.param_id} conflicting values'
+                    raise RuntimeError(text)
+                break
+        if add:
+            set_parameter_list.append(set_parameter)
 
     @staticmethod
     def remove_rule_statement(statements: List[Statement], rule_id: str, smt_id: str) -> List[Statement]:
