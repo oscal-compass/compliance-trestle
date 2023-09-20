@@ -19,7 +19,7 @@ from typing import Any, Dict, List
 
 import trestle.common.const as const
 import trestle.oscal.catalog as cat
-from trestle.common.list_utils import as_list, deep_get, delete_list_from_list, none_if_empty
+from trestle.common.list_utils import as_list, deep_get, none_if_empty
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.catalog.catalog_merger import CatalogMerger
@@ -63,18 +63,6 @@ class CatalogWriter():
 
             # get all params and vals for this control from the resolved profile catalog with block adds in effect
             control_param_dict = ControlInterface.get_control_param_dict(control, False)
-            to_delete = []
-            # removes aggregate parameters to be non-editable in markdowns
-            props_by_param_ids = {}
-            for param_id, values_dict in control_param_dict.items():
-                props_by_param_ids[param_id] = [
-                    prop for prop in as_list(values_dict.props) if prop.name == 'aggregates'
-                ]
-            to_delete = list({k: v for k, v in props_by_param_ids.items() if v != []}.keys())
-            unique_params_to_del = list(set(to_delete))
-            if unique_params_to_del:
-                delete_list_from_list(control_param_dict, unique_params_to_del)
-
             set_param_dict = self._construct_set_parameters_dict(profile_set_param_dict, control_param_dict, context)
 
             if set_param_dict:
@@ -174,15 +162,43 @@ class CatalogWriter():
                     # all the other elements are from the profile set_param
                     new_dict[const.VALUES] = orig_dict.get(const.VALUES, None)
                     new_dict[const.GUIDELINES] = orig_dict.get(const.GUIDELINES, None)
+                    if new_dict[const.VALUES] is None:
+                        new_dict.pop(const.VALUES)
+                    if new_dict[const.GUIDELINES] is None:
+                        new_dict.pop(const.GUIDELINES)
             else:
                 # if the profile doesnt change this param at all, show it in the header with values
                 tmp_dict = ModelUtils.parameter_to_dict(param_dict, True)
                 values = tmp_dict.get('values', None)
-                new_dict = {'id': param_id, 'values': values}
+                # if values are None then don´t display them in the markdown
+                if values is not None:
+                    new_dict = {'id': param_id, 'values': values, const.PROFILE_VALUES: ['<REPLACE_ME>']}
+                else:
+                    new_dict = {'id': param_id, const.PROFILE_VALUES: ['<REPLACE_ME>']}
             new_dict.pop('id', None)
-            if display_name:
+            # validates if there are aggregated parameter values to the current parameter
+            aggregated_props = [prop for prop in as_list(param_dict.props) if prop.name == const.AGGREGATES]
+            if aggregated_props != []:
+                props_to_add = []
+                for prop in aggregated_props:
+                    props_to_add.append(prop.value)
+                new_dict[const.AGGREGATES] = props_to_add
+                new_dict.pop(const.PROFILE_VALUES, None)
+            alt_identifier = [prop for prop in as_list(param_dict.props) if prop.name == const.ALT_IDENTIFIER]
+            if alt_identifier != []:
+                new_dict[const.ALT_IDENTIFIER] = alt_identifier[0].value
+            # adds display name, if no display name then do not add to dict
+            if display_name != '' and display_name is not None:
                 new_dict[const.DISPLAY_NAME] = display_name
-            key_order = (const.LABEL, const.GUIDELINES, const.PROFILE_VALUES, const.VALUES, const.DISPLAY_NAME)
+            key_order = (
+                const.LABEL,
+                const.GUIDELINES,
+                const.VALUES,
+                const.AGGREGATES,
+                const.ALT_IDENTIFIER,
+                const.DISPLAY_NAME,
+                const.PROFILE_VALUES
+            )
             ordered_dict = {k: new_dict[k] for k in key_order if k in new_dict.keys()}
             set_param_dict[param_id] = ordered_dict
 

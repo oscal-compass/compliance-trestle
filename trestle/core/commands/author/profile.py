@@ -286,33 +286,6 @@ class ProfileAssemble(AuthorCommonCommand):
         return changed
 
     @staticmethod
-    def _add_aggregated_parameter(
-        param: Any, param_dict: Dict[str, Any], control_id: str, controls: Any, param_map: Dict[str, str]
-    ) -> None:
-        """
-        Add aggregated parameter value to original parameter.
-
-        Notes:
-            None
-        """
-        # verifies aggregated param is not on grabbed param dict
-        if param.id not in list(param_dict.keys()):
-            param.values = []
-            agg_props = [prop for prop in param.props if prop.name == 'aggregates']
-            for prop in as_list(agg_props):
-                if param_dict[prop.value].get('values'):
-                    agg_param_values = param_dict[prop.value].get('values')
-                    for value in as_list(agg_param_values):
-                        param.values.append(value)
-                else:
-                    agg_param_values = [p for p in controls[control_id] if p.id == prop.value][0]
-                    param.values.append(agg_param_values.props[0].value)
-                dict_param = ModelUtils.parameter_to_dict(param, False)
-                param_dict[param.id] = dict_param
-                param_map[param.id] = control_id
-        return None
-
-    @staticmethod
     def assemble_profile(
         trestle_root: pathlib.Path,
         parent_prof_name: str,
@@ -381,14 +354,6 @@ class ProfileAssemble(AuthorCommonCommand):
         catalog_api = CatalogAPI(catalog=catalog, context=context)
         found_alters, param_dict, param_map = catalog_api.read_additional_content_from_md(label_as_key=True)
 
-        controls = {}
-        for group in as_list(catalog.groups):
-            for control in as_list(group.controls):
-                controls[control.id] = control.params
-        for control_id, params in controls.items():
-            for param in as_list(params):
-                ProfileAssemble._add_aggregated_parameter(param, param_dict, control_id, controls, param_map)
-        # technically if allowed sections is [] it means no sections are allowed
         if allowed_sections is not None:
             for bad_part in [
                     part for alter in found_alters for add in as_list(alter.adds)
