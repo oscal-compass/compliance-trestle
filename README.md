@@ -93,7 +93,6 @@ Meeting information:
 
 ```
 Compliance Trestle Community Call
-Hosted by Alejandro Leiva
 
 Join from the meeting link
 https://ibm.webex.com/ibm/j.php?MTID=m030fdef5ac2d09f46f04813bb5e9dc6b
