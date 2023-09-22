@@ -682,6 +682,51 @@ def generate_test_by_comp() -> ssp.ByComponent:
     return by_comp
 
 
+def generate_test_inheritance_md(
+    provided_uuid: str, responsibility_uuid: str, leveraged_statement_names: List[str]
+) -> str:
+    """
+    Generate a inheritance statement with placeholders replaced by provided values.
+
+    Args:
+        provided_uuid (str): UUID for provided statement.
+        responsibility_uuid (str): UUID for responsibility statement.
+        leveraged_statement_names (list of str): Names for leveraged statements (as a list).
+        leveraged_ssp_href (str): Href for leveraged SSP.
+
+    Returns:
+        str: The template with placeholders replaced.
+    """
+    # Convert the list of leveraged statement names into a YAML list
+    leveraged_statement_list = '\n'.join([f'  - name: {name}' for name in leveraged_statement_names])
+
+    md_template = f"""---
+x-trestle-statement:
+  # Add or modify leveraged SSP Statements here.
+  provided-uuid: {provided_uuid}
+  responsibility-uuid: {responsibility_uuid}
+x-trestle-leveraging-comp:
+  # Leveraged statements can be optionally associated with components in this system.
+  # Associate leveraged statements to Components of this system here:
+{leveraged_statement_list}
+---
+
+# Provided Statement Description
+
+provided statement description
+
+# Responsibility Statement Description
+
+resp statement description
+
+# Satisfied Statement Description
+
+<!-- Use this section to explain how the inherited responsibility is being satisfied. -->
+My Satisfied Description
+    """
+    return md_template
+
+
 class FileChecker:
     """Check for changes in files after test operations."""
 
