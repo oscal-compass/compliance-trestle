@@ -20,6 +20,7 @@ from typing import Dict, List, Tuple
 
 import trestle.core.generators as gens
 import trestle.oscal.ssp as ossp
+from trestle.common.common_types import TypeWithByComps
 from trestle.common.list_utils import as_list, none_if_empty
 from trestle.core.crm.bycomp_interface import ByComponentInterface
 from trestle.core.crm.leveraged_statements import InheritanceMarkdownReader
@@ -89,27 +90,9 @@ class ExportReader:
             # If the control id existing in the markdown, then update the by_components
             if implemented_requirement.control_id in markdown_dict:
 
-                new_by_comp: List[ossp.ByComponent] = []
                 by_comp_dict: ByComponentDict = markdown_dict[implemented_requirement.control_id]
 
-                for by_comp in as_list(implemented_requirement.by_components):
-
-                    if by_comp.component_uuid in by_comp_dict:
-                        comp_inheritance_info = by_comp_dict[by_comp.component_uuid]
-
-                        bycomp_interface = ByComponentInterface(by_comp)
-                        by_comp = bycomp_interface.reconcile_inheritance_by_component(
-                            comp_inheritance_info[0], comp_inheritance_info[1]
-                        )
-
-                        # Delete the entry from the by_comp_dict once processed to avoid duplicates
-                        del by_comp_dict[by_comp.component_uuid]
-
-                    new_by_comp.append(by_comp)
-
-                # Add any new by_components that were not in the original implemented requirement
-                new_by_comp.extend(ExportReader._add_new_by_comps(by_comp_dict))
-                implemented_requirement.by_components = new_by_comp
+                self._update_type_with_by_comp(implemented_requirement, by_comp_dict)
 
                 # Delete the entry from the markdown_dict once processed to avoid duplicates
                 del markdown_dict[implemented_requirement.control_id]
@@ -123,27 +106,9 @@ class ExportReader:
                 # If the statement id existing in the markdown, then update the by_components
                 if statement_id in markdown_dict:
 
-                    new_by_comp: List[ossp.ByComponent] = []
                     by_comp_dict: ByComponentDict = markdown_dict[statement_id]
 
-                    for by_comp in as_list(stm.by_components):
-
-                        if by_comp.component_uuid in by_comp_dict:
-                            comp_inheritance_info = by_comp_dict[by_comp.component_uuid]
-
-                            bycomp_interface = ByComponentInterface(by_comp)
-                            by_comp = bycomp_interface.reconcile_inheritance_by_component(
-                                comp_inheritance_info[0], comp_inheritance_info[1]
-                            )
-
-                            # Delete the entry from the by_comp_dict once processed to avoid duplicates
-                            del by_comp_dict[by_comp.component_uuid]
-
-                        new_by_comp.append(by_comp)
-
-                    # Add any new by_components that were not in the original statement
-                    new_by_comp.extend(ExportReader._add_new_by_comps(by_comp_dict))
-                    stm.by_components = new_by_comp
+                    self._update_type_with_by_comp(stm, by_comp_dict)
 
                     # Delete the entry from the markdown_dict once processed to avoid duplicates
                     del markdown_dict[statement_id]
@@ -151,6 +116,30 @@ class ExportReader:
                 new_statements.append(stm)
 
             implemented_requirement.statements = none_if_empty(new_statements)
+
+    def _update_type_with_by_comp(self, with_bycomp: TypeWithByComps, by_comp_dict: ByComponentDict) -> None:
+        """Update the by_components for a type with by_components."""
+        new_by_comp: List[ossp.ByComponent] = []
+
+        by_comp: ossp.ByComponent
+        for by_comp in as_list(with_bycomp.by_components):
+
+            if by_comp.component_uuid in by_comp_dict:
+                comp_inheritance_info = by_comp_dict[by_comp.component_uuid]
+
+                bycomp_interface = ByComponentInterface(by_comp)
+                by_comp = bycomp_interface.reconcile_inheritance_by_component(
+                    comp_inheritance_info[0], comp_inheritance_info[1]
+                )
+
+                # Delete the entry from the by_comp_dict once processed to avoid duplicates
+                del by_comp_dict[by_comp.component_uuid]
+
+            new_by_comp.append(by_comp)
+
+        # Add any new by_components that were not in the original statement
+        new_by_comp.extend(ExportReader._add_new_by_comps(by_comp_dict))
+        with_bycomp.by_components = none_if_empty(new_by_comp)
 
     def _add_control_mappings_to_implemented_requirements(
         self, control_mapping: str, by_comps: ByComponentDict

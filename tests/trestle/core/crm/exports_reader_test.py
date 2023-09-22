@@ -14,11 +14,15 @@
 """Tests for the ssp_generator module."""
 
 import pathlib
+import uuid
+
+import pytest
 
 from tests import test_utils
 
 import trestle.common.const as const
 import trestle.core.crm.export_reader as exportreader
+import trestle.core.generators as gens
 import trestle.oscal.ssp as ossp
 from trestle.common.model_utils import ModelUtils
 from trestle.core.models.file_content_type import FileContentType
@@ -31,6 +35,16 @@ expected_saas_uuid = '22222222-0000-4000-9001-000000000001'
 
 example_provided_uuid = '18ac4e2a-b5f2-46e4-94fa-cc84ab6fe114'
 example_responsibility_uuid = '4b34c68f-75fa-4b38-baf0-e50158c13ac2'
+
+
+@pytest.fixture(scope='function')
+def sample_implemented_requirement() -> ossp.ImplementedRequirement:
+    """Return a valid ComponentDefinition object with some contents."""
+    # one component has no properties - the other has two
+    impl_req: ossp.ImplementedRequirement = gens.generate_sample_model(ossp.ImplementedRequirement)
+    by_comp: ossp.ByComponent = gens.generate_sample_model(ossp.ByComponent)
+    impl_req.by_components = [by_comp]
+    return impl_req
 
 
 def prep_inheritance_dir(ac_appliance_dir: pathlib.Path) -> None:
@@ -180,3 +194,35 @@ def test_read_inheritance_markdown_dir_with_multiple_leveraged_components(tmp_tr
 
     assert len(inheritance_info[0]) == 2
     assert len(inheritance_info[1]) == 2
+
+
+def test_update_type_with_by_comp(sample_implemented_requirement: ossp.ImplementedRequirement) -> None:
+    """Test update type with by component."""
+    test_ssp: ossp.SystemSecurityPlan = gens.generate_sample_model(ossp.SystemSecurityPlan)
+    reader = exportreader.ExportReader('', test_ssp)
+
+    test_inherited: ossp.Inherited = gens.generate_sample_model(ossp.Inherited)
+    test_satisfied: ossp.Satisfied = gens.generate_sample_model(ossp.Satisfied)
+
+    test_comp_uuid = str(uuid.uuid4())
+
+    test_by_comp_dict: exportreader.ByComponentDict = {test_comp_uuid: ([test_inherited], [test_satisfied])}
+
+    assert len(sample_implemented_requirement.by_components) == 1
+
+    reader._update_type_with_by_comp(sample_implemented_requirement, test_by_comp_dict)
+
+    # Ensure a new by_comp was added, but the original was not removed
+    assert len(sample_implemented_requirement.by_components) == 2
+
+    # Test update the existing without adding a new component
+    test_satisfied.description = 'Updated Description'
+    test_by_comp_dict: exportreader.ByComponentDict = {test_comp_uuid: ([test_inherited], [test_satisfied])}
+    reader._update_type_with_by_comp(sample_implemented_requirement, test_by_comp_dict)
+
+    assert len(sample_implemented_requirement.by_components) == 2
+    new_by_comp = sample_implemented_requirement.by_components[1]  # type: ignore
+
+    assert new_by_comp.component_uuid == test_comp_uuid
+    assert new_by_comp.satisfied is not None
+    assert new_by_comp.satisfied[0].description == 'Updated Description'
