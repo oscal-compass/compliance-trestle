@@ -141,10 +141,12 @@ def test_read_inheritance_markdown_dir(tmp_trestle_dir: pathlib.Path) -> None:
     reader = exportreader.ExportReader(inheritance_path, orig_ssp)  # type: ignore
     markdown_dict: exportreader.InheritanceViewDict = reader._read_inheritance_markdown_directory()
 
-    assert len(markdown_dict) == 2
+    assert len(markdown_dict) == 3
     assert 'ac-2' in markdown_dict
     assert len(markdown_dict['ac-2']) == 2
     assert expected_appliance_uuid in markdown_dict['ac-2']
+
+    assert len(markdown_dict['ac-2.1']) == 0
 
     inheritance_info = markdown_dict['ac-2'][expected_appliance_uuid]
 
@@ -166,6 +168,12 @@ def test_read_inheritance_markdown_dir_with_multiple_leveraged_components(tmp_tr
         leveraged_statement_names=['Access Control Appliance']
     )
 
+    unmapped_text = test_utils.generate_test_inheritance_md(
+        provided_uuid=example_provided_uuid,
+        responsibility_uuid=example_responsibility_uuid,
+        leveraged_statement_names=[const.REPLACE_ME]
+    )
+
     this_system_dir = inheritance_path.joinpath('This System')
     ac_2 = this_system_dir.joinpath('ac-2')
     ac_2.mkdir(parents=True)
@@ -173,6 +181,13 @@ def test_read_inheritance_markdown_dir_with_multiple_leveraged_components(tmp_tr
     file = ac_2 / f'{expected_appliance_uuid}.md'
     with open(file, 'w') as f:
         f.write(inheritance_text_2)
+
+    ac_2a = this_system_dir.joinpath('ac-2_smt.a')
+    ac_2a.mkdir(parents=True)
+
+    file = ac_2a / f'{expected_appliance_uuid}.md'
+    with open(file, 'w') as f:
+        f.write(unmapped_text)
 
     test_utils.load_from_json(tmp_trestle_dir, 'leveraging_ssp', leveraging_ssp, ossp.SystemSecurityPlan)
 
@@ -194,6 +209,16 @@ def test_read_inheritance_markdown_dir_with_multiple_leveraged_components(tmp_tr
 
     assert len(inheritance_info[0]) == 2
     assert len(inheritance_info[1]) == 2
+
+    assert 'ac-2_smt.a' in markdown_dict
+    assert len(markdown_dict['ac-2_smt.a']) == 2
+
+    assert expected_appliance_uuid in markdown_dict['ac-2_smt.a']
+    inheritance_info = markdown_dict['ac-2_smt.a'][expected_appliance_uuid]
+
+    # Only leveraging from one component
+    assert len(inheritance_info[0]) == 1
+    assert len(inheritance_info[1]) == 1
 
 
 def test_update_type_with_by_comp(sample_implemented_requirement: ossp.ImplementedRequirement) -> None:
@@ -226,3 +251,13 @@ def test_update_type_with_by_comp(sample_implemented_requirement: ossp.Implement
     assert new_by_comp.component_uuid == test_comp_uuid
     assert new_by_comp.satisfied is not None
     assert new_by_comp.satisfied[0].description == 'Updated Description'
+
+    # Test removing the existing inheritance info
+    test_by_comp_dict: exportreader.ByComponentDict = {}
+    reader._update_type_with_by_comp(sample_implemented_requirement, test_by_comp_dict)
+
+    new_by_comp = sample_implemented_requirement.by_components[1]  # type: ignore
+
+    assert new_by_comp.component_uuid == test_comp_uuid
+    assert new_by_comp.satisfied is None
+    assert new_by_comp.inherited is None

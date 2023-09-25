@@ -77,8 +77,9 @@ class ExportReader:
 
         # Process remaining markdown information that was not in the implemented requirements
         for control_id, by_comp_dict in markdown_dict.items():
-            logging.debug(f'Adding control mapping {control_id} to implemented requirements')
-            self._add_control_mappings_to_implemented_requirements(control_id, by_comp_dict)
+            if by_comp_dict:
+                logging.debug(f'Adding control mapping {control_id} to implemented requirements')
+                self._add_control_mappings_to_implemented_requirements(control_id, by_comp_dict)
 
         self._ssp.control_implementation.implemented_requirements = list(self._implemented_requirements.values())
         return self._ssp
@@ -124,16 +125,18 @@ class ExportReader:
         by_comp: ossp.ByComponent
         for by_comp in as_list(with_bycomp.by_components):
 
+            # If the by_component uuid exists in the by_comp_dict, then update it
+            # If not, clear the by_component inheritance information
+            comp_inheritance_info: Tuple[List[ossp.Inherited], List[ossp.Satisfied]] = ([], [])
             if by_comp.component_uuid in by_comp_dict:
                 comp_inheritance_info = by_comp_dict[by_comp.component_uuid]
-
-                bycomp_interface = ByComponentInterface(by_comp)
-                by_comp = bycomp_interface.reconcile_inheritance_by_component(
-                    comp_inheritance_info[0], comp_inheritance_info[1]
-                )
-
                 # Delete the entry from the by_comp_dict once processed to avoid duplicates
                 del by_comp_dict[by_comp.component_uuid]
+
+            bycomp_interface = ByComponentInterface(by_comp)
+            by_comp = bycomp_interface.reconcile_inheritance_by_component(
+                comp_inheritance_info[0], comp_inheritance_info[1]
+            )
 
             new_by_comp.append(by_comp)
 
@@ -224,7 +227,8 @@ class ExportReader:
                             satisfied.append(leveraged_info.satisfied)
 
                         by_comp_dict[comp_uuid] = (inherited, satisfied)
-                # If there is information in the by_component dictionary, then update the markdown dictionary
-                if by_comp_dict:
-                    markdown_dict[control_dir] = by_comp_dict
+
+                # Add the by_component dictionary to the markdown dictionary for the control directory
+                markdown_dict[control_dir] = by_comp_dict
+
         return markdown_dict
