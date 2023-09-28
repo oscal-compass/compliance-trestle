@@ -563,10 +563,18 @@ class SSPAssemble(AuthorCommonCommand):
                     raise TrestleError('Original ssp has no system component.')
                 comp_dict[const.SSP_MAIN_COMP_NAME] = sys_comp
 
+                ssp_sys_imp_comps = ssp.system_implementation.components
+                # Gather the leveraged components to add back after the merge
+                leveraged_comps: Dict[str, ossp.SystemComponent] = {}
+                for sys_comp in ssp_sys_imp_comps:
+                    if sys_comp.props is not None:
+                        prop_names = [x.name for x in sys_comp.props]
+                        if const.LEV_AUTH_UUID in prop_names:
+                            leveraged_comps[sys_comp.title] = sys_comp
+
                 # Verifies older compdefs in an ssp no longer exist in newly provided ones
                 comp_titles = [x.title for x in comp_dict.values()]
-                ssp_sys_imp_comps = ssp.system_implementation.components
-                diffs = [x for x in ssp_sys_imp_comps if x.title not in comp_titles]
+                diffs = [x for x in ssp_sys_imp_comps if x.title not in comp_titles and x.title not in leveraged_comps]
                 if diffs:
                     for diff in diffs:
                         logger.warning(
@@ -581,6 +589,9 @@ class SSPAssemble(AuthorCommonCommand):
                 CatalogReader.read_ssp_md_content(md_path, ssp, comp_dict, part_id_map_by_label, context)
 
                 new_file_content_type = FileContentType.path_to_content_type(orig_ssp_path)
+
+                # Add the leveraged comps back to the final ssp
+                ssp.system_implementation.components.extend(list(leveraged_comps.values()))
             else:
                 # create a sample ssp to hold all the parts
                 ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
