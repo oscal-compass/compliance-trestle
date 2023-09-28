@@ -118,6 +118,7 @@ nav:
         - export_reader: api_reference/trestle.core.crm.export_reader.md
         - export_writer: api_reference/trestle.core.crm.export_writer.md
         - leveraged_statements: api_reference/trestle.core.crm.leveraged_statements.md
+        - ssp_inheritance_api: api_reference/trestle.core.crm.ssp_inheritance_api.md
       - docs_control_writer: api_reference/trestle.core.docs_control_writer.md
       - draw_io: api_reference/trestle.core.draw_io.md
       - duplicates_validator: api_reference/trestle.core.duplicates_validator.md

@@ -47,7 +47,7 @@ class SSPInheritanceAPI():
         Write inheritance information to markdown.
 
         Args:
-            leveraged_ssp: SSP to write inheritance information from.
+            leveraged_ssp_reference: Location of the SSP to write inheritance information from.
             catalog_api: Catalog API to filter inheritance information by catalog.
 
         Notes:
