@@ -105,8 +105,8 @@ class SSPInheritanceAPI():
 
         if not leveraged_components:
             logger.warn(
-                'No leveraged components mapped in inheritance view.',
-                'No leveraged authorization will be added to the ssp'
+                'No leveraged components mapped to the SSP. '
+                'Please edit the inheritance markdown to include the leveraged authorization.'
             )
         else:
             if self._is_present_in_ssp(ssp, link):
