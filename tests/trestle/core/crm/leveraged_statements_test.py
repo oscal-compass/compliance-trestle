@@ -31,6 +31,8 @@ resp_uuid = '4b34c68f-75fa-4b38-baf0-e50158c13ac2'
 resp_statement_desc = 'resp statement description'
 satisfied_statement_desc = 'satisfied statement description'
 
+test_href = 'trestle://ssp/ssp.json'
+
 
 def add_authored_content(test_file: pathlib.Path, yaml_header: Dict[str, Any]) -> None:
     """Update the yaml header with a test component and satisfied description to simulate editing."""
@@ -47,7 +49,7 @@ def test_write_inheritance_tree(tmp_path: pathlib.Path) -> None:
     """Test writing statements with both provided and responsibility."""
     statement_tree_path = tmp_path.joinpath('statement_tree.md')
 
-    statement = StatementTree(provided_uuid, provided_statement_desc, resp_uuid, resp_statement_desc)
+    statement = StatementTree(provided_uuid, provided_statement_desc, resp_uuid, resp_statement_desc, test_href)
 
     statement.write_statement_md(statement_tree_path)
 
@@ -61,6 +63,7 @@ def test_write_inheritance_tree(tmp_path: pathlib.Path) -> None:
 
     assert header[const.TRESTLE_STATEMENT_TAG][const.PROVIDED_UUID] == provided_uuid
     assert header[const.TRESTLE_STATEMENT_TAG][const.RESPONSIBILITY_UUID] == resp_uuid
+    assert header[const.TRESTLE_GLOBAL_TAG][const.LEVERAGED_SSP][const.HREF] == test_href
 
     # Confirm markdown content
     node = tree.get_node_for_key(const.PROVIDED_STATEMENT_DESCRIPTION, False)
@@ -94,7 +97,7 @@ def test_write_inheritance_provided(tmp_path: pathlib.Path) -> None:
     """Test writing statements with only provided."""
     statement_provided_path = tmp_path.joinpath('statement_provided.md')
 
-    statement = StatementProvided(provided_uuid, provided_statement_desc)
+    statement = StatementProvided(provided_uuid, provided_statement_desc, test_href)
 
     statement.write_statement_md(statement_provided_path)
 
@@ -107,6 +110,7 @@ def test_write_inheritance_provided(tmp_path: pathlib.Path) -> None:
     assert comp_header_value == [{'name': 'REPLACE_ME'}]
 
     assert header[const.TRESTLE_STATEMENT_TAG][const.PROVIDED_UUID] == provided_uuid
+    assert header[const.TRESTLE_GLOBAL_TAG][const.LEVERAGED_SSP][const.HREF] == test_href
 
     # Confirm markdown content
     node = tree.get_node_for_key(const.PROVIDED_STATEMENT_DESCRIPTION, False)
@@ -132,7 +136,7 @@ def test_write_inheritance_responsibility(tmp_path: pathlib.Path) -> None:
     """Test writing statements with only responsibility."""
     statement_resp_path = tmp_path.joinpath('statement_req.md')
 
-    statement = StatementResponsibility(resp_uuid, resp_statement_desc)
+    statement = StatementResponsibility(resp_uuid, resp_statement_desc, test_href)
 
     statement.write_statement_md(statement_resp_path)
 
@@ -145,6 +149,7 @@ def test_write_inheritance_responsibility(tmp_path: pathlib.Path) -> None:
     assert comp_header_value == [{'name': 'REPLACE_ME'}]
 
     assert header[const.TRESTLE_STATEMENT_TAG][const.RESPONSIBILITY_UUID] == resp_uuid
+    assert header[const.TRESTLE_GLOBAL_TAG][const.LEVERAGED_SSP][const.HREF] == test_href
 
     # Confirm markdown content
     node = tree.get_node_for_key(const.RESPONSIBILITY_STATEMENT_DESCRIPTION, False)
@@ -174,7 +179,7 @@ def test_process_leveraged_statement_default_mapping(tmp_path: pathlib.Path) -> 
     """Test processing leveraged statement markdown with no set mapping."""
     statement_tree_path = tmp_path.joinpath('statement_tree.md')
 
-    statement = StatementTree(provided_uuid, provided_statement_desc, resp_uuid, resp_statement_desc)
+    statement = StatementTree(provided_uuid, provided_statement_desc, resp_uuid, resp_statement_desc, test_href)
 
     statement.write_statement_md(statement_tree_path)
 
@@ -193,7 +198,7 @@ def test_process_leveraged_statement_markdown_tree(tmp_path: pathlib.Path) -> No
     test_header: Dict[str, Any] = {}
     add_authored_content(statement_tree_path, test_header)
 
-    statement = StatementTree(provided_uuid, provided_statement_desc, resp_uuid, resp_statement_desc)
+    statement = StatementTree(provided_uuid, provided_statement_desc, resp_uuid, resp_statement_desc, test_href)
 
     statement.write_statement_md(statement_tree_path)
 
@@ -224,7 +229,7 @@ def test_process_leveraged_statement_markdown_provided(tmp_path: pathlib.Path) -
     test_header: Dict[str, Any] = {}
     add_authored_content(statement_provided_path, test_header)
 
-    statement = StatementProvided(provided_uuid, provided_statement_desc)
+    statement = StatementProvided(provided_uuid, provided_statement_desc, test_href)
 
     statement.write_statement_md(statement_provided_path)
 
@@ -252,7 +257,7 @@ def test_process_leveraged_statement_markdown_responsibility(tmp_path: pathlib.P
     test_header: Dict[str, Any] = {}
     add_authored_content(statement_resp_path, test_header)
 
-    statement = StatementResponsibility(resp_uuid, resp_statement_desc)
+    statement = StatementResponsibility(resp_uuid, resp_statement_desc, test_href)
 
     statement.write_statement_md(statement_resp_path)
 

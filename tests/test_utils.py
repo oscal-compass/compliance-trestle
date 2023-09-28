@@ -683,7 +683,7 @@ def generate_test_by_comp() -> ssp.ByComponent:
 
 
 def generate_test_inheritance_md(
-    provided_uuid: str, responsibility_uuid: str, leveraged_statement_names: List[str]
+    provided_uuid: str, responsibility_uuid: str, leveraged_statement_names: List[str], leveraged_ssp_href: str
 ) -> str:
     """
     Generate a inheritance statement with placeholders replaced by provided values.
@@ -709,6 +709,9 @@ x-trestle-leveraging-comp:
   # Leveraged statements can be optionally associated with components in this system.
   # Associate leveraged statements to Components of this system here:
 {leveraged_statement_list}
+x-trestle-global:
+    leveraged-ssp:
+      href: {leveraged_ssp_href}
 ---
 
 # Provided Statement Description

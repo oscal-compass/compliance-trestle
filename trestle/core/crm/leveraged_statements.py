@@ -34,7 +34,7 @@ component_mapping_default: List[Dict[str, str]] = [{'name': const.REPLACE_ME}]
 class LeveragedStatements(ABC):
     """Abstract class for managing leveraged statements."""
 
-    def __init__(self) -> None:
+    def __init__(self, leveraged_ssp_reference: str) -> None:
         """Initialize the class."""
         self._md_file: Optional[MDWriter] = None
         self.header_comment_dict: Dict[str, str] = {
@@ -42,7 +42,13 @@ class LeveragedStatements(ABC):
             const.TRESTLE_STATEMENT_TAG: const.YAML_LEVERAGED_COMMENT
         }
         self.merged_header_dict: Dict[str, Any] = {
-            const.TRESTLE_STATEMENT_TAG: '', const.TRESTLE_LEVERAGING_COMP_TAG: component_mapping_default
+            const.TRESTLE_STATEMENT_TAG: '',
+            const.TRESTLE_LEVERAGING_COMP_TAG: component_mapping_default,
+            const.TRESTLE_GLOBAL_TAG: {
+                const.LEVERAGED_SSP: {
+                    const.HREF: leveraged_ssp_reference
+                }
+            }
         }
 
     @abstractmethod
@@ -54,15 +60,20 @@ class StatementTree(LeveragedStatements):
     """Concrete class for managing provided and responsibility statements."""
 
     def __init__(
-        self, provided_uuid: str, provided_description: str, responsibility_uuid: str, responsibility_description: str
-    ):
+        self,
+        provided_uuid: str,
+        provided_description: str,
+        responsibility_uuid: str,
+        responsibility_description: str,
+        leveraged_ssp_reference: str
+    ) -> None:
         """Initialize the class."""
         self.provided_uuid = provided_uuid
         self.provided_description = provided_description
         self.responsibility_uuid = responsibility_uuid
         self.responsibility_description = responsibility_description
         self.satisfied_description = ''
-        super().__init__()
+        super().__init__(leveraged_ssp_reference)
 
     def write_statement_md(self, leveraged_statement_file: pathlib.Path) -> None:
         """Write a provided and responsibility statements to a markdown file."""
@@ -107,11 +118,16 @@ class StatementTree(LeveragedStatements):
 class StatementProvided(LeveragedStatements):
     """Concrete class for managing provided statements."""
 
-    def __init__(self, provided_uuid: str, provided_description: str):
+    def __init__(
+        self,
+        provided_uuid: str,
+        provided_description: str,
+        leveraged_ssp_reference: str,
+    ) -> None:
         """Initialize the class."""
         self.provided_uuid = provided_uuid
         self.provided_description = provided_description
-        super().__init__()
+        super().__init__(leveraged_ssp_reference)
 
     def write_statement_md(self, leveraged_statement_file: pathlib.Path) -> None:
         """Write provided statements to a markdown file."""
@@ -143,12 +159,17 @@ class StatementProvided(LeveragedStatements):
 class StatementResponsibility(LeveragedStatements):
     """Concrete class for managing responsibility statements."""
 
-    def __init__(self, responsibility_uuid: str, responsibility_description: str):
+    def __init__(
+        self,
+        responsibility_uuid: str,
+        responsibility_description: str,
+        leveraged_ssp_reference: str,
+    ) -> None:
         """Initialize the class."""
         self.responsibility_uuid = responsibility_uuid
         self.responsibility_description = responsibility_description
         self.satisfied_description = ''
-        super().__init__()
+        super().__init__(leveraged_ssp_reference)
 
     def write_statement_md(self, leveraged_statement_file: pathlib.Path) -> None:
         """Write responsibility statements to a markdown file."""
@@ -262,6 +283,10 @@ class InheritanceMarkdownReader:
             satisfied_statement.responsibility_uuid = statement_info[const.RESPONSIBILITY_UUID]
 
         return InheritanceInfo(leveraging_comps, inherited_statement, satisfied_statement)
+
+    def get_leveraged_ssp_reference(self) -> str:
+        """Return the leveraged SSP reference in the yaml header."""
+        return self._yaml_header[const.TRESTLE_GLOBAL_TAG][const.LEVERAGED_SSP][const.HREF]
 
     def get_satisfied_description(self) -> Optional[str]:
         """Return the satisfied description in the Markdown."""

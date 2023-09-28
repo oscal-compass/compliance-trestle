@@ -39,6 +39,7 @@ from trestle.core.models.file_content_type import FileContentType
 
 test_profile = 'simple_test_profile'
 test_ssp = 'leveraged_ssp'
+test_ref = 'trestle://leveraged_ssp.json'
 
 
 def custom_side_effect(file_path: pathlib.Path) -> None:
@@ -53,7 +54,7 @@ def test_write_exports_as_markdown(tmp_trestle_dir: pathlib.Path) -> None:
     ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, test_ssp, ossp.SystemSecurityPlan, FileContentType.JSON)
 
     inherited_path = tmp_trestle_dir.joinpath('inherited')
-    writer = ExportWriter(inherited_path, ssp)
+    writer = ExportWriter(inherited_path, ssp, test_ref)
 
     mock = Mock(spec=LeveragedStatements)
     mock.write_statement_md.side_effect = custom_side_effect
@@ -77,7 +78,7 @@ def test_write_exports_as_markdown_invalid_ssp(tmp_trestle_dir: pathlib.Path) ->
     ssp.system_implementation.components.remove(ssp.system_implementation.components[2])
 
     inherited_path = tmp_trestle_dir.joinpath('inherited')
-    writer = ExportWriter(inherited_path, ssp)
+    writer = ExportWriter(inherited_path, ssp, test_ref)
 
     with pytest.raises(TrestleError, match=r'Component .* is not in the system implementation'):
         writer.write_exports_as_markdown()
@@ -92,7 +93,7 @@ def test_statement_types_from_exports(tmp_trestle_dir: pathlib.Path) -> None:
     ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
 
     inherited_path = tmp_trestle_dir.joinpath('inherited')
-    writer = ExportWriter(inherited_path, ssp)
+    writer = ExportWriter(inherited_path, ssp, test_ref)
 
     by_comp: ossp.ByComponent = test_utils.generate_test_by_comp()
     bycomp_interface: ByComponentInterface = ByComponentInterface(by_comp)
@@ -120,7 +121,7 @@ def test_statement_types_no_exports(tmp_trestle_dir: pathlib.Path) -> None:
     ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
 
     inherited_path = tmp_trestle_dir.joinpath('inherited')
-    writer = ExportWriter(inherited_path, ssp)
+    writer = ExportWriter(inherited_path, ssp, test_ref)
 
     by_comp = gens.generate_sample_model(ossp.ByComponent)
     bycomp_interface: ByComponentInterface = ByComponentInterface(by_comp)

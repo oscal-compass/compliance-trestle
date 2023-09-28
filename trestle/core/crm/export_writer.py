@@ -40,7 +40,7 @@ class ExportWriter:
     to Markdown.
     """
 
-    def __init__(self, root_path: pathlib.Path, ssp: ossp.SystemSecurityPlan):
+    def __init__(self, root_path: pathlib.Path, ssp: ossp.SystemSecurityPlan, leveraged_ssp_href: str):
         """
         Initialize export writer.
 
@@ -50,6 +50,7 @@ class ExportWriter:
         """
         self._ssp: ossp.SystemSecurityPlan = ssp
         self._root_path: pathlib.Path = root_path
+        self._leveraged_ssp_href: str = leveraged_ssp_href
 
         # Find all the components and create paths for name
         self._paths_by_comp: Dict[str, pathlib.Path] = {}
@@ -95,16 +96,22 @@ class ExportWriter:
         all_statements: Dict[str, LeveragedStatements] = {}
 
         for responsibility in export_interface.get_isolated_responsibilities():
-            all_statements[responsibility.uuid
-                           ] = StatementResponsibility(responsibility.uuid, responsibility.description)
+            all_statements[responsibility.uuid] = StatementResponsibility(
+                responsibility.uuid, responsibility.description, self._leveraged_ssp_href
+            )
 
         for provided in export_interface.get_isolated_provided():
-            all_statements[provided.uuid] = StatementProvided(provided.uuid, provided.description)
+            all_statements[provided.uuid
+                           ] = StatementProvided(provided.uuid, provided.description, self._leveraged_ssp_href)
 
         for responsibility, provided in export_interface.get_export_sets():
             path = f'{provided.uuid}_{responsibility.uuid}'
             all_statements[path] = StatementTree(
-                provided.uuid, provided.description, responsibility.uuid, responsibility.description
+                provided.uuid,
+                provided.description,
+                responsibility.uuid,
+                responsibility.description,
+                self._leveraged_ssp_href
             )
 
         return all_statements

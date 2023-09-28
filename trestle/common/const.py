@@ -288,6 +288,8 @@ PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT = '<!-- Add prose here for require
 
 PROFILE = 'profile'
 
+LEVERAGED_SSP = 'leveraged-ssp'
+
 TITLE = 'title'
 
 NAME = 'name'
@@ -349,6 +351,12 @@ TRESTLE_GLOBAL_TAG = TRESTLE_TAG + 'global'
 NAMESPACE_FEDRAMP = 'https://fedramp.gov/ns/oscal'
 
 LEV_AUTH_UUID = 'leveraged-authorization-uuid'
+
+INHERITED_UUID = 'inherited-uuid'
+
+IMPLEMENTATION_POINT = 'implementation-point'
+
+IMPLEMENTATION_POINT_EXTERNAL = 'external'
 
 STATUS_INHERITED = 'inherited'
 
