@@ -903,14 +903,18 @@ class _RuleSetMgr():
     def add_prop(self, name: str, value: str, ns: str, class_: str) -> None:
         """Add prop."""
         if value is not None and len(value):
-            prop = Property(
-                name=name,
-                value=value,
-                ns=ns,
-                class_=class_,
-                remarks=self._rule_set,
-            )
-            self._props[name] = prop
+            try:
+                prop = Property(
+                    name=name,
+                    value=value,
+                    ns=ns,
+                    class_=class_,
+                    remarks=self._rule_set,
+                )
+                self._props[name] = prop
+            except Exception:
+                text = f'Invalid property name: {name} value: {value} remarks: {self._rule_set}'
+                raise RuntimeError(text)
 
     def get_props(self) -> List[Property]:
         """Get props."""

@@ -577,6 +577,20 @@ def test_execute_delete_rule_with_params(tmp_path: pathlib.Path) -> None:
             assert prop.value != 'allowed_admins_per_account'
 
 
+def test_execute_bad_rule(tmp_path: pathlib.Path) -> None:
+    """Test execute add rule."""
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
+    # add rule
+    rows = _get_rows('tests/data/csv/soc2.sample.v1.csv')
+    rows[3][2] = '```'
+    with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
+        mock_csv_reader.return_value = rows
+        tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+        retval = tgt.execute()
+        assert retval == TaskOutcome.FAILURE
+
+
 def test_execute_add_rule(tmp_path: pathlib.Path) -> None:
     """Test execute add rule."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
