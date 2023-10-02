@@ -125,8 +125,8 @@ class CsvToOscalComponentDefinition(TaskBase):
         text1 = '  required columns:      '
         for text2 in CsvColumn.get_required_column_names():
             if text2 in ['Rule_Description', 'Profile_Source', 'Profile_Description', 'Control_Id_List']:
-                text2 += '*'
-            logger.info(text1 + text2)
+                text2 += ' (see note 1)'
+            logger.info(text1 + '$$' + text2)
             text1 = '                         '
         text1 = '  optional columns:      '
         for text2 in CsvColumn.get_optional_column_names():
@@ -134,11 +134,14 @@ class CsvToOscalComponentDefinition(TaskBase):
                          'Parameter_Description',
                          'Parameter_Value_Alternatives',
                          'Parameter_Value_Default']:
-                text2 += '*'
+                text2 += ' (see note 1)'
             if text2 in ['Check_Id', 'Check_Description']:
-                text2 += '+'
-            logger.info(text1 + text2)
+                text2 += ' (see note 2)'
+            logger.info(text1 + '$' + text2)
             text1 = '                         '
+        text1 = '  comment columns:       '
+        text2 = 'Informational (see note 3)'
+        logger.info(text1 + '#' + text2)
         text1 = '  output-dir           = '
         text2 = '(required) the path of the output directory for synthesized OSCAL .json files.'
         logger.info(text1 + text2)
@@ -159,10 +162,13 @@ class CsvToOscalComponentDefinition(TaskBase):
         text2 = ''
         logger.info(text1 + text2)
         text1 = 'Notes: '
-        text2 = '* column is ignored for validation component type'
+        text2 = '[1] column is ignored for validation component type'
         logger.info(text1 + text2)
         text1 = '       '
-        text2 = '+ column is required for validation component type'
+        text2 = '[2] column is required for validation component type'
+        logger.info(text1 + text2)
+        text1 = '       '
+        text2 = '[3] column name starting with # causes column to be ignored'
         logger.info(text1 + text2)
 
     def configure(self) -> bool:
@@ -557,6 +563,8 @@ class CsvToOscalComponentDefinition(TaskBase):
         # user props
         column_names = self._csv_mgr.get_user_column_names()
         for column_name in column_names:
+            if column_name.startswith('#'):
+                continue
             prop_name = self._get_prop_name(column_name)
             prop_value = self._csv_mgr.get_value(rule_key, column_name).strip()
             rule_set_mgr.add_prop(prop_name, prop_value, namespace, self.get_class(prop_name))
