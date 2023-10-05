@@ -4,7 +4,7 @@ owner: tmp
 valid:
   from:
   to:
-x-trestle-template-type: cloud_security_baseline_checklist
+x-trestle-template-type: b
 x-trestle-template-version: 1.0.0
 ---
 
