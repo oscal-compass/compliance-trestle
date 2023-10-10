@@ -82,6 +82,65 @@ def derive_part_id(control_mapping: str) -> str:
     return rval
 
 
+def etype(target: str) -> str:
+    """Get etype."""
+    if target:
+        return 'invalid'
+    else:
+        return 'missing'
+
+
+def row_property_builder(row: int, name: str, value, ns: str, class_: str, remarks: str) -> Property:
+    """Row property builder."""
+    # name
+    try:
+        Property(
+            name=name,
+            value='value',
+        )
+    except Exception:
+        text = f'property for row: {row} name: {name} is {etype(name)}'
+        raise RuntimeError(text)
+    # value
+    try:
+        Property(
+            name=name,
+            value=value,
+        )
+    except Exception:
+        text = f'property for row: {row} value: {value} is {etype(value)}'
+        raise RuntimeError(text)
+    # ns
+    try:
+        Property(
+            name=name,
+            value=value,
+            ns=ns,
+        )
+    except Exception:
+        text = f'property for row: {row} ns: {ns} is {etype(ns)}'
+        raise RuntimeError(text)
+    # class
+    try:
+        Property(
+            name=name,
+            value=value,
+            class_=class_,
+        )
+    except Exception:
+        text = f'property for row: {row} class: {class_} is {etype(class_)}'
+        raise RuntimeError(text)
+    # prop
+    prop = Property(
+        name=name,
+        value=value,
+        ns=ns,
+        class_=class_,
+        remarks=remarks,
+    )
+    return prop
+
+
 class CsvToOscalComponentDefinition(TaskBase):
     """
     Task to create OSCAL ComponentDefinition json.
@@ -911,18 +970,15 @@ class _RuleSetMgr():
     def add_prop(self, name: str, value: str, ns: str, class_: str) -> None:
         """Add prop."""
         if value is not None and len(value):
-            try:
-                prop = Property(
-                    name=name,
-                    value=value,
-                    ns=ns,
-                    class_=class_,
-                    remarks=self._rule_set,
-                )
-                self._props[name] = prop
-            except Exception:
-                text = f'Invalid property name: {name} value: {value} remarks: {self._rule_set}'
-                raise RuntimeError(text)
+            prop = row_property_builder(
+                row=self._row_number,
+                name=name,
+                value=value,
+                ns=ns,
+                class_=class_,
+                remarks=self._rule_set,
+            )
+            self._props[name] = prop
 
     def get_props(self) -> List[Property]:
         """Get props."""
