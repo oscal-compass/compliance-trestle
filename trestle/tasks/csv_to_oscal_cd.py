@@ -1494,8 +1494,6 @@ class _CsvMgr():
         self._csv_controls_map = {}
         self._csv_profile_list = []
         for row_num, row in self.row_generator():
-            if self._is_no_control(row):
-                continue
             self._check_row_minimum_requirements(row_num, row)
             component_title = self.get_row_value(row, f'{COMPONENT_TITLE}')
             component_type = self.get_row_value(row, f'{COMPONENT_TYPE}')
@@ -1544,6 +1542,8 @@ class _CsvMgr():
         for row in self._csv:
             index += 1
             if index < 3:
+                continue
+            if self._is_no_control(row):
                 continue
             logger.debug(f'row_gen: {index} {row}')
             yield index, row
