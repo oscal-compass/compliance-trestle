@@ -1510,9 +1510,8 @@ class _CsvMgr():
             logger.debug(f'csv-rules: {key} {self._csv_rules_map[key][0]}')
             # set parameters, by component
             source = self.get_row_value(row, PROFILE_SOURCE)
-            if source:
-                if source not in self._csv_profile_list:
-                    self._csv_profile_list.append(source)
+            if source and source not in self._csv_profile_list:
+                self._csv_profile_list.append(source)
             description = self.get_row_value(row, PROFILE_DESCRIPTION)
             param_id = self.get_row_value(row, PARAMETER_ID)
             if param_id:
