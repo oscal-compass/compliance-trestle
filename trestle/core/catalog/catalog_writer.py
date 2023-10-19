@@ -161,6 +161,7 @@ class CatalogWriter():
                     # pull only the values from the actual control dict
                     # all the other elements are from the profile set_param
                     new_dict[const.VALUES] = orig_dict.get(const.VALUES, None)
+                    new_dict[const.PARAM_VALUE_ORIGIN] = None
                     new_dict[const.GUIDELINES] = orig_dict.get(const.GUIDELINES, None)
                     if new_dict[const.VALUES] is None:
                         new_dict.pop(const.VALUES)
@@ -197,7 +198,8 @@ class CatalogWriter():
                 const.AGGREGATES,
                 const.ALT_IDENTIFIER,
                 const.DISPLAY_NAME,
-                const.PROFILE_VALUES
+                const.PROFILE_VALUES,
+                const.PARAM_VALUE_ORIGIN
             )
             ordered_dict = {k: new_dict[k] for k in key_order if k in new_dict.keys()}
             set_param_dict[param_id] = ordered_dict

@@ -1626,6 +1626,7 @@ class Parameter(OscalBaseModel):
     values: Optional[List[constr(regex=r'^\S(.*\S)?$')]] = Field(None)
     select: Optional[ParameterSelection] = None
     remarks: Optional[str] = None
+    param_value_origin: Optional[str] = None
 
 
 class OriginActor(OscalBaseModel):

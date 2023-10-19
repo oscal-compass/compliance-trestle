@@ -443,6 +443,8 @@ VALUES = 'values'
 
 GUIDELINES = 'guidelines'
 
+PARAM_VALUE_ORIGIN = 'param-value-origin'
+
 LABEL = 'label'
 
 SECTIONS_TAG = TRESTLE_TAG + 'sections'
