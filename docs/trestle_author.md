@@ -298,9 +298,9 @@ Running `trestle author docs validate -tn docs_task -gh="Governed section"` will
 
 ### Validating the documents against different templates
 
-Validation against multiple templates can be done when there is an scenario where you have multiple templates that will have multiple instances. In this particular case you can have a 1:1 relationship between the template and the instance document you are creating out of it, so validation can be performed based on template type and version of that particular template defined in headers.
+Validation against multiple templates can be done when there is a scenario where you have multiple templates that will have multiple instances. In this particular case you can have a 1:1 relationship between the template and the instance document you are creating out of it, so validation can be performed based on template type and version of that particular template defined in headers.
 
-For that to happen you will need to provide your template with the following parameter at the yaml header level, matching the type of template to be implemented so the validation can occur:
+For that to happen you will need to provide your template with the following parameter at the yaml header level, matching the type of template to be implemented so that the validation can occur:
 
 > x-trestle-template-type: insert_template_type_here
 
