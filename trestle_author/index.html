@@ -757,6 +757,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#validating-the-documents-against-different-templates" class="md-nav__link">
+    Validating the documents against different templates
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -851,7 +858,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#validating-the-documents-against-different-templates" class="md-nav__link">
+  <a href="#validating-the-documents-against-different-templates_1" class="md-nav__link">
     Validating the documents against different templates
   </a>
   
@@ -4866,6 +4873,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#validating-the-documents-against-different-templates" class="md-nav__link">
+    Validating the documents against different templates
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4960,7 +4974,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#validating-the-documents-against-different-templates" class="md-nav__link">
+  <a href="#validating-the-documents-against-different-templates_1" class="md-nav__link">
     Validating the documents against different templates
   </a>
   
@@ -5353,6 +5367,49 @@ See extra options for more validation options. To learn more on what exactly is 
 <li>If <code>--template-version 1.0.0</code> (<code>-tv</code>) is passed the header field <code>x-trestle-template-version</code> will be ignored and document will be forcefully validated against template of version <code>1.0.0</code>.
   Use this for testing purposes <em>only</em> when you need to validate the document against a specific template. By default the template version will be determined based on <code>x-trestle-template-version</code> in the document.</li>
 </ul>
+<h3 id="validating-the-documents-against-different-templates">Validating the documents against different templates<a class="headerlink" href="#validating-the-documents-against-different-templates" title="Permanent link">¤</a></h3>
+<p>Validation against multiple templates can be done when there is a scenario where you have multiple templates that will have multiple instances. In this particular case you can have a 1:1 relationship between the template and the instance document you are creating out of it, so validation can be performed based on template type and version of that particular template defined in headers.</p>
+<p>For that to happen you will need to provide your template with the following parameter at the yaml header level, matching the type of template to be implemented so that the validation can occur:</p>
+<blockquote>
+<p>x-trestle-template-type: insert_template_type_here</p>
+</blockquote>
+<p>Please, take into consideration that for the validation to happen you will also need to provide each instance document in the task folder a field called <code>x-trestle-template-type: insert_template_type_here</code> in the yaml header matching with the template name.</p>
+<div class="highlight"><pre><span></span><code><span class="nn">---</span>
+<span class="nt">authors</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tmp</span>
+<span class="nt">owner</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tmp</span>
+<span class="nt">valid</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">from</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+<span class="w">  </span><span class="nt">to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+<span class="nt">x-trestle-template-type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">insert_template_type_here</span>
+<span class="nn">---</span>
+</code></pre></div>
+<p>With that, you will be able to create more than 1 instance document per template and give the instance the desired name.</p>
+<p>For instance, let´s consider the next folder structure:</p>
+<div class="highlight"><pre><span></span><code>trestle_root
+┣ .trestle
+┃ ┣ author
+┃ ┃ ┣ my_task_2
+┃ ┃ ┃ ┣ 0.0.1
+┃ ┃ ┃ ┃ ┣ a_template.md
+┃ ┃ ┃ ┃ ┣ another_template.md
+┃ ┃ ┃ ┃ ┗ arhitecture.drawio
+┃ ┗ config.ini
+
+trestle_root
+ ┣ .trestle
+ ┣ my_task_2
+ ┃ ┣ sample_folder_0
+ ┃ ┃ ┣ a_template_1.md
+ ┃ ┃ ┣ a_template_2.md
+ ┃ ┃ ┣ arhitecture_1.drawio
+ ┃ ┃ ┗ another_template_123.md
+</code></pre></div>
+<p>If you noticed, names are no longer needed to match with exact template names, and that´s because validation will run through <code>x-trestle-template-type</code> field defined at the instance header, not through the name.</p>
+<p>To validate the documents against their respective templates using <code>x-trestle-template-type</code>, run:</p>
+<blockquote>
+<p>trestle author docs validate -tn my_task_name -vtt</p>
+</blockquote>
+<p>Now, <code>-vtt</code> stands for validate template type. Validate template type option will provide you the ability to have more than 1 instance per template validated.</p>
 </details>
 <details>
 <summary><b>folders - Validating documents against multiple templates and ensuring folder structure (multiple individual templates per task) </b></summary>
@@ -5444,7 +5501,7 @@ This command will validate that both: structure (i.e. all template documents are
 <li>If <code>--template-version 1.0.0</code> (<code>-tv</code>) is passed the header field <code>x-trestle-template-version</code> will be ignored and document will be forcefully validated against template of version <code>1.0.0</code>.
   Use this for testing purposes <em>only</em> when you need to validate the document against a specific template. By default the template version will be determined based on <code>x-trestle-template-version</code> in the document.</li>
 </ul>
-<h3 id="validating-the-documents-against-different-templates">Validating the documents against different templates<a class="headerlink" href="#validating-the-documents-against-different-templates" title="Permanent link">¤</a></h3>
+<h3 id="validating-the-documents-against-different-templates_1">Validating the documents against different templates<a class="headerlink" href="#validating-the-documents-against-different-templates_1" title="Permanent link">¤</a></h3>
 <p>Validation against multiple templates as stated before can be done, but there is another scenario that you can leverage on trestle to have multiple documents in the task folder corresponding to a single template.</p>
 <p>For that to happen you will need to provide your template with the following parameter at the yaml header level, matching the type of template to be implemented so the validation can occur:</p>
 <blockquote>

@@ -4640,6 +4640,13 @@ Docs            (<a class="autorefs autorefs-internal" title="trestle.core.comma
             <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span>
         <span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="n">author_const</span><span class="o">.</span><span class="n">TEMPLATE_TYPE_VALIDATE_SHORT</span><span class="p">,</span>
+            <span class="n">author_const</span><span class="o">.</span><span class="n">TEMPLATE_TYPE_VALIDATE_LONG</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="n">author_const</span><span class="o">.</span><span class="n">TEMPLATE_TYPE_VALIDATE_HELP</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span>
+        <span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">status</span> <span class="o">=</span> <span class="mi">1</span>
@@ -4666,7 +4673,8 @@ Docs            (<a class="autorefs autorefs-internal" title="trestle.core.comma
                     <span class="n">args</span><span class="o">.</span><span class="n">recurse</span><span class="p">,</span>
                     <span class="n">args</span><span class="o">.</span><span class="n">readme_validate</span><span class="p">,</span>
                     <span class="n">args</span><span class="o">.</span><span class="n">template_version</span><span class="p">,</span>
-                    <span class="n">args</span><span class="o">.</span><span class="n">ignore</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">ignore</span><span class="p">,</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">validate_template_type</span>
                 <span class="p">)</span>
 
             <span class="k">return</span> <span class="n">status</span>
@@ -4755,7 +4763,8 @@ Docs            (<a class="autorefs autorefs-internal" title="trestle.core.comma
         <span class="n">recurse</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
         <span class="n">readme_validate</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
         <span class="n">template_version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">ignore</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">ignore</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">validate_by_type_field</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Validate md files in a directory with option to recurse.</span>
@@ -4794,7 +4803,26 @@ Docs            (<a class="autorefs autorefs-internal" title="trestle.core.comma
                         <span class="n">versione_template_dir</span> <span class="o">=</span> <span class="n">TemplateVersioning</span><span class="o">.</span><span class="n">get_versioned_template_dir</span><span class="p">(</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">template_dir</span><span class="p">,</span> <span class="n">instance_version</span>
                         <span class="p">)</span>
-                        <span class="n">template_file</span> <span class="o">=</span> <span class="n">versione_template_dir</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_name</span>
+                        <span class="c1"># checks on naming template name out of type header if needed</span>
+                        <span class="k">if</span> <span class="n">validate_by_type_field</span><span class="p">:</span>
+                            <span class="c1"># get template name out of its type which essentially needs to be the same</span>
+                            <span class="n">template_name</span> <span class="o">=</span> <span class="n">md_api</span><span class="o">.</span><span class="n">processor</span><span class="o">.</span><span class="n">fetch_value_from_header</span><span class="p">(</span>
+                                <span class="n">item_path</span><span class="p">,</span> <span class="n">author_const</span><span class="o">.</span><span class="n">TEMPLATE_TYPE_HEADER</span>
+                            <span class="p">)</span>
+                            <span class="c1"># throw an error if template type is not present</span>
+                            <span class="k">if</span> <span class="n">template_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                                    <span class="sa">f</span><span class="s1">&#39;INVALID: Instance file </span><span class="si">{</span><span class="n">item_path</span><span class="si">}</span><span class="s1"> does not have&#39;</span>
+                                    <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="n">author_const</span><span class="o">.</span><span class="n">TEMPLATE_TYPE_HEADER</span><span class="si">}</span><span class="s1">&#39;</span>
+                                    <span class="s1">&#39; field in its header and can not be validated using optional parameter validate&#39;</span>
+                                    <span class="s1">&#39; template type field&#39;</span>
+                                <span class="p">)</span>
+                                <span class="n">status</span> <span class="o">=</span> <span class="mi">1</span>
+                                <span class="k">return</span> <span class="n">status</span>
+                            <span class="n">template_name</span> <span class="o">=</span> <span class="n">template_name</span> <span class="o">+</span> <span class="s1">&#39;.md&#39;</span>
+                            <span class="n">template_file</span> <span class="o">=</span> <span class="n">versione_template_dir</span> <span class="o">/</span> <span class="n">template_name</span>
+                        <span class="k">else</span><span class="p">:</span>  <span class="c1"># continues regular flow without template type</span>
+                            <span class="n">template_file</span> <span class="o">=</span> <span class="n">versione_template_dir</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_name</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">template_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
                         <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span>
                             <span class="sa">f</span><span class="s1">&#39;Required template file: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rel_dir</span><span class="p">(</span><span class="n">template_file</span><span class="p">)</span><span class="si">}</span><span class="s1"> does not exist. Exiting.&#39;</span>
@@ -4821,7 +4849,8 @@ Docs            (<a class="autorefs autorefs-internal" title="trestle.core.comma
                         <span class="n">recurse</span><span class="p">,</span>
                         <span class="n">readme_validate</span><span class="p">,</span>
                         <span class="n">template_version</span><span class="p">,</span>
-                        <span class="n">ignore</span>
+                        <span class="n">ignore</span><span class="p">,</span>
+                        <span class="n">validate_by_type_field</span>
                     <span class="p">)</span>
                     <span class="k">if</span> <span class="n">rc</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
                         <span class="n">status</span> <span class="o">=</span> <span class="n">rc</span>
@@ -4836,7 +4865,8 @@ Docs            (<a class="autorefs autorefs-internal" title="trestle.core.comma
         <span class="n">recurse</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
         <span class="n">readme_validate</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
         <span class="n">template_version</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">ignore</span><span class="p">:</span> <span class="nb">str</span>
+        <span class="n">ignore</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">validate_by_type_field</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Validate task.</span>
@@ -4862,7 +4892,8 @@ Docs            (<a class="autorefs autorefs-internal" title="trestle.core.comma
             <span class="n">recurse</span><span class="p">,</span>
             <span class="n">readme_validate</span><span class="p">,</span>
             <span class="n">template_version</span><span class="p">,</span>
-            <span class="n">ignore</span>
+            <span class="n">ignore</span><span class="p">,</span>
+            <span class="n">validate_by_type_field</span>
         <span class="p">)</span>
 </code></pre></div>
         </details>
@@ -5067,7 +5098,7 @@ Docs            (<a class="autorefs autorefs-internal" title="trestle.core.comma
 
 
 <h6 id="trestle.core.commands.author.docs.Docs.validate" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">governed_heading</span><span class="p">,</span> <span class="n">validate_header</span><span class="p">,</span> <span class="n">validate_only_header</span><span class="p">,</span> <span class="n">recurse</span><span class="p">,</span> <span class="n">readme_validate</span><span class="p">,</span> <span class="n">template_version</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">governed_heading</span><span class="p">,</span> <span class="n">validate_header</span><span class="p">,</span> <span class="n">validate_only_header</span><span class="p">,</span> <span class="n">recurse</span><span class="p">,</span> <span class="n">readme_validate</span><span class="p">,</span> <span class="n">template_version</span><span class="p">,</span> <span class="n">ignore</span><span class="p">,</span> <span class="n">validate_by_type_field</span><span class="p">)</span></code>
 
 
 <a href="#trestle.core.commands.author.docs.Docs.validate" class="headerlink" title="Permanent link">¤</a></h6>
@@ -5144,7 +5175,8 @@ Docs            (<a class="autorefs autorefs-internal" title="trestle.core.comma
     <span class="n">recurse</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="n">readme_validate</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="n">template_version</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">ignore</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">ignore</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">validate_by_type_field</span><span class="p">:</span> <span class="nb">bool</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Validate task.</span>
@@ -5170,7 +5202,8 @@ Docs            (<a class="autorefs autorefs-internal" title="trestle.core.comma
         <span class="n">recurse</span><span class="p">,</span>
         <span class="n">readme_validate</span><span class="p">,</span>
         <span class="n">template_version</span><span class="p">,</span>
-        <span class="n">ignore</span>
+        <span class="n">ignore</span><span class="p">,</span>
+        <span class="n">validate_by_type_field</span>
     <span class="p">)</span>
 </code></pre></div>
         </details>

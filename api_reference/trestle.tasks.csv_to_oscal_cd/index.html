@@ -4220,6 +4220,20 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.csv_to_oscal_cd.etype" class="md-nav__link">
+    etype()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.csv_to_oscal_cd.row_property_builder" class="md-nav__link">
+    row_property_builder()
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -5143,6 +5157,20 @@
           <li class="md-nav__item">
   <a href="#trestle.tasks.csv_to_oscal_cd.derive_part_id" class="md-nav__link">
     derive_part_id()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.csv_to_oscal_cd.etype" class="md-nav__link">
+    etype()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.csv_to_oscal_cd.row_property_builder" class="md-nav__link">
+    row_property_builder()
   </a>
   
 </li>
@@ -6189,8 +6217,8 @@ CsvToOscalComponentDefinition            (<a class="autorefs autorefs-internal" 
         <span class="n">text1</span> <span class="o">=</span> <span class="s1">&#39;  required columns:      &#39;</span>
         <span class="k">for</span> <span class="n">text2</span> <span class="ow">in</span> <span class="n">CsvColumn</span><span class="o">.</span><span class="n">get_required_column_names</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">text2</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Rule_Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Profile_Source&#39;</span><span class="p">,</span> <span class="s1">&#39;Profile_Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Control_Id_List&#39;</span><span class="p">]:</span>
-                <span class="n">text2</span> <span class="o">+=</span> <span class="s1">&#39;*&#39;</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
+                <span class="n">text2</span> <span class="o">+=</span> <span class="s1">&#39; (see note 1)&#39;</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="s1">&#39;$$&#39;</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
             <span class="n">text1</span> <span class="o">=</span> <span class="s1">&#39;                         &#39;</span>
         <span class="n">text1</span> <span class="o">=</span> <span class="s1">&#39;  optional columns:      &#39;</span>
         <span class="k">for</span> <span class="n">text2</span> <span class="ow">in</span> <span class="n">CsvColumn</span><span class="o">.</span><span class="n">get_optional_column_names</span><span class="p">():</span>
@@ -6198,11 +6226,14 @@ CsvToOscalComponentDefinition            (<a class="autorefs autorefs-internal" 
                          <span class="s1">&#39;Parameter_Description&#39;</span><span class="p">,</span>
                          <span class="s1">&#39;Parameter_Value_Alternatives&#39;</span><span class="p">,</span>
                          <span class="s1">&#39;Parameter_Value_Default&#39;</span><span class="p">]:</span>
-                <span class="n">text2</span> <span class="o">+=</span> <span class="s1">&#39;*&#39;</span>
+                <span class="n">text2</span> <span class="o">+=</span> <span class="s1">&#39; (see note 1)&#39;</span>
             <span class="k">if</span> <span class="n">text2</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Check_Id&#39;</span><span class="p">,</span> <span class="s1">&#39;Check_Description&#39;</span><span class="p">]:</span>
-                <span class="n">text2</span> <span class="o">+=</span> <span class="s1">&#39;+&#39;</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
+                <span class="n">text2</span> <span class="o">+=</span> <span class="s1">&#39; (see note 2)&#39;</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="s1">&#39;$&#39;</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
             <span class="n">text1</span> <span class="o">=</span> <span class="s1">&#39;                         &#39;</span>
+        <span class="n">text1</span> <span class="o">=</span> <span class="s1">&#39;  comment columns:       &#39;</span>
+        <span class="n">text2</span> <span class="o">=</span> <span class="s1">&#39;Informational (see note 3)&#39;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="s1">&#39;#&#39;</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
         <span class="n">text1</span> <span class="o">=</span> <span class="s1">&#39;  output-dir           = &#39;</span>
         <span class="n">text2</span> <span class="o">=</span> <span class="s1">&#39;(required) the path of the output directory for synthesized OSCAL .json files.&#39;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
@@ -6223,10 +6254,13 @@ CsvToOscalComponentDefinition            (<a class="autorefs autorefs-internal" 
         <span class="n">text2</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
         <span class="n">text1</span> <span class="o">=</span> <span class="s1">&#39;Notes: &#39;</span>
-        <span class="n">text2</span> <span class="o">=</span> <span class="s1">&#39;* column is ignored for validation component type&#39;</span>
+        <span class="n">text2</span> <span class="o">=</span> <span class="s1">&#39;[1] column is ignored for validation component type&#39;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
         <span class="n">text1</span> <span class="o">=</span> <span class="s1">&#39;       &#39;</span>
-        <span class="n">text2</span> <span class="o">=</span> <span class="s1">&#39;+ column is required for validation component type&#39;</span>
+        <span class="n">text2</span> <span class="o">=</span> <span class="s1">&#39;[2] column is required for validation component type&#39;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
+        <span class="n">text1</span> <span class="o">=</span> <span class="s1">&#39;       &#39;</span>
+        <span class="n">text2</span> <span class="o">=</span> <span class="s1">&#39;[3] column name starting with # causes column to be ignored&#39;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -6621,6 +6655,8 @@ CsvToOscalComponentDefinition            (<a class="autorefs autorefs-internal" 
         <span class="c1"># user props</span>
         <span class="n">column_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csv_mgr</span><span class="o">.</span><span class="n">get_user_column_names</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">column_name</span> <span class="ow">in</span> <span class="n">column_names</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">column_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">):</span>
+                <span class="k">continue</span>
             <span class="n">prop_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_prop_name</span><span class="p">(</span><span class="n">column_name</span><span class="p">)</span>
             <span class="n">prop_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csv_mgr</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">rule_key</span><span class="p">,</span> <span class="n">column_name</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
             <span class="n">rule_set_mgr</span><span class="o">.</span><span class="n">add_prop</span><span class="p">(</span><span class="n">prop_name</span><span class="p">,</span> <span class="n">prop_value</span><span class="p">,</span> <span class="n">namespace</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_class</span><span class="p">(</span><span class="n">prop_name</span><span class="p">))</span>
@@ -7236,8 +7272,8 @@ CsvToOscalComponentDefinition            (<a class="autorefs autorefs-internal" 
     <span class="n">text1</span> <span class="o">=</span> <span class="s1">&#39;  required columns:      &#39;</span>
     <span class="k">for</span> <span class="n">text2</span> <span class="ow">in</span> <span class="n">CsvColumn</span><span class="o">.</span><span class="n">get_required_column_names</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">text2</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Rule_Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Profile_Source&#39;</span><span class="p">,</span> <span class="s1">&#39;Profile_Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Control_Id_List&#39;</span><span class="p">]:</span>
-            <span class="n">text2</span> <span class="o">+=</span> <span class="s1">&#39;*&#39;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
+            <span class="n">text2</span> <span class="o">+=</span> <span class="s1">&#39; (see note 1)&#39;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="s1">&#39;$$&#39;</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
         <span class="n">text1</span> <span class="o">=</span> <span class="s1">&#39;                         &#39;</span>
     <span class="n">text1</span> <span class="o">=</span> <span class="s1">&#39;  optional columns:      &#39;</span>
     <span class="k">for</span> <span class="n">text2</span> <span class="ow">in</span> <span class="n">CsvColumn</span><span class="o">.</span><span class="n">get_optional_column_names</span><span class="p">():</span>
@@ -7245,11 +7281,14 @@ CsvToOscalComponentDefinition            (<a class="autorefs autorefs-internal" 
                      <span class="s1">&#39;Parameter_Description&#39;</span><span class="p">,</span>
                      <span class="s1">&#39;Parameter_Value_Alternatives&#39;</span><span class="p">,</span>
                      <span class="s1">&#39;Parameter_Value_Default&#39;</span><span class="p">]:</span>
-            <span class="n">text2</span> <span class="o">+=</span> <span class="s1">&#39;*&#39;</span>
+            <span class="n">text2</span> <span class="o">+=</span> <span class="s1">&#39; (see note 1)&#39;</span>
         <span class="k">if</span> <span class="n">text2</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Check_Id&#39;</span><span class="p">,</span> <span class="s1">&#39;Check_Description&#39;</span><span class="p">]:</span>
-            <span class="n">text2</span> <span class="o">+=</span> <span class="s1">&#39;+&#39;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
+            <span class="n">text2</span> <span class="o">+=</span> <span class="s1">&#39; (see note 2)&#39;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="s1">&#39;$&#39;</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
         <span class="n">text1</span> <span class="o">=</span> <span class="s1">&#39;                         &#39;</span>
+    <span class="n">text1</span> <span class="o">=</span> <span class="s1">&#39;  comment columns:       &#39;</span>
+    <span class="n">text2</span> <span class="o">=</span> <span class="s1">&#39;Informational (see note 3)&#39;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="s1">&#39;#&#39;</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
     <span class="n">text1</span> <span class="o">=</span> <span class="s1">&#39;  output-dir           = &#39;</span>
     <span class="n">text2</span> <span class="o">=</span> <span class="s1">&#39;(required) the path of the output directory for synthesized OSCAL .json files.&#39;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
@@ -7270,10 +7309,13 @@ CsvToOscalComponentDefinition            (<a class="autorefs autorefs-internal" 
     <span class="n">text2</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
     <span class="n">text1</span> <span class="o">=</span> <span class="s1">&#39;Notes: &#39;</span>
-    <span class="n">text2</span> <span class="o">=</span> <span class="s1">&#39;* column is ignored for validation component type&#39;</span>
+    <span class="n">text2</span> <span class="o">=</span> <span class="s1">&#39;[1] column is ignored for validation component type&#39;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
     <span class="n">text1</span> <span class="o">=</span> <span class="s1">&#39;       &#39;</span>
-    <span class="n">text2</span> <span class="o">=</span> <span class="s1">&#39;+ column is required for validation component type&#39;</span>
+    <span class="n">text2</span> <span class="o">=</span> <span class="s1">&#39;[2] column is required for validation component type&#39;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
+    <span class="n">text1</span> <span class="o">=</span> <span class="s1">&#39;       &#39;</span>
+    <span class="n">text2</span> <span class="o">=</span> <span class="s1">&#39;[3] column name starting with # causes column to be ignored&#39;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
 </code></pre></div>
         </details>
@@ -7630,6 +7672,109 @@ CsvToOscalComponentDefinition            (<a class="autorefs autorefs-internal" 
     <span class="k">else</span><span class="p">:</span>
         <span class="n">rval</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">return</span> <span class="n">rval</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h4 id="trestle.tasks.csv_to_oscal_cd.etype" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">etype</span><span class="p">(</span><span class="n">target</span><span class="p">)</span></code>
+
+
+<a href="#trestle.tasks.csv_to_oscal_cd.etype" class="headerlink" title="Permanent link">¤</a></h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Get etype.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>trestle/tasks/csv_to_oscal_cd.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">etype</span><span class="p">(</span><span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get etype.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">target</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;invalid&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;missing&#39;</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h4 id="trestle.tasks.csv_to_oscal_cd.row_property_builder" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">row_property_builder</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">class_</span><span class="p">,</span> <span class="n">remarks</span><span class="p">)</span></code>
+
+
+<a href="#trestle.tasks.csv_to_oscal_cd.row_property_builder" class="headerlink" title="Permanent link">¤</a></h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Row property builder.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>trestle/tasks/csv_to_oscal_cd.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">row_property_builder</span><span class="p">(</span><span class="n">row</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">ns</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">class_</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">remarks</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Property</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Row property builder.&quot;&quot;&quot;</span>
+    <span class="c1"># name</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">Property</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;property for row: </span><span class="si">{</span><span class="n">row</span><span class="si">}</span><span class="s1"> name: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> is </span><span class="si">{</span><span class="n">etype</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="c1"># value</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">Property</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;property for row: </span><span class="si">{</span><span class="n">row</span><span class="si">}</span><span class="s1"> value: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1"> is </span><span class="si">{</span><span class="n">etype</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="c1"># ns</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">Property</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+            <span class="n">ns</span><span class="o">=</span><span class="n">ns</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;property for row: </span><span class="si">{</span><span class="n">row</span><span class="si">}</span><span class="s1"> ns: </span><span class="si">{</span><span class="n">ns</span><span class="si">}</span><span class="s1"> is </span><span class="si">{</span><span class="n">etype</span><span class="p">(</span><span class="n">ns</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="c1"># class</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">Property</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+            <span class="n">class_</span><span class="o">=</span><span class="n">class_</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;property for row: </span><span class="si">{</span><span class="n">row</span><span class="si">}</span><span class="s1"> class: </span><span class="si">{</span><span class="n">class_</span><span class="si">}</span><span class="s1"> is </span><span class="si">{</span><span class="n">etype</span><span class="p">(</span><span class="n">class_</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="c1"># prop</span>
+    <span class="n">prop</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+        <span class="n">ns</span><span class="o">=</span><span class="n">ns</span><span class="p">,</span>
+        <span class="n">class_</span><span class="o">=</span><span class="n">class_</span><span class="p">,</span>
+        <span class="n">remarks</span><span class="o">=</span><span class="n">remarks</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">prop</span>
 </code></pre></div>
         </details>
     </div>
