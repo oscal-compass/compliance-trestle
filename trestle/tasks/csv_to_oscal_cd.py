@@ -82,6 +82,65 @@ def derive_part_id(control_mapping: str) -> str:
     return rval
 
 
+def etype(target: str) -> str:
+    """Get etype."""
+    if target:
+        return 'invalid'
+    else:
+        return 'missing'
+
+
+def row_property_builder(row: int, name: str, value, ns: str, class_: str, remarks: str) -> Property:
+    """Row property builder."""
+    # name
+    try:
+        Property(
+            name=name,
+            value='value',
+        )
+    except Exception:
+        text = f'property for row: {row} name: {name} is {etype(name)}'
+        raise RuntimeError(text)
+    # value
+    try:
+        Property(
+            name=name,
+            value=value,
+        )
+    except Exception:
+        text = f'property for row: {row} value: {value} is {etype(value)}'
+        raise RuntimeError(text)
+    # ns
+    try:
+        Property(
+            name=name,
+            value=value,
+            ns=ns,
+        )
+    except Exception:
+        text = f'property for row: {row} ns: {ns} is {etype(ns)}'
+        raise RuntimeError(text)
+    # class
+    try:
+        Property(
+            name=name,
+            value=value,
+            class_=class_,
+        )
+    except Exception:
+        text = f'property for row: {row} class: {class_} is {etype(class_)}'
+        raise RuntimeError(text)
+    # prop
+    prop = Property(
+        name=name,
+        value=value,
+        ns=ns,
+        class_=class_,
+        remarks=remarks,
+    )
+    return prop
+
+
 class CsvToOscalComponentDefinition(TaskBase):
     """
     Task to create OSCAL ComponentDefinition json.
@@ -125,8 +184,8 @@ class CsvToOscalComponentDefinition(TaskBase):
         text1 = '  required columns:      '
         for text2 in CsvColumn.get_required_column_names():
             if text2 in ['Rule_Description', 'Profile_Source', 'Profile_Description', 'Control_Id_List']:
-                text2 += '*'
-            logger.info(text1 + text2)
+                text2 += ' (see note 1)'
+            logger.info(text1 + '$$' + text2)
             text1 = '                         '
         text1 = '  optional columns:      '
         for text2 in CsvColumn.get_optional_column_names():
@@ -134,11 +193,14 @@ class CsvToOscalComponentDefinition(TaskBase):
                          'Parameter_Description',
                          'Parameter_Value_Alternatives',
                          'Parameter_Value_Default']:
-                text2 += '*'
+                text2 += ' (see note 1)'
             if text2 in ['Check_Id', 'Check_Description']:
-                text2 += '+'
-            logger.info(text1 + text2)
+                text2 += ' (see note 2)'
+            logger.info(text1 + '$' + text2)
             text1 = '                         '
+        text1 = '  comment columns:       '
+        text2 = 'Informational (see note 3)'
+        logger.info(text1 + '#' + text2)
         text1 = '  output-dir           = '
         text2 = '(required) the path of the output directory for synthesized OSCAL .json files.'
         logger.info(text1 + text2)
@@ -159,10 +221,13 @@ class CsvToOscalComponentDefinition(TaskBase):
         text2 = ''
         logger.info(text1 + text2)
         text1 = 'Notes: '
-        text2 = '* column is ignored for validation component type'
+        text2 = '[1] column is ignored for validation component type'
         logger.info(text1 + text2)
         text1 = '       '
-        text2 = '+ column is required for validation component type'
+        text2 = '[2] column is required for validation component type'
+        logger.info(text1 + text2)
+        text1 = '       '
+        text2 = '[3] column name starting with # causes column to be ignored'
         logger.info(text1 + text2)
 
     def configure(self) -> bool:
@@ -557,6 +622,8 @@ class CsvToOscalComponentDefinition(TaskBase):
         # user props
         column_names = self._csv_mgr.get_user_column_names()
         for column_name in column_names:
+            if column_name.startswith('#'):
+                continue
             prop_name = self._get_prop_name(column_name)
             prop_value = self._csv_mgr.get_value(rule_key, column_name).strip()
             rule_set_mgr.add_prop(prop_name, prop_value, namespace, self.get_class(prop_name))
@@ -903,7 +970,8 @@ class _RuleSetMgr():
     def add_prop(self, name: str, value: str, ns: str, class_: str) -> None:
         """Add prop."""
         if value is not None and len(value):
-            prop = Property(
+            prop = row_property_builder(
+                row=self._row_number,
                 name=name,
                 value=value,
                 ns=ns,
@@ -1426,8 +1494,6 @@ class _CsvMgr():
         self._csv_controls_map = {}
         self._csv_profile_list = []
         for row_num, row in self.row_generator():
-            if self._is_no_control(row):
-                continue
             self._check_row_minimum_requirements(row_num, row)
             component_title = self.get_row_value(row, f'{COMPONENT_TITLE}')
             component_type = self.get_row_value(row, f'{COMPONENT_TYPE}')
@@ -1442,7 +1508,7 @@ class _CsvMgr():
             logger.debug(f'csv-rules: {key} {self._csv_rules_map[key][0]}')
             # set parameters, by component
             source = self.get_row_value(row, PROFILE_SOURCE)
-            if source not in self._csv_profile_list:
+            if source and source not in self._csv_profile_list:
                 self._csv_profile_list.append(source)
             description = self.get_row_value(row, PROFILE_DESCRIPTION)
             param_id = self.get_row_value(row, PARAMETER_ID)
@@ -1476,6 +1542,8 @@ class _CsvMgr():
         for row in self._csv:
             index += 1
             if index < 3:
+                continue
+            if self._is_no_control(row):
                 continue
             logger.debug(f'row_gen: {index} {row}')
             yield index, row

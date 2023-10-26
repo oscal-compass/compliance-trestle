@@ -721,3 +721,42 @@ def test_template_validate_flags_invalid_body(
 
     command_validate = 'trestle author docs template-validate -tn test_task -hv'
     execute_command_and_assert(command_validate, 1, monkeypatch)
+
+
+def test_multiple_dif_templates_recursive(
+    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """Test instance folder with multiple different template types inside a > 1 folder hierarchy."""
+    task_template_folder = tmp_trestle_dir / '.trestle/author/test_task/'
+    test_template_folder = testdata_dir / 'author/docs/a_folder_template'
+    test_instances_folder = testdata_dir / 'author/docs/a_folder'
+    task_instance_folder = tmp_trestle_dir / 'test_task/'
+
+    shutil.copytree(test_template_folder, task_template_folder)
+
+    shutil.copytree(test_instances_folder, task_instance_folder)
+
+    command_validate = 'trestle author docs validate -tn test_task -r -vtt'
+    execute_command_and_assert(command_validate, 0, monkeypatch)
+
+    # Remove template type from instance and test to fail
+    task_markdown = task_instance_folder / 'folder_level_1/folder_level_2-1/a_v1.md'
+    md_api = MarkdownAPI()
+    header, tree = md_api.processor.process_markdown(task_markdown)
+    del header['x-trestle-template-type']
+
+    md_api.write_markdown_with_header(task_markdown, header, tree.content.raw_text)
+
+    execute_command_and_assert(command_validate, 1, monkeypatch)
+    # set template type to arch-design again
+    header['x-trestle-template-type'] = 'a'
+
+    # Modify template headeing from instance and test to fail
+    a_node = tree.get_node_for_key('# System architecture', True)
+
+    assert a_node
+
+    tree.content.raw_text = tree.content.raw_text.replace('# System architecture', '# Not the heading expected')
+    md_api.write_markdown_with_header(task_markdown, header, tree.content.raw_text)
+
+    execute_command_and_assert(command_validate, 1, monkeypatch)
