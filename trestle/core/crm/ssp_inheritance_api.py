@@ -53,12 +53,7 @@ class SSPInheritanceAPI():
         Notes:
             If a catalog API is provided, the written controls in the markdown will be filtered by the catalog.
         """
-        fetcher = FetcherFactory.get_fetcher(self._trestle_root, leveraged_ssp_reference)
-        leveraged_ssp: ossp.SystemSecurityPlan
-        try:
-            leveraged_ssp, _ = fetcher.get_oscal()
-        except TrestleError as e:
-            raise TrestleError(f'Unable to fetch ssp from {leveraged_ssp_reference}: {e}')
+        leveraged_ssp: ossp.SystemSecurityPlan = self._fetch_leveraged_ssp(leveraged_ssp_reference)
 
         if catalog_api is not None:
             control_imp: ossp.ControlImplementation = leveraged_ssp.control_implementation
@@ -88,15 +83,9 @@ class SSPInheritanceAPI():
         reader = ExportReader(self._inheritance_markdown_path, ssp)
         ssp = reader.read_exports_from_markdown()
 
-        # Reader get reference
         leveraged_ssp_reference = reader.get_leveraged_ssp_href()
 
-        fetcher = FetcherFactory.get_fetcher(self._trestle_root, leveraged_ssp_reference)
-        leveraged_ssp: ossp.SystemSecurityPlan
-        try:
-            leveraged_ssp, _ = fetcher.get_oscal()
-        except TrestleError as e:
-            raise TrestleError(f'Unable to fetch ssp from {leveraged_ssp_reference}: {e}')
+        leveraged_ssp: ossp.SystemSecurityPlan = self._fetch_leveraged_ssp(leveraged_ssp_reference)
 
         link: common.Link = common.Link(href=leveraged_ssp_reference)
         leveraged_auths: List[ossp.LeveragedAuthorization] = []
@@ -109,21 +98,42 @@ class SSPInheritanceAPI():
                 'Please edit the inheritance markdown to include the leveraged authorization.'
             )
         else:
-            if self._is_present_in_ssp(ssp, link):
-                if ssp.system_implementation.leveraged_authorizations is not None:
-                    leveraged_auth = ssp.system_implementation.leveraged_authorizations[0]
+            existing_leveraged_auth: ossp.LeveragedAuthorization = self._leveraged_auth_from_existing(
+                as_list(ssp.system_implementation.leveraged_authorizations), link
+            )
+            if existing_leveraged_auth is not None:
+                leveraged_auth = existing_leveraged_auth
             else:
                 leveraged_auth.links = as_list(leveraged_auth.links)
                 leveraged_auth.links.append(link)
 
-            # Set the title of the leveraged authorization
             leveraged_auth.title = f'Leveraged Authorization for {leveraged_ssp.metadata.title}'
             leveraged_auths.append(leveraged_auth)
+
         # Overwrite the leveraged authorization in the SSP. The only leveraged authorization should be the one
         # coming from inheritance view
         ssp.system_implementation.leveraged_authorizations = none_if_empty(leveraged_auths)
 
-        # Reconcile the current leveraged components with the leveraged components in the inheritance view
+        self._reconcile_components(ssp, leveraged_ssp, leveraged_components, leveraged_auth)
+
+    def _fetch_leveraged_ssp(self, leveraged_ssp_reference: str) -> ossp.SystemSecurityPlan:
+        """Fetch the leveraged SSP."""
+        leveraged_ssp: ossp.SystemSecurityPlan
+        fetcher = FetcherFactory.get_fetcher(self._trestle_root, leveraged_ssp_reference)
+        try:
+            leveraged_ssp, _ = fetcher.get_oscal()
+        except TrestleError as e:
+            raise TrestleError(f'Unable to fetch ssp from {leveraged_ssp_reference}: {e}')
+        return leveraged_ssp
+
+    def _reconcile_components(
+        self,
+        ssp: ossp.SystemSecurityPlan,
+        leveraged_ssp: ossp.SystemSecurityPlan,
+        leveraged_components: List[str],
+        leveraged_auth: ossp.LeveragedAuthorization
+    ) -> None:
+        """Reconcile components in the leveraging SSP with those in the leveraged SSP."""
         mapped_components: Dict[str, ossp.SystemComponent] = {}
         for component in as_list(leveraged_ssp.system_implementation.components):
             if component.title in leveraged_components:
@@ -131,9 +141,7 @@ class SSPInheritanceAPI():
 
         new_components: List[ossp.SystemComponent] = []
         for component in as_list(ssp.system_implementation.components):
-            props_dict: Dict[str, str] = {}
-            for prop in as_list(component.props):
-                props_dict[prop.name] = prop.value
+            props_dict: Dict[str, str] = {prop.name: prop.value for prop in as_list(component.props)}
 
             # If this component is part of the original SSP components, add
             # and continue
@@ -167,17 +175,17 @@ class SSPInheritanceAPI():
         new_comp.description = original_comp.description
         new_comp.status = original_comp.status
 
-        new_comp.props = []
-        new_comp.props.append(
-            common.Property(name=const.IMPLEMENTATION_POINT, value=const.IMPLEMENTATION_POINT_EXTERNAL)
-        )
-        new_comp.props.append(common.Property(name=const.LEV_AUTH_UUID, value=leveraged_auth_id))
-        new_comp.props.append(common.Property(name=const.INHERITED_UUID, value=original_comp.uuid))
+        new_comp.props = [
+            common.Property(name=const.IMPLEMENTATION_POINT, value=const.IMPLEMENTATION_POINT_EXTERNAL),
+            common.Property(name=const.LEV_AUTH_UUID, value=leveraged_auth_id),
+            common.Property(name=const.INHERITED_UUID, value=original_comp.uuid)
+        ]
 
-    def _is_present_in_ssp(self, ssp: ossp.SystemSecurityPlan, link: common.Link) -> bool:
-        if (ssp.system_implementation.leveraged_authorizations is not None
-                and ssp.system_implementation.leveraged_authorizations[0].links is not None
-                and ssp.system_implementation.leveraged_authorizations[0].links[0].href == link.href):
-            return True
-        else:
-            return False
+    def _leveraged_auth_from_existing(
+        self, leveraged_authorizations: List[ossp.LeveragedAuthorization], criteria_link: common.Link
+    ) -> Optional[ossp.LeveragedAuthorization]:
+        """Return the leveraged authorization if it is present in the ssp."""
+        for leveraged_auth in leveraged_authorizations:
+            if leveraged_auth.links and any(link.href == criteria_link.href for link in leveraged_auth.links):
+                return leveraged_auth
+        return None
