@@ -209,8 +209,8 @@ class SSPGenerate(AuthorCommonCommand):
 
         Notes:
             This will create the inheritance view markdown files in the same directory as the ssp markdown files.
-            The information will be from the leveraged ssp, but filtered by the chose profile to ensure only relevant
-            control are present for mapping.
+            The information will be from the leveraged ssp, but filtered by the chosen profile to ensure only relevant
+            controls are present for mapping.
         """
         # if file not recognized as URI form, assume it represents name of file in trestle directory
         ssp_in_trestle_dir = '://' not in leveraged_ssp_name_or_href
@@ -609,7 +609,7 @@ class SSPAssemble(AuthorCommonCommand):
             # TODO if the ssp already existed then components may need to be removed if not ref'd by imp_reqs
             self._generate_roles_in_metadata(ssp)
 
-            # If this is a leveraging SSP, update it with the retrieved the exports from the leveraged SSP
+            # If this is a leveraging SSP, update it with the retrieved exports from the leveraged SSP
             inheritance_markdown_path = md_path.joinpath(const.INHERITANCE_VIEW_DIR)
             if os.path.exists(inheritance_markdown_path):
                 SSPInheritanceAPI(inheritance_markdown_path, trestle_root).update_ssp_inheritance(ssp)

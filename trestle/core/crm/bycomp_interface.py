@@ -29,7 +29,7 @@ class ByComponentInterface:
     Interface to query and modify by-component assembly inheritance contents.
 
     The by-component is contained in two separate forms:  As an actual OSCAL by-component assembly,
-    and and multiple dicts providing direct lookup of inheritance statement by uuid.
+    and multiple dicts providing direct lookup of inheritance statement by uuid.
 
     The dicts are created by the ByComponentInterface constructor, parsed and the responsibility and provided statements
     are separated into three catagories:
@@ -133,7 +133,7 @@ class ByComponentInterface:
         Reconcile the inherited and satisfied statements in the by-component assembly with changes from the export.
 
         Notes:
-            A statement is determined as existing if the provided uuid or responsibility uuid is in the existing in the
+            A statement is determined as existing if the provided uuid or responsibility uuid is in the existing
             by-component assembly. If existing, the description will be updated if it has changed.
 
             Any existing inherited or satisfied statements that are not in the incoming export will be removed.
