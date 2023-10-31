@@ -106,7 +106,6 @@ class SetParameter(OscalBaseModel):
     guidelines: Optional[List[common.ParameterGuideline]] = Field(None)
     values: Optional[List[constr(regex=r'^\S(.*\S)?$')]] = Field(None)
     select: Optional[common.ParameterSelection] = None
-    param_value_origin: Optional[str] = Field(None, alias='parameter-value-origin')
 
 
 class Remove(OscalBaseModel):
