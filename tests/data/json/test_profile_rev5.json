@@ -1,0 +1,20 @@
+{
+  "profile": {
+    "uuid": "4bd1e5a9-829d-43c9-b6c7-89631fc202b1",
+    "metadata": {
+      "title": "IBM Unified common controls profile",
+      "last-modified": "2023-03-04T10:55:48.592554+05:30",
+      "version": "1.0.0",
+      "oscal-version": "1.0.2"
+    },
+    "imports": [
+      {
+        "href": "trestle://profiles/full_profile_rev5/profile.json",
+        "include-all": { }
+      }
+    ],
+    "merge": {
+      "as-is": true
+    }
+  }
+}

@@ -3,6 +3,26 @@
 
 <!--next-version-placeholder-->
 
+## v2.4.0 (2023-10-26)
+### Feature
+* Adding validate template type to author docs command ([#1465](https://github.com/IBM/compliance-trestle/issues/1465)) ([`5289f51`](https://github.com/IBM/compliance-trestle/commit/5289f516e9710361e0dc391cefd979b5e2d46ed0))
+
+### Fix
+* Upgrade urllib version to fix vulnerability ([#1472](https://github.com/IBM/compliance-trestle/issues/1472)) ([`e9d4175`](https://github.com/IBM/compliance-trestle/commit/e9d4175fabd015ada6e8cdd26450c454ad83fbe8))
+* Improve bad property error message by including csv row number ([#1466](https://github.com/IBM/compliance-trestle/issues/1466)) ([`ab97beb`](https://github.com/IBM/compliance-trestle/commit/ab97beb2367112e9e68fb258af6dc2c75d909279))
+* Cryptic error message + feat: # indicates comment column ([#1459](https://github.com/IBM/compliance-trestle/issues/1459)) ([`45eda01`](https://github.com/IBM/compliance-trestle/commit/45eda015751d2f9121e14fe609b14acd890440fd))
+* Update community call information ([#1444](https://github.com/IBM/compliance-trestle/issues/1444)) ([`5a03d06`](https://github.com/IBM/compliance-trestle/commit/5a03d06783fff8db4bf402b1e21acb99fd485454))
+
+### Documentation
+* Updating vtt documentation for trestle author docs ([#1471](https://github.com/IBM/compliance-trestle/issues/1471)) ([`63d436a`](https://github.com/IBM/compliance-trestle/commit/63d436a7752e50ef0c52c93cbab36f4c1fc16748))
+
+## v2.3.1 (2023-09-20)
+### Fix
+* Improper indentation structure validation not working ([#1451](https://github.com/IBM/compliance-trestle/issues/1451)) ([`2e6936a`](https://github.com/IBM/compliance-trestle/commit/2e6936a4705251fd8412fd67163a7cd9d801a4b8))
+* Fixing typo in encoding name ([#1448](https://github.com/IBM/compliance-trestle/issues/1448)) ([`bdf60b2`](https://github.com/IBM/compliance-trestle/commit/bdf60b26075f7250bcdbbe08745630b27042ad74))
+* Parameter aggregation fix ([#1443](https://github.com/IBM/compliance-trestle/issues/1443)) ([`dd9e3bc`](https://github.com/IBM/compliance-trestle/commit/dd9e3bc2ebaeab23f3c4fc0647ec3942d38bed16))
+* Prevent duplicates in set-parameters ([#1450](https://github.com/IBM/compliance-trestle/issues/1450)) ([`62e2f05`](https://github.com/IBM/compliance-trestle/commit/62e2f059dd2ae08616895ebdfd6e37258483019d))
+
 ## v2.3.0 (2023-09-06)
 ### Feature
 * Extend multiple templates validation to trestle author folders ([#1430](https://github.com/IBM/compliance-trestle/issues/1430)) ([`c7bef58`](https://github.com/IBM/compliance-trestle/commit/c7bef589a6e671b96170e93feb88c6436a094da6))
