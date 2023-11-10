@@ -84,6 +84,13 @@ class Docs(AuthorCommonCommand):
             action='store_true'
         )
 
+        self.add_argument(
+            author_const.TEMPLATE_TYPE_VALIDATE_SHORT,
+            author_const.TEMPLATE_TYPE_VALIDATE_LONG,
+            help=author_const.TEMPLATE_TYPE_VALIDATE_HELP,
+            action='store_true'
+        )
+
     def _run(self, args: argparse.Namespace) -> int:
         try:
             status = 1
@@ -110,7 +117,8 @@ class Docs(AuthorCommonCommand):
                     args.recurse,
                     args.readme_validate,
                     args.template_version,
-                    args.ignore
+                    args.ignore,
+                    args.validate_template_type
                 )
 
             return status
@@ -199,7 +207,8 @@ class Docs(AuthorCommonCommand):
         recurse: bool,
         readme_validate: bool,
         template_version: Optional[str] = None,
-        ignore: Optional[str] = None
+        ignore: Optional[str] = None,
+        validate_by_type_field: bool = False
     ) -> int:
         """
         Validate md files in a directory with option to recurse.
@@ -238,7 +247,26 @@ class Docs(AuthorCommonCommand):
                         versione_template_dir = TemplateVersioning.get_versioned_template_dir(
                             self.template_dir, instance_version
                         )
-                        template_file = versione_template_dir / self.template_name
+                        # checks on naming template name out of type header if needed
+                        if validate_by_type_field:
+                            # get template name out of its type which essentially needs to be the same
+                            template_name = md_api.processor.fetch_value_from_header(
+                                item_path, author_const.TEMPLATE_TYPE_HEADER
+                            )
+                            # throw an error if template type is not present
+                            if template_name is None:
+                                logger.error(
+                                    f'INVALID: Instance file {item_path} does not have'
+                                    f' {author_const.TEMPLATE_TYPE_HEADER}'
+                                    ' field in its header and can not be validated using optional parameter validate'
+                                    ' template type field'
+                                )
+                                status = 1
+                                return status
+                            template_name = template_name + '.md'
+                            template_file = versione_template_dir / template_name
+                        else:  # continues regular flow without template type
+                            template_file = versione_template_dir / self.template_name
                     if not template_file.is_file():
                         raise TrestleError(
                             f'Required template file: {self.rel_dir(template_file)} does not exist. Exiting.'
@@ -265,7 +293,8 @@ class Docs(AuthorCommonCommand):
                         recurse,
                         readme_validate,
                         template_version,
-                        ignore
+                        ignore,
+                        validate_by_type_field
                     )
                     if rc != 0:
                         status = rc
@@ -280,7 +309,8 @@ class Docs(AuthorCommonCommand):
         recurse: bool,
         readme_validate: bool,
         template_version: str,
-        ignore: str
+        ignore: str,
+        validate_by_type_field: bool
     ) -> int:
         """
         Validate task.
@@ -306,5 +336,6 @@ class Docs(AuthorCommonCommand):
             recurse,
             readme_validate,
             template_version,
-            ignore
+            ignore,
+            validate_by_type_field
         )

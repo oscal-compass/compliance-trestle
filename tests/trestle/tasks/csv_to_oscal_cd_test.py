@@ -1138,3 +1138,69 @@ def test_execute_validation(tmp_path: pathlib.Path) -> None:
     assert component.props[2].name == 'Check_Description'
     assert component.props[2].value == 'validation-check-description'
     assert len(component.control_implementations) == 0
+
+
+def test_row_property_builder(tmp_path):
+    """Test row property builder."""
+    # valid
+    prop = csv_to_oscal_cd.row_property_builder(
+        row=0,
+        name='name',
+        value='value',
+        ns='https://www.ibm.com',
+        class_='class',
+        remarks='remarks',
+    )
+    assert prop
+    # missing name
+    try:
+        prop = csv_to_oscal_cd.row_property_builder(
+            row=0,
+            name=None,
+            value='value',
+            ns='https://www.ibm.com',
+            class_='class',
+            remarks='remarks',
+        )
+        raise AssertionError('missing name OK?')
+    except Exception:
+        assert prop
+    # missing value
+    try:
+        prop = csv_to_oscal_cd.row_property_builder(
+            row=0,
+            name='name',
+            value=None,
+            ns='https://www.ibm.com',
+            class_='class',
+            remarks='remarks',
+        )
+        raise AssertionError('missing value OK?')
+    except Exception:
+        assert prop
+    # invalid ns
+    try:
+        prop = csv_to_oscal_cd.row_property_builder(
+            row=0,
+            name='name',
+            value='value',
+            ns='foobar',
+            class_='class',
+            remarks='remarks',
+        )
+        raise AssertionError('invalid ns OK?')
+    except Exception:
+        assert prop
+    # invalid class
+    try:
+        prop = csv_to_oscal_cd.row_property_builder(
+            row=0,
+            name='name',
+            value='value',
+            ns='https://www.ibm.com',
+            class_='\n',
+            remarks='remarks',
+        )
+        raise AssertionError('invalid class OK?')
+    except Exception:
+        assert prop
