@@ -272,8 +272,7 @@ class ProfileAssemble(AuthorCommonCommand):
                             label=param.label,
                             values=param.values,
                             select=param.select,
-                            props=param.props,
-                            param_value_origin=param.param_value_origin
+                            props=param.props
                         )
                     )
             if profile.modify.set_parameters != new_set_params:

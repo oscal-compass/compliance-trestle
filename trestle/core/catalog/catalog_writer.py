@@ -144,10 +144,12 @@ class CatalogWriter():
         for param_id, param_dict in control_param_dict.items():
             # if the param is in the full_param_dict, load its contents first and mark as profile-values
             display_name = ''
+            param_value_origin = ''
             if param_id in profile_set_param_dict:
                 # get the param from the profile set_param
                 param = profile_set_param_dict[param_id]
                 display_name, _ = CatalogInterface._get_display_name_and_ns(param)
+                param_value_origin, _ = CatalogInterface._get_param_value_origin_and_ns(param)
                 # assign its contents to the dict
                 new_dict = ModelUtils.parameter_to_dict(param, True)
                 if const.VALUES in new_dict:
@@ -161,7 +163,6 @@ class CatalogWriter():
                     # pull only the values from the actual control dict
                     # all the other elements are from the profile set_param
                     new_dict[const.VALUES] = orig_dict.get(const.VALUES, None)
-                    new_dict[const.PARAM_VALUE_ORIGIN] = None
                     new_dict[const.GUIDELINES] = orig_dict.get(const.GUIDELINES, None)
                     if new_dict[const.VALUES] is None:
                         new_dict.pop(const.VALUES)
@@ -191,6 +192,12 @@ class CatalogWriter():
             # adds display name, if no display name then do not add to dict
             if display_name != '' and display_name is not None:
                 new_dict[const.DISPLAY_NAME] = display_name
+            # adds param_Value_origin
+            if param_value_origin != '' and param_value_origin is not None:
+                new_dict[const.PARAM_VALUE_ORIGIN] = param_value_origin
+            else:
+                # puts it empty for user to fill it out mandatorily
+                new_dict[const.PARAM_VALUE_ORIGIN] = 'Added by Control Owner'
             key_order = (
                 const.LABEL,
                 const.GUIDELINES,

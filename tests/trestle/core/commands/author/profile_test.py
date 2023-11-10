@@ -1345,4 +1345,18 @@ def test_profile_generate_assemble_param_value_origin(tmp_trestle_dir: pathlib.P
                                                  prof.Profile, FileContentType.JSON)
 
     # grabs first parameter in line and test out the value
-    assert profile.modify.set_parameters[0].param_value_origin == 'coming from xyz corporate policy'
+    assert profile.modify.set_parameters[0].props[1].value == 'coming from xyz corporate policy'
+
+    profile.modify.set_parameters[0].props[1].value = 'this is a change test'
+
+    ModelUtils.save_top_level_model(profile, tmp_trestle_dir, 'my_assembled_prof', FileContentType.JSON)
+
+    # convert resolved profile catalog to markdown then assemble it after adding an item to a control
+    # generate, edit, assemble
+    test_args = f'trestle author profile-generate -n {assembled_prof_name} -o {md_name} -rs NeededExtra --force-overwrite'.split(  # noqa E501
+    )
+    test_args.extend(['-y', str(yaml_header_path)])
+    test_args.extend(['-s', all_sections_str])
+    monkeypatch.setattr(sys, 'argv', test_args)
+
+    assert Trestle().run() == 0

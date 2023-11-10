@@ -633,9 +633,17 @@ class ModelUtils:
             param_dict.pop(const.AGGREGATES)
         param_value_origin = None
         if const.PARAM_VALUE_ORIGIN in param_dict:
-            param_value_origin = param_dict[const.PARAM_VALUE_ORIGIN]
-            # removing param-value-origin as this is prop don´t have any value
-            param_dict.pop(const.PARAM_VALUE_ORIGIN)
+            param_value_origin = param_dict.pop(const.PARAM_VALUE_ORIGIN)
+            if param_value_origin is not None:
+                props.append(
+                    common.Property(
+                        name=const.PARAM_VALUE_ORIGIN, value=param_value_origin
+                    )
+                )
+            else:
+                raise TrestleError(
+                    f'Parameter value origin property for parameter {param_dict["id"]} is None and it should have a value'
+                )
         if const.ALT_IDENTIFIER in param_dict:
             # removing alt-identifier as this is prop just informative in markdown
             param_dict.pop(const.ALT_IDENTIFIER)
@@ -644,7 +652,6 @@ class ModelUtils:
             param_dict.pop('ns')
         param = common.Parameter(**param_dict)
         param.props = none_if_empty(props)
-        param.param_value_origin = param_value_origin
         return param
 
     @staticmethod
