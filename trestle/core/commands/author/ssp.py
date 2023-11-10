@@ -15,6 +15,7 @@
 
 import argparse
 import logging
+import os
 import pathlib
 from typing import Any, Dict, List, Optional, Set
 
@@ -42,6 +43,7 @@ from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_interface import ControlInterface, ParameterRep
 from trestle.core.control_reader import ControlReader
+from trestle.core.crm.ssp_inheritance_api import SSPInheritanceAPI
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.remote.cache import FetcherFactory
@@ -63,6 +65,10 @@ class SSPGenerate(AuthorCommonCommand):
             '-o', '--output', help='Name of the output generated ssp markdown folder', required=True, type=str
         )  # noqa E501
         self.add_argument('-cd', '--compdefs', help=const.HELP_COMPDEFS, required=False, type=str)
+
+        ls_help_str = 'Leveraged ssp with inheritable controls href or name in the trestle_workspace'
+        self.add_argument('-ls', '--leveraged-ssp', help=ls_help_str, required=False, type=str)
+
         self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
         self.add_argument(
             '-fo', '--force-overwrite', help=const.HELP_FO_OUTPUT, required=False, action='store_true', default=False
@@ -100,6 +106,7 @@ class SSPGenerate(AuthorCommonCommand):
                 trestle_root,
                 args.profile,
                 compdef_name_list,
+                args.leveraged_ssp,
                 md_path,
                 yaml_header,
                 args.overwrite_header_values,
@@ -114,6 +121,7 @@ class SSPGenerate(AuthorCommonCommand):
         trestle_root: pathlib.Path,
         profile_name_or_href: str,
         compdef_name_list: List[str],
+        leveraged_ssp_name_or_href: str,
         md_path: pathlib.Path,
         yaml_header: Dict[str, Any],
         overwrite_header_values: bool,
@@ -183,7 +191,43 @@ class SSPGenerate(AuthorCommonCommand):
 
         catalog_api.write_catalog_as_markdown()
 
+        # Generate inheritance view after controls view completes
+        if leveraged_ssp_name_or_href:
+            self._generate_inheritance_markdown(trestle_root, leveraged_ssp_name_or_href, resolved_catalog, md_path)
+
         return CmdReturnCodes.SUCCESS.value
+
+    def _generate_inheritance_markdown(
+        self,
+        trestle_root: pathlib.Path,
+        leveraged_ssp_name_or_href: str,
+        resolved_catalog: CatalogInterface,
+        md_path: str
+    ) -> None:
+        """
+        Generate markdown for inheritance view.
+
+        Notes:
+            This will create the inheritance view markdown files in the same directory as the ssp markdown files.
+            The information will be from the leveraged ssp, but filtered by the chosen profile to ensure only relevant
+            controls are present for mapping.
+        """
+        # if file not recognized as URI form, assume it represents name of file in trestle directory
+        ssp_in_trestle_dir = '://' not in leveraged_ssp_name_or_href
+        ssp_href = leveraged_ssp_name_or_href
+        if ssp_in_trestle_dir:
+            local_path = f'{const.MODEL_DIR_SSP}/{leveraged_ssp_name_or_href}/system-security-plan.json'
+            ssp_href = const.TRESTLE_HREF_HEADING + local_path
+
+        inheritance_view_path: pathlib.Path = md_path.joinpath(const.INHERITANCE_VIEW_DIR)
+        inheritance_view_path.mkdir(exist_ok=True)
+        logger.debug(f'Creating content for inheritance view in {inheritance_view_path}')
+
+        ssp_inheritance_api = SSPInheritanceAPI(inheritance_view_path, trestle_root)
+
+        # Filter the ssp implemented requirements by the catalog specified
+        catalog_api: CatalogAPI = CatalogAPI(catalog=resolved_catalog)
+        ssp_inheritance_api.write_inheritance_as_markdown(ssp_href, catalog_api)
 
 
 class SSPAssemble(AuthorCommonCommand):
@@ -519,10 +563,18 @@ class SSPAssemble(AuthorCommonCommand):
                     raise TrestleError('Original ssp has no system component.')
                 comp_dict[const.SSP_MAIN_COMP_NAME] = sys_comp
 
+                ssp_sys_imp_comps = ssp.system_implementation.components
+                # Gather the leveraged components to add back after the merge
+                leveraged_comps: Dict[str, ossp.SystemComponent] = {}
+                for sys_comp in ssp_sys_imp_comps:
+                    if sys_comp.props is not None:
+                        prop_names = [x.name for x in sys_comp.props]
+                        if const.LEV_AUTH_UUID in prop_names:
+                            leveraged_comps[sys_comp.title] = sys_comp
+
                 # Verifies older compdefs in an ssp no longer exist in newly provided ones
                 comp_titles = [x.title for x in comp_dict.values()]
-                ssp_sys_imp_comps = ssp.system_implementation.components
-                diffs = [x for x in ssp_sys_imp_comps if x.title not in comp_titles]
+                diffs = [x for x in ssp_sys_imp_comps if x.title not in comp_titles and x.title not in leveraged_comps]
                 if diffs:
                     for diff in diffs:
                         logger.warning(
@@ -537,6 +589,9 @@ class SSPAssemble(AuthorCommonCommand):
                 CatalogReader.read_ssp_md_content(md_path, ssp, comp_dict, part_id_map_by_label, context)
 
                 new_file_content_type = FileContentType.path_to_content_type(orig_ssp_path)
+
+                # Add the leveraged comps back to the final ssp
+                ssp.system_implementation.components.extend(list(leveraged_comps.values()))
             else:
                 # create a sample ssp to hold all the parts
                 ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
@@ -553,6 +608,11 @@ class SSPAssemble(AuthorCommonCommand):
             # now that we know the complete list of needed components, add them to the sys_imp
             # TODO if the ssp already existed then components may need to be removed if not ref'd by imp_reqs
             self._generate_roles_in_metadata(ssp)
+
+            # If this is a leveraging SSP, update it with the retrieved exports from the leveraged SSP
+            inheritance_markdown_path = md_path.joinpath(const.INHERITANCE_VIEW_DIR)
+            if os.path.exists(inheritance_markdown_path):
+                SSPInheritanceAPI(inheritance_markdown_path, trestle_root).update_ssp_inheritance(ssp)
 
             ssp.import_profile.href = profile_href
 

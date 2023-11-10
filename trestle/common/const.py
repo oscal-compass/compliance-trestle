@@ -288,6 +288,8 @@ PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT = '<!-- Add prose here for require
 
 PROFILE = 'profile'
 
+LEVERAGED_SSP = 'leveraged-ssp'
+
 TITLE = 'title'
 
 NAME = 'name'
@@ -350,6 +352,12 @@ NAMESPACE_FEDRAMP = 'https://fedramp.gov/ns/oscal'
 
 LEV_AUTH_UUID = 'leveraged-authorization-uuid'
 
+INHERITED_UUID = 'inherited-uuid'
+
+IMPLEMENTATION_POINT = 'implementation-point'
+
+IMPLEMENTATION_POINT_EXTERNAL = 'external'
+
 STATUS_INHERITED = 'inherited'
 
 STATUS_PARTIALLY_IMPLEMENTED = 'partially-implemented'
@@ -369,6 +377,10 @@ IMPLEMENTATION_STATUS_REMARKS_HEADER = 'Implementation Status Remarks'
 REMARKS = 'Remarks'
 
 STATUS_REMARKS = 'status-remarks'
+
+PROVIDED_STATEMENT_DESCRIPTION = 'Provided Statement Description'
+
+RESPONSIBILITY_STATEMENT_DESCRIPTION = 'Responsibility Statement Description'
 
 # Following 5 are allowed state tokens for
 # SSP -> ControlImplementation -> ImplementedRequirements -> ByComponents -> common.ImplementationStatus -> State
@@ -417,6 +429,11 @@ STATUS_PROMPT = f'<!-- For implementation status enter one of: {STATUS_IMPLEMENT
 
 RULES_WARNING = '<!-- Note that the list of rules under ### Rules: is read-only and changes will not be captured after assembly to JSON -->'  # noqa E501
 
+SATISFIED_STATEMENT_COMMENT = (
+    '<!-- Use this section to explain how'
+    ' the inherited responsibility is being satisfied. -->'
+)
+
 THIS_SYSTEM_PROMPT = '### ' + SSP_MAIN_COMP_NAME
 
 RESPONSIBLE_ROLE = 'responsible-role'
@@ -430,6 +447,10 @@ SET_PARAMS_TAG = TRESTLE_TAG + 'set-params'
 RULES_PARAMS_TAG = TRESTLE_TAG + 'rules-params'
 
 COMP_DEF_RULES_PARAM_VALS_TAG = TRESTLE_TAG + 'comp-def-rules-param-vals'
+
+TRESTLE_LEVERAGING_COMP_TAG = TRESTLE_TAG + 'leveraging-comp'
+
+TRESTLE_STATEMENT_TAG = TRESTLE_TAG + 'statement'
 
 PARAM_VALUES_TAG = TRESTLE_TAG + 'param-values'
 
@@ -466,6 +487,10 @@ CONTROL_STATEMENT_HEADER = '## Control Statement'
 CONTROL_HEADER = '## Control'
 
 REPLACE_ME = 'REPLACE_ME'
+
+PROVIDED_UUID = 'provided-uuid'
+
+RESPONSIBILITY_UUID = 'responsibility-uuid'
 
 YAML_PROPS_COMMENT = """  # Add or modify control properties here
   # Properties may be at the control or part level
@@ -536,6 +561,13 @@ YAML_RULE_PARAM_VALUES_COMPONENT_COMMENT = """  # You may set new values for rul
   #
 """
 
+YAML_LEVERAGED_COMMENT = """  # Add or modify leveraged SSP Statements here.
+"""
+
+YAML_LEVERAGING_COMP_COMMENT = """  # Leveraged statements can be optionally associated with components in this system.
+  # Associate leveraged statements to Components of this system here:
+"""
+
 DISPLAY_NAME = 'display-name'
 
 TRESTLE_GENERIC_NS = 'https://ibm.github.io/compliance-trestle/schemas/oscal'
@@ -586,3 +618,11 @@ ORIGINATION_CUSTOMER_CONFIGURED = 'customer-configured'
 ORIGINATION_CUSTOMER_PROVIDED = 'customer-provided'
 
 ORIGINATION_INHERITED = 'inherited'
+
+# Constant relation to the inheritance view Markdown
+
+INHERITANCE_VIEW_DIR = 'inheritance'
+
+HELP_LEVERAGED = 'Name of the SSP to be leveraged.'
+
+SATISFIED_STATEMENT_DESCRIPTION = 'Satisfied Statement Description'

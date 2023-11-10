@@ -243,6 +243,20 @@ def replace_line_in_file_after_tag(file_path: pathlib.Path, tag: str, new_line: 
     return False
 
 
+def replace_in_file(file_path: pathlib.Path, search_text: str, replace_text: str) -> None:
+    """Replace all occurrences of search_text with replace_text in file_path."""
+    if not file_path.exists():
+        raise TrestleError(f'Test file {file_path} not found.')
+
+    with open(file_path, 'r') as file:
+        file_content = file.read()
+
+    updated_content = file_content.replace(search_text, replace_text)
+
+    with open(file_path, 'w') as file:
+        file.write(updated_content)
+
+
 def substitute_text_in_file(file_path: pathlib.Path, tag: str, new_str: str) -> bool:
     """Substitute first match of string with new string in file."""
     if not file_path.exists():
@@ -442,10 +456,13 @@ def load_from_json(
     shutil.copy2(src_path, dst_path)
 
 
-def setup_for_ssp(tmp_trestle_dir: pathlib.Path,
-                  prof_name: str,
-                  output_name: str,
-                  use_yaml: bool = False) -> Tuple[argparse.Namespace, pathlib.Path]:
+def setup_for_ssp(
+    tmp_trestle_dir: pathlib.Path,
+    prof_name: str,
+    output_name: str,
+    use_yaml: bool = False,
+    leveraged_ssp_name: str = ''
+) -> Tuple[argparse.Namespace, pathlib.Path]:
     """Create the comp_def, profile and catalog content needed for ssp-generate."""
     comp_names = 'comp_def_a,comp_def_b'
     for comp_name in comp_names.split(','):
@@ -456,10 +473,15 @@ def setup_for_ssp(tmp_trestle_dir: pathlib.Path,
         load_from_json(tmp_trestle_dir, local_prof_name, local_prof_name, prof.Profile)
     load_from_json(tmp_trestle_dir, 'simplified_nist_catalog', 'simplified_nist_catalog', cat.Catalog)
     yaml_path = YAML_TEST_DATA_PATH / 'good_simple.yaml' if use_yaml else None
+
+    if leveraged_ssp_name:
+        load_from_json(tmp_trestle_dir, leveraged_ssp_name, leveraged_ssp_name, ssp.SystemSecurityPlan)
+
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
         profile=prof_name,
         compdefs=comp_names,
+        leveraged_ssp=leveraged_ssp_name,
         output=output_name,
         verbose=0,
         overwrite_header_values=False,
@@ -636,6 +658,77 @@ def gen_and_assemble_first_ssp(prof_name: str, ssp_name: str, gen_args: Any, mon
     # first ssp assembly
     ssp_assemble = f'trestle author ssp-assemble -m {ssp_name} -o {ssp_name} -cd {gen_args.compdefs}'
     execute_command_and_assert(ssp_assemble, 0, monkeypatch)
+
+
+def generate_test_by_comp() -> ssp.ByComponent:
+    """Generate a by-component assembly for testing."""
+    by_comp = generators.generate_sample_model(ssp.ByComponent)
+    by_comp.export = generators.generate_sample_model(ssp.Export)
+    by_comp.export.provided = []
+    by_comp.export.responsibilities = []
+
+    isolated_provided = generators.generate_sample_model(ssp.Provided)
+    isolated_responsibility = generators.generate_sample_model(ssp.Responsibility)
+
+    set_provided = generators.generate_sample_model(ssp.Provided)
+    set_responsibility = generators.generate_sample_model(ssp.Responsibility)
+
+    set_responsibility.provided_uuid = set_provided.uuid
+
+    by_comp.export.provided.append(isolated_provided)
+    by_comp.export.provided.append(set_provided)
+    by_comp.export.responsibilities.append(isolated_responsibility)
+    by_comp.export.responsibilities.append(set_responsibility)
+
+    return by_comp
+
+
+def generate_test_inheritance_md(
+    provided_uuid: str, responsibility_uuid: str, leveraged_statement_names: List[str], leveraged_ssp_href: str
+) -> str:
+    """
+    Generate a inheritance statement with placeholders replaced by provided values.
+
+    Args:
+        provided_uuid (str): UUID for provided statement.
+        responsibility_uuid (str): UUID for responsibility statement.
+        leveraged_statement_names (list of str): Names for leveraged statements (as a list).
+        leveraged_ssp_href (str): Href for leveraged SSP.
+
+    Returns:
+        str: The template with placeholders replaced.
+    """
+    # Convert the list of leveraged statement names into a YAML list
+    leveraged_statement_list = '\n'.join([f'  - name: {name}' for name in leveraged_statement_names])
+
+    md_template = f"""---
+x-trestle-statement:
+  # Add or modify leveraged SSP Statements here.
+  provided-uuid: {provided_uuid}
+  responsibility-uuid: {responsibility_uuid}
+x-trestle-leveraging-comp:
+  # Leveraged statements can be optionally associated with components in this system.
+  # Associate leveraged statements to Components of this system here:
+{leveraged_statement_list}
+x-trestle-global:
+    leveraged-ssp:
+      href: {leveraged_ssp_href}
+---
+
+# Provided Statement Description
+
+provided statement description
+
+# Responsibility Statement Description
+
+resp statement description
+
+# Satisfied Statement Description
+
+<!-- Use this section to explain how the inherited responsibility is being satisfied. -->
+My Satisfied Description
+    """
+    return md_template
 
 
 class FileChecker:
