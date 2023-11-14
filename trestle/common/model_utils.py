@@ -635,14 +635,11 @@ class ModelUtils:
         if const.PARAM_VALUE_ORIGIN in param_dict:
             param_value_origin = param_dict.pop(const.PARAM_VALUE_ORIGIN)
             if param_value_origin is not None:
-                props.append(
-                    common.Property(
-                        name=const.PARAM_VALUE_ORIGIN, value=param_value_origin
-                    )
-                )
+                props.append(common.Property(name=const.PARAM_VALUE_ORIGIN, value=param_value_origin))
             else:
                 raise TrestleError(
-                    f'Parameter value origin property for parameter {param_dict["id"]} is None and it should have a value'
+                    f'Parameter value origin property for parameter {param_dict["id"]}'
+                    'is None and it should have a value'
                 )
         if const.ALT_IDENTIFIER in param_dict:
             # removing alt-identifier as this is prop just informative in markdown
