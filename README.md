@@ -77,6 +77,16 @@ See [Install trestle in a python virtual environment](https://ibm.github.io/comp
 
 Complete documentation, tutorials, and background on compliance can be found [here](https://ibm.github.io/compliance-trestle).
 
+## Agile Authoring
+
+A trestle-based agile authoring repository setup tool, documentation and tutorial can be found [here](https://github.com/IBM/compliance-trestle-agile-authoring).
+
+Agile authoring comprises the following beneficial features:
+- based on OSCAL documents behind-the-scenes
+- employs GIT for document control and access
+- exposes text (markdown) and spread sheets (csv) to ease management of compliance artifacts
+- implements compliance digitization for improved audit readiness and cost effectiveness
+
 ## Demos
 
 A collection of demos utilizing trestle can be found in the related project [compliance-trestle-demos](https://github.com/IBM/compliance-trestle-demos).
