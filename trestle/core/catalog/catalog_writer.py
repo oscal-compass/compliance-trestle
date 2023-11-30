@@ -156,6 +156,10 @@ class CatalogWriter():
                     if context.purpose == ContextPurpose.PROFILE:
                         new_dict[const.PROFILE_VALUES] = new_dict[const.VALUES]
                         new_dict.pop(const.VALUES)
+                # adds param_Value_origin
+                if param_value_origin != '' and param_value_origin is not None:
+                    if context.purpose == ContextPurpose.PROFILE:
+                        new_dict[const.PROFILE_PARAM_VALUE_ORIGIN] = param_value_origin
                 # then insert the original, incoming values as values
                 if param_id in control_param_dict:
                     orig_param = control_param_dict[param_id]
@@ -192,12 +196,6 @@ class CatalogWriter():
             # adds display name, if no display name then do not add to dict
             if display_name != '' and display_name is not None:
                 new_dict[const.DISPLAY_NAME] = display_name
-            # adds param_Value_origin
-            if param_value_origin != '' and param_value_origin is not None:
-                new_dict[const.PARAM_VALUE_ORIGIN] = param_value_origin
-            else:
-                # puts it empty for user to fill it out mandatorily
-                new_dict[const.PARAM_VALUE_ORIGIN] = 'Added by Control Owner'
             key_order = (
                 const.LABEL,
                 const.GUIDELINES,
@@ -206,7 +204,8 @@ class CatalogWriter():
                 const.ALT_IDENTIFIER,
                 const.DISPLAY_NAME,
                 const.PROFILE_VALUES,
-                const.PARAM_VALUE_ORIGIN
+                const.PARAM_VALUE_ORIGIN,
+                const.PROFILE_PARAM_VALUE_ORIGIN
             )
             ordered_dict = {k: new_dict[k] for k in key_order if k in new_dict.keys()}
             set_param_dict[param_id] = ordered_dict

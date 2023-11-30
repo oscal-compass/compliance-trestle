@@ -466,6 +466,8 @@ GUIDELINES = 'guidelines'
 
 PARAM_VALUE_ORIGIN = 'param-value-origin'
 
+PROFILE_PARAM_VALUE_ORIGIN = 'profile-param-value-origin'
+
 LABEL = 'label'
 
 SECTIONS_TAG = TRESTLE_TAG + 'sections'
