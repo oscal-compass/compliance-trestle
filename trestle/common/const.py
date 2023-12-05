@@ -537,6 +537,13 @@ YAML_PROFILE_VALUES_COMMENT = """    # This section contains the parameters that
   # the parameter value is made up of the values from the other parameters. For parameters
   # that aggregate, profile-values is not applicable.
   #
+  # If the value of property param-value-origin needs to be changed, please
+  # insert a new property called profile-param-value-origin below and place the value there
+  # instead of replacing the original param-value-origin as follows:
+  #
+  #    param-value-origin: this is the original value DO NOT REPLACE
+  #    profile-param-value-origin: place the new value required HERE
+  #
 """
 
 YAML_RULE_PARAM_VALUES_SSP_COMMENT = """  # You may set new values for rule parameters by adding

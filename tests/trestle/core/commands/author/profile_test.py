@@ -1330,7 +1330,7 @@ def test_profile_generate_assemble_param_value_origin(tmp_trestle_dir: pathlib.P
     header, tree = md_api.processor.process_markdown(md_path)
 
     assert header
-    header[const.SET_PARAMS_TAG]['ac-1_prm_1'][const.PROFILE_PARAM_VALUE_ORIGIN] = 'coming from xyz corporate policy'
+    header[const.SET_PARAMS_TAG]['ac-1_prm_1'][const.PROFILE_PARAM_VALUE_ORIGIN] = 'Needed to change param value origin'
 
     md_api.write_markdown_with_header(md_path, header, tree.content.raw_text)
 
@@ -1345,7 +1345,7 @@ def test_profile_generate_assemble_param_value_origin(tmp_trestle_dir: pathlib.P
                                                  prof.Profile, FileContentType.JSON)
 
     # grabs first parameter in line and test out the value
-    assert profile.modify.set_parameters[0].props[1].value == 'coming from xyz corporate policy'
+    assert profile.modify.set_parameters[0].props[1].value == 'Needed to change param value origin'
 
     profile.modify.set_parameters[0].props[1].value = 'this is a change test'
 
@@ -1367,13 +1367,12 @@ def test_profile_generate_assemble_param_value_origin(tmp_trestle_dir: pathlib.P
     header, tree = md_api.processor.process_markdown(md_path)
 
     assert header
-    header[const.SET_PARAMS_TAG]['ac-1_prm_1'][const.PARAM_VALUE_ORIGIN] = 'now again I need to change origin'
+    header[const.SET_PARAMS_TAG]['ac-1_prm_1'][const.PROFILE_PARAM_VALUE_ORIGIN] = 'now again I need to change origin'
 
     md_api.write_markdown_with_header(md_path, header, tree.content.raw_text)
 
     # assemble based on set_parameters_flag
-    test_args = f'trestle author profile-assemble -n {prof_name} -m {md_name} -o {assembled_prof_name}'.split()
+    test_args = f'trestle author profile-assemble -n {prof_name} -m {md_name} -o {assembled_prof_name} -r'.split()
     test_args.append('-sp')
-    assembled_prof_dir.mkdir()
     monkeypatch.setattr(sys, 'argv', test_args)
     assert Trestle().run() == 0

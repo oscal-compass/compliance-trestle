@@ -159,7 +159,7 @@ class CatalogWriter():
                 # adds param_Value_origin
                 if param_value_origin != '' and param_value_origin is not None:
                     if context.purpose == ContextPurpose.PROFILE:
-                        new_dict[const.PROFILE_PARAM_VALUE_ORIGIN] = param_value_origin
+                        new_dict[const.PARAM_VALUE_ORIGIN] = param_value_origin
                 # then insert the original, incoming values as values
                 if param_id in control_param_dict:
                     orig_param = control_param_dict[param_id]
