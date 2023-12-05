@@ -144,22 +144,30 @@ class CatalogWriter():
         for param_id, param_dict in control_param_dict.items():
             # if the param is in the full_param_dict, load its contents first and mark as profile-values
             display_name = ''
-            param_value_origin = ''
+            param_value_origin, _ = CatalogInterface._get_param_value_origin_and_ns(param_dict)
+            prof_param_value_origin = ''
             if param_id in profile_set_param_dict:
                 # get the param from the profile set_param
                 param = profile_set_param_dict[param_id]
                 display_name, _ = CatalogInterface._get_display_name_and_ns(param)
-                param_value_origin, _ = CatalogInterface._get_param_value_origin_and_ns(param)
+                prof_param_value_origin, _ = CatalogInterface._get_param_value_origin_and_ns(param)
                 # assign its contents to the dict
                 new_dict = ModelUtils.parameter_to_dict(param, True)
                 if const.VALUES in new_dict:
                     if context.purpose == ContextPurpose.PROFILE:
                         new_dict[const.PROFILE_VALUES] = new_dict[const.VALUES]
                         new_dict.pop(const.VALUES)
-                # adds param_Value_origin
+                # validates if parent profile has param-value-origin field
                 if param_value_origin != '' and param_value_origin is not None:
                     if context.purpose == ContextPurpose.PROFILE:
                         new_dict[const.PARAM_VALUE_ORIGIN] = param_value_origin
+                # validates if current profile has param-value-origin field and
+                # adds it to prof-param-value-origin
+                if prof_param_value_origin != '' and prof_param_value_origin is not None:
+                    if context.purpose == ContextPurpose.PROFILE:
+                        new_dict[const.PROFILE_PARAM_VALUE_ORIGIN] = prof_param_value_origin
+                else:
+                    new_dict[const.PROFILE_PARAM_VALUE_ORIGIN] = const.ADDED_BY_CONTROL_OWNER
                 # then insert the original, incoming values as values
                 if param_id in control_param_dict:
                     orig_param = control_param_dict[param_id]
@@ -178,9 +186,19 @@ class CatalogWriter():
                 values = tmp_dict.get('values', None)
                 # if values are None then don´t display them in the markdown
                 if values is not None:
-                    new_dict = {'id': param_id, 'values': values, const.PROFILE_VALUES: ['<REPLACE_ME>']}
+                    new_dict = {
+                        'id': param_id,
+                        'values': values,
+                    }
                 else:
-                    new_dict = {'id': param_id, const.PROFILE_VALUES: ['<REPLACE_ME>']}
+                    new_dict = {
+                        'id': param_id,
+                    }
+                new_dict[const.PROFILE_VALUES] = ['<REPLACE_ME>']
+                new_dict[const.PROFILE_PARAM_VALUE_ORIGIN] = const.ADDED_BY_CONTROL_OWNER
+            if param_value_origin is not None:
+                if context.purpose == ContextPurpose.PROFILE:
+                    new_dict[const.PARAM_VALUE_ORIGIN] = param_value_origin
             new_dict.pop('id', None)
             # validates if there are aggregated parameter values to the current parameter
             aggregated_props = [prop for prop in as_list(param_dict.props) if prop.name == const.AGGREGATES]

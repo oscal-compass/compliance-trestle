@@ -1376,3 +1376,67 @@ def test_profile_generate_assemble_param_value_origin(tmp_trestle_dir: pathlib.P
     test_args.append('-sp')
     monkeypatch.setattr(sys, 'argv', test_args)
     assert Trestle().run() == 0
+
+
+def test_param_value_origin_from_inherited_profile(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test the inherited param-value-origin coming from imported profile."""
+    test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
+    yaml_header_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
+
+    # convert resolved profile catalog to markdown then assemble it after adding an item to a control
+    # generate, edit, assemble
+    test_args = f'trestle author profile-generate -n test_profile_a -o {md_name} -rs NeededExtra'.split(  # noqa E501
+    )
+    test_args.extend(['-y', str(yaml_header_path)])
+    test_args.extend(['-s', all_sections_str])
+    monkeypatch.setattr(sys, 'argv', test_args)
+
+    assert Trestle().run() == 0
+
+    md_path = tmp_trestle_dir / 'my_md' / 'ac' / 'ac-3.3.md'
+
+    assert md_path.exists()
+    md_api = MarkdownAPI()
+    header, tree = md_api.processor.process_markdown(md_path)
+
+    assert header
+    assert header[const.SET_PARAMS_TAG]['ac-3.3_prm_1'][const.PROFILE_PARAM_VALUE_ORIGIN] == 'Added by control owner'
+    header[const.SET_PARAMS_TAG]['ac-3.3_prm_1'][const.PROFILE_PARAM_VALUE_ORIGIN] = 'Needed to change param value origin'
+
+    md_api.write_markdown_with_header(md_path, header, tree.content.raw_text)
+
+    # assemble based on set_parameters_flag
+    test_args = f'trestle author profile-assemble -n test_profile_a -m {md_name} -o {assembled_prof_name}'.split()
+    test_args.append('-sp')
+    assembled_prof_dir = tmp_trestle_dir / 'profiles/my_assembled_prof'
+    assembled_prof_dir.mkdir()
+    monkeypatch.setattr(sys, 'argv', test_args)
+    assert Trestle().run() == 0
+
+    profile, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'my_assembled_prof',
+                                                 prof.Profile, FileContentType.JSON)
+
+    # grabs parameter ac-3.3_prm_1 and verify if it was changed correctly
+    assert profile.modify.set_parameters[18].props[0].value == 'Needed to change param value origin'
+    # now change the value in the json file to verify if in the markdown is changed
+    profile.modify.set_parameters[18].props[0].value = 'this is a change test'
+
+    ModelUtils.save_top_level_model(profile, tmp_trestle_dir, 'my_assembled_prof', FileContentType.JSON)
+
+    # convert resolved profile catalog to markdown then assemble it after adding an item to a control
+    # generate, edit, assemble
+    test_args = f'trestle author profile-generate -n {assembled_prof_name} -o {md_name} -rs NeededExtra --force-overwrite'.split(  # noqa E501
+    )
+    test_args.extend(['-y', str(yaml_header_path)])
+    test_args.extend(['-s', all_sections_str])
+    monkeypatch.setattr(sys, 'argv', test_args)
+
+    assert Trestle().run() == 0
+
+    assert md_path.exists()
+    md_api = MarkdownAPI()
+    header, tree = md_api.processor.process_markdown(md_path)
+
+    assert header
+    # verify the change done in json is reflected correctly in the profile-param-value-origin
+    assert header[const.SET_PARAMS_TAG]['ac-3.3_prm_1'][const.PROFILE_PARAM_VALUE_ORIGIN] == 'this is a change test'

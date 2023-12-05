@@ -635,3 +635,5 @@ INHERITANCE_VIEW_DIR = 'inheritance'
 HELP_LEVERAGED = 'Name of the SSP to be leveraged.'
 
 SATISFIED_STATEMENT_DESCRIPTION = 'Satisfied Statement Description'
+
+ADDED_BY_CONTROL_OWNER = 'Added by control owner'
