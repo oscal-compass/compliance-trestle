@@ -1401,8 +1401,8 @@ def test_param_value_origin_from_inherited_profile(tmp_trestle_dir: pathlib.Path
 
     assert header
     assert header[const.SET_PARAMS_TAG]['ac-3.3_prm_1'][const.PROFILE_PARAM_VALUE_ORIGIN] == 'Added by control owner'
-    header[const.SET_PARAMS_TAG]['ac-3.3_prm_1'][const.PROFILE_PARAM_VALUE_ORIGIN] = 'Needed to change param value origin'
-
+    header[const.SET_PARAMS_TAG]['ac-3.3_prm_1'][const.PROFILE_PARAM_VALUE_ORIGIN
+                                                 ] = 'Needed to change param value origin'
     md_api.write_markdown_with_header(md_path, header, tree.content.raw_text)
 
     # assemble based on set_parameters_flag
