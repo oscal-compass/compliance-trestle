@@ -88,7 +88,12 @@ class CatalogReader():
                             param_dict[const.PARAM_VALUE_ORIGIN] = param_dict[const.PROFILE_PARAM_VALUE_ORIGIN]
                             param_dict.pop(const.PROFILE_PARAM_VALUE_ORIGIN)
                         else:
+                            # removes replace me placeholder and profile-param-value-origin as it was not modified
                             param_dict.pop(const.PROFILE_PARAM_VALUE_ORIGIN)
+                            # validates param-value-origin is in dict to remove it
+                            # because a value wasn´t provided and it shouldn´t be inheriting value from parent
+                            if const.PARAM_VALUE_ORIGIN in param_dict:
+                                param_dict.pop(const.PARAM_VALUE_ORIGIN)
                     final_param_dict[param_id] = param_dict
                     param_sort_map[param_id] = sort_id
         new_alters: List[prof.Alter] = []
