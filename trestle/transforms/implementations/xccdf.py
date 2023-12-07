@@ -199,7 +199,7 @@ class RuleUse():
     @property
     def ns(self):
         """Derive namespace."""
-        return f'https://ibm.github.io/compliance-trestle/schemas/oscal/ar/{self.scanner_name}'
+        return f'https://ibm.github.io/compliance-trestle/schemas/oscal/ar/{self.scanner_name}'  # noqa: E231
 
 
 class _XccdfResult():
@@ -317,9 +317,14 @@ class _XccdfResult():
 
     def _parse_xml(self) -> Iterator[RuleUse]:
         """Parse the stringified XML."""
+        ns = {
+            'checklist12': 'http://checklists.nist.gov/xccdf/1.2',
+        }
         results = self.xccdf_xml
         root = ElementTree.fromstring(results, forbid_dtd=True)
         version = self._get_version(root)
+        if _remove_namespace(root.tag) != 'TestResult':
+            root = root.find('.//checklist12:TestResult', ns)
         id_ = self._get_id(root)
         target = self._get_target(root)
         target_type = self._get_target_type(root)
