@@ -1404,7 +1404,8 @@ def test_param_value_origin_from_inherited_profile(tmp_trestle_dir: pathlib.Path
     profile, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'my_assembled_prof',
                                                  prof.Profile, FileContentType.JSON)
 
-    # grabs parameter ac-3.3_prm_1 and verify param-value-origin wasn´t added as profile-param-value-origin wasn´t modified
+    # grabs parameter ac-3.3_prm_1 and verify param-value-origin wasn´t added as
+    # profile-param-value-origin wasn´t modified
     assert profile.modify.set_parameters[18].props is None
 
     md_path = tmp_trestle_dir / 'my_md' / 'ac' / 'ac-3.3.md'
@@ -1420,8 +1421,7 @@ def test_param_value_origin_from_inherited_profile(tmp_trestle_dir: pathlib.Path
     md_api.write_markdown_with_header(md_path, header, tree.content.raw_text)
 
     # assemble based on set_parameters_flag
-    test_args = f'trestle author profile-assemble -n test_profile_a -m {md_name} -o {assembled_prof_name}'.split(
-    )
+    test_args = f'trestle author profile-assemble -n test_profile_a -m {md_name} -o {assembled_prof_name}'.split()
     test_args.append('-sp')
     monkeypatch.setattr(sys, 'argv', test_args)
     assert Trestle().run() == 0
