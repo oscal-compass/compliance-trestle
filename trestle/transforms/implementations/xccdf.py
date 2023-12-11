@@ -318,7 +318,7 @@ class _XccdfResult():
     def _parse_xml(self) -> Iterator[RuleUse]:
         """Parse the stringified XML."""
         ns = {
-            'checklist12': 'http://checklists.nist.gov/xccdf/1.2',
+            'checklist12': 'http://checklists.nist.gov/xccdf/1.2',  # NOSONAR
         }
         results = self.xccdf_xml
         root = ElementTree.fromstring(results, forbid_dtd=True)
