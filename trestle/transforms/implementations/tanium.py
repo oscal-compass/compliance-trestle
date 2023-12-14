@@ -251,7 +251,7 @@ class TaniumOscalFactory():
         self._component_map: Dict[str, SystemComponent] = {}
         self._inventory_map: Dict[str, InventoryItem] = {}
         self._observation_list: List[Observation] = []
-        self._ns = 'https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium'
+        self._ns = 'https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium'
         self._cpus = None
         self._checking = checking
         self._caching = caching

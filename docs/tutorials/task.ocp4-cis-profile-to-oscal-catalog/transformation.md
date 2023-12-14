@@ -1,6 +1,6 @@
 # Tutorial: Setup for and use of ComplianceAsCode profile to OSCAL Catalog transformer
 
-Here are step by step instructions for setup and transformation of [ComplianceAsCode](https://github.com/ComplianceAsCode/content) profile data files into [NIST](https://www.nist.gov/) standard [OSCAL](https://pages.nist.gov/OSCAL/) [Catalog](https://pages.nist.gov/OSCAL/reference/latest/catalog/json-outline/) using the [compliance-trestle](https://ibm.github.io/compliance-trestle/) tool.
+Here are step by step instructions for setup and transformation of [ComplianceAsCode](https://github.com/ComplianceAsCode/content) profile data files into [NIST](https://www.nist.gov/) standard [OSCAL](https://pages.nist.gov/OSCAL/) [Catalog](https://pages.nist.gov/OSCAL/reference/latest/catalog/json-outline/) using the [compliance-trestle](https://oscal-compass.github.io/compliance-trestle/) tool.
 
 ## *Objective*
 
@@ -12,7 +12,7 @@ The second is a one-command transformation from `.profile` to `OSCAL.json`.
 
 ## *Step 1: Install trestle in a Python virtual environment*
 
-Follow the instructions [here](https://ibm.github.io/compliance-trestle/python_trestle_setup/) to install trestle in a virtual environment.
+Follow the instructions [here](https://oscal-compass.github.io/compliance-trestle/python_trestle_setup/) to install trestle in a virtual environment.
 
 ## *Step 2: Transform profile data (CIS benchmarks)*
 

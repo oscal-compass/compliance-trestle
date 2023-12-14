@@ -178,7 +178,7 @@ Support in this section is intended to cover both github.com and github enterpri
 The first scenario is for unauthenticated access. Unauthenticated access may be addressed through either the 'UI' form
 URL e.g.:
 
-https://github.com/IBM/compliance-trestle/blob/develop/LICENSE
+https://github.com/oscal-compass/compliance-trestle/blob/develop/LICENSE
 
 OR
 
@@ -186,7 +186,7 @@ the raw form URL:
 https://raw.githubusercontent.com/IBM/compliance-trestle/develop/LICENSE
 
 Both URLs would map to the following path in trestle cache:
-`.trestle/cache/github.com/IBM/compliance-trestle/develop/LICENSE`
+`.trestle/cache/github.com/oscal-compass/compliance-trestle/develop/LICENSE`
 
 For authenticated scenarios both domains are supported, however, tokens provided to the raw website e.g.:
 https://raw.githubusercontent.com/IBM/compliance-trestle/develop/LICENSE?token=TOKEN

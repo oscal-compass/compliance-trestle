@@ -1,6 +1,6 @@
 # Tutorial: Setup for and use of ComplianceAsCode profile to OSCAL Component Definition transformer
 
-Here are step by step instructions for setup and transformation of [ComplianceAsCode](https://github.com/ComplianceAsCode/content) profile data files into [NIST](https://www.nist.gov/) standard [OSCAL](https://pages.nist.gov/OSCAL/) [Component Definition](https://pages.nist.gov/OSCAL/reference/latest/component-definition/json-outline/) using the [compliance-trestle](https://ibm.github.io/compliance-trestle/) tool.
+Here are step by step instructions for setup and transformation of [ComplianceAsCode](https://github.com/ComplianceAsCode/content) profile data files into [NIST](https://www.nist.gov/) standard [OSCAL](https://pages.nist.gov/OSCAL/) [Component Definition](https://pages.nist.gov/OSCAL/reference/latest/component-definition/json-outline/) using the [compliance-trestle](https://oscal-compass.github.io/compliance-trestle/) tool.
 
 ## *Objective*
 
@@ -12,7 +12,7 @@ The second is a one-command transformation from `.profile` to `OSCAL.json`.
 
 ## *Step 1: Install trestle in a Python virtual environment*
 
-Follow the instructions [here](https://ibm.github.io/compliance-trestle/python_trestle_setup/) to install trestle in a virtual environment.
+Follow the instructions [here](https://oscal-compass.github.io/compliance-trestle/python_trestle_setup/) to install trestle in a virtual environment.
 
 ## *Step 2: Transform profile data (CIS benchmarks)*
 
@@ -55,7 +55,7 @@ Configuration flags sit under [task.ocp4-cis-profile-to-oscal-cd]:
   output-dir             = location to write the generated component-definition.json file.
   profile-name           = profile name, e.g. OCP4 CIS-benchmark v4.
   profile-mnemonic       = profile mnemonic, e.g. ocp4-cis-node.
-  profile-ns             = profile ns, e.g. http://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud.
+  profile-ns             = profile ns, e.g. http://oscal-compass.github.io/compliance-trestle/schemas/oscal/ibm-cloud.
   profile-version        = profile version, e.g. 1.1.
   profile-check-version  = profile check version, e.g. 0.1.58.
   profile-type           = profile type, e.g. OCP4.
@@ -117,7 +117,7 @@ output-dir = component-definitions/ocp4-cis
 
 profile-name = OCP4 CIS-benchmark v4
 profile-mnemonic = ocp4-cis-node
-profile-ns = http://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud
+profile-ns = http://oscal-compass.github.io/compliance-trestle/schemas/oscal/ibm-cloud
 profile-version = 1.1
 profile-check-version = 0.1.58
 
@@ -294,19 +294,19 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/ocp4-cis/compo
             "props": [
               {
                 "name": "profile_name",
-                "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud",
+                "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ibm-cloud",
                 "value": "OCP4 CIS-benchmark v4",
                 "class": "scc_profile_name"
               },
               {
                 "name": "profile_mnemonic",
-                "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud",
+                "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ibm-cloud",
                 "value": "ocp4-cis-node",
                 "class": "scc_profile_mnemonic"
               },
               {
                 "name": "profile_version",
-                "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud",
+                "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ibm-cloud",
                 "value": "1.1",
                 "class": "scc_profile_version"
               },
@@ -323,7 +323,7 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/ocp4-cis/compo
                 "props": [
                   {
                     "name": "XCCDF_rule",
-                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud",
+                    "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ibm-cloud",
                     "value": "xccdf_org.ssgproject.content_rule_file_permissions_kube_apiserver",
                     "class": "scc_goal_name_id",
                     "remarks": "Verify Permissions on the Kubernetes API Server Pod Specification File"
@@ -358,7 +358,7 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/ocp4-cis/compo
                 "props": [
                   {
                     "name": "XCCDF_rule",
-                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud",
+                    "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ibm-cloud",
                     "value": "xccdf_org.ssgproject.content_rule_file_owner_kube_apiserver",
                     "class": "scc_goal_name_id",
                     "remarks": "Verify User Who Owns The Kubernetes API Server Pod Specification File"
@@ -393,7 +393,7 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/ocp4-cis/compo
                 "props": [
                   {
                     "name": "XCCDF_rule",
-                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud",
+                    "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ibm-cloud",
                     "value": "xccdf_org.ssgproject.content_rule_file_groupowner_kube_apiserver",
                     "class": "scc_goal_name_id",
                     "remarks": "Verify Group Who Owns The Kubernetes API Server Pod Specification File"
