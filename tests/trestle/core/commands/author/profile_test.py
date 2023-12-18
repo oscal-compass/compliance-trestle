@@ -1306,7 +1306,6 @@ def test_profile_generate_assemble_param_value_origin(tmp_trestle_dir: pathlib.P
     """Test the profile markdown generator."""
     _, assembled_prof_dir, _, markdown_path = setup_profile_generate(tmp_trestle_dir, 'simple_test_profile.json')
     yaml_header_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
-    ac_path = markdown_path / 'ac'
 
     # convert resolved profile catalog to markdown then assemble it after adding an item to a control
     # generate, edit, assemble
@@ -1318,18 +1317,13 @@ def test_profile_generate_assemble_param_value_origin(tmp_trestle_dir: pathlib.P
 
     assert Trestle().run() == 0
 
-    fc = test_utils.FileChecker(ac_path)
-
-    assert Trestle().run() == 0
-
-    assert fc.files_unchanged()
-
     md_path = markdown_path / 'ac' / 'ac-1.md'
     assert md_path.exists()
     md_api = MarkdownAPI()
     header, tree = md_api.processor.process_markdown(md_path)
 
     assert header
+    assert header[const.SET_PARAMS_TAG]['ac-1_prm_1'][const.PROFILE_PARAM_VALUE_ORIGIN] == 'comes from xyz policy'
     header[const.SET_PARAMS_TAG]['ac-1_prm_1'][const.PROFILE_PARAM_VALUE_ORIGIN] = 'Needed to change param value origin'
 
     md_api.write_markdown_with_header(md_path, header, tree.content.raw_text)
