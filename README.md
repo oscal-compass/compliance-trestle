@@ -6,7 +6,7 @@
 ![[Code Coverage](https://sonarcloud.io/dashboard?id=compliance-trestle)](https://sonarcloud.io/api/project_badges/measure?project=compliance-trestle&metric=coverage)
 ![[Quality gate](https://sonarcloud.io/dashboard?id=compliance-trestle)](https://sonarcloud.io/api/project_badges/measure?project=compliance-trestle&metric=alert_status)
 ![[Pypi](https://pypi.org/project/compliance-trestle/)](https://img.shields.io/pypi/dm/compliance-trestle)
-![GitHub Actions status](https://img.shields.io/github/workflow/status/IBM/compliance-trestle/Trestle%20PR%20pipeline?event=push)
+![GitHub Actions status](https://img.shields.io/github/workflow/status/oscal-compass/compliance-trestle/Trestle%20PR%20pipeline?event=push)
 
 ______________________________________________________________________
 

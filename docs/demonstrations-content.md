@@ -1,6 +1,6 @@
 # Trestle demonstration projects and content
 
-Trestle has a number of demonstrations setup in the [IBM/compliance-trestle-demos](https://github.com/oscal-compass/compliance-trestle-demos)
+Trestle has a number of demonstrations setup in the [oscal-compass/compliance-trestle-demos](https://github.com/oscal-compass/compliance-trestle-demos)
 repository which is intended to be a single point of call for demonstrations and content.
 
 If you are interested in contributing a demonstration / content open a PR to the demonstration repo and a PR to

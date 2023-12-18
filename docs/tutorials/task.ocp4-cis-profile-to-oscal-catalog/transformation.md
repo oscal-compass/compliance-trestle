@@ -71,7 +71,7 @@ Configuration flags sit under [task.ocp4-cis-profile-to-oscal-catalog]:
 - Fetch trestle task file.
 
 ```
-(venv.trestle)$ curl 'https://raw.githubusercontent.com/IBM/compliance-trestle/main/docs/tutorials/task.ocp4-cis-profile-to-oscal-catalog/demo-ocp4-cis-profile-to-oscal-catalog.config' > adjunct-data/task-files/demo-ocp4-cis-profile-to-oscal-catalog.config
+(venv.trestle)$ curl 'https://raw.githubusercontent.com/oscal-compass/compliance-trestle/main/docs/tutorials/task.ocp4-cis-profile-to-oscal-catalog/demo-ocp4-cis-profile-to-oscal-catalog.config' > adjunct-data/task-files/demo-ocp4-cis-profile-to-oscal-catalog.config
 ```
 
 <details markdown>

@@ -237,14 +237,14 @@ Configuration flags sit under [task.csv-to-oscal-cd]:
 - Fetch sample csv-file.
 
 ```
-(venv.trestle)$ curl 'https://raw.githubusercontent.com/IBM/compliance-trestle/main/docs/tutorials/task.csv-to-oscal-cd/ocp4-sample-input.csv' > adjunct-data/ocp4-sample-input.csv
+(venv.trestle)$ curl 'https://raw.githubusercontent.com/oscal-compass/compliance-trestle/main/docs/tutorials/task.csv-to-oscal-cd/ocp4-sample-input.csv' > adjunct-data/ocp4-sample-input.csv
 
 ```
 
 - Fetch trestle task file.
 
 ```
-(venv.trestle)$ curl 'https://raw.githubusercontent.com/IBM/compliance-trestle/main/docs/tutorials/task.csv-to-oscal-cd/demo-csv-to-oscal-cd.config' > adjunct-data/task-files/demo-csv-to-oscal-cd.config
+(venv.trestle)$ curl 'https://raw.githubusercontent.com/oscal-compass/compliance-trestle/main/docs/tutorials/task.csv-to-oscal-cd/demo-csv-to-oscal-cd.config' > adjunct-data/task-files/demo-csv-to-oscal-cd.config
 ```
 
 <details markdown>

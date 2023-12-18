@@ -112,13 +112,16 @@ def test_https_fetcher_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyP
 def test_https_fetcher(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test the HTTPS fetcher update, including failures."""
     # This valid uri should work:
-    uri = 'https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/json/minimal_catalog.json'
+    uri = (
+        'https://raw.githubusercontent.com/oscal-compass/compliance-trestle/develop/'
+        'tests/data/json/minimal_catalog.json'
+    )
     fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
     fetcher._update_cache()
     assert len(open(fetcher._cached_object_path, encoding=const.FILE_ENCODING).read()) > 0
     dummy_existing_file = fetcher._cached_object_path.__str__()
     # Now we'll get a file that does not exist:
-    uri = 'https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/json/not_here.json'
+    uri = 'https://raw.githubusercontent.com/oscal-compass/compliance-trestle/develop/tests/data/json/not_here.json'
     fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
     with pytest.raises(TrestleError, match='GET returned code 404'):
         fetcher._update_cache()
@@ -301,7 +304,10 @@ def test_fetcher_factory(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
 
 def test_fetcher_expiration(tmp_trestle_dir: pathlib.Path) -> None:
     """Test fetcher expiration behavior."""
-    uri = 'https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/json/minimal_catalog.json'
+    uri = (
+        'https://raw.githubusercontent.com/oscal-compass/compliance-trestle/develop/'
+        'tests/data/json/minimal_catalog.json'
+    )
     fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
     # specify quick timeout of 5s
     fetcher._expiration_seconds = 5

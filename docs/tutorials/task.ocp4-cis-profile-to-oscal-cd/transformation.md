@@ -94,9 +94,9 @@ Notes:
 - Fetch trestle config and task files.
 
 ```shell
-(venv.trestle)$ curl 'https://raw.githubusercontent.com/IBM/compliance-trestle/main/docs/tutorials/task.ocp4-cis-profile-to-oscal-cd/demo-ocp4-cis-profile-to-oscal-cd.config' > adjunct-data/config-files/demo-ocp4-cis-profile-to-oscal-cd.config
-(venv.trestle)$ curl 'https://raw.githubusercontent.com/IBM/compliance-trestle/main/docs/tutorials/task.ocp4-cis-profile-to-oscal-cd/selected_rules.json' > adjunct-data/task-files/selected_rules.json
-(venv.trestle)$ curl 'https://raw.githubusercontent.com/IBM/compliance-trestle/main/docs/tutorials/task.ocp4-cis-profile-to-oscal-cd/enabled_rules.json' > adjunct-data/task-files/enabled_rules.json
+(venv.trestle)$ curl 'https://raw.githubusercontent.com/oscal-compass/compliance-trestle/main/docs/tutorials/task.ocp4-cis-profile-to-oscal-cd/demo-ocp4-cis-profile-to-oscal-cd.config' > adjunct-data/config-files/demo-ocp4-cis-profile-to-oscal-cd.config
+(venv.trestle)$ curl 'https://raw.githubusercontent.com/oscal-compass/compliance-trestle/main/docs/tutorials/task.ocp4-cis-profile-to-oscal-cd/selected_rules.json' > adjunct-data/task-files/selected_rules.json
+(venv.trestle)$ curl 'https://raw.githubusercontent.com/oscal-compass/compliance-trestle/main/docs/tutorials/task.ocp4-cis-profile-to-oscal-cd/enabled_rules.json' > adjunct-data/task-files/enabled_rules.json
 ```
 
 <details markdown>

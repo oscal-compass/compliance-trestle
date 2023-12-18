@@ -208,7 +208,7 @@ plugins:
           new_path_syntax: true
     watch:
     - trestle
-repo_name: IBM/compliance-trestle
+repo_name: oscal-compass/compliance-trestle
 repo_url: https://github.com/oscal-compass/compliance-trestle
 site_description: Documentation for compliance-trestle package.
 site_name: Compliance Trestle
