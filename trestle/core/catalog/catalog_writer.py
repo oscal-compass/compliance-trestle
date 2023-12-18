@@ -194,7 +194,7 @@ class CatalogWriter():
                     new_dict = {
                         'id': param_id,
                     }
-                new_dict[const.PROFILE_VALUES] = ['<REPLACE_ME>']
+                new_dict[const.PROFILE_VALUES] = [const.REPLACE_ME_PLACEHOLDER]
                 new_dict[const.PROFILE_PARAM_VALUE_ORIGIN] = const.ADDED_BY_CONTROL_OWNER
             if param_value_origin is not None:
                 if context.purpose == ContextPurpose.PROFILE:

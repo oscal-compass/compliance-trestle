@@ -75,8 +75,8 @@ class CatalogReader():
                     # if profile_values are present, overwrite values with them
                     if const.PROFILE_VALUES in param_dict:
                         if param_dict[const.PROFILE_VALUES] != [] and param_dict[const.PROFILE_VALUES] is not None:
-                            if not write_mode and '<REPLACE_ME>' in param_dict[const.PROFILE_VALUES]:
-                                param_dict[const.PROFILE_VALUES].remove('<REPLACE_ME>')
+                            if not write_mode and const.REPLACE_ME_PLACEHOLDER in param_dict[const.PROFILE_VALUES]:
+                                param_dict[const.PROFILE_VALUES].remove(const.REPLACE_ME_PLACEHOLDER)
                             if param_dict[const.PROFILE_VALUES] != [] and param_dict[const.PROFILE_VALUES] is not None:
                                 param_dict[const.VALUES] = param_dict[const.PROFILE_VALUES]
                         if not write_mode:
