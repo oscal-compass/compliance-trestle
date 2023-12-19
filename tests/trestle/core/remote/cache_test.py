@@ -112,13 +112,16 @@ def test_https_fetcher_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyP
 def test_https_fetcher(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test the HTTPS fetcher update, including failures."""
     # This valid uri should work:
-    uri = 'https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/json/minimal_catalog.json'
+    uri = (
+        'https://raw.githubusercontent.com/oscal-compass/compliance-trestle/develop/'
+        'tests/data/json/minimal_catalog.json'
+    )
     fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
     fetcher._update_cache()
     assert len(open(fetcher._cached_object_path, encoding=const.FILE_ENCODING).read()) > 0
     dummy_existing_file = fetcher._cached_object_path.__str__()
     # Now we'll get a file that does not exist:
-    uri = 'https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/json/not_here.json'
+    uri = 'https://raw.githubusercontent.com/oscal-compass/compliance-trestle/develop/tests/data/json/not_here.json'
     fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
     with pytest.raises(TrestleError, match='GET returned code 404'):
         fetcher._update_cache()
@@ -241,20 +244,20 @@ def test_sftp_fetcher_bad_uri(uri: str, tmp_trestle_dir: pathlib.Path) -> None:
         '.json',
         'a.ym',
         'ftp://some.host/this.file',
-        'https://{{9invalid}}:@github.com/IBM/test/file',
-        'https://{{invalid var}}:@github.com/IBM/test/file',
-        'https://{{invalid-var}}:@github.com/IBM/test/file',
-        'https://{{_}}:@github.com/IBM/test/file',
-        'https://{{myusername}}:@github.com/IBM/test/file',
-        'https://{{myusername}}:passwordstring@github.com/IBM/test/file',
-        'https://{{myusername_not_defined}}:passwordstring@github.com/IBM/test/file',
-        'https://{{myusername}}:{{password_var_not_defined}}@github.com/IBM/test/file',
-        'https://{{myusername}}:{{0invalid}}@github.com/IBM/test/file',
-        'https://{{myusername}}:{{invalid var}}@github.com/IBM/test/file',
-        'https://{{myusername}}:{{invalid-var}}@github.com/IBM/test/file',
-        'https://{{myusername}}:{{_}}@github.com/IBM/test/file',
-        'https://usernamestring:{{mypassword}}@github.com/IBM/test/file',
-        'https://:{{mypassword}}@github.com/IBM/test/file'
+        'https://{{9invalid}}:@github.com/oscal-compass/test/file',
+        'https://{{invalid var}}:@github.com/oscal-compass/test/file',
+        'https://{{invalid-var}}:@github.com/oscal-compass/test/file',
+        'https://{{_}}:@github.com/oscal-compass/test/file',
+        'https://{{myusername}}:@github.com/oscal-compass/test/file',
+        'https://{{myusername}}:passwordstring@github.com/oscal-compass/test/file',
+        'https://{{myusername_not_defined}}:passwordstring@github.com/oscal-compass/test/file',
+        'https://{{myusername}}:{{password_var_not_defined}}@github.com/oscal-compass/test/file',
+        'https://{{myusername}}:{{0invalid}}@github.com/oscal-compass/test/file',
+        'https://{{myusername}}:{{invalid var}}@github.com/oscal-compass/test/file',
+        'https://{{myusername}}:{{invalid-var}}@github.com/oscal-compass/test/file',
+        'https://{{myusername}}:{{_}}@github.com/oscal-compass/test/file',
+        'https://usernamestring:{{mypassword}}@github.com/oscal-compass/test/file',
+        'https://:{{mypassword}}@github.com/oscal-compass/test/file'
     ]
 )
 def test_fetcher_bad_uri(tmp_trestle_dir: pathlib.Path, uri: str, monkeypatch: MonkeyPatch) -> None:
@@ -301,7 +304,10 @@ def test_fetcher_factory(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
 
 def test_fetcher_expiration(tmp_trestle_dir: pathlib.Path) -> None:
     """Test fetcher expiration behavior."""
-    uri = 'https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/json/minimal_catalog.json'
+    uri = (
+        'https://raw.githubusercontent.com/oscal-compass/compliance-trestle/develop/'
+        'tests/data/json/minimal_catalog.json'
+    )
     fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
     # specify quick timeout of 5s
     fetcher._expiration_seconds = 5

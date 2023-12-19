@@ -9,13 +9,13 @@
             "props": [
                 {
                     "name": "profile_mnemonic",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud",
+                    "ns": "http://oscal-compass.github.io/compliance-trestle/schemas/oscal/ibm-cloud",
                     "value": "roks-ocp4-v1-0-e2123484",
                     "class": "scc_profile_mnemonic"
                 },
                 {
                     "name": "base_profile_mnemonic",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud",
+                    "ns": "http://oscal-compass.github.io/compliance-trestle/schemas/oscal/ibm-cloud",
                     "value": "ocp4-cis-node",
                     "class": "scc_base_profile_mnemonic"
                 }

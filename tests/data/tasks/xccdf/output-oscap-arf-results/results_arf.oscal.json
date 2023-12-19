@@ -26,8 +26,7 @@
               {
                 "name": "target",
                 "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
-                "value": "kube-c18ler8d06m877hrn7jg-roks8-default-00000319.iks.mycorp",
-                "class": "scc_inventory_item_id"
+                "value": "kube-c18ler8d06m877hrn7jg-roks8-default-00000319.iks.mycorp"
               },
               {
                 "name": "target_type",
@@ -62,15 +61,12 @@
                 },
                 {
                   "name": "version",
-                  "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
-                  "value": "0.1.57",
-                  "class": "scc_check_version"
+                  "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP"
                 },
                 {
                   "name": "severity",
                   "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
-                  "value": "medium",
-                  "class": "scc_check_severity"
+                  "value": "medium"
                 },
                 {
                   "name": "weight",
@@ -90,8 +86,7 @@
                 {
                   "name": "id",
                   "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
-                  "value": "xccdf_org.open-scap_testresult_xccdf_org.ssgproject.content_profile_cis",
-                  "class": "scc_predefined_profile"
+                  "value": "xccdf_org.open-scap_testresult_xccdf_org.ssgproject.content_profile_cis"
                 }
               ],
               "status": {
@@ -119,14 +114,12 @@
             {
               "name": "idref",
               "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
-              "value": "xccdf_org.ssgproject.content_rule_prefer_64bit_os",
-              "class": "scc_check_name_id"
+              "value": "xccdf_org.ssgproject.content_rule_prefer_64bit_os"
             },
             {
               "name": "result",
               "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
-              "value": "notselected",
-              "class": "scc_result"
+              "value": "notselected"
             }
           ],
           "methods": [
@@ -138,7 +131,7 @@
               "type": "inventory-item"
             }
           ],
-          "collected": "2021-02-24T19:31:13+00:00"
+          "collected": "2023-11-30T23:00:03+00:00"
         },
         {
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -147,14 +140,12 @@
             {
               "name": "idref",
               "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
-              "value": "xccdf_org.ssgproject.content_rule_disable_prelink",
-              "class": "scc_check_name_id"
+              "value": "xccdf_org.ssgproject.content_rule_disable_prelink"
             },
             {
               "name": "result",
               "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
-              "value": "pass",
-              "class": "scc_result"
+              "value": "pass"
             }
           ],
           "methods": [
@@ -166,7 +157,7 @@
               "type": "inventory-item"
             }
           ],
-          "collected": "2021-02-24T19:31:13+00:00"
+          "collected": "2023-11-30T23:00:03+00:00"
         }
       ]
     }

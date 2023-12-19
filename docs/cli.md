@@ -1325,7 +1325,7 @@ output-overwrite = true
 
 org-name = International Business Machines
 org-remarks = IBM
-namespace = https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud
+namespace = https://oscal-compass.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud
 property-name-to-class = goal_name_id:scc_goal_name_id, goal_version:scc_goal_version
 catalog-url = https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json
 catalog-title = NIST Special Publication 800-53 Revision 4
@@ -1345,7 +1345,7 @@ Example catalog-file:
 Example spread-sheet-file:
 </span>
 
-[/home/user/compliance/data/spread-sheet/good.xlsx](https://github.com/IBM/compliance-trestle/tree/main/tests/data/spread-sheet/good.xlsx)
+[/home/user/compliance/data/spread-sheet/good.xlsx](https://github.com/oscal-compass/compliance-trestle/tree/main/tests/data/spread-sheet/good.xlsx)
 
 **output**
 
@@ -1353,7 +1353,7 @@ Example spread-sheet-file:
 Example component-definition.json:
 </span>
 
-[/home/user/compliance/data/tasks/xlsx/output/component-definition.json](https://github.com/IBM/compliance-trestle/tree/main/tests/data/tasks/xlsx/output/component-definition.json)
+[/home/user/compliance/data/tasks/xlsx/output/component-definition.json](https://github.com/oscal-compass/compliance-trestle/tree/main/tests/data/tasks/xlsx/output/component-definition.json)
 
 ### spreadsheet to component definition mapping
 
@@ -1493,7 +1493,7 @@ profile-title = IBM Best Practices SCC GOALS
 Example spread-sheet-file:
 </span>
 
-[/home/user/compliance/data/spread-sheet/good.xlsx](https://github.com/IBM/compliance-trestle/tree/main/tests/data/spread-sheet/good.xlsx)
+[/home/user/compliance/data/spread-sheet/good.xlsx](https://github.com/oscal-compass/compliance-trestle/tree/main/tests/data/spread-sheet/good.xlsx)
 
 **output**
 
@@ -1501,4 +1501,4 @@ Example spread-sheet-file:
 Example profile.json:
 </span>
 
-[/home/user/compliance/data/tasks/xlsx/output/profile.json](https://github.com/IBM/compliance-trestle/tree/main/tests/data/tasks/xlsx/output/profile.json)
+[/home/user/compliance/data/tasks/xlsx/output/profile.json](https://github.com/oscal-compass/compliance-trestle/tree/main/tests/data/tasks/xlsx/output/profile.json)

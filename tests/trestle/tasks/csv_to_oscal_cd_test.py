@@ -60,7 +60,7 @@ def _validate_ocp(tmp_path: pathlib.Path) -> None:
     assert component.type == 'Service'
     assert component.title == 'OSCO'
     assert component.props[0].name == 'Rule_Id'
-    assert component.props[0].ns == 'http://ibm.github.io/compliance-trestle/schemas/oscal/cd'
+    assert component.props[0].ns == 'http://oscal-compass.github.io/compliance-trestle/schemas/oscal/cd'
     assert component.props[0].value == 'xccdf_org.ssgproject.content_rule_api_server_anonymous_auth'
     assert component.props[0].class_ == 'scc_class'
     assert component.props[0].remarks == 'rule_set_000'
