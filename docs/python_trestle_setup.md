@@ -47,7 +47,7 @@ Details can be found at [Installation - pip documentation](https://pip.pypa.io/e
 
 ## *Install trestle*
 
-- Install [compliance-trestle](https://ibm.github.io/compliance-trestle/).
+- Install [compliance-trestle](https://oscal-compass.github.io/compliance-trestle/).
 
 ```bash
 (venv.trestle)$ python -m pip install compliance-trestle

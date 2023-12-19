@@ -314,7 +314,10 @@ def test_import_failure_execute_plan(tmp_trestle_dir: pathlib.Path, monkeypatch:
 
 def test_import_from_url(tmp_trestle_dir: pathlib.Path) -> None:
     """Test import via url."""
-    uri = 'https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/json/minimal_catalog.json'
+    uri = (
+        'https://raw.githubusercontent.com/oscal-compass/compliance-trestle/develop/'
+        'tests/data/json/minimal_catalog.json'
+    )
     args = argparse.Namespace(trestle_root=tmp_trestle_dir, file=uri, output='my_catalog', verbose=1, regenerate=False)
     i = importcmd.ImportCmd()
     assert i._run(args) == 0

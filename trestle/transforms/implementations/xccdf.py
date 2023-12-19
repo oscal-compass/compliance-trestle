@@ -199,7 +199,7 @@ class RuleUse():
     @property
     def ns(self):
         """Derive namespace."""
-        return f'https://ibm.github.io/compliance-trestle/schemas/oscal/ar/{self.scanner_name}'  # noqa: E231
+        return f'https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/{self.scanner_name}'  # noqa: E231
 
 
 class _XccdfResult():

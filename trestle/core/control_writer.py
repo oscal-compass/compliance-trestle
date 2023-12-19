@@ -345,7 +345,7 @@ class ControlWriter():
         self._md_file.new_line('<!-- Subparts may be added with nested hash levels of the form ### My Subpart Name -->')
         self._md_file.new_line('<!-- underneath the parent ## Control or ## Part being added -->')
         self._md_file.new_line(
-            '<!-- See https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring for guidance. -->'  # noqa E501
+            '<!-- See https://oscal-compass.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring for guidance. -->'  # noqa E501
         )
         # next is to make mdformat happy
         self._md_file._add_line_raw('')

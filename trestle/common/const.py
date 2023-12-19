@@ -195,9 +195,9 @@ FILE_ENCODING = 'utf8'
 
 # Trestle documentation
 
-WEBSITE_ROOT = 'https://ibm.github.io/compliance-trestle'
+WEBSITE_ROOT = 'https://oscal-compass.github.io/compliance-trestle'
 
-BUG_REPORT = 'https://github.com/IBM/compliance-trestle/issues/new/choose'
+BUG_REPORT = 'https://github.com/oscal-compass/compliance-trestle/issues/new/choose'
 
 # Sample objects
 SAMPLE_UUID_STR = 'A0000000-0000-4000-8000-000000000000'
@@ -579,7 +579,7 @@ YAML_LEVERAGING_COMP_COMMENT = """  # Leveraged statements can be optionally ass
 
 DISPLAY_NAME = 'display-name'
 
-TRESTLE_GENERIC_NS = 'https://ibm.github.io/compliance-trestle/schemas/oscal'
+TRESTLE_GENERIC_NS = 'https://oscal-compass.github.io/compliance-trestle/schemas/oscal'
 
 RESOLUTION_SOURCE = 'resolution-source'
 

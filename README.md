@@ -6,7 +6,17 @@
 ![[Code Coverage](https://sonarcloud.io/dashboard?id=compliance-trestle)](https://sonarcloud.io/api/project_badges/measure?project=compliance-trestle&metric=coverage)
 ![[Quality gate](https://sonarcloud.io/dashboard?id=compliance-trestle)](https://sonarcloud.io/api/project_badges/measure?project=compliance-trestle&metric=alert_status)
 ![[Pypi](https://pypi.org/project/compliance-trestle/)](https://img.shields.io/pypi/dm/compliance-trestle)
-![GitHub Actions status](https://img.shields.io/github/workflow/status/IBM/compliance-trestle/Trestle%20PR%20pipeline?event=push)
+![GitHub Actions status](https://img.shields.io/github/workflow/status/oscal-compass/compliance-trestle/Trestle%20PR%20pipeline?event=push)
+
+______________________________________________________________________
+
+<table>
+<tr>
+<td><img src="images/Apollo_11_liftoff.png">
+<td> We've moved. Please note our new organizational location.
+</table>
+
+______________________________________________________________________
 
 Trestle is an ensemble of tools that enable the creation, validation, and governance of documentation artifacts for compliance needs. It leverages NIST's [OSCAL](https://pages.nist.gov/OSCAL/documentation/) as a standard data format for interchange between tools and people, and provides an opinionated approach to OSCAL adoption.
 
@@ -62,7 +72,7 @@ By building human managed artifacts into OSCAL, Trestle is not only able to vali
 OSCAL supports `xml`, `json` and `yaml` with their [metaschema](https://github.com/usnistgov/metaschema) tooling. Trestle
 natively supports only `json` and `yaml` formats at this time.
 
-Future roadmap anticipates that support for xml [import](https://github.com/IBM/compliance-trestle/issues/177) and [upstream references](https://github.com/IBM/compliance-trestle/issues/178) will be enabled. However, it is expected
+Future roadmap anticipates that support for xml [import](https://github.com/oscal-compass/compliance-trestle/issues/177) and [upstream references](https://github.com/oscal-compass/compliance-trestle/issues/178) will be enabled. However, it is expected
 that full support will remain only for `json` and  `yaml`.
 
 Users needing to import XML OSCAL artifacts are recommended to look at NIST's XML to json conversion page [here](https://github.com/usnistgov/OSCAL/tree/master/json#oscal-xml-to-json-converters).
@@ -71,15 +81,15 @@ Users needing to import XML OSCAL artifacts are recommended to look at NIST's XM
 
 Trestle runs on almost all Python platforms (e.g. Linux, Mac, Windows), is available on PyPi and can be easily installed via pip. It is under active development and new releases are made available regularly.\
 To install run: `pip install compliance-trestle`\
-See [Install trestle in a python virtual environment](https://ibm.github.io/compliance-trestle/python_trestle_setup/) for the full installation guide.
+See [Install trestle in a python virtual environment](https://oscal-compass.github.io/compliance-trestle/python_trestle_setup/) for the full installation guide.
 
 ## Complete documentation and tutorials
 
-Complete documentation, tutorials, and background on compliance can be found [here](https://ibm.github.io/compliance-trestle).
+Complete documentation, tutorials, and background on compliance can be found [here](https://oscal-compass.github.io/compliance-trestle).
 
 ## Agile Authoring
 
-A trestle-based agile authoring repository setup tool, documentation and tutorial can be found [here](https://github.com/IBM/compliance-trestle-agile-authoring).
+A trestle-based agile authoring repository setup tool, documentation and tutorial can be found [here](https://github.com/oscal-compass/compliance-trestle-agile-authoring).
 
 Agile authoring comprises the following beneficial features:
 
@@ -90,7 +100,7 @@ Agile authoring comprises the following beneficial features:
 
 ## Demos
 
-A collection of demos utilizing trestle can be found in the related project [compliance-trestle-demos](https://github.com/IBM/compliance-trestle-demos).
+A collection of demos utilizing trestle can be found in the related project [compliance-trestle-demos](https://github.com/oscal-compass/compliance-trestle-demos).
 
 ## Development status
 
@@ -131,12 +141,12 @@ You can also dial 173.243.2.68 and enter your meeting number.
 
 ## Contributing to Trestle
 
-Our project welcomes external contributions. Please consult [contributing](https://ibm.github.io/compliance-trestle/contributing/mkdocs_contributing/) to get started.
+Our project welcomes external contributions. Please consult [contributing](https://oscal-compass.github.io/compliance-trestle/contributing/mkdocs_contributing/) to get started.
 
 ## License & Authors
 
 If you would like to see the detailed LICENSE click [here](LICENSE).
-Consult [contributors](https://github.com/IBM/compliance-trestle/graphs/contributors) for a list of authors and [maintainers](MAINTAINERS.md) for the core team.
+Consult [contributors](https://github.com/oscal-compass/compliance-trestle/graphs/contributors) for a list of authors and [maintainers](MAINTAINERS.md) for the core team.
 
 ```text
 # Copyright (c) 2020 IBM Corp. All rights reserved.
