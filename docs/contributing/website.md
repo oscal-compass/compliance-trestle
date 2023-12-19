@@ -1,6 +1,6 @@
 # Developing for the trestle documentation website
 
-This page describes the developing for the trestle (website) which is deployed at https://ibm.github.io/compliance-trestle.
+This page describes the developing for the trestle (website) which is deployed at https://oscal-compass.github.io/compliance-trestle.
 
 ## Documentation for use within the github project.
 

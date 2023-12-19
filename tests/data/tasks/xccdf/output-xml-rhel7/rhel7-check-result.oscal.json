@@ -25,13 +25,13 @@
             "props": [
               {
                 "name": "target",
-                "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
+                "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
                 "value": "kube-c18ler8d06m877hrn7jg-roks8-default-00000319.iks.mycorp",
                 "class": "scc_inventory_item_id"
               },
               {
                 "name": "target_type",
-                "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
+                "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
                 "value": "rhel7"
               }
             ],
@@ -52,44 +52,44 @@
               "props": [
                 {
                   "name": "scanner_name",
-                  "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
+                  "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
                   "value": "OpenSCAP"
                 },
                 {
                   "name": "scanner_version",
-                  "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
+                  "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
                   "value": "1.3.3"
                 },
                 {
                   "name": "version",
-                  "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
+                  "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
                   "value": "0.1.57",
                   "class": "scc_check_version"
                 },
                 {
                   "name": "severity",
-                  "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
+                  "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
                   "value": "medium",
                   "class": "scc_check_severity"
                 },
                 {
                   "name": "weight",
-                  "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
+                  "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
                   "value": "1.000000"
                 },
                 {
                   "name": "benchmark_id",
-                  "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
+                  "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
                   "value": "xccdf_org.ssgproject.content_benchmark_RHEL-7"
                 },
                 {
                   "name": "benchmark_href",
-                  "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
+                  "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
                   "value": "/content/ssg-rhel7-ds.xml"
                 },
                 {
                   "name": "id",
-                  "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
+                  "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
                   "value": "xccdf_org.open-scap_testresult_xccdf_org.ssgproject.content_profile_cis",
                   "class": "scc_predefined_profile"
                 }
@@ -118,13 +118,13 @@
           "props": [
             {
               "name": "idref",
-              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
+              "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
               "value": "xccdf_org.ssgproject.content_rule_prefer_64bit_os",
               "class": "scc_check_name_id"
             },
             {
               "name": "result",
-              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
+              "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
               "value": "notselected",
               "class": "scc_result"
             }
@@ -146,13 +146,13 @@
           "props": [
             {
               "name": "idref",
-              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
+              "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
               "value": "xccdf_org.ssgproject.content_rule_disable_prelink",
               "class": "scc_check_name_id"
             },
             {
               "name": "result",
-              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
+              "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
               "value": "pass",
               "class": "scc_result"
             }
