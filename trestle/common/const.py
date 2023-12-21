@@ -537,12 +537,13 @@ YAML_PROFILE_VALUES_COMMENT = """    # This section contains the parameters that
   # the parameter value is made up of the values from the other parameters. For parameters
   # that aggregate, profile-values is not applicable.
   #
-  # If the value of property param-value-origin needs to be changed, please
-  # insert a new property called profile-param-value-origin below and place the value there
-  # instead of replacing the original param-value-origin as follows:
+  # Property param-value-origin is meant for putting the origin from where that parameter comes from.
+  # In order to be changed in the current profile, profile-param-value-origin property will be displayed with
+  # the placeholder "<REPLACE_ME>" for you to be replaced. If a parameter already has a param-value-origin 
+  # coming from an inherited profile, do no change this value, instead use profile-param-value-origin as follows:
   #
-  #    param-value-origin: this is the original value DO NOT REPLACE
-  #    profile-param-value-origin: place the new value required HERE
+  #    param-value-origin: DO NOT REPLACE - this is the original value
+  #    profile-param-value-origin: <REPLACE_ME> - replace the new value required HERE
   #
 """
 

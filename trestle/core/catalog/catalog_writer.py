@@ -167,7 +167,7 @@ class CatalogWriter():
                     if context.purpose == ContextPurpose.PROFILE:
                         new_dict[const.PROFILE_PARAM_VALUE_ORIGIN] = prof_param_value_origin
                 else:
-                    new_dict[const.PROFILE_PARAM_VALUE_ORIGIN] = const.ADDED_BY_CONTROL_OWNER
+                    new_dict[const.PROFILE_PARAM_VALUE_ORIGIN] = const.REPLACE_ME_PLACEHOLDER
                 # then insert the original, incoming values as values
                 if param_id in control_param_dict:
                     orig_param = control_param_dict[param_id]
@@ -195,7 +195,7 @@ class CatalogWriter():
                         'id': param_id,
                     }
                 new_dict[const.PROFILE_VALUES] = [const.REPLACE_ME_PLACEHOLDER]
-                new_dict[const.PROFILE_PARAM_VALUE_ORIGIN] = const.ADDED_BY_CONTROL_OWNER
+                new_dict[const.PROFILE_PARAM_VALUE_ORIGIN] = const.REPLACE_ME_PLACEHOLDER
             if param_value_origin is not None:
                 if context.purpose == ContextPurpose.PROFILE:
                     new_dict[const.PARAM_VALUE_ORIGIN] = param_value_origin

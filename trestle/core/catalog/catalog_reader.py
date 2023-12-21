@@ -84,7 +84,7 @@ class CatalogReader():
                     # verifies if at control profile edition the param value origin was modified
                     # through the profile-param-value-origin tag
                     if const.PROFILE_PARAM_VALUE_ORIGIN in param_dict:
-                        if param_dict[const.PROFILE_PARAM_VALUE_ORIGIN] != const.ADDED_BY_CONTROL_OWNER:
+                        if param_dict[const.PROFILE_PARAM_VALUE_ORIGIN] != const.REPLACE_ME_PLACEHOLDER:
                             param_dict[const.PARAM_VALUE_ORIGIN] = param_dict[const.PROFILE_PARAM_VALUE_ORIGIN]
                             param_dict.pop(const.PROFILE_PARAM_VALUE_ORIGIN)
                         else:
