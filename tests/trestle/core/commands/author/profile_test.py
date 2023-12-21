@@ -1409,7 +1409,8 @@ def test_param_value_origin_from_inherited_profile(tmp_trestle_dir: pathlib.Path
     header, tree = md_api.processor.process_markdown(md_path)
 
     assert header
-    assert header[const.SET_PARAMS_TAG]['ac-3.3_prm_1'][const.PROFILE_PARAM_VALUE_ORIGIN] == const.REPLACE_ME_PLACEHOLDER
+    assert header[const.SET_PARAMS_TAG]['ac-3.3_prm_1'][const.PROFILE_PARAM_VALUE_ORIGIN
+                                                        ] == const.REPLACE_ME_PLACEHOLDER
     header[const.SET_PARAMS_TAG]['ac-3.3_prm_1'][const.PROFILE_PARAM_VALUE_ORIGIN
                                                  ] = 'Needed to change param value origin'
     md_api.write_markdown_with_header(md_path, header, tree.content.raw_text)
