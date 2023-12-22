@@ -75,12 +75,25 @@ class CatalogReader():
                     # if profile_values are present, overwrite values with them
                     if const.PROFILE_VALUES in param_dict:
                         if param_dict[const.PROFILE_VALUES] != [] and param_dict[const.PROFILE_VALUES] is not None:
-                            if not write_mode and '<REPLACE_ME>' in param_dict[const.PROFILE_VALUES]:
-                                param_dict[const.PROFILE_VALUES].remove('<REPLACE_ME>')
+                            if not write_mode and const.REPLACE_ME_PLACEHOLDER in param_dict[const.PROFILE_VALUES]:
+                                param_dict[const.PROFILE_VALUES].remove(const.REPLACE_ME_PLACEHOLDER)
                             if param_dict[const.PROFILE_VALUES] != [] and param_dict[const.PROFILE_VALUES] is not None:
                                 param_dict[const.VALUES] = param_dict[const.PROFILE_VALUES]
                         if not write_mode:
                             param_dict.pop(const.PROFILE_VALUES)
+                    # verifies if at control profile edition the param value origin was modified
+                    # through the profile-param-value-origin tag
+                    if const.PROFILE_PARAM_VALUE_ORIGIN in param_dict:
+                        if param_dict[const.PROFILE_PARAM_VALUE_ORIGIN] != const.REPLACE_ME_PLACEHOLDER:
+                            param_dict[const.PARAM_VALUE_ORIGIN] = param_dict[const.PROFILE_PARAM_VALUE_ORIGIN]
+                            param_dict.pop(const.PROFILE_PARAM_VALUE_ORIGIN)
+                        else:
+                            # removes replace me placeholder and profile-param-value-origin as it was not modified
+                            param_dict.pop(const.PROFILE_PARAM_VALUE_ORIGIN)
+                            # validates param-value-origin is in dict to remove it
+                            # because a value wasn´t provided and it shouldn´t be inheriting value from parent
+                            if const.PARAM_VALUE_ORIGIN in param_dict:
+                                param_dict.pop(const.PARAM_VALUE_ORIGIN)
                     final_param_dict[param_id] = param_dict
                     param_sort_map[param_id] = sort_id
         new_alters: List[prof.Alter] = []

@@ -684,6 +684,14 @@ class CatalogInterface():
         return None, None
 
     @staticmethod
+    def _get_param_value_origin_and_ns(param: common.Parameter) -> Tuple[Optional[str], Optional[str]]:
+        for prop in as_list(param.props):
+            if prop.name == const.PARAM_VALUE_ORIGIN:
+                ns = str(prop.ns) if prop.ns else None
+                return prop.value, ns
+        return None, None
+
+    @staticmethod
     def _prune_controls(md_path: pathlib.Path, written_controls: Set[str]) -> List[str]:
         """Search directory and remove any controls that were not written out."""
         deleted_controls = []

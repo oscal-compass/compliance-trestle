@@ -464,6 +464,10 @@ VALUES = 'values'
 
 GUIDELINES = 'guidelines'
 
+PARAM_VALUE_ORIGIN = 'param-value-origin'
+
+PROFILE_PARAM_VALUE_ORIGIN = 'profile-param-value-origin'
+
 LABEL = 'label'
 
 SECTIONS_TAG = TRESTLE_TAG + 'sections'
@@ -532,6 +536,14 @@ YAML_PROFILE_VALUES_COMMENT = """    # This section contains the parameters that
   # Some parameters may show an aggregates property which lists other parameters. This means
   # the parameter value is made up of the values from the other parameters. For parameters
   # that aggregate, profile-values is not applicable.
+  #
+  # Property param-value-origin is meant for putting the origin from where that parameter comes from.
+  # In order to be changed in the current profile, profile-param-value-origin property will be displayed with
+  # the placeholder "<REPLACE_ME>" for you to be replaced. If a parameter already has a param-value-origin
+  # coming from an inherited profile, do no change this value, instead use profile-param-value-origin as follows:
+  #
+  #    param-value-origin: DO NOT REPLACE - this is the original value
+  #    profile-param-value-origin: <REPLACE_ME> - replace the new value required HERE
   #
 """
 
@@ -624,3 +636,7 @@ INHERITANCE_VIEW_DIR = 'inheritance'
 HELP_LEVERAGED = 'Name of the SSP to be leveraged.'
 
 SATISFIED_STATEMENT_DESCRIPTION = 'Satisfied Statement Description'
+
+ADDED_BY_CONTROL_OWNER = 'Added by control owner'
+
+REPLACE_ME_PLACEHOLDER = '<REPLACE_ME>'

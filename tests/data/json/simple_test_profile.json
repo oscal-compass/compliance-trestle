@@ -36,6 +36,10 @@
               "name": "display-name",
               "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal",
               "value": "Pretty ac-1 prm 1"
+            },
+            {
+              "name": "param-value-origin",
+              "value": "comes from xyz policy"
             }
           ],
           "label": "label from profile",
