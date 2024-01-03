@@ -71,7 +71,6 @@ class CatalogReader():
                 )
                 alters_map[sort_id] = control_alters
                 for param_id, param_dict in control_param_dict.items():
-                    param_dict[const.VALUES] = param_dict[const.VALUES] if const.VALUES in param_dict else []
                     # if profile_values are present, overwrite values with them
                     if const.PROFILE_VALUES in param_dict:
                         if param_dict[const.PROFILE_VALUES] != [] and param_dict[const.PROFILE_VALUES] is not None:
