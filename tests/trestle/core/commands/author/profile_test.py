@@ -299,7 +299,7 @@ def test_profile_generate_assemble(
     if set_parameters_flag:
         assert set_params[2].values[0] == 'new value'
         assert set_params[1].props[0].ns == const.TRESTLE_GENERIC_NS
-        assert len(set_params) == 18
+        assert len(set_params) == 14
     else:
         # the original profile did not have ns set for this display name
         # confirm the namespace is not defined unless set_parameters_flag is True
@@ -405,7 +405,7 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
         )
         set_params = profile.modify.set_parameters
 
-        assert len(set_params) == 18
+        assert len(set_params) == 14
         assert set_params[0].values[0] == 'all personnel'
         # the label is present in the header so it ends up in the set_parameter
         assert set_params[0].label == 'label from edit'
@@ -415,11 +415,11 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
         assert set_params[2].values[0] == 'new value'
         assert profile.metadata.version == new_version
         if ohv:
-            assert set_params[4].values[0] == 'no meetings from cli yaml'
-            assert set_params[4].label == 'meetings cancelled from cli yaml'
+            assert set_params[3].values[0] == 'no meetings from cli yaml'
+            assert set_params[3].label == 'meetings cancelled from cli yaml'
         else:
-            assert set_params[4].values[0] == 'all meetings'
-            assert set_params[4].label is None
+            assert set_params[3].values[0] == 'all meetings'
+            assert set_params[3].label is None
 
         catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, assembled_prof_dir / 'profile.json')
         catalog_interface = CatalogInterface(catalog)
@@ -1425,9 +1425,9 @@ def test_param_value_origin_from_inherited_profile(tmp_trestle_dir: pathlib.Path
                                                  prof.Profile, FileContentType.JSON)
 
     # grabs parameter ac-3.3_prm_1 and verify if it was changed correctly
-    assert profile.modify.set_parameters[18].props[0].value == 'Needed to change param value origin'
+    assert profile.modify.set_parameters[16].props[0].value == 'Needed to change param value origin'
     # now change the value in the json file to verify if in the markdown is changed
-    profile.modify.set_parameters[18].props[0].value = 'this is a change test'
+    profile.modify.set_parameters[16].props[0].value = 'this is a change test'
 
     ModelUtils.save_top_level_model(profile, tmp_trestle_dir, 'my_assembled_prof', FileContentType.JSON)
 
