@@ -1448,3 +1448,47 @@ def test_param_value_origin_from_inherited_profile(tmp_trestle_dir: pathlib.Path
     assert header
     # verify the change done in json is reflected correctly in the profile-param-value-origin
     assert header[const.SET_PARAMS_TAG]['ac-3.3_prm_1'][const.PROFILE_PARAM_VALUE_ORIGIN] == 'this is a change test'
+
+
+def test_profile_values_included_if_replaced(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test the profile markdown generator."""
+    _, assembled_prof_dir, _, markdown_path = setup_profile_generate(tmp_trestle_dir, 'simple_test_profile.json')
+    yaml_header_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
+
+    # convert resolved profile catalog to markdown then assemble it after adding an item to a control
+    # generate, edit, assemble
+    test_args = f'trestle author profile-generate -n {prof_name} -o {md_name} -rs NeededExtra'.split(  # noqa E501
+    )
+    test_args.extend(['-y', str(yaml_header_path)])
+    test_args.extend(['-s', all_sections_str])
+    monkeypatch.setattr(sys, 'argv', test_args)
+
+    assert Trestle().run() == 0
+
+    md_path = markdown_path / 'ac' / 'ac-1.md'
+    assert md_path.exists()
+    md_api = MarkdownAPI()
+    header, tree = md_api.processor.process_markdown(md_path)
+
+    assert header
+    profile_values_for_param = header[const.SET_PARAMS_TAG]['ac-1_prm_7'][const.PROFILE_VALUES]
+    assert const.REPLACE_ME_PLACEHOLDER in profile_values_for_param
+    profile_values_for_param = [a for a in profile_values_for_param if a != const.REPLACE_ME_PLACEHOLDER]
+    profile_values_for_param.append('Test value')
+    header[const.SET_PARAMS_TAG]['ac-1_prm_7'][const.PROFILE_VALUES] = profile_values_for_param
+    md_api.write_markdown_with_header(md_path, header, tree.content.raw_text)
+    # verify if value was replaced correctly
+    assert 'Test value' in header[const.SET_PARAMS_TAG]['ac-1_prm_7'][const.PROFILE_VALUES]
+
+    # assemble based on set_parameters_flag
+    test_args = f'trestle author profile-assemble -n {prof_name} -m {md_name} -o {assembled_prof_name}'.split()
+    test_args.append('-sp')
+    assembled_prof_dir.mkdir()
+    monkeypatch.setattr(sys, 'argv', test_args)
+    assert Trestle().run() == 0
+
+    profile, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'my_assembled_prof',
+                                                 prof.Profile, FileContentType.JSON)
+
+    # grabs 6 parameter in line and test out the value is in there
+    assert 'Test value' in profile.modify.set_parameters[6].values
