@@ -48,6 +48,8 @@ cf05 = 'tests/data/tasks/xccdf/test-xccdf-result-to-oscal-ar-1.3.5.config'
 cf06 = 'tests/data/tasks/xccdf/test-xccdf-result-to-oscal-ar-xml-rhel7.config'
 cf07 = 'tests/data/tasks/xccdf/test-xccdf-result-to-oscal-ar-xml-ocp4.config'
 cf08 = 'tests/data/tasks/xccdf/test-xccdf-result-to-oscal-ar-configmaps.config'
+cf09 = 'tests/data/tasks/xccdf/test-xccdf-result-to-oscal-ar-input-oscap-results.config'
+cf10 = 'tests/data/tasks/xccdf/test-xccdf-result-to-oscal-ar-input-oscap-arf-results.config'
 
 
 def setup_config(path: str):
@@ -428,6 +430,50 @@ def test_xccdf_execute_input_configmaps(tmp_path, monkeypatch: MonkeyPatch):
     monkeypatch.setattr(uuid, 'uuid4', monkeybusiness.uuid_mock1)
     xccdf.XccdfTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
     config = setup_config(cf08)
+    section = config['task.xccdf-result-to-oscal-ar']
+    d_expected = pathlib.Path(section['output-dir'])
+    d_produced = tmp_path
+    section['output-dir'] = str(d_produced)
+    tgt = xccdf_result_to_oscal_ar.XccdfResultToOscalAR(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    list_dir = os.listdir(d_produced)
+    assert len(list_dir) == 1
+    for fn in list_dir:
+        f_expected = d_expected / fn
+        f_produced = d_produced / fn
+        result = text_files_equal(f_expected, f_produced)
+        assert result
+
+
+def test_xccdf_execute_input_oscap_result(tmp_path, monkeypatch: MonkeyPatch):
+    """Test OpenSCAP XCCDF to OSCAL AR."""
+    monkeybusiness = MonkeyBusiness()
+    monkeypatch.setattr(uuid, 'uuid4', monkeybusiness.uuid_mock1)
+    xccdf.XccdfTransformer.set_timestamp('2023-11-30T23:00:03+00:00')
+    config = setup_config(cf09)
+    section = config['task.xccdf-result-to-oscal-ar']
+    d_expected = pathlib.Path(section['output-dir'])
+    d_produced = tmp_path
+    section['output-dir'] = str(d_produced)
+    tgt = xccdf_result_to_oscal_ar.XccdfResultToOscalAR(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    list_dir = os.listdir(d_produced)
+    assert len(list_dir) == 1
+    for fn in list_dir:
+        f_expected = d_expected / fn
+        f_produced = d_produced / fn
+        result = text_files_equal(f_expected, f_produced)
+        assert result
+
+
+def test_xccdf_execute_input_oscap_arf_result(tmp_path, monkeypatch: MonkeyPatch):
+    """Test OpenSCAP ARF to OSCAL AR."""
+    monkeybusiness = MonkeyBusiness()
+    monkeypatch.setattr(uuid, 'uuid4', monkeybusiness.uuid_mock1)
+    xccdf.XccdfTransformer.set_timestamp('2023-11-30T23:00:03+00:00')
+    config = setup_config(cf10)
     section = config['task.xccdf-result-to-oscal-ar']
     d_expected = pathlib.Path(section['output-dir'])
     d_produced = tmp_path

@@ -255,6 +255,107 @@ def test_ssp_generate_header_edit(tmp_trestle_dir: pathlib.Path) -> None:
     assert len(co) == 3
 
 
+def test_ssp_generate_with_inheritance(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test ssp-generate with inheritance view."""
+    args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name, False, 'leveraged_ssp')
+    ssp_cmd = SSPGenerate()
+    assert ssp_cmd._run(args) == 0
+
+    # Test output for each type of file
+
+    # Find export files under This System
+    this_system_dir = tmp_trestle_dir / ssp_name / const.INHERITANCE_VIEW_DIR / 'This System'
+
+    expected_uuid = '11111111-0000-4000-9009-001001002001'
+    ac_21 = this_system_dir / 'ac-2.1'
+    test_provided = ac_21 / f'{expected_uuid}.md'
+    assert test_provided.exists()
+
+    # confirm content in yaml header
+    md_api = MarkdownAPI()
+    header, tree = md_api.processor.process_markdown(test_provided)
+    assert tree is not None
+
+    comp_header_value = header[const.TRESTLE_LEVERAGING_COMP_TAG]
+    assert comp_header_value == [{'name': 'REPLACE_ME'}]
+    assert header[const.TRESTLE_STATEMENT_TAG][const.PROVIDED_UUID] == expected_uuid
+
+    expected_provided = """# Provided Statement Description
+
+Consumer-appropriate description of what may be inherited.
+
+In the context of the application component in satisfaction of AC-2.1."""
+
+    # Confirm markdown content
+    node = tree.get_node_for_key(const.PROVIDED_STATEMENT_DESCRIPTION, False)
+    assert node.content.raw_text == expected_provided
+
+    expected_uuid = '11111111-0000-4000-9009-002001001001'
+    ac_2_stm = this_system_dir / 'ac-2_stmt.a'
+    test_provided = ac_2_stm / f'{expected_uuid}.md'
+    assert test_provided.exists()
+
+    # confirm content in yaml header
+    md_api = MarkdownAPI()
+    header, tree = md_api.processor.process_markdown(test_provided)
+    assert tree is not None
+
+    comp_header_value = header[const.TRESTLE_LEVERAGING_COMP_TAG]
+    assert comp_header_value == [{'name': 'REPLACE_ME'}]
+    assert header[const.TRESTLE_STATEMENT_TAG][const.RESPONSIBILITY_UUID] == expected_uuid
+
+    expected_responsibility = """# Responsibility Statement Description
+
+Leveraging system's responsibilities with respect to inheriting this capability.
+
+In the context of the application component in satisfaction of AC-2, part a.
+"""
+
+    # Confirm markdown content
+    node = tree.get_node_for_key(const.RESPONSIBILITY_STATEMENT_DESCRIPTION, False)
+    assert node.content.raw_text == expected_responsibility
+
+    # Fine export files under Application
+    application_dir = tmp_trestle_dir / ssp_name / const.INHERITANCE_VIEW_DIR / 'Application'
+
+    expected_provided_uuid = '11111111-0000-4000-9009-002001002001'
+    expected_responsibility_uuid = '11111111-0000-4000-9009-002001002002'
+    ac_2_stm = application_dir / 'ac-2_stmt.a'
+    test_provided = ac_2_stm / f'{expected_provided_uuid}_{expected_responsibility_uuid}.md'
+    assert test_provided.exists()
+
+    # confirm content in yaml header
+    md_api = MarkdownAPI()
+    header, tree = md_api.processor.process_markdown(test_provided)
+    assert tree is not None
+
+    comp_header_value = header[const.TRESTLE_LEVERAGING_COMP_TAG]
+    assert comp_header_value == [{'name': 'REPLACE_ME'}]
+    assert header[const.TRESTLE_STATEMENT_TAG][const.PROVIDED_UUID] == expected_provided_uuid
+    assert header[const.TRESTLE_STATEMENT_TAG][const.RESPONSIBILITY_UUID] == expected_responsibility_uuid
+
+    expected_provided = """# Provided Statement Description
+
+Consumer-appropriate description of what may be inherited.
+
+In the context of the application component in satisfaction of AC-2, part a.
+"""
+
+    expected_responsibility = """# Responsibility Statement Description
+
+Leveraging system's responsibilities with respect to inheriting this capability.
+
+In the context of the application component in satisfaction of AC-2, part a.
+"""
+
+    # Confirm markdown content
+    node = tree.get_node_for_key(const.PROVIDED_STATEMENT_DESCRIPTION, False)
+    assert node.content.raw_text == expected_provided
+
+    node = tree.get_node_for_key(const.RESPONSIBILITY_STATEMENT_DESCRIPTION, False)
+    assert node.content.raw_text == expected_responsibility
+
+
 def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     """Test ssp assemble from cli."""
     gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
@@ -444,6 +545,49 @@ def test_ssp_generate_resolved_catalog(tmp_trestle_dir: pathlib.Path) -> None:
     assert len(resolved_catalog.groups) == 2
 
     resolved_catalog.oscal_write(new_catalog_path)
+
+
+def test_ssp_assemble_with_inheritance(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test ssp assemble from cli with inheritance view."""
+    gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name, False, 'leveraged_ssp')
+    args_compdefs = gen_args.compdefs
+
+    # first create the markdown
+    ssp_gen = SSPGenerate()
+    assert ssp_gen._run(gen_args) == 0
+
+    this_system_dir = tmp_trestle_dir / ssp_name / const.INHERITANCE_VIEW_DIR / 'This System'
+
+    expected_uuid = '11111111-0000-4000-9009-001001002001'
+    ac_21 = this_system_dir / 'ac-2.1'
+    test_provided = ac_21 / f'{expected_uuid}.md'
+
+    test_utils.replace_in_file(test_provided, 'REPLACE_ME', 'comp_aa')
+
+    # now assemble the edited controls into json ssp
+    ssp_assemble = SSPAssemble()
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        markdown=ssp_name,
+        output=ssp_name,
+        verbose=0,
+        regenerate=False,
+        name=None,
+        compdefs=args_compdefs,
+        version=None
+    )
+    assert ssp_assemble._run(args) == 0
+
+    ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
+
+    imp_reqs = ssp.control_implementation.implemented_requirements
+    imp_req = next((i_req for i_req in imp_reqs if i_req.control_id == 'ac-2.1'), None)
+    inherited = imp_req.by_components[1].inherited[0]  # type: ignore
+    assert inherited.description == (
+        'Consumer-appropriate description of what may be inherited.\n\n\
+In the context of the application component in satisfaction of AC-2.1.'
+    )
+    assert inherited.provided_uuid == expected_uuid
 
 
 def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:

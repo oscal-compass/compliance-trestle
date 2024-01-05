@@ -3,28 +3,28 @@
 Our project welcomes external contributions. If you have an itch, please feel
 free to scratch it.
 
-To contribute code or documentation, please submit a [pull request](https://github.com/IBM/compliance-trestle/pulls).
+To contribute code or documentation, please submit a [pull request](https://github.com/oscal-compass/compliance-trestle/pulls).
 
 A good way to familiarize yourself with the codebase and contribution process is
-to look for and tackle low-hanging fruit in the [issue tracker](https://github.com/IBM/compliance-trestle/issues).
-Before embarking on a more ambitious contribution, please quickly [get in touch](https://ibm.github.io/compliance-trestle/maintainers/) with us.
+to look for and tackle low-hanging fruit in the [issue tracker](https://github.com/oscal-compass/compliance-trestle/issues).
+Before embarking on a more ambitious contribution, please quickly [get in touch](https://oscal-compass.github.io/compliance-trestle/maintainers/) with us.
 
 **Note: We appreciate your effort, and want to avoid a situation where a contribution
 requires extensive rework (by you or by us), sits in backlog for a long time, or
 cannot be accepted at all!**
 
-We have also adopted [Contributor Covenant Code of Conduct](https://ibm.github.io/compliance-trestle/mkdocs_code_of_conduct/).
+We have also adopted [Contributor Covenant Code of Conduct](https://oscal-compass.github.io/compliance-trestle/mkdocs_code_of_conduct/).
 
 ### Proposing new features
 
-If you would like to implement a new feature, please [raise an issue](https://github.com/IBM/compliance-trestle/issues)
+If you would like to implement a new feature, please [raise an issue](https://github.com/oscal-compass/compliance-trestle/issues)
 labelled `enhancement` before sending a pull request so the feature can be discussed. This is to avoid
 you wasting your valuable time working on a feature that the project developers
 are not interested in accepting into the code base.
 
 ### Fixing bugs
 
-If you would like to fix a bug, please [raise an issue](https://github.com/IBM/compliance-trestle/issues) labelled `bug` before sending a
+If you would like to fix a bug, please [raise an issue](https://github.com/oscal-compass/compliance-trestle/issues) labelled `bug` before sending a
 pull request so it can be tracked.
 
 ### Merge approval
@@ -32,7 +32,7 @@ pull request so it can be tracked.
 The project maintainers use LGTM (Looks Good To Me) in comments on the code
 review to indicate acceptance. A change requires LGTMs from one of the maintainers.
 
-For a list of the maintainers, see the [maintainers](https://ibm.github.io/compliance-trestle/maintainers/) page.
+For a list of the maintainers, see the [maintainers](https://oscal-compass.github.io/compliance-trestle/maintainers/) page.
 
 ### Trestle merging and release workflow
 
@@ -77,7 +77,7 @@ The devops process does not _strictly_ enforce typing, however, the expectation 
 commits with a focus on quality over quantity (e.g. don't add `Any` everywhere just to meet coverage requirements).
 Python typing of functions is an active work in progress.
 
-`mkbuild` is used to generate the [trestle documenation site](https://ibm.github.io/compliance-trestle). The `mkbuild`
+`mkbuild` is used to generate the [trestle documenation site](https://oscal-compass.github.io/compliance-trestle). The `mkbuild`
 website includes an API reference section generated from the code. Docstrings within the code are expected to follow
 [google style docstrings](https://www.sphinx-doc.org/en/master/usage/extensions/example_google.html).
 
@@ -105,7 +105,7 @@ e.g.
 
 We have tried to make it as easy as possible to make contributions. This
 applies to how we handle the legal aspects of contribution. We use the
-same approach - the [Developer's Certificate of Origin 1.1 (DCO)](https://ibm.github.io/compliance-trestle/contributing/DCO/) - that the Linux® Kernel [community](https://elinux.org/Developer_Certificate_Of_Origin)
+same approach - the [Developer's Certificate of Origin 1.1 (DCO)](https://oscal-compass.github.io/compliance-trestle/contributing/DCO/) - that the Linux® Kernel [community](https://elinux.org/Developer_Certificate_Of_Origin)
 uses to manage code contributions.
 
 We simply ask that when submitting a patch for review, the developer
@@ -184,7 +184,7 @@ Both of these repositories are submodules in the trestle project. In order to de
 ### Code style and formating
 
 `trestle` uses [yapf](https://github.com/google/yapf) for code formatting and [flake8](https://flake8.pycqa.org/en/latest/) for code styling.  It also uses [pre-commit](https://pre-commit.com/) hooks that are integrated into the development process and the CI. When you run `make develop` you are ensuring that the pre-commit hooks are installed and updated to their latest versions for this repository. This ensures that all delivered code has been properly formatted
-and passes the linter rules.  See the [pre-commit configuration file](https://github.com/IBM/compliance-trestle/blob/develop/.pre-commit-config.yaml) for details on
+and passes the linter rules.  See the [pre-commit configuration file](https://github.com/oscal-compass/compliance-trestle/blob/develop/.pre-commit-config.yaml) for details on
 `yapf` and `flake8` configurations.
 
 Since `yapf` and `flake8` are installed as part of the `pre-commit` hooks, running `yapf` and `flake8`

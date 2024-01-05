@@ -1,6 +1,6 @@
 # Tutorial: Setup for and use of standard format csv-file to OSCAL Component Definition json-file transformer
 
-Here are step by step instructions for setup and transformation of [trestle standard format csv-file](ocp4-sample-input.csv) into OSCAL Component Definition [json-file](component-definition.json) using the [compliance-trestle](https://ibm.github.io/compliance-trestle/) tool.
+Here are step by step instructions for setup and transformation of [trestle standard format csv-file](ocp4-sample-input.csv) into OSCAL Component Definition [json-file](component-definition.json) using the [compliance-trestle](https://oscal-compass.github.io/compliance-trestle/) tool.
 
 ## *Objective*
 
@@ -164,7 +164,7 @@ The below table represents the expectations of trestle task `csv-to-oscal-cd` fo
 
 ## *Step 1: Install trestle in a Python virtual environment*
 
-Follow the instructions [here](https://ibm.github.io/compliance-trestle/python_trestle_setup/) to install trestle in a virtual environment.
+Follow the instructions [here](https://oscal-compass.github.io/compliance-trestle/python_trestle_setup/) to install trestle in a virtual environment.
 
 ## *Step 2: Transform profile data (CIS benchmarks)*
 
@@ -221,8 +221,8 @@ Configuration flags sit under [task.csv-to-oscal-cd]:
                       Fetcher_Description
                       Resource_Instance_Type
   output-dir        = (required) the path of the output directory for synthesized OSCAL .json files.
-  namespace         = (optional) the namespace for properties, e.g. https://ibm.github.io/compliance-trestle/schemas/oscal/cd
-  user-namespace    = (optional) the user-namespace for properties, e.g. https://ibm.github.io/compliance-trestle/schemas/oscal/cd/user-defined
+  namespace         = (optional) the namespace for properties, e.g. https://oscal-compass.github.io/compliance-trestle/schemas/oscal/cd
+  user-namespace    = (optional) the user-namespace for properties, e.g. https://oscal-compass.github.io/compliance-trestle/schemas/oscal/cd/user-defined
   class.column-name = (optional) the class to associate with the specified column name, e.g. class.Rule_Id = scc_class
   output-overwrite  = (optional) true [default] or false; replace existing output when true.
 
@@ -237,14 +237,14 @@ Configuration flags sit under [task.csv-to-oscal-cd]:
 - Fetch sample csv-file.
 
 ```
-(venv.trestle)$ curl 'https://raw.githubusercontent.com/IBM/compliance-trestle/main/docs/tutorials/task.csv-to-oscal-cd/ocp4-sample-input.csv' > adjunct-data/ocp4-sample-input.csv
+(venv.trestle)$ curl 'https://raw.githubusercontent.com/oscal-compass/compliance-trestle/main/docs/tutorials/task.csv-to-oscal-cd/ocp4-sample-input.csv' > adjunct-data/ocp4-sample-input.csv
 
 ```
 
 - Fetch trestle task file.
 
 ```
-(venv.trestle)$ curl 'https://raw.githubusercontent.com/IBM/compliance-trestle/main/docs/tutorials/task.csv-to-oscal-cd/demo-csv-to-oscal-cd.config' > adjunct-data/task-files/demo-csv-to-oscal-cd.config
+(venv.trestle)$ curl 'https://raw.githubusercontent.com/oscal-compass/compliance-trestle/main/docs/tutorials/task.csv-to-oscal-cd/demo-csv-to-oscal-cd.config' > adjunct-data/task-files/demo-csv-to-oscal-cd.config
 ```
 
 <details markdown>

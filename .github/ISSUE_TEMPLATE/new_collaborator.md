@@ -14,4 +14,4 @@ I would like collaborator (write) access to this repository.
   - help make & test releases
   - help promote the project
 
-[contributing]: https://github.com/IBM/compliance-trestle/blob/main/CONTRIBUTING.md
+[contributing]: https://github.com/oscal-compass/compliance-trestle/blob/main/CONTRIBUTING.md

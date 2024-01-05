@@ -1,6 +1,6 @@
 # Tutorial: Introduction to trestle workflow
 
-Here are step-by-step instructions to manipulate a [NIST](https://www.nist.gov/) standard [OSCAL](https://pages.nist.gov/OSCAL/) catalog using the [compliance-trestle](https://ibm.github.io/compliance-trestle/) (`"trestle"`) tool.
+Here are step-by-step instructions to manipulate a [NIST](https://www.nist.gov/) standard [OSCAL](https://pages.nist.gov/OSCAL/) catalog using the [compliance-trestle](https://oscal-compass.github.io/compliance-trestle/) (`"trestle"`) tool.
 
 ## *Objective*
 

@@ -38,7 +38,7 @@ nav:
 - Contributing:
   - Code of Conduct: mkdocs_code_of_conduct.md
   - Contributing overview: contributing/mkdocs_contributing.md
-  - Contributors: https://github.com/IBM/compliance-trestle/graphs/contributors
+  - Contributors: https://github.com/oscal-compass/compliance-trestle/graphs/contributors
   - Maintainers: maintainers.md
   - Documentation website: contributing/website.md
   - Trestle's object model: contributing/trestle_oscal_object_model.md
@@ -113,6 +113,12 @@ nav:
       - control_interface: api_reference/trestle.core.control_interface.md
       - control_reader: api_reference/trestle.core.control_reader.md
       - control_writer: api_reference/trestle.core.control_writer.md
+      - crm:
+        - bycomp_interface: api_reference/trestle.core.crm.bycomp_interface.md
+        - export_reader: api_reference/trestle.core.crm.export_reader.md
+        - export_writer: api_reference/trestle.core.crm.export_writer.md
+        - leveraged_statements: api_reference/trestle.core.crm.leveraged_statements.md
+        - ssp_inheritance_api: api_reference/trestle.core.crm.ssp_inheritance_api.md
       - docs_control_writer: api_reference/trestle.core.docs_control_writer.md
       - draw_io: api_reference/trestle.core.draw_io.md
       - duplicates_validator: api_reference/trestle.core.duplicates_validator.md
@@ -202,11 +208,11 @@ plugins:
           new_path_syntax: true
     watch:
     - trestle
-repo_name: IBM/compliance-trestle
-repo_url: https://github.com/IBM/compliance-trestle
+repo_name: oscal-compass/compliance-trestle
+repo_url: https://github.com/oscal-compass/compliance-trestle
 site_description: Documentation for compliance-trestle package.
 site_name: Compliance Trestle
-site_url: https://ibm.github.io/compliance-trestle
+site_url: https://oscal-compass.github.io/compliance-trestle
 theme:
   features:
   - content.code.annotate
