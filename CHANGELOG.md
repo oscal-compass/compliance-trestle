@@ -3,6 +3,21 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.0 (2024-01-05)
+### Feature
+* Add parameter value origin field to parameters ([#1470](https://github.com/oscal-compass/compliance-trestle/issues/1470)) ([`b86aa2b`](https://github.com/oscal-compass/compliance-trestle/commit/b86aa2b5ef97a8fd988efb8ec995fb0624af6db0))
+* Allow use of OpenSCAP result files in task xccdf_result_to_oscal_ar ([#1411](https://github.com/oscal-compass/compliance-trestle/issues/1411)) ([`eeb715c`](https://github.com/oscal-compass/compliance-trestle/commit/eeb715c4cd86c3bd5183592c03beac1cc46859d9))
+* Add inheritance view to ssp-generate and ssp-assemble ([#1441](https://github.com/oscal-compass/compliance-trestle/issues/1441)) ([`6cf498b`](https://github.com/oscal-compass/compliance-trestle/commit/6cf498b26aa2a2d583714470038291b0567fb80a))
+
+### Fix
+* Correct empty values going in assembled profile ([#1491](https://github.com/oscal-compass/compliance-trestle/issues/1491)) ([`136b712`](https://github.com/oscal-compass/compliance-trestle/commit/136b712cfaf0392ae5673a6103700014d27b2866))
+* Correct vulnerability ([#1486](https://github.com/oscal-compass/compliance-trestle/issues/1486)) ([`4610d24`](https://github.com/oscal-compass/compliance-trestle/commit/4610d247516c7ddc37a1b1774b31fbfb9f5012fa))
+* Move to new org ([#1483](https://github.com/oscal-compass/compliance-trestle/issues/1483)) ([`c456779`](https://github.com/oscal-compass/compliance-trestle/commit/c4567792cc62b7e9e85c8dca0ce2d26fe82fcbc6))
+* Sonar ([#1481](https://github.com/oscal-compass/compliance-trestle/issues/1481)) ([`4e7e8fd`](https://github.com/oscal-compass/compliance-trestle/commit/4e7e8fd6618852dcceb4b464a7cabc91154e171a))
+* Correct critical vulnerability ([#1479](https://github.com/oscal-compass/compliance-trestle/issues/1479)) ([`72b0f6f`](https://github.com/oscal-compass/compliance-trestle/commit/72b0f6f132fe7f6ed20fd29e47e13656082c0d29))
+* Link main readme to agile authoring setup repo ([#1477](https://github.com/oscal-compass/compliance-trestle/issues/1477)) ([`88c1606`](https://github.com/oscal-compass/compliance-trestle/commit/88c16064897644db03aab11799a6dfc31ec8a1d2))
+* **tests:** Pins oscal-content references in tests the latest 1.0 commit ([#1474](https://github.com/oscal-compass/compliance-trestle/issues/1474)) ([`0dc7551`](https://github.com/oscal-compass/compliance-trestle/commit/0dc755184fb8c061cacc90cc930ea7b0c43f2b7c))
+
 ## v2.4.0 (2023-10-26)
 ### Feature
 * Adding validate template type to author docs command ([#1465](https://github.com/IBM/compliance-trestle/issues/1465)) ([`5289f51`](https://github.com/IBM/compliance-trestle/commit/5289f516e9710361e0dc391cefd979b5e2d46ed0))
