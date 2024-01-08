@@ -34,7 +34,6 @@ from typing import Any, Dict, List, Optional, Type, cast
 import orjson
 
 from pydantic import Extra, Field, create_model
-from pydantic.fields import ModelField
 from pydantic.parse import load_file
 
 from ruamel.yaml import YAML
@@ -47,6 +46,10 @@ from trestle.core.models.file_content_type import FileContentType
 from trestle.core.trestle_base_model import TrestleBaseModel
 
 logger = logging.getLogger(__name__)
+
+# Pydantic v2 removed class ModelField.
+# Redefine as type Any; below extract attr_field.name if present else None (same as before).
+ModelField = Any
 
 
 def robust_datetime_serialization(input_dt: datetime.datetime) -> str:
@@ -169,10 +172,11 @@ class OscalBaseModel(TrestleBaseModel):
         """Get attribute value by field alias."""
         # TODO: can this be restricted beyond Any easily.
         attr_field = self.get_field_by_alias(attr_alias)
-        if isinstance(attr_field, ModelField):
-            return getattr(self, attr_field.name, None)
-
-        return None
+        if attr_field:
+            rval = getattr(self, attr_field.name, None)
+        else:
+            rval = None
+        return rval
 
     def stripped_instance(
         self,
