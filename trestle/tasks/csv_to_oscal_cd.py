@@ -229,8 +229,8 @@ class CsvToOscalComponentDefinition(TaskBase):
         text2 = '[3] column name starting with # causes column to be ignored'
         logger.info(text1 + text2)
         text1 = '       '
-        text2 = '[4] additional parameters are specified by adding a common suffix'
-        text3 = f', for example: {PARAMETER_ID}_1, {PARAMETER_DESCRIPTION}_1, ...'
+        text2 = '[4] additional parameters are specified by adding a common suffix per set'
+        text3 = f', for example: {PARAMETER_ID}_1, {PARAMETER_DESCRIPTION}_1, ...{PARAMETER_ID}_2...'
         logger.info(text1 + text2 + text3)
 
     def configure(self) -> bool:
