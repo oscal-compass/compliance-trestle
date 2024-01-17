@@ -617,7 +617,7 @@ class CsvToOscalComponentDefinition(TaskBase):
             rule_set_mgr.add_prop(prop_name, prop_value, namespace, self.get_class(prop_name))
         if not self._is_validation(rule_key):
             # parameter columns
-            column_names = CsvColumn.get_parameter_column_names()
+            column_names = self._csv_mgr.get_parameter_column_names()
             for column_name in column_names:
                 prop_name = self._get_prop_name(column_name)
                 prop_value = self._csv_mgr.get_value(rule_key, column_name).strip()
@@ -736,7 +736,7 @@ class CsvToOscalComponentDefinition(TaskBase):
             class_ = self.get_class(column_name)
             self._cd_mgr.update_rule_definition(component, rule_set, column_name, column_value, rule_ns, class_)
         # parameter columns
-        column_names = CsvColumn.get_parameter_column_names()
+        column_names = self._csv_mgr.get_parameter_column_names()
         for column_name in column_names:
             column_value = self._csv_mgr.get_value(rule_key, column_name).strip()
             class_ = self.get_class(column_name)
@@ -1568,6 +1568,16 @@ class _CsvMgr():
         col_names = []
         for col_name in self._csv[0]:
             if col_name.startswith(PARAMETER_ID):
+                col_names.append(col_name)
+        return col_names
+
+    def get_parameter_column_names(self) -> List[str]:
+        """Get parameter column_names."""
+        col_names = []
+        for col_name in self._csv[0]:
+            if col_name.startswith(PARAMETER_VALUE_DEFAULT):
+                continue
+            if col_name.startswith(PARAMETER):
                 col_names.append(col_name)
         return col_names
 
