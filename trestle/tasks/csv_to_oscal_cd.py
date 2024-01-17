@@ -1507,6 +1507,9 @@ class CsvColumn():
     ]
 
 
+Row = Iterator[List[str]]
+
+
 class _CsvMgr():
     """Csv Manager."""
 
@@ -1548,15 +1551,28 @@ class _CsvMgr():
                     self._csv_set_params_map[key] = [row_num, row]
                     logger.debug(f'csv-set-parameters: {key} {self._csv_set_params_map[key][0]}')
             # control mappings
-            control_mappings = self.get_row_value(row, CONTROL_ID_LIST)
-            if control_mappings:
-                controls = control_mappings.split()
-                for control in controls:
-                    key = (component_description, component_type, rule_id, source, description, control)
-                    self._csv_controls_map[key] = [row_num, row]
+            self._control_mappings(row_num, row, component_description, component_type, rule_id, source, description)
         logger.debug(f'csv rules: {len(self._csv_rules_map)}')
         logger.debug(f'csv params: {len(self._csv_set_params_map)}')
         logger.debug(f'csv controls: {len(self._csv_controls_map)}')
+
+    def _control_mappings(
+        self,
+        row_num: int,
+        row: Row,
+        component_description: str,
+        component_type: str,
+        rule_id: str,
+        source: str,
+        description: str
+    ) -> None:
+        """Control_mappings."""
+        control_mappings = self.get_row_value(row, CONTROL_ID_LIST)
+        if control_mappings:
+            controls = control_mappings.split()
+            for control in controls:
+                key = (component_description, component_type, rule_id, source, description, control)
+                self._csv_controls_map[key] = [row_num, row]
 
     @staticmethod
     def get_rule_key(component_title: str, component_type: str, rule_id: str) -> tuple:
@@ -1585,7 +1601,7 @@ class _CsvMgr():
         """Get profile list."""
         return [] + self._csv_profile_list
 
-    def row_generator(self) -> Generator[Union[int, Iterator[List[str]]], None, None]:
+    def row_generator(self) -> Generator[Union[int, Row], None, None]:
         """Generate rows."""
         index = 0
         for row in self._csv:
