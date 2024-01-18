@@ -484,72 +484,109 @@ def test_execute_bp4_sample(tmp_path: pathlib.Path) -> None:
     component = cd.components[0]
     assert len(component.props) == 68
     assert len(component.control_implementations) == 1
+    # props
+    index = 0
+    assert component.props[index].name == 'Rule_Id'
+    assert component.props[index].value == 'account_owner_authorized_ip_range_configured'
+    assert component.props[index].remarks == 'rule_set_00'
+    index = 7
+    assert component.props[index].name == 'Parameter_Id'
+    assert component.props[index].value == 'allowed_admins_per_account'
+    assert component.props[index].remarks == 'rule_set_01'
+    index = 8
+    assert component.props[index].name == 'Parameter_Description'
+    assert component.props[index].value == 'Maximum allowed administrators per'
+    assert component.props[index].remarks == 'rule_set_01'
+    index = 9
+    assert component.props[index].name == 'Parameter_Value_Alternatives'
+    assert component.props[index].value == '10'
+    assert component.props[index].remarks == 'rule_set_01'
+    index = 10
+    assert component.props[index].name == 'Parameter_Id2'
+    assert component.props[index].value == 'allowed_admins_per_account2'
+    assert component.props[index].remarks == 'rule_set_01'
+    index = 11
+    assert component.props[index].name == 'Parameter_Description2'
+    assert component.props[index].value == 'Maximum allowed administrators per2'
+    assert component.props[index].remarks == 'rule_set_01'
+    index = 12
+    assert component.props[index].name == 'Parameter_Value_Alternatives2'
+    assert component.props[index].value == '20'
+    assert component.props[index].remarks == 'rule_set_01'
+    index = 13
+    assert component.props[index].name == 'Check_Id'
+    assert component.props[index].value == 'iam_admin_role_users_per_account_maxcount'
+    assert component.props[index].remarks == 'rule_set_01'
+    # control implementations
     ci = component.control_implementations[0]
     assert len(ci.set_parameters) == 8
-    #
     index = 0
     assert ci.set_parameters[index].param_id == 'allowed_admins_per_account'
     assert len(ci.set_parameters[index].values) == 1
     assert ci.set_parameters[index].values[0] == '10'
-    #
     index = 1
     assert ci.set_parameters[index].param_id == 'allowed_admins_per_account2'
     assert len(ci.set_parameters[index].values) == 1
     assert ci.set_parameters[index].values[0] == '20'
-    #
     index = 2
     assert ci.set_parameters[index].param_id == 'api_keys_rotated_days'
     assert len(ci.set_parameters[index].values) == 3
     assert ci.set_parameters[index].values[0] == 'x'
     assert ci.set_parameters[index].values[1] == 'y'
     assert ci.set_parameters[index].values[2] == 'z'
-    #
     index = 3
     assert ci.set_parameters[index].param_id == 'api_keys_rotated_days2'
     assert len(ci.set_parameters[index].values) == 3
     assert ci.set_parameters[index].values[0] == 'r'
     assert ci.set_parameters[index].values[1] == 's'
     assert ci.set_parameters[index].values[2] == 't'
-    #
+
+
+def test_execute_bp4_change_param_default_value(tmp_path: pathlib.Path) -> None:
+    """Test execute bp4 change param default_value."""
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    section['csv-file'] = 'tests/data/csv/bp.sample.v4.csv'
+    # change default param default value
+    rows = _get_rows('tests/data/csv/bp.sample.v4.csv')
+    row = rows[3]
+    assert row[17] == 'allowed_admins_per_account2'
+    assert row[19] == '20'
+    assert row[20] == '20'
+    row[19] = '50'
+    row[20] = '45 50 55'
+    # modify
+    with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
+        mock_csv_reader.return_value = rows
+        tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+        retval = tgt.execute()
+        assert retval == TaskOutcome.SUCCESS
+    # read component-definition
+    fp = pathlib.Path(tmp_path) / 'component-definition.json'
+    cd = ComponentDefinition.oscal_read(fp)
+    # spot check
+    component = cd.components[0]
+    assert len(component.props) == 68
+    assert len(component.control_implementations) == 1
+    # props
     index = 0
     assert component.props[index].name == 'Rule_Id'
     assert component.props[index].value == 'account_owner_authorized_ip_range_configured'
     assert component.props[index].remarks == 'rule_set_00'
-    #
-    index = 7
-    assert component.props[index].name == 'Parameter_Id'
-    assert component.props[index].value == 'allowed_admins_per_account'
-    assert component.props[index].remarks == 'rule_set_01'
-    #
-    index = 8
-    assert component.props[index].name == 'Parameter_Description'
-    assert component.props[index].value == 'Maximum allowed administrators per'
-    assert component.props[index].remarks == 'rule_set_01'
-    #
-    index = 9
-    assert component.props[index].name == 'Parameter_Value_Alternatives'
-    assert component.props[index].value == '10'
-    assert component.props[index].remarks == 'rule_set_01'
-    #
-    index = 10
-    assert component.props[index].name == 'Parameter_Id2'
-    assert component.props[index].value == 'allowed_admins_per_account2'
-    assert component.props[index].remarks == 'rule_set_01'
-    #
-    index = 11
-    assert component.props[index].name == 'Parameter_Description2'
-    assert component.props[index].value == 'Maximum allowed administrators per2'
-    assert component.props[index].remarks == 'rule_set_01'
-    #
     index = 12
     assert component.props[index].name == 'Parameter_Value_Alternatives2'
-    assert component.props[index].value == '20'
+    assert component.props[index].value == '45 50 55'
     assert component.props[index].remarks == 'rule_set_01'
-    #
-    index = 13
-    assert component.props[index].name == 'Check_Id'
-    assert component.props[index].value == 'iam_admin_role_users_per_account_maxcount'
-    assert component.props[index].remarks == 'rule_set_01'
+    # control implementations
+    ci = component.control_implementations[0]
+    assert len(ci.set_parameters) == 8
+    index = 0
+    assert ci.set_parameters[index].param_id == 'allowed_admins_per_account'
+    assert len(ci.set_parameters[index].values) == 1
+    assert ci.set_parameters[index].values[0] == '10'
+    index = 1
+    assert ci.set_parameters[index].param_id == 'allowed_admins_per_account2'
+    assert len(ci.set_parameters[index].values) == 1
+    assert ci.set_parameters[index].values[0] == '50'
 
 
 def test_execute_bp_cd(tmp_path: pathlib.Path) -> None:
