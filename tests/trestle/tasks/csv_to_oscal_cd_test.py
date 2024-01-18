@@ -474,6 +474,7 @@ def test_execute_bp4_sample(tmp_path: pathlib.Path) -> None:
     """Test execute bp4 sample."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['csv-file'] = 'tests/data/csv/bp.sample.v4.csv'
+    # perform transformation from csv to OSCAL json
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
@@ -542,11 +543,11 @@ def test_execute_bp4_sample(tmp_path: pathlib.Path) -> None:
     assert ci.set_parameters[index].values[2] == 't'
 
 
-def test_execute_bp4_change_param_default_value(tmp_path: pathlib.Path) -> None:
-    """Test execute bp4 change param default_value."""
+def test_execute_bp4_modify_additional_param_set(tmp_path: pathlib.Path) -> None:
+    """Test execute bp4 modify additional param set."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['csv-file'] = 'tests/data/csv/bp.sample.v4.csv'
-    # change default param default value
+    # modify additional param set
     rows = _get_rows('tests/data/csv/bp.sample.v4.csv')
     row = rows[3]
     assert row[17] == 'allowed_admins_per_account2'
@@ -554,7 +555,7 @@ def test_execute_bp4_change_param_default_value(tmp_path: pathlib.Path) -> None:
     assert row[20] == '20'
     row[19] = '50'
     row[20] = '45 50 55'
-    # modify
+    # perform transformation from csv to OSCAL json
     with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
         mock_csv_reader.return_value = rows
         tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
@@ -587,6 +588,38 @@ def test_execute_bp4_change_param_default_value(tmp_path: pathlib.Path) -> None:
     assert ci.set_parameters[index].param_id == 'allowed_admins_per_account2'
     assert len(ci.set_parameters[index].values) == 1
     assert ci.set_parameters[index].values[0] == '50'
+
+
+def test_execute_bp4_delete_additional_param_set(tmp_path: pathlib.Path) -> None:
+    """Test execute bp4 delete additional param set."""
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    section['csv-file'] = 'tests/data/csv/bp.sample.v4.csv'
+    # delete additional param set
+    rows = _get_rows('tests/data/csv/bp.sample.v4.csv')
+    row = rows[3]
+    assert row[17] == 'allowed_admins_per_account2'
+    assert row[19] == '20'
+    assert row[20] == '20'
+    row[17] = ''
+    row[18] = ''
+    row[19] = ''
+    row[20] = ''
+    # perform transformation from csv to OSCAL json
+    with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
+        mock_csv_reader.return_value = rows
+        tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+        retval = tgt.execute()
+        assert retval == TaskOutcome.SUCCESS
+    # read component-definition
+    fp = pathlib.Path(tmp_path) / 'component-definition.json'
+    cd = ComponentDefinition.oscal_read(fp)
+    # spot check
+    component = cd.components[0]
+    assert len(component.props) == 65
+    assert len(component.control_implementations) == 1
+    # control implementations
+    ci = component.control_implementations[0]
+    assert len(ci.set_parameters) == 7
 
 
 def test_execute_bp_cd(tmp_path: pathlib.Path) -> None:
