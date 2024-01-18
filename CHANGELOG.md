@@ -3,6 +3,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.1 (2024-01-18)
+### Fix
+* Correct security vulnerability ([#1498](https://github.com/oscal-compass/compliance-trestle/issues/1498)) ([`e23792c`](https://github.com/oscal-compass/compliance-trestle/commit/e23792cb1cde490fa2951866c9f99f9d43e9c669))
+
 ## v2.5.0 (2024-01-05)
 ### Feature
 * Add parameter value origin field to parameters ([#1470](https://github.com/oscal-compass/compliance-trestle/issues/1470)) ([`b86aa2b`](https://github.com/oscal-compass/compliance-trestle/commit/b86aa2b5ef97a8fd988efb8ec995fb0624af6db0))
