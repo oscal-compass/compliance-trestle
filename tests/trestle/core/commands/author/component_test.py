@@ -191,7 +191,6 @@ def test_component_generate_missing_control(tmp_trestle_dir: pathlib.Path, monke
 
 def test_component_generate_more_than_one_param(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test component generate with more than 1 parameters per rule."""
-
     comp_name = test_utils.setup_component_generate(tmp_trestle_dir, 'comp_def_more_params')
 
     generate_cmd = f'trestle author component-generate -n {comp_name} -o {md_path}'

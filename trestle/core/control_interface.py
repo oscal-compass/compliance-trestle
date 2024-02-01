@@ -1122,9 +1122,7 @@ class ControlInterface:
                 if imp_req.control_id != new_imp_req.control_id:
                     continue
                 _, imp_req_param_dict, _ = ControlInterface.get_rules_and_params_dict_from_item(imp_req)
-                imp_req_rule_param_ids = [
-                    param['name'] for params in imp_req_param_dict.values() for param in params
-                ]
+                imp_req_rule_param_ids = [param['name'] for params in imp_req_param_dict.values() for param in params]
                 status = ControlInterface.get_status_from_props(new_imp_req)
                 ControlInterface.insert_status_in_props(imp_req, status)
                 imp_req.description = new_imp_req.description
