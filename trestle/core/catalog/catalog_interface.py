@@ -748,16 +748,17 @@ class CatalogInterface():
             rules_params = {}
             rules_param_names = []
             for comp_name, rules_params_dict in as_dict(context.rules_params_dict).items():
-                for rule_id, rules_param in rules_params_dict.items():
+                for rule_id, rules_parameters in rules_params_dict.items():
                     if rule_id in rule_ids.get(comp_name, []):
-                        param_name = rules_param['name']
-                        rules_param_names.append(param_name)
-                        rules_param[const.HEADER_RULE_ID] = rule_id_rule_name_map[comp_name].get(rule_id, None)
-                        deep_append(rules_params, [comp_name], rules_param)
-                        deep_set(
-                            param_id_rule_name_map, [comp_name, rules_param['name']],
-                            rule_id_rule_name_map[comp_name][rule_id]
-                        )
+                        for rule_parameter in rules_parameters:
+                            param_name = rule_parameter['name']
+                            rules_param_names.append(param_name)
+                            rule_parameter[const.HEADER_RULE_ID] = rule_id_rule_name_map[comp_name].get(rule_id, None)
+                            deep_append(rules_params, [comp_name], rule_parameter)
+                            deep_set(
+                                param_id_rule_name_map, [comp_name, rule_parameter['name']],
+                                rule_id_rule_name_map[comp_name][rule_id]
+                            )
             set_or_pop(header, const.RULES_PARAMS_TAG, rules_params)
 
             self._extend_rules_param_list(control_id, header, param_id_rule_name_map)
@@ -887,6 +888,7 @@ class CatalogInterface():
                     self._add_control_imp_comp_info(context, part_id_map, comp_rules_props)
                 # add the rule_id to the param_dict
                 for param_comp_name, rule_param_dict in context.rules_params_dict.items():
-                    for rule_tag, param_dict in rule_param_dict.items():
-                        rule_dict = deep_get(context.rules_dict, [param_comp_name, rule_tag], {})
-                        param_dict[const.HEADER_RULE_ID] = rule_dict.get(const.NAME, 'unknown_rule')
+                    for rule_tag, params_list in rule_param_dict.items():
+                        for param in params_list:
+                            rule_dict = deep_get(context.rules_dict, [param_comp_name, rule_tag], {})
+                            param[const.HEADER_RULE_ID] = rule_dict.get(const.NAME, 'unknown_rule')

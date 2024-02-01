@@ -454,39 +454,50 @@ class ControlInterface:
         """Get all params found in this item with rule_id as key."""
         # id, description, options - where options is a string containing comma-sep list of items
         # params is dict with rule_id as key and value contains: param_name, description and choices
-        params: Dict[str, Dict[str, str]] = {}
+        params: Dict[str, List[Dict[str, str]]] = {}
         props = []
         for prop in as_list(item.props):
-            if prop.name == const.PARAMETER_ID:
+            if const.PARAMETER_ID in prop.name:
                 rule_id = prop.remarks
                 param_name = prop.value
-                if rule_id in params:
-                    raise TrestleError(f'Duplicate param {param_name} found for rule {rule_id}')
-                # create new param for this rule
-                params[rule_id] = {'name': param_name}
+                # rule already exists in parameters dict
+                if rule_id in params.keys():
+                    existing_param = next((prm for prm in params[rule_id] if prm['name'] == param_name), None)
+                    if existing_param is not None:
+                        raise TrestleError(f'Param id for rule {rule_id} already exists')
+                    else:
+                        # append a new parameter for the current rule
+                        params[rule_id].append({'name': param_name})
+                else:
+                    # create new param for this rule for the first parameter
+                    params[rule_id] = [{'name': param_name}]
                 props.append(prop)
-            elif prop.name == const.PARAMETER_DESCRIPTION:
+            elif const.PARAMETER_DESCRIPTION in prop.name:
                 rule_id = prop.remarks
                 if rule_id in params:
-                    params[rule_id]['description'] = prop.value
+                    param = next((prm for prm in params[rule_id] if prm['name'] == param_name), None)
+                    param['description'] = prop.value
                     props.append(prop)
                 else:
                     raise TrestleError(f'Param description for rule {rule_id} found with no param_id')
-            elif prop.name == const.PARAMETER_VALUE_ALTERNATIVES:
+            elif const.PARAMETER_VALUE_ALTERNATIVES in prop.name:
                 rule_id = prop.remarks
                 if rule_id in params:
-                    params[rule_id]['options'] = prop.value
+                    param = next((prm for prm in params[rule_id] if prm['name'] == param_name), None)
+                    param['options'] = prop.value
                     props.append(prop)
                 else:
                     raise TrestleError(f'Param options for rule {rule_id} found with no param_id')
         new_params = {}
-        for rule_id, param in params.items():
-            if 'name' not in param:
-                logger.warning(f'Parameter for rule_id {rule_id} has no matching name.  Ignoring the param.')
-            else:
-                param['description'] = param.get('description', '')
-                param['options'] = param.get('options', '')
-                new_params[rule_id] = param
+        for rule_id, rule_params in params.items():
+            new_params[rule_id] = []
+            for param in rule_params:
+                if 'name' not in param:
+                    logger.warning(f'Parameter for rule_id {rule_id} has no matching name.  Ignoring the param.')
+                else:
+                    param['description'] = param.get('description', '')
+                    param['options'] = param.get('options', '')
+                    new_params[rule_id].append(param)
         return new_params, props
 
     @staticmethod
@@ -1102,14 +1113,18 @@ class ControlInterface:
         """
         for control_imp in as_list(component.control_implementations):
             _, control_imp_param_dict, _ = ControlInterface.get_rules_and_params_dict_from_item(control_imp)
-            control_imp_rule_param_ids = [d['name'] for d in control_imp_param_dict.values()]
+            control_imp_rule_param_ids = [
+                param['name'] for params in control_imp_param_dict.values() for param in params
+            ]
             if profile_title != ModelUtils.get_title_from_model_uri(trestle_root, control_imp.source):
                 continue
             for imp_req in as_list(control_imp.implemented_requirements):
                 if imp_req.control_id != new_imp_req.control_id:
                     continue
                 _, imp_req_param_dict, _ = ControlInterface.get_rules_and_params_dict_from_item(imp_req)
-                imp_req_rule_param_ids = [d['name'] for d in imp_req_param_dict]
+                imp_req_rule_param_ids = [
+                    param['name'] for params in imp_req_param_dict.values() for param in params
+                ]
                 status = ControlInterface.get_status_from_props(new_imp_req)
                 ControlInterface.insert_status_in_props(imp_req, status)
                 imp_req.description = new_imp_req.description
