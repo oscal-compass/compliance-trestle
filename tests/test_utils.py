@@ -493,6 +493,32 @@ def setup_for_ssp(
     return args, yaml_path
 
 
+def setup_for_ssp_fedramp(
+    tmp_trestle_dir: pathlib.Path,
+    output_name: str,
+) -> argparse.Namespace:
+    """Load profile and component needed for ssp-generate with FedRAMP profile."""
+    prof_name = 'full_profile_rev5'
+    comp_name = 'test_compdef_rev5'
+    load_from_json(tmp_trestle_dir, prof_name, prof_name, prof.Profile)
+    load_from_json(tmp_trestle_dir, comp_name, comp_name, comp.ComponentDefinition)
+
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        profile=prof_name,
+        compdefs=comp_name,
+        leveraged_ssp=None,
+        output=output_name,
+        verbose=0,
+        overwrite_header_values=False,
+        yaml_header=None,
+        allowed_sections=None,
+        force_overwrite=None
+    )
+
+    return args
+
+
 def make_file_hidden(file_path: pathlib.Path, if_dot=False) -> None:
     """
     Make a file hidden on windows.
