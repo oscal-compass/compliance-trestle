@@ -259,7 +259,10 @@ class CatalogReader():
         # if control has no parts it will not have part id map and bycomps will go at control level
         control_part_id_map = part_id_map_by_label.get(control_id, {})
         for label, comp_info in comp_info_dict.items():
-            part_id = control_part_id_map.get(label, '')
+            if label:
+                part_id = control_part_id_map.get(label, '')
+            else:
+                part_id = ''
             by_comp = CatalogReader._get_by_comp_from_imp_req(imp_req, part_id, gen_comp.uuid)
             by_comp.description = comp_info.prose
             by_comp.implementation_status = comp_info.status
