@@ -302,10 +302,12 @@ class CatalogInterface():
                 id_dict: Dict[str, str] = {}
                 for sub_part in as_list(statement_part.parts):
                     label = ControlInterface.get_label(sub_part)
-                    if label_as_key:
-                        id_dict[label] = sub_part.id
-                    else:
-                        id_dict[sub_part.id] = label
+                    # skip add to map for empty label
+                    if label:
+                        if label_as_key:
+                            id_dict[label] = sub_part.id
+                        else:
+                            id_dict[sub_part.id] = label
                 if id_dict:
                     id_map[control.id] = id_dict
         return id_map
