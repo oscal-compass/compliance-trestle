@@ -298,18 +298,20 @@ class CatalogInterface():
         id_map = {}
         for control in self.get_all_controls_from_catalog(True):
             statement_part = get_item_from_list(control.parts, const.STATEMENT, lambda p: p.name)
-            if statement_part:
-                id_dict: Dict[str, str] = {}
-                for sub_part in as_list(statement_part.parts):
-                    label = ControlInterface.get_label(sub_part)
-                    # skip add to map for empty label
-                    if label:
-                        if label_as_key:
-                            id_dict[label] = sub_part.id
-                        else:
-                            id_dict[sub_part.id] = label
-                if id_dict:
-                    id_map[control.id] = id_dict
+            if not statement_part:
+                continue
+            id_dict: Dict[str, str] = {}
+            for sub_part in as_list(statement_part.parts):
+                label = ControlInterface.get_label(sub_part)
+                # skip add to map for empty label
+                if not label:
+                    continue
+                if label_as_key:
+                    id_dict[label] = sub_part.id
+                else:
+                    id_dict[sub_part.id] = label
+            if id_dict:
+                id_map[control.id] = id_dict
         return id_map
 
     @staticmethod
