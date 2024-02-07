@@ -197,3 +197,8 @@ def test_component_generate_more_than_one_param(tmp_trestle_dir: pathlib.Path, m
 
     # generate the md first time
     test_utils.execute_command_and_assert(generate_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
+
+    assem_name = 'assem_comp'
+    # now assemble component generated
+    assemble_cmd = f'trestle author component-assemble -m {md_path} -n {comp_name} -o {assem_name}'
+    test_utils.execute_command_and_assert(assemble_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
