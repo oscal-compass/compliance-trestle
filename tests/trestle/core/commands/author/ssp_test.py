@@ -19,7 +19,7 @@ import pathlib
 from _pytest.monkeypatch import MonkeyPatch
 
 from tests import test_utils
-from tests.test_utils import FileChecker, setup_for_ssp
+from tests.test_utils import FileChecker, setup_for_ssp, setup_for_ssp_fedramp
 
 import trestle.core.generators as gens
 import trestle.core.generic_oscal as generic
@@ -483,6 +483,17 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert orig_uuid != test_utils.get_model_uuid(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     # confirm the file was not written out since no change
     assert orig_ssp_path.stat().st_mtime > orig_file_creation
+
+
+def test_ssp_assemble_fedramp_profile(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Tests ssp assemble with a fedramp profile."""
+    gen_args = setup_for_ssp_fedramp(tmp_trestle_dir, ssp_name)
+    ssp_gen = SSPGenerate()
+    assert ssp_gen._run(gen_args) == 0
+
+    # first assemble
+    ssp_assemble = f'trestle author ssp-assemble -m {ssp_name} -o {ssp_name} -cd {gen_args.compdefs}'
+    test_utils.execute_command_and_assert(ssp_assemble, 0, monkeypatch)
 
 
 def test_ssp_assemble_remove_comp_defs(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
