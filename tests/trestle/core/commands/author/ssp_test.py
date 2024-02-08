@@ -1060,10 +1060,17 @@ def test_ssp_gen_and_assemble_more_than_one_param(tmp_trestle_dir: pathlib.Path,
     assert md_path.exists()
 
     md_api = MarkdownAPI()
-    header, _ = md_api.processor.process_markdown(md_path)
+    header, tree = md_api.processor.process_markdown(md_path)
+    rule_parameters = header['x-trestle-comp-def-rules-param-vals']['comp_aa']
+    rule_parameters.append({'name': 'allowed_admins_per_account2', 'values': ['20']})
+
+    md_api.write_markdown_with_header(md_path, header, tree.content.raw_text)
 
     # verifies a second parameter has beend added to the top shared rule
     assert header['x-trestle-rules-params']['comp_aa'][1]['name'] == 'allowed_admins_per_account2'
+
+    # verifies the parameter value for the rule has been written down correctly in the markdown file
+    assert header['x-trestle-comp-def-rules-param-vals']['comp_aa'][2]['values'] == ['20']
 
     # now assemble controls into json ssp
     ssp_assemble = SSPAssemble()

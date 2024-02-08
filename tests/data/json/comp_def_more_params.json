@@ -185,7 +185,7 @@
               {
                 "name": "Parameter_Value_Alternatives2",
                 "ns": "http://oscal-compass.github.io/compliance-trestle/schemas/oscal/cd",
-                "value": "20",
+                "value": "[\"20\", \"30\"]",
                 "remarks": "rule_1"
               }
             ],
