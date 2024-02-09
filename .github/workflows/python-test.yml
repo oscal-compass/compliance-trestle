@@ -13,14 +13,14 @@ jobs:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v2
       with:
         submodules: true
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v2
       with:
         python-version: 3.9
-    - uses: actions/cache@v4
+    - uses: actions/cache@v2
       with:
         path: ~/.cache/pip
         key: ubuntu-latest-3.9-pip-${{ hashFiles('setup.cfg') }}
@@ -66,14 +66,14 @@ jobs:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v2
       with:
         submodules: true
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v2
       with:
         python-version: 3.9
-    - uses: actions/cache@v4
+    - uses: actions/cache@v2
       with:
         path: ~/.cache/pip
         key: ubuntu-latest-3.9-pip-${{ hashFiles('setup.cfg') }}
@@ -92,7 +92,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ['3.9', '3.10', '3.11']
+        python-version: [3.10, 3.11]
         include:
         - os: ubuntu-latest
           path: ~/.cache/pip
@@ -100,20 +100,32 @@ jobs:
           path: ~/Library/Caches/pip
         - os: windows-latest
           path: ~\AppData\Local\pip\Cache
+        # optional 3.9 test
+        - os: ubuntu-latest
+          path: ~/.cache/pip
+          python-version: 3.9
+        # optional 3.9 test
+        - os: macos-latest
+          path: ~/Library/Caches/pip
+          python-version: 3.9
+        # optional 3.9 test
+        - os: windows-latest
+          path: ~\AppData\Local\pip\Cache
+          python-version: 3.9
           
     steps:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v2
       with:
         fetch-depth: 0
         submodules: true
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
-    - uses: actions/cache@v4
+    - uses: actions/cache@v2
       with:
         path: ${{ matrix.path }}
         key: ${{ matrix.os }}-${{ matrix.python-version }}-pip-${{ hashFiles('setup.cfg') }}
@@ -133,7 +145,7 @@ jobs:
 
     - name: Upload artifact
       if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.9' }}
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v2
       with:
         name: coverage
         path: coverage.xml
@@ -149,14 +161,14 @@ jobs:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v2
       with:
         submodules: true
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v2
       with:
         python-version: 3.9
-    - uses: actions/cache@v4
+    - uses: actions/cache@v2
       with:
         path: ~/.cache/pip
         key: ubuntu-latest-3.9-pip-${{ hashFiles('setup.cfg') }}
@@ -166,7 +178,7 @@ jobs:
       run: |
         make develop
     - name: Get coverage
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v2
       with:
         name: coverage
     - name: SonarCloud Scan
