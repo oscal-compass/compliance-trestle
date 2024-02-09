@@ -20,7 +20,7 @@ jobs:
           path: ~/Library/Caches/pip
         - os: windows-latest
           path: ~\AppData\Local\pip\Cache
-        python-version: [3.8, 3.9]
+        python-version: ['3.8', '3.9']
 
     steps:
     - name: Don't mess with  line endings
@@ -90,10 +90,10 @@ jobs:
         submodules: true
         fetch-depth: 0
         token: ${{ secrets.ADMIN_PAT }} 
-    - name: Set up Python 3.8
+    - name: Set up Python '3.8'
       uses: actions/setup-python@v2
       with:
-        python-version: 3.8
+        python-version: '3.8'
     - name: Install build tools
       run: |
         make develop
@@ -119,11 +119,11 @@ jobs:
         submodules: true
         fetch-depth: 0
         token: ${{ secrets.ADMIN_PAT }} 
-    - name: Set up Python 3.8
+    - name: Set up Python '3.8'
       uses: actions/setup-python@v2
       # This is deliberately not using a custom credential as it relies on native github actions token to have push rights.
       with:
-        python-version: 3.8
+        python-version: '3.8'
     - name: Install build tools
       run: |
         make develop
