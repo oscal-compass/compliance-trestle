@@ -99,6 +99,8 @@
         "include-controls": [
           {
             "with-ids": [
+              "ac-1",
+              "ac-2.3",
               "sc-21"
             ]
           }
