@@ -85,27 +85,23 @@ A collection of demos utilizing trestle can be found in the related project [com
 
 Compliance trestle is currently stable and is based on NIST OSCAL version 1.0.4, with active development continuing.
 
-## Community call
+## Community meetings and communications
 
-We would like to share development in progress for compliance trestle, coming soon and get feedback from community on what features would they like to see in compliance trestle.
-The community call will happen every 2 week(s) on Tuesday at 10am EST.
-Meeting information:
+##### Scheduled meetings
 
-```
-Compliance Trestle Community Call
-Hosted by MANJIREE GADGIL
+Please attend! All are invited.
 
-https://ibm.webex.com/ibm/j.php?MTID=m46740e85f87f290d0848c6941c489b0a
-Tuesday, May 16, 2023 10:30 AM | 30 minutes | (UTC-04:00) Eastern Time (US & Canada)
-Occurs every 2 week(s) on Tuesday effective 5/16/2023 from 10:30 AM to 11:00 AM, (UTC-04:00) Eastern Time (US & Canada)
+When: 2nd and 4th Tuesday of each month at 10:00 ET [convert to your local time](https://dateful.com/convert/est-edt-eastern-time)
 
-Join by phone
-1-844-531-0958 United States Toll Free
-1-669-234-1178 United States Toll
-1-669-234-1178 United States Toll
-Host access code 979 191 85
-Attendee access code 979 379 85
-```
+Where: [https://zoom.us/j/92729235315](https://zoom.us/j/92729235315)
+
+- Meeting Id: 927 2923 5315
+
+- Meeting notes: [here](https://docs.google.com/document/d/1z9xvt-Z97j4CtEH1-nR9sMWul7jQkUi_fNY7BdMPgxM/edit#heading=h.nohkp1kbeduj)
+
+##### Chat anytime
+
+- Slack: [# compliance-grc](https://app.slack.com/client/T08PSQ7BQ/C066TMUBEL8)
 
 ## Contributing to Trestle
 
