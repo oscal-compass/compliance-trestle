@@ -97,7 +97,7 @@ Where: [https://zoom.us/j/92729235315](https://zoom.us/j/92729235315)
 
 - Meeting Id: 927 2923 5315
 
-- Meeting notes: [here](https://docs.google.com/document/d/1z9xvt-Z97j4CtEH1-nR9sMWul7jQkUi_fNY7BdMPgxM/edit#heading=h.nohkp1kbeduj)
+- Meeting agenda and notes: [here](https://docs.google.com/document/d/1z9xvt-Z97j4CtEH1-nR9sMWul7jQkUi_fNY7BdMPgxM/edit#heading=h.nohkp1kbeduj)
 
 ##### Chat anytime
 
