@@ -100,7 +100,7 @@ class Ocp4CisProfileToOscalCD(TaskBase):
         text2 = 'profile mnemonic, e.g. ocp4-cis-node.'
         logger.info(text1 + text2)
         text1 = '  profile-ns             = '
-        text2 = 'profile ns, e.g. https://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud.'
+        text2 = 'profile ns, e.g. https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ibm-cloud.'
         logger.info(text1 + text2)
         text1 = '  profile-version        = '
         text2 = 'profile version, e.g. 1.1.'

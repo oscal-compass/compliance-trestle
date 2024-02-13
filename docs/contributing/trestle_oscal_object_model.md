@@ -3,9 +3,9 @@
 Trestle provides an object model for OSCAL to ease the development and validation of OSCAL objects that reside in the `trestle.oscal` module.
 This functionality, which is built on [pydantic](https://pydantic-docs.helpmanual.io/) and [python data classes](https://docs.python.org/3/library/dataclasses.html), allows validation of the OSCAL schema and is leveraged to provide a variety of utility functions including:
 
-- IO Support for yaml / json / python dict serialisation [see `OscalBaseModel` for trestle enhancements](https://github.com/IBM/compliance-trestle/blob/develop/trestle/core/base_model.py)
-- The ability to generate pro-forma objects using [`trestle.core.generate::generate_sample_model`](https://github.com/IBM/compliance-trestle/blob/develop/trestle/core/generators.py)
-- Integration into the flask api framework [(demo)](https://github.com/IBM/compliance-trestle-demos/tree/develop/trestle_flask_api)
+- IO Support for yaml / json / python dict serialisation [see `OscalBaseModel` for trestle enhancements](https://github.com/oscal-compass/compliance-trestle/blob/develop/trestle/core/base_model.py)
+- The ability to generate pro-forma objects using [`trestle.core.generate::generate_sample_model`](https://github.com/oscal-compass/compliance-trestle/blob/develop/trestle/core/generators.py)
+- Integration into the flask api framework [(demo)](https://github.com/oscal-compass/compliance-trestle-demos/tree/develop/trestle_flask_api)
 
 ## Mapping and variance with OSCAL names.
 

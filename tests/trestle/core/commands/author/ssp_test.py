@@ -19,7 +19,7 @@ import pathlib
 from _pytest.monkeypatch import MonkeyPatch
 
 from tests import test_utils
-from tests.test_utils import FileChecker, setup_for_ssp
+from tests.test_utils import FileChecker, setup_for_ssp, setup_for_ssp_fedramp
 
 import trestle.core.generators as gens
 import trestle.core.generic_oscal as generic
@@ -215,7 +215,6 @@ def test_ssp_generate_header_edit(tmp_trestle_dir: pathlib.Path) -> None:
     # confirm new items were added from yaml but not when the same key was alread present (values not updated)
     header, tree = md_api.processor.process_markdown(ac_1)
     assert 'control-origination' in header
-    assert header['x-trestle-set-params']['ac-1_prm_5']['values'] is None
     assert header['x-trestle-set-params']['ac-1_prm_5']['label'] == 'meetings cancelled from cli yaml'
 
     # generate again with header and DO overwrite header values
@@ -254,6 +253,107 @@ def test_ssp_generate_header_edit(tmp_trestle_dir: pathlib.Path) -> None:
     co = header['control-origination']
     assert co[2] == 'Service Provider Corporate'
     assert len(co) == 3
+
+
+def test_ssp_generate_with_inheritance(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test ssp-generate with inheritance view."""
+    args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name, False, 'leveraged_ssp')
+    ssp_cmd = SSPGenerate()
+    assert ssp_cmd._run(args) == 0
+
+    # Test output for each type of file
+
+    # Find export files under This System
+    this_system_dir = tmp_trestle_dir / ssp_name / const.INHERITANCE_VIEW_DIR / 'This System'
+
+    expected_uuid = '11111111-0000-4000-9009-001001002001'
+    ac_21 = this_system_dir / 'ac-2.1'
+    test_provided = ac_21 / f'{expected_uuid}.md'
+    assert test_provided.exists()
+
+    # confirm content in yaml header
+    md_api = MarkdownAPI()
+    header, tree = md_api.processor.process_markdown(test_provided)
+    assert tree is not None
+
+    comp_header_value = header[const.TRESTLE_LEVERAGING_COMP_TAG]
+    assert comp_header_value == [{'name': 'REPLACE_ME'}]
+    assert header[const.TRESTLE_STATEMENT_TAG][const.PROVIDED_UUID] == expected_uuid
+
+    expected_provided = """# Provided Statement Description
+
+Consumer-appropriate description of what may be inherited.
+
+In the context of the application component in satisfaction of AC-2.1."""
+
+    # Confirm markdown content
+    node = tree.get_node_for_key(const.PROVIDED_STATEMENT_DESCRIPTION, False)
+    assert node.content.raw_text == expected_provided
+
+    expected_uuid = '11111111-0000-4000-9009-002001001001'
+    ac_2_stm = this_system_dir / 'ac-2_stmt.a'
+    test_provided = ac_2_stm / f'{expected_uuid}.md'
+    assert test_provided.exists()
+
+    # confirm content in yaml header
+    md_api = MarkdownAPI()
+    header, tree = md_api.processor.process_markdown(test_provided)
+    assert tree is not None
+
+    comp_header_value = header[const.TRESTLE_LEVERAGING_COMP_TAG]
+    assert comp_header_value == [{'name': 'REPLACE_ME'}]
+    assert header[const.TRESTLE_STATEMENT_TAG][const.RESPONSIBILITY_UUID] == expected_uuid
+
+    expected_responsibility = """# Responsibility Statement Description
+
+Leveraging system's responsibilities with respect to inheriting this capability.
+
+In the context of the application component in satisfaction of AC-2, part a.
+"""
+
+    # Confirm markdown content
+    node = tree.get_node_for_key(const.RESPONSIBILITY_STATEMENT_DESCRIPTION, False)
+    assert node.content.raw_text == expected_responsibility
+
+    # Fine export files under Application
+    application_dir = tmp_trestle_dir / ssp_name / const.INHERITANCE_VIEW_DIR / 'Application'
+
+    expected_provided_uuid = '11111111-0000-4000-9009-002001002001'
+    expected_responsibility_uuid = '11111111-0000-4000-9009-002001002002'
+    ac_2_stm = application_dir / 'ac-2_stmt.a'
+    test_provided = ac_2_stm / f'{expected_provided_uuid}_{expected_responsibility_uuid}.md'
+    assert test_provided.exists()
+
+    # confirm content in yaml header
+    md_api = MarkdownAPI()
+    header, tree = md_api.processor.process_markdown(test_provided)
+    assert tree is not None
+
+    comp_header_value = header[const.TRESTLE_LEVERAGING_COMP_TAG]
+    assert comp_header_value == [{'name': 'REPLACE_ME'}]
+    assert header[const.TRESTLE_STATEMENT_TAG][const.PROVIDED_UUID] == expected_provided_uuid
+    assert header[const.TRESTLE_STATEMENT_TAG][const.RESPONSIBILITY_UUID] == expected_responsibility_uuid
+
+    expected_provided = """# Provided Statement Description
+
+Consumer-appropriate description of what may be inherited.
+
+In the context of the application component in satisfaction of AC-2, part a.
+"""
+
+    expected_responsibility = """# Responsibility Statement Description
+
+Leveraging system's responsibilities with respect to inheriting this capability.
+
+In the context of the application component in satisfaction of AC-2, part a.
+"""
+
+    # Confirm markdown content
+    node = tree.get_node_for_key(const.PROVIDED_STATEMENT_DESCRIPTION, False)
+    assert node.content.raw_text == expected_provided
+
+    node = tree.get_node_for_key(const.RESPONSIBILITY_STATEMENT_DESCRIPTION, False)
+    assert node.content.raw_text == expected_responsibility
 
 
 def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
@@ -385,6 +485,17 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert orig_ssp_path.stat().st_mtime > orig_file_creation
 
 
+def test_ssp_assemble_fedramp_profile(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Tests ssp assemble with a fedramp profile."""
+    gen_args = setup_for_ssp_fedramp(tmp_trestle_dir, ssp_name)
+    ssp_gen = SSPGenerate()
+    assert ssp_gen._run(gen_args) == 0
+
+    # first assemble
+    ssp_assemble = f'trestle author ssp-assemble -m {ssp_name} -o {ssp_name} -cd {gen_args.compdefs}'
+    test_utils.execute_command_and_assert(ssp_assemble, 0, monkeypatch)
+
+
 def test_ssp_assemble_remove_comp_defs(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Tests the removal of component definitions that are no longer valid for an ssp."""
     gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
@@ -447,6 +558,49 @@ def test_ssp_generate_resolved_catalog(tmp_trestle_dir: pathlib.Path) -> None:
     resolved_catalog.oscal_write(new_catalog_path)
 
 
+def test_ssp_assemble_with_inheritance(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test ssp assemble from cli with inheritance view."""
+    gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name, False, 'leveraged_ssp')
+    args_compdefs = gen_args.compdefs
+
+    # first create the markdown
+    ssp_gen = SSPGenerate()
+    assert ssp_gen._run(gen_args) == 0
+
+    this_system_dir = tmp_trestle_dir / ssp_name / const.INHERITANCE_VIEW_DIR / 'This System'
+
+    expected_uuid = '11111111-0000-4000-9009-001001002001'
+    ac_21 = this_system_dir / 'ac-2.1'
+    test_provided = ac_21 / f'{expected_uuid}.md'
+
+    test_utils.replace_in_file(test_provided, 'REPLACE_ME', 'comp_aa')
+
+    # now assemble the edited controls into json ssp
+    ssp_assemble = SSPAssemble()
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        markdown=ssp_name,
+        output=ssp_name,
+        verbose=0,
+        regenerate=False,
+        name=None,
+        compdefs=args_compdefs,
+        version=None
+    )
+    assert ssp_assemble._run(args) == 0
+
+    ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
+
+    imp_reqs = ssp.control_implementation.implemented_requirements
+    imp_req = next((i_req for i_req in imp_reqs if i_req.control_id == 'ac-2.1'), None)
+    inherited = imp_req.by_components[1].inherited[0]  # type: ignore
+    assert inherited.description == (
+        'Consumer-appropriate description of what may be inherited.\n\n\
+In the context of the application component in satisfaction of AC-2.1.'
+    )
+    assert inherited.provided_uuid == expected_uuid
+
+
 def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp filter."""
     # FIXME enhance coverage
@@ -486,7 +640,8 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         regenerate=False,
         version=None,
         components=None,
-        implementation_status=None
+        implementation_status=None,
+        control_origination=None
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
@@ -514,7 +669,8 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         regenerate=True,
         version=None,
         components='comp_aa',
-        implementation_status=None
+        implementation_status=None,
+        control_origination=None
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
@@ -536,7 +692,8 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         regenerate=True,
         version=None,
         components='comp_aa',
-        implementation_status=None
+        implementation_status=None,
+        control_origination=None
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
@@ -551,7 +708,8 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         regenerate=False,
         version=None,
         components=None,
-        implementation_status='not-applicable,implemented'
+        implementation_status='not-applicable,implemented',
+        control_origination=None
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
@@ -578,7 +736,8 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         regenerate=False,
         version=None,
         components=None,
-        implementation_status='not-applicable'
+        implementation_status='not-applicable',
+        control_origination=None
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
@@ -602,8 +761,11 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         verbose=0,
         regenerate=True,
         version=None,
-        components=None
+        components=None,
+        implementation_status=None,
+        control_origination=None
     )
+
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 1
 
@@ -618,7 +780,9 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         verbose=0,
         regenerate=True,
         version=None,
-        components=None
+        components=None,
+        implementation_status=None,
+        control_origination=None
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 1
@@ -634,7 +798,105 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         regenerate=True,
         version=None,
         components=None,
-        implementation_status=bad_impl
+        implementation_status=bad_impl,
+        control_origination=None
+    )
+    ssp_filter = SSPFilter()
+    assert ssp_filter._run(args) == 1
+
+
+def test_ssp_filter_control_origination(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test the ssp filter when filtering by control origination."""
+    gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
+    ssp_gen = SSPGenerate()
+    assert ssp_gen._run(gen_args) == 0
+
+    # create ssp from the markdown
+    ssp_assemble = SSPAssemble()
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        markdown=ssp_name,
+        output=ssp_name,
+        verbose=0,
+        name=None,
+        version=None,
+        regenerate=False,
+        compdefs=gen_args.compdefs
+    )
+    assert ssp_assemble._run(args) == 0
+
+    ssp: ossp.SystemSecurityPlan
+    ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
+
+    assert len(ssp.control_implementation.implemented_requirements) == 8
+
+    filtered_name = 'filtered_ssp'
+
+    # now filter the ssp by multiple control origination values
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        name=ssp_name,
+        profile=None,
+        output=filtered_name,
+        verbose=0,
+        regenerate=False,
+        version=None,
+        components=None,
+        implementation_status=None,
+        control_origination='customer-configured,system-specific'
+    )
+    ssp_filter = SSPFilter()
+    assert ssp_filter._run(args) == 0
+
+    ssp, _ = ModelUtils.load_model_for_class(
+        tmp_trestle_dir,
+        filtered_name,
+        ossp.SystemSecurityPlan,
+        FileContentType.JSON
+    )
+
+    # confirm the imp_reqs have been culled to two controls
+    assert len(ssp.control_implementation.implemented_requirements) == 2
+
+    # now filter the ssp by a control origination that is unused
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        name=ssp_name,
+        profile=None,
+        output=filtered_name,
+        verbose=0,
+        regenerate=False,
+        version=None,
+        components=None,
+        implementation_status=None,
+        control_origination='inherited'
+    )
+    ssp_filter = SSPFilter()
+    assert ssp_filter._run(args) == 0
+
+    ssp, _ = ModelUtils.load_model_for_class(
+        tmp_trestle_dir,
+        filtered_name,
+        ossp.SystemSecurityPlan,
+        FileContentType.JSON
+    )
+
+    # confirm the imp_reqs have been culled to zero controls
+    assert len(ssp.control_implementation.implemented_requirements) == 0
+
+    # filter with an invalid control origination to trigger error
+    bad_co = 'co_bad'
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        name=ssp_name,
+        profile=None,
+        output=filtered_name,
+        verbose=0,
+        regenerate=True,
+        version=None,
+        components=None,
+        implementation_status=None,
+        control_origination=bad_co
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 1

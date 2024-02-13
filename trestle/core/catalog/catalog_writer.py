@@ -63,7 +63,6 @@ class CatalogWriter():
 
             # get all params and vals for this control from the resolved profile catalog with block adds in effect
             control_param_dict = ControlInterface.get_control_param_dict(control, False)
-
             set_param_dict = self._construct_set_parameters_dict(profile_set_param_dict, control_param_dict, context)
 
             if set_param_dict:
@@ -145,16 +144,30 @@ class CatalogWriter():
         for param_id, param_dict in control_param_dict.items():
             # if the param is in the full_param_dict, load its contents first and mark as profile-values
             display_name = ''
+            param_value_origin, _ = CatalogInterface._get_param_value_origin_and_ns(param_dict)
+            prof_param_value_origin = ''
             if param_id in profile_set_param_dict:
                 # get the param from the profile set_param
                 param = profile_set_param_dict[param_id]
                 display_name, _ = CatalogInterface._get_display_name_and_ns(param)
+                prof_param_value_origin, _ = CatalogInterface._get_param_value_origin_and_ns(param)
                 # assign its contents to the dict
                 new_dict = ModelUtils.parameter_to_dict(param, True)
                 if const.VALUES in new_dict:
                     if context.purpose == ContextPurpose.PROFILE:
                         new_dict[const.PROFILE_VALUES] = new_dict[const.VALUES]
                         new_dict.pop(const.VALUES)
+                # validates if parent profile has param-value-origin field
+                if param_value_origin != '' and param_value_origin is not None:
+                    if context.purpose == ContextPurpose.PROFILE:
+                        new_dict[const.PARAM_VALUE_ORIGIN] = param_value_origin
+                # validates if current profile has param-value-origin field and
+                # adds it to prof-param-value-origin
+                if prof_param_value_origin != '' and prof_param_value_origin is not None:
+                    if context.purpose == ContextPurpose.PROFILE:
+                        new_dict[const.PROFILE_PARAM_VALUE_ORIGIN] = prof_param_value_origin
+                else:
+                    new_dict[const.PROFILE_PARAM_VALUE_ORIGIN] = const.REPLACE_ME_PLACEHOLDER
                 # then insert the original, incoming values as values
                 if param_id in control_param_dict:
                     orig_param = control_param_dict[param_id]
@@ -162,15 +175,58 @@ class CatalogWriter():
                     # pull only the values from the actual control dict
                     # all the other elements are from the profile set_param
                     new_dict[const.VALUES] = orig_dict.get(const.VALUES, None)
+                    new_dict[const.GUIDELINES] = orig_dict.get(const.GUIDELINES, None)
+                    if new_dict[const.VALUES] is None:
+                        new_dict.pop(const.VALUES)
+                    if new_dict[const.GUIDELINES] is None:
+                        new_dict.pop(const.GUIDELINES)
             else:
                 # if the profile doesnt change this param at all, show it in the header with values
                 tmp_dict = ModelUtils.parameter_to_dict(param_dict, True)
                 values = tmp_dict.get('values', None)
-                new_dict = {'id': param_id, 'values': values}
+                # if values are None then don´t display them in the markdown
+                if values is not None:
+                    new_dict = {
+                        'id': param_id,
+                        'values': values,
+                    }
+                else:
+                    new_dict = {
+                        'id': param_id,
+                    }
+                new_dict[const.PROFILE_VALUES] = [const.REPLACE_ME_PLACEHOLDER]
+                new_dict[const.PROFILE_PARAM_VALUE_ORIGIN] = const.REPLACE_ME_PLACEHOLDER
+            if param_value_origin is not None:
+                if context.purpose == ContextPurpose.PROFILE:
+                    new_dict[const.PARAM_VALUE_ORIGIN] = param_value_origin
             new_dict.pop('id', None)
-            if display_name:
+            # validates if there are aggregated parameter values to the current parameter
+            aggregated_props = [prop for prop in as_list(param_dict.props) if prop.name == const.AGGREGATES]
+            if aggregated_props != []:
+                props_to_add = []
+                for prop in aggregated_props:
+                    props_to_add.append(prop.value)
+                new_dict[const.AGGREGATES] = props_to_add
+                new_dict.pop(const.PROFILE_VALUES, None)
+            alt_identifier = [prop for prop in as_list(param_dict.props) if prop.name == const.ALT_IDENTIFIER]
+            if alt_identifier != []:
+                new_dict[const.ALT_IDENTIFIER] = alt_identifier[0].value
+            # adds display name, if no display name then do not add to dict
+            if display_name != '' and display_name is not None:
                 new_dict[const.DISPLAY_NAME] = display_name
-            set_param_dict[param_id] = new_dict
+            key_order = (
+                const.LABEL,
+                const.GUIDELINES,
+                const.VALUES,
+                const.AGGREGATES,
+                const.ALT_IDENTIFIER,
+                const.DISPLAY_NAME,
+                const.PROFILE_VALUES,
+                const.PARAM_VALUE_ORIGIN,
+                const.PROFILE_PARAM_VALUE_ORIGIN
+            )
+            ordered_dict = {k: new_dict[k] for k in key_order if k in new_dict.keys()}
+            set_param_dict[param_id] = ordered_dict
 
         return set_param_dict
 

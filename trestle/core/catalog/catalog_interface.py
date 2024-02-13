@@ -298,16 +298,20 @@ class CatalogInterface():
         id_map = {}
         for control in self.get_all_controls_from_catalog(True):
             statement_part = get_item_from_list(control.parts, const.STATEMENT, lambda p: p.name)
-            if statement_part:
-                id_dict: Dict[str, str] = {}
-                for sub_part in as_list(statement_part.parts):
-                    label = ControlInterface.get_label(sub_part)
-                    if label_as_key:
-                        id_dict[label] = sub_part.id
-                    else:
-                        id_dict[sub_part.id] = label
-                if id_dict:
-                    id_map[control.id] = id_dict
+            if not statement_part:
+                continue
+            id_dict: Dict[str, str] = {}
+            for sub_part in as_list(statement_part.parts):
+                label = ControlInterface.get_label(sub_part)
+                # skip add to map for empty label
+                if not label:
+                    continue
+                if label_as_key:
+                    id_dict[label] = sub_part.id
+                else:
+                    id_dict[sub_part.id] = label
+            if id_dict:
+                id_map[control.id] = id_dict
         return id_map
 
     @staticmethod
@@ -679,6 +683,14 @@ class CatalogInterface():
     def _get_display_name_and_ns(param: common.Parameter) -> Tuple[Optional[str], Optional[str]]:
         for prop in as_list(param.props):
             if prop.name == const.DISPLAY_NAME:
+                ns = str(prop.ns) if prop.ns else None
+                return prop.value, ns
+        return None, None
+
+    @staticmethod
+    def _get_param_value_origin_and_ns(param: common.Parameter) -> Tuple[Optional[str], Optional[str]]:
+        for prop in as_list(param.props):
+            if prop.name == const.PARAM_VALUE_ORIGIN:
                 ns = str(prop.ns) if prop.ns else None
                 return prop.value, ns
         return None, None

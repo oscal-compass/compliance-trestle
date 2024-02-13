@@ -32,7 +32,7 @@ from trestle.tasks.base_task import TaskOutcome
 
 def monkey_exception() -> None:
     """Monkey exception."""
-    raise Exception('foobar')
+    raise RuntimeError('foobar')
 
 
 def _get_rows(file_: str) -> List[List[str]]:
@@ -60,7 +60,7 @@ def _validate_ocp(tmp_path: pathlib.Path) -> None:
     assert component.type == 'Service'
     assert component.title == 'OSCO'
     assert component.props[0].name == 'Rule_Id'
-    assert component.props[0].ns == 'http://ibm.github.io/compliance-trestle/schemas/oscal/cd'
+    assert component.props[0].ns == 'http://oscal-compass.github.io/compliance-trestle/schemas/oscal/cd'
     assert component.props[0].value == 'xccdf_org.ssgproject.content_rule_api_server_anonymous_auth'
     assert component.props[0].class_ == 'scc_class'
     assert component.props[0].remarks == 'rule_set_000'
@@ -139,7 +139,7 @@ def _get_config_section_init(tmp_path: pathlib.Path, fname: str) -> tuple:
 
 def test_print_info(tmp_path: pathlib.Path) -> None:
     """Test print_info."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.print_info()
     assert retval is None
@@ -147,7 +147,7 @@ def test_print_info(tmp_path: pathlib.Path) -> None:
 
 def test_simulate(tmp_path: pathlib.Path) -> None:
     """Test simulate."""
-    config, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd.config')
+    _, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd.config')
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.simulate()
     assert retval == TaskOutcome.SIM_SUCCESS
@@ -156,7 +156,7 @@ def test_simulate(tmp_path: pathlib.Path) -> None:
 
 def test_execute(tmp_path: pathlib.Path) -> None:
     """Test execute."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
@@ -173,7 +173,7 @@ def test_config_missing(tmp_path: pathlib.Path) -> None:
 
 def test_config_missing_title(tmp_path: pathlib.Path) -> None:
     """Test config missing title."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
     section.pop('title')
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
@@ -182,7 +182,7 @@ def test_config_missing_title(tmp_path: pathlib.Path) -> None:
 
 def test_config_missing_version(tmp_path: pathlib.Path) -> None:
     """Test config missing version."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
     section.pop('version')
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
@@ -191,7 +191,7 @@ def test_config_missing_version(tmp_path: pathlib.Path) -> None:
 
 def test_config_missing_csv_file_spec(tmp_path: pathlib.Path) -> None:
     """Test config missing csv file spec."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
     section['output-dir'] = str(tmp_path)
     section.pop('csv-file')
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
@@ -201,7 +201,7 @@ def test_config_missing_csv_file_spec(tmp_path: pathlib.Path) -> None:
 
 def test_config_missing_csv_file(tmp_path: pathlib.Path) -> None:
     """Test config missing csv file."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
     section['csv-file'] = 'foobar'
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
@@ -211,7 +211,7 @@ def test_config_missing_csv_file(tmp_path: pathlib.Path) -> None:
 def test_exception(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test exception."""
     monkeypatch.setattr(csv_to_oscal_cd._RuleSetIdMgr, 'get_next_rule_set_id', monkey_exception)
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
@@ -219,7 +219,7 @@ def test_exception(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
 
 def test_execute_mock(tmp_path: pathlib.Path) -> None:
     """Test execute mock."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
     # get good data & test that mocking works
     rows = _get_rows('tests/data/csv/ocp4-user.v2.csv')
     with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
@@ -260,7 +260,7 @@ def test_execute_validate_controls(tmp_path: pathlib.Path, monkeypatch: MonkeyPa
     cwd = os.getcwd()
     try:
         os.chdir(workspace)
-        config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
+        _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
         tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
         section['validate-controls'] = 'warn'
         retval = tgt.execute()
@@ -276,7 +276,7 @@ def test_execute_validate_controls_nist(tmp_path: pathlib.Path, monkeypatch: Mon
     cwd = os.getcwd()
     try:
         os.chdir(workspace)
-        config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
+        _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
         # replace resolved profile (catalog)
         rows = _get_rows('tests/data/csv/ocp4-user.v2.csv')
         for i, row in enumerate(rows):
@@ -305,7 +305,7 @@ def test_execute_control_invalid(tmp_path: pathlib.Path, monkeypatch: MonkeyPatc
     cwd = os.getcwd()
     try:
         os.chdir(workspace)
-        config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
+        _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
         # inject error
         rows = _get_rows('tests/data/csv/ocp4-user.v2.csv')
         row = rows[2]
@@ -329,7 +329,7 @@ def test_execute_control_invalid_fail(tmp_path: pathlib.Path, monkeypatch: Monke
     cwd = os.getcwd()
     try:
         os.chdir(workspace)
-        config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
+        _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
         # inject error
         rows = _get_rows('tests/data/csv/ocp4-user.v2.csv')
         row = rows[2]
@@ -348,7 +348,7 @@ def test_execute_control_invalid_fail(tmp_path: pathlib.Path, monkeypatch: Monke
 
 def test_execute_no_overwrite(tmp_path: pathlib.Path) -> None:
     """Test execute no overwrite."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
@@ -359,7 +359,7 @@ def test_execute_no_overwrite(tmp_path: pathlib.Path) -> None:
 
 def test_execute_verbose(tmp_path: pathlib.Path) -> None:
     """Test execute verbose."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
     section['quiet'] = 'False'
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
@@ -369,7 +369,7 @@ def test_execute_verbose(tmp_path: pathlib.Path) -> None:
 
 def test_execute_missing_heading(tmp_path: pathlib.Path) -> None:
     """Test execute missing heading."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
     # inject error
     rows = _get_rows('tests/data/csv/ocp4-user.v2.csv')
     row = rows[0]
@@ -384,7 +384,7 @@ def test_execute_missing_heading(tmp_path: pathlib.Path) -> None:
 
 def test_execute_missing_value(tmp_path: pathlib.Path) -> None:
     """Test execute missing value."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
     # inject error
     rows = _get_rows('tests/data/csv/ocp4-user.v2.csv')
     row = rows[2]
@@ -399,7 +399,7 @@ def test_execute_missing_value(tmp_path: pathlib.Path) -> None:
 
 def test_execute_missing_rule_id(tmp_path: pathlib.Path) -> None:
     """Test execute missing rule id."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
     # inject error
     rows = _get_rows('tests/data/csv/ocp4-user.v2.csv')
     row = rows[2]
@@ -414,7 +414,7 @@ def test_execute_missing_rule_id(tmp_path: pathlib.Path) -> None:
 
 def test_execute_missing_control_id_list(tmp_path: pathlib.Path) -> None:
     """Test execute missing control id list."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
     # inject error
     rows = _get_rows('tests/data/csv/ocp4-user.v2.csv')
     row = rows[2]
@@ -433,33 +433,198 @@ def test_execute_missing_control_id_list(tmp_path: pathlib.Path) -> None:
     assert len(component.props) == 423
 
 
-def test_execute_missing_parameter_id(tmp_path: pathlib.Path) -> None:
-    """Test execute missing parameter id."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
-    # inject error
-    rows = _get_rows('tests/data/csv/ocp4-user.v2.csv')
-    row = rows[2]
-    assert row[9] == 'scan_interval_max'
-    row[9] = ''
-    with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
-        mock_csv_reader.return_value = rows
-        tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
-        retval = tgt.execute()
-        assert retval == TaskOutcome.FAILURE
-
-
 def test_execute_bp_sample(tmp_path: pathlib.Path) -> None:
     """Test execute bp sample."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
     _validate_bp(tmp_path)
 
 
+def test_execute_bp3_sample(tmp_path: pathlib.Path) -> None:
+    """Test execute bp3 sample."""
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    section['csv-file'] = 'tests/data/csv/bp.sample.v3.csv'
+    tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    # read component-definition
+    fp = pathlib.Path(tmp_path) / 'component-definition.json'
+    cd = ComponentDefinition.oscal_read(fp)
+    # spot check
+    component = cd.components[0]
+    assert len(component.props) == 59
+    assert len(component.control_implementations) == 1
+    ci = component.control_implementations[0]
+    assert len(ci.set_parameters) == 4
+    assert len(ci.set_parameters[0].values) == 1
+    assert len(ci.set_parameters[1].values) == 3
+    assert ci.set_parameters[1].values[0] == 'x'
+    assert ci.set_parameters[1].values[1] == 'y'
+    assert ci.set_parameters[1].values[2] == 'z'
+    assert len(ci.set_parameters[2].values) == 3
+    assert len(ci.set_parameters[3].values) == 3
+    assert ci.set_parameters[3].values[0] == '3'
+    assert ci.set_parameters[3].values[1] == '4'
+    assert ci.set_parameters[3].values[2] == '5'
+
+
+def test_execute_bp4_sample(tmp_path: pathlib.Path) -> None:
+    """Test execute bp4 sample."""
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    section['csv-file'] = 'tests/data/csv/bp.sample.v4.csv'
+    # perform transformation from csv to OSCAL json
+    tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    # read component-definition
+    fp = pathlib.Path(tmp_path) / 'component-definition.json'
+    cd = ComponentDefinition.oscal_read(fp)
+    # spot check
+    component = cd.components[0]
+    assert len(component.props) == 68
+    assert len(component.control_implementations) == 1
+    # props
+    index = 0
+    assert component.props[index].name == 'Rule_Id'
+    assert component.props[index].value == 'account_owner_authorized_ip_range_configured'
+    assert component.props[index].remarks == 'rule_set_00'
+    index = 7
+    assert component.props[index].name == 'Parameter_Id'
+    assert component.props[index].value == 'allowed_admins_per_account'
+    assert component.props[index].remarks == 'rule_set_01'
+    index = 8
+    assert component.props[index].name == 'Parameter_Description'
+    assert component.props[index].value == 'Maximum allowed administrators per'
+    assert component.props[index].remarks == 'rule_set_01'
+    index = 9
+    assert component.props[index].name == 'Parameter_Value_Alternatives'
+    assert component.props[index].value == '10'
+    assert component.props[index].remarks == 'rule_set_01'
+    index = 10
+    assert component.props[index].name == 'Parameter_Id2'
+    assert component.props[index].value == 'allowed_admins_per_account2'
+    assert component.props[index].remarks == 'rule_set_01'
+    index = 11
+    assert component.props[index].name == 'Parameter_Description2'
+    assert component.props[index].value == 'Maximum allowed administrators per2'
+    assert component.props[index].remarks == 'rule_set_01'
+    index = 12
+    assert component.props[index].name == 'Parameter_Value_Alternatives2'
+    assert component.props[index].value == '20'
+    assert component.props[index].remarks == 'rule_set_01'
+    index = 13
+    assert component.props[index].name == 'Check_Id'
+    assert component.props[index].value == 'iam_admin_role_users_per_account_maxcount'
+    assert component.props[index].remarks == 'rule_set_01'
+    # control implementations
+    ci = component.control_implementations[0]
+    assert len(ci.set_parameters) == 8
+    index = 0
+    assert ci.set_parameters[index].param_id == 'allowed_admins_per_account'
+    assert len(ci.set_parameters[index].values) == 1
+    assert ci.set_parameters[index].values[0] == '10'
+    index = 1
+    assert ci.set_parameters[index].param_id == 'allowed_admins_per_account2'
+    assert len(ci.set_parameters[index].values) == 1
+    assert ci.set_parameters[index].values[0] == '20'
+    index = 2
+    assert ci.set_parameters[index].param_id == 'api_keys_rotated_days'
+    assert len(ci.set_parameters[index].values) == 3
+    assert ci.set_parameters[index].values[0] == 'x'
+    assert ci.set_parameters[index].values[1] == 'y'
+    assert ci.set_parameters[index].values[2] == 'z'
+    index = 3
+    assert ci.set_parameters[index].param_id == 'api_keys_rotated_days2'
+    assert len(ci.set_parameters[index].values) == 3
+    assert ci.set_parameters[index].values[0] == 'r'
+    assert ci.set_parameters[index].values[1] == 's'
+    assert ci.set_parameters[index].values[2] == 't'
+
+
+def test_execute_bp4_modify_additional_param_set(tmp_path: pathlib.Path) -> None:
+    """Test execute bp4 modify additional param set."""
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    section['csv-file'] = 'tests/data/csv/bp.sample.v4.csv'
+    # modify additional param set
+    rows = _get_rows('tests/data/csv/bp.sample.v4.csv')
+    row = rows[3]
+    assert row[17] == 'allowed_admins_per_account2'
+    assert row[19] == '20'
+    assert row[20] == '20'
+    row[19] = '50'
+    row[20] = '45 50 55'
+    # perform transformation from csv to OSCAL json
+    with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
+        mock_csv_reader.return_value = rows
+        tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+        retval = tgt.execute()
+        assert retval == TaskOutcome.SUCCESS
+    # read component-definition
+    fp = pathlib.Path(tmp_path) / 'component-definition.json'
+    cd = ComponentDefinition.oscal_read(fp)
+    # spot check
+    component = cd.components[0]
+    assert len(component.props) == 68
+    assert len(component.control_implementations) == 1
+    # props
+    index = 0
+    assert component.props[index].name == 'Rule_Id'
+    assert component.props[index].value == 'account_owner_authorized_ip_range_configured'
+    assert component.props[index].remarks == 'rule_set_00'
+    index = 12
+    assert component.props[index].name == 'Parameter_Value_Alternatives2'
+    assert component.props[index].value == '45 50 55'
+    assert component.props[index].remarks == 'rule_set_01'
+    # control implementations
+    ci = component.control_implementations[0]
+    assert len(ci.set_parameters) == 8
+    index = 0
+    assert ci.set_parameters[index].param_id == 'allowed_admins_per_account'
+    assert len(ci.set_parameters[index].values) == 1
+    assert ci.set_parameters[index].values[0] == '10'
+    index = 1
+    assert ci.set_parameters[index].param_id == 'allowed_admins_per_account2'
+    assert len(ci.set_parameters[index].values) == 1
+    assert ci.set_parameters[index].values[0] == '50'
+
+
+def test_execute_bp4_delete_additional_param_set(tmp_path: pathlib.Path) -> None:
+    """Test execute bp4 delete additional param set."""
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    section['csv-file'] = 'tests/data/csv/bp.sample.v4.csv'
+    # delete additional param set
+    rows = _get_rows('tests/data/csv/bp.sample.v4.csv')
+    row = rows[3]
+    assert row[17] == 'allowed_admins_per_account2'
+    assert row[19] == '20'
+    assert row[20] == '20'
+    row[17] = ''
+    row[18] = ''
+    row[19] = ''
+    row[20] = ''
+    # perform transformation from csv to OSCAL json
+    with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
+        mock_csv_reader.return_value = rows
+        tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+        retval = tgt.execute()
+        assert retval == TaskOutcome.SUCCESS
+    # read component-definition
+    fp = pathlib.Path(tmp_path) / 'component-definition.json'
+    cd = ComponentDefinition.oscal_read(fp)
+    # spot check
+    component = cd.components[0]
+    assert len(component.props) == 65
+    assert len(component.control_implementations) == 1
+    # control implementations
+    ci = component.control_implementations[0]
+    assert len(ci.set_parameters) == 7
+
+
 def test_execute_bp_cd(tmp_path: pathlib.Path) -> None:
     """Test execute bp cd."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
@@ -469,7 +634,7 @@ def test_execute_bp_cd(tmp_path: pathlib.Path) -> None:
 
 def test_execute_bp_cd_missing(tmp_path: pathlib.Path) -> None:
     """Test execute bp cd missing."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/foobar/component-definition.json'
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
@@ -478,7 +643,7 @@ def test_execute_bp_cd_missing(tmp_path: pathlib.Path) -> None:
 
 def test_execute_duplicate_rule(tmp_path: pathlib.Path) -> None:
     """Test execute duplicate rule."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # duplicate rule
     rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
@@ -492,7 +657,7 @@ def test_execute_duplicate_rule(tmp_path: pathlib.Path) -> None:
 
 def test_execute_delete_rule(tmp_path: pathlib.Path) -> None:
     """Test execute delete rule."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # delete rule
     rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
@@ -517,7 +682,7 @@ def test_execute_delete_rule(tmp_path: pathlib.Path) -> None:
 
 def test_execute_delete_all_rules_with_params(tmp_path: pathlib.Path) -> None:
     """Test execute delete all rules with params."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # delete all rules with params
     rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
@@ -543,7 +708,7 @@ def test_execute_delete_all_rules_with_params(tmp_path: pathlib.Path) -> None:
 
 def test_execute_delete_rule_with_params(tmp_path: pathlib.Path) -> None:
     """Test execute delete rule with params."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # delete rule with params
     rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
@@ -564,9 +729,37 @@ def test_execute_delete_rule_with_params(tmp_path: pathlib.Path) -> None:
             assert prop.value != 'allowed_admins_per_account'
 
 
+def test_execute_column_bad_data(tmp_path: pathlib.Path) -> None:
+    """Test execute column bad data."""
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
+    # add rule
+    rows = _get_rows('tests/data/csv/soc2.sample.v1.csv')
+    rows[3][2] = '```'
+    with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
+        mock_csv_reader.return_value = rows
+        tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+        retval = tgt.execute()
+        assert retval == TaskOutcome.FAILURE
+
+
+def test_execute_column_ignore(tmp_path: pathlib.Path) -> None:
+    """Test execute column ignore."""
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
+    # add rule
+    rows = _get_rows('tests/data/csv/soc2.sample.v2.csv')
+    rows[3][2] = '```'
+    with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
+        mock_csv_reader.return_value = rows
+        tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+        retval = tgt.execute()
+        assert retval == TaskOutcome.SUCCESS
+
+
 def test_execute_add_rule(tmp_path: pathlib.Path) -> None:
     """Test execute add rule."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # add rule
     rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
@@ -648,9 +841,35 @@ def test_execute_add_rule(tmp_path: pathlib.Path) -> None:
     assert len(component.control_implementations[1].set_parameters) == 1
 
 
+def test_execute_param_duplicate_value(tmp_path: pathlib.Path) -> None:
+    """Test execute param duplicate default value."""
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    # duplicate default param default value
+    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    row = rows[3]
+    assert row[13] == 'allowed_admins_per_account'
+    assert row[15] == '10'
+    row = rows[2]
+    row[13] = 'allowed_admins_per_account'
+    row[15] = '10'
+    rows[2] = row
+    with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
+        mock_csv_reader.return_value = rows
+        tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+        retval = tgt.execute()
+        assert retval == TaskOutcome.SUCCESS
+    row[15] = '11'
+    rows[2] = row
+    with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
+        mock_csv_reader.return_value = rows
+        tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+        retval = tgt.execute()
+        assert retval == TaskOutcome.FAILURE
+
+
 def test_execute_missing_param_default_value(tmp_path: pathlib.Path) -> None:
     """Test execute missing param default_value."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     # delete default param default value
     rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
     row = rows[3]
@@ -661,12 +880,12 @@ def test_execute_missing_param_default_value(tmp_path: pathlib.Path) -> None:
         mock_csv_reader.return_value = rows
         tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
         retval = tgt.execute()
-        assert retval == TaskOutcome.FAILURE
+        assert retval == TaskOutcome.SUCCESS
 
 
 def test_execute_change_param_default_value(tmp_path: pathlib.Path) -> None:
     """Test execute change param default_value."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # change default param default value
     rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
@@ -696,7 +915,7 @@ def test_execute_change_param_default_value(tmp_path: pathlib.Path) -> None:
 
 def test_execute_delete_param(tmp_path: pathlib.Path) -> None:
     """Test execute delete param."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # delete param
     rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
@@ -726,7 +945,7 @@ def test_execute_delete_param(tmp_path: pathlib.Path) -> None:
 
 def test_execute_delete_params(tmp_path: pathlib.Path) -> None:
     """Test execute delete params."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # delete params
     rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
@@ -750,7 +969,7 @@ def test_execute_delete_params(tmp_path: pathlib.Path) -> None:
 
 def test_execute_add_param(tmp_path: pathlib.Path) -> None:
     """Test execute add param."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # add param
     rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
@@ -789,7 +1008,7 @@ def test_execute_add_param(tmp_path: pathlib.Path) -> None:
 
 def test_execute_delete_all_control_id_list(tmp_path: pathlib.Path) -> None:
     """Test execute delete all control id list."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # delete all control lists
     rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
@@ -810,7 +1029,7 @@ def test_execute_delete_all_control_id_list(tmp_path: pathlib.Path) -> None:
 
 def test_execute_delete_control_id(tmp_path: pathlib.Path) -> None:
     """Test execute delete control id."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # delete control id
     rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
@@ -835,7 +1054,7 @@ def test_execute_delete_control_id(tmp_path: pathlib.Path) -> None:
 
 def test_execute_delete_control_id_multi(tmp_path: pathlib.Path) -> None:
     """Test execute delete control id multi."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # delete control id multi
     rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
@@ -860,7 +1079,7 @@ def test_execute_delete_control_id_multi(tmp_path: pathlib.Path) -> None:
 
 def test_execute_delete_control_id_smt(tmp_path: pathlib.Path) -> None:
     """Test execute delete control id smt."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # delete control id smt
     rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
@@ -887,7 +1106,7 @@ def test_execute_delete_control_id_smt(tmp_path: pathlib.Path) -> None:
 
 def test_execute_add_control_id(tmp_path: pathlib.Path) -> None:
     """Test execute add control id."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # add control id
     rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
@@ -911,7 +1130,7 @@ def test_execute_add_control_id(tmp_path: pathlib.Path) -> None:
 
 def test_execute_add_control_id_smt(tmp_path: pathlib.Path) -> None:
     """Test execute add control mapping smt."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # add control mapping smt
     rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
@@ -941,7 +1160,7 @@ def test_execute_add_control_id_smt(tmp_path: pathlib.Path) -> None:
 
 def test_execute_delete_property(tmp_path: pathlib.Path) -> None:
     """Test execute delete property."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # delete property
     rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
@@ -967,7 +1186,7 @@ def test_execute_delete_property(tmp_path: pathlib.Path) -> None:
 
 def test_execute_add_property(tmp_path: pathlib.Path) -> None:
     """Test execute add property."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # add property
     rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
@@ -999,7 +1218,7 @@ def test_execute_add_property(tmp_path: pathlib.Path) -> None:
 
 def test_execute_add_user_property(tmp_path: pathlib.Path) -> None:
     """Test execute add user property."""
-    config, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
     # add user property
     rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
@@ -1020,3 +1239,120 @@ def test_execute_add_user_property(tmp_path: pathlib.Path) -> None:
     assert len(component.props) == 71
     assert component.props[5].name == 'New_Column_Name'
     assert component.props[5].value == 'new-column-value-2'
+
+
+def test_execute_validation(tmp_path: pathlib.Path) -> None:
+    """Test execute validation."""
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
+    # set validation component type
+    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    row = [
+        'validation-reference-id',
+        'validation-rule-id',
+        'validation-rule-description',
+        'validation-check-id',
+        'validation-check-description',
+        'validation-fetcher',
+        'validation-fetcher-description',
+        'https://abc.com/validation-profile-reference-url',
+        'validation-profile-description',
+        'Validation',
+        'validation-control-id-list',
+        'IAM',
+        'IAM',
+        'validation-parameter-id',
+        'validation-parameter-description',
+        'validation-parameter-value-default',
+        'validation-parameter-value-alternatives',
+        'https://abc.com/validation-namespace'
+    ]
+    rows.append(row)
+    with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
+        mock_csv_reader.return_value = rows
+        tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+        retval = tgt.execute()
+        assert retval == TaskOutcome.SUCCESS
+    # read component-definition
+    fp = pathlib.Path(tmp_path) / 'component-definition.json'
+    cd = ComponentDefinition.oscal_read(fp)
+    # spot check
+    component = cd.components[1]
+    assert component.type == 'Validation'
+    assert component.title == 'IAM'
+    assert component.description == 'IAM'
+    assert len(component.props) == 6
+    assert component.props[0].name == 'Rule_Id'
+    assert component.props[0].value == 'validation-rule-id'
+    assert component.props[0].class_ == 'scc_class'
+    assert component.props[1].name == 'Check_Id'
+    assert component.props[1].value == 'validation-check-id'
+    assert component.props[2].name == 'Check_Description'
+    assert component.props[2].value == 'validation-check-description'
+    assert len(component.control_implementations) == 0
+
+
+def test_row_property_builder(tmp_path):
+    """Test row property builder."""
+    # valid
+    prop = csv_to_oscal_cd.row_property_builder(
+        row=0,
+        name='name',
+        value='value',
+        ns='https://www.ibm.com',
+        class_='class',
+        remarks='remarks',
+    )
+    assert prop
+    # missing name
+    try:
+        prop = csv_to_oscal_cd.row_property_builder(
+            row=0,
+            name=None,
+            value='value',
+            ns='https://www.ibm.com',
+            class_='class',
+            remarks='remarks',
+        )
+        raise AssertionError('missing name OK?')
+    except Exception:
+        assert prop
+    # missing value
+    try:
+        prop = csv_to_oscal_cd.row_property_builder(
+            row=0,
+            name='name',
+            value=None,
+            ns='https://www.ibm.com',
+            class_='class',
+            remarks='remarks',
+        )
+        raise AssertionError('missing value OK?')
+    except Exception:
+        assert prop
+    # invalid ns
+    try:
+        prop = csv_to_oscal_cd.row_property_builder(
+            row=0,
+            name='name',
+            value='value',
+            ns='foobar',
+            class_='class',
+            remarks='remarks',
+        )
+        raise AssertionError('invalid ns OK?')
+    except Exception:
+        assert prop
+    # invalid class
+    try:
+        prop = csv_to_oscal_cd.row_property_builder(
+            row=0,
+            name='name',
+            value='value',
+            ns='https://www.ibm.com',
+            class_='\n',
+            remarks='remarks',
+        )
+        raise AssertionError('invalid class OK?')
+    except Exception:
+        assert prop

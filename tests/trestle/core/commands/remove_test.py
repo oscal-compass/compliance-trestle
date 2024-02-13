@@ -27,6 +27,7 @@ from tests import test_utils
 
 import trestle.common.err as err
 from trestle.cli import Trestle
+from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.commands.remove import RemoveCmd
 from trestle.core.models.actions import RemoveAction
 from trestle.core.models.elements import Element, ElementPath
@@ -124,20 +125,20 @@ def test_remove_failure(tmp_path: pathlib.Path):
 def test_run_failure_switches(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test failure of _run on bad switches for RemoveCmd."""
     # 1. Missing --file argument.
-    testargs = ['trestle', 'remove', '-e', 'catalog.metadata.roles']
+    testargs = ['trestle', 'remove', '-e', 'catalog.metadata.roles', '--trestle-root', str(tmp_path)]
     monkeypatch.setattr(sys, 'argv', testargs)
     with pytest.raises(SystemExit) as e:
         Trestle().run()
     assert e.type == SystemExit
-    assert e.value.code == 2
+    assert e.value.code == CmdReturnCodes.INCORRECT_ARGS.value
 
     # 2. Missing --element argument.
-    testargs = ['trestle', 'remove', '-f', './catalog.json']
+    testargs = ['trestle', 'remove', '-f', './catalog.json', '--trestle-root', str(tmp_path)]
     monkeypatch.setattr(sys, 'argv', testargs)
     with pytest.raises(SystemExit) as e:
         Trestle().run()
     assert e.type == SystemExit
-    assert e.value.code == 2
+    assert e.value.code == CmdReturnCodes.INCORRECT_ARGS.value
 
 
 def test_run_failure_nonexistent_element(
@@ -154,18 +155,27 @@ def test_run_failure_nonexistent_element(
     )
 
     # 1. self.remove() fails -- Should happen if wildcard is given, or nonexistent element.
-    testargs = ['trestle', 'remove', '-f', str(catalog_def_file), '-e', 'catalog.blah']
+    testargs = ['trestle', 'remove', '-f', str(catalog_def_file), '-e', 'catalog.blah', '--trestle-root', str(tmp_path)]
     monkeypatch.setattr(sys, 'argv', testargs)
     exitcode = Trestle().run()
-    assert exitcode == 5
+    assert exitcode == CmdReturnCodes.COMMAND_ERROR.value
 
     # 2. Corrupt json file
     source_file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'bad_simple.json')
     shutil.copyfile(source_file_path, catalog_def_file)
-    testargs = ['trestle', 'remove', '-f', str(catalog_def_file), '-e', 'catalog.metadata.roles']
+    testargs = [
+        'trestle',
+        'remove',
+        '-f',
+        str(catalog_def_file),
+        '-e',
+        'catalog.metadata.roles',
+        '--trestle-root',
+        str(tmp_path)
+    ]
     monkeypatch.setattr(sys, 'argv', testargs)
     exitcode = Trestle().run()
-    assert exitcode == 5
+    assert exitcode == CmdReturnCodes.COMMAND_ERROR.value
 
 
 def test_run_failure_wildcard(tmp_path: pathlib.Path, sample_catalog_minimal: Catalog, monkeypatch: MonkeyPatch):
@@ -178,10 +188,10 @@ def test_run_failure_wildcard(tmp_path: pathlib.Path, sample_catalog_minimal: Ca
         sample_catalog_minimal,
         test_utils.CATALOGS_DIR
     )
-    testargs = ['trestle', 'remove', '-f', str(catalog_def_file), '-e', 'catalog.*']
+    testargs = ['trestle', 'remove', '-f', str(catalog_def_file), '-e', 'catalog.*', '--trestle-root', str(tmp_path)]
     monkeypatch.setattr(sys, 'argv', testargs)
     exitcode = Trestle().run()
-    assert exitcode == 5
+    assert exitcode == CmdReturnCodes.COMMAND_ERROR.value
 
 
 def test_run_failure_required_element(
@@ -198,10 +208,12 @@ def test_run_failure_required_element(
     )
     # 4. simulate() fails -- Should happen if required element is target for deletion
     monkeypatch.chdir(tmp_path)
-    testargs = ['trestle', 'remove', '-f', str(catalog_def_file), '-e', 'catalog.metadata']
+    testargs = [
+        'trestle', 'remove', '-f', str(catalog_def_file), '-e', 'catalog.metadata', '--trestle-root', str(tmp_path)
+    ]
     monkeypatch.setattr(sys, 'argv', testargs)
     exitcode = Trestle().run()
-    assert exitcode == 1
+    assert exitcode == CmdReturnCodes.COMMAND_ERROR.value
 
 
 def test_run_failure_project_not_found(
@@ -217,10 +229,10 @@ def test_run_failure_project_not_found(
         test_utils.CATALOGS_DIR
     )
     # 5. get_contextual_model_type() fails, i.e., "Trestle project not found"
-    testargs = ['trestle', 'remove', '-f', '/dev/null', '-e', 'catalog.metadata']
+    testargs = ['trestle', 'remove', '-f', '/dev/null', '-e', 'catalog.metadata', '--trestle-root', str(tmp_path)]
     monkeypatch.setattr(sys, 'argv', testargs)
     exitcode = Trestle().run()
-    assert exitcode == 5
+    assert exitcode == CmdReturnCodes.COMMAND_ERROR.value
 
 
 def test_run_failure_filenotfounderror(
@@ -238,11 +250,18 @@ def test_run_failure_filenotfounderror(
     # 6. oscal_read fails because file is not found
     # Must specify catalogs/ location, not catalogs/my_test_model/.
     testargs = [
-        'trestle', 'remove', '-f', re.sub('my_test_model/', '', str(catalog_def_file)), '-e', 'catalog.metadata'
+        'trestle',
+        'remove',
+        '-f',
+        re.sub('my_test_model/', '', str(catalog_def_file)),
+        '-e',
+        'catalog.metadata',
+        '--trestle-root',
+        str(tmp_path)
     ]
     monkeypatch.setattr(sys, 'argv', testargs)
     exitcode = Trestle().run()
-    assert exitcode == 5
+    assert exitcode == CmdReturnCodes.COMMAND_ERROR.value
 
 
 def test_run_failure_plan_execute(

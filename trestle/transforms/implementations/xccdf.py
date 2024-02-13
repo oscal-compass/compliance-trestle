@@ -111,7 +111,7 @@ class XccdfResultToOscalARTransformer(ResultsTransformer):
         results.__root__.append(self._results_factory.result)
         return results
 
-    def _ingest_configmaps(self, jdata: str) -> None:
+    def _ingest_configmaps(self, jdata: dict) -> None:
         """Ingest configmaps."""
         items = jdata['items']
         for item in items:
@@ -121,7 +121,7 @@ class XccdfResultToOscalARTransformer(ResultsTransformer):
                     resource = item
                     self._results_factory.ingest(resource)
 
-    def _ingest_auditree(self, jdata: str) -> None:
+    def _ingest_auditree(self, jdata: dict) -> None:
         """Ingest auditree."""
         for key in jdata.keys():
             for group in jdata[key]:
@@ -199,7 +199,7 @@ class RuleUse():
     @property
     def ns(self):
         """Derive namespace."""
-        return f'https://ibm.github.io/compliance-trestle/schemas/oscal/ar/{self.scanner_name}'
+        return f'https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/{self.scanner_name}'  # noqa: E231
 
 
 class _XccdfResult():
@@ -317,9 +317,14 @@ class _XccdfResult():
 
     def _parse_xml(self) -> Iterator[RuleUse]:
         """Parse the stringified XML."""
+        ns = {
+            'checklist12': 'http://checklists.nist.gov/xccdf/1.2',  # NOSONAR
+        }
         results = self.xccdf_xml
         root = ElementTree.fromstring(results, forbid_dtd=True)
         version = self._get_version(root)
+        if _remove_namespace(root.tag) != 'TestResult':
+            root = root.find('.//checklist12:TestResult', ns)
         id_ = self._get_id(root)
         target = self._get_target(root)
         target_type = self._get_target_type(root)

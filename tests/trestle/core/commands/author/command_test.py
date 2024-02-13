@@ -22,6 +22,7 @@ from _pytest.monkeypatch import MonkeyPatch
 import pytest
 
 import trestle.cli
+from trestle.core.commands.common.return_codes import CmdReturnCodes
 
 
 def test_governed_docs_cli(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
@@ -32,7 +33,7 @@ def test_governed_docs_cli(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPat
         trestle.cli.run()
         # FIXME: Needs to be changed once implemented.
     assert wrapped_error.type == SystemExit
-    assert wrapped_error.value.code == 2
+    assert wrapped_error.value.code == CmdReturnCodes.INCORRECT_ARGS.value
 
 
 def test_governed_folders_cli(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
@@ -43,7 +44,7 @@ def test_governed_folders_cli(tmp_trestle_dir: pathlib.Path, monkeypatch: Monkey
         trestle.cli.run()
         # FIXME: Needs to be changed once implemented.
     assert wrapped_error.type == SystemExit
-    assert wrapped_error.value.code == 2
+    assert wrapped_error.value.code == CmdReturnCodes.INCORRECT_ARGS.value
 
 
 @pytest.mark.parametrize(
@@ -52,8 +53,9 @@ def test_governed_folders_cli(tmp_trestle_dir: pathlib.Path, monkeypatch: Monkey
 def test_failure_not_trestle(command_string, tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test for failure based on not in trestle directory."""
     monkeypatch.setattr(sys, 'argv', command_string.split())
+    monkeypatch.chdir(tmp_path)
     with pytest.raises(SystemExit) as wrapped_error:
         trestle.cli.run()
         # FIXME: Needs to be changed once implemented.
     assert wrapped_error.type == SystemExit
-    assert wrapped_error.value.code == 5
+    assert wrapped_error.value.code == CmdReturnCodes.TRESTLE_ROOT_ERROR.value
