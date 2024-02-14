@@ -117,7 +117,7 @@ Please attend! All are invited.
 To discover the actual meeting dates, add the meeting to your Google Calendar.
 
 1. Go to [Google Calendar](https://calendar.google.com/calendar/u/0/embed?src=0b8u5el8ta4s93t2cm72tuvhhk@group.calendar.google.com&ctz=America/Los_Angeles)
-2. Click at the bottom right where it says `+GoogleCalendar` to add the meetings series
+1. Click at the bottom right where it says `+GoogleCalendar` to add the meetings series
 
 **Where**: [https://zoom.us/j/92729235315](https://zoom.us/j/92729235315)
 
