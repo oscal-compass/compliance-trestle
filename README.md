@@ -91,17 +91,26 @@ Compliance trestle is currently stable and is based on NIST OSCAL version 1.0.4,
 
 Please attend! All are invited.
 
-When: 2nd and 4th Tuesday of each month at 10:00 ET [convert to your local time](https://dateful.com/convert/est-edt-eastern-time)
+**When**: Every other Tuesday at 10:00 ET [convert to your local time](https://dateful.com/convert/est-edt-eastern-time)
 
-Where: [https://zoom.us/j/92729235315](https://zoom.us/j/92729235315)
+To discover the actual meeting dates, add the meeting to your Google Calendar.
+
+1. Go to [Google Calendar](https://calendar.google.com/calendar/u/0/embed?src=0b8u5el8ta4s93t2cm72tuvhhk@group.calendar.google.com&ctz=America/Los_Angeles)
+2. Click at the bottom right where it says `+GoogleCalendar` to add the meetings series
+
+**Where**: [https://zoom.us/j/92729235315](https://zoom.us/j/92729235315)
 
 - Meeting Id: 927 2923 5315
 
-- Meeting agenda and notes: [here](https://docs.google.com/document/d/1z9xvt-Z97j4CtEH1-nR9sMWul7jQkUi_fNY7BdMPgxM/edit#heading=h.nohkp1kbeduj)
+- **Note**: You can login to Zoom using another account like Google, Facebook
+
+**What**: Meeting agenda and notes [Google Docs](https://docs.google.com/document/d/1z9xvt-Z97j4CtEH1-nR9sMWul7jQkUi_fNY7BdMPgxM/edit#heading=h.nohkp1kbeduj)
 
 ##### Chat anytime
 
-- Slack: [# compliance-grc](https://app.slack.com/client/T08PSQ7BQ/C066TMUBEL8)
+Slack: [# compliance-grc](https://cloud-native.slack.com/archives/C066TMUBEL8)
+
+- **Note**: You can login to Slack using another account like Google, Apple
 
 ## Contributing to Trestle
 
