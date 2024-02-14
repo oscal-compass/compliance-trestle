@@ -85,7 +85,7 @@ def test_split_chained_sub_model_plans(
     """Test for split_model method with chained sum models like catalog.metadata.parties.*."""
     # Assume we are running a command like below
     # trestle split -f catalog.json -e catalog.metadata.parties.*
-    # see https://github.com/IBM/compliance-trestle/issues/172
+    # see https://github.com/oscal-compass/compliance-trestle/issues/172
     content_type = FileContentType.JSON
 
     # prepare trestle project dir with the file

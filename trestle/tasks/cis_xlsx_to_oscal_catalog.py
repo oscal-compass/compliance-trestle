@@ -221,11 +221,11 @@ class CisXlsxToOscalCatalog(TaskBase):
     """
 
     name = 'cis-xlsx-to-oscal-catalog'
-    ns = 'https://ibm.github.io/compliance-trestle/schemas/oscal/catalog/cis'
+    ns = 'https://oscal-compass.github.io/compliance-trestle/schemas/oscal/catalog/cis'
 
     def __init__(self, config_object: Optional[configparser.SectionProxy]) -> None:
         """
-        Initialize trestle task ocp4-cis-profile-to-oscal-catalog.
+        Initialize trestle task.
 
         Args:
             config_object: Config section associated with the task.

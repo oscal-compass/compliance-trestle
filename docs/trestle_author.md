@@ -26,7 +26,7 @@ While trestle provides editing support for OSCAL there is an unfortunate truth t
 1. OSCAL does not cover the lower level operational workflows.
 1. Some users will not be comfortable editing in json/yaml/xml formats
 
-The markdown centric workflows allow transition path where capability is [being developed](https://github.com/IBM/compliance-trestle/issues/555)
+The markdown centric workflows allow transition path where capability is [being developed](https://github.com/oscal-compass/compliance-trestle/issues/555)
 
 </details>
 
@@ -296,6 +296,61 @@ Running `trestle author docs validate -tn docs_task -gh="Governed section"` will
 - If `--template-version 1.0.0` (`-tv`) is passed the header field `x-trestle-template-version` will be ignored and document will be forcefully validated against template of version `1.0.0`.
   Use this for testing purposes _only_ when you need to validate the document against a specific template. By default the template version will be determined based on `x-trestle-template-version` in the document.
 
+### Validating the documents against different templates
+
+Validation against multiple templates can be done when there is a scenario where you have multiple templates that will have multiple instances. In this particular case you can have a 1:1 relationship between the template and the instance document you are creating out of it, so validation can be performed based on template type and version of that particular template defined in headers.
+
+For that to happen you will need to provide your template with the following parameter at the yaml header level, matching the type of template to be implemented so that the validation can occur:
+
+> x-trestle-template-type: insert_template_type_here
+
+Please, take into consideration that for the validation to happen you will also need to provide each instance document in the task folder a field called `x-trestle-template-type: insert_template_type_here` in the yaml header matching with the template name.
+
+```yaml
+---
+authors: tmp
+owner: tmp
+valid:
+  from: null
+  to: null
+x-trestle-template-type: insert_template_type_here
+---
+```
+
+With that, you will be able to create more than 1 instance document per template and give the instance the desired name.
+
+For instance, let´s consider the next folder structure:
+
+```text
+trestle_root
+┣ .trestle
+┃ ┣ author
+┃ ┃ ┣ my_task_2
+┃ ┃ ┃ ┣ 0.0.1
+┃ ┃ ┃ ┃ ┣ a_template.md
+┃ ┃ ┃ ┃ ┣ another_template.md
+┃ ┃ ┃ ┃ ┗ arhitecture.drawio
+┃ ┗ config.ini
+
+trestle_root
+ ┣ .trestle
+ ┣ my_task_2
+ ┃ ┣ sample_folder_0
+ ┃ ┃ ┣ a_template_1.md
+ ┃ ┃ ┣ a_template_2.md
+ ┃ ┃ ┣ arhitecture_1.drawio
+ ┃ ┃ ┗ another_template_123.md
+
+```
+
+If you noticed, names are no longer needed to match with exact template names, and that´s because validation will run through `x-trestle-template-type` field defined at the instance header, not through the name.
+
+To validate the documents against their respective templates using `x-trestle-template-type`, run:
+
+> trestle author docs validate -tn my_task_name -vtt
+
+Now, `-vtt` stands for validate template type. Validate template type option will provide you the ability to have more than 1 instance per template validated.
+
 </details>
 
 <details markdown>
@@ -408,6 +463,61 @@ Running `trestle author docs validate -tn docs_task -gh="Governed section"` will
 - If `--recurse` (`-r`) is passed the documents in the subfolders will also be validated. By default `author docs` only indexes a flat directory.
 - If `--template-version 1.0.0` (`-tv`) is passed the header field `x-trestle-template-version` will be ignored and document will be forcefully validated against template of version `1.0.0`.
   Use this for testing purposes _only_ when you need to validate the document against a specific template. By default the template version will be determined based on `x-trestle-template-version` in the document.
+
+### Validating the documents against different templates
+
+Validation against multiple templates as stated before can be done, but there is another scenario that you can leverage on trestle to have multiple documents in the task folder corresponding to a single template.
+
+For that to happen you will need to provide your template with the following parameter at the yaml header level, matching the type of template to be implemented so the validation can occur:
+
+> x-trestle-template-type: insert_template_type_here
+
+Please, take into consideration that for the validation to happen you will also need to provide each instance document in the task folder a field called `x-trestle-template-type: insert_template_type_here` in the yaml header matching with the template name.
+
+```yaml
+---
+authors: tmp
+owner: tmp
+valid:
+  from: null
+  to: null
+x-trestle-template-type: insert_template_type_here
+---
+```
+
+With that, you will be able to create more than 1 instance document per template and give the instance the desired name.
+
+For instance, let´s consider the next folder structure:
+
+```text
+trestle_root
+┣ .trestle
+┃ ┣ author
+┃ ┃ ┣ my_task_2
+┃ ┃ ┃ ┣ 0.0.1
+┃ ┃ ┃ ┃ ┣ a_template.md
+┃ ┃ ┃ ┃ ┣ another_template.md
+┃ ┃ ┃ ┃ ┗ arhitecture.drawio
+┃ ┗ config.ini
+
+trestle_root
+ ┣ .trestle
+ ┣ my_task_2
+ ┃ ┣ sample_folder_0
+ ┃ ┃ ┣ a_template_1.md
+ ┃ ┃ ┣ a_template_2.md
+ ┃ ┃ ┣ arhitecture_1.drawio
+ ┃ ┃ ┗ another_template_123.md
+
+```
+
+If you noticed, names are no longer needed to match with exact template names, and that´s because validation will run through `x-trestle-template-type` field defined at the instance header, not through the name.
+
+To validate the documents against their respective templates using `x-trestle-template-type`, run:
+
+> trestle author folders validate -tn my_task_name -vtt
+
+Now, `-vtt` stands for validate template type. Validate template type option will provide you the ability to have more than 1 instance per template validated.
 
 </details>
 
@@ -575,7 +685,7 @@ CLI evocation:
 
 > trestle author catalog-assemble
 
-The `catalog` author commands allow you to convert a control catalog to markdown and edit its control statement, then assemble markdown back into an OSCAL catalog with the modifications to the statement.  Items in the statement may be edited or added.  For more details on its usage please see [the catalog authoring tutorial](https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).
+The `catalog` author commands allow you to convert a control catalog to markdown and edit its control statement, then assemble markdown back into an OSCAL catalog with the modifications to the statement.  Items in the statement may be edited or added.  For more details on its usage please see [the catalog authoring tutorial](https://oscal-compass.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).
 
 ### Profile authoring
 
@@ -589,7 +699,22 @@ CLI evocation:
 
 > trestle author profile-assemble
 
-The `profile` author commands allow you to edit additions made by a profile to its imported controls that end up in the final resolved profile catalog.  Only the additions may be edited or added to the generated markdown control files - and those additions can then be assembled into a new version of the original profile, with those additions.  For more details on its usage please see [the profile authoring tutorial](https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).
+The `profile` author commands allow you to edit additions made by a profile to its imported controls that end up in the final resolved profile catalog.  Only the additions may be edited or added to the generated markdown control files - and those additions can then be assembled into a new version of the original profile, with those additions.  For more details on its usage please see [the profile authoring tutorial](https://oscal-compass.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).
+
+### Profile generation with inheritance
+
+CLI evocation:
+
+> trestle author profile-inherit
+
+The `profile-inherit` sub-command takes a given parent profile and filters its imported controls based inherited controls from a given SSP.
+
+The leveraged SSP is evaluated based on whether provided and responsibility statements for all `by-component` fields are set for each applicable control, as well as the implementation status.
+All components must have exported provided statements, no exported responsibility statements, and an implementation status of `implemented` in order for a control to be filtered from the output profile (i.e. controls delta profile).
+
+As with the other related author commands, if an existing destination file already exists, it is not updated if no changes would be made.
+
+For more details on its usage please see [the ssp-filter tutorial](https://oscal-compass.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).
 
 ### SSP authoring
 
@@ -605,7 +730,7 @@ CLI evocation:
 
 The `ssp-generate` sub-command creates a partial SSP (System Security Plan) from a profile and optional yaml header file.  `ssp-assemble` can then assemble the markdown files into a single json SSP file.
 
-For more details on its usage please see [the ssp authoring tutorial](https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).
+For more details on its usage please see [the ssp authoring tutorial](https://oscal-compass.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).
 
 ### SSP Content Filtering
 
@@ -613,18 +738,20 @@ CLI evocation:
 
 > trestle author ssp-filter
 
-The `ssp-filter` sub-command takes a given SSP and filters its contents based on a given profile, list of components, and/or control implementation status.
+The `ssp-filter` sub-command takes a given SSP and filters its contents based on a given profile, list of components, control implementation status and/or control origination.
 
 If filtering by profile, the SSP is assumed to contain a superset of controls needed by the profile, and the filter operation generates a new SSP with just the controls needed by that profile.  If the profile references a control not in the SSP, the routine fails with an error.
 
-If filtering by components, a colon-delimited list of components should be provided, with `This system` as the default name for the overall required component for the entire system.  Case and spaces are ignored in the component names, so the names could be specified as `--components "this system: my component"`.  The resulting, filtered ssp will have updated implementated requirements with filtered by_components on each requirement, and filtered by_components on each statement.
+If filtering by components, a colon-delimited list of components should be provided, with `This system` as the default name for the overall required component for the entire system.  Case and spaces are ignored in the component names, so the names could be specified as `--components "this system: my component"`.  The resulting, filtered ssp will have updated implemented requirements with filtered by_components on each requirement, and filtered by_components on each statement.
 
-If filtering by control implementation status, a comma-demilited list of implementation status values should be provided. These values must comply with the OSCAL SSP format references's allowed values, which are as follows: implemented, partial, planned, alternative, and not-applicable.
+If filtering by control implementation status, a comma-delimited list of implementation status values should be provided. These values must comply with the OSCAL SSP format references's allowed values, which are as follows: implemented, partial, planned, alternative, and not-applicable.
 
-You may filter by a combination of a profile, list of component names, and implementation statuses.
+If filtering by control origination, a comma-delimited list of control origination values should be provided. These values must comply with the OSCAL SSP format references's allowed values for the control origination property, which are as follows: system-specific, inherited, organization, customer-configured, and customer-provided.
+
+You may filter by a combination of a profile, list of component names, implementation statuses, and control origination values.
 
 As with the other related author commands, if an existing destination file already exists, it is not updated if no changes would be made.
 
-For more details on its usage please see [the ssp-filter tutorial](https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).
+For more details on its usage please see [the ssp-filter tutorial](https://oscal-compass.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).
 
 </details>

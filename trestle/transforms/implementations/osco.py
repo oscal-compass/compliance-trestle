@@ -346,7 +346,7 @@ class _OscalResultsFactory():
         self._result_properties_list: List[Property] = []
         self._component_map: Dict[str, SystemComponent] = {}
         self._inventory_map: Dict[str, InventoryItem] = {}
-        self._ns = 'https://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco'
+        self._ns = 'https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/osco'
         self._checking = checking
 
     @property

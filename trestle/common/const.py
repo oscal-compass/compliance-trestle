@@ -195,9 +195,9 @@ FILE_ENCODING = 'utf8'
 
 # Trestle documentation
 
-WEBSITE_ROOT = 'https://ibm.github.io/compliance-trestle'
+WEBSITE_ROOT = 'https://oscal-compass.github.io/compliance-trestle'
 
-BUG_REPORT = 'https://github.com/IBM/compliance-trestle/issues/new/choose'
+BUG_REPORT = 'https://github.com/oscal-compass/compliance-trestle/issues/new/choose'
 
 # Sample objects
 SAMPLE_UUID_STR = 'A0000000-0000-4000-8000-000000000000'
@@ -250,6 +250,7 @@ MARKDOWN_URL_REGEX = r'\[([^\]]+)\]\(([^)]+)\)'
 TEMPLATE_VERSION_REGEX = r'[0-9]+.[0-9]+.[0-9]+'
 
 OBJECTIVE_PART = 'objective'
+ASSESMENT_OBJECTIVE_PART = 'assessment-objective'
 TABLE_OF_PARAMS_PART = 'table_of_parameters'
 
 # extracts standalone uuid's from anywhere in string
@@ -286,6 +287,8 @@ SSP_VALUES = 'ssp-values'
 PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT = '<!-- Add prose here for required Section'
 
 PROFILE = 'profile'
+
+LEVERAGED_SSP = 'leveraged-ssp'
 
 TITLE = 'title'
 
@@ -349,6 +352,12 @@ NAMESPACE_FEDRAMP = 'https://fedramp.gov/ns/oscal'
 
 LEV_AUTH_UUID = 'leveraged-authorization-uuid'
 
+INHERITED_UUID = 'inherited-uuid'
+
+IMPLEMENTATION_POINT = 'implementation-point'
+
+IMPLEMENTATION_POINT_EXTERNAL = 'external'
+
 STATUS_INHERITED = 'inherited'
 
 STATUS_PARTIALLY_IMPLEMENTED = 'partially-implemented'
@@ -368,6 +377,10 @@ IMPLEMENTATION_STATUS_REMARKS_HEADER = 'Implementation Status Remarks'
 REMARKS = 'Remarks'
 
 STATUS_REMARKS = 'status-remarks'
+
+PROVIDED_STATEMENT_DESCRIPTION = 'Provided Statement Description'
+
+RESPONSIBILITY_STATEMENT_DESCRIPTION = 'Responsibility Statement Description'
 
 # Following 5 are allowed state tokens for
 # SSP -> ControlImplementation -> ImplementedRequirements -> ByComponents -> common.ImplementationStatus -> State
@@ -416,6 +429,11 @@ STATUS_PROMPT = f'<!-- For implementation status enter one of: {STATUS_IMPLEMENT
 
 RULES_WARNING = '<!-- Note that the list of rules under ### Rules: is read-only and changes will not be captured after assembly to JSON -->'  # noqa E501
 
+SATISFIED_STATEMENT_COMMENT = (
+    '<!-- Use this section to explain how'
+    ' the inherited responsibility is being satisfied. -->'
+)
+
 THIS_SYSTEM_PROMPT = '### ' + SSP_MAIN_COMP_NAME
 
 RESPONSIBLE_ROLE = 'responsible-role'
@@ -430,6 +448,10 @@ RULES_PARAMS_TAG = TRESTLE_TAG + 'rules-params'
 
 COMP_DEF_RULES_PARAM_VALS_TAG = TRESTLE_TAG + 'comp-def-rules-param-vals'
 
+TRESTLE_LEVERAGING_COMP_TAG = TRESTLE_TAG + 'leveraging-comp'
+
+TRESTLE_STATEMENT_TAG = TRESTLE_TAG + 'statement'
+
 PARAM_VALUES_TAG = TRESTLE_TAG + 'param-values'
 
 COMP_DEF_RULES_TAG = TRESTLE_TAG + 'comp-def-rules'
@@ -439,6 +461,14 @@ PROFILE_VALUES = 'profile-values'
 COMPONENT_VALUES = 'component-values'
 
 VALUES = 'values'
+
+GUIDELINES = 'guidelines'
+
+PARAM_VALUE_ORIGIN = 'param-value-origin'
+
+PROFILE_PARAM_VALUE_ORIGIN = 'profile-param-value-origin'
+
+LABEL = 'label'
 
 SECTIONS_TAG = TRESTLE_TAG + 'sections'
 
@@ -459,6 +489,10 @@ CONTROL_STATEMENT_HEADER = '## Control Statement'
 CONTROL_HEADER = '## Control'
 
 REPLACE_ME = 'REPLACE_ME'
+
+PROVIDED_UUID = 'provided-uuid'
+
+RESPONSIBILITY_UUID = 'responsibility-uuid'
 
 YAML_PROPS_COMMENT = """  # Add or modify control properties here
   # Properties may be at the control or part level
@@ -485,15 +519,31 @@ YAML_SSP_VALUES_COMMENT = """  # You may set values for parameters in the assemb
   #
 """
 
-YAML_PROFILE_VALUES_COMMENT = """  # You may set values for parameters in the assembled Profile by adding
+YAML_PROFILE_VALUES_COMMENT = """    # This section contains the parameters that are part of this control.
+  # Each parameter has properties. Only the profile-values and display-name properties are editable.
+  # The other properties are informational.
   #
-  # profile-values:
-  #   - value 1
-  #   - value 2
+  # The values property for a parameter represents values inherited from the OSCAL catalog.
+  # To override the catalog settings, use bullets under profile-values as shown below:
   #
-  # below a section of values:
-  # The values list refers to the values in the catalog, and the profile-values represent values
-  # in SetParameters of the Profile.
+  #   profile-values:
+  #     - value 1
+  #     - value 2
+  #
+  # If the "- <REPLACE_ME>" placeholder appears under profile-values, it is the same as if
+  # the profile-values property were left empty.
+  #
+  # Some parameters may show an aggregates property which lists other parameters. This means
+  # the parameter value is made up of the values from the other parameters. For parameters
+  # that aggregate, profile-values is not applicable.
+  #
+  # Property param-value-origin is meant for putting the origin from where that parameter comes from.
+  # In order to be changed in the current profile, profile-param-value-origin property will be displayed with
+  # the placeholder "<REPLACE_ME>" for you to be replaced. If a parameter already has a param-value-origin
+  # coming from an inherited profile, do no change this value, instead use profile-param-value-origin as follows:
+  #
+  #    param-value-origin: DO NOT REPLACE - this is the original value
+  #    profile-param-value-origin: <REPLACE_ME> - replace the new value required HERE
   #
 """
 
@@ -521,9 +571,16 @@ YAML_RULE_PARAM_VALUES_COMPONENT_COMMENT = """  # You may set new values for rul
   #
 """
 
+YAML_LEVERAGED_COMMENT = """  # Add or modify leveraged SSP Statements here.
+"""
+
+YAML_LEVERAGING_COMP_COMMENT = """  # Leveraged statements can be optionally associated with components in this system.
+  # Associate leveraged statements to Components of this system here:
+"""
+
 DISPLAY_NAME = 'display-name'
 
-TRESTLE_GENERIC_NS = 'https://ibm.github.io/compliance-trestle/schemas/oscal'
+TRESTLE_GENERIC_NS = 'https://oscal-compass.github.io/compliance-trestle/schemas/oscal'
 
 RESOLUTION_SOURCE = 'resolution-source'
 
@@ -554,4 +611,32 @@ VALUE_NOT_ASSIGNED_PREFIX = 'value-not-assigned-prefix'
 
 CONTROL_IMPLEMENTATION = 'control-implementation'
 
+AGGREGATES = 'aggregates'
+
+ALT_IDENTIFIER = 'alt-identifier'
+
 IMPLEMENTED_REQUIREMENT = 'implemented-requirement'
+
+# Following 5 are allowed control origination values for
+# SSP -> ControlImplementation -> ImplementedRequirements -> prop[@name='control-origination']/@value
+ORIGINATION_ORGANIZATION = 'organization'
+
+ORIGINATION_SYSTEM_SPECIFIC = 'system-specific'
+
+ORIGINATION_CUSTOMER_CONFIGURED = 'customer-configured'
+
+ORIGINATION_CUSTOMER_PROVIDED = 'customer-provided'
+
+ORIGINATION_INHERITED = 'inherited'
+
+# Constant relation to the inheritance view Markdown
+
+INHERITANCE_VIEW_DIR = 'inheritance'
+
+HELP_LEVERAGED = 'Name of the SSP to be leveraged.'
+
+SATISFIED_STATEMENT_DESCRIPTION = 'Satisfied Statement Description'
+
+ADDED_BY_CONTROL_OWNER = 'Added by control owner'
+
+REPLACE_ME_PLACEHOLDER = '<REPLACE_ME>'

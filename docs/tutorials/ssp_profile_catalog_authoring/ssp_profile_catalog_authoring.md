@@ -27,6 +27,7 @@ The author commands are:
 1. `catalog-generate` converts a control Catalog to individual controls in markdown format for addition or editing of guidance prose and parameters, with parameters stored in a yaml header at the top of the markdown file.  `catalog-assemble` then gathers the prose and parameters and updates the controls in the Catalog to make a new OSCAL Catalog.
 1. `profile-generate` takes a given Profile and converts the controls represented by its resolved profile catalog to individual controls in markdown format, with sections corresponding to the content that the Profile adds to the Catalog, along with both the current values of parameters in the resolved profile catalog - and the values that are being modified by the given profile's SetParameters.  The user may edit the content or add more, and `profile-assemble` then gathers the updated content and creates a new OSCAL Profile that includes those changes.
 1. `profile-resolve` is special as an authoring tool because it does not involve markdown and instead it simply creates a JSON resolved profile catalog from a specified JSON profile in the trestle directory.  There are options to specify whether or not parameters get replace in the control prose or not, along with any special brackets that might be desired to indicate the parameters embedded in the prose.
+1. `profile-inherit` takes a given parent profile and filters its contents based on the inherited controls included in a given ssp to be include in the final profile.
 1. `component-generate` takes a given ComponentDefinition file and represents all the controls in markdown in separate directories for each Component in the file.  This allows editing of the prose on a per-component basis.  `component-assemble` then assembles the markdown for all controls in all component directories into a new, or the same, ComponentDefinition file.
 1. `ssp-generate` takes a given Profile and an optional list of component-definitions, and represents the individual controls as markdown files with sections that prompt for prose regarding the implementation response for items in the statement of the control, with separate response sections for each component.  `ssp-assemble` then gathers the response sections and creates an OSCAL System Security Plan comprising the resolved profile catalog and the implementation responses for each component.  The list of component-definitions is optional, but without them the SSP will only have one component: `This System`.  Rules, parameters and status associated with the implemented requirements are stored in the SetParameters and Properties of the components in the component definitions and represented in the markdown, allowing changes to be made to the parameter values and status.  These edits are then included in the assembled SSP.  Note that the rules themselves may not be edited and strictly correspond to what is in the component definitions.
 1. `ssp-filter` takes a given ssp and filters its contents based on the controls included in a provided profile, or in a list of components to be included in the final ssp.
@@ -46,7 +47,7 @@ Similarly, when assembling to JSON, the `--set-parameters` option will cause any
 
 As described earlier, the authoring tools are designed to work well in a CI/CD environment where changes are made in a pipeline by people with different responsibilities and authority.  In this setting, changes to documents can trigger changes downstream, e.g. the editing of a control would cause an update in the catalog, which could then flow down to an updated SSP.  These changes can occur automatically via actions that restrict the potential changes to the generated documents.  Examples are the `--set-parameters` option on the `-assemble` tools, and both `--required-sections` and `allowed-sections` for `profile-assemble`.  If a document change triggers an assemble action, changes to parameters can only occur if the action has `--set-parameters` in the command.  Similarly, `profile-assemble` will fail if the sections do not meet the requirements specified in the command options.  Another feature of the `-assemble` tools is that they won't create a new OSCAL file if the output already exists and its content would not be changed.  This prevents undesired triggering of downstream actions when there is no actual change in content.
 
-There is a standalone demonstration of the SSP generation process with trestle in the [Trestle SSP Demo](https://github.com/IBM/compliance-trestle-ssp-demo) that captures the entire process of SSP authoring: from creation of a component definition from CSV file to a final formatted system security plan in Word (.docx) format.
+There is a standalone demonstration of the SSP generation process with trestle in the [Trestle SSP Demo](https://github.com/oscal-compass/compliance-trestle-ssp-demo) that captures the entire process of SSP authoring: from creation of a component definition from CSV file to a final formatted system security plan in Word (.docx) format.
 
 </details>
 
@@ -320,7 +321,7 @@ Access control policy and procedures address the controls in the AC family that 
 <!-- "## Part" parts are new subparts added into the existing top-level statement part with that label. -->
 <!-- Subparts may be added with nested hash levels of the form ### My Subpart Name -->
 <!-- underneath the parent ## Control or ## Part being added -->
-<!-- See https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring for guidance. -->
+<!-- See https://oscal-compass.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring for guidance. -->
 
 ## Control Implementation Guidance
 
@@ -520,6 +521,51 @@ and any value present for the parameter would be ignored.
 
 Similar options apply to the `jinja` authoring commands.
 
+</details>
+
+<details markdown>
+
+<summary>trestle author profile-inherit</summary>
+
+The `trestle author profile-inherit` command is different from the `generate/assemble` commands because it doesn't involve markdown and instead
+it takes an parent profile and ssp and creates child profile in `JSON` format.
+
+When utilizing a process with leveraged authorizations, use the command `trestle author profile-inherit` to create a profile with initial content using a parent profile and SSP with inheritable controls. The provided and responsibility statements for all `by-component` fields, as well as the implementation status, will be used to evaluate the leveraged SSP.
+To be filtered from the output profile (i.e. controls delta profile), all components must have exported provided statements, no exported responsibility statements, and an implementation status of `implemented`.
+
+The filter command is invoked as:
+
+`trestle author profile-inherit --profile my_parent --ssp my_leveraged_ssp --output controls_delta_profile`
+
+Both the parent profile and the SSP must be present in the trestle workspace. This command produces a new workspace profile that imports the parent profile and filters the inherited controls from the SSP using the `exclude-controls` and `include-controls` fields in the profile import.
+
+<details markdown>
+
+<summary>Example imports generated from profile-inherit</summary>
+
+```json
+  "imports": [
+      {
+        "href": "trestle://profiles/controls_delta/profile.json",
+        "include-controls": [
+          {
+            "with-ids": [
+              "ac-2"
+            ]
+          }
+        ],
+        "exclude-controls": [
+          {
+            "with-ids": [
+              "ac-1"
+            ]
+          }
+        ]
+      }
+    ]
+```
+
+</details>
 </details>
 
 <details markdown>
@@ -1004,19 +1050,144 @@ As with all the `assemble` tools, you may optionally specify a `--name` for a co
 
 If you do not specify component-defintions during assembly, the markdown should not refer to any components other than `This System`.  Thus you may first generate markdown with `ssp-generate` and no component-definitions specified - and then you may assemble that ssp with `ssp-assemble` and no component-definitions specified - but only if there are no components other than `This System` referenced in the markdown.  You may add new component implementation details to the markdown later, but any new components must be defined in a component-defintion file, and that file must be specified when `ssp-assemble` is run.
 
+## Inheritance view
+
+The inheritance view is generated by setting the `--leveraged-ssp` flag with `trestle author ssp-generate`. It contains information relating to exported information such as inherited capabilities and customer responsibilities that can be used to populate the inheritance information in the assembled SSP. When used, a directory named "inheritance" is created within the markdown directory. This directory serves as a designated space for  mapping inherited capabilities and responsibilities onto components in the assemble SSP and authoring satisfied statements for responsibilities.
+
+Example usage for creation of the markdown:
+
+`trestle author ssp-generate --profile my_prof --compdefs "compdef_a,compdef_b" --yaml /my_yaml_dir/header.yaml --leveraged-ssp my_provider_ssp --output my_ssp`
+
+In this example the leveraged ssp has previously been imported into the trestle directory, but it can be fetched from remote location.
+
+The generated markdown output with the inheritance view will be placed in the trestle subdirectory `my_ssp/inheritance` with a subdirectory for each component in the leveraged ssp with directories separated by control and statement id below.
+
+An example of this directory structure is below.
+
+```text
+.
+├── Application
+│   ├── ac-1_stmt.a
+│   │   └── 11111111-0000-4000-9009-001001002006.md
+│   ├── ac-2.1
+│   │   └── 11111111-0000-4000-9009-001001002004.md
+│   └── ac-2_stmt.a
+│       └── 11111111-0000-4000-9009-002001002001_11111111-0000-4000-9009-002001002002.md
+└── This System
+    ├── ac-1_stmt.a
+    │   └── 11111111-0000-4000-9009-001002002001.md
+    ├── ac-2.1
+    │   └── 11111111-0000-4000-9009-001001002001.md
+    └── ac-2_stmt.a
+        └── 11111111-0000-4000-9009-002001001001.md
+```
+
+The leveraged components are used as the top level directory to allow any non-leveraged components to be easily skipped or removed. Each markdown file is named in accordance with the uuid of the exported statement to ensure statement description updates can be applied.
+
+There are three types of markdown files that can be generated from this process.
+
+The examples below demonstrate these types:
+
+<details markdown>
+
+<summary>Example of inheritance provided only markdown after ssp-generate</summary>
+
+```markdown
+---
+x-trestle-statement:
+  # Add or modify leveraged SSP Statements here.
+  provided-uuid: 11111111-0000-4000-9009-001002002001
+x-trestle-leveraging-comp:
+  # Leveraged statements can be optionally associated with components in this system.
+  # Associate leveraged statements to Components of this system here:
+  - name: REPLACE_ME
+---
+
+# Provided Statement Description
+
+Customer_appropriate description of what may be inherited.
+```
+
+</details>
+
+<details markdown>
+
+<summary>Example of inheritance customer responsibility only markdown after ssp-generate</summary>
+
+```markdown
+---
+x-trestle-statement:
+  # Add or modify leveraged SSP Statements here.
+  responsibility-uuid: 11111111-0000-4000-9009-002001001001
+x-trestle-leveraging-comp:
+  # Leveraged statements can be optionally associated with components in this system.
+  # Associate leveraged statements to Components of this system here:
+  - name: REPLACE_ME
+---
+
+# Responsibility Statement Description
+
+Leveraging system's responsibilities with respect to inheriting this capability.
+
+# Satisfied Statement Description
+
+<!-- Use this section to explain how the inherited responsibility is being satisfied. -->
+```
+
+</details>
+
+<details markdown>
+
+<summary>Example of inheritance shared responsibility markdown after ssp-generate</summary>
+
+```markdown
+---
+x-trestle-statement:
+  # Add or modify leveraged SSP Statements here.
+  provided-uuid: 11111111-0000-4000-9009-002001002001
+  responsibility-uuid: 11111111-0000-4000-9009-002001002002
+x-trestle-leveraging-comp:
+  # Leveraged statements can be optionally associated with components in this system.
+  # Associate leveraged statements to Components of this system here:
+  - name: REPLACE_ME
+---
+
+# Provided Statement Description
+
+Consumer-appropriate description of what may be inherited.
+
+# Responsibility Statement Description
+
+Leveraging system's responsibilities with respect to inheriting this capability.
+
+# Satisfied Statement Description
+
+<!-- Use this section to explain how the inherited responsibility is being satisfied. -->
+```
+
+</details>
+
+Some additional information and tips about this markdown are below:
+
+- Do not change the statement UUIDs in the YAML header. This is used in the assembled JSON to link the statements in the leveraged SSP to the components in the leveraging SSP.
+- When mapping components in the YAML header, use the component title. If you do not wish to map a component to a particular inherited capability or responsibility, just leave the file as is. Files without mapped components or that contain the default "REPLACE ME" entry will be skipped.
+- If the file exists, just the editable information will be preserved when regenerating existing inheritance view markdown. This includes the information under `Satisfied Statement Description` and the mapped components in the YAML header.
+
+After manually editing the inheritance view markdown, the `trestle author ssp-assemble` command can be run without modifications for the inheritance view use case. During assemble, the inheritance directory is detected and the information will be assembled into the SSP. The by-component assemblies will be updated or added under existing implemented requirement or statement sections with the information from the markdown.
+
 </details>
 
 <details markdown>
 
 <summary>trestle author ssp-filter</summary>
 
-Once you have an SSP in the trestle directory you can filter its contents with a profile, list of components, or list of implementation status values by using the command `trestle author ssp-filter`.  The SSP is assumed to contain a superset of the controls needed by the profile if a profile is specified, and the filter operation will generate a new SSP with only those controls needed by the profile.  If a list of component names is provided, only the specified components will appear in the system implementation of the ssp. If a list of implementation statuses is provided, controls with implementations including those statuses will appear in the control implementation of the ssp.
+Once you have an SSP in the trestle directory you can filter its contents with a profile, list of components, list of implementation statuses, or list control origination values by using the command `trestle author ssp-filter`.  The SSP is assumed to contain a superset of the controls needed by the profile if a profile is specified, and the filter operation will generate a new SSP with only those controls needed by the profile.  If a list of component names is provided, only the specified components will appear in the system implementation of the ssp. If a list of implementation statuses is provided, controls with implementations including those statuses will appear in the control implementation of the ssp. Similarly, if a list of control origination values is provided, implemented requirements with a control origination property value included in the provided values will appear in the control implementation of the ssp.
 
 The filter command is invoked as:
 
-`trestle author ssp-filter --name my_ssp --profile my_profile --components comp_a:comp_b --implementation-status "planned,partial" --output my_culled_ssp`
+`trestle author ssp-filter --name my_ssp --profile my_profile --components comp_a:comp_b --implementation-status "planned,partial" --control-origination "customer-configured" --output my_culled_ssp`
 
-The SSP must be present in the trestle workspace and, if filtering by profile, that profile must also be in the trestle workspace. This command will generate a new SSP in the workspace. If the profile makes reference to a control not in the SSP then the routine will fail with an error message.  Similarly, if one of the components is not present in the ssp the routine will also fail. The implementation statuses must be one of the allowed values as defined in the OSCAL SSP JSON format reference. Those include the following: implemented, partial, planned, alternative, and not-applicable. If an invalid value is provided, an error is returned.
+The SSP must be present in the trestle workspace and, if filtering by profile, that profile must also be in the trestle workspace. This command will generate a new SSP in the workspace. If the profile makes reference to a control not in the SSP then the routine will fail with an error message.  Similarly, if one of the components is not present in the ssp the routine will also fail. The implementation statuses must be one of the allowed values as defined in the OSCAL SSP JSON format reference. Those include the following: implemented, partial, planned, alternative, and not-applicable. If an invalid value is provided, an error is returned. The control origination values also must be one of the allowed values as defined in the OSCAL SSP JSON format reference. Those include the following: system-specific, inherited, customer-configured, customer-provided, and organization. If an invalid value is provided, an error is returned.
 
 </details>
 

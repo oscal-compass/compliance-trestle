@@ -3,6 +3,107 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.1 (2024-01-18)
+### Fix
+* Correct security vulnerability ([#1498](https://github.com/oscal-compass/compliance-trestle/issues/1498)) ([`e23792c`](https://github.com/oscal-compass/compliance-trestle/commit/e23792cb1cde490fa2951866c9f99f9d43e9c669))
+
+## v2.5.0 (2024-01-05)
+### Feature
+* Add parameter value origin field to parameters ([#1470](https://github.com/oscal-compass/compliance-trestle/issues/1470)) ([`b86aa2b`](https://github.com/oscal-compass/compliance-trestle/commit/b86aa2b5ef97a8fd988efb8ec995fb0624af6db0))
+* Allow use of OpenSCAP result files in task xccdf_result_to_oscal_ar ([#1411](https://github.com/oscal-compass/compliance-trestle/issues/1411)) ([`eeb715c`](https://github.com/oscal-compass/compliance-trestle/commit/eeb715c4cd86c3bd5183592c03beac1cc46859d9))
+* Add inheritance view to ssp-generate and ssp-assemble ([#1441](https://github.com/oscal-compass/compliance-trestle/issues/1441)) ([`6cf498b`](https://github.com/oscal-compass/compliance-trestle/commit/6cf498b26aa2a2d583714470038291b0567fb80a))
+
+### Fix
+* Correct empty values going in assembled profile ([#1491](https://github.com/oscal-compass/compliance-trestle/issues/1491)) ([`136b712`](https://github.com/oscal-compass/compliance-trestle/commit/136b712cfaf0392ae5673a6103700014d27b2866))
+* Correct vulnerability ([#1486](https://github.com/oscal-compass/compliance-trestle/issues/1486)) ([`4610d24`](https://github.com/oscal-compass/compliance-trestle/commit/4610d247516c7ddc37a1b1774b31fbfb9f5012fa))
+* Move to new org ([#1483](https://github.com/oscal-compass/compliance-trestle/issues/1483)) ([`c456779`](https://github.com/oscal-compass/compliance-trestle/commit/c4567792cc62b7e9e85c8dca0ce2d26fe82fcbc6))
+* Sonar ([#1481](https://github.com/oscal-compass/compliance-trestle/issues/1481)) ([`4e7e8fd`](https://github.com/oscal-compass/compliance-trestle/commit/4e7e8fd6618852dcceb4b464a7cabc91154e171a))
+* Correct critical vulnerability ([#1479](https://github.com/oscal-compass/compliance-trestle/issues/1479)) ([`72b0f6f`](https://github.com/oscal-compass/compliance-trestle/commit/72b0f6f132fe7f6ed20fd29e47e13656082c0d29))
+* Link main readme to agile authoring setup repo ([#1477](https://github.com/oscal-compass/compliance-trestle/issues/1477)) ([`88c1606`](https://github.com/oscal-compass/compliance-trestle/commit/88c16064897644db03aab11799a6dfc31ec8a1d2))
+* **tests:** Pins oscal-content references in tests the latest 1.0 commit ([#1474](https://github.com/oscal-compass/compliance-trestle/issues/1474)) ([`0dc7551`](https://github.com/oscal-compass/compliance-trestle/commit/0dc755184fb8c061cacc90cc930ea7b0c43f2b7c))
+
+## v2.4.0 (2023-10-26)
+### Feature
+* Adding validate template type to author docs command ([#1465](https://github.com/IBM/compliance-trestle/issues/1465)) ([`5289f51`](https://github.com/IBM/compliance-trestle/commit/5289f516e9710361e0dc391cefd979b5e2d46ed0))
+
+### Fix
+* Upgrade urllib version to fix vulnerability ([#1472](https://github.com/IBM/compliance-trestle/issues/1472)) ([`e9d4175`](https://github.com/IBM/compliance-trestle/commit/e9d4175fabd015ada6e8cdd26450c454ad83fbe8))
+* Improve bad property error message by including csv row number ([#1466](https://github.com/IBM/compliance-trestle/issues/1466)) ([`ab97beb`](https://github.com/IBM/compliance-trestle/commit/ab97beb2367112e9e68fb258af6dc2c75d909279))
+* Cryptic error message + feat: # indicates comment column ([#1459](https://github.com/IBM/compliance-trestle/issues/1459)) ([`45eda01`](https://github.com/IBM/compliance-trestle/commit/45eda015751d2f9121e14fe609b14acd890440fd))
+* Update community call information ([#1444](https://github.com/IBM/compliance-trestle/issues/1444)) ([`5a03d06`](https://github.com/IBM/compliance-trestle/commit/5a03d06783fff8db4bf402b1e21acb99fd485454))
+
+### Documentation
+* Updating vtt documentation for trestle author docs ([#1471](https://github.com/IBM/compliance-trestle/issues/1471)) ([`63d436a`](https://github.com/IBM/compliance-trestle/commit/63d436a7752e50ef0c52c93cbab36f4c1fc16748))
+
+## v2.3.1 (2023-09-20)
+### Fix
+* Improper indentation structure validation not working ([#1451](https://github.com/IBM/compliance-trestle/issues/1451)) ([`2e6936a`](https://github.com/IBM/compliance-trestle/commit/2e6936a4705251fd8412fd67163a7cd9d801a4b8))
+* Fixing typo in encoding name ([#1448](https://github.com/IBM/compliance-trestle/issues/1448)) ([`bdf60b2`](https://github.com/IBM/compliance-trestle/commit/bdf60b26075f7250bcdbbe08745630b27042ad74))
+* Parameter aggregation fix ([#1443](https://github.com/IBM/compliance-trestle/issues/1443)) ([`dd9e3bc`](https://github.com/IBM/compliance-trestle/commit/dd9e3bc2ebaeab23f3c4fc0647ec3942d38bed16))
+* Prevent duplicates in set-parameters ([#1450](https://github.com/IBM/compliance-trestle/issues/1450)) ([`62e2f05`](https://github.com/IBM/compliance-trestle/commit/62e2f059dd2ae08616895ebdfd6e37258483019d))
+
+## v2.3.0 (2023-09-06)
+### Feature
+* Extend multiple templates validation to trestle author folders ([#1430](https://github.com/IBM/compliance-trestle/issues/1430)) ([`c7bef58`](https://github.com/IBM/compliance-trestle/commit/c7bef589a6e671b96170e93feb88c6436a094da6))
+* Adds agile authoring functionality to public API in repository.py ([#1432](https://github.com/IBM/compliance-trestle/issues/1432)) ([`08b2559`](https://github.com/IBM/compliance-trestle/commit/08b255902efb911c99422d49920c5ddaea98ef32))
+* Support validation component_type for task csv-to-oscal-cd ([#1431](https://github.com/IBM/compliance-trestle/issues/1431)) ([`80aaa72`](https://github.com/IBM/compliance-trestle/commit/80aaa72fe96217d1c7dd93e4c1d5bd9c34cb012b))
+
+### Fix
+* Correcting typo ([`1810007`](https://github.com/IBM/compliance-trestle/commit/181000731ada7af1348219581994bd58f2285329))
+* Correcting python semantice release version ([`a8cb9b9`](https://github.com/IBM/compliance-trestle/commit/a8cb9b9f1f11485ac70fa2f35a3e52b917b7a783))
+* Moving watch config a level up ([#1447](https://github.com/IBM/compliance-trestle/issues/1447)) ([`ea5607f`](https://github.com/IBM/compliance-trestle/commit/ea5607f9f404f38da1abf1c40f907196ea79c567))
+* Xccdf parameter type ([#1440](https://github.com/IBM/compliance-trestle/issues/1440)) ([`431670c`](https://github.com/IBM/compliance-trestle/commit/431670cd468693ca4581ec43d8de5d32413ec113))
+* Headings levels validation is not working properly ([#1436](https://github.com/IBM/compliance-trestle/issues/1436)) ([`22b65a9`](https://github.com/IBM/compliance-trestle/commit/22b65a9b84af36d8c12c32c6e5c0dae88208ea49))
+* Default set-parameter values as list ([#1438](https://github.com/IBM/compliance-trestle/issues/1438)) ([`419025d`](https://github.com/IBM/compliance-trestle/commit/419025dfad47cf9f61b5e20a35a9683a84ed26e8))
+* Expected nist profile missing ([#1435](https://github.com/IBM/compliance-trestle/issues/1435)) ([`c96f9ce`](https://github.com/IBM/compliance-trestle/commit/c96f9ce82e453c83a07d9d4c1061833f38c7f104))
+* Provide description and meaning to parameters in markdown ([#1423](https://github.com/IBM/compliance-trestle/issues/1423)) ([`266f67b`](https://github.com/IBM/compliance-trestle/commit/266f67bd220e15922caacb4de0e702f4d0927ceb))
+
+## v2.2.1 (2023-07-05)
+
+### Fix
+
+* Parameter value default is never required ([#1419](https://github.com/IBM/compliance-trestle/issues/1419)) ([`01434f1`](https://github.com/IBM/compliance-trestle/commit/01434f13b16054b035767985a9a02ed9fa91154f))
+* Pydantic 2.0.0 break unit tests ([#1418](https://github.com/IBM/compliance-trestle/issues/1418)) ([`2138831`](https://github.com/IBM/compliance-trestle/commit/2138831f9bb36c5f91ab17cccc4412128c468a82))
+* Adding parameter aggregation from other parameter values for given control ([#1412](https://github.com/IBM/compliance-trestle/issues/1412)) ([`7b8cad0`](https://github.com/IBM/compliance-trestle/commit/7b8cad03e05024a406742720e5abed2e3febdf6f))
+* Assessment objectives formatting in markdown is not correct ([#1414](https://github.com/IBM/compliance-trestle/issues/1414)) ([`dbfc1d6`](https://github.com/IBM/compliance-trestle/commit/dbfc1d6c59339a7f542f86cb74da4f05fe8a9a60))
+
+## v2.2.0 (2023-06-26)
+
+### Feature
+
+* Add profile-inherit command ([#1392](https://github.com/IBM/compliance-trestle/issues/1392)) ([`3bd53ff`](https://github.com/IBM/compliance-trestle/commit/3bd53ff370cece77fc78082dbc04304af12c6647))
+* Oscal-catalog-to-csv ([#1396](https://github.com/IBM/compliance-trestle/issues/1396)) ([`5f59a7f`](https://github.com/IBM/compliance-trestle/commit/5f59a7fc7cf8b88a9f77ba4554dd493acff67114))
+* Adds control origination to ssp-filter ([#1375](https://github.com/IBM/compliance-trestle/issues/1375)) ([`509afa7`](https://github.com/IBM/compliance-trestle/commit/509afa7df124f8a6c3516ad06db256777baaef98))
+
+### Fix
+
+* Drop python 3.7 support as required  ([`cf4160b`](https://github.com/IBM/compliance-trestle/commit/cf4160bc25336cb9362150906a8aaeda308c4134))
+* Change the community call to use bluejeans events ([#1400](https://github.com/IBM/compliance-trestle/issues/1400)) ([`9380cc8`](https://github.com/IBM/compliance-trestle/commit/9380cc813f8b044640fecb4ee302207d3c66d29a))
+* Python 3.7.17 issue ([#1408](https://github.com/IBM/compliance-trestle/issues/1408)) ([`6849c3b`](https://github.com/IBM/compliance-trestle/commit/6849c3b01d0adfd1261b9929a7d5c1866dd38973))
+* Log warning for duplicate part ids when writing markdown from json ([#1395](https://github.com/IBM/compliance-trestle/issues/1395)) ([`760dd4b`](https://github.com/IBM/compliance-trestle/commit/760dd4b4dd6ac405df3db0c2d39d9973ab61a0f4))
+* Use empty string if prose in part is None while writing to markdown ([#1390](https://github.com/IBM/compliance-trestle/issues/1390)) ([`5427fbb`](https://github.com/IBM/compliance-trestle/commit/5427fbb445e9a54a2ede1caa7e15c15b8977dd10))
+* Some tests failing on linux ([#1387](https://github.com/IBM/compliance-trestle/issues/1387)) ([`f0ffdec`](https://github.com/IBM/compliance-trestle/commit/f0ffdecb963d7cd341b6b40be3a02efd3e76748d))
+* Update readme with webex details ([#1383](https://github.com/IBM/compliance-trestle/issues/1383)) ([`4263f1a`](https://github.com/IBM/compliance-trestle/commit/4263f1a72fa9a3ebea01b3b5c301cf89a962bf9c))
+
+### Documentation
+
+* Update maintainers list ([#1394](https://github.com/IBM/compliance-trestle/issues/1394)) ([`c53faa4`](https://github.com/IBM/compliance-trestle/commit/c53faa40ce23a5ad5476cbb6e2c3d32a8e6818dc))
+
+## v2.1.1 (2023-05-12)
+### Fix
+* Change lint title action ([#1352](https://github.com/IBM/compliance-trestle/issues/1352)) ([`5444206`](https://github.com/IBM/compliance-trestle/commit/5444206f8b8c8e6904ec180472c569e246255975))
+* Docs for task xlsx-result-to-oscal-ar replacing "osco" ([#1369](https://github.com/IBM/compliance-trestle/issues/1369)) ([`850ed0a`](https://github.com/IBM/compliance-trestle/commit/850ed0a99e0298496b0df1e91c22bd80c290b6e1))
+* Ssp response missing status and rules ([#1358](https://github.com/IBM/compliance-trestle/issues/1358)) ([`43daf5f`](https://github.com/IBM/compliance-trestle/commit/43daf5f9fca2495c1dbb8fa2ea39cb7184a9e191))
+* Xccdf to oscal-ar ([#1336](https://github.com/IBM/compliance-trestle/issues/1336)) ([`7305883`](https://github.com/IBM/compliance-trestle/commit/730588327ea54a5fc7a5d1f597a3ffeee92e0e48))
+* Handle tabs in statement prose and parts ([#1359](https://github.com/IBM/compliance-trestle/issues/1359)) ([`c34dbea`](https://github.com/IBM/compliance-trestle/commit/c34dbeaa7dd75cd614393c57cba97fa9e5c8d699))
+* Quiet warning about system component status as operational ([#1354](https://github.com/IBM/compliance-trestle/issues/1354)) ([`4313b85`](https://github.com/IBM/compliance-trestle/commit/4313b850403e49a1db8e00f91e264e89e3175238))
+* Raise error if duplicate parts are found in the control statement ([#1351](https://github.com/IBM/compliance-trestle/issues/1351)) ([`74bd4f5`](https://github.com/IBM/compliance-trestle/commit/74bd4f5e33c6d863fca3753955971ad460cac74a))
+* Update author jinja command and add test ([#1347](https://github.com/IBM/compliance-trestle/issues/1347)) ([`a0b1797`](https://github.com/IBM/compliance-trestle/commit/a0b17972d82e106500f69dbfa78f86b8cf2da085))
+
+### Documentation
+* Update community call webex link ([#1366](https://github.com/IBM/compliance-trestle/issues/1366)) ([`d5da18d`](https://github.com/IBM/compliance-trestle/commit/d5da18d8f64fc0328d1b6592f663554c8aed3c22))
+* Add community call information ([`b6d6451`](https://github.com/IBM/compliance-trestle/commit/b6d6451408b79171021e00d883132eed1f5871b6))
+
 ## v2.1.0 (2023-04-06)
 ### Feature
 * Validate SSP rule parameter values ([#1337](https://github.com/IBM/compliance-trestle/issues/1337)) ([`10dd58b`](https://github.com/IBM/compliance-trestle/commit/10dd58b552f8f9a4618daea27e6d0ccd002dbd80))

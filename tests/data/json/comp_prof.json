@@ -39,7 +39,7 @@
           "props": [
             {
               "name": "display-name",
-              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal",
+              "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal",
               "value": "AC-1 (a) (1)"
             }
           ]

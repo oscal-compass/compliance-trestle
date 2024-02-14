@@ -48,6 +48,10 @@
               {
                 "name": "set_param_prof_b_prop",
                 "value": "set param prof b prop value"
+              },
+              {
+                "name": "param-value-origin",
+                "value": "comes from xyz policiy"
               }
             ]
         },

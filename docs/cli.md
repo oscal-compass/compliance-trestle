@@ -561,15 +561,15 @@ references to links, and corresponding links in the backmatter.
 
 Open Shift Compliance Operator and Tanium are supported as 3rd party tools.
 
-## `trestle task osco-result-to-oscal-ar`
+## `trestle task xccdf-result-to-oscal-ar`
 
-The *trestle task osco-result-to-oscal-ar* command facilitates transformation of OpenShift Compliance Operator (OSCO) scan results *.yaml* files into OSCAL partial results *.json* files. Specify required config parameters to indicate the location of the input and the output. Specify optional config parameters to indicate the name of the oscal-metadata.yaml file, if any, and whether overwriting of existing output is permitted.
+The *trestle task xccdf-result-to-oscal-ar* command facilitates transformation of XCCDF results, e.g. OpenShift Compliance Operator (OSCO) scan results, *.yaml* files into OSCAL partial results *.json* files. Specify required config parameters to indicate the location of the input and the output. Specify optional config parameters to indicate the name of the oscal-metadata.yaml file, if any, and whether overwriting of existing output is permitted.
 
 <span style="color:green">
 Example command invocation:
 </span>
 
-`$TRESTLE_BASEDIR$ trestle task osco-result-to-oscal-ar -c /home/user/task.config`
+`$TRESTLE_BASEDIR$ trestle task xccdf-result-to-oscal-ar -c /home/user/task.config`
 
 <span style="color:green">
 Example config:
@@ -578,9 +578,9 @@ Example config:
 */home/user/task.config*
 
 ```conf
-[task.osco-result-to-oscal-ar]
+[task.xccdf-result-to-oscal-ar]
 
-input-dir =  /home/user/git/evidence/osco/input
+input-dir =  /home/user/git/evidence/xccdf/input
 output-dir = /home/user/git/evidence/oscal/output
 oscal-metadata = oscal-metadata.yaml
 output-overwrite = true
@@ -592,7 +592,7 @@ output-overwrite = true
 Example input directory contents listing:
 </span>
 
-*/home/user/git/evidence/osco/input*
+*/home/user/git/evidence/xccdf/input*
 
 ```bash
 -rw-rw-r--. 1 user user  3832 Feb  2 09:36 oscal-metadata.yaml
@@ -666,7 +666,8 @@ metadata:
   name: ssg-ocp4-ds-cis-111.222.333.444-pod
   namespace: openshift-compliance
   resourceVersion: '22693328'
-  selfLink: /api/v1/namespaces/openshift-compliance/configmaps/ssg-ocp4-ds-cis-111.222.333.444-pod
+  selfLink: 
+    /api/v1/namespaces/openshift-compliance/configmaps/ssg-ocp4-ds-cis-111.222.333.444-pod
   uid: 1da3ea81-0a25-4512-ad86-7ac360246b5d
 
 ```
@@ -1324,7 +1325,7 @@ output-overwrite = true
 
 org-name = International Business Machines
 org-remarks = IBM
-namespace = https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud
+namespace = https://oscal-compass.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud
 property-name-to-class = goal_name_id:scc_goal_name_id, goal_version:scc_goal_version
 catalog-url = https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json
 catalog-title = NIST Special Publication 800-53 Revision 4
@@ -1344,7 +1345,7 @@ Example catalog-file:
 Example spread-sheet-file:
 </span>
 
-[/home/user/compliance/data/spread-sheet/good.xlsx](https://github.com/IBM/compliance-trestle/tree/main/tests/data/spread-sheet/good.xlsx)
+[/home/user/compliance/data/spread-sheet/good.xlsx](https://github.com/oscal-compass/compliance-trestle/tree/main/tests/data/spread-sheet/good.xlsx)
 
 **output**
 
@@ -1352,7 +1353,7 @@ Example spread-sheet-file:
 Example component-definition.json:
 </span>
 
-[/home/user/compliance/data/tasks/xlsx/output/component-definition.json](https://github.com/IBM/compliance-trestle/tree/main/tests/data/tasks/xlsx/output/component-definition.json)
+[/home/user/compliance/data/tasks/xlsx/output/component-definition.json](https://github.com/oscal-compass/compliance-trestle/tree/main/tests/data/tasks/xlsx/output/component-definition.json)
 
 ### spreadsheet to component definition mapping
 
@@ -1492,7 +1493,7 @@ profile-title = IBM Best Practices SCC GOALS
 Example spread-sheet-file:
 </span>
 
-[/home/user/compliance/data/spread-sheet/good.xlsx](https://github.com/IBM/compliance-trestle/tree/main/tests/data/spread-sheet/good.xlsx)
+[/home/user/compliance/data/spread-sheet/good.xlsx](https://github.com/oscal-compass/compliance-trestle/tree/main/tests/data/spread-sheet/good.xlsx)
 
 **output**
 
@@ -1500,4 +1501,4 @@ Example spread-sheet-file:
 Example profile.json:
 </span>
 
-[/home/user/compliance/data/tasks/xlsx/output/profile.json](https://github.com/IBM/compliance-trestle/tree/main/tests/data/tasks/xlsx/output/profile.json)
+[/home/user/compliance/data/tasks/xlsx/output/profile.json](https://github.com/oscal-compass/compliance-trestle/tree/main/tests/data/tasks/xlsx/output/profile.json)

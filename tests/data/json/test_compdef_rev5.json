@@ -1,0 +1,127 @@
+{
+  "component-definition": {
+    "uuid": "2652b814-2a6b-4b6d-a0ae-8bc7a007209f",
+    "metadata": {
+      "title": "example FedRAMP component definition",
+      "last-modified": "2021-07-19T14:03:03+00:00",
+      "version": "0.21.0",
+      "oscal-version": "1.0.2",
+      "roles": [
+        {
+          "id": "prepared-by",
+          "title": "Indicates the organization that created this content."
+        },
+        {
+          "id": "prepared-for",
+          "title": "Indicates the organization for which this content was created.."
+        },
+        {
+          "id": "content-approver",
+          "title": "Indicates the organization responsible for all content represented in the \"document\"."
+        }
+      ],
+      "parties": [
+        {
+          "uuid": "ce1f379a-fcdd-485a-a7b7-6f02c0763dd2",
+          "type": "organization",
+          "name": "ACME",
+          "remarks": "ACME company"
+        },
+        {
+          "uuid": "481856b6-16e4-4993-a3ed-2fb242ce235b",
+          "type": "organization",
+          "name": "Customer",
+          "remarks": "Customer for the Component Definition"
+        },
+        {
+          "uuid": "2dc8b17f-daca-44a1-8a1d-c290120ea5e2",
+          "type": "organization",
+          "name": "ISV",
+          "remarks": "ISV for the Component Definition"
+        }
+      ],
+      "responsible-parties": [
+        {
+          "role-id": "prepared-by",
+          "party-uuids": [
+            "ce1f379a-fcdd-485a-a7b7-6f02c0763dd2"
+          ]
+        },
+        {
+          "role-id": "prepared-for",
+          "party-uuids": [
+            "481856b6-16e4-4993-a3ed-2fb242ce235b",
+            "2dc8b17f-daca-44a1-8a1d-c290120ea5e2"
+          ]
+        },
+        {
+          "role-id": "content-approver",
+          "party-uuids": [
+            "ce1f379a-fcdd-485a-a7b7-6f02c0763dd2"
+          ]
+        }
+      ]
+    },
+    "components": [
+      {
+        "uuid": "8220b305-0271-45f9-8a21-40ab6f197f75",
+        "type": "Service",
+        "title": "test_component",
+        "description": "This is a test component",
+        "control-implementations": [
+          {
+            "uuid": "76e89b67-3d6b-463d-90df-ec56a46c6069",
+            "source": "trestle://profiles/full_profile_rev5/profile.json",
+            "description": "trestle comp rev5",
+            "implemented-requirements": [
+              {
+                "uuid": "ca5ea4c5-ba51-4b1d-932a-5606891b7600",
+                "control-id": "sc-21",
+                "description": "imp req prose for sc-21 from test component",
+                "props": [
+                  {
+                    "name": "Rule_Id",
+                    "value": "top_shared_rule_1"
+                  },
+                  {
+                    "name": "implementation-status",
+                    "value": "implemented"
+                  },
+                  {
+                    "name": "control-origination",
+                    "value": "system-specific"
+                  },
+                  {
+                    "name": "control-origination",
+                    "value": "customer-configured"
+                  }
+                ],
+                "responsible-roles": [
+                  {
+                    "role-id": "prepared-by",
+                    "party-uuids": [
+                      "ce1f379a-fcdd-485a-a7b7-6f02c0763dd2"
+                    ]
+                  },
+                  {
+                    "role-id": "prepared-for",
+                    "party-uuids": [
+                      "481856b6-16e4-4993-a3ed-2fb242ce235b",
+                      "2dc8b17f-daca-44a1-8a1d-c290120ea5e2"
+                    ]
+                  },
+                  {
+                    "role-id": "content-approver",
+                    "party-uuids": [
+                      "ce1f379a-fcdd-485a-a7b7-6f02c0763dd2"
+                    ]
+                  }
+                ]
+              }
+            ]
+         }
+        ]
+      }
+    ]
+  }
+}
