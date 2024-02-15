@@ -114,10 +114,11 @@ Please attend! All are invited.
 
 **When**: Every other Tuesday at 10:00 ET [convert to your local time](https://dateful.com/convert/est-edt-eastern-time)
 
-To discover the actual meeting dates, add the meeting to your Google Calendar.
+To discover the actual meeting dates:
 
-1. Go to [Google Calendar](https://calendar.google.com/calendar/u/0/embed?src=0b8u5el8ta4s93t2cm72tuvhhk@group.calendar.google.com&ctz=America/Los_Angeles)
-1. Click at the bottom right where it says `+GoogleCalendar` to add the meetings series
+- Go to [Google Calendar](https://calendar.google.com/calendar/u/0/embed?src=0b8u5el8ta4s93t2cm72tuvhhk@group.calendar.google.com&ctz=America/Los_Angeles)
+- Look at entries in `Tue` day of week for *Compliance Trestle Community Call*
+- To add to your calendar, `click` on `Compliance Trestle Community Call` and choose `copy to my calendar`
 
 **Where**: [https://zoom.us/j/92729235315](https://zoom.us/j/92729235315)
 
