@@ -126,7 +126,7 @@ To discover the actual meeting dates:
 
 - Passcode: 233140
 
-- **Note**: Use the passcode above to login. If you want also you can login to Zoom using another account like Google, Facebook
+- **Note**: Use the passcode above to login to Zoom (or you can login to Zoom using another account like Google, Facebook)
 
 **What**: Meeting agenda and notes [Google Docs](https://docs.google.com/document/d/1z9xvt-Z97j4CtEH1-nR9sMWul7jQkUi_fNY7BdMPgxM/edit#heading=h.nohkp1kbeduj)
 
