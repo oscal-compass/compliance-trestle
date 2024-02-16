@@ -123,6 +123,7 @@ To discover the actual meeting dates:
 **Where**: [https://zoom.us/j/92729235315](https://zoom.us/j/92729235315)
 
 - Meeting Id: 927 2923 5315
+
 - Passcode: 233140
 
 - **Note**: Use the passcode above to login. If you want also you can login to Zoom using another account like Google, Facebook
