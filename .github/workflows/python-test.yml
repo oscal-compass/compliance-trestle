@@ -96,10 +96,13 @@ jobs:
         include:
         - os: ubuntu-latest
           path: ~/.cache/pip
+          python-version: 3.11
         - os: macos-latest
           path: ~/Library/Caches/pip
+          python-version: 3.11
         - os: windows-latest
-          path: ~\AppData\Local\pip\Cache
+          path: ~\AppData\Local\pip\
+          python-version: 3.11
           
     steps:
     - name: Don't mess with line endings
