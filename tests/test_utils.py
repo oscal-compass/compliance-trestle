@@ -460,10 +460,10 @@ def setup_for_ssp(
     prof_name: str,
     output_name: str,
     use_yaml: bool = False,
-    leveraged_ssp_name: str = ''
+    leveraged_ssp_name: str = '',
+    comp_names='comp_def_a,comp_def_b'
 ) -> Tuple[argparse.Namespace, pathlib.Path]:
     """Create the comp_def, profile and catalog content needed for ssp-generate."""
-    comp_names = 'comp_def_a,comp_def_b,comp_def_more_params'
     for comp_name in comp_names.split(','):
         load_from_json(tmp_trestle_dir, comp_name, comp_name, comp.ComponentDefinition)
     prof_name_list = [prof_name]

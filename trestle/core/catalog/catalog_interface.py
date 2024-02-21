@@ -874,12 +874,15 @@ class CatalogInterface():
         """
         context.rules_dict = {}
         context.rules_params_dict = {}
+        comps_uuids = []
         for comp_def_name in context.comp_def_name_list:
             context.comp_def, _ = ModelUtils.load_model_for_class(
                 context.trestle_root,
                 comp_def_name,
                 comp.ComponentDefinition
             )
+            component_uuids = [comp.uuid for comp in context.comp_def.components]
+            comps_uuids.extend(component_uuids)
             for component in as_list(context.comp_def.components):
                 context.component = component
                 context.comp_name = component.title
@@ -896,3 +899,8 @@ class CatalogInterface():
                         for param in params_list:
                             rule_dict = deep_get(context.rules_dict, [param_comp_name, rule_tag], {})
                             param[const.HEADER_RULE_ID] = rule_dict.get(const.NAME, 'unknown_rule')
+        # determine if there are duplicated uuids and throw an exception
+        dup_comp_uuids = set({comp_uuid for comp_uuid in comps_uuids if comps_uuids.count(comp_uuid) > 1})
+        if len(dup_comp_uuids) > 0:
+            # throw an exception if there are repeated component uuids
+            raise TrestleError(f'This component uuid {dup_comp_uuids[0]} is duplicated')
