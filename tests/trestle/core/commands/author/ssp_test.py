@@ -1106,8 +1106,8 @@ def test_ssp_gen_and_assemble_more_than_one_param(tmp_trestle_dir: pathlib.Path,
     assert len(set_params) == 1
 
 
-def test_ssp_gen_throw_execption_for_rep_comps(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
-    """Test ssp generate and assemble with more than 1 parameters per rule."""
+def test_ssp_gen_throw_exception_for_rep_comps(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test ssp generate for duplicated component uuids between diff component definition."""
     gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name, False, '',
                                 'comp_def_more_params,comp_def_more_params_dup')
     # first create the markdown
