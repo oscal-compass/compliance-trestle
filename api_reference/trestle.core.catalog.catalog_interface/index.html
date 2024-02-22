@@ -5489,16 +5489,20 @@ then the catalog controls are updated by pulling from the dict back into the cat
         <span class="n">id_map</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">control</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_controls_from_catalog</span><span class="p">(</span><span class="kc">True</span><span class="p">):</span>
             <span class="n">statement_part</span> <span class="o">=</span> <span class="n">get_item_from_list</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">parts</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">STATEMENT</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">statement_part</span><span class="p">:</span>
-                <span class="n">id_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-                <span class="k">for</span> <span class="n">sub_part</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">statement_part</span><span class="o">.</span><span class="n">parts</span><span class="p">):</span>
-                    <span class="n">label</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">get_label</span><span class="p">(</span><span class="n">sub_part</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">label_as_key</span><span class="p">:</span>
-                        <span class="n">id_dict</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">sub_part</span><span class="o">.</span><span class="n">id</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">id_dict</span><span class="p">[</span><span class="n">sub_part</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">label</span>
-                <span class="k">if</span> <span class="n">id_dict</span><span class="p">:</span>
-                    <span class="n">id_map</span><span class="p">[</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_dict</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">statement_part</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">id_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">sub_part</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">statement_part</span><span class="o">.</span><span class="n">parts</span><span class="p">):</span>
+                <span class="n">label</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">get_label</span><span class="p">(</span><span class="n">sub_part</span><span class="p">)</span>
+                <span class="c1"># skip add to map for empty label</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">label</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="n">label_as_key</span><span class="p">:</span>
+                    <span class="n">id_dict</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">sub_part</span><span class="o">.</span><span class="n">id</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">id_dict</span><span class="p">[</span><span class="n">sub_part</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">label</span>
+            <span class="k">if</span> <span class="n">id_dict</span><span class="p">:</span>
+                <span class="n">id_map</span><span class="p">[</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_dict</span>
         <span class="k">return</span> <span class="n">id_map</span>
 
     <span class="nd">@staticmethod</span>
@@ -5939,16 +5943,17 @@ then the catalog controls are updated by pulling from the dict back into the cat
             <span class="n">rules_params</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="n">rules_param_names</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">comp_name</span><span class="p">,</span> <span class="n">rules_params_dict</span> <span class="ow">in</span> <span class="n">as_dict</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">rules_params_dict</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">for</span> <span class="n">rule_id</span><span class="p">,</span> <span class="n">rules_param</span> <span class="ow">in</span> <span class="n">rules_params_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">rule_id</span><span class="p">,</span> <span class="n">rules_parameters</span> <span class="ow">in</span> <span class="n">rules_params_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                     <span class="k">if</span> <span class="n">rule_id</span> <span class="ow">in</span> <span class="n">rule_ids</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">comp_name</span><span class="p">,</span> <span class="p">[]):</span>
-                        <span class="n">param_name</span> <span class="o">=</span> <span class="n">rules_param</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
-                        <span class="n">rules_param_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">param_name</span><span class="p">)</span>
-                        <span class="n">rules_param</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">HEADER_RULE_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">rule_id_rule_name_map</span><span class="p">[</span><span class="n">comp_name</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rule_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-                        <span class="n">deep_append</span><span class="p">(</span><span class="n">rules_params</span><span class="p">,</span> <span class="p">[</span><span class="n">comp_name</span><span class="p">],</span> <span class="n">rules_param</span><span class="p">)</span>
-                        <span class="n">deep_set</span><span class="p">(</span>
-                            <span class="n">param_id_rule_name_map</span><span class="p">,</span> <span class="p">[</span><span class="n">comp_name</span><span class="p">,</span> <span class="n">rules_param</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]],</span>
-                            <span class="n">rule_id_rule_name_map</span><span class="p">[</span><span class="n">comp_name</span><span class="p">][</span><span class="n">rule_id</span><span class="p">]</span>
-                        <span class="p">)</span>
+                        <span class="k">for</span> <span class="n">rule_parameter</span> <span class="ow">in</span> <span class="n">rules_parameters</span><span class="p">:</span>
+                            <span class="n">param_name</span> <span class="o">=</span> <span class="n">rule_parameter</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+                            <span class="n">rules_param_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">param_name</span><span class="p">)</span>
+                            <span class="n">rule_parameter</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">HEADER_RULE_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">rule_id_rule_name_map</span><span class="p">[</span><span class="n">comp_name</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rule_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                            <span class="n">deep_append</span><span class="p">(</span><span class="n">rules_params</span><span class="p">,</span> <span class="p">[</span><span class="n">comp_name</span><span class="p">],</span> <span class="n">rule_parameter</span><span class="p">)</span>
+                            <span class="n">deep_set</span><span class="p">(</span>
+                                <span class="n">param_id_rule_name_map</span><span class="p">,</span> <span class="p">[</span><span class="n">comp_name</span><span class="p">,</span> <span class="n">rule_parameter</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]],</span>
+                                <span class="n">rule_id_rule_name_map</span><span class="p">[</span><span class="n">comp_name</span><span class="p">][</span><span class="n">rule_id</span><span class="p">]</span>
+                            <span class="p">)</span>
             <span class="n">set_or_pop</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">RULES_PARAMS_TAG</span><span class="p">,</span> <span class="n">rules_params</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_extend_rules_param_list</span><span class="p">(</span><span class="n">control_id</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">param_id_rule_name_map</span><span class="p">)</span>
@@ -6060,12 +6065,15 @@ then the catalog controls are updated by pulling from the dict back into the cat
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">context</span><span class="o">.</span><span class="n">rules_dict</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">context</span><span class="o">.</span><span class="n">rules_params_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">comps_uuids</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">comp_def_name</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">comp_def_name_list</span><span class="p">:</span>
             <span class="n">context</span><span class="o">.</span><span class="n">comp_def</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">load_model_for_class</span><span class="p">(</span>
                 <span class="n">context</span><span class="o">.</span><span class="n">trestle_root</span><span class="p">,</span>
                 <span class="n">comp_def_name</span><span class="p">,</span>
                 <span class="n">comp</span><span class="o">.</span><span class="n">ComponentDefinition</span>
             <span class="p">)</span>
+            <span class="n">component_uuids</span> <span class="o">=</span> <span class="p">[</span><span class="n">comp</span><span class="o">.</span><span class="n">uuid</span> <span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">comp_def</span><span class="o">.</span><span class="n">components</span><span class="p">]</span>
+            <span class="n">comps_uuids</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">component_uuids</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">comp_def</span><span class="o">.</span><span class="n">components</span><span class="p">):</span>
                 <span class="n">context</span><span class="o">.</span><span class="n">component</span> <span class="o">=</span> <span class="n">component</span>
                 <span class="n">context</span><span class="o">.</span><span class="n">comp_name</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">title</span>
@@ -6078,9 +6086,17 @@ then the catalog controls are updated by pulling from the dict back into the cat
                     <span class="bp">self</span><span class="o">.</span><span class="n">_add_control_imp_comp_info</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">part_id_map</span><span class="p">,</span> <span class="n">comp_rules_props</span><span class="p">)</span>
                 <span class="c1"># add the rule_id to the param_dict</span>
                 <span class="k">for</span> <span class="n">param_comp_name</span><span class="p">,</span> <span class="n">rule_param_dict</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">rules_params_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="k">for</span> <span class="n">rule_tag</span><span class="p">,</span> <span class="n">param_dict</span> <span class="ow">in</span> <span class="n">rule_param_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                        <span class="n">rule_dict</span> <span class="o">=</span> <span class="n">deep_get</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">rules_dict</span><span class="p">,</span> <span class="p">[</span><span class="n">param_comp_name</span><span class="p">,</span> <span class="n">rule_tag</span><span class="p">],</span> <span class="p">{})</span>
-                        <span class="n">param_dict</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">HEADER_RULE_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">rule_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">NAME</span><span class="p">,</span> <span class="s1">&#39;unknown_rule&#39;</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">rule_tag</span><span class="p">,</span> <span class="n">params_list</span> <span class="ow">in</span> <span class="n">rule_param_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">params_list</span><span class="p">:</span>
+                            <span class="n">rule_dict</span> <span class="o">=</span> <span class="n">deep_get</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">rules_dict</span><span class="p">,</span> <span class="p">[</span><span class="n">param_comp_name</span><span class="p">,</span> <span class="n">rule_tag</span><span class="p">],</span> <span class="p">{})</span>
+                            <span class="n">param</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">HEADER_RULE_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">rule_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">NAME</span><span class="p">,</span> <span class="s1">&#39;unknown_rule&#39;</span><span class="p">)</span>
+        <span class="c1"># determine if there are duplicated uuids and throw an exception</span>
+        <span class="n">dup_comp_uuids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">({</span><span class="n">comp_uuid</span> <span class="k">for</span> <span class="n">comp_uuid</span> <span class="ow">in</span> <span class="n">comps_uuids</span> <span class="k">if</span> <span class="n">comps_uuids</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">comp_uuid</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">})</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dup_comp_uuids</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># throw an exception if there are repeated component uuids</span>
+            <span class="k">for</span> <span class="n">comp_uuid</span> <span class="ow">in</span> <span class="n">dup_comp_uuids</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Component uuid </span><span class="si">{</span><span class="w"> </span><span class="n">comp_uuid</span><span class="w"> </span><span class="si">}</span><span class="s1"> is duplicated&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Component uuids cannot be duplicated between different component definitions&#39;</span><span class="p">)</span>
 </code></pre></div>
         </details>
 
@@ -6709,12 +6725,15 @@ control: the control itself</p>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">context</span><span class="o">.</span><span class="n">rules_dict</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">context</span><span class="o">.</span><span class="n">rules_params_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">comps_uuids</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">comp_def_name</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">comp_def_name_list</span><span class="p">:</span>
         <span class="n">context</span><span class="o">.</span><span class="n">comp_def</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">load_model_for_class</span><span class="p">(</span>
             <span class="n">context</span><span class="o">.</span><span class="n">trestle_root</span><span class="p">,</span>
             <span class="n">comp_def_name</span><span class="p">,</span>
             <span class="n">comp</span><span class="o">.</span><span class="n">ComponentDefinition</span>
         <span class="p">)</span>
+        <span class="n">component_uuids</span> <span class="o">=</span> <span class="p">[</span><span class="n">comp</span><span class="o">.</span><span class="n">uuid</span> <span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">comp_def</span><span class="o">.</span><span class="n">components</span><span class="p">]</span>
+        <span class="n">comps_uuids</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">component_uuids</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">comp_def</span><span class="o">.</span><span class="n">components</span><span class="p">):</span>
             <span class="n">context</span><span class="o">.</span><span class="n">component</span> <span class="o">=</span> <span class="n">component</span>
             <span class="n">context</span><span class="o">.</span><span class="n">comp_name</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">title</span>
@@ -6727,9 +6746,17 @@ control: the control itself</p>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_add_control_imp_comp_info</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">part_id_map</span><span class="p">,</span> <span class="n">comp_rules_props</span><span class="p">)</span>
             <span class="c1"># add the rule_id to the param_dict</span>
             <span class="k">for</span> <span class="n">param_comp_name</span><span class="p">,</span> <span class="n">rule_param_dict</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">rules_params_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">for</span> <span class="n">rule_tag</span><span class="p">,</span> <span class="n">param_dict</span> <span class="ow">in</span> <span class="n">rule_param_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="n">rule_dict</span> <span class="o">=</span> <span class="n">deep_get</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">rules_dict</span><span class="p">,</span> <span class="p">[</span><span class="n">param_comp_name</span><span class="p">,</span> <span class="n">rule_tag</span><span class="p">],</span> <span class="p">{})</span>
-                    <span class="n">param_dict</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">HEADER_RULE_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">rule_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">NAME</span><span class="p">,</span> <span class="s1">&#39;unknown_rule&#39;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">rule_tag</span><span class="p">,</span> <span class="n">params_list</span> <span class="ow">in</span> <span class="n">rule_param_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">params_list</span><span class="p">:</span>
+                        <span class="n">rule_dict</span> <span class="o">=</span> <span class="n">deep_get</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">rules_dict</span><span class="p">,</span> <span class="p">[</span><span class="n">param_comp_name</span><span class="p">,</span> <span class="n">rule_tag</span><span class="p">],</span> <span class="p">{})</span>
+                        <span class="n">param</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">HEADER_RULE_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">rule_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">NAME</span><span class="p">,</span> <span class="s1">&#39;unknown_rule&#39;</span><span class="p">)</span>
+    <span class="c1"># determine if there are duplicated uuids and throw an exception</span>
+    <span class="n">dup_comp_uuids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">({</span><span class="n">comp_uuid</span> <span class="k">for</span> <span class="n">comp_uuid</span> <span class="ow">in</span> <span class="n">comps_uuids</span> <span class="k">if</span> <span class="n">comps_uuids</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">comp_uuid</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">})</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dup_comp_uuids</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># throw an exception if there are repeated component uuids</span>
+        <span class="k">for</span> <span class="n">comp_uuid</span> <span class="ow">in</span> <span class="n">dup_comp_uuids</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Component uuid </span><span class="si">{</span><span class="w"> </span><span class="n">comp_uuid</span><span class="w"> </span><span class="si">}</span><span class="s1"> is duplicated&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Component uuids cannot be duplicated between different component definitions&#39;</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -7609,16 +7636,20 @@ to the dict and need to be inserted in the actual catalog during update.</p>
     <span class="n">id_map</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">control</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_controls_from_catalog</span><span class="p">(</span><span class="kc">True</span><span class="p">):</span>
         <span class="n">statement_part</span> <span class="o">=</span> <span class="n">get_item_from_list</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">parts</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">STATEMENT</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">statement_part</span><span class="p">:</span>
-            <span class="n">id_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="k">for</span> <span class="n">sub_part</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">statement_part</span><span class="o">.</span><span class="n">parts</span><span class="p">):</span>
-                <span class="n">label</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">get_label</span><span class="p">(</span><span class="n">sub_part</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">label_as_key</span><span class="p">:</span>
-                    <span class="n">id_dict</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">sub_part</span><span class="o">.</span><span class="n">id</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">id_dict</span><span class="p">[</span><span class="n">sub_part</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">label</span>
-            <span class="k">if</span> <span class="n">id_dict</span><span class="p">:</span>
-                <span class="n">id_map</span><span class="p">[</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_dict</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">statement_part</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">id_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">sub_part</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">statement_part</span><span class="o">.</span><span class="n">parts</span><span class="p">):</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">get_label</span><span class="p">(</span><span class="n">sub_part</span><span class="p">)</span>
+            <span class="c1"># skip add to map for empty label</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">label</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">label_as_key</span><span class="p">:</span>
+                <span class="n">id_dict</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">sub_part</span><span class="o">.</span><span class="n">id</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">id_dict</span><span class="p">[</span><span class="n">sub_part</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">label</span>
+        <span class="k">if</span> <span class="n">id_dict</span><span class="p">:</span>
+            <span class="n">id_map</span><span class="p">[</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_dict</span>
     <span class="k">return</span> <span class="n">id_map</span>
 </code></pre></div>
         </details>
