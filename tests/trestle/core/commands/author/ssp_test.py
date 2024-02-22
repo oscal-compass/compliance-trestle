@@ -1055,3 +1055,61 @@ def test_ssp_assemble_no_comps(tmp_trestle_dir: pathlib.Path, capsys) -> None:
     _, err = capsys.readouterr()
     assert 'Control ac-1 references component Bad Component not defined' in err
     assert 'Please specify the names of any component-definitions' in err
+
+
+def test_ssp_gen_and_assemble_more_than_one_param(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test ssp generate and assemble with more than 1 parameters per rule."""
+    gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name, False, '', 'comp_def_more_params')
+    args_compdefs = gen_args.compdefs
+
+    # first create the markdown
+    ssp_gen = SSPGenerate()
+    assert ssp_gen._run(gen_args) == 0
+    new_version = '1.2.3'
+
+    md_path = tmp_trestle_dir / ssp_name / 'ac' / 'ac-1.md'
+    assert md_path.exists()
+
+    md_api = MarkdownAPI()
+    header, tree = md_api.processor.process_markdown(md_path)
+    rule_parameters = header['x-trestle-comp-def-rules-param-vals']['comp_ca']
+    rule_parameters.append({'name': 'allowed_admins_per_account2', 'values': ['20']})
+
+    md_api.write_markdown_with_header(md_path, header, tree.content.raw_text)
+
+    # verifies a second parameter has beend added to the top shared rule
+    assert header['x-trestle-rules-params']['comp_ca'][1]['name'] == 'allowed_admins_per_account2'
+
+    # verifies the parameter value for the rule has been written down correctly in the markdown file
+    assert header['x-trestle-comp-def-rules-param-vals']['comp_ca'][1]['values'] == ['20']
+
+    # now assemble controls into json ssp
+    ssp_assemble = SSPAssemble()
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        markdown=ssp_name,
+        output=ssp_name,
+        verbose=0,
+        regenerate=False,
+        version=new_version,
+        name=None,
+        compdefs=args_compdefs
+    )
+    assert ssp_assemble._run(args) == 0
+
+    assem_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+    set_parameters = assem_ssp.control_implementation.implemented_requirements[0].by_components[0].set_parameters
+    set_params = [
+        set_param.param_id for set_param in set_parameters if set_param.param_id == 'allowed_admins_per_account2'
+    ]
+    # this demonstrates there's only one iteration of the parameter and not being repeated
+    assert len(set_params) == 1
+
+
+def test_ssp_gen_throw_exception_for_rep_comps(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test ssp generate for duplicated component uuids between diff component definition."""
+    gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name, False, '',
+                                'comp_def_more_params,comp_def_more_params_dup')
+    # first create the markdown
+    ssp_gen = SSPGenerate()
+    assert ssp_gen._run(gen_args) == 1
