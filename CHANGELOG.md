@@ -3,6 +3,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.6.1 (2024-02-22)
+### Fix
+* Correct vuln for cryptography ([#1520](https://github.com/oscal-compass/compliance-trestle/issues/1520)) ([`353cc2b`](https://github.com/oscal-compass/compliance-trestle/commit/353cc2b75e611b9d851cca2022f4e0fbe2936d16))
+
 ## v2.6.0 (2024-02-22)
 ### Feature
 * Multiple parms per rule ([#1499](https://github.com/oscal-compass/compliance-trestle/issues/1499)) ([`218ffe4`](https://github.com/oscal-compass/compliance-trestle/commit/218ffe47a879e8bbca115bd956cfc9e99bbc5751))
