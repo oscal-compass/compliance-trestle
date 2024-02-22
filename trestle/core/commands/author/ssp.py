@@ -320,9 +320,11 @@ class SSPAssemble(AuthorCommonCommand):
         # find param_ids needed by rules
         for rule_id in rules_list:
             # get list of param_ids associated with this rule_id
-            param_ids = [param['name'] for param in rule_dict.values() if param['rule-id'] == rule_id]
+            param_ids = [
+                param['name'] for params in rule_dict.values() for param in params if param['rule-id'] == rule_id
+            ]
             needed_param_ids.update(param_ids)
-        all_rule_param_ids = [param['name'] for param in rule_dict.values()]
+        all_rule_param_ids = [param['name'] for params in rule_dict.values() for param in params]
         # any set_param that isn't associated with a rule should be included as a normal control set param with no rule
         for set_param in set_params:
             if set_param.param_id not in all_rule_param_ids:

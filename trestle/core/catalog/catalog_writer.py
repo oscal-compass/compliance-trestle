@@ -235,9 +235,10 @@ class CatalogWriter():
         """Merge info in the rules params dict and the rules param vals dict."""
         for comp_name, comp_dict in context.rules_params_dict.items():
             rules_dict = context.rules_dict.get(comp_name, {})
-            for rule_id, param_dict in comp_dict.items():
-                rule_name = deep_get(rules_dict, [rule_id, 'name'], 'unknown_rule_name')
-                param_dict[const.HEADER_RULE_ID] = rule_name
+            for rule_id, params_list in comp_dict.items():
+                for param in params_list:
+                    rule_name = deep_get(rules_dict, [rule_id, 'name'], 'unknown_rule_name')
+                    param[const.HEADER_RULE_ID] = rule_name
 
     def write_catalog_as_ssp_markdown(self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]]) -> None:
         """
@@ -340,13 +341,13 @@ class CatalogWriter():
         # get top level rule info applying to all controls
         comp_rules_dict, comp_rules_params_dict, _ = ControlInterface.get_rules_and_params_dict_from_item(context.component)  # noqa E501
         context.rules_dict[context.comp_name] = comp_rules_dict
-        context.rules_params_dict.update(comp_rules_params_dict)
+        context.rules_params_dict[context.comp_name] = comp_rules_params_dict
         for control_imp in as_list(context.component.control_implementations):
             control_imp_rules_dict, control_imp_rules_params_dict, _ = ControlInterface.get_rules_and_params_dict_from_item(control_imp)  # noqa E501
             context.rules_dict[context.comp_name].update(control_imp_rules_dict)
             comp_rules_params_dict = context.rules_params_dict.get(context.comp_name, {})
             comp_rules_params_dict.update(control_imp_rules_params_dict)
-            context.rules_params_dict[context.comp_name] = comp_rules_params_dict
+            context.rules_params_dict[context.comp_name].update(comp_rules_params_dict)
             ci_set_params = ControlInterface.get_set_params_from_item(control_imp)
             for imp_req in as_list(control_imp.implemented_requirements):
                 control_part_id_map = part_id_map.get(imp_req.control_id, {})

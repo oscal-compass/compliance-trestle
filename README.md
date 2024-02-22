@@ -106,38 +106,35 @@ A collection of demos utilizing trestle can be found in the related project [com
 
 Compliance trestle is currently stable and is based on NIST OSCAL version 1.0.4, with active development continuing.
 
-## Community call
+## Community meetings and communications
 
-We would like to share development in progress for compliance trestle, coming soon and get feedback from community on what features would they like to see in compliance trestle.\
-The community call will happen every 2 week(s) on Tuesday at 10.00am EST.\
-Meeting information:
+##### Scheduled meetings
 
-```
-Compliance Trestle Community Call
+Please attend! All are invited.
 
-Join from the meeting link
-https://ibm.webex.com/ibm/j.php?MTID=m030fdef5ac2d09f46f04813bb5e9dc6b
-Tuesday, September 5, 2023 10:00 AM | 30 minutes | (UTC-04:00) Eastern Time (US & Canada)
-Occurs every 2 week(s) on Tuesday effective 9/5/2023 from 10:00 AM to 10:30 AM, (UTC-04:00) Eastern Time (US & Canada)
- 
-Join by meeting number
-Meeting number (access code): 146 967 4515
- 
-Tap to join from a mobile device (attendees only)
-1-844-531-0958,,1469674515#43533276# United States Toll Free
-+1-669-234-1178,,1469674515#43533276# United States Toll
-Some mobile devices may ask attendees to enter a numeric password.
- 
-Join by phone
-1-844-531-0958 United States Toll Free
-1-669-234-1178 United States Toll
-Global call-in numbers  |  Toll-free calling restrictions
- 
-Join from a video system or application
-Dial 1469674515@ibm.webex.com
-You can also dial 173.243.2.68 and enter your meeting number.
+**When**: Every other Tuesday at 10:00 ET [convert to your local time](https://dateful.com/convert/est-edt-eastern-time)
 
-```
+To discover the actual meeting dates:
+
+- Go to [Google Calendar](https://calendar.google.com/calendar/u/0/embed?src=0b8u5el8ta4s93t2cm72tuvhhk@group.calendar.google.com&ctz=America/Los_Angeles)
+- Look at entries in `Tue` day of week for *Compliance Trestle Community Call*
+- To add to your calendar, `click` on `Compliance Trestle Community Call` and choose `copy to my calendar`
+
+**Where**: [https://zoom.us/j/92729235315](https://zoom.us/j/92729235315)
+
+- Meeting Id: 927 2923 5315
+
+- Passcode: 233140
+
+- **Note**: Use the passcode above to login to Zoom (or you can login to Zoom using another account like Google, Facebook)
+
+**What**: Meeting agenda and notes [Google Docs](https://docs.google.com/document/d/1z9xvt-Z97j4CtEH1-nR9sMWul7jQkUi_fNY7BdMPgxM/edit#heading=h.nohkp1kbeduj)
+
+##### Chat anytime
+
+Slack: [# compliance-grc](https://cloud-native.slack.com/archives/C066TMUBEL8)
+
+- **Note**: You can login to Slack using another account like Google, Apple
 
 ## Contributing to Trestle
 
