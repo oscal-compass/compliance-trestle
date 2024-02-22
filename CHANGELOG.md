@@ -3,6 +3,16 @@
 
 <!--next-version-placeholder-->
 
+## v2.6.0 (2024-02-22)
+### Feature
+* Multiple parms per rule ([#1499](https://github.com/oscal-compass/compliance-trestle/issues/1499)) ([`218ffe4`](https://github.com/oscal-compass/compliance-trestle/commit/218ffe47a879e8bbca115bd956cfc9e99bbc5751))
+
+### Fix
+* Add multiple parameters per rule support on component definition ([#1504](https://github.com/oscal-compass/compliance-trestle/issues/1504)) ([`96e3f02`](https://github.com/oscal-compass/compliance-trestle/commit/96e3f02fc597ded59ed11f5bd2b07aa2c0ccb504))
+* Community call ([#1516](https://github.com/oscal-compass/compliance-trestle/issues/1516)) ([`53d7fd4`](https://github.com/oscal-compass/compliance-trestle/commit/53d7fd484bdd42e22ff58e3244da732835c2cfea))
+* Correct vulnerability ([#1509](https://github.com/oscal-compass/compliance-trestle/issues/1509)) ([`4f70e0a`](https://github.com/oscal-compass/compliance-trestle/commit/4f70e0af0e4063ac3cd763ff0c7e319168c0d805))
+* Add check for empty label to fix failure for statement with no label property ([#1507](https://github.com/oscal-compass/compliance-trestle/issues/1507)) ([`55ed462`](https://github.com/oscal-compass/compliance-trestle/commit/55ed462107d577efc9099b8ed59c5718eee9e47c))
+
 ## v2.5.1 (2024-01-18)
 ### Fix
 * Correct security vulnerability ([#1498](https://github.com/oscal-compass/compliance-trestle/issues/1498)) ([`e23792c`](https://github.com/oscal-compass/compliance-trestle/commit/e23792cb1cde490fa2951866c9f99f9d43e9c669))
