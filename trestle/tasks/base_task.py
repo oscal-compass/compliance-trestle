@@ -39,7 +39,7 @@ class TaskBase(ABC):
     Abstract base class for tasks.
 
     Attributes:
-        name: Name of the task.
+        name: test Name of the task.
     """
 
     name: str = 'base'
