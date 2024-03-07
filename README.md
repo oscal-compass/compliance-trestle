@@ -120,13 +120,9 @@ To discover the actual meeting dates:
 - Look at entries in `Tue` day of week for *Compliance Trestle Community Call*
 - To add to your calendar, `click` on `Compliance Trestle Community Call` and choose `copy to my calendar`
 
-**Where**: [https://zoom.us/j/92729235315](https://zoom.us/j/92729235315)
+**Where**: [https://zoom.us/j/92729235315?pwd=ZFIxU3RSanlVODh4a1g2SFdJOGpoZz09](https://zoom.us/j/92729235315?pwd=ZFIxU3RSanlVODh4a1g2SFdJOGpoZz09)
 
 - Meeting Id: 927 2923 5315
-
-- Passcode: 233140
-
-- **Note**: Use the passcode above to login to Zoom (or you can login to Zoom using another account like Google, Facebook)
 
 **What**: Meeting agenda and notes [Google Docs](https://docs.google.com/document/d/1z9xvt-Z97j4CtEH1-nR9sMWul7jQkUi_fNY7BdMPgxM/edit#heading=h.nohkp1kbeduj)
 
