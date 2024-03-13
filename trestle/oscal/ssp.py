@@ -45,27 +45,31 @@ class AdjustmentJustification(OscalBaseModel):
     )
 
 
-class State1(Enum):
+class Status1(OscalBaseModel):
     """
-    The operational status.
-    """
-
-    under_development = 'under-development'
-    operational = 'operational'
-    disposition = 'disposition'
-    other = 'other'
-
-
-class State(Enum):
-    """
-    The current operating status.
+    Describes the operational status of the system.
     """
 
-    operational = 'operational'
-    under_development = 'under-development'
-    under_major_modification = 'under-major-modification'
-    disposition = 'disposition'
-    other = 'other'
+    class Config:
+        extra = Extra.forbid
+
+    state: constr(regex=r'^\S(.*\S)?$') = Field(..., description='The current operating status.', title='State')
+    remarks: Optional[str] = None
+
+
+class Status(OscalBaseModel):
+    """
+    Describes the operational status of the system component.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    state: constr(
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+    ) = Field(..., description='The operational status.', title='State')
+    remarks: Optional[str] = None
 
 
 class SetParameter(OscalBaseModel):
@@ -267,15 +271,6 @@ class Inherited(OscalBaseModel):
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
 
 
-class InformationTypeId(OscalBaseModel):
-    __root__: constr(regex=r'^\S(.*\S)?$') = Field(
-        ...,
-        description=
-        'A human-oriented, globally unique identifier qualified by the given identification system used, such as NIST SP 800-60. This identifier has cross-instance scope and can be used to reference this system elsewhere in this or other OSCAL instances. This id should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
-        title='Information Type Systematized Identifier',
-    )
-
-
 class ImportProfile(OscalBaseModel):
     """
     Used to import the OSCAL profile representing the system's control baseline.
@@ -336,11 +331,15 @@ class Diagram(OscalBaseModel):
     remarks: Optional[str] = None
 
 
-class DateAuthorized(OscalBaseModel):
+class DateDatatype(OscalBaseModel):
     __root__: constr(
         regex=
-        r'^((2000|2400|2800|(19|2[0-9](0[48]|[2468][048]|[13579][26])))-02-29)|(((19|2[0-9])[0-9]{2})-02-(0[1-9]|1[0-9]|2[0-8]))|(((19|2[0-9])[0-9]{2})-(0[13578]|10|12)-(0[1-9]|[12][0-9]|3[01]))|(((19|2[0-9])[0-9]{2})-(0[469]|11)-(0[1-9]|[12][0-9]|30))(Z|[+-][0-9]{2}:[0-9]{2})?$'
-    ) = Field(
+        r'^(((2000|2400|2800|(19|2[0-9](0[48]|[2468][048]|[13579][26])))-02-29)|(((19|2[0-9])[0-9]{2})-02-(0[1-9]|1[0-9]|2[0-8]))|(((19|2[0-9])[0-9]{2})-(0[13578]|10|12)-(0[1-9]|[12][0-9]|3[01]))|(((19|2[0-9])[0-9]{2})-(0[469]|11)-(0[1-9]|[12][0-9]|30)))(Z|[+-][0-9]{2}:[0-9]{2})?$'
+    )
+
+
+class DateAuthorized(OscalBaseModel):
+    __root__: DateDatatype = Field(
         ...,
         description='The date the system received its authorization.',
         title='System Authorization Date',
@@ -379,7 +378,7 @@ class Categorization(OscalBaseModel):
         description='Specifies the information type identification system used.',
         title='Information Type Identification System',
     )
-    information_type_ids: Optional[List[InformationTypeId]] = Field(None, alias='information-type-ids')
+    information_type_ids: Optional[List[constr(regex=r'^\S(.*\S)?$')]] = Field(None, alias='information-type-ids')
 
 
 class ByComponent(OscalBaseModel):
@@ -435,21 +434,6 @@ class Base(OscalBaseModel):
     )
 
 
-class AvailabilityImpact(OscalBaseModel):
-    """
-    The expected level of impact resulting from the disruption of access to or use of the described information or the information system.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    props: Optional[List[common.Property]] = Field(None)
-    links: Optional[List[common.Link]] = Field(None)
-    base: Base
-    selected: Optional[Selected] = None
-    adjustment_justification: Optional[AdjustmentJustification] = Field(None, alias='adjustment-justification')
-
-
 class AuthorizationBoundary(OscalBaseModel):
     """
     A description of this system's authorization boundary, optionally supplemented by diagrams that illustrate the authorization boundary.
@@ -466,30 +450,6 @@ class AuthorizationBoundary(OscalBaseModel):
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     diagrams: Optional[List[Diagram]] = Field(None)
-    remarks: Optional[str] = None
-
-
-class Status1(OscalBaseModel):
-    """
-    Describes the operational status of the system.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    state: State = Field(..., description='The current operating status.', title='State')
-    remarks: Optional[str] = None
-
-
-class Status(OscalBaseModel):
-    """
-    Describes the operational status of the system component.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    state: State1 = Field(..., description='The operational status.', title='State')
     remarks: Optional[str] = None
 
 
@@ -596,7 +556,7 @@ class ImplementedRequirement(OscalBaseModel):
         ...,
         alias='control-id',
         description=
-        'A human-oriented identifier reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).',
+        'A reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).',
         title='Control Identifier Reference',
     )
     props: Optional[List[common.Property]] = Field(None)
@@ -697,24 +657,9 @@ class SystemImplementation(OscalBaseModel):
     remarks: Optional[str] = None
 
 
-class IntegrityImpact(OscalBaseModel):
+class Impact(OscalBaseModel):
     """
-    The expected level of impact resulting from the unauthorized modification of the described information.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    props: Optional[List[common.Property]] = Field(None)
-    links: Optional[List[common.Link]] = Field(None)
-    base: Base
-    selected: Optional[Selected] = None
-    adjustment_justification: Optional[AdjustmentJustification] = Field(None, alias='adjustment-justification')
-
-
-class ConfidentialityImpact(OscalBaseModel):
-    """
-    The expected level of impact resulting from the unauthorized disclosure of the described information.
+    The expected level of impact resulting from the described information.
     """
 
     class Config:
@@ -757,27 +702,9 @@ class InformationType(OscalBaseModel):
     categorizations: Optional[List[Categorization]] = Field(None)
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
-    confidentiality_impact: ConfidentialityImpact = Field(
-        ...,
-        alias='confidentiality-impact',
-        description=
-        'The expected level of impact resulting from the unauthorized disclosure of the described information.',
-        title='Confidentiality Impact Level',
-    )
-    integrity_impact: IntegrityImpact = Field(
-        ...,
-        alias='integrity-impact',
-        description=
-        'The expected level of impact resulting from the unauthorized modification of the described information.',
-        title='Integrity Impact Level',
-    )
-    availability_impact: AvailabilityImpact = Field(
-        ...,
-        alias='availability-impact',
-        description=
-        'The expected level of impact resulting from the disruption of access to or use of the described information or the information system.',
-        title='Availability Impact Level',
-    )
+    confidentiality_impact: Optional[Impact] = Field(None, alias='confidentiality-impact')
+    integrity_impact: Optional[Impact] = Field(None, alias='integrity-impact')
+    availability_impact: Optional[Impact] = Field(None, alias='availability-impact')
 
 
 class SystemInformation(OscalBaseModel):
@@ -837,7 +764,7 @@ class SystemCharacteristics(OscalBaseModel):
 
 class SystemSecurityPlan(OscalBaseModel):
     """
-    A system security plan, such as those described in NIST SP 800-18
+    A system security plan, such as those described in NIST SP 800-18.
     """
 
     class Config:
