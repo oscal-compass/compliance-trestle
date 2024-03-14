@@ -94,7 +94,7 @@ def generate_models():
     out_init = out_dir / '__init__.py'
     out_init.touch(exist_ok=True)
 
-    in_dir = Path('nist-source/json/schema')
+    in_dir = Path('release-1.1.2-schemas')
     for full_name in in_dir.glob('oscal_*_schema.json'):
         if 'complete' in str(full_name):
             continue

@@ -640,3 +640,17 @@ SATISFIED_STATEMENT_DESCRIPTION = 'Satisfied Statement Description'
 ADDED_BY_CONTROL_OWNER = 'Added by control owner'
 
 REPLACE_ME_PLACEHOLDER = '<REPLACE_ME>'
+
+KEEP = 'keep'
+
+MERGE = 'merge'
+
+BEFORE = 'before'
+
+AFTER = 'after'
+
+STARTING = 'starting'
+
+ENDING = 'ending'
+
+USE_FIRST = 'use-first'

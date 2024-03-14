@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
 #
 #
 ####### DO NOT EDIT DO NOT EDIT DO NOT EDIT DO NOT EDIT DO NOT EDIT ######
@@ -36,27 +37,45 @@ from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
 import trestle.oscal.common as common
 
 
-class Control(OscalBaseModel):
+class TypeEnum1(Enum):
+    home = 'home'
+    work = 'work'
+
+
+class TypeEnum(Enum):
+    home = 'home'
+    office = 'office'
+    mobile = 'mobile'
+
+
+class TelephoneNumber(OscalBaseModel):
     """
-    A structured information object representing a security or privacy control. Each security or privacy control within the Catalog is defined by a distinct control instance.
+    A telephone service number as defined by ITU-T E.164.
     """
 
     class Config:
         extra = Extra.forbid
 
-    id: constr(
-        regex=
-        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    ) = Field(
+    type: Optional[Union[constr(regex=r'^\S(.*\S)?$'), TypeEnum]] = Field(
+        None, description='Indicates the type of phone number.', title='type flag'
+    )
+    number: constr(regex=r'^\S(.*\S)?$')
+
+
+class Control(OscalBaseModel):
+    """
+    A structured object representing a requirement or guideline, which when implemented will reduce an aspect of risk related to an information system and its information.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    id: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') = Field(
         ...,
-        description=
-        'A human-oriented, locally unique identifier with instance scope that can be used to reference this control elsewhere in this and other OSCAL instances (e.g., profiles). This id should be assigned per-subject, which means it should be consistently used to identify the same control across revisions of the document.',
+        description='Identifies a control such that it can be referenced in the defining catalog and other OSCAL instances (e.g., profiles).',
         title='Control Identifier',
     )
-    class_: Optional[constr(
-        regex=
-        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    )] = Field(
+    class_: Optional[constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$')] = Field(
         None,
         alias='class',
         description='A textual label that provides a sub-type or characterization of the control.',
@@ -67,11 +86,164 @@ class Control(OscalBaseModel):
         description='A name given to the control, which may be used by a tool for display and navigation.',
         title='Control Title',
     )
-    params: Optional[List[common.Parameter]] = Field(None)
+    params: Optional[List[common.Parameter]] = Field(
+        None
+    )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     parts: Optional[List[common.Part]] = Field(None)
     controls: Optional[List[Control]] = None
+
+
+class Address(OscalBaseModel):
+    """
+    A postal address for the location.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    type: Optional[Union[constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'), TypeEnum1]] = Field(
+        None, description='Indicates the type of address.', title='Address Type'
+    )
+    addr_lines: Optional[List[constr(regex=r'^\S(.*\S)?$')]] = Field(
+        None, alias='addr-lines'
+    )
+    city: Optional[constr(regex=r'^\S(.*\S)?$')] = Field(
+        None,
+        description='City, town or geographical region for the mailing address.',
+        title='City',
+    )
+    state: Optional[constr(regex=r'^\S(.*\S)?$')] = Field(
+        None,
+        description='State, province or analogous geographical region for a mailing address.',
+        title='State',
+    )
+    postal_code: Optional[constr(regex=r'^\S(.*\S)?$')] = Field(
+        None,
+        alias='postal-code',
+        description='Postal or ZIP code for mailing address.',
+        title='Postal Code',
+    )
+    country: Optional[constr(regex=r'^\S(.*\S)?$')] = Field(
+        None,
+        description='The ISO 3166-1 alpha-2 country code for the mailing address.',
+        title='Country Code',
+    )
+
+
+class Location(OscalBaseModel):
+    """
+    A physical point of presence, which may be associated with people, organizations, or other concepts within the current or linked OSCAL document.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(
+        ...,
+        description='A unique ID for the location, for reference.',
+        title='Location Universally Unique Identifier',
+    )
+    title: Optional[str] = Field(
+        None,
+        description='A name given to the location, which may be used by a tool for display and navigation.',
+        title='Location Title',
+    )
+    address: Optional[Address] = None
+    email_addresses: Optional[List[EmailAddressDatatype]] = Field(
+        None, alias='email-addresses'
+    )
+    telephone_numbers: Optional[List[TelephoneNumber]] = Field(
+        None, alias='telephone-numbers'
+    )
+    urls: Optional[List[AnyUrl]] = Field(None)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
+    remarks: Optional[str] = None
+
+
+class Party(OscalBaseModel):
+    """
+    An organization or person, which may be associated with roles or other concepts within the current or linked OSCAL document.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(
+        ...,
+        description='A unique identifier for the party.',
+        title='Party Universally Unique Identifier',
+    )
+    type: constr(regex=r'^\S(.*\S)?$') = Field(
+        ...,
+        description='A category describing the kind of party the object describes.',
+        title='Party Type',
+    )
+    name: Optional[constr(regex=r'^\S(.*\S)?$')] = Field(
+        None,
+        description='The full name of the party. This is typically the legal name associated with the party.',
+        title='Party Name',
+    )
+    short_name: Optional[constr(regex=r'^\S(.*\S)?$')] = Field(
+        None,
+        alias='short-name',
+        description='A short common name, abbreviation, or acronym for the party.',
+        title='Party Short Name',
+    )
+    external_ids: Optional[List[common.ExternalId]] = Field(
+        None, alias='external-ids'
+    )
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
+    email_addresses: Optional[List[EmailAddressDatatype]] = Field(
+        None, alias='email-addresses'
+    )
+    telephone_numbers: Optional[List[TelephoneNumber]] = Field(
+        None, alias='telephone-numbers'
+    )
+    addresses: Optional[List[Address]] = Field(None)
+    location_uuids: Optional[List[constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$')]] = Field(
+        None, alias='location-uuids'
+    )
+    member_of_organizations: Optional[List[constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$')]] = Field(
+        None, alias='member-of-organizations'
+    )
+    remarks: Optional[str] = None
+
+
+class Metadata(OscalBaseModel):
+    """
+    Provides information about the containing document, and defines concepts that are shared across the document.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    title: str = Field(
+        ...,
+        description='A name given to the document, which may be used by a tool for display and navigation.',
+        title='Document Title',
+    )
+    published: Optional[datetime] = None
+    last_modified: datetime = Field(..., alias='last-modified')
+    version: constr(regex=r'^\S(.*\S)?$')
+    oscal_version: common.OscalVersion = Field(..., alias='oscal-version')
+    revisions: Optional[List[common.Revision]] = Field(None)
+    document_ids: Optional[List[common.DocumentId]] = Field(
+        None, alias='document-ids'
+    )
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
+    roles: Optional[List[common.Role]] = Field(None)
+    locations: Optional[List[Location]] = Field(None)
+    parties: Optional[List[Party]] = Field(None)
+    responsible_parties: Optional[List[common.ResponsibleParty]] = Field(
+        None, alias='responsible-parties'
+    )
+    actions: Optional[List[common.Action]] = Field(None)
+    remarks: Optional[str] = None
 
 
 class Group(OscalBaseModel):
@@ -82,19 +254,12 @@ class Group(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    id: Optional[constr(
-        regex=
-        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    )] = Field(
+    id: Optional[constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$')] = Field(
         None,
-        description=
-        'A human-oriented, locally unique identifier with cross-instance scope that can be used to reference this defined group elsewhere in in this and other OSCAL instances (e.g., profiles). This id should be assigned per-subject, which means it should be consistently used to identify the same group across revisions of the document.',
+        description='Identifies the group for the purpose of cross-linking within the defining instance or from other instances that reference the catalog.',
         title='Group Identifier',
     )
-    class_: Optional[constr(
-        regex=
-        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    )] = Field(
+    class_: Optional[constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$')] = Field(
         None,
         alias='class',
         description='A textual label that provides a sub-type or characterization of the group.',
@@ -105,7 +270,9 @@ class Group(OscalBaseModel):
         description='A name given to the group, which may be used by a tool for display and navigation.',
         title='Group Title',
     )
-    params: Optional[List[common.Parameter]] = Field(None)
+    params: Optional[List[common.Parameter]] = Field(
+        None
+    )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     parts: Optional[List[common.Part]] = Field(None)
@@ -115,25 +282,26 @@ class Group(OscalBaseModel):
 
 class Catalog(OscalBaseModel):
     """
-    A collection of controls.
+    A structured, organized collection of control information.
     """
 
     class Config:
         extra = Extra.forbid
 
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
+    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(
         ...,
-        description=
-        'A globally unique identifier with cross-instance scope for this catalog instance. This UUID should be changed when this document is revised.',
+        description='Provides a globally unique means to identify a given catalog instance.',
         title='Catalog Universally Unique Identifier',
     )
-    metadata: common.Metadata
-    params: Optional[List[common.Parameter]] = Field(None)
+    metadata: Metadata
+    params: Optional[List[common.Parameter]] = Field(
+        None
+    )
     controls: Optional[List[Control]] = Field(None)
     groups: Optional[List[Group]] = Field(None)
-    back_matter: Optional[common.BackMatter] = Field(None, alias='back-matter')
+    back_matter: Optional[common.BackMatter] = Field(
+        None, alias='back-matter'
+    )
 
 
 class Model(OscalBaseModel):
