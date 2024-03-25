@@ -15,6 +15,7 @@
 # limitations under the License.
 """Script to generate python models from oscal using datamodel-code-generator."""
 import logging
+import os
 import re
 import sys
 from pathlib import Path
@@ -77,6 +78,81 @@ def generate_model(full_name, out_full_name):
         logger.error(f'Error calling datamodel-codegen for file {full_name} error {error}')
 
 
+def fixup_copy(model_name, fixup_dir_path):
+    """Fixup copy - no changes needed."""
+    cmd = f'cp -p {model_name} {str(fixup_dir_path)}'
+    logger.debug(cmd)
+    os.system(cmd)
+
+
+def fixup_component_schema(model_name, fixup_dir_path):
+    """Fixup component schema."""
+    model_path = Path(model_name)
+    model_file = model_path.name
+    fixup_path = fixup_dir_path / model_file
+    # move location of embedded metadata stanza, to be compatible with the other models
+    lines = []
+    relocate = []
+    # ingest original
+    with open(model_name, 'r') as f:
+        mode = 'keep'
+        while line := f.readline():
+            if '"oscal-component-definition-oscal-metadata:metadata" :' in line:
+                mode = 'delete'
+            elif '"oscal-component-definition-oscal-control-common:part" : ' in line:
+                mode = 'keep'
+            if 'keep' in mode:
+                lines.append(line)
+            else:
+                # delete
+                relocate.append(line)
+    # rewrite revised
+    with open(fixup_path, 'w') as f:
+        for line in lines:
+            if '"oscal-component-definition-oscal-component-definition:import-component-definition" : ' in line:
+                # insert
+                for item in relocate:
+                    f.write(item)
+            f.write(line)
+    text = f'fixup {model_name} -> {str(fixup_path)}'
+    logger.info(text)
+
+
+def get_input_dir_name():
+    """Get input dir name."""
+    return 'release-1.1.2-schemas'
+
+
+def get_input_dir_path():
+    """Get input dir path."""
+    return Path(f'{get_input_dir_name()}')
+
+
+def get_fixup_dir_name():
+    """Get fixup dir name."""
+    return f'{get_input_dir_name()}-fixup'
+
+
+def get_fixup_dir_path():
+    """Get fixup dir path."""
+    return Path(f'{get_fixup_dir_name()}')
+
+
+def fix_models():
+    """Fix models."""
+    input_dir_path = get_input_dir_path()
+    fixup_dir_path = get_fixup_dir_path()
+    fixup_dir_path.mkdir(exist_ok=True, parents=True)
+    for full_name in input_dir_path.glob('oscal_*_schema.json'):
+        model_name = str(full_name)
+        if 'complete' in model_name:
+            continue
+        if 'component_schema' in model_name:
+            fixup_component_schema(model_name, fixup_dir_path)
+        else:
+            fixup_copy(model_name, fixup_dir_path)
+
+
 def generate_models():
     """
     Generate all models including 3rd party.
@@ -94,7 +170,7 @@ def generate_models():
     out_init = out_dir / '__init__.py'
     out_init.touch(exist_ok=True)
 
-    in_dir = Path('release-1.1.2-schemas')
+    in_dir = get_fixup_dir_path()
     for full_name in in_dir.glob('oscal_*_schema.json'):
         if 'complete' in str(full_name):
             continue
@@ -115,6 +191,7 @@ def generate_models():
 def main():
     """Load git and generate models."""
     # at this point should load_git() if latest oscal schemas are needed
+    fix_models()
     generate_models()
     logger.info('DONE')
 
