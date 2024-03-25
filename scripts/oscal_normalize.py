@@ -788,8 +788,7 @@ def reorder_and_dump_as_python(file_classes):
     """Reorder the files and dump."""
     for item in file_classes.items():
         ordered, forward_refs = reorder_classes(item[0], item[1])
-        frs = None
-        write_oscal(ordered, frs, item[0])
+        write_oscal(ordered, forward_refs, item[0])
 
 
 def find_full_changes(file_classes):
