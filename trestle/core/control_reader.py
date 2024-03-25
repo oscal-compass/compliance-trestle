@@ -325,8 +325,8 @@ class ControlReader:
         return sort_id, imp_req
 
     @staticmethod
-    def _get_props_list(control_id: str, label_map: Dict[str, str],
-                        yaml_header: Dict[str, Any]) -> Tuple[List[common.Property], Dict[str, List[common.Property]]]:
+    def get_props_list(control_id: str, label_map: Dict[str, str],
+                       yaml_header: Dict[str, Any]) -> Tuple[List[common.Property], Dict[str, List[common.Property]]]:
         """Get the list of props in the yaml header of this control as separate lists with and without by_id."""
         prop_list = yaml_header.get(const.TRESTLE_ADD_PROPS_TAG, [])
         props = []
@@ -388,7 +388,7 @@ class ControlReader:
         if header_params:
             param_dict.update(header_params)
 
-        props, props_by_id = ControlReader._get_props_list(control_id, part_label_to_id_map, yaml_header)
+        props, props_by_id = ControlReader.get_props_list(control_id, part_label_to_id_map, yaml_header)
 
         # When adding props without by_id it can either be starting or ending and we default to ending
         # This is the default behavior as described for implicit binding in
