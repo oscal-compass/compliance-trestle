@@ -15,7 +15,7 @@
 
 import argparse
 import pathlib
-from typing import Dict
+from typing import Dict, List
 
 from _pytest.monkeypatch import MonkeyPatch
 
@@ -1119,7 +1119,6 @@ def test_ssp_gen_throw_exception_for_rep_comps(tmp_trestle_dir: pathlib.Path, mo
 def test_ssp_gen_and_assemble_add_props(tmp_trestle_dir: pathlib.Path) -> None:
     """Test ssp generate does not overwrite header edits."""
     gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
-    gen_args.compdefs = None
     gen_args.yaml_header = None
     ssp_cmd = SSPGenerate()
 
@@ -1135,10 +1134,14 @@ def test_ssp_gen_and_assemble_add_props(tmp_trestle_dir: pathlib.Path) -> None:
     ac_1_properties: Dict[str, str] = {
         'name': 'prop_with_ns', 'value': 'prop with ns', 'ns': 'https://my_new_namespace'
     }
-    ac_1_smt_properties: Dict[str, str] = {'name': 'smt_prop_with_ns', 'value': 'smt prop with ns', 'smt-part': 'a'}
-    header['x-trestle-add-props'] = [ac_1_properties, ac_1_smt_properties]
+    ac_1_smt_properties: Dict[str, str] = {'name': 'smt_prop', 'value': 'smt prop', 'smt-part': 'a.'}
+    # Verify the add props header value is present
+    properties: List[Dict[str, str]] = header.get('x-trestle-add-props')
+    properties.extend([ac_1_properties, ac_1_smt_properties])
+
     md_api.write_markdown_with_header(md_path, header, tree.content.raw_text)
 
+    args_compdefs = gen_args.compdefs
     # now assemble controls into json ssp
     ssp_assemble = SSPAssemble()
     args = argparse.Namespace(
@@ -1148,7 +1151,7 @@ def test_ssp_gen_and_assemble_add_props(tmp_trestle_dir: pathlib.Path) -> None:
         verbose=1,
         name=None,
         version=None,
-        compdefs=None,
+        compdefs=args_compdefs,
         regenerate=False,
     )
     assert ssp_assemble._run(args) == 0
@@ -1160,3 +1163,8 @@ def test_ssp_gen_and_assemble_add_props(tmp_trestle_dir: pathlib.Path) -> None:
     assert impl_req.props[0].name == 'prop_with_ns'
     assert impl_req.props[0].value == 'prop with ns'
     assert impl_req.props[0].ns == 'https://my_new_namespace'
+
+    smt_a = next((smt for smt in impl_req.statements if smt.statement_id == 'ac-1_smt.a'), None)
+    assert len(smt_a.props) == 1
+    assert smt_a.props[0].name == 'smt_prop'
+    assert smt_a.props[0].value == 'smt prop'
