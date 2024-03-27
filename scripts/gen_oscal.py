@@ -22,6 +22,8 @@ from subprocess import CalledProcessError, check_call
 
 from oscal_normalize import normalize_files
 
+from schema_preprocess import fixup_models
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 logger.addHandler(logging.StreamHandler())
@@ -94,7 +96,7 @@ def generate_models():
     out_init = out_dir / '__init__.py'
     out_init.touch(exist_ok=True)
 
-    in_dir = Path('release-1.1.2-schemas')
+    in_dir = fixup_models('release-1.1.2-schemas')
     for full_name in in_dir.glob('oscal_*_schema.json'):
         if 'complete' in str(full_name):
             continue
