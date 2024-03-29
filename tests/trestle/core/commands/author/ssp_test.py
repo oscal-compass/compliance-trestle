@@ -1117,7 +1117,7 @@ def test_ssp_gen_throw_exception_for_rep_comps(tmp_trestle_dir: pathlib.Path, mo
 
 
 def test_ssp_gen_and_assemble_add_props(tmp_trestle_dir: pathlib.Path) -> None:
-    """Test ssp generate does not overwrite header edits."""
+    """Test ssp generate and assemble with additional properties processing."""
     gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
     gen_args.yaml_header = None
     ssp_cmd = SSPGenerate()
