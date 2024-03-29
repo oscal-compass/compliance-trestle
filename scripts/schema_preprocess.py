@@ -24,6 +24,20 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 logger.addHandler(logging.StreamHandler())
 
+schema_file_name_search_template = 'oscal_*_schema.json'
+
+
+def get_oscal_release(input_dir_name: str) -> str:
+    """Get OSCAL release."""
+    release = '?'
+    input_dir_path = Path(input_dir_name)
+    for full_name in input_dir_path.glob(schema_file_name_search_template):
+        model_name = str(full_name)
+        if 'catalog' in model_name:
+            data = json_data_get(model_name)
+            release = data['$id'].split('/')[-2]
+    return release
+
 
 def fixup_models(input_dir_name: str) -> Path:
     """Fix models."""
@@ -52,7 +66,7 @@ def json_data_put(model_name: str, data: Dict) -> None:
 
 def fixup_json(fixup_dir_path: Path) -> None:
     """Fixup json."""
-    for full_name in fixup_dir_path.glob('oscal_*_schema.json'):
+    for full_name in fixup_dir_path.glob(schema_file_name_search_template):
         model_name = str(full_name)
         data = json_data_get(model_name)
         move_metadata(data)
@@ -102,7 +116,7 @@ def move_metadata(data: Dict) -> None:
 
 def fixup_copy_schemas(input_dir_path: Path, fixup_dir_path: Path) -> None:
     """Fixup copy schemas."""
-    for full_name in input_dir_path.glob('oscal_*_schema.json'):
+    for full_name in input_dir_path.glob(schema_file_name_search_template):
         model_name = str(full_name)
         if 'complete' in model_name:
             continue

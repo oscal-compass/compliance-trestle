@@ -25,7 +25,6 @@ import uuid
 from typing import Any, Dict, List, Optional, ValuesView
 
 from trestle.common.list_utils import join_key_to_list_dicts
-from trestle.oscal.common import ControlSelection
 from trestle.oscal.assessment_results import LocalDefinitions1
 from trestle.oscal.assessment_results import Observation
 from trestle.oscal.assessment_results import Result
