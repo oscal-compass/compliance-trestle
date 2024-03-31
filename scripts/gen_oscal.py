@@ -17,6 +17,7 @@
 import logging
 import re
 import sys
+from datetime import datetime
 from pathlib import Path
 from subprocess import CalledProcessError, check_call
 
@@ -83,7 +84,7 @@ def generate_oscal_init(src_dir, out_dir):
     """Generate OSCAL init."""
     init_file = out_dir / '__init__.py'
     # release
-    year = '2024'
+    year = str(datetime.today().year)
     release = get_oscal_release(src_dir)
     rela = release.split('.')[0]
     relb = release.split('.')[1]
