@@ -732,19 +732,22 @@ def write_oscal(classes, forward_refs, fstem):
             out_file.writelines('\n'.join(forward_refs) + '\n')
 
 
-##### (begin) Temporary?
+# (begin) Temporary?
 
 additions = {
-    'assessment_results': [ 
-        'from trestle.oscal.common import AssessmentAssets', 
-        'from trestle.oscal.common import SystemComponent' ],
+    'assessment_results': [
+        'from trestle.oscal.common import AssessmentAssets', 'from trestle.oscal.common import SystemComponent'
+    ],
     'catalog': [
         'from trestle.oscal.common import TokenDatatype',
-        ],
+    ],
+    'component': [
+        'from trestle.oscal.common import URIReferenceDatatype',
+    ],
     'ssp': [
         'from trestle.oscal.common import SystemComponent',
-        ],
-    }
+    ],
+}
 
 
 def hack_oscal(fstem):
@@ -759,12 +762,13 @@ def hack_oscal(fstem):
                     for item in additions[fstem]:
                         line = f'{item}\n'
                         lines.append(line)
-                        print(f'hack_oscal: file {fstem}.py insert "{line.strip()}"')
+                        logger.info(f'hack_oscal: file {fstem}.py insert "{line.strip()}"')
         with open(fname, 'w') as f:
             for line in lines:
                 f.write(line)
 
-##### (end) Temporary?
+
+# (end) Temporary?
 
 
 def apply_changes_to_class_list(classes, changes):
@@ -829,8 +833,8 @@ def reorder_and_dump_as_python(file_classes):
         forward_refs = None
         write_oscal(ordered, forward_refs, item[0])
         hack_oscal(item[0])
-                
-                
+
+
 def find_full_changes(file_classes):
     """Find all name changes and what files made them."""
     changes = {}

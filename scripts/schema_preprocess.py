@@ -74,6 +74,7 @@ def fixup_json(fixup_dir_path: Path) -> None:
 
 
 def get_order(key):
+    """Get order."""
     if 'json-schema-directive' in key:
         return 0
     if key.endswith('ap:assessment-plan'):
