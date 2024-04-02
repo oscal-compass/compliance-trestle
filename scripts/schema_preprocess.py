@@ -69,49 +69,49 @@ def fixup_json(fixup_dir_path: Path) -> None:
     for full_name in fixup_dir_path.glob(schema_file_name_search_template):
         model_name = str(full_name)
         data = json_data_get(model_name)
-        move_metadata(data)
-        assign_labels(data)
+        names_reorder(data)
         json_data_put(model_name, data)
 
 
-def assign_labels(data: Dict) -> None:
-    """Assign labels."""
-    if 'oscal-poam-oscal-poam:plan-of-action-and-milestones' in data['definitions'].keys():
-        key = 'oscal-poam-oscal-assessment-common:assessment-subject'
-        val = {'enum': ['component', 'inventory-item', 'location', 'party', 'user']}
-        id_ = 'Type4'
-        try:
-            item = data['definitions'][key]['properties']['type']['anyOf'][1]
-            if item == val:
-                val = {id_: val}
-                data['definitions'][key]['properties']['type']['anyOf'][1] = val
-                logger.debug(f'{key} -> {val}')
-        except Exception:
-            logger.warning(f'Unable to assign {key}')
+def get_order(key):
+    if 'json-schema-directive' in key:
+        return 0
+    if key.endswith('ap:assessment-plan'):
+        return 1
+    if key.endswith('ar:assessment-results'):
+        return 1
+    if key.endswith('catalog:catalog'):
+        return 1
+    if key.endswith('component-definition:component-definition'):
+        return 1
+    if key.endswith('poam:plan-of-action-and-milestones'):
+        return 1
+    if key.endswith('profile:profile'):
+        return 1
+    if key.endswith('ssp:system-security-plan'):
+        return 1
+    if 'oscal-metadata:' in key:
+        return 2
+    if 'oscal-control-common:' in key:
+        return 3
+    if 'oscal-implementation-common:' in key:
+        return 4
+    return 5
 
 
-def move_metadata(data: Dict) -> None:
-    """Move metadata."""
-    if 'oscal-component-definition-oscal-component-definition:component-definition' in data['definitions'].keys():
-        desc1 = {}
-        desc2 = {}
-        desc3 = {}
+def names_reorder(data: Dict) -> None:
+    """Reorder."""
+    reorder_defs = {}
+    for index in range(6):
         for key in data['definitions'].keys():
-            if key == 'json-schema-directive':
-                desc1[key] = data['definitions'][key]
-            elif key == 'oscal-component-definition-oscal-component-definition:component-definition':
-                desc1[key] = data['definitions'][key]
-            elif 'oscal-component-definition-oscal-metadata:' in key:
-                desc2[key] = data['definitions'][key]
-            else:
-                desc3[key] = data['definitions'][key]
-        data['definitions'] = {}
-        for key in desc1.keys():
-            data['definitions'][key] = desc1[key]
-        for key in desc2.keys():
-            data['definitions'][key] = desc2[key]
-        for key in desc3.keys():
-            data['definitions'][key] = desc3[key]
+            order = get_order(key)
+            if order == index:
+                reorder_defs[key] = data['definitions'][key]
+    len_old = len(data['definitions'])
+    len_new = len(reorder_defs)
+    if len_old != len_new:
+        raise RuntimeError(f'old: {len_old} new: {len_new}')
+    data['definitions'] = reorder_defs
 
 
 def fixup_copy_schemas(input_dir_path: Path, fixup_dir_path: Path) -> None:
@@ -120,11 +120,6 @@ def fixup_copy_schemas(input_dir_path: Path, fixup_dir_path: Path) -> None:
         model_name = str(full_name)
         if 'complete' in model_name:
             continue
-        fixup_copy(model_name, fixup_dir_path)
-
-
-def fixup_copy(model_name: str, fixup_dir_path: Path) -> None:
-    """Fixup copy - no changes needed."""
-    cmd = f'cp -p {model_name} {str(fixup_dir_path)}'
-    logger.debug(cmd)
-    os.system(cmd)
+        cmd = f'cp -p {model_name} {str(fixup_dir_path)}'
+        logger.debug(cmd)
+        os.system(cmd)

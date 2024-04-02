@@ -182,6 +182,9 @@ oscal_validator_code = """
 
     @validator('__root__')
     def oscal_version_is_valid(cls, v):
+        strict_version = False
+        if not strict_version:
+            return True
         p = re.compile(OSCAL_VERSION_REGEX)
         matched = p.match(v)
         if matched is None:
@@ -729,6 +732,41 @@ def write_oscal(classes, forward_refs, fstem):
             out_file.writelines('\n'.join(forward_refs) + '\n')
 
 
+##### (begin) Temporary?
+
+additions = {
+    'assessment_results': [ 
+        'from trestle.oscal.common import AssessmentAssets', 
+        'from trestle.oscal.common import SystemComponent' ],
+    'catalog': [
+        'from trestle.oscal.common import TokenDatatype',
+        ],
+    'ssp': [
+        'from trestle.oscal.common import SystemComponent',
+        ],
+    }
+
+
+def hack_oscal(fstem):
+    """Hack oscal."""
+    lines = []
+    if fstem in additions.keys():
+        fname = f'trestle/oscal/{fstem}.py'
+        with open(fname, 'r') as f:
+            for line in f:
+                lines.append(line)
+                if 'import trestle.oscal.common as common' in line:
+                    for item in additions[fstem]:
+                        line = f'{item}\n'
+                        lines.append(line)
+                        print(f'hack_oscal: file {fstem}.py insert "{line.strip()}"')
+        with open(fname, 'w') as f:
+            for line in lines:
+                f.write(line)
+
+##### (end) Temporary?
+
+
 def apply_changes_to_class_list(classes, changes):
     """Make all changes to the name and body of a list of classes."""
     for i, c in enumerate(classes):
@@ -788,9 +826,11 @@ def reorder_and_dump_as_python(file_classes):
     """Reorder the files and dump."""
     for item in file_classes.items():
         ordered, forward_refs = reorder_classes(item[0], item[1])
+        forward_refs = None
         write_oscal(ordered, forward_refs, item[0])
-
-
+        hack_oscal(item[0])
+                
+                
 def find_full_changes(file_classes):
     """Find all name changes and what files made them."""
     changes = {}
