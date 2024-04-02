@@ -401,9 +401,7 @@ class ControlReader:
         # add the parts and props at control level
         if editable_parts or props:
             adds.append(
-                prof.Add(
-                    parts=none_if_empty(editable_parts), props=none_if_empty(props), position=const.ENDING
-                )
+                prof.Add(parts=none_if_empty(editable_parts), props=none_if_empty(props), position=const.ENDING)
             )
 
         # add the parts and props at the part level, by-id

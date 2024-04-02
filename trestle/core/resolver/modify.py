@@ -124,9 +124,7 @@ class Modify(Pipeline.Filter):
         setattr(part, attr, attr_list)
 
     @staticmethod
-    def _add_attr_to_control(
-        control: cat.Control, items: List[OBT], attr: str, position: Optional[str]
-    ) -> None:
+    def _add_attr_to_control(control: cat.Control, items: List[OBT], attr: str, position: Optional[str]) -> None:
         attr_list = as_list(getattr(control, attr, None))
         # if position is None it will add to end
         if position in [STARTING, BEFORE]:
