@@ -81,11 +81,11 @@ def fixup_json(fixup_dir_path: Path) -> None:
         model_name = str(full_name)
         data = json_data_get(model_name)
         names_reorder(data)
-        hacks(data)
+        hacks(model_name, data)
         json_data_put(model_name, data)
 
 
-def get_order(key):
+def get_order(key: str) -> int:
     """Get order."""
     if 'json-schema-directive' in key:
         return 0
@@ -130,9 +130,9 @@ def names_reorder(data: Dict) -> None:
 # <Temporary hacks>
 
 
-def hacks(data: Dict) -> None:
+def hacks(model_name: str, data: Dict) -> None:
     """Hacks."""
-    hack_email_address_datatype(data)
+    hack_email_address_datatype(model_name, data)
 
 
 EmailAddressDatatype = {
@@ -143,11 +143,18 @@ EmailAddressDatatype = {
 }
 
 
-def hack_email_address_datatype(data: Dict) -> None:
+def hack_email_address_datatype(model_name: str, data: Dict) -> None:
     """Reorder."""
     key = 'EmailAddressDatatype'
     if key in data['definitions'].keys():
-        data['definitions'][key] = EmailAddressDatatype
+        key_part = 'allOf'
+        if key_part not in data['definitions'][key].keys():
+            text = f'expected {key_part} not found in {key}, skipping hack in {model_name}'
+            logger.warning(text)
+        else:
+            data['definitions'][key] = EmailAddressDatatype
+            text = f'hacking {model_name}: replace {key}'
+            logger.info(text)
 
 
 # </Temporary hacks>

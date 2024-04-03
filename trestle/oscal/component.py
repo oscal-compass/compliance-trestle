@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 #
 #
 ####### DO NOT EDIT DO NOT EDIT DO NOT EDIT DO NOT EDIT DO NOT EDIT ######
@@ -64,13 +63,28 @@ class Statement(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    statement_id: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') = Field(..., alias='statement-id', description='A human-oriented identifier reference to a control statement.', title='Control Statement Reference')
-    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(
+    statement_id: constr(
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+    ) = Field(
         ...,
-        description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this control statement elsewhere in this or other OSCAL instances. The UUID of the control statement in the source OSCAL instance is sufficient to reference the data item locally or globally (e.g., in an imported OSCAL instance).',
+        alias='statement-id',
+        description='A human-oriented identifier reference to a control statement.',
+        title='Control Statement Reference'
+    )
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description=
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this control statement elsewhere in this or other OSCAL instances. The UUID of the control statement in the source OSCAL instance is sufficient to reference the data item locally or globally (e.g., in an imported OSCAL instance).',
         title='Control Statement Reference Universally Unique Identifier',
     )
-    description: str = Field(..., description='A summary of how the containing control statement is implemented by the component or capability.', title='Statement Implementation Description')
+    description: str = Field(
+        ...,
+        description='A summary of how the containing control statement is implemented by the component or capability.',
+        title='Statement Implementation Description'
+    )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
@@ -85,8 +99,15 @@ class SetParameter(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    param_id: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') = Field(
-        ..., alias='param-id', description="A human-oriented reference to a parameter within a control, who's catalog has been imported into the current implementation context.", title='Parameter ID'
+    param_id: constr(
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+    ) = Field(
+        ...,
+        alias='param-id',
+        description=
+        "A human-oriented reference to a parameter within a control, who's catalog has been imported into the current implementation context.",
+        title='Parameter ID'
     )
     values: List[constr(regex=r'^\S(.*\S)?$')] = Field(...)
     remarks: Optional[str] = None
@@ -100,8 +121,19 @@ class IncorporatesComponent(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    component_uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(..., alias='component-uuid', description='A machine-oriented identifier reference to a component.', title='Component Reference')
-    description: str = Field(..., description='A description of the component, including information about its function.', title='Component Description')
+    component_uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        alias='component-uuid',
+        description='A machine-oriented identifier reference to a component.',
+        title='Component Reference'
+    )
+    description: str = Field(
+        ...,
+        description='A description of the component, including information about its function.',
+        title='Component Description'
+    )
 
 
 class ImportComponentDefinition(OscalBaseModel):
@@ -112,7 +144,12 @@ class ImportComponentDefinition(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    href: str = Field(..., description='A link to a resource that defines a set of components and/or capabilities to import into this collection.', title='Hyperlink Reference')
+    href: str = Field(
+        ...,
+        description=
+        'A link to a resource that defines a set of components and/or capabilities to import into this collection.',
+        title='Hyperlink Reference'
+    )
 
 
 class ImplementedRequirement(OscalBaseModel):
@@ -123,16 +160,27 @@ class ImplementedRequirement(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(..., description='Provides a globally unique means to identify a given control implementation by a component.', title='Control Implementation Identifier')
-    control_id: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') = Field(
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description='Provides a globally unique means to identify a given control implementation by a component.',
+        title='Control Implementation Identifier'
+    )
+    control_id: constr(
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+    ) = Field(
         ...,
         alias='control-id',
-        description='A reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).',
+        description=
+        'A reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).',
         title='Control Identifier Reference',
     )
     description: str = Field(
         ...,
-        description='A suggestion from the supplier (e.g., component vendor or author) for how the specified control may be implemented if the containing component or capability is instantiated in a system security plan.',
+        description=
+        'A suggestion from the supplier (e.g., component vendor or author) for how the specified control may be implemented if the containing component or capability is instantiated in a system security plan.',
         title='Control Implementation Description',
     )
     props: Optional[List[common.Property]] = Field(None)
@@ -151,12 +199,25 @@ class ControlImplementation(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(
-        ..., description='Provides a means to identify a set of control implementations that are supported by a given component or capability.', title='Control Implementation Set Identifier'
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description=
+        'Provides a means to identify a set of control implementations that are supported by a given component or capability.',
+        title='Control Implementation Set Identifier'
     )
-    source: URIReferenceDatatype = Field(..., description='A reference to an OSCAL catalog or profile providing the referenced control or subcontrol definition.', title='Source Resource Reference')
+    source: URIReferenceDatatype = Field(
+        ...,
+        description=
+        'A reference to an OSCAL catalog or profile providing the referenced control or subcontrol definition.',
+        title='Source Resource Reference'
+    )
     description: str = Field(
-        ..., description='A description of how the specified set of controls are implemented for the containing component or capability.', title='Control Implementation Description'
+        ...,
+        description=
+        'A description of how the specified set of controls are implemented for the containing component or capability.',
+        title='Control Implementation Description'
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
@@ -172,8 +233,14 @@ class Capability(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(..., description='Provides a globally unique means to identify a given capability.', title='Capability Identifier')
-    name: constr(regex=r'^\S(.*\S)?$') = Field(..., description="The capability's human-readable name.", title='Capability Name')
+    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+                 ) = Field(
+                     ...,
+                     description='Provides a globally unique means to identify a given capability.',
+                     title='Capability Identifier'
+                 )
+    name: constr(regex=r'^\S(.*\S)?$'
+                 ) = Field(..., description="The capability's human-readable name.", title='Capability Name')
     description: str = Field(..., description='A summary of the capability.', title='Capability Description')
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
@@ -190,11 +257,24 @@ class DefinedComponent(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(..., description='Provides a globally unique means to identify a given component.', title='Component Identifier')
-    type: Union[constr(regex=r'^\S(.*\S)?$'), Type3] = Field(..., description='A category describing the purpose of the component.', title='Component Type')
+    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+                 ) = Field(
+                     ...,
+                     description='Provides a globally unique means to identify a given component.',
+                     title='Component Identifier'
+                 )
+    type: Union[constr(regex=r'^\S(.*\S)?$'), Type3] = Field(
+        ..., description='A category describing the purpose of the component.', title='Component Type'
+    )
     title: str = Field(..., description='A human readable name for the component.', title='Component Title')
-    description: str = Field(..., description='A description of the component, including information about its function.', title='Component Description')
-    purpose: Optional[str] = Field(None, description='A summary of the technological or business purpose of the component.', title='Purpose')
+    description: str = Field(
+        ...,
+        description='A description of the component, including information about its function.',
+        title='Component Description'
+    )
+    purpose: Optional[str] = Field(
+        None, description='A summary of the technological or business purpose of the component.', title='Purpose'
+    )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
@@ -211,9 +291,16 @@ class ComponentDefinition(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(..., description='Provides a globally unique means to identify a given component definition instance.', title='Component Definition Universally Unique Identifier')
+    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+                 ) = Field(
+                     ...,
+                     description='Provides a globally unique means to identify a given component definition instance.',
+                     title='Component Definition Universally Unique Identifier'
+                 )
     metadata: common.Metadata
-    import_component_definitions: Optional[List[ImportComponentDefinition]] = Field(None, alias='import-component-definitions')
+    import_component_definitions: Optional[List[ImportComponentDefinition]] = Field(
+        None, alias='import-component-definitions'
+    )
     components: Optional[List[DefinedComponent]] = Field(None)
     capabilities: Optional[List[Capability]] = Field(None)
     back_matter: Optional[common.BackMatter] = Field(None, alias='back-matter')
