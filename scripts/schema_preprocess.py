@@ -50,6 +50,17 @@ def fixup_models(input_dir_name: str) -> Path:
     return fixup_dir_path
 
 
+def fixup_copy_schemas(input_dir_path: Path, fixup_dir_path: Path) -> None:
+    """Fixup copy schemas."""
+    for full_name in input_dir_path.glob(schema_file_name_search_template):
+        model_name = str(full_name)
+        if 'complete' in model_name:
+            continue
+        cmd = f'cp -p {model_name} {str(fixup_dir_path)}'
+        logger.debug(cmd)
+        os.system(cmd)
+
+
 def json_data_get(model_name: str) -> Dict:
     """Get json data."""
     with open(model_name, 'r') as f:
@@ -70,6 +81,7 @@ def fixup_json(fixup_dir_path: Path) -> None:
         model_name = str(full_name)
         data = json_data_get(model_name)
         names_reorder(data)
+        hacks(data)
         json_data_put(model_name, data)
 
 
@@ -115,12 +127,27 @@ def names_reorder(data: Dict) -> None:
     data['definitions'] = reorder_defs
 
 
-def fixup_copy_schemas(input_dir_path: Path, fixup_dir_path: Path) -> None:
-    """Fixup copy schemas."""
-    for full_name in input_dir_path.glob(schema_file_name_search_template):
-        model_name = str(full_name)
-        if 'complete' in model_name:
-            continue
-        cmd = f'cp -p {model_name} {str(fixup_dir_path)}'
-        logger.debug(cmd)
-        os.system(cmd)
+# <Temporary hacks>
+
+
+def hacks(data: Dict) -> None:
+    """Hacks."""
+    hack_email_address_datatype(data)
+
+
+EmailAddressDatatype = {
+    'description': 'An email address as defined by RFC 5322 Section 3.4.1.',
+    'type': 'string',
+    'format': 'email',
+    'pattern': '^.+@.+$'
+}
+
+
+def hack_email_address_datatype(data: Dict) -> None:
+    """Reorder."""
+    key = 'EmailAddressDatatype'
+    if key in data['definitions'].keys():
+        data['definitions'][key] = EmailAddressDatatype
+
+
+# </Temporary hacks>
