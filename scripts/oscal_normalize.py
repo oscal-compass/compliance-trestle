@@ -738,9 +738,6 @@ additions = {
     'assessment_results': [
         'from trestle.oscal.common import AssessmentAssets', 'from trestle.oscal.common import SystemComponent'
     ],
-    'catalog': [
-        'from trestle.oscal.common import TokenDatatype',
-    ],
     'component': [
         'from trestle.oscal.common import URIReferenceDatatype',
     ],
@@ -964,6 +961,10 @@ def kill_roots(file_classes):
                         if 'OscalVersion' not in line and 'OSCAL' not in line:
                             line = line.replace('common.' + name, body, 1)
                             if name not in body:
+                                line = line.replace(name, body, 1)
+                        else:
+                            # handle special case
+                            if 'id: TokenDatatype' in line:
                                 line = line.replace(name, body, 1)
                     c.lines[ii] = line
     return file_classes
