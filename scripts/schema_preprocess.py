@@ -41,12 +41,15 @@ def get_oscal_release(input_dir_name: str) -> str:
 
 def fixup_models(input_dir_name: str) -> Path:
     """Fix models."""
+    patch_dir_name = 'schema-patch'
+    patch_file_path = Path(patch_dir_name) / 'schema-substitutes.json'
     fixup_dir_name = f'{input_dir_name}-fixup'
     input_dir_path = Path(input_dir_name)
     fixup_dir_path = Path(fixup_dir_name)
     fixup_dir_path.mkdir(exist_ok=True, parents=True)
     fixup_copy_schemas(input_dir_path, fixup_dir_path)
     fixup_json(fixup_dir_path)
+    patch_schemas(fixup_dir_path, patch_file_path)
     return fixup_dir_path
 
 
@@ -59,6 +62,44 @@ def fixup_copy_schemas(input_dir_path: Path, fixup_dir_path: Path) -> None:
         cmd = f'cp -p {model_name} {str(fixup_dir_path)}'
         logger.debug(cmd)
         os.system(cmd)
+
+
+# patch_schemas introduced for migrating from OSCAL 1.0.4 to 1.2.2 due to missing/broken
+# support in datamodel-codegen tool. See issue(s):
+# - https://github.com/koxudaxi/datamodel-code-generator/issues/1901
+def patch_schemas(fixup_dir_path: Path, patch_file_path: Path) -> None:
+    """Patch json schemas."""
+    # Patch file contains "old-style" defintions which are used temporarily
+    # until datamodel-codegen tool issues are resolved.
+    pf = f'{patch_file_path}'
+    patch_json = json_data_get(pf)
+    for full_name in fixup_dir_path.glob(schema_file_name_search_template):
+        model_name = str(full_name)
+        patch_model(model_name, patch_json)
+
+
+def calculate_patch_key(key: str) -> str:
+    """Calculate patch key."""
+    patch_key = key
+    patch_key = patch_key.replace('oscal-ap-', '')
+    patch_key = patch_key.replace('oscal-ar-', '')
+    patch_key = patch_key.replace('oscal-catalog-', '')
+    patch_key = patch_key.replace('oscal-component-definition-', '')
+    patch_key = patch_key.replace('oscal-poam-', '')
+    patch_key = patch_key.replace('oscal-profile-', '')
+    patch_key = patch_key.replace('oscal-ssp-', '')
+    return patch_key
+
+
+def patch_model(model_name: str, patch_json: Dict):
+    """Patch model."""
+    data = json_data_get(model_name)
+    for key in data['definitions'].keys():
+        patch_key = calculate_patch_key(key)
+        if patch_key in patch_json.keys():
+            logger.info(f'patch: {model_name} {key}')
+            data['definitions'][key] = patch_json[patch_key]
+    json_data_put(model_name, data)
 
 
 def json_data_get(model_name: str) -> Dict:
@@ -81,7 +122,6 @@ def fixup_json(fixup_dir_path: Path) -> None:
         model_name = str(full_name)
         data = json_data_get(model_name)
         names_reorder(data)
-        hacks(model_name, data)
         json_data_put(model_name, data)
 
 
@@ -125,36 +165,3 @@ def names_reorder(data: Dict) -> None:
     if len_old != len_new:
         raise RuntimeError(f'old: {len_old} new: {len_new}')
     data['definitions'] = reorder_defs
-
-
-# <Temporary hacks>
-
-
-def hacks(model_name: str, data: Dict) -> None:
-    """Hacks."""
-    hack_email_address_datatype(model_name, data)
-
-
-EmailAddressDatatype = {
-    'description': 'An email address as defined by RFC 5322 Section 3.4.1.',
-    'type': 'string',
-    'format': 'email',
-    'pattern': '^.+@.+$'
-}
-
-
-def hack_email_address_datatype(model_name: str, data: Dict) -> None:
-    """Reorder."""
-    key = 'EmailAddressDatatype'
-    if key in data['definitions'].keys():
-        key_part = 'allOf'
-        if key_part not in data['definitions'][key].keys():
-            text = f'expected {key_part} not found in {key}, skipping hack in {model_name}'
-            logger.warning(text)
-        else:
-            data['definitions'][key] = EmailAddressDatatype
-            text = f'hacking {model_name}: replace {key}'
-            logger.info(text)
-
-
-# </Temporary hacks>

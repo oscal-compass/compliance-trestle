@@ -355,20 +355,6 @@ class ParameterValue(OscalBaseModel):
     __root__: StringDatatype = Field(..., description='A parameter value or set of values.', title='Parameter Value')
 
 
-class ParameterSelection(OscalBaseModel):
-    """
-    Presenting a choice among alternatives.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    how_many: Optional[constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$')] = Field(
-        None, alias='how-many', description='Describes the number of selections that must occur. Without this setting, only one value should be assumed to be permitted.', title='Parameter Cardinality'
-    )
-    choice: Optional[List[str]] = Field(None)
-
-
 class ParameterGuideline(OscalBaseModel):
     """
     A prose statement that provides a recommendation for the use of a parameter.
@@ -547,6 +533,15 @@ class IdentifierType(Enum):
     http___ietf_org_rfc_rfc4122 = 'http://ietf.org/rfc/rfc4122'
 
 
+class HowMany(Enum):
+    """
+    Describes the number of selections that must occur. Without this setting, only one value should be assumed to be permitted.
+    """
+
+    one = 'one'
+    one_or_more = 'one-or-more'
+
+
 class FunctionPerformed(OscalBaseModel):
     __root__: StringDatatype = Field(..., description='Describes a function performed for a given authorized privilege by this user class.', title='Functions Performed')
 
@@ -606,12 +601,8 @@ class ExternalId(OscalBaseModel):
     id: constr(regex=r'^\S(.*\S)?$')
 
 
-class EmailAddressDatatype(OscalBaseModel):
-    __root__: EmailStr = Field(..., description='An email address as defined by RFC 5322 Section 3.4.1.')
-
-
 class EmailAddress(OscalBaseModel):
-    __root__: EmailAddressDatatype = Field(..., description='An email address as defined by RFC 5322 Section 3.4.1.', title='Email Address')
+    __root__: EmailStr = Field(..., description='An email address as defined by RFC 5322 Section 3.4.1.', title='Email Address')
 
 
 class DocumentId(OscalBaseModel):
@@ -1214,6 +1205,20 @@ class LocalObjective(OscalBaseModel):
     links: Optional[List[Link]] = Field(None)
     parts: List[Part] = Field(...)
     remarks: Optional[str] = None
+
+
+class ParameterSelection(OscalBaseModel):
+    """
+    Presenting a choice among alternatives
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    how_many: Optional[HowMany] = Field(
+        None, alias='how-many', description='Describes the number of selections that must occur. Without this setting, only one value should be assumed to be permitted.', title='Parameter Cardinality'
+    )
+    choice: Optional[List[str]] = Field(None)
 
 
 class Parameter(OscalBaseModel):
