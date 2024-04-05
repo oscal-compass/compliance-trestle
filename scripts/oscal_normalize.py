@@ -768,12 +768,21 @@ def hack_oscal(fstem):
 # (end) Temporary?
 
 
+def apply_eligible(line):
+    """Apply eligible."""
+    if 'title=' not in line and 'description=' not in line:
+        return True
+    if 'CommonRiskStatus' in line:
+        return True
+    return False
+
+
 def apply_changes_to_class_list(classes, changes):
     """Make all changes to the name and body of a list of classes."""
     for i, c in enumerate(classes):
         lines = []
         for line in c.lines:
-            if 'title=' not in line and 'description=' not in line:
+            if apply_eligible(line):
                 for item in changes:
                     if item[0] in line:
                         line = replace_token(line, item[0], item[1])

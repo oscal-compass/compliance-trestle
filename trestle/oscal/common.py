@@ -285,6 +285,10 @@ class RiskStatus1(Enum):
     closed = 'closed'
 
 
+class RiskStatus(OscalBaseModel):
+    __root__: Union[TokenDatatype, RiskStatus1] = Field(..., description='Describes the status of the associated risk.', title='Risk Status')
+
+
 class Remarks(OscalBaseModel):
     __root__: str = Field(..., description='Additional commentary about the containing object.', title='Remarks')
 
