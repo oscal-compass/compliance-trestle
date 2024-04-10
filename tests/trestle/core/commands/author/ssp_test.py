@@ -55,6 +55,12 @@ def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_la
 
 part_a_text = """## Implementation for part a.
 
+### This System
+
+<!-- Add implementation prose for the main This System component for control: ac-1_smt.a -->
+
+#### Implementation Status: planned
+
 ### comp_aa
 
 statement prose for part a. from comp aa
@@ -75,7 +81,19 @@ statement prose for part a. from comp aa
 
 #### Implementation Status: partial
 
-______________________________________________________________________"""
+______________________________________________________________________
+"""
+
+part_a_text_no_comp = """## Implementation for part a.
+
+### This System
+
+<!-- Add implementation prose for the main This System component for control: ac-1_smt.a -->
+
+#### Implementation Status: planned
+
+______________________________________________________________________
+"""
 
 
 def test_ssp_generate(tmp_trestle_dir: pathlib.Path) -> None:
@@ -132,6 +150,9 @@ def test_ssp_generate_no_cds(tmp_trestle_dir: pathlib.Path) -> None:
     assert len(node.subnodes[0].subnodes) == 1
     assert node.subnodes[0].key == '### This System'
     assert node.subnodes[0].subnodes[0].key == '#### Implementation Status: planned'
+
+    node = tree.get_node_for_key('## Implementation for part a.')
+    assert node.content.raw_text == part_a_text_no_comp
 
     fc = FileChecker(md_dir)
 
@@ -657,7 +678,7 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
     assert len(ssp.control_implementation.implemented_requirements) == 3
 
     # confirm there are three by_comps for: this system, foo, bar
-    assert len(ssp.control_implementation.implemented_requirements[0].statements[0].by_components) == 2
+    assert len(ssp.control_implementation.implemented_requirements[0].statements[0].by_components) == 3
 
     # now filter the ssp by components
     args = argparse.Namespace(

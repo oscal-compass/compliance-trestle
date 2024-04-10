@@ -201,30 +201,46 @@ class CatalogReader():
                 ssp.control_implementation.implemented_requirements
             )
             ssp.control_implementation.implemented_requirements.append(control_imp_req)
+        CatalogReader._add_statement_to_impl_requirement(control_imp_req, statement_id)
+        return control_imp_req
+
+    @staticmethod
+    def _add_statement_to_impl_requirement(impl_req: ossp.ImplementedRequirement, statement_id: str) -> ossp.Statement:
+        """Update the implemented requirement with a new statement."""
         statement = gens.generate_sample_model(ossp.Statement)
         statement.statement_id = statement_id
         statement.by_components = None
-        control_imp_req.statements = as_list(control_imp_req.statements)
-        control_imp_req.statements.append(statement)
-        return control_imp_req
+        impl_req.statements = as_list(impl_req.statements)
+        impl_req.statements.append(statement)
+        return statement
 
+    # TODO: Check back on older bug around this function and make this doesn't hide an issue
     @staticmethod
     def _get_by_comp_from_imp_req(
         imp_req: ossp.ImplementedRequirement, statement_id: str, comp_uuid: str
     ) -> ossp.ByComponent:
         if statement_id:
+            found_statement: Optional[ossp.Statement] = None
             for statement in as_list(imp_req.statements):
                 if statement.statement_id == statement_id:
-                    for by_comp in as_list(statement.by_components):
-                        if by_comp.component_uuid == comp_uuid:
-                            return by_comp
-                    # didnt find bycomp so need to make one
-                    by_comp = gens.generate_sample_model(ossp.ByComponent)
-                    by_comp.component_uuid = comp_uuid
-                    by_comp.implementation_status = com.ImplementationStatus(state=const.STATUS_PLANNED)
-                    statement.by_components = as_list(statement.by_components)
-                    statement.by_components.append(by_comp)
-                    return by_comp
+                    found_statement = statement
+                    break
+
+            # If the statement doesn't exist, create it
+            if not found_statement:
+                found_statement = CatalogReader._add_statement_to_impl_requirement(imp_req, statement_id)
+            else:
+                for by_comp in as_list(found_statement.by_components):
+                    if by_comp.component_uuid == comp_uuid:
+                        return by_comp
+
+            # didnt find bycomp or new statement so need to make one
+            by_comp = gens.generate_sample_model(ossp.ByComponent)
+            by_comp.component_uuid = comp_uuid
+            by_comp.implementation_status = com.ImplementationStatus(state=const.STATUS_PLANNED)
+            found_statement.by_components = as_list(found_statement.by_components)
+            found_statement.by_components.append(by_comp)
+            return by_comp
         else:
             for by_comp in as_list(imp_req.by_components):
                 if by_comp.component_uuid == comp_uuid:
@@ -235,7 +251,6 @@ class CatalogReader():
             imp_req.by_components = as_list(imp_req.by_components)
             imp_req.by_components.append(by_comp)
             return by_comp
-        raise TrestleError(f'Internal error seeking by_comp for component {comp_uuid} and statement {statement_id}')
 
     @staticmethod
     def _read_comp_info_from_md(control_file_path: pathlib.Path,
