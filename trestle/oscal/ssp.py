@@ -34,7 +34,7 @@ from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr, validator
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
 import trestle.oscal.common as common
-from trestle.oscal.common import SystemComponent
+from trestle.oscal.common import Status, SystemComponent
 
 
 class AdjustmentJustification(OscalBaseModel):
