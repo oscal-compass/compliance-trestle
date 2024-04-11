@@ -31,10 +31,14 @@ from trestle.common import str_utils
 from trestle.common.str_utils import AliasMode
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal import OSCAL_VERSION
+from trestle.oscal.common import Base64
 
 logger = logging.getLogger(__name__)
 
 TG = TypeVar('TG', bound=OscalBaseModel)
+
+sample_base_64 = Base64(filename=const.REPLACE_ME, media_type=const.REPLACE_ME, value=0)
+type_base64 = type(sample_base_64)
 
 
 def safe_is_sub(sub: Any, parent: Any) -> bool:
@@ -52,6 +56,8 @@ def generate_sample_value_by_type(
     Includes the Optional use of passing down a parent_model
     """
     # FIXME: Should be in separate generator module as it inherits EVERYTHING
+    if type_ is Base64:
+        return sample_base_64
     if type_ is datetime:
         return datetime.now().astimezone()
     if type_ is bool:
@@ -105,6 +111,14 @@ def generate_sample_value_by_type(
     return {}  # type: ignore
 
 
+def is_by_type(model_type: Union[Type[TG], List[TG], Dict[str, TG]]) -> bool:
+    """Check for by type."""
+    rval = False
+    if model_type == type_base64:
+        rval = True
+    return rval
+
+
 def generate_sample_model(
     model: Union[Type[TG], List[TG], Dict[str, TG]], include_optional: bool = False, depth: int = -1
 ) -> TG:
@@ -154,6 +168,8 @@ def generate_sample_model(
                     model_dict[field] = generate_sample_model(
                         outer_type, include_optional=include_optional, depth=depth - 1
                     )
+                elif is_by_type(outer_type):
+                    model_dict[field] = generate_sample_value_by_type(outer_type, field)
                 elif safe_is_sub(outer_type, OscalBaseModel):
                     model_dict[field] = generate_sample_model(
                         outer_type, include_optional=include_optional, depth=depth - 1
