@@ -142,15 +142,16 @@ class ControlWriter():
         else:
             self._insert_status(ImplementationStatus(state=const.STATUS_PLANNED), level)
 
-    def _process_main_component(self, part_id: str, comp_dict: CompDict) -> None:
+    def _process_main_component(self, part_id: str, part_label: str, comp_dict: CompDict) -> None:
         """Handle prompts for This System component."""
         self._md_file.new_paragraph()
         self._md_file.new_header(3, const.SSP_MAIN_COMP_NAME)
         self._md_file.new_paragraph()
         prose = f'{const.SSP_ADD_THIS_SYSTEM_IMPLEMENTATION_FOR_CONTROL_TEXT}: {part_id} -->'
         status = ImplementationStatus(state=const.STATUS_PLANNED)
-        if const.SSP_MAIN_COMP_NAME in comp_dict:
-            comp_info = list(comp_dict[const.SSP_MAIN_COMP_NAME].values())[0]
+        sys_comp_dict: Dict[str, ComponentImpInfo] = comp_dict.get(const.SSP_MAIN_COMP_NAME, {})
+        if sys_comp_dict and part_label in sys_comp_dict:
+            comp_info = sys_comp_dict[part_label]
             if comp_info.prose:
                 prose = comp_info.prose
             status = comp_info.status
@@ -166,7 +167,8 @@ class ControlWriter():
         did_write = False
         # do special handling for This System
         if context.purpose == ContextPurpose.SSP:
-            self._process_main_component(control_id, comp_dict)
+            # Passing in the control id and the empty key ('') for the label
+            self._process_main_component(control_id, '', comp_dict)
             did_write = True
 
         sorted_comp_names = sorted(comp_dict.keys())
@@ -227,13 +229,14 @@ class ControlWriter():
                         self._md_file.new_header(level=2, title=f'Implementation for part {part_label}')
                         wrote_label_content = False
                         if context.purpose == ContextPurpose.SSP:
-                            self._process_main_component(prt.id, comp_dict)
+                            self._process_main_component(prt.id, part_label, comp_dict)
                             wrote_label_content = True
                         sorted_comp_names = sorted(comp_dict.keys())
                         for comp_name in sorted_comp_names:
-                            dic = comp_dict[comp_name]
+                            # This System already handled
                             if comp_name == const.SSP_MAIN_COMP_NAME:
                                 continue
+                            dic = comp_dict[comp_name]
                             if part_label in dic:
                                 # insert the component name for ssp but not for comp_def
                                 # because there should only be one component in generated comp_def markdown
