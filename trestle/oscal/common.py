@@ -1922,6 +1922,65 @@ class RelatedResponse(OscalBaseModel):
     remarks: Optional[str] = None
 
 
+class Origin(OscalBaseModel):
+    """
+    Identifies the source of the finding, such as a tool, interviewed person, or activity.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    actors: List[OriginActor] = Field(...)
+    related_tasks: Optional[List[RelatedTask]] = Field(None, alias='related-tasks')
+
+
+class Observation(OscalBaseModel):
+    """
+    Describes an individual observation.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description=
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this observation elsewhere in this or other OSCAL instances. The locally defined UUID of the observation can be used to reference the data item locally or globally (e.g., in an imorted OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
+        title='Observation Universally Unique Identifier',
+    )
+    title: Optional[str] = Field(None, description='The title for this observation.', title='Observation Title')
+    description: str = Field(
+        ...,
+        description='A human-readable description of this assessment observation.',
+        title='Observation Description'
+    )
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
+    methods: List[Union[constr(regex=r'^\S(.*\S)?$'), Methods]] = Field(...)
+    types: Optional[List[Union[constr(
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+    ),
+                               Types]]] = Field(None)
+    origins: Optional[List[Origin]] = Field(None)
+    subjects: Optional[List[SubjectReference]] = Field(None)
+    relevant_evidence: Optional[List[RelevantEvidence]] = Field(None, alias='relevant-evidence')
+    collected: datetime = Field(
+        ...,
+        description='Date/time stamp identifying when the finding information was collected.',
+        title='Collected Field'
+    )
+    expires: Optional[datetime] = Field(
+        None,
+        description=
+        'Date/time identifying when the finding information is out-of-date and no longer valid. Typically used with continuous assessment scenarios.',
+        title='Expires Field'
+    )
+    remarks: Optional[str] = None
+
+
 class Hash(OscalBaseModel):
     """
     A representation of a cryptographic digest generated over a resource using a specified hash algorithm.
@@ -2000,6 +2059,20 @@ class BackMatter(OscalBaseModel):
     resources: Optional[List[Resource]] = Field(None)
 
 
+class Characterization(OscalBaseModel):
+    """
+    A collection of descriptive data about the containing object from a specific origin.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
+    origin: Origin
+    facets: List[Facet] = Field(...)
+
+
 class AssociatedActivity(OscalBaseModel):
     """
     Identifies an individual activity to be performed as part of a task.
@@ -2058,6 +2131,46 @@ class Task(OscalBaseModel):
     associated_activities: Optional[List[AssociatedActivity]] = Field(None, alias='associated-activities')
     subjects: Optional[List[AssessmentSubject]] = Field(None)
     responsible_roles: Optional[List[ResponsibleRole]] = Field(None, alias='responsible-roles')
+    remarks: Optional[str] = None
+
+
+class Response(OscalBaseModel):
+    """
+    Describes either recommended or an actual plan for addressing the risk.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description=
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this remediation elsewhere in this or other OSCAL instances. The locally defined UUID of the risk response can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
+        title='Remediation Universally Unique Identifier',
+    )
+    lifecycle: Union[
+        constr(
+            regex=
+            r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+        ),
+        Lifecycle
+    ] = Field(
+        ...,
+        description=
+        'Identifies whether this is a recommendation, such as from an assessor or tool, or an actual plan accepted by the system owner.',
+        title='Remediation Intent'
+    )
+    title: str = Field(..., description='The title for this response activity.', title='Response Title')
+    description: str = Field(
+        ..., description='A human-readable description of this response plan.', title='Response Description'
+    )
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
+    origins: Optional[List[Origin]] = Field(None)
+    required_assets: Optional[List[RequiredAsset]] = Field(None, alias='required-assets')
+    tasks: Optional[List[Task]] = Field(None)
     remarks: Optional[str] = None
 
 

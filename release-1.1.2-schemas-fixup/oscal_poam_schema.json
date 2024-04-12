@@ -1808,28 +1808,6 @@
             "$ref": "#assembly_oscal-metadata_link"
           }
         },
-        "origins": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "title": "Origin",
-            "description": "Identifies the source of the finding, such as a tool or person.",
-            "type": "object",
-            "properties": {
-              "actors": {
-                "type": "array",
-                "minItems": 1,
-                "items": {
-                  "$ref": "#assembly_oscal-assessment-common_origin-actor"
-                }
-              }
-            },
-            "required": [
-              "actors"
-            ],
-            "additionalProperties": false
-          }
-        },
         "related-findings": {
           "type": "array",
           "minItems": 1,
@@ -1892,6 +1870,28 @@
         },
         "remarks": {
           "$ref": "#field_oscal-metadata_remarks"
+        },
+        "originations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "title": "Origin",
+            "description": "Identifies the source of the finding, such as a tool or person.",
+            "type": "object",
+            "properties": {
+              "actors": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "$ref": "#assembly_oscal-assessment-common_origin-actor"
+                }
+              }
+            },
+            "required": [
+              "actors"
+            ],
+            "additionalProperties": false
+          }
         }
       },
       "required": [

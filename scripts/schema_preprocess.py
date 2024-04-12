@@ -76,6 +76,7 @@ def patch_schemas(fixup_dir_path: Path, patch_file_path: Path) -> None:
     for full_name in fixup_dir_path.glob(schema_file_name_search_template):
         model_name = str(full_name)
         patch_model(model_name, patch_json)
+        hack_model(model_name)
 
 
 def calculate_patch_key(key: str) -> str:
@@ -99,6 +100,29 @@ def patch_model(model_name: str, patch_json: Dict):
         if patch_key in patch_json.keys():
             logger.info(f'patch: {model_name} {key}')
             data['definitions'][key] = patch_json[patch_key]
+    json_data_put(model_name, data)
+
+
+def hack_model(model_name: str) -> None:
+    """Hack model."""
+    # POAM: change property name "origins" to "originations" to avoid conflict
+    if not model_name.endswith('oscal_poam_schema.json'):
+        return
+    data = json_data_get(model_name)
+    k1 = 'oscal-poam-oscal-poam:poam-item'
+    if k1 not in data['definitions'].keys():
+        return
+    k2 = 'properties'
+    if k2 not in data['definitions'][k1]:
+        return
+    k3 = 'origins'
+    if k3 not in data['definitions'][k1][k2]:
+        return
+    value = data['definitions'][k1][k2][k3]
+    del data['definitions'][k1][k2][k3]
+    u3 = 'originations'
+    data['definitions'][k1][k2][u3] = value
+    logger.info(f'patch: {model_name} {k1}.{k2}.{k3} -> {k1}.{k2}.{u3}')
     json_data_put(model_name, data)
 
 
