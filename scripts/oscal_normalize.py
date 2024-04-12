@@ -964,15 +964,15 @@ def kill_roots(file_classes):
                 for ii in range(1, len(c.lines)):
                     line = c.lines[ii]
                     for name, body in new_root_classes.items():
+                        # handle special case
+                        if any(token in line for token in ['id: TokenDatatype', 'value: StringDatatype']):
+                            line = line.replace(name, body, 1)
+                            continue
                         if 'title=' in line and 'Value' in line:
                             continue
                         if 'OscalVersion' not in line and 'OSCAL' not in line:
                             line = line.replace('common.' + name, body, 1)
                             if name not in body:
-                                line = line.replace(name, body, 1)
-                        else:
-                            # handle special case
-                            if 'id: TokenDatatype' in line:
                                 line = line.replace(name, body, 1)
                     c.lines[ii] = line
     return file_classes

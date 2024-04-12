@@ -394,7 +394,7 @@ class Property(OscalBaseModel):
         "A namespace qualifying the property's name. This allows different organizations to associate distinct semantics with the same name.",
         title='Property Namespace'
     )
-    value: StringDatatype = Field(
+    value: constr(regex=r'^\S(.*\S)?$') = Field(
         ..., description='Indicates the value of the attribute, characteristic, or quality.', title='Property Value'
     )
     class_: Optional[constr(
@@ -739,7 +739,8 @@ class Facet(OscalBaseModel):
         'Specifies the naming system under which this risk metric is organized, which allows for the same names to be used in different systems controlled by different parties. This avoids the potential of a name clash.',
         title='Naming System',
     )
-    value: StringDatatype = Field(..., description='Indicates the value of the facet.', title='Facet Value')
+    value: constr(regex=r'^\S(.*\S)?$'
+                  ) = Field(..., description='Indicates the value of the facet.', title='Facet Value')
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
     remarks: Optional[str] = None
