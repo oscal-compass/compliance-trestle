@@ -736,7 +736,7 @@ def write_oscal(classes, forward_refs, fstem):
 
 additions = {
     'assessment_plan': ['from trestle.oscal.common import SystemComponent'],
-    'assessment_results': ['from trestle.oscal.common import AssessmentAssets, SystemComponent'],
+    'assessment_results': ['from trestle.oscal.common import AssessmentAssets, Observation, SystemComponent'],
     'component': [
         'from trestle.oscal.common import URIReferenceDatatype',
     ],
