@@ -78,6 +78,8 @@ def patch_schemas(fixup_dir_path: Path, patch_file_path: Path) -> None:
         patch_model(model_name, patch_json)
         patch_finding_target(model_name)
         patch_poam_origins(model_name)
+        patch_poam_item(model_name, 'related-findings')
+        patch_poam_item(model_name, 'related-observations')
 
 
 def calculate_patch_key(key: str) -> str:
@@ -145,6 +147,39 @@ def patch_poam_origins(model_name: str) -> None:
     u3 = 'originations'
     data['definitions'][k1][k2][u3] = value
     logger.info(f'patch: {model_name} {k1}.{k2}.{k3} -> {k1}.{k2}.{u3}')
+    json_data_put(model_name, data)
+
+
+# With this patch the description in POAM slightly altered to match the other models.
+# This may not be an acceptable solution!?
+def patch_poam_item(model_name: str, k3: str) -> None:
+    """Patch POAM item."""
+    # POAM: change related-finding item description from "poam-item" to "finding" to avoid conflict
+    if not model_name.endswith('oscal_poam_schema.json'):
+        return
+    data = json_data_get(model_name)
+    k1 = 'oscal-poam-oscal-poam:poam-item'
+    if k1 not in data['definitions'].keys():
+        return
+    k2 = 'properties'
+    if k2 not in data['definitions'][k1]:
+        return
+    if k3 not in data['definitions'][k1][k2]:
+        return
+    k4 = 'items'
+    if k4 not in data['definitions'][k1][k2][k3]:
+        return
+    k5 = 'description'
+    if k5 not in data['definitions'][k1][k2][k3][k4]:
+        return
+    old_value = 'poam-item'
+    if old_value not in data['definitions'][k1][k2][k3][k4][k5]:
+        return
+    new_value = 'finding'
+    data['definitions'][k1][k2][k3][k4][k5] = data['definitions'][k1][k2][k3][k4][k5].replace(old_value, new_value)
+    x = data['definitions'][k1][k2][k3][k4][k5]
+    print(f'{x}')
+    logger.info(f'patch: {model_name} {k1}.{k2}.{k3}.{k4}.{k5} {old_value} -> {new_value}')
     json_data_put(model_name, data)
 
 

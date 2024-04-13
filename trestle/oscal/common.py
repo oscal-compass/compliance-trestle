@@ -348,6 +348,24 @@ class RelatedRisk(OscalBaseModel):
     )
 
 
+class RelatedObservation(OscalBaseModel):
+    """
+    Relates the finding to a set of referenced observations that were used to determine the finding.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    observation_uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        alias='observation-uuid',
+        description='A machine-oriented identifier reference to an observation defined in the list of observations.',
+        title='Observation Universally Unique Identifier Reference',
+    )
+
+
 class Rel(Enum):
     """
     Describes the type of relationship provided by the link's hypertext reference. This can be an indicator of the link's purpose.
@@ -2087,6 +2105,44 @@ class BackMatter(OscalBaseModel):
     resources: Optional[List[Resource]] = Field(None)
 
 
+class Finding(OscalBaseModel):
+    """
+    Describes an individual finding.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description=
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this finding in this or other OSCAL instances. The locally defined UUID of the finding can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
+        title='Finding Universally Unique Identifier',
+    )
+    title: str = Field(..., description='The title for this finding.', title='Finding Title')
+    description: str = Field(
+        ..., description='A human-readable description of this finding.', title='Finding Description'
+    )
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
+    origins: Optional[List[Origin]] = Field(None)
+    target: FindingTarget
+    implementation_statement_uuid: Optional[constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    )] = Field(
+        None,
+        alias='implementation-statement-uuid',
+        description=
+        'A machine-oriented identifier reference to the implementation statement in the SSP to which this finding is related.',
+        title='Implementation Statement UUID',
+    )
+    related_observations: Optional[List[RelatedObservation]] = Field(None, alias='related-observations')
+    related_risks: Optional[List[RelatedRisk]] = Field(None, alias='related-risks')
+    remarks: Optional[str] = None
+
+
 class Characterization(OscalBaseModel):
     """
     A collection of descriptive data about the containing object from a specific origin.
@@ -2200,6 +2256,49 @@ class Response(OscalBaseModel):
     required_assets: Optional[List[RequiredAsset]] = Field(None, alias='required-assets')
     tasks: Optional[List[Task]] = Field(None)
     remarks: Optional[str] = None
+
+
+class Risk(OscalBaseModel):
+    """
+    An identified risk.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description=
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this risk elsewhere in this or other OSCAL instances. The locally defined UUID of the risk can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
+        title='Risk Universally Unique Identifier',
+    )
+    title: str = Field(..., description='The title for this risk.', title='Risk Title')
+    description: str = Field(
+        ...,
+        description=
+        'A human-readable summary of the identified risk, to include a statement of how the risk impacts the system.',
+        title='Risk Description'
+    )
+    statement: str = Field(
+        ..., description='An summary of impact for how the risk affects the system.', title='Risk Statement'
+    )
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
+    status: RiskStatus
+    origins: Optional[List[Origin]] = Field(None)
+    threat_ids: Optional[List[ThreatId]] = Field(None, alias='threat-ids')
+    characterizations: Optional[List[Characterization]] = Field(None)
+    mitigating_factors: Optional[List[MitigatingFactor]] = Field(None, alias='mitigating-factors')
+    deadline: Optional[datetime] = Field(
+        None, description='The date/time by which the risk must be resolved.', title='Risk Resolution Deadline'
+    )
+    remediations: Optional[List[Response]] = Field(None)
+    risk_log: Optional[RiskLog] = Field(
+        None, alias='risk-log', description='A log of all risk-related tasks taken.', title='Risk Log'
+    )
+    related_observations: Optional[List[RelatedObservation]] = Field(None, alias='related-observations')
 
 
 class Action(OscalBaseModel):

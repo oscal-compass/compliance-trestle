@@ -1813,7 +1813,7 @@
           "minItems": 1,
           "items": {
             "title": "Related Finding",
-            "description": "Relates the poam-item to referenced finding(s).",
+            "description": "Relates the finding to referenced finding(s).",
             "type": "object",
             "properties": {
               "finding-uuid": {
@@ -1833,7 +1833,7 @@
           "minItems": 1,
           "items": {
             "title": "Related Observation",
-            "description": "Relates the poam-item to a set of referenced observations that were used to determine the finding.",
+            "description": "Relates the finding to a set of referenced observations that were used to determine the finding.",
             "type": "object",
             "properties": {
               "observation-uuid": {

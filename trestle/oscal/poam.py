@@ -34,6 +34,8 @@ from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr, validator
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
 import trestle.oscal.common as common
+from trestle.oscal.common import RelatedObservation
+from trestle.oscal.common import RelatedObservation as RelatedObservation1
 
 
 class Entry(OscalBaseModel):
@@ -77,6 +79,31 @@ class Entry(OscalBaseModel):
                                   )
     related_responses: Optional[List[common.RelatedResponse]] = Field(None, alias='related-responses')
     remarks: Optional[str] = None
+
+
+class LocalDefinitions(OscalBaseModel):
+    """
+    Allows components, and inventory-items to be defined within the POA&M for circumstances where no OSCAL-based SSP exists, or is not delivered with the POA&M.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    components: Optional[List[common.SystemComponent]] = Field(None)
+    inventory_items: Optional[List[common.InventoryItem]] = Field(None, alias='inventory-items')
+    assessment_assets: Optional[common.AssessmentAssets] = Field(None, alias='assessment-assets')
+    remarks: Optional[str] = None
+
+
+class Origination(OscalBaseModel):
+    """
+    Identifies the source of the finding, such as a tool or person.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    actors: List[common.OriginActor] = Field(...)
 
 
 class Type3(Enum):
@@ -134,45 +161,9 @@ class RiskLog(OscalBaseModel):
     entries: List[Entry] = Field(...)
 
 
-class RelatedObservation1(OscalBaseModel):
-    """
-    Relates the finding to a set of referenced observations that were used to determine the finding.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    observation_uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        alias='observation-uuid',
-        description='A machine-oriented identifier reference to an observation defined in the list of observations.',
-        title='Observation Universally Unique Identifier Reference',
-    )
-
-
-class RelatedObservation(OscalBaseModel):
-    """
-    Relates the poam-item to a set of referenced observations that were used to determine the finding.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    observation_uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        alias='observation-uuid',
-        description='A machine-oriented identifier reference to an observation defined in the list of observations.',
-        title='Observation Universally Unique Identifier Reference',
-    )
-
-
 class RelatedFinding(OscalBaseModel):
     """
-    Relates the poam-item to referenced finding(s).
+    Relates the finding to referenced finding(s).
     """
 
     class Config:
@@ -186,112 +177,6 @@ class RelatedFinding(OscalBaseModel):
         description='A machine-oriented identifier reference to a finding defined in the list of findings.',
         title='Finding Universally Unique Identifier Reference'
     )
-
-
-class Origination(OscalBaseModel):
-    """
-    Identifies the source of the finding, such as a tool or person.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    actors: List[common.OriginActor] = Field(...)
-
-
-class LocalDefinitions(OscalBaseModel):
-    """
-    Allows components, and inventory-items to be defined within the POA&M for circumstances where no OSCAL-based SSP exists, or is not delivered with the POA&M.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    components: Optional[List[common.SystemComponent]] = Field(None)
-    inventory_items: Optional[List[common.InventoryItem]] = Field(None, alias='inventory-items')
-    assessment_assets: Optional[common.AssessmentAssets] = Field(None, alias='assessment-assets')
-    remarks: Optional[str] = None
-
-
-class Finding(OscalBaseModel):
-    """
-    Describes an individual finding.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description=
-        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this finding in this or other OSCAL instances. The locally defined UUID of the finding can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
-        title='Finding Universally Unique Identifier',
-    )
-    title: str = Field(..., description='The title for this finding.', title='Finding Title')
-    description: str = Field(
-        ..., description='A human-readable description of this finding.', title='Finding Description'
-    )
-    props: Optional[List[common.Property]] = Field(None)
-    links: Optional[List[common.Link]] = Field(None)
-    origins: Optional[List[common.Origin]] = Field(None)
-    target: common.FindingTarget
-    implementation_statement_uuid: Optional[constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    )] = Field(
-        None,
-        alias='implementation-statement-uuid',
-        description=
-        'A machine-oriented identifier reference to the implementation statement in the SSP to which this finding is related.',
-        title='Implementation Statement UUID',
-    )
-    related_observations: Optional[List[RelatedObservation1]] = Field(None, alias='related-observations')
-    related_risks: Optional[List[common.RelatedRisk]] = Field(None, alias='related-risks')
-    remarks: Optional[str] = None
-
-
-class Risk(OscalBaseModel):
-    """
-    An identified risk.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description=
-        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this risk elsewhere in this or other OSCAL instances. The locally defined UUID of the risk can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
-        title='Risk Universally Unique Identifier',
-    )
-    title: str = Field(..., description='The title for this risk.', title='Risk Title')
-    description: str = Field(
-        ...,
-        description=
-        'A human-readable summary of the identified risk, to include a statement of how the risk impacts the system.',
-        title='Risk Description'
-    )
-    statement: str = Field(
-        ..., description='An summary of impact for how the risk affects the system.', title='Risk Statement'
-    )
-    props: Optional[List[common.Property]] = Field(None)
-    links: Optional[List[common.Link]] = Field(None)
-    status: Union[TokenDatatype, RiskStatus1]
-    origins: Optional[List[common.Origin]] = Field(None)
-    threat_ids: Optional[List[common.ThreatId]] = Field(None, alias='threat-ids')
-    characterizations: Optional[List[common.Characterization]] = Field(None)
-    mitigating_factors: Optional[List[common.MitigatingFactor]] = Field(None, alias='mitigating-factors')
-    deadline: Optional[datetime] = Field(
-        None, description='The date/time by which the risk must be resolved.', title='Risk Resolution Deadline'
-    )
-    remediations: Optional[List[common.Response]] = Field(None)
-    risk_log: Optional[RiskLog] = Field(
-        None, alias='risk-log', description='A log of all risk-related tasks taken.', title='Risk Log'
-    )
-    related_observations: Optional[List[RelatedObservation1]] = Field(None, alias='related-observations')
 
 
 class PoamItem(OscalBaseModel):
@@ -317,7 +202,7 @@ class PoamItem(OscalBaseModel):
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     related_findings: Optional[List[RelatedFinding]] = Field(None, alias='related-findings')
-    related_observations: Optional[List[RelatedObservation]] = Field(None, alias='related-observations')
+    related_observations: Optional[List[common.RelatedObservation]] = Field(None, alias='related-observations')
     related_risks: Optional[List[common.RelatedRisk]] = Field(None, alias='related-risks')
     remarks: Optional[str] = None
     originations: Optional[List[Origination]] = Field(None)
@@ -344,8 +229,8 @@ class PlanOfActionAndMilestones(OscalBaseModel):
     system_id: Optional[common.SystemId] = Field(None, alias='system-id')
     local_definitions: Optional[LocalDefinitions] = Field(None, alias='local-definitions')
     observations: Optional[List[common.Observation]] = Field(None)
-    risks: Optional[List[Risk]] = Field(None)
-    findings: Optional[List[Finding]] = Field(None)
+    risks: Optional[List[common.Risk]] = Field(None)
+    findings: Optional[List[common.Finding]] = Field(None)
     poam_items: List[PoamItem] = Field(..., alias='poam-items')
     back_matter: Optional[common.BackMatter] = Field(None, alias='back-matter')
 
