@@ -28,13 +28,13 @@ from trestle.common.list_utils import join_key_to_list_dicts
 from trestle.oscal.assessment_results import LocalDefinitions1
 from trestle.oscal.assessment_results import Observation
 from trestle.oscal.assessment_results import Result
-from trestle.oscal.assessment_results import Status1
 from trestle.oscal.assessment_results import SystemComponent
 from trestle.oscal.common import ControlSelection
 from trestle.oscal.common import ImplementedComponent
 from trestle.oscal.common import InventoryItem
 from trestle.oscal.common import Property
 from trestle.oscal.common import ReviewedControls
+from trestle.oscal.common import Status
 from trestle.oscal.common import SubjectReference
 from trestle.transforms.results import Results
 from trestle.transforms.transformer_factory import ResultsTransformer
@@ -298,7 +298,7 @@ class TaniumOscalFactory():
             # See Note in _get_component_ref.
             component_description = rule_use.component
             component_ref = _uuid_component()
-            status = Status1(state='operational')
+            status = Status(state='operational')
             component = SystemComponent(
                 uuid=component_ref,
                 type=component_type,

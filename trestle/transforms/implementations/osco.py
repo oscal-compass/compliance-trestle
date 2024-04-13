@@ -31,13 +31,13 @@ from trestle.common.list_utils import as_list
 from trestle.oscal.assessment_results import LocalDefinitions1
 from trestle.oscal.assessment_results import Observation
 from trestle.oscal.assessment_results import Result
-from trestle.oscal.assessment_results import Status1
 from trestle.oscal.assessment_results import SystemComponent
 from trestle.oscal.common import ControlSelection
 from trestle.oscal.common import ImplementedComponent
 from trestle.oscal.common import InventoryItem
 from trestle.oscal.common import Property
 from trestle.oscal.common import ReviewedControls
+from trestle.oscal.common import Status
 from trestle.oscal.common import SubjectReference
 from trestle.oscal.profile import Profile
 from trestle.transforms.results import Results
@@ -433,7 +433,7 @@ class _OscalResultsFactory():
             if component.type == _type and component.title == _title and component.description == _desc:
                 return
         component_ref = str(uuid.uuid4())
-        status = Status1(state='operational')
+        status = Status(state='operational')
         component = SystemComponent(uuid=component_ref, type=_type, title=_title, description=_desc, status=status)
         self._component_map[component_ref] = component
 

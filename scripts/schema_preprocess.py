@@ -76,7 +76,8 @@ def patch_schemas(fixup_dir_path: Path, patch_file_path: Path) -> None:
     for full_name in fixup_dir_path.glob(schema_file_name_search_template):
         model_name = str(full_name)
         patch_model(model_name, patch_json)
-        hack_model(model_name)
+        patch_finding_target(model_name)
+        patch_poam_origins(model_name)
 
 
 def calculate_patch_key(key: str) -> str:
@@ -103,8 +104,29 @@ def patch_model(model_name: str, patch_json: Dict):
     json_data_put(model_name, data)
 
 
-def hack_model(model_name: str) -> None:
-    """Hack model."""
+def patch_finding_target(model_name: str) -> None:
+    """Patch finding target."""
+    # finding target: change property name "status" to "objectiveStatus" to avoid conflict
+    data = json_data_get(model_name)
+    for k1 in data['definitions'].keys():
+        if not k1.endswith('-common:finding-target'):
+            continue
+        k2 = 'properties'
+        if k2 not in data['definitions'][k1]:
+            continue
+        k3 = 'status'
+        if k3 not in data['definitions'][k1][k2]:
+            continue
+        value = data['definitions'][k1][k2][k3]
+        del data['definitions'][k1][k2][k3]
+        u3 = 'objectiveStatus'
+        data['definitions'][k1][k2][u3] = value
+        logger.info(f'patch: {model_name} {k1}.{k2}.{k3} -> {k1}.{k2}.{u3}')
+        json_data_put(model_name, data)
+
+
+def patch_poam_origins(model_name: str) -> None:
+    """Patch POAM origins."""
     # POAM: change property name "origins" to "originations" to avoid conflict
     if not model_name.endswith('oscal_poam_schema.json'):
         return

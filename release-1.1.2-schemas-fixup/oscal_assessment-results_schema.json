@@ -3034,7 +3034,13 @@
             "$ref": "#assembly_oscal-metadata_link"
           }
         },
-        "status": {
+        "implementation-status": {
+          "$ref": "#assembly_oscal-implementation-common_implementation-status"
+        },
+        "remarks": {
+          "$ref": "#field_oscal-metadata_remarks"
+        },
+        "objectiveStatus": {
           "title": "Objective Status",
           "description": "A determination of if the objective is satisfied or not within a given system.",
           "type": "object",
@@ -3078,12 +3084,6 @@
             "state"
           ],
           "additionalProperties": false
-        },
-        "implementation-status": {
-          "$ref": "#assembly_oscal-implementation-common_implementation-status"
-        },
-        "remarks": {
-          "$ref": "#field_oscal-metadata_remarks"
         }
       },
       "required": [

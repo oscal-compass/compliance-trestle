@@ -29,7 +29,6 @@ from trestle.oscal.assessment_results import AssessmentAssets
 from trestle.oscal.assessment_results import LocalDefinitions1
 from trestle.oscal.assessment_results import Observation
 from trestle.oscal.assessment_results import Result
-from trestle.oscal.assessment_results import Status1
 from trestle.oscal.assessment_results import SystemComponent
 from trestle.oscal.common import AssessmentPlatform
 from trestle.oscal.common import ControlSelection
@@ -37,6 +36,7 @@ from trestle.oscal.common import ImplementedComponent
 from trestle.oscal.common import InventoryItem
 from trestle.oscal.common import Property
 from trestle.oscal.common import ReviewedControls
+from trestle.oscal.common import Status
 from trestle.oscal.common import SubjectReference
 from trestle.transforms.results import Results
 from trestle.transforms.transformer_factory import ResultsTransformer
@@ -424,7 +424,7 @@ class _OscalResultsFactory():
     @property
     def assessment_assets(self) -> AssessmentAssets:
         """OSCAL assessment_assets."""
-        _status = Status1(state='operational')
+        _status = Status(state='operational')
         component = SystemComponent(
             uuid=str(uuid.uuid4()),
             type=f'{self._type}',
@@ -523,7 +523,7 @@ class _OscalResultsFactory():
             if component.type == _type and component.title == _title and component.description == _desc:
                 return
         component_ref = str(uuid.uuid4())
-        status = Status1(state='operational')
+        status = Status(state='operational')
         component = SystemComponent(uuid=component_ref, type=_type, title=_title, description=_desc, status=status)
         self._component_map[component_ref] = component
 

@@ -486,6 +486,34 @@ class OnDate(OscalBaseModel):
     date: datetime = Field(..., description='The task must occur on the specified date.', title='On Date Condition')
 
 
+class ObjectiveStatus(OscalBaseModel):
+    """
+    A determination of if the objective is satisfied or not within a given system.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    state: constr(
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+    ) = Field(
+        ...,
+        description='An indication as to whether the objective is satisfied or not.',
+        title='Objective Status State'
+    )
+    reason: Optional[Union[constr(
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+    ),
+                           Reason]] = Field(
+                               None,
+                               description="The reason the objective was given it's status.",
+                               title='Objective Status Reason'
+                           )
+    remarks: Optional[str] = None
+
+
 class NonNegativeIntegerDatatype(OscalBaseModel):
     """
     An integer value that is equal to or greater than 0.
@@ -712,13 +740,13 @@ class FindingTarget(OscalBaseModel):
     )
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
-    status: Status1 = Field(
-        ...,
+    implementation_status: Optional[ImplementationStatus] = Field(None, alias='implementation-status')
+    remarks: Optional[str] = None
+    objectiveStatus: Optional[ObjectiveStatus] = Field(
+        None,
         description='A determination of if the objective is satisfied or not within a given system.',
         title='Objective Status'
     )
-    implementation_status: Optional[ImplementationStatus] = Field(None, alias='implementation-status')
-    remarks: Optional[str] = None
 
 
 class Facet(OscalBaseModel):
