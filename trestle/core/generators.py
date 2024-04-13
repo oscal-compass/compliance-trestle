@@ -16,6 +16,7 @@
 import inspect
 import logging
 import math
+import typing
 import uuid
 from datetime import date, datetime
 from enum import Enum
@@ -31,7 +32,7 @@ from trestle.common import str_utils
 from trestle.common.str_utils import AliasMode
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal import OSCAL_VERSION
-from trestle.oscal.common import Base64
+from trestle.oscal.common import Base64, Methods
 
 logger = logging.getLogger(__name__)
 
@@ -40,11 +41,25 @@ TG = TypeVar('TG', bound=OscalBaseModel)
 sample_base_64 = Base64(filename=const.REPLACE_ME, media_type=const.REPLACE_ME, value=0)
 type_base64 = type(sample_base_64)
 
+sample_method = Methods.EXAMINE
+
 
 def safe_is_sub(sub: Any, parent: Any) -> bool:
     """Is this a subclass of parent."""
     is_class = inspect.isclass(sub)
     return is_class and issubclass(sub, parent)
+
+
+def is_enum_method(type_: type) -> bool:
+    """Test for method."""
+    rval = False
+    if utils.get_origin(type_) == Union:
+        args = typing.get_args(type_)
+        for arg in args:
+            if "<enum 'Methods'>" == f'{arg}':
+                rval = True
+                break
+    return rval
 
 
 def generate_sample_value_by_type(
@@ -56,6 +71,8 @@ def generate_sample_value_by_type(
     Includes the Optional use of passing down a parent_model
     """
     # FIXME: Should be in separate generator module as it inherits EVERYTHING
+    if is_enum_method(type_):
+        return sample_method
     if type_ is Base64:
         return sample_base_64
     if type_ is datetime:
