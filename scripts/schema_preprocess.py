@@ -177,8 +177,6 @@ def patch_poam_item(model_name: str, k3: str) -> None:
         return
     new_value = 'finding'
     data['definitions'][k1][k2][k3][k4][k5] = data['definitions'][k1][k2][k3][k4][k5].replace(old_value, new_value)
-    x = data['definitions'][k1][k2][k3][k4][k5]
-    print(f'{x}')
     logger.info(f'patch: {model_name} {k1}.{k2}.{k3}.{k4}.{k5} {old_value} -> {new_value}')
     json_data_put(model_name, data)
 

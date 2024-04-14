@@ -32,14 +32,18 @@ from trestle.common import str_utils
 from trestle.common.str_utils import AliasMode
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal import OSCAL_VERSION
-from trestle.oscal.common import Base64, Methods
+from trestle.oscal.common import Base64, Base64Datatype, Methods
+from trestle.oscal.ssp import DateDatatype
 
 logger = logging.getLogger(__name__)
 
 TG = TypeVar('TG', bound=OscalBaseModel)
 
-sample_base_64 = Base64(filename=const.REPLACE_ME, media_type=const.REPLACE_ME, value=0)
-type_base64 = type(sample_base_64)
+sample_base64_value = 0
+sample_base64 = Base64(filename=const.REPLACE_ME, media_type=const.REPLACE_ME, value=sample_base64_value)
+type_base64 = type(sample_base64)
+
+sample_date_value = '2400-02-29'
 
 sample_method = Methods.EXAMINE
 
@@ -74,7 +78,7 @@ def generate_sample_value_by_type(
     if is_enum_method(type_):
         return sample_method
     if type_ is Base64:
-        return sample_base_64
+        return sample_base64
     if type_ is datetime:
         return datetime.now().astimezone()
     if type_ is bool:
@@ -196,7 +200,11 @@ def generate_sample_model(
                     # Root models should ideally not exist, however, sometimes we are stuck with them.
                     # If that is the case we need sufficient information on the type in order to generate a model.
                     # E.g. we need the type of the container.
-                    if field == '__root__' and hasattr(model, '__name__'):
+                    if model_type in [Base64, Base64Datatype]:
+                        model_dict[field] = sample_base64_value
+                    elif model_type in [DateDatatype]:
+                        model_dict[field] = sample_date_value
+                    elif field == '__root__' and hasattr(model, '__name__'):
                         model_dict[field] = generate_sample_value_by_type(
                             outer_type, str_utils.classname_to_alias(model.__name__, AliasMode.FIELD)
                         )
