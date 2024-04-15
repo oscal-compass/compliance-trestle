@@ -265,9 +265,9 @@ class ControlWriter():
         self._md_file.new_hr()
 
     def _skip_part(self, context: ControlContext, part_label: str, comp_dict: CompDict) -> bool:
-        """Check if a part should be skipped out based on rules and context."""
+        """Check if a part should be skipped based on rules and context."""
         if context.purpose == ContextPurpose.SSP:
-            # It will always be written out of SSPs because of This System
+            # It will always be written out for SSPs because of This System
             return False
         # only write out part if rules apply to it
         elif context.purpose == ContextPurpose.COMPONENT:
