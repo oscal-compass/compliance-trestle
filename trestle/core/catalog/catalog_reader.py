@@ -214,7 +214,6 @@ class CatalogReader():
         impl_req.statements.append(statement)
         return statement
 
-    # TODO: Check back on older bug around this function and make this doesn't hide an issue
     @staticmethod
     def _get_by_comp_from_imp_req(
         imp_req: ossp.ImplementedRequirement, statement_id: str, comp_uuid: str
