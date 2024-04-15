@@ -1136,7 +1136,35 @@ def test_ssp_gen_throw_exception_for_rep_comps(tmp_trestle_dir: pathlib.Path, mo
     assert ssp_gen._run(gen_args) == 1
 
 
-part_a_text_edited = """## Implementation for part a.
+def test_ssp_gen_and_assemble_implementation_parts(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test ssp generate and assemble edit implementation parts."""
+    gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
+    args_compdefs = gen_args.compdefs
+
+    ssp_gen = SSPGenerate()
+    assert ssp_gen._run(gen_args) == 0
+
+    prose_sys = 'My response for This System'
+    prose_aa = 'My response for comp aa'
+    prose_sys_a = 'My response for This System part a.'
+    prose_aa_a = 'My response for comp aa part a.'
+
+    # ac-1 edit
+    ac_1_path = tmp_trestle_dir / ssp_name / 'ac/ac-1.md'
+    assert test_utils.substitute_text_in_file(
+        ac_1_path, '<!-- Add implementation prose for the main This System component for control: ac-1 -->', prose_sys
+    )
+    assert test_utils.substitute_text_in_file(
+        ac_1_path,
+        '<!-- Add implementation prose for the main This System component for control: ac-1_smt.a -->',
+        prose_sys_a
+    )
+    assert test_utils.substitute_text_in_file(ac_1_path, 'imp req prose for ac-1 from comp aa', prose_aa)
+    assert test_utils.substitute_text_in_file(ac_1_path, 'statement prose for part a. from comp aa', prose_aa_a)
+    # change status for sys comp
+    assert test_utils.substitute_text_in_file(ac_1_path, 'Status: planned', 'Status: alternative')
+
+    part_a_text_edited = """## Implementation for part a.
 
 ### This System
 
@@ -1166,35 +1194,6 @@ My response for comp aa part a.
 
 ______________________________________________________________________
 """
-
-
-def test_ssp_gen_and_assemble_implementation_parts(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
-    """Test ssp generate and assemble edit implementation parts."""
-    gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
-    args_compdefs = gen_args.compdefs
-
-    ssp_gen = SSPGenerate()
-    assert ssp_gen._run(gen_args) == 0
-
-    prose_sys = 'My response for This System'
-    prose_aa = 'My response for comp aa'
-    prose_sys_a = 'My response for This System part a.'
-    prose_aa_a = 'My response for comp aa part a.'
-
-    # ac-1 edit
-    ac_1_path = tmp_trestle_dir / ssp_name / 'ac/ac-1.md'
-    assert test_utils.substitute_text_in_file(
-        ac_1_path, '<!-- Add implementation prose for the main This System component for control: ac-1 -->', prose_sys
-    )
-    assert test_utils.substitute_text_in_file(
-        ac_1_path,
-        '<!-- Add implementation prose for the main This System component for control: ac-1_smt.a -->',
-        prose_sys_a
-    )
-    assert test_utils.substitute_text_in_file(ac_1_path, 'imp req prose for ac-1 from comp aa', prose_aa)
-    assert test_utils.substitute_text_in_file(ac_1_path, 'statement prose for part a. from comp aa', prose_aa_a)
-    # change status for sys comp
-    assert test_utils.substitute_text_in_file(ac_1_path, 'Status: planned', 'Status: alternative')
 
     md_api = MarkdownAPI()
     _, tree = md_api.processor.process_markdown(ac_1_path)
