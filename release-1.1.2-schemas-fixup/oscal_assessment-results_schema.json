@@ -2238,10 +2238,7 @@
               "$ref": "#/definitions/TokenDatatype"
             },
             {
-              "enum": [
-                "milestone",
-                "action"
-              ]
+              "$ref": "#/definitions/TaskValidValues"
             }
           ]
         },
@@ -3516,10 +3513,7 @@
               "$ref": "#/definitions/URIDatatype"
             },
             {
-              "enum": [
-                "http://fedramp.gov",
-                "http://fedramp.gov/ns/oscal"
-              ]
+              "$ref": "#/definitions/ThreatIdValidValues"
             }
           ]
         },
@@ -4240,6 +4234,18 @@
       "description": "A type 4 ('random' or 'pseudorandom') or type 5 UUID per RFC 4122.",
       "type": "string",
       "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$"
+    },
+    "TaskValidValues": {
+      "enum": [
+        "milestone",
+        "action"
+      ]
+    },
+    "ThreatIdValidValues": {
+      "enum": [
+        "http://fedramp.gov",
+        "http://fedramp.gov/ns/oscal"
+      ]
     }
   },
   "properties": {

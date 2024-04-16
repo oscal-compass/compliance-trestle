@@ -735,16 +735,31 @@ def write_oscal(classes, forward_refs, fstem):
 # (begin) Temporary?
 
 additions = {
-    'assessment_plan': ['from trestle.oscal.common import SystemComponent, RelatedObservation'],
+    'assessment_plan': [
+        'from trestle.oscal.common import RelatedObservation',
+        'from trestle.oscal.common import RiskStatus1',
+        'from trestle.oscal.common import SystemComponent',
+        'from trestle.oscal.common import TaskValidValues',
+        'from trestle.oscal.common import TokenDatatype',
+    ],
     'assessment_results': [
-        'from trestle.oscal.common import AssessmentAssets, Observation, RelatedObservation, SystemComponent'
+        'from trestle.oscal.common import AssessmentAssets',
+        'from trestle.oscal.common import Observation',
+        'from trestle.oscal.common import RelatedObservation',
+        'from trestle.oscal.common import RiskStatus1',
+        'from trestle.oscal.common import SystemComponent',
+        'from trestle.oscal.common import TaskValidValues',
+        'from trestle.oscal.common import TokenDatatype',
     ],
     'component': [
         'from trestle.oscal.common import URIReferenceDatatype',
     ],
     'poam': [
         'from trestle.oscal.common import RelatedObservation',
-        'from trestle.oscal.common import RelatedObservation as RelatedObservation1'
+        'from trestle.oscal.common import RiskStatus1',
+        'from trestle.oscal.common import TaskValidValues',
+        'from trestle.oscal.common import TokenDatatype',
+        'from trestle.oscal.common import RelatedObservation as RelatedObservation1',
     ],
     'ssp': [
         'from trestle.oscal.common import Status, SystemComponent',

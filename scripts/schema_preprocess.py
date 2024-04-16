@@ -18,7 +18,7 @@ import json
 import logging
 import os
 from pathlib import Path
-from typing import Dict
+from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -69,7 +69,7 @@ def fixup_copy_schemas(input_dir_path: Path, fixup_dir_path: Path) -> None:
 # - https://github.com/koxudaxi/datamodel-code-generator/issues/1901
 def patch_schemas(fixup_dir_path: Path, patch_file_path: Path) -> None:
     """Patch json schemas."""
-    # Patch file contains "old-style" defintions which are used temporarily
+    # Patch file contains "old-style" definitions which are used temporarily
     # until datamodel-codegen tool issues are resolved.
     pf = f'{patch_file_path}'
     patch_json = json_data_get(pf)
@@ -80,6 +80,7 @@ def patch_schemas(fixup_dir_path: Path, patch_file_path: Path) -> None:
         patch_poam_origins(model_name)
         patch_poam_item(model_name, 'related-findings')
         patch_poam_item(model_name, 'related-observations')
+        create_refs(model_name)
 
 
 def calculate_patch_key(key: str) -> str:
@@ -178,6 +179,379 @@ def patch_poam_item(model_name: str, k3: str) -> None:
     new_value = 'finding'
     data['definitions'][k1][k2][k3][k4][k5] = data['definitions'][k1][k2][k3][k4][k5].replace(old_value, new_value)
     logger.info(f'patch: {model_name} {k1}.{k2}.{k3}.{k4}.{k5} {old_value} -> {new_value}')
+    json_data_put(model_name, data)
+
+
+# Create refs for common elements
+def create_refs(model_name: str) -> None:
+    """Create refs."""
+    # Task Valid Values
+    list_ = [
+        'oscal-ap-oscal-assessment-common:task',
+        'oscal-ar-oscal-assessment-common:task',
+        'oscal-poam-oscal-assessment-common:task',
+    ]
+    for key in list_:
+        create_ref_task_valid_values(model_name, key)
+    # Threat Id Valid Values
+    list_ = [
+        'oscal-ap-oscal-assessment-common:threat-id',
+        'oscal-ar-oscal-assessment-common:threat-id',
+        'oscal-poam-oscal-assessment-common:threat-id',
+    ]
+    for key in list_:
+        create_ref_threat_id_valid_values(model_name, key)
+
+
+# Create refs for common elements
+def _create_refs_tbd(model_name: str) -> None:
+    """Create refs."""
+    # Naming System Valid Values
+    list_ = [
+        'oscal-ap-oscal-assessment-common:characterization',
+        'oscal-ar-oscal-assessment-common:characterization',
+        'oscal-poam-oscal-assessment-common:characterization',
+    ]
+    for key in list_:
+        create_ref_naming_system_valid_values(model_name, key)
+    # Observation Valid Values
+    list_ = [
+        'oscal-ap-oscal-assessment-common:observation',
+        'oscal-ar-oscal-assessment-common:observation',
+        'oscal-poam-oscal-assessment-common:observation',
+    ]
+    for key in list_:
+        create_ref_observation_valid_values(model_name, key)
+    # System Component Valid Values
+    list_ = [
+        'oscal-ap-oscal-implementation-common:system-component',
+        'oscal-ar-oscal-implementation-common:system-component',
+        'oscal-poam-oscal-implementation-common:system-component',
+        'oscal-ssp-oscal-implementation-common:system-component',
+    ]
+    for key in list_:
+        create_ref_system_component_valid_values(model_name, key)
+    # Defined Component Valid Values
+    list_ = [
+        'oscal-component-definition-oscal-component-definition:defined-component',
+    ]
+    for key in list_:
+        create_ref_defined_component_valid_values(model_name, key)
+    # Assessment Subject Valid Values
+    list_ = [
+        'oscal-ap-oscal-assessment-common:select-subject-by-id',
+        'oscal-ap-oscal-assessment-common:subject-reference',
+        'oscal-ar-oscal-assessment-common:select-subject-by-id',
+        'oscal-ar-oscal-assessment-common:subject-reference',
+        'oscal-poam-oscal-assessment-common:select-subject-by-id',
+        'oscal-poam-oscal-assessment-common:subject-reference',
+    ]
+    for key in list_:
+        create_ref_assessment_subject_valid_values(model_name, key)
+    # Subject Valid Values
+    list_ = [
+        'oscal-ap-oscal-assessment-common:assessment-subject',
+        'oscal-ar-oscal-assessment-common:assessment-subject',
+        'oscal-poam-oscal-assessment-common:assessment-subject',
+    ]
+    for key in list_:
+        create_ref_subject_valid_values(model_name, key)
+    # Address Valid Values
+    list_ = [
+        'oscal-ap-oscal-metadata:address',
+        'oscal-ar-oscal-metadata:address',
+        'oscal-catalog-oscal-metadata:address',
+        'oscal-component-definition-oscal-metadata:address',
+        'oscal-poam-oscal-metadata:address',
+        'oscal-profile-oscal-metadata:address',
+        'oscal-ssp-oscal-metadata:address',
+    ]
+    for key in list_:
+        create_ref_address_valid_values(model_name, key)
+    # Telephone Valid Values
+    list_ = [
+        'oscal-ap-oscal-metadata:telephone-number',
+        'oscal-ar-oscal-metadata:telephone-number',
+        'oscal-catalog-oscal-metadata:telephone-number',
+        'oscal-component-definition-oscal-metadata:telephone-number',
+        'oscal-poam-oscal-metadata:telephone-number',
+        'oscal-profile-oscal-metadata:telephone-number',
+        'oscal-ssp-oscal-metadata:telephone-number',
+    ]
+    for key in list_:
+        create_ref_telephone_valid_values(model_name, key)
+    # Associated Risk Status Valid Values
+    list_ = [
+        'oscal-ap-oscal-assessment-common:risk-status',
+        'oscal-ar-oscal-assessment-common:risk-status',
+        'oscal-poam-oscal-assessment-common:risk-status',
+    ]
+    for key in list_:
+        create_ref_associated_risk_status_valid_values(model_name, key)
+
+
+def _find(needle: str, haystack: Dict) -> Any:
+    """Find needle in haystack."""
+    for item in haystack:
+        if item == needle:
+            return haystack[item]
+    return None
+
+
+def create_ref_naming_system_valid_values(model_name: str, k1: str) -> None:
+    """Create ref for Naming System Valid Values."""
+    data = json_data_get(model_name)
+    tgt = data['definitions']
+    tgt = tgt.get(k1)
+    if not tgt:
+        return
+    k2 = 'properties'
+    tgt = tgt.get(k2)
+    k3 = 'facets'
+    tgt = _find(k3, tgt)
+    k4 = 'items'
+    tgt = _find(k4, tgt)
+    k5 = 'properties'
+    tgt = _find(k5, tgt)
+    k6 = 'system'
+    tgt = _find(k6, tgt)
+    k7 = 'anyOf'
+    tgt = tgt.get(k7)
+    key = 'NamingSystemValidValues'
+    item = tgt[1]
+    replacement = {'$ref': f'#/definitions/{key}'}
+    tgt[1] = replacement
+    tgt = data['definitions']
+    tgt[key] = item
+    logger.info(f'patch: {model_name} {replacement}')
+    json_data_put(model_name, data)
+
+
+def create_ref_observation_valid_values(model_name: str, k1: str) -> None:
+    """Create ref for Observation Valid Values."""
+    data = json_data_get(model_name)
+    tgt = data['definitions']
+    tgt = tgt.get(k1)
+    if not tgt:
+        return
+    k2 = 'properties'
+    tgt = tgt.get(k2)
+    k3 = 'types'
+    tgt = _find(k3, tgt)
+    k4 = 'items'
+    tgt = tgt = tgt.get(k4)
+    k5 = 'anyOf'
+    tgt = tgt.get(k5)
+    key = 'ObservationValidValues'
+    item = tgt[1]
+    replacement = {'$ref': f'#/definitions/{key}'}
+    tgt[1] = replacement
+    tgt = data['definitions']
+    tgt[key] = item
+    logger.info(f'patch: {model_name} {replacement}')
+    json_data_put(model_name, data)
+
+
+def create_ref_system_component_valid_values(model_name: str, k1: str) -> None:
+    """Create ref for System Component Valid Values."""
+    data = json_data_get(model_name)
+    tgt = data['definitions']
+    tgt = tgt.get(k1)
+    if not tgt:
+        return
+    k2 = 'properties'
+    tgt = tgt.get(k2)
+    k3 = 'type'
+    tgt = _find(k3, tgt)
+    k4 = 'anyOf'
+    tgt = tgt.get(k4)
+    key = 'SystemComponentValidValues'
+    item = tgt[1]
+    replacement = {'$ref': f'#/definitions/{key}'}
+    tgt[1] = replacement
+    tgt = data['definitions']
+    tgt[key] = item
+    logger.info(f'patch: {model_name} {replacement}')
+    json_data_put(model_name, data)
+
+
+def create_ref_defined_component_valid_values(model_name: str, k1: str) -> None:
+    """Create ref for Defined Component Valid Values."""
+    data = json_data_get(model_name)
+    tgt = data['definitions']
+    tgt = tgt.get(k1)
+    if not tgt:
+        return
+    k2 = 'properties'
+    tgt = tgt.get(k2)
+    k3 = 'type'
+    tgt = _find(k3, tgt)
+    k4 = 'anyOf'
+    tgt = tgt.get(k4)
+    key = 'DefinedComponentValidValues'
+    item = tgt[1]
+    replacement = {'$ref': f'#/definitions/{key}'}
+    tgt[1] = replacement
+    tgt = data['definitions']
+    tgt[key] = item
+    logger.info(f'patch: {model_name} {replacement}')
+    json_data_put(model_name, data)
+
+
+def create_ref_assessment_subject_valid_values(model_name: str, k1: str) -> None:
+    """Create ref for Assessment Subject Valid Values."""
+    data = json_data_get(model_name)
+    tgt = data['definitions']
+    tgt = tgt.get(k1)
+    if not tgt:
+        return
+    k2 = 'properties'
+    tgt = tgt.get(k2)
+    k3 = 'type'
+    tgt = _find(k3, tgt)
+    k4 = 'anyOf'
+    tgt = tgt.get(k4)
+    key = 'AssessmentSubjectValidValues'
+    item = tgt[1]
+    replacement = {'$ref': f'#/definitions/{key}'}
+    tgt[1] = replacement
+    tgt = data['definitions']
+    tgt[key] = item
+    logger.info(f'patch: {model_name} {replacement}')
+    json_data_put(model_name, data)
+
+
+def create_ref_subject_valid_values(model_name: str, k1: str) -> None:
+    """Create ref for Subject Valid Values."""
+    data = json_data_get(model_name)
+    tgt = data['definitions']
+    tgt = tgt.get(k1)
+    if not tgt:
+        return
+    k2 = 'properties'
+    tgt = tgt.get(k2)
+    k3 = 'type'
+    tgt = _find(k3, tgt)
+    k4 = 'anyOf'
+    tgt = tgt.get(k4)
+    key = 'SubjectValidValues'
+    item = tgt[1]
+    replacement = {'$ref': f'#/definitions/{key}'}
+    tgt[1] = replacement
+    tgt = data['definitions']
+    tgt[key] = item
+    logger.info(f'patch: {model_name} {replacement}')
+    json_data_put(model_name, data)
+
+
+def create_ref_task_valid_values(model_name: str, k1: str) -> None:
+    """Create ref for Task Valid Values."""
+    data = json_data_get(model_name)
+    tgt = data['definitions']
+    tgt = tgt.get(k1)
+    if not tgt:
+        return
+    k2 = 'properties'
+    tgt = tgt.get(k2)
+    k3 = 'type'
+    tgt = _find(k3, tgt)
+    k4 = 'anyOf'
+    tgt = tgt.get(k4)
+    key = 'TaskValidValues'
+    item = tgt[1]
+    replacement = {'$ref': f'#/definitions/{key}'}
+    tgt[1] = replacement
+    tgt = data['definitions']
+    tgt[key] = item
+    logger.info(f'patch: {model_name} {replacement}')
+    json_data_put(model_name, data)
+
+
+def create_ref_address_valid_values(model_name: str, k1: str) -> None:
+    """Create ref for Address Valid Values."""
+    data = json_data_get(model_name)
+    tgt = data['definitions']
+    tgt = tgt.get(k1)
+    if not tgt:
+        return
+    k2 = 'properties'
+    tgt = tgt.get(k2)
+    k3 = 'type'
+    tgt = _find(k3, tgt)
+    k4 = 'anyOf'
+    tgt = tgt.get(k4)
+    key = 'AddressValidValues'
+    item = tgt[1]
+    replacement = {'$ref': f'#/definitions/{key}'}
+    tgt[1] = replacement
+    tgt = data['definitions']
+    tgt[key] = item
+    logger.info(f'patch: {model_name} {replacement}')
+    json_data_put(model_name, data)
+
+
+def create_ref_telephone_valid_values(model_name: str, k1: str) -> None:
+    """Create ref for Telephone Valid Values."""
+    data = json_data_get(model_name)
+    tgt = data['definitions']
+    tgt = tgt.get(k1)
+    if not tgt:
+        return
+    k2 = 'properties'
+    tgt = tgt.get(k2)
+    k3 = 'type'
+    tgt = _find(k3, tgt)
+    k4 = 'anyOf'
+    tgt = tgt.get(k4)
+    key = 'Telephone Valid Values'
+    item = tgt[1]
+    replacement = {'$ref': f'#/definitions/{key}'}
+    tgt[1] = replacement
+    tgt = data['definitions']
+    tgt[key] = item
+    logger.info(f'patch: {model_name} {replacement}')
+    json_data_put(model_name, data)
+
+
+def create_ref_threat_id_valid_values(model_name: str, k1: str) -> None:
+    """Create ref for Threat Id Valid Values."""
+    data = json_data_get(model_name)
+    tgt = data['definitions']
+    tgt = tgt.get(k1)
+    if not tgt:
+        return
+    k2 = 'properties'
+    tgt = tgt.get(k2)
+    k3 = 'system'
+    tgt = _find(k3, tgt)
+    k4 = 'anyOf'
+    tgt = tgt.get(k4)
+    key = 'ThreatIdValidValues'
+    item = tgt[1]
+    replacement = {'$ref': f'#/definitions/{key}'}
+    tgt[1] = replacement
+    tgt = data['definitions']
+    tgt[key] = item
+    logger.info(f'patch: {model_name} {replacement}')
+    json_data_put(model_name, data)
+
+
+def create_ref_associated_risk_status_valid_values(model_name: str, k1: str) -> None:
+    """Create ref for Associated Risk Status Valid Values."""
+    data = json_data_get(model_name)
+    tgt = data['definitions']
+    tgt = tgt.get(k1)
+    if not tgt:
+        return
+    k2 = 'anyOf'
+    tgt = tgt.get(k2)
+    key = 'AssociatedRiskStatusValidValues'
+    item = tgt[1]
+    replacement = {'$ref': f'#/definitions/{key}'}
+    tgt[1] = replacement
+    tgt = data['definitions']
+    tgt[key] = item
+    logger.info(f'patch: {model_name} {replacement}')
     json_data_put(model_name, data)
 
 

@@ -32,7 +32,7 @@ from trestle.common import str_utils
 from trestle.common.str_utils import AliasMode
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal import OSCAL_VERSION
-from trestle.oscal.common import Base64, Base64Datatype, Methods
+from trestle.oscal.common import Base64, Base64Datatype, Methods, TaskValidValues
 from trestle.oscal.ssp import DateDatatype
 
 logger = logging.getLogger(__name__)
@@ -45,6 +45,7 @@ type_base64 = type(sample_base64)
 
 sample_date_value = '2400-02-29'
 
+sample_task_valid_value = TaskValidValues.milestone
 sample_method = Methods.EXAMINE
 
 
@@ -66,6 +67,18 @@ def is_enum_method(type_: type) -> bool:
     return rval
 
 
+def is_enum_task_valid_value(type_: type) -> bool:
+    """Test for task valid value."""
+    rval = False
+    if utils.get_origin(type_) == Union:
+        args = typing.get_args(type_)
+        for arg in args:
+            if "<enum 'TaskValidValues'>" == f'{arg}':
+                rval = True
+                break
+    return rval
+
+
 def generate_sample_value_by_type(
     type_: type,
     field_name: str,
@@ -77,6 +90,8 @@ def generate_sample_value_by_type(
     # FIXME: Should be in separate generator module as it inherits EVERYTHING
     if is_enum_method(type_):
         return sample_method
+    if is_enum_task_valid_value(type_):
+        return sample_task_valid_value
     if type_ is Base64:
         return sample_base64
     if type_ is datetime:
