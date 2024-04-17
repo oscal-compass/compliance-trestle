@@ -16,7 +16,7 @@ testpaths = [
 ]
 
 [tool.black]
-line-length = 200
+line-length = 500
 
 [tool.isort]
-line_length = 200
+line_length = 500

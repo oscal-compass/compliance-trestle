@@ -224,7 +224,7 @@ class Alter(OscalBaseModel):
         alias='control-id',
         description=
         'A reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).',
-        title='Control Identifier Reference',
+        title='Control Identifier Reference'
     )
     removes: Optional[List[Remove]] = Field(None)
     adds: Optional[List[Add]] = Field(None)
@@ -242,7 +242,7 @@ class Modify(OscalBaseModel):
     alters: Optional[List[Alter]] = Field(None)
 
 
-class SelectControlById(OscalBaseModel):
+class SelectControl(OscalBaseModel):
     """
     Select a control or controls from an imported control set.
     """
@@ -277,8 +277,8 @@ class Import(OscalBaseModel):
         title='Catalog or Profile Reference'
     )
     include_all: Optional[common.IncludeAll] = Field(None, alias='include-all')
-    include_controls: Optional[List[SelectControlById]] = Field(None, alias='include-controls')
-    exclude_controls: Optional[List[SelectControlById]] = Field(None, alias='exclude-controls')
+    include_controls: Optional[List[SelectControl]] = Field(None, alias='include-controls')
+    exclude_controls: Optional[List[SelectControl]] = Field(None, alias='exclude-controls')
 
 
 class InsertControls(OscalBaseModel):
@@ -296,8 +296,8 @@ class InsertControls(OscalBaseModel):
         None, description='A designation of how a selection of controls in a profile is to be ordered.', title='Order'
     )
     include_all: Optional[common.IncludeAll] = Field(None, alias='include-all')
-    include_controls: Optional[List[SelectControlById]] = Field(None, alias='include-controls')
-    exclude_controls: Optional[List[SelectControlById]] = Field(None, alias='exclude-controls')
+    include_controls: Optional[List[SelectControl]] = Field(None, alias='include-controls')
+    exclude_controls: Optional[List[SelectControl]] = Field(None, alias='exclude-controls')
 
 
 class Group(OscalBaseModel):

@@ -638,8 +638,8 @@ class ProfileInherit(AuthorCommonCommand):
 
         include_with_ids: Set[str] = catalog_control_ids - exclude_with_ids
 
-        orig_prof_import.include_controls = [prof.SelectControlById(with_ids=sorted(include_with_ids))]
-        orig_prof_import.exclude_controls = [prof.SelectControlById(with_ids=sorted(exclude_with_ids))]
+        orig_prof_import.include_controls = [prof.SelectControl(with_ids=sorted(include_with_ids))]
+        orig_prof_import.exclude_controls = [prof.SelectControl(with_ids=sorted(exclude_with_ids))]
 
     def initialize_profile(
         self,

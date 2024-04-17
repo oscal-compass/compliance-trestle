@@ -78,7 +78,7 @@ class Statement(OscalBaseModel):
         ...,
         description=
         'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this control statement elsewhere in this or other OSCAL instances. The UUID of the control statement in the source OSCAL instance is sufficient to reference the data item locally or globally (e.g., in an imported OSCAL instance).',
-        title='Control Statement Reference Universally Unique Identifier',
+        title='Control Statement Reference Universally Unique Identifier'
     )
     description: str = Field(
         ...,
@@ -175,13 +175,13 @@ class ImplementedRequirement(OscalBaseModel):
         alias='control-id',
         description=
         'A reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).',
-        title='Control Identifier Reference',
+        title='Control Identifier Reference'
     )
     description: str = Field(
         ...,
         description=
         'A suggestion from the supplier (e.g., component vendor or author) for how the specified control may be implemented if the containing component or capability is instantiated in a system security plan.',
-        title='Control Implementation Description',
+        title='Control Implementation Description'
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)

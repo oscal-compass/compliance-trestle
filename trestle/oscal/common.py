@@ -69,31 +69,6 @@ class URIDatatype(OscalBaseModel):
     __root__: AnyUrl = Field(..., description='A universal resource identifier (URI) formatted according to RFC3986.')
 
 
-class Types(Enum):
-    """
-    Identifies the nature of the observation. More than one may be used to further qualify and enable filtering.
-    """
-
-    ssp_statement_issue = 'ssp-statement-issue'
-    control_objective = 'control-objective'
-    mitigation = 'mitigation'
-    finding = 'finding'
-    historic = 'historic'
-
-
-class Type4(Enum):
-    """
-    Used to indicate the type of object pointed to by the uuid-ref within a subject.
-    """
-
-    component = 'component'
-    inventory_item = 'inventory-item'
-    location = 'location'
-    party = 'party'
-    user = 'user'
-    resource = 'resource'
-
-
 class Type2(Enum):
     """
     A category describing the purpose of the component.
@@ -202,6 +177,15 @@ class TaskValidValues(Enum):
     action = 'action'
 
 
+class SubjectReferenceValidValues(Enum):
+    component = 'component'
+    inventory_item = 'inventory-item'
+    location = 'location'
+    party = 'party'
+    user = 'user'
+    resource = 'resource'
+
+
 class StringDatatype(OscalBaseModel):
     __root__: constr(regex=r'^\S(.*\S)?$') = Field(
         ...,
@@ -256,6 +240,15 @@ class Source(OscalBaseModel):
     )
 
 
+class SelectSubjectByIdValidValues(Enum):
+    component = 'component'
+    inventory_item = 'inventory-item'
+    location = 'location'
+    party = 'party'
+    user = 'user'
+    resource = 'resource'
+
+
 class SelectObjectiveById(OscalBaseModel):
     """
     Used to select a control objective for inclusion/exclusion based on the control objective's identifier.
@@ -268,6 +261,32 @@ class SelectObjectiveById(OscalBaseModel):
         regex=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
     ) = Field(..., alias='objective-id', description='Points to an assessment objective.', title='Objective ID')
+
+
+class SelectControlById(OscalBaseModel):
+    """
+    Used to select a control for inclusion/exclusion based on one or more control identifiers. A set of statement identifiers can be used to target the inclusion/exclusion to only specific control statements providing more granularity over the specific statements that are within the asessment scope.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    control_id: constr(
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+    ) = Field(
+        ...,
+        alias='control-id',
+        description=
+        'A reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).',
+        title='Control Identifier Reference'
+    )
+    statement_ids: Optional[List[constr(
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+    )]] = Field(
+        None, alias='statement-ids'
+    )
 
 
 class Scheme1(Enum):
@@ -290,11 +309,7 @@ class RoleId(OscalBaseModel):
     __root__: TokenDatatype = Field(..., description='Reference to a role by UUID.', title='Role Identifier Reference')
 
 
-class RiskStatus1(Enum):
-    """
-    Describes the status of the associated risk.
-    """
-
+class RiskStatusValidValues(Enum):
     open = 'open'
     investigating = 'investigating'
     remediating = 'remediating'
@@ -304,7 +319,7 @@ class RiskStatus1(Enum):
 
 
 class RiskStatus(OscalBaseModel):
-    __root__: Union[TokenDatatype, RiskStatus1] = Field(
+    __root__: Union[TokenDatatype, RiskStatusValidValues] = Field(
         ..., description='Describes the status of the associated risk.', title='Risk Status'
     )
 
@@ -345,7 +360,7 @@ class RelatedObservation(OscalBaseModel):
         ...,
         alias='observation-uuid',
         description='A machine-oriented identifier reference to an observation defined in the list of observations.',
-        title='Observation Universally Unique Identifier Reference',
+        title='Observation Universally Unique Identifier Reference'
     )
 
 
@@ -487,6 +502,14 @@ class OnDate(OscalBaseModel):
     date: datetime = Field(..., description='The task must occur on the specified date.', title='On Date Condition')
 
 
+class ObservationTypeValidValues(Enum):
+    ssp_statement_issue = 'ssp-statement-issue'
+    control_objective = 'control-objective'
+    mitigation = 'mitigation'
+    finding = 'finding'
+    historic = 'historic'
+
+
 class ObjectiveStatus(OscalBaseModel):
     """
     A determination of if the objective is satisfied or not within a given system.
@@ -519,6 +542,17 @@ class NonNegativeIntegerDatatype(OscalBaseModel):
     """
     An integer value that is equal to or greater than 0.
     """
+
+
+class NamingSystemValidValues(Enum):
+    http___fedramp_gov = 'http://fedramp.gov'
+    http___fedramp_gov_ns_oscal = 'http://fedramp.gov/ns/oscal'
+    http___csrc_nist_gov_ns_oscal = 'http://csrc.nist.gov/ns/oscal'
+    http___csrc_nist_gov_ns_oscal_unknown = 'http://csrc.nist.gov/ns/oscal/unknown'
+    http___cve_mitre_org = 'http://cve.mitre.org'
+    http___www_first_org_cvss_v2_0 = 'http://www.first.org/cvss/v2.0'
+    http___www_first_org_cvss_v3_0 = 'http://www.first.org/cvss/v3.0'
+    http___www_first_org_cvss_v3_1 = 'http://www.first.org/cvss/v3.1'
 
 
 class Name(Enum):
@@ -607,7 +641,7 @@ class Link(OscalBaseModel):
         alias='resource-fragment',
         description=
         'In case where the href points to a back-matter/resource, this value will indicate the URI fragment to append to any rlink associated with the resource. This value MUST be URI encoded.',
-        title='Resource Fragment',
+        title='Resource Fragment'
     )
     text: Optional[str] = Field(
         None,
@@ -750,6 +784,31 @@ class FindingTarget(OscalBaseModel):
     )
 
 
+class Facet(OscalBaseModel):
+    """
+    An individual characteristic that is part of a larger set produced by the same actor.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    name: constr(
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+    ) = Field(..., description='The name of the risk metric within the specified system.', title='Facet Name')
+    system: Union[URIDatatype, NamingSystemValidValues] = Field(
+        ...,
+        description=
+        'Specifies the naming system under which this risk metric is organized, which allows for the same names to be used in different systems controlled by different parties. This avoids the potential of a name clash.',
+        title='Naming System'
+    )
+    value: constr(regex=r'^\S(.*\S)?$'
+                  ) = Field(..., description='Indicates the value of the facet.', title='Facet Value')
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
+    remarks: Optional[str] = None
+
+
 class ExternalId(OscalBaseModel):
     """
     An identifier for a person or organization using a designated scheme. e.g. an Open Researcher and Contributor ID (ORCID).
@@ -782,7 +841,7 @@ class DocumentId(OscalBaseModel):
         None,
         description=
         'Qualifies the kind of document identifier using a URI. If the scheme is not provided the value of the element will be interpreted as a string of characters.',
-        title='Document Identification Scheme',
+        title='Document Identification Scheme'
     )
     identifier: constr(regex=r'^\S(.*\S)?$')
 
@@ -886,7 +945,7 @@ class Base64(OscalBaseModel):
         None,
         description=
         'Name of the file before it was encoded as Base64 to be embedded in a resource. This is the name that will be assigned to the file when the file is decoded.',
-        title='File Name',
+        title='File Name'
     )
     media_type: Optional[constr(regex=r'^\S(.*\S)?$')] = Field(
         None,
@@ -924,6 +983,14 @@ class AtFrequency(OscalBaseModel):
         ..., description='The task must occur after the specified period has elapsed.', title='Period'
     )
     unit: constr(regex=r'^\S(.*\S)?$') = Field(..., description='The unit of time for the period.', title='Time Unit')
+
+
+class AssessmentSubjectValidValues(Enum):
+    component = 'component'
+    inventory_item = 'inventory-item'
+    location = 'location'
+    party = 'party'
+    user = 'user'
 
 
 class AssessmentSubjectPlaceholder(OscalBaseModel):
@@ -967,7 +1034,7 @@ class AssessmentPart(OscalBaseModel):
         None,
         description=
         'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this part elsewhere in this or other OSCAL instances. The locally defined UUID of the part can be used to reference the data item locally or globally (e.g., in an ported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
-        title='Part Identifier',
+        title='Part Identifier'
     )
     name: Union[constr(
         regex=
@@ -992,7 +1059,7 @@ class AssessmentPart(OscalBaseModel):
         alias='class',
         description=
         "A textual label that provides a sub-type or characterization of the part's name. This can be used to further distinguish or discriminate between the semantics of multiple parts of the same control with the same name and ns.",
-        title='Part Class',
+        title='Part Class'
     )
     title: Optional[str] = Field(
         None,
@@ -1165,17 +1232,13 @@ class SubjectReference(OscalBaseModel):
         alias='subject-uuid',
         description=
         "A machine-oriented identifier reference to a component, inventory-item, location, party, user, or resource using it's UUID.",
-        title='Subject Universally Unique Identifier Reference',
+        title='Subject Universally Unique Identifier Reference'
     )
-    type: Union[constr(
-        regex=
-        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    ),
-                Type4] = Field(
-                    ...,
-                    description='Used to indicate the type of object pointed to by the uuid-ref within a subject.',
-                    title='Subject Universally Unique Identifier Reference Type'
-                )
+    type: Union[TokenDatatype, SubjectReferenceValidValues] = Field(
+        ...,
+        description='Used to indicate the type of object pointed to by the uuid-ref within a subject.',
+        title='Subject Universally Unique Identifier Reference Type'
+    )
     title: Optional[str] = Field(
         None, description='The title or name for the referenced subject.', title='Subject Reference Title'
     )
@@ -1234,19 +1297,42 @@ class SelectSubjectById(OscalBaseModel):
         alias='subject-uuid',
         description=
         "A machine-oriented identifier reference to a component, inventory-item, location, party, user, or resource using it's UUID.",
-        title='Subject Universally Unique Identifier Reference',
+        title='Subject Universally Unique Identifier Reference'
     )
-    type: Union[constr(
-        regex=
-        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    ),
-                Type4] = Field(
-                    ...,
-                    description='Used to indicate the type of object pointed to by the uuid-ref within a subject.',
-                    title='Subject Universally Unique Identifier Reference Type'
-                )
+    type: Union[TokenDatatype, SelectSubjectByIdValidValues] = Field(
+        ...,
+        description='Used to indicate the type of object pointed to by the uuid-ref within a subject.',
+        title='Subject Universally Unique Identifier Reference Type'
+    )
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
+    remarks: Optional[str] = None
+
+
+class AssessmentSubject(OscalBaseModel):
+    """
+    Identifies system elements being assessed, such as components, inventory items, and locations. In the assessment plan, this identifies a planned assessment subject. In the assessment results this is an actual assessment subject, and reflects any changes from the plan. exactly what will be the focus of this assessment. Any subjects not identified in this way are out-of-scope.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    type: Union[TokenDatatype, AssessmentSubjectValidValues] = Field(
+        ...,
+        description=
+        'Indicates the type of assessment subject, such as a component, inventory, item, location, or party represented by this selection statement.',
+        title='Subject Type'
+    )
+    description: Optional[str] = Field(
+        None,
+        description='A human-readable description of the collection of subjects being included in this assessment.',
+        title='Include Subjects Description'
+    )
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
+    include_all: Optional[IncludeAll] = Field(None, alias='include-all')
+    include_subjects: Optional[List[SelectSubjectById]] = Field(None, alias='include-subjects')
+    exclude_subjects: Optional[List[SelectSubjectById]] = Field(None, alias='exclude-subjects')
     remarks: Optional[str] = None
 
 
@@ -1419,28 +1505,6 @@ class RelevantEvidence(OscalBaseModel):
     remarks: Optional[str] = None
 
 
-class RelatedResponse(OscalBaseModel):
-    """
-    Identifies an individual risk response that this log entry is for.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    response_uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        alias='response-uuid',
-        description='A machine-oriented identifier reference to a unique risk response.',
-        title='Response Universally Unique Identifier Reference'
-    )
-    props: Optional[List[Property]] = Field(None)
-    links: Optional[List[Link]] = Field(None)
-    related_tasks: Optional[List[RelatedTask]] = Field(None, alias='related-tasks')
-    remarks: Optional[str] = None
-
-
 class Published(OscalBaseModel):
     __root__: DateTimeWithTimezoneDatatype = Field(
         ..., description='The date and time the document was last made available.', title='Publication Timestamp'
@@ -1489,7 +1553,7 @@ class Protocol(OscalBaseModel):
         ...,
         description=
         'The common name of the protocol, which should be the appropriate "service name" from the IANA Service Name and Transport Protocol Port Number Registry.',
-        title='Protocol Name',
+        title='Protocol Name'
     )
     title: Optional[str] = Field(
         None,
@@ -1645,7 +1709,7 @@ class LocalObjective(OscalBaseModel):
         alias='control-id',
         description=
         'A reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).',
-        title='Control Identifier Reference',
+        title='Control Identifier Reference'
     )
     description: Optional[str] = Field(
         None, description='A human-readable description of this control objective.', title='Objective Description'
@@ -1757,65 +1821,6 @@ class OriginActor(OscalBaseModel):
     links: Optional[List[Link]] = Field(None)
 
 
-class Origin(OscalBaseModel):
-    """
-    Identifies the source of the finding, such as a tool, interviewed person, or activity.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    actors: List[OriginActor] = Field(...)
-    related_tasks: Optional[List[RelatedTask]] = Field(None, alias='related-tasks')
-
-
-class Observation(OscalBaseModel):
-    """
-    Describes an individual observation.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description=
-        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this observation elsewhere in this or other OSCAL instances. The locally defined UUID of the observation can be used to reference the data item locally or globally (e.g., in an imorted OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
-        title='Observation Universally Unique Identifier',
-    )
-    title: Optional[str] = Field(None, description='The title for this observation.', title='Observation Title')
-    description: str = Field(
-        ...,
-        description='A human-readable description of this assessment observation.',
-        title='Observation Description'
-    )
-    props: Optional[List[Property]] = Field(None)
-    links: Optional[List[Link]] = Field(None)
-    methods: List[Union[constr(regex=r'^\S(.*\S)?$'), Methods]] = Field(...)
-    types: Optional[List[Union[constr(
-        regex=
-        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    ),
-                               Types]]] = Field(None)
-    origins: Optional[List[Origin]] = Field(None)
-    subjects: Optional[List[SubjectReference]] = Field(None)
-    relevant_evidence: Optional[List[RelevantEvidence]] = Field(None, alias='relevant-evidence')
-    collected: datetime = Field(
-        ...,
-        description='Date/time stamp identifying when the finding information was collected.',
-        title='Collected Field'
-    )
-    expires: Optional[datetime] = Field(
-        None,
-        description=
-        'Date/time identifying when the finding information is out-of-date and no longer valid. Typically used with continuous assessment scenarios.',
-        title='Expires Field'
-    )
-    remarks: Optional[str] = None
-
-
 class Location(OscalBaseModel):
     """
     A physical point of presence, which may be associated with people, organizations, or other concepts within the current or linked OSCAL document.
@@ -1867,7 +1872,7 @@ class ImplementedComponent(OscalBaseModel):
         alias='component-uuid',
         description=
         'A machine-oriented identifier reference to a component that is implemented as part of an inventory item.',
-        title='Component Universally Unique Identifier Reference',
+        title='Component Universally Unique Identifier Reference'
     )
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
@@ -1901,6 +1906,67 @@ class InventoryItem(OscalBaseModel):
     responsible_parties: Optional[List[ResponsibleParty]] = Field(None, alias='responsible-parties')
     implemented_components: Optional[List[ImplementedComponent]] = Field(None, alias='implemented-components')
     remarks: Optional[str] = None
+
+
+class IdentifiedSubject(OscalBaseModel):
+    """
+    Used to detail assessment subjects that were identfied by this task.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    subject_placeholder_uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        alias='subject-placeholder-uuid',
+        description=
+        'A machine-oriented identifier reference to a unique assessment subject placeholder defined by this task.',
+        title='Assessment Subject Placeholder Universally Unique Identifier Reference'
+    )
+    subjects: List[AssessmentSubject] = Field(...)
+
+
+class RelatedTask(OscalBaseModel):
+    """
+    Identifies an individual task for which the containing object is a consequence of.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    task_uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        alias='task-uuid',
+        description='A machine-oriented identifier reference to a unique task.',
+        title='Task Universally Unique Identifier Reference'
+    )
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
+    responsible_parties: Optional[List[ResponsibleParty]] = Field(None, alias='responsible-parties')
+    subjects: Optional[List[AssessmentSubject]] = Field(None)
+    identified_subject: Optional[IdentifiedSubject] = Field(
+        None,
+        alias='identified-subject',
+        description='Used to detail assessment subjects that were identfied by this task.',
+        title='Identified Subject'
+    )
+    remarks: Optional[str] = None
+
+
+class Origin(OscalBaseModel):
+    """
+    Identifies the source of the finding, such as a tool, interviewed person, or activity.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    actors: List[OriginActor] = Field(...)
+    related_tasks: Optional[List[RelatedTask]] = Field(None, alias='related-tasks')
 
 
 class Hash(OscalBaseModel):
@@ -2012,10 +2078,121 @@ class Finding(OscalBaseModel):
         alias='implementation-statement-uuid',
         description=
         'A machine-oriented identifier reference to the implementation statement in the SSP to which this finding is related.',
-        title='Implementation Statement UUID',
+        title='Implementation Statement UUID'
     )
     related_observations: Optional[List[RelatedObservation]] = Field(None, alias='related-observations')
     related_risks: Optional[List[RelatedRisk]] = Field(None, alias='related-risks')
+    remarks: Optional[str] = None
+
+
+class Characterization(OscalBaseModel):
+    """
+    A collection of descriptive data about the containing object from a specific origin.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
+    origin: Origin
+    facets: List[Facet] = Field(...)
+
+
+class AssociatedActivity(OscalBaseModel):
+    """
+    Identifies an individual activity to be performed as part of a task.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    activity_uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        alias='activity-uuid',
+        description='A machine-oriented identifier reference to an activity defined in the list of activities.',
+        title='Activity Universally Unique Identifier Reference'
+    )
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
+    responsible_roles: Optional[List[ResponsibleRole]] = Field(None, alias='responsible-roles')
+    subjects: List[AssessmentSubject] = Field(...)
+    remarks: Optional[str] = None
+
+
+class Task(OscalBaseModel):
+    """
+    Represents a scheduled event or milestone, which may be associated with a series of assessment actions.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description=
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this task elsewhere in this or other OSCAL instances. The locally defined UUID of the task can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
+        title='Task Universally Unique Identifier',
+    )
+    type: Union[TokenDatatype, TaskValidValues] = Field(..., description='The type of task.', title='Task Type')
+    title: str = Field(..., description='The title for this task.', title='Task Title')
+    description: Optional[str] = Field(
+        None, description='A human-readable description of this task.', title='Task Description'
+    )
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
+    timing: Optional[Timing] = Field(
+        None, description='The timing under which the task is intended to occur.', title='Event Timing'
+    )
+    dependencies: Optional[List[Dependency]] = Field(None)
+    tasks: Optional[List[Task]] = None
+    associated_activities: Optional[List[AssociatedActivity]] = Field(None, alias='associated-activities')
+    subjects: Optional[List[AssessmentSubject]] = Field(None)
+    responsible_roles: Optional[List[ResponsibleRole]] = Field(None, alias='responsible-roles')
+    remarks: Optional[str] = None
+
+
+class Response(OscalBaseModel):
+    """
+    Describes either recommended or an actual plan for addressing the risk.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description=
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this remediation elsewhere in this or other OSCAL instances. The locally defined UUID of the risk response can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
+        title='Remediation Universally Unique Identifier',
+    )
+    lifecycle: Union[
+        constr(
+            regex=
+            r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+        ),
+        Lifecycle
+    ] = Field(
+        ...,
+        description=
+        'Identifies whether this is a recommendation, such as from an assessor or tool, or an actual plan accepted by the system owner.',
+        title='Remediation Intent'
+    )
+    title: str = Field(..., description='The title for this response activity.', title='Response Title')
+    description: str = Field(
+        ..., description='A human-readable description of this response plan.', title='Response Description'
+    )
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
+    origins: Optional[List[Origin]] = Field(None)
+    required_assets: Optional[List[RequiredAsset]] = Field(None, alias='required-assets')
+    tasks: Optional[List[Task]] = Field(None)
     remarks: Optional[str] = None
 
 
@@ -2033,7 +2210,7 @@ class Action(OscalBaseModel):
         ...,
         description=
         'A unique identifier that can be used to reference this defined action elsewhere in an OSCAL document. A UUID should be consistently used for a given location across revisions of the document.',
-        title='Action Universally Unique Identifier',
+        title='Action Universally Unique Identifier'
     )
     date: Optional[datetime] = Field(
         None, description='The date and time when the action occurred.', title='Action Occurrence Date'
@@ -2095,7 +2272,7 @@ class UsesComponent(OscalBaseModel):
         alias='component-uuid',
         description=
         'A machine-oriented identifier reference to a component that is implemented as part of an inventory item.',
-        title='Component Universally Unique Identifier Reference',
+        title='Component Universally Unique Identifier Reference'
     )
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
@@ -2195,3 +2372,163 @@ class Activity(OscalBaseModel):
     related_controls: Optional[ReviewedControls] = Field(None, alias='related-controls')
     responsible_roles: Optional[List[ResponsibleRole]] = Field(None, alias='responsible-roles')
     remarks: Optional[str] = None
+
+
+class Observation(OscalBaseModel):
+    """
+    Describes an individual observation.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description=
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this observation elsewhere in this or other OSCAL instances. The locally defined UUID of the observation can be used to reference the data item locally or globally (e.g., in an imorted OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
+        title='Observation Universally Unique Identifier',
+    )
+    title: Optional[str] = Field(None, description='The title for this observation.', title='Observation Title')
+    description: str = Field(
+        ...,
+        description='A human-readable description of this assessment observation.',
+        title='Observation Description'
+    )
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
+    methods: List[Union[constr(regex=r'^\S(.*\S)?$'), Methods]] = Field(...)
+    types: Optional[List[Union[constr(
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+    ),
+                               ObservationTypeValidValues]]] = Field(None)
+    origins: Optional[List[Origin]] = Field(None)
+    subjects: Optional[List[SubjectReference]] = Field(None)
+    relevant_evidence: Optional[List[RelevantEvidence]] = Field(None, alias='relevant-evidence')
+    collected: datetime = Field(
+        ...,
+        description='Date/time stamp identifying when the finding information was collected.',
+        title='Collected Field'
+    )
+    expires: Optional[datetime] = Field(
+        None,
+        description=
+        'Date/time identifying when the finding information is out-of-date and no longer valid. Typically used with continuous assessment scenarios.',
+        title='Expires Field'
+    )
+    remarks: Optional[str] = None
+
+
+class RelatedResponse(OscalBaseModel):
+    """
+    Identifies an individual risk response that this log entry is for.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    response_uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        alias='response-uuid',
+        description='A machine-oriented identifier reference to a unique risk response.',
+        title='Response Universally Unique Identifier Reference'
+    )
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
+    related_tasks: Optional[List[RelatedTask]] = Field(None, alias='related-tasks')
+    remarks: Optional[str] = None
+
+
+class Entry(OscalBaseModel):
+    """
+    Identifies an individual risk response that occurred as part of managing an identified risk.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description=
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this risk log entry elsewhere in this or other OSCAL instances. The locally defined UUID of the risk log entry can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
+        title='Risk Log Entry Universally Unique Identifier',
+    )
+    title: Optional[str] = Field(None, description='The title for this risk log entry.', title='Title')
+    description: Optional[str] = Field(
+        None,
+        description='A human-readable description of what was done regarding the risk.',
+        title='Risk Task Description'
+    )
+    start: datetime = Field(..., description='Identifies the start date and time of the event.', title='Start')
+    end: Optional[datetime] = Field(
+        None,
+        description=
+        'Identifies the end date and time of the event. If the event is a point in time, the start and end will be the same date and time.',
+        title='End'
+    )
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
+    logged_by: Optional[List[LoggedBy]] = Field(None, alias='logged-by')
+    status_change: Optional[RiskStatus] = Field(None, alias='status-change')
+    related_responses: Optional[List[RelatedResponse]] = Field(None, alias='related-responses')
+    remarks: Optional[str] = None
+
+
+class RiskLog(OscalBaseModel):
+    """
+    A log of all risk-related tasks taken.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    entries: List[Entry] = Field(...)
+
+
+class Risk(OscalBaseModel):
+    """
+    An identified risk.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description=
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this risk elsewhere in this or other OSCAL instances. The locally defined UUID of the risk can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
+        title='Risk Universally Unique Identifier',
+    )
+    title: str = Field(..., description='The title for this risk.', title='Risk Title')
+    description: str = Field(
+        ...,
+        description=
+        'A human-readable summary of the identified risk, to include a statement of how the risk impacts the system.',
+        title='Risk Description'
+    )
+    statement: str = Field(
+        ..., description='An summary of impact for how the risk affects the system.', title='Risk Statement'
+    )
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
+    status: RiskStatus
+    origins: Optional[List[Origin]] = Field(None)
+    threat_ids: Optional[List[ThreatId]] = Field(None, alias='threat-ids')
+    characterizations: Optional[List[Characterization]] = Field(None)
+    mitigating_factors: Optional[List[MitigatingFactor]] = Field(None, alias='mitigating-factors')
+    deadline: Optional[datetime] = Field(
+        None, description='The date/time by which the risk must be resolved.', title='Risk Resolution Deadline'
+    )
+    remediations: Optional[List[Response]] = Field(None)
+    risk_log: Optional[RiskLog] = Field(
+        None, alias='risk-log', description='A log of all risk-related tasks taken.', title='Risk Log'
+    )
+    related_observations: Optional[List[RelatedObservation]] = Field(None, alias='related-observations')

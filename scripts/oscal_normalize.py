@@ -737,7 +737,6 @@ def write_oscal(classes, forward_refs, fstem):
 additions = {
     'assessment_plan': [
         'from trestle.oscal.common import RelatedObservation',
-        'from trestle.oscal.common import RiskStatus1',
         'from trestle.oscal.common import SystemComponent',
         'from trestle.oscal.common import TaskValidValues',
         'from trestle.oscal.common import TokenDatatype',
@@ -746,7 +745,6 @@ additions = {
         'from trestle.oscal.common import AssessmentAssets',
         'from trestle.oscal.common import Observation',
         'from trestle.oscal.common import RelatedObservation',
-        'from trestle.oscal.common import RiskStatus1',
         'from trestle.oscal.common import SystemComponent',
         'from trestle.oscal.common import TaskValidValues',
         'from trestle.oscal.common import TokenDatatype',
@@ -756,7 +754,6 @@ additions = {
     ],
     'poam': [
         'from trestle.oscal.common import RelatedObservation',
-        'from trestle.oscal.common import RiskStatus1',
         'from trestle.oscal.common import TaskValidValues',
         'from trestle.oscal.common import TokenDatatype',
         'from trestle.oscal.common import RelatedObservation as RelatedObservation1',
@@ -986,7 +983,10 @@ def kill_roots(file_classes):
                     line = c.lines[ii]
                     for name, body in new_root_classes.items():
                         # handle special case
-                        if any(token in line for token in ['id: TokenDatatype', 'value: StringDatatype']):
+                        if any(token in line for token in ['id: TokenDatatype',
+                                                           'value: StringDatatype',
+                                                           'uuid: UUIDDatatype',
+                                                           'uuid: Optional[UUIDDatatype]']):
                             line = line.replace(name, body, 1)
                             continue
                         if 'title=' in line and 'Value' in line:

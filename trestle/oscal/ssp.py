@@ -109,21 +109,21 @@ class SecurityImpactLevel(OscalBaseModel):
         alias='security-objective-confidentiality',
         description=
         'A target-level of confidentiality for the system, based on the sensitivity of information within the system.',
-        title='Security Objective: Confidentiality',
+        title='Security Objective: Confidentiality'
     )
     security_objective_integrity: constr(regex=r'^\S(.*\S)?$') = Field(
         ...,
         alias='security-objective-integrity',
         description=
         'A target-level of integrity for the system, based on the sensitivity of information within the system.',
-        title='Security Objective: Integrity',
+        title='Security Objective: Integrity'
     )
     security_objective_availability: constr(regex=r'^\S(.*\S)?$') = Field(
         ...,
         alias='security-objective-availability',
         description=
         'A target-level of availability for the system, based on the sensitivity of information within the system.',
-        title='Security Objective: Availability',
+        title='Security Objective: Availability'
     )
 
 
@@ -150,13 +150,13 @@ class Satisfied(OscalBaseModel):
         alias='responsibility-uuid',
         description=
         'A machine-oriented identifier reference to a control implementation that satisfies a responsibility imposed by a leveraged system.',
-        title='Responsibility UUID',
+        title='Responsibility UUID'
     )
     description: str = Field(
         ...,
         description=
         'An implementation statement that describes the aspects of a control or control statement implementation that a leveraging system is implementing based on a requirement from a leveraged system.',
-        title='Satisfied Control Implementation Responsibility Description',
+        title='Satisfied Control Implementation Responsibility Description'
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
@@ -187,13 +187,13 @@ class Responsibility(OscalBaseModel):
         alias='provided-uuid',
         description=
         'A machine-oriented identifier reference to an inherited control implementation that a leveraging system is inheriting from a leveraged system.',
-        title='Provided UUID',
+        title='Provided UUID'
     )
     description: str = Field(
         ...,
         description=
         'An implementation statement that describes the aspects of the control or control statement implementation that a leveraging system must implement to satisfy the control provided by a leveraged system.',
-        title='Control Implementation Responsibility Description',
+        title='Control Implementation Responsibility Description'
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
@@ -221,7 +221,7 @@ class Provided(OscalBaseModel):
         ...,
         description=
         'An implementation statement that describes the aspects of the control or control statement implementation that can be provided to another system leveraging this system.',
-        title='Provided Control Implementation Description',
+        title='Provided Control Implementation Description'
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
@@ -252,13 +252,13 @@ class Inherited(OscalBaseModel):
         alias='provided-uuid',
         description=
         'A machine-oriented identifier reference to an inherited control implementation that a leveraging system is inheriting from a leveraged system.',
-        title='Provided UUID',
+        title='Provided UUID'
     )
     description: str = Field(
         ...,
         description=
         'An implementation statement that describes the aspects of a control or control statement implementation that a leveraging system is inheriting from a leveraged system.',
-        title='Inherited Control Implementation Description',
+        title='Inherited Control Implementation Description'
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
@@ -293,7 +293,7 @@ class Export(OscalBaseModel):
         None,
         description=
         'An implementation statement that describes the aspects of the control or control statement implementation that can be available to another system leveraging this system.',
-        title='Control Implementation Export Description',
+        title='Control Implementation Export Description'
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
@@ -316,7 +316,7 @@ class Diagram(OscalBaseModel):
         ...,
         description=
         'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this diagram elsewhere in this or other OSCAL instances. The locally defined UUID of the diagram can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
-        title='Diagram ID',
+        title='Diagram ID'
     )
     description: Optional[str] = Field(None, description='A summary of the diagram.', title='Diagram Description')
     props: Optional[List[common.Property]] = Field(None)
@@ -383,7 +383,7 @@ class ByComponent(OscalBaseModel):
         ...,
         alias='component-uuid',
         description='A machine-oriented identifier reference to the component that is implemeting a given control.',
-        title='Component Universally Unique Identifier Reference',
+        title='Component Universally Unique Identifier Reference'
     )
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
@@ -397,7 +397,7 @@ class ByComponent(OscalBaseModel):
         ...,
         description=
         'An implementation statement that describes how a control or a control statement is implemented within the referenced system component.',
-        title='Control Implementation Description',
+        title='Control Implementation Description'
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
@@ -464,7 +464,7 @@ class Statement(OscalBaseModel):
         ...,
         description=
         'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this control statement elsewhere in this or other OSCAL instances. The UUID of the control statement in the source OSCAL instance is sufficient to reference the data item locally or globally (e.g., in an imported OSCAL instance).',
-        title='Control Statement Reference Universally Unique Identifier',
+        title='Control Statement Reference Universally Unique Identifier'
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
@@ -497,7 +497,7 @@ class ImplementedRequirement(OscalBaseModel):
         alias='control-id',
         description=
         'A reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).',
-        title='Control Identifier Reference',
+        title='Control Identifier Reference'
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)

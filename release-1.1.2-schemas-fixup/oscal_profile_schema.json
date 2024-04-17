@@ -1260,14 +1260,14 @@
           "type": "array",
           "minItems": 1,
           "items": {
-            "$ref": "#assembly_oscal-profile_select-control-by-id"
+            "$ref": "#assembly_oscal-profile_select-control"
           }
         },
         "exclude-controls": {
           "type": "array",
           "minItems": 1,
           "items": {
-            "$ref": "#assembly_oscal-profile_select-control-by-id"
+            "$ref": "#assembly_oscal-profile_select-control"
           }
         }
       },
@@ -1665,23 +1665,23 @@
           "type": "array",
           "minItems": 1,
           "items": {
-            "$ref": "#assembly_oscal-profile_select-control-by-id"
+            "$ref": "#assembly_oscal-profile_select-control"
           }
         },
         "exclude-controls": {
           "type": "array",
           "minItems": 1,
           "items": {
-            "$ref": "#assembly_oscal-profile_select-control-by-id"
+            "$ref": "#assembly_oscal-profile_select-control"
           }
         }
       },
       "additionalProperties": false
     },
-    "oscal-profile-oscal-profile:select-control-by-id": {
+    "oscal-profile-oscal-profile:select-control": {
       "title": "Select Control",
       "description": "Select a control or controls from an imported control set.",
-      "$id": "#assembly_oscal-profile_select-control-by-id",
+      "$id": "#assembly_oscal-profile_select-control",
       "type": "object",
       "properties": {
         "with-child-controls": {

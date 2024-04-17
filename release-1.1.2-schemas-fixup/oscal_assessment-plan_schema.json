@@ -2504,13 +2504,7 @@
               "$ref": "#/definitions/TokenDatatype"
             },
             {
-              "enum": [
-                "component",
-                "inventory-item",
-                "location",
-                "party",
-                "user"
-              ]
+              "$ref": "#/definitions/AssessmentSubjectValidValues"
             }
           ]
         },
@@ -2578,14 +2572,7 @@
               "$ref": "#/definitions/TokenDatatype"
             },
             {
-              "enum": [
-                "component",
-                "inventory-item",
-                "location",
-                "party",
-                "user",
-                "resource"
-              ]
+              "$ref": "#/definitions/SelectSubjectByIdValidValues"
             }
           ]
         },
@@ -2632,14 +2619,7 @@
               "$ref": "#/definitions/TokenDatatype"
             },
             {
-              "enum": [
-                "component",
-                "inventory-item",
-                "location",
-                "party",
-                "user",
-                "resource"
-              ]
+              "$ref": "#/definitions/SubjectReferenceValidValues"
             }
           ]
         },
@@ -3055,13 +3035,7 @@
                 "$ref": "#/definitions/TokenDatatype"
               },
               {
-                "enum": [
-                  "ssp-statement-issue",
-                  "control-objective",
-                  "mitigation",
-                  "finding",
-                  "historic"
-                ]
+                "$ref": "#/definitions/ObservationTypeValidValues"
               }
             ]
           }
@@ -3640,14 +3614,7 @@
           "$ref": "#/definitions/TokenDatatype"
         },
         {
-          "enum": [
-            "open",
-            "investigating",
-            "remediating",
-            "deviation-requested",
-            "deviation-approved",
-            "closed"
-          ]
+          "$ref": "#/definitions/RiskStatusValidValues"
         }
       ]
     },
@@ -3695,16 +3662,7 @@
                     "$ref": "#/definitions/URIDatatype"
                   },
                   {
-                    "enum": [
-                      "http://fedramp.gov",
-                      "http://fedramp.gov/ns/oscal",
-                      "http://csrc.nist.gov/ns/oscal",
-                      "http://csrc.nist.gov/ns/oscal/unknown",
-                      "http://cve.mitre.org",
-                      "http://www.first.org/cvss/v2.0",
-                      "http://www.first.org/cvss/v3.0",
-                      "http://www.first.org/cvss/v3.1"
-                    ]
+                    "$ref": "#/definitions/NamingSystemValidValues"
                   }
                 ]
               },
@@ -4041,6 +3999,66 @@
       "enum": [
         "http://fedramp.gov",
         "http://fedramp.gov/ns/oscal"
+      ]
+    },
+    "SelectSubjectByIdValidValues": {
+      "enum": [
+        "component",
+        "inventory-item",
+        "location",
+        "party",
+        "user",
+        "resource"
+      ]
+    },
+    "AssessmentSubjectValidValues": {
+      "enum": [
+        "component",
+        "inventory-item",
+        "location",
+        "party",
+        "user"
+      ]
+    },
+    "NamingSystemValidValues": {
+      "enum": [
+        "http://fedramp.gov",
+        "http://fedramp.gov/ns/oscal",
+        "http://csrc.nist.gov/ns/oscal",
+        "http://csrc.nist.gov/ns/oscal/unknown",
+        "http://cve.mitre.org",
+        "http://www.first.org/cvss/v2.0",
+        "http://www.first.org/cvss/v3.0",
+        "http://www.first.org/cvss/v3.1"
+      ]
+    },
+    "SubjectReferenceValidValues": {
+      "enum": [
+        "component",
+        "inventory-item",
+        "location",
+        "party",
+        "user",
+        "resource"
+      ]
+    },
+    "ObservationTypeValidValues": {
+      "enum": [
+        "ssp-statement-issue",
+        "control-objective",
+        "mitigation",
+        "finding",
+        "historic"
+      ]
+    },
+    "RiskStatusValidValues": {
+      "enum": [
+        "open",
+        "investigating",
+        "remediating",
+        "deviation-requested",
+        "deviation-approved",
+        "closed"
       ]
     }
   },

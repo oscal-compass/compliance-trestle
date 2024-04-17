@@ -32,7 +32,7 @@ from trestle.common import str_utils
 from trestle.common.str_utils import AliasMode
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal import OSCAL_VERSION
-from trestle.oscal.common import Base64, Base64Datatype, Methods, TaskValidValues
+from trestle.oscal.common import Base64, Base64Datatype, Methods, ObservationTypeValidValues, TaskValidValues
 from trestle.oscal.ssp import DateDatatype
 
 logger = logging.getLogger(__name__)
@@ -47,6 +47,8 @@ sample_date_value = '2400-02-29'
 
 sample_task_valid_value = TaskValidValues.milestone
 sample_method = Methods.EXAMINE
+
+sample_observation_type_valid_value = ObservationTypeValidValues.historic
 
 
 def safe_is_sub(sub: Any, parent: Any) -> bool:
@@ -79,6 +81,18 @@ def is_enum_task_valid_value(type_: type) -> bool:
     return rval
 
 
+def is_enum_observation_type_valid_value(type_: type) -> bool:
+    """Test for observation type valid value."""
+    rval = False
+    if utils.get_origin(type_) == Union:
+        args = typing.get_args(type_)
+        for arg in args:
+            if "<enum 'ObservationTypeValidValues'>" == f'{arg}':
+                rval = True
+                break
+    return rval
+
+
 def generate_sample_value_by_type(
     type_: type,
     field_name: str,
@@ -92,6 +106,8 @@ def generate_sample_value_by_type(
         return sample_method
     if is_enum_task_valid_value(type_):
         return sample_task_valid_value
+    if is_enum_observation_type_valid_value(type_):
+        return sample_observation_type_valid_value
     if type_ is Base64:
         return sample_base64
     if type_ is datetime:
@@ -211,14 +227,22 @@ def generate_sample_model(
                         outer_type, include_optional=include_optional, depth=depth - 1
                     )
                 else:
+                    # Handle special cases (hacking)
+                    if model_type in [Base64Datatype]:
+                        model_dict[field] = sample_base64_value
+                    elif model_type in [Base64]:
+                        if field == 'filename':
+                            model_dict[field] = sample_base64.filename
+                        elif field == 'media_type':
+                            model_dict[field] = sample_base64.media_type
+                        elif field == 'value':
+                            model_dict[field] = sample_base64.value
+                    elif model_type in [DateDatatype]:
+                        model_dict[field] = sample_date_value
                     # Hacking here:
                     # Root models should ideally not exist, however, sometimes we are stuck with them.
                     # If that is the case we need sufficient information on the type in order to generate a model.
                     # E.g. we need the type of the container.
-                    if model_type in [Base64, Base64Datatype]:
-                        model_dict[field] = sample_base64_value
-                    elif model_type in [DateDatatype]:
-                        model_dict[field] = sample_date_value
                     elif field == '__root__' and hasattr(model, '__name__'):
                         model_dict[field] = generate_sample_value_by_type(
                             outer_type, str_utils.classname_to_alias(model.__name__, AliasMode.FIELD)

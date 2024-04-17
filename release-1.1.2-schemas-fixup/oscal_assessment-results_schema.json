@@ -1743,259 +1743,6 @@
       ],
       "additionalProperties": false
     },
-    "oscal-ar-oscal-ar:result": {
-      "title": "Assessment Result",
-      "description": "Used by the assessment results and POA&M. In the assessment results, this identifies all of the assessment observations and findings, initial and residual risks, deviations, and disposition. In the POA&M, this identifies initial and residual risks, deviations, and disposition.",
-      "$id": "#assembly_oscal-ar_result",
-      "type": "object",
-      "properties": {
-        "uuid": {
-          "title": "Results Universally Unique Identifier",
-          "description": "A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this set of results in this or other OSCAL instances. The locally defined UUID of the assessment result can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.",
-          "$ref": "#/definitions/UUIDDatatype"
-        },
-        "title": {
-          "title": "Results Title",
-          "description": "The title for this set of results.",
-          "type": "string"
-        },
-        "description": {
-          "title": "Results Description",
-          "description": "A human-readable description of this set of test results.",
-          "type": "string"
-        },
-        "start": {
-          "title": "start field",
-          "description": "Date/time stamp identifying the start of the evidence collection reflected in these results.",
-          "$ref": "#/definitions/DateTimeWithTimezoneDatatype"
-        },
-        "end": {
-          "title": "end field",
-          "description": "Date/time stamp identifying the end of the evidence collection reflected in these results. In a continuous motoring scenario, this may contain the same value as start if appropriate.",
-          "$ref": "#/definitions/DateTimeWithTimezoneDatatype"
-        },
-        "props": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "$ref": "#assembly_oscal-metadata_property"
-          }
-        },
-        "links": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "$ref": "#assembly_oscal-metadata_link"
-          }
-        },
-        "local-definitions": {
-          "title": "Local Definitions",
-          "description": "Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.",
-          "type": "object",
-          "properties": {
-            "components": {
-              "type": "array",
-              "minItems": 1,
-              "items": {
-                "$ref": "#assembly_oscal-implementation-common_system-component"
-              }
-            },
-            "inventory-items": {
-              "type": "array",
-              "minItems": 1,
-              "items": {
-                "$ref": "#assembly_oscal-implementation-common_inventory-item"
-              }
-            },
-            "users": {
-              "type": "array",
-              "minItems": 1,
-              "items": {
-                "$ref": "#assembly_oscal-implementation-common_system-user"
-              }
-            },
-            "assessment-assets": {
-              "$ref": "#assembly_oscal-assessment-common_assessment-assets"
-            },
-            "tasks": {
-              "type": "array",
-              "minItems": 1,
-              "items": {
-                "$ref": "#assembly_oscal-assessment-common_task"
-              }
-            }
-          },
-          "additionalProperties": false
-        },
-        "reviewed-controls": {
-          "$ref": "#assembly_oscal-assessment-common_reviewed-controls"
-        },
-        "attestations": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "title": "Attestation Statements",
-            "description": "A set of textual statements, typically written by the assessor.",
-            "type": "object",
-            "properties": {
-              "responsible-parties": {
-                "type": "array",
-                "minItems": 1,
-                "items": {
-                  "$ref": "#assembly_oscal-metadata_responsible-party"
-                }
-              },
-              "parts": {
-                "type": "array",
-                "minItems": 1,
-                "items": {
-                  "$ref": "#assembly_oscal-assessment-common_assessment-part"
-                }
-              }
-            },
-            "required": [
-              "parts"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "assessment-log": {
-          "title": "Assessment Log",
-          "description": "A log of all assessment-related actions taken.",
-          "type": "object",
-          "properties": {
-            "entries": {
-              "type": "array",
-              "minItems": 1,
-              "items": {
-                "title": "Assessment Log Entry",
-                "description": "Identifies the result of an action and/or task that occurred as part of executing an assessment plan or an assessment event that occurred in producing the assessment results.",
-                "type": "object",
-                "properties": {
-                  "uuid": {
-                    "title": "Assessment Log Entry Universally Unique Identifier",
-                    "description": "A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference an assessment event in this or other OSCAL instances. The locally defined UUID of the assessment log entry can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.",
-                    "$ref": "#/definitions/UUIDDatatype"
-                  },
-                  "title": {
-                    "title": "Action Title",
-                    "description": "The title for this event.",
-                    "type": "string"
-                  },
-                  "description": {
-                    "title": "Action Description",
-                    "description": "A human-readable description of this event.",
-                    "type": "string"
-                  },
-                  "start": {
-                    "title": "Start",
-                    "description": "Identifies the start date and time of an event.",
-                    "$ref": "#/definitions/DateTimeWithTimezoneDatatype"
-                  },
-                  "end": {
-                    "title": "End",
-                    "description": "Identifies the end date and time of an event. If the event is a point in time, the start and end will be the same date and time.",
-                    "$ref": "#/definitions/DateTimeWithTimezoneDatatype"
-                  },
-                  "props": {
-                    "type": "array",
-                    "minItems": 1,
-                    "items": {
-                      "$ref": "#assembly_oscal-metadata_property"
-                    }
-                  },
-                  "links": {
-                    "type": "array",
-                    "minItems": 1,
-                    "items": {
-                      "$ref": "#assembly_oscal-metadata_link"
-                    }
-                  },
-                  "logged-by": {
-                    "type": "array",
-                    "minItems": 1,
-                    "items": {
-                      "$ref": "#assembly_oscal-assessment-common_logged-by"
-                    }
-                  },
-                  "related-tasks": {
-                    "type": "array",
-                    "minItems": 1,
-                    "items": {
-                      "$ref": "#assembly_oscal-assessment-common_related-task"
-                    }
-                  },
-                  "remarks": {
-                    "$ref": "#field_oscal-metadata_remarks"
-                  }
-                },
-                "required": [
-                  "uuid",
-                  "start"
-                ],
-                "additionalProperties": false
-              }
-            }
-          },
-          "required": [
-            "entries"
-          ],
-          "additionalProperties": false
-        },
-        "observations": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "$ref": "#assembly_oscal-assessment-common_observation"
-          }
-        },
-        "risks": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "$ref": "#assembly_oscal-assessment-common_risk"
-          }
-        },
-        "findings": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "$ref": "#assembly_oscal-assessment-common_finding"
-          }
-        },
-        "remarks": {
-          "$ref": "#field_oscal-metadata_remarks"
-        }
-      },
-      "required": [
-        "uuid",
-        "title",
-        "description",
-        "start",
-        "reviewed-controls"
-      ],
-      "additionalProperties": false
-    },
-    "oscal-ar-oscal-ar:import-ap": {
-      "title": "Import Assessment Plan",
-      "description": "Used by assessment-results to import information about the original plan for assessing the system.",
-      "$id": "#assembly_oscal-ar_import-ap",
-      "type": "object",
-      "properties": {
-        "href": {
-          "title": "Assessment Plan Reference",
-          "description": "A resolvable URL reference to the assessment plan governing the assessment activities.",
-          "$ref": "#/definitions/URIReferenceDatatype"
-        },
-        "remarks": {
-          "$ref": "#field_oscal-metadata_remarks"
-        }
-      },
-      "required": [
-        "href"
-      ],
-      "additionalProperties": false
-    },
     "oscal-ar-oscal-assessment-common:import-ssp": {
       "title": "Import System Security Plan",
       "description": "Used by the assessment plan and POA&M to import information about the system.",
@@ -2708,13 +2455,7 @@
               "$ref": "#/definitions/TokenDatatype"
             },
             {
-              "enum": [
-                "component",
-                "inventory-item",
-                "location",
-                "party",
-                "user"
-              ]
+              "$ref": "#/definitions/AssessmentSubjectValidValues"
             }
           ]
         },
@@ -2782,14 +2523,7 @@
               "$ref": "#/definitions/TokenDatatype"
             },
             {
-              "enum": [
-                "component",
-                "inventory-item",
-                "location",
-                "party",
-                "user",
-                "resource"
-              ]
+              "$ref": "#/definitions/SelectSubjectByIdValidValues"
             }
           ]
         },
@@ -2836,14 +2570,7 @@
               "$ref": "#/definitions/TokenDatatype"
             },
             {
-              "enum": [
-                "component",
-                "inventory-item",
-                "location",
-                "party",
-                "user",
-                "resource"
-              ]
+              "$ref": "#/definitions/SubjectReferenceValidValues"
             }
           ]
         },
@@ -3259,13 +2986,7 @@
                 "$ref": "#/definitions/TokenDatatype"
               },
               {
-                "enum": [
-                  "ssp-statement-issue",
-                  "control-objective",
-                  "mitigation",
-                  "finding",
-                  "historic"
-                ]
+                "$ref": "#/definitions/ObservationTypeValidValues"
               }
             ]
           }
@@ -3844,14 +3565,7 @@
           "$ref": "#/definitions/TokenDatatype"
         },
         {
-          "enum": [
-            "open",
-            "investigating",
-            "remediating",
-            "deviation-requested",
-            "deviation-approved",
-            "closed"
-          ]
+          "$ref": "#/definitions/RiskStatusValidValues"
         }
       ]
     },
@@ -3899,16 +3613,7 @@
                     "$ref": "#/definitions/URIDatatype"
                   },
                   {
-                    "enum": [
-                      "http://fedramp.gov",
-                      "http://fedramp.gov/ns/oscal",
-                      "http://csrc.nist.gov/ns/oscal",
-                      "http://csrc.nist.gov/ns/oscal/unknown",
-                      "http://cve.mitre.org",
-                      "http://www.first.org/cvss/v2.0",
-                      "http://www.first.org/cvss/v3.0",
-                      "http://www.first.org/cvss/v3.1"
-                    ]
+                    "$ref": "#/definitions/NamingSystemValidValues"
                   }
                 ]
               },
@@ -4156,6 +3861,259 @@
       ],
       "additionalProperties": false
     },
+    "oscal-ar-oscal-ar:result": {
+      "title": "Assessment Result",
+      "description": "Used by the assessment results and POA&M. In the assessment results, this identifies all of the assessment observations and findings, initial and residual risks, deviations, and disposition. In the POA&M, this identifies initial and residual risks, deviations, and disposition.",
+      "$id": "#assembly_oscal-ar_result",
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "title": "Results Universally Unique Identifier",
+          "description": "A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this set of results in this or other OSCAL instances. The locally defined UUID of the assessment result can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.",
+          "$ref": "#/definitions/UUIDDatatype"
+        },
+        "title": {
+          "title": "Results Title",
+          "description": "The title for this set of results.",
+          "type": "string"
+        },
+        "description": {
+          "title": "Results Description",
+          "description": "A human-readable description of this set of test results.",
+          "type": "string"
+        },
+        "start": {
+          "title": "start field",
+          "description": "Date/time stamp identifying the start of the evidence collection reflected in these results.",
+          "$ref": "#/definitions/DateTimeWithTimezoneDatatype"
+        },
+        "end": {
+          "title": "end field",
+          "description": "Date/time stamp identifying the end of the evidence collection reflected in these results. In a continuous motoring scenario, this may contain the same value as start if appropriate.",
+          "$ref": "#/definitions/DateTimeWithTimezoneDatatype"
+        },
+        "props": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#assembly_oscal-metadata_property"
+          }
+        },
+        "links": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#assembly_oscal-metadata_link"
+          }
+        },
+        "local-definitions": {
+          "title": "Local Definitions",
+          "description": "Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.",
+          "type": "object",
+          "properties": {
+            "components": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#assembly_oscal-implementation-common_system-component"
+              }
+            },
+            "inventory-items": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#assembly_oscal-implementation-common_inventory-item"
+              }
+            },
+            "users": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#assembly_oscal-implementation-common_system-user"
+              }
+            },
+            "assessment-assets": {
+              "$ref": "#assembly_oscal-assessment-common_assessment-assets"
+            },
+            "tasks": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#assembly_oscal-assessment-common_task"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "reviewed-controls": {
+          "$ref": "#assembly_oscal-assessment-common_reviewed-controls"
+        },
+        "attestations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "title": "Attestation Statements",
+            "description": "A set of textual statements, typically written by the assessor.",
+            "type": "object",
+            "properties": {
+              "responsible-parties": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "$ref": "#assembly_oscal-metadata_responsible-party"
+                }
+              },
+              "parts": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "$ref": "#assembly_oscal-assessment-common_assessment-part"
+                }
+              }
+            },
+            "required": [
+              "parts"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "assessment-log": {
+          "title": "Assessment Log",
+          "description": "A log of all assessment-related actions taken.",
+          "type": "object",
+          "properties": {
+            "entries": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "title": "Assessment Log Entry",
+                "description": "Identifies the result of an action and/or task that occurred as part of executing an assessment plan or an assessment event that occurred in producing the assessment results.",
+                "type": "object",
+                "properties": {
+                  "uuid": {
+                    "title": "Assessment Log Entry Universally Unique Identifier",
+                    "description": "A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference an assessment event in this or other OSCAL instances. The locally defined UUID of the assessment log entry can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.",
+                    "$ref": "#/definitions/UUIDDatatype"
+                  },
+                  "title": {
+                    "title": "Action Title",
+                    "description": "The title for this event.",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Action Description",
+                    "description": "A human-readable description of this event.",
+                    "type": "string"
+                  },
+                  "start": {
+                    "title": "Start",
+                    "description": "Identifies the start date and time of an event.",
+                    "$ref": "#/definitions/DateTimeWithTimezoneDatatype"
+                  },
+                  "end": {
+                    "title": "End",
+                    "description": "Identifies the end date and time of an event. If the event is a point in time, the start and end will be the same date and time.",
+                    "$ref": "#/definitions/DateTimeWithTimezoneDatatype"
+                  },
+                  "props": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "$ref": "#assembly_oscal-metadata_property"
+                    }
+                  },
+                  "links": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "$ref": "#assembly_oscal-metadata_link"
+                    }
+                  },
+                  "logged-by": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "$ref": "#assembly_oscal-assessment-common_logged-by"
+                    }
+                  },
+                  "related-tasks": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "$ref": "#assembly_oscal-assessment-common_related-task"
+                    }
+                  },
+                  "remarks": {
+                    "$ref": "#field_oscal-metadata_remarks"
+                  }
+                },
+                "required": [
+                  "uuid",
+                  "start"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "entries"
+          ],
+          "additionalProperties": false
+        },
+        "observations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#assembly_oscal-assessment-common_observation"
+          }
+        },
+        "risks": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#assembly_oscal-assessment-common_risk"
+          }
+        },
+        "findings": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#assembly_oscal-assessment-common_finding"
+          }
+        },
+        "remarks": {
+          "$ref": "#field_oscal-metadata_remarks"
+        }
+      },
+      "required": [
+        "uuid",
+        "title",
+        "description",
+        "start",
+        "reviewed-controls"
+      ],
+      "additionalProperties": false
+    },
+    "oscal-ar-oscal-ar:import-ap": {
+      "title": "Import Assessment Plan",
+      "description": "Used by assessment-results to import information about the original plan for assessing the system.",
+      "$id": "#assembly_oscal-ar_import-ap",
+      "type": "object",
+      "properties": {
+        "href": {
+          "title": "Assessment Plan Reference",
+          "description": "A resolvable URL reference to the assessment plan governing the assessment activities.",
+          "$ref": "#/definitions/URIReferenceDatatype"
+        },
+        "remarks": {
+          "$ref": "#field_oscal-metadata_remarks"
+        }
+      },
+      "required": [
+        "href"
+      ],
+      "additionalProperties": false
+    },
     "Base64Datatype": {
       "description": "Binary data encoded using the Base 64 encoding algorithm as defined by RFC4648.",
       "type": "string",
@@ -4245,6 +4203,66 @@
       "enum": [
         "http://fedramp.gov",
         "http://fedramp.gov/ns/oscal"
+      ]
+    },
+    "SelectSubjectByIdValidValues": {
+      "enum": [
+        "component",
+        "inventory-item",
+        "location",
+        "party",
+        "user",
+        "resource"
+      ]
+    },
+    "AssessmentSubjectValidValues": {
+      "enum": [
+        "component",
+        "inventory-item",
+        "location",
+        "party",
+        "user"
+      ]
+    },
+    "NamingSystemValidValues": {
+      "enum": [
+        "http://fedramp.gov",
+        "http://fedramp.gov/ns/oscal",
+        "http://csrc.nist.gov/ns/oscal",
+        "http://csrc.nist.gov/ns/oscal/unknown",
+        "http://cve.mitre.org",
+        "http://www.first.org/cvss/v2.0",
+        "http://www.first.org/cvss/v3.0",
+        "http://www.first.org/cvss/v3.1"
+      ]
+    },
+    "SubjectReferenceValidValues": {
+      "enum": [
+        "component",
+        "inventory-item",
+        "location",
+        "party",
+        "user",
+        "resource"
+      ]
+    },
+    "ObservationTypeValidValues": {
+      "enum": [
+        "ssp-statement-issue",
+        "control-objective",
+        "mitigation",
+        "finding",
+        "historic"
+      ]
+    },
+    "RiskStatusValidValues": {
+      "enum": [
+        "open",
+        "investigating",
+        "remediating",
+        "deviation-requested",
+        "deviation-approved",
+        "closed"
       ]
     }
   },
