@@ -62,7 +62,7 @@ def _validate(config: str, section: Dict[str, str]) -> None:
     rows = _get_rows(opth)
     # spot check
     if config == CONFIG_BY_CONTROL:
-        assert len(rows) == 1190
+        assert len(rows) == 1194
         row = rows[0]
         assert row[0] == 'Control Identifier'
         assert row[1] == 'Control Title'
@@ -74,7 +74,7 @@ def _validate(config: str, section: Dict[str, str]) -> None:
             2
         ] == 'a. Develop, document, and disseminate to [Assignment: organization-defined personnel or roles]: 1. [Selection (one or more): organization-level; mission/business process-level; system-level] access control policy that: 2. Procedures to facilitate the implementation of the access control policy and the associated access controls; b. Designate an [Assignment: official] to manage the development, documentation, and dissemination of the access control policy and procedures; and c. Review and update the current access control: 1. Policy [Assignment: frequency] and following [Assignment: events] ; and 2. Procedures [Assignment: frequency] and following [Assignment: events].'  # noqa
     elif config == CONFIG_BY_STATEMENT:
-        assert len(rows) == 1750
+        assert len(rows) == 1759
         row = rows[0]
         assert row[0] == 'Control Identifier'
         assert row[1] == 'Control Title'
