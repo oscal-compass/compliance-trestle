@@ -207,7 +207,7 @@ class ControlImplementation(OscalBaseModel):
         'Provides a means to identify a set of control implementations that are supported by a given component or capability.',
         title='Control Implementation Set Identifier'
     )
-    source: URIReferenceDatatype = Field(
+    source: str = Field(
         ...,
         description=
         'A reference to an OSCAL catalog or profile providing the referenced control or subcontrol definition.',

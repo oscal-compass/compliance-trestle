@@ -983,10 +983,13 @@ def kill_roots(file_classes):
                     line = c.lines[ii]
                     for name, body in new_root_classes.items():
                         # handle special case
-                        if any(token in line for token in ['id: TokenDatatype',
-                                                           'value: StringDatatype',
-                                                           'uuid: UUIDDatatype',
-                                                           'uuid: Optional[UUIDDatatype]']):
+                        if any(token in line for token in [
+                                'id: TokenDatatype',
+                                'value: StringDatatype',
+                                'uuid: UUIDDatatype',
+                                'uuid: Optional[UUIDDatatype]',
+                                'source: URIReferenceDatatype',
+                        ]):
                             line = line.replace(name, body, 1)
                             continue
                         if 'title=' in line and 'Value' in line:
