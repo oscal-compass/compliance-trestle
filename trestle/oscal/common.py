@@ -483,7 +483,7 @@ class OscalVersion(OscalBaseModel):
     def oscal_version_is_valid(cls, v):
         strict_version = False
         if not strict_version:
-            return True
+            return v
         p = re.compile(OSCAL_VERSION_REGEX)
         matched = p.match(v)
         if matched is None:
