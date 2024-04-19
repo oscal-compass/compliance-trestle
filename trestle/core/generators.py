@@ -32,7 +32,7 @@ from trestle.common import str_utils
 from trestle.common.str_utils import AliasMode
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal import OSCAL_VERSION
-from trestle.oscal.common import Base64, Base64Datatype, Methods, ObservationTypeValidValues, TaskValidValues
+from trestle.oscal.common import Base64, Base64Datatype, Methods, ObservationTypeValidValues, OscalVersion, TaskValidValues
 from trestle.oscal.ssp import DateDatatype
 
 logger = logging.getLogger(__name__)
@@ -203,6 +203,9 @@ def generate_sample_model(
     # the only type of collection possible after OSCAL 1.0.0 is list
     if safe_is_sub(model, OscalBaseModel):
         for field in model.__fields__:  # type: ignore
+            if model_type in [OscalVersion]:
+                model_dict[field] = OSCAL_VERSION
+                break
             if field == 'include_all':
                 if include_optional:
                     model_dict[field] = {}
