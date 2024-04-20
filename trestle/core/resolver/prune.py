@@ -59,11 +59,12 @@ class Prune(Pipeline.Filter):
                 include_children = select_control.with_child_controls == 'yes'
                 if select_control.with_ids:
                     new_ids = select_control.with_ids
-                    for id_ in new_ids:
+                    for withid_ in new_ids:
+                        id_ = withid_.__root__
                         control_ids.append(id_)
                         if include_children:
                             control_ids.extend(self._catalog_interface.get_dependent_control_ids(id_))
-        return [control_id.__root__ for control_id in control_ids]
+        return control_ids
 
     def _find_needed_control_ids(self) -> List[str]:
         """Get list of control_ids needed by profile and corresponding groups."""
