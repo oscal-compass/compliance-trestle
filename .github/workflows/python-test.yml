@@ -195,6 +195,7 @@ jobs:
           -Dsonar.projectKey=compliance-trestle
           -Dsonar.organization=compliance-trestle
           -Dsonar.cpd.exclusions=trestle/oscal/*.py
+          -Dsonar.exclusions=trestle/oscal/*.py
     - name: SonarQube Quality Gate check
       uses: sonarsource/sonarqube-quality-gate-action@master
       # Force to fail step after specific time
