@@ -473,7 +473,7 @@ class ParameterConstraint(OscalBaseModel):
 
 
 class OscalVersion(OscalBaseModel):
-    __root__: StringDatatype = Field(
+    __root__: constr(regex=r'^\S(.*\S)?$') = Field(
         ...,
         description='The OSCAL model version the document was authored against and will conform to as valid.',
         title='OSCAL Version'

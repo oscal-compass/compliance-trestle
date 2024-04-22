@@ -983,6 +983,10 @@ def kill_roots(file_classes):
                     line = c.lines[ii]
                     for name, body in new_root_classes.items():
                         # handle special case
+                        if c.name == 'OscalVersion':
+                            if any(token in line for token in [' __root__: StringDatatype']):
+                                line = line.replace(name, body, 1)
+                            continue
                         if any(token in line for token in [
                                 'id: TokenDatatype',
                                 'value: StringDatatype',
