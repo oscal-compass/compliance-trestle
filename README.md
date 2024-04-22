@@ -123,9 +123,7 @@ Dial in:
 (US) +1 402-627-0247 PIN: 535 362 764#\
 [More phone numbers](https://tel.meet/mwp-affd-tvu?pin=9717189704231)
 
-> TODO: Fill in docs link
-
-**What**: Meeting agenda and notes Google Docs
+**What**: Meeting agenda and notes [Google Docs](https://docs.google.com/document/d/1XTYM7xnWlIqd-8Nn5-qtgvgk8kH3NSmYle5yZvaS7qs/edit?usp=sharing)
 
 ##### Chat anytime
 
