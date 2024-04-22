@@ -20,18 +20,18 @@ jobs:
           path: ~/Library/Caches/pip
         - os: windows-latest
           path: ~\AppData\Local\pip\Cache
-        # optional 3.7 test
+        # optional
         - os: ubuntu-latest
           path: ~/.cache/pip
-          python-version: 3.7
-        # optional 3.7 test
+          python-version: 3.9
+        # optional
         - os: macos-latest
           path: ~/Library/Caches/pip
-          python-version: 3.7.16
-        # optional 3.7 test
+          python-version: 3.9
+        # optional
         - os: windows-latest
           path: ~\AppData\Local\pip\Cache
-          python-version: 3.7
+          python-version: 3.9
         python-version: [3.8, 3.9]
 
     steps:
