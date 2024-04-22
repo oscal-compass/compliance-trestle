@@ -114,8 +114,8 @@ Please attend! All are invited.
 
 **When**:
 
-Every other Tuesday starting on April 23, 2024 · 11:00 – 11:30am est-edt-eastern-time
-[convert to your local time](https://dateful.com/convert/)
+Every other Tuesday starting on April 23, 2024 · 11:00 – 11:30am ET
+[convert to your local time](https://mytime.io/11am/ET)
 
 **Where**: [Google Meet Link](https://meet.google.com/mwp-affd-tvu)
 
