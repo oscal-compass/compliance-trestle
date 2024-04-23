@@ -823,8 +823,14 @@ class ExternalId(OscalBaseModel):
     id: constr(regex=r'^\S(.*\S)?$')
 
 
+class EmailAddressDatatype(OscalBaseModel):
+    """
+    An email address string formatted according to RFC 6531.
+    """
+
+
 class EmailAddress(OscalBaseModel):
-    __root__: EmailStr = Field(
+    __root__: EmailAddressDatatype = Field(
         ..., description='An email address as defined by RFC 5322 Section 3.4.1.', title='Email Address'
     )
 

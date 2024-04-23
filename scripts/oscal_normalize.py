@@ -959,6 +959,10 @@ def kill_roots(file_classes):
     com = file_classes['common']
     root_classes = {}
     match_str = ':__root__:'
+    # patch EmailAddress
+    for c in com:
+        if c.name == 'EmailAddress':
+            c.body_text = c.body_text.replace('EmailAddressDatatype', 'EmailStr')
     # find all root classes
     for c in com:
         body = c.body_text

@@ -957,9 +957,7 @@
       "title": "Email Address",
       "description": "An email address as defined by RFC 5322 Section 3.4.1.",
       "$id": "#field_oscal-metadata_email-address",
-      "type": "string",
-      "format": "email",
-      "pattern": "^.+@.+$"
+      "$ref": "#/definitions/EmailAddressDatatype"
     },
     "oscal-ap-oscal-metadata:telephone-number": {
       "title": "Telephone Number",
