@@ -41,15 +41,13 @@ def get_oscal_release(input_dir_name: str) -> str:
 
 def fixup_models(input_dir_name: str) -> Path:
     """Fix models."""
-    patch_dir_name = 'schema-patch'
-    patch_file_path = Path(patch_dir_name) / 'schema-substitutes.json'
     fixup_dir_name = f'{input_dir_name}-fixup'
     input_dir_path = Path(input_dir_name)
     fixup_dir_path = Path(fixup_dir_name)
     fixup_dir_path.mkdir(exist_ok=True, parents=True)
     fixup_copy_schemas(input_dir_path, fixup_dir_path)
     fixup_json(fixup_dir_path)
-    patch_schemas(fixup_dir_path, patch_file_path)
+    patch_schemas(fixup_dir_path)
     return fixup_dir_path
 
 
@@ -67,15 +65,10 @@ def fixup_copy_schemas(input_dir_path: Path, fixup_dir_path: Path) -> None:
 # patch_schemas introduced for migrating from OSCAL 1.0.4 to 1.2.2 due to missing/broken
 # support in datamodel-codegen tool. See issue(s):
 # - https://github.com/koxudaxi/datamodel-code-generator/issues/1901
-def patch_schemas(fixup_dir_path: Path, patch_file_path: Path) -> None:
+def patch_schemas(fixup_dir_path: Path) -> None:
     """Patch json schemas."""
-    # Patch file contains "old-style" definitions which are used temporarily
-    # until datamodel-codegen tool issues are resolved.
-    pf = f'{patch_file_path}'
-    patch_json = json_data_get(pf)
     for full_name in fixup_dir_path.glob(schema_file_name_search_template):
         model_name = str(full_name)
-        patch_model(model_name, patch_json)
         patch_finding_target(model_name)
         patch_poam_origins(model_name)
         patch_poam_item(model_name, 'related-findings')
@@ -279,6 +272,18 @@ def create_refs(model_name: str) -> None:
     ]
     for key in list_:
         create_ref_risk_status_valid_values(model_name, key)
+    # How Many Valid Values
+    list_ = [
+        'oscal-ap-oscal-control-common:parameter-selection',
+        'oscal-ar-oscal-control-common:parameter-selection',
+        'oscal-catalog-oscal-control-common:parameter-selection',
+        'oscal-component-definition-oscal-control-common:parameter-selection',
+        'oscal-poam-oscal-control-common:parameter-selection',
+        'oscal-profile-oscal-control-common:parameter-selection',
+        'oscal-ssp-oscal-control-common:parameter-selection',
+    ]
+    for key in list_:
+        create_ref_how_many_valid_values(model_name, key)
 
 
 def create_ref_task_valid_values(model_name: str, k1: str) -> None:
@@ -460,6 +465,29 @@ def create_ref_risk_status_valid_values(model_name: str, k1: str) -> None:
     k2 = 'anyOf'
     tgt = tgt.get(k2)
     key = 'RiskStatusValidValues'
+    item = tgt[1]
+    replacement = {'$ref': f'#/definitions/{key}'}
+    tgt[1] = replacement
+    tgt = data['definitions']
+    tgt[key] = item
+    logger.info(f'patch: {model_name} {replacement}')
+    json_data_put(model_name, data)
+
+
+def create_ref_how_many_valid_values(model_name: str, k1: str) -> None:
+    """Create ref for How Many Valid Values."""
+    data = json_data_get(model_name)
+    tgt = data['definitions']
+    tgt = tgt.get(k1)
+    if not tgt:
+        return
+    k2 = 'properties'
+    tgt = tgt.get(k2)
+    k3 = 'how-many'
+    tgt = _find(k3, tgt)
+    k4 = 'allOf'
+    tgt = tgt.get(k4)
+    key = 'HowManyValidValues'
     item = tgt[1]
     replacement = {'$ref': f'#/definitions/{key}'}
     tgt[1] = replacement

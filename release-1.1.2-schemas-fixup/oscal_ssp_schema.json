@@ -1209,18 +1209,20 @@
     },
     "oscal-ssp-oscal-control-common:parameter-selection": {
       "title": "Selection",
-      "description": "Presenting a choice among alternatives",
+      "description": "Presenting a choice among alternatives.",
       "$id": "#assembly_oscal-control-common_parameter-selection",
       "type": "object",
       "properties": {
         "how-many": {
           "title": "Parameter Cardinality",
           "description": "Describes the number of selections that must occur. Without this setting, only one value should be assumed to be permitted.",
-          "type": "string",
-          "pattern": "^(\\p{L}|_)(\\p{L}|\\p{N}|[.\\-_])*$",
-          "enum": [
-            "one",
-            "one-or-more"
+          "allOf": [
+            {
+              "$ref": "#/definitions/TokenDatatype"
+            },
+            {
+              "$ref": "#/definitions/HowManyValidValues"
+            }
           ]
         },
         "choice": {
@@ -1228,7 +1230,7 @@
           "minItems": 1,
           "items": {
             "title": "Choice",
-            "description": "A value selection among several such options",
+            "description": "A value selection among several such options.",
             "type": "string"
           }
         }
@@ -2869,6 +2871,12 @@
       "description": "A type 4 ('random' or 'pseudorandom') or type 5 UUID per RFC 4122.",
       "type": "string",
       "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$"
+    },
+    "HowManyValidValues": {
+      "enum": [
+        "one",
+        "one-or-more"
+      ]
     }
   },
   "properties": {

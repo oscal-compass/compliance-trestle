@@ -1728,7 +1728,7 @@ class LocalObjective(OscalBaseModel):
 
 class ParameterSelection(OscalBaseModel):
     """
-    Presenting a choice among alternatives
+    Presenting a choice among alternatives.
     """
 
     class Config:
