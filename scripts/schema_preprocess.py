@@ -26,6 +26,29 @@ logger.addHandler(logging.StreamHandler())
 
 schema_file_name_search_template = 'oscal_*_schema.json'
 
+integrity_map = {}
+
+
+def integrity_check(token: str, content: Dict) -> None:
+    """Check that common entries have identical bodies."""
+    # derive common key
+    key = token.split(':')[1]
+    # if no common entry yet, add and return
+    if key not in integrity_map.keys():
+        integrity_map[key] = content
+        return
+    # check that existing common entry matches this entry
+    entry = integrity_map[key]
+    # existing and current content should be same size
+    if len(content.keys()) != len(entry.keys()):
+        logger.error(f'{token} size mismatch')
+    # existing and current individual content should match
+    for ekey in entry.keys():
+        if ekey not in content.keys():
+            logger.error(f'missing content key {ekey}')
+        if entry[ekey] != content[ekey]:
+            logger.error(f'mismatch content for key {ekey}')
+
 
 def get_oscal_release(input_dir_name: str) -> str:
     """Get OSCAL release."""
@@ -306,6 +329,7 @@ def create_ref_task_valid_values(model_name: str, k1: str) -> None:
     tgt = data['definitions']
     tgt[key] = item
     logger.info(f'patch: {model_name} {replacement}')
+    integrity_check(k1, replacement)
     json_data_put(model_name, data)
 
 
@@ -329,6 +353,7 @@ def create_ref_threat_id_valid_values(model_name: str, k1: str) -> None:
     tgt = data['definitions']
     tgt[key] = item
     logger.info(f'patch: {model_name} {replacement}')
+    integrity_check(k1, replacement)
     json_data_put(model_name, data)
 
 
@@ -352,6 +377,7 @@ def create_ref_select_subject_by_id_valid_values(model_name: str, k1: str) -> No
     tgt = data['definitions']
     tgt[key] = item
     logger.info(f'patch: {model_name} {replacement}')
+    integrity_check(k1, replacement)
     json_data_put(model_name, data)
 
 
@@ -375,6 +401,7 @@ def create_ref_assessment_subject_valid_values(model_name: str, k1: str) -> None
     tgt = data['definitions']
     tgt[key] = item
     logger.info(f'patch: {model_name} {replacement}')
+    integrity_check(k1, replacement)
     json_data_put(model_name, data)
 
 
@@ -404,6 +431,7 @@ def create_ref_naming_system_valid_values(model_name: str, k1: str) -> None:
     tgt = data['definitions']
     tgt[key] = item
     logger.info(f'patch: {model_name} {replacement}')
+    integrity_check(k1, replacement)
     json_data_put(model_name, data)
 
 
@@ -427,6 +455,7 @@ def create_ref_subject_reference_valid_values(model_name: str, k1: str) -> None:
     tgt = data['definitions']
     tgt[key] = item
     logger.info(f'patch: {model_name} {replacement}')
+    integrity_check(k1, replacement)
     json_data_put(model_name, data)
 
 
@@ -452,6 +481,7 @@ def create_ref_observation_type_valid_values(model_name: str, k1: str) -> None:
     tgt = data['definitions']
     tgt[key] = item
     logger.info(f'patch: {model_name} {replacement}')
+    integrity_check(k1, replacement)
     json_data_put(model_name, data)
 
 
@@ -471,6 +501,7 @@ def create_ref_risk_status_valid_values(model_name: str, k1: str) -> None:
     tgt = data['definitions']
     tgt[key] = item
     logger.info(f'patch: {model_name} {replacement}')
+    integrity_check(k1, replacement)
     json_data_put(model_name, data)
 
 
@@ -494,6 +525,7 @@ def create_ref_how_many_valid_values(model_name: str, k1: str) -> None:
     tgt = data['definitions']
     tgt[key] = item
     logger.info(f'patch: {model_name} {replacement}')
+    integrity_check(k1, replacement)
     json_data_put(model_name, data)
 
 
