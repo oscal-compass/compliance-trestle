@@ -316,9 +316,7 @@
                           "$ref": "#/definitions/URIDatatype"
                         },
                         {
-                          "enum": [
-                            "http://orcid.org/"
-                          ]
+                          "$ref": "#/definitions/ExternalSchemeValidValues"
                         }
                       ]
                     },
@@ -982,9 +980,7 @@
               "$ref": "#/definitions/URIDatatype"
             },
             {
-              "enum": [
-                "http://www.doi.org/"
-              ]
+              "$ref": "#/definitions/DocumentSchemeValidValues"
             }
           ]
         },
@@ -1801,6 +1797,16 @@
       "enum": [
         "home",
         "work"
+      ]
+    },
+    "ExternalSchemeValidValues": {
+      "enum": [
+        "http://orcid.org/"
+      ]
+    },
+    "DocumentSchemeValidValues": {
+      "enum": [
+        "http://www.doi.org/"
       ]
     }
   },

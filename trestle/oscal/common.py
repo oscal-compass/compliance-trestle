@@ -262,22 +262,6 @@ class SelectControlById(OscalBaseModel):
     )
 
 
-class Scheme1(Enum):
-    """
-    Qualifies the kind of document identifier using a URI. If the scheme is not provided the value of the element will be interpreted as a string of characters.
-    """
-
-    http___www_doi_org_ = 'http://www.doi.org/'
-
-
-class Scheme(Enum):
-    """
-    Indicates the type of external identifier.
-    """
-
-    http___orcid_org_ = 'http://orcid.org/'
-
-
 class RoleId(OscalBaseModel):
     __root__: TokenDatatype = Field(..., description='Reference to a role by UUID.', title='Role Identifier Reference')
 
@@ -782,6 +766,10 @@ class Facet(OscalBaseModel):
     remarks: Optional[str] = None
 
 
+class ExternalSchemeValidValues(Enum):
+    http___orcid_org_ = 'http://orcid.org/'
+
+
 class ExternalId(OscalBaseModel):
     """
     An identifier for a person or organization using a designated scheme. e.g. an Open Researcher and Contributor ID (ORCID).
@@ -790,7 +778,7 @@ class ExternalId(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    scheme: Union[AnyUrl, Scheme] = Field(
+    scheme: Union[URIDatatype, ExternalSchemeValidValues] = Field(
         ..., description='Indicates the type of external identifier.', title='External Identifier Schema'
     )
     id: constr(regex=r'^\S(.*\S)?$')
@@ -808,6 +796,10 @@ class EmailAddress(OscalBaseModel):
     )
 
 
+class DocumentSchemeValidValues(Enum):
+    http___www_doi_org_ = 'http://www.doi.org/'
+
+
 class DocumentId(OscalBaseModel):
     """
     A document identifier qualified by an identifier scheme.
@@ -816,7 +808,7 @@ class DocumentId(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    scheme: Optional[Union[AnyUrl, Scheme1]] = Field(
+    scheme: Optional[Union[URIDatatype, DocumentSchemeValidValues]] = Field(
         None,
         description=
         'Qualifies the kind of document identifier using a URI. If the scheme is not provided the value of the element will be interpreted as a string of characters.',
