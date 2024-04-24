@@ -37,7 +37,7 @@ import trestle.oscal.common as common
 from trestle.oscal.common import URIReferenceDatatype
 
 
-class Type3(Enum):
+class Type1(Enum):
     """
     A category describing the purpose of the component.
     """
@@ -263,7 +263,7 @@ class DefinedComponent(OscalBaseModel):
                      description='Provides a globally unique means to identify a given component.',
                      title='Component Identifier'
                  )
-    type: Union[constr(regex=r'^\S(.*\S)?$'), Type3] = Field(
+    type: Union[constr(regex=r'^\S(.*\S)?$'), Type1] = Field(
         ..., description='A category describing the purpose of the component.', title='Component Type'
     )
     title: str = Field(..., description='A human readable name for the component.', title='Component Title')

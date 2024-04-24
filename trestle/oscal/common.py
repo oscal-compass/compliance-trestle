@@ -69,7 +69,7 @@ class URIDatatype(OscalBaseModel):
     __root__: AnyUrl = Field(..., description='A universal resource identifier (URI) formatted according to RFC3986.')
 
 
-class Type2(Enum):
+class Type(Enum):
     """
     A category describing the purpose of the component.
     """
@@ -88,25 +88,6 @@ class Type2(Enum):
     standard = 'standard'
     validation = 'validation'
     network = 'network'
-
-
-class Type1(Enum):
-    """
-    Indicates the type of address.
-    """
-
-    home = 'home'
-    work = 'work'
-
-
-class Type(Enum):
-    """
-    Indicates the type of phone number.
-    """
-
-    home = 'home'
-    office = 'office'
-    mobile = 'mobile'
 
 
 class TokenDatatype(OscalBaseModel):
@@ -158,18 +139,10 @@ class Test(OscalBaseModel):
     remarks: Optional[str] = None
 
 
-class TelephoneNumber(OscalBaseModel):
-    """
-    A telephone service number as defined by ITU-T E.164.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    type: Optional[Union[constr(regex=r'^\S(.*\S)?$'), Type]] = Field(
-        None, description='Indicates the type of phone number.', title='type flag'
-    )
-    number: constr(regex=r'^\S(.*\S)?$')
+class TelephoneTypeValidValues(Enum):
+    home = 'home'
+    office = 'office'
+    mobile = 'mobile'
 
 
 class TaskValidValues(Enum):
@@ -1093,6 +1066,11 @@ class Algorithm(Enum):
     SHA3_512 = 'SHA3-512'
 
 
+class AddressTypeValidValues(Enum):
+    home = 'home'
+    work = 'work'
+
+
 class Address(OscalBaseModel):
     """
     A postal address for the location.
@@ -1101,13 +1079,9 @@ class Address(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    type: Optional[Union[constr(
-        regex=
-        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    ),
-                         Type1]] = Field(
-                             None, description='Indicates the type of address.', title='Address Type'
-                         )
+    type: Optional[Union[TokenDatatype, AddressTypeValidValues]] = Field(
+        None, description='Indicates the type of address.', title='Address Type'
+    )
     addr_lines: Optional[List[constr(regex=r'^\S(.*\S)?$')]] = Field(None, alias='addr-lines')
     city: Optional[constr(regex=r'^\S(.*\S)?$')] = Field(
         None, description='City, town or geographical region for the mailing address.', title='City'
@@ -1162,6 +1136,48 @@ class Timing(OscalBaseModel):
         description='The task is intended to occur at the specified frequency.',
         title='Frequency Condition'
     )
+
+
+class TelephoneNumber(OscalBaseModel):
+    """
+    A telephone service number as defined by ITU-T E.164.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    type: Optional[Union[StringDatatype, TelephoneTypeValidValues]] = Field(
+        None, description='Indicates the type of phone number.', title='type flag'
+    )
+    number: constr(regex=r'^\S(.*\S)?$')
+
+
+class Location(OscalBaseModel):
+    """
+    A physical point of presence, which may be associated with people, organizations, or other concepts within the current or linked OSCAL document.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+                 ) = Field(
+                     ...,
+                     description='A unique ID for the location, for reference.',
+                     title='Location Universally Unique Identifier'
+                 )
+    title: Optional[str] = Field(
+        None,
+        description='A name given to the location, which may be used by a tool for display and navigation.',
+        title='Location Title'
+    )
+    address: Optional[Address] = None
+    email_addresses: Optional[List[EmailAddress]] = Field(None, alias='email-addresses')
+    telephone_numbers: Optional[List[TelephoneNumber]] = Field(None, alias='telephone-numbers')
+    urls: Optional[List[AnyUrl]] = Field(None)
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
+    remarks: Optional[str] = None
 
 
 class SystemUser(OscalBaseModel):
@@ -1585,7 +1601,7 @@ class SystemComponent(OscalBaseModel):
         'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this component elsewhere in this or other OSCAL instances. The locally defined UUID of the component can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Component Identifier',
     )
-    type: Union[constr(regex=r'^\S(.*\S)?$'), Type2] = Field(
+    type: Union[constr(regex=r'^\S(.*\S)?$'), Type] = Field(
         ..., description='A category describing the purpose of the component.', title='Component Type'
     )
     title: str = Field(..., description='A human readable name for the system component.', title='Component Title')
@@ -1825,34 +1841,6 @@ class OriginActor(OscalBaseModel):
     )
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
-
-
-class Location(OscalBaseModel):
-    """
-    A physical point of presence, which may be associated with people, organizations, or other concepts within the current or linked OSCAL document.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-                 ) = Field(
-                     ...,
-                     description='A unique ID for the location, for reference.',
-                     title='Location Universally Unique Identifier'
-                 )
-    title: Optional[str] = Field(
-        None,
-        description='A name given to the location, which may be used by a tool for display and navigation.',
-        title='Location Title'
-    )
-    address: Optional[Address] = None
-    email_addresses: Optional[List[EmailAddress]] = Field(None, alias='email-addresses')
-    telephone_numbers: Optional[List[TelephoneNumber]] = Field(None, alias='telephone-numbers')
-    urls: Optional[List[AnyUrl]] = Field(None)
-    props: Optional[List[Property]] = Field(None)
-    links: Optional[List[Link]] = Field(None)
-    remarks: Optional[str] = None
 
 
 class LastModified(OscalBaseModel):

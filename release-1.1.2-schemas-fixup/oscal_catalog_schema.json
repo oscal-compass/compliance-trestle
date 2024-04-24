@@ -908,11 +908,7 @@
               "$ref": "#/definitions/StringDatatype"
             },
             {
-              "enum": [
-                "home",
-                "office",
-                "mobile"
-              ]
+              "$ref": "#/definitions/TelephoneTypeValidValues"
             }
           ]
         },
@@ -939,10 +935,7 @@
               "$ref": "#/definitions/TokenDatatype"
             },
             {
-              "enum": [
-                "home",
-                "work"
-              ]
+              "$ref": "#/definitions/AddressTypeValidValues"
             }
           ]
         },
@@ -1436,6 +1429,19 @@
       "enum": [
         "one",
         "one-or-more"
+      ]
+    },
+    "TelephoneTypeValidValues": {
+      "enum": [
+        "home",
+        "office",
+        "mobile"
+      ]
+    },
+    "AddressTypeValidValues": {
+      "enum": [
+        "home",
+        "work"
       ]
     }
   },

@@ -26,28 +26,30 @@ logger.addHandler(logging.StreamHandler())
 
 schema_file_name_search_template = 'oscal_*_schema.json'
 
-integrity_map = {}
+body_integrity_map = {}
 
 
-def integrity_check(token: str, content: Dict) -> None:
+def body_integrity_check(token: str, content: Dict) -> None:
     """Check that common entries have identical bodies."""
     # derive common key
     key = token.split(':')[1]
     # if no common entry yet, add and return
-    if key not in integrity_map.keys():
-        integrity_map[key] = content
+    if key not in body_integrity_map.keys():
+        body_integrity_map[key] = content
+        logger.debug(f'initialize for {key}')
         return
     # check that existing common entry matches this entry
-    entry = integrity_map[key]
+    entry = body_integrity_map[key]
     # existing and current content should be same size
     if len(content.keys()) != len(entry.keys()):
         logger.error(f'{token} size mismatch')
     # existing and current individual content should match
     for ekey in entry.keys():
         if ekey not in content.keys():
-            logger.error(f'missing content key {ekey}')
+            logger.error(f'missing content key {token}')
         if entry[ekey] != content[ekey]:
-            logger.error(f'mismatch content for key {ekey}')
+            logger.error(f'mismatch content for key {token}')
+        logger.debug(f'match for {token}')
 
 
 def get_oscal_release(input_dir_name: str) -> str:
@@ -307,6 +309,30 @@ def create_refs(model_name: str) -> None:
     ]
     for key in list_:
         create_ref_how_many_valid_values(model_name, key)
+    # Telephone Type Valid Values
+    list_ = [
+        'oscal-ap-oscal-metadata:telephone-number',
+        'oscal-ar-oscal-metadata:telephone-number',
+        'oscal-catalog-oscal-metadata:telephone-number',
+        'oscal-component-definition-oscal-metadata:telephone-number',
+        'oscal-poam-oscal-metadata:telephone-number',
+        'oscal-profile-oscal-metadata:telephone-number',
+        'oscal-ssp-oscal-metadata:telephone-number',
+    ]
+    for key in list_:
+        create_ref_telephone_type_valid_values(model_name, key)
+    # Address Type Valid Values
+    list_ = [
+        'oscal-ap-oscal-metadata:address',
+        'oscal-ar-oscal-metadata:address',
+        'oscal-catalog-oscal-metadata:address',
+        'oscal-component-definition-oscal-metadata:address',
+        'oscal-poam-oscal-metadata:address',
+        'oscal-profile-oscal-metadata:address',
+        'oscal-ssp-oscal-metadata:address',
+    ]
+    for key in list_:
+        create_ref_address_type_valid_values(model_name, key)
 
 
 def create_ref_task_valid_values(model_name: str, k1: str) -> None:
@@ -329,7 +355,7 @@ def create_ref_task_valid_values(model_name: str, k1: str) -> None:
     tgt = data['definitions']
     tgt[key] = item
     logger.debug(f'patch: {model_name} {replacement}')
-    integrity_check(k1, replacement)
+    body_integrity_check(k1, replacement)
     json_data_put(model_name, data)
 
 
@@ -353,7 +379,7 @@ def create_ref_threat_id_valid_values(model_name: str, k1: str) -> None:
     tgt = data['definitions']
     tgt[key] = item
     logger.debug(f'patch: {model_name} {replacement}')
-    integrity_check(k1, replacement)
+    body_integrity_check(k1, replacement)
     json_data_put(model_name, data)
 
 
@@ -377,7 +403,7 @@ def create_ref_select_subject_by_id_valid_values(model_name: str, k1: str) -> No
     tgt = data['definitions']
     tgt[key] = item
     logger.debug(f'patch: {model_name} {replacement}')
-    integrity_check(k1, replacement)
+    body_integrity_check(k1, replacement)
     json_data_put(model_name, data)
 
 
@@ -401,7 +427,7 @@ def create_ref_assessment_subject_valid_values(model_name: str, k1: str) -> None
     tgt = data['definitions']
     tgt[key] = item
     logger.debug(f'patch: {model_name} {replacement}')
-    integrity_check(k1, replacement)
+    body_integrity_check(k1, replacement)
     json_data_put(model_name, data)
 
 
@@ -431,7 +457,7 @@ def create_ref_naming_system_valid_values(model_name: str, k1: str) -> None:
     tgt = data['definitions']
     tgt[key] = item
     logger.debug(f'patch: {model_name} {replacement}')
-    integrity_check(k1, replacement)
+    body_integrity_check(k1, replacement)
     json_data_put(model_name, data)
 
 
@@ -455,7 +481,7 @@ def create_ref_subject_reference_valid_values(model_name: str, k1: str) -> None:
     tgt = data['definitions']
     tgt[key] = item
     logger.debug(f'patch: {model_name} {replacement}')
-    integrity_check(k1, replacement)
+    body_integrity_check(k1, replacement)
     json_data_put(model_name, data)
 
 
@@ -481,7 +507,7 @@ def create_ref_observation_type_valid_values(model_name: str, k1: str) -> None:
     tgt = data['definitions']
     tgt[key] = item
     logger.debug(f'patch: {model_name} {replacement}')
-    integrity_check(k1, replacement)
+    body_integrity_check(k1, replacement)
     json_data_put(model_name, data)
 
 
@@ -501,7 +527,7 @@ def create_ref_risk_status_valid_values(model_name: str, k1: str) -> None:
     tgt = data['definitions']
     tgt[key] = item
     logger.debug(f'patch: {model_name} {replacement}')
-    integrity_check(k1, replacement)
+    body_integrity_check(k1, replacement)
     json_data_put(model_name, data)
 
 
@@ -525,7 +551,79 @@ def create_ref_how_many_valid_values(model_name: str, k1: str) -> None:
     tgt = data['definitions']
     tgt[key] = item
     logger.debug(f'patch: {model_name} {replacement}')
-    integrity_check(k1, replacement)
+    body_integrity_check(k1, replacement)
+    json_data_put(model_name, data)
+
+
+def create_ref_telephone_type_valid_values(model_name: str, k1: str) -> None:
+    """Create ref for Telephone Type Valid Values."""
+    data = json_data_get(model_name)
+    tgt = data['definitions']
+    tgt = tgt.get(k1)
+    if not tgt:
+        return
+    k2 = 'properties'
+    tgt = tgt.get(k2)
+    k3 = 'type'
+    tgt = _find(k3, tgt)
+    k4 = 'anyOf'
+    tgt = tgt.get(k4)
+    key = 'TelephoneTypeValidValues'
+    item = tgt[1]
+    replacement = {'$ref': f'#/definitions/{key}'}
+    tgt[1] = replacement
+    tgt = data['definitions']
+    tgt[key] = item
+    logger.debug(f'patch: {model_name} {replacement}')
+    body_integrity_check(k1, replacement)
+    json_data_put(model_name, data)
+
+
+def create_ref_address_type_valid_values(model_name: str, k1: str) -> None:
+    """Create ref for Address Type Valid Values."""
+    data = json_data_get(model_name)
+    tgt = data['definitions']
+    tgt = tgt.get(k1)
+    if not tgt:
+        return
+    k2 = 'properties'
+    tgt = tgt.get(k2)
+    k3 = 'type'
+    tgt = _find(k3, tgt)
+    k4 = 'anyOf'
+    tgt = tgt.get(k4)
+    key = 'AddressTypeValidValues'
+    item = tgt[1]
+    replacement = {'$ref': f'#/definitions/{key}'}
+    tgt[1] = replacement
+    tgt = data['definitions']
+    tgt[key] = item
+    logger.debug(f'patch: {model_name} {replacement}')
+    body_integrity_check(k1, replacement)
+    json_data_put(model_name, data)
+
+
+def create_ref_component_type_valid_values(model_name: str, k1: str) -> None:
+    """Create ref for Component Type Valid Values."""
+    data = json_data_get(model_name)
+    tgt = data['definitions']
+    tgt = tgt.get(k1)
+    if not tgt:
+        return
+    k2 = 'properties'
+    tgt = tgt.get(k2)
+    k3 = 'type'
+    tgt = _find(k3, tgt)
+    k4 = 'anyOf'
+    tgt = tgt.get(k4)
+    key = 'ComponentTypeValidValues'
+    item = tgt[1]
+    replacement = {'$ref': f'#/definitions/{key}'}
+    tgt[1] = replacement
+    tgt = data['definitions']
+    tgt[key] = item
+    logger.debug(f'patch: {model_name} {replacement}')
+    body_integrity_check(k1, replacement)
     json_data_put(model_name, data)
 
 
