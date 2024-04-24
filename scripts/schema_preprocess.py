@@ -87,7 +87,7 @@ def fixup_copy_schemas(input_dir_path: Path, fixup_dir_path: Path) -> None:
         os.system(cmd)
 
 
-# patch_schemas introduced for migrating from OSCAL 1.0.4 to 1.2.2 due to missing/broken
+# patch_schemas introduced for migrating from OSCAL 1.0.4 to 1.1.2 due to missing/broken
 # support in datamodel-codegen tool. See issue(s):
 # - https://github.com/koxudaxi/datamodel-code-generator/issues/1901
 def patch_schemas(fixup_dir_path: Path) -> None:
@@ -129,6 +129,7 @@ def patch_model(model_name: str, patch_json: Dict):
 def patch_finding_target(model_name: str) -> None:
     """Patch finding target."""
     # finding target: change property name "status" to "objectiveStatus" to avoid conflict
+    # later, oscal_normalize will do the reverse to get the field name correct
     data = json_data_get(model_name)
     for k1 in data['definitions'].keys():
         if not k1.endswith('-common:finding-target'):
@@ -150,6 +151,7 @@ def patch_finding_target(model_name: str) -> None:
 def patch_poam_origins(model_name: str) -> None:
     """Patch POAM origins."""
     # POAM: change property name "origins" to "originations" to avoid conflict
+    # later, oscal_normalize will do the reverse to get the field name correct
     if not model_name.endswith('oscal_poam_schema.json'):
         return
     data = json_data_get(model_name)
@@ -171,6 +173,7 @@ def patch_poam_origins(model_name: str) -> None:
 
 
 # With this patch the description in POAM slightly altered to match the other models.
+# This beneficially results in PoamItem being common to all schemas.
 # This may not be an acceptable solution!?
 def patch_poam_item(model_name: str, k3: str) -> None:
     """Patch POAM item."""
@@ -201,6 +204,8 @@ def patch_poam_item(model_name: str, k3: str) -> None:
     json_data_put(model_name, data)
 
 
+# Profile: change name "select-control-by-id" to "select-control" to avoid conflict
+# This does not cause in any field name changes.
 def patch_profile(model_name: str) -> None:
     """Patch profile."""
     if not model_name.endswith('oscal_profile_schema.json'):
