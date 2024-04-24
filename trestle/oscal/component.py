@@ -37,24 +37,6 @@ import trestle.oscal.common as common
 from trestle.oscal.common import URIReferenceDatatype
 
 
-class Type1(Enum):
-    """
-    A category describing the purpose of the component.
-    """
-
-    interconnection = 'interconnection'
-    software = 'software'
-    hardware = 'hardware'
-    service = 'service'
-    policy = 'policy'
-    physical = 'physical'
-    process_procedure = 'process-procedure'
-    plan = 'plan'
-    guidance = 'guidance'
-    standard = 'standard'
-    validation = 'validation'
-
-
 class Statement(OscalBaseModel):
     """
     Identifies which statements within a control are addressed.
@@ -191,6 +173,20 @@ class ImplementedRequirement(OscalBaseModel):
     remarks: Optional[str] = None
 
 
+class DefinedComponentTypeValidValues(Enum):
+    interconnection = 'interconnection'
+    software = 'software'
+    hardware = 'hardware'
+    service = 'service'
+    policy = 'policy'
+    physical = 'physical'
+    process_procedure = 'process-procedure'
+    plan = 'plan'
+    guidance = 'guidance'
+    standard = 'standard'
+    validation = 'validation'
+
+
 class ControlImplementation(OscalBaseModel):
     """
     Defines how the component or capability supports a set of controls.
@@ -263,7 +259,7 @@ class DefinedComponent(OscalBaseModel):
                      description='Provides a globally unique means to identify a given component.',
                      title='Component Identifier'
                  )
-    type: Union[constr(regex=r'^\S(.*\S)?$'), Type1] = Field(
+    type: Union[constr(regex=r'^\S(.*\S)?$'), DefinedComponentTypeValidValues] = Field(
         ..., description='A category describing the purpose of the component.', title='Component Type'
     )
     title: str = Field(..., description='A human readable name for the component.', title='Component Title')

@@ -357,6 +357,12 @@ def create_refs(model_name: str) -> None:
     ]
     for key in list_:
         create_ref_document_scheme_valid_values(model_name, key)
+    # Defined Component Type Valid Values
+    list_ = [
+        'oscal-component-definition-oscal-component-definition:defined-component',
+    ]
+    for key in list_:
+        create_ref_defined_component_type_valid_values(model_name, key)
 
 
 def create_ref_task_valid_values(model_name: str, k1: str) -> None:
@@ -701,6 +707,30 @@ def create_ref_document_scheme_valid_values(model_name: str, k1: str) -> None:
     k4 = 'anyOf'
     tgt = tgt.get(k4)
     key = 'DocumentSchemeValidValues'
+    item = tgt[1]
+    replacement = {'$ref': f'#/definitions/{key}'}
+    tgt[1] = replacement
+    tgt = data['definitions']
+    tgt[key] = item
+    logger.debug(f'patch: {model_name} {replacement}')
+    body_integrity_check(k1, replacement)
+    json_data_put(model_name, data)
+
+
+def create_ref_defined_component_type_valid_values(model_name: str, k1: str) -> None:
+    """Create ref for Defined Component Type Valid Values."""
+    data = json_data_get(model_name)
+    tgt = data['definitions']
+    tgt = tgt.get(k1)
+    if not tgt:
+        return
+    k2 = 'properties'
+    tgt = tgt.get(k2)
+    k3 = 'type'
+    tgt = _find(k3, tgt)
+    k4 = 'anyOf'
+    tgt = tgt.get(k4)
+    key = 'DefinedComponentTypeValidValues'
     item = tgt[1]
     replacement = {'$ref': f'#/definitions/{key}'}
     tgt[1] = replacement
