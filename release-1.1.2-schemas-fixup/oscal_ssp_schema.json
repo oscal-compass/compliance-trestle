@@ -1252,22 +1252,7 @@
               "$ref": "#/definitions/StringDatatype"
             },
             {
-              "enum": [
-                "this-system",
-                "system",
-                "interconnection",
-                "software",
-                "hardware",
-                "service",
-                "policy",
-                "physical",
-                "process-procedure",
-                "plan",
-                "guidance",
-                "standard",
-                "validation",
-                "network"
-              ]
+              "$ref": "#/definitions/SystemComponentTypeValidValues"
             }
           ]
         },
@@ -2888,6 +2873,24 @@
     "DocumentSchemeValidValues": {
       "enum": [
         "http://www.doi.org/"
+      ]
+    },
+    "SystemComponentTypeValidValues": {
+      "enum": [
+        "this-system",
+        "system",
+        "interconnection",
+        "software",
+        "hardware",
+        "service",
+        "policy",
+        "physical",
+        "process-procedure",
+        "plan",
+        "guidance",
+        "standard",
+        "validation",
+        "network"
       ]
     }
   },

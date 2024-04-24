@@ -69,27 +69,6 @@ class URIDatatype(OscalBaseModel):
     __root__: AnyUrl = Field(..., description='A universal resource identifier (URI) formatted according to RFC3986.')
 
 
-class Type(Enum):
-    """
-    A category describing the purpose of the component.
-    """
-
-    this_system = 'this-system'
-    system = 'system'
-    interconnection = 'interconnection'
-    software = 'software'
-    hardware = 'hardware'
-    service = 'service'
-    policy = 'policy'
-    physical = 'physical'
-    process_procedure = 'process-procedure'
-    plan = 'plan'
-    guidance = 'guidance'
-    standard = 'standard'
-    validation = 'validation'
-    network = 'network'
-
-
 class TokenDatatype(OscalBaseModel):
     __root__: constr(
         regex=
@@ -148,6 +127,23 @@ class TelephoneTypeValidValues(Enum):
 class TaskValidValues(Enum):
     milestone = 'milestone'
     action = 'action'
+
+
+class SystemComponentTypeValidValues(Enum):
+    this_system = 'this-system'
+    system = 'system'
+    interconnection = 'interconnection'
+    software = 'software'
+    hardware = 'hardware'
+    service = 'service'
+    policy = 'policy'
+    physical = 'physical'
+    process_procedure = 'process-procedure'
+    plan = 'plan'
+    guidance = 'guidance'
+    standard = 'standard'
+    validation = 'validation'
+    network = 'network'
 
 
 class SubjectReferenceValidValues(Enum):
@@ -1593,7 +1589,7 @@ class SystemComponent(OscalBaseModel):
         'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this component elsewhere in this or other OSCAL instances. The locally defined UUID of the component can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Component Identifier',
     )
-    type: Union[constr(regex=r'^\S(.*\S)?$'), Type] = Field(
+    type: Union[constr(regex=r'^\S(.*\S)?$'), SystemComponentTypeValidValues] = Field(
         ..., description='A category describing the purpose of the component.', title='Component Type'
     )
     title: str = Field(..., description='A human readable name for the system component.', title='Component Title')

@@ -1019,6 +1019,7 @@ def kill_roots(file_classes):
                                 'uuid: Optional[UUIDDatatype]',
                                 'source: URIReferenceDatatype',
                                 'type: Union[StringDatatype, DefinedComponentTypeValidValues]',
+                                'type: Union[StringDatatype, SystemComponentTypeValidValues]',
                         ]):
                             line = line.replace(name, body, 1)
                             continue

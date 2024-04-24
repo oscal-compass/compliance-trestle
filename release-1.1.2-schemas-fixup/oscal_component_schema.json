@@ -1257,22 +1257,7 @@
               "$ref": "#/definitions/StringDatatype"
             },
             {
-              "enum": [
-                "this-system",
-                "system",
-                "interconnection",
-                "software",
-                "hardware",
-                "service",
-                "policy",
-                "physical",
-                "process-procedure",
-                "plan",
-                "guidance",
-                "standard",
-                "validation",
-                "network"
-              ]
+              "$ref": "#/definitions/SystemComponentTypeValidValues"
             }
           ]
         },
@@ -2188,6 +2173,24 @@
         "guidance",
         "standard",
         "validation"
+      ]
+    },
+    "SystemComponentTypeValidValues": {
+      "enum": [
+        "this-system",
+        "system",
+        "interconnection",
+        "software",
+        "hardware",
+        "service",
+        "policy",
+        "physical",
+        "process-procedure",
+        "plan",
+        "guidance",
+        "standard",
+        "validation",
+        "network"
       ]
     }
   },
