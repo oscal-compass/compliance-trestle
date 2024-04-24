@@ -139,7 +139,7 @@ def patch_finding_target(model_name: str) -> None:
             continue
         value = data['definitions'][k1][k2][k3]
         del data['definitions'][k1][k2][k3]
-        u3 = 'objectiveStatus'
+        u3 = 'objective_status'
         data['definitions'][k1][k2][u3] = value
         logger.info(f'patch: {model_name} {k1}.{k2}.{k3} -> {k1}.{k2}.{u3}')
         json_data_put(model_name, data)
@@ -328,7 +328,7 @@ def create_ref_task_valid_values(model_name: str, k1: str) -> None:
     tgt[1] = replacement
     tgt = data['definitions']
     tgt[key] = item
-    logger.info(f'patch: {model_name} {replacement}')
+    logger.debug(f'patch: {model_name} {replacement}')
     integrity_check(k1, replacement)
     json_data_put(model_name, data)
 
@@ -352,7 +352,7 @@ def create_ref_threat_id_valid_values(model_name: str, k1: str) -> None:
     tgt[1] = replacement
     tgt = data['definitions']
     tgt[key] = item
-    logger.info(f'patch: {model_name} {replacement}')
+    logger.debug(f'patch: {model_name} {replacement}')
     integrity_check(k1, replacement)
     json_data_put(model_name, data)
 
@@ -376,7 +376,7 @@ def create_ref_select_subject_by_id_valid_values(model_name: str, k1: str) -> No
     tgt[1] = replacement
     tgt = data['definitions']
     tgt[key] = item
-    logger.info(f'patch: {model_name} {replacement}')
+    logger.debug(f'patch: {model_name} {replacement}')
     integrity_check(k1, replacement)
     json_data_put(model_name, data)
 
@@ -400,7 +400,7 @@ def create_ref_assessment_subject_valid_values(model_name: str, k1: str) -> None
     tgt[1] = replacement
     tgt = data['definitions']
     tgt[key] = item
-    logger.info(f'patch: {model_name} {replacement}')
+    logger.debug(f'patch: {model_name} {replacement}')
     integrity_check(k1, replacement)
     json_data_put(model_name, data)
 
@@ -430,7 +430,7 @@ def create_ref_naming_system_valid_values(model_name: str, k1: str) -> None:
     tgt[1] = replacement
     tgt = data['definitions']
     tgt[key] = item
-    logger.info(f'patch: {model_name} {replacement}')
+    logger.debug(f'patch: {model_name} {replacement}')
     integrity_check(k1, replacement)
     json_data_put(model_name, data)
 
@@ -454,7 +454,7 @@ def create_ref_subject_reference_valid_values(model_name: str, k1: str) -> None:
     tgt[1] = replacement
     tgt = data['definitions']
     tgt[key] = item
-    logger.info(f'patch: {model_name} {replacement}')
+    logger.debug(f'patch: {model_name} {replacement}')
     integrity_check(k1, replacement)
     json_data_put(model_name, data)
 
@@ -480,7 +480,7 @@ def create_ref_observation_type_valid_values(model_name: str, k1: str) -> None:
     tgt[1] = replacement
     tgt = data['definitions']
     tgt[key] = item
-    logger.info(f'patch: {model_name} {replacement}')
+    logger.debug(f'patch: {model_name} {replacement}')
     integrity_check(k1, replacement)
     json_data_put(model_name, data)
 
@@ -500,7 +500,7 @@ def create_ref_risk_status_valid_values(model_name: str, k1: str) -> None:
     tgt[1] = replacement
     tgt = data['definitions']
     tgt[key] = item
-    logger.info(f'patch: {model_name} {replacement}')
+    logger.debug(f'patch: {model_name} {replacement}')
     integrity_check(k1, replacement)
     json_data_put(model_name, data)
 
@@ -524,7 +524,7 @@ def create_ref_how_many_valid_values(model_name: str, k1: str) -> None:
     tgt[1] = replacement
     tgt = data['definitions']
     tgt[key] = item
-    logger.info(f'patch: {model_name} {replacement}')
+    logger.debug(f'patch: {model_name} {replacement}')
     integrity_check(k1, replacement)
     json_data_put(model_name, data)
 

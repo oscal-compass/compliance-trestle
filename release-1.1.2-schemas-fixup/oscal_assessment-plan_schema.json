@@ -2813,7 +2813,7 @@
         "remarks": {
           "$ref": "#field_oscal-metadata_remarks"
         },
-        "objectiveStatus": {
+        "objective_status": {
           "title": "Objective Status",
           "description": "A determination of if the objective is satisfied or not within a given system.",
           "type": "object",

@@ -109,7 +109,7 @@ class PoamItem(OscalBaseModel):
     related_observations: Optional[List[common.RelatedObservation]] = Field(None, alias='related-observations')
     related_risks: Optional[List[common.RelatedRisk]] = Field(None, alias='related-risks')
     remarks: Optional[str] = None
-    originations: Optional[List[Origination]] = Field(None)
+    origins: Optional[List[Origination]] = Field(None)
 
 
 class PlanOfActionAndMilestones(OscalBaseModel):

@@ -777,7 +777,7 @@ class FindingTarget(OscalBaseModel):
     links: Optional[List[Link]] = Field(None)
     implementation_status: Optional[ImplementationStatus] = Field(None, alias='implementation-status')
     remarks: Optional[str] = None
-    objectiveStatus: Optional[ObjectiveStatus] = Field(
+    status: Optional[ObjectiveStatus] = Field(
         None,
         description='A determination of if the objective is satisfied or not within a given system.',
         title='Objective Status'
@@ -830,7 +830,7 @@ class EmailAddressDatatype(OscalBaseModel):
 
 
 class EmailAddress(OscalBaseModel):
-    __root__: EmailAddressDatatype = Field(
+    __root__: EmailStr = Field(
         ..., description='An email address as defined by RFC 5322 Section 3.4.1.', title='Email Address'
     )
 
@@ -1633,7 +1633,7 @@ class Party(OscalBaseModel):
     external_ids: Optional[List[ExternalId]] = Field(None, alias='external-ids')
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
-    email_addresses: Optional[List[EmailStr]] = Field(None, alias='email-addresses')
+    email_addresses: Optional[List[EmailAddress]] = Field(None, alias='email-addresses')
     telephone_numbers: Optional[List[TelephoneNumber]] = Field(None, alias='telephone-numbers')
     addresses: Optional[List[Address]] = Field(None)
     location_uuids: Optional[List[constr(
@@ -1847,7 +1847,7 @@ class Location(OscalBaseModel):
         title='Location Title'
     )
     address: Optional[Address] = None
-    email_addresses: Optional[List[EmailStr]] = Field(None, alias='email-addresses')
+    email_addresses: Optional[List[EmailAddress]] = Field(None, alias='email-addresses')
     telephone_numbers: Optional[List[TelephoneNumber]] = Field(None, alias='telephone-numbers')
     urls: Optional[List[AnyUrl]] = Field(None)
     props: Optional[List[Property]] = Field(None)

@@ -954,15 +954,36 @@ def _strip_unrefed_files(file_class):
     return [c for c in file_class if c.name not in dead_names]
 
 
+def patch_lines(c, old, new):
+    """Patch lines."""
+    for ii in range(1, len(c.lines)):
+        line = c.lines[ii]
+        line = line.replace(old, new, 1)
+        c.lines[ii] = line
+    return c.lines
+
+
+def patch_items(file_classes):
+    """Patch items."""
+    for key in file_classes:
+        file_class = file_classes[key]
+        for c in file_class:
+            if c.name == 'EmailAddress':
+                c.lines = patch_lines(c, 'EmailAddressDatatype', 'EmailStr')
+            # see: schema_preprocess patch_finding_target
+            elif c.name == 'FindingTarget':
+                c.lines = patch_lines(c, 'objective_status', 'status')
+            # see: schema_preprocess patch_poam_origins
+            elif c.name == 'PoamItem':
+                c.lines = patch_lines(c, 'originations', 'origins')
+    return file_classes
+
+
 def kill_roots(file_classes):
     """Kill the root classes in common."""
     com = file_classes['common']
     root_classes = {}
     match_str = ':__root__:'
-    # patch EmailAddress
-    for c in com:
-        if c.name == 'EmailAddress':
-            c.body_text = c.body_text.replace('EmailAddressDatatype', 'EmailStr')
     # find all root classes
     for c in com:
         body = c.body_text
@@ -1060,6 +1081,9 @@ def normalize_files():
 
     # now apply all the changes to the class bodies
     file_classes = apply_changes_to_classes(file_classes, changes, com_names)
+
+    # patch common items
+    file_classes = patch_items(file_classes)
 
     # kill the __root__ classes
     file_classes = kill_roots(file_classes)
