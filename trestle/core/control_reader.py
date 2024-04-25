@@ -411,7 +411,7 @@ class ControlReader:
         for by_id in sorted(by_ids):
             parts = by_id_parts.get(by_id, None)
             props = props_by_id.get(by_id, None)
-            adds.append(prof.Add(parts=parts, props=props, position=prof.Position.ending, by_id=by_id))
+            adds.append(prof.Add(parts=parts, props=props, position=const.ENDING, by_id=by_id))
 
         new_alters = []
         if adds:

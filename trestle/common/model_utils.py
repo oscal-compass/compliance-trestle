@@ -539,8 +539,6 @@ class ModelUtils:
         main_fields = ['id', 'label', 'values', 'select', 'choice', 'how_many', 'guidelines', 'prose']
         if isinstance(obj, common.Remarks):
             return obj.__root__
-        if isinstance(obj, common.HowMany):
-            return obj.value
         # it is either a string already or we cast it to string
         if not hasattr(obj, const.FIELDS_SET):
             return str(obj)
