@@ -382,6 +382,14 @@ def create_refs(model_name: str) -> None:
         create_ref_system_component_type_valid_values(model_name, key)
 
 
+def _fetch(tgt: Any, key: str) -> Any:
+    """Fetch."""
+    try:
+        return tgt.get(key)
+    except Exception:
+        return _find(key, tgt)
+
+
 def create_ref_task_valid_values(model_name: str, k1: str) -> None:
     """Create ref for Task Valid Values."""
     data = json_data_get(model_name)
@@ -389,12 +397,9 @@ def create_ref_task_valid_values(model_name: str, k1: str) -> None:
     tgt = tgt.get(k1)
     if not tgt:
         return
-    k2 = 'properties'
-    tgt = tgt.get(k2)
-    k3 = 'type'
-    tgt = _find(k3, tgt)
-    k4 = 'anyOf'
-    tgt = tgt.get(k4)
+    tgt = _fetch(tgt, 'properties')
+    tgt = _fetch(tgt, 'type')
+    tgt = _fetch(tgt, 'anyOf')
     key = 'TaskValidValues'
     item = tgt[1]
     replacement = {'$ref': f'#/definitions/{key}'}
@@ -413,12 +418,9 @@ def create_ref_threat_id_valid_values(model_name: str, k1: str) -> None:
     tgt = tgt.get(k1)
     if not tgt:
         return
-    k2 = 'properties'
-    tgt = tgt.get(k2)
-    k3 = 'system'
-    tgt = _find(k3, tgt)
-    k4 = 'anyOf'
-    tgt = tgt.get(k4)
+    tgt = _fetch(tgt, 'properties')
+    tgt = _fetch(tgt, 'system')
+    tgt = _fetch(tgt, 'anyOf')
     key = 'ThreatIdValidValues'
     item = tgt[1]
     replacement = {'$ref': f'#/definitions/{key}'}
@@ -437,12 +439,9 @@ def create_ref_select_subject_by_id_valid_values(model_name: str, k1: str) -> No
     tgt = tgt.get(k1)
     if not tgt:
         return
-    k2 = 'properties'
-    tgt = tgt.get(k2)
-    k3 = 'type'
-    tgt = _find(k3, tgt)
-    k4 = 'anyOf'
-    tgt = tgt.get(k4)
+    tgt = _fetch(tgt, 'properties')
+    tgt = _fetch(tgt, 'type')
+    tgt = _fetch(tgt, 'anyOf')
     key = 'SelectSubjectByIdValidValues'
     item = tgt[1]
     replacement = {'$ref': f'#/definitions/{key}'}
@@ -461,12 +460,9 @@ def create_ref_assessment_subject_valid_values(model_name: str, k1: str) -> None
     tgt = tgt.get(k1)
     if not tgt:
         return
-    k2 = 'properties'
-    tgt = tgt.get(k2)
-    k3 = 'type'
-    tgt = _find(k3, tgt)
-    k4 = 'anyOf'
-    tgt = tgt.get(k4)
+    tgt = _fetch(tgt, 'properties')
+    tgt = _fetch(tgt, 'type')
+    tgt = _fetch(tgt, 'anyOf')
     key = 'AssessmentSubjectValidValues'
     item = tgt[1]
     replacement = {'$ref': f'#/definitions/{key}'}
@@ -485,18 +481,12 @@ def create_ref_naming_system_valid_values(model_name: str, k1: str) -> None:
     tgt = tgt.get(k1)
     if not tgt:
         return
-    k2 = 'properties'
-    tgt = tgt.get(k2)
-    k3 = 'facets'
-    tgt = _find(k3, tgt)
-    k4 = 'items'
-    tgt = _find(k4, tgt)
-    k5 = 'properties'
-    tgt = _find(k5, tgt)
-    k6 = 'system'
-    tgt = _find(k6, tgt)
-    k7 = 'anyOf'
-    tgt = tgt.get(k7)
+    tgt = _fetch(tgt, 'properties')
+    tgt = _fetch(tgt, 'facets')
+    tgt = _fetch(tgt, 'items')
+    tgt = _fetch(tgt, 'properties')
+    tgt = _fetch(tgt, 'system')
+    tgt = _fetch(tgt, 'anyOf')
     key = 'NamingSystemValidValues'
     item = tgt[1]
     replacement = {'$ref': f'#/definitions/{key}'}
@@ -515,12 +505,9 @@ def create_ref_subject_reference_valid_values(model_name: str, k1: str) -> None:
     tgt = tgt.get(k1)
     if not tgt:
         return
-    k2 = 'properties'
-    tgt = tgt.get(k2)
-    k3 = 'type'
-    tgt = _find(k3, tgt)
-    k4 = 'anyOf'
-    tgt = tgt.get(k4)
+    tgt = _fetch(tgt, 'properties')
+    tgt = _fetch(tgt, 'type')
+    tgt = _fetch(tgt, 'anyOf')
     key = 'SubjectReferenceValidValues'
     item = tgt[1]
     replacement = {'$ref': f'#/definitions/{key}'}
@@ -539,14 +526,10 @@ def create_ref_observation_type_valid_values(model_name: str, k1: str) -> None:
     tgt = tgt.get(k1)
     if not tgt:
         return
-    k2 = 'properties'
-    tgt = tgt.get(k2)
-    k3 = 'types'
-    tgt = _find(k3, tgt)
-    k4 = 'items'
-    tgt = tgt.get(k4)
-    k5 = 'anyOf'
-    tgt = tgt.get(k5)
+    tgt = _fetch(tgt, 'properties')
+    tgt = _fetch(tgt, 'types')
+    tgt = _fetch(tgt, 'items')
+    tgt = _fetch(tgt, 'anyOf')
     key = 'ObservationTypeValidValues'
     item = tgt[1]
     replacement = {'$ref': f'#/definitions/{key}'}
@@ -565,8 +548,7 @@ def create_ref_risk_status_valid_values(model_name: str, k1: str) -> None:
     tgt = tgt.get(k1)
     if not tgt:
         return
-    k2 = 'anyOf'
-    tgt = tgt.get(k2)
+    tgt = _fetch(tgt, 'anyOf')
     key = 'RiskStatusValidValues'
     item = tgt[1]
     replacement = {'$ref': f'#/definitions/{key}'}
@@ -585,12 +567,9 @@ def create_ref_how_many_valid_values(model_name: str, k1: str) -> None:
     tgt = tgt.get(k1)
     if not tgt:
         return
-    k2 = 'properties'
-    tgt = tgt.get(k2)
-    k3 = 'how-many'
-    tgt = _find(k3, tgt)
-    k4 = 'allOf'
-    tgt = tgt.get(k4)
+    tgt = _fetch(tgt, 'properties')
+    tgt = _fetch(tgt, 'how-many')
+    tgt = _fetch(tgt, 'allOf')
     key = 'HowManyValidValues'
     item = tgt[1]
     replacement = {'$ref': f'#/definitions/{key}'}
@@ -609,12 +588,9 @@ def create_ref_telephone_type_valid_values(model_name: str, k1: str) -> None:
     tgt = tgt.get(k1)
     if not tgt:
         return
-    k2 = 'properties'
-    tgt = tgt.get(k2)
-    k3 = 'type'
-    tgt = _find(k3, tgt)
-    k4 = 'anyOf'
-    tgt = tgt.get(k4)
+    tgt = _fetch(tgt, 'properties')
+    tgt = _fetch(tgt, 'type')
+    tgt = _fetch(tgt, 'anyOf')
     key = 'TelephoneTypeValidValues'
     item = tgt[1]
     replacement = {'$ref': f'#/definitions/{key}'}
@@ -633,12 +609,9 @@ def create_ref_address_type_valid_values(model_name: str, k1: str) -> None:
     tgt = tgt.get(k1)
     if not tgt:
         return
-    k2 = 'properties'
-    tgt = tgt.get(k2)
-    k3 = 'type'
-    tgt = _find(k3, tgt)
-    k4 = 'anyOf'
-    tgt = tgt.get(k4)
+    tgt = _fetch(tgt, 'properties')
+    tgt = _fetch(tgt, 'type')
+    tgt = _fetch(tgt, 'anyOf')
     key = 'AddressTypeValidValues'
     item = tgt[1]
     replacement = {'$ref': f'#/definitions/{key}'}
@@ -657,12 +630,9 @@ def create_ref_component_type_valid_values(model_name: str, k1: str) -> None:
     tgt = tgt.get(k1)
     if not tgt:
         return
-    k2 = 'properties'
-    tgt = tgt.get(k2)
-    k3 = 'type'
-    tgt = _find(k3, tgt)
-    k4 = 'anyOf'
-    tgt = tgt.get(k4)
+    tgt = _fetch(tgt, 'properties')
+    tgt = _fetch(tgt, 'type')
+    tgt = _fetch(tgt, 'anyOf')
     key = 'ComponentTypeValidValues'
     item = tgt[1]
     replacement = {'$ref': f'#/definitions/{key}'}
@@ -681,24 +651,15 @@ def create_ref_external_scheme_valid_values(model_name: str, k1: str) -> None:
     tgt = tgt.get(k1)
     if not tgt:
         return
-    k2 = 'properties'
-    tgt = tgt.get(k2)
-    k3 = 'parties'
-    tgt = _find(k3, tgt)
-    k4 = 'items'
-    tgt = tgt.get(k4)
-    k5 = 'properties'
-    tgt = tgt.get(k5)
-    k6 = 'external-ids'
-    tgt = _find(k6, tgt)
-    k7 = 'items'
-    tgt = tgt.get(k7)
-    k8 = 'properties'
-    tgt = tgt.get(k8)
-    k9 = 'scheme'
-    tgt = _find(k9, tgt)
-    k10 = 'anyOf'
-    tgt = tgt.get(k10)
+    tgt = _fetch(tgt, 'properties')
+    tgt = _fetch(tgt, 'parties')
+    tgt = _fetch(tgt, 'items')
+    tgt = _fetch(tgt, 'properties')
+    tgt = _fetch(tgt, 'external-ids')
+    tgt = _fetch(tgt, 'items')
+    tgt = _fetch(tgt, 'properties')
+    tgt = _fetch(tgt, 'scheme')
+    tgt = _fetch(tgt, 'anyOf')
     key = 'ExternalSchemeValidValues'
     item = tgt[1]
     replacement = {'$ref': f'#/definitions/{key}'}
@@ -717,12 +678,9 @@ def create_ref_document_scheme_valid_values(model_name: str, k1: str) -> None:
     tgt = tgt.get(k1)
     if not tgt:
         return
-    k2 = 'properties'
-    tgt = tgt.get(k2)
-    k3 = 'scheme'
-    tgt = _find(k3, tgt)
-    k4 = 'anyOf'
-    tgt = tgt.get(k4)
+    tgt = _fetch(tgt, 'properties')
+    tgt = _fetch(tgt, 'scheme')
+    tgt = _fetch(tgt, 'anyOf')
     key = 'DocumentSchemeValidValues'
     item = tgt[1]
     replacement = {'$ref': f'#/definitions/{key}'}
@@ -741,12 +699,9 @@ def create_ref_defined_component_type_valid_values(model_name: str, k1: str) -> 
     tgt = tgt.get(k1)
     if not tgt:
         return
-    k2 = 'properties'
-    tgt = tgt.get(k2)
-    k3 = 'type'
-    tgt = _find(k3, tgt)
-    k4 = 'anyOf'
-    tgt = tgt.get(k4)
+    tgt = _fetch(tgt, 'properties')
+    tgt = _fetch(tgt, 'type')
+    tgt = _fetch(tgt, 'anyOf')
     key = 'DefinedComponentTypeValidValues'
     item = tgt[1]
     replacement = {'$ref': f'#/definitions/{key}'}
@@ -765,12 +720,9 @@ def create_ref_system_component_type_valid_values(model_name: str, k1: str) -> N
     tgt = tgt.get(k1)
     if not tgt:
         return
-    k2 = 'properties'
-    tgt = tgt.get(k2)
-    k3 = 'type'
-    tgt = _find(k3, tgt)
-    k4 = 'anyOf'
-    tgt = tgt.get(k4)
+    tgt = _fetch(tgt, 'properties')
+    tgt = _fetch(tgt, 'type')
+    tgt = _fetch(tgt, 'anyOf')
     key = 'SystemComponentTypeValidValues'
     item = tgt[1]
     replacement = {'$ref': f'#/definitions/{key}'}
