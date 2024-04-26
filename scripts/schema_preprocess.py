@@ -173,7 +173,7 @@ def patch_poam_origins(model_name: str) -> None:
 
 
 # With this patch the description in POAM slightly altered to match the other models.
-# This beneficially results in PoamItem being common to all schemas.
+# This beneficially results in RelatedObservation being common in POAM (no need for RelatedObservation1).
 # This may not be an acceptable solution!?
 def patch_poam_item(model_name: str, k3: str) -> None:
     """Patch POAM item."""
@@ -438,49 +438,6 @@ def create_ref(model_name: str, root: str, navigation: List[str], ref_name: str)
     tgt[ref_name] = item
     logger.debug(f'patch: {model_name} {replacement}')
     body_integrity_check(root, replacement)
-    json_data_put(model_name, data)
-
-
-def create_ref_observation_type_valid_values(model_name: str, k1: str) -> None:
-    """Create ref for Observation Type Valid Values."""
-    data = json_data_get(model_name)
-    tgt = data['definitions']
-    tgt = tgt.get(k1)
-    if not tgt:
-        return
-    tgt = _fetch(tgt, 'properties')
-    tgt = _fetch(tgt, 'types')
-    tgt = _fetch(tgt, 'items')
-    tgt = _fetch(tgt, 'anyOf')
-    key = 'ObservationTypeValidValues'
-    item = tgt[1]
-    replacement = {'$ref': f'#/definitions/{key}'}
-    tgt[1] = replacement
-    tgt = data['definitions']
-    tgt[key] = item
-    logger.debug(f'patch: {model_name} {replacement}')
-    body_integrity_check(k1, replacement)
-    json_data_put(model_name, data)
-
-
-def create_ref_component_type_valid_values(model_name: str, k1: str) -> None:
-    """Create ref for Component Type Valid Values."""
-    data = json_data_get(model_name)
-    tgt = data['definitions']
-    tgt = tgt.get(k1)
-    if not tgt:
-        return
-    tgt = _fetch(tgt, 'properties')
-    tgt = _fetch(tgt, 'type')
-    tgt = _fetch(tgt, 'anyOf')
-    key = 'ComponentTypeValidValues'
-    item = tgt[1]
-    replacement = {'$ref': f'#/definitions/{key}'}
-    tgt[1] = replacement
-    tgt = data['definitions']
-    tgt[key] = item
-    logger.debug(f'patch: {model_name} {replacement}')
-    body_integrity_check(k1, replacement)
     json_data_put(model_name, data)
 
 
