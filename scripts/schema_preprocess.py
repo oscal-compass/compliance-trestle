@@ -244,64 +244,80 @@ def create_refs(model_name: str) -> None:
         'oscal-ar-oscal-assessment-common:task',
         'oscal-poam-oscal-assessment-common:task',
     ]
-    for key in list_:
-        create_ref_task_valid_values(model_name, key)
+    navigation = ['properties', 'type', 'anyOf']
+    ref_name = 'TaskValidValues'
+    for root in list_:
+        create_ref(model_name, root, navigation, ref_name)
     # Threat Id Valid Values
     list_ = [
         'oscal-ap-oscal-assessment-common:threat-id',
         'oscal-ar-oscal-assessment-common:threat-id',
         'oscal-poam-oscal-assessment-common:threat-id',
     ]
-    for key in list_:
-        create_ref_threat_id_valid_values(model_name, key)
+    navigation = ['properties', 'system', 'anyOf']
+    ref_name = 'ThreatIdValidValues'
+    for root in list_:
+        create_ref(model_name, root, navigation, ref_name)
     # Select Subject By Id Valid Values
     list_ = [
         'oscal-ap-oscal-assessment-common:select-subject-by-id',
         'oscal-ar-oscal-assessment-common:select-subject-by-id',
         'oscal-poam-oscal-assessment-common:select-subject-by-id',
     ]
-    for key in list_:
-        create_ref_select_subject_by_id_valid_values(model_name, key)
+    navigation = ['properties', 'type', 'anyOf']
+    ref_name = 'SelectSubjectByIdValidValues'
+    for root in list_:
+        create_ref(model_name, root, navigation, ref_name)
     # Assessment Subject Valid Values
     list_ = [
         'oscal-ap-oscal-assessment-common:assessment-subject',
         'oscal-ar-oscal-assessment-common:assessment-subject',
         'oscal-poam-oscal-assessment-common:assessment-subject',
     ]
-    for key in list_:
-        create_ref_assessment_subject_valid_values(model_name, key)
+    navigation = ['properties', 'type', 'anyOf']
+    ref_name = 'AssessmentSubjectValidValues'
+    for root in list_:
+        create_ref(model_name, root, navigation, ref_name)
     # Naming System Valid Values
     list_ = [
         'oscal-ap-oscal-assessment-common:characterization',
         'oscal-ar-oscal-assessment-common:characterization',
         'oscal-poam-oscal-assessment-common:characterization',
     ]
-    for key in list_:
-        create_ref_naming_system_valid_values(model_name, key)
+    navigation = ['properties', 'facets', 'items', 'properties', 'system', 'anyOf']
+    ref_name = 'NamingSystemValidValues'
+    for root in list_:
+        create_ref(model_name, root, navigation, ref_name)
     # Subject Reference Valid Values
     list_ = [
         'oscal-ap-oscal-assessment-common:subject-reference',
         'oscal-ar-oscal-assessment-common:subject-reference',
         'oscal-poam-oscal-assessment-common:subject-reference',
     ]
-    for key in list_:
-        create_ref_subject_reference_valid_values(model_name, key)
+    navigation = ['properties', 'type', 'anyOf']
+    ref_name = 'SubjectReferenceValidValues'
+    for root in list_:
+        create_ref(model_name, root, navigation, ref_name)
     # Subject Reference Valid Values
     list_ = [
         'oscal-ap-oscal-assessment-common:observation',
         'oscal-ar-oscal-assessment-common:observation',
         'oscal-poam-oscal-assessment-common:observation',
     ]
-    for key in list_:
-        create_ref_observation_type_valid_values(model_name, key)
+    navigation = ['properties', 'types', 'items', 'anyOf']
+    ref_name = 'ObservationTypeValidValues'
+    for root in list_:
+        create_ref(model_name, root, navigation, ref_name)
     # Risk Status Valid Values
     list_ = [
         'oscal-ap-oscal-assessment-common:risk-status',
         'oscal-ar-oscal-assessment-common:risk-status',
         'oscal-poam-oscal-assessment-common:risk-status',
     ]
-    for key in list_:
-        create_ref_risk_status_valid_values(model_name, key)
+    navigation = ['anyOf']
+    ref_name = 'RiskStatusValidValues'
+    for root in list_:
+        create_ref(model_name, root, navigation, ref_name)
     # How Many Valid Values
     list_ = [
         'oscal-ap-oscal-control-common:parameter-selection',
@@ -312,8 +328,10 @@ def create_refs(model_name: str) -> None:
         'oscal-profile-oscal-control-common:parameter-selection',
         'oscal-ssp-oscal-control-common:parameter-selection',
     ]
-    for key in list_:
-        create_ref_how_many_valid_values(model_name, key)
+    navigation = ['properties', 'how-many', 'allOf']
+    ref_name = 'HowManyValidValues'
+    for root in list_:
+        create_ref(model_name, root, navigation, ref_name)
     # Telephone Type Valid Values
     list_ = [
         'oscal-ap-oscal-metadata:telephone-number',
@@ -324,8 +342,10 @@ def create_refs(model_name: str) -> None:
         'oscal-profile-oscal-metadata:telephone-number',
         'oscal-ssp-oscal-metadata:telephone-number',
     ]
-    for key in list_:
-        create_ref_telephone_type_valid_values(model_name, key)
+    navigation = ['properties', 'type', 'anyOf']
+    ref_name = 'TelephoneTypeValidValues'
+    for root in list_:
+        create_ref(model_name, root, navigation, ref_name)
     # Address Type Valid Values
     list_ = [
         'oscal-ap-oscal-metadata:address',
@@ -336,8 +356,10 @@ def create_refs(model_name: str) -> None:
         'oscal-profile-oscal-metadata:address',
         'oscal-ssp-oscal-metadata:address',
     ]
-    for key in list_:
-        create_ref_address_type_valid_values(model_name, key)
+    navigation = ['properties', 'type', 'anyOf']
+    ref_name = 'AddressTypeValidValues'
+    for root in list_:
+        create_ref(model_name, root, navigation, ref_name)
     # External Scheme Valid Values
     list_ = [
         'oscal-ap-oscal-metadata:metadata',
@@ -348,8 +370,12 @@ def create_refs(model_name: str) -> None:
         'oscal-profile-oscal-metadata:metadata',
         'oscal-ssp-oscal-metadata:metadata',
     ]
-    for key in list_:
-        create_ref_external_scheme_valid_values(model_name, key)
+    navigation = [
+        'properties', 'parties', 'items', 'properties', 'external-ids', 'items', 'properties', 'scheme', 'anyOf'
+    ]
+    ref_name = 'ExternalSchemeValidValues'
+    for root in list_:
+        create_ref(model_name, root, navigation, ref_name)
     # Document Scheme Valid Values
     list_ = [
         'oscal-ap-oscal-metadata:document-id',
@@ -360,14 +386,18 @@ def create_refs(model_name: str) -> None:
         'oscal-profile-oscal-metadata:document-id',
         'oscal-ssp-oscal-metadata:document-id',
     ]
-    for key in list_:
-        create_ref_document_scheme_valid_values(model_name, key)
+    navigation = ['properties', 'scheme', 'anyOf']
+    ref_name = 'DocumentSchemeValidValues'
+    for root in list_:
+        create_ref(model_name, root, navigation, ref_name)
     # Defined Component Type Valid Values
     list_ = [
         'oscal-component-definition-oscal-component-definition:defined-component',
     ]
-    for key in list_:
-        create_ref_defined_component_type_valid_values(model_name, key)
+    navigation = ['properties', 'type', 'anyOf']
+    ref_name = 'DefinedComponentTypeValidValues'
+    for root in list_:
+        create_ref(model_name, root, navigation, ref_name)
     # System Component Type Valid Values
     list_ = [
         'oscal-ap-oscal-implementation-common:system-component',
@@ -378,8 +408,10 @@ def create_refs(model_name: str) -> None:
         'oscal-profile-oscal-implementation-common:system-component',
         'oscal-ssp-oscal-implementation-common:system-component',
     ]
-    for key in list_:
-        create_ref_system_component_type_valid_values(model_name, key)
+    navigation = ['properties', 'type', 'anyOf']
+    ref_name = 'SystemComponentTypeValidValues'
+    for root in list_:
+        create_ref(model_name, root, navigation, ref_name)
 
 
 def _fetch(tgt: Any, key: str) -> Any:
@@ -390,132 +422,22 @@ def _fetch(tgt: Any, key: str) -> Any:
         return _find(key, tgt)
 
 
-def create_ref_task_valid_values(model_name: str, k1: str) -> None:
-    """Create ref for Task Valid Values."""
+def create_ref(model_name: str, root: str, navigation: List[str], ref_name: str) -> None:
+    """Create ref."""
     data = json_data_get(model_name)
     tgt = data['definitions']
-    tgt = tgt.get(k1)
+    tgt = tgt.get(root)
     if not tgt:
         return
-    tgt = _fetch(tgt, 'properties')
-    tgt = _fetch(tgt, 'type')
-    tgt = _fetch(tgt, 'anyOf')
-    key = 'TaskValidValues'
+    for leaf in navigation:
+        tgt = _fetch(tgt, leaf)
     item = tgt[1]
-    replacement = {'$ref': f'#/definitions/{key}'}
+    replacement = {'$ref': f'#/definitions/{ref_name}'}
     tgt[1] = replacement
     tgt = data['definitions']
-    tgt[key] = item
+    tgt[ref_name] = item
     logger.debug(f'patch: {model_name} {replacement}')
-    body_integrity_check(k1, replacement)
-    json_data_put(model_name, data)
-
-
-def create_ref_threat_id_valid_values(model_name: str, k1: str) -> None:
-    """Create ref for Threat Id Valid Values."""
-    data = json_data_get(model_name)
-    tgt = data['definitions']
-    tgt = tgt.get(k1)
-    if not tgt:
-        return
-    tgt = _fetch(tgt, 'properties')
-    tgt = _fetch(tgt, 'system')
-    tgt = _fetch(tgt, 'anyOf')
-    key = 'ThreatIdValidValues'
-    item = tgt[1]
-    replacement = {'$ref': f'#/definitions/{key}'}
-    tgt[1] = replacement
-    tgt = data['definitions']
-    tgt[key] = item
-    logger.debug(f'patch: {model_name} {replacement}')
-    body_integrity_check(k1, replacement)
-    json_data_put(model_name, data)
-
-
-def create_ref_select_subject_by_id_valid_values(model_name: str, k1: str) -> None:
-    """Create ref for Select Subject By Id Valid Values."""
-    data = json_data_get(model_name)
-    tgt = data['definitions']
-    tgt = tgt.get(k1)
-    if not tgt:
-        return
-    tgt = _fetch(tgt, 'properties')
-    tgt = _fetch(tgt, 'type')
-    tgt = _fetch(tgt, 'anyOf')
-    key = 'SelectSubjectByIdValidValues'
-    item = tgt[1]
-    replacement = {'$ref': f'#/definitions/{key}'}
-    tgt[1] = replacement
-    tgt = data['definitions']
-    tgt[key] = item
-    logger.debug(f'patch: {model_name} {replacement}')
-    body_integrity_check(k1, replacement)
-    json_data_put(model_name, data)
-
-
-def create_ref_assessment_subject_valid_values(model_name: str, k1: str) -> None:
-    """Create ref for Assessment Subject Valid Values."""
-    data = json_data_get(model_name)
-    tgt = data['definitions']
-    tgt = tgt.get(k1)
-    if not tgt:
-        return
-    tgt = _fetch(tgt, 'properties')
-    tgt = _fetch(tgt, 'type')
-    tgt = _fetch(tgt, 'anyOf')
-    key = 'AssessmentSubjectValidValues'
-    item = tgt[1]
-    replacement = {'$ref': f'#/definitions/{key}'}
-    tgt[1] = replacement
-    tgt = data['definitions']
-    tgt[key] = item
-    logger.debug(f'patch: {model_name} {replacement}')
-    body_integrity_check(k1, replacement)
-    json_data_put(model_name, data)
-
-
-def create_ref_naming_system_valid_values(model_name: str, k1: str) -> None:
-    """Create ref for Naming System Valid Values."""
-    data = json_data_get(model_name)
-    tgt = data['definitions']
-    tgt = tgt.get(k1)
-    if not tgt:
-        return
-    tgt = _fetch(tgt, 'properties')
-    tgt = _fetch(tgt, 'facets')
-    tgt = _fetch(tgt, 'items')
-    tgt = _fetch(tgt, 'properties')
-    tgt = _fetch(tgt, 'system')
-    tgt = _fetch(tgt, 'anyOf')
-    key = 'NamingSystemValidValues'
-    item = tgt[1]
-    replacement = {'$ref': f'#/definitions/{key}'}
-    tgt[1] = replacement
-    tgt = data['definitions']
-    tgt[key] = item
-    logger.debug(f'patch: {model_name} {replacement}')
-    body_integrity_check(k1, replacement)
-    json_data_put(model_name, data)
-
-
-def create_ref_subject_reference_valid_values(model_name: str, k1: str) -> None:
-    """Create ref for Subject Reference Valid Values."""
-    data = json_data_get(model_name)
-    tgt = data['definitions']
-    tgt = tgt.get(k1)
-    if not tgt:
-        return
-    tgt = _fetch(tgt, 'properties')
-    tgt = _fetch(tgt, 'type')
-    tgt = _fetch(tgt, 'anyOf')
-    key = 'SubjectReferenceValidValues'
-    item = tgt[1]
-    replacement = {'$ref': f'#/definitions/{key}'}
-    tgt[1] = replacement
-    tgt = data['definitions']
-    tgt[key] = item
-    logger.debug(f'patch: {model_name} {replacement}')
-    body_integrity_check(k1, replacement)
+    body_integrity_check(root, replacement)
     json_data_put(model_name, data)
 
 
@@ -541,88 +463,6 @@ def create_ref_observation_type_valid_values(model_name: str, k1: str) -> None:
     json_data_put(model_name, data)
 
 
-def create_ref_risk_status_valid_values(model_name: str, k1: str) -> None:
-    """Create ref for Risk Status Valid Values."""
-    data = json_data_get(model_name)
-    tgt = data['definitions']
-    tgt = tgt.get(k1)
-    if not tgt:
-        return
-    tgt = _fetch(tgt, 'anyOf')
-    key = 'RiskStatusValidValues'
-    item = tgt[1]
-    replacement = {'$ref': f'#/definitions/{key}'}
-    tgt[1] = replacement
-    tgt = data['definitions']
-    tgt[key] = item
-    logger.debug(f'patch: {model_name} {replacement}')
-    body_integrity_check(k1, replacement)
-    json_data_put(model_name, data)
-
-
-def create_ref_how_many_valid_values(model_name: str, k1: str) -> None:
-    """Create ref for How Many Valid Values."""
-    data = json_data_get(model_name)
-    tgt = data['definitions']
-    tgt = tgt.get(k1)
-    if not tgt:
-        return
-    tgt = _fetch(tgt, 'properties')
-    tgt = _fetch(tgt, 'how-many')
-    tgt = _fetch(tgt, 'allOf')
-    key = 'HowManyValidValues'
-    item = tgt[1]
-    replacement = {'$ref': f'#/definitions/{key}'}
-    tgt[1] = replacement
-    tgt = data['definitions']
-    tgt[key] = item
-    logger.debug(f'patch: {model_name} {replacement}')
-    body_integrity_check(k1, replacement)
-    json_data_put(model_name, data)
-
-
-def create_ref_telephone_type_valid_values(model_name: str, k1: str) -> None:
-    """Create ref for Telephone Type Valid Values."""
-    data = json_data_get(model_name)
-    tgt = data['definitions']
-    tgt = tgt.get(k1)
-    if not tgt:
-        return
-    tgt = _fetch(tgt, 'properties')
-    tgt = _fetch(tgt, 'type')
-    tgt = _fetch(tgt, 'anyOf')
-    key = 'TelephoneTypeValidValues'
-    item = tgt[1]
-    replacement = {'$ref': f'#/definitions/{key}'}
-    tgt[1] = replacement
-    tgt = data['definitions']
-    tgt[key] = item
-    logger.debug(f'patch: {model_name} {replacement}')
-    body_integrity_check(k1, replacement)
-    json_data_put(model_name, data)
-
-
-def create_ref_address_type_valid_values(model_name: str, k1: str) -> None:
-    """Create ref for Address Type Valid Values."""
-    data = json_data_get(model_name)
-    tgt = data['definitions']
-    tgt = tgt.get(k1)
-    if not tgt:
-        return
-    tgt = _fetch(tgt, 'properties')
-    tgt = _fetch(tgt, 'type')
-    tgt = _fetch(tgt, 'anyOf')
-    key = 'AddressTypeValidValues'
-    item = tgt[1]
-    replacement = {'$ref': f'#/definitions/{key}'}
-    tgt[1] = replacement
-    tgt = data['definitions']
-    tgt[key] = item
-    logger.debug(f'patch: {model_name} {replacement}')
-    body_integrity_check(k1, replacement)
-    json_data_put(model_name, data)
-
-
 def create_ref_component_type_valid_values(model_name: str, k1: str) -> None:
     """Create ref for Component Type Valid Values."""
     data = json_data_get(model_name)
@@ -634,96 +474,6 @@ def create_ref_component_type_valid_values(model_name: str, k1: str) -> None:
     tgt = _fetch(tgt, 'type')
     tgt = _fetch(tgt, 'anyOf')
     key = 'ComponentTypeValidValues'
-    item = tgt[1]
-    replacement = {'$ref': f'#/definitions/{key}'}
-    tgt[1] = replacement
-    tgt = data['definitions']
-    tgt[key] = item
-    logger.debug(f'patch: {model_name} {replacement}')
-    body_integrity_check(k1, replacement)
-    json_data_put(model_name, data)
-
-
-def create_ref_external_scheme_valid_values(model_name: str, k1: str) -> None:
-    """Create ref for External Scheme Valid Values."""
-    data = json_data_get(model_name)
-    tgt = data['definitions']
-    tgt = tgt.get(k1)
-    if not tgt:
-        return
-    tgt = _fetch(tgt, 'properties')
-    tgt = _fetch(tgt, 'parties')
-    tgt = _fetch(tgt, 'items')
-    tgt = _fetch(tgt, 'properties')
-    tgt = _fetch(tgt, 'external-ids')
-    tgt = _fetch(tgt, 'items')
-    tgt = _fetch(tgt, 'properties')
-    tgt = _fetch(tgt, 'scheme')
-    tgt = _fetch(tgt, 'anyOf')
-    key = 'ExternalSchemeValidValues'
-    item = tgt[1]
-    replacement = {'$ref': f'#/definitions/{key}'}
-    tgt[1] = replacement
-    tgt = data['definitions']
-    tgt[key] = item
-    logger.debug(f'patch: {model_name} {replacement}')
-    body_integrity_check(k1, replacement)
-    json_data_put(model_name, data)
-
-
-def create_ref_document_scheme_valid_values(model_name: str, k1: str) -> None:
-    """Create ref for Document Scheme Valid Values."""
-    data = json_data_get(model_name)
-    tgt = data['definitions']
-    tgt = tgt.get(k1)
-    if not tgt:
-        return
-    tgt = _fetch(tgt, 'properties')
-    tgt = _fetch(tgt, 'scheme')
-    tgt = _fetch(tgt, 'anyOf')
-    key = 'DocumentSchemeValidValues'
-    item = tgt[1]
-    replacement = {'$ref': f'#/definitions/{key}'}
-    tgt[1] = replacement
-    tgt = data['definitions']
-    tgt[key] = item
-    logger.debug(f'patch: {model_name} {replacement}')
-    body_integrity_check(k1, replacement)
-    json_data_put(model_name, data)
-
-
-def create_ref_defined_component_type_valid_values(model_name: str, k1: str) -> None:
-    """Create ref for Defined Component Type Valid Values."""
-    data = json_data_get(model_name)
-    tgt = data['definitions']
-    tgt = tgt.get(k1)
-    if not tgt:
-        return
-    tgt = _fetch(tgt, 'properties')
-    tgt = _fetch(tgt, 'type')
-    tgt = _fetch(tgt, 'anyOf')
-    key = 'DefinedComponentTypeValidValues'
-    item = tgt[1]
-    replacement = {'$ref': f'#/definitions/{key}'}
-    tgt[1] = replacement
-    tgt = data['definitions']
-    tgt[key] = item
-    logger.debug(f'patch: {model_name} {replacement}')
-    body_integrity_check(k1, replacement)
-    json_data_put(model_name, data)
-
-
-def create_ref_system_component_type_valid_values(model_name: str, k1: str) -> None:
-    """Create ref for Defined Component Type Valid Values."""
-    data = json_data_get(model_name)
-    tgt = data['definitions']
-    tgt = tgt.get(k1)
-    if not tgt:
-        return
-    tgt = _fetch(tgt, 'properties')
-    tgt = _fetch(tgt, 'type')
-    tgt = _fetch(tgt, 'anyOf')
-    key = 'SystemComponentTypeValidValues'
     item = tgt[1]
     replacement = {'$ref': f'#/definitions/{key}'}
     tgt[1] = replacement
