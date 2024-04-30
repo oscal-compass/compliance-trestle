@@ -563,10 +563,9 @@ class ProfileInherit(AuthorCommonCommand):
             log.set_log_level_from_args(args)
             trestle_root: pathlib.Path = args.trestle_root
 
-            if args.profile:
-                if args.profile == args.output:
-                    logger.warning(f'Output profile {args.output} cannot equal parent')
-                    return CmdReturnCodes.INCORRECT_ARGS.value
+            if args.profile and args.profile == args.output:
+                logger.warning(f'Output profile {args.output} cannot equal parent')
+                return CmdReturnCodes.INCORRECT_ARGS.value
 
             return self.initialize_profile(
                 trestle_root=trestle_root,
@@ -599,6 +598,22 @@ class ProfileInherit(AuthorCommonCommand):
         return True
 
     @staticmethod
+    def _create_components_by_id(
+        orig_prof_import: prof.Import, leveraged_ssp: ssp.SystemSecurityPlan, catalog_api: CatalogAPI
+    ) -> Dict[str, List[ssp.ByComponent]]:
+        components_by_id: Dict[str, List[ssp.ByComponent]] = {}
+        for implemented_requirement in leveraged_ssp.control_implementation.implemented_requirements:
+            by_components: List[ssp.ByComponent] = []
+            if implemented_requirement.by_components:
+                by_components.extend(implemented_requirement.by_components)
+            if implemented_requirement.statements:
+                for stm in implemented_requirement.statements:
+                    if stm.by_components:
+                        by_components.extend(stm.by_components)
+            components_by_id[implemented_requirement.control_id] = none_if_empty(by_components)
+        return components_by_id
+
+    @staticmethod
     def update_profile_import(
         orig_prof_import: prof.Import, leveraged_ssp: ssp.SystemSecurityPlan, catalog_api: CatalogAPI
     ) -> None:
@@ -613,19 +628,11 @@ class ProfileInherit(AuthorCommonCommand):
             None
         """
         exclude_with_ids: Set[str] = set()
-        components_by_id: Dict[str, List[ssp.ByComponent]] = {}
 
         # Create dictionary containing all by-components by control for faster searching
-        for implemented_requirement in leveraged_ssp.control_implementation.implemented_requirements:
-            by_components: List[ssp.ByComponent] = []
-
-            if implemented_requirement.by_components:
-                by_components.extend(implemented_requirement.by_components)
-            if implemented_requirement.statements:
-                for stm in implemented_requirement.statements:
-                    if stm.by_components:
-                        by_components.extend(stm.by_components)
-            components_by_id[implemented_requirement.control_id] = none_if_empty(by_components)
+        components_by_id: Dict[str, List[ssp.ByComponent]] = ProfileInherit._create_components_by_id(
+            orig_prof_import, leveraged_ssp, catalog_api
+        )
 
         # Looping by controls in the catalog because the ids in the profile should
         # be a subset of the catalog and not the ssp controls.
