@@ -29,7 +29,7 @@ schema_file_name_search_template = 'oscal_*_schema.json'
 body_integrity_map = {}
 
 
-def body_integrity_check(token: str, content: Dict) -> None:
+def body_identical_check(token: str, content: Dict) -> None:
     """Check that common entries have identical bodies."""
     # derive common key
     key = token.split(':')[1]
@@ -66,12 +66,16 @@ def get_oscal_release(input_dir_name: str) -> str:
 
 def fixup_models(input_dir_name: str) -> Path:
     """Fix models."""
+    # create fixup dir
     fixup_dir_name = f'{input_dir_name}-fixup'
     input_dir_path = Path(input_dir_name)
     fixup_dir_path = Path(fixup_dir_name)
     fixup_dir_path.mkdir(exist_ok=True, parents=True)
+    # copy original schemas to fixup dir
     fixup_copy_schemas(input_dir_path, fixup_dir_path)
+    # schema reorder entries
     fixup_json(fixup_dir_path)
+    # schema patching
     patch_schemas(fixup_dir_path)
     return fixup_dir_path
 
@@ -174,7 +178,6 @@ def patch_poam_origins(model_name: str) -> None:
 
 # With this patch the description in POAM slightly altered to match the other models.
 # This beneficially results in RelatedObservation being common in POAM (no need for RelatedObservation1).
-# This may not be an acceptable solution!?
 def patch_poam_item(model_name: str, k3: str) -> None:
     """Patch POAM item."""
     # POAM: change related-finding item description from "poam-item" to "finding" to avoid conflict
@@ -236,6 +239,8 @@ def _find(needle: str, haystack: Dict) -> Any:
 
 
 # Create refs for common elements
+# This beneficially results in unnamed entities getting assigned pre-determined names,
+# rather than letting datamodel-codegen tool assign names nondeterministically.
 def create_refs(model_name: str) -> None:
     """Create refs."""
     # Task Valid Values
@@ -437,7 +442,7 @@ def create_ref(model_name: str, root: str, navigation: List[str], ref_name: str)
     tgt = data['definitions']
     tgt[ref_name] = item
     logger.debug(f'patch: {model_name} {replacement}')
-    body_integrity_check(root, replacement)
+    body_identical_check(root, replacement)
     json_data_put(model_name, data)
 
 
