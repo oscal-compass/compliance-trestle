@@ -4,7 +4,7 @@ extension-pkg-whitelist=pydantic
 
 
 [MESSAGES CONTROL]
-disable=W1203, W1201, A005
+disable=W1203, W1201
 
 [FORMAT]
 max-line-length=120
