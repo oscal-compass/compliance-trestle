@@ -22,8 +22,8 @@ from datetime import date, datetime
 from enum import Enum
 from typing import Any, Dict, List, Type, TypeVar, Union, cast
 
-import pydantic.networks
-from pydantic import ConstrainedStr
+import pydantic.v1.networks
+from pydantic.v1 import ConstrainedStr
 
 import trestle.common.const as const
 import trestle.common.err as err
@@ -157,11 +157,11 @@ def generate_sample_value_by_type(
         if field_name == 'oscal_version':
             return OSCAL_VERSION
         return const.REPLACE_ME
-    if type_ is pydantic.networks.EmailStr:
-        return pydantic.networks.EmailStr('dummy@sample.com')
-    if type_ is pydantic.networks.AnyUrl:
+    if type_ is pydantic.v1.networks.EmailStr:
+        return pydantic.v1.networks.EmailStr('dummy@sample.com')
+    if type_ is pydantic.v1.networks.AnyUrl:
         # TODO: Cleanup: this should be usable from a url.. but it's not inuitive.
-        return pydantic.networks.AnyUrl('https://sample.com/replaceme.html', scheme='http', host='sample.com')
+        return pydantic.v1.networks.AnyUrl('https://sample.com/replaceme.html', scheme='http', host='sample.com')
     if type_ is list:
         raise err.TrestleError(f'Unable to generate sample for type {type_}')
     # default to empty dict for anything else

@@ -19,7 +19,7 @@ import logging
 from typing import List, Optional
 from uuid import uuid4
 
-from pydantic import Field, constr
+from pydantic.v1 import Field, constr
 
 import trestle.oscal.component as comp
 import trestle.oscal.ssp as ossp
