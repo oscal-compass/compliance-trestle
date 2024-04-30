@@ -69,27 +69,39 @@ class Merge(Pipeline.Filter):
             id_ = getattr(item, NAME, None)
         return id_
 
+    def _item_genertor(self, dest: List[OBT], src: List[OBT], merge_method: Optional[str]) -> Iterator[OBT]:
+        if merge_method == const.KEEP:
+            dest.extend(src)
+        else:
+            for item in src:
+                # if there is an exact copy of this in dest then ignore it
+                if item not in dest:
+                    yield item
+
+    def _merge_item(self, item: OBT, dest: List[OBT], merge_method: Optional[str]) -> bool:
+        merged = False
+        item_id = self._get_id(item)
+        if item_id is not None:
+            for other in dest:
+                other_id = self._get_id(other)
+                if other_id != item_id:
+                    continue
+                if merge_method == const.MERGE:
+                    self._merge_items(other, item, merge_method)
+                merged = True
+                break
+        return merged
+
     def _merge_lists(self, dest: List[OBT], src: List[OBT], merge_method: Optional[str]) -> None:
         added_items = []
         if merge_method == const.KEEP:
             dest.extend(src)
             return
-        for item in src:
-            # if there is an exact copy of this in dest then ignore it
-            if item not in dest:
-                merged = False
-                item_id = self._get_id(item)
-                if item_id is not None:
-                    for other in dest:
-                        other_id = self._get_id(other)
-                        if other_id == item_id:
-                            if merge_method == const.MERGE:
-                                self._merge_items(other, item, merge_method)
-                            merged = True
-                            break
-                # it isn't already in dest and no match was found for merge, so append
-                if not merged:
-                    added_items.append(item)
+        for item in self._item_genertor(dest, src, merge_method):
+            merged = self._merge_item(item, dest, merge_method)
+            # it isn't already in dest and no match was found for merge, so append
+            if not merged:
+                added_items.append(item)
         dest.extend(added_items)
 
     def _merge_attrs(
