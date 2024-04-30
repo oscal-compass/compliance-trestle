@@ -207,6 +207,21 @@ class ProfileAssemble(AuthorCommonCommand):
             return handle_generic_command_exception(e, logger, 'Assembly of markdown to profile failed')
 
     @staticmethod
+    def _update_alter_adds(profile: prof.Profile, alters: List[prof.Alter], alter_dict: Dict) -> None:
+        for new_alter in alters:
+            alter = alter_dict.get(new_alter.control_id, None)
+            if not alter:
+                # the control did not have alters, so add
+                alter = prof.Alter(control_id=new_alter.control_id)
+            # even though we removed adds at start, we may have added one already
+            if alter.adds:
+                alter.adds.extend(new_alter.adds)
+            else:
+                alter.adds = new_alter.adds
+            # update the dict with the new alter with its added adds
+            alter_dict[new_alter.control_id] = alter
+
+    @staticmethod
     def _replace_alter_adds(profile: prof.Profile, alters: List[prof.Alter]) -> bool:
         """Replace the alter adds in the orig_profile with the new ones and return True if changed."""
         changed = False
@@ -225,19 +240,7 @@ class ProfileAssemble(AuthorCommonCommand):
                 alter.adds = None
                 alter_dict[alter.control_id] = alter
             # now go through new alters and add them to each control in dict by control id
-            for new_alter in alters:
-                alter = alter_dict.get(new_alter.control_id, None)
-                if not alter:
-                    # the control did not have alters, so add
-                    alter = prof.Alter(control_id=new_alter.control_id)
-
-                # even though we removed adds at start, we may have added one already
-                if alter.adds:
-                    alter.adds.extend(new_alter.adds)
-                else:
-                    alter.adds = new_alter.adds
-                # update the dict with the new alter with its added adds
-                alter_dict[new_alter.control_id] = alter
+            ProfileAssemble._update_alter_adds(profile, alters, alter_dict)
             # get the new list of alters from the dict and update profile
             new_alters = list(alter_dict.values())
             # special case, if all adds were deleted remove such alters completely
