@@ -25,10 +25,10 @@ import re
 import traceback
 from typing import Iterator, List, Optional
 
-from trestle.common.const import ONE
 from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.oscal.catalog import Catalog
 from trestle.oscal.catalog import Control
+from trestle.oscal.common import HowMany
 from trestle.oscal.common import Link
 from trestle.oscal.common import Parameter
 from trestle.oscal.common import Part
@@ -257,7 +257,7 @@ class CatalogHelper:
                     rval = f'[Assignment: {param.label}]'
                 elif param.select:
                     choices = self._get_parm_choices(control, param)
-                    if param.select.how_many == ONE:
+                    if param.select.how_many == HowMany.one:
                         rval = f'[Selection (one): {choices}]'
                     else:
                         rval = f'[Selection (one or more): {choices}]'
