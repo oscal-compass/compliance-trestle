@@ -171,9 +171,9 @@ jobs:
     - uses: actions/cache@v2
       with:
         path: ~/.cache/pip
-        key: ubuntu-latest-3.9-pip-${{ hashFiles('setup.cfg') }}
+        key: ubuntu-latest-3.8-pip-${{ hashFiles('setup.cfg') }}
         restore-keys: |
-          ubuntu-latest-3.9-pip-
+          ubuntu-latest-3.8-pip-
     - name: Install build tools
       run: |
         make develop
