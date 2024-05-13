@@ -92,7 +92,8 @@ jobs:
     strategy:
       matrix:
         # Note: mac-os latest has transitioned to arm64. Only macos-13 and lower are x86_64 and support python 3.7.
-        os: [ubuntu-latest, macos-latest, windows-latest, macos-13]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: [3.8, 3.12]
         include:
         - os: ubuntu-latest
           path: ~/.cache/pip
@@ -112,7 +113,6 @@ jobs:
         - os: windows-latest
           path: ~\AppData\Local\pip\Cache
           python-version: 3.7
-        python-version: [3.8, 3.12]
     steps:
     - name: Don't mess with line endings
       run: |
