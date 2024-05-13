@@ -13,11 +13,11 @@ jobs:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         submodules: true
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
         python-version: 3.9
     - uses: actions/cache@v2
@@ -66,11 +66,11 @@ jobs:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         submodules: true
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
         python-version: 3.9
     - uses: actions/cache@v2
@@ -117,12 +117,12 @@ jobs:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
         submodules: true
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
     - uses: actions/cache@v2
@@ -161,11 +161,11 @@ jobs:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         submodules: true
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
         python-version: 3.8
     - uses: actions/cache@v2
