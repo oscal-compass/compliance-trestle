@@ -25,19 +25,23 @@ from defusedxml import ElementTree
 
 from ruamel.yaml import YAML
 
-from trestle.oscal.assessment_results import AssessmentAssets
-from trestle.oscal.assessment_results import LocalDefinitions1
-from trestle.oscal.assessment_results import Observation
-from trestle.oscal.assessment_results import Result
-from trestle.oscal.assessment_results import SystemComponent
-from trestle.oscal.common import AssessmentPlatform
-from trestle.oscal.common import ControlSelection
-from trestle.oscal.common import ImplementedComponent
-from trestle.oscal.common import InventoryItem
-from trestle.oscal.common import Property
-from trestle.oscal.common import ReviewedControls
-from trestle.oscal.common import Status
-from trestle.oscal.common import SubjectReference
+from trestle.oscal.assessment_results import (
+    AssessmentAssets,
+    LocalDefinitions1,
+    Observation,
+    Result,
+    SystemComponent,
+)
+from trestle.oscal.common import (
+    AssessmentPlatform,
+    ControlSelection,
+    ImplementedComponent,
+    InventoryItem,
+    Property,
+    ReviewedControls,
+    Status,
+    SubjectReference,
+)
 from trestle.transforms.results import Results
 from trestle.transforms.transformer_factory import ResultsTransformer
 from trestle.transforms.transformer_helper import TransformerHelper
