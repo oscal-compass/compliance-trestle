@@ -28,21 +28,24 @@ from defusedxml import ElementTree
 from ruamel.yaml import YAML
 
 from trestle.common.list_utils import as_list
-from trestle.oscal.assessment_results import LocalDefinitions1
-from trestle.oscal.assessment_results import Observation
-from trestle.oscal.assessment_results import Result
-from trestle.oscal.assessment_results import SystemComponent
-from trestle.oscal.common import ControlSelection
-from trestle.oscal.common import ImplementedComponent
-from trestle.oscal.common import InventoryItem
-from trestle.oscal.common import Property
-from trestle.oscal.common import ReviewedControls
-from trestle.oscal.common import Status
-from trestle.oscal.common import SubjectReference
+from trestle.oscal.assessment_results import (
+    LocalDefinitions1,
+    Observation,
+    Result,
+    SystemComponent,
+)
+from trestle.oscal.common import (
+    ControlSelection,
+    ImplementedComponent,
+    InventoryItem,
+    Property,
+    ReviewedControls,
+    Status,
+    SubjectReference,
+)
 from trestle.oscal.profile import Profile
 from trestle.transforms.results import Results
-from trestle.transforms.transformer_factory import FromOscalTransformer
-from trestle.transforms.transformer_factory import ResultsTransformer
+from trestle.transforms.transformer_factory import FromOscalTransformer, ResultsTransformer
 from trestle.transforms.transformer_helper import TransformerHelper
 
 logger = logging.getLogger(__name__)
