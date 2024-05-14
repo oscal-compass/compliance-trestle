@@ -598,9 +598,7 @@ class ProfileInherit(AuthorCommonCommand):
         return True
 
     @staticmethod
-    def _create_components_by_id(
-        orig_prof_import: prof.Import, leveraged_ssp: ssp.SystemSecurityPlan, catalog_api: CatalogAPI
-    ) -> Dict[str, List[ssp.ByComponent]]:
+    def _create_components_by_id(leveraged_ssp: ssp.SystemSecurityPlan) -> Dict[str, List[ssp.ByComponent]]:
         components_by_id: Dict[str, List[ssp.ByComponent]] = {}
         for implemented_requirement in leveraged_ssp.control_implementation.implemented_requirements:
             by_components: List[ssp.ByComponent] = []
@@ -630,9 +628,7 @@ class ProfileInherit(AuthorCommonCommand):
         exclude_with_ids: Set[str] = set()
 
         # Create dictionary containing all by-components by control for faster searching
-        components_by_id: Dict[str, List[ssp.ByComponent]] = ProfileInherit._create_components_by_id(
-            orig_prof_import, leveraged_ssp, catalog_api
-        )
+        components_by_id: Dict[str, List[ssp.ByComponent]] = ProfileInherit._create_components_by_id(leveraged_ssp)
 
         # Looping by controls in the catalog because the ids in the profile should
         # be a subset of the catalog and not the ssp controls.
