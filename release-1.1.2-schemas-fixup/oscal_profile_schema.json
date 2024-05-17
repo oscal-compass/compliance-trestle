@@ -278,17 +278,7 @@
               "type": {
                 "title": "Party Type",
                 "description": "A category describing the kind of party the object describes.",
-                "allOf": [
-                  {
-                    "$ref": "#/definitions/StringDatatype"
-                  },
-                  {
-                    "enum": [
-                      "person",
-                      "organization"
-                    ]
-                  }
-                ]
+                "$ref": "#/definitions/Party TypeValidValues"
               },
               "name": {
                 "title": "Party Name",
@@ -1203,14 +1193,7 @@
         "how-many": {
           "title": "Parameter Cardinality",
           "description": "Describes the number of selections that must occur. Without this setting, only one value should be assumed to be permitted.",
-          "allOf": [
-            {
-              "$ref": "#/definitions/TokenDatatype"
-            },
-            {
-              "$ref": "#/definitions/HowManyValidValues"
-            }
-          ]
+          "$ref": "#/definitions/HowManyValidValues"
         },
         "choice": {
           "type": "array",
@@ -1279,18 +1262,7 @@
             "method": {
               "title": "Combination Method",
               "description": "Declare how clashing controls should be handled.",
-              "allOf": [
-                {
-                  "$ref": "#/definitions/StringDatatype"
-                },
-                {
-                  "enum": [
-                    "use-first",
-                    "merge",
-                    "keep"
-                  ]
-                }
-              ]
+              "$ref": "#/definitions/CombinationMethodValidValues"
             }
           },
           "additionalProperties": false
@@ -1523,21 +1495,7 @@
                     "by-item-name": {
                       "title": "Item Name Reference",
                       "description": "Identify items to remove by the name of the item's information object name, e.g. title or prop.",
-                      "allOf": [
-                        {
-                          "$ref": "#/definitions/TokenDatatype"
-                        },
-                        {
-                          "enum": [
-                            "param",
-                            "prop",
-                            "link",
-                            "part",
-                            "mapping",
-                            "map"
-                          ]
-                        }
-                      ]
+                      "$ref": "#/definitions/ItemNameValidValues"
                     },
                     "by-ns": {
                       "title": "Item Namespace Reference",
@@ -1559,19 +1517,7 @@
                     "position": {
                       "title": "Position",
                       "description": "Where to add the new content with respect to the targeted element (beside it or inside it).",
-                      "allOf": [
-                        {
-                          "$ref": "#/definitions/TokenDatatype"
-                        },
-                        {
-                          "enum": [
-                            "before",
-                            "after",
-                            "starting",
-                            "ending"
-                          ]
-                        }
-                      ]
+                      "$ref": "#/definitions/PositionValidValues"
                     },
                     "by-id": {
                       "title": "Reference by ID",
@@ -1634,18 +1580,7 @@
         "order": {
           "title": "Order",
           "description": "A designation of how a selection of controls in a profile is to be ordered.",
-          "allOf": [
-            {
-              "$ref": "#/definitions/TokenDatatype"
-            },
-            {
-              "enum": [
-                "keep",
-                "ascending",
-                "descending"
-              ]
-            }
-          ]
+          "$ref": "#/definitions/OrderValidValues"
         },
         "include-all": {
           "$ref": "#assembly_oscal-control-common_include-all"
@@ -1676,17 +1611,7 @@
         "with-child-controls": {
           "title": "Include Contained Controls with Control",
           "description": "When a control is included, whether its child (dependent) controls are also included.",
-          "allOf": [
-            {
-              "$ref": "#/definitions/TokenDatatype"
-            },
-            {
-              "enum": [
-                "yes",
-                "no"
-              ]
-            }
-          ]
+          "$ref": "#/definitions/WithChildControlsValidValues"
         },
         "with-ids": {
           "type": "array",
@@ -1804,9 +1729,53 @@
         "http://orcid.org/"
       ]
     },
+    "Party TypeValidValues": {
+      "enum": [
+        "person",
+        "organization"
+      ]
+    },
     "DocumentSchemeValidValues": {
       "enum": [
         "http://www.doi.org/"
+      ]
+    },
+    "ItemNameValidValues": {
+      "enum": [
+        "param",
+        "prop",
+        "link",
+        "part",
+        "mapping",
+        "map"
+      ]
+    },
+    "OrderValidValues": {
+      "enum": [
+        "keep",
+        "ascending",
+        "descending"
+      ]
+    },
+    "WithChildControlsValidValues": {
+      "enum": [
+        "yes",
+        "no"
+      ]
+    },
+    "PositionValidValues": {
+      "enum": [
+        "before",
+        "after",
+        "starting",
+        "ending"
+      ]
+    },
+    "CombinationMethodValidValues": {
+      "enum": [
+        "use-first",
+        "merge",
+        "keep"
       ]
     }
   },

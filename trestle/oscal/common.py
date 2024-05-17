@@ -80,6 +80,15 @@ class TokenDatatype(OscalBaseModel):
     )
 
 
+class TimeUnitValidValues(Enum):
+    seconds = 'seconds'
+    minutes = 'minutes'
+    hours = 'hours'
+    days = 'days'
+    months = 'months'
+    years = 'years'
+
+
 class ThreatIdValidValues(Enum):
     http___fedramp_gov = 'http://fedramp.gov'
     http___fedramp_gov_ns_oscal = 'http://fedramp.gov/ns/oscal'
@@ -146,6 +155,13 @@ class SystemComponentTypeValidValues(Enum):
     network = 'network'
 
 
+class SystemComponentOperationalStateValidValues(Enum):
+    under_development = 'under-development'
+    operational = 'operational'
+    disposition = 'disposition'
+    other = 'other'
+
+
 class SubjectReferenceValidValues(Enum):
     component = 'component'
     inventory_item = 'inventory-item'
@@ -171,10 +187,7 @@ class Status(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    state: constr(
-        regex=
-        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    ) = Field(..., description='The operational status.', title='State')
+    state: SystemComponentOperationalStateValidValues = Field(..., description='The operational status.', title='State')
     remarks: Optional[str] = None
 
 
@@ -390,10 +403,20 @@ class PositiveIntegerDatatype(OscalBaseModel):
     """
 
 
+class PortRangeValidValues(Enum):
+    TCP = 'TCP'
+    UDP = 'UDP'
+
+
 class PartyUuid(OscalBaseModel):
     __root__: UUIDDatatype = Field(
         ..., description='Reference to a party by UUID.', title='Party Universally Unique Identifier Reference'
     )
+
+
+class PartyTypeValidValues(Enum):
+    person = 'person'
+    organization = 'organization'
 
 
 class ParameterValue(OscalBaseModel):
@@ -444,6 +467,12 @@ class OscalVersion(OscalBaseModel):
         return v
 
 
+class OriginActorValidValues(Enum):
+    tool = 'tool'
+    assessment_platform = 'assessment-platform'
+    party = 'party'
+
+
 class OnDate(OscalBaseModel):
     """
     The task is intended to occur on the specified date.
@@ -463,6 +492,11 @@ class ObservationTypeValidValues(Enum):
     historic = 'historic'
 
 
+class ObjectiveStatusStateValidValues(Enum):
+    satisfied = 'satisfied'
+    not_satisfied = 'not-satisfied'
+
+
 class ObjectiveStatus(OscalBaseModel):
     """
     A determination of if the objective is satisfied or not within a given system.
@@ -471,10 +505,7 @@ class ObjectiveStatus(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    state: constr(
-        regex=
-        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    ) = Field(
+    state: ObjectiveStatusStateValidValues = Field(
         ...,
         description='An indication as to whether the objective is satisfied or not.',
         title='Objective Status State'
@@ -681,13 +712,12 @@ class IdentifierType(Enum):
     http___ietf_org_rfc_rfc4122 = 'http://ietf.org/rfc/rfc4122'
 
 
-class HowMany(Enum):
-    """
-    Describes the number of selections that must occur. Without this setting, only one value should be assumed to be permitted.
-    """
-
+class HowManyValidValues(Enum):
     one = 'one'
     one_or_more = 'one-or-more'
+
+
+HowMany = HowManyValidValues
 
 
 class FunctionPerformed(OscalBaseModel):
@@ -698,6 +728,11 @@ class FunctionPerformed(OscalBaseModel):
     )
 
 
+class FindingTargetTypeValidValues(Enum):
+    statement_id = 'statement-id'
+    objective_id = 'objective-id'
+
+
 class FindingTarget(OscalBaseModel):
     """
     Captures an assessor's conclusions regarding the degree to which an objective is satisfied.
@@ -706,8 +741,9 @@ class FindingTarget(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    type: constr(regex=r'^\S(.*\S)?$'
-                 ) = Field(..., description='Identifies the type of the target.', title='Finding Target Type')
+    type: FindingTargetTypeValidValues = Field(
+        ..., description='Identifies the type of the target.', title='Finding Target Type'
+    )
     target_id: constr(
         regex=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
@@ -949,7 +985,7 @@ class AtFrequency(OscalBaseModel):
     period: PositiveIntegerDatatype = Field(
         ..., description='The task must occur after the specified period has elapsed.', title='Period'
     )
-    unit: constr(regex=r'^\S(.*\S)?$') = Field(..., description='The unit of time for the period.', title='Time Unit')
+    unit: TimeUnitValidValues = Field(..., description='The unit of time for the period.', title='Time Unit')
 
 
 class AssessmentSubjectValidValues(Enum):
@@ -1535,10 +1571,7 @@ class PortRange(OscalBaseModel):
     end: Optional[NonNegativeIntegerDatatype] = Field(
         None, description='Indicates the ending port number in a port range', title='End'
     )
-    transport: Optional[constr(
-        regex=
-        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    )] = Field(
+    transport: Optional[PortRangeValidValues] = Field(
         None, description='Indicates the transport type.', title='Transport'
     )
 
@@ -1620,9 +1653,9 @@ class Party(OscalBaseModel):
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(..., description='A unique identifier for the party.', title='Party Universally Unique Identifier')
-    type: constr(
-        regex=r'^\S(.*\S)?$'
-    ) = Field(..., description='A category describing the kind of party the object describes.', title='Party Type')
+    type: PartyTypeValidValues = Field(
+        ..., description='A category describing the kind of party the object describes.', title='Party Type'
+    )
     name: Optional[constr(regex=r'^\S(.*\S)?$')] = Field(
         None,
         description='The full name of the party. This is typically the legal name associated with the party.',
@@ -1738,7 +1771,7 @@ class ParameterSelection(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    how_many: Optional[HowMany] = Field(
+    how_many: Optional[HowManyValidValues] = Field(
         None,
         alias='how-many',
         description=
@@ -1806,10 +1839,7 @@ class OriginActor(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    type: constr(
-        regex=
-        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    ) = Field(..., description='The kind of actor.', title='Actor Type')
+    type: OriginActorValidValues = Field(..., description='The kind of actor.', title='Actor Type')
     actor_uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(

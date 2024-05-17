@@ -77,6 +77,7 @@ def fixup_models(input_dir_name: str) -> Path:
     fixup_json(fixup_dir_path)
     # schema patching
     patch_schemas(fixup_dir_path)
+    patch_allof(fixup_dir_path)
     return fixup_dir_path
 
 
@@ -89,6 +90,28 @@ def fixup_copy_schemas(input_dir_path: Path, fixup_dir_path: Path) -> None:
         cmd = f'cp -p {model_name} {str(fixup_dir_path)}'
         logger.debug(cmd)
         os.system(cmd)
+
+
+def traverse_dict(data, model_name):
+    """Recursively traverse dict and replace allOf with ref."""
+    for _, value in data.items():
+        if isinstance(value, dict):
+            if 'allOf' in value.keys():
+                allof = value['allOf'][1]
+                if '$ref' in allof.keys():
+                    value['$ref'] = allof['$ref']
+                    del value['allOf']
+            traverse_dict(value, model_name)
+
+
+# - https://github.com/koxudaxi/datamodel-code-generator/issues/1901
+def patch_allof(fixup_dir_path: Path) -> None:
+    """Patch allOf in schemas."""
+    for full_name in fixup_dir_path.glob(schema_file_name_search_template):
+        model_name = str(full_name)
+        data = json_data_get(model_name)
+        traverse_dict(data, model_name)
+        json_data_put(model_name, data)
 
 
 # patch_schemas introduced for migrating from OSCAL 1.0.4 to 1.1.2 due to missing/broken
@@ -125,7 +148,7 @@ def patch_model(model_name: str, patch_json: Dict):
     for key in data['definitions'].keys():
         patch_key = calculate_patch_key(key)
         if patch_key in patch_json.keys():
-            logger.info(f'patch: {model_name} {key}')
+            logger.debug(f'patch: {model_name} {key}')
             data['definitions'][key] = patch_json[patch_key]
     json_data_put(model_name, data)
 
@@ -148,7 +171,7 @@ def patch_finding_target(model_name: str) -> None:
         del data['definitions'][k1][k2][k3]
         u3 = 'objective_status'
         data['definitions'][k1][k2][u3] = value
-        logger.info(f'patch: {model_name} {k1}.{k2}.{k3} -> {k1}.{k2}.{u3}')
+        logger.debug(f'patch: {model_name} {k1}.{k2}.{k3} -> {k1}.{k2}.{u3}')
         json_data_put(model_name, data)
 
 
@@ -172,7 +195,7 @@ def patch_poam_origins(model_name: str) -> None:
     del data['definitions'][k1][k2][k3]
     u3 = 'originations'
     data['definitions'][k1][k2][u3] = value
-    logger.info(f'patch: {model_name} {k1}.{k2}.{k3} -> {k1}.{k2}.{u3}')
+    logger.debug(f'patch: {model_name} {k1}.{k2}.{k3} -> {k1}.{k2}.{u3}')
     json_data_put(model_name, data)
 
 
@@ -203,7 +226,7 @@ def patch_poam_item(model_name: str, k3: str) -> None:
         return
     new_value = 'finding'
     data['definitions'][k1][k2][k3][k4][k5] = data['definitions'][k1][k2][k3][k4][k5].replace(old_value, new_value)
-    logger.info(f'patch: {model_name} {k1}.{k2}.{k3}.{k4}.{k5} {old_value} -> {new_value}')
+    logger.debug(f'patch: {model_name} {k1}.{k2}.{k3}.{k4}.{k5} {old_value} -> {new_value}')
     json_data_put(model_name, data)
 
 
@@ -223,7 +246,7 @@ def patch_profile(model_name: str) -> None:
             count += 1
             line = line.replace(old_value, new_value)
         new_data.append(line)
-    logger.info(f'patch: {model_name} {old_value} -> {new_value}, count={count}')
+    logger.debug(f'patch: {model_name} {old_value} -> {new_value}, count={count}')
     data_put(model_name, new_data)
     # format
     data = json_data_get(model_name)
@@ -251,6 +274,36 @@ def create_refs(model_name: str) -> None:
     ]
     navigation = ['properties', 'type', 'anyOf']
     ref_name = 'TaskValidValues'
+    for root in list_:
+        create_ref(model_name, root, navigation, ref_name)
+    # Time Unit Valid Values
+    list_ = [
+        'oscal-ap-oscal-assessment-common:task',
+        'oscal-ar-oscal-assessment-common:task',
+        'oscal-poam-oscal-assessment-common:task',
+    ]
+    navigation = ['properties', 'timing', 'properties', 'at-frequency', 'properties', 'unit', 'allOf']
+    ref_name = 'TimeUnitValidValues'
+    for root in list_:
+        create_ref(model_name, root, navigation, ref_name)
+    # Finding Target Type Valid Values
+    list_ = [
+        'oscal-ap-oscal-assessment-common:finding-target',
+        'oscal-ar-oscal-assessment-common:finding-target',
+        'oscal-poam-oscal-assessment-common:finding-target',
+    ]
+    navigation = ['properties', 'type', 'allOf']
+    ref_name = 'FindingTargetTypeValidValues'
+    for root in list_:
+        create_ref(model_name, root, navigation, ref_name)
+    # Objective Status State Valid Values
+    list_ = [
+        'oscal-ap-oscal-assessment-common:finding-target',
+        'oscal-ar-oscal-assessment-common:finding-target',
+        'oscal-poam-oscal-assessment-common:finding-target',
+    ]
+    navigation = ['properties', 'objective_status', 'properties', 'state', 'allOf']
+    ref_name = 'ObjectiveStatusStateValidValues'
     for root in list_:
         create_ref(model_name, root, navigation, ref_name)
     # Threat Id Valid Values
@@ -381,6 +434,20 @@ def create_refs(model_name: str) -> None:
     ref_name = 'ExternalSchemeValidValues'
     for root in list_:
         create_ref(model_name, root, navigation, ref_name)
+    # Party Type Valid Values
+    list_ = [
+        'oscal-ap-oscal-metadata:metadata',
+        'oscal-ar-oscal-metadata:metadata',
+        'oscal-catalog-oscal-metadata:metadata',
+        'oscal-component-definition-oscal-metadata:metadata',
+        'oscal-poam-oscal-metadata:metadata',
+        'oscal-profile-oscal-metadata:metadata',
+        'oscal-ssp-oscal-metadata:metadata',
+    ]
+    navigation = ['properties', 'parties', 'items', 'properties', 'type', 'allOf']
+    ref_name = 'Party TypeValidValues'
+    for root in list_:
+        create_ref(model_name, root, navigation, ref_name)
     # Document Scheme Valid Values
     list_ = [
         'oscal-ap-oscal-metadata:document-id',
@@ -415,6 +482,98 @@ def create_refs(model_name: str) -> None:
     ]
     navigation = ['properties', 'type', 'anyOf']
     ref_name = 'SystemComponentTypeValidValues'
+    for root in list_:
+        create_ref(model_name, root, navigation, ref_name)
+    # System Component Operational State
+    list_ = [
+        'oscal-ap-oscal-implementation-common:system-component',
+        'oscal-ar-oscal-implementation-common:system-component',
+        'oscal-catalog-oscal-implementation-common:system-component',
+        'oscal-component-definition-oscal-implementation-common:system-component',
+        'oscal-poam-oscal-implementation-common:system-component',
+        'oscal-profile-oscal-implementation-common:system-component',
+        'oscal-ssp-oscal-implementation-common:system-component',
+    ]
+    navigation = ['properties', 'status', 'properties', 'state', 'allOf']
+    ref_name = 'SystemComponentOperationalStateValidValues'
+    for root in list_:
+        create_ref(model_name, root, navigation, ref_name)
+    # Origin Actor Type Valid Values
+    list_ = [
+        'oscal-ap-oscal-assessment-common:origin-actor',
+        'oscal-ar-oscal-assessment-common:origin-actor',
+        'oscal-poam-oscal-assessment-common:origin-actor',
+    ]
+    navigation = ['properties', 'type', 'allOf']
+    ref_name = 'OriginActorValidValues'
+    for root in list_:
+        create_ref(model_name, root, navigation, ref_name)
+    # Port Range Valid Values
+    list_ = [
+        'oscal-ap-oscal-implementation-common:port-range',
+        'oscal-ar-oscal-implementation-common:port-range',
+        'oscal-component-definition-oscal-implementation-common:port-range',
+        'oscal-poam-oscal-implementation-common:port-range',
+        'oscal-ssp-oscal-implementation-common:port-range',
+    ]
+    navigation = ['properties', 'transport', 'allOf']
+    ref_name = 'PortRangeValidValues'
+    for root in list_:
+        create_ref(model_name, root, navigation, ref_name)
+    # Operational State Valid Values
+    list_ = [
+        'oscal-ssp-oscal-ssp:status',
+    ]
+    navigation = ['properties', 'state', 'allOf']
+    ref_name = 'OperationalStateValidValues'
+    for root in list_:
+        create_ref(model_name, root, navigation, ref_name)
+    # Item Name Valid Values
+    list_ = [
+        'oscal-profile-oscal-profile:modify',
+    ]
+    navigation = [
+        'properties', 'alters', 'items', 'properties', 'removes', 'items', 'properties', 'by-item-name', 'allOf'
+    ]
+    ref_name = 'ItemNameValidValues'
+    for root in list_:
+        create_ref(model_name, root, navigation, ref_name)
+    # Order Valid Values
+    list_ = [
+        'oscal-profile-oscal-profile:insert-controls',
+    ]
+    navigation = ['properties', 'order', 'allOf']
+    ref_name = 'OrderValidValues'
+    for root in list_:
+        create_ref(model_name, root, navigation, ref_name)
+    # With Child Controls Valid Values
+    list_ = [
+        'oscal-profile-oscal-profile:select-control',
+    ]
+    navigation = ['properties', 'with-child-controls', 'allOf']
+    ref_name = 'WithChildControlsValidValues'
+    for root in list_:
+        create_ref(model_name, root, navigation, ref_name)
+    # additioanl refs
+    create_refs_additional(model_name)
+
+
+def create_refs_additional(model_name: str) -> None:
+    """Additional refs."""
+    # Position Valid Values
+    list_ = [
+        'oscal-profile-oscal-profile:modify',
+    ]
+    navigation = ['properties', 'alters', 'items', 'properties', 'adds', 'items', 'properties', 'position', 'allOf']
+    ref_name = 'PositionValidValues'
+    for root in list_:
+        create_ref(model_name, root, navigation, ref_name)
+    # Combination Method Valid Values
+    list_ = [
+        'oscal-profile-oscal-profile:merge',
+    ]
+    navigation = ['properties', 'combine', 'properties', 'method', 'allOf']
+    ref_name = 'CombinationMethodValidValues'
     for root in list_:
         create_ref(model_name, root, navigation, ref_name)
 
