@@ -285,17 +285,7 @@
               "type": {
                 "title": "Party Type",
                 "description": "A category describing the kind of party the object describes.",
-                "allOf": [
-                  {
-                    "$ref": "#/definitions/StringDatatype"
-                  },
-                  {
-                    "enum": [
-                      "person",
-                      "organization"
-                    ]
-                  }
-                ]
+                "$ref": "#/definitions/Party TypeValidValues"
               },
               "name": {
                 "title": "Party Name",
@@ -1210,14 +1200,7 @@
         "how-many": {
           "title": "Parameter Cardinality",
           "description": "Describes the number of selections that must occur. Without this setting, only one value should be assumed to be permitted.",
-          "allOf": [
-            {
-              "$ref": "#/definitions/TokenDatatype"
-            },
-            {
-              "$ref": "#/definitions/HowManyValidValues"
-            }
-          ]
+          "$ref": "#/definitions/HowManyValidValues"
         },
         "choice": {
           "type": "array",
@@ -1443,6 +1426,12 @@
     "ExternalSchemeValidValues": {
       "enum": [
         "http://orcid.org/"
+      ]
+    },
+    "Party TypeValidValues": {
+      "enum": [
+        "person",
+        "organization"
       ]
     },
     "DocumentSchemeValidValues": {

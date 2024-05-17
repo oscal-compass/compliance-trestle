@@ -36,39 +36,6 @@ from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
 import trestle.oscal.common as common
 
 
-class Add(OscalBaseModel):
-    """
-    Specifies contents to be added into controls, in resolution.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    position: Optional[constr(
-        regex=
-        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    )] = Field(
-        None,
-        description='Where to add the new content with respect to the targeted element (beside it or inside it).',
-        title='Position'
-    )
-    by_id: Optional[constr(
-        regex=
-        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    )] = Field(
-        None, alias='by-id', description='Target location of the addition.', title='Reference by ID'
-    )
-    title: Optional[str] = Field(
-        None,
-        description='A name given to the control, which may be used by a tool for display and navigation.',
-        title='Title Change'
-    )
-    params: Optional[List[common.Parameter]] = Field(None)
-    props: Optional[List[common.Property]] = Field(None)
-    links: Optional[List[common.Link]] = Field(None)
-    parts: Optional[List[common.Part]] = Field(None)
-
-
 class WithId(OscalBaseModel):
     __root__: constr(
         regex=
@@ -76,6 +43,11 @@ class WithId(OscalBaseModel):
     ) = Field(
         ..., description='Selecting a control by its ID given as a literal.', title='Match Controls by Identifier'
     )
+
+
+class WithChildControlsValidValues(Enum):
+    yes = 'yes'
+    no = 'no'
 
 
 class SetParameter(OscalBaseModel):
@@ -126,6 +98,117 @@ class SetParameter(OscalBaseModel):
     select: Optional[common.ParameterSelection] = None
 
 
+class PositionValidValues(Enum):
+    before = 'before'
+    after = 'after'
+    starting = 'starting'
+    ending = 'ending'
+
+
+class OrderValidValues(Enum):
+    keep = 'keep'
+    ascending = 'ascending'
+    descending = 'descending'
+
+
+class Matching(OscalBaseModel):
+    """
+    Selecting a set of controls by matching their IDs with a wildcard pattern.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    pattern: Optional[constr(regex=r'^\S(.*\S)?$')] = Field(
+        None, description='A glob expression matching the IDs of one or more controls to be selected.', title='Pattern'
+    )
+
+
+class ItemNameValidValues(Enum):
+    param = 'param'
+    prop = 'prop'
+    link = 'link'
+    part = 'part'
+    mapping = 'mapping'
+    map = 'map'
+
+
+class CombinationMethodValidValues(Enum):
+    use_first = 'use-first'
+    merge = 'merge'
+    keep = 'keep'
+
+
+class BooleanDatatype(OscalBaseModel):
+    __root__: bool = Field(..., description='A binary value that is either: true or false.')
+
+
+class Add(OscalBaseModel):
+    """
+    Specifies contents to be added into controls, in resolution.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    position: Optional[PositionValidValues] = Field(
+        None,
+        description='Where to add the new content with respect to the targeted element (beside it or inside it).',
+        title='Position'
+    )
+    by_id: Optional[constr(
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+    )] = Field(
+        None, alias='by-id', description='Target location of the addition.', title='Reference by ID'
+    )
+    title: Optional[str] = Field(
+        None,
+        description='A name given to the control, which may be used by a tool for display and navigation.',
+        title='Title Change'
+    )
+    params: Optional[List[common.Parameter]] = Field(None)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
+    parts: Optional[List[common.Part]] = Field(None)
+
+
+class SelectControl(OscalBaseModel):
+    """
+    Select a control or controls from an imported control set.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    with_child_controls: Optional[WithChildControlsValidValues] = Field(
+        None,
+        alias='with-child-controls',
+        description='When a control is included, whether its child (dependent) controls are also included.',
+        title='Include Contained Controls with Control'
+    )
+    with_ids: Optional[List[WithId]] = Field(None, alias='with-ids')
+    matching: Optional[List[Matching]] = Field(None)
+
+
+class Import(OscalBaseModel):
+    """
+    Designates a referenced source catalog or profile that provides a source of control information for use in creating a new overlay or baseline.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    href: str = Field(
+        ...,
+        description='A resolvable URL reference to the base catalog or profile that this profile is tailoring.',
+        title='Catalog or Profile Reference'
+    )
+    include_all: Optional[common.IncludeAll] = Field(None, alias='include-all')
+    include_controls: Optional[List[SelectControl]] = Field(None, alias='include-controls')
+    exclude_controls: Optional[List[SelectControl]] = Field(None, alias='exclude-controls')
+
+
 class Remove(OscalBaseModel):
     """
     Specifies objects to be removed from a control based on specific aspects of the object that must all match.
@@ -158,10 +241,7 @@ class Remove(OscalBaseModel):
     )] = Field(
         None, alias='by-id', description='Identify items to remove indicated by their id.', title='Reference by ID'
     )
-    by_item_name: Optional[constr(
-        regex=
-        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    )] = Field(
+    by_item_name: Optional[ItemNameValidValues] = Field(
         None,
         alias='by-item-name',
         description="Identify items to remove by the name of the item's information object name, e.g. title or prop.",
@@ -176,36 +256,6 @@ class Remove(OscalBaseModel):
         description="Identify items to remove by the item's ns, which is the namespace associated with a part, or prop.",
         title='Item Namespace Reference'
     )
-
-
-class Matching(OscalBaseModel):
-    """
-    Selecting a set of controls by matching their IDs with a wildcard pattern.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    pattern: Optional[constr(regex=r'^\S(.*\S)?$')] = Field(
-        None, description='A glob expression matching the IDs of one or more controls to be selected.', title='Pattern'
-    )
-
-
-class Combine(OscalBaseModel):
-    """
-    A Combine element defines how to resolve duplicate instances of the same control (e.g., controls with the same ID).
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    method: Optional[constr(regex=r'^\S(.*\S)?$')] = Field(
-        None, description='Declare how clashing controls should be handled.', title='Combination Method'
-    )
-
-
-class BooleanDatatype(OscalBaseModel):
-    __root__: bool = Field(..., description='A binary value that is either: true or false.')
 
 
 class Alter(OscalBaseModel):
@@ -242,45 +292,6 @@ class Modify(OscalBaseModel):
     alters: Optional[List[Alter]] = Field(None)
 
 
-class SelectControl(OscalBaseModel):
-    """
-    Select a control or controls from an imported control set.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    with_child_controls: Optional[constr(
-        regex=
-        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    )] = Field(
-        None,
-        alias='with-child-controls',
-        description='When a control is included, whether its child (dependent) controls are also included.',
-        title='Include Contained Controls with Control'
-    )
-    with_ids: Optional[List[WithId]] = Field(None, alias='with-ids')
-    matching: Optional[List[Matching]] = Field(None)
-
-
-class Import(OscalBaseModel):
-    """
-    Designates a referenced source catalog or profile that provides a source of control information for use in creating a new overlay or baseline.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    href: str = Field(
-        ...,
-        description='A resolvable URL reference to the base catalog or profile that this profile is tailoring.',
-        title='Catalog or Profile Reference'
-    )
-    include_all: Optional[common.IncludeAll] = Field(None, alias='include-all')
-    include_controls: Optional[List[SelectControl]] = Field(None, alias='include-controls')
-    exclude_controls: Optional[List[SelectControl]] = Field(None, alias='exclude-controls')
-
-
 class InsertControls(OscalBaseModel):
     """
     Specifies which controls to use in the containing context.
@@ -289,10 +300,7 @@ class InsertControls(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    order: Optional[constr(
-        regex=
-        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    )] = Field(
+    order: Optional[OrderValidValues] = Field(
         None, description='A designation of how a selection of controls in a profile is to be ordered.', title='Order'
     )
     include_all: Optional[common.IncludeAll] = Field(None, alias='include-all')
@@ -342,6 +350,19 @@ class Custom(OscalBaseModel):
 
     groups: Optional[List[Group]] = Field(None)
     insert_controls: Optional[List[InsertControls]] = Field(None, alias='insert-controls')
+
+
+class Combine(OscalBaseModel):
+    """
+    A Combine element defines how to resolve duplicate instances of the same control (e.g., controls with the same ID).
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    method: Optional[CombinationMethodValidValues] = Field(
+        None, description='Declare how clashing controls should be handled.', title='Combination Method'
+    )
 
 
 class Merge(OscalBaseModel):
