@@ -302,17 +302,7 @@
               "type": {
                 "title": "Party Type",
                 "description": "A category describing the kind of party the object describes.",
-                "allOf": [
-                  {
-                    "$ref": "#/definitions/StringDatatype"
-                  },
-                  {
-                    "enum": [
-                      "person",
-                      "organization"
-                    ]
-                  }
-                ]
+                "$ref": "#/definitions/Party TypeValidValues"
               },
               "name": {
                 "title": "Party Name",
@@ -1227,14 +1217,7 @@
         "how-many": {
           "title": "Parameter Cardinality",
           "description": "Describes the number of selections that must occur. Without this setting, only one value should be assumed to be permitted.",
-          "allOf": [
-            {
-              "$ref": "#/definitions/TokenDatatype"
-            },
-            {
-              "$ref": "#/definitions/HowManyValidValues"
-            }
-          ]
+          "$ref": "#/definitions/HowManyValidValues"
         },
         "choice": {
           "type": "array",
@@ -1315,19 +1298,7 @@
             "state": {
               "title": "State",
               "description": "The operational status.",
-              "allOf": [
-                {
-                  "$ref": "#/definitions/TokenDatatype"
-                },
-                {
-                  "enum": [
-                    "under-development",
-                    "operational",
-                    "disposition",
-                    "other"
-                  ]
-                }
-              ]
+              "$ref": "#/definitions/SystemComponentOperationalStateValidValues"
             },
             "remarks": {
               "$ref": "#field_oscal-metadata_remarks"
@@ -1418,17 +1389,7 @@
         "transport": {
           "title": "Transport",
           "description": "Indicates the transport type.",
-          "allOf": [
-            {
-              "$ref": "#/definitions/TokenDatatype"
-            },
-            {
-              "enum": [
-                "TCP",
-                "UDP"
-              ]
-            }
-          ]
+          "$ref": "#/definitions/PortRangeValidValues"
         }
       },
       "additionalProperties": false
@@ -2044,21 +2005,7 @@
                 "unit": {
                   "title": "Time Unit",
                   "description": "The unit of time for the period.",
-                  "allOf": [
-                    {
-                      "$ref": "#/definitions/StringDatatype"
-                    },
-                    {
-                      "enum": [
-                        "seconds",
-                        "minutes",
-                        "hours",
-                        "days",
-                        "months",
-                        "years"
-                      ]
-                    }
-                  ]
+                  "$ref": "#/definitions/TimeUnitValidValues"
                 }
               },
               "required": [
@@ -2692,17 +2639,7 @@
         "type": {
           "title": "Finding Target Type",
           "description": "Identifies the type of the target.",
-          "allOf": [
-            {
-              "$ref": "#/definitions/StringDatatype"
-            },
-            {
-              "enum": [
-                "statement-id",
-                "objective-id"
-              ]
-            }
-          ]
+          "$ref": "#/definitions/FindingTargetTypeValidValues"
         },
         "target-id": {
           "title": "Finding Target Identifier Reference",
@@ -2747,17 +2684,7 @@
             "state": {
               "title": "Objective Status State",
               "description": "An indication as to whether the objective is satisfied or not.",
-              "allOf": [
-                {
-                  "$ref": "#/definitions/TokenDatatype"
-                },
-                {
-                  "enum": [
-                    "satisfied",
-                    "not-satisfied"
-                  ]
-                }
-              ]
+              "$ref": "#/definitions/ObjectiveStatusStateValidValues"
             },
             "reason": {
               "title": "Objective Status Reason",
@@ -3079,18 +3006,7 @@
         "type": {
           "title": "Actor Type",
           "description": "The kind of actor.",
-          "allOf": [
-            {
-              "$ref": "#/definitions/TokenDatatype"
-            },
-            {
-              "enum": [
-                "tool",
-                "assessment-platform",
-                "party"
-              ]
-            }
-          ]
+          "$ref": "#/definitions/OriginActorValidValues"
         },
         "actor-uuid": {
           "title": "Actor Universally Unique Identifier Reference",
@@ -4077,6 +3993,28 @@
         "action"
       ]
     },
+    "TimeUnitValidValues": {
+      "enum": [
+        "seconds",
+        "minutes",
+        "hours",
+        "days",
+        "months",
+        "years"
+      ]
+    },
+    "FindingTargetTypeValidValues": {
+      "enum": [
+        "statement-id",
+        "objective-id"
+      ]
+    },
+    "ObjectiveStatusStateValidValues": {
+      "enum": [
+        "satisfied",
+        "not-satisfied"
+      ]
+    },
     "ThreatIdValidValues": {
       "enum": [
         "http://fedramp.gov",
@@ -4167,6 +4105,12 @@
         "http://orcid.org/"
       ]
     },
+    "Party TypeValidValues": {
+      "enum": [
+        "person",
+        "organization"
+      ]
+    },
     "DocumentSchemeValidValues": {
       "enum": [
         "http://www.doi.org/"
@@ -4188,6 +4132,27 @@
         "standard",
         "validation",
         "network"
+      ]
+    },
+    "SystemComponentOperationalStateValidValues": {
+      "enum": [
+        "under-development",
+        "operational",
+        "disposition",
+        "other"
+      ]
+    },
+    "OriginActorValidValues": {
+      "enum": [
+        "tool",
+        "assessment-platform",
+        "party"
+      ]
+    },
+    "PortRangeValidValues": {
+      "enum": [
+        "TCP",
+        "UDP"
       ]
     }
   },

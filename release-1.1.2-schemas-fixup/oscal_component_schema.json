@@ -285,17 +285,7 @@
               "type": {
                 "title": "Party Type",
                 "description": "A category describing the kind of party the object describes.",
-                "allOf": [
-                  {
-                    "$ref": "#/definitions/StringDatatype"
-                  },
-                  {
-                    "enum": [
-                      "person",
-                      "organization"
-                    ]
-                  }
-                ]
+                "$ref": "#/definitions/Party TypeValidValues"
               },
               "name": {
                 "title": "Party Name",
@@ -1210,14 +1200,7 @@
         "how-many": {
           "title": "Parameter Cardinality",
           "description": "Describes the number of selections that must occur. Without this setting, only one value should be assumed to be permitted.",
-          "allOf": [
-            {
-              "$ref": "#/definitions/TokenDatatype"
-            },
-            {
-              "$ref": "#/definitions/HowManyValidValues"
-            }
-          ]
+          "$ref": "#/definitions/HowManyValidValues"
         },
         "choice": {
           "type": "array",
@@ -1298,19 +1281,7 @@
             "state": {
               "title": "State",
               "description": "The operational status.",
-              "allOf": [
-                {
-                  "$ref": "#/definitions/TokenDatatype"
-                },
-                {
-                  "enum": [
-                    "under-development",
-                    "operational",
-                    "disposition",
-                    "other"
-                  ]
-                }
-              ]
+              "$ref": "#/definitions/SystemComponentOperationalStateValidValues"
             },
             "remarks": {
               "$ref": "#field_oscal-metadata_remarks"
@@ -1401,17 +1372,7 @@
         "transport": {
           "title": "Transport",
           "description": "Indicates the transport type.",
-          "allOf": [
-            {
-              "$ref": "#/definitions/TokenDatatype"
-            },
-            {
-              "enum": [
-                "TCP",
-                "UDP"
-              ]
-            }
-          ]
+          "$ref": "#/definitions/PortRangeValidValues"
         }
       },
       "additionalProperties": false
@@ -2155,6 +2116,12 @@
         "http://orcid.org/"
       ]
     },
+    "Party TypeValidValues": {
+      "enum": [
+        "person",
+        "organization"
+      ]
+    },
     "DocumentSchemeValidValues": {
       "enum": [
         "http://www.doi.org/"
@@ -2191,6 +2158,20 @@
         "standard",
         "validation",
         "network"
+      ]
+    },
+    "SystemComponentOperationalStateValidValues": {
+      "enum": [
+        "under-development",
+        "operational",
+        "disposition",
+        "other"
+      ]
+    },
+    "PortRangeValidValues": {
+      "enum": [
+        "TCP",
+        "UDP"
       ]
     }
   },

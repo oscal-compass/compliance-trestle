@@ -401,7 +401,11 @@ class ControlReader:
         # add the parts and props at control level
         if editable_parts or props:
             adds.append(
-                prof.Add(parts=none_if_empty(editable_parts), props=none_if_empty(props), position=const.ENDING)
+                prof.Add(
+                    parts=none_if_empty(editable_parts),
+                    props=none_if_empty(props),
+                    position=prof.PositionValidValues.ending.value
+                )
             )
 
         # add the parts and props at the part level, by-id
@@ -409,7 +413,7 @@ class ControlReader:
         for by_id in sorted(by_ids):
             parts = by_id_parts.get(by_id, None)
             props = props_by_id.get(by_id, None)
-            adds.append(prof.Add(parts=parts, props=props, position=const.ENDING, by_id=by_id))
+            adds.append(prof.Add(parts=parts, props=props, position=prof.PositionValidValues.ending.value, by_id=by_id))
 
         new_alters = []
         if adds:

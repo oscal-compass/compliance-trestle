@@ -54,18 +54,6 @@ class System(Enum):
     http___doi_org_10_6028_NIST_SP_800_60v2r1 = 'http://doi.org/10.6028/NIST.SP.800-60v2r1'
 
 
-class Status1(OscalBaseModel):
-    """
-    Describes the operational status of the system.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    state: constr(regex=r'^\S(.*\S)?$') = Field(..., description='The current operating status.', title='State')
-    remarks: Optional[str] = None
-
-
 class SetParameter(OscalBaseModel):
     """
     Identifies the parameter that will be set by the enclosed value.
@@ -227,6 +215,14 @@ class Provided(OscalBaseModel):
     links: Optional[List[common.Link]] = Field(None)
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
     remarks: Optional[str] = None
+
+
+class OperationalStateValidValues(Enum):
+    operational = 'operational'
+    under_development = 'under-development'
+    under_major_modification = 'under-major-modification'
+    disposition = 'disposition'
+    other = 'other'
 
 
 class Inherited(OscalBaseModel):
@@ -438,6 +434,18 @@ class AuthorizationBoundary(OscalBaseModel):
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     diagrams: Optional[List[Diagram]] = Field(None)
+    remarks: Optional[str] = None
+
+
+class Status1(OscalBaseModel):
+    """
+    Describes the operational status of the system.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    state: OperationalStateValidValues = Field(..., description='The current operating status.', title='State')
     remarks: Optional[str] = None
 
 

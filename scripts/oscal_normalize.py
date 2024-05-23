@@ -376,7 +376,7 @@ def reorder(fstem, class_list):
             break
         loop_num += 1
     if did_swap:
-        logger.info('Excess iteration in reordering!')
+        logger.warning('Excess iteration in reordering!')
     forward_refs = find_forward_refs(class_list, orders)
 
     # return reordered list of classes with no forward refs
@@ -715,6 +715,9 @@ def write_oscal(classes, forward_refs, fstem):
             # add special validator for OscalVersion
             if c.name == 'OscalVersion':
                 out_file.write(oscal_validator_code)
+            # add alias HowMany
+            if c.name == 'HowManyValidValues':
+                out_file.write('HowMany = HowManyValidValues\n\n\n')
 
         if not is_common:
             out_file.writelines('class Model(OscalBaseModel):\n')
@@ -784,7 +787,7 @@ def bkwd_compat_1_0_4(fstem):
                     for item in additions[fstem]:
                         line = f'{item}\n'
                         lines.append(line)
-                        logger.info(f'bkwd_compat_1_0_4: file {fstem}.py insert "{line.strip()}"')
+                        logger.debug(f'bkwd_compat_1_0_4: file {fstem}.py insert "{line.strip()}"')
         with open(fname, 'w') as f:
             for line in lines:
                 f.write(line)
@@ -800,7 +803,7 @@ def pydantic_interface_v1(fstem):
             for line in f:
                 if line.startswith('from pydantic'):
                     line = line.replace('pydantic', 'pydantic.v1')
-                    logger.info(f'pydantic_interface_v1: file {fstem}.py modify "{line.strip()}"')
+                    logger.debug(f'pydantic_interface_v1: file {fstem}.py modify "{line.strip()}"')
                 lines.append(line)
         with open(fname, 'w') as f:
             for line in lines:
