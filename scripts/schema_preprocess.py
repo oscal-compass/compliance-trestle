@@ -29,10 +29,10 @@ schema_file_name_search_template = 'oscal_*_schema.json'
 body_integrity_map = {}
 
 
-def body_identical_check(token: str, content: Dict) -> None:
+def body_identical_check(token: str, title: str, content: Dict) -> None:
     """Check that common entries have identical bodies."""
     # derive common key
-    key = token.split(':')[1]
+    key = token.split(':')[1] + title
     # if no common entry yet, add and return
     if key not in body_integrity_map.keys():
         body_integrity_map[key] = content
@@ -554,12 +554,6 @@ def create_refs(model_name: str) -> None:
     ref_name = 'WithChildControlsValidValues'
     for root in list_:
         create_ref(model_name, root, navigation, ref_name)
-    # additioanl refs
-    create_refs_additional(model_name)
-
-
-def create_refs_additional(model_name: str) -> None:
-    """Additional refs."""
     # Position Valid Values
     list_ = [
         'oscal-profile-oscal-profile:modify',
@@ -586,6 +580,20 @@ def _fetch(tgt: Any, key: str) -> Any:
         return _find(key, tgt)
 
 
+def _get_title(model_name: str, root: str, navigation: List[str]) -> str:
+    """Get title."""
+    title = None
+    data = json_data_get(model_name)
+    tgt = data['definitions']
+    tgt = tgt.get(root)
+    if not tgt:
+        return
+    for leaf in navigation:
+        tgt = _fetch(tgt, leaf)
+    title = tgt
+    return title
+
+
 def create_ref(model_name: str, root: str, navigation: List[str], ref_name: str) -> None:
     """Create ref."""
     data = json_data_get(model_name)
@@ -601,7 +609,11 @@ def create_ref(model_name: str, root: str, navigation: List[str], ref_name: str)
     tgt = data['definitions']
     tgt[ref_name] = item
     logger.debug(f'patch: {model_name} {replacement}')
-    body_identical_check(root, replacement)
+    # title
+    title_navigation = navigation
+    title_navigation[-1] = 'title'
+    title = _get_title(model_name, root, navigation)
+    body_identical_check(root, title, replacement)
     json_data_put(model_name, data)
 
 
