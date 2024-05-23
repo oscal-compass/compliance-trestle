@@ -393,7 +393,7 @@ class CatalogInterface():
 
     def get_group_ids(self) -> List[str]:
         """Get all the group id's as a list of sorted strings."""
-        return sorted(filter(lambda id: id, list({control.group_id for control in self._control_dict.values()})))
+        return sorted(filter(lambda id_: id_, list({control.group_id for control in self._control_dict.values()})))
 
     def get_all_groups_from_catalog(self) -> List[cat.Group]:
         """

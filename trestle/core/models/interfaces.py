@@ -14,7 +14,7 @@
 """Interfaces for use within other trestle functions defined as pydantic data models."""
 from typing import Dict, Optional
 
-from pydantic import Extra
+from pydantic.v1 import Extra
 
 import trestle.oscal.assessment_plan as o_ap
 import trestle.oscal.assessment_results as o_ar

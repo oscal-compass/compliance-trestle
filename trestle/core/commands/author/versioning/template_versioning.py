@@ -20,7 +20,7 @@ import shutil
 from pathlib import Path
 from typing import List, Optional, Tuple
 
-from pkg_resources import resource_filename
+import importlib_resources
 
 from trestle.common import file_utils
 from trestle.common.const import DRAWIO_FILE_EXT, MARKDOWN_FILE_EXT, TEMPLATE_VERSION_REGEX
@@ -181,26 +181,27 @@ class TemplateVersioning:
         try:
             templates_resource_path = TRESTLE_RESOURCES + '.templates'
 
-            generic_template = Path(resource_filename(templates_resource_path, resource_name)).resolve()
-            if version is None:
-                _, version = TemplateVersioning.get_latest_version_for_task(task_path)
+            ref = importlib_resources.files(templates_resource_path) / resource_name
+            with importlib_resources.as_file(ref) as generic_template:
+                if version is None:
+                    _, version = TemplateVersioning.get_latest_version_for_task(task_path)
 
-            # modify header/metadata in the template
-            if generic_template.suffix == MARKDOWN_FILE_EXT:
-                md_api = MarkdownAPI()
-                header, md_body = md_api.processor.read_markdown_wo_processing(generic_template)
-                header[TEMPLATE_VERSION_HEADER] = version
-                md_api.write_markdown_with_header(target_file, header, md_body)
-                logger.debug(f'Successfully written template markdown to {target_file}')
-            elif generic_template.suffix == DRAWIO_FILE_EXT:
-                drawio = DrawIO(generic_template)
-                metadata = drawio.get_metadata()[0]
-                metadata[TEMPLATE_VERSION_HEADER] = version
+                # modify header/metadata in the template
+                if generic_template.suffix == MARKDOWN_FILE_EXT:
+                    md_api = MarkdownAPI()
+                    header, md_body = md_api.processor.read_markdown_wo_processing(generic_template)
+                    header[TEMPLATE_VERSION_HEADER] = version
+                    md_api.write_markdown_with_header(target_file, header, md_body)
+                    logger.debug(f'Successfully written template markdown to {target_file}')
+                elif generic_template.suffix == DRAWIO_FILE_EXT:
+                    drawio = DrawIO(generic_template)
+                    metadata = drawio.get_metadata()[0]
+                    metadata[TEMPLATE_VERSION_HEADER] = version
 
-                drawio.write_drawio_with_metadata(generic_template, metadata, 0, target_file)
-                logger.debug(f'Successfully written template drawio to {target_file}')
-            else:
-                raise TrestleError(f'Unsupported template file extension {generic_template.suffix}')
+                    drawio.write_drawio_with_metadata(generic_template, metadata, 0, target_file)
+                    logger.debug(f'Successfully written template drawio to {target_file}')
+                else:
+                    raise TrestleError(f'Unsupported template file extension {generic_template.suffix}')
         except OSError as e:
             raise TrestleError(f'Error while updating template folder: {e}')
 

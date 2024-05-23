@@ -19,7 +19,6 @@ from typing import Iterator, List, Optional, Tuple, Union
 import trestle.oscal.catalog as cat
 import trestle.oscal.common as com
 import trestle.oscal.profile as prof
-from trestle.common import const
 from trestle.common.common_types import OBT
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list, none_if_empty
@@ -69,27 +68,39 @@ class Merge(Pipeline.Filter):
             id_ = getattr(item, NAME, None)
         return id_
 
+    def _item_genertor(self, dest: List[OBT], src: List[OBT], merge_method: Optional[str]) -> Iterator[OBT]:
+        if merge_method == prof.CombinationMethodValidValues.keep.value:
+            dest.extend(src)
+        else:
+            for item in src:
+                # if there is an exact copy of this in dest then ignore it
+                if item not in dest:
+                    yield item
+
+    def _merge_item(self, item: OBT, dest: List[OBT], merge_method: Optional[str]) -> bool:
+        merged = False
+        item_id = self._get_id(item)
+        if item_id is not None:
+            for other in dest:
+                other_id = self._get_id(other)
+                if other_id != item_id:
+                    continue
+                if merge_method == prof.CombinationMethodValidValues.merge.value:
+                    self._merge_items(other, item, merge_method)
+                merged = True
+                break
+        return merged
+
     def _merge_lists(self, dest: List[OBT], src: List[OBT], merge_method: Optional[str]) -> None:
         added_items = []
-        if merge_method == const.KEEP:
+        if merge_method == prof.CombinationMethodValidValues.keep.value:
             dest.extend(src)
             return
-        for item in src:
-            # if there is an exact copy of this in dest then ignore it
-            if item not in dest:
-                merged = False
-                item_id = self._get_id(item)
-                if item_id is not None:
-                    for other in dest:
-                        other_id = self._get_id(other)
-                        if other_id == item_id:
-                            if merge_method == const.MERGE:
-                                self._merge_items(other, item, merge_method)
-                            merged = True
-                            break
-                # it isn't already in dest and no match was found for merge, so append
-                if not merged:
-                    added_items.append(item)
+        for item in self._item_genertor(dest, src, merge_method):
+            merged = self._merge_item(item, dest, merge_method)
+            # it isn't already in dest and no match was found for merge, so append
+            if not merged:
+                added_items.append(item)
         dest.extend(added_items)
 
     def _merge_attrs(
@@ -107,9 +118,9 @@ class Merge(Pipeline.Filter):
             self._merge_lists(dest_attr, src_attr, merge_method)
             setattr(dest, attr, dest_attr)
             return
-        if dest_attr and merge_method == const.USE_FIRST:
+        if dest_attr and merge_method == prof.CombinationMethodValidValues.use_first.value:
             return
-        if dest_attr == src_attr and merge_method not in [None, const.KEEP]:
+        if dest_attr == src_attr and merge_method not in [None, prof.CombinationMethodValidValues.keep.value]:
             return
         setattr(dest, attr, src_attr)
 
@@ -177,7 +188,7 @@ class Merge(Pipeline.Filter):
         local_cat = catalog.copy(deep=True)
         local_merged = merged.copy(deep=True) if merged else None
 
-        merge_method = const.KEEP
+        merge_method = prof.CombinationMethodValidValues.keep.value
         as_is = False
         if self._profile.merge is not None:
             if self._profile.merge.custom is not None:
@@ -186,14 +197,14 @@ class Merge(Pipeline.Filter):
                 as_is = self._profile.merge.as_is
             if self._profile.merge.combine is None:
                 logger.debug('Profile has merge but no combine so defaulting to combine/merge.')
-                merge_method = const.MERGE
+                merge_method = prof.CombinationMethodValidValues.merge.value
             else:
                 merge_combine = self._profile.merge.combine
-                if merge_combine.method is None:
+                if merge_combine.method.value is None:
                     logger.debug('Profile has merge combine but no method.  Defaulting to merge.')
-                    merge_method = const.MERGE
+                    merge_method = prof.CombinationMethodValidValues.merge.value
                 else:
-                    merge_method = merge_combine.method
+                    merge_method = merge_combine.method.value
 
         if local_merged is None:
             return self._flatten_catalog(local_cat, as_is)

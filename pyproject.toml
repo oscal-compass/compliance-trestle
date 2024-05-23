@@ -14,3 +14,9 @@ minversion = "6.2"
 testpaths = [
     "tests",
 ]
+
+[tool.black]
+line-length = 500
+
+[tool.isort]
+line_length = 500

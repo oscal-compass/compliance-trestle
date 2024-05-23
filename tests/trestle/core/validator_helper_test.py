@@ -24,7 +24,7 @@ import trestle.oscal.catalog as catalog
 import trestle.oscal.ssp as ssp
 from trestle.common.model_utils import ModelUtils
 
-ssp_path = pathlib.Path('nist-content/src/examples/ssp/json/ssp-example.json')
+ssp_path = pathlib.Path('nist-content/examples/ssp/json/ssp-example.json')
 catalog_path = test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME
 
 
@@ -32,7 +32,7 @@ def test_regenerate_uuids_ssp() -> None:
     """Test regeneration of uuids with updated refs in ssp."""
     orig_ssp = ssp.SystemSecurityPlan.oscal_read(ssp_path)
     new_ssp, uuid_lut, n_refs_updated = ModelUtils.regenerate_uuids(orig_ssp)
-    assert len(uuid_lut.items()) == 36
+    assert len(uuid_lut.items()) == 39
     assert n_refs_updated == 23
 
 
