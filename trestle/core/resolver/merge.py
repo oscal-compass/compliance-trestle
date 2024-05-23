@@ -201,11 +201,11 @@ class Merge(Pipeline.Filter):
                 merge_method = const.MERGE
             else:
                 merge_combine = self._profile.merge.combine
-                if merge_combine.method is None:
+                if merge_combine.method.value is None:
                     logger.debug('Profile has merge combine but no method.  Defaulting to merge.')
                     merge_method = const.MERGE
                 else:
-                    merge_method = merge_combine.method
+                    merge_method = merge_combine.method.value
 
         if local_merged is None:
             return self._flatten_catalog(local_cat, as_is)
