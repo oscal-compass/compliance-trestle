@@ -17,8 +17,6 @@
 
 import string
 
-import trestle.oscal.profile as profile
-
 FIELDS_SET = '__fields_set__'
 
 ROOT = '__root__'
@@ -642,17 +640,3 @@ SATISFIED_STATEMENT_DESCRIPTION = 'Satisfied Statement Description'
 ADDED_BY_CONTROL_OWNER = 'Added by control owner'
 
 REPLACE_ME_PLACEHOLDER = '<REPLACE_ME>'
-
-KEEP = profile.CombinationMethodValidValues.keep.value
-
-MERGE = profile.CombinationMethodValidValues.merge.value
-
-USE_FIRST = profile.CombinationMethodValidValues.use_first.value
-
-BEFORE = profile.PositionValidValues.before.value
-
-AFTER = profile.PositionValidValues.after.value
-
-STARTING = profile.PositionValidValues.starting.value
-
-ENDING = profile.PositionValidValues.ending.value
