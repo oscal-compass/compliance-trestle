@@ -14,24 +14,21 @@
 # limitations under the License.
 """Testing of valid values."""
 
-import pytest
-
 import trestle.oscal.profile as prof
-        
+
+
 def test_position_valid(tmp_path) -> None:
     """Testing position valid."""
     try:
         # ending
         val = 'ending'
-        obj = prof.Add(
-            position=val)
+        obj = prof.Add(position=val)
         assert isinstance(obj.position, prof.PositionValidValues)
         assert obj.position == prof.PositionValidValues.ending
         assert obj.position.value == 'ending'
         # after
         val = prof.PositionValidValues.after
-        obj = prof.Add(
-            position=val)
+        obj = prof.Add(position=val)
         assert isinstance(obj.position, prof.PositionValidValues)
         assert obj.position == prof.PositionValidValues.after
         assert obj.position.value == 'after'
@@ -45,14 +42,13 @@ def test_position_valid(tmp_path) -> None:
         assert obj.position.value == 'before'
     except Exception as e:
         raise RuntimeError(e)
-    
+
+
 def test_position_invalid(tmp_path) -> None:
     """Testing position invalid."""
     try:
         val = 'foobar'
-        prof.Add(
-            position=val)
+        prof.Add(position=val)
         raise RuntimeError(f'position={val} incorrectly allowed')
     except Exception:
         pass
-    
