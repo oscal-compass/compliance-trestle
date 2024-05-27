@@ -6,6 +6,10 @@ on:
   push:
     branches:
       - develop
+env:
+  PYTHON_A: '3.9'
+  PYTHON_B: '3.10'
+  PYTHON_C: '3.11'      
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -19,13 +23,13 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.10'
+        python-version: $PYTHON_B
     - uses: actions/cache@v2
       with:
         path: ~/.cache/pip
-        key: ubuntu-latest-3.10-pip-${{ hashFiles('setup.cfg') }}
+        key: ubuntu-latest-$PYTHON_B-pip-${{ hashFiles('setup.cfg') }}
         restore-keys: |
-          ubuntu-latest-3.10-pip-
+          ubuntu-latest-$PYTHON_B-pip-
     - name: Install build tools
       run: |
         make develop
@@ -72,13 +76,13 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.10'
+        python-version: $PYTHON_B
     - uses: actions/cache@v2
       with:
         path: ~/.cache/pip
-        key: ubuntu-latest-3.10-pip-${{ hashFiles('setup.cfg') }}
+        key: ubuntu-latest-$PYTHON_B-pip-${{ hashFiles('setup.cfg') }}
         restore-keys: |
-          ubuntu-latest-3.10-pip-
+          ubuntu-latest-$PYTHON_B-pip-
     - name: Install build tools
       run: |
         make develop
@@ -92,7 +96,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ['3.9', '3.10', '3.11']
+        python-version: [$PYTHON_A, $PYTHON_B, $PYTHON_C]
         include:
         - os: ubuntu-latest
           path: ~/.cache/pip
@@ -103,15 +107,15 @@ jobs:
         # optional
         - os: ubuntu-latest
           path: ~/.cache/pip
-          python-version: '3.10'
+          python-version: $PYTHON_B
         # optional
         - os: macos-latest
           path: ~/Library/Caches/pip
-          python-version: '3.10'
+          python-version: $PYTHON_B
         # optional
         - os: windows-latest
           path: ~\AppData\Local\pip\Cache
-          python-version: '3.10'
+          python-version: $PYTHON_B
           
     steps:
     - name: Don't mess with line endings
@@ -135,16 +139,16 @@ jobs:
       run: |
         make develop
     - name: Pytest Fast
-      if: ${{ !(matrix.os == 'ubuntu-latest' && matrix.python-version == '3.10') }}
+      if: ${{ !(matrix.os == 'ubuntu-latest' && matrix.python-version == $PYTHON_B) }}
       run: |
         make test
     - name: Pytest Cov
-      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.10' }}
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == $PYTHON_B }}
       run: |
         make test-cov
 
     - name: Upload artifact
-      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.10' }}
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == $PYTHON_B }}
       uses: actions/upload-artifact@v2
       with:
         name: coverage
@@ -167,13 +171,13 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.10'
+        python-version: $PYTHON_B
     - uses: actions/cache@v2
       with:
         path: ~/.cache/pip
-        key: ubuntu-latest-3.10-pip-${{ hashFiles('setup.cfg') }}
+        key: ubuntu-latest-$PYTHON_B-pip-${{ hashFiles('setup.cfg') }}
         restore-keys: |
-          ubuntu-latest-3.10-pip-
+          ubuntu-latest-$PYTHON_B-pip-
     - name: Install build tools
       run: |
         make develop
@@ -191,7 +195,7 @@ jobs:
           -Dsonar.python.coverage.reportPaths=coverage.xml
           -Dsonar.tests=tests/
           -Dsonar.sources=trestle/ 
-          -Dsonar.python.version='3.10'
+          -Dsonar.python.version=$PYTHON_B
           -Dsonar.projectKey=compliance-trestle
           -Dsonar.organization=compliance-trestle
           -Dsonar.cpd.exclusions=trestle/oscal/*.py
