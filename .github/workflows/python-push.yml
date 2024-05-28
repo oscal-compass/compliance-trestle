@@ -25,7 +25,7 @@ jobs:
           path: ~/Library/Caches/pip
         - os: windows-latest
           path: ~\AppData\Local\pip\Cache
-        python-version: [$PYTHON_A, $PYTHON_B, $PYTHON_C]
+        python-version: ['3.9', '3.10', '3.11']
 
     steps:
     - name: Don't mess with  line endings
@@ -49,39 +49,39 @@ jobs:
       run: |
         make develop
     - name: Setup pre-commit
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == $PYTHON_B) }}
+      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.10') }}
       run: |
         make pre-commit
     - name: Install dependencies
       run: |
         make install
     - name: Run md document formatting (mdformat)
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == $PYTHON_B) }}
+      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.10') }}
       run: |
         make mdformat
     - name: Run code formatting (yapf)
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == $PYTHON_B) }}
+      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.10') }}
       run: |
         make code-format
     - name: Run code linting (flake8)
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == $PYTHON_B) }}
+      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.10') }}
       run: |
         make code-lint
     - name: Run code typing check (mypy)
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == $PYTHON_B) }}
+      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.10') }}
       continue-on-error: true 
       run: |
         make code-typing
     - name: Validate website content (mkdocs)
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == $PYTHON_B) }}
+      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.10') }}
       run: |
         make docs-validate
     - name: Pytest Fast
-      if: ${{ !(matrix.os == 'ubuntu-latest' && matrix.python-version == $PYTHON_B) }}
+      if: ${{ !(matrix.os == 'ubuntu-latest' && matrix.python-version == '3.10') }}
       run: |
         make test
     - name: Pytest Cov
-      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == $PYTHON_B }}
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.10' }}
       run: |
         make test-cov
   deploy:
@@ -95,10 +95,10 @@ jobs:
         submodules: true
         fetch-depth: 0
         token: ${{ secrets.ADMIN_PAT }} 
-    - name: Set up Python $PYTHON_B
+    - name: Set up Python 3.10
       uses: actions/setup-python@v2
       with:
-        python-version: $PYTHON_B
+        python-version: '3.10'
     - name: Install build tools
       run: |
         make develop
@@ -124,11 +124,11 @@ jobs:
         submodules: true
         fetch-depth: 0
         token: ${{ secrets.ADMIN_PAT }} 
-    - name: Set up Python $PYTHON_B
+    - name: Set up Python 3.10
       uses: actions/setup-python@v2
       # This is deliberately not using a custom credential as it relies on native github actions token to have push rights.
       with:
-        python-version: $PYTHON_B
+        python-version: '3.10'
     - name: Install build tools
       run: |
         make develop
