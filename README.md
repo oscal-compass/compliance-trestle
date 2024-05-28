@@ -102,27 +102,22 @@ Compliance trestle is currently stable and is based on NIST OSCAL version 1.0.4,
 
 Please attend! All are invited.
 
-**When**: Every other Tuesday at 10:00 ET [convert to your local time](https://dateful.com/convert/est-edt-eastern-time)
+**When**:
 
-To discover the actual meeting dates:
+Every other Tuesday starting on April 23, 2024 · 11:00 – 11:30am ET
+[convert to your local time](https://mytime.io/11am/ET)
 
-- Go to [Google Calendar](https://calendar.google.com/calendar/u/0/embed?src=0b8u5el8ta4s93t2cm72tuvhhk@group.calendar.google.com&ctz=America/Los_Angeles)
-- Look at entries in `Tue` day of week for *Compliance Trestle Community Call*
-- To add to your calendar, `click` on `Compliance Trestle Community Call` and choose `copy to my calendar`
+**Where**: [Google Meet Link](https://meet.google.com/mwp-affd-tvu)
 
-**Where**: [https://zoom.us/j/92729235315](https://zoom.us/j/92729235315)
+Dial in:
+(US) +1 402-627-0247 PIN: 535 362 764#\
+[More phone numbers](https://tel.meet/mwp-affd-tvu?pin=9717189704231)
 
-- Meeting Id: 927 2923 5315
-
-- Passcode: 233140
-
-- **Note**: Use the passcode above to login to Zoom (or you can login to Zoom using another account like Google, Facebook)
-
-**What**: Meeting agenda and notes [Google Docs](https://docs.google.com/document/d/1z9xvt-Z97j4CtEH1-nR9sMWul7jQkUi_fNY7BdMPgxM/edit#heading=h.nohkp1kbeduj)
+**What**: Meeting agenda and notes [Google Docs](https://docs.google.com/document/d/1XTYM7xnWlIqd-8Nn5-qtgvgk8kH3NSmYle5yZvaS7qs/edit?usp=sharing)
 
 ##### Chat anytime
 
-Slack: [# compliance-grc](https://cloud-native.slack.com/archives/C066TMUBEL8)
+Slack: [#oscal-compliance-trestle-agileauthoring-c2p](https://cloud-native.slack.com/archives/C06F3PEPNBW)
 
 - **Note**: You can login to Slack using another account like Google, Apple
 
