@@ -23,7 +23,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: $PYTHON_B
+        python-version: ${{ env.PYTHON_B }}
     - uses: actions/cache@v2
       with:
         path: ~/.cache/pip
