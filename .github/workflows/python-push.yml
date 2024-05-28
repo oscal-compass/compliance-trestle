@@ -7,11 +7,6 @@ on:
     branches:
       - main
 
-env:
-  PYTHON_A: '3.9'
-  PYTHON_B: '3.10'
-  PYTHON_C: '3.11'
-
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -25,6 +20,18 @@ jobs:
           path: ~/Library/Caches/pip
         - os: windows-latest
           path: ~\AppData\Local\pip\Cache
+        # optional
+        - os: ubuntu-latest
+          path: ~/.cache/pip
+          python-version: '3.10'
+        # optional
+        - os: macos-latest
+          path: ~/Library/Caches/pip
+          python-version: '3.10'
+        # optional
+        - os: windows-latest
+          path: ~\AppData\Local\pip\Cache
+          python-version: '3.10'
         python-version: ['3.9', '3.10', '3.11']
 
     steps:

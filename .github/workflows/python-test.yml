@@ -6,10 +6,6 @@ on:
   push:
     branches:
       - develop
-env:
-  PYTHON_A: '3.9'
-  PYTHON_B: '3.10'
-  PYTHON_C: '3.11'      
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -23,7 +19,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: ${{ env.PYTHON_B }}
+        python-version: '3.10'
     - uses: actions/cache@v2
       with:
         path: ~/.cache/pip
@@ -76,7 +72,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: ${{ env.PYTHON_B }}
+        python-version: '3.10'
     - uses: actions/cache@v2
       with:
         path: ~/.cache/pip
@@ -104,6 +100,18 @@ jobs:
           path: ~/Library/Caches/pip
         - os: windows-latest
           path: ~\AppData\Local\pip\Cache
+        # optional
+        - os: ubuntu-latest
+          path: ~/.cache/pip
+          python-version: '3.10'
+        # optional
+        - os: macos-latest
+          path: ~/Library/Caches/pip
+          python-version: '3.10'
+        # optional
+        - os: windows-latest
+          path: ~\AppData\Local\pip\Cache
+          python-version: '3.10'
           
     steps:
     - name: Don't mess with line endings
@@ -127,16 +135,16 @@ jobs:
       run: |
         make develop
     - name: Pytest Fast
-      if: ${{ !(matrix.os == 'ubuntu-latest' && matrix.python-version == ${{ env.PYTHON_B }}) }}
+      if: ${{ !(matrix.os == 'ubuntu-latest' && matrix.python-version == '3.10') }}
       run: |
         make test
     - name: Pytest Cov
-      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == ${{ env.PYTHON_B }} }}
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.10' }}
       run: |
         make test-cov
 
     - name: Upload artifact
-      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == ${{ env.PYTHON_B }} }}
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.10' }}
       uses: actions/upload-artifact@v2
       with:
         name: coverage
@@ -159,7 +167,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: ${{ env.PYTHON_B }}
+        python-version: '3.10'
     - uses: actions/cache@v2
       with:
         path: ~/.cache/pip
@@ -183,7 +191,7 @@ jobs:
           -Dsonar.python.coverage.reportPaths=coverage.xml
           -Dsonar.tests=tests/
           -Dsonar.sources=trestle/ 
-          -Dsonar.python.version=${{ env.PYTHON_B }}
+          -Dsonar.python.version='3.10'
           -Dsonar.projectKey=compliance-trestle
           -Dsonar.organization=compliance-trestle
           -Dsonar.cpd.exclusions=trestle/oscal/*.py
