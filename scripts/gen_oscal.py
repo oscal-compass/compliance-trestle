@@ -124,7 +124,7 @@ def generate_models():
     out_dir.mkdir(exist_ok=True, parents=True)
     tmp_dir = out_dir / 'tmp'
     tmp_dir.mkdir(exist_ok=True, parents=True)
-    src_dir = 'release-1.1.2-schemas'
+    src_dir = 'release-schemas'
     generate_oscal_init(src_dir, out_dir)
     in_dir = fixup_models(src_dir)
     for full_name in in_dir.glob('oscal_*_schema.json'):

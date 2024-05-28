@@ -94,7 +94,7 @@ def get_oscal_release(input_dir_name: str) -> str:
 def fixup_models(input_dir_name: str) -> Path:
     """Fix models."""
     # create fixup dir
-    fixup_dir_name = f'{input_dir_name}-fixup'
+    fixup_dir_name = f'tmp/{input_dir_name}-fixup'
     input_dir_path = Path(input_dir_name)
     fixup_dir_path = Path(fixup_dir_name)
     fixup_dir_path.mkdir(exist_ok=True, parents=True)
