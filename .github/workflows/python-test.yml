@@ -100,19 +100,6 @@ jobs:
           path: ~/Library/Caches/pip
         - os: windows-latest
           path: ~\AppData\Local\pip\Cache
-        # optional
-        - os: ubuntu-latest
-          path: ~/.cache/pip
-          python-version: '3.10'
-        # optional
-        - os: macos-latest
-          path: ~/Library/Caches/pip
-          python-version: '3.10'
-        # optional
-        - os: windows-latest
-          path: ~\AppData\Local\pip\Cache
-          python-version: '3.10'
-          
     steps:
     - name: Don't mess with line endings
       run: |
