@@ -13,7 +13,34 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Script to pre-process OSCAL schemas."""
+"""Script to pre-process OSCAL schemas.
+
+This module serves 3 purposes:
+
+1. reordering of original OSCAL schema
+
+The order of the "common" elements in the schemas produced by OSCAL is not consistent,
+which leads to mismatches during Python code generation and less things appearing in common.
+Reordering works nicely to increase the number of common objects.
+
+2. reproducible names
+
+Even with reordering, some names changed. Type1 in previous release of trestle is no longer
+Type1 in current release. And the names were not necessarily meaningful. Code now navigates
+to valid values in schema and assign names. Although some manual effort was initially
+required, the anticipated OSCAL changes in the future are few. The end result is more
+consistent naming.
+
+3. allOf construct not correctly handled
+
+The allOf construct, newly employed by the OSCAL schemas, is not handled correctly by the
+Python code generator. An issue has been opened with the Python code generator.
+See https://github.com/koxudaxi/datamodel-code-generator/issues/1901 (and others).
+This part of pre-processing can be removed once a fix from the Python code generator
+materializes.
+
+"""
+
 import json
 import logging
 import os
