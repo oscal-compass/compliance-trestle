@@ -182,6 +182,9 @@ oscal_validator_code = """
 
     @validator('__root__')
     def oscal_version_is_valid(cls, v):
+        strict_version = False
+        if not strict_version:
+            return v
         p = re.compile(OSCAL_VERSION_REGEX)
         matched = p.match(v)
         if matched is None:
@@ -373,7 +376,7 @@ def reorder(fstem, class_list):
             break
         loop_num += 1
     if did_swap:
-        logger.info('Excess iteration in reordering!')
+        logger.warning('Excess iteration in reordering!')
     forward_refs = find_forward_refs(class_list, orders)
 
     # return reordered list of classes with no forward refs
@@ -712,6 +715,9 @@ def write_oscal(classes, forward_refs, fstem):
             # add special validator for OscalVersion
             if c.name == 'OscalVersion':
                 out_file.write(oscal_validator_code)
+            # add alias HowMany
+            if c.name == 'HowManyValidValues':
+                out_file.write('HowMany = HowManyValidValues\n\n\n')
 
         if not is_common:
             out_file.writelines('class Model(OscalBaseModel):\n')
@@ -729,12 +735,96 @@ def write_oscal(classes, forward_refs, fstem):
             out_file.writelines('\n'.join(forward_refs) + '\n')
 
 
+# The below "additions" items have moved from individual model class to common.
+# For backward compatibility between 1.1.2 and 1.0.4, add back these classes
+# from common into the individual models via the bkwd_compat_1_0_4 method below.
+
+# The list of stems (dict keys) is also used by the pydantic_interface_v1 modification
+# method below, and thus the empty contents for some.
+
+additions = {
+    'assessment_plan': [
+        'from trestle.oscal.common import RelatedObservation',
+        'from trestle.oscal.common import SystemComponent',
+        'from trestle.oscal.common import TaskValidValues',
+        'from trestle.oscal.common import TokenDatatype',
+    ],
+    'assessment_results': [
+        'from trestle.oscal.common import AssessmentAssets',
+        'from trestle.oscal.common import Observation',
+        'from trestle.oscal.common import RelatedObservation',
+        'from trestle.oscal.common import SystemComponent',
+        'from trestle.oscal.common import TaskValidValues',
+        'from trestle.oscal.common import TokenDatatype',
+    ],
+    'catalog': [],
+    'common': [],
+    'component': [
+        'from trestle.oscal.common import URIReferenceDatatype',
+    ],
+    'poam': [
+        'from trestle.oscal.common import RelatedObservation',
+        'from trestle.oscal.common import TaskValidValues',
+        'from trestle.oscal.common import TokenDatatype',
+        'from trestle.oscal.common import RelatedObservation as RelatedObservation1',
+    ],
+    'profile': [],
+    'ssp': [
+        'from trestle.oscal.common import Status, SystemComponent',
+    ],
+}
+
+
+def bkwd_compat_1_0_4(fstem):
+    """Backward compatibility for items moved into common in 1.1.2."""
+    lines = []
+    if fstem in additions.keys():
+        fname = f'trestle/oscal/{fstem}.py'
+        with open(fname, 'r') as f:
+            for line in f:
+                lines.append(line)
+                if 'import trestle.oscal.common as common' in line:
+                    for item in additions[fstem]:
+                        line = f'{item}\n'
+                        lines.append(line)
+                        logger.debug(f'bkwd_compat_1_0_4: file {fstem}.py insert "{line.strip()}"')
+        with open(fname, 'w') as f:
+            for line in lines:
+                f.write(line)
+
+
+def pydantic_interface_v1(fstem):
+    """Patch for trestle use of pydantic v1 interface from pydantic v2 lib."""
+    # This function should be removed once the v2 interface is supported in trestle.
+    lines = []
+    if fstem in additions.keys():
+        fname = f'trestle/oscal/{fstem}.py'
+        with open(fname, 'r') as f:
+            for line in f:
+                if line.startswith('from pydantic'):
+                    line = line.replace('pydantic', 'pydantic.v1')
+                    logger.debug(f'pydantic_interface_v1: file {fstem}.py modify "{line.strip()}"')
+                lines.append(line)
+        with open(fname, 'w') as f:
+            for line in lines:
+                f.write(line)
+
+
+def apply_eligible(line):
+    """Apply eligible."""
+    if 'title=' not in line and 'description=' not in line:
+        return True
+    if 'CommonRiskStatus' in line:
+        return True
+    return False
+
+
 def apply_changes_to_class_list(classes, changes):
     """Make all changes to the name and body of a list of classes."""
     for i, c in enumerate(classes):
         lines = []
         for line in c.lines:
-            if 'title=' not in line and 'description=' not in line:
+            if apply_eligible(line):
                 for item in changes:
                     if item[0] in line:
                         line = replace_token(line, item[0], item[1])
@@ -788,7 +878,10 @@ def reorder_and_dump_as_python(file_classes):
     """Reorder the files and dump."""
     for item in file_classes.items():
         ordered, forward_refs = reorder_classes(item[0], item[1])
+        forward_refs = None
         write_oscal(ordered, forward_refs, item[0])
+        bkwd_compat_1_0_4(item[0])
+        pydantic_interface_v1(item[0])
 
 
 def find_full_changes(file_classes):
@@ -887,6 +980,31 @@ def _strip_unrefed_files(file_class):
     return [c for c in file_class if c.name not in dead_names]
 
 
+def patch_lines(c, old, new):
+    """Patch lines."""
+    for ii in range(1, len(c.lines)):
+        line = c.lines[ii]
+        line = line.replace(old, new, 1)
+        c.lines[ii] = line
+    return c.lines
+
+
+def patch_items(file_classes):
+    """Patch items."""
+    for key in file_classes:
+        file_class = file_classes[key]
+        for c in file_class:
+            if c.name == 'EmailAddress':
+                c.lines = patch_lines(c, 'EmailAddressDatatype', 'EmailStr')
+            # see: schema_preprocess patch_finding_target
+            elif c.name == 'FindingTarget':
+                c.lines = patch_lines(c, 'objective_status', 'status')
+            # see: schema_preprocess patch_poam_origins
+            elif c.name == 'PoamItem':
+                c.lines = patch_lines(c, 'originations', 'origins')
+    return file_classes
+
+
 def kill_roots(file_classes):
     """Kill the root classes in common."""
     com = file_classes['common']
@@ -915,6 +1033,22 @@ def kill_roots(file_classes):
                 for ii in range(1, len(c.lines)):
                     line = c.lines[ii]
                     for name, body in new_root_classes.items():
+                        # handle special case
+                        if c.name == 'OscalVersion':
+                            if any(token in line for token in [' __root__: StringDatatype']):
+                                line = line.replace(name, body, 1)
+                            continue
+                        if any(token in line for token in [
+                                'id: TokenDatatype',
+                                'value: StringDatatype',
+                                'uuid: UUIDDatatype',
+                                'uuid: Optional[UUIDDatatype]',
+                                'source: URIReferenceDatatype',
+                                'type: Union[StringDatatype, DefinedComponentTypeValidValues]',
+                                'type: Union[StringDatatype, SystemComponentTypeValidValues]',
+                        ]):
+                            line = line.replace(name, body, 1)
+                            continue
                         if 'title=' in line and 'Value' in line:
                             continue
                         if 'OscalVersion' not in line and 'OSCAL' not in line:
@@ -975,6 +1109,9 @@ def normalize_files():
 
     # now apply all the changes to the class bodies
     file_classes = apply_changes_to_classes(file_classes, changes, com_names)
+
+    # patch common items
+    file_classes = patch_items(file_classes)
 
     # kill the __root__ classes
     file_classes = kill_roots(file_classes)

@@ -28,7 +28,7 @@ from trestle.oscal.common import Metadata
 from trestle.oscal.profile import Import
 from trestle.oscal.profile import Modify
 from trestle.oscal.profile import Profile
-from trestle.oscal.profile import SelectControlById
+from trestle.oscal.profile import SelectControl as SelectControlById
 from trestle.oscal.profile import SetParameter
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome

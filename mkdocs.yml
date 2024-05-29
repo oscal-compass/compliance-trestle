@@ -88,7 +88,7 @@ nav:
           - folders: api_reference/trestle.core.commands.author.folders.md
           - headers: api_reference/trestle.core.commands.author.headers.md
           - jinja: api_reference/trestle.core.commands.author.jinja.md
-          - profile: api_reference/trestle.core.commands.author.profile.md
+          - prof: api_reference/trestle.core.commands.author.prof.md
           - ssp: api_reference/trestle.core.commands.author.ssp.md
           - versioning:
             - template_versioning: api_reference/trestle.core.commands.author.versioning.template_versioning.md
