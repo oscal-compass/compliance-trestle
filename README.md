@@ -94,7 +94,7 @@ A collection of demos utilizing trestle can be found in the related project [com
 
 ## Development status
 
-Compliance trestle is currently stable and is based on NIST OSCAL version 1.0.4, with active development continuing.
+Compliance trestle is currently stable and is based on NIST OSCAL version 1.1.2, with active development continuing.
 
 ## Community meetings and communications
 
