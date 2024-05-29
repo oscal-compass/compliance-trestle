@@ -93,7 +93,7 @@ class SSPInheritanceAPI():
         leveraged_components: List[str] = reader.get_leveraged_components()
 
         if not leveraged_components:
-            logger.warn(
+            logger.warning(
                 'No leveraged components mapped to the SSP. '
                 'Please edit the inheritance markdown to include the leveraged authorization.'
             )

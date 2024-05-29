@@ -341,7 +341,7 @@ class CsvToOscalComponentDefinition(TaskBase):
         if len(self._unresolved_controls) > 0:
             text = f'Unresolved controls: {self._unresolved_controls}'
             if self._validate_controls == 'warn':
-                logger.warn(text)
+                logger.warning(text)
             elif self._validate_controls == 'on':
                 raise RuntimeError(text)
         # prepare new/revised component definition

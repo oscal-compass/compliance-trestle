@@ -29,11 +29,12 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr, validator
+from pydantic.v1 import AnyUrl, EmailStr, Extra, Field, conint, constr, validator
 
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
 import trestle.oscal.common as common
+from trestle.oscal.common import Status, SystemComponent
 
 
 class AdjustmentJustification(OscalBaseModel):
@@ -41,31 +42,16 @@ class AdjustmentJustification(OscalBaseModel):
         ...,
         description=
         'If the selected security level is different from the base security level, this contains the justification for the change.',
-        title='Adjustment Justification',
+        title='Adjustment Justification'
     )
 
 
-class State1(Enum):
+class System(Enum):
     """
-    The operational status.
-    """
-
-    under_development = 'under-development'
-    operational = 'operational'
-    disposition = 'disposition'
-    other = 'other'
-
-
-class State(Enum):
-    """
-    The current operating status.
+    Specifies the information type identification system used.
     """
 
-    operational = 'operational'
-    under_development = 'under-development'
-    under_major_modification = 'under-major-modification'
-    disposition = 'disposition'
-    other = 'other'
+    http___doi_org_10_6028_NIST_SP_800_60v2r1 = 'http://doi.org/10.6028/NIST.SP.800-60v2r1'
 
 
 class SetParameter(OscalBaseModel):
@@ -84,7 +70,7 @@ class SetParameter(OscalBaseModel):
         alias='param-id',
         description=
         "A human-oriented reference to a parameter within a control, who's catalog has been imported into the current implementation context.",
-        title='Parameter ID',
+        title='Parameter ID'
     )
     values: List[constr(regex=r'^\S(.*\S)?$')] = Field(...)
     remarks: Optional[str] = None
@@ -94,7 +80,7 @@ class Selected(OscalBaseModel):
     __root__: constr(regex=r'^\S(.*\S)?$') = Field(
         ...,
         description='The selected (Confidentiality, Integrity, or Availability) security impact level.',
-        title='Selected Level (Confidentiality, Integrity, or Availability)',
+        title='Selected Level (Confidentiality, Integrity, or Availability)'
     )
 
 
@@ -111,21 +97,21 @@ class SecurityImpactLevel(OscalBaseModel):
         alias='security-objective-confidentiality',
         description=
         'A target-level of confidentiality for the system, based on the sensitivity of information within the system.',
-        title='Security Objective: Confidentiality',
+        title='Security Objective: Confidentiality'
     )
     security_objective_integrity: constr(regex=r'^\S(.*\S)?$') = Field(
         ...,
         alias='security-objective-integrity',
         description=
         'A target-level of integrity for the system, based on the sensitivity of information within the system.',
-        title='Security Objective: Integrity',
+        title='Security Objective: Integrity'
     )
     security_objective_availability: constr(regex=r'^\S(.*\S)?$') = Field(
         ...,
         alias='security-objective-availability',
         description=
         'A target-level of availability for the system, based on the sensitivity of information within the system.',
-        title='Security Objective: Availability',
+        title='Security Objective: Availability'
     )
 
 
@@ -152,13 +138,13 @@ class Satisfied(OscalBaseModel):
         alias='responsibility-uuid',
         description=
         'A machine-oriented identifier reference to a control implementation that satisfies a responsibility imposed by a leveraged system.',
-        title='Responsibility UUID',
+        title='Responsibility UUID'
     )
     description: str = Field(
         ...,
         description=
         'An implementation statement that describes the aspects of a control or control statement implementation that a leveraging system is implementing based on a requirement from a leveraged system.',
-        title='Satisfied Control Implementation Responsibility Description',
+        title='Satisfied Control Implementation Responsibility Description'
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
@@ -189,13 +175,13 @@ class Responsibility(OscalBaseModel):
         alias='provided-uuid',
         description=
         'A machine-oriented identifier reference to an inherited control implementation that a leveraging system is inheriting from a leveraged system.',
-        title='Provided UUID',
+        title='Provided UUID'
     )
     description: str = Field(
         ...,
         description=
         'An implementation statement that describes the aspects of the control or control statement implementation that a leveraging system must implement to satisfy the control provided by a leveraged system.',
-        title='Control Implementation Responsibility Description',
+        title='Control Implementation Responsibility Description'
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
@@ -223,12 +209,20 @@ class Provided(OscalBaseModel):
         ...,
         description=
         'An implementation statement that describes the aspects of the control or control statement implementation that can be provided to another system leveraging this system.',
-        title='Provided Control Implementation Description',
+        title='Provided Control Implementation Description'
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
     remarks: Optional[str] = None
+
+
+class OperationalStateValidValues(Enum):
+    operational = 'operational'
+    under_development = 'under-development'
+    under_major_modification = 'under-major-modification'
+    disposition = 'disposition'
+    other = 'other'
 
 
 class Inherited(OscalBaseModel):
@@ -254,26 +248,17 @@ class Inherited(OscalBaseModel):
         alias='provided-uuid',
         description=
         'A machine-oriented identifier reference to an inherited control implementation that a leveraging system is inheriting from a leveraged system.',
-        title='Provided UUID',
+        title='Provided UUID'
     )
     description: str = Field(
         ...,
         description=
         'An implementation statement that describes the aspects of a control or control statement implementation that a leveraging system is inheriting from a leveraged system.',
-        title='Inherited Control Implementation Description',
+        title='Inherited Control Implementation Description'
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
-
-
-class InformationTypeId(OscalBaseModel):
-    __root__: constr(regex=r'^\S(.*\S)?$') = Field(
-        ...,
-        description=
-        'A human-oriented, globally unique identifier qualified by the given identification system used, such as NIST SP 800-60. This identifier has cross-instance scope and can be used to reference this system elsewhere in this or other OSCAL instances. This id should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
-        title='Information Type Systematized Identifier',
-    )
 
 
 class ImportProfile(OscalBaseModel):
@@ -287,7 +272,7 @@ class ImportProfile(OscalBaseModel):
     href: str = Field(
         ...,
         description="A resolvable URL reference to the profile or catalog to use as the system's control baseline.",
-        title='Profile Reference',
+        title='Profile Reference'
     )
     remarks: Optional[str] = None
 
@@ -304,7 +289,7 @@ class Export(OscalBaseModel):
         None,
         description=
         'An implementation statement that describes the aspects of the control or control statement implementation that can be available to another system leveraging this system.',
-        title='Control Implementation Export Description',
+        title='Control Implementation Export Description'
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
@@ -327,7 +312,7 @@ class Diagram(OscalBaseModel):
         ...,
         description=
         'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this diagram elsewhere in this or other OSCAL instances. The locally defined UUID of the diagram can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
-        title='Diagram ID',
+        title='Diagram ID'
     )
     description: Optional[str] = Field(None, description='A summary of the diagram.', title='Diagram Description')
     props: Optional[List[common.Property]] = Field(None)
@@ -336,14 +321,16 @@ class Diagram(OscalBaseModel):
     remarks: Optional[str] = None
 
 
-class DateAuthorized(OscalBaseModel):
+class DateDatatype(OscalBaseModel):
     __root__: constr(
         regex=
-        r'^((2000|2400|2800|(19|2[0-9](0[48]|[2468][048]|[13579][26])))-02-29)|(((19|2[0-9])[0-9]{2})-02-(0[1-9]|1[0-9]|2[0-8]))|(((19|2[0-9])[0-9]{2})-(0[13578]|10|12)-(0[1-9]|[12][0-9]|3[01]))|(((19|2[0-9])[0-9]{2})-(0[469]|11)-(0[1-9]|[12][0-9]|30))(Z|[+-][0-9]{2}:[0-9]{2})?$'
-    ) = Field(
-        ...,
-        description='The date the system received its authorization.',
-        title='System Authorization Date',
+        r'^(((2000|2400|2800|(19|2[0-9](0[48]|[2468][048]|[13579][26])))-02-29)|(((19|2[0-9])[0-9]{2})-02-(0[1-9]|1[0-9]|2[0-8]))|(((19|2[0-9])[0-9]{2})-(0[13578]|10|12)-(0[1-9]|[12][0-9]|3[01]))|(((19|2[0-9])[0-9]{2})-(0[469]|11)-(0[1-9]|[12][0-9]|30)))(Z|(-((0[0-9]|1[0-2]):00|0[39]:30)|\+((0[0-9]|1[0-4]):00|(0[34569]|10):30|(0[58]|12):45)))?$'
+    ) = Field(..., description='A string representing a 24-hour period with an optional timezone.')
+
+
+class DateAuthorized(OscalBaseModel):
+    __root__: DateDatatype = Field(
+        ..., description='The date the system received its authorization.', title='System Authorization Date'
     )
 
 
@@ -355,11 +342,7 @@ class DataFlow(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    description: str = Field(
-        ...,
-        description="A summary of the system's data flow.",
-        title='Data Flow Description',
-    )
+    description: str = Field(..., description="A summary of the system's data flow.", title='Data Flow Description')
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     diagrams: Optional[List[Diagram]] = Field(None)
@@ -374,12 +357,12 @@ class Categorization(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    system: AnyUrl = Field(
+    system: Union[AnyUrl, System] = Field(
         ...,
         description='Specifies the information type identification system used.',
-        title='Information Type Identification System',
+        title='Information Type Identification System'
     )
-    information_type_ids: Optional[List[InformationTypeId]] = Field(None, alias='information-type-ids')
+    information_type_ids: Optional[List[constr(regex=r'^\S(.*\S)?$')]] = Field(None, alias='information-type-ids')
 
 
 class ByComponent(OscalBaseModel):
@@ -396,7 +379,7 @@ class ByComponent(OscalBaseModel):
         ...,
         alias='component-uuid',
         description='A machine-oriented identifier reference to the component that is implemeting a given control.',
-        title='Component Universally Unique Identifier Reference',
+        title='Component Universally Unique Identifier Reference'
     )
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
@@ -410,7 +393,7 @@ class ByComponent(OscalBaseModel):
         ...,
         description=
         'An implementation statement that describes how a control or a control statement is implemented within the referenced system component.',
-        title='Control Implementation Description',
+        title='Control Implementation Description'
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
@@ -419,7 +402,7 @@ class ByComponent(OscalBaseModel):
     export: Optional[Export] = Field(
         None,
         description='Identifies content intended for external consumption, such as with leveraged organizations.',
-        title='Export',
+        title='Export'
     )
     inherited: Optional[List[Inherited]] = Field(None)
     satisfied: Optional[List[Satisfied]] = Field(None)
@@ -431,23 +414,8 @@ class Base(OscalBaseModel):
     __root__: constr(regex=r'^\S(.*\S)?$') = Field(
         ...,
         description='The prescribed base (Confidentiality, Integrity, or Availability) security impact level.',
-        title='Base Level (Confidentiality, Integrity, or Availability)',
+        title='Base Level (Confidentiality, Integrity, or Availability)'
     )
-
-
-class AvailabilityImpact(OscalBaseModel):
-    """
-    The expected level of impact resulting from the disruption of access to or use of the described information or the information system.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    props: Optional[List[common.Property]] = Field(None)
-    links: Optional[List[common.Link]] = Field(None)
-    base: Base
-    selected: Optional[Selected] = None
-    adjustment_justification: Optional[AdjustmentJustification] = Field(None, alias='adjustment-justification')
 
 
 class AuthorizationBoundary(OscalBaseModel):
@@ -461,7 +429,7 @@ class AuthorizationBoundary(OscalBaseModel):
     description: str = Field(
         ...,
         description="A summary of the system's authorization boundary.",
-        title='Authorization Boundary Description',
+        title='Authorization Boundary Description'
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
@@ -477,67 +445,7 @@ class Status1(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    state: State = Field(..., description='The current operating status.', title='State')
-    remarks: Optional[str] = None
-
-
-class Status(OscalBaseModel):
-    """
-    Describes the operational status of the system component.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    state: State1 = Field(..., description='The operational status.', title='State')
-    remarks: Optional[str] = None
-
-
-class SystemComponent(OscalBaseModel):
-    """
-    A defined component that can be part of an implemented system.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description=
-        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this component elsewhere in this or other OSCAL instances. The locally defined UUID of the component can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
-        title='Component Identifier',
-    )
-    type: constr(regex=r'^\S(.*\S)?$') = Field(
-        ...,
-        description='A category describing the purpose of the component.',
-        title='Component Type',
-    )
-    title: str = Field(
-        ...,
-        description='A human readable name for the system component.',
-        title='Component Title',
-    )
-    description: str = Field(
-        ...,
-        description='A description of the component, including information about its function.',
-        title='Component Description',
-    )
-    purpose: Optional[str] = Field(
-        None,
-        description='A summary of the technological or business purpose of the component.',
-        title='Purpose',
-    )
-    props: Optional[List[common.Property]] = Field(None)
-    links: Optional[List[common.Link]] = Field(None)
-    status: Status = Field(
-        ...,
-        description='Describes the operational status of the system component.',
-        title='Status',
-    )
-    responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
-    protocols: Optional[List[common.Protocol]] = Field(None)
+    state: OperationalStateValidValues = Field(..., description='The current operating status.', title='State')
     remarks: Optional[str] = None
 
 
@@ -556,7 +464,7 @@ class Statement(OscalBaseModel):
         ...,
         alias='statement-id',
         description='A human-oriented identifier reference to a control statement.',
-        title='Control Statement Reference',
+        title='Control Statement Reference'
     )
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
@@ -564,7 +472,7 @@ class Statement(OscalBaseModel):
         ...,
         description=
         'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this control statement elsewhere in this or other OSCAL instances. The UUID of the control statement in the source OSCAL instance is sufficient to reference the data item locally or globally (e.g., in an imported OSCAL instance).',
-        title='Control Statement Reference Universally Unique Identifier',
+        title='Control Statement Reference Universally Unique Identifier'
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
@@ -596,8 +504,8 @@ class ImplementedRequirement(OscalBaseModel):
         ...,
         alias='control-id',
         description=
-        'A human-oriented identifier reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).',
-        title='Control Identifier Reference',
+        'A reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).',
+        title='Control Identifier Reference'
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
@@ -620,7 +528,7 @@ class ControlImplementation(OscalBaseModel):
         ...,
         description=
         'A statement describing important things to know about how this set of control satisfaction documentation is approached.',
-        title='Control Implementation Description',
+        title='Control Implementation Description'
     )
     set_parameters: Optional[List[SetParameter]] = Field(None, alias='set-parameters')
     implemented_requirements: List[ImplementedRequirement] = Field(..., alias='implemented-requirements')
@@ -635,9 +543,7 @@ class NetworkArchitecture(OscalBaseModel):
         extra = Extra.forbid
 
     description: str = Field(
-        ...,
-        description="A summary of the system's network architecture.",
-        title='Network Architecture Description',
+        ..., description="A summary of the system's network architecture.", title='Network Architecture Description'
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
@@ -664,7 +570,7 @@ class LeveragedAuthorization(OscalBaseModel):
     title: str = Field(
         ...,
         description='A human readable name for the leveraged authorization in the context of the system.',
-        title='title field',
+        title='title field'
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
@@ -674,7 +580,7 @@ class LeveragedAuthorization(OscalBaseModel):
         ...,
         alias='party-uuid',
         description='A machine-oriented identifier reference to the party that manages the leveraged system.',
-        title='party-uuid field',
+        title='party-uuid field'
     )
     date_authorized: DateAuthorized = Field(..., alias='date-authorized')
     remarks: Optional[str] = None
@@ -692,29 +598,14 @@ class SystemImplementation(OscalBaseModel):
     links: Optional[List[common.Link]] = Field(None)
     leveraged_authorizations: Optional[List[LeveragedAuthorization]] = Field(None, alias='leveraged-authorizations')
     users: List[common.SystemUser] = Field(...)
-    components: List[SystemComponent] = Field(...)
+    components: List[common.SystemComponent] = Field(...)
     inventory_items: Optional[List[common.InventoryItem]] = Field(None, alias='inventory-items')
     remarks: Optional[str] = None
 
 
-class IntegrityImpact(OscalBaseModel):
+class Impact(OscalBaseModel):
     """
-    The expected level of impact resulting from the unauthorized modification of the described information.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    props: Optional[List[common.Property]] = Field(None)
-    links: Optional[List[common.Link]] = Field(None)
-    base: Base
-    selected: Optional[Selected] = None
-    adjustment_justification: Optional[AdjustmentJustification] = Field(None, alias='adjustment-justification')
-
-
-class ConfidentialityImpact(OscalBaseModel):
-    """
-    The expected level of impact resulting from the unauthorized disclosure of the described information.
+    The expected level of impact resulting from the described information.
     """
 
     class Config:
@@ -747,37 +638,19 @@ class InformationType(OscalBaseModel):
         ...,
         description=
         'A human readable name for the information type. This title should be meaningful within the context of the system.',
-        title='title field',
+        title='title field'
     )
     description: str = Field(
         ...,
         description='A summary of how this information type is used within the system.',
-        title='Information Type Description',
+        title='Information Type Description'
     )
     categorizations: Optional[List[Categorization]] = Field(None)
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
-    confidentiality_impact: ConfidentialityImpact = Field(
-        ...,
-        alias='confidentiality-impact',
-        description=
-        'The expected level of impact resulting from the unauthorized disclosure of the described information.',
-        title='Confidentiality Impact Level',
-    )
-    integrity_impact: IntegrityImpact = Field(
-        ...,
-        alias='integrity-impact',
-        description=
-        'The expected level of impact resulting from the unauthorized modification of the described information.',
-        title='Integrity Impact Level',
-    )
-    availability_impact: AvailabilityImpact = Field(
-        ...,
-        alias='availability-impact',
-        description=
-        'The expected level of impact resulting from the disruption of access to or use of the described information or the information system.',
-        title='Availability Impact Level',
-    )
+    confidentiality_impact: Optional[Impact] = Field(None, alias='confidentiality-impact')
+    integrity_impact: Optional[Impact] = Field(None, alias='integrity-impact')
+    availability_impact: Optional[Impact] = Field(None, alias='availability-impact')
 
 
 class SystemInformation(OscalBaseModel):
@@ -802,31 +675,28 @@ class SystemCharacteristics(OscalBaseModel):
         extra = Extra.forbid
 
     system_ids: List[common.SystemId] = Field(..., alias='system-ids')
-    system_name: constr(regex=r'^\S(.*\S)?$') = Field(
-        ...,
-        alias='system-name',
-        description='The full name of the system.',
-        title='System Name - Full',
-    )
+    system_name: constr(
+        regex=r'^\S(.*\S)?$'
+    ) = Field(..., alias='system-name', description='The full name of the system.', title='System Name - Full')
     system_name_short: Optional[constr(regex=r'^\S(.*\S)?$')] = Field(
         None,
         alias='system-name-short',
         description=
         'A short name for the system, such as an acronym, that is suitable for display in a data table or summary list.',
-        title='System Name - Short',
+        title='System Name - Short'
     )
     description: str = Field(..., description='A summary of the system.', title='System Description')
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     date_authorized: Optional[DateAuthorized] = Field(None, alias='date-authorized')
-    security_sensitivity_level: constr(regex=r'^\S(.*\S)?$') = Field(
-        ...,
+    security_sensitivity_level: Optional[constr(regex=r'^\S(.*\S)?$')] = Field(
+        None,
         alias='security-sensitivity-level',
         description='The overall information system sensitivity categorization, such as defined by FIPS-199.',
-        title='Security Sensitivity Level',
+        title='Security Sensitivity Level'
     )
     system_information: SystemInformation = Field(..., alias='system-information')
-    security_impact_level: SecurityImpactLevel = Field(..., alias='security-impact-level')
+    security_impact_level: Optional[SecurityImpactLevel] = Field(None, alias='security-impact-level')
     status: Status1
     authorization_boundary: AuthorizationBoundary = Field(..., alias='authorization-boundary')
     network_architecture: Optional[NetworkArchitecture] = Field(None, alias='network-architecture')
@@ -837,7 +707,7 @@ class SystemCharacteristics(OscalBaseModel):
 
 class SystemSecurityPlan(OscalBaseModel):
     """
-    A system security plan, such as those described in NIST SP 800-18
+    A system security plan, such as those described in NIST SP 800-18.
     """
 
     class Config:

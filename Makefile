@@ -49,6 +49,9 @@ code-lint:
 code-typing:
 	mypy --pretty trestle
 
+test-all::
+	python -m pytest -n auto
+
 test::
 	python -m pytest --exitfirst -n auto
 

@@ -20,7 +20,7 @@ import pathlib
 import shutil
 from shutil import copyfile
 
-from pkg_resources import resource_filename
+import importlib_resources
 
 import trestle.common.const as const
 import trestle.common.log as log
@@ -102,9 +102,10 @@ class InitCmd(CommandBase):
     def _copy_config_file(self, root: pathlib.Path) -> None:
         """Copy the initial config.ini file to .trestle directory."""
         try:
-            source_path = pathlib.Path(resource_filename('trestle.resources', const.TRESTLE_CONFIG_FILE)).resolve()
-            destination_path = (root / pathlib.Path(const.TRESTLE_CONFIG_DIR) / const.TRESTLE_CONFIG_FILE).resolve()
-            copyfile(source_path, destination_path)
+            ref = importlib_resources.files('trestle.resources') / const.TRESTLE_CONFIG_FILE
+            with importlib_resources.as_file(ref) as source_path:
+                destination_path = (root / pathlib.Path(const.TRESTLE_CONFIG_DIR) / const.TRESTLE_CONFIG_FILE).resolve()
+                copyfile(source_path, destination_path)
 
         except (shutil.SameFileError, OSError) as e:
             raise TrestleError(f'Error while copying config file: {e}')
