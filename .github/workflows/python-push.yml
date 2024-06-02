@@ -83,6 +83,11 @@ jobs:
 
     runs-on: ubuntu-latest
     needs: build
+    permissions:
+      id-token: write
+    environment:
+      name: pypi
+      url: https://pypi.org/p/compliance-trestle
     if: github.ref == 'refs/heads/main' && github.repository == 'oscal-compass/compliance-trestle'
     steps:
     - uses: actions/checkout@v2
@@ -97,13 +102,25 @@ jobs:
     - name: Install build tools
       run: |
         make develop
-    - name: Create release
-      shell: bash
-      env:
-        PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
-        GH_TOKEN: ${{ secrets.ADMIN_PAT }}
-      run: |
-        make release
+
+    # This action uses Python Semantic Release v8
+    - name: Python Semantic Release
+      id: release
+      uses: python-semantic-release/python-semantic-release@v9.8.0
+      with:
+        github_token: ${{ secrets.ADMIN_PAT }}
+
+    - name: Publish package distributions to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      # NOTE: DO NOT wrap the conditional in ${{ }} as it will always evaluate to true.
+      # See https://github.com/actions/runner/issues/1173
+      if: steps.release.outputs.released == 'true'
+
+    - name: Publish package distributions to GitHub Releases
+      uses: python-semantic-release/upload-to-gh-release@v9.8.0
+      if: steps.release.outputs.released == 'true'
+      with:
+        github_token: ${{ secrets.ADMIN_PAT }}
 
   deploy-docs:
     runs-on: ubuntu-latest
