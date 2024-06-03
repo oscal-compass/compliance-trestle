@@ -3,6 +3,11 @@
 
 <!--next-version-placeholder-->
 
+## v3.0.1 (2024-06-03)
+### Fix
+* Reverting last serm ver changes ([`9df0703`](https://github.com/oscal-compass/compliance-trestle/commit/9df0703aa925af836a8e07dcb45ed6db31daae11))
+* Revert sem release changelog and version ([`01427df`](https://github.com/oscal-compass/compliance-trestle/commit/01427df909cb8e3a25d46ba8e3c9049533d65a6b))
+
 ## v3.0.0 (2024-06-03)
 ### Feature
 * Oscal nist upgrade ([#1550](https://github.com/oscal-compass/compliance-trestle/issues/1550)) ([`82caf5f`](https://github.com/oscal-compass/compliance-trestle/commit/82caf5fe08796e10532410299d2032b2be7e7d61))
