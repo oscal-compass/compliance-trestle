@@ -8,19 +8,9 @@
 ![[Pypi](https://pypi.org/project/compliance-trestle/)](https://img.shields.io/pypi/dm/compliance-trestle)
 ![GitHub Actions status](https://img.shields.io/github/workflow/status/oscal-compass/compliance-trestle/Trestle%20PR%20pipeline?event=push)
 
-______________________________________________________________________
+Trestle is an ensemble of tools that enable the creation, validation, and governance of documentation artifacts for compliance needs. It leverages NIST's [OSCAL](https://pages.nist.gov/OSCAL/) as a standard data format for interchange between tools and people, and provides an opinionated approach to OSCAL adoption.
 
-<table>
-<tr>
-<td><img src="images/Apollo_11_liftoff.png">
-<td> We've moved. Please note our new organizational location.
-</table>
-
-______________________________________________________________________
-
-Trestle is an ensemble of tools that enable the creation, validation, and governance of documentation artifacts for compliance needs. It leverages NIST's [OSCAL](https://pages.nist.gov/OSCAL/documentation/) as a standard data format for interchange between tools and people, and provides an opinionated approach to OSCAL adoption.
-
-Trestle is designed to operate as a CICD pipeline running on top of compliance artifacts in `git`, to provide transparency for the state of compliance across multiple stakeholders in an environment friendly to developers. Trestle passes the generated artifacts on to tools that orchestrate the enforcement, measurement, and reporting of compliance.
+Trestle is designed to operate as a CICD pipeline running on top of compliance artifacts in `git`, to provide transparency for the state of compliance across multiple stakeholders in an environment friendly to developers. Trestle passes the generated artifacts onto tools that orchestrate the enforcement, measurement, and reporting of compliance.
 
 It also provides tooling to manage OSCAL documents in a more human-friendly manner. By splitting large OSCAL data structures into smaller and easier to edit sub-structures, creation and maintenance of these artifacts can follow normal `git` workflows including peer review via pull request, versioning, releases/tagging.
 
@@ -35,17 +25,15 @@ Trestle provides tooling to help orchestrate the compliance process across a num
 - Help manage OSCAL documents in a more human-friendly manner by expanding the large OSCAL data structures into smaller and easier to edit sub-structures while making sure the schemas are enforced.
 - Transform documents from other formats to OSCAL
 - Provide governance for markdown documents and enforce consistency of format and content based on specified templates
-- Tooling manage authoring and governance of markdown and drawio files withn a repository.
+- Tooling manage authoring and governance of markdown and drawio files within a repository.
 - Support within trestle to streamline management within a managed git environment.
-- An underlying object model that supports developers interacting with OSCAL artefacts.
+- An underlying object model that supports developers interacting with OSCAL artifacts.
 
 ## Important Note:
 
-The current version of trestle supports NIST OSCAL 1.0.0-4.  There was a breaking change in OSCAL moving from
-version 1.0.0 to 1.0.2 mainly due to `prop` becoming `props` in AssessmentResults.  As a result, the current development path of trestle requires OSCAL 1.0.4, but for those who require OSCAL 1.0.0 please use trestle version 0.37.x.  That version is stable but will not have any features added, and we encourage users to move to OSCAL 1.0.4.
+The current version of trestle supports NIST OSCAL 1.1.2 as well as previous versions 1.1.x and 1.0.x. All files created by trestle will be output as OSCAL version 1.1.2.
 
-OSCAL version 1.0.0 files are still handled on import but any AssessmentResults must conform to the OSCAL 1.0.4 schema, with
-props instead of prop.  And all files created by trestle will be output as OSCAL version 1.0.4.
+There was a breaking change in OSCAL moving from version 1.0.0 to 1.0.2 mainly due to `prop` becoming `props` in AssessmentResults.  Those who require strict OSCAL 1.0.0 please use trestle version 0.37.x.  That version is stable but will not have any features added, and we encourage all users to move to OSCAL 1.1.2. OSCAL version 1.0.0 files are still handled on import but any AssessmentResults must conform to the `props` in AssessmentResults OSCAL specification.
 
 ## Why Trestle
 
@@ -75,7 +63,7 @@ natively supports only `json` and `yaml` formats at this time.
 Future roadmap anticipates that support for xml [import](https://github.com/oscal-compass/compliance-trestle/issues/177) and [upstream references](https://github.com/oscal-compass/compliance-trestle/issues/178) will be enabled. However, it is expected
 that full support will remain only for `json` and  `yaml`.
 
-Users needing to import XML OSCAL artifacts are recommended to look at NIST's XML to json conversion page [here](https://github.com/usnistgov/OSCAL/tree/master/json#oscal-xml-to-json-converters).
+Users needing to import XML OSCAL artifacts are recommended to look at NIST's XML to json conversion page [here](https://github.com/usnistgov/OSCAL/blob/main/build/README.md#converters).
 
 ## Python codebase, easy installation via pip
 
@@ -104,7 +92,7 @@ A collection of demos utilizing trestle can be found in the related project [com
 
 ## Development status
 
-Compliance trestle is currently stable and is based on NIST OSCAL version 1.0.4, with active development continuing.
+Compliance trestle is currently stable and is based on NIST OSCAL version 1.1.2, with active development continuing.
 
 ## Community meetings and communications
 
@@ -112,27 +100,22 @@ Compliance trestle is currently stable and is based on NIST OSCAL version 1.0.4,
 
 Please attend! All are invited.
 
-**When**: Every other Tuesday at 10:00 ET [convert to your local time](https://dateful.com/convert/est-edt-eastern-time)
+**When**:
 
-To discover the actual meeting dates:
+Every other Tuesday starting on April 23, 2024 · 11:00 – 11:30am ET
+[convert to your local time](https://mytime.io/11am/ET)
 
-- Go to [Google Calendar](https://calendar.google.com/calendar/u/0/embed?src=0b8u5el8ta4s93t2cm72tuvhhk@group.calendar.google.com&ctz=America/Los_Angeles)
-- Look at entries in `Tue` day of week for *Compliance Trestle Community Call*
-- To add to your calendar, `click` on `Compliance Trestle Community Call` and choose `copy to my calendar`
+**Where**: [Google Meet Link](https://meet.google.com/mwp-affd-tvu)
 
-**Where**: [https://zoom.us/j/92729235315](https://zoom.us/j/92729235315)
+Dial in:
+(US) +1 402-627-0247 PIN: 535 362 764#\
+[More phone numbers](https://tel.meet/mwp-affd-tvu?pin=9717189704231)
 
-- Meeting Id: 927 2923 5315
-
-- Passcode: 233140
-
-- **Note**: Use the passcode above to login to Zoom (or you can login to Zoom using another account like Google, Facebook)
-
-**What**: Meeting agenda and notes [Google Docs](https://docs.google.com/document/d/1z9xvt-Z97j4CtEH1-nR9sMWul7jQkUi_fNY7BdMPgxM/edit#heading=h.nohkp1kbeduj)
+**What**: Meeting agenda and notes [Google Docs](https://docs.google.com/document/d/1XTYM7xnWlIqd-8Nn5-qtgvgk8kH3NSmYle5yZvaS7qs/edit?usp=sharing)
 
 ##### Chat anytime
 
-Slack: [# compliance-grc](https://cloud-native.slack.com/archives/C066TMUBEL8)
+Slack: [#oscal-compliance-trestle-agileauthoring-c2p](https://cloud-native.slack.com/archives/C06F3PEPNBW)
 
 - **Note**: You can login to Slack using another account like Google, Apple
 

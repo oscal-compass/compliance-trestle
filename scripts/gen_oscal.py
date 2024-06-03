@@ -17,10 +17,13 @@
 import logging
 import re
 import sys
+from datetime import datetime
 from pathlib import Path
 from subprocess import CalledProcessError, check_call
 
 from oscal_normalize import normalize_files
+
+from schema_preprocess import fixup_models, get_oscal_release
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -77,6 +80,36 @@ def generate_model(full_name, out_full_name):
         logger.error(f'Error calling datamodel-codegen for file {full_name} error {error}')
 
 
+def generate_oscal_init(src_dir, out_dir):
+    """Generate OSCAL init."""
+    init_file = out_dir / '__init__.py'
+    # release
+    year = str(datetime.today().year)
+    release = get_oscal_release(src_dir)
+    rela = release.split('.')[0]
+    relb = release.split('.')[1]
+    relc = release.split('.')[2]
+    # read and modify lines
+    lines = []
+    with open(init_file, 'r') as f:
+        for line in f:
+            parts = line.split(' ')
+            if len(parts) > 3:
+                if parts[1] == 'Copyright':
+                    parts[3] = year
+                    line = ' '.join(parts)
+            if len(parts) > 2:
+                if parts[0] == 'OSCAL_VERSION':
+                    line = f"OSCAL_VERSION = '{release}'\n"
+                if parts[0] == 'OSCAL_VERSION_REGEX':
+                    line = f"OSCAL_VERSION_REGEX = r'^{rela}\.{relb}\.[0-{relc}]$'\n"
+            lines.append(line)
+
+    # write lines
+    with open(init_file, 'w') as f:
+        f.writelines(lines)
+
+
 def generate_models():
     """
     Generate all models including 3rd party.
@@ -91,10 +124,9 @@ def generate_models():
     out_dir.mkdir(exist_ok=True, parents=True)
     tmp_dir = out_dir / 'tmp'
     tmp_dir.mkdir(exist_ok=True, parents=True)
-    out_init = out_dir / '__init__.py'
-    out_init.touch(exist_ok=True)
-
-    in_dir = Path('nist-source/json/schema')
+    src_dir = 'release-schemas'
+    generate_oscal_init(src_dir, out_dir)
+    in_dir = fixup_models(src_dir)
     for full_name in in_dir.glob('oscal_*_schema.json'):
         if 'complete' in str(full_name):
             continue

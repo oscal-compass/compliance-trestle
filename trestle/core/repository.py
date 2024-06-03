@@ -26,7 +26,7 @@ import trestle.common.const as const
 import trestle.core.commands.assemble as assemblecmd
 import trestle.core.commands.author.catalog as catalogauthorcmd
 import trestle.core.commands.author.component as componentauthorcmd
-import trestle.core.commands.author.profile as profileauthorcmd
+import trestle.core.commands.author.prof as profileauthorcmd
 import trestle.core.commands.author.ssp as sspauthorcmd
 import trestle.core.commands.merge as mergecmd
 import trestle.core.commands.split as splitcmd

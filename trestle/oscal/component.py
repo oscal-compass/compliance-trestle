@@ -29,11 +29,12 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr, validator
+from pydantic.v1 import AnyUrl, EmailStr, Extra, Field, conint, constr, validator
 
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
 import trestle.oscal.common as common
+from trestle.oscal.common import URIReferenceDatatype
 
 
 class Statement(OscalBaseModel):
@@ -51,7 +52,7 @@ class Statement(OscalBaseModel):
         ...,
         alias='statement-id',
         description='A human-oriented identifier reference to a control statement.',
-        title='Control Statement Reference',
+        title='Control Statement Reference'
     )
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
@@ -59,39 +60,16 @@ class Statement(OscalBaseModel):
         ...,
         description=
         'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this control statement elsewhere in this or other OSCAL instances. The UUID of the control statement in the source OSCAL instance is sufficient to reference the data item locally or globally (e.g., in an imported OSCAL instance).',
-        title='Control Statement Reference Universally Unique Identifier',
+        title='Control Statement Reference Universally Unique Identifier'
     )
     description: str = Field(
         ...,
         description='A summary of how the containing control statement is implemented by the component or capability.',
-        title='Statement Implementation Description',
+        title='Statement Implementation Description'
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
-    remarks: Optional[str] = None
-
-
-class State(Enum):
-    """
-    The operational status.
-    """
-
-    under_development = 'under-development'
-    operational = 'operational'
-    disposition = 'disposition'
-    other = 'other'
-
-
-class Status(OscalBaseModel):
-    """
-    Describes the operational status of the system component.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    state: State = Field(..., description='The operational status.', title='State')
     remarks: Optional[str] = None
 
 
@@ -111,7 +89,7 @@ class SetParameter(OscalBaseModel):
         alias='param-id',
         description=
         "A human-oriented reference to a parameter within a control, who's catalog has been imported into the current implementation context.",
-        title='Parameter ID',
+        title='Parameter ID'
     )
     values: List[constr(regex=r'^\S(.*\S)?$')] = Field(...)
     remarks: Optional[str] = None
@@ -119,7 +97,7 @@ class SetParameter(OscalBaseModel):
 
 class IncorporatesComponent(OscalBaseModel):
     """
-    TBD
+    The collection of components comprising this capability.
     """
 
     class Config:
@@ -131,12 +109,12 @@ class IncorporatesComponent(OscalBaseModel):
         ...,
         alias='component-uuid',
         description='A machine-oriented identifier reference to a component.',
-        title='Component Reference',
+        title='Component Reference'
     )
     description: str = Field(
         ...,
         description='A description of the component, including information about its function.',
-        title='Component Description',
+        title='Component Description'
     )
 
 
@@ -152,7 +130,7 @@ class ImportComponentDefinition(OscalBaseModel):
         ...,
         description=
         'A link to a resource that defines a set of components and/or capabilities to import into this collection.',
-        title='Hyperlink Reference',
+        title='Hyperlink Reference'
     )
 
 
@@ -168,9 +146,8 @@ class ImplementedRequirement(OscalBaseModel):
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description=
-        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference a specific control implementation elsewhere in this or other OSCAL instances. The locally defined UUID of the control implementation can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance).This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
-        title='Control Implementation Identifier',
+        description='Provides a globally unique means to identify a given control implementation by a component.',
+        title='Control Implementation Identifier'
     )
     control_id: constr(
         regex=
@@ -179,14 +156,14 @@ class ImplementedRequirement(OscalBaseModel):
         ...,
         alias='control-id',
         description=
-        'A human-oriented identifier reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).',
-        title='Control Identifier Reference',
+        'A reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).',
+        title='Control Identifier Reference'
     )
     description: str = Field(
         ...,
         description=
-        'A suggestion for how the specified control may be implemented if the containing component or capability is instantiated in a system security plan.',
-        title='Control Implementation Description',
+        'A suggestion from the supplier (e.g., component vendor or author) for how the specified control may be implemented if the containing component or capability is instantiated in a system security plan.',
+        title='Control Implementation Description'
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
@@ -194,6 +171,20 @@ class ImplementedRequirement(OscalBaseModel):
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
     statements: Optional[List[Statement]] = Field(None)
     remarks: Optional[str] = None
+
+
+class DefinedComponentTypeValidValues(Enum):
+    interconnection = 'interconnection'
+    software = 'software'
+    hardware = 'hardware'
+    service = 'service'
+    policy = 'policy'
+    physical = 'physical'
+    process_procedure = 'process-procedure'
+    plan = 'plan'
+    guidance = 'guidance'
+    standard = 'standard'
+    validation = 'validation'
 
 
 class ControlImplementation(OscalBaseModel):
@@ -209,20 +200,20 @@ class ControlImplementation(OscalBaseModel):
     ) = Field(
         ...,
         description=
-        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference a set of implemented controls elsewhere in this or other OSCAL instances. The locally defined UUID of the control implementation set can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
-        title='Control Implementation Set Identifier',
+        'Provides a means to identify a set of control implementations that are supported by a given component or capability.',
+        title='Control Implementation Set Identifier'
     )
     source: str = Field(
         ...,
         description=
         'A reference to an OSCAL catalog or profile providing the referenced control or subcontrol definition.',
-        title='Source Resource Reference',
+        title='Source Resource Reference'
     )
     description: str = Field(
         ...,
         description=
         'A description of how the specified set of controls are implemented for the containing component or capability.',
-        title='Control Implementation Description',
+        title='Control Implementation Description'
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
@@ -238,19 +229,14 @@ class Capability(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description=
-        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this capability elsewhere in this or other OSCAL instances. The locally defined UUID of the capability can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance).This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
-        title='Capability Identifier',
-    )
-    name: constr(regex=r'^\S(.*\S)?$') = Field(
-        ...,
-        description="The capability's human-readable name.",
-        title='Capability Name',
-    )
+    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+                 ) = Field(
+                     ...,
+                     description='Provides a globally unique means to identify a given capability.',
+                     title='Capability Identifier'
+                 )
+    name: constr(regex=r'^\S(.*\S)?$'
+                 ) = Field(..., description="The capability's human-readable name.", title='Capability Name')
     description: str = Field(..., description='A summary of the capability.', title='Capability Description')
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
@@ -267,33 +253,23 @@ class DefinedComponent(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description=
-        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this component elsewhere in this or other OSCAL instances. The locally defined UUID of the component can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
-        title='Component Identifier',
+    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+                 ) = Field(
+                     ...,
+                     description='Provides a globally unique means to identify a given component.',
+                     title='Component Identifier'
+                 )
+    type: Union[constr(regex=r'^\S(.*\S)?$'), DefinedComponentTypeValidValues] = Field(
+        ..., description='A category describing the purpose of the component.', title='Component Type'
     )
-    type: constr(regex=r'^\S(.*\S)?$') = Field(
-        ...,
-        description='A category describing the purpose of the component.',
-        title='Component Type',
-    )
-    title: str = Field(
-        ...,
-        description='A human readable name for the component.',
-        title='Component Title',
-    )
+    title: str = Field(..., description='A human readable name for the component.', title='Component Title')
     description: str = Field(
         ...,
         description='A description of the component, including information about its function.',
-        title='Component Description',
+        title='Component Description'
     )
     purpose: Optional[str] = Field(
-        None,
-        description='A summary of the technological or business purpose of the component.',
-        title='Purpose',
+        None, description='A summary of the technological or business purpose of the component.', title='Purpose'
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
@@ -311,14 +287,12 @@ class ComponentDefinition(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description=
-        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this component definition elsewhere in this or other OSCAL instances. The locally defined UUID of the component definition can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
-        title='Component Definition Universally Unique Identifier',
-    )
+    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+                 ) = Field(
+                     ...,
+                     description='Provides a globally unique means to identify a given component definition instance.',
+                     title='Component Definition Universally Unique Identifier'
+                 )
     metadata: common.Metadata
     import_component_definitions: Optional[List[ImportComponentDefinition]] = Field(
         None, alias='import-component-definitions'

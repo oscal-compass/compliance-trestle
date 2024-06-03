@@ -28,18 +28,24 @@ from defusedxml import ElementTree
 from ruamel.yaml import YAML
 
 from trestle.common.list_utils import as_list
-from trestle.oscal.assessment_results import ControlSelection
-from trestle.oscal.assessment_results import LocalDefinitions1
-from trestle.oscal.assessment_results import Observation
-from trestle.oscal.assessment_results import Result
-from trestle.oscal.assessment_results import ReviewedControls
-from trestle.oscal.assessment_results import Status1
-from trestle.oscal.assessment_results import SystemComponent
-from trestle.oscal.common import ImplementedComponent, InventoryItem, Property, SubjectReference
+from trestle.oscal.assessment_results import (
+    LocalDefinitions1,
+    Observation,
+    Result,
+    SystemComponent,
+)
+from trestle.oscal.common import (
+    ControlSelection,
+    ImplementedComponent,
+    InventoryItem,
+    Property,
+    ReviewedControls,
+    Status,
+    SubjectReference,
+)
 from trestle.oscal.profile import Profile
 from trestle.transforms.results import Results
-from trestle.transforms.transformer_factory import FromOscalTransformer
-from trestle.transforms.transformer_factory import ResultsTransformer
+from trestle.transforms.transformer_factory import FromOscalTransformer, ResultsTransformer
 from trestle.transforms.transformer_helper import TransformerHelper
 
 logger = logging.getLogger(__name__)
@@ -430,7 +436,7 @@ class _OscalResultsFactory():
             if component.type == _type and component.title == _title and component.description == _desc:
                 return
         component_ref = str(uuid.uuid4())
-        status = Status1(state='operational')
+        status = Status(state='operational')
         component = SystemComponent(uuid=component_ref, type=_type, title=_title, description=_desc, status=status)
         self._component_map[component_ref] = component
 

@@ -393,7 +393,7 @@ class CatalogInterface():
 
     def get_group_ids(self) -> List[str]:
         """Get all the group id's as a list of sorted strings."""
-        return sorted(filter(lambda id: id, list({control.group_id for control in self._control_dict.values()})))
+        return sorted(filter(lambda id_: id_, list({control.group_id for control in self._control_dict.values()})))
 
     def get_all_groups_from_catalog(self) -> List[cat.Group]:
         """
@@ -469,9 +469,9 @@ class CatalogInterface():
     def get_group_info_by_control(self, control_id: str) -> Tuple[str, str, str]:
         """Get the group_id, title, class for this control from the dict."""
         return (
-            self._control_dict[control_id].group_id,
-            self._control_dict[control_id].group_title,
-            self._control_dict[control_id].group_class
+            '' if self._control_dict is None else self._control_dict[control_id].group_id,
+            '' if self._control_dict is None else self._control_dict[control_id].group_title,
+            '' if self._control_dict is None else self._control_dict[control_id].group_class
         )
 
     def get_control_path(self, control_id: str) -> List[str]:
