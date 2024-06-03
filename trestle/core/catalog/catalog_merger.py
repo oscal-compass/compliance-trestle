@@ -94,7 +94,10 @@ class CatalogMerger():
                 self._catalog_interface._control_dict[src.id] = new_control_handle  # type: ignore
 
         # now need to cull any controls that are not in the src catalog
-        handled_ids = set(cat_interface._control_dict.keys())
+        if cat_interface._control_dict is None:
+            handled_ids = None
+        else:
+            handled_ids = set(cat_interface._control_dict.keys())
         orig_ids = set(self._catalog_interface._control_dict.keys())
         extra_ids = orig_ids.difference(handled_ids)
         for extra_id in sorted(extra_ids):
