@@ -33,7 +33,7 @@ Trestle provides tooling to help orchestrate the compliance process across a num
 
 The current version of trestle supports NIST OSCAL 1.1.2 as well as previous versions 1.1.x and 1.0.x. All files created by trestle will be output as OSCAL version 1.1.2.
 
-There was a breaking change in OSCAL moving from version 1.0.0 to 1.0.2 mainly due to `prop` becoming `props` in AssessmentResults.  Those who require strict OSCAL 1.0.0 please use trestle version 0.37.x.  That version is stable but will not have any features added, and we encourage users to move to OSCAL 1.1.2. OSCAL version 1.0.0 files are still handled on import but any AssessmentResults must conform to the `props` in AssessmentResults OSCAL specification.  
+There was a breaking change in OSCAL moving from version 1.0.0 to 1.0.2 mainly due to `prop` becoming `props` in AssessmentResults.  Those who require strict OSCAL 1.0.0 please use trestle version 0.37.x.  That version is stable but will not have any features added, and we encourage users to move to OSCAL 1.1.2. OSCAL version 1.0.0 files are still handled on import but any AssessmentResults must conform to the `props` in AssessmentResults OSCAL specification.
 
 ## Why Trestle
 
