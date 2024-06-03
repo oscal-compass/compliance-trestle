@@ -2050,11 +2050,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.core.commands.author.profile/" class="md-nav__link">
+      <a href="../trestle.core.commands.author.prof/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    profile
+    prof
   </span>
   
 
@@ -5077,7 +5077,9 @@ ControlReader        </code>
         <span class="k">if</span> <span class="n">editable_parts</span> <span class="ow">or</span> <span class="n">props</span><span class="p">:</span>
             <span class="n">adds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="n">prof</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span>
-                    <span class="n">parts</span><span class="o">=</span><span class="n">none_if_empty</span><span class="p">(</span><span class="n">editable_parts</span><span class="p">),</span> <span class="n">props</span><span class="o">=</span><span class="n">none_if_empty</span><span class="p">(</span><span class="n">props</span><span class="p">),</span> <span class="n">position</span><span class="o">=</span><span class="n">prof</span><span class="o">.</span><span class="n">Position</span><span class="o">.</span><span class="n">ending</span>
+                    <span class="n">parts</span><span class="o">=</span><span class="n">none_if_empty</span><span class="p">(</span><span class="n">editable_parts</span><span class="p">),</span>
+                    <span class="n">props</span><span class="o">=</span><span class="n">none_if_empty</span><span class="p">(</span><span class="n">props</span><span class="p">),</span>
+                    <span class="n">position</span><span class="o">=</span><span class="n">prof</span><span class="o">.</span><span class="n">PositionValidValues</span><span class="o">.</span><span class="n">ending</span><span class="o">.</span><span class="n">value</span>
                 <span class="p">)</span>
             <span class="p">)</span>
 
@@ -5086,7 +5088,7 @@ ControlReader        </code>
         <span class="k">for</span> <span class="n">by_id</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">by_ids</span><span class="p">):</span>
             <span class="n">parts</span> <span class="o">=</span> <span class="n">by_id_parts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">by_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
             <span class="n">props</span> <span class="o">=</span> <span class="n">props_by_id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">by_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-            <span class="n">adds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prof</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">parts</span><span class="o">=</span><span class="n">parts</span><span class="p">,</span> <span class="n">props</span><span class="o">=</span><span class="n">props</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">prof</span><span class="o">.</span><span class="n">Position</span><span class="o">.</span><span class="n">ending</span><span class="p">,</span> <span class="n">by_id</span><span class="o">=</span><span class="n">by_id</span><span class="p">))</span>
+            <span class="n">adds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prof</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">parts</span><span class="o">=</span><span class="n">parts</span><span class="p">,</span> <span class="n">props</span><span class="o">=</span><span class="n">props</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">prof</span><span class="o">.</span><span class="n">PositionValidValues</span><span class="o">.</span><span class="n">ending</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">by_id</span><span class="o">=</span><span class="n">by_id</span><span class="p">))</span>
 
         <span class="n">new_alters</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">adds</span><span class="p">:</span>
@@ -5470,7 +5472,9 @@ Adds to the passed in comp_dict.</p></td>
     <span class="k">if</span> <span class="n">editable_parts</span> <span class="ow">or</span> <span class="n">props</span><span class="p">:</span>
         <span class="n">adds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="n">prof</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span>
-                <span class="n">parts</span><span class="o">=</span><span class="n">none_if_empty</span><span class="p">(</span><span class="n">editable_parts</span><span class="p">),</span> <span class="n">props</span><span class="o">=</span><span class="n">none_if_empty</span><span class="p">(</span><span class="n">props</span><span class="p">),</span> <span class="n">position</span><span class="o">=</span><span class="n">prof</span><span class="o">.</span><span class="n">Position</span><span class="o">.</span><span class="n">ending</span>
+                <span class="n">parts</span><span class="o">=</span><span class="n">none_if_empty</span><span class="p">(</span><span class="n">editable_parts</span><span class="p">),</span>
+                <span class="n">props</span><span class="o">=</span><span class="n">none_if_empty</span><span class="p">(</span><span class="n">props</span><span class="p">),</span>
+                <span class="n">position</span><span class="o">=</span><span class="n">prof</span><span class="o">.</span><span class="n">PositionValidValues</span><span class="o">.</span><span class="n">ending</span><span class="o">.</span><span class="n">value</span>
             <span class="p">)</span>
         <span class="p">)</span>
 
@@ -5479,7 +5483,7 @@ Adds to the passed in comp_dict.</p></td>
     <span class="k">for</span> <span class="n">by_id</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">by_ids</span><span class="p">):</span>
         <span class="n">parts</span> <span class="o">=</span> <span class="n">by_id_parts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">by_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">props</span> <span class="o">=</span> <span class="n">props_by_id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">by_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">adds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prof</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">parts</span><span class="o">=</span><span class="n">parts</span><span class="p">,</span> <span class="n">props</span><span class="o">=</span><span class="n">props</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">prof</span><span class="o">.</span><span class="n">Position</span><span class="o">.</span><span class="n">ending</span><span class="p">,</span> <span class="n">by_id</span><span class="o">=</span><span class="n">by_id</span><span class="p">))</span>
+        <span class="n">adds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prof</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">parts</span><span class="o">=</span><span class="n">parts</span><span class="p">,</span> <span class="n">props</span><span class="o">=</span><span class="n">props</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">prof</span><span class="o">.</span><span class="n">PositionValidValues</span><span class="o">.</span><span class="n">ending</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">by_id</span><span class="o">=</span><span class="n">by_id</span><span class="p">))</span>
 
     <span class="n">new_alters</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">if</span> <span class="n">adds</span><span class="p">:</span>

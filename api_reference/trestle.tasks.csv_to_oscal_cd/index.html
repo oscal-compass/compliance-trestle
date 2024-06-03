@@ -2048,11 +2048,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.core.commands.author.profile/" class="md-nav__link">
+      <a href="../trestle.core.commands.author.prof/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    profile
+    prof
   </span>
   
 
@@ -6677,7 +6677,7 @@ CsvToOscalComponentDefinition            (<a class="autorefs autorefs-internal" 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unresolved_controls</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Unresolved controls: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_unresolved_controls</span><span class="si">}</span><span class="s1">&#39;</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_controls</span> <span class="o">==</span> <span class="s1">&#39;warn&#39;</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_controls</span> <span class="o">==</span> <span class="s1">&#39;on&#39;</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
         <span class="c1"># prepare new/revised component definition</span>

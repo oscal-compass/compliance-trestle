@@ -2052,11 +2052,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.core.commands.author.profile/" class="md-nav__link">
+      <a href="../trestle.core.commands.author.prof/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    profile
+    prof
   </span>
   
 
@@ -4702,9 +4702,10 @@ InitCmd            (<a class="autorefs autorefs-internal" title="trestle.core.co
     <span class="k">def</span> <span class="nf">_copy_config_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Copy the initial config.ini file to .trestle directory.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">source_path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">resource_filename</span><span class="p">(</span><span class="s1">&#39;trestle.resources&#39;</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_CONFIG_FILE</span><span class="p">))</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
-            <span class="n">destination_path</span> <span class="o">=</span> <span class="p">(</span><span class="n">root</span> <span class="o">/</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_CONFIG_DIR</span><span class="p">)</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_CONFIG_FILE</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
-            <span class="n">copyfile</span><span class="p">(</span><span class="n">source_path</span><span class="p">,</span> <span class="n">destination_path</span><span class="p">)</span>
+            <span class="n">ref</span> <span class="o">=</span> <span class="n">importlib_resources</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="s1">&#39;trestle.resources&#39;</span><span class="p">)</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_CONFIG_FILE</span>
+            <span class="k">with</span> <span class="n">importlib_resources</span><span class="o">.</span><span class="n">as_file</span><span class="p">(</span><span class="n">ref</span><span class="p">)</span> <span class="k">as</span> <span class="n">source_path</span><span class="p">:</span>
+                <span class="n">destination_path</span> <span class="o">=</span> <span class="p">(</span><span class="n">root</span> <span class="o">/</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_CONFIG_DIR</span><span class="p">)</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_CONFIG_FILE</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+                <span class="n">copyfile</span><span class="p">(</span><span class="n">source_path</span><span class="p">,</span> <span class="n">destination_path</span><span class="p">)</span>
 
         <span class="k">except</span> <span class="p">(</span><span class="n">shutil</span><span class="o">.</span><span class="n">SameFileError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error while copying config file: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>

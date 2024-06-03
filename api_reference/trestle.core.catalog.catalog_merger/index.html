@@ -2168,11 +2168,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.core.commands.author.profile/" class="md-nav__link">
+      <a href="../trestle.core.commands.author.prof/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    profile
+    prof
   </span>
   
 
@@ -4752,7 +4752,10 @@ merging contents of one catalog to another.</p>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_catalog_interface</span><span class="o">.</span><span class="n">_control_dict</span><span class="p">[</span><span class="n">src</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_control_handle</span>  <span class="c1"># type: ignore</span>
 
         <span class="c1"># now need to cull any controls that are not in the src catalog</span>
-        <span class="n">handled_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">cat_interface</span><span class="o">.</span><span class="n">_control_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">cat_interface</span><span class="o">.</span><span class="n">_control_dict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">handled_ids</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">handled_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">cat_interface</span><span class="o">.</span><span class="n">_control_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="n">orig_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_catalog_interface</span><span class="o">.</span><span class="n">_control_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="n">extra_ids</span> <span class="o">=</span> <span class="n">orig_ids</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">handled_ids</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">extra_id</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">extra_ids</span><span class="p">):</span>
@@ -4949,7 +4952,10 @@ including its parameters.  Only values may be specified.  If no value specified,
             <span class="bp">self</span><span class="o">.</span><span class="n">_catalog_interface</span><span class="o">.</span><span class="n">_control_dict</span><span class="p">[</span><span class="n">src</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_control_handle</span>  <span class="c1"># type: ignore</span>
 
     <span class="c1"># now need to cull any controls that are not in the src catalog</span>
-    <span class="n">handled_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">cat_interface</span><span class="o">.</span><span class="n">_control_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">cat_interface</span><span class="o">.</span><span class="n">_control_dict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">handled_ids</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">handled_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">cat_interface</span><span class="o">.</span><span class="n">_control_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
     <span class="n">orig_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_catalog_interface</span><span class="o">.</span><span class="n">_control_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
     <span class="n">extra_ids</span> <span class="o">=</span> <span class="n">orig_ids</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">handled_ids</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">extra_id</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">extra_ids</span><span class="p">):</span>

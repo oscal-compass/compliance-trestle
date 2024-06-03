@@ -2054,11 +2054,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.core.commands.author.profile/" class="md-nav__link">
+      <a href="../trestle.core.commands.author.prof/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    profile
+    prof
   </span>
   
 
@@ -4911,26 +4911,27 @@ TemplateVersioning        </code>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">templates_resource_path</span> <span class="o">=</span> <span class="n">TRESTLE_RESOURCES</span> <span class="o">+</span> <span class="s1">&#39;.templates&#39;</span>
 
-            <span class="n">generic_template</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">resource_filename</span><span class="p">(</span><span class="n">templates_resource_path</span><span class="p">,</span> <span class="n">resource_name</span><span class="p">))</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">_</span><span class="p">,</span> <span class="n">version</span> <span class="o">=</span> <span class="n">TemplateVersioning</span><span class="o">.</span><span class="n">get_latest_version_for_task</span><span class="p">(</span><span class="n">task_path</span><span class="p">)</span>
+            <span class="n">ref</span> <span class="o">=</span> <span class="n">importlib_resources</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="n">templates_resource_path</span><span class="p">)</span> <span class="o">/</span> <span class="n">resource_name</span>
+            <span class="k">with</span> <span class="n">importlib_resources</span><span class="o">.</span><span class="n">as_file</span><span class="p">(</span><span class="n">ref</span><span class="p">)</span> <span class="k">as</span> <span class="n">generic_template</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">_</span><span class="p">,</span> <span class="n">version</span> <span class="o">=</span> <span class="n">TemplateVersioning</span><span class="o">.</span><span class="n">get_latest_version_for_task</span><span class="p">(</span><span class="n">task_path</span><span class="p">)</span>
 
-            <span class="c1"># modify header/metadata in the template</span>
-            <span class="k">if</span> <span class="n">generic_template</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="n">MARKDOWN_FILE_EXT</span><span class="p">:</span>
-                <span class="n">md_api</span> <span class="o">=</span> <span class="n">MarkdownAPI</span><span class="p">()</span>
-                <span class="n">header</span><span class="p">,</span> <span class="n">md_body</span> <span class="o">=</span> <span class="n">md_api</span><span class="o">.</span><span class="n">processor</span><span class="o">.</span><span class="n">read_markdown_wo_processing</span><span class="p">(</span><span class="n">generic_template</span><span class="p">)</span>
-                <span class="n">header</span><span class="p">[</span><span class="n">TEMPLATE_VERSION_HEADER</span><span class="p">]</span> <span class="o">=</span> <span class="n">version</span>
-                <span class="n">md_api</span><span class="o">.</span><span class="n">write_markdown_with_header</span><span class="p">(</span><span class="n">target_file</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">md_body</span><span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Successfully written template markdown to </span><span class="si">{</span><span class="n">target_file</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">generic_template</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="n">DRAWIO_FILE_EXT</span><span class="p">:</span>
-                <span class="n">drawio</span> <span class="o">=</span> <span class="n">DrawIO</span><span class="p">(</span><span class="n">generic_template</span><span class="p">)</span>
-                <span class="n">metadata</span> <span class="o">=</span> <span class="n">drawio</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="n">metadata</span><span class="p">[</span><span class="n">TEMPLATE_VERSION_HEADER</span><span class="p">]</span> <span class="o">=</span> <span class="n">version</span>
+                <span class="c1"># modify header/metadata in the template</span>
+                <span class="k">if</span> <span class="n">generic_template</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="n">MARKDOWN_FILE_EXT</span><span class="p">:</span>
+                    <span class="n">md_api</span> <span class="o">=</span> <span class="n">MarkdownAPI</span><span class="p">()</span>
+                    <span class="n">header</span><span class="p">,</span> <span class="n">md_body</span> <span class="o">=</span> <span class="n">md_api</span><span class="o">.</span><span class="n">processor</span><span class="o">.</span><span class="n">read_markdown_wo_processing</span><span class="p">(</span><span class="n">generic_template</span><span class="p">)</span>
+                    <span class="n">header</span><span class="p">[</span><span class="n">TEMPLATE_VERSION_HEADER</span><span class="p">]</span> <span class="o">=</span> <span class="n">version</span>
+                    <span class="n">md_api</span><span class="o">.</span><span class="n">write_markdown_with_header</span><span class="p">(</span><span class="n">target_file</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">md_body</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Successfully written template markdown to </span><span class="si">{</span><span class="n">target_file</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">generic_template</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="n">DRAWIO_FILE_EXT</span><span class="p">:</span>
+                    <span class="n">drawio</span> <span class="o">=</span> <span class="n">DrawIO</span><span class="p">(</span><span class="n">generic_template</span><span class="p">)</span>
+                    <span class="n">metadata</span> <span class="o">=</span> <span class="n">drawio</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">metadata</span><span class="p">[</span><span class="n">TEMPLATE_VERSION_HEADER</span><span class="p">]</span> <span class="o">=</span> <span class="n">version</span>
 
-                <span class="n">drawio</span><span class="o">.</span><span class="n">write_drawio_with_metadata</span><span class="p">(</span><span class="n">generic_template</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">target_file</span><span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Successfully written template drawio to </span><span class="si">{</span><span class="n">target_file</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unsupported template file extension </span><span class="si">{</span><span class="n">generic_template</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">drawio</span><span class="o">.</span><span class="n">write_drawio_with_metadata</span><span class="p">(</span><span class="n">generic_template</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">target_file</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Successfully written template drawio to </span><span class="si">{</span><span class="n">target_file</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unsupported template file extension </span><span class="si">{</span><span class="n">generic_template</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error while updating template folder: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
@@ -5318,26 +5319,27 @@ By default all old-style templates will be updated to version 0.0.1</p>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">templates_resource_path</span> <span class="o">=</span> <span class="n">TRESTLE_RESOURCES</span> <span class="o">+</span> <span class="s1">&#39;.templates&#39;</span>
 
-        <span class="n">generic_template</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">resource_filename</span><span class="p">(</span><span class="n">templates_resource_path</span><span class="p">,</span> <span class="n">resource_name</span><span class="p">))</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">_</span><span class="p">,</span> <span class="n">version</span> <span class="o">=</span> <span class="n">TemplateVersioning</span><span class="o">.</span><span class="n">get_latest_version_for_task</span><span class="p">(</span><span class="n">task_path</span><span class="p">)</span>
+        <span class="n">ref</span> <span class="o">=</span> <span class="n">importlib_resources</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="n">templates_resource_path</span><span class="p">)</span> <span class="o">/</span> <span class="n">resource_name</span>
+        <span class="k">with</span> <span class="n">importlib_resources</span><span class="o">.</span><span class="n">as_file</span><span class="p">(</span><span class="n">ref</span><span class="p">)</span> <span class="k">as</span> <span class="n">generic_template</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">_</span><span class="p">,</span> <span class="n">version</span> <span class="o">=</span> <span class="n">TemplateVersioning</span><span class="o">.</span><span class="n">get_latest_version_for_task</span><span class="p">(</span><span class="n">task_path</span><span class="p">)</span>
 
-        <span class="c1"># modify header/metadata in the template</span>
-        <span class="k">if</span> <span class="n">generic_template</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="n">MARKDOWN_FILE_EXT</span><span class="p">:</span>
-            <span class="n">md_api</span> <span class="o">=</span> <span class="n">MarkdownAPI</span><span class="p">()</span>
-            <span class="n">header</span><span class="p">,</span> <span class="n">md_body</span> <span class="o">=</span> <span class="n">md_api</span><span class="o">.</span><span class="n">processor</span><span class="o">.</span><span class="n">read_markdown_wo_processing</span><span class="p">(</span><span class="n">generic_template</span><span class="p">)</span>
-            <span class="n">header</span><span class="p">[</span><span class="n">TEMPLATE_VERSION_HEADER</span><span class="p">]</span> <span class="o">=</span> <span class="n">version</span>
-            <span class="n">md_api</span><span class="o">.</span><span class="n">write_markdown_with_header</span><span class="p">(</span><span class="n">target_file</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">md_body</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Successfully written template markdown to </span><span class="si">{</span><span class="n">target_file</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">generic_template</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="n">DRAWIO_FILE_EXT</span><span class="p">:</span>
-            <span class="n">drawio</span> <span class="o">=</span> <span class="n">DrawIO</span><span class="p">(</span><span class="n">generic_template</span><span class="p">)</span>
-            <span class="n">metadata</span> <span class="o">=</span> <span class="n">drawio</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">metadata</span><span class="p">[</span><span class="n">TEMPLATE_VERSION_HEADER</span><span class="p">]</span> <span class="o">=</span> <span class="n">version</span>
+            <span class="c1"># modify header/metadata in the template</span>
+            <span class="k">if</span> <span class="n">generic_template</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="n">MARKDOWN_FILE_EXT</span><span class="p">:</span>
+                <span class="n">md_api</span> <span class="o">=</span> <span class="n">MarkdownAPI</span><span class="p">()</span>
+                <span class="n">header</span><span class="p">,</span> <span class="n">md_body</span> <span class="o">=</span> <span class="n">md_api</span><span class="o">.</span><span class="n">processor</span><span class="o">.</span><span class="n">read_markdown_wo_processing</span><span class="p">(</span><span class="n">generic_template</span><span class="p">)</span>
+                <span class="n">header</span><span class="p">[</span><span class="n">TEMPLATE_VERSION_HEADER</span><span class="p">]</span> <span class="o">=</span> <span class="n">version</span>
+                <span class="n">md_api</span><span class="o">.</span><span class="n">write_markdown_with_header</span><span class="p">(</span><span class="n">target_file</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">md_body</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Successfully written template markdown to </span><span class="si">{</span><span class="n">target_file</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">generic_template</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="n">DRAWIO_FILE_EXT</span><span class="p">:</span>
+                <span class="n">drawio</span> <span class="o">=</span> <span class="n">DrawIO</span><span class="p">(</span><span class="n">generic_template</span><span class="p">)</span>
+                <span class="n">metadata</span> <span class="o">=</span> <span class="n">drawio</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">metadata</span><span class="p">[</span><span class="n">TEMPLATE_VERSION_HEADER</span><span class="p">]</span> <span class="o">=</span> <span class="n">version</span>
 
-            <span class="n">drawio</span><span class="o">.</span><span class="n">write_drawio_with_metadata</span><span class="p">(</span><span class="n">generic_template</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">target_file</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Successfully written template drawio to </span><span class="si">{</span><span class="n">target_file</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unsupported template file extension </span><span class="si">{</span><span class="n">generic_template</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">drawio</span><span class="o">.</span><span class="n">write_drawio_with_metadata</span><span class="p">(</span><span class="n">generic_template</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">target_file</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Successfully written template drawio to </span><span class="si">{</span><span class="n">target_file</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unsupported template file extension </span><span class="si">{</span><span class="n">generic_template</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error while updating template folder: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </code></pre></div>

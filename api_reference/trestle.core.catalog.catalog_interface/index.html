@@ -2433,11 +2433,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.core.commands.author.profile/" class="md-nav__link">
+      <a href="../trestle.core.commands.author.prof/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    profile
+    prof
   </span>
   
 
@@ -5584,7 +5584,7 @@ then the catalog controls are updated by pulling from the dict back into the cat
 
     <span class="k">def</span> <span class="nf">get_group_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all the group id&#39;s as a list of sorted strings.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">id</span><span class="p">,</span> <span class="nb">list</span><span class="p">({</span><span class="n">control</span><span class="o">.</span><span class="n">group_id</span> <span class="k">for</span> <span class="n">control</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()})))</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">id_</span><span class="p">:</span> <span class="n">id_</span><span class="p">,</span> <span class="nb">list</span><span class="p">({</span><span class="n">control</span><span class="o">.</span><span class="n">group_id</span> <span class="k">for</span> <span class="n">control</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()})))</span>
 
     <span class="k">def</span> <span class="nf">get_all_groups_from_catalog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">cat</span><span class="o">.</span><span class="n">Group</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -5660,9 +5660,9 @@ then the catalog controls are updated by pulling from the dict back into the cat
     <span class="k">def</span> <span class="nf">get_group_info_by_control</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the group_id, title, class for this control from the dict.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span><span class="p">[</span><span class="n">control_id</span><span class="p">]</span><span class="o">.</span><span class="n">group_id</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span><span class="p">[</span><span class="n">control_id</span><span class="p">]</span><span class="o">.</span><span class="n">group_title</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span><span class="p">[</span><span class="n">control_id</span><span class="p">]</span><span class="o">.</span><span class="n">group_class</span>
+            <span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span><span class="p">[</span><span class="n">control_id</span><span class="p">]</span><span class="o">.</span><span class="n">group_id</span><span class="p">,</span>
+            <span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span><span class="p">[</span><span class="n">control_id</span><span class="p">]</span><span class="o">.</span><span class="n">group_title</span><span class="p">,</span>
+            <span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span><span class="p">[</span><span class="n">control_id</span><span class="p">]</span><span class="o">.</span><span class="n">group_class</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_control_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
@@ -6137,7 +6137,8 @@ control: the control itself</p>
 
         <details class="quote">
           <summary>Source code in <code>trestle/core/catalog/catalog_interface.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ControlHandle</span><span class="p">:</span>
+          <div class="highlight"><pre><span></span><code><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">ControlHandle</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convenience class for handling controls as members of a group.</span>
 
 <span class="sd">    group_id: id of parent group or &#39;&#39; if not in a group</span>
@@ -7459,7 +7460,7 @@ to the dict and need to be inserted in the actual catalog during update.</p>
           <summary>Source code in <code>trestle/core/catalog/catalog_interface.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_group_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get all the group id&#39;s as a list of sorted strings.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">id</span><span class="p">,</span> <span class="nb">list</span><span class="p">({</span><span class="n">control</span><span class="o">.</span><span class="n">group_id</span> <span class="k">for</span> <span class="n">control</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()})))</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">id_</span><span class="p">:</span> <span class="n">id_</span><span class="p">,</span> <span class="nb">list</span><span class="p">({</span><span class="n">control</span><span class="o">.</span><span class="n">group_id</span> <span class="k">for</span> <span class="n">control</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()})))</span>
 </code></pre></div>
         </details>
     </div>
@@ -7487,9 +7488,9 @@ to the dict and need to be inserted in the actual catalog during update.</p>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_group_info_by_control</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the group_id, title, class for this control from the dict.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">(</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span><span class="p">[</span><span class="n">control_id</span><span class="p">]</span><span class="o">.</span><span class="n">group_id</span><span class="p">,</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span><span class="p">[</span><span class="n">control_id</span><span class="p">]</span><span class="o">.</span><span class="n">group_title</span><span class="p">,</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span><span class="p">[</span><span class="n">control_id</span><span class="p">]</span><span class="o">.</span><span class="n">group_class</span>
+        <span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span><span class="p">[</span><span class="n">control_id</span><span class="p">]</span><span class="o">.</span><span class="n">group_id</span><span class="p">,</span>
+        <span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span><span class="p">[</span><span class="n">control_id</span><span class="p">]</span><span class="o">.</span><span class="n">group_title</span><span class="p">,</span>
+        <span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span><span class="p">[</span><span class="n">control_id</span><span class="p">]</span><span class="o">.</span><span class="n">group_class</span>
     <span class="p">)</span>
 </code></pre></div>
         </details>

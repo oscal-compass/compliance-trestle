@@ -2050,11 +2050,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.core.commands.author.profile/" class="md-nav__link">
+      <a href="../trestle.core.commands.author.prof/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    profile
+    prof
   </span>
   
 
@@ -4727,11 +4727,11 @@ Modify            (<a class="autorefs autorefs-internal" title="trestle.core.pip
         <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">parts_list</span><span class="p">)):</span>
             <span class="c1"># find the matching part</span>
             <span class="k">if</span> <span class="n">parts_list</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">add</span><span class="o">.</span><span class="n">by_id</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">add</span><span class="o">.</span><span class="n">position</span> <span class="o">==</span> <span class="n">prof</span><span class="o">.</span><span class="n">Position</span><span class="o">.</span><span class="n">after</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">add</span><span class="o">.</span><span class="n">position</span> <span class="o">==</span> <span class="n">prof</span><span class="o">.</span><span class="n">PositionValidValues</span><span class="o">.</span><span class="n">after</span><span class="p">:</span>
                     <span class="k">for</span> <span class="n">offset</span><span class="p">,</span> <span class="n">new_item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">as_list</span><span class="p">(</span><span class="n">add</span><span class="o">.</span><span class="n">parts</span><span class="p">)):</span>
                         <span class="n">parts_list</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span> <span class="n">new_item</span><span class="p">)</span>
                     <span class="n">added_parts</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="k">elif</span> <span class="n">add</span><span class="o">.</span><span class="n">position</span> <span class="o">==</span> <span class="n">prof</span><span class="o">.</span><span class="n">Position</span><span class="o">.</span><span class="n">before</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="n">add</span><span class="o">.</span><span class="n">position</span> <span class="o">==</span> <span class="n">prof</span><span class="o">.</span><span class="n">PositionValidValues</span><span class="o">.</span><span class="n">before</span><span class="p">:</span>
                     <span class="k">for</span> <span class="n">offset</span><span class="p">,</span> <span class="n">new_item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">as_list</span><span class="p">(</span><span class="n">add</span><span class="o">.</span><span class="n">parts</span><span class="p">)):</span>
                         <span class="n">parts_list</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span> <span class="n">new_item</span><span class="p">)</span>
                     <span class="n">added_parts</span> <span class="o">=</span> <span class="kc">True</span>
@@ -4755,10 +4755,10 @@ Modify            (<a class="autorefs autorefs-internal" title="trestle.core.pip
         <span class="k">return</span> <span class="kc">False</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_add_attr_to_part</span><span class="p">(</span><span class="n">part</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">Part</span><span class="p">,</span> <span class="n">items</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">OBT</span><span class="p">],</span> <span class="n">attr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">prof</span><span class="o">.</span><span class="n">Position</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_add_attr_to_part</span><span class="p">(</span><span class="n">part</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">Part</span><span class="p">,</span> <span class="n">items</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">OBT</span><span class="p">],</span> <span class="n">attr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">attr_list</span> <span class="o">=</span> <span class="n">as_list</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">part</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
         <span class="c1"># position may be None and if so will go at end</span>
-        <span class="k">if</span> <span class="n">position</span> <span class="ow">in</span> <span class="p">[</span><span class="n">prof</span><span class="o">.</span><span class="n">Position</span><span class="o">.</span><span class="n">starting</span><span class="p">,</span> <span class="n">prof</span><span class="o">.</span><span class="n">Position</span><span class="o">.</span><span class="n">before</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">position</span> <span class="ow">in</span> <span class="p">[</span><span class="n">prof</span><span class="o">.</span><span class="n">PositionValidValues</span><span class="o">.</span><span class="n">starting</span><span class="p">,</span> <span class="n">prof</span><span class="o">.</span><span class="n">PositionValidValues</span><span class="o">.</span><span class="n">before</span><span class="p">]:</span>
             <span class="n">items</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">attr_list</span><span class="p">)</span>
             <span class="n">attr_list</span> <span class="o">=</span> <span class="n">items</span>
         <span class="k">else</span><span class="p">:</span>
@@ -4766,12 +4766,9 @@ Modify            (<a class="autorefs autorefs-internal" title="trestle.core.pip
         <span class="nb">setattr</span><span class="p">(</span><span class="n">part</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">attr_list</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_add_attr_to_control</span><span class="p">(</span>
-        <span class="n">control</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">,</span> <span class="n">items</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">OBT</span><span class="p">],</span> <span class="n">attr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">prof</span><span class="o">.</span><span class="n">Position</span><span class="p">]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_add_attr_to_control</span><span class="p">(</span><span class="n">control</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">,</span> <span class="n">items</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">OBT</span><span class="p">],</span> <span class="n">attr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">attr_list</span> <span class="o">=</span> <span class="n">as_list</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
-        <span class="c1"># if position is None it will add to end</span>
-        <span class="k">if</span> <span class="n">position</span> <span class="ow">in</span> <span class="p">[</span><span class="n">prof</span><span class="o">.</span><span class="n">Position</span><span class="o">.</span><span class="n">starting</span><span class="p">,</span> <span class="n">prof</span><span class="o">.</span><span class="n">Position</span><span class="o">.</span><span class="n">before</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">position</span> <span class="ow">in</span> <span class="p">[</span><span class="n">prof</span><span class="o">.</span><span class="n">PositionValidValues</span><span class="o">.</span><span class="n">starting</span><span class="p">,</span> <span class="n">prof</span><span class="o">.</span><span class="n">PositionValidValues</span><span class="o">.</span><span class="n">before</span><span class="p">]:</span>
             <span class="n">items</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">attr_list</span><span class="p">)</span>
             <span class="n">attr_list</span> <span class="o">=</span> <span class="n">items</span>
         <span class="k">else</span><span class="p">:</span>
