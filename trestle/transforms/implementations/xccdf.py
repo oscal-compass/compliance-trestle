@@ -25,15 +25,23 @@ from defusedxml import ElementTree
 
 from ruamel.yaml import YAML
 
-from trestle.oscal.assessment_results import AssessmentAssets
-from trestle.oscal.assessment_results import ControlSelection
-from trestle.oscal.assessment_results import LocalDefinitions1
-from trestle.oscal.assessment_results import Observation
-from trestle.oscal.assessment_results import Result
-from trestle.oscal.assessment_results import ReviewedControls
-from trestle.oscal.assessment_results import Status1
-from trestle.oscal.assessment_results import SystemComponent
-from trestle.oscal.common import AssessmentPlatform, ImplementedComponent, InventoryItem, Property, SubjectReference
+from trestle.oscal.assessment_results import (
+    AssessmentAssets,
+    LocalDefinitions1,
+    Observation,
+    Result,
+    SystemComponent,
+)
+from trestle.oscal.common import (
+    AssessmentPlatform,
+    ControlSelection,
+    ImplementedComponent,
+    InventoryItem,
+    Property,
+    ReviewedControls,
+    Status,
+    SubjectReference,
+)
 from trestle.transforms.results import Results
 from trestle.transforms.transformer_factory import ResultsTransformer
 from trestle.transforms.transformer_helper import TransformerHelper
@@ -420,7 +428,7 @@ class _OscalResultsFactory():
     @property
     def assessment_assets(self) -> AssessmentAssets:
         """OSCAL assessment_assets."""
-        _status = Status1(state='operational')
+        _status = Status(state='operational')
         component = SystemComponent(
             uuid=str(uuid.uuid4()),
             type=f'{self._type}',
@@ -519,7 +527,7 @@ class _OscalResultsFactory():
             if component.type == _type and component.title == _title and component.description == _desc:
                 return
         component_ref = str(uuid.uuid4())
-        status = Status1(state='operational')
+        status = Status(state='operational')
         component = SystemComponent(uuid=component_ref, type=_type, title=_title, description=_desc, status=status)
         self._component_map[component_ref] = component
 

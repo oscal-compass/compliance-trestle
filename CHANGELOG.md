@@ -3,6 +3,28 @@
 
 <!--next-version-placeholder-->
 
+## v3.0.1 (2024-06-03)
+### Fix
+* Reverting last serm ver changes ([`9df0703`](https://github.com/oscal-compass/compliance-trestle/commit/9df0703aa925af836a8e07dcb45ed6db31daae11))
+* Revert sem release changelog and version ([`01427df`](https://github.com/oscal-compass/compliance-trestle/commit/01427df909cb8e3a25d46ba8e3c9049533d65a6b))
+
+## v3.0.0 (2024-06-03)
+### Feature
+* Oscal nist upgrade ([#1550](https://github.com/oscal-compass/compliance-trestle/issues/1550)) ([`82caf5f`](https://github.com/oscal-compass/compliance-trestle/commit/82caf5fe08796e10532410299d2032b2be7e7d61))
+
+### Fix
+* Correct sonar quality checks ([#1568](https://github.com/oscal-compass/compliance-trestle/issues/1568)) ([`7f93f86`](https://github.com/oscal-compass/compliance-trestle/commit/7f93f86ac384d3c68b801a24e166fd1774c31103))
+* Updated README.md - breaking change ([#1566](https://github.com/oscal-compass/compliance-trestle/issues/1566)) ([`7397105`](https://github.com/oscal-compass/compliance-trestle/commit/739710572f7d62a390b3a71fe3d06f080dfc8ebe))
+* Remove obsolete text, fix broken links, fix spelling ([#1565](https://github.com/oscal-compass/compliance-trestle/issues/1565)) ([`0955b4b`](https://github.com/oscal-compass/compliance-trestle/commit/0955b4b23537ea7d19d3902a7ff9e7c7e442a135))
+* BREAKING CHANGE ([#1560](https://github.com/oscal-compass/compliance-trestle/issues/1560)) ([`f714b12`](https://github.com/oscal-compass/compliance-trestle/commit/f714b12d179a2e83f9ef4c1904668a67ed936c3f))
+* Zoom link ([#1530](https://github.com/oscal-compass/compliance-trestle/issues/1530)) ([`95ff6b7`](https://github.com/oscal-compass/compliance-trestle/commit/95ff6b7f53ab325ec106c47d28a44f5e70f5f964))
+
+### Breaking
+* for new release ([`7397105`](https://github.com/oscal-compass/compliance-trestle/commit/739710572f7d62a390b3a71fe3d06f080dfc8ebe))
+
+### Documentation
+* Updates communication details in README.md ([#1537](https://github.com/oscal-compass/compliance-trestle/issues/1537)) ([`eb459a2`](https://github.com/oscal-compass/compliance-trestle/commit/eb459a292abb7251ee6d321a81d46d041f2a9b0a))
+
 ## v2.6.1 (2024-02-22)
 ### Fix
 * Correct vuln for cryptography ([#1520](https://github.com/oscal-compass/compliance-trestle/issues/1520)) ([`353cc2b`](https://github.com/oscal-compass/compliance-trestle/commit/353cc2b75e611b9d851cca2022f4e0fbe2936d16))

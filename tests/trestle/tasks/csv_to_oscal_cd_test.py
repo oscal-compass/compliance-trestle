@@ -382,6 +382,24 @@ def test_execute_missing_heading(tmp_path: pathlib.Path) -> None:
         assert retval == TaskOutcome.FAILURE
 
 
+def test_execute_case_insensitive_heading(tmp_path: pathlib.Path) -> None:
+    """Test execute case insensitive heading."""
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
+    # inject headings with different case
+    rows = _get_rows('tests/data/csv/ocp4-user.v2.csv')
+    row = rows[0]
+    assert row[2] == 'Rule_Description'
+    assert row[9] == 'Parameter_Id'
+    row[2] = 'rUlE_dEsCrIpTiOn'
+    row[9] = 'pArAmEtEr_Id'
+    with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
+        mock_csv_reader.return_value = rows
+        tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+        retval = tgt.execute()
+        assert retval == TaskOutcome.SUCCESS
+        _validate_ocp(tmp_path)
+
+
 def test_execute_missing_value(tmp_path: pathlib.Path) -> None:
     """Test execute missing value."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
