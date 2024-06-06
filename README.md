@@ -1,4 +1,4 @@
-# <div> <img style="vertical-align:middle" alt="Logo" width="80px" src="images/compliance-trestle-800x800.png"> <span style="">Compliance-trestle (also known as `trestle`)</span> </div>
+# <img alt="Logo" width="80px" src="./images/compliance-trestle-800x800.png" style="vertical-align: middle;" /> Compliance-trestle (also known as `trestle`)
 
 ![[OS Compatibility](#prerequisites)](https://img.shields.io/badge/platform-osx%20%7C%20linux%20%7C%20windows-orange.svg)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/compliance-trestle)
