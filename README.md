@@ -1,4 +1,3 @@
-
 # <img alt="Logo" width="80px" src="./images/compliance-trestle-800x800-transparent.png" style="vertical-align: middle;" /> Compliance-trestle (also known as `trestle`)
 
 ![[OS Compatibility](#prerequisites)](https://img.shields.io/badge/platform-osx%20%7C%20linux%20%7C%20windows-orange.svg)
