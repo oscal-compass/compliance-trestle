@@ -50,20 +50,21 @@ class Prune(Pipeline.Filter):
         self._catalog_interface = CatalogInterface(catalog)
         self._catalog = catalog
 
-    def _controls_selected(self, select_list: Optional[List[prof.SelectControlById]]) -> List[str]:
+    def _controls_selected(self, select_list: Optional[List[prof.SelectControl]]) -> List[str]:
         control_ids: List[str] = []
         if select_list is not None:
             for select_control in select_list:
                 if select_control.matching is not None:
-                    raise TrestleError('Profiles with SelectControlById based on matching are not supported.')
+                    raise TrestleError('Profiles with SelectControl based on matching are not supported.')
                 include_children = select_control.with_child_controls == 'yes'
                 if select_control.with_ids:
                     new_ids = select_control.with_ids
-                    for id_ in new_ids:
+                    for withid_ in new_ids:
+                        id_ = withid_.__root__
                         control_ids.append(id_)
                         if include_children:
                             control_ids.extend(self._catalog_interface.get_dependent_control_ids(id_))
-        return [control_id.__root__ for control_id in control_ids]
+        return control_ids
 
     def _find_needed_control_ids(self) -> List[str]:
         """Get list of control_ids needed by profile and corresponding groups."""
