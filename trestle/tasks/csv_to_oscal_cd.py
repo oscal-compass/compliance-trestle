@@ -1647,11 +1647,12 @@ class _CsvMgr():
         return rval
 
     def _undecorate_header(self) -> None:
-        """Undecorate header."""
+        """Undecorate header, and reformat each word in header to title case."""
         head_row = self._csv[0]
         self._csv[0] = []
         for column_name in head_row:
             heading = self._get_normalized_column_name(column_name)
+            heading = heading.title()
             self._csv[0].append(heading)
 
     def _verify(self) -> None:
