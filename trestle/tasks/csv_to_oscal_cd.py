@@ -61,6 +61,9 @@ PARAMETER_ID = f'{PARAMETER}_Id'
 PARAMETER_DESCRIPTION = f'{PARAMETER}_Description'
 PARAMETER_VALUE_DEFAULT = f'{PARAMETER}_Value_Default'
 PARAMETER_VALUE_ALTERNATIVES = f'{PARAMETER}_Value_Alternatives'
+ORIGINAL_RISK_RATING = 'Original_Risk_Rating'
+ADJUSTED_RISK_RATING = 'Adjusted_Risk_Rating'
+RISK_ADJUSTMENT = 'Risk_Adjustment'
 
 validation = 'validation'
 prefix_rule_set = 'rule_set_'
@@ -190,7 +193,10 @@ class CsvToOscalComponentDefinition(TaskBase):
             text1 = '                         '
         text1 = '  optional columns:      '
         for text2 in CsvColumn.get_optional_column_names():
-            text2 += ' (see note 2)'
+            if text2 in [f'{ORIGINAL_RISK_RATING}', f'{ADJUSTED_RISK_RATING}', f'{RISK_ADJUSTMENT}']:
+                text2 += ' (see note 1)'
+            else:
+                text2 += ' (see note 2)'
             logger.info(text1 + '$' + text2)
             text1 = '                         '
         for text2 in CsvColumn.get_parameter_column_names():
@@ -1367,6 +1373,9 @@ class CsvColumn():
     _columns_optional = [
         f'{CHECK_ID}',
         f'{CHECK_DESCRIPTION}',
+        f'{ORIGINAL_RISK_RATING}',
+        f'{ADJUSTED_RISK_RATING}',
+        f'{RISK_ADJUSTMENT}',
     ]
 
     _columns_parameter = [
@@ -1440,6 +1449,9 @@ class CsvColumn():
         f'{PARAMETER_VALUE_ALTERNATIVES}',
         f'{CHECK_ID}',
         f'{CHECK_DESCRIPTION}',
+        f'{ORIGINAL_RISK_RATING}',
+        f'{ADJUSTED_RISK_RATING}',
+        f'{RISK_ADJUSTMENT}',
     ]
 
     @staticmethod
