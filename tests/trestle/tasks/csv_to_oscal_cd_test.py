@@ -888,23 +888,29 @@ def test_execute_param_duplicate_value(tmp_path: pathlib.Path) -> None:
 def test_execute_correct_rule_key(tmp_path: pathlib.Path) -> None:
     """Test execute missing value."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
-    # inject error
     rows = _get_rows('tests/data/csv/ocp4-user.v2.csv')
     row = rows[2]
+    # ensure component_title and component_description are different
     assert row[7] == 'OSCO'
     assert row[8] == 'OSCO'
     row[8] = 'IAM'
     assert row[8] == 'IAM'
     component_title = row[7]
+    component_description = row[8]
     component_type = row[5]
     rule_id = row[1]
     with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
         mock_csv_reader.return_value = rows
-        expected_key = (component_title, component_type, rule_id)
+        # perform transformation
         tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
         retval = tgt.execute()
         assert retval == TaskOutcome.SUCCESS
+        # insure expected key exists
+        expected_key = (component_title, component_type, rule_id)
         assert expected_key in tgt._csv_mgr.get_rule_keys()
+        # insure unexpected key does not exist
+        unexpected_key = (component_description, component_type, rule_id)
+        assert unexpected_key not in tgt._csv_mgr.get_rule_keys()
 
 
 def test_execute_missing_param_default_value(tmp_path: pathlib.Path) -> None:
