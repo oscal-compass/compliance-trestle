@@ -1238,16 +1238,19 @@ def test_execute_with_risk_properties(tmp_path: pathlib.Path) -> None:
     """Test execute with risk properties."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     # add risk properties
-    rows = _get_rows('tests/data/csv/bp.sample.v5.csv')
-    assert rows[0][5] == 'Original_Risk_Rating'
-    assert rows[0][6] == 'Adjusted_Risk_Rating'
-    assert rows[0][7] == 'Risk_Adjustment'
-    assert rows[2][5] == ''
-    assert rows[2][6] == ''
-    assert rows[2][7] == ''
-    rows[2][5] = 'add-original-risk-rating'
-    rows[2][6] = 'add-adjusted-risk-rating'
-    rows[2][7] = 'add-risk-adjustment'
+    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    rows[0].append('Original_Risk_Rating')
+    rows[0].append('Adjusted_Risk_Rating')
+    rows[0].append('Risk_Adjustment')
+    # row 3 will be tested
+    rows[2].append('add-original-risk-rating')
+    rows[2].append('add-adjusted-risk-rating')
+    rows[2].append('add-risk-adjustment')
+    # ensure all rows have a value for the risk columns to execute task successfully
+    for row in rows[3:]:
+        row.append('')
+        row.append('')
+        row.append('')
     with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
         mock_csv_reader.return_value = rows
         tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
@@ -1258,7 +1261,7 @@ def test_execute_with_risk_properties(tmp_path: pathlib.Path) -> None:
     cd = ComponentDefinition.oscal_read(fp)
     # spot check
     component = cd.components[0]
-    # the bp.sample.v5.csv before mock has 62 properties
+    # the bp.sample.v2.csv before mock has 62 properties
     assert len(component.props) == 65
     assert component.props[0].name == 'Rule_Id'
     assert component.props[1].name == 'Rule_Description'
@@ -1276,20 +1279,23 @@ def test_execute_with_ignored_risk_properties(tmp_path: pathlib.Path) -> None:
     """Test execute with ignored risk properties when component type is validation."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     # add risk properties
-    rows = _get_rows('tests/data/csv/bp.sample.v5.csv')
-    assert rows[0][5] == 'Original_Risk_Rating'
-    assert rows[0][6] == 'Adjusted_Risk_Rating'
-    assert rows[0][7] == 'Risk_Adjustment'
-    assert rows[2][5] == ''
-    assert rows[2][6] == ''
-    assert rows[2][7] == ''
-    rows[2][5] = 'add-original-risk-rating'
-    rows[2][6] = 'add-adjusted-risk-rating'
-    rows[2][7] = 'add-risk-adjustment'
+    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    rows[0].append('Original_Risk_Rating')
+    rows[0].append('Adjusted_Risk_Rating')
+    rows[0].append('Risk_Adjustment')
+    # row 3 will be tested
+    rows[2].append('add-original-risk-rating')
+    rows[2].append('add-adjusted-risk-rating')
+    rows[2].append('add-risk-adjustment')
+    # ensure all rows have a value for the risk columns to execute task successfully
+    for row in rows[3:]:
+        row.append('')
+        row.append('')
+        row.append('')
     # set validation component type
-    assert rows[0][12] == 'Component_Type'
-    assert rows[2][12] == 'Service'
-    rows[2][12] = 'Validation'
+    assert rows[0][9] == 'Component_Type'
+    assert rows[2][9] == 'Service'
+    rows[2][9] = 'Validation'
     with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
         mock_csv_reader.return_value = rows
         tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
