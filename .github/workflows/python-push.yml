@@ -86,7 +86,7 @@ jobs:
     permissions:
       id-token: write
     environment:
-      name: release  ######## WARNING ####### THIS IS A BLIND PLACEHOLDER. PROJECT ADMIN MUST CHECK WITH END USER.
+      name: release
       url: https://pypi.org/p/compliance-trestle
     if: github.ref == 'refs/heads/main' && github.repository == 'oscal-compass/compliance-trestle'
     steps:
