@@ -419,6 +419,20 @@
             "remarks": "rule_set_09"
           }
         ],
+        "protocols": [
+          {
+            "uuid": "0130b4ef-4561-4363-bab5-1e20b9888e49",
+            "name": "https",
+            "title": "Transport Layer Security",
+            "port-ranges": [
+              {
+                "start": 443,
+                "end": 443,
+                "transport": "TCP"
+              }
+            ]
+          }
+        ],
         "control-implementations": [
           {
             "uuid": "a6fb7cc5-debb-47dd-81aa-92ecc00d75d6",
