@@ -667,12 +667,20 @@ class CsvToOscalComponentDefinition(TaskBase):
             name = self._csv_mgr.get_value(rule_key, parameter_id_column_name)
             value = self._csv_mgr.get_value(rule_key, parameter_value_default_column_name)
             if name and value:
-                values = self._str_to_list(value)
-                set_parameter = SetParameter(
-                    param_id=name,
-                    values=values,
-                )
-                set_parameters.append(set_parameter)
+                try:
+                    values = self._str_to_list(value)
+                    set_parameter = SetParameter(
+                        param_id=name,
+                        values=values,
+                    )
+                    set_parameters.append(set_parameter)
+                except Exception:
+                    row_number = self._csv_mgr.get_row_number(rule_key)
+                    text = (
+                        f'row {row_number}: "{name}" is invalid for column {parameter_id_column_name} '
+                        f'and/or "{",".join(values)}" is invalid for column {parameter_value_default_column_name}'
+                    )
+                    raise RuntimeError(text)
             elif name:
                 row_number = self._csv_mgr.get_row_number(rule_key)
                 text = f'row "{row_number}" missing value for "{parameter_value_default_column_name}"'
