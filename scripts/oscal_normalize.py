@@ -1033,7 +1033,13 @@ def kill_roots(file_classes):
                 for ii in range(1, len(c.lines)):
                     line = c.lines[ii]
                     for name, body in new_root_classes.items():
-                        # handle special case
+                        # handle special cases
+                        if 'NonNegativeIntegerDatatype' in line:
+                            line = line.replace('NonNegativeIntegerDatatype', 'conint(ge=0, multiple_of=1)', 1)
+                        if 'PositiveIntegerDatatype' in line:
+                            line = line.replace('PositiveIntegerDatatype', 'conint(ge=1, multiple_of=1)', 1)
+                        if 'IntegerDatatype' in line:
+                            line = line.replace('IntegerDatatype', 'conint(multiple_of=1)', 1)
                         if c.name == 'OscalVersion':
                             if any(token in line for token in [' __root__: StringDatatype']):
                                 line = line.replace(name, body, 1)
