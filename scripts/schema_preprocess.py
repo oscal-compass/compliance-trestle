@@ -124,9 +124,12 @@ def traverse_dict(data, model_name):
     for _, value in data.items():
         if isinstance(value, dict):
             if 'allOf' in value.keys():
-                allof = value['allOf'][1]
-                if '$ref' in allof.keys():
-                    value['$ref'] = allof['$ref']
+                delete_allof = False
+                for allof in value['allOf']:
+                    if '$ref' in allof.keys():
+                        value['$ref'] = allof['$ref']
+                        delete_allof = True
+                if delete_allof:
                     del value['allOf']
             traverse_dict(value, model_name)
 

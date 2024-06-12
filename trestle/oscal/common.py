@@ -397,12 +397,6 @@ class Property(OscalBaseModel):
     remarks: Optional[str] = None
 
 
-class PositiveIntegerDatatype(OscalBaseModel):
-    """
-    An integer value that is greater than 0.
-    """
-
-
 class PortRangeValidValues(Enum):
     TCP = 'TCP'
     UDP = 'UDP'
@@ -520,12 +514,6 @@ class ObjectiveStatus(OscalBaseModel):
                                title='Objective Status Reason'
                            )
     remarks: Optional[str] = None
-
-
-class NonNegativeIntegerDatatype(OscalBaseModel):
-    """
-    An integer value that is equal to or greater than 0.
-    """
 
 
 class NamingSystemValidValues(Enum):
@@ -817,9 +805,7 @@ class ExternalId(OscalBaseModel):
 
 
 class EmailAddressDatatype(OscalBaseModel):
-    """
-    An email address string formatted according to RFC 6531.
-    """
+    __root__: StringDatatype = Field(..., description='An email address string formatted according to RFC 6531.')
 
 
 class EmailAddress(OscalBaseModel):
@@ -974,20 +960,6 @@ class AuthorizedPrivilege(OscalBaseModel):
     functions_performed: List[constr(regex=r'^\S(.*\S)?$')] = Field(..., alias='functions-performed')
 
 
-class AtFrequency(OscalBaseModel):
-    """
-    The task is intended to occur at the specified frequency.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    period: PositiveIntegerDatatype = Field(
-        ..., description='The task must occur after the specified period has elapsed.', title='Period'
-    )
-    unit: TimeUnitValidValues = Field(..., description='The unit of time for the period.', title='Time Unit')
-
-
 class AssessmentSubjectValidValues(Enum):
     component = 'component'
     inventory_item = 'inventory-item'
@@ -1134,34 +1106,6 @@ class Version(OscalBaseModel):
     )
 
 
-class Timing(OscalBaseModel):
-    """
-    The timing under which the task is intended to occur.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    on_date: Optional[OnDate] = Field(
-        None,
-        alias='on-date',
-        description='The task is intended to occur on the specified date.',
-        title='On Date Condition'
-    )
-    within_date_range: Optional[WithinDateRange] = Field(
-        None,
-        alias='within-date-range',
-        description='The task is intended to occur within the specified date range.',
-        title='On Date Range Condition'
-    )
-    at_frequency: Optional[AtFrequency] = Field(
-        None,
-        alias='at-frequency',
-        description='The task is intended to occur at the specified frequency.',
-        title='Frequency Condition'
-    )
-
-
 class TelephoneNumber(OscalBaseModel):
     """
     A telephone service number as defined by ITU-T E.164.
@@ -1196,7 +1140,7 @@ class Location(OscalBaseModel):
         title='Location Title'
     )
     address: Optional[Address] = None
-    email_addresses: Optional[List[EmailAddress]] = Field(None, alias='email-addresses')
+    email_addresses: Optional[List[StringDatatype]] = Field(None, alias='email-addresses')
     telephone_numbers: Optional[List[TelephoneNumber]] = Field(None, alias='telephone-numbers')
     urls: Optional[List[AnyUrl]] = Field(None)
     props: Optional[List[Property]] = Field(None)
@@ -1557,89 +1501,50 @@ class Published(OscalBaseModel):
     )
 
 
-class PortRange(OscalBaseModel):
+class PositiveIntegerDatatype(OscalBaseModel):
+    __root__: IntegerDatatype = Field(..., description='An integer value that is greater than 0.')
+
+
+class AtFrequency(OscalBaseModel):
     """
-    Where applicable this is the IPv4 port range on which the service operates.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    start: Optional[NonNegativeIntegerDatatype] = Field(
-        None, description='Indicates the starting port number in a port range', title='Start'
-    )
-    end: Optional[NonNegativeIntegerDatatype] = Field(
-        None, description='Indicates the ending port number in a port range', title='End'
-    )
-    transport: Optional[PortRangeValidValues] = Field(
-        None, description='Indicates the transport type.', title='Transport'
-    )
-
-
-class Protocol(OscalBaseModel):
-    """
-    Information about the protocol used to provide a service.
+    The task is intended to occur at the specified frequency.
     """
 
     class Config:
         extra = Extra.forbid
 
-    uuid: Optional[constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    )] = Field(
+    period: PositiveIntegerDatatype = Field(
+        ..., description='The task must occur after the specified period has elapsed.', title='Period'
+    )
+    unit: TimeUnitValidValues = Field(..., description='The unit of time for the period.', title='Time Unit')
+
+
+class Timing(OscalBaseModel):
+    """
+    The timing under which the task is intended to occur.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    on_date: Optional[OnDate] = Field(
         None,
-        description=
-        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this service protocol information elsewhere in this or other OSCAL instances. The locally defined UUID of the service protocol can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
-        title='Service Protocol Information Universally Unique Identifier',
+        alias='on-date',
+        description='The task is intended to occur on the specified date.',
+        title='On Date Condition'
     )
-    name: constr(regex=r'^\S(.*\S)?$') = Field(
-        ...,
-        description=
-        'The common name of the protocol, which should be the appropriate "service name" from the IANA Service Name and Transport Protocol Port Number Registry.',
-        title='Protocol Name'
-    )
-    title: Optional[str] = Field(
+    within_date_range: Optional[WithinDateRange] = Field(
         None,
-        description='A human readable name for the protocol (e.g., Transport Layer Security).',
-        title='Protocol Title'
+        alias='within-date-range',
+        description='The task is intended to occur within the specified date range.',
+        title='On Date Range Condition'
     )
-    port_ranges: Optional[List[PortRange]] = Field(None, alias='port-ranges')
-
-
-class SystemComponent(OscalBaseModel):
-    """
-    A defined component that can be part of an implemented system.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description=
-        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this component elsewhere in this or other OSCAL instances. The locally defined UUID of the component can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
-        title='Component Identifier',
+    at_frequency: Optional[AtFrequency] = Field(
+        None,
+        alias='at-frequency',
+        description='The task is intended to occur at the specified frequency.',
+        title='Frequency Condition'
     )
-    type: Union[constr(regex=r'^\S(.*\S)?$'), SystemComponentTypeValidValues] = Field(
-        ..., description='A category describing the purpose of the component.', title='Component Type'
-    )
-    title: str = Field(..., description='A human readable name for the system component.', title='Component Title')
-    description: str = Field(
-        ...,
-        description='A description of the component, including information about its function.',
-        title='Component Description'
-    )
-    purpose: Optional[str] = Field(
-        None, description='A summary of the technological or business purpose of the component.', title='Purpose'
-    )
-    props: Optional[List[Property]] = Field(None)
-    links: Optional[List[Link]] = Field(None)
-    status: Status = Field(..., description='Describes the operational status of the system component.', title='Status')
-    responsible_roles: Optional[List[ResponsibleRole]] = Field(None, alias='responsible-roles')
-    protocols: Optional[List[Protocol]] = Field(None)
-    remarks: Optional[str] = None
 
 
 class Party(OscalBaseModel):
@@ -1670,7 +1575,7 @@ class Party(OscalBaseModel):
     external_ids: Optional[List[ExternalId]] = Field(None, alias='external-ids')
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
-    email_addresses: Optional[List[EmailAddress]] = Field(None, alias='email-addresses')
+    email_addresses: Optional[List[StringDatatype]] = Field(None, alias='email-addresses')
     telephone_numbers: Optional[List[TelephoneNumber]] = Field(None, alias='telephone-numbers')
     addresses: Optional[List[Address]] = Field(None)
     location_uuids: Optional[List[constr(
@@ -1859,6 +1764,95 @@ class OriginActor(OscalBaseModel):
     )
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
+
+
+class NonNegativeIntegerDatatype(OscalBaseModel):
+    __root__: IntegerDatatype = Field(..., description='An integer value that is equal to or greater than 0.')
+
+
+class PortRange(OscalBaseModel):
+    """
+    Where applicable this is the IPv4 port range on which the service operates.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    start: Optional[NonNegativeIntegerDatatype] = Field(
+        None, description='Indicates the starting port number in a port range', title='Start'
+    )
+    end: Optional[NonNegativeIntegerDatatype] = Field(
+        None, description='Indicates the ending port number in a port range', title='End'
+    )
+    transport: Optional[PortRangeValidValues] = Field(
+        None, description='Indicates the transport type.', title='Transport'
+    )
+
+
+class Protocol(OscalBaseModel):
+    """
+    Information about the protocol used to provide a service.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    uuid: Optional[constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    )] = Field(
+        None,
+        description=
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this service protocol information elsewhere in this or other OSCAL instances. The locally defined UUID of the service protocol can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
+        title='Service Protocol Information Universally Unique Identifier',
+    )
+    name: constr(regex=r'^\S(.*\S)?$') = Field(
+        ...,
+        description=
+        'The common name of the protocol, which should be the appropriate "service name" from the IANA Service Name and Transport Protocol Port Number Registry.',
+        title='Protocol Name'
+    )
+    title: Optional[str] = Field(
+        None,
+        description='A human readable name for the protocol (e.g., Transport Layer Security).',
+        title='Protocol Title'
+    )
+    port_ranges: Optional[List[PortRange]] = Field(None, alias='port-ranges')
+
+
+class SystemComponent(OscalBaseModel):
+    """
+    A defined component that can be part of an implemented system.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description=
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this component elsewhere in this or other OSCAL instances. The locally defined UUID of the component can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
+        title='Component Identifier',
+    )
+    type: Union[constr(regex=r'^\S(.*\S)?$'), SystemComponentTypeValidValues] = Field(
+        ..., description='A category describing the purpose of the component.', title='Component Type'
+    )
+    title: str = Field(..., description='A human readable name for the system component.', title='Component Title')
+    description: str = Field(
+        ...,
+        description='A description of the component, including information about its function.',
+        title='Component Description'
+    )
+    purpose: Optional[str] = Field(
+        None, description='A summary of the technological or business purpose of the component.', title='Purpose'
+    )
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
+    status: Status = Field(..., description='Describes the operational status of the system component.', title='Status')
+    responsible_roles: Optional[List[ResponsibleRole]] = Field(None, alias='responsible-roles')
+    protocols: Optional[List[Protocol]] = Field(None)
+    remarks: Optional[str] = None
 
 
 class LastModified(OscalBaseModel):
