@@ -472,6 +472,10 @@ class XlsxHelper:
                 self._add_column(self._column.nist_mappings, column, 0)
             elif self._column.resource_title in cell_tokens:
                 self._add_column(self._column.resource_title, column, 0)
+        self._insure_columns()
+        
+    def _insure_columns(self) -> None:
+        """Insure columns."""
         # insure expected columns found
         for name in [self._column.control_id,
                      self._column.control_text,
