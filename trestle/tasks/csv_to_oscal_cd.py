@@ -1545,7 +1545,7 @@ class _CsvMgr():
             component_description = self.get_row_value(row, f'{COMPONENT_DESCRIPTION}')
             rule_id = self.get_row_value(row, f'{RULE_ID}')
             # rule sets
-            key = _CsvMgr.get_rule_key(component_description, component_type, rule_id)
+            key = _CsvMgr.get_rule_key(component_title, component_type, rule_id)
             if key in self._csv_rules_map:
                 text = f'row "{row_num}" contains duplicate {RULE_ID} "{rule_id}"'
                 raise RuntimeError(text)
