@@ -96,28 +96,7 @@ Compliance trestle is currently stable and is based on NIST OSCAL version 1.1.2,
 
 ## Community meetings and communications
 
-##### Scheduled meetings
-
-Please attend! All are invited.
-
-**When**:
-
-Every other Tuesday starting on April 23, 2024 · 11:00 – 11:30am ET
-[convert to your local time](https://mytime.io/11am/ET)
-
-**Where**: [Google Meet Link](https://meet.google.com/mwp-affd-tvu)
-
-Dial in:
-(US) +1 402-627-0247 PIN: 535 362 764#\
-[More phone numbers](https://tel.meet/mwp-affd-tvu?pin=9717189704231)
-
-**What**: Meeting agenda and notes [Google Docs](https://docs.google.com/document/d/1XTYM7xnWlIqd-8Nn5-qtgvgk8kH3NSmYle5yZvaS7qs/edit?usp=sharing)
-
-##### Chat anytime
-
-Slack: [#oscal-compliance-trestle-agileauthoring-c2p](https://cloud-native.slack.com/archives/C06F3PEPNBW)
-
-- **Note**: You can login to Slack using another account like Google, Apple
+Please refer to the community [README](https://github.com/oscal-compass/community/blob/main/README.md) for communication details.
 
 ## Contributing to Trestle
 
