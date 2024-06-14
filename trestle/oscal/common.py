@@ -408,6 +408,25 @@ class PortRangeValidValues(Enum):
     UDP = 'UDP'
 
 
+class PortRange(OscalBaseModel):
+    """
+    Where applicable this is the IPv4 port range on which the service operates.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    start: Optional[conint(ge=0, multiple_of=1)] = Field(
+        None, description='Indicates the starting port number in a port range', title='Start'
+    )
+    end: Optional[conint(ge=0, multiple_of=1)] = Field(
+        None, description='Indicates the ending port number in a port range', title='End'
+    )
+    transport: Optional[PortRangeValidValues] = Field(
+        None, description='Indicates the transport type.', title='Transport'
+    )
+
+
 class PartyUuid(OscalBaseModel):
     __root__: UUIDDatatype = Field(
         ..., description='Reference to a party by UUID.', title='Party Universally Unique Identifier Reference'
@@ -982,9 +1001,9 @@ class AtFrequency(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    period: PositiveIntegerDatatype = Field(
-        ..., description='The task must occur after the specified period has elapsed.', title='Period'
-    )
+    period: conint(
+        ge=1, multiple_of=1
+    ) = Field(..., description='The task must occur after the specified period has elapsed.', title='Period')
     unit: TimeUnitValidValues = Field(..., description='The unit of time for the period.', title='Time Unit')
 
 
@@ -1554,25 +1573,6 @@ class RelevantEvidence(OscalBaseModel):
 class Published(OscalBaseModel):
     __root__: DateTimeWithTimezoneDatatype = Field(
         ..., description='The date and time the document was last made available.', title='Publication Timestamp'
-    )
-
-
-class PortRange(OscalBaseModel):
-    """
-    Where applicable this is the IPv4 port range on which the service operates.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    start: Optional[NonNegativeIntegerDatatype] = Field(
-        None, description='Indicates the starting port number in a port range', title='Start'
-    )
-    end: Optional[NonNegativeIntegerDatatype] = Field(
-        None, description='Indicates the ending port number in a port range', title='End'
-    )
-    transport: Optional[PortRangeValidValues] = Field(
-        None, description='Indicates the transport type.', title='Transport'
     )
 
 
