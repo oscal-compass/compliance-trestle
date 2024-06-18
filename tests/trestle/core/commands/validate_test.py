@@ -30,6 +30,7 @@ from tests.test_utils import setup_for_ssp
 import trestle.common.const as const
 import trestle.core.generators as gens
 import trestle.oscal.assessment_plan as ap
+import trestle.oscal.common as common
 import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
 from trestle import cli
@@ -407,3 +408,65 @@ def test_validate_ssp_with_no_profile(tmp_trestle_dir: pathlib.Path, monkeypatch
 
     new_ssp.import_profile.href = original_href
     ModelUtils.save_top_level_model(new_ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
+
+
+def test_period(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test period."""
+    unit = common.TimeUnitValidValues.seconds
+    _ = common.AtFrequency(period=1, unit=unit)
+    try:
+        _ = common.AtFrequency(period=0, unit=unit)
+        raise RuntimeError('must be positive integer')
+    except Exception:
+        pass
+
+
+def test_validate_component_definition(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test validation of Component Definition."""
+    jfile = 'component-definition.json'
+
+    sdir = test_data_dir / 'validate' / 'component-definitions' / 'x1'
+    spth = sdir / f'{jfile}'
+
+    tdir = tmp_trestle_dir / test_utils.COMPONENT_DEF_DIR / 'my_test_model'
+    tpth = tdir / f'{jfile}'
+
+    (tdir).mkdir(exist_ok=True, parents=True)
+
+    shutil.copyfile(spth, tpth)
+    validate_command = f'trestle validate -f {tpth}'
+    test_utils.execute_command_and_assert(validate_command, 0, monkeypatch)
+
+
+def test_validate_component_definition_ports(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test validation of ports in Component Definition."""
+    jfile = 'component-definition.json'
+
+    sdir = test_data_dir / 'validate' / 'component-definitions' / 'x2'
+    spth = sdir / f'{jfile}'
+
+    tdir = tmp_trestle_dir / test_utils.COMPONENT_DEF_DIR / 'my_test_model'
+    tpth = tdir / f'{jfile}'
+
+    (tdir).mkdir(exist_ok=True, parents=True)
+
+    shutil.copyfile(spth, tpth)
+    validate_command = f'trestle validate -f {tpth}'
+    test_utils.execute_command_and_assert(validate_command, 0, monkeypatch)
+
+
+def test_validate_component_definition_ports_invalid(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test validation of ports in Component Definition."""
+    jfile = 'component-definition.json'
+
+    sdir = test_data_dir / 'validate' / 'component-definitions' / 'x3'
+    spth = sdir / f'{jfile}'
+
+    tdir = tmp_trestle_dir / test_utils.COMPONENT_DEF_DIR / 'my_test_model'
+    tpth = tdir / f'{jfile}'
+
+    (tdir).mkdir(exist_ok=True, parents=True)
+
+    shutil.copyfile(spth, tpth)
+    validate_command = f'trestle validate -f {tpth}'
+    test_utils.execute_command_and_assert(validate_command, 1, monkeypatch)
