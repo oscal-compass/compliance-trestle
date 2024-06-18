@@ -45380,9 +45380,9 @@ AtFrequency            (<a class="autorefs autorefs-internal" title="trestle.cor
     <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
         <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
 
-    <span class="n">period</span><span class="p">:</span> <span class="n">PositiveIntegerDatatype</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;The task must occur after the specified period has elapsed.&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Period&#39;</span>
-    <span class="p">)</span>
+    <span class="n">period</span><span class="p">:</span> <span class="n">conint</span><span class="p">(</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">multiple_of</span><span class="o">=</span><span class="mi">1</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;The task must occur after the specified period has elapsed.&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Period&#39;</span><span class="p">)</span>
     <span class="n">unit</span><span class="p">:</span> <span class="n">TimeUnitValidValues</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;The unit of time for the period.&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Time Unit&#39;</span><span class="p">)</span>
 </code></pre></div>
         </details>
@@ -45674,7 +45674,7 @@ AtFrequency            (<a class="autorefs autorefs-internal" title="trestle.cor
 
 
 <h6 id="trestle.oscal.common.AtFrequency.period" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">period</span><span class="p">:</span> <span class="n">PositiveIntegerDatatype</span></code>
+<code class="highlight language-python"><span class="n">period</span><span class="p">:</span> <span class="n">ConstrainedIntValue</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-pydantic-field"><code>pydantic-field</code></small>
@@ -70075,10 +70075,10 @@ PortRange            (<a class="autorefs autorefs-internal" title="trestle.core.
     <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
         <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
 
-    <span class="n">start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">NonNegativeIntegerDatatype</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">conint</span><span class="p">(</span><span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">multiple_of</span><span class="o">=</span><span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Indicates the starting port number in a port range&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Start&#39;</span>
     <span class="p">)</span>
-    <span class="n">end</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">NonNegativeIntegerDatatype</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">end</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">conint</span><span class="p">(</span><span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">multiple_of</span><span class="o">=</span><span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Indicates the ending port number in a port range&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;End&#39;</span>
     <span class="p">)</span>
     <span class="n">transport</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PortRangeValidValues</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
@@ -70374,7 +70374,7 @@ PortRange            (<a class="autorefs autorefs-internal" title="trestle.core.
 
 
 <h6 id="trestle.oscal.common.PortRange.end" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">end</span><span class="p">:</span> <span class="n">NonNegativeIntegerDatatype</span></code>
+<code class="highlight language-python"><span class="n">end</span><span class="p">:</span> <span class="n">ConstrainedIntValue</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-pydantic-field"><code>pydantic-field</code></small>
@@ -70396,7 +70396,7 @@ PortRange            (<a class="autorefs autorefs-internal" title="trestle.core.
 
 
 <h6 id="trestle.oscal.common.PortRange.start" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">start</span><span class="p">:</span> <span class="n">NonNegativeIntegerDatatype</span></code>
+<code class="highlight language-python"><span class="n">start</span><span class="p">:</span> <span class="n">ConstrainedIntValue</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-pydantic-field"><code>pydantic-field</code></small>
