@@ -33,7 +33,7 @@ The steps are as follows:
 <li> Merge develop branch into main branch <i style="color:darkgrey;">(remote)</i>
 </ol>
 
------
+______________________________________________________________________
 
 ##### Overview of process to take OSCAL models and upgrade trestle Python code
 
