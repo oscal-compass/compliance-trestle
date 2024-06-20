@@ -26,4 +26,3 @@ def test_mypy(tmp_path) -> None:
     output_bytes, _ = process.communicate()
     output = output_bytes.decode('utf-8')
     assert 'Success: no issues found in 1 source file' in output
-
