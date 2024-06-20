@@ -222,6 +222,7 @@ def test_valid_version() -> None:
     assert not TemplateVersioning.is_valid_version('0.1')
     assert not TemplateVersioning.is_valid_version('1')
     assert not TemplateVersioning.is_valid_version('0.0.0.1')
+    assert not TemplateVersioning.is_valid_version('0a0b1')
 
 
 def test_empty_folder_is_not_created(tmp_path: pathlib.Path) -> None:
