@@ -16,6 +16,7 @@
 
 import subprocess
 
+config = 'setup.cfg'
 subject = 'tests/trestle/misc/_inventory.py'
 
 
@@ -28,7 +29,7 @@ def test_mypy(tmp_path) -> None:
     assert 'Trestle version' in output
     assert 'based on OSCAL version' in output
     #
-    cmd = ['mypy', f'{subject}']
+    cmd = ['mypy', '--config-file', f'{config}', f'{subject}']
     process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
     output_bytes, _ = process.communicate()
     output = output_bytes.decode('utf-8')
