@@ -21,6 +21,13 @@ subject = 'tests/trestle/misc/_inventory.py'
 
 def test_mypy(tmp_path) -> None:
     """Testing mypy."""
+    cmd = ['trestle', 'version']
+    process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+    output_bytes, _ = process.communicate()
+    output = output_bytes.decode('utf-8')
+    assert 'Trestle version' in output
+    assert 'based on OSCAL version' in output
+    #
     cmd = ['mypy', f'{subject}']
     process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
     output_bytes, _ = process.communicate()
