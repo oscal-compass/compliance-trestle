@@ -14,10 +14,12 @@
 # limitations under the License.
 """Testing mypy."""
 
+import pathlib
 import subprocess
 
-config = 'setup.cfg'
-subject = 'tests/trestle/misc/_inventory.py'
+folder = pathlib.Path('tests') / 'trestle' / 'misc'
+subject = folder / '_inventory.py'
+config = folder / 'mypy.cfg'
 
 
 def test_mypy(tmp_path) -> None:
