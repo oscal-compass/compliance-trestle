@@ -2,6 +2,80 @@
 
 
 
+## v3.2.0 (2024-06-18)
+
+### Chore
+
+* chore: Merge back version tags and changelog into develop. ([`d72f1fd`](https://github.com/oscal-compass/compliance-trestle/commit/d72f1fdfe26cd03a92d07aabfa6cde37ab41bc70))
+
+### Documentation
+
+* docs: updates README.md communication details (#1588)
+
+Communication information is now centralized to
+the community repo
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`a44312c`](https://github.com/oscal-compass/compliance-trestle/commit/a44312ce48e22bd71de9c6780e773b13b13eb575))
+
+### Feature
+
+* feat: add risk properties support to csv-to-oscal-cd task (#1577)
+
+* feat: add risk properties support to csv-to-oscal-cd task
+
+Signed-off-by: Ma1h01 &lt;yihaomai@gmail.com&gt;
+
+* fix: update the risk properties tests to mock the risk columns instead of creating a new csv file
+
+Signed-off-by: Ma1h01 &lt;yihaomai@gmail.com&gt;
+
+---------
+
+Signed-off-by: Ma1h01 &lt;yihaomai@gmail.com&gt;
+Co-authored-by: AleJo2995 &lt;alejandro.leiva.palomo@ibm.com&gt; ([`dbe8e05`](https://github.com/oscal-compass/compliance-trestle/commit/dbe8e051cd4ad2ab073438a4e837356924d6e062))
+
+### Fix
+
+* fix: correct old pyhton versions (#1572)
+
+Signed-off-by: Alejandro Jose Leiva Palomo &lt;alejandro.leiva.palomo@ibm.com&gt; ([`d6ca166`](https://github.com/oscal-compass/compliance-trestle/commit/d6ca1666c89a1ea5bfa54d4d242d0814e62668bd))
+
+* fix: handle NonNegativeIntegerDatatype and PositiveIntegerDatatype in gen_oscal (#1584)
+
+* fix: handle *IntegerDatatype during gen_oscal
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* fix: test cases for NonNegative and Postive IntegerDatatypes
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+---------
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt; ([`888c9eb`](https://github.com/oscal-compass/compliance-trestle/commit/888c9eb0f6ae106fefd3f9667d4fc9fa74f51008))
+
+* fix: correct the argument for get_rule_key in csv_to_oscal_cd.py (#1578)
+
+* fix: correct the argument for get_rule_key in csv_to_oscal_cd.py
+
+Signed-off-by: Ma1h01 &lt;yihaomai@gmail.com&gt;
+
+* test: correct comments and add another assert statement to test the existence of wrong key
+
+Signed-off-by: Ma1h01 &lt;yihaomai@gmail.com&gt;
+
+---------
+
+Signed-off-by: Ma1h01 &lt;yihaomai@gmail.com&gt;
+Co-authored-by: AleJo2995 &lt;alejandro.leiva.palomo@ibm.com&gt; ([`774e3cf`](https://github.com/oscal-compass/compliance-trestle/commit/774e3cff89647a5e2fbd494d5ec5f352a0dd0671))
+
+### Unknown
+
+* Merge pull request #1593 from oscal-compass/develop
+
+chore: Trestle release ([`8e7c490`](https://github.com/oscal-compass/compliance-trestle/commit/8e7c4905efd4eb174d2d9afe7f20c575bd3d2d52))
+
+
 ## v3.1.0 (2024-06-12)
 
 ### Chore

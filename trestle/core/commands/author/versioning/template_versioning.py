@@ -212,7 +212,7 @@ class TemplateVersioning:
             return True  # we can have empty version
         if template_version == '0.0.0':
             return False
-        version_regex = r'^[0-9]+.[0-9]+.[0-9]+$'
+        version_regex = r'^[0-9]+\.[0-9]+\.[0-9]+$'
         pattern = re.compile(version_regex)
         if pattern.search(template_version):
             return True
