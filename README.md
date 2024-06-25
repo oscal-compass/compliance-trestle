@@ -29,59 +29,6 @@ Trestle provides tooling to help orchestrate the compliance process across a num
 - Support within trestle to streamline management within a managed git environment.
 - An underlying object model that supports developers interacting with OSCAL artifacts.
 
-## Important Note:
-
-The current trestle v3:
-
-- supports NIST OSCAL 1.1.2 as well as previous versions
-- new OSCAL json documents created will be output as OSCAL version 1.1.2
-- old OSCAL json documents created using trestle v2 are supported (backwards compatibility)
-- some Python module dependencies have been upgraded
-
-OSCAL changes between 1.0.4 and 1.1.2 can be found here: [https://github.com/usnistgov/OSCAL/releases](https://github.com/usnistgov/OSCAL/releases). In short:
-
-<details>
-<summary>1.1.2</summary>
-<ul>
-<li>Catalog constraints added in oscal_catalog_metaschema.xml
-<li>Remove with-parent-controls from implementation
-<li>Bump actions/setup-java from 3 to 4
-<li>CI Automation enhancements
-</ul>
-</details>
-
-<details>
-<summary>1.1.1</summary> 
-<ul>   
-<li>Allow non-FISMA/RMF use cases for SSP information type impact levels.
-<li>Remove obsolete model documentation for biblio elements in back-matter/resources.
-</ul>
-</details>
-
-<details>
-<summary>1.1.0</summary> 
-<ul>   
-<li>SSP: Change certain elements from required to optional for non-RMF use cases.
-<li>SSP: improve constraints of links for cross-referencing components and indicating where components were imported from.
-<li>POAM: add related-findings assembly.
-<li>Profile: Remove with-parent-controls from the profile model.
-<li>Metadata: add group attribute to props
-<li>Metadata: add resource fragment to links (very useful for deep-linking into elements by UUID and point to sub-element UUID)
-<li>Metadata: add actions assembly to track approvals or request for changes status.
-<li>Metadata: correct how cross-references between controls and their parts are handled.
-<li>Mapping: re previous discussion, mapping, by itself or within catalog, has been moved out of the v1.1.0 release.
-</ul>
-</details>
-
-<details>
-<summary>1.0.6, 1.0.5</summary> 
-<ul>   
-<li>Small bug fixes
-</ul>
-</details>
-
-There was a breaking change in OSCAL moving from version 1.0.0 to 1.0.2 mainly due to `prop` becoming `props` in AssessmentResults.  Those who require strict OSCAL 1.0.0 please use trestle version 0.37.x.  That version is stable but will not have any features added, and we encourage all users to move to OSCAL 1.1.2. OSCAL version 1.0.0 files are still handled on import but any AssessmentResults must conform to the `props` in AssessmentResults OSCAL specification.
-
 ## Why Trestle
 
 Compliance suffers from being a complex topic that is hard to articulate simply. It involves complete and accurate execution of multiple procedures across many disciplines (e.g. IT, HR, management) with periodic verification and audit of those procedures against controls.
@@ -139,7 +86,11 @@ A collection of demos utilizing trestle can be found in the related project [com
 
 ## Development status
 
-Compliance trestle is currently stable and is based on NIST OSCAL version 1.1.2, with active development continuing.
+### v3: stable (actively developed)
+- supports NIST OSCAL 1.1.2 as well as previous versions
+
+### v2: stable (maintenance mode)
+- supports NIST OSCAL 1.0.4 as well as previous versions 
 
 ## Community meetings and communications
 
