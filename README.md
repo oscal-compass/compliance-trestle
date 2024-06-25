@@ -87,10 +87,12 @@ A collection of demos utilizing trestle can be found in the related project [com
 ## Development status
 
 ### v3: stable (actively developed)
+
 - supports NIST OSCAL 1.1.2 as well as previous versions
 
 ### v2: stable (maintenance mode)
-- supports NIST OSCAL 1.0.4 as well as previous versions 
+
+- supports NIST OSCAL 1.0.4 as well as previous versions
 
 ## Community meetings and communications
 
