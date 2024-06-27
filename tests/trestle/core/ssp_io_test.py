@@ -120,7 +120,7 @@ def test_ssp_get_control_response(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
     tree = DocsMarkdownNode.build_tree_from_markdown(md_text.split('\n'))
 
     assert tree.get_node_for_key('## Implementation for part a.')
-    assert len(list(tree.get_all_headers_for_level(2))) == 4
+    assert len(list(tree.get_all_headers_for_level(2))) == 6
     assert len(list(tree.get_all_headers_for_level(3))) == 5
 
     md_text = ssp_io.get_control_response('ac-3', 1, True)
