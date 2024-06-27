@@ -1054,6 +1054,8 @@ lines or modify/remove the lines with `### ` in them, corresponding to system co
 
 If you edit the control markdown files you may run `ssp-generate` again and your edits will not be overwritten.  When writing out the markdown for a control, any existing markdown for that control will be read and the response text for each part will be re-inserted into the new markdown file.  If the new markdown has added parts the original responses will be placed correctly in the new file, but if any part is removed from the source control json file then any corresponding prose will be lost after the next `ssp-generate`.
 
+The `x-trestle-add-props` key of the yaml header allows the addition of properties to the implemented requirements under the SSP control implementation, comprising `name`, `value`, and optionally a namespace `ns` value. Similarly to the `x-trestle-add-props` in profile authoring, the properties may be added at the control level, or attached to a top level statement part by adding a value, `smt-part` with value `a.`, `b.` or any other label for one of the top level statement parts.
+
 `trestle author ssp-assemble`
 
 After manually edting the markdown and providing the responses for the control implementation requirements, the markdown can be assembled into a single json SSP file with:
