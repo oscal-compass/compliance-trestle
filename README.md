@@ -29,12 +29,6 @@ Trestle provides tooling to help orchestrate the compliance process across a num
 - Support within trestle to streamline management within a managed git environment.
 - An underlying object model that supports developers interacting with OSCAL artifacts.
 
-## Important Note:
-
-The current version of trestle supports NIST OSCAL 1.1.2 as well as previous versions 1.1.x and 1.0.x. All files created by trestle will be output as OSCAL version 1.1.2.
-
-There was a breaking change in OSCAL moving from version 1.0.0 to 1.0.2 mainly due to `prop` becoming `props` in AssessmentResults.  Those who require strict OSCAL 1.0.0 please use trestle version 0.37.x.  That version is stable but will not have any features added, and we encourage all users to move to OSCAL 1.1.2. OSCAL version 1.0.0 files are still handled on import but any AssessmentResults must conform to the `props` in AssessmentResults OSCAL specification.
-
 ## Why Trestle
 
 Compliance suffers from being a complex topic that is hard to articulate simply. It involves complete and accurate execution of multiple procedures across many disciplines (e.g. IT, HR, management) with periodic verification and audit of those procedures against controls.
@@ -92,32 +86,17 @@ A collection of demos utilizing trestle can be found in the related project [com
 
 ## Development status
 
-Compliance trestle is currently stable and is based on NIST OSCAL version 1.1.2, with active development continuing.
+### v3: stable (actively developed)
+
+- supports NIST OSCAL 1.1.2 as well as previous versions
+
+### v2: stable (maintenance mode)
+
+- supports NIST OSCAL 1.0.4 as well as previous versions
 
 ## Community meetings and communications
 
-##### Scheduled meetings
-
-Please attend! All are invited.
-
-**When**:
-
-Every other Tuesday starting on April 23, 2024 · 11:00 – 11:30am ET
-[convert to your local time](https://mytime.io/11am/ET)
-
-**Where**: [Google Meet Link](https://meet.google.com/mwp-affd-tvu)
-
-Dial in:
-(US) +1 402-627-0247 PIN: 535 362 764#\
-[More phone numbers](https://tel.meet/mwp-affd-tvu?pin=9717189704231)
-
-**What**: Meeting agenda and notes [Google Docs](https://docs.google.com/document/d/1XTYM7xnWlIqd-8Nn5-qtgvgk8kH3NSmYle5yZvaS7qs/edit?usp=sharing)
-
-##### Chat anytime
-
-Slack: [#oscal-compliance-trestle-agileauthoring-c2p](https://cloud-native.slack.com/archives/C06F3PEPNBW)
-
-- **Note**: You can login to Slack using another account like Google, Apple
+Please refer to the community [README](https://github.com/oscal-compass/community/blob/main/README.md) for communication details.
 
 ## Contributing to Trestle
 
