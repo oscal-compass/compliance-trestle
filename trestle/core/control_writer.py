@@ -487,6 +487,9 @@ class ControlWriter():
             elif context.purpose == ContextPurpose.SSP:
                 header_comment_dict[const.SET_PARAMS_TAG] = const.YAML_SSP_VALUES_COMMENT
                 header_comment_dict[const.COMP_DEF_RULES_PARAM_VALS_TAG] = const.YAML_RULE_PARAM_VALUES_SSP_COMMENT
+                # The add props information to SSP only. It is added to the profile later.
+                if const.TRESTLE_ADD_PROPS_TAG not in md_header:
+                    md_header[const.TRESTLE_ADD_PROPS_TAG] = []
             elif context.purpose == ContextPurpose.COMPONENT:
                 header_comment_dict[const.COMP_DEF_RULES_PARAM_VALS_TAG
                                     ] = const.YAML_RULE_PARAM_VALUES_COMPONENT_COMMENT
