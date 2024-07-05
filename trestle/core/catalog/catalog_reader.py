@@ -323,10 +323,36 @@ class CatalogReader():
         item.set_parameters.append(ossp.SetParameter(param_id=param_id, values=param_values))
 
     @staticmethod
+    def _add_props_to_imp_req(
+        control_id: str,
+        part_id_map_by_label: Dict[str, Dict[str, str]],
+        yaml_header: Dict[str, Any],
+        imp_req: ossp.ImplementedRequirement
+    ) -> None:
+        """Add the props from the yaml header to the imp_req."""
+        control_part_id_map = part_id_map_by_label.get(control_id, {})
+        props, props_by_id = ControlReader.get_props_list(control_id, control_part_id_map, yaml_header)
+        # add the props at control level
+        if props:
+            imp_req.props = as_list(imp_req.props)
+            imp_req.props.extend(props)
+
+        # add the props at the part level
+        for label, part_id in control_part_id_map.items():
+            props = props_by_id.get(label, [])
+            if not props:
+                continue
+            for statement in as_list(imp_req.statements):
+                if statement.statement_id == part_id:
+                    statement.props = as_list(statement.props)
+                    statement.props.extend(props)
+
+    @staticmethod
     def _update_ssp_with_md_header(
         ssp: ossp.SystemSecurityPlan,
         control_id: str,
         comp_dict: Dict[str, generic.GenericComponent],
+        part_label_to_id_map: Dict[str, Dict[str, str]],
         md_header: Dict[str, Dict[str, str]]
     ) -> None:
         """Update the ssp with info from the header of an ssp control markdown file."""
@@ -345,6 +371,8 @@ class CatalogReader():
         for param_id, param_dict in param_vals_dict.items():
             if const.SSP_VALUES in param_dict:
                 CatalogReader._add_set_params_to_item(param_dict, imp_req, param_id)
+
+        CatalogReader._add_props_to_imp_req(control_id, part_label_to_id_map, md_header, imp_req)
 
     @staticmethod
     def read_ssp_md_content(
@@ -398,4 +426,4 @@ class CatalogReader():
                     CatalogReader._update_ssp_with_comp_info(
                         ssp, control_id, comp_dict[comp_name], comp_info_dict, part_id_map_by_label
                     )
-                CatalogReader._update_ssp_with_md_header(ssp, control_id, comp_dict, md_header)
+                CatalogReader._update_ssp_with_md_header(ssp, control_id, comp_dict, part_id_map_by_label, md_header)
