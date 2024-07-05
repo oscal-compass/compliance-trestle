@@ -13,19 +13,19 @@ jobs:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         submodules: true
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
-    - uses: actions/cache@v2
+        python-version: ${{ vars.PYTHON_MAX }}
+    - uses: actions/cache@v4
       with:
         path: ~/.cache/pip
-        key: ubuntu-latest-3.10-pip-${{ hashFiles('setup.cfg') }}
+        key: ubuntu-latest-${{ vars.PYTHON_MAX }}-pip-${{ hashFiles('setup.cfg') }}
         restore-keys: |
-          ubuntu-latest-3.10-pip-
+          ubuntu-latest-${{ vars.PYTHON_MAX }}-pip-
     - name: Install build tools
       run: |
         make develop
@@ -66,19 +66,19 @@ jobs:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         submodules: true
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
-    - uses: actions/cache@v2
+        python-version: ${{ vars.PYTHON_MAX }}
+    - uses: actions/cache@v4
       with:
         path: ~/.cache/pip
-        key: ubuntu-latest-3.10-pip-${{ hashFiles('setup.cfg') }}
+        key: ubuntu-latest-${{ vars.PYTHON_MAX }}-pip-${{ hashFiles('setup.cfg') }}
         restore-keys: |
-          ubuntu-latest-3.10-pip-
+          ubuntu-latest-${{ vars.PYTHON_MAX }}-pip-
     - name: Install build tools
       run: |
         make develop
@@ -92,7 +92,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ['3.9', '3.10', '3.11']
+        python-version: [${{ vars.PYTHON_MIN }}, ${{ vars.PYTHON_MAX }}]
         include:
         - os: ubuntu-latest
           path: ~/.cache/pip
@@ -104,15 +104,15 @@ jobs:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
         submodules: true
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
-    - uses: actions/cache@v2
+    - uses: actions/cache@v4
       with:
         path: ${{ matrix.path }}
         key: ${{ matrix.os }}-${{ matrix.python-version }}-pip-${{ hashFiles('setup.cfg') }}
@@ -122,16 +122,16 @@ jobs:
       run: |
         make develop
     - name: Pytest Fast
-      if: ${{ !(matrix.os == 'ubuntu-latest' && matrix.python-version == '3.10') }}
+      if: ${{ !(matrix.os == 'ubuntu-latest' && matrix.python-version == vars.PYTHON_MAX) }}
       run: |
         make test
     - name: Pytest Cov
-      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.10' }}
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == vars.PYTHON_MAX }}
       run: |
         make test-cov
 
     - name: Upload artifact
-      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.10' }}
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == vars.PYTHON_MAX }}
       uses: actions/upload-artifact@v2
       with:
         name: coverage
@@ -148,19 +148,19 @@ jobs:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         submodules: true
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
-    - uses: actions/cache@v2
+        python-version: ${{ vars.PYTHON_MAX }}
+    - uses: actions/cache@v4
       with:
         path: ~/.cache/pip
-        key: ubuntu-latest-3.10-pip-${{ hashFiles('setup.cfg') }}
+        key: ubuntu-latest-${{ vars.PYTHON_MAX }}-pip-${{ hashFiles('setup.cfg') }}
         restore-keys: |
-          ubuntu-latest-3.10-pip-
+          ubuntu-latest-${{ vars.PYTHON_MAX }}-pip-
     - name: Install build tools
       run: |
         make develop
@@ -178,7 +178,7 @@ jobs:
           -Dsonar.python.coverage.reportPaths=coverage.xml
           -Dsonar.tests=tests/
           -Dsonar.sources=trestle/ 
-          -Dsonar.python.version='3.10'
+          -Dsonar.python.version=${{ vars.PYTHON_MAX }}
           -Dsonar.projectKey=compliance-trestle
           -Dsonar.organization=compliance-trestle
           -Dsonar.cpd.exclusions=trestle/oscal/*.py
