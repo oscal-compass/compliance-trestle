@@ -92,7 +92,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: [${{ vars.PYTHON_MIN }}, ${{ vars.PYTHON_MAX }}]
+        python-version: [ '${{ vars.PYTHON_MIN }}', '${{ vars.PYTHON_MAX }}' ]
         include:
         - os: ubuntu-latest
           path: ~/.cache/pip
