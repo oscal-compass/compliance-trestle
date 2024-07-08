@@ -63,12 +63,16 @@ trestle repository without relying on presumptions (such as cwd being within the
 repository). Find the demo
 [here](https://github.com/oscal-compass/compliance-trestle-demos/tree/develop/trestle_repo_api_examples).
 
-## Converting a spreadsheet into a `component-definition`
-
-Plenty of compliance content exists today in spreadsheets. This
-[demonstration](https://github.com/oscal-compass/compliance-trestle-demos/tree/develop/trestle_task_spread_sheet_to_component_definition)
-show how to use the xlsx-to-oscal-component-definition MVP functionality.
-
 ## Task examples
 
-### Spreadsheet to component definition
+### Convert a spreadsheet into a `component-definition`
+
+This
+[demonstration](https://github.com/oscal-compass/compliance-trestle-demos/tree/develop/trestle_task_spread_sheet_to_component_definition)
+shows how to use the `trestle task xlsx-to-oscal-cd` functionality.
+
+### Convert a `xccdf` result into a partial `assessment-results`
+
+This
+[demonstration](https://github.com/oscal-compass/compliance-trestle-demos/tree/develop/trestle_task_xccdf_result_to_oscal_ar)
+shows how to use the `trestle task xccdf_result_to_oscal_ar` functionality.
