@@ -15,6 +15,7 @@
 
 import argparse
 import pathlib
+from typing import Dict, List
 
 from _pytest.monkeypatch import MonkeyPatch
 
@@ -1136,6 +1137,60 @@ def test_ssp_gen_throw_exception_for_rep_comps(tmp_trestle_dir: pathlib.Path, mo
     assert ssp_gen._run(gen_args) == 1
 
 
+def test_ssp_gen_and_assemble_add_props(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test ssp generate and assemble with additional properties processing."""
+    gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
+    gen_args.yaml_header = None
+    ssp_cmd = SSPGenerate()
+
+    assert ssp_cmd._run(gen_args) == 0
+
+    md_path = tmp_trestle_dir / ssp_name / 'ac' / 'ac-1.md'
+    assert md_path.exists()
+
+    md_api = MarkdownAPI()
+    header, tree = md_api.processor.process_markdown(md_path)
+
+    # Create key in header for add props for now
+    ac_1_properties: Dict[str, str] = {
+        'name': 'prop_with_ns', 'value': 'prop with ns', 'ns': 'https://my_new_namespace'
+    }
+    ac_1_smt_properties: Dict[str, str] = {'name': 'smt_prop', 'value': 'smt prop', 'smt-part': 'a.'}
+    # Verify the add props header value is present
+    properties: List[Dict[str, str]] = header.get('x-trestle-add-props')
+    properties.extend([ac_1_properties, ac_1_smt_properties])
+
+    md_api.write_markdown_with_header(md_path, header, tree.content.raw_text)
+
+    args_compdefs = gen_args.compdefs
+    # now assemble controls into json ssp
+    ssp_assemble = SSPAssemble()
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        markdown=ssp_name,
+        output=ssp_name,
+        verbose=1,
+        name=None,
+        version=None,
+        compdefs=args_compdefs,
+        regenerate=False,
+    )
+    assert ssp_assemble._run(args) == 0
+
+    assem_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+    impl_reqs = assem_ssp.control_implementation.implemented_requirements
+    impl_req = next((i_req for i_req in impl_reqs if i_req.control_id == 'ac-1'), None)
+    assert len(impl_req.props) == 1
+    assert impl_req.props[0].name == 'prop_with_ns'
+    assert impl_req.props[0].value == 'prop with ns'
+    assert impl_req.props[0].ns == 'https://my_new_namespace'
+
+    smt_a = next((smt for smt in impl_req.statements if smt.statement_id == 'ac-1_smt.a'), None)
+    assert len(smt_a.props) == 1
+    assert smt_a.props[0].name == 'smt_prop'
+    assert smt_a.props[0].value == 'smt prop'
+
+
 def test_ssp_gen_and_assemble_implementation_parts(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test ssp generate and assemble edit implementation parts."""
     gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
@@ -1165,33 +1220,19 @@ def test_ssp_gen_and_assemble_implementation_parts(tmp_trestle_dir: pathlib.Path
     assert test_utils.substitute_text_in_file(ac_1_path, 'Status: planned', 'Status: alternative')
 
     part_a_text_edited = """## Implementation for part a.
-
 ### This System
-
 My response for This System part a.
-
 #### Implementation Status: planned
-
 ### comp_aa
-
 My response for comp aa part a.
-
 #### Rules:
-
   - comp_rule_aa_1
-
 #### Implementation Status: partial
-
 ### comp_ab
-
 <!-- Add control implementation description here for item a. -->
-
 #### Rules:
-
   - comp_rule_ab_1
-
 #### Implementation Status: partial
-
 ______________________________________________________________________
 """
 

@@ -23,6 +23,8 @@ from unittest import mock
 
 from _pytest.monkeypatch import MonkeyPatch
 
+import pytest
+
 from tests import test_utils
 
 import trestle.tasks.csv_to_oscal_cd as csv_to_oscal_cd
@@ -885,6 +887,34 @@ def test_execute_param_duplicate_value(tmp_path: pathlib.Path) -> None:
         assert retval == TaskOutcome.FAILURE
 
 
+def test_execute_correct_rule_key(tmp_path: pathlib.Path) -> None:
+    """Test execute missing value."""
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
+    rows = _get_rows('tests/data/csv/ocp4-user.v2.csv')
+    row = rows[2]
+    # ensure component_title and component_description are different
+    assert row[7] == 'OSCO'
+    assert row[8] == 'OSCO'
+    row[8] = 'IAM'
+    assert row[8] == 'IAM'
+    component_title = row[7]
+    component_description = row[8]
+    component_type = row[5]
+    rule_id = row[1]
+    with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
+        mock_csv_reader.return_value = rows
+        # perform transformation
+        tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+        retval = tgt.execute()
+        assert retval == TaskOutcome.SUCCESS
+        # insure expected key exists
+        expected_key = (component_title, component_type, rule_id)
+        assert expected_key in tgt._csv_mgr.get_rule_keys()
+        # insure unexpected key does not exist
+        unexpected_key = (component_description, component_type, rule_id)
+        assert unexpected_key not in tgt._csv_mgr.get_rule_keys()
+
+
 def test_execute_missing_param_default_value(tmp_path: pathlib.Path) -> None:
     """Test execute missing param default_value."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -1234,6 +1264,87 @@ def test_execute_add_property(tmp_path: pathlib.Path) -> None:
     assert component.props[6].value == 'add-fetcher-description'
 
 
+def test_execute_with_risk_properties(tmp_path: pathlib.Path) -> None:
+    """Test execute with risk properties."""
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    # add risk properties
+    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    rows[0].append('Original_Risk_Rating')
+    rows[0].append('Adjusted_Risk_Rating')
+    rows[0].append('Risk_Adjustment')
+    # row 3 will be tested
+    rows[2].append('add-original-risk-rating')
+    rows[2].append('add-adjusted-risk-rating')
+    rows[2].append('add-risk-adjustment')
+    # ensure all rows have a value for the risk columns to execute task successfully
+    for row in rows[3:]:
+        row.append('')
+        row.append('')
+        row.append('')
+    with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
+        mock_csv_reader.return_value = rows
+        tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+        retval = tgt.execute()
+        assert retval == TaskOutcome.SUCCESS
+    # read component-definition
+    fp = pathlib.Path(tmp_path) / 'component-definition.json'
+    cd = ComponentDefinition.oscal_read(fp)
+    # spot check
+    component = cd.components[0]
+    # the bp.sample.v2.csv before mock has 62 properties
+    assert len(component.props) == 65
+    assert component.props[0].name == 'Rule_Id'
+    assert component.props[1].name == 'Rule_Description'
+    assert component.props[2].name == 'Check_Id'
+    assert component.props[3].name == 'Check_Description'
+    assert component.props[4].name == 'Original_Risk_Rating'
+    assert component.props[4].value == 'add-original-risk-rating'
+    assert component.props[5].name == 'Adjusted_Risk_Rating'
+    assert component.props[5].value == 'add-adjusted-risk-rating'
+    assert component.props[6].name == 'Risk_Adjustment'
+    assert component.props[6].value == 'add-risk-adjustment'
+
+
+def test_execute_with_ignored_risk_properties(tmp_path: pathlib.Path) -> None:
+    """Test execute with ignored risk properties when component type is validation."""
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    # add risk properties
+    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    rows[0].append('Original_Risk_Rating')
+    rows[0].append('Adjusted_Risk_Rating')
+    rows[0].append('Risk_Adjustment')
+    # row 3 will be tested
+    rows[2].append('add-original-risk-rating')
+    rows[2].append('add-adjusted-risk-rating')
+    rows[2].append('add-risk-adjustment')
+    # ensure all rows have a value for the risk columns to execute task successfully
+    for row in rows[3:]:
+        row.append('')
+        row.append('')
+        row.append('')
+    # set validation component type
+    assert rows[0][9] == 'Component_Type'
+    assert rows[2][9] == 'Service'
+    rows[2][9] = 'Validation'
+    with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
+        mock_csv_reader.return_value = rows
+        tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+        retval = tgt.execute()
+        assert retval == TaskOutcome.SUCCESS
+    # read component-definition
+    fp = pathlib.Path(tmp_path) / 'component-definition.json'
+    cd = ComponentDefinition.oscal_read(fp)
+    # spot check
+    component = cd.components[0]
+    assert component.type == 'Validation'
+    # there are 4 component validation props: Rule_Id, Check_Id, Check_Description, Reference_Id
+    assert len(component.props) == 4
+    for prop in component.props:
+        assert prop.name != 'Original_Risk_Rating'
+        assert prop.name != 'Adjusted_Risk_Rating'
+        assert prop.name != 'Risk_Adjustment'
+
+
 def test_execute_add_user_property(tmp_path: pathlib.Path) -> None:
     """Test execute add user property."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -1308,6 +1419,28 @@ def test_execute_validation(tmp_path: pathlib.Path) -> None:
     assert component.props[2].name == 'Check_Description'
     assert component.props[2].value == 'validation-check-description'
     assert len(component.control_implementations) == 0
+
+
+def test_execute_invalid_set_parameter_values(tmp_path: pathlib.Path) -> None:
+    """Test execute invalid set parameter (PARAMETER_ID, Parameter_Value_Default) values."""
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    # inject invalid set parameter values
+    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    assert rows[3][13] == 'allowed_admins_per_account'
+    assert rows[3][15] == '10'
+    rows[3][13] = 'allowed admins per account'
+    rows[3][15] = '10 '
+    with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
+        mock_csv_reader.return_value = rows
+        tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+        with pytest.raises(RuntimeError) as exc_info:
+            tgt._execute()
+
+        exeception_value = str(exc_info.value)
+        assert exeception_value == (
+            'row 4: "allowed admins per account" is invalid for column Parameter_Id '
+            'and/or "10 " is invalid for column Parameter_Value_Default'
+        )
 
 
 def test_row_property_builder(tmp_path):

@@ -1,0 +1,121 @@
+<mxfile host="Electron" modified="2024-06-13T10:43:21.154Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.4.0 Chrome/112.0.5615.204 Electron/24.5.1 Safari/537.36" etag="ATkJAvcx6_PSuDCCJN0E" version="21.4.0" type="device">
+  <diagram name="Page-1" id="hMJuEOXWqzFiT-lxQNfF">
+    <mxGraphModel dx="1195" dy="810" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="pt1Z5ydw9RW1vbKcqbn2-36" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E6E6E6;" vertex="1" parent="1">
+          <mxGeometry x="240" y="280" width="160" height="320" as="geometry" />
+        </mxCell>
+        <mxCell id="pt1Z5ydw9RW1vbKcqbn2-2" value="Catalog&lt;br&gt;Schema" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;" vertex="1" parent="1">
+          <mxGeometry x="40" y="160" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="pt1Z5ydw9RW1vbKcqbn2-3" value="Profile&lt;br&gt;Schema" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;" vertex="1" parent="1">
+          <mxGeometry x="40" y="240" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="pt1Z5ydw9RW1vbKcqbn2-4" value="Component Definition Schema" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;" vertex="1" parent="1">
+          <mxGeometry x="40" y="320" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="pt1Z5ydw9RW1vbKcqbn2-5" value="System Security Plan Schema" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;" vertex="1" parent="1">
+          <mxGeometry x="40" y="400" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="pt1Z5ydw9RW1vbKcqbn2-6" value="Plan of Action and Milestone Schema" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;" vertex="1" parent="1">
+          <mxGeometry x="40" y="480" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="pt1Z5ydw9RW1vbKcqbn2-7" value="Assessment Plan Schema" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;" vertex="1" parent="1">
+          <mxGeometry x="40" y="560" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="pt1Z5ydw9RW1vbKcqbn2-8" value="Assessment Results Schema" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;" vertex="1" parent="1">
+          <mxGeometry x="40" y="640" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="pt1Z5ydw9RW1vbKcqbn2-22" value="trestle gen_oscal.py" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="310" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="pt1Z5ydw9RW1vbKcqbn2-23" value="datamodel.codegen&lt;br&gt;(3rd party tool)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="480" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="pt1Z5ydw9RW1vbKcqbn2-24" value="catalog.py" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#99CCFF;" vertex="1" parent="1">
+          <mxGeometry x="480" y="160" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="pt1Z5ydw9RW1vbKcqbn2-25" value="common.py" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#99CCFF;" vertex="1" parent="1">
+          <mxGeometry x="480" y="80" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="pt1Z5ydw9RW1vbKcqbn2-26" value="profile.py" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#99CCFF;" vertex="1" parent="1">
+          <mxGeometry x="480" y="240" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="pt1Z5ydw9RW1vbKcqbn2-27" value="component.py" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#99CCFF;" vertex="1" parent="1">
+          <mxGeometry x="480" y="320" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="pt1Z5ydw9RW1vbKcqbn2-28" value="ssp.py" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#99CCFF;" vertex="1" parent="1">
+          <mxGeometry x="480" y="400" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="pt1Z5ydw9RW1vbKcqbn2-29" value="poam.py" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#99CCFF;" vertex="1" parent="1">
+          <mxGeometry x="480" y="480" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="pt1Z5ydw9RW1vbKcqbn2-30" value="assessment_plan.py" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#99CCFF;" vertex="1" parent="1">
+          <mxGeometry x="480" y="560" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="pt1Z5ydw9RW1vbKcqbn2-31" value="assessment_result.py" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#99CCFF;" vertex="1" parent="1">
+          <mxGeometry x="480" y="640" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="pt1Z5ydw9RW1vbKcqbn2-40" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fillColor=#FF6666;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="180" y="429.5" as="sourcePoint" />
+            <mxPoint x="230" y="429.5" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pt1Z5ydw9RW1vbKcqbn2-42" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fillColor=#FF6666;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="420" y="429.5" as="sourcePoint" />
+            <mxPoint x="470" y="429.5" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pt1Z5ydw9RW1vbKcqbn2-43" value="" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;fillColor=#A9C4EB;" edge="1" parent="1" source="pt1Z5ydw9RW1vbKcqbn2-23" target="pt1Z5ydw9RW1vbKcqbn2-22">
+          <mxGeometry width="100" height="100" relative="1" as="geometry">
+            <mxPoint x="300" y="490" as="sourcePoint" />
+            <mxPoint x="400" y="390" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pt1Z5ydw9RW1vbKcqbn2-45" value="OSCAL" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="70" y="110" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pt1Z5ydw9RW1vbKcqbn2-46" value="trestle&lt;br&gt;generated code" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="510" y="40" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pt1Z5ydw9RW1vbKcqbn2-47" value="code generation of oscal-compass compliance-trestle functionality" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="240" y="220" width="160" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pt1Z5ydw9RW1vbKcqbn2-49" value="trestle code-coverage test cases&lt;br&gt;(~1200)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="680" y="400" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="pt1Z5ydw9RW1vbKcqbn2-52" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fillColor=#FF6666;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="620" y="429.5" as="sourcePoint" />
+            <mxPoint x="670" y="429.5" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="620" y="429.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pt1Z5ydw9RW1vbKcqbn2-53" value="Goal: zero errors/failures" style="text;html=1;strokeColor=none;fillColor=#B9E0A5;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="660" y="480" width="160" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pt1Z5ydw9RW1vbKcqbn2-54" value="core, utils, tasks, etc." style="rounded=0;whiteSpace=wrap;html=1;fillColor=#99CCFF;" vertex="1" parent="1">
+          <mxGeometry x="680" y="240" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="pt1Z5ydw9RW1vbKcqbn2-55" value="trestle&lt;br&gt;existing&lt;br&gt;code" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="710" y="190" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pt1Z5ydw9RW1vbKcqbn2-56" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fillColor=#FF6666;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="739.5" y="330" as="sourcePoint" />
+            <mxPoint x="739.5" y="370" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="739.5" y="330" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
