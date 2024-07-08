@@ -23,14 +23,8 @@ contains a number of small examples for using the trestle OSCAL sdks.
 
 [arc42](https://arc42.org/) have created a set of open-source architecture
 documentation templates. This
-[demonstration](https://github.com/oscal-compass/compliance-trestle-arc42-demo)
+[demonstration](https://github.com/IBM/compliance-trestle-arc42-demo/tree/f1ed64cd65af3167a3b129585d758bf8a21a4a6c)
 uses `trestle author` to enforce use of the (modified) arc42 templates.
-
-A CICD pipeline (using github actions) is used for this demonstration. The full
-repository, including working CICD is
-[here](https://github.com/oscal-compass/compliance-trestle-arc42-demo). Read
-more about the demo
-[here](https://github.com/oscal-compass/compliance-trestle-arc42-demo).
 
 ## Trestle flask microservice demonstration.
 
