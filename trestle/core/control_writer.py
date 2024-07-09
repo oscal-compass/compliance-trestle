@@ -228,7 +228,10 @@ class ControlWriter():
                         self._md_file.new_hr()
                         self._md_file.new_header(level=2, title=f'Implementation for part {part_label}')
                         wrote_label_content = False
-                        if context.purpose == ContextPurpose.SSP:
+                        # If the part is written out, only include the main system component if
+                        # include all part are true. The default behavior is to keep this logic
+                        # rules-based.
+                        if context.purpose == ContextPurpose.SSP and context.include_all_parts:
                             self._process_main_component(prt.id, part_label, comp_dict)
                             wrote_label_content = True
                         sorted_comp_names = sorted(comp_dict.keys())
@@ -266,11 +269,11 @@ class ControlWriter():
 
     def _skip_part(self, context: ControlContext, part_label: str, comp_dict: CompDict) -> bool:
         """Check if a part should be skipped based on rules and context."""
-        if context.purpose == ContextPurpose.SSP:
-            # It will always be written out for SSPs because of This System
+        if context.purpose == ContextPurpose.SSP and context.include_all_parts:
+            # Only write out all of the parts for SSPs if specified
             return False
         # only write out part if rules apply to it
-        elif context.purpose == ContextPurpose.COMPONENT:
+        else:
             no_applied_rules = True
             for _, dic in comp_dict.items():
                 if part_label in dic and dic[part_label].rules:

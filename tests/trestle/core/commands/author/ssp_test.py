@@ -56,12 +56,6 @@ def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_la
 
 part_a_text = """## Implementation for part a.
 
-### This System
-
-<!-- Add implementation prose for the main This System component for control: ac-1_smt.a -->
-
-#### Implementation Status: planned
-
 ### comp_aa
 
 statement prose for part a. from comp aa
@@ -82,19 +76,7 @@ statement prose for part a. from comp aa
 
 #### Implementation Status: partial
 
-______________________________________________________________________
-"""
-
-part_a_text_no_comp = """## Implementation for part a.
-
-### This System
-
-<!-- Add implementation prose for the main This System component for control: ac-1_smt.a -->
-
-#### Implementation Status: planned
-
-______________________________________________________________________
-"""
+______________________________________________________________________"""
 
 
 def test_ssp_generate(tmp_trestle_dir: pathlib.Path) -> None:
@@ -151,9 +133,6 @@ def test_ssp_generate_no_cds(tmp_trestle_dir: pathlib.Path) -> None:
     assert len(node.subnodes[0].subnodes) == 1
     assert node.subnodes[0].key == '### This System'
     assert node.subnodes[0].subnodes[0].key == '#### Implementation Status: planned'
-
-    node = tree.get_node_for_key('## Implementation for part a.')
-    assert node.content.raw_text == part_a_text_no_comp
 
     fc = FileChecker(md_dir)
 
@@ -679,7 +658,7 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
     assert len(ssp.control_implementation.implemented_requirements) == 3
 
     # confirm there are three by_comps for: this system, foo, bar
-    assert len(ssp.control_implementation.implemented_requirements[0].statements[0].by_components) == 3
+    assert len(ssp.control_implementation.implemented_requirements[0].statements[0].by_components) == 2
 
     # now filter the ssp by components
     args = argparse.Namespace(
@@ -1195,6 +1174,7 @@ def test_ssp_gen_and_assemble_implementation_parts(tmp_trestle_dir: pathlib.Path
     """Test ssp generate and assemble edit implementation parts."""
     gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
     args_compdefs = gen_args.compdefs
+    gen_args.include_all_parts = True
 
     ssp_gen = SSPGenerate()
     assert ssp_gen._run(gen_args) == 0
@@ -1220,19 +1200,33 @@ def test_ssp_gen_and_assemble_implementation_parts(tmp_trestle_dir: pathlib.Path
     assert test_utils.substitute_text_in_file(ac_1_path, 'Status: planned', 'Status: alternative')
 
     part_a_text_edited = """## Implementation for part a.
+
 ### This System
+
 My response for This System part a.
+
 #### Implementation Status: planned
+
 ### comp_aa
+
 My response for comp aa part a.
+
 #### Rules:
+
   - comp_rule_aa_1
+
 #### Implementation Status: partial
+
 ### comp_ab
+
 <!-- Add control implementation description here for item a. -->
+
 #### Rules:
+
   - comp_rule_ab_1
+
 #### Implementation Status: partial
+
 ______________________________________________________________________
 """
 
@@ -1276,3 +1270,36 @@ ______________________________________________________________________
     node = tree.get_node_for_key('## Implementation for part a.')
     assert node.content.raw_text == part_a_text_edited
     assert test_utils.confirm_text_in_file(ac_1_path, const.SSP_MD_IMPLEMENTATION_QUESTION, prose_sys)
+
+
+def test_ssp_generate_no_cds_include_all_parts(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test the ssp generator with no comp defs and include all parts are true."""
+    args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
+
+    args.compdefs = None
+    args.include_all_parts = True
+    ssp_cmd = SSPGenerate()
+    assert ssp_cmd._run(args) == 0
+    md_dir = tmp_trestle_dir / ssp_name
+    ac_1 = md_dir / 'ac/ac-1.md'
+    assert ac_1.exists()
+    at_2 = md_dir / 'at/at-2.md'
+    assert at_2.exists()
+
+    md_api = MarkdownAPI()
+    header, tree = md_api.processor.process_markdown(ac_1)
+    assert header[const.TRESTLE_GLOBAL_TAG][const.SORT_ID] == 'ac-01'
+
+    part_a_text_no_comp = """## Implementation for part a.
+
+### This System
+
+<!-- Add implementation prose for the main This System component for control: ac-1_smt.a -->
+
+#### Implementation Status: planned
+
+______________________________________________________________________
+"""
+
+    node = tree.get_node_for_key('## Implementation for part a.')
+    assert node.content.raw_text == part_a_text_no_comp

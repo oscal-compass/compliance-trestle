@@ -44,6 +44,7 @@ class ControlContext:
     trestle_root: pathlib.Path
     md_root: pathlib.Path
     prompt_responses: bool
+    include_all_parts: bool
     overwrite_header_values: bool
     set_parameters_flag: bool
     cli_yaml_header: Optional[Dict[Any, Any]] = None
@@ -71,6 +72,7 @@ class ControlContext:
         trestle_root: pathlib.Path,
         md_root: pathlib.Path,
         prompt_responses: bool = False,
+        include_all_parts: bool = False,
         overwrite_header_values: bool = False,
         set_parameters_flag: bool = False,
         cli_yaml_header: Optional[Dict[Any, Any]] = None,
@@ -97,6 +99,7 @@ class ControlContext:
             trestle_root,
             md_root,
             prompt_responses,
+            include_all_parts,
             overwrite_header_values,
             set_parameters_flag,
             cli_yaml_header=cli_yaml_header,
@@ -132,6 +135,7 @@ class ControlContext:
             context.trestle_root,
             context.md_root,
             context.prompt_responses,
+            context.include_all_parts,
             context.overwrite_header_values,
             context.set_parameters_flag,
             cli_yaml_header=copy.deepcopy(context.cli_yaml_header),
