@@ -228,9 +228,8 @@ class ControlWriter():
                         self._md_file.new_hr()
                         self._md_file.new_header(level=2, title=f'Implementation for part {part_label}')
                         wrote_label_content = False
-                        # If the part is written out, only include the main system component if
-                        # include all part are true. The default behavior is to keep this logic
-                        # rules-based.
+                        # To reduce verbosity by default, the main component
+                        # is conditionally written for each part dependant on the control context.
                         if context.purpose == ContextPurpose.SSP and context.include_all_parts:
                             self._process_main_component(prt.id, part_label, comp_dict)
                             wrote_label_content = True
@@ -268,11 +267,14 @@ class ControlWriter():
         self._md_file.new_hr()
 
     def _skip_part(self, context: ControlContext, part_label: str, comp_dict: CompDict) -> bool:
-        """Check if a part should be skipped based on rules and context."""
+        """
+        Check if a part should be skipped based on rules and context.
+
+        Notes: The default logic is to keep part inclusion rules-based. Using the control
+        context, the can be alter for SSP markdown generation.
+        """
         if context.purpose == ContextPurpose.SSP and context.include_all_parts:
-            # Only write out all of the parts for SSPs if specified
             return False
-        # only write out part if rules apply to it
         else:
             no_applied_rules = True
             for _, dic in comp_dict.items():
