@@ -15,5 +15,8 @@
 # limitations under the License.
 
 #TODO: Ensure this is automatically updated successfully.
-OSCAL_VERSION = '1.0.4'
-OSCAL_VERSION_REGEX = r'^1\.0\.[0-4]$'
+
+# Warning! This is a HACK!
+
+OSCAL_VERSION = '1.1.2'
+OSCAL_VERSION_REGEX = r'^1\.[0-1]\.[0-4]$'

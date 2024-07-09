@@ -23,4 +23,5 @@ format for interchange between tools & people and provides an
 opinionated approach to OSCAL adoption.
 """
 
-__version__ = '2.0.0'
+# Note: this version is hacked to allow newer of versions of OSCAL than 1.0.4 (up to 1.1.4). Some features may fail...
+__version__ = '2.0.0-bridge'
