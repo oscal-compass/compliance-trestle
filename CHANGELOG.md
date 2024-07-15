@@ -2,6 +2,196 @@
 
 
 
+## v3.3.0 (2024-07-15)
+
+### Chore
+
+* chore: Merge back version tags and changelog into develop. ([`0c6e3d9`](https://github.com/oscal-compass/compliance-trestle/commit/0c6e3d917009885ddbe700d582b89a89e62d5983))
+
+### Documentation
+
+* docs: re-phrasing code of conduct reference (#1620)
+
+* docs: re-phrasing code of conduct reference
+
+Signed-off-by: Alejandro Jose Leiva Palomo &lt;alejandro.leiva.palomo@ibm.com&gt;
+
+* Update docs/mkdocs_code_of_conduct.md
+
+Co-authored-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* Update docs/mkdocs_code_of_conduct.md
+
+Co-authored-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+---------
+
+Signed-off-by: Alejandro Jose Leiva Palomo &lt;alejandro.leiva.palomo@ibm.com&gt;
+Co-authored-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`7dabaee`](https://github.com/oscal-compass/compliance-trestle/commit/7dabaee6cfaeb61b4048847dafdde8b8d9ffa33d))
+
+* docs: removes CODE_OF_CONDUCT.md (#1609)
+
+Removes the code of conduct file to allow
+inheritance from the organization level
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`7ba70c3`](https://github.com/oscal-compass/compliance-trestle/commit/7ba70c3556e48b7b77333a132c8f47b3ea32df05))
+
+### Feature
+
+* feat: adds `x-trestle-add-props` to the YAML header in SSP markdown (#1534)
+
+* feat: adds `x-trestle-add-prop` processing to CatalogReader for SSP
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* feat: adds ADD_PROP header to ssp in ControlWriter
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* docs: updates ssp authoring tutorial docs in website
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* fix: updates docstring on add-props test function
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* docs: adds info on ssp props usage to ssp authoring tutorial
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+---------
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`cf3e552`](https://github.com/oscal-compass/compliance-trestle/commit/cf3e552061ecc11b78751a29b4a09f1f04c1d5b0))
+
+### Fix
+
+* fix: Ensure codeql still runs on main (#1618) ([`b796c0d`](https://github.com/oscal-compass/compliance-trestle/commit/b796c0ddf87f972d8fd86dcccd34b7998abd7fea))
+
+* fix: abstract python version in pipelines (#1612)
+
+
+
+Signed-off-by: Chris Butler &lt;chris.butler@redhat.com&gt; ([`60b6452`](https://github.com/oscal-compass/compliance-trestle/commit/60b64524b8ddec97cd1977177551e13f856e8f4d))
+
+* fix: correct vulnerabilities (#1611)
+
+* fix: correct vulns
+
+Signed-off-by: Alejandro Jose Leiva Palomo &lt;alejandro.leiva.palomo@ibm.com&gt;
+
+* fix: add requests version
+
+Signed-off-by: Alejandro Jose Leiva Palomo &lt;alejandro.leiva.palomo@ibm.com&gt;
+
+* fix: correct datamodel code gen dependency
+
+Signed-off-by: Alejandro Jose Leiva Palomo &lt;alejandro.leiva.palomo@ibm.com&gt;
+
+---------
+
+Signed-off-by: Alejandro Jose Leiva Palomo &lt;alejandro.leiva.palomo@ibm.com&gt; ([`a68439d`](https://github.com/oscal-compass/compliance-trestle/commit/a68439daf05f5aac279de8dca59132d8b4e9af6a))
+
+* fix: improve trestle v3 README important info (#1592)
+
+* fix: improve trestle v3 README important info
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* add OSCAL models upgrade development info
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* Make mdformat happy.
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* relocate OSCAL migration section to contributing markdown
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* revise development status
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* make mdformat happy
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+---------
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt; ([`0d7bc20`](https://github.com/oscal-compass/compliance-trestle/commit/0d7bc202389c85ec9f204ab2c45dac25a385a577))
+
+* fix: use pydantic.v1 plugin for mypy (#1595)
+
+* fix: use pydantic.v1 plugin for mypy
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* add mypy testcase
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* format &amp; lint
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* sanity check
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* explicitly specify mypy config file
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* add mypy.cfg
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* revise mypy.cfg
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+---------
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt; ([`fdd3d34`](https://github.com/oscal-compass/compliance-trestle/commit/fdd3d34d6da975c60b6b3457b1a933048eeca91b))
+
+* fix: update the regex of template version to prevent invalid version format (#1594)
+
+Signed-off-by: Ma1h01 &lt;yihaomai@gmail.com&gt; ([`031850f`](https://github.com/oscal-compass/compliance-trestle/commit/031850f91a83f6fdd569025982a923cd10123938))
+
+### Refactor
+
+* refactor: update trestle documentation webpage&#39;s Demo section to be in sync with the demo repo (#1614)
+
+* refactor: remove obsolete ISM demo
+
+Signed-off-by: Ma1h01 &lt;yihaomai@gmail.com&gt;
+
+* fix: fix the arc42 demo link
+
+Signed-off-by: Ma1h01 &lt;yihaomai@gmail.com&gt;
+
+* refactor: extend and finish the Task examples section
+
+Signed-off-by: Ma1h01 &lt;yihaomai@gmail.com&gt;
+
+---------
+
+Signed-off-by: Ma1h01 &lt;yihaomai@gmail.com&gt; ([`e5d510e`](https://github.com/oscal-compass/compliance-trestle/commit/e5d510e830ae69839129cb28d15b36f6fbaa4a67))
+
+* refactor: update the error message when set parameters have invalid values (#1581)
+
+Signed-off-by: Ma1h01 &lt;yihaomai@gmail.com&gt;
+Co-authored-by: AleJo2995 &lt;alejandro.leiva.palomo@ibm.com&gt; ([`7ef4319`](https://github.com/oscal-compass/compliance-trestle/commit/7ef431970fcfe5563895c1864c304e2221819ded))
+
+### Unknown
+
+* Merge pull request #1616 from oscal-compass/develop
+
+chore: Trestle release ([`11e1a06`](https://github.com/oscal-compass/compliance-trestle/commit/11e1a061f1dfb7a9f87d09ed4a53b0a3fa0badd1))
+
+
 ## v3.2.0 (2024-06-18)
 
 ### Chore
