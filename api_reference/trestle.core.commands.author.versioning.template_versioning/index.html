@@ -4942,7 +4942,7 @@ TemplateVersioning        </code>
             <span class="k">return</span> <span class="kc">True</span>  <span class="c1"># we can have empty version</span>
         <span class="k">if</span> <span class="n">template_version</span> <span class="o">==</span> <span class="s1">&#39;0.0.0&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
-        <span class="n">version_regex</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;^[0-9]+.[0-9]+.[0-9]+$&#39;</span>
+        <span class="n">version_regex</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;^[0-9]+\.[0-9]+\.[0-9]+$&#39;</span>
         <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">version_regex</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">template_version</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">True</span>
@@ -5128,7 +5128,7 @@ TemplateVersioning        </code>
         <span class="k">return</span> <span class="kc">True</span>  <span class="c1"># we can have empty version</span>
     <span class="k">if</span> <span class="n">template_version</span> <span class="o">==</span> <span class="s1">&#39;0.0.0&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span>
-    <span class="n">version_regex</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;^[0-9]+.[0-9]+.[0-9]+$&#39;</span>
+    <span class="n">version_regex</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;^[0-9]+\.[0-9]+\.[0-9]+$&#39;</span>
     <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">version_regex</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">template_version</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">True</span>

@@ -635,20 +635,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#trestle-author-ssp-assemble" class="md-nav__link">
-    trestle author ssp-assemble
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#inheritance-view" class="md-nav__link">
-    Inheritance view
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -4491,20 +4477,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#trestle-author-ssp-assemble" class="md-nav__link">
-    trestle author ssp-assemble
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#inheritance-view" class="md-nav__link">
-    Inheritance view
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -5255,7 +5227,25 @@ x-trestle-global:
   profile:
     title: comp prof aa
     href: trestle://profiles/comp_prof/profile.json
-<span class="gu">  sort-id: ac-01</span>
+  sort-id: ac-01
+x-trestle-add-props:
+  # Add or modify control properties here
+  # Properties may be at the control or part level
+  # Add control level properties like this:
+  #   - name: ac1_new_prop
+  #     value: new property value
+  #
+  # Add properties to a statement part like this, where &quot;b.&quot; is the label of the target statement part
+  #   - name: ac1_new_prop
+  #     value: new property value
+  #     smt-part: b.
+  #
+<span class="w">  </span><span class="k">-</span><span class="w"> </span>name: prop_with_ns
+    value: prop with ns
+    ns: https://my_new_namespace
+<span class="w">  </span><span class="k">-</span><span class="w"> </span>name: prop_with_no_ns
+    value: prop with no ns
+<span class="gu">    ns: https://my_added_namespace</span>
 <span class="gu">---</span>
 
 <span class="gh"># ac-1 - \[Access Control\] Policy and Procedures</span>
@@ -5354,14 +5344,15 @@ Each label in the ssp is wrapped in <code>\[ \]</code> to indicate it comes dire
 <p>After generating the markdown for the resolved profile catalog you may then edit the files and provide text in the sections with <code>Add control implementation...</code> in them.  But do not remove the horizontal rule
 lines or modify/remove the lines with <code>###</code> in them, corresponding to system components.</p>
 <p>If you edit the control markdown files you may run <code>ssp-generate</code> again and your edits will not be overwritten.  When writing out the markdown for a control, any existing markdown for that control will be read and the response text for each part will be re-inserted into the new markdown file.  If the new markdown has added parts the original responses will be placed correctly in the new file, but if any part is removed from the source control json file then any corresponding prose will be lost after the next <code>ssp-generate</code>.</p>
-<h2 id="trestle-author-ssp-assemble"><code>trestle author ssp-assemble</code><a class="headerlink" href="#trestle-author-ssp-assemble" title="Permanent link">¤</a></h2>
+<p>The <code>x-trestle-add-props</code> key of the yaml header allows the addition of properties to the implemented requirements under the SSP control implementation, comprising <code>name</code>, <code>value</code>, and optionally a namespace <code>ns</code> value. Similarly to the <code>x-trestle-add-props</code> in profile authoring, the properties may be added at the control level, or attached to a top level statement part by adding a value, <code>smt-part</code> with value <code>a.</code>, <code>b.</code> or any other label for one of the top level statement parts.</p>
+<p><code>trestle author ssp-assemble</code></p>
 <p>After manually edting the markdown and providing the responses for the control implementation requirements, the markdown can be assembled into a single json SSP file with:</p>
 <p><code>trestle author ssp-assemble --markdown my_ssp --compdefs my_compdef_a,my_compdef_b --output my_json_ssp</code></p>
 <p>This will assemble the markdown files in the my_ssp directory and create a json SSP with name my_json_ssp in the system-security-plans directory.</p>
 <p>As indicated for <code>ssp-generate</code>, please do not alter any of the horizontal rule lines or lines indicating the part or control id, e.g. <code>### ACME Component</code>.  You may run <code>ssp-generate</code> and <code>ssp-assemble</code> repeatedly for the same markdown directory, allowing a continuous editing and updating cycle.</p>
 <p>As with all the <code>assemble</code> tools, you may optionally specify a <code>--name</code> for a corresponding json file into which the updates will be inserted, thereby preserving metadata and other aspects of the model.  The result can overwrite the provided model or get directed to a new model.  And the version may be updated and the uuid's regenerated.  As with the other <code>-assemble</code> tools, if an output file already exists, a new one will only be written if there are changes to the model relative to the existing file.  See <code>catalog-assemble</code> for more details.</p>
 <p>If you do not specify component-defintions during assembly, the markdown should not refer to any components other than <code>This System</code>.  Thus you may first generate markdown with <code>ssp-generate</code> and no component-definitions specified - and then you may assemble that ssp with <code>ssp-assemble</code> and no component-definitions specified - but only if there are no components other than <code>This System</code> referenced in the markdown.  You may add new component implementation details to the markdown later, but any new components must be defined in a component-defintion file, and that file must be specified when <code>ssp-assemble</code> is run.</p>
-<h2 id="inheritance-view">Inheritance view<a class="headerlink" href="#inheritance-view" title="Permanent link">¤</a></h2>
+<p><code>ssp inheritance view</code></p>
 <p>The inheritance view is generated by setting the <code>--leveraged-ssp</code> flag with <code>trestle author ssp-generate</code>. It contains information relating to exported information such as inherited capabilities and customer responsibilities that can be used to populate the inheritance information in the assembled SSP. When used, a directory named "inheritance" is created within the markdown directory. This directory serves as a designated space for  mapping inherited capabilities and responsibilities onto components in the assemble SSP and authoring satisfied statements for responsibilities.</p>
 <p>Example usage for creation of the markdown:</p>
 <p><code>trestle author ssp-generate --profile my_prof --compdefs "compdef_a,compdef_b" --yaml /my_yaml_dir/header.yaml --leveraged-ssp my_provider_ssp --output my_ssp</code></p>

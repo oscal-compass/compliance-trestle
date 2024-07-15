@@ -2651,6 +2651,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#trestle.core.control_reader.ControlReader.get_props_list" class="md-nav__link">
+    get_props_list()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#trestle.core.control_reader.ControlReader.read_control" class="md-nav__link">
     read_control()
   </a>
@@ -4579,6 +4586,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#trestle.core.control_reader.ControlReader.get_props_list" class="md-nav__link">
+    get_props_list()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#trestle.core.control_reader.ControlReader.read_control" class="md-nav__link">
     read_control()
   </a>
@@ -5000,8 +5014,8 @@ ControlReader        </code>
         <span class="k">return</span> <span class="n">sort_id</span><span class="p">,</span> <span class="n">imp_req</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_get_props_list</span><span class="p">(</span><span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">label_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-                        <span class="n">yaml_header</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Property</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Property</span><span class="p">]]]:</span>
+    <span class="k">def</span> <span class="nf">get_props_list</span><span class="p">(</span><span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">label_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+                       <span class="n">yaml_header</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Property</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Property</span><span class="p">]]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the list of props in the yaml header of this control as separate lists with and without by_id.&quot;&quot;&quot;</span>
         <span class="n">prop_list</span> <span class="o">=</span> <span class="n">yaml_header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_ADD_PROPS_TAG</span><span class="p">,</span> <span class="p">[])</span>
         <span class="n">props</span> <span class="o">=</span> <span class="p">[]</span>
@@ -5063,7 +5077,7 @@ ControlReader        </code>
         <span class="k">if</span> <span class="n">header_params</span><span class="p">:</span>
             <span class="n">param_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">header_params</span><span class="p">)</span>
 
-        <span class="n">props</span><span class="p">,</span> <span class="n">props_by_id</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">_get_props_list</span><span class="p">(</span><span class="n">control_id</span><span class="p">,</span> <span class="n">part_label_to_id_map</span><span class="p">,</span> <span class="n">yaml_header</span><span class="p">)</span>
+        <span class="n">props</span><span class="p">,</span> <span class="n">props_by_id</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">get_props_list</span><span class="p">(</span><span class="n">control_id</span><span class="p">,</span> <span class="n">part_label_to_id_map</span><span class="p">,</span> <span class="n">yaml_header</span><span class="p">)</span>
 
         <span class="c1"># When adding props without by_id it can either be starting or ending and we default to ending</span>
         <span class="c1"># This is the default behavior as described for implicit binding in</span>
@@ -5179,6 +5193,52 @@ ControlReader        </code>
 
 
 <h5 id="trestle.core.control_reader.ControlReader-methods">Methods<a href="#trestle.core.control_reader.ControlReader-methods" class="headerlink" title="Permanent link">¤</a></h5>
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h6 id="trestle.core.control_reader.ControlReader.get_props_list" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">get_props_list</span><span class="p">(</span><span class="n">control_id</span><span class="p">,</span> <span class="n">label_map</span><span class="p">,</span> <span class="n">yaml_header</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-staticmethod"><code>staticmethod</code></small>
+  </span>
+
+<a href="#trestle.core.control_reader.ControlReader.get_props_list" class="headerlink" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+      <p>Get the list of props in the yaml header of this control as separate lists with and without by_id.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/control_reader.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span> <span class="nf">get_props_list</span><span class="p">(</span><span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">label_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+                   <span class="n">yaml_header</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Property</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Property</span><span class="p">]]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the list of props in the yaml header of this control as separate lists with and without by_id.&quot;&quot;&quot;</span>
+    <span class="n">prop_list</span> <span class="o">=</span> <span class="n">yaml_header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_ADD_PROPS_TAG</span><span class="p">,</span> <span class="p">[])</span>
+    <span class="n">props</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">props_by_id</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">prop_d</span> <span class="ow">in</span> <span class="n">prop_list</span><span class="p">:</span>
+        <span class="n">by_id</span> <span class="o">=</span> <span class="n">prop_d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;smt-part&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">by_id</span> <span class="ow">and</span> <span class="n">control_id</span> <span class="ow">in</span> <span class="n">label_map</span><span class="p">:</span>
+            <span class="n">by_id</span> <span class="o">=</span> <span class="n">label_map</span><span class="p">[</span><span class="n">control_id</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">by_id</span><span class="p">,</span> <span class="n">by_id</span><span class="p">)</span>
+        <span class="n">prop</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">Property</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">prop_d</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">value</span><span class="o">=</span><span class="n">prop_d</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">],</span> <span class="n">ns</span><span class="o">=</span><span class="n">prop_d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ns&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">by_id</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">by_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">props_by_id</span><span class="p">:</span>
+                <span class="n">props_by_id</span><span class="p">[</span><span class="n">by_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">props_by_id</span><span class="p">[</span><span class="n">by_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">props</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">props</span><span class="p">,</span> <span class="n">props_by_id</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
 
   <div class="doc doc-object doc-method">
 
@@ -5458,7 +5518,7 @@ Adds to the passed in comp_dict.</p></td>
     <span class="k">if</span> <span class="n">header_params</span><span class="p">:</span>
         <span class="n">param_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">header_params</span><span class="p">)</span>
 
-    <span class="n">props</span><span class="p">,</span> <span class="n">props_by_id</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">_get_props_list</span><span class="p">(</span><span class="n">control_id</span><span class="p">,</span> <span class="n">part_label_to_id_map</span><span class="p">,</span> <span class="n">yaml_header</span><span class="p">)</span>
+    <span class="n">props</span><span class="p">,</span> <span class="n">props_by_id</span> <span class="o">=</span> <span class="n">ControlReader</span><span class="o">.</span><span class="n">get_props_list</span><span class="p">(</span><span class="n">control_id</span><span class="p">,</span> <span class="n">part_label_to_id_map</span><span class="p">,</span> <span class="n">yaml_header</span><span class="p">)</span>
 
     <span class="c1"># When adding props without by_id it can either be starting or ending and we default to ending</span>
     <span class="c1"># This is the default behavior as described for implicit binding in</span>

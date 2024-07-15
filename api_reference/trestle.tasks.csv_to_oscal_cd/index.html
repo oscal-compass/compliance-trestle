@@ -7108,12 +7108,20 @@ CsvToOscalComponentDefinition            (<a class="autorefs autorefs-internal" 
             <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csv_mgr</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">rule_key</span><span class="p">,</span> <span class="n">parameter_id_column_name</span><span class="p">)</span>
             <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csv_mgr</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">rule_key</span><span class="p">,</span> <span class="n">parameter_value_default_column_name</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">name</span> <span class="ow">and</span> <span class="n">value</span><span class="p">:</span>
-                <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_str_to_list</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-                <span class="n">set_parameter</span> <span class="o">=</span> <span class="n">SetParameter</span><span class="p">(</span>
-                    <span class="n">param_id</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-                    <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">,</span>
-                <span class="p">)</span>
-                <span class="n">set_parameters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">set_parameter</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_str_to_list</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                    <span class="n">set_parameter</span> <span class="o">=</span> <span class="n">SetParameter</span><span class="p">(</span>
+                        <span class="n">param_id</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                        <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">set_parameters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">set_parameter</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="n">row_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csv_mgr</span><span class="o">.</span><span class="n">get_row_number</span><span class="p">(</span><span class="n">rule_key</span><span class="p">)</span>
+                    <span class="n">text</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;row </span><span class="si">{</span><span class="n">row_number</span><span class="si">}</span><span class="s1">: &quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&quot; is invalid for column </span><span class="si">{</span><span class="n">parameter_id_column_name</span><span class="si">}</span><span class="s1"> &#39;</span>
+                        <span class="sa">f</span><span class="s1">&#39;and/or &quot;</span><span class="si">{</span><span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">values</span><span class="p">)</span><span class="si">}</span><span class="s1">&quot; is invalid for column </span><span class="si">{</span><span class="n">parameter_value_default_column_name</span><span class="si">}</span><span class="s1">&#39;</span>
+                    <span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">name</span><span class="p">:</span>
                 <span class="n">row_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csv_mgr</span><span class="o">.</span><span class="n">get_row_number</span><span class="p">(</span><span class="n">rule_key</span><span class="p">)</span>
                 <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;row &quot;</span><span class="si">{</span><span class="n">row_number</span><span class="si">}</span><span class="s1">&quot; missing value for &quot;</span><span class="si">{</span><span class="n">parameter_value_default_column_name</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
