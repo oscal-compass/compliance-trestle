@@ -23,6 +23,8 @@ from unittest import mock
 
 from _pytest.monkeypatch import MonkeyPatch
 
+import pytest
+
 from tests import test_utils
 
 import trestle.tasks.csv_to_oscal_cd as csv_to_oscal_cd
@@ -1417,6 +1419,28 @@ def test_execute_validation(tmp_path: pathlib.Path) -> None:
     assert component.props[2].name == 'Check_Description'
     assert component.props[2].value == 'validation-check-description'
     assert len(component.control_implementations) == 0
+
+
+def test_execute_invalid_set_parameter_values(tmp_path: pathlib.Path) -> None:
+    """Test execute invalid set parameter (PARAMETER_ID, Parameter_Value_Default) values."""
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
+    # inject invalid set parameter values
+    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    assert rows[3][13] == 'allowed_admins_per_account'
+    assert rows[3][15] == '10'
+    rows[3][13] = 'allowed admins per account'
+    rows[3][15] = '10 '
+    with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
+        mock_csv_reader.return_value = rows
+        tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+        with pytest.raises(RuntimeError) as exc_info:
+            tgt._execute()
+
+        exeception_value = str(exc_info.value)
+        assert exeception_value == (
+            'row 4: "allowed admins per account" is invalid for column Parameter_Id '
+            'and/or "10 " is invalid for column Parameter_Value_Default'
+        )
 
 
 def test_row_property_builder(tmp_path):
