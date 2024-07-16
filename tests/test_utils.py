@@ -484,6 +484,7 @@ def setup_for_ssp(
         output=output_name,
         verbose=0,
         overwrite_header_values=False,
+        include_all_parts=False,
         yaml_header=yaml_path,
         allowed_sections=None,
         force_overwrite=None
@@ -510,6 +511,7 @@ def setup_for_ssp_fedramp(
         output=output_name,
         verbose=0,
         overwrite_header_values=False,
+        include_all_parts=False,
         yaml_header=None,
         allowed_sections=None,
         force_overwrite=None

@@ -1168,3 +1168,138 @@ def test_ssp_gen_and_assemble_add_props(tmp_trestle_dir: pathlib.Path) -> None:
     assert len(smt_a.props) == 1
     assert smt_a.props[0].name == 'smt_prop'
     assert smt_a.props[0].value == 'smt prop'
+
+
+def test_ssp_gen_and_assemble_implementation_parts(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test ssp generate and assemble edit implementation parts."""
+    gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
+    args_compdefs = gen_args.compdefs
+    gen_args.include_all_parts = True
+
+    ssp_gen = SSPGenerate()
+    assert ssp_gen._run(gen_args) == 0
+
+    prose_sys = 'My response for This System'
+    prose_aa = 'My response for comp aa'
+    prose_sys_a = 'My response for This System part a.'
+    prose_aa_a = 'My response for comp aa part a.'
+
+    # ac-1 edit
+    ac_1_path = tmp_trestle_dir / ssp_name / 'ac/ac-1.md'
+    assert test_utils.substitute_text_in_file(
+        ac_1_path, '<!-- Add implementation prose for the main This System component for control: ac-1 -->', prose_sys
+    )
+    assert test_utils.substitute_text_in_file(
+        ac_1_path,
+        '<!-- Add implementation prose for the main This System component for control: ac-1_smt.a -->',
+        prose_sys_a
+    )
+    assert test_utils.substitute_text_in_file(ac_1_path, 'imp req prose for ac-1 from comp aa', prose_aa)
+    assert test_utils.substitute_text_in_file(ac_1_path, 'statement prose for part a. from comp aa', prose_aa_a)
+    # change status for sys comp
+    assert test_utils.substitute_text_in_file(ac_1_path, 'Status: planned', 'Status: alternative')
+
+    part_a_text_edited = """## Implementation for part a.
+
+### This System
+
+My response for This System part a.
+
+#### Implementation Status: planned
+
+### comp_aa
+
+My response for comp aa part a.
+
+#### Rules:
+
+  - comp_rule_aa_1
+
+#### Implementation Status: partial
+
+### comp_ab
+
+<!-- Add control implementation description here for item a. -->
+
+#### Rules:
+
+  - comp_rule_ab_1
+
+#### Implementation Status: partial
+
+______________________________________________________________________
+"""
+
+    md_api = MarkdownAPI()
+    _, tree = md_api.processor.process_markdown(ac_1_path)
+    node = tree.get_node_for_key('## Implementation for part a.')
+    assert node.content.raw_text == part_a_text_edited
+
+    # now assemble the edited controls into json ssp
+    ssp_assemble = SSPAssemble()
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        markdown=ssp_name,
+        output=ssp_name,
+        verbose=0,
+        regenerate=False,
+        version='',
+        name=None,
+        compdefs=args_compdefs
+    )
+    assert ssp_assemble._run(args) == 0
+
+    # Verify the correct information is in the assembled ssp
+    ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
+    imp_reqs = ssp.control_implementation.implemented_requirements
+    ac_1_imp_req = next((i_req for i_req in imp_reqs if i_req.control_id == 'ac-1'), None)
+    assert ac_1_imp_req is not None
+
+    # comp_aa is the first component in the list and This System is the last
+    assert ac_1_imp_req.by_components[0].description == prose_aa  # type: ignore
+    assert ac_1_imp_req.by_components[2].implementation_status.state == 'alternative'  # type: ignore
+    assert ac_1_imp_req.by_components[2].description == prose_sys  # type: ignore
+    ac_1_a_smt = next((smt for smt in ac_1_imp_req.statements if smt.statement_id == 'ac-1_smt.a'), None)
+    assert ac_1_a_smt is not None
+    assert ac_1_a_smt.by_components[0].description == prose_aa_a  # type: ignore
+    assert ac_1_a_smt.by_components[2].description == prose_sys_a  # type: ignore
+
+    # Regeneration checks to make sure the markdown is not overwritten
+    assert ssp_gen._run(gen_args) == 0
+    _, tree = md_api.processor.process_markdown(ac_1_path)
+    node = tree.get_node_for_key('## Implementation for part a.')
+    assert node.content.raw_text == part_a_text_edited
+    assert test_utils.confirm_text_in_file(ac_1_path, const.SSP_MD_IMPLEMENTATION_QUESTION, prose_sys)
+
+
+def test_ssp_generate_no_cds_include_all_parts(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test the ssp generator with no comp defs and include all parts are true."""
+    args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
+
+    args.compdefs = None
+    args.include_all_parts = True
+    ssp_cmd = SSPGenerate()
+    assert ssp_cmd._run(args) == 0
+    md_dir = tmp_trestle_dir / ssp_name
+    ac_1 = md_dir / 'ac/ac-1.md'
+    assert ac_1.exists()
+    at_2 = md_dir / 'at/at-2.md'
+    assert at_2.exists()
+
+    md_api = MarkdownAPI()
+    header, tree = md_api.processor.process_markdown(ac_1)
+    assert header[const.TRESTLE_GLOBAL_TAG][const.SORT_ID] == 'ac-01'
+
+    part_a_text_no_comp = """## Implementation for part a.
+
+### This System
+
+<!-- Add implementation prose for the main This System component for control: ac-1_smt.a -->
+
+#### Implementation Status: planned
+
+______________________________________________________________________
+"""
+
+    node = tree.get_node_for_key('## Implementation for part a.')
+    assert node.content.raw_text == part_a_text_no_comp
