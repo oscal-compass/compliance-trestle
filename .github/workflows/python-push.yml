@@ -36,7 +36,7 @@ jobs:
           path: ~/Library/Caches/pip
         - os: windows-latest
           path: ~\AppData\Local\pip\Cache
-        python-version: [ '${{ needs.outputs.set-versions.min }}', '${{ needs.outputs.set-versions.max }}']
+        python-version: [ '${{ needs.set-versions.outputs.min }}', '${{ needs.set-versions.outputs.max }}']
 
     steps:
     - name: Don't mess with  line endings
@@ -60,39 +60,39 @@ jobs:
       run: |
         make develop
     - name: Setup pre-commit
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.outputs.set-versions.max ) }}
+      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.set-versions.outputs.max ) }}
       run: |
         make pre-commit
     - name: Install dependencies
       run: |
         make install
     - name: Run md document formatting (mdformat)
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.outputs.set-versions.max) }}
+      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.set-versions.outputs.max) }}
       run: |
         make mdformat
     - name: Run code formatting (yapf)
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.outputs.set-versions.max) }}
+      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.set-versions.outputs.max) }}
       run: |
         make code-format
     - name: Run code linting (flake8)
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.outputs.set-versions.max) }}
+      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.set-versions.outputs.max) }}
       run: |
         make code-lint
     - name: Run code typing check (mypy)
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.outputs.set-versions.max) }}
+      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.set-versions.outputs.max) }}
       continue-on-error: true 
       run: |
         make code-typing
     - name: Validate website content (mkdocs)
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.outputs.set-versions.max) }}
+      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.set-versions.outputs.max) }}
       run: |
         make docs-validate
     - name: Pytest Fast
-      if: ${{ !(matrix.os == 'ubuntu-latest' && matrix.python-version == needs.outputs.set-versions.max) }}
+      if: ${{ !(matrix.os == 'ubuntu-latest' && matrix.python-version == needs.set-versions.outputs.max) }}
       run: |
         make test
     - name: Pytest Cov
-      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == needs.outputs.set-versions.max }}
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == needs.set-versions.outputs.max }}
       run: |
         make test-cov
   deploy:
@@ -110,10 +110,10 @@ jobs:
         submodules: true
         fetch-depth: 0
         token: ${{ secrets.ADMIN_PAT }} 
-    - name: Set up Python ${{ needs.outputs.set-versions.max }}
+    - name: Set up Python ${{ needs.set-versions.outputs.max }}
       uses: actions/setup-python@v5
       with:
-        python-version: ${{ needs.outputs.set-versions.max }}
+        python-version: ${{ needs.set-versions.outputs.max }}
     - name: Install build tools
       run: |
         make develop
@@ -139,7 +139,7 @@ jobs:
 
   deploy-docs:
     runs-on: ubuntu-latest
-    needs: deploy
+    needs: [ deploy, set-versions ]
     concurrency: 
       group: ${{ github.ref }}-${{ github.workflow }}-${{ github.job }}-docs
       cancel-in-progress: true
@@ -151,11 +151,11 @@ jobs:
         submodules: true
         fetch-depth: 0
         token: ${{ secrets.ADMIN_PAT }} 
-    - name: Set up Python ${{ needs.outputs.set-versions.max }}
+    - name: Set up Python ${{ needs.set-versions.outputs.max }}
       uses: actions/setup-python@v5
       # This is deliberately not using a custom credential as it relies on native github actions token to have push rights.
       with:
-        python-version: ${{ needs.outputs.set-versions.max }}
+        python-version: ${{ needs.set-versions.outputs.max }}
     - name: Install build tools
       run: |
         make develop
