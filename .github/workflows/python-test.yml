@@ -7,7 +7,20 @@ on:
     branches:
       - develop
 jobs:
+  set-versions:
+    runs-on: ubuntu-latest
+    outputs:
+      min: ${{ steps.versions.outputs.min }}
+      max: ${{ steps.versions.outputs.max }}
+    steps:
+    - id: versions
+      run: |
+        min_version=$(jq '.PYTHON_MIN' version.json)
+        max=$(jq '.PYTHON_MAX' version.json)
+        echo "::set-output name=min::$min_version"
+        echo "::set-output name=max::$max_version"
   lint:
+    needs: set-versions
     runs-on: ubuntu-latest
     steps:
     - name: Don't mess with line endings
@@ -19,13 +32,13 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: ${{ vars.PYTHON_MAX }}
+        python-version: ${{ fromJson(needs.outputs.set-versions.max) }}
     - uses: actions/cache@v4
       with:
         path: ~/.cache/pip
-        key: ubuntu-latest-${{ vars.PYTHON_MAX }}-pip-${{ hashFiles('setup.cfg') }}
+        key: ubuntu-latest-${{ fromJson(needs.outputs.set-versions.max) }}-pip-${{ hashFiles('setup.cfg') }}
         restore-keys: |
-          ubuntu-latest-${{ vars.PYTHON_MAX }}-pip-
+          ubuntu-latest-${{ fromJson(needs.outputs.set-versions.max) }}-pip-
     - name: Install build tools
       run: |
         make develop
@@ -58,6 +71,7 @@ jobs:
 # This test simulates what it is like for a user to install trestle today.
 # Coverage cannot be calculated as part of
   bdist:
+    needs: set-versions
     runs-on: ubuntu-latest
     steps:
     - name: Don't mess with line endings
@@ -72,13 +86,13 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: ${{ vars.PYTHON_MAX }}
+        python-version: ${{ fromJson(needs.outputs.set-versions.max) }}
     - uses: actions/cache@v4
       with:
         path: ~/.cache/pip
-        key: ubuntu-latest-${{ vars.PYTHON_MAX }}-pip-${{ hashFiles('setup.cfg') }}
+        key: ubuntu-latest-${{ fromJson(needs.outputs.set-versions.max) }}-pip-${{ hashFiles('setup.cfg') }}
         restore-keys: |
-          ubuntu-latest-${{ vars.PYTHON_MAX }}-pip-
+          ubuntu-latest-${{ fromJson(needs.outputs.set-versions.max) }}-pip-
     - name: Install build tools
       run: |
         make develop
@@ -88,11 +102,12 @@ jobs:
 
   test:
     # This test
+    needs: set-versions
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: [ '${{ vars.PYTHON_MIN }}', '${{ vars.PYTHON_MAX }}' ]
+        python-version: [ '${{ fromJson(needs.outputs.set-versions.min) }}', '${{ fromJson(needs.outputs.set-versions.max) }}' ]
         include:
         - os: ubuntu-latest
           path: ~/.cache/pip
@@ -122,16 +137,16 @@ jobs:
       run: |
         make develop
     - name: Pytest Fast
-      if: ${{ !(matrix.os == 'ubuntu-latest' && matrix.python-version == vars.PYTHON_MAX) }}
+      if: ${{ !(matrix.os == 'ubuntu-latest' && matrix.python-version == fromJson(needs.outputs.set-versions.max)) }}
       run: |
         make test
     - name: Pytest Cov
-      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == vars.PYTHON_MAX }}
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == fromJson(needs.outputs.set-versions.max) }}
       run: |
         make test-cov
 
     - name: Upload artifact
-      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == vars.PYTHON_MAX }}
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == fromJson(needs.outputs.set-versions.max) }}
       uses: actions/upload-artifact@v2
       with:
         name: coverage
@@ -140,7 +155,7 @@ jobs:
   sonar:
     if: ${{ github.event.pull_request.base.repo.url == github.event.pull_request.head.repo.url }}
     runs-on: ubuntu-latest
-    needs: test
+    needs: [ test, set-versions]
     steps:
     - name: Don't mess with line endings
       run: |
@@ -154,13 +169,13 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: ${{ vars.PYTHON_MAX }}
+        python-version: ${{ fromJson(needs.outputs.set-versions.max) }}
     - uses: actions/cache@v4
       with:
         path: ~/.cache/pip
-        key: ubuntu-latest-${{ vars.PYTHON_MAX }}-pip-${{ hashFiles('setup.cfg') }}
+        key: ubuntu-latest-${{ fromJson(needs.outputs.set-versions.max) }}-pip-${{ hashFiles('setup.cfg') }}
         restore-keys: |
-          ubuntu-latest-${{ vars.PYTHON_MAX }}-pip-
+          ubuntu-latest-${{ fromJson(needs.outputs.set-versions.max) }}-pip-
     - name: Install build tools
       run: |
         make develop
@@ -178,7 +193,7 @@ jobs:
           -Dsonar.python.coverage.reportPaths=coverage.xml
           -Dsonar.tests=tests/
           -Dsonar.sources=trestle/ 
-          -Dsonar.python.version=${{ vars.PYTHON_MAX }}
+          -Dsonar.python.version=${{ fromJson(needs.outputs.set-versions.max) }}
           -Dsonar.projectKey=compliance-trestle
           -Dsonar.organization=compliance-trestle
           -Dsonar.cpd.exclusions=trestle/oscal/*.py
