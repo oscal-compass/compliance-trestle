@@ -13,6 +13,7 @@ jobs:
       min: ${{ steps.versions.outputs.min }}
       max: ${{ steps.versions.outputs.max }}
     steps:
+    - uses: actions/checkout@v4
     - id: versions
       run: |
         min_version=$(jq '.PYTHON_MIN' version.json)
