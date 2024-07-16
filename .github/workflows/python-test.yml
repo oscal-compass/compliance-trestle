@@ -33,13 +33,13 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: ${{ fromJson(needs.outputs.set-versions.max) }}
+        python-version: ${{ needs.outputs.set-versions.max }}
     - uses: actions/cache@v4
       with:
         path: ~/.cache/pip
-        key: ubuntu-latest-${{ fromJson(needs.outputs.set-versions.max) }}-pip-${{ hashFiles('setup.cfg') }}
+        key: ubuntu-latest-${{ needs.outputs.set-versions.max }}-pip-${{ hashFiles('setup.cfg') }}
         restore-keys: |
-          ubuntu-latest-${{ fromJson(needs.outputs.set-versions.max) }}-pip-
+          ubuntu-latest-${{ needs.outputs.set-versions.max }}-pip-
     - name: Install build tools
       run: |
         make develop
@@ -87,13 +87,13 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: ${{ fromJson(needs.outputs.set-versions.max) }}
+        python-version: ${{ needs.outputs.set-versions.max }}
     - uses: actions/cache@v4
       with:
         path: ~/.cache/pip
-        key: ubuntu-latest-${{ fromJson(needs.outputs.set-versions.max) }}-pip-${{ hashFiles('setup.cfg') }}
+        key: ubuntu-latest-${{ needs.outputs.set-versions.max }}-pip-${{ hashFiles('setup.cfg') }}
         restore-keys: |
-          ubuntu-latest-${{ fromJson(needs.outputs.set-versions.max) }}-pip-
+          ubuntu-latest-${{ needs.outputs.set-versions.max }}-pip-
     - name: Install build tools
       run: |
         make develop
@@ -108,7 +108,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: [ '${{ fromJson(needs.outputs.set-versions.min) }}', '${{ fromJson(needs.outputs.set-versions.max) }}' ]
+        python-version: [ '${{ needs.outputs.set-versions.min }}', '${{ needs.outputs.set-versions.max }}' ]
         include:
         - os: ubuntu-latest
           path: ~/.cache/pip
@@ -138,16 +138,16 @@ jobs:
       run: |
         make develop
     - name: Pytest Fast
-      if: ${{ !(matrix.os == 'ubuntu-latest' && matrix.python-version == fromJson(needs.outputs.set-versions.max)) }}
+      if: ${{ !(matrix.os == 'ubuntu-latest' && matrix.python-version == needs.outputs.set-versions.max) }}
       run: |
         make test
     - name: Pytest Cov
-      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == fromJson(needs.outputs.set-versions.max) }}
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == needs.outputs.set-versions.max }}
       run: |
         make test-cov
 
     - name: Upload artifact
-      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == fromJson(needs.outputs.set-versions.max) }}
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == needs.outputs.set-versions.max }}
       uses: actions/upload-artifact@v2
       with:
         name: coverage
@@ -170,13 +170,13 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: ${{ fromJson(needs.outputs.set-versions.max) }}
+        python-version: ${{ needs.outputs.set-versions.max }}
     - uses: actions/cache@v4
       with:
         path: ~/.cache/pip
-        key: ubuntu-latest-${{ fromJson(needs.outputs.set-versions.max) }}-pip-${{ hashFiles('setup.cfg') }}
+        key: ubuntu-latest-${{ needs.outputs.set-versions.max }}-pip-${{ hashFiles('setup.cfg') }}
         restore-keys: |
-          ubuntu-latest-${{ fromJson(needs.outputs.set-versions.max) }}-pip-
+          ubuntu-latest-${{ needs.outputs.set-versions.max }}-pip-
     - name: Install build tools
       run: |
         make develop
@@ -194,7 +194,7 @@ jobs:
           -Dsonar.python.coverage.reportPaths=coverage.xml
           -Dsonar.tests=tests/
           -Dsonar.sources=trestle/ 
-          -Dsonar.python.version=${{ fromJson(needs.outputs.set-versions.max) }}
+          -Dsonar.python.version=${{ needs.outputs.set-versions.max }}
           -Dsonar.projectKey=compliance-trestle
           -Dsonar.organization=compliance-trestle
           -Dsonar.cpd.exclusions=trestle/oscal/*.py

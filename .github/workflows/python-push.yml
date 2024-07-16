@@ -36,7 +36,7 @@ jobs:
           path: ~/Library/Caches/pip
         - os: windows-latest
           path: ~\AppData\Local\pip\Cache
-        python-version: [ '${{ fromJson(needs.outputs.set-versions.min) }}', '${{ fromJson(needs.outputs.set-versions.max) }}']
+        python-version: [ '${{ needs.outputs.set-versions.min }}', '${{ needs.outputs.set-versions.max }}']
 
     steps:
     - name: Don't mess with  line endings
@@ -60,39 +60,39 @@ jobs:
       run: |
         make develop
     - name: Setup pre-commit
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == fromJson(needs.outputs.set-versions.max) ) }}
+      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.outputs.set-versions.max ) }}
       run: |
         make pre-commit
     - name: Install dependencies
       run: |
         make install
     - name: Run md document formatting (mdformat)
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == fromJson(needs.outputs.set-versions.max)) }}
+      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.outputs.set-versions.max) }}
       run: |
         make mdformat
     - name: Run code formatting (yapf)
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == fromJson(needs.outputs.set-versions.max)) }}
+      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.outputs.set-versions.max) }}
       run: |
         make code-format
     - name: Run code linting (flake8)
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == fromJson(needs.outputs.set-versions.max)) }}
+      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.outputs.set-versions.max) }}
       run: |
         make code-lint
     - name: Run code typing check (mypy)
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == fromJson(needs.outputs.set-versions.max)) }}
+      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.outputs.set-versions.max) }}
       continue-on-error: true 
       run: |
         make code-typing
     - name: Validate website content (mkdocs)
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == fromJson(needs.outputs.set-versions.max)) }}
+      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.outputs.set-versions.max) }}
       run: |
         make docs-validate
     - name: Pytest Fast
-      if: ${{ !(matrix.os == 'ubuntu-latest' && matrix.python-version == fromJson(needs.outputs.set-versions.max)) }}
+      if: ${{ !(matrix.os == 'ubuntu-latest' && matrix.python-version == needs.outputs.set-versions.max) }}
       run: |
         make test
     - name: Pytest Cov
-      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == fromJson(needs.outputs.set-versions.max) }}
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == needs.outputs.set-versions.max }}
       run: |
         make test-cov
   deploy:
@@ -110,10 +110,10 @@ jobs:
         submodules: true
         fetch-depth: 0
         token: ${{ secrets.ADMIN_PAT }} 
-    - name: Set up Python ${{ fromJson(needs.outputs.set-versions.max) }}
+    - name: Set up Python ${{ needs.outputs.set-versions.max }}
       uses: actions/setup-python@v5
       with:
-        python-version: ${{ fromJson(needs.outputs.set-versions.max) }}
+        python-version: ${{ needs.outputs.set-versions.max }}
     - name: Install build tools
       run: |
         make develop
@@ -151,11 +151,11 @@ jobs:
         submodules: true
         fetch-depth: 0
         token: ${{ secrets.ADMIN_PAT }} 
-    - name: Set up Python ${{ fromJson(needs.outputs.set-versions.max) }}
+    - name: Set up Python ${{ needs.outputs.set-versions.max }}
       uses: actions/setup-python@v5
       # This is deliberately not using a custom credential as it relies on native github actions token to have push rights.
       with:
-        python-version: ${{ fromJson(needs.outputs.set-versions.max) }}
+        python-version: ${{ needs.outputs.set-versions.max }}
     - name: Install build tools
       run: |
         make develop
