@@ -17,9 +17,9 @@ jobs:
     - id: versions
       run: |
         min_version=$(jq '.PYTHON_MIN' version.json)
-        max=$(jq '.PYTHON_MAX' version.json)
-        echo "::set-output name=min::$min_version"
-        echo "::set-output name=max::$max_version"
+        max_version=$(jq '.PYTHON_MAX' version.json)
+        echo "min=$min_version" >> $GITHUB_OUTPUT
+        echo "max=$max_version" >> $GITHUB_OUTPUT
   lint:
     needs: set-versions
     runs-on: ubuntu-latest
