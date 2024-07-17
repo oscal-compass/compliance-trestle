@@ -622,6 +622,7 @@ class AgileAuthoring(Repository):
         compdefs: str,
         leveraged_ssp: str = '',
         force_overwrite: bool = False,
+        include_all_parts: bool = False,
         yaml_header: str = '',
         overwrite_header_values: bool = False
     ) -> bool:
@@ -637,6 +638,7 @@ class AgileAuthoring(Repository):
             leveraged_ssp=leveraged_ssp,
             trestle_root=self.root_dir,
             force_overwrite=force_overwrite,
+            include_all_parts=include_all_parts,
             yaml_header=yaml_header,
             overwrite_header_values=overwrite_header_values,
             verbose=verbose
