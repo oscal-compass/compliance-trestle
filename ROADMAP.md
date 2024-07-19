@@ -12,7 +12,7 @@ High level roadmap items are identified as `Epics`. These represent larger initi
 
 We strive to release ready-to-go features monthly. This is documented through milestones. Bug and security fixes will be released on-demand.
 
-For high-level initiatives that need to be broken down and executed, we schedule to an iteration that lasts 12 weeks. This give us time to get community input, break them down, and add them to a monthly release.
+We use 12-week iterations for high-level initiatives that must be broken down and completed. It allows the time to collect community comments, break it down into smaller issues, and schedule a monthly release.
 
 ### How to get involved
 
