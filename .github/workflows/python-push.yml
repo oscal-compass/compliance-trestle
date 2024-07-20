@@ -19,8 +19,8 @@ jobs:
     - uses: actions/checkout@v4
     - id: versions
       run: |
-        min_version=$(jq '.PYTHON_MIN' version.json)
-        max_version=$(jq '.PYTHON_MAX' version.json)
+        min_version=$(jq '.PYTHON_MIN' -r version.json)
+        max_version=$(jq '.PYTHON_MAX' -r version.json)
         echo "min=$min_version" 
         echo "max=$max_version"
         echo "min=$min_version" >> $GITHUB_OUTPUT
@@ -38,7 +38,7 @@ jobs:
           path: ~/Library/Caches/pip
         - os: windows-latest
           path: ~\AppData\Local\pip\Cache
-        python-version: [ '${{ fromJson(needs.set-versions.outputs.min) }}', '${{ fromJson(fromJson(needs.set-versions.outputs.max)) }}']
+        python-version: [ '${{ needs.set-versions.outputs.min }}', '${{ needs.set-versions.outputs.max }}']
 
     steps:
     - name: Don't mess with  line endings
@@ -57,44 +57,47 @@ jobs:
         key: ${{ matrix.os }}-${{ matrix.python-version }}-pip-${{ hashFiles('setup.cfg') }}
         restore-keys: |
          ${{ matrix.os }}-${{ matrix.python-version }}-pip-
+    - name: Is core test version
+      id: core-version
+      run: echo "core=${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.set-versions.outputs.max ) }}" >> $GITHUB_OUTPUT
 
     - name: Install build tools
       run: |
         make develop
     - name: Setup pre-commit
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == fromJson(fromJson(needs.set-versions.outputs.max)) ) }}
+      if: ${{ steps.core-version.outputs.core }}
       run: |
         make pre-commit
     - name: Install dependencies
       run: |
         make install
     - name: Run md document formatting (mdformat)
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == fromJson(fromJson(needs.set-versions.outputs.max))) }}
+      if: ${{ steps.core-version.outputs.core }}
       run: |
         make mdformat
     - name: Run code formatting (yapf)
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == fromJson(fromJson(needs.set-versions.outputs.max))) }}
+      if: ${{ steps.core-version.outputs.core }}
       run: |
         make code-format
     - name: Run code linting (flake8)
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == fromJson(fromJson(needs.set-versions.outputs.max))) }}
+      if: ${{ steps.core-version.outputs.core }}
       run: |
         make code-lint
     - name: Run code typing check (mypy)
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == fromJson(fromJson(needs.set-versions.outputs.max))) }}
+      if: ${{ steps.core-version.outputs.core }}
       continue-on-error: true 
       run: |
         make code-typing
     - name: Validate website content (mkdocs)
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == fromJson(fromJson(needs.set-versions.outputs.max))) }}
+      if: ${{ steps.core-version.outputs.core }}
       run: |
         make docs-validate
     - name: Pytest Fast
-      if: ${{ !(matrix.os == 'ubuntu-latest' && matrix.python-version == fromJson(fromJson(needs.set-versions.outputs.max))) }}
+      if: ${{ !(steps.core-version.outputs.core) }}
       run: |
         make test
     - name: Pytest Cov
-      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == fromJson(fromJson(needs.set-versions.outputs.max)) }}
+      if: ${{ steps.core-version.outputs.core }}
       run: |
         make test-cov
   deploy:
@@ -112,10 +115,10 @@ jobs:
         submodules: true
         fetch-depth: 0
         token: ${{ secrets.ADMIN_PAT }} 
-    - name: Set up Python ${{ fromJson(fromJson(needs.set-versions.outputs.max)) }}
+    - name: Set up Python ${{ needs.set-versions.outputs.max }}
       uses: actions/setup-python@v5
       with:
-        python-version: ${{ fromJson(fromJson(needs.set-versions.outputs.max)) }}
+        python-version: ${{ needs.set-versions.outputs.max }}
     - name: Install build tools
       run: |
         make develop
@@ -153,11 +156,11 @@ jobs:
         submodules: true
         fetch-depth: 0
         token: ${{ secrets.ADMIN_PAT }} 
-    - name: Set up Python ${{ fromJson(fromJson(needs.set-versions.outputs.max)) }}
+    - name: Set up Python ${{ needs.set-versions.outputs.max }}
       uses: actions/setup-python@v5
       # This is deliberately not using a custom credential as it relies on native github actions token to have push rights.
       with:
-        python-version: ${{ fromJson(fromJson(needs.set-versions.outputs.max)) }}
+        python-version: ${{ needs.set-versions.outputs.max }}
     - name: Install build tools
       run: |
         make develop

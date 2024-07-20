@@ -134,20 +134,23 @@ jobs:
         key: ${{ matrix.os }}-${{ matrix.python-version }}-pip-${{ hashFiles('setup.cfg') }}
         restore-keys: |
          ${{ matrix.os }}-${{ matrix.python-version }}-pip-
+    - name: Is core test version
+      id: core-version
+      run: echo "core=${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.set-versions.outputs.max ) }}" >> $GITHUB_OUTPUT
     - name: Install build tools
       run: |
         make develop
     - name: Pytest Fast
-      if: ${{ !(matrix.os == 'ubuntu-latest' && matrix.python-version == needs.set-versions.outputs.max) }}
+      if: ${{ !(steps.core-version.outputs.core) }}
       run: |
         make test
     - name: Pytest Cov
-      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == needs.set-versions.outputs.max }}
+      if: ${{ steps.core-version.outputs.core }}
       run: |
         make test-cov
 
     - name: Upload artifact
-      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == needs.set-versions.outputs.max }}
+      if: ${{ steps.core-version.outputs.core }}
       uses: actions/upload-artifact@v2
       with:
         name: coverage
