@@ -18,6 +18,8 @@ jobs:
       run: |
         min_version=$(jq '.PYTHON_MIN' version.json)
         max_version=$(jq '.PYTHON_MAX' version.json)
+        echo "min=$min_version" 
+        echo "max=$max_version"
         echo "min=$min_version" >> $GITHUB_OUTPUT
         echo "max=$max_version" >> $GITHUB_OUTPUT
   lint:
