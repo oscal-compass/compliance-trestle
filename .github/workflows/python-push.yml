@@ -65,39 +65,39 @@ jobs:
       run: |
         make develop
     - name: Setup pre-commit
-      if: ${{ steps.core-version.outputs.core }}
+      if: steps.core-version.outputs.core == 'true'
       run: |
         make pre-commit
     - name: Install dependencies
       run: |
         make install
     - name: Run md document formatting (mdformat)
-      if: ${{ steps.core-version.outputs.core }}
+      if: steps.core-version.outputs.core == 'true'
       run: |
         make mdformat
     - name: Run code formatting (yapf)
-      if: ${{ steps.core-version.outputs.core }}
+      if: steps.core-version.outputs.core == 'true'
       run: |
         make code-format
     - name: Run code linting (flake8)
-      if: ${{ steps.core-version.outputs.core }}
+      if: steps.core-version.outputs.core == 'true'
       run: |
         make code-lint
     - name: Run code typing check (mypy)
-      if: ${{ steps.core-version.outputs.core }}
+      if: steps.core-version.outputs.core == 'true'
       continue-on-error: true 
       run: |
         make code-typing
     - name: Validate website content (mkdocs)
-      if: ${{ steps.core-version.outputs.core }}
+      if: steps.core-version.outputs.core == 'true'
       run: |
         make docs-validate
     - name: Pytest Fast
-      if: ${{ !(steps.core-version.outputs.core) }}
+      if: steps.core-version.outputs.core != 'true'
       run: |
         make test
     - name: Pytest Cov
-      if: ${{ steps.core-version.outputs.core }}
+      if: steps.core-version.outputs.core == 'true'
       run: |
         make test-cov
   deploy:

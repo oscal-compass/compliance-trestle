@@ -141,16 +141,16 @@ jobs:
       run: |
         make develop
     - name: Pytest Fast
-      if: ${{ !(steps.core-version.outputs.core) }}
+      if: steps.core-version.outputs.core != 'true'
       run: |
         make test
     - name: Pytest Cov
-      if: ${{ steps.core-version.outputs.core }}
+      if: steps.core-version.outputs.core == 'true'
       run: |
         make test-cov
 
     - name: Upload artifact
-      if: ${{ steps.core-version.outputs.core }}
+      if: steps.core-version.outputs.core == 'true'
       uses: actions/upload-artifact@v2
       with:
         name: coverage
