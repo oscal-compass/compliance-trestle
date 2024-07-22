@@ -637,6 +637,7 @@ class AgileAuthoring(Repository):
             leveraged_ssp=leveraged_ssp,
             trestle_root=self.root_dir,
             force_overwrite=force_overwrite,
+            include_all_parts=include_all_parts,
             yaml_header=yaml_header,
             overwrite_header_values=overwrite_header_values,
             verbose=verbose
