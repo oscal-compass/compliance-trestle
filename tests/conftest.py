@@ -15,6 +15,7 @@
 """Common fixtures."""
 import os
 import pathlib
+import shutil
 import random
 import string
 import sys
@@ -36,6 +37,26 @@ from trestle.oscal.component import ComponentDefinition, DefinedComponent
 from trestle.oscal.profile import Profile
 
 TEST_CONFIG: dict = {}
+
+
+@pytest.fixture(scope='session', autouse=True)
+def clean_tmp():
+    """Remove Trestle workspace in /tmp if there's one"""
+    if os.name == 'posix':
+        curr_path = os.getcwd()
+        os.chdir("/tmp")
+        try:
+            shutil.rmtree(".trestle")
+            shutil.rmtree("dist")
+            shutil.rmtree("catalogs")
+            shutil.rmtree("profiles")
+            shutil.rmtree("component-definitions")
+            shutil.rmtree("system-security-plans")
+            shutil.rmtree("assessment-plans")
+            shutil.rmtree("assessment-results")
+            shutil.rmtree("plan-of-action-and-milestones")
+        finally:
+            os.chdir(curr_path)
 
 
 @pytest.fixture(scope='function')
