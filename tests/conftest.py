@@ -43,12 +43,22 @@ TEST_CONFIG: dict = {}
 def clean_tmp():
     """Remove Trestle workspace in /tmp if there's one."""
     if os.name == 'posix':
-        trestle_dirs = ['.trestle', 'dist', 'catalogs', 'profiles', 'component-definitions', 'system-security-plans', 'assessment-plans', 'assessment-results', 'plan-of-action-and-milestones']
+        trestle_dirs = [
+            '.trestle',
+            'dist',
+            'catalogs',
+            'profiles',
+            'component-definitions',
+            'system-security-plans',
+            'assessment-plans',
+            'assessment-results',
+            'plan-of-action-and-milestones'
+        ]
         curr_path = os.getcwd()
         os.chdir('/tmp')
-        for dir in trestle_dirs:
-            if pathlib.Path(dir).is_dir():
-                shutil.rmtree(dir)
+        for trestle_dir in trestle_dirs:
+            if pathlib.Path(trestle_dir).is_dir():
+                shutil.rmtree(trestle_dir)
         os.chdir(curr_path)
 
 
