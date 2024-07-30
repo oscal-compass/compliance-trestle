@@ -102,6 +102,10 @@ Please refer to the community [README](https://github.com/oscal-compass/communit
 
 Our project welcomes external contributions. Please consult [contributing](https://oscal-compass.github.io/compliance-trestle/contributing/mkdocs_contributing/) to get started.
 
+## Code of Conduct
+
+Participation in the OSCAL Compass community is governed by the [Code of Conduct](https://github.com/oscal-compass/community/blob/main/CODE_OF_CONDUCT.md).
+
 ## License & Authors
 
 If you would like to see the detailed LICENSE click [here](LICENSE).
