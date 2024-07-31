@@ -328,6 +328,11 @@ HELP_MARKDOWN_NAME = 'Name of the output generated profile markdown folder'
 
 HELP_COMPDEFS = 'Comma-separated list of component-definitions for the ssp.'
 
+HELP_INCLUDE_ALL_PARTS = (
+    'Include all control parts when generating SSP markdown.'
+    + ' By default, only controls and parts with an attached rule will be written out.'
+)
+
 FILTER_BY_PROFILE = 'filter-by-profile'
 
 FILTER_BY_COMPONENTS = 'filter-by-components'
