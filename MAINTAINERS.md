@@ -6,8 +6,6 @@ Christopher Butler [butler54](https://github.com/butler54)
 
 Lou Degenaro [degenaro](https://github.com/degenaro)
 
-Frank Suits [fsuits](https://github.com/fsuits)
-
 Jennifer Power [jpower432](https://github.com/jpower432)
 
 Manjiree Gadgil [mrgadgil](https://github.com/mrgadgil)
