@@ -1,4 +1,4 @@
-# <img alt="Logo" width="50px" src="https://raw.githubusercontent.com/oscal-compass/compliance-trestle/develop/images/compliance-trestle-800x800.png" style="vertical-align: middle;" /> Compliance-trestle (also known as `trestle`)
+# <img alt="Logo" width="50px" src="https://raw.githubusercontent.com/oscal-compass/compliance-trestle/main/images/compliance-trestle-800x800.png" style="vertical-align: middle;" /> Compliance-trestle (also known as `trestle`)
 
 ![[OS Compatibility](#prerequisites)](https://img.shields.io/badge/platform-osx%20%7C%20linux%20%7C%20windows-orange.svg)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/compliance-trestle)
