@@ -1,7 +1,7 @@
 version: 2
 updates:
   - package-ecosystem: "github-actions"
-    directories: "/"
+    directory: "/"
     schedule:
       interval: "weekly"
     commit-message:
