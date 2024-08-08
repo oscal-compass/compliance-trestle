@@ -281,19 +281,27 @@ class CisXlsxToOscalCatalog(TaskBase):
 
     def _add_property(self, xlsx_helper: XlsxHelper, props: List[Property], row: int, key: str) -> None:
         """Add property."""
-        name = self._get_normalized_name(key)
-        value = xlsx_helper.get(row, key)
-        if value:
-            props.append(self._create_property(name, value))
+        try:
+            name = self._get_normalized_name(key)
+            value = xlsx_helper.get(row, key)
+            if value:
+                props.append(self._create_property(name, value))
+        except KeyError as e:
+            text = f'key {e} not found.'
+            logger.debug(text)
 
     def _add_property_boolean(self, xlsx_helper: XlsxHelper, props: List[Property], row: int, key: str) -> None:
         """Add property."""
-        name = self._get_normalized_name(key)
-        value = xlsx_helper.get(row, key)
-        if value:
-            props.append(self._create_property(name, 'True'))
-        else:
-            props.append(self._create_property(name, 'False'))
+        try:
+            name = self._get_normalized_name(key)
+            value = xlsx_helper.get(row, key)
+            if value:
+                props.append(self._create_property(name, 'True'))
+            else:
+                props.append(self._create_property(name, 'False'))
+        except KeyError as e:
+            text = f'key {e} not found.'
+            logger.debug(text)
 
     def _add_part(self, xlsx_helper: XlsxHelper, parts: List[Part], id_: str, row: int, key: str) -> None:
         """Add part."""
