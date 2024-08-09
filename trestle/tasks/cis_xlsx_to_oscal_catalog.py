@@ -81,7 +81,7 @@ class XlsxHelper:
     def _mapper(self) -> None:
         """Map columns heading names to column numbers."""
         self._col_name_to_number = {}
-        cols = self._work_sheet.max_column
+        cols = self._work_sheet.max_column + 1
         row = 1
         for col in range(row, cols):
             cell = self._work_sheet.cell(row, col)
