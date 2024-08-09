@@ -47,19 +47,16 @@ timestamp = datetime.datetime.utcnow().replace(microsecond=0).replace(tzinfo=dat
 class XlsxHelper:
     """Xlsx Helper common functions and assistance navigating spread sheet."""
 
-    def __init__(self, file: str, sheet: str) -> None:
+    def __init__(self, file: str) -> None:
         """Initialize."""
         self._spread_sheet = file
         self._wb = load_workbook(self._spread_sheet)
+        sheet_candidates = ['Combined Profiles', 'Combined']
         self._sheet_name = None
-        if sheet:
-            self._sheet_name = sheet
-        else:
-            sheet_candidates = ['Combined Profiles', 'Combined']
-            for sheet_candidate in sheet_candidates:
-                if sheet_candidate in self._wb.sheetnames:
-                    self._sheet_name = sheet_candidate
-                    break
+        for sheet_candidate in sheet_candidates:
+            if sheet_candidate in self._wb.sheetnames:
+                self._sheet_name = sheet_candidate
+                break
         if not self._sheet_name:
             raise RuntimeError(f'{file} missing one of {sheet_candidates} sheet')
         self._work_sheet = self._wb[self._sheet_name]
@@ -245,9 +242,6 @@ class CisXlsxToOscalCatalog(TaskBase):
         text1 = '  input-file             = '
         text2 = '(required) path to read the compliance-as-code .xlsx spread sheet file.'
         logger.info(text1 + text2)
-        text1 = '  input-sheet            = '
-        text2 = '(optional) name of sheet in .xlsx spread sheet file.'
-        logger.info(text1 + text2)
         text1 = '  output-dir             = '
         text2 = '(required) location to write the generated catalog.json file.'
         logger.info(text1 + text2)
@@ -311,10 +305,7 @@ class CisXlsxToOscalCatalog(TaskBase):
 
     def _add_part(self, xlsx_helper: XlsxHelper, parts: List[Part], id_: str, row: int, key: str) -> None:
         """Add part."""
-        try:
-            value = xlsx_helper.get(row, key)
-        except KeyError:
-            value = None
+        value = xlsx_helper.get(row, key)
         if value:
             name = self._get_normalized_name(key)
             parts.append(Part(id=id_, name=name, prose=value))
@@ -333,7 +324,6 @@ class CisXlsxToOscalCatalog(TaskBase):
         if not self._config:
             logger.warning('config missing')
             return TaskOutcome('failure')
-        # required
         try:
             ifile = self._config['input-file']
             odir = self._config['output-dir']
@@ -342,8 +332,6 @@ class CisXlsxToOscalCatalog(TaskBase):
         except KeyError as e:
             logger.info(f'key {e.args[0]} missing')
             return TaskOutcome('failure')
-        # sheet
-        isheet = self._config.get('input-sheet', None)
         # verbosity
         _quiet = self._config.get('quiet', False)
         _verbose = not _quiet
@@ -358,7 +346,7 @@ class CisXlsxToOscalCatalog(TaskBase):
         if not overwrite and pathlib.Path(ofile).exists():
             logger.warning(f'output: {ofile} already exists')
             return TaskOutcome('failure')
-        xlsx_helper = XlsxHelper(ifile, isheet)
+        xlsx_helper = XlsxHelper(ifile)
         catalog_helper = CatalogHelper(title, version)
         if xlsx_helper.is_ocp():
             self._process_ocp(xlsx_helper, catalog_helper)
