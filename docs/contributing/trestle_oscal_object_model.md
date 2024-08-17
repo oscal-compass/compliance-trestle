@@ -9,7 +9,7 @@ This functionality, which is built on [pydantic](https://pydantic-docs.helpmanua
 
 ## Mapping and variance with OSCAL names.
 
-The underlying object model that trestle relies on is the json schema published by NIST [here](https://github.com/usnistgov/OSCAL/tree/main/json/schema). In understanding these models the [model reference page](https://pages.nist.gov/OSCAL/reference/1.0.0/) is an indispensable source.
+The underlying object model that trestle relies on is the json schema published by NIST [here](https://github.com/usnistgov/OSCAL/tree/main/json/schema). In understanding these models the [model reference page](https://pages.nist.gov/OSCAL-Reference/models/) is an indispensable source.
 
 When generating the python data class based models we have tried to be as faithful as we can to the naming convention provided by OSCAL. This is the hierarchy of rules that we have used:
 

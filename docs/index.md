@@ -65,7 +65,7 @@ natively supports only `json` and `yaml` formats at this time.
 Future roadmap anticipates that support for xml [import](https://github.com/oscal-compass/compliance-trestle/issues/177) and [upstream references](https://github.com/oscal-compass/compliance-trestle/issues/178) will be enabled. However, it is expected
 that full support will remain only for `json` and  `yaml`.
 
-Users needing to import XML OSCAL artifacts are recommended to look at NIST's XML to json conversion page [here](https://github.com/usnistgov/OSCAL/tree/master/json#oscal-xml-to-json-converters).
+Users needing to import XML OSCAL artifacts are recommended to look at NIST's OSCAL converters page [here](https://github.com/usnistgov/OSCAL/blob/main/build/README.md#converters).
 
 ## Python codebase, easy installation via pip
 
