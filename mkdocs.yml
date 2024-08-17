@@ -193,6 +193,11 @@ nav:
       - transformer_singleton: api_reference/trestle.transforms.transformer_singleton.md
 plugins:
 - search
+- htmlproofer:
+    enabled: true
+    validate_rendered_template: true
+    validate_external_urls: true
+    raise_error_after_finish: true
 - mkdocstrings:
     handlers:
       python:
