@@ -165,9 +165,11 @@ class CatalogWriter():
                 # adds it to prof-param-value-origin
                 if prof_param_value_origin != '' and prof_param_value_origin is not None:
                     if context.purpose == ContextPurpose.PROFILE:
-                        new_dict[const.PROFILE_PARAM_VALUE_ORIGIN] = prof_param_value_origin
+                        if const.AGGREGATES not in [prop.name for prop in as_list(param.props)]:
+                            new_dict[const.PROFILE_PARAM_VALUE_ORIGIN] = prof_param_value_origin
                 else:
-                    new_dict[const.PROFILE_PARAM_VALUE_ORIGIN] = const.REPLACE_ME_PLACEHOLDER
+                    if const.AGGREGATES not in [prop.name for prop in as_list(param.props)]:
+                        new_dict[const.PROFILE_PARAM_VALUE_ORIGIN] = const.REPLACE_ME_PLACEHOLDER
                 # then insert the original, incoming values as values
                 if param_id in control_param_dict:
                     orig_param = control_param_dict[param_id]
@@ -180,6 +182,8 @@ class CatalogWriter():
                         new_dict.pop(const.VALUES)
                     if new_dict[const.GUIDELINES] is None:
                         new_dict.pop(const.GUIDELINES)
+                    if const.AGGREGATES in [prop.name for prop in as_list(orig_param.props)]:
+                        new_dict.pop(const.PROFILE_PARAM_VALUE_ORIGIN)
             else:
                 # if the profile doesnt change this param at all, show it in the header with values
                 tmp_dict = ModelUtils.parameter_to_dict(param_dict, True)
