@@ -2693,6 +2693,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#trestle.core.control_context.ControlContext.include_all_parts" class="md-nav__link">
+    include_all_parts
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#trestle.core.control_context.ControlContext.inherited_props" class="md-nav__link">
     inherited_props
   </a>
@@ -4856,6 +4863,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#trestle.core.control_context.ControlContext.include_all_parts" class="md-nav__link">
+    include_all_parts
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#trestle.core.control_context.ControlContext.inherited_props" class="md-nav__link">
     inherited_props
   </a>
@@ -5218,6 +5232,7 @@ ControlContext        </code>
     <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span>
     <span class="n">md_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span>
     <span class="n">prompt_responses</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">include_all_parts</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">overwrite_header_values</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">set_parameters_flag</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">cli_yaml_header</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -5245,6 +5260,7 @@ ControlContext        </code>
         <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
         <span class="n">md_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
         <span class="n">prompt_responses</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">include_all_parts</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">overwrite_header_values</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">set_parameters_flag</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">cli_yaml_header</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -5271,6 +5287,7 @@ ControlContext        </code>
             <span class="n">trestle_root</span><span class="p">,</span>
             <span class="n">md_root</span><span class="p">,</span>
             <span class="n">prompt_responses</span><span class="p">,</span>
+            <span class="n">include_all_parts</span><span class="p">,</span>
             <span class="n">overwrite_header_values</span><span class="p">,</span>
             <span class="n">set_parameters_flag</span><span class="p">,</span>
             <span class="n">cli_yaml_header</span><span class="o">=</span><span class="n">cli_yaml_header</span><span class="p">,</span>
@@ -5306,6 +5323,7 @@ ControlContext        </code>
             <span class="n">context</span><span class="o">.</span><span class="n">trestle_root</span><span class="p">,</span>
             <span class="n">context</span><span class="o">.</span><span class="n">md_root</span><span class="p">,</span>
             <span class="n">context</span><span class="o">.</span><span class="n">prompt_responses</span><span class="p">,</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">include_all_parts</span><span class="p">,</span>
             <span class="n">context</span><span class="o">.</span><span class="n">overwrite_header_values</span><span class="p">,</span>
             <span class="n">context</span><span class="o">.</span><span class="n">set_parameters_flag</span><span class="p">,</span>
             <span class="n">cli_yaml_header</span><span class="o">=</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">cli_yaml_header</span><span class="p">),</span>
@@ -5497,6 +5515,27 @@ ControlContext        </code>
   </span>
 
 <a href="#trestle.core.control_context.ControlContext.control_implementation" class="headerlink" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h6 id="trestle.core.control_context.ControlContext.include_all_parts" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">include_all_parts</span><span class="p">:</span> <span class="nb">bool</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-dataclass-field"><code>dataclass-field</code></small>
+  </span>
+
+<a href="#trestle.core.control_context.ControlContext.include_all_parts" class="headerlink" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
@@ -5851,7 +5890,7 @@ ControlContext        </code>
 
 
 <h6 id="trestle.core.control_context.ControlContext.__init__" class="doc doc-heading">
-<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">purpose</span><span class="p">,</span> <span class="n">to_markdown</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">md_root</span><span class="p">,</span> <span class="n">prompt_responses</span><span class="p">,</span> <span class="n">overwrite_header_values</span><span class="p">,</span> <span class="n">set_parameters_flag</span><span class="p">,</span> <span class="n">cli_yaml_header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sections_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">required_sections</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">allowed_sections</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">comp_def</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">comp_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">component</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">comp_def_name_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inherited_props</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rules_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rules_params_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">control_implementation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uri_name_map</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">comp_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">merged_header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">purpose</span><span class="p">,</span> <span class="n">to_markdown</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">md_root</span><span class="p">,</span> <span class="n">prompt_responses</span><span class="p">,</span> <span class="n">include_all_parts</span><span class="p">,</span> <span class="n">overwrite_header_values</span><span class="p">,</span> <span class="n">set_parameters_flag</span><span class="p">,</span> <span class="n">cli_yaml_header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sections_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">required_sections</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">allowed_sections</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">comp_def</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">comp_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">component</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">comp_def_name_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inherited_props</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rules_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rules_params_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">control_implementation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uri_name_map</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">comp_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">merged_header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-special"><code>special</code></small>
@@ -5918,6 +5957,7 @@ ControlContext        </code>
         <span class="n">context</span><span class="o">.</span><span class="n">trestle_root</span><span class="p">,</span>
         <span class="n">context</span><span class="o">.</span><span class="n">md_root</span><span class="p">,</span>
         <span class="n">context</span><span class="o">.</span><span class="n">prompt_responses</span><span class="p">,</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">include_all_parts</span><span class="p">,</span>
         <span class="n">context</span><span class="o">.</span><span class="n">overwrite_header_values</span><span class="p">,</span>
         <span class="n">context</span><span class="o">.</span><span class="n">set_parameters_flag</span><span class="p">,</span>
         <span class="n">cli_yaml_header</span><span class="o">=</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">cli_yaml_header</span><span class="p">),</span>
@@ -5951,7 +5991,7 @@ ControlContext        </code>
 
 
 <h6 id="trestle.core.control_context.ControlContext.generate" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">generate</span><span class="p">(</span><span class="n">purpose</span><span class="p">,</span> <span class="n">to_markdown</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">md_root</span><span class="p">,</span> <span class="n">prompt_responses</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">overwrite_header_values</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">set_parameters_flag</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cli_yaml_header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sections_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">required_sections</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">allowed_sections</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">comp_def</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">comp_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">component</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">comp_def_name_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inherited_props</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rules_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rules_params_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">control_implementation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uri_name_map</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">comp_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">merged_header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">generate</span><span class="p">(</span><span class="n">purpose</span><span class="p">,</span> <span class="n">to_markdown</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">md_root</span><span class="p">,</span> <span class="n">prompt_responses</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">include_all_parts</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">overwrite_header_values</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">set_parameters_flag</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cli_yaml_header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sections_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">required_sections</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">allowed_sections</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">comp_def</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">comp_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">component</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">comp_def_name_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inherited_props</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rules_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rules_params_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">control_implementation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uri_name_map</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">comp_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">merged_header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-classmethod"><code>classmethod</code></small>
@@ -5973,6 +6013,7 @@ ControlContext        </code>
     <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
     <span class="n">md_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
     <span class="n">prompt_responses</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">include_all_parts</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">overwrite_header_values</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">set_parameters_flag</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">cli_yaml_header</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -5999,6 +6040,7 @@ ControlContext        </code>
         <span class="n">trestle_root</span><span class="p">,</span>
         <span class="n">md_root</span><span class="p">,</span>
         <span class="n">prompt_responses</span><span class="p">,</span>
+        <span class="n">include_all_parts</span><span class="p">,</span>
         <span class="n">overwrite_header_values</span><span class="p">,</span>
         <span class="n">set_parameters_flag</span><span class="p">,</span>
         <span class="n">cli_yaml_header</span><span class="o">=</span><span class="n">cli_yaml_header</span><span class="p">,</span>

@@ -5884,6 +5884,14 @@ SSPGenerate            (<a class="autorefs autorefs-internal" title="trestle.cor
             <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">False</span>
         <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;-iap&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;--include-all-parts&#39;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">HELP_INCLUDE_ALL_PARTS</span><span class="p">,</span>
+            <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
@@ -5913,7 +5921,8 @@ SSPGenerate            (<a class="autorefs autorefs-internal" title="trestle.cor
                 <span class="n">md_path</span><span class="p">,</span>
                 <span class="n">yaml_header</span><span class="p">,</span>
                 <span class="n">args</span><span class="o">.</span><span class="n">overwrite_header_values</span><span class="p">,</span>
-                <span class="n">args</span><span class="o">.</span><span class="n">force_overwrite</span>
+                <span class="n">args</span><span class="o">.</span><span class="n">force_overwrite</span><span class="p">,</span>
+                <span class="n">args</span><span class="o">.</span><span class="n">include_all_parts</span>
             <span class="p">)</span>
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
@@ -5928,7 +5937,8 @@ SSPGenerate            (<a class="autorefs autorefs-internal" title="trestle.cor
         <span class="n">md_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
         <span class="n">yaml_header</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
         <span class="n">overwrite_header_values</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
-        <span class="n">force_overwrite</span><span class="p">:</span> <span class="nb">bool</span>
+        <span class="n">force_overwrite</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">include_all_parts</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate the ssp markdown from the profile and compdefs.</span>
@@ -5960,6 +5970,7 @@ SSPGenerate            (<a class="autorefs autorefs-internal" title="trestle.cor
         <span class="n">context</span><span class="o">.</span><span class="n">overwrite_header_values</span> <span class="o">=</span> <span class="n">overwrite_header_values</span>
         <span class="n">context</span><span class="o">.</span><span class="n">allowed_sections</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">context</span><span class="o">.</span><span class="n">comp_def_name_list</span> <span class="o">=</span> <span class="n">compdef_name_list</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">include_all_parts</span> <span class="o">=</span> <span class="n">include_all_parts</span>
 
         <span class="c1"># if file not recognized as URI form, assume it represents name of file in trestle directory</span>
         <span class="n">profile_in_trestle_dir</span> <span class="o">=</span> <span class="s1">&#39;://&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">profile_name_or_href</span>

@@ -5090,7 +5090,7 @@ rather than using the command line.</p>
         <span class="n">markdown_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">set_parameters</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">regenerate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Assemble catalog markdown into OSCAL Catalog in JSON.&quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Assembling model </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> of type catalog.&#39;</span><span class="p">)</span>
@@ -5125,10 +5125,10 @@ rather than using the command line.</p>
         <span class="n">markdown_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">set_parameters</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">regenerate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-        <span class="n">sections</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-        <span class="n">required_sections</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-        <span class="n">allowed_sections</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">sections</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">required_sections</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">allowed_sections</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Assemble profile markdown into OSCAL Profile in JSON.&quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Assembling model </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> of type profile.&#39;</span><span class="p">)</span>
@@ -5194,7 +5194,7 @@ rather than using the command line.</p>
         <span class="n">markdown_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">compdefs</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">regenerate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Assemble ssp markdown into OSCAL SSP in JSON.&quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Assembling model </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> of type ssp.&#39;</span><span class="p">)</span>
@@ -5227,7 +5227,7 @@ rather than using the command line.</p>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">output</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">force_overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">yaml_header</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">yaml_header</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">overwrite_header_values</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate catalog markdown from OSCAL Catalog in JSON.&quot;&quot;&quot;</span>
@@ -5260,10 +5260,10 @@ rather than using the command line.</p>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">output</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">force_overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">yaml_header</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">yaml_header</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">overwrite_header_values</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">sections</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-        <span class="n">required_sections</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">sections</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">required_sections</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate profile markdown from OSCAL Profile in JSON.&quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Generating markdown for </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> of type profile.&#39;</span><span class="p">)</span>
@@ -5322,9 +5322,10 @@ rather than using the command line.</p>
         <span class="n">profile</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">output</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">compdefs</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">leveraged_ssp</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">leveraged_ssp</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">force_overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">yaml_header</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">include_all_parts</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">yaml_header</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">overwrite_header_values</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate ssp markdown from OSCAL Profile and Component Definitions.&quot;&quot;&quot;</span>
@@ -5339,6 +5340,7 @@ rather than using the command line.</p>
             <span class="n">leveraged_ssp</span><span class="o">=</span><span class="n">leveraged_ssp</span><span class="p">,</span>
             <span class="n">trestle_root</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span><span class="p">,</span>
             <span class="n">force_overwrite</span><span class="o">=</span><span class="n">force_overwrite</span><span class="p">,</span>
+            <span class="n">include_all_parts</span><span class="o">=</span><span class="n">include_all_parts</span><span class="p">,</span>
             <span class="n">yaml_header</span><span class="o">=</span><span class="n">yaml_header</span><span class="p">,</span>
             <span class="n">overwrite_header_values</span><span class="o">=</span><span class="n">overwrite_header_values</span><span class="p">,</span>
             <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span>
@@ -5402,7 +5404,7 @@ rather than using the command line.</p>
 
 
 <h6 id="trestle.core.repository.AgileAuthoring.assemble_catalog_markdown" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">assemble_catalog_markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">markdown_dir</span><span class="p">,</span> <span class="n">set_parameters</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">regenerate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">assemble_catalog_markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">markdown_dir</span><span class="p">,</span> <span class="n">set_parameters</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">regenerate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 
 <a href="#trestle.core.repository.AgileAuthoring.assemble_catalog_markdown" class="headerlink" title="Permanent link">¤</a></h6>
@@ -5420,7 +5422,7 @@ rather than using the command line.</p>
     <span class="n">markdown_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">set_parameters</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">regenerate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Assemble catalog markdown into OSCAL Catalog in JSON.&quot;&quot;&quot;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Assembling model </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> of type catalog.&#39;</span><span class="p">)</span>
@@ -5511,7 +5513,7 @@ rather than using the command line.</p>
 
 
 <h6 id="trestle.core.repository.AgileAuthoring.assemble_profile_markdown" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">assemble_profile_markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">markdown_dir</span><span class="p">,</span> <span class="n">set_parameters</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">regenerate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">required_sections</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">allowed_sections</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">assemble_profile_markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">markdown_dir</span><span class="p">,</span> <span class="n">set_parameters</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">regenerate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">required_sections</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">allowed_sections</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 
 <a href="#trestle.core.repository.AgileAuthoring.assemble_profile_markdown" class="headerlink" title="Permanent link">¤</a></h6>
@@ -5529,10 +5531,10 @@ rather than using the command line.</p>
     <span class="n">markdown_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">set_parameters</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">regenerate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-    <span class="n">sections</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-    <span class="n">required_sections</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-    <span class="n">allowed_sections</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">sections</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">required_sections</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">allowed_sections</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Assemble profile markdown into OSCAL Profile in JSON.&quot;&quot;&quot;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Assembling model </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> of type profile.&#39;</span><span class="p">)</span>
@@ -5575,7 +5577,7 @@ rather than using the command line.</p>
 
 
 <h6 id="trestle.core.repository.AgileAuthoring.assemble_ssp_markdown" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">assemble_ssp_markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">markdown_dir</span><span class="p">,</span> <span class="n">compdefs</span><span class="p">,</span> <span class="n">regenerate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">assemble_ssp_markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">markdown_dir</span><span class="p">,</span> <span class="n">compdefs</span><span class="p">,</span> <span class="n">regenerate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 
 <a href="#trestle.core.repository.AgileAuthoring.assemble_ssp_markdown" class="headerlink" title="Permanent link">¤</a></h6>
@@ -5593,7 +5595,7 @@ rather than using the command line.</p>
     <span class="n">markdown_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">compdefs</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">regenerate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Assemble ssp markdown into OSCAL SSP in JSON.&quot;&quot;&quot;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Assembling model </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> of type ssp.&#39;</span><span class="p">)</span>
@@ -5633,7 +5635,7 @@ rather than using the command line.</p>
 
 
 <h6 id="trestle.core.repository.AgileAuthoring.generate_catalog_markdown" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">generate_catalog_markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">force_overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">yaml_header</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">overwrite_header_values</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">generate_catalog_markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">force_overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">yaml_header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite_header_values</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 
 <a href="#trestle.core.repository.AgileAuthoring.generate_catalog_markdown" class="headerlink" title="Permanent link">¤</a></h6>
@@ -5649,7 +5651,7 @@ rather than using the command line.</p>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">output</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">force_overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">yaml_header</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+    <span class="n">yaml_header</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">overwrite_header_values</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate catalog markdown from OSCAL Catalog in JSON.&quot;&quot;&quot;</span>
@@ -5737,7 +5739,7 @@ rather than using the command line.</p>
 
 
 <h6 id="trestle.core.repository.AgileAuthoring.generate_profile_markdown" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">generate_profile_markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">force_overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">yaml_header</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">overwrite_header_values</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">required_sections</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">generate_profile_markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">force_overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">yaml_header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite_header_values</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">required_sections</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 
 <a href="#trestle.core.repository.AgileAuthoring.generate_profile_markdown" class="headerlink" title="Permanent link">¤</a></h6>
@@ -5753,10 +5755,10 @@ rather than using the command line.</p>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">output</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">force_overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">yaml_header</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+    <span class="n">yaml_header</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">overwrite_header_values</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">sections</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-    <span class="n">required_sections</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">sections</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">required_sections</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate profile markdown from OSCAL Profile in JSON.&quot;&quot;&quot;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Generating markdown for </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> of type profile.&#39;</span><span class="p">)</span>
@@ -5797,7 +5799,7 @@ rather than using the command line.</p>
 
 
 <h6 id="trestle.core.repository.AgileAuthoring.generate_ssp_markdown" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">generate_ssp_markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">compdefs</span><span class="p">,</span> <span class="n">leveraged_ssp</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">force_overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">yaml_header</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">overwrite_header_values</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">generate_ssp_markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">compdefs</span><span class="p">,</span> <span class="n">leveraged_ssp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">force_overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">include_all_parts</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">yaml_header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite_header_values</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 
 <a href="#trestle.core.repository.AgileAuthoring.generate_ssp_markdown" class="headerlink" title="Permanent link">¤</a></h6>
@@ -5813,9 +5815,10 @@ rather than using the command line.</p>
     <span class="n">profile</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">output</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">compdefs</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">leveraged_ssp</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+    <span class="n">leveraged_ssp</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">force_overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">yaml_header</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+    <span class="n">include_all_parts</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">yaml_header</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">overwrite_header_values</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate ssp markdown from OSCAL Profile and Component Definitions.&quot;&quot;&quot;</span>
@@ -5830,6 +5833,7 @@ rather than using the command line.</p>
         <span class="n">leveraged_ssp</span><span class="o">=</span><span class="n">leveraged_ssp</span><span class="p">,</span>
         <span class="n">trestle_root</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span><span class="p">,</span>
         <span class="n">force_overwrite</span><span class="o">=</span><span class="n">force_overwrite</span><span class="p">,</span>
+        <span class="n">include_all_parts</span><span class="o">=</span><span class="n">include_all_parts</span><span class="p">,</span>
         <span class="n">yaml_header</span><span class="o">=</span><span class="n">yaml_header</span><span class="p">,</span>
         <span class="n">overwrite_header_values</span><span class="o">=</span><span class="n">overwrite_header_values</span><span class="p">,</span>
         <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span>

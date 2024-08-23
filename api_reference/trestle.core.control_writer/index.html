@@ -4781,6 +4781,22 @@ ControlWriter        </code>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_insert_status</span><span class="p">(</span><span class="n">ImplementationStatus</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">STATUS_PLANNED</span><span class="p">),</span> <span class="n">level</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">_process_main_component</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">part_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">part_label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">comp_dict</span><span class="p">:</span> <span class="n">CompDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle prompts for This System component.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_paragraph</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_header</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">SSP_MAIN_COMP_NAME</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_paragraph</span><span class="p">()</span>
+        <span class="n">prose</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">SSP_ADD_THIS_SYSTEM_IMPLEMENTATION_FOR_CONTROL_TEXT</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">part_id</span><span class="si">}</span><span class="s1"> --&gt;&#39;</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="n">ImplementationStatus</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">STATUS_PLANNED</span><span class="p">)</span>
+        <span class="n">sys_comp_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ComponentImpInfo</span><span class="p">]</span> <span class="o">=</span> <span class="n">comp_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">SSP_MAIN_COMP_NAME</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="k">if</span> <span class="n">sys_comp_dict</span> <span class="ow">and</span> <span class="n">part_label</span> <span class="ow">in</span> <span class="n">sys_comp_dict</span><span class="p">:</span>
+            <span class="n">comp_info</span> <span class="o">=</span> <span class="n">sys_comp_dict</span><span class="p">[</span><span class="n">part_label</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">comp_info</span><span class="o">.</span><span class="n">prose</span><span class="p">:</span>
+                <span class="n">prose</span> <span class="o">=</span> <span class="n">comp_info</span><span class="o">.</span><span class="n">prose</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">comp_info</span><span class="o">.</span><span class="n">status</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_paraline</span><span class="p">(</span><span class="n">prose</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_insert_status</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">_add_component_control_prompts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">comp_dict</span><span class="p">:</span> <span class="n">CompDict</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ControlContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add prompts to the markdown for the control itself, per component.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">purpose</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ContextPurpose</span><span class="o">.</span><span class="n">COMPONENT</span><span class="p">,</span> <span class="n">ContextPurpose</span><span class="o">.</span><span class="n">SSP</span><span class="p">]:</span>
@@ -4790,19 +4806,10 @@ ControlWriter        </code>
         <span class="n">did_write</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="c1"># do special handling for This System</span>
         <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">purpose</span> <span class="o">==</span> <span class="n">ContextPurpose</span><span class="o">.</span><span class="n">SSP</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_paragraph</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_header</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">SSP_MAIN_COMP_NAME</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_paragraph</span><span class="p">()</span>
-            <span class="n">prose</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">SSP_ADD_THIS_SYSTEM_IMPLEMENTATION_FOR_CONTROL_TEXT</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">control_id</span><span class="si">}</span><span class="s1"> --&gt;&#39;</span>
-            <span class="n">status</span> <span class="o">=</span> <span class="n">ImplementationStatus</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">STATUS_PLANNED</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">const</span><span class="o">.</span><span class="n">SSP_MAIN_COMP_NAME</span> <span class="ow">in</span> <span class="n">comp_dict</span><span class="p">:</span>
-                <span class="n">comp_info</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">comp_dict</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SSP_MAIN_COMP_NAME</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="k">if</span> <span class="n">comp_info</span><span class="o">.</span><span class="n">prose</span><span class="p">:</span>
-                    <span class="n">prose</span> <span class="o">=</span> <span class="n">comp_info</span><span class="o">.</span><span class="n">prose</span>
-                <span class="n">status</span> <span class="o">=</span> <span class="n">comp_info</span><span class="o">.</span><span class="n">status</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_paraline</span><span class="p">(</span><span class="n">prose</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_insert_status</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+            <span class="c1"># Passing in the control id and the empty key (&#39;&#39;) for the label</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_process_main_component</span><span class="p">(</span><span class="n">control_id</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">comp_dict</span><span class="p">)</span>
             <span class="n">did_write</span> <span class="o">=</span> <span class="kc">True</span>
+
         <span class="n">sorted_comp_names</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">comp_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="k">for</span> <span class="n">comp_name</span> <span class="ow">in</span> <span class="n">sorted_comp_names</span><span class="p">:</span>
             <span class="n">dic</span> <span class="o">=</span> <span class="n">comp_dict</span><span class="p">[</span><span class="n">comp_name</span><span class="p">]</span>
@@ -4848,14 +4855,11 @@ ControlWriter        </code>
                         <span class="c1"># if no label guess the label from the sub-part id</span>
                         <span class="n">part_label</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">get_label</span><span class="p">(</span><span class="n">prt</span><span class="p">)</span>
                         <span class="n">part_label</span> <span class="o">=</span> <span class="n">prt</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">part_label</span> <span class="k">else</span> <span class="n">part_label</span>
-                        <span class="c1"># only write out part if rules apply to it</span>
-                        <span class="n">rules_apply</span> <span class="o">=</span> <span class="kc">False</span>
-                        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">dic</span> <span class="ow">in</span> <span class="n">comp_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                            <span class="k">if</span> <span class="n">part_label</span> <span class="ow">in</span> <span class="n">dic</span> <span class="ow">and</span> <span class="n">dic</span><span class="p">[</span><span class="n">part_label</span><span class="p">]</span><span class="o">.</span><span class="n">rules</span><span class="p">:</span>
-                                <span class="n">rules_apply</span> <span class="o">=</span> <span class="kc">True</span>
-                                <span class="k">break</span>
-                        <span class="k">if</span> <span class="ow">not</span> <span class="n">rules_apply</span><span class="p">:</span>
+
+                        <span class="c1"># Determine if this part should be written out</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_skip_part</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">part_label</span><span class="p">,</span> <span class="n">comp_dict</span><span class="p">):</span>
                             <span class="k">continue</span>
+
                         <span class="k">if</span> <span class="ow">not</span> <span class="n">did_write_part</span><span class="p">:</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_line</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">SSP_MD_LEAVE_BLANK_TEXT</span><span class="p">)</span>
                             <span class="c1"># insert extra line to make mdformat happy</span>
@@ -4863,11 +4867,17 @@ ControlWriter        </code>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_hr</span><span class="p">()</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_header</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Implementation for part </span><span class="si">{</span><span class="n">part_label</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                         <span class="n">wrote_label_content</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="c1"># To reduce verbosity by default, the main component</span>
+                        <span class="c1"># is conditionally written for each part dependant on the control context.</span>
+                        <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">purpose</span> <span class="o">==</span> <span class="n">ContextPurpose</span><span class="o">.</span><span class="n">SSP</span> <span class="ow">and</span> <span class="n">context</span><span class="o">.</span><span class="n">include_all_parts</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_process_main_component</span><span class="p">(</span><span class="n">prt</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">part_label</span><span class="p">,</span> <span class="n">comp_dict</span><span class="p">)</span>
+                            <span class="n">wrote_label_content</span> <span class="o">=</span> <span class="kc">True</span>
                         <span class="n">sorted_comp_names</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">comp_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
                         <span class="k">for</span> <span class="n">comp_name</span> <span class="ow">in</span> <span class="n">sorted_comp_names</span><span class="p">:</span>
-                            <span class="n">dic</span> <span class="o">=</span> <span class="n">comp_dict</span><span class="p">[</span><span class="n">comp_name</span><span class="p">]</span>
+                            <span class="c1"># This System already handled</span>
                             <span class="k">if</span> <span class="n">comp_name</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">SSP_MAIN_COMP_NAME</span><span class="p">:</span>
                                 <span class="k">continue</span>
+                            <span class="n">dic</span> <span class="o">=</span> <span class="n">comp_dict</span><span class="p">[</span><span class="n">comp_name</span><span class="p">]</span>
                             <span class="k">if</span> <span class="n">part_label</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
                                 <span class="c1"># insert the component name for ssp but not for comp_def</span>
                                 <span class="c1"># because there should only be one component in generated comp_def markdown</span>
@@ -4894,6 +4904,24 @@ ControlWriter        </code>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_header</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">comp_name</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_insert_comp_info</span><span class="p">(</span><span class="n">part_label</span><span class="p">,</span> <span class="n">dic</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_hr</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_skip_part</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ControlContext</span><span class="p">,</span> <span class="n">part_label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">comp_dict</span><span class="p">:</span> <span class="n">CompDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if a part should be skipped based on rules and context.</span>
+
+<span class="sd">        Notes: The default logic is to conditionally add control parts based</span>
+<span class="sd">        on whether the component has rules associated with that part. This can be</span>
+<span class="sd">        changed using the control context for SSP markdown.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">purpose</span> <span class="o">==</span> <span class="n">ContextPurpose</span><span class="o">.</span><span class="n">SSP</span> <span class="ow">and</span> <span class="n">context</span><span class="o">.</span><span class="n">include_all_parts</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">no_applied_rules</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">dic</span> <span class="ow">in</span> <span class="n">comp_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">part_label</span> <span class="ow">in</span> <span class="n">dic</span> <span class="ow">and</span> <span class="n">dic</span><span class="p">[</span><span class="n">part_label</span><span class="p">]</span><span class="o">.</span><span class="n">rules</span><span class="p">:</span>
+                    <span class="n">no_applied_rules</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="k">break</span>
+        <span class="k">return</span> <span class="n">no_applied_rules</span>
 
     <span class="k">def</span> <span class="nf">_dump_subpart_infos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">part</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">name</span> <span class="o">=</span> <span class="n">part</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>

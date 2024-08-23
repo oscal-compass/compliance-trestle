@@ -4880,30 +4880,45 @@ reading catalog from markdown.</p>
                 <span class="n">ssp</span><span class="o">.</span><span class="n">control_implementation</span><span class="o">.</span><span class="n">implemented_requirements</span>
             <span class="p">)</span>
             <span class="n">ssp</span><span class="o">.</span><span class="n">control_implementation</span><span class="o">.</span><span class="n">implemented_requirements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">control_imp_req</span><span class="p">)</span>
+        <span class="n">CatalogReader</span><span class="o">.</span><span class="n">_add_statement_to_impl_requirement</span><span class="p">(</span><span class="n">control_imp_req</span><span class="p">,</span> <span class="n">statement_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">control_imp_req</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_add_statement_to_impl_requirement</span><span class="p">(</span><span class="n">impl_req</span><span class="p">:</span> <span class="n">ossp</span><span class="o">.</span><span class="n">ImplementedRequirement</span><span class="p">,</span> <span class="n">statement_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ossp</span><span class="o">.</span><span class="n">Statement</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the implemented requirement with a new statement.&quot;&quot;&quot;</span>
         <span class="n">statement</span> <span class="o">=</span> <span class="n">gens</span><span class="o">.</span><span class="n">generate_sample_model</span><span class="p">(</span><span class="n">ossp</span><span class="o">.</span><span class="n">Statement</span><span class="p">)</span>
         <span class="n">statement</span><span class="o">.</span><span class="n">statement_id</span> <span class="o">=</span> <span class="n">statement_id</span>
         <span class="n">statement</span><span class="o">.</span><span class="n">by_components</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">control_imp_req</span><span class="o">.</span><span class="n">statements</span> <span class="o">=</span> <span class="n">as_list</span><span class="p">(</span><span class="n">control_imp_req</span><span class="o">.</span><span class="n">statements</span><span class="p">)</span>
-        <span class="n">control_imp_req</span><span class="o">.</span><span class="n">statements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">control_imp_req</span>
+        <span class="n">impl_req</span><span class="o">.</span><span class="n">statements</span> <span class="o">=</span> <span class="n">as_list</span><span class="p">(</span><span class="n">impl_req</span><span class="o">.</span><span class="n">statements</span><span class="p">)</span>
+        <span class="n">impl_req</span><span class="o">.</span><span class="n">statements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">statement</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_get_by_comp_from_imp_req</span><span class="p">(</span>
         <span class="n">imp_req</span><span class="p">:</span> <span class="n">ossp</span><span class="o">.</span><span class="n">ImplementedRequirement</span><span class="p">,</span> <span class="n">statement_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">comp_uuid</span><span class="p">:</span> <span class="nb">str</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ossp</span><span class="o">.</span><span class="n">ByComponent</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">statement_id</span><span class="p">:</span>
+            <span class="n">found_statement</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ossp</span><span class="o">.</span><span class="n">Statement</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="k">for</span> <span class="n">statement</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">imp_req</span><span class="o">.</span><span class="n">statements</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">statement</span><span class="o">.</span><span class="n">statement_id</span> <span class="o">==</span> <span class="n">statement_id</span><span class="p">:</span>
-                    <span class="k">for</span> <span class="n">by_comp</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">statement</span><span class="o">.</span><span class="n">by_components</span><span class="p">):</span>
-                        <span class="k">if</span> <span class="n">by_comp</span><span class="o">.</span><span class="n">component_uuid</span> <span class="o">==</span> <span class="n">comp_uuid</span><span class="p">:</span>
-                            <span class="k">return</span> <span class="n">by_comp</span>
-                    <span class="c1"># didnt find bycomp so need to make one</span>
-                    <span class="n">by_comp</span> <span class="o">=</span> <span class="n">gens</span><span class="o">.</span><span class="n">generate_sample_model</span><span class="p">(</span><span class="n">ossp</span><span class="o">.</span><span class="n">ByComponent</span><span class="p">)</span>
-                    <span class="n">by_comp</span><span class="o">.</span><span class="n">component_uuid</span> <span class="o">=</span> <span class="n">comp_uuid</span>
-                    <span class="n">by_comp</span><span class="o">.</span><span class="n">implementation_status</span> <span class="o">=</span> <span class="n">com</span><span class="o">.</span><span class="n">ImplementationStatus</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">STATUS_PLANNED</span><span class="p">)</span>
-                    <span class="n">statement</span><span class="o">.</span><span class="n">by_components</span> <span class="o">=</span> <span class="n">as_list</span><span class="p">(</span><span class="n">statement</span><span class="o">.</span><span class="n">by_components</span><span class="p">)</span>
-                    <span class="n">statement</span><span class="o">.</span><span class="n">by_components</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">by_comp</span><span class="p">)</span>
-                    <span class="k">return</span> <span class="n">by_comp</span>
+                    <span class="n">found_statement</span> <span class="o">=</span> <span class="n">statement</span>
+                    <span class="k">break</span>
+
+            <span class="c1"># If the statement doesn&#39;t exist, create it</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">found_statement</span><span class="p">:</span>
+                <span class="n">found_statement</span> <span class="o">=</span> <span class="n">CatalogReader</span><span class="o">.</span><span class="n">_add_statement_to_impl_requirement</span><span class="p">(</span><span class="n">imp_req</span><span class="p">,</span> <span class="n">statement_id</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">by_comp</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">found_statement</span><span class="o">.</span><span class="n">by_components</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">by_comp</span><span class="o">.</span><span class="n">component_uuid</span> <span class="o">==</span> <span class="n">comp_uuid</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">by_comp</span>
+
+            <span class="c1"># didnt find bycomp or new statement so need to make one</span>
+            <span class="n">by_comp</span> <span class="o">=</span> <span class="n">gens</span><span class="o">.</span><span class="n">generate_sample_model</span><span class="p">(</span><span class="n">ossp</span><span class="o">.</span><span class="n">ByComponent</span><span class="p">)</span>
+            <span class="n">by_comp</span><span class="o">.</span><span class="n">component_uuid</span> <span class="o">=</span> <span class="n">comp_uuid</span>
+            <span class="n">by_comp</span><span class="o">.</span><span class="n">implementation_status</span> <span class="o">=</span> <span class="n">com</span><span class="o">.</span><span class="n">ImplementationStatus</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">STATUS_PLANNED</span><span class="p">)</span>
+            <span class="n">found_statement</span><span class="o">.</span><span class="n">by_components</span> <span class="o">=</span> <span class="n">as_list</span><span class="p">(</span><span class="n">found_statement</span><span class="o">.</span><span class="n">by_components</span><span class="p">)</span>
+            <span class="n">found_statement</span><span class="o">.</span><span class="n">by_components</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">by_comp</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">by_comp</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">by_comp</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">imp_req</span><span class="o">.</span><span class="n">by_components</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">by_comp</span><span class="o">.</span><span class="n">component_uuid</span> <span class="o">==</span> <span class="n">comp_uuid</span><span class="p">:</span>
@@ -4914,7 +4929,6 @@ reading catalog from markdown.</p>
             <span class="n">imp_req</span><span class="o">.</span><span class="n">by_components</span> <span class="o">=</span> <span class="n">as_list</span><span class="p">(</span><span class="n">imp_req</span><span class="o">.</span><span class="n">by_components</span><span class="p">)</span>
             <span class="n">imp_req</span><span class="o">.</span><span class="n">by_components</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">by_comp</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">by_comp</span>
-        <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Internal error seeking by_comp for component </span><span class="si">{</span><span class="n">comp_uuid</span><span class="si">}</span><span class="s1"> and statement </span><span class="si">{</span><span class="n">statement_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_read_comp_info_from_md</span><span class="p">(</span><span class="n">control_file_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>

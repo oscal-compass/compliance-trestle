@@ -6378,6 +6378,24 @@ ControlInterface        </code>
         <span class="k">return</span> <span class="s1">&#39;&#39;</span>
 
     <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_param_as_aggregated_value</span><span class="p">(</span>
+        <span class="n">param</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">Parameter</span><span class="p">,</span>
+        <span class="n">param_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">common</span><span class="o">.</span><span class="n">Parameter</span><span class="p">],</span>
+        <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">brackets</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert parameter aggregation to str.&quot;&quot;&quot;</span>
+        <span class="c1"># review is an aggregated parameter</span>
+        <span class="k">if</span> <span class="n">const</span><span class="o">.</span><span class="n">AGGREGATES</span> <span class="ow">in</span> <span class="p">[</span><span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">props</span><span class="p">)]:</span>
+            <span class="n">aggregated_values</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">props</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">param_dict</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">aggregated_values</span> <span class="o">+=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">as_list</span><span class="p">(</span><span class="n">param_dict</span><span class="p">[</span><span class="n">prop</span><span class="o">.</span><span class="n">value</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span>
+            <span class="k">return</span> <span class="n">aggregated_values</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_param_label_choices_as_str</span><span class="p">(</span><span class="n">param</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">Parameter</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">brackets</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert param label or choices to string, using choices if present.&quot;&quot;&quot;</span>
         <span class="n">choices</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">_param_selection_as_str</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="n">brackets</span><span class="p">)</span>
@@ -6388,6 +6406,7 @@ ControlInterface        </code>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_param_values_assignment_str</span><span class="p">(</span>
         <span class="n">param</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">Parameter</span><span class="p">,</span>
+        <span class="n">param_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">common</span><span class="o">.</span><span class="n">Parameter</span><span class="p">],</span>
         <span class="n">value_assigned_prefix</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">value_not_assigned_prefix</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -6399,6 +6418,9 @@ ControlInterface        </code>
         <span class="c1"># otherwise use param selection if present</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">param_str</span><span class="p">:</span>
             <span class="n">param_str</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">_param_selection_as_str</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="c1"># otherwise use param aggregated values if present</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">param_str</span><span class="p">:</span>
+            <span class="n">param_str</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">_param_as_aggregated_value</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">param_dict</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="c1"># finally use label and param_id as fallbacks</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">param_str</span><span class="p">:</span>
             <span class="n">param_str</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">label</span> <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">label</span> <span class="k">else</span> <span class="n">param</span><span class="o">.</span><span class="n">id</span>
@@ -6429,7 +6451,8 @@ ControlInterface        </code>
         <span class="n">brackets</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">params_format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">value_assigned_prefix</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">value_not_assigned_prefix</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">value_not_assigned_prefix</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">param_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">common</span><span class="o">.</span><span class="n">Parameter</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert parameter to string based on best available representation.</span>
@@ -6462,7 +6485,7 @@ ControlInterface        </code>
                 <span class="n">param_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="k">elif</span> <span class="n">param_rep</span> <span class="o">==</span> <span class="n">ParameterRep</span><span class="o">.</span><span class="n">ASSIGNMENT_FORM</span><span class="p">:</span>
             <span class="n">param_str</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">_param_values_assignment_str</span><span class="p">(</span>
-                <span class="n">param</span><span class="p">,</span> <span class="n">value_assigned_prefix</span><span class="p">,</span> <span class="n">value_not_assigned_prefix</span>
+                <span class="n">param</span><span class="p">,</span> <span class="n">param_dict</span><span class="p">,</span> <span class="n">value_assigned_prefix</span><span class="p">,</span> <span class="n">value_not_assigned_prefix</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">param_str</span><span class="p">:</span>
                 <span class="n">param_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -6561,11 +6584,20 @@ ControlInterface        </code>
             <span class="k">elif</span> <span class="n">param_dict</span><span class="p">[</span><span class="n">param_ids</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">param</span> <span class="o">=</span> <span class="n">param_dict</span><span class="p">[</span><span class="n">param_ids</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
                 <span class="n">param_str</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">param_to_str</span><span class="p">(</span>
-                    <span class="n">param</span><span class="p">,</span> <span class="n">param_rep</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">params_format</span><span class="p">,</span> <span class="n">value_assigned_prefix</span><span class="p">,</span> <span class="n">value_not_assigned_prefix</span>
+                    <span class="n">param</span><span class="p">,</span>
+                    <span class="n">param_rep</span><span class="p">,</span>
+                    <span class="kc">False</span><span class="p">,</span>
+                    <span class="kc">False</span><span class="p">,</span>
+                    <span class="n">params_format</span><span class="p">,</span>
+                    <span class="n">value_assigned_prefix</span><span class="p">,</span>
+                    <span class="n">value_not_assigned_prefix</span><span class="p">,</span>
+                    <span class="n">param_dict</span>
                 <span class="p">)</span>
                 <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">staches</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">param_str</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">show_value_warnings</span> <span class="ow">and</span> <span class="n">param_rep</span> <span class="o">!=</span> <span class="n">ParameterRep</span><span class="o">.</span><span class="n">LABEL_OR_CHOICES</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">param</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Parameter </span><span class="si">{</span><span class="n">param_id</span><span class="si">}</span><span class="s1"> has no values and was referenced by prose.&#39;</span><span class="p">)</span>
+                    <span class="c1"># verifies the current parameter is not an aggregated parameter to throw a warning</span>
+                    <span class="k">if</span> <span class="n">const</span><span class="o">.</span><span class="n">AGGREGATES</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">props</span><span class="p">)]:</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Parameter </span><span class="si">{</span><span class="n">param_id</span><span class="si">}</span><span class="s1"> has no values and was referenced by prose.&#39;</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">show_value_warnings</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Control prose references param </span><span class="si">{</span><span class="n">param_ids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s1"> with no specified value.&#39;</span><span class="p">)</span>
         <span class="c1"># there may be staches remaining that we can&#39;t replace if not in param_dict</span>
@@ -8364,7 +8396,7 @@ Items present in both will be overriden dest if overwrite_header_values is True.
 
 
 <h6 id="trestle.core.control_interface.ControlInterface.param_to_str" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">param_to_str</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">param_rep</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">brackets</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">params_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">value_assigned_prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">value_not_assigned_prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">param_to_str</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">param_rep</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">brackets</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">params_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">value_assigned_prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">value_not_assigned_prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">param_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-staticmethod"><code>staticmethod</code></small>
@@ -8456,7 +8488,8 @@ Items present in both will be overriden dest if overwrite_header_values is True.
     <span class="n">brackets</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">params_format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">value_assigned_prefix</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">value_not_assigned_prefix</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">value_not_assigned_prefix</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">param_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">common</span><span class="o">.</span><span class="n">Parameter</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert parameter to string based on best available representation.</span>
@@ -8489,7 +8522,7 @@ Items present in both will be overriden dest if overwrite_header_values is True.
             <span class="n">param_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="k">elif</span> <span class="n">param_rep</span> <span class="o">==</span> <span class="n">ParameterRep</span><span class="o">.</span><span class="n">ASSIGNMENT_FORM</span><span class="p">:</span>
         <span class="n">param_str</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="o">.</span><span class="n">_param_values_assignment_str</span><span class="p">(</span>
-            <span class="n">param</span><span class="p">,</span> <span class="n">value_assigned_prefix</span><span class="p">,</span> <span class="n">value_not_assigned_prefix</span>
+            <span class="n">param</span><span class="p">,</span> <span class="n">param_dict</span><span class="p">,</span> <span class="n">value_assigned_prefix</span><span class="p">,</span> <span class="n">value_not_assigned_prefix</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">param_str</span><span class="p">:</span>
             <span class="n">param_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
