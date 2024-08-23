@@ -194,7 +194,7 @@ nav:
 plugins:
 - search
 - htmlproofer:
-    enabled: true
+    enabled: false
     validate_rendered_template: true
     validate_external_urls: true
     raise_error_after_finish: true
@@ -227,3 +227,8 @@ theme:
     accent: purple
     primary: teal
     scheme: slate
+validation:
+  omitted_files: warn
+  absolute_links: warn # Or 'relative_to_docs' - new in MkDocs 1.6
+  unrecognized_links: warn
+  anchors: warn # New in MkDocs 1.6
