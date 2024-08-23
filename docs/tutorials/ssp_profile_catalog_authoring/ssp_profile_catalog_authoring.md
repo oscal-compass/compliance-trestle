@@ -1049,6 +1049,8 @@ In addition, this is the only control markdown where the moustache (`{{}}`) item
 
 The markdown can have guidance per-component in the control, as shown by the line, `### ACME Component`.  Any prose directly under a `##` implementation section will apply to the overall system component, but sections in a sub-header of the form `###` will only apply to that particular component.
 
+The `--include-all-parts` flag controls how the main system component (`This System`) is written in the markdown. By default, control parts are not written out unless a component has a rule associated with that particular control part or `statement`. When `--include-all-parts` is set, all control parts will be written with the main component present under the `## Implementation for part <part>` section. All other components will still be conditionally added based on the presence of rules.
+
 After generating the markdown for the resolved profile catalog you may then edit the files and provide text in the sections with `Add control implementation...` in them.  But do not remove the horizontal rule
 lines or modify/remove the lines with `### ` in them, corresponding to system components.
 

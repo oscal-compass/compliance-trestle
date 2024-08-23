@@ -388,7 +388,7 @@ class AgileAuthoring(Repository):
         markdown_dir: str,
         set_parameters: bool = False,
         regenerate: bool = False,
-        version: str = ''
+        version: Optional[str] = None
     ) -> bool:
         """Assemble catalog markdown into OSCAL Catalog in JSON."""
         logger.debug(f'Assembling model {name} of type catalog.')
@@ -423,10 +423,10 @@ class AgileAuthoring(Repository):
         markdown_dir: str,
         set_parameters: bool = False,
         regenerate: bool = False,
-        version: str = '',
-        sections: str = '',
-        required_sections: str = '',
-        allowed_sections: str = ''
+        version: Optional[str] = None,
+        sections: Optional[str] = None,
+        required_sections: Optional[str] = None,
+        allowed_sections: Optional[str] = None
     ) -> bool:
         """Assemble profile markdown into OSCAL Profile in JSON."""
         logger.debug(f'Assembling model {name} of type profile.')
@@ -492,7 +492,7 @@ class AgileAuthoring(Repository):
         markdown_dir: str,
         compdefs: str,
         regenerate: bool = False,
-        version: str = ''
+        version: Optional[str] = None
     ) -> bool:
         """Assemble ssp markdown into OSCAL SSP in JSON."""
         logger.debug(f'Assembling model {name} of type ssp.')
@@ -525,7 +525,7 @@ class AgileAuthoring(Repository):
         name: str,
         output: str,
         force_overwrite: bool = False,
-        yaml_header: str = '',
+        yaml_header: Optional[str] = None,
         overwrite_header_values: bool = False
     ) -> bool:
         """Generate catalog markdown from OSCAL Catalog in JSON."""
@@ -558,10 +558,10 @@ class AgileAuthoring(Repository):
         name: str,
         output: str,
         force_overwrite: bool = False,
-        yaml_header: str = '',
+        yaml_header: Optional[str] = None,
         overwrite_header_values: bool = False,
-        sections: str = '',
-        required_sections: str = ''
+        sections: Optional[str] = None,
+        required_sections: Optional[str] = None
     ) -> bool:
         """Generate profile markdown from OSCAL Profile in JSON."""
         logger.debug(f'Generating markdown for {name} of type profile.')
@@ -620,9 +620,10 @@ class AgileAuthoring(Repository):
         profile: str,
         output: str,
         compdefs: str,
-        leveraged_ssp: str = '',
+        leveraged_ssp: Optional[str] = None,
         force_overwrite: bool = False,
-        yaml_header: str = '',
+        include_all_parts: bool = False,
+        yaml_header: Optional[str] = None,
         overwrite_header_values: bool = False
     ) -> bool:
         """Generate ssp markdown from OSCAL Profile and Component Definitions."""
@@ -637,6 +638,7 @@ class AgileAuthoring(Repository):
             leveraged_ssp=leveraged_ssp,
             trestle_root=self.root_dir,
             force_overwrite=force_overwrite,
+            include_all_parts=include_all_parts,
             yaml_header=yaml_header,
             overwrite_header_values=overwrite_header_values,
             verbose=verbose

@@ -1,4 +1,4 @@
-# <img alt="Logo" width="50px" src="./images/compliance-trestle-800x800.png" style="vertical-align: middle;" /> Compliance-trestle (also known as `trestle`)
+# <img alt="Logo" width="50px" src="https://raw.githubusercontent.com/oscal-compass/compliance-trestle/main/images/compliance-trestle-800x800.png" style="vertical-align: middle;" /> Compliance-trestle (also known as `trestle`)
 
 ![[OS Compatibility](#prerequisites)](https://img.shields.io/badge/platform-osx%20%7C%20linux%20%7C%20windows-orange.svg)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/compliance-trestle)
@@ -101,6 +101,10 @@ Please refer to the community [README](https://github.com/oscal-compass/communit
 ## Contributing to Trestle
 
 Our project welcomes external contributions. Please consult [contributing](https://oscal-compass.github.io/compliance-trestle/contributing/mkdocs_contributing/) to get started.
+
+## Code of Conduct
+
+Participation in the OSCAL Compass community is governed by the [Code of Conduct](https://github.com/oscal-compass/community/blob/main/CODE_OF_CONDUCT.md).
 
 ## License & Authors
 

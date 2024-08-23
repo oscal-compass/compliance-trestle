@@ -1168,3 +1168,210 @@ def test_ssp_gen_and_assemble_add_props(tmp_trestle_dir: pathlib.Path) -> None:
     assert len(smt_a.props) == 1
     assert smt_a.props[0].name == 'smt_prop'
     assert smt_a.props[0].value == 'smt prop'
+
+
+def test_ssp_gen_and_assemble_implementation_parts(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test ssp generate and assemble edit implementation parts."""
+    gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
+    args_compdefs = gen_args.compdefs
+    gen_args.include_all_parts = True
+
+    ssp_gen = SSPGenerate()
+    assert ssp_gen._run(gen_args) == 0
+
+    prose_sys = 'My response for This System'
+    prose_aa = 'My response for comp aa'
+    prose_sys_a = 'My response for This System part a.'
+    prose_aa_a = 'My response for comp aa part a.'
+
+    # ac-1 edit
+    ac_1_path = tmp_trestle_dir / ssp_name / 'ac/ac-1.md'
+    assert test_utils.substitute_text_in_file(
+        ac_1_path, '<!-- Add implementation prose for the main This System component for control: ac-1 -->', prose_sys
+    )
+    assert test_utils.substitute_text_in_file(
+        ac_1_path,
+        '<!-- Add implementation prose for the main This System component for control: ac-1_smt.a -->',
+        prose_sys_a
+    )
+    assert test_utils.substitute_text_in_file(ac_1_path, 'imp req prose for ac-1 from comp aa', prose_aa)
+    assert test_utils.substitute_text_in_file(ac_1_path, 'statement prose for part a. from comp aa', prose_aa_a)
+    # change status for sys comp
+    assert test_utils.substitute_text_in_file(ac_1_path, 'Status: planned', 'Status: alternative')
+
+    part_a_text_edited = """## Implementation for part a.
+
+### This System
+
+My response for This System part a.
+
+#### Implementation Status: planned
+
+### comp_aa
+
+My response for comp aa part a.
+
+#### Rules:
+
+  - comp_rule_aa_1
+
+#### Implementation Status: partial
+
+### comp_ab
+
+<!-- Add control implementation description here for item a. -->
+
+#### Rules:
+
+  - comp_rule_ab_1
+
+#### Implementation Status: partial
+
+______________________________________________________________________
+"""
+
+    md_api = MarkdownAPI()
+    _, tree = md_api.processor.process_markdown(ac_1_path)
+    node = tree.get_node_for_key('## Implementation for part a.')
+    assert node.content.raw_text == part_a_text_edited
+
+    # now assemble the edited controls into json ssp
+    ssp_assemble = SSPAssemble()
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        markdown=ssp_name,
+        output=ssp_name,
+        verbose=0,
+        regenerate=False,
+        version='',
+        name=None,
+        compdefs=args_compdefs
+    )
+    assert ssp_assemble._run(args) == 0
+
+    # Verify the correct information is in the assembled ssp
+    ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
+    imp_reqs = ssp.control_implementation.implemented_requirements
+    ac_1_imp_req = next((i_req for i_req in imp_reqs if i_req.control_id == 'ac-1'), None)
+    assert ac_1_imp_req is not None
+
+    # comp_aa is the first component in the list and This System is the last
+    assert ac_1_imp_req.by_components[0].description == prose_aa  # type: ignore
+    assert ac_1_imp_req.by_components[2].implementation_status.state == 'alternative'  # type: ignore
+    assert ac_1_imp_req.by_components[2].description == prose_sys  # type: ignore
+    ac_1_a_smt = next((smt for smt in ac_1_imp_req.statements if smt.statement_id == 'ac-1_smt.a'), None)
+    assert ac_1_a_smt is not None
+    assert ac_1_a_smt.by_components[0].description == prose_aa_a  # type: ignore
+    assert ac_1_a_smt.by_components[2].description == prose_sys_a  # type: ignore
+
+    # Regeneration checks to make sure the markdown is not overwritten
+    assert ssp_gen._run(gen_args) == 0
+    _, tree = md_api.processor.process_markdown(ac_1_path)
+    node = tree.get_node_for_key('## Implementation for part a.')
+    assert node.content.raw_text == part_a_text_edited
+    assert test_utils.confirm_text_in_file(ac_1_path, const.SSP_MD_IMPLEMENTATION_QUESTION, prose_sys)
+
+
+def test_ssp_generate_no_cds_include_all_parts(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test the ssp generator with no comp defs and include all parts are true."""
+    args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
+
+    args.compdefs = None
+    args.include_all_parts = True
+    ssp_cmd = SSPGenerate()
+    assert ssp_cmd._run(args) == 0
+    md_dir = tmp_trestle_dir / ssp_name
+    ac_1 = md_dir / 'ac/ac-1.md'
+    assert ac_1.exists()
+    at_2 = md_dir / 'at/at-2.md'
+    assert at_2.exists()
+
+    md_api = MarkdownAPI()
+    header, tree = md_api.processor.process_markdown(ac_1)
+    assert header[const.TRESTLE_GLOBAL_TAG][const.SORT_ID] == 'ac-01'
+
+    part_a_text_no_comp = """## Implementation for part a.
+
+### This System
+
+<!-- Add implementation prose for the main This System component for control: ac-1_smt.a -->
+
+#### Implementation Status: planned
+
+______________________________________________________________________
+"""
+
+    node = tree.get_node_for_key('## Implementation for part a.')
+    assert node.content.raw_text == part_a_text_no_comp
+
+
+def test_ssp_generate_aggregates_no_cds(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test the ssp generator with no comp defs does aggregate values from aggregated parameters."""
+    args, _ = setup_for_ssp(tmp_trestle_dir, 'profile_aggregation', ssp_name)
+
+    args.compdefs = None
+    ssp_cmd = SSPGenerate()
+    assert ssp_cmd._run(args) == 0
+    md_dir = tmp_trestle_dir / ssp_name
+    si_7 = md_dir / 'si-7.md'
+    assert si_7.exists()
+
+    md_api = MarkdownAPI()
+    header, tree = md_api.processor.process_markdown(si_7)
+    si_7_odp_01 = header['x-trestle-set-params']['si-07_odp.01']
+    si_7_odp_01['ssp-values'] = ['changed value in the ssp markdown']
+
+    md_api.write_markdown_with_header(si_7, header, tree.content.raw_text)
+
+    # now assemble the edited controls into json ssp
+    ssp_assemble = SSPAssemble()
+    assemble_args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        markdown=ssp_name,
+        output=ssp_name,
+        verbose=0,
+        regenerate=False,
+        version='',
+        name=None,
+        compdefs=None
+    )
+    assert ssp_assemble._run(assemble_args) == 0
+
+    # Verify the correct information is in the assembled ssp
+    ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
+    imp_reqs = ssp.control_implementation.implemented_requirements
+    si_7_imp_req = next((i_req for i_req in imp_reqs if i_req.control_id == 'si-7'), None)
+    si_07_odp_01 = next((param for param in si_7_imp_req.set_parameters if param.param_id == 'si-07_odp.01'), None)
+    changed_value_in_ssp = next(
+        (val for val in si_07_odp_01.values if val == 'changed value in the ssp markdown'), None
+    )
+    assert changed_value_in_ssp is not None
+
+    # regenerate the SSP again
+    ssp_cmd = SSPGenerate()
+    assert ssp_cmd._run(args) == 0
+    md_dir = tmp_trestle_dir / ssp_name
+    si_7 = md_dir / 'si-7.md'
+    assert si_7.exists()
+
+    md_api = MarkdownAPI()
+    header, tree = md_api.processor.process_markdown(si_7)
+    si_7_odp_01 = header['x-trestle-set-params']['si-07_odp.01']
+    assert 'changed value in the ssp markdown' in si_7_odp_01['ssp-values']
+
+
+def test_ssp_generate_aggregates_no_param_value_orig(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test the ssp generator aggregate parameters have no parame-value-origin."""
+    args, _ = setup_for_ssp(tmp_trestle_dir, 'profile_aggregation', ssp_name)
+
+    args.compdefs = None
+    ssp_cmd = SSPGenerate()
+    assert ssp_cmd._run(args) == 0
+    md_dir = tmp_trestle_dir / ssp_name
+    si_7 = md_dir / 'si-7.md'
+    assert si_7.exists()
+
+    md_api = MarkdownAPI()
+    header, _ = md_api.processor.process_markdown(si_7)
+    si_7_prm_1 = header['x-trestle-set-params']['si-7_prm_1']
+    assert const.PARAM_VALUE_ORIGIN not in si_7_prm_1.keys()
