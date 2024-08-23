@@ -1,0 +1,106 @@
+{
+  "profile": {
+    "uuid": "83be30e4-6c88-40e0-9927-286ff0e43d59",
+    "metadata": {
+      "title": "SI-7 profile",
+      "last-modified": "2024-06-24T19:35:43.973109+00:00",
+      "version": "0.0.1",
+      "oscal-version": "1.1.2"
+    },
+    "imports": [
+      {
+        "href": "https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+        "include-controls": [
+          {
+            "with-ids": [
+              "si-7"
+            ]
+          }
+        ]
+      }
+    ],
+    "modify": {
+      "set-parameters": [
+        {
+          "param-id": "si-07_odp.01",
+          "props": [
+            {
+              "name": "param-value-origin",
+              "value": "OCISO"
+            }
+          ],
+          "values": [
+            "software"
+          ]
+        },
+        {
+          "param-id": "si-07_odp.02",
+          "props": [
+            {
+              "name": "param-value-origin",
+              "value": "OCISO"
+            }
+          ],
+          "values": [
+            "firmware"
+          ]
+        },
+        {
+          "param-id": "si-07_odp.03",
+          "props": [
+            {
+              "name": "param-value-origin",
+              "value": "OCISO"
+            }
+          ],
+          "values": [
+            "information"
+          ]
+        },
+        {
+          "param-id": "si-07_odp.04",
+          "props": [
+            {
+              "name": "param-value-origin",
+              "value": "OCISO"
+            }
+          ],
+          "values": [
+            "notify the System Owner, ISSO, ISSM, and the Incident Response team"
+          ]
+        },
+        {
+          "param-id": "si-07_odp.05",
+          "props": [
+            {
+              "name": "param-value-origin",
+              "value": "OCISO"
+            }
+          ],
+          "values": [
+            "notify the System Owner, ISSO, ISSM, and the Incident Response team"
+          ]
+        },
+        {
+          "param-id": "si-07_odp.06",
+          "props": [
+            {
+              "name": "param-value-origin",
+              "value": "OCISO"
+            }
+          ],
+          "values": [
+            "notify the System Owner, ISSO, ISSM, and the Incident Response team"
+          ]
+        },
+        {
+          "param-id": "si-7_prm_1"
+        },
+        {
+          "param-id": "si-7_prm_2"
+        }
+      ],
+      "alters": []
+    }
+  }
+}

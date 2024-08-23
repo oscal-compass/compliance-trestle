@@ -1303,3 +1303,75 @@ ______________________________________________________________________
 
     node = tree.get_node_for_key('## Implementation for part a.')
     assert node.content.raw_text == part_a_text_no_comp
+
+
+def test_ssp_generate_aggregates_no_cds(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test the ssp generator with no comp defs does aggregate values from aggregated parameters."""
+    args, _ = setup_for_ssp(tmp_trestle_dir, 'profile_aggregation', ssp_name)
+
+    args.compdefs = None
+    ssp_cmd = SSPGenerate()
+    assert ssp_cmd._run(args) == 0
+    md_dir = tmp_trestle_dir / ssp_name
+    si_7 = md_dir / 'si-7.md'
+    assert si_7.exists()
+
+    md_api = MarkdownAPI()
+    header, tree = md_api.processor.process_markdown(si_7)
+    si_7_odp_01 = header['x-trestle-set-params']['si-07_odp.01']
+    si_7_odp_01['ssp-values'] = ['changed value in the ssp markdown']
+
+    md_api.write_markdown_with_header(si_7, header, tree.content.raw_text)
+
+    # now assemble the edited controls into json ssp
+    ssp_assemble = SSPAssemble()
+    assemble_args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        markdown=ssp_name,
+        output=ssp_name,
+        verbose=0,
+        regenerate=False,
+        version='',
+        name=None,
+        compdefs=None
+    )
+    assert ssp_assemble._run(assemble_args) == 0
+
+    # Verify the correct information is in the assembled ssp
+    ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
+    imp_reqs = ssp.control_implementation.implemented_requirements
+    si_7_imp_req = next((i_req for i_req in imp_reqs if i_req.control_id == 'si-7'), None)
+    si_07_odp_01 = next((param for param in si_7_imp_req.set_parameters if param.param_id == 'si-07_odp.01'), None)
+    changed_value_in_ssp = next(
+        (val for val in si_07_odp_01.values if val == 'changed value in the ssp markdown'), None
+    )
+    assert changed_value_in_ssp is not None
+
+    # regenerate the SSP again
+    ssp_cmd = SSPGenerate()
+    assert ssp_cmd._run(args) == 0
+    md_dir = tmp_trestle_dir / ssp_name
+    si_7 = md_dir / 'si-7.md'
+    assert si_7.exists()
+
+    md_api = MarkdownAPI()
+    header, tree = md_api.processor.process_markdown(si_7)
+    si_7_odp_01 = header['x-trestle-set-params']['si-07_odp.01']
+    assert 'changed value in the ssp markdown' in si_7_odp_01['ssp-values']
+
+
+def test_ssp_generate_aggregates_no_param_value_orig(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test the ssp generator aggregate parameters have no parame-value-origin."""
+    args, _ = setup_for_ssp(tmp_trestle_dir, 'profile_aggregation', ssp_name)
+
+    args.compdefs = None
+    ssp_cmd = SSPGenerate()
+    assert ssp_cmd._run(args) == 0
+    md_dir = tmp_trestle_dir / ssp_name
+    si_7 = md_dir / 'si-7.md'
+    assert si_7.exists()
+
+    md_api = MarkdownAPI()
+    header, _ = md_api.processor.process_markdown(si_7)
+    si_7_prm_1 = header['x-trestle-set-params']['si-7_prm_1']
+    assert const.PARAM_VALUE_ORIGIN not in si_7_prm_1.keys()
