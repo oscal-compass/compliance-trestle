@@ -127,3 +127,5 @@ Consult [contributors](https://github.com/oscal-compass/compliance-trestle/graph
 # limitations under the License.
 
 ```
+
+##### Originally created by IBM & Red Hat.
