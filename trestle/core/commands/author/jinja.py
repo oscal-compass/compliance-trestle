@@ -37,6 +37,7 @@ from trestle.core.control_interface import ControlInterface, ParameterRep
 from trestle.core.docs_control_writer import DocsControlWriter
 from trestle.core.jinja import MDCleanInclude, MDDatestamp, MDSectionInclude
 from trestle.core.profile_resolver import ProfileResolver
+from trestle.core.ssp_interface import SSPInterface
 from trestle.core.ssp_io import SSPMarkdownWriter
 from trestle.oscal.profile import Profile
 from trestle.oscal.ssp import SystemSecurityPlan
@@ -225,6 +226,7 @@ class JinjaCmd(CommandPlusDocs):
             lut['catalog'] = resolved_catalog
             lut['catalog_interface'] = CatalogInterface(resolved_catalog)
             lut['control_interface'] = ControlInterface()
+            lut['ssp_interface'] = SSPInterface(ssp_data)
             lut['control_writer'] = DocsControlWriter()
             lut['ssp_md_writer'] = ssp_writer
 
