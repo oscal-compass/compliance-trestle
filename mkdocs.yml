@@ -49,6 +49,7 @@ nav:
 - Plugins:
   - FedRAMP validation: plugins/compliance-trestle-fedramp.md
 - License: license.md
+- trestle api reference test: api_reference_test/trestle.md
 - Reference:
   - Integrating with IBM SCC: reference/third-party-result-schema-SCC.md
   - trestle API reference:
@@ -193,15 +194,19 @@ nav:
       - transformer_singleton: api_reference/trestle.transforms.transformer_singleton.md
 plugins:
 - search
+- autorefs
 - htmlproofer:
     enabled: false
     validate_rendered_template: true
     validate_external_urls: true
     raise_error_after_finish: true
 - mkdocstrings:
+    default_handler: python
     handlers:
       python:
         options:
+          show_inheritance_diagram: true
+          inherited_members: false
           group_by_category: true
           show_category_heading: true
           show_if_no_docstring: true
@@ -211,8 +216,6 @@ plugins:
           - '!^__json'
           - '!^__config__'
           new_path_syntax: true
-    watch:
-    - trestle
 repo_name: oscal-compass/compliance-trestle
 repo_url: https://github.com/oscal-compass/compliance-trestle
 site_description: Documentation for compliance-trestle package.
