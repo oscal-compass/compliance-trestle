@@ -671,6 +671,24 @@ class ControlInterface:
         return ''
 
     @staticmethod
+    def _param_as_aggregated_value(
+        param: common.Parameter,
+        param_dict: Dict[str, common.Parameter],
+        verbose: bool = False,
+        brackets: bool = False
+    ) -> str:
+        """Convert parameter aggregation to str."""
+        # review is an aggregated parameter
+        if const.AGGREGATES in [prop.name for prop in as_list(param.props)]:
+            aggregated_values = ''
+            for prop in as_list(param.props):
+                if prop.value not in param_dict:
+                    continue
+                aggregated_values += ', '.join(as_list(param_dict[prop.value].values)) + ', '
+            return aggregated_values[:-2]
+        return ''
+
+    @staticmethod
     def _param_label_choices_as_str(param: common.Parameter, verbose: bool = False, brackets: bool = False) -> str:
         """Convert param label or choices to string, using choices if present."""
         choices = ControlInterface._param_selection_as_str(param, verbose, brackets)
@@ -681,6 +699,7 @@ class ControlInterface:
     @staticmethod
     def _param_values_assignment_str(
         param: common.Parameter,
+        param_dict: Dict[str, common.Parameter],
         value_assigned_prefix: Optional[str] = None,
         value_not_assigned_prefix: Optional[str] = None
     ) -> str:
@@ -692,6 +711,9 @@ class ControlInterface:
         # otherwise use param selection if present
         if not param_str:
             param_str = ControlInterface._param_selection_as_str(param, True, False)
+        # otherwise use param aggregated values if present
+        if not param_str:
+            param_str = ControlInterface._param_as_aggregated_value(param, param_dict, True, False)
         # finally use label and param_id as fallbacks
         if not param_str:
             param_str = param.label if param.label else param.id
@@ -722,7 +744,8 @@ class ControlInterface:
         brackets: bool = False,
         params_format: Optional[str] = None,
         value_assigned_prefix: Optional[str] = None,
-        value_not_assigned_prefix: Optional[str] = None
+        value_not_assigned_prefix: Optional[str] = None,
+        param_dict: Dict[str, common.Parameter] = None
     ) -> Optional[str]:
         """
         Convert parameter to string based on best available representation.
@@ -755,7 +778,7 @@ class ControlInterface:
                 param_str = ''
         elif param_rep == ParameterRep.ASSIGNMENT_FORM:
             param_str = ControlInterface._param_values_assignment_str(
-                param, value_assigned_prefix, value_not_assigned_prefix
+                param, param_dict, value_assigned_prefix, value_not_assigned_prefix
             )
             if not param_str:
                 param_str = ''
@@ -854,11 +877,20 @@ class ControlInterface:
             elif param_dict[param_ids[i]] is not None:
                 param = param_dict[param_ids[i]]
                 param_str = ControlInterface.param_to_str(
-                    param, param_rep, False, False, params_format, value_assigned_prefix, value_not_assigned_prefix
+                    param,
+                    param_rep,
+                    False,
+                    False,
+                    params_format,
+                    value_assigned_prefix,
+                    value_not_assigned_prefix,
+                    param_dict
                 )
                 text = text.replace(staches[i], param_str, 1).strip()
                 if show_value_warnings and param_rep != ParameterRep.LABEL_OR_CHOICES and not param.values:
-                    logger.warning(f'Parameter {param_id} has no values and was referenced by prose.')
+                    # verifies the current parameter is not an aggregated parameter to throw a warning
+                    if const.AGGREGATES not in [prop.name for prop in as_list(param.props)]:
+                        logger.warning(f'Parameter {param_id} has no values and was referenced by prose.')
             elif show_value_warnings:
                 logger.warning(f'Control prose references param {param_ids[i]} with no specified value.')
         # there may be staches remaining that we can't replace if not in param_dict
