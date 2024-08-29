@@ -185,6 +185,57 @@ def test_cis_xlsx_to_oscal_catalog_unexpected_section(tmp_path: pathlib.Path):
         assert retval == TaskOutcome.FAILURE
 
 
+def test_cis_xlsx_to_oscal_catalog_no_status(tmp_path: pathlib.Path):
+    """Test no column with name status."""
+    folder = 'tests/data/tasks/cis-xlsx-to-oscal-catalog'
+    file_ = f'{folder}/CIS_RedHat_OpenShift_Container_Platform_Benchmark_v1.2.0-2.snippet.xlsx'
+    wb_hacked = load_workbook(file_)
+    sheet = wb_hacked['Combined Profiles']
+    cell = sheet.cell(1, 5)
+    assert cell.value == 'status'
+    cell.value = 'X'
+    with mock.patch('trestle.tasks.cis_xlsx_to_oscal_catalog.load_workbook') as load_workbook_mock:
+        load_workbook_mock.return_value = wb_hacked
+        section = _get_section(tmp_path, ocp_config)
+        tgt = cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog(section)
+        retval = tgt.execute()
+        assert retval == TaskOutcome.SUCCESS
+
+
+def test_cis_xlsx_to_oscal_catalog_no_mitre(tmp_path: pathlib.Path):
+    """Test no column with name mitre."""
+    folder = 'tests/data/tasks/cis-xlsx-to-oscal-catalog'
+    file_ = f'{folder}/CIS_RedHat_OpenShift_Container_Platform_Benchmark_v1.2.0-2.snippet.xlsx'
+    wb_hacked = load_workbook(file_)
+    sheet = wb_hacked['Combined Profiles']
+    cell = sheet.cell(1, 20)
+    assert cell.value == 'MITRE ATT&CK Mappings'
+    cell.value = 'X'
+    with mock.patch('trestle.tasks.cis_xlsx_to_oscal_catalog.load_workbook') as load_workbook_mock:
+        load_workbook_mock.return_value = wb_hacked
+        section = _get_section(tmp_path, ocp_config)
+        tgt = cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog(section)
+        retval = tgt.execute()
+        assert retval == TaskOutcome.SUCCESS
+
+
+def test_cis_xlsx_to_oscal_catalog_no_v7_ig1(tmp_path: pathlib.Path):
+    """Test no column with name v7 IG1."""
+    folder = 'tests/data/tasks/cis-xlsx-to-oscal-catalog'
+    file_ = f'{folder}/CIS_RedHat_OpenShift_Container_Platform_Benchmark_v1.2.0-2.snippet.xlsx'
+    wb_hacked = load_workbook(file_)
+    sheet = wb_hacked['Combined Profiles']
+    cell = sheet.cell(1, 14)
+    assert cell.value == 'v7 IG1'
+    cell.value = 'Z'
+    with mock.patch('trestle.tasks.cis_xlsx_to_oscal_catalog.load_workbook') as load_workbook_mock:
+        load_workbook_mock.return_value = wb_hacked
+        section = _get_section(tmp_path, ocp_config)
+        tgt = cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog(section)
+        retval = tgt.execute()
+        assert retval == TaskOutcome.SUCCESS
+
+
 def test_cis_xlsx_to_oscal_catalog_execute_rhel(tmp_path: pathlib.Path):
     """Test execute call - rhel."""
     section = _get_section(tmp_path, rhel_config)

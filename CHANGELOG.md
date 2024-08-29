@@ -2,6 +2,204 @@
 
 
 
+## v3.4.0 (2024-08-23)
+
+### Chore
+
+* chore: Merge back version tags and changelog into develop. ([`724ac16`](https://github.com/oscal-compass/compliance-trestle/commit/724ac169389e4d80cca4c336e17fbd5bed4cedff))
+
+### Documentation
+
+* docs: update maintainers list to reflect active maintainers (#1638)
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+Co-authored-by: mrgadgil &lt;49280244+mrgadgil@users.noreply.github.com&gt; ([`f8daaae`](https://github.com/oscal-compass/compliance-trestle/commit/f8daaae2e57c9a582b9a94bd5128ed55a890a3bf))
+
+* docs: updates CODE_OF_CONDUCT urls in README and website (#1635)
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`08f387a`](https://github.com/oscal-compass/compliance-trestle/commit/08f387a074734a5ddd079d5f613220aa6b44242c))
+
+* docs: adds ROADMAP.md with high level roadmap description (#1626)
+
+* docs: adds ROADMAP.md with high level roadmap description
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* chore: refines working in ROADMAP.md for clarity
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* docs: updates ROADMAP.md with timeline information
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* docs: rewords section on iterations
+
+Adds more clarity around what takes place in
+the 12-week period. No changes to the overall plan.
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+---------
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`ed10dad`](https://github.com/oscal-compass/compliance-trestle/commit/ed10dadee72ac2bedf07c71095e598dc6f95b5bf))
+
+### Feature
+
+* feat: add parameter aggregation support for SSP (#1668)
+
+Signed-off-by: Alejandro Jose Leiva Palomo &lt;alejandro.leiva.palomo@ibm.com&gt; ([`b2611d1`](https://github.com/oscal-compass/compliance-trestle/commit/b2611d1382c6ff1e9e1864e7fa1726dd7ad07eb5))
+
+* feat: adds dependabot configuration for continous updates (#1647)
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`4862c4a`](https://github.com/oscal-compass/compliance-trestle/commit/4862c4ac0ec9ce06988f1b6d75ad5986acbd3b78))
+
+* feat: adds implementation parts to This System component in markdown (#1536)
+
+* feat: adds implementation part prompts for This System
+
+Changes in assembly are due to changes in the markdown breaking the unit tests
+because the This System component is associated with each statement
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* fix: removes this system comp prose and status duplication
+
+The process_main_component was overwriting the first prose
+response to all the parts
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* chore: removes TODO comment for bug review
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* chore: updates workding in comments in control_writer.py
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* chore: moves part_a_text_edited into applicable unit tests
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* refactor: add include-all-parts to make part responses optional
+
+To ensure the default markdown is not overly verbose, writing all
+implementation parts and the inclusion of This System is optional.
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* docs: updates documentation with include-all-parts description
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* chore: updates comments and docstring in control_writer.py updates
+
+The goal is to increase the usefulness of the comments
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* fix: updates docstring in control_writer.py to improve clarity
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+---------
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`54706af`](https://github.com/oscal-compass/compliance-trestle/commit/54706af0f9d428d10451823aa7d8d0f92a86e3eb))
+
+### Fix
+
+* fix: cis benchmarks to catalog task, which mistakenly does not see all columns (#1657)
+
+* fix: allow sheet specification
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* fix: number of columns is too small by 1
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* Fix: examine all columns
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+---------
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt; ([`6c2d3f3`](https://github.com/oscal-compass/compliance-trestle/commit/6c2d3f3bd8d6eeaf04e0a931ce39b8b52646e95a))
+
+* fix: skips sonar scans for dependabot updates (#1656)
+
+* fix: skips sonar scans for dependabot updates
+
+Dependabot updates only include third party dependency updates
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* fix: updates workflow if statement formatting
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+---------
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`050c425`](https://github.com/oscal-compass/compliance-trestle/commit/050c425771ccb52bd263b011e37e128a1eb8205f))
+
+* fix: updates invalid dependabot configuation (#1650)
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`e27f0cd`](https://github.com/oscal-compass/compliance-trestle/commit/e27f0cda76a89c7fe60e425916e8b85c3cb1fc30))
+
+* fix: correct logo redirection for PyPi page (#1644)
+
+* fix: correct logo redirection for PyPi page
+
+Signed-off-by: Alejandro Jose Leiva Palomo &lt;alejandro.leiva.palomo@ibm.com&gt;
+
+* fix: change develop to main branch in the logo link
+
+Signed-off-by: Alejandro Jose Leiva Palomo &lt;alejandro.leiva.palomo@ibm.com&gt;
+
+---------
+
+Signed-off-by: Alejandro Jose Leiva Palomo &lt;alejandro.leiva.palomo@ibm.com&gt; ([`2c4899a`](https://github.com/oscal-compass/compliance-trestle/commit/2c4899a809cb28855943f4f3e89f3e9d771aaf1e))
+
+* fix: default value for optional string params should be None (#1621)
+
+* fix: default value for optional string params should be None
+
+Signed-off-by: George Vauter &lt;gvauter@redhat.com&gt;
+
+* pin setuptools to min version suppported by setuptools_scm
+
+Signed-off-by: George Vauter &lt;gvauter@redhat.com&gt;
+
+* fix: add include_all_parts to undo accidental deletion
+
+Signed-off-by: George Vauter &lt;gvauter@redhat.com&gt;
+
+---------
+
+Signed-off-by: George Vauter &lt;gvauter@redhat.com&gt; ([`f81f567`](https://github.com/oscal-compass/compliance-trestle/commit/f81f5674ee2996532524eb014daadbbdbd33e6bb))
+
+* fix: allow forks to correctly run the pipelines (#1633)
+
+A small set of cleanups to the pipelines.
+
+---------
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+Signed-off-by: Chris Butler &lt;chris.butler@redhat.com&gt;
+Co-authored-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`af4e5a2`](https://github.com/oscal-compass/compliance-trestle/commit/af4e5a286279a0aebf70b1cb87fa97651711ada2))
+
+### Unknown
+
+* Merge pull request #1670 from oscal-compass/develop
+
+chore: Trestle release ([`2420d97`](https://github.com/oscal-compass/compliance-trestle/commit/2420d9740fbaa78f8a8a4b92c54747984db70717))
+
+* fix - make status and mitre column optional (#1649)
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt; ([`47e6936`](https://github.com/oscal-compass/compliance-trestle/commit/47e6936e47d1fa0840aef5c26f36140438f03c98))
+
+
 ## v3.3.0 (2024-07-15)
 
 ### Chore
