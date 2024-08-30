@@ -125,10 +125,9 @@ Consult [contributors](https://github.com/oscal-compass/compliance-trestle/graph
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 ```
 
-<hr>
+______________________________________________________________________
 
 We are a Cloud Native Computing Foundation sandbox project.
 
