@@ -192,6 +192,7 @@ nav:
       - transformer_helper: api_reference/trestle/transforms/transformer_helper.md
       - transformer_singleton: api_reference/trestle/transforms/transformer_singleton.md
 plugins:
+- awesome-pages
 - search
 - mkdocstrings:
     handlers:
