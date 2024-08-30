@@ -108,6 +108,7 @@ Participation in the OSCAL Compass community is governed by the [Code of Conduct
 
 ## License & Authors
 
+If you would like to see the detailed LICENSE click [here](LICENSE).
 Consult [contributors](https://github.com/oscal-compass/compliance-trestle/graphs/contributors) for a list of authors and [maintainers](MAINTAINERS.md) for the core team.
 
 ```text
