@@ -39,7 +39,7 @@ However, there is plenty of good news:
 
 In the case of Tanium, the [OSCAL](https://pages.nist.gov/OSCAL) compliance data document is a *System Assessment Results* fragment with *Findings* and *Observations*, while in the case of OpenShift Compliance Operator there are *Observations* only.
 
-Tutorials are available to show you: how to [run a transformer](https://oscal-compass.github.io/compliance-trestle/tutorials/task.tanuim-to-oscal/transformation/), how to [write a transformer](https://oscal-compass.github.io/compliance-trestle/tutorials/task.transformer-construction/transformer-construction/).
+Tutorials are available to show you: how to [run a transformer](../task.tanium-result-to-oscal-ar/transformation.md), how to [write a transformer](../task.transformer-construction/transformer-construction.md).
 
 #### Step 2 – Reporting
 
