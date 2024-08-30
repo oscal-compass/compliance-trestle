@@ -112,7 +112,7 @@ If you would like to see the detailed LICENSE click [here](LICENSE).
 Consult [contributors](https://github.com/oscal-compass/compliance-trestle/graphs/contributors) for a list of authors and [maintainers](MAINTAINERS.md) for the core team.
 
 ```text
-# Copyright (c) 2020 IBM Corp. All rights reserved.
+# Copyright (c) 2024 The OSCAL Compass Authors. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -127,3 +127,11 @@ Consult [contributors](https://github.com/oscal-compass/compliance-trestle/graph
 # limitations under the License.
 
 ```
+
+-----
+
+We are a Cloud Native Computing Foundation sandbox project.
+
+The Linux Foundation® (TLF) has registered trademarks and uses trademarks. For a list of TLF trademarks, see [Trademark Usage](https://www.linuxfoundation.org/legal/trademark-usage)".
+
+*OSCAL Compass was originally contributed by IBM and Red Hat.*
