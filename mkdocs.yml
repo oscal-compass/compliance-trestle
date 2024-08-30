@@ -202,7 +202,9 @@ plugins:
     validate_external_urls: true
     raise_error_after_finish: false
     raise_error_excludes:
-      404: ['#trestle.core*'] # This is to remove some false positives around 
+      # This is to remove some false positives for links which work.
+      # Anchors are validated again by core mkdocs
+      404: ['#trestle.*']
 - mkdocstrings:
     default_handler: python
     handlers:
