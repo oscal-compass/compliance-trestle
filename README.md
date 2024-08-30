@@ -134,4 +134,4 @@ We are a Cloud Native Computing Foundation sandbox project.
 
 The Linux Foundation® (TLF) has registered trademarks and uses trademarks. For a list of TLF trademarks, see [Trademark Usage](https://www.linuxfoundation.org/legal/trademark-usage)".
 
-*OSCAL Compass was originally contributed by IBM and Red Hat.*
+*Trestle was originally created by IBM and Red Hat.*
