@@ -51,9 +51,15 @@ def update_mkdocs_meta(path: pathlib.Path, module_list: List[Any]) -> None:
 
 def write_module_doc_metafile(dump_location: pathlib.Path, module_name: str) -> None:
     """Create a markdown file which allows mkdocstrings to index an individual module."""
-    write_file = dump_location / (module_name + '.md')
+    write_file = dump_location / (module_name.replace('.', '/') + '.md')
+    write_file.parent.mkdir(parents=True, exist_ok=True)
     fh = write_file.open('w', encoding='utf8')
-    fh.write(f'::: {module_name}\n')
+    # yaml header
+    fh.write('---\n')
+    fh.write(f'title: {module_name}\n')
+    fh.write(f'description: Documentation for {module_name} module\n')
+    fh.write('---\n')
+    fh.write(f'::: {module_name}\n')  # noqa: E231
     fh.write('handler: python\n')
     fh.close()
 
@@ -76,7 +82,7 @@ def create_module_markdowns(base_path: pathlib.Path, base_module: str, dump_loca
             if len(struct) > 0:
                 module_arr.append({path.stem: struct})
         elif path.suffix == '.py' and path.stem[0] != '_':
-            struct = dump_location.stem + '/' + module_full_name + '.md'
+            struct = dump_location.stem + '/' + module_full_name.replace('.', '/') + '.md'
             write_module_doc_metafile(dump_location, module_full_name)
             module_arr.append({path.stem: struct})
     module_arr.sort(key=get_key)
