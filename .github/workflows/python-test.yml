@@ -151,7 +151,7 @@ jobs:
 
     - name: Upload artifact
       if: steps.core-version.outputs.core == 'true'
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: coverage
         path: coverage.xml
@@ -184,7 +184,7 @@ jobs:
       run: |
         make develop
     - name: Get coverage
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: coverage
     - name: SonarCloud Scan
