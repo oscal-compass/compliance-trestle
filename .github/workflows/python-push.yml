@@ -126,7 +126,7 @@ jobs:
     # This action uses Python Semantic Release v8
     - name: Python Semantic Release
       id: release
-      uses: python-semantic-release/python-semantic-release@v9.8.0
+      uses: python-semantic-release/python-semantic-release@v9.8.8
       with:
         github_token: ${{ secrets.ADMIN_PAT }}
 
