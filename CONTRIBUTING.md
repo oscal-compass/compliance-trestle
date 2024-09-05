@@ -15,8 +15,8 @@ cannot be accepted at all!**
 
 ### Coding standards
 
-Python code should generally follow [PEP 8](https://peps.python.org/pep-0008/) which is enforced by 
-[Flake8](https://flake8.pycqa.org/en/latest/). To check if your code contribution issue: `make code-lint`
+Python code should generally follow [PEP 8](https://peps.python.org/pep-0008/) which is enforced by
+[Flake8](https://flake8.pycqa.org/en/latest/). To check your code contribution, issue: `make code-lint`
 
 ### Proposing new features
 
