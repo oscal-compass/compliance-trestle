@@ -13,6 +13,11 @@ Before embarking on a more ambitious contribution, please quickly [get in touch]
 requires extensive rework (by you or by us), sits in backlog for a long time, or
 cannot be accepted at all!**
 
+### Coding standards
+
+Python code should generally follow [PEP 8](https://peps.python.org/pep-0008/) which is enforced by 
+[Flake8](https://flake8.pycqa.org/en/latest/). To check if your code contribution issue: `make code-lint`
+
 ### Proposing new features
 
 If you would like to implement a new feature, please [raise an issue](https://github.com/oscal-compass/compliance-trestle/issues)
