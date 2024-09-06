@@ -32,6 +32,13 @@ review to indicate acceptance. A change requires LGTMs from one of the maintaine
 
 For a list of the maintainers, see the [maintainers](https://oscal-compass.github.io/compliance-trestle/maintainers/) page.
 
+### Trestle updating and release logistics
+
+Contributors should make a working copy (branch or fork) from the develop branch of `trestle`.
+Contributors should update the working copy with changes, then create a pull request to merge into the develop branch.
+Upon approval from reviewer(s), the working copy is squashed and merged into the develop branch.
+Upon a cadence established by the maintainers, the develop branch is merged into the main branch and a new release is uniquely numbered and pushed to [pypi](https://pypi.org/project/compliance-trestle/).
+
 ### Trestle merging and release workflow
 
 `trestle` is operating on a simple, yet opinionated, method for continuous integration. It's designed to give developers a coherent understanding of the objectives of other past developers.
