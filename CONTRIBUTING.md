@@ -13,11 +13,6 @@ Before embarking on a more ambitious contribution, please quickly [get in touch]
 requires extensive rework (by you or by us), sits in backlog for a long time, or
 cannot be accepted at all!**
 
-### Coding standards
-
-Python code should generally follow [PEP 8](https://peps.python.org/pep-0008/) which is enforced by
-[Flake8](https://flake8.pycqa.org/en/latest/). To check your code contribution, issue: `make code-lint`
-
 ### Proposing new features
 
 If you would like to implement a new feature, please [raise an issue](https://github.com/oscal-compass/compliance-trestle/issues)
@@ -185,6 +180,8 @@ Trestle relies on reference data from two NIST repositories for testing:
 Both of these repositories are submodules in the trestle project. In order to develop / test trestle the submodules must be checked out with `git submodule update --init` or `make submodules`.
 
 ### Code style and formating
+
+Python code should generally follow [PEP 8](https://peps.python.org/pep-0008/).
 
 `trestle` uses [yapf](https://github.com/google/yapf) for code formatting and [flake8](https://flake8.pycqa.org/en/latest/) for code styling.  It also uses [pre-commit](https://pre-commit.com/) hooks that are integrated into the development process and the CI. When you run `make develop` you are ensuring that the pre-commit hooks are installed and updated to their latest versions for this repository. This ensures that all delivered code has been properly formatted
 and passes the linter rules.  See the [pre-commit configuration file](https://github.com/oscal-compass/compliance-trestle/blob/develop/.pre-commit-config.yaml) for details on
