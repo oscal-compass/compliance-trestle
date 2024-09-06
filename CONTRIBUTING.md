@@ -39,6 +39,9 @@ Contributors should update the working copy with changes, then create a pull req
 Upon approval from reviewer(s), the working copy is squashed and merged into the develop branch.
 Upon a cadence established by the maintainers, the develop branch is merged into the main branch and a new release is uniquely numbered and pushed to [pypi](https://pypi.org/project/compliance-trestle/).
 
+`trestle` employs `semantic release` to automatically control release numbering.
+Code deliveries should be tagged with prefix `fix:` for changes that are bug fixes or `feat:` for changes that are new features.  See [allowed_tags](https://python-semantic-release.readthedocs.io/en/latest/commit-parsing.html#:~:text=The%20default%20configuration%20options%20for%20semantic_release.commit_parser.AngularCommitParser%20are%3A) for a list of supported tags.
+
 ### Trestle merging and release workflow
 
 `trestle` is operating on a simple, yet opinionated, method for continuous integration. It's designed to give developers a coherent understanding of the objectives of other past developers.
