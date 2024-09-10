@@ -219,11 +219,11 @@ def test_component_workflow_no_rules(tmp_trestle_dir: pathlib.Path, monkeypatch:
     # Check that the example md file looks correct
     _, tree = MarkdownProcessor().process_markdown(ac1_path)
 
-    imp_req_md = """## What is the solution and how is it implemented? 
+    imp_req_md = """## What is the solution and how is it implemented?
 
 <!-- For implementation status enter one of: implemented, partial, planned, alternative, not-applicable -->
 
-<!-- Note that the list of rules under ### Rules: is read-only and changes will not be captured after assembly to JSON --> 
+<!-- Note that the list of rules under ### Rules: is read-only and changes will not be captured after assembly to JSON -->
 
 imp req prose for ac-1 from comp cc
 

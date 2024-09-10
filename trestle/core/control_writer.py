@@ -282,7 +282,7 @@ class ControlWriter():
         Check if a part should be skipped based on rules and context.
 
         Notes: The default logic is to conditionally add control parts based
-        on whether the component has rules  or existing prose associated with that part. This can be
+        on whether the component has rules or existing prose associated with that part. This can be
         changed using the control context for SSP markdown.
         """
         if context.purpose == ContextPurpose.SSP and context.include_all_parts:
