@@ -32,6 +32,16 @@ review to indicate acceptance. A change requires LGTMs from one of the maintaine
 
 For a list of the maintainers, see the [maintainers](https://oscal-compass.github.io/compliance-trestle/maintainers/) page.
 
+### Trestle updating and release logistics
+
+Contributors should make a working copy (branch or fork) from the develop branch of `trestle`.
+Contributors should update the working copy with changes, then create a pull request to merge into the develop branch.
+Upon approval from reviewer(s), the working copy is squashed and merged into the develop branch.
+Upon a cadence established by the maintainers, the develop branch is merged into the main branch and a new release is uniquely numbered and pushed to [pypi](https://pypi.org/project/compliance-trestle/).
+
+`trestle` employs `semantic release` to automatically control release numbering.
+Code deliveries should be tagged with prefix `fix:` for changes that are bug fixes or `feat:` for changes that are new features.  See [allowed_tags](https://python-semantic-release.readthedocs.io/en/latest/commit-parsing.html#:~:text=The%20default%20configuration%20options%20for%20semantic_release.commit_parser.AngularCommitParser%20are%3A) for a list of supported tags.
+
 ### Trestle merging and release workflow
 
 `trestle` is operating on a simple, yet opinionated, method for continuous integration. It's designed to give developers a coherent understanding of the objectives of other past developers.
@@ -86,7 +96,7 @@ Software License 2.0. Using the SPDX format is the simplest approach.
 e.g.
 
 ```text
-# Copyright (c) 2020 IBM Corp. All rights reserved.
+# Copyright (c) 2024 The OSCAL Compass Authors. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -180,6 +190,8 @@ Trestle relies on reference data from two NIST repositories for testing:
 Both of these repositories are submodules in the trestle project. In order to develop / test trestle the submodules must be checked out with `git submodule update --init` or `make submodules`.
 
 ### Code style and formating
+
+Python code should generally follow [PEP 8](https://peps.python.org/pep-0008/).
 
 `trestle` uses [yapf](https://github.com/google/yapf) for code formatting and [flake8](https://flake8.pycqa.org/en/latest/) for code styling.  It also uses [pre-commit](https://pre-commit.com/) hooks that are integrated into the development process and the CI. When you run `make develop` you are ensuring that the pre-commit hooks are installed and updated to their latest versions for this repository. This ensures that all delivered code has been properly formatted
 and passes the linter rules.  See the [pre-commit configuration file](https://github.com/oscal-compass/compliance-trestle/blob/develop/.pre-commit-config.yaml) for details on
