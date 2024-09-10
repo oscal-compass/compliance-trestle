@@ -217,11 +217,34 @@ def test_component_workflow_no_rules(tmp_trestle_dir: pathlib.Path, monkeypatch:
     test_utils.execute_command_and_assert(generate_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
 
     # Check that the example md file looks correct
-    assert test_utils.confirm_text_in_file(
-        file_path=ac1_path,
-        tag='What is the solution and how is it implemented?',
-        text='imp req prose for ac-1 from comp cc'
-    )
+    _, tree = MarkdownProcessor().process_markdown(ac1_path)
+
+    imp_req_md = """## What is the solution and how is it implemented? 
+
+<!-- For implementation status enter one of: implemented, partial, planned, alternative, not-applicable -->
+
+<!-- Note that the list of rules under ### Rules: is read-only and changes will not be captured after assembly to JSON --> 
+
+imp req prose for ac-1 from comp cc
+
+### Implementation Status: planned
+
+______________________________________________________________________
+"""  # noqa E501
+
+    node = tree.get_node_for_key('## What is the solution and how is it implemented?')
+    assert node.content.raw_text == imp_req_md
+
+    part_a_md = """## Implementation for part a.
+
+statement prose for part a. from comp cc
+
+### Implementation Status: planned
+
+______________________________________________________________________"""
+
+    node = tree.get_node_for_key('## Implementation for part a.')
+    assert node.content.raw_text == part_a_md
 
     test_utils.substitute_text_in_file(
         ac1_path, '### Implementation Status: planned', f'### Implementation Status: {const.STATUS_IMPLEMENTED}'
