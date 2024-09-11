@@ -260,4 +260,4 @@ ______________________________________________________________________
 
 ##### Overview of process to take OSCAL models and upgrade trestle Python code
 
-<img src="images/trestle-OSCAL-upgrade.png" style="width:600px;height:500px;border: 1px solid #000;padding:10px;">
+![](images/trestle-OSCAL-upgrade.png)

@@ -65,7 +65,7 @@ natively supports only `json` and `yaml` formats at this time.
 Future roadmap anticipates that support for xml [import](https://github.com/oscal-compass/compliance-trestle/issues/177) and [upstream references](https://github.com/oscal-compass/compliance-trestle/issues/178) will be enabled. However, it is expected
 that full support will remain only for `json` and  `yaml`.
 
-Users needing to import XML OSCAL artifacts are recommended to look at NIST's XML to json conversion page [here](https://github.com/usnistgov/OSCAL/tree/master/json#oscal-xml-to-json-converters).
+Users needing to import XML OSCAL artifacts are recommended to look at NIST's OSCAL converters page [here](https://github.com/usnistgov/OSCAL/blob/main/build/README.md#converters).
 
 ## Python codebase, easy installation via pip
 
@@ -77,12 +77,12 @@ Compliance trestle is currently stable and is based on NIST OSCAL version 1.0.4,
 
 ## Contributing to Trestle
 
-Our project welcomes external contributions. Please consult [contributing](contributing/mkdocs_contributing/) to get started.
+Our project welcomes external contributions. Please consult [contributing](contributing/mkdocs_contributing.md) to get started.
 
 ## License & Authors
 
-If you would like to see the detailed LICENSE click [here](license/).
-Consult [contributors](https://github.com/oscal-compass/compliance-trestle/graphs/contributors) for a list of authors and [maintainers](maintainers/) for the core team.
+If you would like to see the detailed LICENSE click [here](license.md).
+Consult [contributors](https://github.com/oscal-compass/compliance-trestle/graphs/contributors) for a list of authors and [maintainers](maintainers.md) for the core team.
 
 ```text
 # Copyright (c) 2024 The OSCAL Compass Authors. All rights reserved.
