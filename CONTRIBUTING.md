@@ -32,10 +32,11 @@ review to indicate acceptance. A change requires LGTMs from one of the maintaine
 
 For a list of the maintainers, see the [maintainers](https://oscal-compass.github.io/compliance-trestle/maintainers/) page.
 
-### Trestle updating and release logistics
+### Trestle updating, testing and release logistics
 
 Contributors should make a working copy (branch or fork) from the develop branch of `trestle`.
 Contributors should update the working copy with changes, then create a pull request to merge into the develop branch.
+Contributors must include test cases to meet at least the minimum code coverage requirements.
 Upon approval from reviewer(s), the working copy is squashed and merged into the develop branch.
 Upon a cadence established by the maintainers, the develop branch is merged into the main branch and a new release is uniquely numbered and pushed to [pypi](https://pypi.org/project/compliance-trestle/).
 
@@ -174,7 +175,7 @@ Test discovery should be automatic when you select a .py file for editing. After
 
 Sometimes the discovery fails - and you may need to resort to uninstalling the python extension and reinstalling it - perhaps also shutting down code and restarting.  This is a lightweight operation and seems to be safe and usually fixes any problems.
 
-Test disovery will fail or stop if any of the tests have errors in them - so be sure to monitor the Problems panel at the bottom for problems in the code.
+Test discovery will fail or stop if any of the tests have errors in them - so be sure to monitor the Problems panel at the bottom for problems in the code.
 
 Note that there are many panels available in Output - so be sure to check `Python Test Log` for errors and output from the tests.
 
@@ -188,6 +189,16 @@ Trestle relies on reference data from two NIST repositories for testing:
 - https://github.com/usnistgov/oscal-content
 
 Both of these repositories are submodules in the trestle project. In order to develop / test trestle the submodules must be checked out with `git submodule update --init` or `make submodules`.
+
+### Code testing
+
+Tests must exist for at least 96% of trestle Python code. To determine the code coverage locally during development:
+
+```bash
+make test-cov
+```
+
+A PR without sufficient test coverage will fail the trestle CI process and will not be approved or merged.
 
 ### Code style and formating
 
