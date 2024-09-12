@@ -200,6 +200,8 @@ make test-cov
 
 A PR without sufficient test coverage will fail the trestle CI process and will not be approved or merged.
 
+Additional code scrutiny is applied in the trestle CI pipeline by [SonarCloud](https://sonarcloud.io/project/overview?id=compliance-trestle). Any failures must be addressed before code merging.
+
 ### Code style and formating
 
 Python code should generally follow [PEP 8](https://peps.python.org/pep-0008/).
