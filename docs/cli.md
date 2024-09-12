@@ -113,11 +113,11 @@ Users can query the contents of files using `trestle describe`, and probe the co
 
 OSCAL models are rich and contain multiple nested data structures. Given this, a mechanism is required to address _elements_ /_attributes_ within an oscal object.
 
-This accessing method is called 'element path' and is similar to _jsonPath_. Commands provide element path by a `-e` argument where available, e.g. trestle split -f catalog.json -e 'catalog.metadata.\*'. This path is used whenever specifying an attribute or model, rather than exposing trestle's underlying object model name. Users can refer to [NIST's json outline](https://pages.nist.gov/OSCAL/reference/latest/complete/json-outline/) to understand object names in trestle.
+This accessing method is called 'element path' and is similar to _jsonPath_. Commands provide element path by a `-e` argument where available, e.g. trestle split -f catalog.json -e 'catalog.metadata.\*'. This path is used whenever specifying an attribute or model, rather than exposing trestle's underlying object model name. Users can refer to [NIST's json outline](https://pages.nist.gov/OSCAL-Reference/models/latest/complete/json-outline/) to understand object names in trestle.
 
 ### Rules for element path
 
-1. Element path is an expression of the attribute names, [in json form](https://pages.nist.gov/OSCAL/reference/latest/complete/json-outline/) , concatenated by a period (`.`).
+1. Element path is an expression of the attribute names, [in json form](https://pages.nist.gov/OSCAL-Reference/models/latest/complete/json-outline/) , concatenated by a period (`.`).
    1. E.g. The metadata in a catalog is referred to as `catalog.metadata`
 1. Element paths are relative to the file.
    1. e.g. For `metadata.json` roles would be referred to as `metadata.roles`, from the catalog file that would be `catalog.metadata.roles`
