@@ -68,7 +68,7 @@ class ModelUtils:
             Return a tuple of Model Type (e.g. class 'trestle.oscal.catalog.Catalog'),
             Model Alias (e.g. 'catalog.metadata') and Instance of the Model.
             If the model is decomposed/split/distributed, the instance of the model contains
-            the decomposed models loaded recursively.
+                the decomposed models loaded recursively.
 
         Note:
             This does not validate the model.  You must either validate the model separately or use the load_validate
@@ -171,7 +171,8 @@ class ModelUtils:
         If you need to load an existing model but its content type may not be known, use this method.
         But the file content type should be specified if it is somehow known.
 
-        Note:  This does not validate the model.  If you want to validate the model use the load_validate utilities.
+        Note:
+            This does not validate the model.  If you want to validate the model use the load_validate utilities.
         """
         root_model_path = ModelUtils._root_path_for_top_level_model(
             trestle_root, model_name, model_class
