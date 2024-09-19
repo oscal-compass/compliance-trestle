@@ -369,9 +369,8 @@ def setup_for_component_definition(tmp_trestle_dir: pathlib.Path, monkeypatch: M
     return comp_name
 
 
-def setup_component_generate(tmp_trestle_dir: pathlib.Path) -> str:
+def setup_component_generate(tmp_trestle_dir: pathlib.Path, comp_name='comp_def_a') -> str:
     """Create the compdef, profile and catalog content component-generate."""
-    comp_name = 'comp_def_a'
     load_from_json(tmp_trestle_dir, comp_name, comp_name, comp.ComponentDefinition)
     for prof_name in 'comp_prof,comp_prof_aa,comp_prof_ab,comp_prof_ba,comp_prof_bb'.split(','):
         load_from_json(tmp_trestle_dir, prof_name, prof_name, prof.Profile)
@@ -461,10 +460,10 @@ def setup_for_ssp(
     prof_name: str,
     output_name: str,
     use_yaml: bool = False,
-    leveraged_ssp_name: str = ''
+    leveraged_ssp_name: str = '',
+    comp_names='comp_def_a,comp_def_b'
 ) -> Tuple[argparse.Namespace, pathlib.Path]:
     """Create the comp_def, profile and catalog content needed for ssp-generate."""
-    comp_names = 'comp_def_a,comp_def_b'
     for comp_name in comp_names.split(','):
         load_from_json(tmp_trestle_dir, comp_name, comp_name, comp.ComponentDefinition)
     prof_name_list = [prof_name]
@@ -485,6 +484,7 @@ def setup_for_ssp(
         output=output_name,
         verbose=0,
         overwrite_header_values=False,
+        include_all_parts=False,
         yaml_header=yaml_path,
         allowed_sections=None,
         force_overwrite=None
@@ -511,6 +511,7 @@ def setup_for_ssp_fedramp(
         output=output_name,
         verbose=0,
         overwrite_header_values=False,
+        include_all_parts=False,
         yaml_header=None,
         allowed_sections=None,
         force_overwrite=None

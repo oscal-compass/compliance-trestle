@@ -393,7 +393,7 @@ class CatalogInterface():
 
     def get_group_ids(self) -> List[str]:
         """Get all the group id's as a list of sorted strings."""
-        return sorted(filter(lambda id: id, list({control.group_id for control in self._control_dict.values()})))
+        return sorted(filter(lambda id_: id_, list({control.group_id for control in self._control_dict.values()})))
 
     def get_all_groups_from_catalog(self) -> List[cat.Group]:
         """
@@ -469,9 +469,9 @@ class CatalogInterface():
     def get_group_info_by_control(self, control_id: str) -> Tuple[str, str, str]:
         """Get the group_id, title, class for this control from the dict."""
         return (
-            self._control_dict[control_id].group_id,
-            self._control_dict[control_id].group_title,
-            self._control_dict[control_id].group_class
+            '' if self._control_dict is None else self._control_dict[control_id].group_id,
+            '' if self._control_dict is None else self._control_dict[control_id].group_title,
+            '' if self._control_dict is None else self._control_dict[control_id].group_class
         )
 
     def get_control_path(self, control_id: str) -> List[str]:
@@ -752,16 +752,17 @@ class CatalogInterface():
             rules_params = {}
             rules_param_names = []
             for comp_name, rules_params_dict in as_dict(context.rules_params_dict).items():
-                for rule_id, rules_param in rules_params_dict.items():
+                for rule_id, rules_parameters in rules_params_dict.items():
                     if rule_id in rule_ids.get(comp_name, []):
-                        param_name = rules_param['name']
-                        rules_param_names.append(param_name)
-                        rules_param[const.HEADER_RULE_ID] = rule_id_rule_name_map[comp_name].get(rule_id, None)
-                        deep_append(rules_params, [comp_name], rules_param)
-                        deep_set(
-                            param_id_rule_name_map, [comp_name, rules_param['name']],
-                            rule_id_rule_name_map[comp_name][rule_id]
-                        )
+                        for rule_parameter in rules_parameters:
+                            param_name = rule_parameter['name']
+                            rules_param_names.append(param_name)
+                            rule_parameter[const.HEADER_RULE_ID] = rule_id_rule_name_map[comp_name].get(rule_id, None)
+                            deep_append(rules_params, [comp_name], rule_parameter)
+                            deep_set(
+                                param_id_rule_name_map, [comp_name, rule_parameter['name']],
+                                rule_id_rule_name_map[comp_name][rule_id]
+                            )
             set_or_pop(header, const.RULES_PARAMS_TAG, rules_params)
 
             self._extend_rules_param_list(control_id, header, param_id_rule_name_map)
@@ -873,12 +874,15 @@ class CatalogInterface():
         """
         context.rules_dict = {}
         context.rules_params_dict = {}
+        comps_uuids = []
         for comp_def_name in context.comp_def_name_list:
             context.comp_def, _ = ModelUtils.load_model_for_class(
                 context.trestle_root,
                 comp_def_name,
                 comp.ComponentDefinition
             )
+            component_uuids = [comp.uuid for comp in context.comp_def.components]
+            comps_uuids.extend(component_uuids)
             for component in as_list(context.comp_def.components):
                 context.component = component
                 context.comp_name = component.title
@@ -891,6 +895,14 @@ class CatalogInterface():
                     self._add_control_imp_comp_info(context, part_id_map, comp_rules_props)
                 # add the rule_id to the param_dict
                 for param_comp_name, rule_param_dict in context.rules_params_dict.items():
-                    for rule_tag, param_dict in rule_param_dict.items():
-                        rule_dict = deep_get(context.rules_dict, [param_comp_name, rule_tag], {})
-                        param_dict[const.HEADER_RULE_ID] = rule_dict.get(const.NAME, 'unknown_rule')
+                    for rule_tag, params_list in rule_param_dict.items():
+                        for param in params_list:
+                            rule_dict = deep_get(context.rules_dict, [param_comp_name, rule_tag], {})
+                            param[const.HEADER_RULE_ID] = rule_dict.get(const.NAME, 'unknown_rule')
+        # determine if there are duplicated uuids and throw an exception
+        dup_comp_uuids = set({comp_uuid for comp_uuid in comps_uuids if comps_uuids.count(comp_uuid) > 1})
+        if len(dup_comp_uuids) > 0:
+            # throw an exception if there are repeated component uuids
+            for comp_uuid in dup_comp_uuids:
+                logger.error(f'Component uuid { comp_uuid } is duplicated')
+            raise TrestleError('Component uuids cannot be duplicated between different component definitions')

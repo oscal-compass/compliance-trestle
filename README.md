@@ -1,4 +1,4 @@
-# Compliance-trestle (also known as `trestle`)
+# <img alt="Logo" width="50px" src="https://raw.githubusercontent.com/oscal-compass/compliance-trestle/main/images/compliance-trestle-800x800.png" style="vertical-align: middle;" /> Compliance-trestle (also known as `trestle`)
 
 ![[OS Compatibility](#prerequisites)](https://img.shields.io/badge/platform-osx%20%7C%20linux%20%7C%20windows-orange.svg)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/compliance-trestle)
@@ -6,21 +6,11 @@
 ![[Code Coverage](https://sonarcloud.io/dashboard?id=compliance-trestle)](https://sonarcloud.io/api/project_badges/measure?project=compliance-trestle&metric=coverage)
 ![[Quality gate](https://sonarcloud.io/dashboard?id=compliance-trestle)](https://sonarcloud.io/api/project_badges/measure?project=compliance-trestle&metric=alert_status)
 ![[Pypi](https://pypi.org/project/compliance-trestle/)](https://img.shields.io/pypi/dm/compliance-trestle)
-![GitHub Actions status](https://img.shields.io/github/workflow/status/oscal-compass/compliance-trestle/Trestle%20PR%20pipeline?event=push)
+![GitHub Actions status](https://github.com/oscal-compass/compliance-trestle/actions/workflows/python-test.yml/badge.svg?branch=develop)
 
-______________________________________________________________________
+Trestle is an ensemble of tools that enable the creation, validation, and governance of documentation artifacts for compliance needs. It leverages NIST's [OSCAL](https://pages.nist.gov/OSCAL/) as a standard data format for interchange between tools and people, and provides an opinionated approach to OSCAL adoption.
 
-<table>
-<tr>
-<td><img src="images/Apollo_11_liftoff.png">
-<td> We've moved. Please note our new organizational location.
-</table>
-
-______________________________________________________________________
-
-Trestle is an ensemble of tools that enable the creation, validation, and governance of documentation artifacts for compliance needs. It leverages NIST's [OSCAL](https://pages.nist.gov/OSCAL/documentation/) as a standard data format for interchange between tools and people, and provides an opinionated approach to OSCAL adoption.
-
-Trestle is designed to operate as a CICD pipeline running on top of compliance artifacts in `git`, to provide transparency for the state of compliance across multiple stakeholders in an environment friendly to developers. Trestle passes the generated artifacts on to tools that orchestrate the enforcement, measurement, and reporting of compliance.
+Trestle is designed to operate as a CICD pipeline running on top of compliance artifacts in `git`, to provide transparency for the state of compliance across multiple stakeholders in an environment friendly to developers. Trestle passes the generated artifacts onto tools that orchestrate the enforcement, measurement, and reporting of compliance.
 
 It also provides tooling to manage OSCAL documents in a more human-friendly manner. By splitting large OSCAL data structures into smaller and easier to edit sub-structures, creation and maintenance of these artifacts can follow normal `git` workflows including peer review via pull request, versioning, releases/tagging.
 
@@ -35,17 +25,9 @@ Trestle provides tooling to help orchestrate the compliance process across a num
 - Help manage OSCAL documents in a more human-friendly manner by expanding the large OSCAL data structures into smaller and easier to edit sub-structures while making sure the schemas are enforced.
 - Transform documents from other formats to OSCAL
 - Provide governance for markdown documents and enforce consistency of format and content based on specified templates
-- Tooling manage authoring and governance of markdown and drawio files withn a repository.
+- Tooling manage authoring and governance of markdown and drawio files within a repository.
 - Support within trestle to streamline management within a managed git environment.
-- An underlying object model that supports developers interacting with OSCAL artefacts.
-
-## Important Note:
-
-The current version of trestle supports NIST OSCAL 1.0.0-4.  There was a breaking change in OSCAL moving from
-version 1.0.0 to 1.0.2 mainly due to `prop` becoming `props` in AssessmentResults.  As a result, the current development path of trestle requires OSCAL 1.0.4, but for those who require OSCAL 1.0.0 please use trestle version 0.37.x.  That version is stable but will not have any features added, and we encourage users to move to OSCAL 1.0.4.
-
-OSCAL version 1.0.0 files are still handled on import but any AssessmentResults must conform to the OSCAL 1.0.4 schema, with
-props instead of prop.  And all files created by trestle will be output as OSCAL version 1.0.4.
+- An underlying object model that supports developers interacting with OSCAL artifacts.
 
 ## Why Trestle
 
@@ -75,7 +57,7 @@ natively supports only `json` and `yaml` formats at this time.
 Future roadmap anticipates that support for xml [import](https://github.com/oscal-compass/compliance-trestle/issues/177) and [upstream references](https://github.com/oscal-compass/compliance-trestle/issues/178) will be enabled. However, it is expected
 that full support will remain only for `json` and  `yaml`.
 
-Users needing to import XML OSCAL artifacts are recommended to look at NIST's XML to json conversion page [here](https://github.com/usnistgov/OSCAL/tree/master/json#oscal-xml-to-json-converters).
+Users needing to import XML OSCAL artifacts are recommended to look at NIST's XML to json conversion page [here](https://github.com/usnistgov/OSCAL/blob/main/build/README.md#converters).
 
 ## Python codebase, easy installation via pip
 
@@ -104,44 +86,25 @@ A collection of demos utilizing trestle can be found in the related project [com
 
 ## Development status
 
-Compliance trestle is currently stable and is based on NIST OSCAL version 1.0.4, with active development continuing.
+### v3: stable (actively developed)
 
-## Community call
+- supports NIST OSCAL 1.1.2 as well as previous versions
 
-We would like to share development in progress for compliance trestle, coming soon and get feedback from community on what features would they like to see in compliance trestle.\
-The community call will happen every 2 week(s) on Tuesday at 10.00am EST.\
-Meeting information:
+### v2: stable (maintenance mode)
 
-```
-Compliance Trestle Community Call
+- supports NIST OSCAL 1.0.4 as well as previous versions
 
-Join from the meeting link
-https://ibm.webex.com/ibm/j.php?MTID=m030fdef5ac2d09f46f04813bb5e9dc6b
-Tuesday, September 5, 2023 10:00 AM | 30 minutes | (UTC-04:00) Eastern Time (US & Canada)
-Occurs every 2 week(s) on Tuesday effective 9/5/2023 from 10:00 AM to 10:30 AM, (UTC-04:00) Eastern Time (US & Canada)
- 
-Join by meeting number
-Meeting number (access code): 146 967 4515
- 
-Tap to join from a mobile device (attendees only)
-1-844-531-0958,,1469674515#43533276# United States Toll Free
-+1-669-234-1178,,1469674515#43533276# United States Toll
-Some mobile devices may ask attendees to enter a numeric password.
- 
-Join by phone
-1-844-531-0958 United States Toll Free
-1-669-234-1178 United States Toll
-Global call-in numbers  |  Toll-free calling restrictions
- 
-Join from a video system or application
-Dial 1469674515@ibm.webex.com
-You can also dial 173.243.2.68 and enter your meeting number.
+## Community meetings and communications
 
-```
+Please refer to the community [README](https://github.com/oscal-compass/community/blob/main/README.md) for communication details.
 
 ## Contributing to Trestle
 
 Our project welcomes external contributions. Please consult [contributing](https://oscal-compass.github.io/compliance-trestle/contributing/mkdocs_contributing/) to get started.
+
+## Code of Conduct
+
+Participation in the OSCAL Compass community is governed by the [Code of Conduct](https://github.com/oscal-compass/community/blob/main/CODE_OF_CONDUCT.md).
 
 ## License & Authors
 
@@ -149,7 +112,7 @@ If you would like to see the detailed LICENSE click [here](LICENSE).
 Consult [contributors](https://github.com/oscal-compass/compliance-trestle/graphs/contributors) for a list of authors and [maintainers](MAINTAINERS.md) for the core team.
 
 ```text
-# Copyright (c) 2020 IBM Corp. All rights reserved.
+# Copyright (c) 2024 The OSCAL Compass Authors. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -162,5 +125,17 @@ Consult [contributors](https://github.com/oscal-compass/compliance-trestle/graph
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 ```
+
+______________________________________________________________________
+
+We are a Cloud Native Computing Foundation sandbox project.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://www.cncf.io/wp-content/uploads/2022/07/cncf-white-logo.svg">
+  <img src="https://www.cncf.io/wp-content/uploads/2022/07/cncf-color-bg.svg" width=300 />
+</picture>
+
+The Linux Foundation® (TLF) has registered trademarks and uses trademarks. For a list of TLF trademarks, see [Trademark Usage](https://www.linuxfoundation.org/legal/trademark-usage)".
+
+*Trestle was originally created by IBM.*

@@ -61,6 +61,9 @@ PARAMETER_ID = f'{PARAMETER}_Id'
 PARAMETER_DESCRIPTION = f'{PARAMETER}_Description'
 PARAMETER_VALUE_DEFAULT = f'{PARAMETER}_Value_Default'
 PARAMETER_VALUE_ALTERNATIVES = f'{PARAMETER}_Value_Alternatives'
+ORIGINAL_RISK_RATING = 'Original_Risk_Rating'
+ADJUSTED_RISK_RATING = 'Adjusted_Risk_Rating'
+RISK_ADJUSTMENT = 'Risk_Adjustment'
 
 validation = 'validation'
 prefix_rule_set = 'rule_set_'
@@ -190,7 +193,10 @@ class CsvToOscalComponentDefinition(TaskBase):
             text1 = '                         '
         text1 = '  optional columns:      '
         for text2 in CsvColumn.get_optional_column_names():
-            text2 += ' (see note 2)'
+            if text2 in [f'{ORIGINAL_RISK_RATING}', f'{ADJUSTED_RISK_RATING}', f'{RISK_ADJUSTMENT}']:
+                text2 += ' (see note 1)'
+            else:
+                text2 += ' (see note 2)'
             logger.info(text1 + '$' + text2)
             text1 = '                         '
         for text2 in CsvColumn.get_parameter_column_names():
@@ -341,7 +347,7 @@ class CsvToOscalComponentDefinition(TaskBase):
         if len(self._unresolved_controls) > 0:
             text = f'Unresolved controls: {self._unresolved_controls}'
             if self._validate_controls == 'warn':
-                logger.warn(text)
+                logger.warning(text)
             elif self._validate_controls == 'on':
                 raise RuntimeError(text)
         # prepare new/revised component definition
@@ -667,12 +673,20 @@ class CsvToOscalComponentDefinition(TaskBase):
             name = self._csv_mgr.get_value(rule_key, parameter_id_column_name)
             value = self._csv_mgr.get_value(rule_key, parameter_value_default_column_name)
             if name and value:
-                values = self._str_to_list(value)
-                set_parameter = SetParameter(
-                    param_id=name,
-                    values=values,
-                )
-                set_parameters.append(set_parameter)
+                try:
+                    values = self._str_to_list(value)
+                    set_parameter = SetParameter(
+                        param_id=name,
+                        values=values,
+                    )
+                    set_parameters.append(set_parameter)
+                except Exception:
+                    row_number = self._csv_mgr.get_row_number(rule_key)
+                    text = (
+                        f'row {row_number}: "{name}" is invalid for column {parameter_id_column_name} '
+                        f'and/or "{",".join(values)}" is invalid for column {parameter_value_default_column_name}'
+                    )
+                    raise RuntimeError(text)
             elif name:
                 row_number = self._csv_mgr.get_row_number(rule_key)
                 text = f'row "{row_number}" missing value for "{parameter_value_default_column_name}"'
@@ -1367,6 +1381,9 @@ class CsvColumn():
     _columns_optional = [
         f'{CHECK_ID}',
         f'{CHECK_DESCRIPTION}',
+        f'{ORIGINAL_RISK_RATING}',
+        f'{ADJUSTED_RISK_RATING}',
+        f'{RISK_ADJUSTMENT}',
     ]
 
     _columns_parameter = [
@@ -1440,6 +1457,9 @@ class CsvColumn():
         f'{PARAMETER_VALUE_ALTERNATIVES}',
         f'{CHECK_ID}',
         f'{CHECK_DESCRIPTION}',
+        f'{ORIGINAL_RISK_RATING}',
+        f'{ADJUSTED_RISK_RATING}',
+        f'{RISK_ADJUSTMENT}',
     ]
 
     @staticmethod
@@ -1533,7 +1553,7 @@ class _CsvMgr():
             component_description = self.get_row_value(row, f'{COMPONENT_DESCRIPTION}')
             rule_id = self.get_row_value(row, f'{RULE_ID}')
             # rule sets
-            key = _CsvMgr.get_rule_key(component_description, component_type, rule_id)
+            key = _CsvMgr.get_rule_key(component_title, component_type, rule_id)
             if key in self._csv_rules_map:
                 text = f'row "{row_num}" contains duplicate {RULE_ID} "{rule_id}"'
                 raise RuntimeError(text)
@@ -1647,11 +1667,12 @@ class _CsvMgr():
         return rval
 
     def _undecorate_header(self) -> None:
-        """Undecorate header."""
+        """Undecorate header, and reformat each word in header to title case."""
         head_row = self._csv[0]
         self._csv[0] = []
         for column_name in head_row:
             heading = self._get_normalized_column_name(column_name)
+            heading = heading.title()
             self._csv[0].append(heading)
 
     def _verify(self) -> None:

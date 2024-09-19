@@ -793,8 +793,7 @@ The markdown header lists all the rules that apply to this control, along with t
 
 The values for rule parameters are specified using the normal `SetParameter` mechanism in the ControlImplementation, but it's important to note that there are two different types of `SetParameter`: Those that apply to the normal parameters of the control, and those that apply strictly to the rules.
 
-Note that markdown for a control is only created if there are rules associated with the control, and within the markdown the only parts written out that
-prompt for responses are parts that have rules assigned.  Thus the output markdown directory may be highly pruned of both controls and groups of controls if only some controls have rules associated.
+Note that markdown is created for all of the controls in the `Component` control implementation. However, when processing control parts, the part is only written out if there are associated rules or pre-filled implementation descriptions.
 
 In addition, the rules should be regarded as read-only from the editing perspective, and you cannot change the rules associated with a control or its parts.  But you may edit the rule parameter values as described in the comments of the markdown file under
 `x-trestle-comp-def-rules-param-vals`.  You may also edit the prose and implementation status associated with a statement part at the bottom of the markdown file.
@@ -929,6 +928,24 @@ x-trestle-global:
     title: comp prof aa
     href: trestle://profiles/comp_prof/profile.json
   sort-id: ac-01
+x-trestle-add-props:
+  # Add or modify control properties here
+  # Properties may be at the control or part level
+  # Add control level properties like this:
+  #   - name: ac1_new_prop
+  #     value: new property value
+  #
+  # Add properties to a statement part like this, where "b." is the label of the target statement part
+  #   - name: ac1_new_prop
+  #     value: new property value
+  #     smt-part: b.
+  #
+  - name: prop_with_ns
+    value: prop with ns
+    ns: https://my_new_namespace
+  - name: prop_with_no_ns
+    value: prop with no ns
+    ns: https://my_added_namespace
 ---
 
 # ac-1 - \[Access Control\] Policy and Procedures
@@ -1031,12 +1048,16 @@ In addition, this is the only control markdown where the moustache (`{{}}`) item
 
 The markdown can have guidance per-component in the control, as shown by the line, `### ACME Component`.  Any prose directly under a `##` implementation section will apply to the overall system component, but sections in a sub-header of the form `###` will only apply to that particular component.
 
+The `--include-all-parts` flag controls how the main system component (`This System`) is written in the markdown. By default, control parts are not written out unless a component has a rule associated with that particular control part or `statement`. When `--include-all-parts` is set, all control parts will be written with the main component present under the `## Implementation for part <part>` section. All other components will still be conditionally added based on the presence of rules.
+
 After generating the markdown for the resolved profile catalog you may then edit the files and provide text in the sections with `Add control implementation...` in them.  But do not remove the horizontal rule
 lines or modify/remove the lines with `### ` in them, corresponding to system components.
 
 If you edit the control markdown files you may run `ssp-generate` again and your edits will not be overwritten.  When writing out the markdown for a control, any existing markdown for that control will be read and the response text for each part will be re-inserted into the new markdown file.  If the new markdown has added parts the original responses will be placed correctly in the new file, but if any part is removed from the source control json file then any corresponding prose will be lost after the next `ssp-generate`.
 
-## `trestle author ssp-assemble`
+The `x-trestle-add-props` key of the yaml header allows the addition of properties to the implemented requirements under the SSP control implementation, comprising `name`, `value`, and optionally a namespace `ns` value. Similarly to the `x-trestle-add-props` in profile authoring, the properties may be added at the control level, or attached to a top level statement part by adding a value, `smt-part` with value `a.`, `b.` or any other label for one of the top level statement parts.
+
+`trestle author ssp-assemble`
 
 After manually edting the markdown and providing the responses for the control implementation requirements, the markdown can be assembled into a single json SSP file with:
 
@@ -1050,7 +1071,7 @@ As with all the `assemble` tools, you may optionally specify a `--name` for a co
 
 If you do not specify component-defintions during assembly, the markdown should not refer to any components other than `This System`.  Thus you may first generate markdown with `ssp-generate` and no component-definitions specified - and then you may assemble that ssp with `ssp-assemble` and no component-definitions specified - but only if there are no components other than `This System` referenced in the markdown.  You may add new component implementation details to the markdown later, but any new components must be defined in a component-defintion file, and that file must be specified when `ssp-assemble` is run.
 
-## Inheritance view
+`ssp inheritance view`
 
 The inheritance view is generated by setting the `--leveraged-ssp` flag with `trestle author ssp-generate`. It contains information relating to exported information such as inherited capabilities and customer responsibilities that can be used to populate the inheritance information in the assembled SSP. When used, a directory named "inheritance" is created within the markdown directory. This directory serves as a designated space for  mapping inherited capabilities and responsibilities onto components in the assemble SSP and authoring satisfied statements for responsibilities.
 

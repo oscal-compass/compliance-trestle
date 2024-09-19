@@ -49,6 +49,9 @@ code-lint:
 code-typing:
 	mypy --pretty trestle
 
+test-all::
+	python -m pytest -n auto
+
 test::
 	python -m pytest --exitfirst -n auto
 
@@ -83,7 +86,7 @@ docs-automation::
 	python ./scripts/website_automation.py
 
 docs-validate:: docs-automation
-	mkdocs build -c -s
+	mkdocs build -v -c -s
 	rm -rf site
 
 docs-serve: docs-automation

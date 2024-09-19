@@ -207,6 +207,21 @@ class ProfileAssemble(AuthorCommonCommand):
             return handle_generic_command_exception(e, logger, 'Assembly of markdown to profile failed')
 
     @staticmethod
+    def _update_alter_adds(profile: prof.Profile, alters: List[prof.Alter], alter_dict: Dict) -> None:
+        for new_alter in alters:
+            alter = alter_dict.get(new_alter.control_id, None)
+            if not alter:
+                # the control did not have alters, so add
+                alter = prof.Alter(control_id=new_alter.control_id)
+            # even though we removed adds at start, we may have added one already
+            if alter.adds:
+                alter.adds.extend(new_alter.adds)
+            else:
+                alter.adds = new_alter.adds
+            # update the dict with the new alter with its added adds
+            alter_dict[new_alter.control_id] = alter
+
+    @staticmethod
     def _replace_alter_adds(profile: prof.Profile, alters: List[prof.Alter]) -> bool:
         """Replace the alter adds in the orig_profile with the new ones and return True if changed."""
         changed = False
@@ -225,19 +240,7 @@ class ProfileAssemble(AuthorCommonCommand):
                 alter.adds = None
                 alter_dict[alter.control_id] = alter
             # now go through new alters and add them to each control in dict by control id
-            for new_alter in alters:
-                alter = alter_dict.get(new_alter.control_id, None)
-                if not alter:
-                    # the control did not have alters, so add
-                    alter = prof.Alter(control_id=new_alter.control_id)
-
-                # even though we removed adds at start, we may have added one already
-                if alter.adds:
-                    alter.adds.extend(new_alter.adds)
-                else:
-                    alter.adds = new_alter.adds
-                # update the dict with the new alter with its added adds
-                alter_dict[new_alter.control_id] = alter
+            ProfileAssemble._update_alter_adds(profile, alters, alter_dict)
             # get the new list of alters from the dict and update profile
             new_alters = list(alter_dict.values())
             # special case, if all adds were deleted remove such alters completely
@@ -560,10 +563,9 @@ class ProfileInherit(AuthorCommonCommand):
             log.set_log_level_from_args(args)
             trestle_root: pathlib.Path = args.trestle_root
 
-            if args.profile:
-                if args.profile == args.output:
-                    logger.warning(f'Output profile {args.output} cannot equal parent')
-                    return CmdReturnCodes.INCORRECT_ARGS.value
+            if args.profile and args.profile == args.output:
+                logger.warning(f'Output profile {args.output} cannot equal parent')
+                return CmdReturnCodes.INCORRECT_ARGS.value
 
             return self.initialize_profile(
                 trestle_root=trestle_root,
@@ -596,6 +598,20 @@ class ProfileInherit(AuthorCommonCommand):
         return True
 
     @staticmethod
+    def _create_components_by_id(leveraged_ssp: ssp.SystemSecurityPlan) -> Dict[str, List[ssp.ByComponent]]:
+        components_by_id: Dict[str, List[ssp.ByComponent]] = {}
+        for implemented_requirement in leveraged_ssp.control_implementation.implemented_requirements:
+            by_components: List[ssp.ByComponent] = []
+            if implemented_requirement.by_components:
+                by_components.extend(implemented_requirement.by_components)
+            if implemented_requirement.statements:
+                for stm in implemented_requirement.statements:
+                    if stm.by_components:
+                        by_components.extend(stm.by_components)
+            components_by_id[implemented_requirement.control_id] = none_if_empty(by_components)
+        return components_by_id
+
+    @staticmethod
     def update_profile_import(
         orig_prof_import: prof.Import, leveraged_ssp: ssp.SystemSecurityPlan, catalog_api: CatalogAPI
     ) -> None:
@@ -610,19 +626,9 @@ class ProfileInherit(AuthorCommonCommand):
             None
         """
         exclude_with_ids: Set[str] = set()
-        components_by_id: Dict[str, List[ssp.ByComponent]] = {}
 
         # Create dictionary containing all by-components by control for faster searching
-        for implemented_requirement in leveraged_ssp.control_implementation.implemented_requirements:
-            by_components: List[ssp.ByComponent] = []
-
-            if implemented_requirement.by_components:
-                by_components.extend(implemented_requirement.by_components)
-            if implemented_requirement.statements:
-                for stm in implemented_requirement.statements:
-                    if stm.by_components:
-                        by_components.extend(stm.by_components)
-            components_by_id[implemented_requirement.control_id] = none_if_empty(by_components)
+        components_by_id: Dict[str, List[ssp.ByComponent]] = ProfileInherit._create_components_by_id(leveraged_ssp)
 
         # Looping by controls in the catalog because the ids in the profile should
         # be a subset of the catalog and not the ssp controls.
@@ -638,8 +644,8 @@ class ProfileInherit(AuthorCommonCommand):
 
         include_with_ids: Set[str] = catalog_control_ids - exclude_with_ids
 
-        orig_prof_import.include_controls = [prof.SelectControlById(with_ids=sorted(include_with_ids))]
-        orig_prof_import.exclude_controls = [prof.SelectControlById(with_ids=sorted(exclude_with_ids))]
+        orig_prof_import.include_controls = [prof.SelectControl(with_ids=sorted(include_with_ids))]
+        orig_prof_import.exclude_controls = [prof.SelectControl(with_ids=sorted(exclude_with_ids))]
 
     def initialize_profile(
         self,

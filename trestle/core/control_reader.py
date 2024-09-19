@@ -283,9 +283,6 @@ class ControlReader:
         imp_req.statements = []
         comp_dict = md_comp_dict[comp_name]
         for label, comp_info in comp_dict.items():
-            # only assemble responses with associated rules
-            if not comp_info.rules:
-                continue
             # if no label it applies to the imp_req itself rather than a statement
             if not label:
                 imp_req.description = ControlReader._handle_empty_prose(comp_info.prose, control_id)
@@ -325,8 +322,8 @@ class ControlReader:
         return sort_id, imp_req
 
     @staticmethod
-    def _get_props_list(control_id: str, label_map: Dict[str, str],
-                        yaml_header: Dict[str, Any]) -> Tuple[List[common.Property], Dict[str, List[common.Property]]]:
+    def get_props_list(control_id: str, label_map: Dict[str, str],
+                       yaml_header: Dict[str, Any]) -> Tuple[List[common.Property], Dict[str, List[common.Property]]]:
         """Get the list of props in the yaml header of this control as separate lists with and without by_id."""
         prop_list = yaml_header.get(const.TRESTLE_ADD_PROPS_TAG, [])
         props = []
@@ -388,7 +385,7 @@ class ControlReader:
         if header_params:
             param_dict.update(header_params)
 
-        props, props_by_id = ControlReader._get_props_list(control_id, part_label_to_id_map, yaml_header)
+        props, props_by_id = ControlReader.get_props_list(control_id, part_label_to_id_map, yaml_header)
 
         # When adding props without by_id it can either be starting or ending and we default to ending
         # This is the default behavior as described for implicit binding in
@@ -402,7 +399,9 @@ class ControlReader:
         if editable_parts or props:
             adds.append(
                 prof.Add(
-                    parts=none_if_empty(editable_parts), props=none_if_empty(props), position=prof.Position.ending
+                    parts=none_if_empty(editable_parts),
+                    props=none_if_empty(props),
+                    position=prof.PositionValidValues.ending.value
                 )
             )
 
@@ -411,7 +410,7 @@ class ControlReader:
         for by_id in sorted(by_ids):
             parts = by_id_parts.get(by_id, None)
             props = props_by_id.get(by_id, None)
-            adds.append(prof.Add(parts=parts, props=props, position=prof.Position.ending, by_id=by_id))
+            adds.append(prof.Add(parts=parts, props=props, position=prof.PositionValidValues.ending.value, by_id=by_id))
 
         new_alters = []
         if adds:

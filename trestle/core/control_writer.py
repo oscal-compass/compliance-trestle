@@ -129,7 +129,7 @@ class ControlWriter():
         level = 3 if context.purpose == ContextPurpose.COMPONENT else 4
         if part_label in comp_info:
             info = comp_info[part_label]
-            if context.purpose in [ContextPurpose.COMPONENT, ContextPurpose.SSP] and not info.rules:
+            if context.purpose in [ContextPurpose.COMPONENT, ContextPurpose.SSP] and not self._include_component(info):
                 return
             self._md_file.new_paragraph()
             if info.prose:
@@ -142,6 +142,22 @@ class ControlWriter():
         else:
             self._insert_status(ImplementationStatus(state=const.STATUS_PLANNED), level)
 
+    def _process_main_component(self, part_id: str, part_label: str, comp_dict: CompDict) -> None:
+        """Handle prompts for This System component."""
+        self._md_file.new_paragraph()
+        self._md_file.new_header(3, const.SSP_MAIN_COMP_NAME)
+        self._md_file.new_paragraph()
+        prose = f'{const.SSP_ADD_THIS_SYSTEM_IMPLEMENTATION_FOR_CONTROL_TEXT}: {part_id} -->'
+        status = ImplementationStatus(state=const.STATUS_PLANNED)
+        sys_comp_dict: Dict[str, ComponentImpInfo] = comp_dict.get(const.SSP_MAIN_COMP_NAME, {})
+        if sys_comp_dict and part_label in sys_comp_dict:
+            comp_info = sys_comp_dict[part_label]
+            if comp_info.prose:
+                prose = comp_info.prose
+            status = comp_info.status
+        self._md_file.new_paraline(prose)
+        self._insert_status(status, 4)
+
     def _add_component_control_prompts(self, control_id: str, comp_dict: CompDict, context: ControlContext) -> bool:
         """Add prompts to the markdown for the control itself, per component."""
         if context.purpose not in [ContextPurpose.COMPONENT, ContextPurpose.SSP]:
@@ -151,19 +167,10 @@ class ControlWriter():
         did_write = False
         # do special handling for This System
         if context.purpose == ContextPurpose.SSP:
-            self._md_file.new_paragraph()
-            self._md_file.new_header(3, const.SSP_MAIN_COMP_NAME)
-            self._md_file.new_paragraph()
-            prose = f'{const.SSP_ADD_THIS_SYSTEM_IMPLEMENTATION_FOR_CONTROL_TEXT}: {control_id} -->'
-            status = ImplementationStatus(state=const.STATUS_PLANNED)
-            if const.SSP_MAIN_COMP_NAME in comp_dict:
-                comp_info = list(comp_dict[const.SSP_MAIN_COMP_NAME].values())[0]
-                if comp_info.prose:
-                    prose = comp_info.prose
-                status = comp_info.status
-            self._md_file.new_paraline(prose)
-            self._insert_status(status, 4)
+            # Passing in the control id and the empty key ('') for the label
+            self._process_main_component(control_id, '', comp_dict)
             did_write = True
+
         sorted_comp_names = sorted(comp_dict.keys())
         for comp_name in sorted_comp_names:
             dic = comp_dict[comp_name]
@@ -209,14 +216,11 @@ class ControlWriter():
                         # if no label guess the label from the sub-part id
                         part_label = ControlInterface.get_label(prt)
                         part_label = prt.id.split('.')[-1] if not part_label else part_label
-                        # only write out part if rules apply to it
-                        rules_apply = False
-                        for _, dic in comp_dict.items():
-                            if part_label in dic and dic[part_label].rules:
-                                rules_apply = True
-                                break
-                        if not rules_apply:
+
+                        # Determine if this part should be written out
+                        if self._skip_part(context, part_label, comp_dict):
                             continue
+
                         if not did_write_part:
                             self._md_file.new_line(const.SSP_MD_LEAVE_BLANK_TEXT)
                             # insert extra line to make mdformat happy
@@ -224,11 +228,17 @@ class ControlWriter():
                         self._md_file.new_hr()
                         self._md_file.new_header(level=2, title=f'Implementation for part {part_label}')
                         wrote_label_content = False
+                        # To reduce verbosity by default, the main component
+                        # is conditionally written for each part dependant on the control context.
+                        if context.purpose == ContextPurpose.SSP and context.include_all_parts:
+                            self._process_main_component(prt.id, part_label, comp_dict)
+                            wrote_label_content = True
                         sorted_comp_names = sorted(comp_dict.keys())
                         for comp_name in sorted_comp_names:
-                            dic = comp_dict[comp_name]
+                            # This System already handled
                             if comp_name == const.SSP_MAIN_COMP_NAME:
                                 continue
+                            dic = comp_dict[comp_name]
                             if part_label in dic:
                                 # insert the component name for ssp but not for comp_def
                                 # because there should only be one component in generated comp_def markdown
@@ -255,6 +265,36 @@ class ControlWriter():
                         self._md_file.new_header(level=3, title=comp_name)
                     self._insert_comp_info(part_label, dic, context)
         self._md_file.new_hr()
+
+    def _include_component(self, comp_info: ComponentImpInfo) -> bool:
+        """
+        Check if a component has the required Markdown fields.
+
+        Notes: This is a simple function to centralize logic to check
+        when a component meets the requirement to get written to Markdown.
+        """
+        if comp_info.rules or comp_info.prose:
+            return True
+        return False
+
+    def _skip_part(self, context: ControlContext, part_label: str, comp_dict: CompDict) -> bool:
+        """
+        Check if a part should be skipped based on rules and context.
+
+        Notes: The default logic is to conditionally add control parts based
+        on whether the component has rules or existing prose associated with that part. This can be
+        changed using the control context for SSP markdown.
+        """
+        if context.purpose == ContextPurpose.SSP and context.include_all_parts:
+            return False
+        else:
+            skip_item = True
+            for _, dic in comp_dict.items():
+                if part_label in dic:
+                    if self._include_component(dic[part_label]):
+                        skip_item = False
+                        break
+        return skip_item
 
     def _dump_subpart_infos(self, level: int, part: Dict[str, Any]) -> None:
         name = part['name']
@@ -487,6 +527,9 @@ class ControlWriter():
             elif context.purpose == ContextPurpose.SSP:
                 header_comment_dict[const.SET_PARAMS_TAG] = const.YAML_SSP_VALUES_COMMENT
                 header_comment_dict[const.COMP_DEF_RULES_PARAM_VALS_TAG] = const.YAML_RULE_PARAM_VALUES_SSP_COMMENT
+                # The add props information to SSP only. It is added to the profile later.
+                if const.TRESTLE_ADD_PROPS_TAG not in md_header:
+                    md_header[const.TRESTLE_ADD_PROPS_TAG] = []
             elif context.purpose == ContextPurpose.COMPONENT:
                 header_comment_dict[const.COMP_DEF_RULES_PARAM_VALS_TAG
                                     ] = const.YAML_RULE_PARAM_VALUES_COMPONENT_COMMENT

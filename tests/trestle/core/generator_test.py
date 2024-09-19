@@ -22,8 +22,8 @@ import uuid
 from datetime import date, datetime
 from typing import Any, List
 
-import pydantic.networks
-from pydantic import ConstrainedStr
+import pydantic.v1.networks
+from pydantic.v1 import ConstrainedStr
 
 import pytest
 
@@ -59,9 +59,9 @@ def test_get_sample_value_by_type() -> None:
     uuid_ = gens.generate_sample_value_by_type(ConstrainedStr, 'uuid')
     assert is_valid_uuid(uuid_) and str(uuid_) != const.SAMPLE_UUID_STR
     assert gens.generate_sample_value_by_type(ConstrainedStr, 'date_authorized') == date.today().isoformat()
-    assert gens.generate_sample_value_by_type(pydantic.networks.EmailStr,
-                                              'anything') == pydantic.networks.EmailStr('dummy@sample.com')
-    assert gens.generate_sample_value_by_type(pydantic.networks.AnyUrl, 'anything') == pydantic.networks.AnyUrl(
+    assert gens.generate_sample_value_by_type(pydantic.v1.networks.EmailStr,
+                                              'anything') == pydantic.v1.networks.EmailStr('dummy@sample.com')
+    assert gens.generate_sample_value_by_type(pydantic.v1.networks.AnyUrl, 'anything') == pydantic.v1.networks.AnyUrl(
         'https://sample.com/replaceme.html', scheme='http', host='sample.com'
     )
     with pytest.raises(err.TrestleError):

@@ -1,0 +1,20 @@
+{
+  "component-definition": {
+    "uuid": "e7ba3d37-2ba0-4db9-9cf8-f5ec1214ffd5",
+    "metadata": {
+      "title": "Generic component-definition created by trestle named replication.",
+      "last-modified": "2024-06-11T21:16:49.175968+00:00",
+      "version": "0.0.0",
+      "oscal-version": "1.0.4"
+    },
+    "components": [
+      {
+        "uuid": "4cef9684-578e-460e-a2d1-6eb78b8a76ca",
+        "type": "REPLACE_ME",
+        "title": "REPLACE_ME",
+        "description": "REPLACE_ME",
+        "control-implementations": []
+      }
+    ]
+  }
+}

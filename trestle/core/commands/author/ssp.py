@@ -81,6 +81,14 @@ class SSPGenerate(AuthorCommonCommand):
             action='store_true',
             default=False
         )
+        self.add_argument(
+            '-iap',
+            '--include-all-parts',
+            help=const.HELP_INCLUDE_ALL_PARTS,
+            required=False,
+            action='store_true',
+            default=False
+        )
 
     def _run(self, args: argparse.Namespace) -> int:
         try:
@@ -110,7 +118,8 @@ class SSPGenerate(AuthorCommonCommand):
                 md_path,
                 yaml_header,
                 args.overwrite_header_values,
-                args.force_overwrite
+                args.force_overwrite,
+                args.include_all_parts
             )
 
         except Exception as e:  # pragma: no cover
@@ -125,7 +134,8 @@ class SSPGenerate(AuthorCommonCommand):
         md_path: pathlib.Path,
         yaml_header: Dict[str, Any],
         overwrite_header_values: bool,
-        force_overwrite: bool
+        force_overwrite: bool,
+        include_all_parts: bool
     ) -> int:
         """
         Generate the ssp markdown from the profile and compdefs.
@@ -157,6 +167,7 @@ class SSPGenerate(AuthorCommonCommand):
         context.overwrite_header_values = overwrite_header_values
         context.allowed_sections = None
         context.comp_def_name_list = compdef_name_list
+        context.include_all_parts = include_all_parts
 
         # if file not recognized as URI form, assume it represents name of file in trestle directory
         profile_in_trestle_dir = '://' not in profile_name_or_href
@@ -320,9 +331,11 @@ class SSPAssemble(AuthorCommonCommand):
         # find param_ids needed by rules
         for rule_id in rules_list:
             # get list of param_ids associated with this rule_id
-            param_ids = [param['name'] for param in rule_dict.values() if param['rule-id'] == rule_id]
+            param_ids = [
+                param['name'] for params in rule_dict.values() for param in params if param['rule-id'] == rule_id
+            ]
             needed_param_ids.update(param_ids)
-        all_rule_param_ids = [param['name'] for param in rule_dict.values()]
+        all_rule_param_ids = [param['name'] for params in rule_dict.values() for param in params]
         # any set_param that isn't associated with a rule should be included as a normal control set param with no rule
         for set_param in set_params:
             if set_param.param_id not in all_rule_param_ids:
