@@ -129,7 +129,7 @@ class ControlWriter():
         level = 3 if context.purpose == ContextPurpose.COMPONENT else 4
         if part_label in comp_info:
             info = comp_info[part_label]
-            if context.purpose in [ContextPurpose.COMPONENT, ContextPurpose.SSP] and not info.rules:
+            if context.purpose in [ContextPurpose.COMPONENT, ContextPurpose.SSP] and not self._include_component(info):
                 return
             self._md_file.new_paragraph()
             if info.prose:
@@ -266,23 +266,35 @@ class ControlWriter():
                     self._insert_comp_info(part_label, dic, context)
         self._md_file.new_hr()
 
+    def _include_component(self, comp_info: ComponentImpInfo) -> bool:
+        """
+        Check if a component has the required Markdown fields.
+
+        Notes: This is a simple function to centralize logic to check
+        when a component meets the requirement to get written to Markdown.
+        """
+        if comp_info.rules or comp_info.prose:
+            return True
+        return False
+
     def _skip_part(self, context: ControlContext, part_label: str, comp_dict: CompDict) -> bool:
         """
         Check if a part should be skipped based on rules and context.
 
         Notes: The default logic is to conditionally add control parts based
-        on whether the component has rules associated with that part. This can be
+        on whether the component has rules or existing prose associated with that part. This can be
         changed using the control context for SSP markdown.
         """
         if context.purpose == ContextPurpose.SSP and context.include_all_parts:
             return False
         else:
-            no_applied_rules = True
+            skip_item = True
             for _, dic in comp_dict.items():
-                if part_label in dic and dic[part_label].rules:
-                    no_applied_rules = False
-                    break
-        return no_applied_rules
+                if part_label in dic:
+                    if self._include_component(dic[part_label]):
+                        skip_item = False
+                        break
+        return skip_item
 
     def _dump_subpart_infos(self, level: int, part: Dict[str, Any]) -> None:
         name = part['name']

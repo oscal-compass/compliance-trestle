@@ -6,7 +6,7 @@
 ![[Code Coverage](https://sonarcloud.io/dashboard?id=compliance-trestle)](https://sonarcloud.io/api/project_badges/measure?project=compliance-trestle&metric=coverage)
 ![[Quality gate](https://sonarcloud.io/dashboard?id=compliance-trestle)](https://sonarcloud.io/api/project_badges/measure?project=compliance-trestle&metric=alert_status)
 ![[Pypi](https://pypi.org/project/compliance-trestle/)](https://img.shields.io/pypi/dm/compliance-trestle)
-![GitHub Actions status](https://img.shields.io/github/workflow/status/oscal-compass/compliance-trestle/Trestle%20PR%20pipeline?event=push)
+![GitHub Actions status](https://github.com/oscal-compass/compliance-trestle/actions/workflows/python-test.yml/badge.svg?branch=develop)
 
 Trestle is an ensemble of tools that enable the creation, validation, and governance of documentation artifacts for compliance needs. It leverages NIST's [OSCAL](https://pages.nist.gov/OSCAL/) as a standard data format for interchange between tools and people, and provides an opinionated approach to OSCAL adoption.
 
@@ -112,7 +112,7 @@ If you would like to see the detailed LICENSE click [here](LICENSE).
 Consult [contributors](https://github.com/oscal-compass/compliance-trestle/graphs/contributors) for a list of authors and [maintainers](MAINTAINERS.md) for the core team.
 
 ```text
-# Copyright (c) 2020 IBM Corp. All rights reserved.
+# Copyright (c) 2024 The OSCAL Compass Authors. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -125,5 +125,17 @@ Consult [contributors](https://github.com/oscal-compass/compliance-trestle/graph
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 ```
+
+______________________________________________________________________
+
+We are a Cloud Native Computing Foundation sandbox project.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://www.cncf.io/wp-content/uploads/2022/07/cncf-white-logo.svg">
+  <img src="https://www.cncf.io/wp-content/uploads/2022/07/cncf-color-bg.svg" width=300 />
+</picture>
+
+The Linux Foundation® (TLF) has registered trademarks and uses trademarks. For a list of TLF trademarks, see [Trademark Usage](https://www.linuxfoundation.org/legal/trademark-usage)".
+
+*Trestle was originally created by IBM.*
