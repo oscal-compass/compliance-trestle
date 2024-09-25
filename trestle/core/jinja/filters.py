@@ -13,14 +13,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Trestle utilities to customize ."""
+"""Trestle utilities to customize jinja filters."""
 import logging
 from typing import Any, Iterator, List, Optional
 
 from jinja2.environment import Environment
 
 from trestle.common.list_utils import as_list, get_default
-from trestle.core.jinja import TrestleJinjaExtension
+from trestle.core.jinja.base import TrestleJinjaExtension
 from trestle.oscal.common import Party, ResponsibleParty
 from trestle.oscal.ssp import Diagram, SystemSecurityPlan
 

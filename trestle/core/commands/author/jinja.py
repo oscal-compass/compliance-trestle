@@ -35,26 +35,13 @@ from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_interface import ControlInterface, ParameterRep
 from trestle.core.docs_control_writer import DocsControlWriter
-from trestle.core.jinja import MDCleanInclude, MDDatestamp, MDSectionInclude, TrestleJinjaExtension
-from trestle.core.jinja_filters import JinjaSSPFilters
-from trestle.core.plugins import discovered_plugins
+from trestle.core.jinja.ext import extensions
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.ssp_io import SSPMarkdownWriter
 from trestle.oscal.profile import Profile
 from trestle.oscal.ssp import SystemSecurityPlan
 
 logger = logging.getLogger(__name__)
-
-_extensions = [MDSectionInclude, MDCleanInclude, MDDatestamp, JinjaSSPFilters]
-
-# This block is uncovered as trestle cannot find plugins in it's unit tests - it is the base module.
-for plugin, ext_cls in discovered_plugins('jinja_ext'):  # pragma: nocover
-    # add extensions (derived from TrestleJinjaExtension) to extensions list
-    if issubclass(ext_cls, TrestleJinjaExtension):
-        # don't add TrestleJinjaExtension
-        if ext_cls is not TrestleJinjaExtension:
-            _extensions.append(ext_cls)
-            logger.info(f'{ext_cls} added to jinja extensions from plugin {plugin}')
 
 
 class JinjaCmd(CommandPlusDocs):
@@ -204,7 +191,7 @@ class JinjaCmd(CommandPlusDocs):
         """Run jinja over an input file with additional booleans."""
         template_folder = pathlib.Path.cwd()
         jinja_env = Environment(
-            loader=FileSystemLoader(template_folder), extensions=_extensions, trim_blocks=True, autoescape=True
+            loader=FileSystemLoader(template_folder), extensions=extensions(), trim_blocks=True, autoescape=True
         )
         template = jinja_env.get_template(str(r_input_file))
         # create boolean dict
@@ -292,7 +279,10 @@ class JinjaCmd(CommandPlusDocs):
                 control_writer = DocsControlWriter()
 
                 jinja_env = Environment(
-                    loader=FileSystemLoader(template_folder), extensions=_extensions, trim_blocks=True, autoescape=True
+                    loader=FileSystemLoader(template_folder),
+                    extensions=extensions(),
+                    trim_blocks=True,
+                    autoescape=True
                 )
                 template = jinja_env.get_template(str(r_input_file))
                 lut['catalog_interface'] = catalog_interface
@@ -322,7 +312,7 @@ class JinjaCmd(CommandPlusDocs):
             dict_loader = DictLoader({str(random_name): new_output})
             jinja_env = Environment(
                 loader=ChoiceLoader([dict_loader, FileSystemLoader(template_folder)]),
-                extensions=_extensions,
+                extensions=extensions(),
                 autoescape=True,
                 trim_blocks=True
             )

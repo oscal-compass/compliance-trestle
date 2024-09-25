@@ -19,7 +19,7 @@ from typing import Any, List, Optional
 
 import pytest
 
-from trestle.core.jinja_filters import (diagram_href, first_array_entry, get_party, parties_for_role)
+from trestle.core.jinja.filters import (diagram_href, first_array_entry, get_party, parties_for_role)
 from trestle.oscal.common import Link, Party, ResponsibleParty
 from trestle.oscal.ssp import Diagram, SystemSecurityPlan
 

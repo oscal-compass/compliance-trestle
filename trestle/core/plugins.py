@@ -31,11 +31,10 @@ _discovered_plugins = {
     if name.startswith('trestle_')
 }
 
-logger.debug(_discovered_plugins)
-
 
 def discovered_plugins(search_module: str) -> Iterator[Tuple[str, Any]]:
     """Yield discovered plugin classes within a given module name."""
+    logger.debug(_discovered_plugins)
     # This block is uncovered as trestle cannot find plugins in it's unit tests - it is the base module.
     for plugin, value in _discovered_plugins.items():  # pragma: nocover
         for _, module, _ in pkgutil.iter_modules([pathlib.Path(value.__path__[0], search_module)]):
