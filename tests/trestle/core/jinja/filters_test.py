@@ -19,7 +19,7 @@ from typing import Any, List, Optional
 
 import pytest
 
-from trestle.core.jinja.filters import (diagram_href, first_array_entry, get_party, parties_for_role)
+from trestle.core.jinja.filters import (diagram_href, first_or_none, get_party, parties_for_role)
 from trestle.oscal.common import Link, Party, ResponsibleParty
 from trestle.oscal.ssp import Diagram, SystemSecurityPlan
 
@@ -43,9 +43,9 @@ def test_diagram_href(links: Optional[List[Link]], expected: str) -> None:
 
 
 @pytest.mark.parametrize('actual,expected', [[['ok'], 'ok'], ([], None), (None, None)])
-def test_first_array_entry(actual: Optional[List[Any]], expected: Optional[Any]) -> None:
-    """Test behavior of retieving the first element or None for empty or missing list."""
-    assert first_array_entry(actual) == expected
+def test_first_or_none(actual: Optional[List[Any]], expected: Optional[Any]) -> None:
+    """Test behavior of retrieving the first element or None for empty or missing list."""
+    assert first_or_none(actual) == expected
 
 
 def test_get_party(sample_system_security_plan: SystemSecurityPlan, sample_party: Party) -> None:

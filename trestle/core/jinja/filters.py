@@ -27,7 +27,7 @@ from trestle.oscal.ssp import Diagram, SystemSecurityPlan
 logger = logging.getLogger(__name__)
 
 
-def first_array_entry(value: Optional[List[Any]]) -> Optional[Any]:
+def first_or_none(value: Optional[List[Any]]) -> Optional[Any]:
     """Retrieve the first array entry, or None for lists that are None or empty."""
     return next(iter(as_list(value)), None)
 
@@ -70,7 +70,7 @@ class JinjaSSPFilters(TrestleJinjaExtension):
 
         environment.filters['as_list'] = as_list
         environment.filters['get_default'] = get_default
-        environment.filters['first_array_entry'] = first_array_entry
+        environment.filters['first_or_none'] = first_or_none
         environment.filters['get_party'] = get_party
         environment.filters['parties_for_role'] = parties_for_role
         environment.filters['diagram_href'] = diagram_href

@@ -28,7 +28,7 @@ Trestle uses a naming convention to discover the top-level module of the plugin 
 
 To add commands to the CLI interface, the top-level module should contain a `commands` directory where all the plugin command files should be stored. Each command should have its own python file. In the above example, `validate.py` file contains one command for this plugin. Other python files or folders should be created in the top-level module folder, outside the `commands` folder. This helps in keeping the commands separate and in their discovery by trestle.
 
-To add jinja extensions available during `trestule author jinja`, the top-level module should contain a `jinja_ext` directory where all extension files should be stored. Each extension should have its own python file. In the above example, `filters.py` file contains a single extension class, which may define many filters or custom tags. Supporting code should be created in the top-level module folder, outside the `jinja_ext` folder. This helps in keeping the extensions separate and in their discovery by trestle.
+To add jinja extensions available during `trestle author jinja`, the top-level module should contain a `jinja_ext` directory where all extension files should be stored. Each extension should have its own python file. In the above example, `filters.py` file contains a single extension class, which may define many filters or custom tags. Supporting code should be created in the top-level module folder, outside the `jinja_ext` folder. This helps in keeping the extensions separate and in their discovery by trestle.
 
 ## Command Creation
 
