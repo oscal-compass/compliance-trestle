@@ -202,3 +202,64 @@ def test_component_generate_more_than_one_param(tmp_trestle_dir: pathlib.Path, m
     # now assemble component generated
     assemble_cmd = f'trestle author component-assemble -m {md_path} -n {comp_name} -o {assem_name}'
     test_utils.execute_command_and_assert(assemble_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
+
+
+def test_component_workflow_no_rules(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test component generate and assemble with no rules set."""
+    comp_name = test_utils.setup_component_generate(tmp_trestle_dir, 'comp_def_c')
+    ac1_path = tmp_trestle_dir / 'md_comp/comp_cc/comp_prof_aa/ac/ac-1.md'
+
+    orig_component, _ = model_utils.ModelUtils.load_model_for_class(
+        tmp_trestle_dir, comp_name, comp.ComponentDefinition
+    )
+
+    generate_cmd = f'trestle author component-generate -n {comp_name} -o {md_path}'
+    test_utils.execute_command_and_assert(generate_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
+
+    # Check that the example md file looks correct
+    _, tree = MarkdownProcessor().process_markdown(ac1_path)
+
+    imp_req_md = """## What is the solution and how is it implemented?
+
+<!-- For implementation status enter one of: implemented, partial, planned, alternative, not-applicable -->
+
+<!-- Note that the list of rules under ### Rules: is read-only and changes will not be captured after assembly to JSON -->
+
+imp req prose for ac-1 from comp cc
+
+### Implementation Status: planned
+
+______________________________________________________________________
+"""  # noqa E501
+
+    node = tree.get_node_for_key('## What is the solution and how is it implemented?')
+    assert node.content.raw_text == imp_req_md
+
+    part_a_md = """## Implementation for part a.
+
+statement prose for part a. from comp cc
+
+### Implementation Status: planned
+
+______________________________________________________________________"""
+
+    node = tree.get_node_for_key('## Implementation for part a.')
+    assert node.content.raw_text == part_a_md
+
+    test_utils.substitute_text_in_file(
+        ac1_path, '### Implementation Status: planned', f'### Implementation Status: {const.STATUS_IMPLEMENTED}'
+    )
+    # Check that the changes make it into the JSON
+    assem_name = 'assem_comp'
+    assemble_cmd = f'trestle author component-assemble -m {md_path} -n {comp_name} -o {assem_name}'
+    test_utils.execute_command_and_assert(assemble_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
+    assem_component, _ = model_utils.ModelUtils.load_model_for_class(
+        tmp_trestle_dir, assem_name, comp.ComponentDefinition
+    )
+
+    # Check the ac-1 implementation status and that the model changed
+    assert not model_utils.ModelUtils.models_are_equivalent(orig_component, assem_component)  # type: ignore
+    imp_reqs = assem_component.components[0].control_implementations[0].implemented_requirements  # type: ignore
+    imp_req = next((i_req for i_req in imp_reqs if i_req.control_id == 'ac-1'), None)
+    assert imp_req.description == 'imp req prose for ac-1 from comp cc'
+    assert ControlInterface.get_status_from_props(imp_req).state == const.STATUS_IMPLEMENTED  # type: ignore
