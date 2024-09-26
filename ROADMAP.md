@@ -30,4 +30,4 @@ During issue triage, feature requests are identified as `Epics` and added to the
 
 All new issues in `compliance-trestle` are added to the [project](https://github.com/orgs/oscal-compass/projects/2) with a status of New. All issues that need to be triaged are viewable [here](https://github.com/orgs/oscal-compass/projects/2/views/8). Once there is enough information to move forward on the issue, it can be moved to the `Backlog` by applying the `Backlog` label and moving the status to `Ready`.
 
-> Note: `compliance-trestle` currently does not have enough maintainers to address every pull request and issue. We welcome and appreciate community contributions. We are using `actions/stale` for automatic issue closure to ensure we can focus on the most relevant,update-to-date pull requests and issues.
+> Note: `compliance-trestle` currently does not have enough maintainers to address every pull request and issue. We welcome and appreciate community contributions. We are using `actions/stale` for automatic issue closure to ensure we can focus on the most relevant,up-to-date pull requests and issues.
