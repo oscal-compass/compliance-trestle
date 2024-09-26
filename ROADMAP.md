@@ -25,7 +25,6 @@ Each roadmap item is represented as a GitHub Issue. Discussions or any feedback 
 New items on the roadmap are typically driven by changes in OSCAL and new feature requests through GitHub Issues.
 During issue triage, feature requests are identified as `Epics` and added to the roadmap or individual features that can be directly added to the project `Backlog` and/or an upcoming release milestone.
 
-
 ### Our Triaging Process
 
 All new issues in `compliance-trestle` are added to the [project](https://github.com/orgs/oscal-compass/projects/2) with a status of New. All issues that need to be triaged are viewable [here](https://github.com/orgs/oscal-compass/projects/2/views/8). Once there is enough information to move forward on the issue, it can be moved to the `Backlog` by applying the `Backlog` label and moving the status to `Ready`.
