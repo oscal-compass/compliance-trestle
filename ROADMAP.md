@@ -30,5 +30,3 @@ All new issues in `compliance-trestle` are added to the [project](https://github
 
 New items on the roadmap are typically driven by changes in OSCAL and new feature requests through GitHub Issues.
 During issue triage, feature requests are identified as `Epics` and added to the roadmap or individual features that can be directly added to the project `Backlog` and/or an upcoming release milestone.
-
-
