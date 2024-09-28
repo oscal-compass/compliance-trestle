@@ -1,3 +1,8 @@
+---
+title: Demos
+description: BANANAS
+---
+
 # Trestle demonstration projects and content
 
 Trestle has a number of demonstrations setup in the

@@ -1,3 +1,8 @@
+---
+title: Developing trestle plugins
+description: BANANAS
+---
+
 # Adding plugins to trestle
 
 Trestle provides a mechanism for 3rd party providers to extend its command interface via a plugin architecture. All trestle plugins that conforms to this specification will be automatically discovered by trestle if installed, and their command(s) will be added to trestle sub-commands list. Below we describe this plugin mechanism with the help of an example plugin [`compliance-trestle-fedramp`](https://github.com/oscal-compass/compliance-trestle-fedramp) that we created as a separate python project that can be installed via `pip`.

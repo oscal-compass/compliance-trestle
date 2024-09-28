@@ -1,3 +1,8 @@
+---
+title:
+description: BANANAS
+---
+
 # Tutorial: What’s your compliance posture?
 
 #### Introduction
@@ -17,15 +22,15 @@ Moreover, assuring continuous compliance across multiple cloud vendors can compl
 
 Common sense dictates that standardization would simplify matters. The National Institute of Standards and Technologies (NIST) is developing the Open Security Controls Assessment Language ([OSCAL](https://pages.nist.gov/OSCAL)).
 
-The compliance-[trestle](../../index.md) open source github project is an effort to employ [OSCAL](https://pages.nist.gov/OSCAL) for compliance standardization and automation. Of great utility is the [trestle](../../index.md) oscal module that facilitates transformation of data to/from Python object representations in accordance with the [OSCAL](https://pages.nist.gov/OSCAL) schemas.
+The compliance-[trestle](../index.md) open source github project is an effort to employ [OSCAL](https://pages.nist.gov/OSCAL) for compliance standardization and automation. Of great utility is the [trestle](../index.md) oscal module that facilitates transformation of data to/from Python object representations in accordance with the [OSCAL](https://pages.nist.gov/OSCAL) schemas.
 
 #### Simple Continuous Compliance Architecture
 
-![Continuous Compliance Reporting](ContinuousCompliance.jpg)
+![Continuous Compliance Reporting](./compliance_posture/ContinuousCompliance.jpg)
 
 Cloud Services can often be configured to monitor (and sometimes enforce) policies. Examples include OpenShift Compliance Operator and Tanium. However, the compliance reporting “raw” data produced is unique to each.
 
-Two steps are needed to ascertain your compliance posture. Step 1 is to transform available compliance “raw” data into standardized form ([OSCAL](https://pages.nist.gov/OSCAL)). Step 2 is to examine the [OSCAL](https://pages.nist.gov/OSCAL) data and assemble a compliance posture for the controls and components of interest. And [trestle](../../index.md) is the go-to solution.
+Two steps are needed to ascertain your compliance posture. Step 1 is to transform available compliance “raw” data into standardized form ([OSCAL](https://pages.nist.gov/OSCAL)). Step 2 is to examine the [OSCAL](https://pages.nist.gov/OSCAL) data and assemble a compliance posture for the controls and components of interest. And [trestle](../index.md) is the go-to solution.
 
 #### Step 1 – Transformation
 
@@ -35,7 +40,7 @@ However, there is plenty of good news:
 
 - a transformer for your Cloud Service type may already exist, such as: [Tanium to OSCAL](https://github.com/oscal-compass/compliance-trestle/blob/main/trestle/tasks/tanium_result_to_oscal_ar.py), [OpenShift Compliance Operator to OSCAL](https://github.com/oscal-compass/compliance-trestle/blob/main/trestle/tasks/xccdf_result_to_oscal_ar.py)
 - once a transformer for a Cloud Service type has been written, it can be open-sourced/re-used
-- writing a transformer is fairly easy: just a few lines of Python code using [trestle](../../index.md) as a foundation
+- writing a transformer is fairly easy: just a few lines of Python code using [trestle](../index.md) as a foundation
 
 In the case of Tanium, the [OSCAL](https://pages.nist.gov/OSCAL) compliance data document is a *System Assessment Results* fragment with *Findings* and *Observations*, while in the case of OpenShift Compliance Operator there are *Observations* only.
 

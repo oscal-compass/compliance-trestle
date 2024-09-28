@@ -1,3 +1,8 @@
+---
+title: Setting up GitHub actions
+description: BANANAS
+---
+
 # Github actions setup
 
 Github actions contains variables which have opaque values to a user.

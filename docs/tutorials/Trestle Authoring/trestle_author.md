@@ -1,3 +1,8 @@
+---
+title: Governance of Authored Documents
+description: BANANAS
+---
+
 # Trestle CLI for Governance of Authored Documents
 
 This document is organized in a multiple collapsable sections for ease of use.

@@ -1,3 +1,10 @@
+---
+title: Developer Certificate of Originality
+description: BANANAS
+---
+
+In order to insure proper attribution contributors must use `git --signoff` on commits.
+
 ```text
 Developer Certificate of Origin
 Version 1.1

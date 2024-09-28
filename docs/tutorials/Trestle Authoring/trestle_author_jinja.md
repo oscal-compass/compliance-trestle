@@ -1,3 +1,8 @@
+---
+title:
+description: BANANAS
+---
+
 # Trestle author jinja - output templating support for oscal documents.
 
 Unfortunately OSCAL documents are not yet universally accepted. Therefore to support various OSCAL and non-OSCAL compliance workflows `trestle author jinja` is designed to provide end users with the ability to use jinja to produce customized output. This complements the more structured commands `trestle author catalog-{assemble|generate}`, `trestle author profile-{assemble|generate}` and `trestle author ssp-{assemble|generate}` and allows arbitrary use of jinja.
