@@ -1,0 +1,121 @@
+{
+  "component-definition": {
+    "uuid": "2652b814-2a6b-4b6d-a0ae-8bc7a007209f",
+    "metadata": {
+      "title": "comp def c",
+      "last-modified": "2021-07-19T14:03:03+00:00",
+      "version": "0.21.0",
+      "oscal-version": "1.0.2",
+      "roles": [
+        {
+          "id": "prepared-by",
+          "title": "Indicates the organization that created this content."
+        },
+        {
+          "id": "prepared-for",
+          "title": "Indicates the organization for which this content was created.."
+        },
+        {
+          "id": "content-approver",
+          "title": "Indicates the organization responsible for all content represented in the \"document\"."
+        }
+      ],
+      "parties": [
+        {
+          "uuid": "ce1f379a-fcdd-485a-a7b7-6f02c0763dd2",
+          "type": "organization",
+          "name": "ACME",
+          "remarks": "ACME company"
+        },
+        {
+          "uuid": "481856b6-16e4-4993-a3ed-2fb242ce235b",
+          "type": "organization",
+          "name": "Customer",
+          "remarks": "Customer for the Component Definition"
+        },
+        {
+          "uuid": "2dc8b17f-daca-44a1-8a1d-c290120ea5e2",
+          "type": "organization",
+          "name": "ISV",
+          "remarks": "ISV for the Component Definition"
+        }
+      ],
+      "responsible-parties": [
+        {
+          "role-id": "prepared-by",
+          "party-uuids": [
+            "ce1f379a-fcdd-485a-a7b7-6f02c0763dd2"
+          ]
+        },
+        {
+          "role-id": "prepared-for",
+          "party-uuids": [
+            "481856b6-16e4-4993-a3ed-2fb242ce235b",
+            "2dc8b17f-daca-44a1-8a1d-c290120ea5e2"
+          ]
+        },
+        {
+          "role-id": "content-approver",
+          "party-uuids": [
+            "ce1f379a-fcdd-485a-a7b7-6f02c0763dd2"
+          ]
+        }
+      ]
+    },
+    "components": [
+      {
+        "uuid": "8220b305-0271-45f9-8a21-40ab6f197f70",
+        "type": "Service",
+        "title": "comp_cc",
+        "description": "comp cc",
+        "control-implementations": [
+          {
+            "uuid": "76e89b67-3d6b-463d-90df-ec56a46c6069",
+            "source": "trestle://profiles/comp_prof_aa/profile.json",
+            "description": "trestle comp prof cc",
+            "implemented-requirements": [
+              {
+                "uuid": "ca5ea4c5-ba51-4b1d-932a-5606891b7500",
+                "control-id": "ac-1",
+                "description": "imp req prose for ac-1 from comp cc",
+                "responsible-roles": [
+                  {
+                    "role-id": "prepared-by",
+                    "party-uuids": [
+                      "ce1f379a-fcdd-485a-a7b7-6f02c0763dd2"
+                    ]
+                  },
+                  {
+                    "role-id": "prepared-for",
+                    "party-uuids": [
+                      "481856b6-16e4-4993-a3ed-2fb242ce235b",
+                      "2dc8b17f-daca-44a1-8a1d-c290120ea5e2"
+                    ]
+                  },
+                  {
+                    "role-id": "content-approver",
+                    "party-uuids": [
+                      "ce1f379a-fcdd-485a-a7b7-6f02c0763dd2"
+                    ]
+                  }
+                ],
+                "statements": [
+                  {
+                    "statement-id": "ac-1_smt.a",
+                    "uuid": "2652b814-2a6b-4b6d-a0ae-8bc7a0072200",
+                    "description": "statement prose for part a. from comp cc"
+                  }
+                ]
+              },
+              {
+                "uuid": "ca5ea4c5-ba51-4b1d-932a-5606891b7599",
+                "control-id": "ac-3",
+                "description": "imp req prose for ac-3 from comp cc"
+              }
+            ]
+         }
+        ]
+      }
+    ]
+  }
+}
