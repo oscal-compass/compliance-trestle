@@ -3,4 +3,4 @@ title: Maintainers
 description: BANANAS
 ---
 
-{\!MAINTAINERS.md!}
+{!MAINTAINERS.md!}
