@@ -86,7 +86,7 @@ docs-automation::
 	python ./scripts/website_automation.py
 
 docs-validate:: docs-automation
-	mkdocs build -v -c -s
+	mkdocs build -c -s
 	rm -rf site
 
 docs-serve: docs-automation

@@ -27,27 +27,6 @@ import pathlib
 import shutil
 from typing import Any, Dict, List
 
-from ruamel.yaml import YAML
-
-
-def update_mkdocs_meta(path: pathlib.Path, module_list: List[Any]) -> None:
-    """Update the mkdocs.yml structure file to represent the latest trestle modules."""
-    yaml = YAML()
-    fh_read = path.open('r', encoding='utf8')
-    yaml_structure = yaml.load(fh_read)
-    fh_read.close()
-    nav = yaml_structure['nav']
-    for index in range(len(nav)):
-        if 'Reference' in nav[index].keys():
-            nav[index]['Reference'] = []
-            nav[index]['Reference'].append({'Integrating with IBM SCC': 'reference/third-party-result-schema-SCC.md'})
-            nav[index]['Reference'].append({'trestle API reference': module_list})
-
-    yaml_structure['nav'] = nav
-    fh_write = path.open('w', encoding='utf8')
-    yaml.dump(yaml_structure, fh_write)
-    fh_write.close()
-
 
 def write_module_doc_metafile(dump_location: pathlib.Path, module_name: str) -> None:
     """Create a markdown file which allows mkdocstrings to index an individual module."""
@@ -112,10 +91,9 @@ def cleanup_directory(dump_location: pathlib.Path):
 
 if __name__ == '__main__':
     # Setup structure automatically for mkdocstrings
-    api_ref_location = pathlib.Path('docs/api_reference')
+    api_ref_location = pathlib.Path('docs/reference/api')
     cleanup_directory(api_ref_location)
     structer = create_module_markdowns(pathlib.Path('trestle'), 'trestle', api_ref_location)
-    update_mkdocs_meta(pathlib.Path('mkdocs.yml'), structer)
     # Ensure single source of truth for license file
     md_txt(pathlib.Path('LICENSE'), pathlib.Path('docs/license.md'))
     md_txt(pathlib.Path('DCO1.1.txt'), pathlib.Path('docs/contributing/DCO.md'))

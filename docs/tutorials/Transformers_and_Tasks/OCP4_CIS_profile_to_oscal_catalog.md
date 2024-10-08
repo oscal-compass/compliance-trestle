@@ -17,7 +17,7 @@ The second is a one-command transformation from `.profile` to `OSCAL.json`.
 
 ## *Step 1: Install trestle in a Python virtual environment*
 
-Follow the instructions [here](../../python_trestle_setup.md) to install trestle in a virtual environment.
+Follow the instructions [here](../../installation.md) to install trestle in a virtual environment.
 
 ## *Step 2: Transform profile data (CIS benchmarks)*
 

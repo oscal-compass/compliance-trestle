@@ -5,7 +5,7 @@ description: BANANAS
 
 # Tutorial: Setup for and use of standard format csv-file to OSCAL Component Definition json-file transformer
 
-Here are step by step instructions for setup and transformation of [trestle standard format csv-file](ocp4-sample-input.csv) into OSCAL Component Definition [json-file](component-definition.json) using the [compliance-trestle](https://oscal-compass.github.io/compliance-trestle/) tool.
+Here are step by step instructions for setup and transformation of [trestle standard format csv-file](csv_to_oscal_cd/ocp4-sample-input.csv) into OSCAL Component Definition [json-file](csv_to_oscal_cd/component-definition.json) using the [compliance-trestle](https://oscal-compass.github.io/compliance-trestle/) tool.
 
 ## *Objective*
 
@@ -242,14 +242,14 @@ Configuration flags sit under [task.csv-to-oscal-cd]:
 - Fetch sample csv-file.
 
 ```
-(venv.trestle)$ curl 'https://raw.githubusercontent.com/oscal-compass/compliance-trestle/main/docs/tutorials/task.csv-to-oscal-cd/ocp4-sample-input.csv' > adjunct-data/ocp4-sample-input.csv
+(venv.trestle)$ curl 'https://raw.githubusercontent.com/oscal-compass/compliance-trestle/main/docs/tutorials/Transformers_and_Tasks/csv_to_oscal_cd/ocp4-sample-input.csv' > adjunct-data/ocp4-sample-input.csv
 
 ```
 
 - Fetch trestle task file.
 
 ```
-(venv.trestle)$ curl 'https://raw.githubusercontent.com/oscal-compass/compliance-trestle/main/docs/tutorials/task.csv-to-oscal-cd/demo-csv-to-oscal-cd.config' > adjunct-data/task-files/demo-csv-to-oscal-cd.config
+(venv.trestle)$ curl 'https://raw.githubusercontent.com/oscal-compass/compliance-trestle/main/docs/tutorials/Transformers_and_Tasks/csv_to_oscal_cd/demo-csv-to-oscal-cd.config' > adjunct-data/task-files/demo-csv-to-oscal-cd.config
 ```
 
 <details markdown>

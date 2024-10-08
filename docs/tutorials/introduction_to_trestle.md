@@ -11,7 +11,7 @@ Here are step-by-step instructions to manipulate a [NIST](https://www.nist.gov/)
 
 Learn how to split and merge an OSCAL catalog json file using trestle commands and its command line interface (CLI).  Trestle simplifies the manipulation and management of large OSCAL documents by allowing controlled deconstruction into smaller components, and later reconstruction after editing those components.  And all operations guarantee that the individual files conform to the corresponding OSCAL schema to maintain integrity of the document in the process.
 
-This tutorial assumes you have installed Python and installed trestle in a virtual environment per the directions found [here](../python_trestle_setup.md).
+This tutorial assumes you have installed Python and installed trestle in a virtual environment per the directions found [here](../installation.md).
 
 The examples shown will work for linux and mac, but Windows will require the following modifications:
 

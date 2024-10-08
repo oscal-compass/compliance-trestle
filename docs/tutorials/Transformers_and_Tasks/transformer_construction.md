@@ -31,7 +31,7 @@ You have a source of compliance data that is in non-OSCAL format (spreadsheet, X
 and you would like to transform into standardized form in terms of NIST OSCAL.
 Presumed is an existing method for obtaining the compliance data from the cloud and materializing on disk as one or more files.
 
-![transformer-construction](transformer-construction.jpg)
+![transformer-construction](transformer_construction/transformer-construction.jpg)
 
 - Source files on disk (pink) is our starting point.
 - OSCAL files on disk (blue) is our ending point.
@@ -60,7 +60,7 @@ From most complex to least complex they are:
 Below is a snippet from the [SAR](https://pages.nist.gov/OSCAL/documentation/schema/assessment-results-layer/) model
 with these three levels shown.
 
-![assessment-results](assessment-results.jpg)
+![assessment-results](transformer_construction/assessment-results.jpg)
 
 Although producing a complete SAR is possible, this transformation is not covered here.
 We focus on partial results, either Observations only or Observations with Findings.
@@ -443,7 +443,7 @@ Table of approximate lines of code.
 ## *Contributing*
 
 Consider contributing your transformer to
-[trestle](../../contributing/mkdocs_contributing.md)
+[trestle](../../contributing/index.md)
 or
 [auditree-arboretum](https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/CONTRIBUTING.md)
 or
