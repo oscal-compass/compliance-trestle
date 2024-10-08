@@ -1,0 +1,38 @@
+name: Stale Issues and PRs
+on:
+  schedule:
+  - cron: '17 1 * * *'
+  workflow_dispatch:
+
+permissions:
+    contents: read
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    permissions:
+        issues: write
+        pull-requests: write
+    env:
+        STALE_WARNING_DAYS: 90
+        STALE_CLOSURE_DAYS: 30
+    steps:
+    - uses: actions/stale@28ca1036281a5e5922ead5184a1bbf96e5fc984e # v9
+      with:
+        stale-issue-label: stale
+        exempt-issue-labels: good-first-issue, help-wanted, exempt-from-stale
+        stale-issue-message: >
+          This issue has been automatically marked as stale because it has not had activity within ${{ env.STALE_WARNING_DAYS }} days.
+          It will be automatically closed if no further activity occurs within ${{ env.STALE_CLOSURE_DAYS }} days.
+        close-issue-message: >
+          This issue has been automatically closed due to inactivity.
+        days-before-issue-stale: ${{ env.STALE_WARNING_DAYS }}
+        days-before-issue-close: ${{ env.STALE_CLOSURE_DAYS }}
+        stale-pr-label: stale
+        stale-pr-message: >
+          This pull request has been automatically marked as stale because it has not had activity within ${{ env.STALE_WARNING_DAYS }} days.
+          It will be automatically closed if no further activity occurs within ${{ env.STALE_CLOSURE_DAYS }} days.
+        close-pr-message: >
+          This pull request has been automatically closed due to inactivity. Please reopen if this PR is still being worked on.
+        days-before-pr-stale: ${{ env.STALE_WARNING_DAYS }}
+        days-before-pr-close: ${{ env.STALE_CLOSURE_DAYS }}

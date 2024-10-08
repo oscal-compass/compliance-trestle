@@ -126,7 +126,7 @@ jobs:
     # This action uses Python Semantic Release v8
     - name: Python Semantic Release
       id: release
-      uses: python-semantic-release/python-semantic-release@v9.8.0
+      uses: python-semantic-release/python-semantic-release@v9.8.8
       with:
         github_token: ${{ secrets.ADMIN_PAT }}
 
@@ -137,7 +137,7 @@ jobs:
       if: steps.release.outputs.released == 'true'
 
     - name: Publish package distributions to GitHub Releases
-      uses: python-semantic-release/upload-to-gh-release@v9.8.0
+      uses: python-semantic-release/upload-to-gh-release@v9.8.8
       if: steps.release.outputs.released == 'true'
       with:
         github_token: ${{ secrets.ADMIN_PAT }}
