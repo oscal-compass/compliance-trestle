@@ -113,7 +113,7 @@ Trestle provides custom jinja tags for use specifically with markdown: `mdsectio
    1. `{% md_clean_include 'path_to_file.md' heading_level=2 %}`
    1. The heading level argument adjusts to (based on the number of hashes) the most significant heading in the document, if headings exist.
 
-`mdsection_include` is similar to the native `md_clean_include` except that.:
+`mdsection_include` is similar to `md_clean_include` except that:
 
 1. `mdsection_include` requires an second positional argument which is the title of a heading, from a markdown file, which you want the content from.
 
@@ -128,6 +128,23 @@ Trestle provides custom jinja tags for use specifically with markdown: `mdsectio
 
 1. `format` where a python [datetime strftime format string](https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes) is provided to format the output. E.g. `{% md_datestamp format='%B %d, %Y' %}` results in `December 28, 2021` being inserted.
 1. `newline` is a boolean to control the addition of a double newline after the inserted date string. For example `{% md_datestamp newline=false %}` inserts a date in the default format, without additional newlines.
+
+## Custom Jinja filters.
+
+Trestle provides custom jinja filters for help processing SSP data.
+
+- `as_list` will return the passed value, or an empty list if `None` is passed in.
+  - Example: `{% for party in ssp.metadata.parties | as_list %}`
+- `get_default` operates the same as the built-in Jinja `default` filter, with the optional second parameter set to `True`
+  - Example: `{{ control_interface.get_prop(user, 'user-property') | get_default('[Property]') }}`
+- `first_or_none` will return the first element of a list, or `None` if the list is empty or `None` itself.
+  - Example: `{% set address = party.addresses | first_or_none %}`
+- `get_party` will return the `Party` found in `ssp.metadata.parties` for a given `uuid`
+  - Example: `{% set organization = party.member_of_organizations | first_or_none | get_party(ssp) %}`
+- `parties_for_role` will yield individual `Party` entries when given a list of `ResponsibleParty` and a `role-id`
+  - Example: `{% for party in ssp.metadata.responsible_parties | parties_for_role("prepared-by", ssp) %}`
+- `diagram_href` will return the `Link.href` where `Link.rel == 'diagram'` when given a `Diagram` object
+  - Example: `![{{diagram.caption}}]({{ diagram | diagram_href }})`
 
 ## Generate controls as individual markdown pages.
 
@@ -144,17 +161,17 @@ To achieve that, we can create a simple Jinja template that would be used to gen
 {{ control_writer.write_control_with_sections(
    control,
    profile,
-   group_title, 
-   ['statement', 'objective', 'expected_evidence', 'implementation_guidance', 'table_of_parameters'], 
+   group_title,
+   ['statement', 'objective', 'expected_evidence', 'implementation_guidance', 'table_of_parameters'],
    {
       'statement':'Control Statement',
-      'objective':'Control Objective', 
-      'expected_evidence':'Expected Evidence', 
-      'implementation_guidance':'Implementation Guidance', 
+      'objective':'Control Objective',
+      'expected_evidence':'Expected Evidence',
+      'implementation_guidance':'Implementation Guidance',
       'table_of_parameters':'Control Parameters'
    }
-   ) 
-   
+   )
+
    | safe
 }}
 ```

@@ -35,7 +35,7 @@ from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_interface import ControlInterface, ParameterRep
 from trestle.core.docs_control_writer import DocsControlWriter
-from trestle.core.jinja import MDCleanInclude, MDDatestamp, MDSectionInclude
+from trestle.core.jinja.ext import extensions
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.ssp_io import SSPMarkdownWriter
 from trestle.oscal.profile import Profile
@@ -191,10 +191,7 @@ class JinjaCmd(CommandPlusDocs):
         """Run jinja over an input file with additional booleans."""
         template_folder = pathlib.Path.cwd()
         jinja_env = Environment(
-            loader=FileSystemLoader(template_folder),
-            extensions=[MDSectionInclude, MDCleanInclude, MDDatestamp],
-            trim_blocks=True,
-            autoescape=True
+            loader=FileSystemLoader(template_folder), extensions=extensions(), trim_blocks=True, autoescape=True
         )
         template = jinja_env.get_template(str(r_input_file))
         # create boolean dict
@@ -283,7 +280,7 @@ class JinjaCmd(CommandPlusDocs):
 
                 jinja_env = Environment(
                     loader=FileSystemLoader(template_folder),
-                    extensions=[MDSectionInclude, MDCleanInclude, MDDatestamp],
+                    extensions=extensions(),
                     trim_blocks=True,
                     autoescape=True
                 )
@@ -315,7 +312,7 @@ class JinjaCmd(CommandPlusDocs):
             dict_loader = DictLoader({str(random_name): new_output})
             jinja_env = Environment(
                 loader=ChoiceLoader([dict_loader, FileSystemLoader(template_folder)]),
-                extensions=[MDCleanInclude, MDSectionInclude, MDDatestamp],
+                extensions=extensions(),
                 autoescape=True,
                 trim_blocks=True
             )
