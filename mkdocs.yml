@@ -27,6 +27,7 @@ plugins:
 - search
 - social
 - autorefs
+- git-revision-date-localized
 - htmlproofer:
     enabled: true
     validate_rendered_template: false
