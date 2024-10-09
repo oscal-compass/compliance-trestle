@@ -91,7 +91,7 @@ def cleanup_directory(dump_location: pathlib.Path):
 
 if __name__ == '__main__':
     # Setup structure automatically for mkdocstrings
-    api_ref_location = pathlib.Path('docs/reference/api')
+    api_ref_location = pathlib.Path('docs/reference/API')
     cleanup_directory(api_ref_location)
     structer = create_module_markdowns(pathlib.Path('trestle'), 'trestle', api_ref_location)
     # Ensure single source of truth for license file
