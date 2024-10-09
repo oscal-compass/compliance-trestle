@@ -82,6 +82,12 @@ release::
 gen-oscal::
 	python ./scripts/gen_oscal.py
 
+docs-osx-deps:
+	brew install cairo freetype libffi libjpeg libpng zlib
+
+docs-ubuntu-deps:
+	sudo apt-get -y install libcairo2-dev libfreetype6-dev libffi-dev libjpeg-dev libpng-dev libz-dev
+
 docs-automation::
 	python ./scripts/website_automation.py
 
