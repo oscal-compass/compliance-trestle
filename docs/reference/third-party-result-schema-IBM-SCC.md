@@ -1,6 +1,6 @@
 ---
 title: IBM SCC assessment results integration
-description: BANANAS
+description: Description of how to use trestle to interchange results with IBM Cloud Security and Compliance Center
 ---
 
 # Schema of Assessment Results for Interchange with IBM Cloud Security and Compliance Center, SCC

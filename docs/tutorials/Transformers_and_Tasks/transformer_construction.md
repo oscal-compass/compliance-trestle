@@ -1,6 +1,6 @@
 ---
-title:
-description: BANANAS
+title: Posture format with OSCAL assesment results
+description: Tutorial on how to build a lite verision of Oscal Assessment Results  with Trestle SDK from your posture result format
 ---
 
 # Tutorial: How to build an Oscal Assessment Results "lite" with Trestle SDK from your posture result format
@@ -8,7 +8,7 @@ description: BANANAS
 The compliance-trestle (trestle) project provides helpful modules to assist your standardization efforts.
 Discussed below are some best practices for automated bridging to NIST OSCAL.
 
-## *Why NIST OSCAL?*
+## Why NIST OSCAL?
 
 The Open Security Controls Assessment Language [OSCAL](https://pages.nist.gov/OSCAL)
 is a set of formats expressed in XML, JSON, and YAML that provide machine-readable representations of control catalogs, control baselines, system security plans, and assessment plans and results as adopted by the
@@ -16,7 +16,7 @@ National Institute of Standards and Technology [NIST](https://pages.nist.gov/).
 
 Standardizing to OSCAL facilitates data interchange and understandability.
 
-## *Objective*
+## Objective
 
 The objective here is to transform your compliance data into valid OSCAL, in particular System Assessment Results
 [SAR](https://pages.nist.gov/OSCAL/documentation/schema/assessment-results-layer/).
@@ -25,7 +25,7 @@ Examples of existing transformers  included with trestle are for the
 OpenShift Compliance Operator [OSCO](https://github.com/oscal-compass/compliance-trestle/blob/develop/trestle/tasks/xccdf_result_to_oscal_ar.py) and
 [Tanium](https://github.com/oscal-compass/compliance-trestle/blob/develop/trestle/tasks/tanium_result_to_oscal_ar.py).
 
-## *Overview*
+## Overview
 
 You have a source of compliance data that is in non-OSCAL format (spreadsheet, XML, JSON, database, object-store...)
 and you would like to transform into standardized form in terms of NIST OSCAL.
@@ -48,7 +48,7 @@ auditree-arboretum [harvest](https://github.com/ComplianceAsCode/auditree-harves
 report (file interface) that employs the trestle
 xccdf-result-to-oscal-ar transformation (data processing) module.
 
-## *Choose Mapping Strategy*
+## Choose Mapping Strategy
 
 There are 3 potential levels of OSCAL Assessment Results that can be emitted by your transformer.
 From most complex to least complex they are:

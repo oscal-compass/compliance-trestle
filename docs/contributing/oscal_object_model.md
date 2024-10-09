@@ -1,6 +1,6 @@
 ---
-title:
-description: BANANAS
+title: Trestle's oscal object model
+description: How to use trestle as an object model for OSCAL
 ---
 
 # Using trestle as an object model for OSCAL

@@ -25,6 +25,7 @@ plugins:
 - awesome-pages
 # warning don't use `macros` - yet
 - search
+- social
 - autorefs
 - htmlproofer:
     enabled: true

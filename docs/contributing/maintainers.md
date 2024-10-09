@@ -1,6 +1,6 @@
 ---
 title: Maintainers
-description: BANANAS
+description: "The list of maintainers of compliance-trestle"
 ---
 
 {!MAINTAINERS.md!}

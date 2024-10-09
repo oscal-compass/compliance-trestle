@@ -1,13 +1,13 @@
 ---
-title:
-description: BANANAS
+title: Converting ComplianceAsCode profiles to component definitions
+description: Tutorial on converting ComplianceAsCode profiles to OSCAL component definitions
 ---
 
 # Tutorial: Setup for and use of ComplianceAsCode profile to OSCAL Component Definition transformer
 
 Here are step by step instructions for setup and transformation of [ComplianceAsCode](https://github.com/ComplianceAsCode/content) profile data files into [NIST](https://www.nist.gov/) standard [OSCAL](https://pages.nist.gov/OSCAL/) [Component Definition](https://pages.nist.gov/OSCAL-Reference/models/v1.1.2/complete/json-reference/#/component-definition) using the [compliance-trestle](https://oscal-compass.github.io/compliance-trestle/) tool.
 
-## *Objective*
+## Objective
 
 How to transform one or more `.profile` compliance files into a standardized `OSCAL.json` file.
 
@@ -15,11 +15,11 @@ There are 2 short steps shown below.
 The first is a one-time check/set-up of your environment.
 The second is a one-command transformation from `.profile` to `OSCAL.json`.
 
-## *Step 1: Install trestle in a Python virtual environment*
+## Step 1: Install trestle in a Python virtual environment
 
 Follow the instructions [here](https://oscal-compass.github.io/compliance-trestle/python_trestle_setup/) to install trestle in a virtual environment.
 
-## *Step 2: Transform profile data (CIS benchmarks)*
+## Step 2: Transform profile data (CIS benchmarks)
 
 Linux, Mac
 

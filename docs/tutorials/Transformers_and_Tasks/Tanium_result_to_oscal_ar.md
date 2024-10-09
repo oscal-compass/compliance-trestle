@@ -1,13 +1,13 @@
 ---
-title:
-description: BANANAS
+title: Coverting Tanium results to OSCAL
+description: Tutorial on how to use compliance trestle to convert Tanium results output to OSCAL assessment results
 ---
 
 # Tutorial: Setup for and use of Tanium to OSCAL transformer
 
 Here are step by step instructions for setup and transformation of [Tanium](https://www.tanium.com/) compliance data files into [NIST](https://www.nist.gov/) standard [OSCAL](https://pages.nist.gov/OSCAL/) using the [compliance-trestle](https://oscal-compass.github.io/compliance-trestle/) tool.
 
-## *Objective*
+## Objective
 
 How to transform a `Tanium.results` compliance file into a standardized `OSCAL.json` file.
 
@@ -15,7 +15,7 @@ There are 2 short steps shown below.
 The first is a one-time check/set-up of your environment.
 The second is a one-command transformation from `Tanium.results` to `OSCAL.json`.
 
-## *Step 1: Environment setup*
+## Step 1: Environment setup
 
 Linux, Mac
 
@@ -33,7 +33,7 @@ Make these changes:
 </ul>
 </details>
 
-- Insure you have a modern [Python](https://www.python.org/downloads/) (3.7, 3.8, 3.9).
+- Insure you have a modern [Python](https://www.python.org/downloads/) (3.9, 3.10, 3.11).
 
 ```bash
 $ python -V
@@ -82,7 +82,7 @@ usage: trestle [-h] {init,create,split,merge,replicate,add,remove,validate,impor
 Initialized trestle project successfully in /home/<user>/trestle.workspace
 ```
 
-## *Step 2: Transform sample*
+## Step 2: Transform sample
 
 - Create Tanium data folders.
 

@@ -1,6 +1,6 @@
 ---
-title: Converting
-description: BANANAS
+title: Converting CSVs to component definitions
+description: Tutorial on how to setup and convert CSV spreadsheets into OSCAL component definitions
 ---
 
 # Tutorial: Setup for and use of standard format csv-file to OSCAL Component Definition json-file transformer

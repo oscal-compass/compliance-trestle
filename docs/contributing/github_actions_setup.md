@@ -1,23 +1,20 @@
 ---
 title: Setting up GitHub actions
-description: BANANAS
+description: Setting up github actions for a fork of compliance trestle for development
 ---
 
 # Github actions setup
 
 Github actions contains variables which have opaque values to a user.
-The variables are documented here such that trestle can be setup on a fork etc.
+The variables are documented here such that trestle can be setup on a fork for independent development.
+This is not required to open a pull request against the compliance-trestle project.
+Project maintainers, after an initial review, will allow github actions workflows to run.
 
 ## Secrets
 
 - `ADMIN_PAT`: Github PAT with sufficient write access to merge content into `develop` and commit to `gh-pages` and `main`
 
 - `SONAR_TOKEN`: Token to sonarcloud with rights to the appropriate project.
-
-## Repository level variables
-
-- `PYTHON_MIN`: Minimum test version of python e.g. `3.9`
-- `PYTHON_MAX`: Maxmimum test version of python e.g. `3.11`
 
 ## Authorization with pypi
 

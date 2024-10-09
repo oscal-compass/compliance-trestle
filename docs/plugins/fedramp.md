@@ -1,6 +1,6 @@
 ---
 title: FedRAMP plugin
-description: BANANAS
+description: Description of the compliance-trestle FedRAMP plugin for validating an SSP against the extended requirements for FedRAMP
 ---
 
 # compliance-trestle-fedramp plugin

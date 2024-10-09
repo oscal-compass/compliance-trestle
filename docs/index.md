@@ -1,6 +1,6 @@
 ---
 title: Overview
-description: BANANAS
+description: Trestle is an ensemble of tools that enable the creation, validation, and governance of documentation artifacts for compliance needs
 ---
 
 # Compliance-trestle (also known as `trestle`)

@@ -1,6 +1,6 @@
 ---
 title: Introduction to trestle workflows
-description: BANANAS
+description: Introductory Tutorial to trestle workflows for managing OSCAL objects as code
 ---
 
 # Tutorial: Introduction to trestle workflow

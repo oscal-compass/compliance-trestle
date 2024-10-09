@@ -1,6 +1,6 @@
 ---
 title: Code of conduct
-description: BANANAS   # potentially replace with a 
+description: Code of conduct for engaging with the compliance trestle community
 ---
 
 # Code of Conduct

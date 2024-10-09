@@ -1,6 +1,6 @@
 ---
 title: Demos
-description: BANANAS
+description: List of different demonstrations of compliance trestle
 ---
 
 # Trestle demonstration projects and content

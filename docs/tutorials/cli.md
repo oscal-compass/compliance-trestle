@@ -1,6 +1,6 @@
 ---
 title: trestle CLI Overview
-description: BANANAS
+description: An introductory tutorial into trestle's CLI and OSCAL use cases
 ---
 
 # trestle CLI Overview and OSCAL usecases

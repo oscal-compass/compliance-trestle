@@ -1,6 +1,6 @@
 ---
 title: Developing trestle plugins
-description: BANANAS
+description: Trestle provides a mechanism for 3rd party providers to extend its command interface via a plugin architecture. This describes to build a trestle plugin.
 ---
 
 # Adding plugins to trestle

@@ -1,6 +1,6 @@
 ---
 title: Installation
-description: BANANAS
+description: Instructions for installing compliance trestle with a python venv
 ---
 
 # Install trestle in a python virtual environment
