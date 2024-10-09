@@ -51,3 +51,5 @@ tmp_bin_test
 
 /venv.trestle/
 
+# mkdocs
+.cache/

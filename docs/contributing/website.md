@@ -1,3 +1,8 @@
+---
+title: Documentation website
+description: Describes how to contribute to and build the documentation website for compliance trestle
+---
+
 # Developing for the trestle documentation website
 
 This page describes the developing for the trestle (website) which is deployed at https://oscal-compass.github.io/compliance-trestle.
@@ -11,7 +16,6 @@ The current documentation website build reuses some of these files, specifically
 - Contents of `README.md`
 - Entirety of `LICENSE`
 - Entirety of `CONTRIBUTING.md`
-- Entirety of `CODE_OF_CONDUCT.md`
 - Entirety of `CHANGELOG.md`
 - Entirely of `MAINTAINERS.md`
 - Entirely of `DCO1.1.txt`
