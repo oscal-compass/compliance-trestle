@@ -69,7 +69,7 @@ theme:
     scheme: slate
   time_format: "%Y-%m-%d %H:%M:%S" # The format used to display the time
   meta_time_format: "%Y-%m-%d %H:%M:%S"
-  logo: "../images/compliance-trestle-800x800-transparent.png"
+  #logo: "../images/compliance-trestle-800x800-transparent.png" # Update when have a single color svg
   favicon: assets/favicon.ico
 validation:
   omitted_files: warn
