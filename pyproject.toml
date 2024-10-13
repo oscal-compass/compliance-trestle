@@ -1,16 +1,61 @@
 # Added to aide with eventual transition away from setup.py
 [build-system]
-requires = [
-    "setuptools >= 35.0.2",
-    "wheel",
-    "setuptools_scm >= 2.0.0"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+# requires = [
+#     "setuptools >= 35.0.2",
+#     "wheel",
+#     "setuptools_scm >= 2.0.0"
+# ]
+# build-backend = "setuptools.build_meta"
+
+[project]
+name = "compliance-trestle"
+dynamic = ["version"]
+description = "Tools to manage & autogenerate python objects representing the OSCAL layers/models"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "Apache-2.0"
+keywords = [
+    "Compliance",
+    "Security",
+    "OSCAL",
 ]
-build-backend = "setuptools.build_meta"
+authors = [{ name = "Chris Butler", email = "chris.butler@redhat.com" }
+]
+
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Information Technology",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: POSIX",
+  "Operating System :: Microsoft",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+
+[project.urls]
+Documentation = "https://oscal-compass.github.io/compliance-trestle"
+"Source code" = "https://github.com/oscal-compass/compliance-trestle"
+
+[project.scripts]
+trestle = "trestle.cli:run"
+
+
+[tool.hatch.version]
+path = "trestle/__init__.py"
 
 [tool.setuptools_scm]
 
 [tool.pytest.ini_options]
-minversion = "6.2"
+minversion = "5.4.3"
 testpaths = [
     "tests",
 ]
