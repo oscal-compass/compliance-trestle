@@ -1,2 +1,0 @@
-::: trestle.cli
-handler: python

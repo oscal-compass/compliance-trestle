@@ -1,0 +1,10 @@
+nav:
+- Overview: index.md
+- Code of Conduct: code_of_conduct.md
+- OSCAL object model: oscal_object_model.md
+- Website development: website.md
+- Developing trestle plugins: plugins.md
+- Contributors: https://github.com/oscal-compass/compliance-trestle/graphs/contributors
+- Maintainers: maintainers.md
+- Developer Certificate of Originality: DCO.md
+- GitHub actions: github_actions_setup.md

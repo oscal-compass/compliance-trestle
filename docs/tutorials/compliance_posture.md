@@ -1,0 +1,51 @@
+---
+title: What's your compliance posture
+description: High level tutorial on measuring your compliance posture with compliance-trestle
+---
+
+# Tutorial: What’s your compliance posture?
+
+#### Introduction
+
+The cloud with its continuous integration and continuous deployment is the modern computing paradigm. There is a plethora of cloud environments: public, private, on-premise, hybrid-cloud, multi-cloud, etc. along with a corresponding contingent of vendors. The cloud offers great flexibility where you can choose just one or some combination optimal for each application. But, as demonstrated from time to time, the cloud can be a dangerous place. Hackers, bots, malware, and more are constant threats seeking to find and exploit weakness in your computing solution. To combat them there are strategies to avoid embarrassment and financial ruin from security breeches. Educating your workforce is of paramount importance. Moreover, employing a trust-but-verify strategy will go a long way toward deflecting trouble.
+
+The time has come for continuous auditing, and giving stakeholders (such as account owners, application owners, system owners and compliance officers) a current picture of their compliance posture:
+
+- Are password rules being followed?
+- Are deployed applications using compromised encryption algorithms?
+- Has a user gotten elevated privileges?
+- Are unauthorized open source projects wrongfully part of your application stack?
+
+Getting answers to these questions only quarterly or annually is leaving you exposed.
+
+Moreover, assuring continuous compliance across multiple cloud vendors can complicate matters. If each has its own compliance regime, then one must become expert in each domain’s compliance solution space, or else be wedded to a single or few providers. That is not an ideal prospect.
+
+Common sense dictates that standardization would simplify matters. The National Institute of Standards and Technologies (NIST) is developing the Open Security Controls Assessment Language ([OSCAL](https://pages.nist.gov/OSCAL)).
+
+The compliance-[trestle](../index.md) open source github project is an effort to employ [OSCAL](https://pages.nist.gov/OSCAL) for compliance standardization and automation. Of great utility is the [trestle](../index.md) oscal module that facilitates transformation of data to/from Python object representations in accordance with the [OSCAL](https://pages.nist.gov/OSCAL) schemas.
+
+#### Simple Continuous Compliance Architecture
+
+![Continuous Compliance Reporting](./compliance_posture/ContinuousCompliance.jpg)
+
+Cloud Services can often be configured to monitor (and sometimes enforce) policies. Examples include OpenShift Compliance Operator and Tanium. However, the compliance reporting “raw” data produced is unique to each.
+
+Two steps are needed to ascertain your compliance posture. Step 1 is to transform available compliance “raw” data into standardized form ([OSCAL](https://pages.nist.gov/OSCAL)). Step 2 is to examine the [OSCAL](https://pages.nist.gov/OSCAL) data and assemble a compliance posture for the controls and components of interest. And [trestle](../index.md) is the go-to solution.
+
+#### Step 1 – Transformation
+
+The bad news is that a transformer to [OSCAL](https://pages.nist.gov/OSCAL) is needed for each Cloud Service type.
+
+However, there is plenty of good news:
+
+- a transformer for your Cloud Service type may already exist, such as: [Tanium to OSCAL](https://github.com/oscal-compass/compliance-trestle/blob/main/trestle/tasks/tanium_result_to_oscal_ar.py), [OpenShift Compliance Operator to OSCAL](https://github.com/oscal-compass/compliance-trestle/blob/main/trestle/tasks/xccdf_result_to_oscal_ar.py)
+- once a transformer for a Cloud Service type has been written, it can be open-sourced/re-used
+- writing a transformer is fairly easy: just a few lines of Python code using [trestle](../index.md) as a foundation
+
+In the case of Tanium, the [OSCAL](https://pages.nist.gov/OSCAL) compliance data document is a *System Assessment Results* fragment with *Findings* and *Observations*, while in the case of OpenShift Compliance Operator there are *Observations* only.
+
+Tutorials are available to show you: how to [run a transformer](Transformers_and_Tasks/Tanium_result_to_oscal_ar.md), how to [write a transformer](Transformers_and_Tasks/transformer_construction.md).
+
+#### Step 2 – Reporting
+
+Coming soon is a [trestle](../index.md) tool to assemble the [OSCAL](https://pages.nist.gov/OSCAL) fragments documents together using [OSCAL](https://pages.nist.gov/OSCAL) compliance configuration data (*System Assessment Plan*  and *System Security Plan*) into a complete *System Assessment Results*.
