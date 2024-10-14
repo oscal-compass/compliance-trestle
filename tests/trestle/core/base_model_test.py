@@ -104,7 +104,7 @@ def test_with_timezone() -> None:
 
     popo_json = json.loads(jsoned_catalog)
     time = popo_json['metadata']['last-modified']
-    assert (type(time) == str)
+    assert (isinstance(time, str))
     assert ('Z' in time or '+' in time or '-' in time)
 
 
