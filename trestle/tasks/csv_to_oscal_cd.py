@@ -241,8 +241,7 @@ class CsvToOscalComponentDefinition(TaskBase):
 
     def configure(self) -> bool:
         """Configure."""
-        self._timestamp = datetime.datetime.utcnow().replace(microsecond=0).replace(tzinfo=datetime.timezone.utc
-                                                                                    ).isoformat()
+        self._timestamp = datetime.datetime.now(datetime.UTC).replace(microsecond=0).isoformat()
         # config verbosity
         self._quiet = self._config.get('quiet', False)
         self._verbose = not self._quiet

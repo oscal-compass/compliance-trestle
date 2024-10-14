@@ -37,7 +37,7 @@ from trestle.tasks.base_task import TaskOutcome
 
 logger = logging.getLogger(__name__)
 
-timestamp = datetime.datetime.utcnow().replace(microsecond=0).replace(tzinfo=datetime.timezone.utc).isoformat()
+timestamp = datetime.datetime.now(datetime.UTC).replace(microsecond=0).isoformat()
 
 recurse = True
 
@@ -270,7 +270,7 @@ class CatalogHelper:
         for choice in param.select.choice:
             rchoice = self._resolve_parms(control, choice)
             if choices:
-                choices += f'; {rchoice}'
+                choices += f'; {rchoice}'  # noqa: E702
             else:
                 choices += f'{rchoice}'
         return choices
