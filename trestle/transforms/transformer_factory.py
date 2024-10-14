@@ -28,7 +28,7 @@ class TransformerBase(ABC):
     """Abstract base interface for all transformers."""
 
     # the current time for consistent timestamping
-    _timestamp = datetime.datetime.now(datetime.UTC).replace(microsecond=0).isoformat()
+    _timestamp = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat()
 
     @staticmethod
     def set_timestamp(value: str) -> None:

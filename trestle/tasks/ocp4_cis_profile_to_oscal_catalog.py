@@ -64,7 +64,7 @@ class Ocp4CisProfileToOscalCatalog(TaskBase):
             config_object: Config section associated with the task.
         """
         super().__init__(config_object)
-        self._timestamp = datetime.datetime.now(datetime.UTC).replace(microsecond=0).isoformat()
+        self._timestamp = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat()
 
     def print_info(self) -> None:
         """Print the help string."""

@@ -41,7 +41,7 @@ from trestle.tasks.base_task import TaskOutcome
 
 logger = logging.getLogger(__name__)
 
-timestamp = datetime.datetime.now(datetime.UTC).replace(microsecond=0).isoformat()
+timestamp = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat()
 
 
 class XlsxHelper:

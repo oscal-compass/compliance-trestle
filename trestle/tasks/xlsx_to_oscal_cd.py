@@ -65,7 +65,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         """
         super().__init__(config_object)
         self.xlsx_helper = XlsxHelper()
-        self._timestamp = datetime.datetime.now(datetime.UTC).replace(microsecond=0).isoformat()
+        self._timestamp = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat()
 
     def set_timestamp(self, timestamp: str) -> None:
         """Set the timestamp."""
