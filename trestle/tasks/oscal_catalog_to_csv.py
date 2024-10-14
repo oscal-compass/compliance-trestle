@@ -270,7 +270,7 @@ class CatalogHelper:
         for choice in param.select.choice:
             rchoice = self._resolve_parms(control, choice)
             if choices:
-                choices += f'; {rchoice}'  # noqa: E702
+                choices += f'; {rchoice}'
             else:
                 choices += f'{rchoice}'
         return choices
