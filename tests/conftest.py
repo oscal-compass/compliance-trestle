@@ -32,8 +32,10 @@ import trestle.oscal.common as common
 from trestle.cli import Trestle
 from trestle.common.err import TrestleError
 from trestle.oscal import catalog as cat
+from trestle.oscal.common import Party
 from trestle.oscal.component import ComponentDefinition, DefinedComponent
 from trestle.oscal.profile import Profile
+from trestle.oscal.ssp import SystemSecurityPlan
 
 TEST_CONFIG: dict = {}
 
@@ -188,6 +190,20 @@ def sample_catalog_subgroups():
     catalog_obj.groups = [group]
 
     return catalog_obj
+
+
+@pytest.fixture(scope='function')
+def sample_party() -> Party:
+    """Return a valid Party object."""
+    return gens.generate_sample_model(Party, True, 3)
+
+
+@pytest.fixture(scope='function')
+def sample_system_security_plan(sample_party: Party) -> SystemSecurityPlan:
+    """Return a valid SSP object with some contents."""
+    ssp: SystemSecurityPlan = gens.generate_sample_model(SystemSecurityPlan, True, 2)
+    ssp.metadata.parties = [gens.generate_sample_model(Party, True, 3), sample_party]
+    return ssp
 
 
 @pytest.fixture(scope='function')
