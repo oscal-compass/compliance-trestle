@@ -108,11 +108,16 @@ testpaths = [
     "tests",
 ]
 
-[tool.black]
-line-length = 500
+[tool.ruff.format]
+preview = true
+quote-style = 'single'
 
-[tool.isort]
-line_length = 500
+
+# [tool.black]
+# line-length = 500
+
+# [tool.isort]
+# line_length = 500
 
 
 

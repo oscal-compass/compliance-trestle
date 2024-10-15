@@ -10,3 +10,5 @@ def get_package_info(package_name):
         return response.json()
     return None
 
+@nox.session()
+def hello():
