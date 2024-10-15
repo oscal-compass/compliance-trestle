@@ -9,3 +9,4 @@ def get_package_info(package_name):
     if response.status_code == 200:
         return response.json()
     return None
+

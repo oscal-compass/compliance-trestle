@@ -99,10 +99,8 @@ path = "trestle/__init__.py"
 [tool.hatch.envs.hatch-test]
 default-args = []
 randomize = true
-extra-args = ["--exitfirst"]
 parallel = true
 
-[tool.setuptools_scm]
 
 [tool.pytest.ini_options]
 minversion = "5.4.3"
@@ -115,6 +113,9 @@ line-length = 500
 
 [tool.isort]
 line_length = 500
+
+
+
 
 [tool.semantic_release]
 build_command = "python setup.py sdist bdist_wheel"
@@ -142,3 +143,36 @@ insecure = false
 
 [tool.semantic_release.publish]
 dist_glob_patterns = ["dist/*"]
+
+
+
+# dev =
+#     pytest>=5.4.3 # okay
+#     pytest-cov>=2.10.0 # not 
+#     pytest-xdist # okay
+#     pre-commit>=2.4.0 # not sure
+#     setuptools>=61 # need to check
+#     urllib3==1.26.19
+#     wheel
+#     yapf
+#     python-semantic-release>=9.8.0
+#     pep8-naming
+#     pytest-random-order
+#     python-dateutil
+#     mypy
+#     types-PyYAML
+#     types-paramiko
+#     types-requests
+#     types-setuptools
+#     # # Docs website
+#     mkdocs>=1.6.0
+#     mkdocstrings[python]>=0.25.2
+#     mkdocs-htmlproofer-plugin
+#     mkdocs-material
+#     markdown-include
+#     pymdown-extensions
+#     livereload
+#     ## Constrain system
+#     pylint
+#     # Checking repo after docs generation.
+#     gitpython

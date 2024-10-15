@@ -16,6 +16,7 @@
 """Tests profile_resolver module."""
 
 import copy
+import os
 import pathlib
 import shutil
 from typing import List, Tuple
@@ -439,6 +440,7 @@ def test_profile_resolver_no_params(tmp_trestle_dir: pathlib.Path) -> None:
     assert '{{' not in catalog_str
 
 
+@pytest.mark.skipif(os.environ.get('TEST_AIRGAPPED') is not None, reason='Network connectivity')
 def test_remote_profile_relative_cat(tmp_trestle_dir: pathlib.Path) -> None:
     """Test profile resolver with remote profile and import of relative catalog path."""
     profile_path = 'https://raw.githubusercontent.com/usnistgov/oscal-content/690f517daaf3a6cbb4056d3cde6eae2756765620/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_LOW-baseline_profile.json'  # noqa E501

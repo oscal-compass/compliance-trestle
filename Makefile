@@ -50,16 +50,17 @@ code-typing:
 	mypy --pretty trestle
 
 test-all::
-	python -m pytest -n auto
+	hatch test
+
+test-airgapped::
+	TEST_AIRGAPPED='TRUE' hatch test
 
 test::
-	python -m pytest --exitfirst -n auto
+	hatch test --exitfirst
 
 test-cov::
-	python -m pytest --cov=trestle  --exitfirst -n auto -vv --cov-report=xml --cov-fail-under=96
+	hatch test --cov=trestle  --exitfirst --cov-report=xml --cov-fail-under=96
 
-test-all-random::
-	python -m pytest --cov=trestle --cov-report=xml --random-order
 
 test-verbose:
 	python -m pytest  -vv -n auto

@@ -14,10 +14,13 @@
 """Tests for the ssp_generator module."""
 
 import argparse
+import os
 import pathlib
 from typing import Dict, List
 
 from _pytest.monkeypatch import MonkeyPatch
+
+import pytest
 
 from tests import test_utils
 from tests.test_utils import FileChecker, setup_for_ssp, setup_for_ssp_fedramp
@@ -486,6 +489,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert orig_ssp_path.stat().st_mtime > orig_file_creation
 
 
+@pytest.mark.skipif(os.environ.get('TEST_AIRGAPPED') is not None, reason='Network connectivity')
 def test_ssp_assemble_fedramp_profile(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Tests ssp assemble with a fedramp profile."""
     gen_args = setup_for_ssp_fedramp(tmp_trestle_dir, ssp_name)
@@ -1305,6 +1309,7 @@ ______________________________________________________________________
     assert node.content.raw_text == part_a_text_no_comp
 
 
+@pytest.mark.skipif(os.environ.get('TEST_AIRGAPPED') is not None, reason='Network connectivity')
 def test_ssp_generate_aggregates_no_cds(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator with no comp defs does aggregate values from aggregated parameters."""
     args, _ = setup_for_ssp(tmp_trestle_dir, 'profile_aggregation', ssp_name)
@@ -1360,6 +1365,7 @@ def test_ssp_generate_aggregates_no_cds(tmp_trestle_dir: pathlib.Path) -> None:
     assert 'changed value in the ssp markdown' in si_7_odp_01['ssp-values']
 
 
+@pytest.mark.skipif(os.environ.get('TEST_AIRGAPPED') is not None, reason='Network connectivity')
 def test_ssp_generate_aggregates_no_param_value_orig(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator aggregate parameters have no parame-value-origin."""
     args, _ = setup_for_ssp(tmp_trestle_dir, 'profile_aggregation', ssp_name)

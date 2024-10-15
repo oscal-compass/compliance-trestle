@@ -312,6 +312,7 @@ def test_import_failure_execute_plan(tmp_trestle_dir: pathlib.Path, monkeypatch:
     assert rc == 1
 
 
+@pytest.mark.skipif(os.environ.get('TEST_AIRGAPPED') is not None, reason='Network connectivity')
 def test_import_from_url(tmp_trestle_dir: pathlib.Path) -> None:
     """Test import via url."""
     uri = (
@@ -329,6 +330,7 @@ def test_import_from_url(tmp_trestle_dir: pathlib.Path) -> None:
     assert ModelUtils.models_are_equivalent(catalog_data, imported_catalog)
 
 
+@pytest.mark.skipif(os.environ.get('TEST_AIRGAPPED') is not None, reason='Network connectivity')
 def test_import_from_nist(tmp_trestle_dir: pathlib.Path) -> None:
     """Test import via url from nist."""
     uri = 'https://raw.githubusercontent.com/usnistgov/oscal-content/690f517daaf3a6cbb4056d3cde6eae2756765620/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_HIGH-baseline_profile-min.json'  # noqa: E501
