@@ -1,6 +1,7 @@
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.3.0  # Use the ref you want to point at
+    rev: v5.0.0  # Use the ref you want to point at
     hooks:
       - id: check-merge-conflict
       - id: check-yaml
@@ -13,13 +14,13 @@ repos:
       - id: yapf
         args: [--in-place, --parallel, --recursive, --style, .yapf-config]
         files: "^(trestle|tests|scripts)"
-        stages: [commit]
+        stages: [pre-commit]
         additional_dependencies: [toml]
   - repo: https://github.com/PyCQA/flake8
-    rev: 5.0.4
+    rev: 7.1.1
     hooks:
       - id: flake8
-        args: [--extend-ignore, "P1,C812,C813,C814,C815,C816,W503,W605,B017,B028", "--illegal-import-packages=filecmp"]
+        args: [--extend-ignore, "P1,C812,C813,C814,C815,C816,W503,W605,B017,B028"]
         additional_dependencies:
           [
             flake8-2020,
@@ -37,14 +38,13 @@ repos:
             flake8-quotes,
             flake8-string-format,
             flake8-use-fstring,
-            flake8-illegal-import,
             pep8-naming,
           ]
         files: "^(tests|scripts)"
         exclude: "(oscal/|third_party)"
-        stages: [commit]
+        stages: [pre-commit]
       - id: flake8
-        args: [--extend-ignore, "P1,C812,C813,C814,C815,C816,W503,W605,B017,B028", "--illegal-import-packages=filecmp"]
+        args: [--extend-ignore, "P1,C812,C813,C814,C815,C816,W503,W605,B017,B028"]
         additional_dependencies:
           [
             flake8-2020,
@@ -62,16 +62,15 @@ repos:
             flake8-quotes,
             flake8-string-format,
             flake8-use-fstring,
-            flake8-illegal-import,
             pep8-naming,
             flake8-bandit,
             dlint  
           ]
         files: "^(trestle)"
         exclude: "(oscal/)"
-        stages: [commit]
+        stages: [pre-commit]
   - repo: https://github.com/executablebooks/mdformat
-    rev: 0.7.16
+    rev: 0.7.17
     hooks:
     - id: mdformat
       exclude: "CHANGELOG.md|docs/mkdocs_code_of_conduct.md|docs/maintainers.md|docs/api_reference|tests/data/author|docs/contributing/mkdocs_contributing.md|tests/data/jinja_markdown_include|tests/data/jinja_cmd/number_captions_data.md|tests/data/jinja_cmd/number_captions_expected_output.md"
@@ -80,3 +79,4 @@ repos:
       - mdformat-config
       - mdformat-frontmatter
       - mdformat-gfm
+

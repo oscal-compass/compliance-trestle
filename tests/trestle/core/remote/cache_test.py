@@ -276,13 +276,13 @@ def test_fetcher_factory(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
                 as_file_uri('user/oscal_file.json'),
                 as_file_uri('../user/oscal_file.json')]:
         fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
-        assert type(fetcher) == cache.LocalFetcher
+        assert isinstance(fetcher, cache.LocalFetcher)
 
     # paths with drive letter
     for uri in ['C:\\Users\\user\\this.json', 'C:/Users/user/this.json', 'C:file.json']:
         if file_utils.is_windows():
             fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
-            assert type(fetcher) == cache.LocalFetcher
+            assert isinstance(fetcher, cache.LocalFetcher)
         else:
             with pytest.raises(TrestleError):
                 cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
@@ -291,15 +291,15 @@ def test_fetcher_factory(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
     monkeypatch.setenv('myusername', 'user123')
     monkeypatch.setenv('mypassword', 'somep4ss')
     fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, https_uri)
-    assert type(fetcher) == cache.HTTPSFetcher
+    assert isinstance(fetcher, cache.HTTPSFetcher)
 
     sftp_uri = 'sftp://user@hostname:/path/to/file.json'
     fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, sftp_uri)
-    assert type(fetcher) == cache.SFTPFetcher
+    assert isinstance(fetcher, cache.SFTPFetcher)
 
     sftp_uri = 'sftp://user@hostname:2000/path/to/file.json'
     fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, sftp_uri)
-    assert type(fetcher) == cache.SFTPFetcher
+    assert isinstance(fetcher, cache.SFTPFetcher)
 
 
 def test_fetcher_expiration(tmp_trestle_dir: pathlib.Path) -> None:
