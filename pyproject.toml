@@ -97,7 +97,7 @@ trestle = "trestle.cli:run"
 path = "trestle/__init__.py"
 
 [tool.hatch.envs.hatch-test]
-default-args = []
+default-args = ['tests']
 randomize = true
 parallel = true
 
