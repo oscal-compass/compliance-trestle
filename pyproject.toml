@@ -108,9 +108,46 @@ testpaths = [
     "tests",
 ]
 
+[tool.ruff]
+line-length = 120
+indent-width = 4
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+    "trestle/oscal",
+]
+
+
 [tool.ruff.format]
 preview = true
-quote-style = 'single'
+quote-style = "single"
+indent-style = "space"
+
+
+[tool.ruff.lint]
+ignore = ["P1","C812","C813","C814","C815","C816"]
 
 
 # [tool.black]
