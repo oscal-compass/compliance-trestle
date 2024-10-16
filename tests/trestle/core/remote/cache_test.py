@@ -16,6 +16,7 @@
 """Testing for cache functionality."""
 
 import getpass
+import os
 import pathlib
 import random
 import string
@@ -109,6 +110,7 @@ def test_https_fetcher_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyP
         fetcher._update_cache()
 
 
+@pytest.mark.skipif(os.environ.get('TEST_AIRGAPPED') is not None, reason='Network connectivity')
 def test_https_fetcher(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test the HTTPS fetcher update, including failures."""
     # This valid uri should work:
@@ -302,6 +304,7 @@ def test_fetcher_factory(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
     assert isinstance(fetcher, cache.SFTPFetcher)
 
 
+@pytest.mark.skipif(os.environ.get('TEST_AIRGAPPED') is not None, reason='Network connectivity')
 def test_fetcher_expiration(tmp_trestle_dir: pathlib.Path) -> None:
     """Test fetcher expiration behavior."""
     uri = (

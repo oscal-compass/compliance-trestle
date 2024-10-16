@@ -1,25 +1,163 @@
 # Added to aide with eventual transition away from setup.py
 [build-system]
-requires = [
-    "setuptools >= 35.0.2",
-    "wheel",
-    "setuptools_scm >= 2.0.0"
-]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-[tool.setuptools_scm]
+[project]
+name = "compliance-trestle"
+dynamic = ["version"]
+description = "Tools to manage & autogenerate python objects representing the OSCAL layers/models"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "Apache-2.0"
+keywords = [
+    "Compliance",
+    "Security",
+    "OSCAL",
+]
+authors = [{ name = "Chris Butler", email = "chris.butler@redhat.com" }
+]
+
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Information Technology",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: POSIX",
+  "Operating System :: Microsoft",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+
+dependencies = [
+    "attrs",
+    "ilcli",
+    "cryptography==42.0.4",
+    "paramiko==3.4.0",
+    "ruamel.yaml",
+    "furl",
+    "pydantic[email]>=2.0.0",
+    "python-dotenv>=0.10.4",
+    "datamodel-code-generator[http] == 0.25.3",
+    "python-frontmatter",
+    "pywin32 >= 1.0;platform_system=='Windows'",
+    "defusedxml",
+    "openpyxl~=3.0",
+    "Jinja2 == 3.1.4",
+    "cmarkgfm==2024.1.*",
+    "orjson",
+    "requests>=2.32.2",
+    "importlib_resources",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pre-commit>=2.4.0",
+    "setuptools>=61",
+    "urllib3==1.26.19",
+    "wheel",
+    "yapf",
+    "python-semantic-release>=9.8.0",
+    "pep8-naming",
+    "pytest-random-order",
+    "python-dateutil",
+    "mypy",
+    "types-PyYAML",
+    "types-paramiko",
+    "types-requests",
+    "types-setuptools",
+    # # Docs website
+    "mkdocs>=1.6.0",
+    "mkdocstrings[python]>=0.25.2",
+    "mkdocs-htmlproofer-plugin",
+    "mkdocs-material",
+    "markdown-include",
+    "pymdown-extensions",
+    "livereload",
+    ## Constrain system
+    "pylint",
+    # Checking repo after docs generation.
+    "gitpython",
+]
+
+[project.urls]
+Documentation = "https://oscal-compass.github.io/compliance-trestle"
+"Source code" = "https://github.com/oscal-compass/compliance-trestle"
+
+[project.scripts]
+trestle = "trestle.cli:run"
+
+[tool.hatch.version]
+path = "trestle/__init__.py"
+
+[tool.hatch.envs.hatch-test]
+default-args = ['tests']
+randomize = true
+parallel = true
+
 
 [tool.pytest.ini_options]
-minversion = "6.2"
+minversion = "5.4.3"
 testpaths = [
     "tests",
 ]
 
-[tool.black]
-line-length = 500
+[tool.ruff]
+line-length = 120
+indent-width = 4
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+    "trestle/oscal",
+]
 
-[tool.isort]
-line_length = 500
+
+[tool.ruff.format]
+preview = true
+quote-style = "single"
+indent-style = "space"
+
+
+[tool.ruff.lint]
+ignore = ["P1","C812","C813","C814","C815","C816"]
+
+
+# [tool.black]
+# line-length = 500
+
+# [tool.isort]
+# line_length = 500
+
+
+
 
 [tool.semantic_release]
 build_command = "python setup.py sdist bdist_wheel"
@@ -47,3 +185,36 @@ insecure = false
 
 [tool.semantic_release.publish]
 dist_glob_patterns = ["dist/*"]
+
+
+
+# dev =
+#     pytest>=5.4.3 # okay
+#     pytest-cov>=2.10.0 # not 
+#     pytest-xdist # okay
+#     pre-commit>=2.4.0 # not sure
+#     setuptools>=61 # need to check
+#     urllib3==1.26.19
+#     wheel
+#     yapf
+#     python-semantic-release>=9.8.0
+#     pep8-naming
+#     pytest-random-order
+#     python-dateutil
+#     mypy
+#     types-PyYAML
+#     types-paramiko
+#     types-requests
+#     types-setuptools
+#     # # Docs website
+#     mkdocs>=1.6.0
+#     mkdocstrings[python]>=0.25.2
+#     mkdocs-htmlproofer-plugin
+#     mkdocs-material
+#     markdown-include
+#     pymdown-extensions
+#     livereload
+#     ## Constrain system
+#     pylint
+#     # Checking repo after docs generation.
+#     gitpython

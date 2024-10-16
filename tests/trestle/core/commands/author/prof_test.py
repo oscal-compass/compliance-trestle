@@ -14,6 +14,7 @@
 """Tests for the profile author module."""
 
 import argparse
+import os
 import pathlib
 import shutil
 import sys
@@ -1213,6 +1214,7 @@ def test_profile_generate_assemble_parameter_aggregation(
     assert Trestle().run() == 0
 
 
+@pytest.mark.skipif(os.environ.get('TEST_AIRGAPPED') is not None, reason='Network connectivity')
 def test_profile_generate_assemble_rev_5(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test the profile markdown generator."""
     _, assembled_prof_dir, _, markdown_path = setup_profile_generate_rev5(tmp_trestle_dir, 'test_profile_rev5.json')
