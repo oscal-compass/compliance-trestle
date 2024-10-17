@@ -52,6 +52,7 @@ RULE_ID = 'Rule_Id'
 RULE_DESCRIPTION = 'Rule_Description'
 PROFILE_SOURCE = 'Profile_Source'
 PROFILE_DESCRIPTION = 'Profile_Description'
+TARGET_COMPONENT = 'Target_Component'
 CHECK_ID = 'Check_Id'
 CHECK_DESCRIPTION = 'Check_Description'
 FETCHER_ID = 'Fetcher_Id'
@@ -145,6 +146,22 @@ def row_property_builder(row: int, name: str, value, ns: str, class_: str, remar
     return prop
 
 
+def is_validation(component_type: str) -> bool:
+    """Check for validation component."""
+    return component_type.lower().strip() == validation
+
+
+def synthesize_rule_key(
+    component_title: str, component_type: str, rule_id: str, check_id: str, target_component: str
+) -> tuple:
+    """Synthesize rule_key."""
+    if is_validation(component_type):
+        rval = (component_title, component_type, rule_id, check_id, target_component)
+    else:
+        rval = (component_title, component_type, rule_id, None, None)
+    return rval
+
+
 class CsvToOscalComponentDefinition(TaskBase):
     """
     Task to create OSCAL ComponentDefinition json.
@@ -168,7 +185,13 @@ class CsvToOscalComponentDefinition(TaskBase):
         """Print the help string."""
         name = self.name
         oscal_name = 'component_definition'
-        #
+        # help note identifiers
+        note01 = '1'
+        note02 = '2'
+        note03 = '3'
+        note04 = '4'
+        note05 = '5'
+        # help generation
         logger.info(f'Help information for {name} task.')
         logger.info('')
         logger.info(f'Purpose: From csv produce OSCAL {oscal_name} file.')
@@ -188,23 +211,25 @@ class CsvToOscalComponentDefinition(TaskBase):
         text1 = '  required columns:      '
         for text2 in CsvColumn.get_required_column_names():
             if text2 in [f'{RULE_DESCRIPTION}', f'{PROFILE_SOURCE}', f'{PROFILE_DESCRIPTION}', f'{CONTROL_ID_LIST}']:
-                text2 += ' (see note 1)'
+                text2 += f' (see note {note01})'
             logger.info(text1 + '$$' + text2)
             text1 = '                         '
         text1 = '  optional columns:      '
         for text2 in CsvColumn.get_optional_column_names():
             if text2 in [f'{ORIGINAL_RISK_RATING}', f'{ADJUSTED_RISK_RATING}', f'{RISK_ADJUSTMENT}']:
-                text2 += ' (see note 1)'
+                text2 += f' (see note {note01})'
+            elif text2 in [f'{TARGET_COMPONENT}']:
+                text2 += f' (see note {note03})'
             else:
-                text2 += ' (see note 2)'
+                text2 += f' (see note {note02})'
             logger.info(text1 + '$' + text2)
             text1 = '                         '
         for text2 in CsvColumn.get_parameter_column_names():
-            text2 += ' (see notes 1, 4)'
+            text2 += f' (see notes {note01}, {note05})'
             logger.info(text1 + '$' + text2)
             text1 = '                         '
         text1 = '  comment columns:       '
-        text2 = 'Informational (see note 3)'
+        text2 = f'Informational (see note {note04})'
         logger.info(text1 + '#' + text2)
         text1 = '  output-dir           = '
         text2 = '(required) the path of the output directory for synthesized OSCAL .json files.'
@@ -226,16 +251,20 @@ class CsvToOscalComponentDefinition(TaskBase):
         text2 = ''
         logger.info(text1 + text2)
         text1 = 'Notes: '
-        text2 = '[1] column is ignored for validation component type'
+        text2 = f'[{note01}] column is ignored for validation component type'
         logger.info(text1 + text2)
         text1 = '       '
-        text2 = '[2] column is required for validation component type'
+        text2 = f'[{note02}] column is required for validation component type'
         logger.info(text1 + text2)
         text1 = '       '
-        text2 = '[3] column name starting with # causes column to be ignored'
+        text2 = f'[{note03}] column is optional for validation component type'
+        text3 = f', but may be needed to prevent {RULE_ID} collisions'
+        logger.info(text1 + text2 + text3)
+        text1 = '       '
+        text2 = f'[{note04}] column name starting with # causes column to be ignored'
         logger.info(text1 + text2)
         text1 = '       '
-        text2 = '[4] additional parameters are specified by adding a common suffix per set'
+        text2 = f'[{note05}] additional parameters are specified by adding a common suffix per set'
         text3 = f', for example: {PARAMETER_ID}_1, {PARAMETER_DESCRIPTION}_1, ...{PARAMETER_ID}_2...'
         logger.info(text1 + text2 + text3)
 
@@ -387,7 +416,7 @@ class CsvToOscalComponentDefinition(TaskBase):
         add_set_params = []
         mod_set_params = []
         for key in cd_set_params:
-            rule_key = (key[0], key[1], key[2])
+            rule_key = synthesize_rule_key(key[0], key[1], key[2], None, None)
             if rule_key not in mod_rules:
                 continue
             if key in csv_set_params:
@@ -396,7 +425,7 @@ class CsvToOscalComponentDefinition(TaskBase):
                 del_set_params.append(key)
                 logger.debug(f'params del: {key}')
         for key in csv_set_params:
-            rule_key = (key[0], key[1], key[2])
+            rule_key = synthesize_rule_key(key[0], key[1], key[2], None, None)
             if rule_key not in mod_rules:
                 continue
             if key in cd_set_params:
@@ -415,7 +444,7 @@ class CsvToOscalComponentDefinition(TaskBase):
         add_control_mappings = []
         mod_control_mappings = []
         for key in cd_controls:
-            rule_key = (key[0], key[1], key[2])
+            rule_key = synthesize_rule_key(key[0], key[1], key[2], None, None)
             if rule_key not in mod_rules:
                 continue
             if key in csv_controls:
@@ -424,7 +453,7 @@ class CsvToOscalComponentDefinition(TaskBase):
                 del_control_mappings.append(key)
                 logger.debug(f'ctl-maps del: {key}')
         for key in csv_controls:
-            rule_key = (key[0], key[1], key[2])
+            rule_key = synthesize_rule_key(key[0], key[1], key[2], None, None)
             if rule_key not in mod_rules:
                 continue
             if key in cd_controls:
@@ -579,7 +608,7 @@ class CsvToOscalComponentDefinition(TaskBase):
     def _is_validation(self, rule_key: tuple) -> bool:
         """Check for validation component."""
         component_type = self._csv_mgr.get_value(rule_key, COMPONENT_TYPE)
-        return component_type.lower() == validation
+        return is_validation(component_type)
 
     def _add_rule_prop(
         self, control_implementation: ControlImplementation, control_mappings: List[str], rule_key: tuple
@@ -769,6 +798,7 @@ class CsvToOscalComponentDefinition(TaskBase):
             source = tokens[3]
             description = tokens[4]
             param_id = tokens[5]
+            # ctl impl
             control_implementation = self._cd_mgr.find_control_implementation(
                 component_title, component_type, source, description
             )
@@ -791,12 +821,13 @@ class CsvToOscalComponentDefinition(TaskBase):
             source = tokens[3]
             description = tokens[4]
             param_id = tokens[5]
+            # ctl impl
             control_implementation = self._cd_mgr.find_control_implementation(
                 component_title, component_type, source, description
             )
             control_implementation.set_parameters = as_list(control_implementation.set_parameters)
             # add
-            rule_key = _CsvMgr.get_rule_key(component_title, component_type, rule_id)
+            rule_key = synthesize_rule_key(component_title, component_type, rule_id, None, None)
             values = [self._csv_mgr.get_default_value_by_id(rule_key, param_id)]
             set_parameter = SetParameter(
                 param_id=param_id,
@@ -813,6 +844,7 @@ class CsvToOscalComponentDefinition(TaskBase):
             source = tokens[3]
             description = tokens[4]
             param_id = tokens[5]
+            # ctl impl
             control_implementation = self._cd_mgr.find_control_implementation(
                 component_title, component_type, source, description
             )
@@ -821,7 +853,7 @@ class CsvToOscalComponentDefinition(TaskBase):
                 for set_parameter in self._set_parameter_generator(set_parameters):
                     if set_parameter.param_id != param_id:
                         continue
-                    rule_key = _CsvMgr.get_rule_key(component_title, component_type, rule_id)
+                    rule_key = synthesize_rule_key(component_title, component_type, rule_id, None, None)
                     values = [self._csv_mgr.get_default_value_by_id(rule_key, param_id)]
                     replacement = SetParameter(
                         param_id=param_id,
@@ -854,6 +886,7 @@ class CsvToOscalComponentDefinition(TaskBase):
             source = tokens[3]
             description = tokens[4]
             smt_id = tokens[5]
+            # ctl-id
             control_id = derive_control_id(smt_id)
             control_implementation = self._cd_mgr.find_control_implementation(
                 component_title, component_type, source, description
@@ -880,13 +913,14 @@ class CsvToOscalComponentDefinition(TaskBase):
             source = tokens[3]
             description = tokens[4]
             smt_id = tokens[5]
+            # ctl-id
             control_id = derive_control_id(smt_id)
             control_implementation = self._cd_mgr.find_control_implementation(
                 component_title, component_type, source, description
             )
             implemented_requirement = self._get_implemented_requirement(control_implementation, control_id)
             # namespace
-            rule_key = (tokens[0], tokens[1], tokens[2])
+            rule_key = synthesize_rule_key(tokens[0], tokens[1], tokens[2], None, None)
             ns = self._get_namespace(rule_key)
             # create rule implementation (as property)
             name = RULE_ID
@@ -1190,7 +1224,7 @@ class _CdMgr():
         if component.props:
             for prop in component.props:
                 if prop.name == RULE_ID:
-                    key = (component.title, component.type, prop.value)
+                    key = synthesize_rule_key(component.title, component.type, prop.value, None, None)
                     value = prop.remarks
                     self._cd_rules_map[key] = value
                     logger.debug(f'cd: {key} {self._cd_rules_map[key]}')
@@ -1380,6 +1414,7 @@ class CsvColumn():
     _columns_optional = [
         f'{CHECK_ID}',
         f'{CHECK_DESCRIPTION}',
+        f'{TARGET_COMPONENT}',
         f'{ORIGINAL_RISK_RATING}',
         f'{ADJUSTED_RISK_RATING}',
         f'{RISK_ADJUSTMENT}',
@@ -1456,6 +1491,7 @@ class CsvColumn():
         f'{PARAMETER_VALUE_ALTERNATIVES}',
         f'{CHECK_ID}',
         f'{CHECK_DESCRIPTION}',
+        f'{TARGET_COMPONENT}',
         f'{ORIGINAL_RISK_RATING}',
         f'{ADJUSTED_RISK_RATING}',
         f'{RISK_ADJUSTMENT}',
@@ -1504,6 +1540,7 @@ class CsvColumn():
         f'{RULE_ID}',
         f'{CHECK_ID}',
         f'{CHECK_DESCRIPTION}',
+        f'{TARGET_COMPONENT}',
     ]
 
     @staticmethod
@@ -1552,7 +1589,12 @@ class _CsvMgr():
             component_description = self.get_row_value(row, f'{COMPONENT_DESCRIPTION}')
             rule_id = self.get_row_value(row, f'{RULE_ID}')
             # rule sets
-            key = _CsvMgr.get_rule_key(component_title, component_type, rule_id)
+            check_id = self.get_row_value(row, f'{CHECK_ID}', default=None)
+            target_component = self.get_row_value(row, f'{TARGET_COMPONENT}', default=None)
+            key = synthesize_rule_key(component_title, component_type, rule_id, check_id, target_component)
+
+            logger.info(f'{key}')
+
             if key in self._csv_rules_map:
                 text = f'row "{row_num}" contains duplicate {RULE_ID} "{rule_id}"'
                 raise RuntimeError(text)
@@ -1592,11 +1634,6 @@ class _CsvMgr():
             for control in controls:
                 key = (component_description, component_type, rule_id, source, description, control)
                 self._csv_controls_map[key] = [row_num, row]
-
-    @staticmethod
-    def get_rule_key(component_title: str, component_type: str, rule_id: str) -> tuple:
-        """Get rule_key."""
-        return (component_title, component_type, rule_id)
 
     def get_parameter_id_column_names(self) -> List[str]:
         """Get parameter_id column_names."""
@@ -1724,9 +1761,9 @@ class _CsvMgr():
         """Get row number for rule."""
         return self._csv_rules_map[rule_key][0]
 
-    def get_row_value(self, row: List[str], name: str) -> str:
+    def get_row_value(self, row: List[str], name: str, default='') -> str:
         """Get value for specified name."""
-        rval = ''
+        rval = default
         index = self.get_col_index(name)
         if index >= 0:
             rval = row[index]
