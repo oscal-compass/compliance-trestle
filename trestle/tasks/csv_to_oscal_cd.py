@@ -152,7 +152,7 @@ def is_validation(component_type: str) -> bool:
 
 
 def synthesize_rule_key(
-    component_title: str, component_type: str, rule_id: str, check_id: str, target_component: str
+    component_title: str, component_type: str, rule_id: str, check_id: str | None, target_component: str | None
 ) -> tuple:
     """Synthesize rule_key."""
     if is_validation(component_type):
