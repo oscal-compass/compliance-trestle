@@ -1596,9 +1596,6 @@ class _CsvMgr():
             check_id = self.get_row_value(row, f'{CHECK_ID}', default=None)
             target_component = self.get_row_value(row, f'{TARGET_COMPONENT}', default=None)
             key = synthesize_rule_key(component_title, component_type, rule_id, check_id, target_component)
-
-            logger.info(f'{key}')
-
             if key in self._csv_rules_map:
                 text = f'row "{row_num}" contains duplicate {RULE_ID} "{rule_id}"'
                 raise RuntimeError(text)
