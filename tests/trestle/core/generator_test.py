@@ -154,7 +154,7 @@ def test_gen_control() -> None:
 def test_ensure_optional_exists() -> None:
     """Explicit test to ensure that optional variables are populated."""
     my_catalog = gens.generate_sample_model(catalog.Catalog, include_optional=True, depth=-1)
-    assert type(my_catalog.controls[0]) == catalog.Control
+    assert isinstance(my_catalog.controls[0], catalog.Control)
 
 
 def test_gen_party() -> None:
