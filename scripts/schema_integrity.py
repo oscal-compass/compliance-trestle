@@ -77,11 +77,11 @@ class IntegrityCmd(Command):
         for key, value in dict_of_interest.items():
             if key == ref_key:
                 returner.append(value)
-            elif type(value) == dict:
+            elif isinstance(value, dict):
                 returner = returner + self.recursive_ref(ref_key, value)
-            elif type(value) == list:
+            elif isinstance(value, list):
                 for item in value:
-                    if type(item) == dict:
+                    if isinstance(item, dict):
                         returner = returner + self.recursive_ref(ref_key, item)
                     elif key == ref_key:
                         returner.append(value)

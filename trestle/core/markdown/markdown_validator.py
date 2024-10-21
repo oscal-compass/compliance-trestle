@@ -181,8 +181,8 @@ class MarkdownValidator:
             return False
         for key in template.keys():
             if key in candidate.keys():
-                if type(template[key]) == dict:
-                    if type(candidate[key]) == dict:
+                if isinstance(template[key], dict):
+                    if isinstance(candidate[key], dict):
                         status = cls.compare_keys(template[key], candidate[key], ignore_fields)
                         if not status:
                             return status
