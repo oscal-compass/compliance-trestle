@@ -22,7 +22,6 @@ from jinja2.ext import Extension
 class TrestleJinjaExtension(Extension):
     """Class to define common methods to be inherited from for use in trestle."""
 
-    # This
     max_tag_parse = 20
 
     def __init__(self, environment: Environment) -> None:
