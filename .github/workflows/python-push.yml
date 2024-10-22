@@ -90,6 +90,10 @@ jobs:
       continue-on-error: true 
       run: |
         make code-typing
+    - name: Install documenation dependencies
+      if: steps.core-version.outputs.core == 'true'
+      run: |
+        make docs-ubuntu-deps
     - name: Validate website content (mkdocs)
       if: steps.core-version.outputs.core == 'true'
       run: |
@@ -176,6 +180,9 @@ jobs:
     - name: Install build tools
       run: |
         make develop
+    - name: Install documenation dependencies
+      run: |
+        make docs-ubuntu-deps
     - name: Create release
       shell: bash
       run: |
