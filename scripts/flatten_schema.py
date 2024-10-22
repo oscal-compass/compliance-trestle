@@ -56,7 +56,7 @@ class FlattenSchema():
 
     def _replace_refs(self, obj, ref_set):
         """Given an object recurse into it replacing any found ref: defs with what is in def_list."""
-        if type(obj) == dict:
+        if isinstance(obj, dict):
             # first check if it is a simple $ref line and replace it directly
             if len(obj.items()) == 1 and obj.get(self._ref_str, None) is not None:
                 return self._replace_ref(obj, ref_set)
@@ -71,9 +71,9 @@ class FlattenSchema():
                     if changed:
                         dirty = True
             return new_dict, ref_set, dirty
-        elif type(obj) == str:
+        elif isinstance(obj, str):
             return obj, ref_set, False
-        elif type(obj) == list:
+        elif isinstance(obj, list):
             n_list = len(obj)
             changed = False
             dirty = False
@@ -82,7 +82,7 @@ class FlattenSchema():
                 if changed:
                     dirty = True
             return obj, ref_set, dirty
-        elif type(obj) == tuple:
+        elif isinstance(obj, tuple):
             new_val, ref_set, changed = self._replace_refs(obj[1], ref_set)
             return (obj[0], new_val), ref_set, changed
         if hasattr(obj, '__iter__'):
