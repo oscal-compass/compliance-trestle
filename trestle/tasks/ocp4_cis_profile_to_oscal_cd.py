@@ -63,8 +63,7 @@ class Ocp4CisProfileToOscalCD(TaskBase):
             config_object: Config section associated with the task.
         """
         super().__init__(config_object)
-        self._timestamp = datetime.datetime.utcnow().replace(microsecond=0).replace(tzinfo=datetime.timezone.utc
-                                                                                    ).isoformat()
+        self._timestamp = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat()
 
     def set_timestamp(self, timestamp: str) -> None:
         """Set the timestamp."""

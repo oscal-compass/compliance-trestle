@@ -3,6 +3,13 @@ extra:
   analytics:
     property: G-XT3KGMHSY8
     provider: google
+  consent:
+    title: Cookie consent
+    description: >-
+      We use cookies to recognize your repeated visits and preferences, as well as
+      to measure the effectiveness of our documentation and whether users find what
+      they're searching for. With your consent, you're helping us to make our documentation
+      better.
 markdown_extensions:
 - admonition
 - markdown_include.include
@@ -44,6 +51,7 @@ nav:
   - Trestle's object model: contributing/trestle_oscal_object_model.md
   - Developer Certificate of Originality: contributing/DCO.md
   - Trestle plugin mechanism: contributing/plugins.md
+  - GitHub actions setup: contributing/github_actions_setup.md
 - Known limitations: errors.md
 - Demos: demonstrations-content.md
 - Plugins:
@@ -124,7 +132,11 @@ nav:
       - duplicates_validator: api_reference/trestle.core.duplicates_validator.md
       - generators: api_reference/trestle.core.generators.md
       - generic_oscal: api_reference/trestle.core.generic_oscal.md
-      - jinja: api_reference/trestle.core.jinja.md
+      - jinja:
+        - base: api_reference/trestle.core.jinja.base.md
+        - ext: api_reference/trestle.core.jinja.ext.md
+        - filters: api_reference/trestle.core.jinja.filters.md
+        - tags: api_reference/trestle.core.jinja.tags.md
       - links_validator: api_reference/trestle.core.links_validator.md
       - markdown:
         - base_markdown_node: api_reference/trestle.core.markdown.base_markdown_node.md
@@ -144,6 +156,7 @@ nav:
       - object_factory: api_reference/trestle.core.object_factory.md
       - parser: api_reference/trestle.core.parser.md
       - pipeline: api_reference/trestle.core.pipeline.md
+      - plugins: api_reference/trestle.core.plugins.md
       - profile_resolver: api_reference/trestle.core.profile_resolver.md
       - refs_validator: api_reference/trestle.core.refs_validator.md
       - remote:
@@ -192,11 +205,25 @@ nav:
       - transformer_helper: api_reference/trestle.transforms.transformer_helper.md
       - transformer_singleton: api_reference/trestle.transforms.transformer_singleton.md
 plugins:
+# warning don't use `macros`
 - search
+- autorefs
+- htmlproofer:
+    enabled: true
+    validate_rendered_template: false
+    validate_external_urls: true
+    raise_error_after_finish: false
+    raise_error_excludes:
+      # This is to remove some false positives for links which work.
+      # Anchors are validated again by core mkdocs
+      404: ['#trestle.*']
 - mkdocstrings:
+    default_handler: python
     handlers:
       python:
         options:
+          show_inheritance_diagram: true
+          inherited_members: false
           group_by_category: true
           show_category_heading: true
           show_if_no_docstring: true
@@ -206,8 +233,6 @@ plugins:
           - '!^__json'
           - '!^__config__'
           new_path_syntax: true
-    watch:
-    - trestle
 repo_name: oscal-compass/compliance-trestle
 repo_url: https://github.com/oscal-compass/compliance-trestle
 site_description: Documentation for compliance-trestle package.
@@ -222,3 +247,8 @@ theme:
     accent: purple
     primary: teal
     scheme: slate
+validation:
+  omitted_files: warn
+  absolute_links: warn # Or 'relative_to_docs' - new in MkDocs 1.6
+  unrecognized_links: warn
+  anchors: warn # New in MkDocs 1.6

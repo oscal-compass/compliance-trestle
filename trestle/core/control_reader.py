@@ -283,9 +283,6 @@ class ControlReader:
         imp_req.statements = []
         comp_dict = md_comp_dict[comp_name]
         for label, comp_info in comp_dict.items():
-            # only assemble responses with associated rules
-            if not comp_info.rules:
-                continue
             # if no label it applies to the imp_req itself rather than a statement
             if not label:
                 imp_req.description = ControlReader._handle_empty_prose(comp_info.prose, control_id)

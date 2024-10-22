@@ -32,6 +32,17 @@ review to indicate acceptance. A change requires LGTMs from one of the maintaine
 
 For a list of the maintainers, see the [maintainers](https://oscal-compass.github.io/compliance-trestle/maintainers/) page.
 
+### Trestle updating, testing and release logistics
+
+Contributors should make a working copy (branch or fork) from the develop branch of `trestle`.
+Contributors should update the working copy with changes, then create a pull request to merge into the develop branch.
+Contributors must include test cases to meet at least the minimum code coverage requirements.
+Upon approval from reviewer(s), the working copy is squashed and merged into the develop branch.
+Upon a cadence established by the maintainers, the develop branch is merged into the main branch and a new release is uniquely numbered and pushed to [pypi](https://pypi.org/project/compliance-trestle/).
+
+`trestle` employs `semantic release` to automatically control release numbering.
+Code deliveries should be tagged with prefix `fix:` for changes that are bug fixes or `feat:` for changes that are new features.  See [allowed_tags](https://python-semantic-release.readthedocs.io/en/latest/commit-parsing.html#:~:text=The%20default%20configuration%20options%20for%20semantic_release.commit_parser.AngularCommitParser%20are%3A) for a list of supported tags.
+
 ### Trestle merging and release workflow
 
 `trestle` is operating on a simple, yet opinionated, method for continuous integration. It's designed to give developers a coherent understanding of the objectives of other past developers.
@@ -86,7 +97,7 @@ Software License 2.0. Using the SPDX format is the simplest approach.
 e.g.
 
 ```text
-# Copyright (c) 2020 IBM Corp. All rights reserved.
+# Copyright (c) 2024 The OSCAL Compass Authors. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -164,7 +175,7 @@ Test discovery should be automatic when you select a .py file for editing. After
 
 Sometimes the discovery fails - and you may need to resort to uninstalling the python extension and reinstalling it - perhaps also shutting down code and restarting.  This is a lightweight operation and seems to be safe and usually fixes any problems.
 
-Test disovery will fail or stop if any of the tests have errors in them - so be sure to monitor the Problems panel at the bottom for problems in the code.
+Test discovery will fail or stop if any of the tests have errors in them - so be sure to monitor the Problems panel at the bottom for problems in the code.
 
 Note that there are many panels available in Output - so be sure to check `Python Test Log` for errors and output from the tests.
 
@@ -179,7 +190,21 @@ Trestle relies on reference data from two NIST repositories for testing:
 
 Both of these repositories are submodules in the trestle project. In order to develop / test trestle the submodules must be checked out with `git submodule update --init` or `make submodules`.
 
+### Code testing
+
+Tests must exist for at least 96% of trestle Python code. To determine the code coverage locally during development:
+
+```bash
+make test-cov
+```
+
+A PR without sufficient test coverage will fail the trestle CI process and will not be approved or merged.
+
+Additional code scrutiny is applied in the trestle CI pipeline by [SonarCloud](https://sonarcloud.io/project/overview?id=compliance-trestle). Any failures must be addressed before code merging.
+
 ### Code style and formating
+
+Python code should generally follow [PEP 8](https://peps.python.org/pep-0008/).
 
 `trestle` uses [yapf](https://github.com/google/yapf) for code formatting and [flake8](https://flake8.pycqa.org/en/latest/) for code styling.  It also uses [pre-commit](https://pre-commit.com/) hooks that are integrated into the development process and the CI. When you run `make develop` you are ensuring that the pre-commit hooks are installed and updated to their latest versions for this repository. This ensures that all delivered code has been properly formatted
 and passes the linter rules.  See the [pre-commit configuration file](https://github.com/oscal-compass/compliance-trestle/blob/develop/.pre-commit-config.yaml) for details on
@@ -248,4 +273,4 @@ ______________________________________________________________________
 
 ##### Overview of process to take OSCAL models and upgrade trestle Python code
 
-<img src="images/trestle-OSCAL-upgrade.png" style="width:600px;height:500px;border: 1px solid #000;padding:10px;">
+![](images/trestle-OSCAL-upgrade.png)
