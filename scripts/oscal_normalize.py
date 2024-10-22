@@ -235,7 +235,7 @@ class ClassText():
         new_refs = p.findall(line)
         if new_refs:
             for r in new_refs:
-                if type(r) == tuple:
+                if isinstance(r, tuple):
                     for s in r:
                         self.add_ref_if_good(s)
                 else:

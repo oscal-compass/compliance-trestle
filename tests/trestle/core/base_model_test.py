@@ -86,7 +86,7 @@ def test_is_oscal_base() -> None:
     """Test that the typing information is as expected."""
     catalog = simple_catalog()
 
-    assert (isinstance(catalog, ospydantic.OscalBaseModel))
+    assert isinstance(catalog, ospydantic.OscalBaseModel)
 
 
 def test_no_timezone_exception() -> None:
@@ -104,7 +104,7 @@ def test_with_timezone() -> None:
 
     popo_json = json.loads(jsoned_catalog)
     time = popo_json['metadata']['last-modified']
-    assert (type(time) == str)
+    assert isinstance(time, str)
     assert ('Z' in time or '+' in time or '-' in time)
 
 

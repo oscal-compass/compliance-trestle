@@ -37,7 +37,7 @@ from trestle.tasks.base_task import TaskOutcome
 
 logger = logging.getLogger(__name__)
 
-timestamp = datetime.datetime.utcnow().replace(microsecond=0).replace(tzinfo=datetime.timezone.utc).isoformat()
+timestamp = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat()
 
 recurse = True
 

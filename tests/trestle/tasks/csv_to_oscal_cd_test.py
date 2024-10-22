@@ -908,10 +908,10 @@ def test_execute_correct_rule_key(tmp_path: pathlib.Path) -> None:
         retval = tgt.execute()
         assert retval == TaskOutcome.SUCCESS
         # insure expected key exists
-        expected_key = (component_title, component_type, rule_id)
+        expected_key = (component_title, component_type, rule_id, None, None)
         assert expected_key in tgt._csv_mgr.get_rule_keys()
         # insure unexpected key does not exist
-        unexpected_key = (component_description, component_type, rule_id)
+        unexpected_key = (component_description, component_type, rule_id, None, None)
         assert unexpected_key not in tgt._csv_mgr.get_rule_keys()
 
 
@@ -1343,6 +1343,32 @@ def test_execute_with_ignored_risk_properties(tmp_path: pathlib.Path) -> None:
         assert prop.name != 'Original_Risk_Rating'
         assert prop.name != 'Adjusted_Risk_Rating'
         assert prop.name != 'Risk_Adjustment'
+
+
+def test_execute_rule_name_overlap(tmp_path: pathlib.Path) -> None:
+    """Test execute rule name overlap."""
+    _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-rule-name-overlap.config')
+    rows = _get_rows(section['csv-file'])
+    with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
+        mock_csv_reader.return_value = rows
+        tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+        retval = tgt.execute()
+        assert retval == TaskOutcome.SUCCESS
+    # read component-definition
+    fp = pathlib.Path(tmp_path) / 'component-definition.json'
+    cd = ComponentDefinition.oscal_read(fp)
+    # spot check
+    component = cd.components[0]
+    assert component.type.lower() == 'validation'
+    assert len(component.props) == 20
+    assert component.props[0].name == 'Rule_Id'
+    assert component.props[0].value == 'RULE-1.1'
+    assert component.props[3].name == 'Target_Component'
+    assert component.props[3].value == 'Target-A'
+    assert component.props[12].name == 'Rule_Id'
+    assert component.props[12].value == 'RULE-1.1'
+    assert component.props[15].name == 'Target_Component'
+    assert component.props[15].value == 'Target-B'
 
 
 def test_execute_add_user_property(tmp_path: pathlib.Path) -> None:

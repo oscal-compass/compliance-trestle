@@ -793,8 +793,7 @@ The markdown header lists all the rules that apply to this control, along with t
 
 The values for rule parameters are specified using the normal `SetParameter` mechanism in the ControlImplementation, but it's important to note that there are two different types of `SetParameter`: Those that apply to the normal parameters of the control, and those that apply strictly to the rules.
 
-Note that markdown for a control is only created if there are rules associated with the control, and within the markdown the only parts written out that
-prompt for responses are parts that have rules assigned.  Thus the output markdown directory may be highly pruned of both controls and groups of controls if only some controls have rules associated.
+Note that markdown is created for all of the controls in the `Component` control implementation. However, when processing control parts, the part is only written out if there are associated rules or pre-filled implementation descriptions.
 
 In addition, the rules should be regarded as read-only from the editing perspective, and you cannot change the rules associated with a control or its parts.  But you may edit the rule parameter values as described in the comments of the markdown file under
 `x-trestle-comp-def-rules-param-vals`.  You may also edit the prose and implementation status associated with a statement part at the bottom of the markdown file.

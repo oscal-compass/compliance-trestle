@@ -18,6 +18,12 @@ We use 12-week iterations for high-level initiatives that must be broken down an
 
 Each roadmap item is represented as a GitHub Issue. Discussions or any feedback on current roadmap items can take place in threads on the corresponding issue. To stay up to date with roadmap items, please join the OSCAL-Compass community [meetings](https://github.com/oscal-compass/community).
 
+**Help Us Grow `compliance-trestle`!** Community contributions are essential to the project's success. To ensure we prioritize the most active and relevant issues, we're using `actions/stale` to automatically close older ones. Your participation is greatly appreciated!
+
+#### Our Triaging Process
+
+All new issues in `compliance-trestle` are added to the [project](https://github.com/orgs/oscal-compass/projects/2) with a status of New. All issues that need to be triaged are viewable [here](https://github.com/orgs/oscal-compass/projects/2/views/8). Once there is enough information to move forward on the issue, it can be moved to the `Backlog` by applying the `Backlog` label and moving the status to `Ready`.
+
 ### How to add an item to the roadmap?
 
 **Contributors are encouraged to get feedback early by submitting issues to new work they would like to complete and getting feedback.**
