@@ -1,6 +1,386 @@
 # CHANGELOG
 
+## v3.5.0 (2024-10-23)
 
+### Build
+
+* build(deps): bump python-semantic-release/upload-to-gh-release (#1717)
+
+Bumps [python-semantic-release/upload-to-gh-release](https://github.com/python-semantic-release/upload-to-gh-release) from 9.8.8 to 9.8.9.
+- [Release notes](https://github.com/python-semantic-release/upload-to-gh-release/releases)
+- [Changelog](https://github.com/python-semantic-release/upload-to-gh-release/blob/main/releaserc.toml)
+- [Commits](https://github.com/python-semantic-release/upload-to-gh-release/compare/v9.8.8...v9.8.9)
+
+---
+updated-dependencies:
+- dependency-name: python-semantic-release/upload-to-gh-release
+  dependency-type: direct:production
+  update-type: version-update:semver-patch
+...
+
+Signed-off-by: dependabot[bot] &lt;support@github.com&gt;
+Co-authored-by: dependabot[bot] &lt;49699333+dependabot[bot]@users.noreply.github.com&gt; ([`5e15a03`](https://github.com/oscal-compass/compliance-trestle/commit/5e15a035fc4e60b4f450f609d924813565b2b354))
+
+* build(deps): bump python-semantic-release/upload-to-gh-release (#1683)
+
+Bumps [python-semantic-release/upload-to-gh-release](https://github.com/python-semantic-release/upload-to-gh-release) from 9.8.0 to 9.8.8.
+- [Release notes](https://github.com/python-semantic-release/upload-to-gh-release/releases)
+- [Changelog](https://github.com/python-semantic-release/upload-to-gh-release/blob/main/releaserc.toml)
+- [Commits](https://github.com/python-semantic-release/upload-to-gh-release/compare/v9.8.0...v9.8.8)
+
+---
+updated-dependencies:
+- dependency-name: python-semantic-release/upload-to-gh-release
+  dependency-type: direct:production
+  update-type: version-update:semver-patch
+...
+
+Signed-off-by: dependabot[bot] &lt;support@github.com&gt;
+Co-authored-by: dependabot[bot] &lt;49699333+dependabot[bot]@users.noreply.github.com&gt;
+Co-authored-by: Chris Butler &lt;chris.butler@redhat.com&gt;
+Co-authored-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`01332d3`](https://github.com/oscal-compass/compliance-trestle/commit/01332d3e7c73fd645788b67e4d5b81cec6ab8576))
+
+* build(deps): Bump python-semantic-release/python-semantic-release (#1682)
+
+Bumps [python-semantic-release/python-semantic-release](https://github.com/python-semantic-release/python-semantic-release) from 9.8.0 to 9.8.8.
+- [Release notes](https://github.com/python-semantic-release/python-semantic-release/releases)
+- [Changelog](https://github.com/python-semantic-release/python-semantic-release/blob/master/CHANGELOG.md)
+- [Commits](https://github.com/python-semantic-release/python-semantic-release/compare/v9.8.0...v9.8.8)
+
+---
+updated-dependencies:
+- dependency-name: python-semantic-release/python-semantic-release
+  dependency-type: direct:production
+  update-type: version-update:semver-patch
+...
+
+Signed-off-by: dependabot[bot] &lt;support@github.com&gt;
+Co-authored-by: dependabot[bot] &lt;49699333+dependabot[bot]@users.noreply.github.com&gt;
+Co-authored-by: Chris Butler &lt;chris.butler@redhat.com&gt;
+Co-authored-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`56b019c`](https://github.com/oscal-compass/compliance-trestle/commit/56b019c1e8f5bf404d6c69bf3c2c00422f293d66))
+
+* build(deps): bump artifact actions from 2 to 4 (#1679)
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`2e81958`](https://github.com/oscal-compass/compliance-trestle/commit/2e81958fe69b57455844006e98bf2cffe24a61bf))
+
+### Chore
+
+* chore: adds initial triaging process and stale issue handling (#1712)
+
+* chore: adds triaging process and stale workflow
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* docs: fix working in ROADMAP around stale issues
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* fix: fixes md formatting
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* chore: reword ROADMAP.md section on stale issues
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* fix: fixes markdown formatting
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+---------
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`0350791`](https://github.com/oscal-compass/compliance-trestle/commit/035079112490086964094a59159e333a8b4b467a))
+
+* chore: add html validation to build process (#1659)
+
+Adds link validation to all links within the documentation ([`810f4e7`](https://github.com/oscal-compass/compliance-trestle/commit/810f4e7c1de7d0284ca970f225c47081fcc4bdaf))
+
+* chore: Merge back version tags and changelog into develop. ([`dfe8929`](https://github.com/oscal-compass/compliance-trestle/commit/dfe892936e5960ad64f6f387dbe5918314049e89))
+
+### Ci
+
+* ci: updates GH credential strategy in the python-push.yml (#1726)
+
+* ci: updates python-push.yml to use a GitHub app for commit work
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* fix: removes extra &#34;&gt;&#34; character
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+---------
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`c69511a`](https://github.com/oscal-compass/compliance-trestle/commit/c69511a134d540b4e443a69f07e36caaa6321ec9))
+
+### Documentation
+
+* docs: update the compliance-trestle-fedramp plugin usage (#1517)
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`e3aeb95`](https://github.com/oscal-compass/compliance-trestle/commit/e3aeb959aac761432e21908be86ee37b426e0d2e))
+
+### Feature
+
+* feat(author-jinja): load jinja extensions from plugins (#1710)
+
+* Implement new helpers as jinja filters loaded via an extension
+
+Signed-off-by: Ryan Ahearn &lt;ryan.ahearn@gsa.gov&gt;
+
+* auto-load plugins with jinja extensions
+
+Signed-off-by: Ryan Ahearn &lt;ryan.ahearn@gsa.gov&gt;
+
+* Refactor jinja organization for ease of reuse
+
+Signed-off-by: Ryan Ahearn &lt;ryan.ahearn@gsa.gov&gt;
+
+* Document plugins including jinja extensions
+
+Signed-off-by: Ryan Ahearn &lt;ryan.ahearn@gsa.gov&gt;
+
+* Rename first_array_entry filter for clarity
+
+fix some other random typos
+
+Signed-off-by: Ryan Ahearn &lt;ryan.ahearn@gsa.gov&gt;
+
+* Update api docs
+
+Signed-off-by: Ryan Ahearn &lt;ryan.ahearn@gsa.gov&gt;
+
+* Add docs for new built-in jinja filters
+
+Signed-off-by: Ryan Ahearn &lt;ryan.ahearn@gsa.gov&gt;
+
+* Correct the copyright line for new files
+
+Signed-off-by: Ryan Ahearn &lt;ryan.ahearn@gsa.gov&gt;
+
+* Remove inherited dangling comment
+
+Signed-off-by: Ryan Ahearn &lt;ryan.ahearn@gsa.gov&gt;
+
+---------
+
+Signed-off-by: Ryan Ahearn &lt;ryan.ahearn@gsa.gov&gt; ([`f7b63ad`](https://github.com/oscal-compass/compliance-trestle/commit/f7b63ad77347532ed42585ff402ca5a7db512712))
+
+### Fix
+
+* fix(build): installs required build dependencies during semantic release build (#1736)
+
+Semantic release is running in a container that does
+not have access to the dependencies installed in `make
+develop` step
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`4dbdf7d`](https://github.com/oscal-compass/compliance-trestle/commit/4dbdf7d0f330ef980e5ba19f445c9568004f5e85))
+
+* fix: support rule overlap for checks and target components (#1730)
+
+* fix: support rule overlap for checks and target components
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* Fix type specification
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* Fix typing, second try.
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* remove extraneous logging statement
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+---------
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt; ([`11ab516`](https://github.com/oscal-compass/compliance-trestle/commit/11ab516a1cda022ea349d1dadae4179709486834))
+
+* fix(refactor): clean up timezone deprecations (#1722)
+
+* fix(refactor): remove deprecated datetime functionality
+
+Signed-off-by: Chris Butler &lt;chris.butler@redhat.com&gt;
+
+
+---------
+
+Signed-off-by: Chris Butler &lt;chris.butler@redhat.com&gt; ([`7b8b353`](https://github.com/oscal-compass/compliance-trestle/commit/7b8b3537dc8d4edfb0bab554be32e53a6fd5ad2a))
+
+* fix: add testing policy to contributing.md (#1697)
+
+* add testing policy to contributing.md
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* Add sonar cloud info.
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+---------
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt; ([`8744cee`](https://github.com/oscal-compass/compliance-trestle/commit/8744cee2beb966e99b338e71ccf723b805b9b4d7))
+
+* fix(markdown): writes component data for markdown without rules (#1695)
+
+* test: adds failing test to confirm component definition bug
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* feat: adds implemented requirement and statement description information
+
+The comp_dict is populated with the information from the OSCAL JSON
+and logic on when to write parts left to the ControlWriter.
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* fix: assemble component responses with and without rules
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* fix: updates control_rules logic to fix test failure
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* feat: centralizes logic for component inclusion in control writer
+
+To ensure parts are written out for component definitions without
+rules in a way that is not too verbose, parts will only be included
+if they have rules attached or non-empty prose.
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* fix: updates formatting to make tests pass
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* docs: updates docs to reflect component authoring behavior
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+---------
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`25dbc7a`](https://github.com/oscal-compass/compliance-trestle/commit/25dbc7a4ae823c8645e8861f3763883e855b44af))
+
+* fix(docs): add cookie consent popup (#1690)
+
+
+
+---------
+
+Signed-off-by: Chris Butler &lt;chris.butler@redhat.com&gt; ([`e67f73c`](https://github.com/oscal-compass/compliance-trestle/commit/e67f73c7cc3203037dd4d83b92ac317cd6e70978))
+
+* fix(docs): correct build status icon is displayed in docs (#1689)
+
+Signed-off-by: Chris Butler &lt;chris.butler@redhat.com&gt; ([`5385092`](https://github.com/oscal-compass/compliance-trestle/commit/53850920bede72f40104cd2d70b80b06f994660a))
+
+* fix: add Python coding standards info (#1686)
+
+* Add Python coding standards info
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* correct english
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* address reviewer suggestion on PEP8 link location
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* Trestle updating and release logistics
+
+Inspired by need to address OpenSSF requirement:
+
+To enable collaborative review, the project&#39;s source repository MUST
+include interim versions for review between releases; it MUST NOT
+include only final releases.
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* Fix contributing copyright.
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* add semantic release &amp; tags info
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+---------
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt; ([`1fe8457`](https://github.com/oscal-compass/compliance-trestle/commit/1fe8457b27cb87b537ba806dd7862c729e1e1ab8))
+
+* fix: lf footer website guidelines (#1678)
+
+* LF footer website guidelines
+
+https://github.com/cncf/foundation/blob/main/website-guidelines.md
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* make mdformat
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* Trestle created
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* fix maintainers link
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* &lt;hr&gt;
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* remove hr
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* fix maintainers reference
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* And license.
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* add cncf logo
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* fix trestle website too
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* restore maintainers.md
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* remove Red Hat from footer, per Red Hat request
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+---------
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt; ([`40b2880`](https://github.com/oscal-compass/compliance-trestle/commit/40b2880ed9c0f9f7ff1fae71b17371306b57d4f6))
+
+### Unknown
+
+* Merge pull request #1737 from oscal-compass/develop
+
+chore: Trestle release ([`7d3ee4c`](https://github.com/oscal-compass/compliance-trestle/commit/7d3ee4c71780d314eaf27f8f0a5ca90d94375987))
+
+* Merge pull request #1735 from oscal-compass/develop
+
+chore: Trestle release ([`26b7734`](https://github.com/oscal-compass/compliance-trestle/commit/26b77343b9bafd3c696f5586cf0e9beaf983dece))
+
+* fix(profile-resolve):handle unspecified aggregate parameters (#1709)
+
+Signed-off-by: Michael Davie &lt;mldavie@amazon.com&gt;
+Co-authored-by: Alejandro Leiva &lt;alejandro.leiva.palomo@ibm.com&gt; ([`bc6f510`](https://github.com/oscal-compass/compliance-trestle/commit/bc6f51025bb29ae8f7828cee5f1803817574e322))
 
 ## v3.4.0 (2024-08-23)
 
@@ -199,7 +579,6 @@ chore: Trestle release ([`2420d97`](https://github.com/oscal-compass/compliance-
 
 Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt; ([`47e6936`](https://github.com/oscal-compass/compliance-trestle/commit/47e6936e47d1fa0840aef5c26f36140438f03c98))
 
-
 ## v3.3.0 (2024-07-15)
 
 ### Chore
@@ -389,7 +768,6 @@ Co-authored-by: AleJo2995 &lt;alejandro.leiva.palomo@ibm.com&gt; ([`7ef4319`](ht
 
 chore: Trestle release ([`11e1a06`](https://github.com/oscal-compass/compliance-trestle/commit/11e1a061f1dfb7a9f87d09ed4a53b0a3fa0badd1))
 
-
 ## v3.2.0 (2024-06-18)
 
 ### Chore
@@ -463,7 +841,6 @@ Co-authored-by: AleJo2995 &lt;alejandro.leiva.palomo@ibm.com&gt; ([`774e3cf`](ht
 
 chore: Trestle release ([`8e7c490`](https://github.com/oscal-compass/compliance-trestle/commit/8e7c4905efd4eb174d2d9afe7f20c575bd3d2d52))
 
-
 ## v3.1.0 (2024-06-12)
 
 ### Chore
@@ -515,7 +892,6 @@ Co-authored-by: AleJo2995 &lt;alejandro.leiva.palomo@ibm.com&gt; ([`064274d`](ht
 * Merge pull request #1582 from oscal-compass/develop
 
 chore: release ([`d068eb4`](https://github.com/oscal-compass/compliance-trestle/commit/d068eb406eab240e7bd8eb648a35eb3e51c2a6c9))
-
 
 ## v3.0.1 (2024-06-03)
 
@@ -1053,7 +1429,6 @@ Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt; ([`95ff6b7`](https://
 
 chore: Trestle release ([`c8be4ab`](https://github.com/oscal-compass/compliance-trestle/commit/c8be4ab948db048c8e3802b890abedc7de8733bc))
 
-
 ## v2.6.1 (2024-02-22)
 
 ### Chore
@@ -1071,7 +1446,6 @@ Signed-off-by: Alejandro Jose Leiva Palomo &lt;alejandro.leiva.palomo@ibm.com&gt
 * Merge pull request #1521 from oscal-compass/develop
 
 chore: Trestle release ([`f097029`](https://github.com/oscal-compass/compliance-trestle/commit/f097029392963643932f471dbc7c1e6baec91896))
-
 
 ## v2.6.0 (2024-02-22)
 
@@ -1242,7 +1616,6 @@ Co-authored-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt; ([`55ed462`](https:/
 
 chore: Trestle release ([`1987260`](https://github.com/oscal-compass/compliance-trestle/commit/198726001c6ea1911b11c1757f219eca032a46ad))
 
-
 ## v2.5.1 (2024-01-18)
 
 ### Chore
@@ -1260,7 +1633,6 @@ Signed-off-by: Alejandro Jose Leiva Palomo &lt;alejandro.leiva.palomo@ibm.com&gt
 * Merge pull request #1501 from oscal-compass/develop
 
 chore: Trestle release ([`7966956`](https://github.com/oscal-compass/compliance-trestle/commit/79669569572b8777c3ef1b1b6663c99af4002bff))
-
 
 ## v2.5.0 (2024-01-05)
 
@@ -1576,7 +1948,6 @@ chore: Trestle release ([`e6c42fa`](https://github.com/oscal-compass/compliance-
 
 Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt; ([`c112f9c`](https://github.com/oscal-compass/compliance-trestle/commit/c112f9cf1ec9ff5228b58a4383beb5f9684b9591))
 
-
 ## v2.4.0 (2023-10-26)
 
 ### Chore
@@ -1697,7 +2068,6 @@ Signed-off-by: Alejandro Jose Leiva Palomo &lt;alejandro.leiva.palomo@ibm.com&gt
 
 Signed-off-by: Alejandro Jose Leiva Palomo &lt;alejandro.leiva.palomo@ibm.com&gt; ([`5a03d06`](https://github.com/oscal-compass/compliance-trestle/commit/5a03d06783fff8db4bf402b1e21acb99fd485454))
 
-
 ## v2.3.1 (2023-09-20)
 
 ### Chore
@@ -1799,7 +2169,6 @@ Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt; ([`62e2f05`](https://
 * Merge pull request #1452 from IBM/develop
 
 chore: Trestle release ([`dd94dd8`](https://github.com/oscal-compass/compliance-trestle/commit/dd94dd8723bd23508504f789458510de6ae7c3d0))
-
 
 ## v2.3.0 (2023-09-06)
 
@@ -1996,7 +2365,6 @@ Signed-off-by: Alejandro Jose Leiva Palomo &lt;alejandro.leiva.palomo@ibm.com&gt
 
 chore: Trestle release ([`73e125d`](https://github.com/oscal-compass/compliance-trestle/commit/73e125ded8cccada508fe7466ecd328847483b8f))
 
-
 ## v2.2.1 (2023-07-05)
 
 ### Chore
@@ -2073,7 +2441,6 @@ Signed-off-by: Alejandro Jose Leiva Palomo &lt;alejandro.leiva.palomo@ibm.com&gt
 * Merge pull request #1420 from IBM/develop
 
 chore: Trestle release ([`2a0d40f`](https://github.com/oscal-compass/compliance-trestle/commit/2a0d40fada48b6263e6ce738ec94d930e94c4607))
-
 
 ## v2.2.0 (2023-06-26)
 
@@ -2284,7 +2651,6 @@ Signed-off-by: degenaro &lt;lou.degenaro@gmail.com&gt; ([`f0ffdec`](https://gith
 * Merge pull request #1399 from IBM/develop
 
 chore: Trestle release ([`c3c28de`](https://github.com/oscal-compass/compliance-trestle/commit/c3c28de55120dc36988db1c3df95c3249ca5a26c))
-
 
 ## v2.1.1 (2023-05-12)
 
@@ -2663,7 +3029,6 @@ Signed-off-by: Sharma-Amit &lt;Sharma.Amit@ibm.com&gt; ([`a0b1797`](https://gith
 * fix typo in task help text (#1365)
 
 Signed-off-by: degenaro &lt;lou.degenaro@gmail.com&gt; ([`cbfa849`](https://github.com/oscal-compass/compliance-trestle/commit/cbfa849beda8b3bc42d6bc2ef8c07faa2cc559ca))
-
 
 ## v2.1.0 (2023-04-06)
 
@@ -3107,7 +3472,6 @@ chore: Trestle hotfix release ([`88f0847`](https://github.com/oscal-compass/comp
 * Merge pull request #1343 from IBM/develop
 
 chore: Trestle release ([`d18807c`](https://github.com/oscal-compass/compliance-trestle/commit/d18807c760c4e99f53c4a9feb2360f295413e103))
-
 
 ## v2.0.0 (2023-03-01)
 
@@ -4097,7 +4461,6 @@ Signed-off-by: Ekaterina Nikonova &lt;enikonovad@gmail.com&gt; ([`a63b094`](http
 * Merge pull request #1312 from IBM/develop
 
 chore: Trestle release ([`c41f873`](https://github.com/oscal-compass/compliance-trestle/commit/c41f873d0996b5100acf1952a0007201ef10a056))
-
 
 ## v1.2.0 (2022-11-07)
 
@@ -5324,7 +5687,6 @@ chore: Trestle release ([`85264e9`](https://github.com/oscal-compass/compliance-
 
 chore: Trestle Release ([`ac6de64`](https://github.com/oscal-compass/compliance-trestle/commit/ac6de6416739a2ed0b77c314d5f4528a74885806))
 
-
 ## v1.1.0 (2022-05-24)
 
 ### Chore
@@ -5383,7 +5745,6 @@ Signed-off-by: Frank Suits &lt;frankst@au1.ibm.com&gt; ([`b666956`](https://gith
 
 chore: Trestle Release ([`7ee1088`](https://github.com/oscal-compass/compliance-trestle/commit/7ee10884fc72ed318c3e62dd72b27518b16e4bf5))
 
-
 ## v1.0.2 (2022-05-05)
 
 ### Chore
@@ -5432,7 +5793,6 @@ Signed-off-by: Frank Suits &lt;frankst@au1.ibm.com&gt; ([`f13fe31`](https://gith
 
 chore: Trestle bugfix release ([`746d239`](https://github.com/oscal-compass/compliance-trestle/commit/746d239ce64df487fae5bdbd5c727cfd132935cc))
 
-
 ## v1.0.1 (2022-04-27)
 
 ### Chore
@@ -5456,7 +5816,6 @@ Signed-off-by: Frank Suits &lt;frankst@au1.ibm.com&gt; ([`488cd40`](https://gith
 * Merge pull request #1104 from IBM/develop
 
 chore: Trestle Stable Release OSCAL 1.0.2 ([`f992596`](https://github.com/oscal-compass/compliance-trestle/commit/f99259668f9faf8ed7af0b0a41beb8dc4b9d4cd4))
-
 
 ## v1.0.0 (2022-04-27)
 
@@ -5532,7 +5891,6 @@ Co-authored-by: Frank Suits &lt;47203786+fsuits@users.noreply.github.com&gt; ([`
 
 chore: Trestle Stable Release OSCAL 1.0.2 ([`ca23972`](https://github.com/oscal-compass/compliance-trestle/commit/ca239723e0cb51f64d44a86c7b0d4fc98828d13e))
 
-
 ## v0.37.0 (2022-04-12)
 
 ### Chore
@@ -5582,7 +5940,6 @@ Co-authored-by: Frank Suits &lt;47203786+fsuits@users.noreply.github.com&gt; ([`
 * Merge pull request #1093 from IBM/develop
 
 chore: Trestle Stable Release OSCAL 1.0.0 ([`0c09ed9`](https://github.com/oscal-compass/compliance-trestle/commit/0c09ed9cbae909a2e833335f06684b60540f01b5))
-
 
 ## v0.36.0 (2022-04-04)
 
@@ -5957,7 +6314,6 @@ Signed-off-by: Frank Suits &lt;frankst@au1.ibm.com&gt; ([`1e6b554`](https://gith
 * Merge pull request #1080 from IBM/develop
 
 chore: Trestle Beta Release ([`8859463`](https://github.com/oscal-compass/compliance-trestle/commit/885946305b750bc96117915f420f74f24873ab6b))
-
 
 ## v0.35.0 (2022-03-22)
 
@@ -6892,7 +7248,6 @@ Signed-off-by: Ekaterina Nikonova &lt;enikonovad@gmail.com&gt;
 Co-authored-by: ImgBotApp &lt;ImgBotHelp@gmail.com&gt;
 Co-authored-by: Ekaterina Nikonova &lt;91102120+enikonovad@users.noreply.github.com&gt; ([`9ccce98`](https://github.com/oscal-compass/compliance-trestle/commit/9ccce98ff03b535f7ea3dc6790e05cd5b310c9bc))
 
-
 ## v0.34.0 (2022-01-07)
 
 ### Chore
@@ -7071,7 +7426,6 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`7ad3c82`](https://git
 * Merge pull request #986 from IBM/develop
 
 chore: Trestle release ([`03ca23e`](https://github.com/oscal-compass/compliance-trestle/commit/03ca23eccf7d5086c47eeaf81a1fd8ef154d1861))
-
 
 ## v0.33.0 (2021-12-21)
 
@@ -7293,7 +7647,6 @@ Co-authored-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`82e484b`](https://gi
 
 chore: Trestle release ([`1874b18`](https://github.com/oscal-compass/compliance-trestle/commit/1874b1800d74f4997296b3343abdbe6d98a8ba6e))
 
-
 ## v0.32.1 (2021-12-17)
 
 ### Chore
@@ -7354,7 +7707,6 @@ Co-authored-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`64f7a97`](https://gi
 * Merge pull request #957 from IBM/develop
 
 chore: Trestle Release ([`5bccc2c`](https://github.com/oscal-compass/compliance-trestle/commit/5bccc2cf8df53db5de00eabb57b518cf9f81025f))
-
 
 ## v0.32.0 (2021-12-14)
 
@@ -7665,7 +8017,6 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`ee48763`](https://git
 
 chore: Trestle release ([`57a5523`](https://github.com/oscal-compass/compliance-trestle/commit/57a55234b3d95a2b1a555333d250d77369ea96f2))
 
-
 ## v0.31.0 (2021-12-01)
 
 ### Chore
@@ -7909,7 +8260,6 @@ Co-authored-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`727265a`](https://gi
 
 chore: Trestle release - enabling plugin architecture ([`0865000`](https://github.com/oscal-compass/compliance-trestle/commit/08650008ffb5252c61d55eb2727825edb7d67889))
 
-
 ## v0.30.0 (2021-11-22)
 
 ### Chore
@@ -7935,7 +8285,6 @@ chore: Trestle release ([`94e161b`](https://github.com/oscal-compass/compliance-
 * Oops, signature typing issue.
 
 Co-authored-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`dcfb34a`](https://github.com/oscal-compass/compliance-trestle/commit/dcfb34ae67ce0bf057d224a6eb4065e25d616a42))
-
 
 ## v0.29.0 (2021-11-19)
 
@@ -8091,7 +8440,6 @@ Signed-off-by: Jeff Tan &lt;jefferson.tan@gmail.com&gt; ([`256f5d4`](https://git
 
 chore: Trestle release ([`c6b1bf8`](https://github.com/oscal-compass/compliance-trestle/commit/c6b1bf833b4d692b73546ee2d7c03a913c76cea6))
 
-
 ## v0.28.1 (2021-11-17)
 
 ### Chore
@@ -8112,7 +8460,6 @@ Co-authored-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`d62051e`](https://gi
 
 fix: trestle release ([`b952390`](https://github.com/oscal-compass/compliance-trestle/commit/b952390f90a97eb60c60cd69b71f67431f5744c0))
 
-
 ## v0.28.0 (2021-11-16)
 
 ### Chore
@@ -8130,7 +8477,6 @@ Signed-off-by: Ekaterina Nikonova &lt;enikonovad@gmail.com&gt; ([`56f7cdf`](http
 * Merge pull request #863 from IBM/develop
 
 fix: Trestle bug fix release. ([`9bcb217`](https://github.com/oscal-compass/compliance-trestle/commit/9bcb21787a71e67db1bf94f812aa0e3ba8260cfe))
-
 
 ## v0.27.2 (2021-11-16)
 
@@ -8254,7 +8600,6 @@ Co-authored-by: compliance-trestle-1 &lt;84952801+compliance-trestle-1@users.nor
 Co-authored-by: Ekaterina Nikonova &lt;91102120+enikonovad@users.noreply.github.com&gt;
 Co-authored-by: degenaro &lt;lou.degenaro@gmail.com&gt; ([`127e7ba`](https://github.com/oscal-compass/compliance-trestle/commit/127e7baf4688c505a6e51259af093823594c86b9))
 
-
 ## v0.27.1 (2021-11-15)
 
 ### Chore
@@ -8278,7 +8623,6 @@ Signed-off-by: Frank Suits &lt;frankst@au1.ibm.com&gt; ([`6865eb7`](https://gith
 * Bug fix release
 
 Bug fix release ([`89fde8c`](https://github.com/oscal-compass/compliance-trestle/commit/89fde8ceee2b4eef9aec97a56f8b5e45f90711a7))
-
 
 ## v0.27.0 (2021-11-14)
 
@@ -8881,7 +9225,6 @@ Signed-off-by: Ekaterina Nikonova &lt;enikonovad@gmail.com&gt; ([`b1e39c1`](http
 
 Trestle release ([`7e8292d`](https://github.com/oscal-compass/compliance-trestle/commit/7e8292db889b8f1e3babf1e6327641b7e179b967))
 
-
 ## v0.26.0 (2021-10-20)
 
 ### Chore
@@ -9367,7 +9710,6 @@ Trestle release ([`bc908f4`](https://github.com/oscal-compass/compliance-trestle
 
 * Create codeql-analysis.yml ([`2e73916`](https://github.com/oscal-compass/compliance-trestle/commit/2e73916730a0bac9f6a49b77d520785be28680b6))
 
-
 ## v0.25.1 (2021-09-30)
 
 ### Chore
@@ -9387,7 +9729,6 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
 * fix: move install_requeest back into the correct setup.cfg section.
 
 Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`8fedeaa`](https://github.com/oscal-compass/compliance-trestle/commit/8fedeaa641e7817fb4092224a315e1a38166078e))
-
 
 ## v0.25.0 (2021-09-29)
 
@@ -9518,7 +9859,6 @@ Signed-off-by: Jeff Tan &lt;jefferson.tan@gmail.com&gt;
 Signed-off-by: Jeff Tan &lt;jefferson.tan@gmail.com&gt;
 
 Co-authored-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`88a4f3c`](https://github.com/oscal-compass/compliance-trestle/commit/88a4f3ccc08778deb3596c06203bd139048af25f))
-
 
 ## v0.24.0 (2021-09-21)
 
@@ -9663,7 +10003,6 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`a780e2c`](https://git
 * Merge pull request #729 from IBM/develop
 
 chore(release): Bug fixes and enabling caching for import ([`1f1598e`](https://github.com/oscal-compass/compliance-trestle/commit/1f1598eae114e4b6223cc09e162ad770dfd7bf69))
-
 
 ## v0.23.0 (2021-09-03)
 
@@ -9912,7 +10251,6 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`c40cfca`](https://git
 
 feat: Trestle release ([`e0aacad`](https://github.com/oscal-compass/compliance-trestle/commit/e0aacadc3706f86ad86fd27c7df26a2e2b2425ec))
 
-
 ## v0.22.1 (2021-08-19)
 
 ### Chore
@@ -9954,7 +10292,6 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`e8d63e1`](https://git
 * Merge pull request #686 from IBM/develop
 
 fix: Trestle release ([`8d76b52`](https://github.com/oscal-compass/compliance-trestle/commit/8d76b5259782f7a8782df3491c391cc77472220b))
-
 
 ## v0.22.0 (2021-08-13)
 
@@ -10190,7 +10527,6 @@ unit test.
 
 * Use trestle version 0.21.0 in compare data, same as parameter-helper
 fix. ([`052d184`](https://github.com/oscal-compass/compliance-trestle/commit/052d184a1cb5b83e034e7f2bc7c8a240299f7b6e))
-
 
 ## v0.21.0 (2021-07-30)
 
@@ -10456,7 +10792,6 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
 
 Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`631eba9`](https://github.com/oscal-compass/compliance-trestle/commit/631eba9ac1795bfcd109ed0e840898c2e6101528))
 
-
 ## v0.20.0 (2021-07-16)
 
 ### Chore
@@ -10621,7 +10956,6 @@ Signed-off-by: fsuits &lt;frankst@au1.ibm.com&gt; ([`891227b`](https://github.co
 * Merge pull request #629 from IBM/develop
 
 feat: Release of trestle repository functionality ([`4135275`](https://github.com/oscal-compass/compliance-trestle/commit/4135275e0874d1a5107e5494075c7ef4bae2d9f7))
-
 
 ## v0.19.0 (2021-07-06)
 
@@ -10998,7 +11332,6 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
 
 Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`82fcab3`](https://github.com/oscal-compass/compliance-trestle/commit/82fcab3ea5e4b06b6ff31a6e2749b30729cfd48d))
 
-
 ## v0.18.1 (2021-06-17)
 
 ### Chore
@@ -11042,7 +11375,6 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
 * fix: Remove redundant statement.
 
 Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`8cd2232`](https://github.com/oscal-compass/compliance-trestle/commit/8cd22323c0b0bcb556c15fa3bb91d4a7c36bb683))
-
 
 ## v0.18.0 (2021-06-17)
 
@@ -11103,7 +11435,6 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`9464420`](https://git
 * Trestle release  - update prior to OSCAL 1.0.0 support.
 
 Pre OSCAL 1.0.0 release ([`797a291`](https://github.com/oscal-compass/compliance-trestle/commit/797a2918dbbe4771ae950364c560c4561216b011))
-
 
 ## v0.17.0 (2021-06-09)
 
@@ -11333,7 +11664,6 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`31e8cde`](https://git
 
 * Merge branch &#39;develop&#39; into fix/cicd_cleanup ([`7b099c6`](https://github.com/oscal-compass/compliance-trestle/commit/7b099c65a8843fb33aaf9a89d7c0f6081c54fda2))
 
-
 ## v0.16.0 (2021-05-28)
 
 ### Chore
@@ -11343,10 +11673,6 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`31e8cde`](https://git
 ### Feature
 
 * feat: OSCO transformer conform to Results interface class. (#532) ([`fc251b9`](https://github.com/oscal-compass/compliance-trestle/commit/fc251b9e9c231de67fd214b16bdd7c2a6cb4d3c1))
-
-* feat: functionaly complete
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`b7c903b`](https://github.com/oscal-compass/compliance-trestle/commit/b7c903b703c78026ac14e31177cd4e3a7541d469))
 
 ### Fix
 
@@ -11394,26 +11720,25 @@ Signed-off-by: FrankSuits &lt;frankst@au1.ibm.com&gt; ([`d17a8f9`](https://githu
 
 * Merge pull request #546 from IBM/fix/split-debug-txt ([`e98af5e`](https://github.com/oscal-compass/compliance-trestle/commit/e98af5e18a452079db7fbca65731122df3029e69))
 
-* Merge branch &#39;develop&#39; into feat/drawio-metadata ([`265cb91`](https://github.com/oscal-compass/compliance-trestle/commit/265cb91a89ee681f0701659c91d19bbf95120e3c))
-
 * move unreachable debug statement ([`b104a3d`](https://github.com/oscal-compass/compliance-trestle/commit/b104a3d4a30952615bbfe906e3a42dc03aa9c07f))
 
-* Merge branch &#39;develop&#39; into feat/drawio-metadata ([`7278618`](https://github.com/oscal-compass/compliance-trestle/commit/72786181d8b00a536b1e98d0ba34ce6f5f919c47))
+* Merge branch &#39;develop&#39; into feat/drawio-metadata ([`265cb91`](https://github.com/oscal-compass/compliance-trestle/commit/265cb91a89ee681f0701659c91d19bbf95120e3c))
 
+* Merge branch &#39;develop&#39; into feat/drawio-metadata ([`7278618`](https://github.com/oscal-compass/compliance-trestle/commit/72786181d8b00a536b1e98d0ba34ce6f5f919c47))
 
 ## v0.15.1 (2021-05-20)
 
 ### Chore
-
-* chore: Added drawio UTs
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`56aabeb`](https://github.com/oscal-compass/compliance-trestle/commit/56aabeb427962c450c0252653d42f0a9de7555e8))
 
 * chore: Release to main to update documentation (#537) ([`ecd5a58`](https://github.com/oscal-compass/compliance-trestle/commit/ecd5a589f82e1c8cc2d8fb576ab413643c88f5f7))
 
 * chore: clean bad data files and improve all_validator feedback (#536) ([`2cb9d7c`](https://github.com/oscal-compass/compliance-trestle/commit/2cb9d7ceb093b1071cbd2184d6191aa07a49f3bd))
 
 * chore: update tools and models for 914 (#534) ([`163043f`](https://github.com/oscal-compass/compliance-trestle/commit/163043fa6837ded959a63f3de13c0cac12022b80))
+
+* chore: Added drawio UTs
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`56aabeb`](https://github.com/oscal-compass/compliance-trestle/commit/56aabeb427962c450c0252653d42f0a9de7555e8))
 
 * chore: Updated some docs to trigger a PR (#523)
 
@@ -11565,6 +11890,10 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`7b339d7`](https://git
 
 ### Feature
 
+* feat: functionaly complete
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`b7c903b`](https://github.com/oscal-compass/compliance-trestle/commit/b7c903b703c78026ac14e31177cd4e3a7541d469))
+
 * feat: oscal version validator (#528) ([`2b132d5`](https://github.com/oscal-compass/compliance-trestle/commit/2b132d5f09832452def258284bb40090d32bab01))
 
 * feat: create title  - place names in title of created objects - issue #473 (#519)
@@ -11664,7 +11993,6 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`a6f7d01`](https://git
 ### Unknown
 
 * Merge branch &#39;main&#39; into develop ([`8aa6b82`](https://github.com/oscal-compass/compliance-trestle/commit/8aa6b828bfaaf9f9bceb50da13de271a7d3b954b))
-
 
 ## v0.15.0 (2021-05-13)
 
@@ -11791,7 +12119,6 @@ Co-authored-by: degenaro &lt;degenaro@localhost&gt;
 Co-authored-by: Frank Suits &lt;47203786+fsuits@users.noreply.github.com&gt;
 Co-authored-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`b2b0db6`](https://github.com/oscal-compass/compliance-trestle/commit/b2b0db6584f985b0c0d634f08c43e835b41e6a6b))
 
-
 ## v0.14.4 (2021-04-22)
 
 ### Chore
@@ -11855,7 +12182,6 @@ Co-authored-by: degenaro &lt;lou.degenaro@gmail.com&gt; ([`e8dc204`](https://git
 
 * Update tutorial to include timestamp property. ([`688bc35`](https://github.com/oscal-compass/compliance-trestle/commit/688bc350f0afba47a3122a18fe66304d2732eaff))
 
-
 ## v0.14.3 (2021-04-20)
 
 ### Chore
@@ -11918,7 +12244,6 @@ Co-authored-by: degenaro &lt;lou.degenaro@gmail.com&gt; ([`9b9b61e`](https://git
 * Update tanium-to-oscal tutorial
 
 Co-authored-by: degenaro &lt;lou.degenaro@gmail.com&gt; ([`bd12c27`](https://github.com/oscal-compass/compliance-trestle/commit/bd12c274afd30aab55ca41afcad3ed37da5f52e3))
-
 
 ## v0.14.2 (2021-04-20)
 
@@ -11992,7 +12317,6 @@ Co-authored-by: degenaro &lt;lou.degenaro@gmail.com&gt; ([`98109ce`](https://git
 
 Co-authored-by: Frank Suits &lt;47203786+fsuits@users.noreply.github.com&gt; ([`264966c`](https://github.com/oscal-compass/compliance-trestle/commit/264966c2b8b20da315179fbf9cee5dd13aefb3ed))
 
-
 ## v0.14.1 (2021-04-16)
 
 ### Chore
@@ -12028,7 +12352,6 @@ Signed-off-by: FrankSuits &lt;frankst@au1.ibm.com&gt; ([`bf8be03`](https://githu
 * Merge pull request #492 from IBM/develop
 
 Release to main: essential fixes to file IO ([`6be5246`](https://github.com/oscal-compass/compliance-trestle/commit/6be5246b530a6613f7af8cf5ad1ba689d8806f0b))
-
 
 ## v0.14.0 (2021-04-15)
 
@@ -12278,7 +12601,6 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
 
 Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`ddc2420`](https://github.com/oscal-compass/compliance-trestle/commit/ddc2420ff71dae6fcb6597654d69dbd16fba8cb6))
 
-
 ## v0.13.1 (2021-04-13)
 
 ### Chore
@@ -12302,7 +12624,6 @@ Minor release: Fix behaviour of trestle transforms ([`02d23b5`](https://github.c
 * fix:Corrected transforms behaviour and added example script. (#468)
 
 Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`7f05800`](https://github.com/oscal-compass/compliance-trestle/commit/7f0580042842663f39c8c221a890c6e77ac700da))
-
 
 ## v0.13.0 (2021-04-13)
 
@@ -12360,7 +12681,6 @@ Co-authored-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`1407911`](https://gi
 * Release to update to OSCAL 1.0.0-rc2
 
 Release to update to OSCAL 1.0.0-rc2 ([`5f6c05d`](https://github.com/oscal-compass/compliance-trestle/commit/5f6c05d7cd3f79d4303689872e22d0f5b66a4c28))
-
 
 ## v0.12.0 (2021-04-09)
 
@@ -12421,7 +12741,6 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
 * fix:Serializing by appropriate key and minimizing file size.
 
 Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`b87f158`](https://github.com/oscal-compass/compliance-trestle/commit/b87f158d9b1f54a3fc68857d7732ceb8a2f830df))
-
 
 ## v0.11.0 (2021-04-08)
 
@@ -12681,7 +13000,6 @@ Signed-off-by: FrankSuits &lt;frankst@au1.ibm.com&gt; ([`805485f`](https://githu
 Signed-off-by: Frank Suits &lt;frankst@au1.ibm.com&gt;
 
 Co-authored-by: FrankSuits &lt;frankst@au1.ibm.com&gt; ([`49c5870`](https://github.com/oscal-compass/compliance-trestle/commit/49c5870dd9a9c3a8cb79c739e3e6d39dfc9b7df7))
-
 
 ## v0.10.0 (2021-03-25)
 
@@ -12953,17 +13271,35 @@ Co-authored-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`32ae0e8`](https://gi
 
 * Merge branch &#39;develop&#39; into fix/fix_any_drops_item ([`e400738`](https://github.com/oscal-compass/compliance-trestle/commit/e4007381af3812e07acfd00e66a25ed9beca5f59))
 
-* Allow creation of duplicate class names by tagging with index: 1,2,3 etc. ([`d07a398`](https://github.com/oscal-compass/compliance-trestle/commit/d07a398e806bd9e30c09bde4be8f5848705680a9))
-
 * Merge pull request #383 from IBM/feature/samples-oscal-1.0.0-rc1
 
 Updated interchange schema, catching up with OSCAL 1.0.0-rc1, with samples, README, and a script to generate the schema ([`e4b0124`](https://github.com/oscal-compass/compliance-trestle/commit/e4b01244b7be60d1ff467daa201ed4e0fb199760))
 
 * Merge branch &#39;feature/samples-oscal-1.0.0-rc1&#39; of github.com:IBM/compliance-trestle into feature/samples-oscal-1.0.0-rc1 ([`f070907`](https://github.com/oscal-compass/compliance-trestle/commit/f0709075c157fab7ecf6acefb186084af9fc62ab))
 
+* Merge branch &#39;develop&#39; into feature/samples-oscal-1.0.0-rc1 ([`ae4544f`](https://github.com/oscal-compass/compliance-trestle/commit/ae4544ff0e08f8dc5a435f67c6f65fddba900e1c))
+
 * feat (samples-oscal-1.0.0-rc1): Improved behavior of script in Windows environments where /dev/stdout won&#39;t work for output.
 
 Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`6a02920`](https://github.com/oscal-compass/compliance-trestle/commit/6a029208fadcc419b0d4a1f764689b58029a570d))
+
+* feat (samples-oscal-1.0.0-rc1): Formatted README.
+
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`d3da956`](https://github.com/oscal-compass/compliance-trestle/commit/d3da95655b0a1c3fde66f72f00c9e3d13ed904c7))
+
+* feat (samples-oscal-1.0.0-rc1): Clarified README.
+
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`ec18022`](https://github.com/oscal-compass/compliance-trestle/commit/ec1802208c5d60d58c94099a0ac43d9711d2bb36))
+
+* feat (samples-oscal-1.0.0-rc1): Sanitized README some more.
+
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`a419961`](https://github.com/oscal-compass/compliance-trestle/commit/a4199616869fc894174f66524a5a112d3252b2b3))
+
+* feat (samples-oscal-1.0.0-rc1): Updated custom schema and samples to catch up with OSCAL 1.0.0-rc1. Script to generate schema also added.
+
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`de22ac7`](https://github.com/oscal-compass/compliance-trestle/commit/de22ac7c1b32596bd267c8b1f967839d51de1173))
+
+* Allow creation of duplicate class names by tagging with index: 1,2,3 etc. ([`d07a398`](https://github.com/oscal-compass/compliance-trestle/commit/d07a398e806bd9e30c09bde4be8f5848705680a9))
 
 * fixes from new fix_any ([`80aa9c4`](https://github.com/oscal-compass/compliance-trestle/commit/80aa9c4775159c357889c5c191fb364e4a545c85))
 
@@ -12982,17 +13318,6 @@ Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`6a02920`](https://github
 * updated version of uuid regen ([`27382ce`](https://github.com/oscal-compass/compliance-trestle/commit/27382ce7f098adc64f731cd19d8920a4e3d491fb))
 
 * Merge branch &#39;develop&#39; of https://github.com/IBM/compliance-trestle into feat/uuid_regen ([`f90ba17`](https://github.com/oscal-compass/compliance-trestle/commit/f90ba17e0c6d261a3a743cbf571da072aedcde73))
-
-* Merge branch &#39;develop&#39; into feature/samples-oscal-1.0.0-rc1 ([`ae4544f`](https://github.com/oscal-compass/compliance-trestle/commit/ae4544ff0e08f8dc5a435f67c6f65fddba900e1c))
-
-* feat (samples-oscal-1.0.0-rc1): Formatted README.
-
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`d3da956`](https://github.com/oscal-compass/compliance-trestle/commit/d3da95655b0a1c3fde66f72f00c9e3d13ed904c7))
-
-* feat (samples-oscal-1.0.0-rc1): Clarified README.
-
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`ec18022`](https://github.com/oscal-compass/compliance-trestle/commit/ec1802208c5d60d58c94099a0ac43d9711d2bb36))
-
 
 ## v0.9.0 (2021-03-02)
 
@@ -13039,10 +13364,6 @@ Co-authored-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`7fc08e1`](https://gi
 
 Bug fix release: clean up issue due to pydantic changes in 1.8.0 ([`48e60ed`](https://github.com/oscal-compass/compliance-trestle/commit/48e60ed1f2f1e0eae71799eec2e49873fd3da0eb))
 
-* feat (samples-oscal-1.0.0-rc1): Sanitized README some more.
-
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`a419961`](https://github.com/oscal-compass/compliance-trestle/commit/a4199616869fc894174f66524a5a112d3252b2b3))
-
 * Fix: Dependency issues including pydantic (#380)
 
 * Fix: Dependency issues
@@ -13053,10 +13374,6 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
 
 Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`e70a023`](https://github.com/oscal-compass/compliance-trestle/commit/e70a0233e35bec329e2c283998bbc27a20877bc9))
 
-* feat (samples-oscal-1.0.0-rc1): Updated custom schema and samples to catch up with OSCAL 1.0.0-rc1. Script to generate schema also added.
-
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`de22ac7`](https://github.com/oscal-compass/compliance-trestle/commit/de22ac7c1b32596bd267c8b1f967839d51de1173))
-
 * initial generation of uuids ([`9c8fd13`](https://github.com/oscal-compass/compliance-trestle/commit/9c8fd139665a4042ff3fb115b2e2625ec03534ba))
 
 * Merge pull request #356 from IBM/feature/remote
@@ -13064,7 +13381,6 @@ Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`de22ac7`](https://github
 remote cache with SFTP and local fetchers ([`52a49db`](https://github.com/oscal-compass/compliance-trestle/commit/52a49db6df28e6d188b3ec5729d265def2b84128))
 
 * Merge branch &#39;develop&#39; into feature/remote ([`eca4236`](https://github.com/oscal-compass/compliance-trestle/commit/eca4236c5aec2d0cb70ce0c382bb769e74ed1309))
-
 
 ## v0.8.1 (2021-02-24)
 
@@ -13089,9 +13405,6 @@ Bugfix merge to master ([`ade0c5f`](https://github.com/oscal-compass/compliance-
 * Merge branch &#39;feature/remote&#39; of github.com:IBM/compliance-trestle into feature/remote
 Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`b3da0f1`](https://github.com/oscal-compass/compliance-trestle/commit/b3da0f1ab03664419ae3cd8fd250e5170eed00ef))
 
-* feat (remote): SSH_KEY must now contain the private key (RSA), not its file name, e.g., SSH_KEY=$(cat ~/.ssh/id_rsa). It is expected to have newlines. Unit test updated accordingly.
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`74223a1`](https://github.com/oscal-compass/compliance-trestle/commit/74223a18a7e4d81a55167d0237d0fb1f14d9385d))
-
 * Merge branch &#39;develop&#39; into feature/remote ([`99967cc`](https://github.com/oscal-compass/compliance-trestle/commit/99967cc13e3dec608fb9af0426075f3b09ebb929))
 
 * Fix: Corrected componnent model caused by new datamodel-gen, using original nist source (#373)
@@ -13103,13 +13416,6 @@ Co-authored-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`b18a815`](https://gi
 Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`a5510aa`](https://github.com/oscal-compass/compliance-trestle/commit/a5510aa786d4de26dfd2991f902ee420faae6e86))
 
 * Merge branch &#39;develop&#39; into feature/remote ([`20c793e`](https://github.com/oscal-compass/compliance-trestle/commit/20c793e8cf93c5624d249eaac17c53c3153ddc73))
-
-* feat (remote): Linted.
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`23dc762`](https://github.com/oscal-compass/compliance-trestle/commit/23dc76213d376ee9295d9e0d0bed94c64887a283))
-
-* feat (remote): Removed HTTPS and Github Fetcher code for now, to be dealt with sometime after this version merges in.
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`b9c4778`](https://github.com/oscal-compass/compliance-trestle/commit/b9c47781b7b8c8fcd49d64cbb3a6a2a678be9119))
-
 
 ## v0.8.0 (2021-02-22)
 
@@ -13175,6 +13481,15 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`fe7a288`](https://git
 
 Release to main: Refactored behaviour for validate and assemble. ([`194c005`](https://github.com/oscal-compass/compliance-trestle/commit/194c0058d2d2e806ea19cefddde8a05ea9c5bfe2))
 
+* feat (remote): SSH_KEY must now contain the private key (RSA), not its file name, e.g., SSH_KEY=$(cat ~/.ssh/id_rsa). It is expected to have newlines. Unit test updated accordingly.
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`74223a1`](https://github.com/oscal-compass/compliance-trestle/commit/74223a18a7e4d81a55167d0237d0fb1f14d9385d))
+
+* feat (remote): Linted.
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`23dc762`](https://github.com/oscal-compass/compliance-trestle/commit/23dc76213d376ee9295d9e0d0bed94c64887a283))
+
+* feat (remote): Removed HTTPS and Github Fetcher code for now, to be dealt with sometime after this version merges in.
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`b9c4778`](https://github.com/oscal-compass/compliance-trestle/commit/b9c47781b7b8c8fcd49d64cbb3a6a2a678be9119))
+
 * feat (remote): Updated test_https_fetcher() so a try block isn&#39;t included.
 Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`54019af`](https://github.com/oscal-compass/compliance-trestle/commit/54019af446c3942897c142913176a6775248dbe1))
 
@@ -13185,10 +13500,59 @@ Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`663af76`](https://github
 Chris merged develop into this more recently.
 Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`90437e4`](https://github.com/oscal-compass/compliance-trestle/commit/90437e4b18ed59c8374cc331bd41a08f8f24d07a))
 
+* Merge branch &#39;develop&#39; into feature/remote ([`2db970f`](https://github.com/oscal-compass/compliance-trestle/commit/2db970fc4afdfdffb8fcbeb1f38ad68b7044dc30))
+
+* Wrap validate in try block to catch exceptions.  Increase test coverage. (#363) ([`14686a8`](https://github.com/oscal-compass/compliance-trestle/commit/14686a873b71aff2ba6a4494efed49d8f95ec29d))
+
+* Feature/validate distributed now validates models by type and all (#360)
+
+* validate duplicates now loads distributed models
+
+* Extensive changes to support loading models by name
+
+* validate by type now works.  Increased test coverage.
+
+* validate now works on -all.  all tests pass
+
+Co-authored-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`b347222`](https://github.com/oscal-compass/compliance-trestle/commit/b347222314282d520bdcb60f1de325429fd5d5e7))
+
+* Feat: Trestle init now adds keep files. (#357)
+
+* trestle init now adds .keep files to preserve directory structure for git
+
+Signed-off-by: Juliet Rubinstein &lt;juliet.rubinstein@ibm.com&gt;
+
+* trestle init now adds .keep files to preserve directory structure for git
+
+Signed-off-by: Juliet Rubinstein &lt;juliet.rubinstein@ibm.com&gt;
+
+* trestle init now adds .keep files to preserve directory structure for git
+
+Signed-off-by: Juliet Rubinstein &lt;juliet.rubinstein@ibm.com&gt;
+
+Co-authored-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`f6ca64a`](https://github.com/oscal-compass/compliance-trestle/commit/f6ca64adf99eca5a89d678266b377d07eb3d3ce3))
+
+* Merge pull request #354 from IBM/feature/import-validate
+
+feat (import): Validation is now part of trestle import, with a rollback if duplicates are found. ([`4080dc2`](https://github.com/oscal-compass/compliance-trestle/commit/4080dc23e13eba0398face98d55f705a60b7216e))
+
+* feat (import): Updated test for import with validation calls, coverage up to 100%.
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`c168922`](https://github.com/oscal-compass/compliance-trestle/commit/c1689223330d28c9487cde5337ea1a3a18e9883e))
+
+* Merge branch &#39;develop&#39; into feature/import-validate
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`c41df46`](https://github.com/oscal-compass/compliance-trestle/commit/c41df46508ccc5d7d8ee8d19630c6279e1beba35))
+
+* feat (import): Updated tests for import with validation calls.
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`2a3b71f`](https://github.com/oscal-compass/compliance-trestle/commit/2a3b71f290077bef6e1247c8d29ec5d5eb78a7eb))
+
+* feat (import): Linted.
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`2ea9df6`](https://github.com/oscal-compass/compliance-trestle/commit/2ea9df6a70daca840fa9bbfae262acb277175b59))
+
+* feat (import): Validating imported model using trestle validate, rolling back if unhappy with results.
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`d9c810a`](https://github.com/oscal-compass/compliance-trestle/commit/d9c810ad09e7c33baf3f424b5ea9fb38e2483d21))
+
 * feat (remote): Fixed confused use of SSH_KEY, so now it refers to a private key, if supplied. Host keys are now loaded from usual/default paths.
 Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`7cd95ca`](https://github.com/oscal-compass/compliance-trestle/commit/7cd95ca59b2a193d1651f777cfa2eb3d0dadd71c))
-
-* Merge branch &#39;develop&#39; into feature/remote ([`2db970f`](https://github.com/oscal-compass/compliance-trestle/commit/2db970fc4afdfdffb8fcbeb1f38ad68b7044dc30))
 
 * feat (remote): Setting relative paths for the local fetcher aside, for now.
 Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`d5c6285`](https://github.com/oscal-compass/compliance-trestle/commit/d5c628509e871cf7b962b6ca36c497233fa1ec32))
@@ -13211,22 +13575,8 @@ Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`2292f7b`](https://github
 * feat (remote): Improved docstrings, with attributes and arguments listed where applicable.
 Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`c779099`](https://github.com/oscal-compass/compliance-trestle/commit/c7790990cb9fe661456808d1c4789d4a4522b0d6))
 
-* Wrap validate in try block to catch exceptions.  Increase test coverage. (#363) ([`14686a8`](https://github.com/oscal-compass/compliance-trestle/commit/14686a873b71aff2ba6a4494efed49d8f95ec29d))
-
 * feat (remote): Improved docstrings, cleaned up code a bit.
 Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`a96a0c6`](https://github.com/oscal-compass/compliance-trestle/commit/a96a0c6af225b152ec28c54b6c451b70de8d0988))
-
-* Feature/validate distributed now validates models by type and all (#360)
-
-* validate duplicates now loads distributed models
-
-* Extensive changes to support loading models by name
-
-* validate by type now works.  Increased test coverage.
-
-* validate now works on -all.  all tests pass
-
-Co-authored-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`b347222`](https://github.com/oscal-compass/compliance-trestle/commit/b347222314282d520bdcb60f1de325429fd5d5e7))
 
 * feat (remote): Accepting any Windows filesystem drive letter in uri.
 Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`12b4d11`](https://github.com/oscal-compass/compliance-trestle/commit/12b4d11021c3ff43e7d66c7637e976331b32320e))
@@ -13261,28 +13611,8 @@ Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`620fe44`](https://github
 * feat (remote): HTTPSFetcher now fills _inst_cache_path, and now has a basic unit test. Minor fix to test_fetcher_factory.
 Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`d3d96e6`](https://github.com/oscal-compass/compliance-trestle/commit/d3d96e6c6d43bde4de1b7d1d4b5b69d9445b317d))
 
-* Feat: Trestle init now adds keep files. (#357)
-
-* trestle init now adds .keep files to preserve directory structure for git
-
-Signed-off-by: Juliet Rubinstein &lt;juliet.rubinstein@ibm.com&gt;
-
-* trestle init now adds .keep files to preserve directory structure for git
-
-Signed-off-by: Juliet Rubinstein &lt;juliet.rubinstein@ibm.com&gt;
-
-* trestle init now adds .keep files to preserve directory structure for git
-
-Signed-off-by: Juliet Rubinstein &lt;juliet.rubinstein@ibm.com&gt;
-
-Co-authored-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`f6ca64a`](https://github.com/oscal-compass/compliance-trestle/commit/f6ca64adf99eca5a89d678266b377d07eb3d3ce3))
-
 * Added tests for unsupported scheme in url and a local file in a Windows filesystem.
 Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`c8f8de7`](https://github.com/oscal-compass/compliance-trestle/commit/c8f8de79ceeb729511ca830fc60b7911de3128b4))
-
-* Merge pull request #354 from IBM/feature/import-validate
-
-feat (import): Validation is now part of trestle import, with a rollback if duplicates are found. ([`4080dc2`](https://github.com/oscal-compass/compliance-trestle/commit/4080dc23e13eba0398face98d55f705a60b7216e))
 
 * feat (import): Updated nist submodules.
 Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`05db1a0`](https://github.com/oscal-compass/compliance-trestle/commit/05db1a08bbc6143a2f66145978d5da13270cfa37))
@@ -13293,21 +13623,6 @@ Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`f51023f`](https://github
 * Merge branch &#39;develop&#39; into feature/remote
 Just to align this branch with recent updates in develop.
 Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`f5e5723`](https://github.com/oscal-compass/compliance-trestle/commit/f5e57238fe48c7c63e57ce9116c02b98012f5cf1))
-
-* feat (import): Updated test for import with validation calls, coverage up to 100%.
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`c168922`](https://github.com/oscal-compass/compliance-trestle/commit/c1689223330d28c9487cde5337ea1a3a18e9883e))
-
-* Merge branch &#39;develop&#39; into feature/import-validate
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`c41df46`](https://github.com/oscal-compass/compliance-trestle/commit/c41df46508ccc5d7d8ee8d19630c6279e1beba35))
-
-* feat (import): Updated tests for import with validation calls.
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`2a3b71f`](https://github.com/oscal-compass/compliance-trestle/commit/2a3b71f290077bef6e1247c8d29ec5d5eb78a7eb))
-
-* feat (import): Linted.
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`2ea9df6`](https://github.com/oscal-compass/compliance-trestle/commit/2ea9df6a70daca840fa9bbfae262acb277175b59))
-
-* feat (import): Validating imported model using trestle validate, rolling back if unhappy with results.
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`d9c810a`](https://github.com/oscal-compass/compliance-trestle/commit/d9c810ad09e7c33baf3f424b5ea9fb38e2483d21))
 
 * New command replicate and functionality to deduce content type based on discovered file extension (#331)
 
@@ -13330,7 +13645,6 @@ Allows determining content type from extension of file in directory.
 * added tests to bring coverage to 100%
 
 Co-authored-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`2694101`](https://github.com/oscal-compass/compliance-trestle/commit/2694101f4414446d5b1fae8b4218083379d7d2ea))
-
 
 ## v0.7.2 (2021-02-02)
 
@@ -13373,20 +13687,9 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
 Co-authored-by: Nebula Alam &lt;anebula@au1.ibm.com&gt;
 Co-authored-by: degenaro &lt;degenaro@us.ibm.com&gt; ([`74df375`](https://github.com/oscal-compass/compliance-trestle/commit/74df375c15ad0bc2f0fb8c54e1ed83faf11d66e4))
 
-* fix: Fix merge main to back to develop automatically.(#332)
-
-* Corrected errors in the build process.
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
-
-* Corrected errors in the build process.
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`b64dd9f`](https://github.com/oscal-compass/compliance-trestle/commit/b64dd9f5d1183109fe18bd3a75f5953af269d985))
-
 ### Unknown
 
 * Merge branch &#39;main&#39; into develop ([`59b9945`](https://github.com/oscal-compass/compliance-trestle/commit/59b994536fa7ffe78498bfa4b17bf0d4943c970a))
-
 
 ## v0.7.1 (2021-02-02)
 
@@ -13419,38 +13722,33 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
 Co-authored-by: Nebula Alam &lt;anebula@au1.ibm.com&gt;
 Co-authored-by: degenaro &lt;degenaro@us.ibm.com&gt; ([`ac3828d`](https://github.com/oscal-compass/compliance-trestle/commit/ac3828de66874807b70ee372be51976a724322d1))
 
-* fix: Corrected assemble to push files into the correct location. ([`f3bc0e5`](https://github.com/oscal-compass/compliance-trestle/commit/f3bc0e5df22430d396ca0d82bc70624db34a6986))
+* fix: Fix merge main to back to develop automatically.(#332)
+
+* Corrected errors in the build process.
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
+
+* Corrected errors in the build process.
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`b64dd9f`](https://github.com/oscal-compass/compliance-trestle/commit/b64dd9f5d1183109fe18bd3a75f5953af269d985))
 
 ### Unknown
 
 * Merge branch &#39;main&#39; into develop ([`31e0ac5`](https://github.com/oscal-compass/compliance-trestle/commit/31e0ac5c1ae956140b38d2a7f1b1961a93dd707c))
 
+## v0.7.0 (2021-01-28)
+
+### Fix
+
+* fix: Corrected assemble to push files into the correct location. ([`f3bc0e5`](https://github.com/oscal-compass/compliance-trestle/commit/f3bc0e5df22430d396ca0d82bc70624db34a6986))
+
+### Unknown
+
+* Release of trestle of assembly and osco-to-oscal.
+
+feat: Release of assembly, osco-to-oscal and other tasks ([`a56c546`](https://github.com/oscal-compass/compliance-trestle/commit/a56c54683ca8ac938f1fc2af787db34f852a9a44))
+
 * Merge branch &#39;develop&#39; into feat/assemble ([`44d884e`](https://github.com/oscal-compass/compliance-trestle/commit/44d884e0fd9ddd4e207f54dde3ae684c80d4eb96))
-
-* Updated to deal with inherently plural model names.
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`3404043`](https://github.com/oscal-compass/compliance-trestle/commit/34040437cd9b26361934ad24e89926264bb137c6))
-
-* feat (remote): testing local fetcher get_oscal() and get_raw(), and code format/lint fixes.
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`05a1e04`](https://github.com/oscal-compass/compliance-trestle/commit/05a1e04c8afabda3e266d1fa97e02060b94b5db8))
-
-* feat (remote): updated get_oscal() and get_raw() to adjust to proper treatment of _inst_cache_path as full paths to the cache object
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`df886e0`](https://github.com/oscal-compass/compliance-trestle/commit/df886e04a3c2dfbf8f530bfe075ecab155db1148))
-
-* feat (remote): local and  sftp fetchers now treat _inst_cache_path as full paths to the cache object, rather than the containing directory.
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`c43292e`](https://github.com/oscal-compass/compliance-trestle/commit/c43292ee879cfe4f29fe45cd2d7f9cd23fa7559d))
-
-* feat (remote): merge resolution: sftp tests.
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`e2a387d`](https://github.com/oscal-compass/compliance-trestle/commit/e2a387df314a729058562e96bc5dca181ce3adb7))
-
-* feat (remote): linting and improving test code.
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`bef5013`](https://github.com/oscal-compass/compliance-trestle/commit/bef50133da6c306934ef8c1b8cfb5158ae2e1448))
-
-* feat (remote): merging get_oscal and tests in.
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`de5bf83`](https://github.com/oscal-compass/compliance-trestle/commit/de5bf83c02f415ad06777993399121119d22ed83))
-
-* feat (remote): cleaned up commented region.
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`a73bed1`](https://github.com/oscal-compass/compliance-trestle/commit/a73bed1806db0d85487ce10b5df946077a243396))
 
 * fix:Correct casing in mkdocs serve to work on case sensitive file sytems.
 
@@ -13460,18 +13758,15 @@ fix &#39;make docs-serve&#39; on linux (Red Hat 7.9) ([`a2949e1`](https://github
 
 Signed-off-by: Lou Degenaro &lt;degenaro@us.ibm.com&gt; ([`28e5fc0`](https://github.com/oscal-compass/compliance-trestle/commit/28e5fc048bafdec4d42d6e2d838df41f83179189))
 
+* Updated to deal with inherently plural model names.
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`3404043`](https://github.com/oscal-compass/compliance-trestle/commit/34040437cd9b26361934ad24e89926264bb137c6))
+
 * Merge develop ([`d0b2d26`](https://github.com/oscal-compass/compliance-trestle/commit/d0b2d26c0fd81d13e904b95e162e1279747ad517))
 
-* assemble bug fix ([`fcbbfd2`](https://github.com/oscal-compass/compliance-trestle/commit/fcbbfd2127c9bab2ac07fafd4b8ff4a9fe85e804))
+* Merge branch &#39;main&#39; into develop ([`0a4e9c7`](https://github.com/oscal-compass/compliance-trestle/commit/0a4e9c7577576597fa70e1e21abe5d579f155387))
 
-* feat (remote): cleaned up: get_oscal() doesn&#39;t need JSONDecodeError.
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`b84a5d1`](https://github.com/oscal-compass/compliance-trestle/commit/b84a5d17275ed8654c043a4a303a3017712cd063))
-
-* feat (remote): get_oscal() implemented and tested, with limited linting. However, yapf did include other parts beyond get_oscal() code for both cache.py and cache_test.py
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`d71607c`](https://github.com/oscal-compass/compliance-trestle/commit/d71607c447d181a74600b84cea1ac1fff1d125eb))
-
-
-## v0.7.0 (2021-01-28)
+## v0.6.2 (2021-01-17)
 
 ### Chore
 
@@ -13562,29 +13857,25 @@ Co-authored-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`4d87e6a`](https://gi
 
 ### Fix
 
+* fix: Corrected branch for mkdocs deploy. (#304) (#305)
+
+Note: Alternative techniques may be required, however, with devops integration it must be tested live.
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`be3f13a`](https://github.com/oscal-compass/compliance-trestle/commit/be3f13a89d44c3f773ad7e372e4116eb609c8f5d))
+
 * fix: Corrected bad link to website homepage. (#314)
 
 Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`81124fb`](https://github.com/oscal-compass/compliance-trestle/commit/81124fba5f25772cbcabf3fd0923ac6284794ff1))
 
 ### Unknown
 
-* Release of trestle of assembly and osco-to-oscal.
-
-feat: Release of assembly, osco-to-oscal and other tasks ([`a56c546`](https://github.com/oscal-compass/compliance-trestle/commit/a56c54683ca8ac938f1fc2af787db34f852a9a44))
-
-* Merge branch &#39;main&#39; into develop ([`0a4e9c7`](https://github.com/oscal-compass/compliance-trestle/commit/0a4e9c7577576597fa70e1e21abe5d579f155387))
+* assemble bug fix ([`fcbbfd2`](https://github.com/oscal-compass/compliance-trestle/commit/fcbbfd2127c9bab2ac07fafd4b8ff4a9fe85e804))
 
 * Full UT ([`f90c351`](https://github.com/oscal-compass/compliance-trestle/commit/f90c3512f466c9ea3cd5cca6290c1b6f288046c0))
 
 * Merge branch &#39;develop&#39; into feat/assemble ([`963e9b9`](https://github.com/oscal-compass/compliance-trestle/commit/963e9b967d87404cedca959f5f05eeae260fc567))
 
 * Extending UT ([`3662b83`](https://github.com/oscal-compass/compliance-trestle/commit/3662b83a660eed4c1f14eb864afd20b04633be19))
-
-* feat (remote): Removed unused import.
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`6f3a2c7`](https://github.com/oscal-compass/compliance-trestle/commit/6f3a2c72a9e0cf868a9fd4175252c957d8d2054f))
-
-* feat (remote): Implemented base class get_raw() method with on unit tests using local fetcher.
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`7abf6a7`](https://github.com/oscal-compass/compliance-trestle/commit/7abf6a7c2a947d8b4043002655bdfdef5e6b87db))
 
 * Code lint ([`d0c8e84`](https://github.com/oscal-compass/compliance-trestle/commit/d0c8e847dd4a13cc7993e86fe567d43a021db6a6))
 
@@ -13596,6 +13887,18 @@ Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`7abf6a7`](https://github
 
 * Implemented trestle assemble with some UT ([`cc02d70`](https://github.com/oscal-compass/compliance-trestle/commit/cc02d70febe86e6b1579f40c323a92637b3b1a8d))
 
+* feat (remote): testing local fetcher get_oscal() and get_raw(), and code format/lint fixes.
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`05a1e04`](https://github.com/oscal-compass/compliance-trestle/commit/05a1e04c8afabda3e266d1fa97e02060b94b5db8))
+
+* feat (remote): updated get_oscal() and get_raw() to adjust to proper treatment of _inst_cache_path as full paths to the cache object
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`df886e0`](https://github.com/oscal-compass/compliance-trestle/commit/df886e04a3c2dfbf8f530bfe075ecab155db1148))
+
+* feat (remote): local and  sftp fetchers now treat _inst_cache_path as full paths to the cache object, rather than the containing directory.
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`c43292e`](https://github.com/oscal-compass/compliance-trestle/commit/c43292ee879cfe4f29fe45cd2d7f9cd23fa7559d))
+
+* feat (remote): merge resolution: sftp tests.
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`e2a387d`](https://github.com/oscal-compass/compliance-trestle/commit/e2a387df314a729058562e96bc5dca181ce3adb7))
+
 * feat (remote): Fixed some unit tests, and linted.
 Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`83de1bc`](https://github.com/oscal-compass/compliance-trestle/commit/83de1bcd57e279e540452802f84eb28da5d1da0d))
 
@@ -13605,49 +13908,30 @@ Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`0b3ede0`](https://github
 * feat (remote): Removed unnecessary mkdir success check for subdirectory inside _trestle_cache_path, which would have been created successfully previously via __init__.
 Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`8f5f66b`](https://github.com/oscal-compass/compliance-trestle/commit/8f5f66b4e35c58f2d69a8de5c524b110278816be))
 
+* feat (remote): linting and improving test code.
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`bef5013`](https://github.com/oscal-compass/compliance-trestle/commit/bef50133da6c306934ef8c1b8cfb5158ae2e1448))
+
+* feat (remote): merging get_oscal and tests in.
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`de5bf83`](https://github.com/oscal-compass/compliance-trestle/commit/de5bf83c02f415ad06777993399121119d22ed83))
+
+* feat (remote): cleaned up: get_oscal() doesn&#39;t need JSONDecodeError.
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`b84a5d1`](https://github.com/oscal-compass/compliance-trestle/commit/b84a5d17275ed8654c043a4a303a3017712cd063))
+
+* feat (remote): get_oscal() implemented and tested, with limited linting. However, yapf did include other parts beyond get_oscal() code for both cache.py and cache_test.py
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`d71607c`](https://github.com/oscal-compass/compliance-trestle/commit/d71607c447d181a74600b84cea1ac1fff1d125eb))
+
+* feat (remote): cleaned up commented region.
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`a73bed1`](https://github.com/oscal-compass/compliance-trestle/commit/a73bed1806db0d85487ce10b5df946077a243396))
+
+* feat (remote): Removed unused import.
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`6f3a2c7`](https://github.com/oscal-compass/compliance-trestle/commit/6f3a2c72a9e0cf868a9fd4175252c957d8d2054f))
+
+* feat (remote): Implemented base class get_raw() method with on unit tests using local fetcher.
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`7abf6a7`](https://github.com/oscal-compass/compliance-trestle/commit/7abf6a7c2a947d8b4043002655bdfdef5e6b87db))
+
 * feature (remote): Fixed settings.py being inside main_test.py... ([`3dfe3b9`](https://github.com/oscal-compass/compliance-trestle/commit/3dfe3b91c049c9c69daede44b4a7fec1c398a458))
 
-* feature (remote): merged remote-sftp branch and resolved... ([`c193dce`](https://github.com/oscal-compass/compliance-trestle/commit/c193dce90ecbfe2bdfbd608ff931a6728b691142))
-
-* Merge pull request #308 from IBM/feature/remote-sftp
-
-Feature/remote-sftp looks good to reviewer. ([`be497fc`](https://github.com/oscal-compass/compliance-trestle/commit/be497fcda82dc8a14c1dea39e6157eb215d4af3b))
-
-* feat (remote): for sftp fetcher, linting and format fixed.
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`37b3543`](https://github.com/oscal-compass/compliance-trestle/commit/37b3543c7f462229566825442128c3d4b21a8ae2))
-
-* feature (remote): misc tweaks resulting from merge... ([`98856b9`](https://github.com/oscal-compass/compliance-trestle/commit/98856b93e9b6f819dda23a8b7976fb06eecf491d))
-
-* feature/remote: various updates to fetchers... ([`ff1596c`](https://github.com/oscal-compass/compliance-trestle/commit/ff1596cbdd3a2ed2c15a6c2c3723f2256331d7ac))
-
-* Merged cache_test... ([`f94f0bd`](https://github.com/oscal-compass/compliance-trestle/commit/f94f0bda54065200f022994bda86b8da0d4c68d8))
-
-* Progress with GithubFetcher and HTTPSFetcher... ([`f03284e`](https://github.com/oscal-compass/compliance-trestle/commit/f03284e6b1e44a7634a249e9637f1b0ecb85c21b))
-
-* feat (remote): for sftp fetcher, added loading of ssh key file via env var SSH_KEY, and updated testing.
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`b1907c0`](https://github.com/oscal-compass/compliance-trestle/commit/b1907c078137e2106d87bde330f7b473a229b49b))
-
-
-## v0.6.2 (2021-01-17)
-
-### Fix
-
-* fix: Corrected branch for mkdocs deploy. (#304) (#305)
-
-Note: Alternative techniques may be required, however, with devops integration it must be tested live.
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`be3f13a`](https://github.com/oscal-compass/compliance-trestle/commit/be3f13a89d44c3f773ad7e372e4116eb609c8f5d))
-
-* fix: Corrected branch for mkdocs deploy. (#304)
-
-Note: Alternative techniques may be required, however, with devops integration it must be tested live.
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`2dd5d93`](https://github.com/oscal-compass/compliance-trestle/commit/2dd5d93df759f9bde345ca1f8d59014d8eb15787))
-
-### Unknown
-
 * Merge branch &#39;main&#39; into develop ([`0411969`](https://github.com/oscal-compass/compliance-trestle/commit/04119696cf646b15b3aed0933eaae95923f3af0e))
-
 
 ## v0.6.1 (2021-01-15)
 
@@ -13665,6 +13949,30 @@ also added full coverage for snake and camel tests ([`c66292e`](https://github.c
 
 Co-authored-by: github-actions[bot] &lt;41898282+github-actions[bot]@users.noreply.github.com&gt; ([`cf83024`](https://github.com/oscal-compass/compliance-trestle/commit/cf83024629b3588891273c5bdcee57d47b2e9a7c))
 
+### Fix
+
+* fix: Corrected branch for mkdocs deploy. (#304)
+
+Note: Alternative techniques may be required, however, with devops integration it must be tested live.
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`2dd5d93`](https://github.com/oscal-compass/compliance-trestle/commit/2dd5d93df759f9bde345ca1f8d59014d8eb15787))
+
+* fix: Extra unit tests and cleanup to close more significant gaps (#298)
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`2abcaad`](https://github.com/oscal-compass/compliance-trestle/commit/2abcaadc1bc14419111e1778bbb1fab61d633d5e))
+
+### Unknown
+
+* Documentation website up and running. (#297)
+
+Minor release: Documentation website up and running. ([`1f8b364`](https://github.com/oscal-compass/compliance-trestle/commit/1f8b364f534131678e74c05538d7db79efe5aabe))
+
+* Merge branch &#39;main&#39; into develop ([`b984828`](https://github.com/oscal-compass/compliance-trestle/commit/b98482828d085c0ba796522b27a75c9162f86871))
+
+## v0.6.0 (2021-01-07)
+
+### Chore
+
 * chore: Ensure develop is correctly updated after a release.  (#294)
 
 * chore: Ensure develop is updated after release is completed.
@@ -13678,6 +13986,14 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`72539c9`](https://git
 * chore: Add mdformat-gfm to setup.cfg (#292)
 
 Signed-off-by: Taneli Hukkinen &lt;hukkinj1@users.noreply.github.com&gt; ([`4750882`](https://github.com/oscal-compass/compliance-trestle/commit/4750882396ea44dbfdebe8860cc527a7768a7ac6))
+
+* chore: Auto-update pre-commit hooks (#277)
+
+Co-authored-by: github-actions[bot] &lt;41898282+github-actions[bot]@users.noreply.github.com&gt; ([`2a2d394`](https://github.com/oscal-compass/compliance-trestle/commit/2a2d39432cd6c32c0373465eee0f84893a7f0718))
+
+* chore: Autoformat GFM tables with mdformat-gfm (#268)
+
+Signed-off-by: Taneli Hukkinen &lt;hukkinj1@users.noreply.github.com&gt; ([`fe4d907`](https://github.com/oscal-compass/compliance-trestle/commit/fe4d9077318fd46aab8088ad1405b6d22bb573b6))
 
 ### Documentation
 
@@ -13750,72 +14066,6 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
 * docs/cli.md
 
 Co-authored-by: Nebula Alam &lt;anebula@au1.ibm.com&gt; ([`a51081b`](https://github.com/oscal-compass/compliance-trestle/commit/a51081bd93cb43b02135b72f00e16cf805eacba9))
-
-### Fix
-
-* fix: Extra unit tests and cleanup to close more significant gaps (#298)
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`2abcaad`](https://github.com/oscal-compass/compliance-trestle/commit/2abcaadc1bc14419111e1778bbb1fab61d633d5e))
-
-* fix: Changed split to not write empty files after split. Implemented circular split-merge test (#295)
-
-Co-authored-by: Nebula Alam &lt;anebula@au1.ibm.com&gt; ([`1ebbeb2`](https://github.com/oscal-compass/compliance-trestle/commit/1ebbeb20db1e25852dd58f7fa7a4ed909e995ef0))
-
-### Unknown
-
-* Documentation website up and running. (#297)
-
-Minor release: Documentation website up and running. ([`1f8b364`](https://github.com/oscal-compass/compliance-trestle/commit/1f8b364f534131678e74c05538d7db79efe5aabe))
-
-* Merge branch &#39;main&#39; into develop ([`b984828`](https://github.com/oscal-compass/compliance-trestle/commit/b98482828d085c0ba796522b27a75c9162f86871))
-
-* feat (remote): added more unit testing for sftp fetcher
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`e0351e4`](https://github.com/oscal-compass/compliance-trestle/commit/e0351e4bb79aa929312e29644f08c7c70864513e))
-
-* feat (remote): added unit tests for sftp fetcher
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`19ef19b`](https://github.com/oscal-compass/compliance-trestle/commit/19ef19bcb8338650344729a350744e5ad508370c))
-
-* feat (remote): working sftp fetcher, live tested with active ssh-agent and password-less auth
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`cd0725d`](https://github.com/oscal-compass/compliance-trestle/commit/cd0725d0363e0ba9a8f3832cf03268c6d3c06c7c))
-
-* feat (remote): added more validations for sftp fetcher, and one for https, with adjustments to unit testing
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`d0e8304`](https://github.com/oscal-compass/compliance-trestle/commit/d0e830422446e49b6379cabf31d595cc5cc595fd))
-
-* feat (remote): started sftp fetcher with simple validation and test, initializing cache location, but no actual fetching yet.
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`0a75bcb`](https://github.com/oscal-compass/compliance-trestle/commit/0a75bcb8f39da55d137acc5fc616651a5718418c))
-
-* Merge pull request #281 from IBM/feature/remote-local
-
-LocalFetcher can now refresh cache from file:/// or absolute path source. ([`c049fa5`](https://github.com/oscal-compass/compliance-trestle/commit/c049fa5e3b41a74b333ac652232a3562fd68faa9))
-
-* feat (remote): generic handling of paths that should also work on Windows environments, linted.
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`a1d8e8f`](https://github.com/oscal-compass/compliance-trestle/commit/a1d8e8f9e626677606a335c1c68974615f6cc74f))
-
-* feat (remote): generic handling of paths that should also work on Windows environments.
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`80f2b8d`](https://github.com/oscal-compass/compliance-trestle/commit/80f2b8d50f72e3ed6e1fee3d2b45719a5448c269))
-
-
-## v0.6.0 (2021-01-07)
-
-### Chore
-
-* chore: Auto-update pre-commit hooks (#277)
-
-Co-authored-by: github-actions[bot] &lt;41898282+github-actions[bot]@users.noreply.github.com&gt; ([`2a2d394`](https://github.com/oscal-compass/compliance-trestle/commit/2a2d39432cd6c32c0373465eee0f84893a7f0718))
-
-* chore: Autoformat GFM tables with mdformat-gfm (#268)
-
-Signed-off-by: Taneli Hukkinen &lt;hukkinj1@users.noreply.github.com&gt; ([`fe4d907`](https://github.com/oscal-compass/compliance-trestle/commit/fe4d9077318fd46aab8088ad1405b6d22bb573b6))
-
-* chore: Remove references to master branch and run releases off of &#34;main&#34; (#259)
-
-* Remove references to master branch and run releases off of &#34;main&#34;
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
-
-* Corrected broken github header.
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`c81b4ba`](https://github.com/oscal-compass/compliance-trestle/commit/c81b4ba116726189d0ced5b2a52f470afe94d29e))
 
 ### Feature
 
@@ -14067,6 +14317,220 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
 
 Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`0652392`](https://github.com/oscal-compass/compliance-trestle/commit/06523929944351ce90ba83a85d57f0b04b323660))
 
+### Fix
+
+* fix: correct semantic release behaviour ([`c25d5be`](https://github.com/oscal-compass/compliance-trestle/commit/c25d5be7448ee956cd848a1476b5c9c70d72ab33))
+
+* fix: Changed split to not write empty files after split. Implemented circular split-merge test (#295)
+
+Co-authored-by: Nebula Alam &lt;anebula@au1.ibm.com&gt; ([`1ebbeb2`](https://github.com/oscal-compass/compliance-trestle/commit/1ebbeb20db1e25852dd58f7fa7a4ed909e995ef0))
+
+* fix: Correct semantic release behaviour.
+
+Corrected semantic release behaviour. ([`caba993`](https://github.com/oscal-compass/compliance-trestle/commit/caba993013fed5b70ced84fc58d34345e042cb6c))
+
+* fix: Refactor to use python and pytest internals for temporary paths and creating directories.
+
+* Refactored to use tmp_path everywhere
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
+
+* Altered unit test to only use pytest inbuilt temporary directories.
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
+
+* Adding more typing and clearing up redundant functionality.
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`1d99ca2`](https://github.com/oscal-compass/compliance-trestle/commit/1d99ca2ac96d76dfa777a0c514be582b382504de))
+
+* fix: Small typo fix.
+
+Trivial spelling fix. ([`2168bb2`](https://github.com/oscal-compass/compliance-trestle/commit/2168bb2b4d8fa79fbf93687a41265379cba608b8))
+
+### Unknown
+
+* Merge branch &#39;main&#39; into develop ([`df99bf8`](https://github.com/oscal-compass/compliance-trestle/commit/df99bf83c4b3326969ab31b070f71b95d38ecee4))
+
+* Merge pull request #289 from IBM/develop
+
+feat: Force update of version for release ([`e716524`](https://github.com/oscal-compass/compliance-trestle/commit/e716524db01f65ad0f9167143126743ea5de4be9))
+
+* Corrected semantic release behaviour.
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`c147e94`](https://github.com/oscal-compass/compliance-trestle/commit/c147e9443993c37bb484a925e4a10c195c1eb1cd))
+
+* Merge branch &#39;main&#39; into develop ([`2c97d6c`](https://github.com/oscal-compass/compliance-trestle/commit/2c97d6c2ad0bf029a417ecfef1866d258ace201b))
+
+* Merge pull request #288 from IBM/develop
+
+feat: Release to support OSCAL 1.0.0rc1 ([`cbb39c4`](https://github.com/oscal-compass/compliance-trestle/commit/cbb39c4455274e9e27f335e0699eac92be25de02))
+
+* Merge branch &#39;main&#39; into develop ([`aad7018`](https://github.com/oscal-compass/compliance-trestle/commit/aad70181dfe4b8868345010fb5fd10000bcd329a))
+
+* Merge pull request #261 from IBM/develop
+
+Trestle release: task and import. ([`24de68c`](https://github.com/oscal-compass/compliance-trestle/commit/24de68ccd4a23ec306137cbdf931f1de03471eb5))
+
+* Merge pull request #264 from IBM/docs/caching-spec
+
+docs (caching): typos and format fixes, explicit prohibition on unencrypted HTTP ([`b3fda9a`](https://github.com/oscal-compass/compliance-trestle/commit/b3fda9a4598541aaac48b65b7ae2881df3b48ea8))
+
+* Merge branch &#39;develop&#39; into docs/caching-spec ([`c927861`](https://github.com/oscal-compass/compliance-trestle/commit/c9278611acdb2aeb809b62763e4f1fe15b66f661))
+
+* Specs now require HTTPS for fetching, while unencrypted HTTP is not allowed.
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`98aabdb`](https://github.com/oscal-compass/compliance-trestle/commit/98aabdbe643d958dcaac00f9c2ff4804e2cb7c93))
+
+* Fixed a few typos.
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`474f693`](https://github.com/oscal-compass/compliance-trestle/commit/474f693e56878fb1d5716a42aad09b3bdf4f0fcc))
+
+* Fixed table.
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`4e78f45`](https://github.com/oscal-compass/compliance-trestle/commit/4e78f4506bb03fb0768aaaa9ea908b0a652ca630))
+
+* feature (remote): merged remote-sftp branch and resolved... ([`c193dce`](https://github.com/oscal-compass/compliance-trestle/commit/c193dce90ecbfe2bdfbd608ff931a6728b691142))
+
+* Merge pull request #308 from IBM/feature/remote-sftp
+
+Feature/remote-sftp looks good to reviewer. ([`be497fc`](https://github.com/oscal-compass/compliance-trestle/commit/be497fcda82dc8a14c1dea39e6157eb215d4af3b))
+
+* feat (remote): for sftp fetcher, linting and format fixed.
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`37b3543`](https://github.com/oscal-compass/compliance-trestle/commit/37b3543c7f462229566825442128c3d4b21a8ae2))
+
+* feat (remote): for sftp fetcher, added loading of ssh key file via env var SSH_KEY, and updated testing.
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`b1907c0`](https://github.com/oscal-compass/compliance-trestle/commit/b1907c078137e2106d87bde330f7b473a229b49b))
+
+* feat (remote): added more unit testing for sftp fetcher
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`e0351e4`](https://github.com/oscal-compass/compliance-trestle/commit/e0351e4bb79aa929312e29644f08c7c70864513e))
+
+* feat (remote): added unit tests for sftp fetcher
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`19ef19b`](https://github.com/oscal-compass/compliance-trestle/commit/19ef19bcb8338650344729a350744e5ad508370c))
+
+* feat (remote): working sftp fetcher, live tested with active ssh-agent and password-less auth
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`cd0725d`](https://github.com/oscal-compass/compliance-trestle/commit/cd0725d0363e0ba9a8f3832cf03268c6d3c06c7c))
+
+* feat (remote): added more validations for sftp fetcher, and one for https, with adjustments to unit testing
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`d0e8304`](https://github.com/oscal-compass/compliance-trestle/commit/d0e830422446e49b6379cabf31d595cc5cc595fd))
+
+* feat (remote): started sftp fetcher with simple validation and test, initializing cache location, but no actual fetching yet.
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`0a75bcb`](https://github.com/oscal-compass/compliance-trestle/commit/0a75bcb8f39da55d137acc5fc616651a5718418c))
+
+* feature (remote): misc tweaks resulting from merge... ([`98856b9`](https://github.com/oscal-compass/compliance-trestle/commit/98856b93e9b6f819dda23a8b7976fb06eecf491d))
+
+* feature/remote: various updates to fetchers... ([`ff1596c`](https://github.com/oscal-compass/compliance-trestle/commit/ff1596cbdd3a2ed2c15a6c2c3723f2256331d7ac))
+
+* Merged cache_test... ([`f94f0bd`](https://github.com/oscal-compass/compliance-trestle/commit/f94f0bda54065200f022994bda86b8da0d4c68d8))
+
+* Merge pull request #281 from IBM/feature/remote-local
+
+LocalFetcher can now refresh cache from file:/// or absolute path source. ([`c049fa5`](https://github.com/oscal-compass/compliance-trestle/commit/c049fa5e3b41a74b333ac652232a3562fd68faa9))
+
+* feat (remote): generic handling of paths that should also work on Windows environments, linted.
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`a1d8e8f`](https://github.com/oscal-compass/compliance-trestle/commit/a1d8e8f9e626677606a335c1c68974615f6cc74f))
+
+* feat (remote): generic handling of paths that should also work on Windows environments.
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`80f2b8d`](https://github.com/oscal-compass/compliance-trestle/commit/80f2b8d50f72e3ed6e1fee3d2b45719a5448c269))
+
+* feat (remote): Adjustments for Windows environment.
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`3cdc31f`](https://github.com/oscal-compass/compliance-trestle/commit/3cdc31f3054cc5b232d79976c47f460bb0a67923))
+
+* feat (remote): LocalFetcher can now refresh cache from file:/// or absolute path source.
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`dc3f809`](https://github.com/oscal-compass/compliance-trestle/commit/dc3f80909d15e5f61617233af5c3a1b7bc6d754a))
+
+* Progress with GithubFetcher and HTTPSFetcher... ([`f03284e`](https://github.com/oscal-compass/compliance-trestle/commit/f03284e6b1e44a7634a249e9637f1b0ecb85c21b))
+
+* feature (remote): Merged Jeff&#39;s changes pushed to feature/remote... ([`a0bfd41`](https://github.com/oscal-compass/compliance-trestle/commit/a0bfd41ac5fe0cfa3a95d59c47e2fd29ce76fe6e))
+
+* Merge pull request #266 from IBM/feature/remote-jeff
+
+feat (remote): New caching code and unit tests, and bringing remote work up to sync with develop today. ([`dfdf9b4`](https://github.com/oscal-compass/compliance-trestle/commit/dfdf9b4fd661a2afb6d51054c587fd38671640f3))
+
+* feat (remote): Synchronizing with correct develop versions of test_utils, conftest, fs and trash.
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`360835a`](https://github.com/oscal-compass/compliance-trestle/commit/360835a7209712a67c3dd90e47e327a8478f2bcc))
+
+* feat (remote): Adopting trestle.utils.fs
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`df792bc`](https://github.com/oscal-compass/compliance-trestle/commit/df792bcddf5f30af815319c43f120ba647f838a3))
+
+* feat (remote): Extended feature/remote cache.py and its unit test.
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`4712eff`](https://github.com/oscal-compass/compliance-trestle/commit/4712effe78e36eb04d9568eb0634744d6949eabb))
+
+* Merge branch &#39;develop&#39; into feature/remote
+Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`b2d3dc4`](https://github.com/oscal-compass/compliance-trestle/commit/b2d3dc4f9664c22d60d14a96975d2fc6d4fdd1c8))
+
+* Merge branch &#39;main&#39; into develop ([`0b0b6c4`](https://github.com/oscal-compass/compliance-trestle/commit/0b0b6c4a3dad51bdce921099906347abc0a4d7df))
+
+## v0.4.0 (2020-11-24)
+
+### Chore
+
+* chore: Remove references to master branch and run releases off of &#34;main&#34; (#259)
+
+* Remove references to master branch and run releases off of &#34;main&#34;
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
+
+* Corrected broken github header.
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`c81b4ba`](https://github.com/oscal-compass/compliance-trestle/commit/c81b4ba116726189d0ced5b2a52f470afe94d29e))
+
+* chore: Cleanup of trestle init to ensure correct return codes(#232)
+
+* fix: Improvements in typing and return codes.
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
+
+* Initial trestle create
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
+
+* Added UT file
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
+
+* Added main file to allow running as &#34;python -m trestle&#34;
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
+
+* Commit to allow merging
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
+
+* Cleaned and as expected UT failures after merge
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
+
+* Updated such that all models can generate
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
+
+* Added unit tests for generators.
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
+
+* Ready for review
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
+
+* Fixed merge error
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
+
+* chore: Refactored init to use pathlib where possible
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
+
+* chore: Refactored init to use pathlib where possible
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`3c25a21`](https://github.com/oscal-compass/compliance-trestle/commit/3c25a215a1cc1d27fb0ca99a606356221e2969dd))
+
+* chore: Auto-update pre-commit hooks (#231)
+
+Co-authored-by: github-actions[bot] &lt;41898282+github-actions[bot]@users.noreply.github.com&gt; ([`157c9bf`](https://github.com/oscal-compass/compliance-trestle/commit/157c9bf99c279855f1027d996132777c614b750c))
+
+* chore: Auto-update pre-commit hooks (#222)
+
+Co-authored-by: github-actions[bot] &lt;41898282+github-actions[bot]@users.noreply.github.com&gt; ([`026541d`](https://github.com/oscal-compass/compliance-trestle/commit/026541df894be37664da9823f8ce25f8f0d1276c))
+
+### Feature
+
 * feat: Trestle import and unit testing
 
 * Bringing in clean import and test.
@@ -14154,246 +14618,6 @@ Signed-off-by: Jeff Tan &lt;jefferson.tan@gmail.com&gt;
 * Now covering 100%, tests response to failure of add_plan.execute().
 Signed-off-by: Jeff Tan &lt;jefferson.tan@gmail.com&gt; ([`a09e192`](https://github.com/oscal-compass/compliance-trestle/commit/a09e192b8a9ed2e8ccf362b38b4f9b2aecef54cd))
 
-### Fix
-
-* fix: correct semantic release behaviour ([`c25d5be`](https://github.com/oscal-compass/compliance-trestle/commit/c25d5be7448ee956cd848a1476b5c9c70d72ab33))
-
-* fix: Correct semantic release behaviour.
-
-Corrected semantic release behaviour. ([`caba993`](https://github.com/oscal-compass/compliance-trestle/commit/caba993013fed5b70ced84fc58d34345e042cb6c))
-
-* fix: Refactor to use python and pytest internals for temporary paths and creating directories.
-
-* Refactored to use tmp_path everywhere
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
-
-* Altered unit test to only use pytest inbuilt temporary directories.
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
-
-* Adding more typing and clearing up redundant functionality.
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`1d99ca2`](https://github.com/oscal-compass/compliance-trestle/commit/1d99ca2ac96d76dfa777a0c514be582b382504de))
-
-* fix: Small typo fix.
-
-Trivial spelling fix. ([`2168bb2`](https://github.com/oscal-compass/compliance-trestle/commit/2168bb2b4d8fa79fbf93687a41265379cba608b8))
-
-* fix: Generalized error expected after parent_model.oscal_read(file_path.absolute()) to handle any and return clean complaint. (#245)
-
-Signed-off-by: Jeff Tan &lt;jefferson.tan@gmail.com&gt; ([`b92ec8b`](https://github.com/oscal-compass/compliance-trestle/commit/b92ec8b40f15f121994eeb57b36e81a3a1b4c239))
-
-### Unknown
-
-* Merge branch &#39;main&#39; into develop ([`df99bf8`](https://github.com/oscal-compass/compliance-trestle/commit/df99bf83c4b3326969ab31b070f71b95d38ecee4))
-
-* Corrected semantic release behaviour.
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`c147e94`](https://github.com/oscal-compass/compliance-trestle/commit/c147e9443993c37bb484a925e4a10c195c1eb1cd))
-
-* Merge pull request #289 from IBM/develop
-
-feat: Force update of version for release ([`e716524`](https://github.com/oscal-compass/compliance-trestle/commit/e716524db01f65ad0f9167143126743ea5de4be9))
-
-* Merge branch &#39;main&#39; into develop ([`2c97d6c`](https://github.com/oscal-compass/compliance-trestle/commit/2c97d6c2ad0bf029a417ecfef1866d258ace201b))
-
-* Merge pull request #288 from IBM/develop
-
-feat: Release to support OSCAL 1.0.0rc1 ([`cbb39c4`](https://github.com/oscal-compass/compliance-trestle/commit/cbb39c4455274e9e27f335e0699eac92be25de02))
-
-* Merge branch &#39;main&#39; into develop ([`aad7018`](https://github.com/oscal-compass/compliance-trestle/commit/aad70181dfe4b8868345010fb5fd10000bcd329a))
-
-* feat (remote): Adjustments for Windows environment.
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`3cdc31f`](https://github.com/oscal-compass/compliance-trestle/commit/3cdc31f3054cc5b232d79976c47f460bb0a67923))
-
-* feat (remote): LocalFetcher can now refresh cache from file:/// or absolute path source.
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`dc3f809`](https://github.com/oscal-compass/compliance-trestle/commit/dc3f80909d15e5f61617233af5c3a1b7bc6d754a))
-
-* feature (remote): Merged Jeff&#39;s changes pushed to feature/remote... ([`a0bfd41`](https://github.com/oscal-compass/compliance-trestle/commit/a0bfd41ac5fe0cfa3a95d59c47e2fd29ce76fe6e))
-
-* feature (remote): added furl to setup requirements and began Github fetch... ([`1555f42`](https://github.com/oscal-compass/compliance-trestle/commit/1555f4286d73d0e17382328183531d7c1f897813))
-
-* Merge pull request #264 from IBM/docs/caching-spec
-
-docs (caching): typos and format fixes, explicit prohibition on unencrypted HTTP ([`b3fda9a`](https://github.com/oscal-compass/compliance-trestle/commit/b3fda9a4598541aaac48b65b7ae2881df3b48ea8))
-
-* Merge pull request #266 from IBM/feature/remote-jeff
-
-feat (remote): New caching code and unit tests, and bringing remote work up to sync with develop today. ([`dfdf9b4`](https://github.com/oscal-compass/compliance-trestle/commit/dfdf9b4fd661a2afb6d51054c587fd38671640f3))
-
-* feat (remote): Synchronizing with correct develop versions of test_utils, conftest, fs and trash.
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`360835a`](https://github.com/oscal-compass/compliance-trestle/commit/360835a7209712a67c3dd90e47e327a8478f2bcc))
-
-* feat (remote): Adopting trestle.utils.fs
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`df792bc`](https://github.com/oscal-compass/compliance-trestle/commit/df792bcddf5f30af815319c43f120ba647f838a3))
-
-* feat (remote): Extended feature/remote cache.py and its unit test.
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`4712eff`](https://github.com/oscal-compass/compliance-trestle/commit/4712effe78e36eb04d9568eb0634744d6949eabb))
-
-* Merge branch &#39;develop&#39; into feature/remote
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`b2d3dc4`](https://github.com/oscal-compass/compliance-trestle/commit/b2d3dc4f9664c22d60d14a96975d2fc6d4fdd1c8))
-
-* Merge branch &#39;develop&#39; into docs/caching-spec ([`c927861`](https://github.com/oscal-compass/compliance-trestle/commit/c9278611acdb2aeb809b62763e4f1fe15b66f661))
-
-* Specs now require HTTPS for fetching, while unencrypted HTTP is not allowed.
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`98aabdb`](https://github.com/oscal-compass/compliance-trestle/commit/98aabdbe643d958dcaac00f9c2ff4804e2cb7c93))
-
-* Fixed a few typos.
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`474f693`](https://github.com/oscal-compass/compliance-trestle/commit/474f693e56878fb1d5716a42aad09b3bdf4f0fcc))
-
-* Fixed table.
-Signed-off-by: Jeff Tan &lt;jeffetan@au1.ibm.com&gt; ([`4e78f45`](https://github.com/oscal-compass/compliance-trestle/commit/4e78f4506bb03fb0768aaaa9ea908b0a652ca630))
-
-* Merge branch &#39;develop&#39; into feature/remote ([`582bae2`](https://github.com/oscal-compass/compliance-trestle/commit/582bae2abe077ee9a9c353f44131951c25df8beb))
-
-* Merge pull request #261 from IBM/develop
-
-Trestle release: task and import. ([`24de68c`](https://github.com/oscal-compass/compliance-trestle/commit/24de68ccd4a23ec306137cbdf931f1de03471eb5))
-
-* Merge branch &#39;main&#39; into develop ([`0b0b6c4`](https://github.com/oscal-compass/compliance-trestle/commit/0b0b6c4a3dad51bdce921099906347abc0a4d7df))
-
-* Initial implementation of trestle task interface and sample task for testing.
-
-* Initial set of trestle task docs.
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
-
-* Additional details for tasks.
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
-
-* Initial implementation of trestle tasks. To be thoroughly tested.
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
-
-* Initial implementation of trestle tasks. To be thoroughly tested.
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
-
-* Stuff.
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
-
-* Altered logging behaviour to use improved logger.
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
-
-* Corrected unit tests
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
-
-* Ready for merge - first trestle tasks.
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
-
-* Merged in removed and updated with appropriate logging changes
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
-
-* Corrected behaviour.
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`d38d933`](https://github.com/oscal-compass/compliance-trestle/commit/d38d933b92e0f61f235532ade74d92e173d66349))
-
-
-## v0.4.0 (2020-11-24)
-
-### Chore
-
-* chore: Cleanup of trestle init to ensure correct return codes(#232)
-
-* fix: Improvements in typing and return codes.
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
-
-* Initial trestle create
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
-
-* Added UT file
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
-
-* Added main file to allow running as &#34;python -m trestle&#34;
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
-
-* Commit to allow merging
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
-
-* Cleaned and as expected UT failures after merge
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
-
-* Updated such that all models can generate
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
-
-* Added unit tests for generators.
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
-
-* Ready for review
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
-
-* Fixed merge error
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
-
-* chore: Refactored init to use pathlib where possible
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
-
-* chore: Refactored init to use pathlib where possible
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`3c25a21`](https://github.com/oscal-compass/compliance-trestle/commit/3c25a215a1cc1d27fb0ca99a606356221e2969dd))
-
-* chore: Auto-update pre-commit hooks (#231)
-
-Co-authored-by: github-actions[bot] &lt;41898282+github-actions[bot]@users.noreply.github.com&gt; ([`157c9bf`](https://github.com/oscal-compass/compliance-trestle/commit/157c9bf99c279855f1027d996132777c614b750c))
-
-* chore: Auto-update pre-commit hooks (#222)
-
-Co-authored-by: github-actions[bot] &lt;41898282+github-actions[bot]@users.noreply.github.com&gt; ([`026541d`](https://github.com/oscal-compass/compliance-trestle/commit/026541df894be37664da9823f8ce25f8f0d1276c))
-
-* chore: Auto-update pre-commit hooks (#210)
-
-Co-authored-by: github-actions[bot] &lt;41898282+github-actions[bot]@users.noreply.github.com&gt; ([`daa70dc`](https://github.com/oscal-compass/compliance-trestle/commit/daa70dceaae62d1ae7576d19cb9c024deabf02cf))
-
-* chore: Adding interface for representing assembly of oscal models. (#198)
-
-* Created initial interface for exchanging oscal model trees
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
-
-* Added tests for interface and cleaned up code formatting
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
-
-* Updated interface name to better reflect funcionality.
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
-
-* Updated unit tests to correct for name change.
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`46934bc`](https://github.com/oscal-compass/compliance-trestle/commit/46934bc700c18d04f9e34d7783b1bf673428b0c1))
-
-### Documentation
-
-* docs: Updated developer documentation with DCO and merge workflow.
-
-* docs: Updated developer docs with workflow and DCO both requirements.
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
-
-* docs: Updated developer docs with workflow and DCO both requirements.
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`041a7aa`](https://github.com/oscal-compass/compliance-trestle/commit/041a7aa8b2183a261827e5ee9d7d562849329e12))
-
-### Feature
-
 * feat: Validation of duplicates now uses object factory (#216)
 
 * Validation of duplicates now using object factory
@@ -14442,6 +14666,10 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`a73538f`](https://git
 
 ### Fix
 
+* fix: Generalized error expected after parent_model.oscal_read(file_path.absolute()) to handle any and return clean complaint. (#245)
+
+Signed-off-by: Jeff Tan &lt;jefferson.tan@gmail.com&gt; ([`b92ec8b`](https://github.com/oscal-compass/compliance-trestle/commit/b92ec8b40f15f121994eeb57b36e81a3a1b4c239))
+
 * fix: Additional test for trestle add (#227)
 
 * fix:add. Add now creates one action plan for all given element paths, instead of individual plans for each element paths provided with -e flag.
@@ -14481,9 +14709,51 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`793ea7c`](https://git
 
 Merging from develop for a trestle release. ([`bc877fe`](https://github.com/oscal-compass/compliance-trestle/commit/bc877febbbcf4a9e8cd179d83f68ac3e1a390034))
 
-* Added test skeleton
+* feature (remote): added furl to setup requirements and began Github fetch... ([`1555f42`](https://github.com/oscal-compass/compliance-trestle/commit/1555f4286d73d0e17382328183531d7c1f897813))
 
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`d839b9b`](https://github.com/oscal-compass/compliance-trestle/commit/d839b9bb1ad2243ed20d0f2dee3409ed0a4db88c))
+* Merge branch &#39;develop&#39; into feature/remote ([`582bae2`](https://github.com/oscal-compass/compliance-trestle/commit/582bae2abe077ee9a9c353f44131951c25df8beb))
+
+* Initial implementation of trestle task interface and sample task for testing.
+
+* Initial set of trestle task docs.
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
+
+* Additional details for tasks.
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
+
+* Initial implementation of trestle tasks. To be thoroughly tested.
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
+
+* Initial implementation of trestle tasks. To be thoroughly tested.
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
+
+* Stuff.
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
+
+* Altered logging behaviour to use improved logger.
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
+
+* Corrected unit tests
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
+
+* Ready for merge - first trestle tasks.
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
+
+* Merged in removed and updated with appropriate logging changes
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
+
+* Corrected behaviour.
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`d38d933`](https://github.com/oscal-compass/compliance-trestle/commit/d38d933b92e0f61f235532ade74d92e173d66349))
 
 * Merge pull request #229 from IBM/fix/missing_main
 
@@ -14504,23 +14774,41 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`93f8e0a`](https://git
 Co-authored-by: Nebula Alam &lt;anebula@au1.ibm.com&gt;
 Co-authored-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`f33eeda`](https://github.com/oscal-compass/compliance-trestle/commit/f33eeda6bf83c43269175fa03bbab4dddce4a87a))
 
+* Added test skeleton
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`d839b9b`](https://github.com/oscal-compass/compliance-trestle/commit/d839b9bb1ad2243ed20d0f2dee3409ed0a4db88c))
+
 * Initial implementation of trestle caching for local fs complete.
 
 Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`d01dfb5`](https://github.com/oscal-compass/compliance-trestle/commit/d01dfb5f3991701cb06a1f7735d94aba8fa5e98e))
 
 * Merge branch &#39;master&#39; into develop ([`a99b19c`](https://github.com/oscal-compass/compliance-trestle/commit/a99b19c096322e94d24977572691ca4a8c927251))
 
-* fix:add (#208)
-
-Trestle `add` now creates one action plan for all given element paths, instead of individual plans for each element paths provided with -e flag.
-
-Co-authored-by: Nebula Alam &lt;anebula@au1.ibm.com&gt;
-Co-authored-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`bcbdae8`](https://github.com/oscal-compass/compliance-trestle/commit/bcbdae86a9ec8844208d9368b8b48429ed25c3ed))
-
-
 ## v0.3.0 (2020-10-26)
 
 ### Chore
+
+* chore: Auto-update pre-commit hooks (#210)
+
+Co-authored-by: github-actions[bot] &lt;41898282+github-actions[bot]@users.noreply.github.com&gt; ([`daa70dc`](https://github.com/oscal-compass/compliance-trestle/commit/daa70dceaae62d1ae7576d19cb9c024deabf02cf))
+
+* chore: Adding interface for representing assembly of oscal models. (#198)
+
+* Created initial interface for exchanging oscal model trees
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
+
+* Added tests for interface and cleaned up code formatting
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
+
+* Updated interface name to better reflect funcionality.
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
+
+* Updated unit tests to correct for name change.
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`46934bc`](https://github.com/oscal-compass/compliance-trestle/commit/46934bc700c18d04f9e34d7783b1bf673428b0c1))
 
 * chore: Auto-update pre-commit hooks (#191)
 
@@ -14544,6 +14832,16 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`40adb2d`](https://git
 Co-authored-by: Bruno &lt;bruno.assis.marques@gmail.com&gt; ([`3d27204`](https://github.com/oscal-compass/compliance-trestle/commit/3d272047c5014e836d93215f925ce0df7c5bdd1c))
 
 ### Documentation
+
+* docs: Updated developer documentation with DCO and merge workflow.
+
+* docs: Updated developer docs with workflow and DCO both requirements.
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
+
+* docs: Updated developer docs with workflow and DCO both requirements.
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`041a7aa`](https://github.com/oscal-compass/compliance-trestle/commit/041a7aa8b2183a261827e5ee9d7d562849329e12))
 
 * docs: Initial caching structure documentation (#143)
 
@@ -14676,6 +14974,13 @@ Signed-off-by: Bruno &lt;brunomar@au1.ibm.com&gt; ([`5f14767`](https://github.co
 * refactor: rename fixture name for sameple_target to sample_target_def ([`788510b`](https://github.com/oscal-compass/compliance-trestle/commit/788510b08dd836e1dfce92520a8517cd345b524d))
 
 ### Unknown
+
+* fix:add (#208)
+
+Trestle `add` now creates one action plan for all given element paths, instead of individual plans for each element paths provided with -e flag.
+
+Co-authored-by: Nebula Alam &lt;anebula@au1.ibm.com&gt;
+Co-authored-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`bcbdae8`](https://github.com/oscal-compass/compliance-trestle/commit/bcbdae86a9ec8844208d9368b8b48429ed25c3ed))
 
 * Merge branch &#39;master&#39; into develop ([`4d77545`](https://github.com/oscal-compass/compliance-trestle/commit/4d7754504591239eca3af9bdf54f452e90f5eb8d))
 
@@ -14814,14 +15119,11 @@ CreatePathAction should have an option to clean the content of a file if it exis
 
 https://github.com/IBM/compliance-trestle/issues/159 ([`f31a800`](https://github.com/oscal-compass/compliance-trestle/commit/f31a8007c311784ce914811ff0e9ef70eb1e6438))
 
-* Unit test for the bug fix ([`7da40fe`](https://github.com/oscal-compass/compliance-trestle/commit/7da40fee88489721c169386d3c578d668eef8021))
-
 * Merge branch &#39;develop&#39; into fix/issue_149b ([`24a51f3`](https://github.com/oscal-compass/compliance-trestle/commit/24a51f380be2aedcde397b45dbcccda37cfb000a))
 
 * Merge pull request #157 from IBM/master
 
 Master ([`84e8882`](https://github.com/oscal-compass/compliance-trestle/commit/84e8882bfce7a82be75ec60aea35cdcc0ac187f9))
-
 
 ## v0.2.2 (2020-10-15)
 
@@ -14837,6 +15139,40 @@ closes #149 ([`7ded03e`](https://github.com/oscal-compass/compliance-trestle/com
 
 * bugfix issue 149 - Union[A, A] -&gt; Union[A, conlist(A, min_items=2)] ([`4f6f6a9`](https://github.com/oscal-compass/compliance-trestle/commit/4f6f6a970dcf0919d3a33500544a54651df92b07))
 
+## v0.2.1 (2020-10-14)
+
+### Fix
+
+* fix: Merge pull request #144 from IBM/fix/issue_138_b
+
+fix for issue #138  forward references in assessment_results ([`153b752`](https://github.com/oscal-compass/compliance-trestle/commit/153b752b0de05baa616ac8d83a107eeaa30b0e63))
+
+### Unknown
+
+* fix for issue 138 forward references in assessment_results ([`f0aeaf3`](https://github.com/oscal-compass/compliance-trestle/commit/f0aeaf35be82203adb308ed6bfa24e7bf65caa29))
+
+## v0.2.0 (2020-10-12)
+
+### Documentation
+
+* docs: Update readme to reflect alpha status. (#134)
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`8ef9762`](https://github.com/oscal-compass/compliance-trestle/commit/8ef9762ccb015d3a5e2b5c3e9d119e7cbca76c43))
+
+### Fix
+
+* fix: Coding formating failure on merge from master
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`3e00d5d`](https://github.com/oscal-compass/compliance-trestle/commit/3e00d5d76e2fd3018604b4f88a8bd83d07b35f60))
+
+### Unknown
+
+* Merge pull request #129 from IBM/develop
+
+Release to master ([`e164c3d`](https://github.com/oscal-compass/compliance-trestle/commit/e164c3dc331c6b1abe6daf60de55276ab1e56b8a))
+
+* Unit test for the bug fix ([`7da40fe`](https://github.com/oscal-compass/compliance-trestle/commit/7da40fee88489721c169386d3c578d668eef8021))
+
 * Handle multiple element paths argument consistently during split #146 (#147) ([`8d7943a`](https://github.com/oscal-compass/compliance-trestle/commit/8d7943a537bb9e8191657245e6a2be2cdeddc729))
 
 * add a few more helpers (#151) (#152)
@@ -14851,24 +15187,57 @@ closes #149 ([`7ded03e`](https://github.com/oscal-compass/compliance-trestle/com
 
 Co-authored-by: Bruno &lt;brunomar@au1.ibm.com&gt; ([`f766486`](https://github.com/oscal-compass/compliance-trestle/commit/f766486eabe4e50bf3817eedf8cc65a2f50f839d))
 
-
-## v0.2.1 (2020-10-14)
-
-### Fix
-
-* fix: Merge pull request #144 from IBM/fix/issue_138_b
-
-fix for issue #138  forward references in assessment_results ([`153b752`](https://github.com/oscal-compass/compliance-trestle/commit/153b752b0de05baa616ac8d83a107eeaa30b0e63))
-
-### Unknown
-
-* fix for issue 138 forward references in assessment_results ([`f0aeaf3`](https://github.com/oscal-compass/compliance-trestle/commit/f0aeaf35be82203adb308ed6bfa24e7bf65caa29))
-
 * Merge pull request #141 from IBM/feature/split_merge_add
 
 Trestle split and foundational functionalities ([`251079f`](https://github.com/oscal-compass/compliance-trestle/commit/251079fceba1bc80283a064dd6de304733c7c42b))
 
 * Merge branch &#39;develop&#39; into feature/split_merge_add ([`5db28de`](https://github.com/oscal-compass/compliance-trestle/commit/5db28de545e200a0e4e90a279fc46b0a19a2205f))
+
+* Extend functionality for detecting duplicate values in pydantic objects (#105)
+
+* Initial implementation of has_no_duplicate_elements
+
+* renamed find_values_by_name_generic to convey not just pydantic objects
+
+* Simplify parsing tests and use new read/write oscal methods
+
+* Manually edit duplicate uuid&#39;s
+
+* add tests for duplicate uuids
+
+* added tools and tests to find duplicate values of specified pydantic type
+
+* better naming of test files and edited uuids
+
+* better implementation of get_values_by_name using fields_set
+
+* Prepare for cli validation
+
+* initial connection to cli
+
+* initial integration of validate test into cli
+
+* Added validation test to cli and refactored
+
+Co-authored-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`b0e3558`](https://github.com/oscal-compass/compliance-trestle/commit/b0e3558b3f1ce6332f7db199a017986eda27e362))
+
+* Fixed regex escape seq. so can again block w605 errors - issue 115 (#135)
+
+Co-authored-by: Lenin Mehedy &lt;lenin.mehedy@au1.ibm.com&gt; ([`c3b292f`](https://github.com/oscal-compass/compliance-trestle/commit/c3b292fe4deeeed1ebcd765d7e6777b8eb08fdfd))
+
+* Merge pull request #131 from IBM/enhancement/5c
+
+From develop, fix_any.py now adds a license header to output files. ([`4aaa89d`](https://github.com/oscal-compass/compliance-trestle/commit/4aaa89d420709311912d8bd51c617694e7f718b7))
+
+* Merge branch &#39;develop&#39; into enhancement/5c ([`c0fe5f0`](https://github.com/oscal-compass/compliance-trestle/commit/c0fe5f00626d0b64c026ab31d24d45d3e0af8836))
+
+* Merge branch &#39;develop&#39; into enhancement/5c ([`55230a7`](https://github.com/oscal-compass/compliance-trestle/commit/55230a7a5870c1f2596eac8c0757002fc8f68ce8))
+
+* Regenerated models in trestle/oscal/ ([`31c9382`](https://github.com/oscal-compass/compliance-trestle/commit/31c9382cab3291b81e1fcd2f507e3603b47ba588))
+
+* Fixed missing newlines for copyright text. ([`e4ffad6`](https://github.com/oscal-compass/compliance-trestle/commit/e4ffad6bb0ddee292a75e7358426f4e1ed687ad3))
+
+* From develop, fix_any.py now adds a license header to output files. ([`ce4806d`](https://github.com/oscal-compass/compliance-trestle/commit/ce4806d80319fee334e395b7c31e5727806af3ab))
 
 * Use get_stripped_contextual_model (#140) ([`b045583`](https://github.com/oscal-compass/compliance-trestle/commit/b045583e6d6ba7b411669208b68814e71cbe506b))
 
@@ -14900,39 +15269,7 @@ Fix recursive model split for a chain of paths ([`88fd9c5`](https://github.com/o
 
 * Fix getting full element path recursively ([`897d2d2`](https://github.com/oscal-compass/compliance-trestle/commit/897d2d25cc9fcc56de0afb6a43d6705fd3bf380b))
 
-* Extend functionality for detecting duplicate values in pydantic objects (#105)
-
-* Initial implementation of has_no_duplicate_elements
-
-* renamed find_values_by_name_generic to convey not just pydantic objects
-
-* Simplify parsing tests and use new read/write oscal methods
-
-* Manually edit duplicate uuid&#39;s
-
-* add tests for duplicate uuids
-
-* added tools and tests to find duplicate values of specified pydantic type
-
-* better naming of test files and edited uuids
-
-* better implementation of get_values_by_name using fields_set
-
-* Prepare for cli validation
-
-* initial connection to cli
-
-* initial integration of validate test into cli
-
-* Added validation test to cli and refactored
-
-Co-authored-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`b0e3558`](https://github.com/oscal-compass/compliance-trestle/commit/b0e3558b3f1ce6332f7db199a017986eda27e362))
-
 * Merge branch &#39;feature/split_merge_add&#39; into feature/split-cmd ([`139983d`](https://github.com/oscal-compass/compliance-trestle/commit/139983dd5f6af84c26bed31f19ed7847ebe58f02))
-
-* Fixed regex escape seq. so can again block w605 errors - issue 115 (#135)
-
-Co-authored-by: Lenin Mehedy &lt;lenin.mehedy@au1.ibm.com&gt; ([`c3b292f`](https://github.com/oscal-compass/compliance-trestle/commit/c3b292fe4deeeed1ebcd765d7e6777b8eb08fdfd))
 
 * add get_singular_alias helper (#136)
 
@@ -14940,30 +15277,43 @@ Co-authored-by: Lenin Mehedy &lt;lenin.mehedy@au1.ibm.com&gt; ([`c3b292f`](https
 
 Co-authored-by: Bruno &lt;brunomar@au1.ibm.com&gt; ([`984c94c`](https://github.com/oscal-compass/compliance-trestle/commit/984c94c3faa72ac506a1aa26f4555b2cd610afe1))
 
-* Implement multi-level recursive split ([`dac9e3e`](https://github.com/oscal-compass/compliance-trestle/commit/dac9e3e546eb135dbcff678b49ae33cdc734794c))
-
-* Each element path must have its root model as the path prefix ([`e1cf697`](https://github.com/oscal-compass/compliance-trestle/commit/e1cf69767a015ac657b8c9fa17e810eeea60e019))
-
-* Merge pull request #131 from IBM/enhancement/5c
-
-From develop, fix_any.py now adds a license header to output files. ([`4aaa89d`](https://github.com/oscal-compass/compliance-trestle/commit/4aaa89d420709311912d8bd51c617694e7f718b7))
-
-* Merge branch &#39;develop&#39; into enhancement/5c ([`c0fe5f0`](https://github.com/oscal-compass/compliance-trestle/commit/c0fe5f00626d0b64c026ab31d24d45d3e0af8836))
-
 * Merge pull request #133 from IBM/feature/split_merge_add
 
 Merge latest code into develop ([`1153584`](https://github.com/oscal-compass/compliance-trestle/commit/115358414db57195d5c3d0215899c16c69224dce))
 
-* Merge branch &#39;develop&#39; into enhancement/5c ([`55230a7`](https://github.com/oscal-compass/compliance-trestle/commit/55230a7a5870c1f2596eac8c0757002fc8f68ce8))
+* Merge branch &#39;develop&#39; into feature/split_merge_add ([`7800622`](https://github.com/oscal-compass/compliance-trestle/commit/7800622a537a6b882b66a3859fac72b048e0d95a))
+
+* Implement multi-level recursive split ([`dac9e3e`](https://github.com/oscal-compass/compliance-trestle/commit/dac9e3e546eb135dbcff678b49ae33cdc734794c))
+
+* Each element path must have its root model as the path prefix ([`e1cf697`](https://github.com/oscal-compass/compliance-trestle/commit/e1cf69767a015ac657b8c9fa17e810eeea60e019))
 
 * Merge branch &#39;feature/split_merge_add&#39; into feature/split-cmd ([`c90533c`](https://github.com/oscal-compass/compliance-trestle/commit/c90533c873768e7b49edbadc932c59d9a32690bd))
 
-* Merge branch &#39;develop&#39; into feature/split_merge_add ([`7800622`](https://github.com/oscal-compass/compliance-trestle/commit/7800622a537a6b882b66a3859fac72b048e0d95a))
-
 * Merge develop ([`18d1086`](https://github.com/oscal-compass/compliance-trestle/commit/18d10865e90f0a6ac4171f3fe35bbc0e85ce3910))
 
+* Merge branch &#39;master&#39; into develop ([`863ad75`](https://github.com/oscal-compass/compliance-trestle/commit/863ad75637c31de19908847d8a671e45d8beb084))
 
-## v0.2.0 (2020-10-12)
+## v0.1.1 (2020-10-05)
+
+### Fix
+
+* fix: Corrected typing of parameter-settings in profile and ssp (#97)
+
+* fix: Corrected typing of parameter-settings in profile.
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
+
+* Added error which was missed in original hotfix
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`9a5ef55`](https://github.com/oscal-compass/compliance-trestle/commit/9a5ef55d9d504f3e32b73277f116172e05281081))
+
+### Unknown
+
+* Correcting missed pre-commit change that broke build process. (#102)
+
+Signed-off-by: Nebula Alam &lt;anebula@au1.ibm.com&gt; ([`7c1820d`](https://github.com/oscal-compass/compliance-trestle/commit/7c1820dbfdd23c3ca0ed592b369a69f056b81c3f))
+
+## v0.1.0 (2020-09-23)
 
 ### Chore
 
@@ -14973,13 +15323,25 @@ Deprecated parser methods which are being replaced by methods inside of OscalBas
 
 Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`0fd0d45`](https://github.com/oscal-compass/compliance-trestle/commit/0fd0d4536550d08b5639c9fe511acc30694c2056))
 
+* chore: Add windows support to CICD and associated test
+
+
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`b6f2203`](https://github.com/oscal-compass/compliance-trestle/commit/b6f2203c175d12a1820047ff310077ea27b1c983))
+
 ### Documentation
 
-* docs: Update readme to reflect alpha status. (#134)
+* docs: Updated documentation with a short description of target (#90)
 
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`8ef9762`](https://github.com/oscal-compass/compliance-trestle/commit/8ef9762ccb015d3a5e2b5c3e9d119e7cbca76c43))
+* Updated documentation with a short description of target
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`bcd20dc`](https://github.com/oscal-compass/compliance-trestle/commit/bcd20dc0d117835347f9b9ee736ae4106fe12326))
 
 ### Feature
+
+* feat: Merge pull request #65 from IBM/develop
+
+Releasing trestle init along with updated object model. ([`0f8b637`](https://github.com/oscal-compass/compliance-trestle/commit/0f8b637d897689450907eca4e7add1dda2016dcd))
 
 * feat: Windows support declared for trestle (#88)
 
@@ -14994,10 +15356,6 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
 Co-authored-by: NEBULA ALAM &lt;nebula.alam@gmail.com&gt; ([`56bdfa2`](https://github.com/oscal-compass/compliance-trestle/commit/56bdfa2b7e3d7365b516d79beae1ec2a2d0855e0))
 
 ### Fix
-
-* fix: Coding formating failure on merge from master
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`3e00d5d`](https://github.com/oscal-compass/compliance-trestle/commit/3e00d5d76e2fd3018604b4f88a8bd83d07b35f60))
 
 * fix: Fix forward references caused by fix_any.py issue #108 (#111)
 
@@ -15025,17 +15383,13 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`3e00d5d`](https://git
 
 ### Unknown
 
-* Regenerated models in trestle/oscal/ ([`31c9382`](https://github.com/oscal-compass/compliance-trestle/commit/31c9382cab3291b81e1fcd2f507e3603b47ba588))
+* Edit and proofread README and CONTRIBUTING (#106)
 
-* Merge pull request #129 from IBM/develop
+* Edit and proofread README and CONTRIBUTING
 
-Release to master ([`e164c3d`](https://github.com/oscal-compass/compliance-trestle/commit/e164c3dc331c6b1abe6daf60de55276ab1e56b8a))
+* fixed typo implicitly
 
-* Fixed missing newlines for copyright text. ([`e4ffad6`](https://github.com/oscal-compass/compliance-trestle/commit/e4ffad6bb0ddee292a75e7358426f4e1ed687ad3))
-
-* From develop, fix_any.py now adds a license header to output files. ([`ce4806d`](https://github.com/oscal-compass/compliance-trestle/commit/ce4806d80319fee334e395b7c31e5727806af3ab))
-
-* Merge branch &#39;master&#39; into develop ([`863ad75`](https://github.com/oscal-compass/compliance-trestle/commit/863ad75637c31de19908847d8a671e45d8beb084))
+Co-authored-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`6473d92`](https://github.com/oscal-compass/compliance-trestle/commit/6473d9216af4f6a791332c3a3ac6abbd09bb0848))
 
 * utils.py cleanup (#127)
 
@@ -15073,8 +15427,6 @@ Co-authored-by: Bruno &lt;brunomar@au1.ibm.com&gt; ([`9e59cea`](https://github.c
 
 * Merge branch &#39;feature/split_merge_add&#39; into feature/split-cmd ([`05e822b`](https://github.com/oscal-compass/compliance-trestle/commit/05e822b9d0af5c30743ee0d70efa9315142f26a2))
 
-* Use yaml target-definition example as test data ([`b20de0c`](https://github.com/oscal-compass/compliance-trestle/commit/b20de0c3c4e3c591414bb3addf89cc54dcd85792))
-
 * implement get_contextual_model_type (#119)
 
 * move functions to core/utils to solve circular dependencies
@@ -15090,6 +15442,8 @@ Co-authored-by: Bruno &lt;brunomar@au1.ibm.com&gt; ([`9e59cea`](https://github.c
 * implement get_contextual_model_type
 
 Co-authored-by: Bruno &lt;brunomar@au1.ibm.com&gt; ([`1622abc`](https://github.com/oscal-compass/compliance-trestle/commit/1622abc16ebacd0adb75f5a5b31aeb4f69f4560a))
+
+* Use yaml target-definition example as test data ([`b20de0c`](https://github.com/oscal-compass/compliance-trestle/commit/b20de0c3c4e3c591414bb3addf89cc54dcd85792))
 
 * Merge branch &#39;feature/split_merge_add&#39; into feature/split-cmd ([`9b696bf`](https://github.com/oscal-compass/compliance-trestle/commit/9b696bfc0c32d2fbdb274891156b1bde21d3da41))
 
@@ -15157,13 +15511,13 @@ Co-authored-by: Bruno &lt;brunomar@au1.ibm.com&gt; ([`1622abc`](https://github.c
 
 * Merge branch &#39;feature/split_merge_add&#39; into feature/split-cmd ([`486c063`](https://github.com/oscal-compass/compliance-trestle/commit/486c063360293adc43d796f2811f7fb536ed4f88))
 
+* Integration test for trestle split and fix to Element.get_at (#116) ([`16c4324`](https://github.com/oscal-compass/compliance-trestle/commit/16c432451d503d5c3850d0755c5e5d891dca2da4))
+
 * Initial implementation of multi level recursive split ([`84d54d3`](https://github.com/oscal-compass/compliance-trestle/commit/84d54d3765cc1367ddd4bc5acbfc7f4a463c9d75))
 
 * Additional test case for list element for element.get_at ([`5f39102`](https://github.com/oscal-compass/compliance-trestle/commit/5f3910277c45e9ec437e6392583a4e4450c97a67))
 
 * Fix Element get_at for dictionary type ([`1c52b21`](https://github.com/oscal-compass/compliance-trestle/commit/1c52b21e5a2714dbd153f9350fc307fcd3cfc87a))
-
-* Integration test for trestle split and fix to Element.get_at (#116) ([`16c4324`](https://github.com/oscal-compass/compliance-trestle/commit/16c432451d503d5c3850d0755c5e5d891dca2da4))
 
 * Correct test method doc block ([`adda36d`](https://github.com/oscal-compass/compliance-trestle/commit/adda36d4f9be1860701b3937f65a4c00e02c077f))
 
@@ -15287,6 +15641,20 @@ Co-authored-by: Bruno &lt;brunomar@au1.ibm.com&gt; ([`e63ad1b`](https://github.c
 
 * Merge branch &#39;feature/split_merge_add&#39; into feature/split-cmd ([`bfd7acd`](https://github.com/oscal-compass/compliance-trestle/commit/bfd7acd30886da1c5a370cadb33e12d99a0dbc10))
 
+* feature: trestle merge -l
+
+* move functions to core/utils to solve circular dependencies
+
+* initial list of contextual_path is not mandatory
+
+* make initial list of get_contextual_path function not mandatory
+
+Co-authored-by: Bruno &lt;brunomar@au1.ibm.com&gt; ([`2f3d2d5`](https://github.com/oscal-compass/compliance-trestle/commit/2f3d2d558afc8bf7091b29bd96ddde9d6aeaf773))
+
+* Support parent path and root model for ElementPath (#109) ([`eeba858`](https://github.com/oscal-compass/compliance-trestle/commit/eeba8586fd634faaff21629b102236a84e73a3b4))
+
+* move utility functions from utils to cmd_utils ([`2699353`](https://github.com/oscal-compass/compliance-trestle/commit/26993530ce5e8fe156854cd043a9ce1a04581bfc))
+
 * Fix splitted model creation ([`e2e0a6a`](https://github.com/oscal-compass/compliance-trestle/commit/e2e0a6aedf3f0bd2e515cfda26a4e2ea1cc61097))
 
 * Fix trestle split run ([`ea6e6c9`](https://github.com/oscal-compass/compliance-trestle/commit/ea6e6c9bfa3dd05273dbdf821e7503d0701e36bc))
@@ -15307,23 +15675,11 @@ Co-authored-by: Bruno &lt;brunomar@au1.ibm.com&gt; ([`e63ad1b`](https://github.c
 
 * Implement stripped_instance method ([`d20db23`](https://github.com/oscal-compass/compliance-trestle/commit/d20db23b9aced367c641eeaec673ace93686b8fd))
 
-* feature: trestle merge -l
-
-* move functions to core/utils to solve circular dependencies
-
-* initial list of contextual_path is not mandatory
-
-* make initial list of get_contextual_path function not mandatory
-
-Co-authored-by: Bruno &lt;brunomar@au1.ibm.com&gt; ([`2f3d2d5`](https://github.com/oscal-compass/compliance-trestle/commit/2f3d2d558afc8bf7091b29bd96ddde9d6aeaf773))
-
 * Tentative tests for split_model as part of TDD ([`9844413`](https://github.com/oscal-compass/compliance-trestle/commit/9844413509e02a7f6a374e032338a9c3bdbb4614))
 
 * Implement utility function to copy availble values from src to dest model ([`d590a34`](https://github.com/oscal-compass/compliance-trestle/commit/d590a34780a1a2215d71005b49e12be5552cd2af))
 
 * Fix mypy warnings ([`66372e2`](https://github.com/oscal-compass/compliance-trestle/commit/66372e27ddbf052ae72adcd57b82e7e3d176ab45))
-
-* Support parent path and root model for ElementPath (#109) ([`eeba858`](https://github.com/oscal-compass/compliance-trestle/commit/eeba8586fd634faaff21629b102236a84e73a3b4))
 
 * Fix tests ([`377a869`](https://github.com/oscal-compass/compliance-trestle/commit/377a8691bda1f1dd448eb7ba241ba9029459afb3))
 
@@ -15333,17 +15689,7 @@ Co-authored-by: Bruno &lt;brunomar@au1.ibm.com&gt; ([`2f3d2d5`](https://github.c
 
 * Handle parent path of an element_path and handle the root model name ([`ebcd9a4`](https://github.com/oscal-compass/compliance-trestle/commit/ebcd9a4c3446b9eebb8e8341c469de3ac1e6da29))
 
-* Edit and proofread README and CONTRIBUTING (#106)
-
-* Edit and proofread README and CONTRIBUTING
-
-* fixed typo implicitly
-
-Co-authored-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`6473d92`](https://github.com/oscal-compass/compliance-trestle/commit/6473d9216af4f6a791332c3a3ac6abbd09bb0848))
-
 * Fix typo ([`c35b1dd`](https://github.com/oscal-compass/compliance-trestle/commit/c35b1dd58ff368e673d4428150c5eab4edb75340))
-
-* move utility functions from utils to cmd_utils ([`2699353`](https://github.com/oscal-compass/compliance-trestle/commit/26993530ce5e8fe156854cd043a9ce1a04581bfc))
 
 * Sync split, merge and add workstreams ([`5bbadf6`](https://github.com/oscal-compass/compliance-trestle/commit/5bbadf673160ab1018bbd07c35dc0224183519ab))
 
@@ -15499,43 +15845,6 @@ This is to support the assumption that CreatePathAction in the Plan will must pr
 
 * Merge branch &#39;develop&#39; of github.com:IBM/compliance-trestle into develop ([`f1ef709`](https://github.com/oscal-compass/compliance-trestle/commit/f1ef709fd26bb50ba68fdd4b4300de48d26aecad))
 
-
-## v0.1.1 (2020-10-05)
-
-### Chore
-
-* chore: Add windows support to CICD and associated test
-
-
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`b6f2203`](https://github.com/oscal-compass/compliance-trestle/commit/b6f2203c175d12a1820047ff310077ea27b1c983))
-
-### Documentation
-
-* docs: Updated documentation with a short description of target (#90)
-
-* Updated documentation with a short description of target
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`bcd20dc`](https://github.com/oscal-compass/compliance-trestle/commit/bcd20dc0d117835347f9b9ee736ae4106fe12326))
-
-### Fix
-
-* fix: Corrected typing of parameter-settings in profile and ssp (#97)
-
-* fix: Corrected typing of parameter-settings in profile.
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
-
-* Added error which was missed in original hotfix
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`9a5ef55`](https://github.com/oscal-compass/compliance-trestle/commit/9a5ef55d9d504f3e32b73277f116172e05281081))
-
-### Unknown
-
-* Correcting missed pre-commit change that broke build process. (#102)
-
-Signed-off-by: Nebula Alam &lt;anebula@au1.ibm.com&gt; ([`7c1820d`](https://github.com/oscal-compass/compliance-trestle/commit/7c1820dbfdd23c3ca0ed592b369a69f056b81c3f))
-
 * provide LUT to handle parameter_settings for fix_any.py (#98)
 
 Co-authored-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`e574108`](https://github.com/oscal-compass/compliance-trestle/commit/e574108b9a58636b98c7680d0700c54b59373835))
@@ -15574,10 +15883,6 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`857280d`](https://git
 
 * Merge branch &#39;develop&#39; into chore/windows_CICD ([`8aab4e1`](https://github.com/oscal-compass/compliance-trestle/commit/8aab4e191e02edc714b13f9f6b02adf415cf6289))
 
-* Remove os.sep
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`e20d3be`](https://github.com/oscal-compass/compliance-trestle/commit/e20d3beb10b8368588339f46f5cb5922a6012e20))
-
 * Convert gen_oscal.sh to py and fix test to run on windows (#77)
 
 * convert gen_oscal.sh to gen_oscal.py and regenerate classes
@@ -15587,6 +15892,10 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`e20d3be`](https://git
 * one char typo in fix_any prevented proper termination
 
 * added yapf and flake8 checks on scripts dir ([`d11e797`](https://github.com/oscal-compass/compliance-trestle/commit/d11e79732495332a6a5b78b4093df38a8addc6cc))
+
+* Remove os.sep
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`e20d3be`](https://github.com/oscal-compass/compliance-trestle/commit/e20d3beb10b8368588339f46f5cb5922a6012e20))
 
 * Remerging code
 
@@ -15618,8 +15927,11 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`0dbdacc`](https://git
 
 * Merge branch &#39;develop&#39; of github.com:IBM/compliance-trestle into develop ([`17289b5`](https://github.com/oscal-compass/compliance-trestle/commit/17289b5f71b3d5642db53337b7c595dd2cf4ee8b))
 
+* Merge branch &#39;master&#39; into develop ([`a94335b`](https://github.com/oscal-compass/compliance-trestle/commit/a94335bfc30886d706433ce0e891a2ef391b5e98))
 
-## v0.1.0 (2020-09-23)
+* Merge branch &#39;master&#39; into develop ([`9078972`](https://github.com/oscal-compass/compliance-trestle/commit/9078972a4a5442af9f01597b61554cd1d92430a3))
+
+## v0.0.3 (2020-09-16)
 
 ### Documentation
 
@@ -15632,11 +15944,27 @@ Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`0dbdacc`](https://git
 closes #49
 signed-off-by: Bruno &lt;brunomar@au1.ibm.com&gt; ([`b84ff9b`](https://github.com/oscal-compass/compliance-trestle/commit/b84ff9b4082e001304550b259ae3a1f9d6a70ea7))
 
+* docs: remove git references
+
+Signed-off-by: Bruno &lt;brunomar@au1.ibm.com&gt; ([`0ddc553`](https://github.com/oscal-compass/compliance-trestle/commit/0ddc55383d370e7512870c6c077ffdae51312cb2))
+
+* docs: add info about uuid
+
+Signed-off-by: Bruno &lt;brunomar@au1.ibm.com&gt; ([`32a34a2`](https://github.com/oscal-compass/compliance-trestle/commit/32a34a2d2a3a3438f31fd78312f282002507f7a8))
+
+* docs: add default decomposition headers
+
+Added default decomposition headers.
+
+Signed-off-by: Bruno &lt;brunomar@au1.ibm.com&gt; ([`d03ee39`](https://github.com/oscal-compass/compliance-trestle/commit/d03ee3996e8a986a4c0388058db42c2cd8253278))
+
+* docs: add examples for split/merge commands
+
+Add example of catalag being edited via trestle using trestle split and trestle merge commands. ([`40ab614`](https://github.com/oscal-compass/compliance-trestle/commit/40ab61404e2b9ec347c736153c3691fd19f8143f))
+
+* docs: add specifications for trestle commands ([`698eff8`](https://github.com/oscal-compass/compliance-trestle/commit/698eff8a9bb60d3c9090ad74ad51e57c9bec3d76))
+
 ### Feature
-
-* feat: Merge pull request #65 from IBM/develop
-
-Releasing trestle init along with updated object model. ([`0f8b637`](https://github.com/oscal-compass/compliance-trestle/commit/0f8b637d897689450907eca4e7add1dda2016dcd))
 
 * feat: implement trestle init command and update specs (#60)
 
@@ -15669,6 +15997,10 @@ Signed-off-by: Bruno &lt;brunomar@au1.ibm.com&gt; ([`6c6b000`](https://github.co
 
 ### Fix
 
+* fix: Merge pull request #47 from IBM/develop
+
+Release PR: Updated to docs and a broken dependency ([`ab8ba4d`](https://github.com/oscal-compass/compliance-trestle/commit/ab8ba4d05ee9c41097233c3b0ca92fa6251b88c4))
+
 * fix: Fix/issue 57 (#59)
 
 Corrected fix_any.py to correctly behave with the Makefile stage for which it is run.
@@ -15682,51 +16014,6 @@ Creates a script which corrects current erroneous behavior in `datamodel-code-ge
 Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
 
 Co-authored-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`22ba2fc`](https://github.com/oscal-compass/compliance-trestle/commit/22ba2fc75baa11626b49ba709610b3bcaf59cea3))
-
-### Unknown
-
-* Merge branch &#39;master&#39; into develop ([`a94335b`](https://github.com/oscal-compass/compliance-trestle/commit/a94335bfc30886d706433ce0e891a2ef391b5e98))
-
-* Merge branch &#39;master&#39; into develop ([`9078972`](https://github.com/oscal-compass/compliance-trestle/commit/9078972a4a5442af9f01597b61554cd1d92430a3))
-
-* feature: Feature/object manipulation (#58)
-
-Initial functionality for allowing creating of &#39;partial&#39; models for use in split / merge.
-
-closes: #52
-
-Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`d76dbfa`](https://github.com/oscal-compass/compliance-trestle/commit/d76dbfa177d91e54716eb16d3194ceb59c789b7f))
-
-
-## v0.0.3 (2020-09-16)
-
-### Documentation
-
-* docs: remove git references
-
-Signed-off-by: Bruno &lt;brunomar@au1.ibm.com&gt; ([`0ddc553`](https://github.com/oscal-compass/compliance-trestle/commit/0ddc55383d370e7512870c6c077ffdae51312cb2))
-
-* docs: add info about uuid
-
-Signed-off-by: Bruno &lt;brunomar@au1.ibm.com&gt; ([`32a34a2`](https://github.com/oscal-compass/compliance-trestle/commit/32a34a2d2a3a3438f31fd78312f282002507f7a8))
-
-* docs: add default decomposition headers
-
-Added default decomposition headers.
-
-Signed-off-by: Bruno &lt;brunomar@au1.ibm.com&gt; ([`d03ee39`](https://github.com/oscal-compass/compliance-trestle/commit/d03ee3996e8a986a4c0388058db42c2cd8253278))
-
-* docs: add examples for split/merge commands
-
-Add example of catalag being edited via trestle using trestle split and trestle merge commands. ([`40ab614`](https://github.com/oscal-compass/compliance-trestle/commit/40ab61404e2b9ec347c736153c3691fd19f8143f))
-
-* docs: add specifications for trestle commands ([`698eff8`](https://github.com/oscal-compass/compliance-trestle/commit/698eff8a9bb60d3c9090ad74ad51e57c9bec3d76))
-
-### Fix
-
-* fix: Merge pull request #47 from IBM/develop
-
-Release PR: Updated to docs and a broken dependency ([`ab8ba4d`](https://github.com/oscal-compass/compliance-trestle/commit/ab8ba4d05ee9c41097233c3b0ca92fa6251b88c4))
 
 * fix: fix conflict between attrs and markdown-it-py
 
@@ -15742,6 +16029,14 @@ Updated issue templates such that github will pick up for use in the UI.
 Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`1382fbc`](https://github.com/oscal-compass/compliance-trestle/commit/1382fbce9db86cf54ac9de97cde4b32b2890e599))
 
 ### Unknown
+
+* feature: Feature/object manipulation (#58)
+
+Initial functionality for allowing creating of &#39;partial&#39; models for use in split / merge.
+
+closes: #52
+
+Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt; ([`d76dbfa`](https://github.com/oscal-compass/compliance-trestle/commit/d76dbfa177d91e54716eb16d3194ceb59c789b7f))
 
 * Merge pull request #45 from IBM/fix/attrs-dep-conflict
 
@@ -15760,7 +16055,6 @@ docs: add specifications and examples for trestle commands ([`9369e7d`](https://
 * Merge branch &#39;docs/trestle-spec&#39; of github.com:IBM/compliance-trestle into docs/trestle-spec ([`30c5803`](https://github.com/oscal-compass/compliance-trestle/commit/30c580323702bed936414f167d69ead94910b66b))
 
 * Merge branch &#39;develop&#39; into docs/trestle-spec ([`db43023`](https://github.com/oscal-compass/compliance-trestle/commit/db43023bc3209bd108cb94fcc80d34c32a9e95d9))
-
 
 ## v0.0.2 (2020-09-10)
 
