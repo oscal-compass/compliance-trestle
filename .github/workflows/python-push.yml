@@ -9,6 +9,8 @@ on:
     branches:
       - main
 
+permissions: {}
+
 jobs:
   set-versions:
     runs-on: ubuntu-latest
@@ -110,11 +112,16 @@ jobs:
       url: https://pypi.org/p/compliance-trestle
     if: github.ref == 'refs/heads/main' && github.repository == 'oscal-compass/compliance-trestle'
     steps:
+    - uses: actions/create-github-app-token@v1
+      id: app-token
+      with:
+        app-id: ${{ secrets.APP_ID }}
+        private-key: ${{ secrets.PRIVATE_KEY }}
     - uses: actions/checkout@v4
       with:
         submodules: true
         fetch-depth: 0
-        token: ${{ secrets.ADMIN_PAT }} 
+        token: ${{ steps.app-token.outputs.token }}
     - name: Set up Python ${{ needs.set-versions.outputs.max }}
       uses: actions/setup-python@v5
       with:
@@ -128,7 +135,7 @@ jobs:
       id: release
       uses: python-semantic-release/python-semantic-release@v9.8.8
       with:
-        github_token: ${{ secrets.ADMIN_PAT }}
+        github_token: ${{ steps.app-token.outputs.token }}
 
     - name: Publish package distributions to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
@@ -137,10 +144,10 @@ jobs:
       if: steps.release.outputs.released == 'true'
 
     - name: Publish package distributions to GitHub Releases
-      uses: python-semantic-release/upload-to-gh-release@v9.8.8
+      uses: python-semantic-release/upload-to-gh-release@v9.8.9
       if: steps.release.outputs.released == 'true'
       with:
-        github_token: ${{ secrets.ADMIN_PAT }}
+        github_token: ${{ steps.app-token.outputs.token }}
 
   deploy-docs:
     runs-on: ubuntu-latest
@@ -151,11 +158,16 @@ jobs:
     # Temporary hack: allow develop as well as master to deploy docs.
     if: github.ref == 'refs/heads/main'
     steps:
+    - uses: actions/create-github-app-token@v1
+      id: app-token
+      with:
+        app-id: ${{ secrets.APP_ID }}
+        private-key: ${{ secrets.PRIVATE_KEY }}
     - uses: actions/checkout@v4
       with:
         submodules: true
         fetch-depth: 0
-        token: ${{ secrets.ADMIN_PAT }} 
+        token: ${{ steps.app-token.outputs.token }}
     - name: Set up Python ${{ needs.set-versions.outputs.max }}
       uses: actions/setup-python@v5
       # This is deliberately not using a custom credential as it relies on native github actions token to have push rights.
@@ -178,16 +190,31 @@ jobs:
       cancel-in-progress: true
     if: github.ref == 'refs/heads/main'
     steps:
+    - uses: actions/create-github-app-token@v1
+      id: app-token
+      with:
+        app-id: ${{ secrets.APP_ID }}
+        private-key: ${{ secrets.PRIVATE_KEY }}
     - uses: actions/checkout@v4
       with:
         submodules: true
         ref: main
         fetch-depth: 0
-        token: ${{ secrets.ADMIN_PAT }}
+        token: ${{ steps.app-token.outputs.token }}
+    - name: Get GitHub App User ID
+      id: get-user-id
+      run: echo "user-id=$(gh api "/users/${{ env.SLUG }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
+      env:
+        GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        SLUG: ${{ steps.app-token.outputs.app-slug }}
     - name: Configure Git
       run: |
-        git config user.name "Vikas Agarwal"
-        git config user.email "<>"
+        git config --global user.name '${{ env.SLUG }}[bot]'
+        git config --global user.email '${{ env.ID }}+${{ env.SLUG }}[bot]@users.noreply.github.com'
+      env:
+        SLUG: ${{ steps.app-token.outputs.app-slug }}
+        ID: ${{ steps.get-user-id.outputs.user-id }}
+      # https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
     - name: Merge Main to Develop
       run: |
         git checkout develop

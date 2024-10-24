@@ -22,7 +22,7 @@ from jinja2 import Environment, FileSystemLoader
 
 import pytest
 
-import trestle.core.jinja as tres_jinja
+import trestle.core.jinja.tags as tres_jinja
 from trestle.core.markdown import markdown_const
 
 JINJA_MD = 'jinja_markdown_include'
