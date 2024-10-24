@@ -111,6 +111,7 @@ testpaths = [
 [tool.ruff]
 line-length = 120
 indent-width = 4
+target-version = "py39"
 exclude = [
     ".bzr",
     ".direnv",
@@ -147,7 +148,7 @@ indent-style = "space"
 
 
 [tool.ruff.lint]
-ignore = ["P1","C812","C813","C814","C815","C816"]
+#ignore = ["P1","C812","C813","C814","C815","C816"]
 
 
 # [tool.black]
