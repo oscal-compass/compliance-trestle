@@ -30,6 +30,20 @@ from trestle.oscal.common import ImplementationStatus, Part
 logger = logging.getLogger(__name__)
 
 
+def comp_dict_merge(target: CompDict, source: CompDict) -> CompDict:
+    new_comp_dict = copy.deepcopy(target)
+    if not source:
+        return new_comp_dict
+    for key, val in source.items():
+        if key not in new_comp_dict:
+            new_comp_dict[key] = val
+        else:
+            for k, v in val.items():
+                if k not in new_comp_dict[key]:
+                    new_comp_dict[key][k] = v
+    return new_comp_dict
+
+
 class ControlWriter():
     """Class to write controls as markdown."""
 
@@ -518,7 +532,7 @@ class ControlWriter():
         md_header, comp_dict = ControlReader.read_control_info_from_md(control_file, context)
         # replace the memory comp_dict with the md one if control exists
         if comp_dict:
-            context.comp_dict = comp_dict
+            context.comp_dict = comp_dict_merge(context.comp_dict, comp_dict)
 
         header_comment_dict = {const.TRESTLE_ADD_PROPS_TAG: const.YAML_PROPS_COMMENT}
         if context.to_markdown:
