@@ -12,7 +12,7 @@ content.
 
 If you are interested in contributing a demonstration / content open a PR to the
 demonstration repo and a PR to
-[this page](https://github.com/oscal-compass/compliance-trestle/blob/develop/docs/demonstrations-content.md).
+[this page](https://github.com/oscal-compass/compliance-trestle/blob/develop/docs/demos.md).
 
 Demonstrations, where practical, should include instructions on how they were
 created.
