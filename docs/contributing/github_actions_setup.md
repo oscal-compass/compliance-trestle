@@ -12,7 +12,7 @@ Project maintainers, after an initial review, will allow github actions workflow
 
 ## Secrets
 
-- `ADMIN_PAT`: Github PAT with sufficient write access to merge content into `develop` and commit to `gh-pages` and `main`
+- `APP_ID` and `PRIVATE_KEY`: GitHub App information with sufficient write access to merge content into `develop` and commit to `gh-pages` and `main`
 
 - `SONAR_TOKEN`: Token to sonarcloud with rights to the appropriate project.
 

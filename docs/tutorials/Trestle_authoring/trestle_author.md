@@ -1,6 +1,6 @@
 ---
 title: Governance of Authored Documents
-description: BANANAS
+description: Tutorial on governing authored documents with trestle
 ---
 
 # Trestle CLI for Governance of Authored Documents
