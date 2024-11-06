@@ -481,6 +481,3 @@ This is a simple example csv that has just one rule per control and one check pe
 2. Multiple checks per rule and multiple target-components per rule: [rule-name-overlap.csv](csv_to_oscal_cd/rule-name-overlap.csv)
 
 This example shows how to specify multiple rules per control and multiple checks per rule.
-
-
-
