@@ -478,6 +478,6 @@ The csv files comprise required headings and values expected by the trestle task
 
 This is a simple example csv that has just one rule per control and one check per rule: [ocp4-sample-input.csv](csv_to_oscal_cd/ocp4-sample-input.csv)
 
-2. Multiple checks per rule and multiple target-components per rule: [rule-name-overlap.csv](csv_to_oscal_cd/rule-name-overlap.csv)
+2. Multiple occurrence sample input
 
-This example shows how to specify multiple rules per control and multiple checks per rule.
+This is a simple example csv that has multiple checks per rule and multiple target-components per rule: [rule-name-overlap.csv](csv_to_oscal_cd/rule-name-overlap.csv)
