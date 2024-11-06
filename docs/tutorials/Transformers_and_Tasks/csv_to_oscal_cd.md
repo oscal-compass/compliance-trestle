@@ -202,34 +202,45 @@ Make these changes:
 trestle.core.commands.task:101 WARNING: Config file was not configured with the appropriate section for the task: "[task.csv-to-oscal-cd]"
 Help information for csv-to-oscal-cd task.
 
+Help information for csv-to-oscal-cd task.
+
 Purpose: From csv produce OSCAL component_definition file.
 
 
 Configuration flags sit under [task.csv-to-oscal-cd]:
-  title             = (required) the component definition title.
-  version           = (required) the component definition version.
-  csv-file          = (required) the path of the csv file.
-  required columns:   Rule_Id
-                      Rule_Description
-                      Profile_Reference_URL
-                      Profile_Description
-                      Component_Type
-                      Control_Mappings
-                      Resource
-  optional columns:   Parameter_Id
-                      Parameter_Description
-                      Parameter_Default_Value
-                      Parameter_Value_Alternatives
-                      Check_Id
-                      Check_Description
-                      Fetcher
-                      Fetcher_Description
-                      Resource_Instance_Type
-  output-dir        = (required) the path of the output directory for synthesized OSCAL .json files.
-  namespace         = (optional) the namespace for properties, e.g. https://oscal-compass.github.io/compliance-trestle/schemas/oscal/cd
-  user-namespace    = (optional) the user-namespace for properties, e.g. https://oscal-compass.github.io/compliance-trestle/schemas/oscal/cd/user-defined
-  class.column-name = (optional) the class to associate with the specified column name, e.g. class.Rule_Id = scc_class
-  output-overwrite  = (optional) true [default] or false; replace existing output when true.
+  title                = (required) the component definition title.
+  version              = (required) the component definition version.
+  csv-file             = (required) the path of the csv file. [1st row are column headings; 2nd row are column descriptions; 3rd row and beyond is data]
+  required columns:      $$Component_Title
+                         $$Component_Description
+                         $$Component_Type
+                         $$Rule_Id
+                         $$Rule_Description (see note 1)
+                         $$Profile_Source (see note 1)
+                         $$Profile_Description (see note 1)
+                         $$Control_Id_List (see note 1)
+                         $$Namespace
+  optional columns:      $Check_Id (see note 2)
+                         $Check_Description (see note 2)
+                         $Target_Component (see note 3)
+                         $Original_Risk_Rating (see note 1)
+                         $Adjusted_Risk_Rating (see note 1)
+                         $Risk_Adjustment (see note 1)
+                         $Parameter_Id (see notes 1, 5)
+                         $Parameter_Description (see notes 1, 5)
+                         $Parameter_Value_Alternatives (see notes 1, 5)
+  comment columns:       #Informational (see note 4)
+  output-dir           = (required) the path of the output directory for synthesized OSCAL .json files.
+  component-definition = (optional) the path of the existing component-definition OSCAL .json file.
+  class.column-name    = (optional) the class to associate with the specified column name, e.g. class.Rule_Id = scc_class
+  output-overwrite     = (optional) true [default] or false; replace existing output when true.
+  validate-controls    = (optional) on, warn, or off [default]; validate controls exist in resolved profile.
+
+Notes: [1] column is ignored for validation component type
+       [2] column is required for validation component type
+       [3] column is optional for validation component type, but may be needed to prevent Rule_Id collisions
+       [4] column name starting with # causes column to be ignored
+       [5] additional parameters are specified by adding a common suffix per set, for example: Parameter_Id_1, Parameter_Description_1, ...Parameter_Id_2...
 
 ```
 
@@ -456,3 +467,20 @@ Congratulations! You have completed this tutorial.
 
 <br>
 <br>
+-----
+
+# Examples: csv files suitable for csv-to-oscsl-cd transformation
+
+The examples given here comprise csv files that can be transformed into OSCAL Component Definitions.
+The csv files comprise required headings and values expected by the trestle task transformer, and may present optional ones as well.
+
+1. OCP4 sample input
+
+This is a simple example csv that has just one rule per control and one check per rule: [ocp4-sample-input.csv](csv_to_oscal_cd/ocp4-sample-input.csv)
+
+2. Multiple checks per rule and multiple target-components per rule: [rule-name-overlap.csv](csv_to_oscal_cd/rule-name-overlap.csv)
+
+This example shows how to specify multiple rules per control and multiple checks per rule.
+
+
+
