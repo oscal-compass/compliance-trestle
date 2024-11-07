@@ -591,6 +591,8 @@ class ControlInterface:
         New items are always added from src to dest.
         Items present in both will be overriden dest if overwrite_header_values is True.
         """
+        if src is None:
+            return
         for key in src.keys():
             if key in dest:
                 if depth and level == depth:
