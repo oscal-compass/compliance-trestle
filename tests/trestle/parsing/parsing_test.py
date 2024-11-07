@@ -23,25 +23,25 @@ import pytest
 from ruamel.yaml import YAML
 from ruamel.yaml.parser import ParserError
 
+from tests.test_utils import YAML_TEST_DATA_PATH
+
 import trestle.common.const as const
 import trestle.oscal.component as component
 
-yaml_path = pathlib.Path('tests/data/yaml/')
-json_path = pathlib.Path('tests/data/json/')
 encoding = const.FILE_ENCODING
 
 
 def test_yaml_load() -> None:
     """Test yaml load."""
     # happy path
-    read_file = (yaml_path / 'good_simple.yaml').open('r', encoding=encoding)
+    read_file = (YAML_TEST_DATA_PATH / 'good_simple.yaml').open('r', encoding=encoding)
     yaml = YAML(typ='safe')
     obj = yaml.load(read_file)
     assert obj is not None
 
     # unhappy path
     with pytest.raises(ParserError):
-        read_file = (yaml_path / 'bad_simple.yaml').open('r', encoding=encoding)
+        read_file = (YAML_TEST_DATA_PATH / 'bad_simple.yaml').open('r', encoding=encoding)
         obj = yaml.load(read_file)
 
 
@@ -51,7 +51,7 @@ def test_yaml_dump(tmp_path: pathlib.Path) -> None:
     tmp_path = pathlib.Path(tmp_path)
     yaml = YAML(typ='safe')
     # happy path
-    read_file = (yaml_path / component_name).open('r', encoding=encoding)
+    read_file = (YAML_TEST_DATA_PATH / component_name).open('r', encoding=encoding)
     component_obj = yaml.load(read_file)
     read_file.close()
     assert component_obj is not None
@@ -75,7 +75,7 @@ def test_oscal_model(tmp_path: pathlib.Path) -> None:
     tmp_path = pathlib.Path(tmp_path)
 
     # load good component
-    read_file = yaml_path / good_component_name
+    read_file = YAML_TEST_DATA_PATH / good_component_name
     assert read_file.exists()
     component_obj = component.ComponentDefinition.oscal_read(read_file)
     assert component_obj is not None
@@ -96,7 +96,7 @@ def test_oscal_model(tmp_path: pathlib.Path) -> None:
     assert component_obj != component_reload
 
     # load good target with different timezone
-    read_file = yaml_path / 'good_component_diff_tz.yaml'
+    read_file = YAML_TEST_DATA_PATH / 'good_component_diff_tz.yaml'
     component_diff_tz = component.ComponentDefinition.oscal_read(read_file)
     assert component_diff_tz is not None
 
@@ -104,7 +104,7 @@ def test_oscal_model(tmp_path: pathlib.Path) -> None:
     assert component_obj == component_diff_tz
 
     # try to load file with no timezone specified
-    read_file = yaml_path / 'bad_component_no_tz.yaml'
+    read_file = YAML_TEST_DATA_PATH / 'bad_component_no_tz.yaml'
 
     # confirm the load fails because it is invalid without timezone specified
     try:
