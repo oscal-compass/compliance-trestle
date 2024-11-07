@@ -46,8 +46,6 @@ from trestle.oscal.catalog import Catalog
 from trestle.oscal.common import ResponsibleParty, Role
 from trestle.oscal.component import ComponentDefinition, ControlImplementation
 
-test_data_dir = pathlib.Path('tests/data').resolve()
-
 md_path = 'md_comp'
 
 
@@ -58,16 +56,18 @@ md_path = 'md_comp'
         ('my_test_model', '-t', False), ('my_test_model', '-a', False), ('my_test_model', '-x', False)
     ]
 )
-def test_validation_happy(name, mode, parent, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+def test_validation_happy(
+    name, mode, parent, tmp_trestle_dir: pathlib.Path, testdata_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
     """Test successful validation runs."""
     (tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model').mkdir(exist_ok=True, parents=True)
     (tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model2').mkdir(exist_ok=True, parents=True)
     shutil.copyfile(
-        test_data_dir / 'json/minimal_catalog.json',
+        testdata_dir / 'json/minimal_catalog.json',
         tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model/catalog.json'
     )
     shutil.copyfile(
-        test_data_dir / 'json/minimal_catalog.json',
+        testdata_dir / 'json/minimal_catalog.json',
         tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model2/catalog.json'
     )
 
@@ -101,17 +101,17 @@ def test_validation_happy(name, mode, parent, tmp_trestle_dir: pathlib.Path, mon
     ]
 )
 def test_validation_unhappy(
-    name, mode, parent, status, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+    name, mode, parent, status, tmp_trestle_dir: pathlib.Path, testdata_dir: pathlib.Path, monkeypatch: MonkeyPatch
 ) -> None:
     """Test failure modes of validation."""
     (tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model').mkdir(exist_ok=True, parents=True)
     (tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model2').mkdir(exist_ok=True, parents=True)
     shutil.copyfile(
-        test_data_dir / 'json/minimal_catalog_bad_oscal_version.json',
+        testdata_dir / 'json/minimal_catalog_bad_oscal_version.json',
         tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model/catalog.json'
     )
     shutil.copyfile(
-        test_data_dir / 'json/minimal_catalog.json',
+        testdata_dir / 'json/minimal_catalog.json',
         tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model2/catalog.json'
     )
 
@@ -421,11 +421,13 @@ def test_period(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None
         pass
 
 
-def test_validate_component_definition(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+def test_validate_component_definition(
+    tmp_trestle_dir: pathlib.Path, testdata_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
     """Test validation of Component Definition."""
     jfile = 'component-definition.json'
 
-    sdir = test_data_dir / 'validate' / 'component-definitions' / 'x1'
+    sdir = testdata_dir / 'validate' / 'component-definitions' / 'x1'
     spth = sdir / f'{jfile}'
 
     tdir = tmp_trestle_dir / test_utils.COMPONENT_DEF_DIR / 'my_test_model'
@@ -438,11 +440,13 @@ def test_validate_component_definition(tmp_trestle_dir: pathlib.Path, monkeypatc
     test_utils.execute_command_and_assert(validate_command, 0, monkeypatch)
 
 
-def test_validate_component_definition_ports(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+def test_validate_component_definition_ports(
+    tmp_trestle_dir: pathlib.Path, testdata_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
     """Test validation of ports in Component Definition."""
     jfile = 'component-definition.json'
 
-    sdir = test_data_dir / 'validate' / 'component-definitions' / 'x2'
+    sdir = testdata_dir / 'validate' / 'component-definitions' / 'x2'
     spth = sdir / f'{jfile}'
 
     tdir = tmp_trestle_dir / test_utils.COMPONENT_DEF_DIR / 'my_test_model'
@@ -455,11 +459,13 @@ def test_validate_component_definition_ports(tmp_trestle_dir: pathlib.Path, monk
     test_utils.execute_command_and_assert(validate_command, 0, monkeypatch)
 
 
-def test_validate_component_definition_ports_invalid(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+def test_validate_component_definition_ports_invalid(
+    tmp_trestle_dir: pathlib.Path, testdata_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
     """Test validation of ports in Component Definition."""
     jfile = 'component-definition.json'
 
-    sdir = test_data_dir / 'validate' / 'component-definitions' / 'x3'
+    sdir = testdata_dir / 'validate' / 'component-definitions' / 'x3'
     spth = sdir / f'{jfile}'
 
     tdir = tmp_trestle_dir / test_utils.COMPONENT_DEF_DIR / 'my_test_model'

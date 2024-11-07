@@ -21,11 +21,13 @@ import uuid
 
 from _pytest.monkeypatch import MonkeyPatch
 
-from tests.test_utils import text_files_equal
+from tests.test_utils import TEST_DIR, set_cwd_unsafe, text_files_equal
 
 import trestle.tasks.xccdf_result_to_oscal_ar as xccdf_result_to_oscal_ar
 import trestle.transforms.implementations.xccdf as xccdf
 from trestle.tasks.base_task import TaskOutcome
+
+root_dir = TEST_DIR / '../'
 
 
 class MonkeyBusiness():
@@ -40,16 +42,16 @@ class MonkeyBusiness():
         return uuid.UUID('46aADFAC-A1fd-4Cf0-a6aA-d1AfAb3e0d3e')
 
 
-cf01 = 'tests/data/tasks/xccdf/test-xccdf-result-to-oscal-ar.config'
-cf02 = 'tests/data/tasks/xccdf/test-xccdf-result-to-oscal-ar-compressed.config'
-cf03 = 'tests/data/tasks/xccdf/test-xccdf-result-to-oscal-ar-fetcher.config'
-cf04 = 'tests/data/tasks/xccdf/test-xccdf-result-to-oscal-ar-bad-yaml.config'
-cf05 = 'tests/data/tasks/xccdf/test-xccdf-result-to-oscal-ar-1.3.5.config'
-cf06 = 'tests/data/tasks/xccdf/test-xccdf-result-to-oscal-ar-xml-rhel7.config'
-cf07 = 'tests/data/tasks/xccdf/test-xccdf-result-to-oscal-ar-xml-ocp4.config'
-cf08 = 'tests/data/tasks/xccdf/test-xccdf-result-to-oscal-ar-configmaps.config'
-cf09 = 'tests/data/tasks/xccdf/test-xccdf-result-to-oscal-ar-input-oscap-results.config'
-cf10 = 'tests/data/tasks/xccdf/test-xccdf-result-to-oscal-ar-input-oscap-arf-results.config'
+cf01 = TEST_DIR / 'data/tasks/xccdf/test-xccdf-result-to-oscal-ar.config'
+cf02 = TEST_DIR / 'data/tasks/xccdf/test-xccdf-result-to-oscal-ar-compressed.config'
+cf03 = TEST_DIR / 'data/tasks/xccdf/test-xccdf-result-to-oscal-ar-fetcher.config'
+cf04 = TEST_DIR / 'data/tasks/xccdf/test-xccdf-result-to-oscal-ar-bad-yaml.config'
+cf05 = TEST_DIR / 'data/tasks/xccdf/test-xccdf-result-to-oscal-ar-1.3.5.config'
+cf06 = TEST_DIR / 'data/tasks/xccdf/test-xccdf-result-to-oscal-ar-xml-rhel7.config'
+cf07 = TEST_DIR / 'data/tasks/xccdf/test-xccdf-result-to-oscal-ar-xml-ocp4.config'
+cf08 = TEST_DIR / 'data/tasks/xccdf/test-xccdf-result-to-oscal-ar-configmaps.config'
+cf09 = TEST_DIR / 'data/tasks/xccdf/test-xccdf-result-to-oscal-ar-input-oscap-results.config'
+cf10 = TEST_DIR / 'data/tasks/xccdf/test-xccdf-result-to-oscal-ar-input-oscap-arf-results.config'
 
 
 def setup_config(path: str):
@@ -60,6 +62,7 @@ def setup_config(path: str):
     return config
 
 
+@set_cwd_unsafe(root_dir)
 def test_xccdf_print_info(tmp_path):
     """Test print_info call."""
     config = setup_config(cf01)
@@ -70,6 +73,7 @@ def test_xccdf_print_info(tmp_path):
     assert retval is None
 
 
+@set_cwd_unsafe(root_dir)
 def test_xccdf_simulate(tmp_path):
     """Test simulate call."""
     config = setup_config(cf01)
@@ -81,6 +85,7 @@ def test_xccdf_simulate(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
+@set_cwd_unsafe(root_dir)
 def test_xccdf_simulate_compressed(tmp_path):
     """Test simulate call with compressed OSCO xml data."""
     config = setup_config(cf02)
@@ -92,6 +97,7 @@ def test_xccdf_simulate_compressed(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
+@set_cwd_unsafe(root_dir)
 def test_xccdf_simulate_no_config(tmp_path):
     """Test simulate no config call."""
     tgt = xccdf_result_to_oscal_ar.XccdfResultToOscalAR(None)
@@ -100,6 +106,7 @@ def test_xccdf_simulate_no_config(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
+@set_cwd_unsafe(root_dir)
 def test_xccdf_simulate_no_overwrite(tmp_path):
     """Test simulate no overwrite call."""
     config = setup_config(cf01)
@@ -117,6 +124,7 @@ def test_xccdf_simulate_no_overwrite(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 1
 
 
+@set_cwd_unsafe(root_dir)
 def test_xccdf_simulate_no_input_dir(tmp_path):
     """Test simulate with no input dir call."""
     config = setup_config(cf01)
@@ -129,6 +137,7 @@ def test_xccdf_simulate_no_input_dir(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
+@set_cwd_unsafe(root_dir)
 def test_xccdf_simulate_no_ouput_dir(tmp_path):
     """Test simulate with no output dir call."""
     config = setup_config(cf01)
@@ -140,6 +149,7 @@ def test_xccdf_simulate_no_ouput_dir(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
+@set_cwd_unsafe(root_dir)
 def test_xccdf_simulate_input_fetcher(tmp_path):
     """Test simulate call OSCO fetcher json data."""
     config = setup_config(cf03)
@@ -151,6 +161,7 @@ def test_xccdf_simulate_input_fetcher(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
+@set_cwd_unsafe(root_dir)
 def test_xccdf_simulate_input_bad_yaml(tmp_path):
     """Test simulate call OSCO bad yaml data."""
     config = setup_config(cf04)
@@ -162,6 +173,7 @@ def test_xccdf_simulate_input_bad_yaml(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
+@set_cwd_unsafe(root_dir)
 def test_xccdf_execute(tmp_path, monkeypatch: MonkeyPatch):
     """Test execute call."""
     monkeybusiness = MonkeyBusiness()
@@ -184,6 +196,7 @@ def test_xccdf_execute(tmp_path, monkeypatch: MonkeyPatch):
         assert result
 
 
+@set_cwd_unsafe(root_dir)
 def test_xccdf_execute_checking(tmp_path, monkeypatch: MonkeyPatch):
     """Test execute call."""
     monkeybusiness = MonkeyBusiness()
@@ -207,6 +220,7 @@ def test_xccdf_execute_checking(tmp_path, monkeypatch: MonkeyPatch):
         assert result
 
 
+@set_cwd_unsafe(root_dir)
 def test_xccdf_execute_1_3_5(tmp_path, monkeypatch: MonkeyPatch):
     """Test execute call."""
     monkeybusiness = MonkeyBusiness()
@@ -229,6 +243,7 @@ def test_xccdf_execute_1_3_5(tmp_path, monkeypatch: MonkeyPatch):
         assert result
 
 
+@set_cwd_unsafe(root_dir)
 def test_xccdf_execute_1_3_5_checking(tmp_path, monkeypatch: MonkeyPatch):
     """Test execute call."""
     monkeybusiness = MonkeyBusiness()
@@ -252,6 +267,7 @@ def test_xccdf_execute_1_3_5_checking(tmp_path, monkeypatch: MonkeyPatch):
         assert result
 
 
+@set_cwd_unsafe(root_dir)
 def test_xccdf_execute_compressed(tmp_path, monkeypatch: MonkeyPatch):
     """Test execute call with compressed OSCO xml data."""
     monkeybusiness = MonkeyBusiness()
@@ -274,6 +290,7 @@ def test_xccdf_execute_compressed(tmp_path, monkeypatch: MonkeyPatch):
         assert result
 
 
+@set_cwd_unsafe(root_dir)
 def test_xccdf_execute_no_config(tmp_path):
     """Test execute no config call."""
     tgt = xccdf_result_to_oscal_ar.XccdfResultToOscalAR(None)
@@ -282,6 +299,7 @@ def test_xccdf_execute_no_config(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
+@set_cwd_unsafe(root_dir)
 def test_xccdf_execute_no_overwrite(tmp_path, monkeypatch: MonkeyPatch):
     """Test execute no overwrite call."""
     execute_no_overwrite_part1(tmp_path, monkeypatch)
@@ -324,6 +342,7 @@ def execute_no_overwrite_part2(tmp_path, monkeypatch: MonkeyPatch):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_xccdf_execute_no_input_dir(tmp_path):
     """Test execute with no input dir call."""
     config = setup_config(cf01)
@@ -336,6 +355,7 @@ def test_xccdf_execute_no_input_dir(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
+@set_cwd_unsafe(root_dir)
 def test_xccdf_execute_no_ouput_dir(tmp_path):
     """Test execute with no output dir call."""
     config = setup_config(cf01)
@@ -347,6 +367,7 @@ def test_xccdf_execute_no_ouput_dir(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
+@set_cwd_unsafe(root_dir)
 def test_xccdf_execute_bad_timestamp(tmp_path):
     """Test execute with bad timestamp."""
     config = setup_config(cf01)
@@ -358,6 +379,7 @@ def test_xccdf_execute_bad_timestamp(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
+@set_cwd_unsafe(root_dir)
 def test_xccdf_execute_input_fetcher(tmp_path, monkeypatch: MonkeyPatch):
     """Test execute call OSCO fetcher json data."""
     monkeybusiness = MonkeyBusiness()
@@ -380,6 +402,7 @@ def test_xccdf_execute_input_fetcher(tmp_path, monkeypatch: MonkeyPatch):
         assert result
 
 
+@set_cwd_unsafe(root_dir)
 def test_xccdf_execute_input_xml_rhel7(tmp_path, monkeypatch: MonkeyPatch):
     """Test execute call OSCO xml data."""
     monkeybusiness = MonkeyBusiness()
@@ -402,6 +425,7 @@ def test_xccdf_execute_input_xml_rhel7(tmp_path, monkeypatch: MonkeyPatch):
         assert result
 
 
+@set_cwd_unsafe(root_dir)
 def test_xccdf_execute_input_xml_ocp4(tmp_path, monkeypatch: MonkeyPatch):
     """Test execute call OSCO xml data."""
     monkeybusiness = MonkeyBusiness()
@@ -424,6 +448,7 @@ def test_xccdf_execute_input_xml_ocp4(tmp_path, monkeypatch: MonkeyPatch):
         assert result
 
 
+@set_cwd_unsafe(root_dir)
 def test_xccdf_execute_input_configmaps(tmp_path, monkeypatch: MonkeyPatch):
     """Test execute call OSCO configmaps data."""
     monkeybusiness = MonkeyBusiness()
@@ -446,6 +471,7 @@ def test_xccdf_execute_input_configmaps(tmp_path, monkeypatch: MonkeyPatch):
         assert result
 
 
+@set_cwd_unsafe(root_dir)
 def test_xccdf_execute_input_oscap_result(tmp_path, monkeypatch: MonkeyPatch):
     """Test OpenSCAP XCCDF to OSCAL AR."""
     monkeybusiness = MonkeyBusiness()
@@ -468,6 +494,7 @@ def test_xccdf_execute_input_oscap_result(tmp_path, monkeypatch: MonkeyPatch):
         assert result
 
 
+@set_cwd_unsafe(root_dir)
 def test_xccdf_execute_input_oscap_arf_result(tmp_path, monkeypatch: MonkeyPatch):
     """Test OpenSCAP ARF to OSCAL AR."""
     monkeybusiness = MonkeyBusiness()

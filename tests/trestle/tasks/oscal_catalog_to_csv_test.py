@@ -22,6 +22,7 @@ from typing import Dict, List
 from _pytest.monkeypatch import MonkeyPatch
 
 from tests import test_utils
+from tests.test_utils import TEST_DIR, set_cwd_unsafe
 
 import trestle.tasks.oscal_catalog_to_csv as oscal_catalog_to_csv
 from trestle.core.catalog.catalog_interface import CatalogInterface
@@ -32,6 +33,8 @@ CONFIG_BY_CONTROL = 'test-oscal-catalog-to-csv-rev-5-by-control.config'
 CONFIG_BY_STATEMENT = 'test-oscal-catalog-to-csv-rev-5-by-statement.config'
 
 CONFIG_LIST = [f'{CONFIG_BY_CONTROL}', f'{CONFIG_BY_STATEMENT}']
+
+root_dir = TEST_DIR / '../'
 
 
 def monkey_exception():
@@ -110,6 +113,7 @@ def _get_config_section_init(tmp_path: pathlib.Path, fname: str) -> tuple:
     return _get_config_section(tmp_path, fname)
 
 
+@set_cwd_unsafe(root_dir)
 def test_print_info(tmp_path: pathlib.Path) -> None:
     """Test print_info."""
     for config in CONFIG_LIST:
@@ -119,6 +123,7 @@ def test_print_info(tmp_path: pathlib.Path) -> None:
         assert retval is None
 
 
+@set_cwd_unsafe(root_dir)
 def test_missing_section(tmp_path: pathlib.Path):
     """Test missing section."""
     section = None
@@ -127,6 +132,7 @@ def test_missing_section(tmp_path: pathlib.Path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_missing_input(tmp_path: pathlib.Path):
     """Test missing input."""
     for config in CONFIG_LIST:
@@ -137,6 +143,7 @@ def test_missing_input(tmp_path: pathlib.Path):
         assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_missing_output(tmp_path: pathlib.Path):
     """Test missing output."""
     for config in CONFIG_LIST:
@@ -147,6 +154,7 @@ def test_missing_output(tmp_path: pathlib.Path):
         assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_bogus_level(tmp_path: pathlib.Path):
     """Test bogus level."""
     for config in CONFIG_LIST:
@@ -157,6 +165,7 @@ def test_bogus_level(tmp_path: pathlib.Path):
         assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_simulate(tmp_path: pathlib.Path):
     """Test execute."""
     for config in CONFIG_LIST:
@@ -167,6 +176,7 @@ def test_simulate(tmp_path: pathlib.Path):
         assert retval == TaskOutcome.SIM_SUCCESS
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute(tmp_path: pathlib.Path):
     """Test execute."""
     for config in CONFIG_LIST:
@@ -179,6 +189,7 @@ def test_execute(tmp_path: pathlib.Path):
         _validate(config, section)
 
 
+@set_cwd_unsafe(root_dir)
 def test_no_overwrite(tmp_path: pathlib.Path):
     """Test no overwrite."""
     for config in CONFIG_LIST:
@@ -192,6 +203,7 @@ def test_no_overwrite(tmp_path: pathlib.Path):
         assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_exception(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test exception."""
     monkeypatch.setattr(oscal_catalog_to_csv.CsvHelper, 'write', monkey_exception)
@@ -203,6 +215,7 @@ def test_exception(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
         assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_join():
     """Test join."""
     oscal_catalog_to_csv.join_str(None, None)
@@ -211,6 +224,7 @@ def test_join():
     oscal_catalog_to_csv.join_str('x', 'y')
 
 
+@set_cwd_unsafe(root_dir)
 def test_derive_id(tmp_path: pathlib.Path):
     """Test derive_id."""
     for config in CONFIG_LIST:
@@ -223,6 +237,7 @@ def test_derive_id(tmp_path: pathlib.Path):
             catalog_helper._derive_id(id_)
 
 
+@set_cwd_unsafe(root_dir)
 def test_unresolved_param(tmp_path: pathlib.Path):
     """Test unresolved param."""
     for config in CONFIG_LIST:
@@ -239,6 +254,7 @@ def test_unresolved_param(tmp_path: pathlib.Path):
                 break
 
 
+@set_cwd_unsafe(root_dir)
 def test_one_choice(tmp_path: pathlib.Path):
     """Test one choice."""
     for config in CONFIG_LIST:
@@ -255,6 +271,7 @@ def test_one_choice(tmp_path: pathlib.Path):
                         return
 
 
+@set_cwd_unsafe(root_dir)
 def test_duplicate(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test duplicate."""
     monkeypatch.setattr(CatalogInterface, 'get_dependent_control_ids', monkey_get_dependent_control_ids)

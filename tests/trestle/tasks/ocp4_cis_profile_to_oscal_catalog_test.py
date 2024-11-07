@@ -20,9 +20,13 @@ import pathlib
 
 from _pytest.monkeypatch import MonkeyPatch
 
+from tests.test_utils import TEST_DIR, set_cwd_unsafe
+
 import trestle.tasks.ocp4_cis_profile_to_oscal_catalog as ocp4_cis_profile_to_oscal_catalog
 from trestle.oscal.catalog import Catalog
 from trestle.tasks.base_task import TaskOutcome
+
+root_dir = TEST_DIR / '../'
 
 
 def monkey_exception():
@@ -36,6 +40,7 @@ def monkey_get_filelist(self, idir):
     return filelist
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_catalog_print_info(tmp_path: pathlib.Path):
     """Test print_info call."""
     config = configparser.ConfigParser()
@@ -50,6 +55,7 @@ def test_ocp4_cis_profile_to_oscal_catalog_print_info(tmp_path: pathlib.Path):
     assert retval is None
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_catalog_simulate(tmp_path: pathlib.Path):
     """Test simulate call."""
     config = configparser.ConfigParser()
@@ -65,6 +71,7 @@ def test_ocp4_cis_profile_to_oscal_catalog_simulate(tmp_path: pathlib.Path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_catalog_execute(tmp_path: pathlib.Path):
     """Test execute call."""
     config = configparser.ConfigParser()
@@ -107,6 +114,7 @@ def _validate(tmp_path: pathlib.Path):
     assert group.controls[1].title == '2.2 Ensure that the --client-cert-auth argument is set to true'
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_catalog_config_missing(tmp_path: pathlib.Path):
     """Test config missing."""
     section = None
@@ -115,6 +123,7 @@ def test_ocp4_cis_profile_to_oscal_catalog_config_missing(tmp_path: pathlib.Path
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_catalog_config_missing_key(tmp_path: pathlib.Path):
     """Test config missing key."""
     config = configparser.ConfigParser()
@@ -129,6 +138,7 @@ def test_ocp4_cis_profile_to_oscal_catalog_config_missing_key(tmp_path: pathlib.
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_catalog_exception(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test _parse exception."""
     monkeypatch.setattr(ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog, '_parse', monkey_exception)
@@ -144,6 +154,7 @@ def test_ocp4_cis_profile_to_oscal_catalog_exception(tmp_path: pathlib.Path, mon
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_catalog_no_overwrite(tmp_path: pathlib.Path):
     """Test no overwrite."""
     config = configparser.ConfigParser()
@@ -161,6 +172,7 @@ def test_ocp4_cis_profile_to_oscal_catalog_no_overwrite(tmp_path: pathlib.Path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_catalog_no_input(tmp_path: pathlib.Path):
     """Test no input."""
     config = configparser.ConfigParser()
@@ -178,6 +190,7 @@ def test_ocp4_cis_profile_to_oscal_catalog_no_input(tmp_path: pathlib.Path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_catalog_no_file(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test no file."""
     monkeypatch.setattr(
@@ -194,6 +207,7 @@ def test_ocp4_cis_profile_to_oscal_catalog_no_file(tmp_path: pathlib.Path, monke
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_catalog_input_bogus(tmp_path: pathlib.Path):
     """Test no input."""
     config = configparser.ConfigParser()

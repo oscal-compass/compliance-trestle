@@ -22,12 +22,15 @@ from unittest import mock
 
 from openpyxl import load_workbook
 
+from tests.test_utils import TEST_DIR, set_cwd_unsafe
+
 import trestle.tasks.cis_xlsx_to_oscal_catalog as cis_xlsx_to_oscal_catalog
 from trestle.oscal.catalog import Catalog
 from trestle.tasks.base_task import TaskOutcome
 
-ocp_config = 'tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.ocp.config'
-rhel_config = 'tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.rhel.config'
+root_dir = TEST_DIR / '../'
+ocp_config = TEST_DIR / 'data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.ocp.config'
+rhel_config = TEST_DIR / 'data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.rhel.config'
 
 
 def _get_section(tmp_path: pathlib.Path, file_: str) -> Dict:
@@ -40,6 +43,7 @@ def _get_section(tmp_path: pathlib.Path, file_: str) -> Dict:
     return section
 
 
+@set_cwd_unsafe(root_dir)
 def test_cis_xlsx_to_oscal_catalog_print_info(tmp_path: pathlib.Path):
     """Test print_info call."""
     section = _get_section(tmp_path, ocp_config)
@@ -48,6 +52,7 @@ def test_cis_xlsx_to_oscal_catalog_print_info(tmp_path: pathlib.Path):
     assert retval is None
 
 
+@set_cwd_unsafe(root_dir)
 def test_cis_xlsx_to_oscal_catalog_simulate(tmp_path: pathlib.Path):
     """Test simulate call."""
     section = _get_section(tmp_path, ocp_config)
@@ -57,6 +62,7 @@ def test_cis_xlsx_to_oscal_catalog_simulate(tmp_path: pathlib.Path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
+@set_cwd_unsafe(root_dir)
 def test_cis_xlsx_to_oscal_catalog_execute_ocp(tmp_path: pathlib.Path):
     """Test execute call - ocp."""
     section = _get_section(tmp_path, ocp_config)
@@ -96,6 +102,7 @@ def _validate_ocp(tmp_path: pathlib.Path):
     assert p52.value == 'Manual'
 
 
+@set_cwd_unsafe(root_dir)
 def test_cis_xlsx_to_oscal_catalog_no_overwrite(tmp_path: pathlib.Path):
     """Test execute call."""
     section = _get_section(tmp_path, ocp_config)
@@ -109,6 +116,7 @@ def test_cis_xlsx_to_oscal_catalog_no_overwrite(tmp_path: pathlib.Path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_cis_xlsx_to_oscal_catalog_missing_config(tmp_path: pathlib.Path):
     """Test missing config."""
     section = None
@@ -117,6 +125,7 @@ def test_cis_xlsx_to_oscal_catalog_missing_config(tmp_path: pathlib.Path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_cis_xlsx_to_oscal_catalog_missing_version(tmp_path: pathlib.Path):
     """Test missing version."""
     section = _get_section(tmp_path, ocp_config)
@@ -126,9 +135,10 @@ def test_cis_xlsx_to_oscal_catalog_missing_version(tmp_path: pathlib.Path):
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_xlsx_to_oscal_catalog_missing_sheet(tmp_path: pathlib.Path):
+@set_cwd_unsafe(root_dir)
+def test_cis_xlsx_to_oscal_catalog_missing_sheet(tmp_path: pathlib.Path, testdata_dir: pathlib.Path):
     """Test missing sheet."""
-    folder = 'tests/data/tasks/cis-xlsx-to-oscal-catalog'
+    folder = testdata_dir / 'tasks/cis-xlsx-to-oscal-catalog'
     file_ = f'{folder}/CIS_RedHat_OpenShift_Container_Platform_Benchmark_v1.2.0-2.snippet.xlsx'
     wb_hacked = load_workbook(file_)
     sheet = wb_hacked['Combined Profiles']
@@ -141,9 +151,10 @@ def test_cis_xlsx_to_oscal_catalog_missing_sheet(tmp_path: pathlib.Path):
         assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_xlsx_to_oscal_catalog_one_dot_added_part(tmp_path: pathlib.Path):
+@set_cwd_unsafe(root_dir)
+def test_cis_xlsx_to_oscal_catalog_one_dot_added_part(tmp_path: pathlib.Path, testdata_dir: pathlib.Path):
     """Test group part."""
-    folder = 'tests/data/tasks/cis-xlsx-to-oscal-catalog'
+    folder = testdata_dir / 'tasks/cis-xlsx-to-oscal-catalog'
     file_ = f'{folder}/CIS_RedHat_OpenShift_Container_Platform_Benchmark_v1.2.0-2.snippet.xlsx'
     wb_hacked = load_workbook(file_)
     sheet = wb_hacked['Combined Profiles']
@@ -168,9 +179,10 @@ def test_cis_xlsx_to_oscal_catalog_one_dot_added_part(tmp_path: pathlib.Path):
     assert p000.prose == 'foobar'
 
 
-def test_cis_xlsx_to_oscal_catalog_unexpected_section(tmp_path: pathlib.Path):
+@set_cwd_unsafe(root_dir)
+def test_cis_xlsx_to_oscal_catalog_unexpected_section(tmp_path: pathlib.Path, testdata_dir: pathlib.Path):
     """Test group part."""
-    folder = 'tests/data/tasks/cis-xlsx-to-oscal-catalog'
+    folder = testdata_dir / 'tasks/cis-xlsx-to-oscal-catalog'
     file_ = f'{folder}/CIS_RedHat_OpenShift_Container_Platform_Benchmark_v1.2.0-2.snippet.xlsx'
     wb_hacked = load_workbook(file_)
     sheet = wb_hacked['Combined Profiles']
@@ -185,9 +197,10 @@ def test_cis_xlsx_to_oscal_catalog_unexpected_section(tmp_path: pathlib.Path):
         assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_xlsx_to_oscal_catalog_no_status(tmp_path: pathlib.Path):
+@set_cwd_unsafe(root_dir)
+def test_cis_xlsx_to_oscal_catalog_no_status(tmp_path: pathlib.Path, testdata_dir: pathlib.Path):
     """Test no column with name status."""
-    folder = 'tests/data/tasks/cis-xlsx-to-oscal-catalog'
+    folder = testdata_dir / 'tasks/cis-xlsx-to-oscal-catalog'
     file_ = f'{folder}/CIS_RedHat_OpenShift_Container_Platform_Benchmark_v1.2.0-2.snippet.xlsx'
     wb_hacked = load_workbook(file_)
     sheet = wb_hacked['Combined Profiles']
@@ -202,9 +215,10 @@ def test_cis_xlsx_to_oscal_catalog_no_status(tmp_path: pathlib.Path):
         assert retval == TaskOutcome.SUCCESS
 
 
-def test_cis_xlsx_to_oscal_catalog_no_mitre(tmp_path: pathlib.Path):
+@set_cwd_unsafe(root_dir)
+def test_cis_xlsx_to_oscal_catalog_no_mitre(tmp_path: pathlib.Path, testdata_dir: pathlib.Path):
     """Test no column with name mitre."""
-    folder = 'tests/data/tasks/cis-xlsx-to-oscal-catalog'
+    folder = testdata_dir / 'tasks/cis-xlsx-to-oscal-catalog'
     file_ = f'{folder}/CIS_RedHat_OpenShift_Container_Platform_Benchmark_v1.2.0-2.snippet.xlsx'
     wb_hacked = load_workbook(file_)
     sheet = wb_hacked['Combined Profiles']
@@ -219,9 +233,10 @@ def test_cis_xlsx_to_oscal_catalog_no_mitre(tmp_path: pathlib.Path):
         assert retval == TaskOutcome.SUCCESS
 
 
-def test_cis_xlsx_to_oscal_catalog_no_v7_ig1(tmp_path: pathlib.Path):
+@set_cwd_unsafe(root_dir)
+def test_cis_xlsx_to_oscal_catalog_no_v7_ig1(tmp_path: pathlib.Path, testdata_dir: pathlib.Path):
     """Test no column with name v7 IG1."""
-    folder = 'tests/data/tasks/cis-xlsx-to-oscal-catalog'
+    folder = testdata_dir / 'tasks/cis-xlsx-to-oscal-catalog'
     file_ = f'{folder}/CIS_RedHat_OpenShift_Container_Platform_Benchmark_v1.2.0-2.snippet.xlsx'
     wb_hacked = load_workbook(file_)
     sheet = wb_hacked['Combined Profiles']
@@ -236,7 +251,8 @@ def test_cis_xlsx_to_oscal_catalog_no_v7_ig1(tmp_path: pathlib.Path):
         assert retval == TaskOutcome.SUCCESS
 
 
-def test_cis_xlsx_to_oscal_catalog_execute_rhel(tmp_path: pathlib.Path):
+@set_cwd_unsafe(root_dir)
+def test_cis_xlsx_to_oscal_catalog_execute_rhel(tmp_path: pathlib.Path, testdata_dir: pathlib.Path):
     """Test execute call - rhel."""
     section = _get_section(tmp_path, rhel_config)
     tgt = cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog(section)
