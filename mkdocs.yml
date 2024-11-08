@@ -53,6 +53,14 @@ plugins:
           - '!^__json'
           - '!^__config__'
           new_path_syntax: true
+- minify:
+    minify_html: true
+    minify_js: false
+    minify_css: true
+    css_files:
+    - css/mkdocstrings.css
+    htmlmin_opts:
+      remove_comments: true
 repo_name: oscal-compass/compliance-trestle
 repo_url: https://github.com/oscal-compass/compliance-trestle
 site_description: Documentation for compliance-trestle package.
