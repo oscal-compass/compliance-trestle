@@ -129,6 +129,8 @@ Consult [contributors](https://github.com/oscal-compass/compliance-trestle/graph
 
 ______________________________________________________________________
 
+<a href="https://www.bestpractices.dev/projects/9408"><img src="https://www.bestpractices.dev/projects/9408/badge"></a>
+
 We are a Cloud Native Computing Foundation sandbox project.
 
 <picture>
