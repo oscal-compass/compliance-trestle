@@ -9,7 +9,6 @@
 ![GitHub Actions status](https://github.com/oscal-compass/compliance-trestle/actions/workflows/python-test.yml/badge.svg?branch=develop)
 ![OpenSSF Best Practices](https://www.bestpractices.dev/projects/9408/badge)
 
-
 Trestle is an ensemble of tools that enable the creation, validation, and governance of documentation artifacts for compliance needs. It leverages NIST's [OSCAL](https://pages.nist.gov/OSCAL/) as a standard data format for interchange between tools and people, and provides an opinionated approach to OSCAL adoption.
 
 Trestle is designed to operate as a CICD pipeline running on top of compliance artifacts in `git`, to provide transparency for the state of compliance across multiple stakeholders in an environment friendly to developers. Trestle passes the generated artifacts onto tools that orchestrate the enforcement, measurement, and reporting of compliance.
@@ -130,7 +129,6 @@ Consult [contributors](https://github.com/oscal-compass/compliance-trestle/graph
 ```
 
 ______________________________________________________________________
-
 
 We are a Cloud Native Computing Foundation sandbox project.
 
