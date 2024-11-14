@@ -30,7 +30,7 @@ from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.control_context import ContextPurpose, ControlContext
-from trestle.core.control_interface import ControlInterface, ParameterRep
+from trestle.core.control_interface import ComponentImpInfo, ControlInterface, ParameterRep
 from trestle.core.control_reader import ControlReader
 from trestle.core.control_writer import ControlWriter
 from trestle.core.markdown.control_markdown_node import ControlMarkdownNode, tree_context
@@ -393,6 +393,46 @@ def test_write_control_header_params(overwrite_header_values, tmp_path: pathlib.
     if overwrite_header_values:
         orig_control_read.params[0] = new_control_read.params[0]
     assert test_utils.controls_equivalent(orig_control_read, new_control_read)
+
+
+def test_merge_control_update(tmp_path: pathlib.Path, testdata_dir: pathlib.Path) -> None:
+    """Test merging of control header params after spec update."""
+    src_control_path = pathlib.Path(testdata_dir / 'author/controls/control_with_components.md')
+    control_path = tmp_path / 'ac-1.md'
+    shutil.copyfile(src_control_path, control_path)
+    orig_control_read, group_title = ControlReader.read_control(control_path, False)
+    assert group_title == 'Access Control'
+    context = ControlContext.generate(ContextPurpose.COMPONENT, True, tmp_path, tmp_path, True)
+    # Given updated template comp_dict from the component definition json
+    context.comp_dict = {
+        'This System': {
+            '': ComponentImpInfo(
+                prose='', rules=[], props=[], status=common.ImplementationStatus(state='planned', remarks=None)
+            ),
+            'a.': ComponentImpInfo(
+                prose='Text for fancy thing component',
+                rules=[],
+                props=[],
+                status=common.ImplementationStatus(state='planned', remarks=None)
+            ),
+            'c.': ComponentImpInfo(
+                prose='Just for the default component',
+                rules=[],
+                props=[],
+                status=common.ImplementationStatus(state='planned', remarks=None)
+            ),
+            'd.': ComponentImpInfo(
+                prose='Example extra component',
+                rules=[],
+                props=[],
+                status=common.ImplementationStatus(state='planned', remarks=None)
+            )
+        }
+    }
+    control_writer = ControlWriter()
+    control_writer.write_control_for_editing(context, orig_control_read, tmp_path, group_title, {}, [])
+    assert context.comp_dict['This System']['c.'].status.state == 'operational', 'State must be merged'
+    assert context.comp_dict['This System']['d.'].status.state == 'planned', 'New template state must be merged'
 
 
 statement_text = """
