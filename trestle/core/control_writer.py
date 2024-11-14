@@ -66,7 +66,7 @@ class ControlWriter():
         control_title = control.title
 
         if print_group_title:
-            group_name = ' \[' + group_title + '\]'
+            group_name = r' \[' + group_title + r'\]'
 
         title = f'{control_id} -{group_name} {control_title}'
 
