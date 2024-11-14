@@ -45,7 +45,7 @@ case_2 = 'indent jump back 2'
 case_3 = 'indent end abrupt'
 case_4 = 'no items'
 
-control_text = """---
+control_text = r"""---
 x-trestle-global:
   sort-id: xy-09
 ---
@@ -131,7 +131,7 @@ def test_read_write_controls(
     part_b3 = common.Part(id='ac-1_smt.b.3', name='item', prose='b.3 prose', props=[prop])
     prop.value = 'c'
     part_c = common.Part(id='ac-1_smt.c', name='item', prose='c prose', props=[prop])
-    sec_1_text = """
+    sec_1_text = r"""
 General comment
 on separate lines
 
@@ -397,7 +397,7 @@ def test_write_control_header_params(
     assert test_utils.controls_equivalent(orig_control_read, new_control_read)
 
 
-statement_text = """
+statement_text = r"""
 
 
 # xy-9 - \[My Group Title\] Fancy Control
