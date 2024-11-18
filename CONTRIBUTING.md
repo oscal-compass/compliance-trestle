@@ -30,9 +30,9 @@ pull request so it can be tracked.
 The project maintainers use LGTM (Looks Good To Me) in comments on the code
 review to indicate acceptance.
 
-A change requires LGTMs from at least two reviewers. One of the reviewers must be a [`CODEOWNER`](./.github/CODEOWNERS).
+A change requires LGTMs from at least two reviewers. One of the reviewers must be a [`CODEOWNER`](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners).
 
-For a list of the maintainers, see the [maintainers](https://oscal-compass.github.io/compliance-trestle/maintainers/) page.
+For a list of the maintainers (also codeowners), see the [maintainers](https://oscal-compass.github.io/compliance-trestle/maintainers/) page.
 
 ### Trestle updating, testing and release logistics
 
