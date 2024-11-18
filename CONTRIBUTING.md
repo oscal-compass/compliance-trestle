@@ -28,7 +28,9 @@ pull request so it can be tracked.
 ### Merge approval
 
 The project maintainers use LGTM (Looks Good To Me) in comments on the code
-review to indicate acceptance. A change requires LGTMs from one of the maintainers.
+review to indicate acceptance.
+
+A change requires LGTMs from at least two reviewers. One of the reviewers must be a [`CODEOWNER`](./.github/CODEOWNERS).
 
 For a list of the maintainers, see the [maintainers](https://oscal-compass.github.io/compliance-trestle/maintainers/) page.
 
