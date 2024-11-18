@@ -61,7 +61,7 @@ In trestle's CI environment this results in the following rules:
 1. Trestle will release on demand the default approach for a hot fix should be to merge into `develop`, followed by releasing to `main`, unless this will release functionality that is not ready.
 1. Each feature/fix/chore (PR into develop) be represented by a single commit into develop / main with a coherent title (in the PR).
    1. The trestle preference for doing this is to use squash merge functionality when merging a PR into develop.
-1. Developers *MUST* pass the required CI checks for each PR.
+1. Developers *MUST* pass the required CI checks for each PR. The checks enforce code quality with a format checker (yapf) and linter (flake8).
 1. Developers are encouraged to use GitHub's automated merge process where possible to keep the number of active PR's low.
 
 ### Merge details for committers:
