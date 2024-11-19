@@ -36,7 +36,7 @@ plugins:
     raise_error_excludes:
       # This is to remove some false positives for links which work.
       # Anchors are validated again by core mkdocs
-      404: ['#trestle.*']
+      404: [ '#trestle.*' ]
 - mkdocstrings:
     default_handler: python
     handlers:
@@ -61,6 +61,15 @@ plugins:
     - css/mkdocstrings.css
     htmlmin_opts:
       remove_comments: true
+- mike:
+    # These fields are all optional; the defaults are as below...
+    alias_type: symlink
+    redirect_template: null
+    deploy_prefix: ''
+    canonical_version: latest
+    version_selector: true
+    css_dir: css
+    javascript_dir: js
 repo_name: oscal-compass/compliance-trestle
 repo_url: https://github.com/oscal-compass/compliance-trestle
 site_description: Documentation for compliance-trestle package.
