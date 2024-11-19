@@ -904,5 +904,5 @@ class CatalogInterface():
         if len(dup_comp_uuids) > 0:
             # throw an exception if there are repeated component uuids
             for comp_uuid in dup_comp_uuids:
-                logger.error(f'Component uuid { comp_uuid } is duplicated')
+                logger.error(f'Component uuid {comp_uuid} is duplicated')
             raise TrestleError('Component uuids cannot be duplicated between different component definitions')
