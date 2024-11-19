@@ -109,8 +109,8 @@ class ControlInterface:
 
     @staticmethod
     def _wrap_label(label: str):
-        l_side = '\['
-        r_side = '\]'
+        l_side = r'\['
+        r_side = r'\]'
         wrapped = '' if label == '' else f'{l_side}{label}{r_side}'
         return wrapped
 

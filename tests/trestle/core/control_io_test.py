@@ -45,7 +45,7 @@ case_2 = 'indent jump back 2'
 case_3 = 'indent end abrupt'
 case_4 = 'no items'
 
-control_text = """---
+control_text = r"""---
 x-trestle-global:
   sort-id: xy-09
 ---
@@ -131,7 +131,7 @@ def test_read_write_controls(
     part_b3 = common.Part(id='ac-1_smt.b.3', name='item', prose='b.3 prose', props=[prop])
     prop.value = 'c'
     part_c = common.Part(id='ac-1_smt.c', name='item', prose='c prose', props=[prop])
-    sec_1_text = """
+    sec_1_text = r"""
 General comment
 on separate lines
 
@@ -338,10 +338,12 @@ def test_get_control_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
 
 
 @pytest.mark.parametrize('overwrite_header_values', [True, False])
-def test_write_control_header_params(overwrite_header_values, tmp_path: pathlib.Path) -> None:
+def test_write_control_header_params(
+    overwrite_header_values, tmp_path: pathlib.Path, testdata_dir: pathlib.Path
+) -> None:
     """Test write/read of control header params."""
     # orig file just has one param ac-1_prm_3
-    src_control_path = pathlib.Path('tests/data/author/controls/control_with_components_and_params.md')
+    src_control_path = pathlib.Path(testdata_dir / 'author/controls/control_with_components_and_params.md')
     # header has two params - 3 and 4
     header = {
         const.SET_PARAMS_TAG: {
@@ -395,7 +397,7 @@ def test_write_control_header_params(overwrite_header_values, tmp_path: pathlib.
     assert test_utils.controls_equivalent(orig_control_read, new_control_read)
 
 
-statement_text = """
+statement_text = r"""
 
 
 # xy-9 - \[My Group Title\] Fancy Control

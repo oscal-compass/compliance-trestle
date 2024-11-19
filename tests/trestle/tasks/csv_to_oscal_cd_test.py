@@ -26,10 +26,13 @@ from _pytest.monkeypatch import MonkeyPatch
 import pytest
 
 from tests import test_utils
+from tests.test_utils import set_cwd_unsafe
 
 import trestle.tasks.csv_to_oscal_cd as csv_to_oscal_cd
 from trestle.oscal.component import ComponentDefinition
 from trestle.tasks.base_task import TaskOutcome
+
+root_dir = test_utils.TEST_DIR / '../'
 
 
 def monkey_exception() -> None:
@@ -139,6 +142,7 @@ def _get_config_section_init(tmp_path: pathlib.Path, fname: str) -> tuple:
     return _get_config_section(tmp_path, fname)
 
 
+@set_cwd_unsafe(root_dir)
 def test_print_info(tmp_path: pathlib.Path) -> None:
     """Test print_info."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
@@ -147,6 +151,7 @@ def test_print_info(tmp_path: pathlib.Path) -> None:
     assert retval is None
 
 
+@set_cwd_unsafe(root_dir)
 def test_simulate(tmp_path: pathlib.Path) -> None:
     """Test simulate."""
     _, section = _get_config_section(tmp_path, 'test-csv-to-oscal-cd.config')
@@ -156,6 +161,7 @@ def test_simulate(tmp_path: pathlib.Path) -> None:
     assert len(os.listdir(str(tmp_path))) == 0
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute(tmp_path: pathlib.Path) -> None:
     """Test execute."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
@@ -165,6 +171,7 @@ def test_execute(tmp_path: pathlib.Path) -> None:
     _validate_ocp(tmp_path)
 
 
+@set_cwd_unsafe(root_dir)
 def test_config_missing(tmp_path: pathlib.Path) -> None:
     """Test config missing."""
     section = None
@@ -173,6 +180,7 @@ def test_config_missing(tmp_path: pathlib.Path) -> None:
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_config_missing_title(tmp_path: pathlib.Path) -> None:
     """Test config missing title."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
@@ -182,6 +190,7 @@ def test_config_missing_title(tmp_path: pathlib.Path) -> None:
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_config_missing_version(tmp_path: pathlib.Path) -> None:
     """Test config missing version."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
@@ -191,6 +200,7 @@ def test_config_missing_version(tmp_path: pathlib.Path) -> None:
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_config_missing_csv_file_spec(tmp_path: pathlib.Path) -> None:
     """Test config missing csv file spec."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
@@ -201,6 +211,7 @@ def test_config_missing_csv_file_spec(tmp_path: pathlib.Path) -> None:
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_config_missing_csv_file(tmp_path: pathlib.Path) -> None:
     """Test config missing csv file."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
@@ -210,6 +221,7 @@ def test_config_missing_csv_file(tmp_path: pathlib.Path) -> None:
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_exception(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test exception."""
     monkeypatch.setattr(csv_to_oscal_cd._RuleSetIdMgr, 'get_next_rule_set_id', monkey_exception)
@@ -219,6 +231,7 @@ def test_exception(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_mock(tmp_path: pathlib.Path) -> None:
     """Test execute mock."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
@@ -255,6 +268,7 @@ def _setup_workspace(workspace: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
         os.chdir(cwd)
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_validate_controls(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test execute validate_controls."""
     workspace = tmp_path / 'trestle.workspace'
@@ -271,6 +285,7 @@ def test_execute_validate_controls(tmp_path: pathlib.Path, monkeypatch: MonkeyPa
     assert retval == TaskOutcome.SUCCESS
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_validate_controls_nist(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test execute validate_controls nist."""
     workspace = tmp_path / 'trestle.workspace'
@@ -300,6 +315,7 @@ def test_execute_validate_controls_nist(tmp_path: pathlib.Path, monkeypatch: Mon
     assert retval == TaskOutcome.SUCCESS
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_control_invalid(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test execute control invalid (not in catalog)."""
     workspace = tmp_path / 'trestle.workspace'
@@ -324,6 +340,7 @@ def test_execute_control_invalid(tmp_path: pathlib.Path, monkeypatch: MonkeyPatc
     assert retval == TaskOutcome.SUCCESS
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_control_invalid_fail(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test execute control invalid (not in catalog)."""
     workspace = tmp_path / 'trestle.workspace'
@@ -348,6 +365,7 @@ def test_execute_control_invalid_fail(tmp_path: pathlib.Path, monkeypatch: Monke
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_no_overwrite(tmp_path: pathlib.Path) -> None:
     """Test execute no overwrite."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
@@ -359,6 +377,7 @@ def test_execute_no_overwrite(tmp_path: pathlib.Path) -> None:
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_verbose(tmp_path: pathlib.Path) -> None:
     """Test execute verbose."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
@@ -369,6 +388,7 @@ def test_execute_verbose(tmp_path: pathlib.Path) -> None:
     _validate_ocp(tmp_path)
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_missing_heading(tmp_path: pathlib.Path) -> None:
     """Test execute missing heading."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
@@ -384,6 +404,7 @@ def test_execute_missing_heading(tmp_path: pathlib.Path) -> None:
         assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_case_insensitive_heading(tmp_path: pathlib.Path) -> None:
     """Test execute case insensitive heading."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
@@ -402,6 +423,7 @@ def test_execute_case_insensitive_heading(tmp_path: pathlib.Path) -> None:
         _validate_ocp(tmp_path)
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_missing_value(tmp_path: pathlib.Path) -> None:
     """Test execute missing value."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
@@ -417,6 +439,7 @@ def test_execute_missing_value(tmp_path: pathlib.Path) -> None:
         assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_missing_rule_id(tmp_path: pathlib.Path) -> None:
     """Test execute missing rule id."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
@@ -432,6 +455,7 @@ def test_execute_missing_rule_id(tmp_path: pathlib.Path) -> None:
         assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_missing_control_id_list(tmp_path: pathlib.Path) -> None:
     """Test execute missing control id list."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
@@ -453,6 +477,7 @@ def test_execute_missing_control_id_list(tmp_path: pathlib.Path) -> None:
     assert len(component.props) == 423
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_bp_sample(tmp_path: pathlib.Path) -> None:
     """Test execute bp sample."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -462,6 +487,7 @@ def test_execute_bp_sample(tmp_path: pathlib.Path) -> None:
     _validate_bp(tmp_path)
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_bp3_sample(tmp_path: pathlib.Path) -> None:
     """Test execute bp3 sample."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -490,6 +516,7 @@ def test_execute_bp3_sample(tmp_path: pathlib.Path) -> None:
     assert ci.set_parameters[3].values[2] == '5'
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_bp4_sample(tmp_path: pathlib.Path) -> None:
     """Test execute bp4 sample."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -563,6 +590,7 @@ def test_execute_bp4_sample(tmp_path: pathlib.Path) -> None:
     assert ci.set_parameters[index].values[2] == 't'
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_bp4_modify_additional_param_set(tmp_path: pathlib.Path) -> None:
     """Test execute bp4 modify additional param set."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -610,6 +638,7 @@ def test_execute_bp4_modify_additional_param_set(tmp_path: pathlib.Path) -> None
     assert ci.set_parameters[index].values[0] == '50'
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_bp4_delete_additional_param_set(tmp_path: pathlib.Path) -> None:
     """Test execute bp4 delete additional param set."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -642,6 +671,7 @@ def test_execute_bp4_delete_additional_param_set(tmp_path: pathlib.Path) -> None
     assert len(ci.set_parameters) == 7
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_bp_cd(tmp_path: pathlib.Path) -> None:
     """Test execute bp cd."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -652,6 +682,7 @@ def test_execute_bp_cd(tmp_path: pathlib.Path) -> None:
     _validate_bp(tmp_path)
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_bp_cd_missing(tmp_path: pathlib.Path) -> None:
     """Test execute bp cd missing."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -661,6 +692,7 @@ def test_execute_bp_cd_missing(tmp_path: pathlib.Path) -> None:
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_duplicate_rule(tmp_path: pathlib.Path) -> None:
     """Test execute duplicate rule."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -675,6 +707,7 @@ def test_execute_duplicate_rule(tmp_path: pathlib.Path) -> None:
         assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_delete_rule(tmp_path: pathlib.Path) -> None:
     """Test execute delete rule."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -700,6 +733,7 @@ def test_execute_delete_rule(tmp_path: pathlib.Path) -> None:
     assert component.props[0].remarks == 'rule_set_01'
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_delete_all_rules_with_params(tmp_path: pathlib.Path) -> None:
     """Test execute delete all rules with params."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -726,6 +760,7 @@ def test_execute_delete_all_rules_with_params(tmp_path: pathlib.Path) -> None:
             assert prop.value != 'allowed_admins_per_account'
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_delete_rule_with_params(tmp_path: pathlib.Path) -> None:
     """Test execute delete rule with params."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -749,6 +784,7 @@ def test_execute_delete_rule_with_params(tmp_path: pathlib.Path) -> None:
             assert prop.value != 'allowed_admins_per_account'
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_column_bad_data(tmp_path: pathlib.Path) -> None:
     """Test execute column bad data."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -763,6 +799,7 @@ def test_execute_column_bad_data(tmp_path: pathlib.Path) -> None:
         assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_column_ignore(tmp_path: pathlib.Path) -> None:
     """Test execute column ignore."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -777,6 +814,7 @@ def test_execute_column_ignore(tmp_path: pathlib.Path) -> None:
         assert retval == TaskOutcome.SUCCESS
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_add_rule(tmp_path: pathlib.Path) -> None:
     """Test execute add rule."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -861,6 +899,7 @@ def test_execute_add_rule(tmp_path: pathlib.Path) -> None:
     assert len(component.control_implementations[1].set_parameters) == 1
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_param_duplicate_value(tmp_path: pathlib.Path) -> None:
     """Test execute param duplicate default value."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -887,6 +926,7 @@ def test_execute_param_duplicate_value(tmp_path: pathlib.Path) -> None:
         assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_correct_rule_key(tmp_path: pathlib.Path) -> None:
     """Test execute missing value."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
@@ -915,6 +955,7 @@ def test_execute_correct_rule_key(tmp_path: pathlib.Path) -> None:
         assert unexpected_key not in tgt._csv_mgr.get_rule_keys()
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_missing_param_default_value(tmp_path: pathlib.Path) -> None:
     """Test execute missing param default_value."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -931,6 +972,7 @@ def test_execute_missing_param_default_value(tmp_path: pathlib.Path) -> None:
         assert retval == TaskOutcome.SUCCESS
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_change_param_default_value(tmp_path: pathlib.Path) -> None:
     """Test execute change param default_value."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -961,6 +1003,7 @@ def test_execute_change_param_default_value(tmp_path: pathlib.Path) -> None:
     assert set_parameters[0].values[0] == '20'
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_delete_param(tmp_path: pathlib.Path) -> None:
     """Test execute delete param."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -991,6 +1034,7 @@ def test_execute_delete_param(tmp_path: pathlib.Path) -> None:
     assert component.props[22].remarks == 'rule_set_04'
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_delete_params(tmp_path: pathlib.Path) -> None:
     """Test execute delete params."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -1015,6 +1059,7 @@ def test_execute_delete_params(tmp_path: pathlib.Path) -> None:
         assert prop.name != 'Parameter_Id'
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_add_param(tmp_path: pathlib.Path) -> None:
     """Test execute add param."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -1054,6 +1099,7 @@ def test_execute_add_param(tmp_path: pathlib.Path) -> None:
     assert set_parameters[4].values[0] == 'add-parameter-default-value'
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_delete_all_control_id_list(tmp_path: pathlib.Path) -> None:
     """Test execute delete all control id list."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -1075,6 +1121,7 @@ def test_execute_delete_all_control_id_list(tmp_path: pathlib.Path) -> None:
         assert len(cd.components) == 0
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_delete_control_id(tmp_path: pathlib.Path) -> None:
     """Test execute delete control id."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -1100,6 +1147,7 @@ def test_execute_delete_control_id(tmp_path: pathlib.Path) -> None:
     assert implemented_requirements[4].control_id == 'ac-6'
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_delete_control_id_multi(tmp_path: pathlib.Path) -> None:
     """Test execute delete control id multi."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -1125,6 +1173,7 @@ def test_execute_delete_control_id_multi(tmp_path: pathlib.Path) -> None:
         assert implemented_requirement.control_id != 'ac-6'
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_delete_control_id_smt(tmp_path: pathlib.Path) -> None:
     """Test execute delete control id smt."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -1152,6 +1201,7 @@ def test_execute_delete_control_id_smt(tmp_path: pathlib.Path) -> None:
     assert statements[0].statement_id == 'cm-7_smt.a'
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_add_control_id(tmp_path: pathlib.Path) -> None:
     """Test execute add control id."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -1176,6 +1226,7 @@ def test_execute_add_control_id(tmp_path: pathlib.Path) -> None:
     assert implemented_requirements[21].control_id == 'ld-0'
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_add_control_id_smt(tmp_path: pathlib.Path) -> None:
     """Test execute add control mapping smt."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -1206,6 +1257,7 @@ def test_execute_add_control_id_smt(tmp_path: pathlib.Path) -> None:
     assert statement.props[0].value == 'account_owner_authorized_ip_range_configured'
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_delete_property(tmp_path: pathlib.Path) -> None:
     """Test execute delete property."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -1232,6 +1284,7 @@ def test_execute_delete_property(tmp_path: pathlib.Path) -> None:
     assert component.props[2].name == 'Reference_Id'
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_add_property(tmp_path: pathlib.Path) -> None:
     """Test execute add property."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -1264,6 +1317,7 @@ def test_execute_add_property(tmp_path: pathlib.Path) -> None:
     assert component.props[6].value == 'add-fetcher-description'
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_with_risk_properties(tmp_path: pathlib.Path) -> None:
     """Test execute with risk properties."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -1305,6 +1359,7 @@ def test_execute_with_risk_properties(tmp_path: pathlib.Path) -> None:
     assert component.props[6].value == 'add-risk-adjustment'
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_with_ignored_risk_properties(tmp_path: pathlib.Path) -> None:
     """Test execute with ignored risk properties when component type is validation."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -1345,6 +1400,7 @@ def test_execute_with_ignored_risk_properties(tmp_path: pathlib.Path) -> None:
         assert prop.name != 'Risk_Adjustment'
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_rule_name_overlap(tmp_path: pathlib.Path) -> None:
     """Test execute rule name overlap."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-rule-name-overlap.config')
@@ -1371,6 +1427,7 @@ def test_execute_rule_name_overlap(tmp_path: pathlib.Path) -> None:
     assert component.props[15].value == 'Target-B'
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_add_user_property(tmp_path: pathlib.Path) -> None:
     """Test execute add user property."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -1396,6 +1453,7 @@ def test_execute_add_user_property(tmp_path: pathlib.Path) -> None:
     assert component.props[5].value == 'new-column-value-2'
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_validation(tmp_path: pathlib.Path) -> None:
     """Test execute validation."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -1447,6 +1505,7 @@ def test_execute_validation(tmp_path: pathlib.Path) -> None:
     assert len(component.control_implementations) == 0
 
 
+@set_cwd_unsafe(root_dir)
 def test_execute_invalid_set_parameter_values(tmp_path: pathlib.Path) -> None:
     """Test execute invalid set parameter (PARAMETER_ID, Parameter_Value_Default) values."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
@@ -1469,6 +1528,7 @@ def test_execute_invalid_set_parameter_values(tmp_path: pathlib.Path) -> None:
         )
 
 
+@set_cwd_unsafe(root_dir)
 def test_row_property_builder(tmp_path):
     """Test row property builder."""
     # valid

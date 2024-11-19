@@ -110,7 +110,7 @@ class TaniumResultToOscalARTransformer(ResultsTransformer):
         results.__root__ = tanium_oscal_factory.results
         ts1 = datetime.datetime.now()
         self._analysis = tanium_oscal_factory.analysis
-        self._analysis.append(f'transform time: {ts1-ts0}')
+        self._analysis.append(f'transform time: {ts1 - ts0}')
         return results
 
 
@@ -455,7 +455,7 @@ class TaniumOscalFactory():
         start = index * batch_size
         end = (index + 1) * batch_size
         end = min(end, len(self._rule_use_list))
-        logger.debug(f'start: {start} end: {end-1}')
+        logger.debug(f'start: {start} end: {end - 1}')
         # process just the one chunk
         for i in range(start, end):
             rule_use = self._rule_use_list[i]

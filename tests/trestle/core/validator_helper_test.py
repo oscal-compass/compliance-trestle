@@ -15,7 +15,6 @@
 # limitations under the License.
 """Tests for validator helper functionality that was moved to model_utils."""
 
-import pathlib
 from uuid import uuid4
 
 import tests.test_utils as test_utils
@@ -24,7 +23,7 @@ import trestle.oscal.catalog as catalog
 import trestle.oscal.ssp as ssp
 from trestle.common.model_utils import ModelUtils
 
-ssp_path = pathlib.Path('nist-content/examples/ssp/json/ssp-example.json')
+ssp_path = test_utils.TEST_DIR / '../nist-content/examples/ssp/json/ssp-example.json'
 catalog_path = test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME
 
 
