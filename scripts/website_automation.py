@@ -27,33 +27,18 @@ import pathlib
 import shutil
 from typing import Any, Dict, List
 
-from ruamel.yaml import YAML
-
-
-def update_mkdocs_meta(path: pathlib.Path, module_list: List[Any]) -> None:
-    """Update the mkdocs.yml structure file to represent the latest trestle modules."""
-    yaml = YAML()
-    fh_read = path.open('r', encoding='utf8')
-    yaml_structure = yaml.load(fh_read)
-    fh_read.close()
-    nav = yaml_structure['nav']
-    for index in range(len(nav)):
-        if 'Reference' in nav[index].keys():
-            nav[index]['Reference'] = []
-            nav[index]['Reference'].append({'Integrating with IBM SCC': 'reference/third-party-result-schema-SCC.md'})
-            nav[index]['Reference'].append({'trestle API reference': module_list})
-
-    yaml_structure['nav'] = nav
-    fh_write = path.open('w', encoding='utf8')
-    yaml.dump(yaml_structure, fh_write)
-    fh_write.close()
-
 
 def write_module_doc_metafile(dump_location: pathlib.Path, module_name: str) -> None:
     """Create a markdown file which allows mkdocstrings to index an individual module."""
-    write_file = dump_location / (module_name + '.md')
+    write_file = dump_location / (module_name.replace('.', '/') + '.md')
+    write_file.parent.mkdir(parents=True, exist_ok=True)
     fh = write_file.open('w', encoding='utf8')
-    fh.write(f'::: {module_name}\n')
+    # yaml header
+    fh.write('---\n')
+    fh.write(f'title: {module_name}\n')
+    fh.write(f'description: Documentation for {module_name} module\n')
+    fh.write('---\n\n')
+    fh.write(f'::: {module_name}\n')  # noqa: E231
     fh.write('handler: python\n')
     fh.close()
 
@@ -76,7 +61,7 @@ def create_module_markdowns(base_path: pathlib.Path, base_module: str, dump_loca
             if len(struct) > 0:
                 module_arr.append({path.stem: struct})
         elif path.suffix == '.py' and path.stem[0] != '_':
-            struct = dump_location.stem + '/' + module_full_name + '.md'
+            struct = dump_location.stem + '/' + module_full_name.replace('.', '/') + '.md'
             write_module_doc_metafile(dump_location, module_full_name)
             module_arr.append({path.stem: struct})
     module_arr.sort(key=get_key)
@@ -106,10 +91,9 @@ def cleanup_directory(dump_location: pathlib.Path):
 
 if __name__ == '__main__':
     # Setup structure automatically for mkdocstrings
-    api_ref_location = pathlib.Path('docs/api_reference')
+    api_ref_location = pathlib.Path('docs/reference/API')
     cleanup_directory(api_ref_location)
     structer = create_module_markdowns(pathlib.Path('trestle'), 'trestle', api_ref_location)
-    update_mkdocs_meta(pathlib.Path('mkdocs.yml'), structer)
     # Ensure single source of truth for license file
     md_txt(pathlib.Path('LICENSE'), pathlib.Path('docs/license.md'))
     md_txt(pathlib.Path('DCO1.1.txt'), pathlib.Path('docs/contributing/DCO.md'))

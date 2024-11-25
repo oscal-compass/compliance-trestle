@@ -109,8 +109,8 @@ class ControlInterface:
 
     @staticmethod
     def _wrap_label(label: str):
-        l_side = '\['
-        r_side = '\]'
+        l_side = r'\['
+        r_side = r'\]'
         wrapped = '' if label == '' else f'{l_side}{label}{r_side}'
         return wrapped
 
@@ -591,6 +591,8 @@ class ControlInterface:
         New items are always added from src to dest.
         Items present in both will be overriden dest if overwrite_header_values is True.
         """
+        if src is None:
+            return
         for key in src.keys():
             if key in dest:
                 if depth and level == depth:
@@ -713,7 +715,8 @@ class ControlInterface:
             param_str = ControlInterface._param_selection_as_str(param, True, False)
         # otherwise use param aggregated values if present
         if not param_str:
-            param_str = ControlInterface._param_as_aggregated_value(param, param_dict, True, False)
+            if any(as_list(param_dict[prop.value].values) for prop in as_list(param.props) if prop.value in param_dict):
+                param_str = ControlInterface._param_as_aggregated_value(param, param_dict, True, False)
         # finally use label and param_id as fallbacks
         if not param_str:
             param_str = param.label if param.label else param.id

@@ -22,7 +22,10 @@ line-length = 500
 line_length = 500
 
 [tool.semantic_release]
-build_command = "python setup.py sdist bdist_wheel"
+build_command = """
+    python -m pip install -e .[dev] --upgrade --upgrade-strategy eager --
+    python setup.py sdist bdist_wheel
+"""
 version_variables = ["trestle/__init__.py:__version__"]
 commit_author = "semantic-release <semantic-release>"
 

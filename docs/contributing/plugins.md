@@ -1,3 +1,8 @@
+---
+title: Developing trestle plugins
+description: Trestle provides a mechanism for 3rd party providers to extend its command interface via a plugin architecture. This describes to build a trestle plugin.
+---
+
 # Adding plugins to trestle
 
 Trestle provides a mechanism for 3rd party providers to extend its command interface via a plugin architecture. All trestle plugins that conforms to this specification will be automatically discovered by trestle if installed, and their command(s) will be added to trestle sub-commands list. Below we describe this plugin mechanism with the help of an example plugin [`compliance-trestle-fedramp`](https://github.com/oscal-compass/compliance-trestle-fedramp) that we created as a separate python project that can be installed via `pip`.
@@ -13,17 +18,22 @@ The plugin project should be organized as shown below.
 ```text
 compliance-trestle-fedramp
 ├── trestle_fedramp
-│   ├── __init.py__
+│   ├── __init__.py
 │   ├── commands
-|   |   ├── __init.py__
+|   |   ├── __init__.py
 |   |   ├── validate.py
+|   ├── jinja_ext
+|   |   ├── __init__.py
+|   |   ├── filters.py
 │   ├── <other source files or folder>
 ├── <other files or folder>
 ```
 
 Trestle uses a naming convention to discover the top-level module of the plugin projects. It expects the top-level module to be named `trestle_{plugin_name}`. This covention must be followed by plugins to be discoverable by trestle. In the above example, the top-level module is named as `trestle_fedramp` so that it can be autmatically discovered by trestle. All the python source files should be created inside this module (folder).
 
-The top-evel module should contain a `commands` directory where all the plugin command files should be stored. Each command should have its own python file. In the above exaample, `validate.py` file conatins one command for this plugin. Other python files or folders should be created in the top-level module folder, outside the `commands` folder. This helps in keeping the commands separate and in their discovery by trestle.
+To add commands to the CLI interface, the top-level module should contain a `commands` directory where all the plugin command files should be stored. Each command should have its own python file. In the above example, `validate.py` file contains one command for this plugin. Other python files or folders should be created in the top-level module folder, outside the `commands` folder. This helps in keeping the commands separate and in their discovery by trestle.
+
+To add jinja extensions available during `trestle author jinja`, the top-level module should contain a `jinja_ext` directory where all extension files should be stored. Each extension should have its own python file. In the above example, `filters.py` file contains a single extension class, which may define many filters or custom tags. Supporting code should be created in the top-level module folder, outside the `jinja_ext` folder. This helps in keeping the extensions separate and in their discovery by trestle.
 
 ## Command Creation
 
@@ -61,3 +71,28 @@ There should be a command class for example, `ValidateCmd` which should either e
 The docstring of the command class is used as the help message for the command. Input arguments to the command should be specified in `_init_arguments` method as shown above. The acutal code of the command is contained in`_run` method. This method is called by ilcli when the command is excuted on the commandline. The command arguments can be accessed from the `args` input parameter as shown above. The command should return `0` in case of successful execution, or any number greater than 0 in case of failure. Please see `trestle.core.commands.common.return_codes.CmdReturnCodes` class for specific return codes in case of failure.
 
 The command class should conatin the `name` field which should be set to the desired command name. In the above example, the command is called `fedramp-validate`. This name is automatically added to the list of sub-command names of trestle during the plugin discovery process. This command can then be invoked as `trestle {name}` from the commandline e.g., `trestle fedramp-validate`. Any input parameters to the command can also be passed on the commandline after the command name.
+
+## Jinja Extension Creation
+
+The plugin extension should be created as shown in the below code snippet.
+
+```python
+from jinja2 import Environment
+from trestle.core.jinja.base import TrestleJinjaExtension
+
+def _mark_tktk(value: str) -> str:
+    """Mark a value with TKTK to easily find it for future revision."""
+    return f'TKTK {value} TKTK'
+
+
+class Filters(TrestleJinjaExtension):
+    def __init__(self, environment: Environment) -> None:
+        super(Filters, self).__init__(environment)
+
+        environment.filters['tktk'] = _mark_tktk
+
+```
+
+There should be an extension class, for example `Filters` that must extend from `TrestleJinjaExtension` or `jinja2.ext.Extention`. The `__init__` method must call init for its superclass. Beyond that, any behavior for standard [jinja2 custom extensions](https://jinja.palletsprojects.com/en/3.1.x/extensions/#module-jinja2.ext) is supported.
+
+Examples for implementing extensions can be found at `trestle/core/jinja/tags.py` and `trestle/core/jinja/filters.py`

@@ -62,6 +62,9 @@ jobs:
       continue-on-error: true
       run: |
         make code-typing
+    - name: Install documenation dependencies
+      run: |
+        make docs-ubuntu-deps
     - name: Validate website content (mkdocs)
       run: |
         make docs-validate
