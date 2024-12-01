@@ -26,7 +26,7 @@ from trestle.oscal.common import Property
 _segment_separator = '|'
 
 
-class PropertyAccounting():
+class PropertyAccounting:
     """Property accounting class.
 
     Help transformers do accounting.
