@@ -109,8 +109,8 @@ class ControlInterface:
 
     @staticmethod
     def _wrap_label(label: str):
-        l_side = '\['
-        r_side = '\]'
+        l_side = r'\['
+        r_side = r'\]'
         wrapped = '' if label == '' else f'{l_side}{label}{r_side}'
         return wrapped
 
@@ -591,6 +591,8 @@ class ControlInterface:
         New items are always added from src to dest.
         Items present in both will be overriden dest if overwrite_header_values is True.
         """
+        if src is None:
+            return
         for key in src.keys():
             if key in dest:
                 if depth and level == depth:

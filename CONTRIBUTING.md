@@ -28,9 +28,11 @@ pull request so it can be tracked.
 ### Merge approval
 
 The project maintainers use LGTM (Looks Good To Me) in comments on the code
-review to indicate acceptance. A change requires LGTMs from one of the maintainers.
+review to indicate acceptance.
 
-For a list of the maintainers, see the [maintainers](https://oscal-compass.github.io/compliance-trestle/maintainers/) page.
+A change requires LGTMs from at least two reviewers. One of the reviewers must be a [`CODEOWNER`](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners).
+
+For a list of the maintainers (also codeowners), see the [maintainers](https://oscal-compass.github.io/compliance-trestle/maintainers/) page.
 
 ### Trestle updating, testing and release logistics
 
@@ -61,7 +63,7 @@ In trestle's CI environment this results in the following rules:
 1. Trestle will release on demand the default approach for a hot fix should be to merge into `develop`, followed by releasing to `main`, unless this will release functionality that is not ready.
 1. Each feature/fix/chore (PR into develop) be represented by a single commit into develop / main with a coherent title (in the PR).
    1. The trestle preference for doing this is to use squash merge functionality when merging a PR into develop.
-1. Developers *MUST* pass the required CI checks for each PR.
+1. Developers *MUST* pass the required CI checks for each PR. The checks enforce code quality with a format checker (yapf) and linter (flake8).
 1. Developers are encouraged to use GitHub's automated merge process where possible to keep the number of active PR's low.
 
 ### Merge details for committers:
@@ -114,7 +116,7 @@ e.g.
 
 We have tried to make it as easy as possible to make contributions. This
 applies to how we handle the legal aspects of contribution. We use the
-same approach - the [Developer's Certificate of Origin 1.1 (DCO)](https://oscal-compass.github.io/compliance-trestle/contributing/DCO/) - that the Linux® Kernel [community](https://elinux.org/Developer_Certificate_Of_Origin)
+same approach - the [Developer's Certificate of Origin 1.1 (DCO)](https://oscal-compass.github.io/compliance-trestle/contributing/DCO/) - that the Linux® Kernel [community](https://developercertificate.org/)
 uses to manage code contributions.
 
 We simply ask that when submitting a patch for review, the developer

@@ -38,7 +38,7 @@ classifiers = [
 dependencies = [
     "attrs",
     "ilcli",
-    "cryptography==42.0.4",
+    "cryptography==43.0.3",
     "paramiko==3.4.0",
     "ruamel.yaml",
     "furl",
@@ -58,6 +58,10 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
+    "pytest>=5.4.3",
+    "pytest-cov>=2.10.0",
+    "pytest-xdist",
+
     "pre-commit>=2.4.0",
     "setuptools>=61",
     "urllib3==1.26.19",
@@ -73,17 +77,23 @@ dev = [
     "types-requests",
     "types-setuptools",
     # # Docs website
+    "mike",
     "mkdocs>=1.6.0",
+    "mkdocs-awesome-pages-plugin",
     "mkdocstrings[python]>=0.25.2",
     "mkdocs-htmlproofer-plugin",
     "mkdocs-material",
     "markdown-include",
+    "mkdocs-minify-plugin",
+    "mkdocs-git-revision-date-localized-plugin",
     "pymdown-extensions",
     "livereload",
+    "pillow",
+    "cairosvg",
     ## Constrain system
     "pylint",
     # Checking repo after docs generation.
-    "gitpython",
+    "gitpython"
 ]
 
 [project.urls]
