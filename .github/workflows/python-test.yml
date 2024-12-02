@@ -72,11 +72,14 @@ jobs:
       run: |
         make check-for-changes
     - name: Test mike script
+      # Only run this check on PRs to develop to check that the
+      # script produce the proper version of latest.
+      if: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.base.ref , 'develop') }}
       env:
-        REF: ${{ github.event.ref }}
+        REF: ${{ github.event.pull_request.base.ref }}
       run: |
         mike_version=$(python ./scripts/mike_version_parse.py "$REF")
-        [[ -z "$mike_version" ]] && echo "mike_version is empty" && exit 1 || echo "$mike_version"
+        [[ "$mike_version" == latest ]] && echo "mike_version should be latest" && exit 1 || echo "$mike_version"
 
 # This test simulates what it is like for a user to install trestle today.
 # Coverage cannot be calculated as part of
