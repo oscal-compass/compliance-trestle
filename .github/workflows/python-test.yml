@@ -71,6 +71,12 @@ jobs:
     - name: Check if dirty (mkdocs)
       run: |
         make check-for-changes
+    - name: Test mike script
+      env:
+        REF: ${{ github.event.ref }}
+      run: |
+        mike_version=$(python ./scripts/mike_version_parse.py "$REF")
+        [[ -z "$mike_version" ]] && echo "mike_version is empty" && exit 1 || echo "$mike_version"
 
 # This test simulates what it is like for a user to install trestle today.
 # Coverage cannot be calculated as part of
