@@ -180,6 +180,9 @@ class CisXlsxToOscalCd(TaskBase):
 
     def _get_tempdir(self) -> tempfile.TemporaryDirectory():
         """Get tmpdir."""
+        path = pathlib.Path('/tmp/foobar')
+        path.mkdir(parents=True, exist_ok=True)
+        return path
         return tempfile.TemporaryDirectory()
 
 
