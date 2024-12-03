@@ -26,7 +26,7 @@ jobs:
         echo "max=$max_version" >> $GITHUB_OUTPUT
   mike-version:
     runs-on: ubuntu-latest
-    needs: [ set-versions]
+    needs: [ set-versions ]
     outputs:
       mver: ${{ steps.versions.mver }}
     steps:
@@ -44,7 +44,7 @@ jobs:
         echo "mver=$mike_version" >> $GITHUB_OUTPUT
   deploy-docs:
     runs-on: ubuntu-latest
-    needs: [ mike-version ]
+    needs: [ mike-version, set-versions ]
     steps:
     - uses: actions/create-github-app-token@v1
       id: app-token
