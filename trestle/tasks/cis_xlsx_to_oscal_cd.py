@@ -174,10 +174,11 @@ class CisXlsxToOscalCd(TaskBase):
             csv_to_json_helper = CsvToJsonHelper(self.config_object, self._tmpdir)
             task_outcome = csv_to_json_helper.run()
             return task_outcome
-        # success!
+        # failure
+        logger.info(traceback.format_exc())
         return TaskOutcome('failure')
 
-    def _get_tempdir(self):
+    def _get_tempdir(self) -> tempfile.TemporaryDirectory():
         """Get tmpdir."""
         return tempfile.TemporaryDirectory()
 
@@ -300,7 +301,7 @@ class CombineHelper:
         self.ws_map = {}
         self.combined_map = {}
 
-    def run(self):
+    def run(self) -> None:
         """Run."""
         self._add_sheet_combined_profiles()
         self._save()
@@ -694,7 +695,7 @@ class XlsxToCsvHelper:
             rval = False
         return rval
 
-    def run(self):
+    def run(self) -> None:
         """Run."""
         self.csv_helper = CsvHelper(self.opath)
         self.non_rule_helper = NonRuleHelper(self.config_object, self)
