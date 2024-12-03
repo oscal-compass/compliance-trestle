@@ -38,7 +38,7 @@ jobs:
         python-version: ${{ needs.set-versions.outputs.max }}
     - id: versions
       run: |
-        mike_version=$(python ./scripts/check-version.py ${{ env.GITHUB_REF }})
+        mike_version=$(python ./scripts/mike_version_parse.py ${{ env.GITHUB_REF }})
         echo "mver=$mike_version" >> $GITHUB_OUTPUT
   deploy-docs:
     runs-on: ubuntu-latest
