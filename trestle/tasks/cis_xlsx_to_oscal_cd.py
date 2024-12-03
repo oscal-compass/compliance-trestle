@@ -163,15 +163,15 @@ class CisXlsxToOscalCd(TaskBase):
         if not overwrite and pathlib.Path(ofile).exists():
             logger.warning(f'output: {ofile} already exists')
             return TaskOutcome('failure')
-        with self._get_tempdir() as self._tmpdir:
+        with self._get_tempdir() as tmpdir:
             # step 1 - add combined sheet, if needed
-            combine_helper = CombineHelper(self.config_object, self._tmpdir)
+            combine_helper = CombineHelper(self.config_object, tmpdir)
             combine_helper.run()
             # step 2 - create trestle ready csv file from xlsx file
-            xlsx_to_csv_helper = XlsxToCsvHelper(self.config_object, self._tmpdir)
+            xlsx_to_csv_helper = XlsxToCsvHelper(self.config_object, tmpdir)
             xlsx_to_csv_helper.run()
             # step 3 - create OSCAL json file from csv file
-            csv_to_json_helper = CsvToJsonHelper(self.config_object, self._tmpdir)
+            csv_to_json_helper = CsvToJsonHelper(self.config_object, tmpdir)
             task_outcome = csv_to_json_helper.run()
             return task_outcome
         # failure
