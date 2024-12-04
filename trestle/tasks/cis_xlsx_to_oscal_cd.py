@@ -183,7 +183,6 @@ class CisXlsxToOscalCd(TaskBase):
         return tempfile.TemporaryDirectory()
 
 
-@staticmethod
 def compare(item1, item2):
     """Compare."""
     # get parts
