@@ -295,6 +295,8 @@ class ColHelper:
 class CombineHelper:
     """Combine helper."""
 
+    tgt_col_profile = 3
+
     def __init__(self, config: SectionProxy, tmpdir: str) -> None:
         """Initialize."""
         benchmark_file = config['benchmark-file']
@@ -309,24 +311,17 @@ class CombineHelper:
         self._add_sheet_combined_profiles()
         self._save()
 
-    def _add_sheet_combined_profiles(self) -> None:
-        """Add sheet combined profiles."""
-        # output sheet
-        self.sheetname_output = SheetHelper.get_sheetname()
-        exists = self.sheetname_output in self.wb.sheetnames
-        if exists:
-            logger.debug(f'output sheet {self.sheetname_output} exists.')
-            return
-        # input sheets
-        self.sheetnames_prefixes = SheetHelper.get_sheetname_prefixes()
-        # sheets
+    def _gather_sheets(self) -> None:
+        """Gather sheets."""
         for sn in self.wb.sheetnames:
             for pn in self.sheetnames_prefixes:
                 if sn.startswith(pn):
                     self.ws_map[sn] = SheetHelper(self.wb, sn)
                     logger.debug(f'input sheet {sn} to be combined.')
                     break
-        # validate
+
+    def _validate_columns_count(self) -> None:
+        """Validate columns count."""
         columns = -1
         for sn in self.ws_map.keys():
             sheet_helper = self.ws_map[sn]
@@ -334,12 +329,12 @@ class CombineHelper:
                 columns = sheet_helper.get_max_col()
             if columns != sheet_helper.get_max_col():
                 raise RuntimeError(f'{sn} unexpected columns count {sheet_helper.get_max_col()} for sheet {sn}')
-        # key columns mappings
+
+    def _populate_combined_map(self) -> int:
+        """Populate combined map."""
         src_col_section_no = ColHelper.get_section()
         src_col_recommendation_no = ColHelper.get_recommendation()
-        tgt_col_profile = 3
         rec_count_sheets = 0
-        rec_count_merged = 0
         # populate combined map
         for sn in self.ws_map.keys():
             sheet_helper = SheetHelper(self.wb, sn)
@@ -355,17 +350,16 @@ class CombineHelper:
                     self.combined_map[section_no][recommendation_no] = {}
                 # combine head or data
                 if row == 1:
-                    self._combine_head(sheet_helper, row, section_no, recommendation_no, tgt_col_profile)
+                    self._combine_head(sheet_helper, row, section_no, recommendation_no, CombineHelper.tgt_col_profile)
                 else:
-                    self._combine_data(sheet_helper, row, section_no, recommendation_no, tgt_col_profile)
+                    self._combine_data(sheet_helper, row, section_no, recommendation_no, CombineHelper.tgt_col_profile)
                     if recommendation_no:
                         rec_count_sheets += 1
-        # add combined sheet
-        sn = self.sheetname_output
-        self.wb.create_sheet(sn)
-        combined_helper = SheetHelper(self.wb, sn)
-        self.ws_map[sn] = combined_helper
-        # populate combined sheet
+        return rec_count_sheets
+
+    def _populate_combined_sheet(self, combined_helper: SheetHelper) -> int:
+        """Populate combined sheet."""
+        rec_count_merged = 0
         row = 1
         keys1 = list(self.combined_map.keys())
         keys1.sort(key=cmp_to_key(SortHelper.compare))
@@ -379,7 +373,7 @@ class CombineHelper:
                     # handle head row
                     for col in kvset.keys():
                         value = self.combined_map[section_no][recommendation_no][col]
-                        if col == tgt_col_profile:
+                        if col == CombineHelper.tgt_col_profile:
                             value = value[0]
                         combined_helper.put_cell_value(row, col, value)
                     row += 1
@@ -387,11 +381,11 @@ class CombineHelper:
                     # handle data row
                     if recommendation_no:
                         # handle data control row
-                        profiles = kvset[tgt_col_profile]
+                        profiles = kvset[CombineHelper.tgt_col_profile]
                         for profile in profiles:
                             for col in kvset.keys():
                                 value = self.combined_map[section_no][recommendation_no][col]
-                                if col == tgt_col_profile:
+                                if col == CombineHelper.tgt_col_profile:
                                     value = profile
                                 combined_helper.put_cell_value(row, col, value)
                             row += 1
@@ -400,10 +394,35 @@ class CombineHelper:
                         # handle data non-control row
                         for col in kvset.keys():
                             value = self.combined_map[section_no][recommendation_no][col]
-                            if col == tgt_col_profile:
+                            if col == CombineHelper.tgt_col_profile:
                                 value = None
                             combined_helper.put_cell_value(row, col, value)
                         row += 1
+        return rec_count_merged
+
+    def _add_sheet_combined_profiles(self) -> None:
+        """Add sheet combined profiles."""
+        # output sheet
+        self.sheetname_output = SheetHelper.get_sheetname()
+        exists = self.sheetname_output in self.wb.sheetnames
+        if exists:
+            logger.debug(f'output sheet {self.sheetname_output} exists.')
+            return
+        # input sheets
+        self.sheetnames_prefixes = SheetHelper.get_sheetname_prefixes()
+        # sheets
+        self._gather_sheets()
+        # validate
+        self._validate_columns_count()
+        # key columns mappings
+        rec_count_sheets = self._populate_combined_map()
+        # add combined sheet
+        sn = self.sheetname_output
+        self.wb.create_sheet(sn)
+        combined_helper = SheetHelper(self.wb, sn)
+        self.ws_map[sn] = combined_helper
+        # populate combined sheet
+        rec_count_merged = self._populate_combined_sheet(combined_helper)
         # correctness check
         if rec_count_sheets != rec_count_merged:
             raise RuntimeError(f'recommendation counts original: {rec_count_sheets} merged: {rec_count_merged}')
