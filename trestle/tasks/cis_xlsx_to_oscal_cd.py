@@ -183,44 +183,48 @@ class CisXlsxToOscalCd(TaskBase):
         return tempfile.TemporaryDirectory()
 
 
-def compare(item1, item2):
-    """Compare."""
-    # get parts
-    if item1 is None:
-        parts1 = ''.split('.')
-    else:
-        parts1 = str(item1).split('.')
-    if item2 is None:
-        parts2 = ''.split('.')
-    else:
-        parts2 = str(item2).split('.')
-    # normalize parts length
-    while len(parts1) < len(parts2):
-        parts1.append('0')
-    while len(parts2) < len(parts1):
-        parts2.append('0')
-    # comparison
-    rval = 0
-    for i in range(len(parts1)):
-        try:
-            v1 = int(parts1[i])
-        except Exception:
-            rval = -1
-            break
-        try:
-            v2 = int(parts2[i])
-        except Exception:
-            rval = 1
-            break
-        if v1 < v2:
-            rval = -1
-            break
-        if v1 > v2:
-            rval = 1
-            break
-    text = f'compare rval: {rval} item1: {item1} item2: {item2}'
-    logger.debug(f'{text}')
-    return rval
+class SortHelper:
+    """SortHelper."""
+
+    @staticmethod
+    def compare(item1, item2):
+        """Compare."""
+        # get parts
+        if item1 is None:
+            parts1 = ''.split('.')
+        else:
+            parts1 = str(item1).split('.')
+        if item2 is None:
+            parts2 = ''.split('.')
+        else:
+            parts2 = str(item2).split('.')
+        # normalize parts length
+        while len(parts1) < len(parts2):
+            parts1.append('0')
+        while len(parts2) < len(parts1):
+            parts2.append('0')
+        # comparison
+        rval = 0
+        for i in range(len(parts1)):
+            try:
+                v1 = int(parts1[i])
+            except Exception:
+                rval = -1
+                break
+            try:
+                v2 = int(parts2[i])
+            except Exception:
+                rval = 1
+                break
+            if v1 < v2:
+                rval = -1
+                break
+            if v1 > v2:
+                rval = 1
+                break
+        text = f'compare rval: {rval} item1: {item1} item2: {item2}'
+        logger.debug(f'{text}')
+        return rval
 
 
 class SheetHelper:
@@ -364,11 +368,11 @@ class CombineHelper:
         # populate combined sheet
         row = 1
         keys1 = list(self.combined_map.keys())
-        keys1.sort(key=cmp_to_key(compare))
+        keys1.sort(key=cmp_to_key(SortHelper.compare))
         for section_no in keys1:
             section = self.combined_map[section_no]
             keys2 = list(section.keys())
-            keys2.sort(key=cmp_to_key(compare))
+            keys2.sort(key=cmp_to_key(SortHelper.compare))
             for recommendation_no in keys2:
                 kvset = self.combined_map[section_no][recommendation_no]
                 if row == 1:
