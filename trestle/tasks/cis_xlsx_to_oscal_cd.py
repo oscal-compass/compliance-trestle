@@ -414,13 +414,7 @@ class CombineHelper:
             rec_count_merged.inc_value()
 
     def _handle_data_row_non_control(
-        self,
-        combined_helper: SheetHelper,
-        row: Int,
-        kvset: Dict,
-        section_no: str,
-        recommendation_no: str,
-        rec_count_merged: Int
+        self, combined_helper: SheetHelper, row: Int, kvset: Dict, section_no: str, recommendation_no: str
     ) -> None:
         """Handle data row non-control."""
         for col in kvset.keys():
@@ -443,9 +437,7 @@ class CombineHelper:
         if recommendation_no:
             self._handle_data_row_control(combined_helper, row, kvset, section_no, recommendation_no, rec_count_merged)
         else:
-            self._handle_data_row_non_control(
-                combined_helper, row, kvset, section_no, recommendation_no, rec_count_merged
-            )
+            self._handle_data_row_non_control(combined_helper, row, kvset, section_no, recommendation_no)
 
     def _populate_combined_sheet(self, combined_helper: SheetHelper) -> int:
         """Populate combined sheet."""
