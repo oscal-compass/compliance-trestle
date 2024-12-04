@@ -67,6 +67,20 @@ jobs:
     - name: Install documenation dependencies
       run: |
         make docs-ubuntu-deps
+    
+    - name: Get GitHub App User ID
+      id: get-user-id
+      run: echo "user-id=$(gh api "/users/${{ env.SLUG }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
+      env:
+        GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        SLUG: ${{ steps.app-token.outputs.app-slug }}
+    - name: Configure Git
+      run: |
+        git config --global user.name '${{ env.SLUG }}[bot]'
+        git config --global user.email '${{ env.ID }}+${{ env.SLUG }}[bot]@users.noreply.github.com'
+      env:
+        SLUG: ${{ steps.app-token.outputs.app-slug }}
+        ID: ${{ steps.get-user-id.outputs.user-id }}
     - name: Create release
       shell: bash
       run: |
