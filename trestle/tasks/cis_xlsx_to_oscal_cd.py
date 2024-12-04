@@ -295,6 +295,22 @@ class ColHelper:
         return 2
 
 
+class Int:
+    """Int."""
+
+    def __init__(self, value=0):
+        """Initialize."""
+        self.value = value
+
+    def inc_value(self) -> None:
+        """Increment."""
+        self.value += 1
+
+    def get_value(self) -> int:
+        """Get."""
+        return self.value
+
+
 class CombineHelper:
     """Combine helper."""
 
@@ -366,10 +382,51 @@ class CombineHelper:
                     rec_count += 1
         return rec_count
 
+    def _handle_head_row(
+        self, combined_helper: SheetHelper, row: Int, kvset: Dict, section_no: str, recommendation_no: str
+    ) -> None:
+        """Handle head row."""
+        for col in kvset.keys():
+            value = self.combined_map[section_no][recommendation_no][col]
+            if col == CombineHelper.tgt_col_profile:
+                value = value[0]
+            combined_helper.put_cell_value(row.get_value(), col, value)
+        row.inc_value()
+
+    def _handle_data_row(
+        self,
+        combined_helper: SheetHelper,
+        row: Int,
+        kvset: Dict,
+        section_no: str,
+        recommendation_no: str,
+        rec_count_merged: int
+    ) -> None:
+        """Handle data row."""
+        if recommendation_no:
+            # handle data control row
+            profiles = kvset[CombineHelper.tgt_col_profile]
+            for profile in profiles:
+                for col in kvset.keys():
+                    value = self.combined_map[section_no][recommendation_no][col]
+                    if col == CombineHelper.tgt_col_profile:
+                        value = profile
+                    combined_helper.put_cell_value(row.get_value(), col, value)
+                row.inc_value()
+                rec_count_merged.inc_value()
+        else:
+            # handle data non-control row
+            for col in kvset.keys():
+                value = self.combined_map[section_no][recommendation_no][col]
+                if col == CombineHelper.tgt_col_profile:
+                    value = None
+                combined_helper.put_cell_value(row.get_value(), col, value)
+            row.inc_value()
+
     def _populate_combined_sheet(self, combined_helper: SheetHelper) -> int:
         """Populate combined sheet."""
-        rec_count_merged = 0
-        row = 1
+        rec_count_merged = Int(0)
+        row = Int(1)
         keys1 = list(self.combined_map.keys())
         keys1.sort(key=cmp_to_key(SortHelper.compare))
         for section_no in keys1:
@@ -378,36 +435,11 @@ class CombineHelper:
             keys2.sort(key=cmp_to_key(SortHelper.compare))
             for recommendation_no in keys2:
                 kvset = self.combined_map[section_no][recommendation_no]
-                if row == 1:
-                    # handle head row
-                    for col in kvset.keys():
-                        value = self.combined_map[section_no][recommendation_no][col]
-                        if col == CombineHelper.tgt_col_profile:
-                            value = value[0]
-                        combined_helper.put_cell_value(row, col, value)
-                    row += 1
+                if row.get_value() == 1:
+                    self._handle_head_row(combined_helper, row, kvset, section_no, recommendation_no)
                 else:
-                    # handle data row
-                    if recommendation_no:
-                        # handle data control row
-                        profiles = kvset[CombineHelper.tgt_col_profile]
-                        for profile in profiles:
-                            for col in kvset.keys():
-                                value = self.combined_map[section_no][recommendation_no][col]
-                                if col == CombineHelper.tgt_col_profile:
-                                    value = profile
-                                combined_helper.put_cell_value(row, col, value)
-                            row += 1
-                            rec_count_merged += 1
-                    else:
-                        # handle data non-control row
-                        for col in kvset.keys():
-                            value = self.combined_map[section_no][recommendation_no][col]
-                            if col == CombineHelper.tgt_col_profile:
-                                value = None
-                            combined_helper.put_cell_value(row, col, value)
-                        row += 1
-        return rec_count_merged
+                    self._handle_data_row(combined_helper, row, kvset, section_no, recommendation_no, rec_count_merged)
+        return rec_count_merged.get_value()
 
     def _add_sheet_combined_profiles(self) -> None:
         """Add sheet combined profiles."""
