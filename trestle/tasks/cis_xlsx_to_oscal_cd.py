@@ -342,23 +342,29 @@ class CombineHelper:
         for sn in self.ws_map.keys():
             sheet_helper = SheetHelper(self.wb, sn)
             # process all rows from individual sheet
-            for row in sheet_helper.row_generator():
-                # section
-                section_no = sheet_helper.get_cell_value(row, src_col_section_no)
-                if section_no not in self.combined_map.keys():
-                    self.combined_map[section_no] = {}
-                # recommendation
-                recommendation_no = sheet_helper.get_cell_value(row, src_col_recommendation_no)
-                if recommendation_no not in self.combined_map[section_no].keys():
-                    self.combined_map[section_no][recommendation_no] = {}
-                # combine head or data
-                if row == 1:
-                    self._combine_head(sheet_helper, row, section_no, recommendation_no, CombineHelper.tgt_col_profile)
-                else:
-                    self._combine_data(sheet_helper, row, section_no, recommendation_no, CombineHelper.tgt_col_profile)
-                    if recommendation_no:
-                        rec_count_sheets += 1
+            rec_count_sheets += self._process_sheet(sheet_helper, src_col_section_no, src_col_recommendation_no)
         return rec_count_sheets
+
+    def _process_sheet(self, sheet_helper: SheetHelper, src_col_section_no: int, src_col_recommendation_no: int) -> int:
+        """Process sheet."""
+        rec_count = 0
+        for row in sheet_helper.row_generator():
+            # section
+            section_no = sheet_helper.get_cell_value(row, src_col_section_no)
+            if section_no not in self.combined_map.keys():
+                self.combined_map[section_no] = {}
+            # recommendation
+            recommendation_no = sheet_helper.get_cell_value(row, src_col_recommendation_no)
+            if recommendation_no not in self.combined_map[section_no].keys():
+                self.combined_map[section_no][recommendation_no] = {}
+            # combine head or data
+            if row == 1:
+                self._combine_head(sheet_helper, row, section_no, recommendation_no, CombineHelper.tgt_col_profile)
+            else:
+                self._combine_data(sheet_helper, row, section_no, recommendation_no, CombineHelper.tgt_col_profile)
+                if recommendation_no:
+                    rec_count += 1
+        return rec_count
 
     def _populate_combined_sheet(self, combined_helper: SheetHelper) -> int:
         """Populate combined sheet."""
