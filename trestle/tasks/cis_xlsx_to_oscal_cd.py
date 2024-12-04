@@ -752,8 +752,24 @@ class XlsxToCsvHelper:
             self.row_names.append(name)
             self.row_descs.append(name)
 
-    def additional_user_columns(self) -> None:
-        """Additional user columns."""
+    def _get_ctl_list(self, prev_row: int, curr_row: int) -> List[str]:
+        """Get_ctl_list."""
+        # if merged row, list is empty
+        if self.merge_row(prev_row, curr_row):
+            ctl_list = []
+        else:
+            # if non-rule row, list is empty
+            rec_no = self.get(curr_row, head_recommendation_no)
+            if rec_no is None:
+                ctl_list = []
+            else:
+                # get list
+                cis_controls = self.get(curr_row, 'CIS Controls')
+                cis_control_helper = CisControlsHelper(cis_controls)
+                ctl_list = cis_control_helper.get_ctl_list(
+                    self._benchmark_control_prefix, self.config_object['profile-version']
+                )
+        return ctl_list
 
     def run(self) -> None:
         """Run."""
@@ -775,20 +791,8 @@ class XlsxToCsvHelper:
         # process each data row of CIS Benchmark file
         prev_row = None
         for curr_row in self.row_generator():
-            # if merged row, continue
-            if self.merge_row(prev_row, curr_row):
-                continue
-            # account for non-rule row:
-            rec_no = self.get(curr_row, head_recommendation_no)
-            if rec_no is None:
-                continue
-            # skip if no controls found
-            cis_controls = self.get(curr_row, 'CIS Controls')
-            cis_control_helper = CisControlsHelper(cis_controls)
-            ctl_list = cis_control_helper.get_ctl_list(
-                self._benchmark_control_prefix, self.config_object['profile-version']
-            )
-            if not len(ctl_list):
+            ctl_list = self._get_ctl_list(prev_row, curr_row)
+            if not ctl_list:
                 continue
             # create new row
             self.csv_row_mgr = CsvRowMgr(self.row_names)
