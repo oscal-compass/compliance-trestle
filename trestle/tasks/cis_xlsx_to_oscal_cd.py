@@ -39,6 +39,9 @@ default_benchmark_control_prefix = 'cisc-'
 default_benchmark_rule_prefix = 'CIS-'
 output_file = 'component-definition.json'
 
+head_recommendation_no = 'Recommendation #'
+head_section_no = 'Section #'
+
 
 class CisXlsxToOscalCd(TaskBase):
     """
@@ -610,7 +613,7 @@ class XlsxToCsvHelper:
         self.ws = self.wb[SheetHelper.get_sheetname()]
         self._create_maps()
         # excluded columns
-        default_columns_exclude = ['"Recommendation #"', '"Profile"', '"Description"']
+        default_columns_exclude = [f'"{head_recommendation_no}"', '"Profile"', '"Description"']
         columns_exclude = self.config_object.get('columns-exclude')
         if columns_exclude:
             columns_exclude = columns_exclude.strip().split(',')
@@ -680,8 +683,8 @@ class XlsxToCsvHelper:
 
     def is_same_rule(self, row_a: int, row_b: str) -> str:
         """Is same rule."""
-        rule_a = self.get(row_a, 'Recommendation #')
-        rule_b = self.get(row_b, 'Recommendation #')
+        rule_a = self.get(row_a, head_recommendation_no)
+        rule_b = self.get(row_b, head_recommendation_no)
         rval = rule_a == rule_b
         logger.debug(f'{rval} {rule_a} {rule_b}')
         return rval
@@ -759,7 +762,7 @@ class XlsxToCsvHelper:
             if self.merge_row(prev_row, curr_row):
                 continue
             # account for non-rule row:
-            rec_no = self.get(curr_row, 'Recommendation #')
+            rec_no = self.get(curr_row, head_recommendation_no)
             if rec_no is None:
                 continue
             # skip if no controls found
@@ -779,7 +782,7 @@ class XlsxToCsvHelper:
             # col Component_Type
             self.csv_row_mgr.put('Component_Type', self.config_object['component-type'])
             # col Rule_ID
-            rec_no = self.get(curr_row, 'Recommendation #')
+            rec_no = self.get(curr_row, head_recommendation_no)
             rule_id = f'{self._benchmark_rule_prefix}{rec_no}'
             self.csv_row_mgr.put('Rule_Id', rule_id)
             # col Rule_Description
@@ -825,7 +828,7 @@ class NonRuleHelper:
         self.col_level = 'Level'
         self.config = config
         self.xlsx_helper = xlsx_helper
-        default_columns_carry_forward = ['Section #', 'Title', 'Description']
+        default_columns_carry_forward = [head_section_no, 'Title', 'Description']
         self.columns_carry_forward = self.config.get('columns-carry-forward', default_columns_carry_forward)
         self._init_col_list()
         self._init_sec_map()
@@ -837,10 +840,10 @@ class NonRuleHelper:
         if not self.columns_carry_forward:
             return
         for row in self.xlsx_helper.row_generator():
-            rec_no = self.xlsx_helper.get(row, 'Recommendation #')
+            rec_no = self.xlsx_helper.get(row, head_recommendation_no)
             if rec_no:
                 continue
-            sec_no = self.xlsx_helper.get(row, 'Section #')
+            sec_no = self.xlsx_helper.get(row, head_section_no)
             count = sec_no.count('.')
             if count > biggest:
                 biggest = count
@@ -856,12 +859,12 @@ class NonRuleHelper:
         if not self.columns_carry_forward:
             return
         for row in self.xlsx_helper.row_generator():
-            rec_no = self.xlsx_helper.get(row, 'Recommendation #')
+            rec_no = self.xlsx_helper.get(row, head_recommendation_no)
             if rec_no:
                 continue
-            sec_no = self.xlsx_helper.get(row, 'Section #')
+            sec_no = self.xlsx_helper.get(row, head_section_no)
             if sec_no in self.sec_map.keys():
-                raise RuntimeError(f'unexpected duplicate Section # {sec_no}')
+                raise RuntimeError(f'unexpected duplicate {head_section_no} {sec_no}')
             _map = {}
             for name in self.columns_carry_forward:
                 _map[name] = self.xlsx_helper.get(row, name)
