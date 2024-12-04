@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ set-versions ]
     outputs:
-      mver: ${{ steps.versions.mver }}
+      mver: ${{ steps.versions.outputs.mver }}
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python ${{ needs.set-versions.outputs.max }}
