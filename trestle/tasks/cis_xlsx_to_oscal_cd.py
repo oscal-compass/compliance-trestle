@@ -720,35 +720,46 @@ class XlsxToCsvHelper:
             rval = False
         return rval
 
-    def run(self) -> None:
-        """Run."""
-        self.csv_helper = CsvHelper(self.opath)
-        self.non_rule_helper = NonRuleHelper(self.config_object, self)
-        # heading row 1 - names
+    def heading_row_1(self) -> None:
+        """Heading row 1."""
         self.row_names = []
         for col_name in CsvHelper.columns().keys():
             name = PropertyHelper.normalize_name(col_name)
             self.row_names.append(name)
-        # heading row 2 - descriptions
-        row_descs = []
+
+    def heading_row_2(self) -> None:
+        """Heading row 2."""
+        self.row_descs = []
         for col_desc in CsvHelper.columns().values():
             desc = col_desc
-            row_descs.append(desc)
+            self.row_descs.append(desc)
         # additional user columns
         for col in self.get_all_columns():
             name = PropertyHelper.normalize_name(col)
             if self.is_excluded_column(col):
                 continue
             self.row_names.append(name)
-            row_descs.append(name)
+            self.row_descs.append(name)
         # additional non-rule columns
         for col in self.non_rule_helper.get_all_columns():
             name = PropertyHelper.normalize_name(col)
             self.row_names.append(name)
-            row_descs.append(name)
+            self.row_descs.append(name)
+
+    def additional_user_columns(self) -> None:
+        """Additional user columns."""
+
+    def run(self) -> None:
+        """Run."""
+        self.csv_helper = CsvHelper(self.opath)
+        self.non_rule_helper = NonRuleHelper(self.config_object, self)
+        # heading row 1 - names
+        self.heading_row_1()
+        # heading row 2 - descriptions
+        self.heading_row_2()
         # add heading rows
         self.csv_helper.add_row(self.row_names)
-        self.csv_helper.add_row(row_descs)
+        self.csv_helper.add_row(self.row_descs)
         # body
         user_columns = []
         for col in self.get_all_columns():
