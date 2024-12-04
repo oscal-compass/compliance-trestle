@@ -1577,9 +1577,12 @@ class _CsvMgr():
         """Initialize."""
         self._csv = []
         with open(csv_path, 'r', newline='') as f:
-            csv_reader = csv.reader(f, delimiter=',', quoting=csv.QUOTE_MINIMAL)
-            for row in csv_reader:
-                self._csv.append(row)
+            try:
+                csv_reader = csv.reader(f, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+                for row in csv_reader:
+                    self._csv.append(row)
+            except Exception:
+                raise RuntimeError(f'row: {row}')
         self._undecorate_header()
         self._verify()
         self._csv_rules_map = {}
