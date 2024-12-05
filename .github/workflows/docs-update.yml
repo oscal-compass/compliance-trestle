@@ -84,7 +84,7 @@ jobs:
     - name: Create release
       shell: bash
       run: |
-        mike deploy ${{ needs.mike-version.outputs.mver }}
+        mike deploy --push ${{ needs.mike-version.outputs.mver }}
     - name: Ensure latest is latest
       shell: bash
       run: | 
