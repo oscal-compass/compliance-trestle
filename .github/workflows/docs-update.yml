@@ -1,0 +1,91 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+name: Trestle Docs update
+on:
+  push:
+    branches:
+    - develop
+    tags:
+    - v*
+
+jobs:
+  set-versions:
+    runs-on: ubuntu-latest
+    outputs:
+      min: ${{ steps.versions.outputs.min }}
+      max: ${{ steps.versions.outputs.max }}
+    steps:
+    - uses: actions/checkout@v4
+    - id: versions
+      run: |
+        min_version=$(jq '.PYTHON_MIN' -r version.json)
+        max_version=$(jq '.PYTHON_MAX' -r version.json)
+        echo "min=$min_version" 
+        echo "max=$max_version"
+        echo "min=$min_version" >> $GITHUB_OUTPUT
+        echo "max=$max_version" >> $GITHUB_OUTPUT
+  mike-version:
+    runs-on: ubuntu-latest
+    needs: [ set-versions ]
+    outputs:
+      mver: ${{ steps.versions.outputs.mver }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python ${{ needs.set-versions.outputs.max }}
+      uses: actions/setup-python@v5
+      # This is deliberately not using a custom credential as it relies on native github actions token to have push rights.
+      with:
+        python-version: ${{ needs.set-versions.outputs.max }}
+    - id: versions
+      env:
+        REF: ${{ github.event.ref }}
+      run: |
+        mike_version=$(python ./scripts/mike_version_parse.py "$REF")
+        echo "mver=$mike_version" >> $GITHUB_OUTPUT
+  deploy-docs:
+    runs-on: ubuntu-latest
+    needs: [ mike-version, set-versions ]
+    steps:
+    - uses: actions/create-github-app-token@v1
+      id: app-token
+      with:
+        app-id: ${{ secrets.APP_ID }}
+        private-key: ${{ secrets.PRIVATE_KEY }}
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
+        fetch-depth: 0
+        token: ${{ steps.app-token.outputs.token }}
+    - name: Set up Python ${{ needs.set-versions.outputs.max }}
+      uses: actions/setup-python@v5
+      # This is deliberately not using a custom credential as it relies on native github actions token to have push rights.
+      with:
+        python-version: ${{ needs.set-versions.outputs.max }}
+    - name: Install build tools
+      run: |
+        make develop
+    - name: Install documenation dependencies
+      run: |
+        make docs-ubuntu-deps
+    
+    - name: Get GitHub App User ID
+      id: get-user-id
+      run: echo "user-id=$(gh api "/users/${{ env.SLUG }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
+      env:
+        GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        SLUG: ${{ steps.app-token.outputs.app-slug }}
+    - name: Configure Git
+      run: |
+        git config --global user.name '${{ env.SLUG }}[bot]'
+        git config --global user.email '${{ env.ID }}+${{ env.SLUG }}[bot]@users.noreply.github.com'
+      env:
+        SLUG: ${{ steps.app-token.outputs.app-slug }}
+        ID: ${{ steps.get-user-id.outputs.user-id }}
+    - name: Create release
+      shell: bash
+      run: |
+        mike deploy --push ${{ needs.mike-version.outputs.mver }}
+    - name: Ensure latest is latest
+      shell: bash
+      run: | 
+        mike set-default latest
