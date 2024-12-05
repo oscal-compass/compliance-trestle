@@ -69,3 +69,33 @@ def _validate_db2(tmp_path: pathlib.Path):
     component_definition = ComponentDefinition.oscal_read(file_path)
     # spot check
     assert len(component_definition.components) == 1
+    assert component_definition.metadata.title == 'CIS IBM Db2 11 Benchmark'
+    assert component_definition.metadata.version == '1.1.0'
+    component = component_definition.components[0]
+    assert component.type == 'software'
+    assert len(component.props) == 552
+    prop = component.props[0]
+    assert prop.name == 'Rule_Id'
+    assert prop.ns == 'https://oscal-compass/compliance-trestle/schemas/oscal/cd'
+    assert prop.value == 'CIS-1.1.1'
+    assert prop.remarks == 'rule_set_00'
+    assert len(component.control_implementations) == 1
+    prop = component.props[551]
+    assert prop.name == 'Group_Description_Level_1'
+    assert prop.ns == 'https://oscal-compass/compliance-trestle/schemas/oscal/cd'
+    assert prop.value.startswith('This section provides guidance on various database configuration parameters.')
+    assert prop.remarks == 'rule_set_22'
+    assert len(component.control_implementations) == 1
+    control_implementation = component.control_implementations[0]
+    assert len(control_implementation.implemented_requirements) == 6
+    assert control_implementation.source == 'catalogs/CIS_controls_v8/catalog.json'
+    assert control_implementation.description == 'CIS catalog v8'
+    implemented_requirement = control_implementation.implemented_requirements[0]
+    assert implemented_requirement.control_id == 'cisc-7.4'
+    assert len(implemented_requirement.props) == 1
+    prop = implemented_requirement.props[0]
+    assert prop.name == 'Rule_Id'
+    assert prop.ns == 'https://oscal-compass/compliance-trestle/schemas/oscal/cd'
+    assert prop.value == 'CIS-1.1.1'
+    implemented_requirement = control_implementation.implemented_requirements[5]
+    assert implemented_requirement.control_id == 'cisc-3.10'
