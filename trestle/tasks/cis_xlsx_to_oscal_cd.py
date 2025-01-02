@@ -27,6 +27,7 @@ from typing import Dict, Iterator, List, Optional
 from openpyxl import load_workbook
 from openpyxl.workbook.workbook import Workbook
 
+from trestle.common.str_utils import as_bool
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
 from trestle.tasks.csv_to_oscal_cd import CsvToOscalComponentDefinition
@@ -163,6 +164,7 @@ class CisXlsxToOscalCd(TaskBase):
         oname = 'component-definition.json'
         ofile = self._oscal_cd_path / oname
         overwrite = self.config_object.get('output-overwrite', self._default_output_overwrite)
+        overwrite = as_bool(overwrite)
         if not overwrite and pathlib.Path(ofile).exists():
             logger.warning(f'output: {ofile} already exists')
             return TaskOutcome('failure')

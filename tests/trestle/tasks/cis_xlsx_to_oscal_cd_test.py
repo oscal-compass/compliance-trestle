@@ -62,6 +62,27 @@ def test_cis_xlsx_to_oscal_cd_execute(tmp_path: pathlib.Path):
     _validate_db2(tmp_path)
 
 
+def test_cis_xlsx_to_oscal_cd_execute_bad_config(tmp_path: pathlib.Path):
+    """Test execute call - bad config."""
+    section = _get_section(tmp_path, db2_config)
+    del section['benchmark-file']
+    tgt = cis_xlsx_to_oscal_cd.CisXlsxToOscalCd(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.FAILURE
+
+
+def test_cis_xlsx_to_oscal_cd_execute_bad_overwrite(tmp_path: pathlib.Path):
+    """Test execute call - bad overwrite."""
+    section = _get_section(tmp_path, db2_config)
+    tgt = cis_xlsx_to_oscal_cd.CisXlsxToOscalCd(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    section['output-overwrite'] = 'false'
+    tgt = cis_xlsx_to_oscal_cd.CisXlsxToOscalCd(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.FAILURE
+
+
 def _validate_db2(tmp_path: pathlib.Path):
     """Validate produced OSCAL for db2 cd."""
     # read catalog
