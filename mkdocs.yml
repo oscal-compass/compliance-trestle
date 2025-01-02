@@ -1,5 +1,7 @@
 edit_uri: ''
 extra:
+  version:
+    provider: mike
   analytics:
     property: G-XT3KGMHSY8
     provider: google

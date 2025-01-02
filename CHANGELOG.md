@@ -1,5 +1,223 @@
 # CHANGELOG
 
+## v3.6.0 (2024-12-05)
+
+### Build
+
+* build(deps): bump cryptography from 42.0.4 to 43.0.3 (#1734)
+
+Bumps [cryptography](https://github.com/pyca/cryptography) from 42.0.4 to 43.0.3.
+- [Changelog](https://github.com/pyca/cryptography/blob/main/CHANGELOG.rst)
+- [Commits](https://github.com/pyca/cryptography/compare/42.0.4...43.0.3)
+
+---
+updated-dependencies:
+- dependency-name: cryptography
+  dependency-type: direct:production
+  update-type: version-update:semver-major
+...
+
+Signed-off-by: dependabot[bot] &lt;support@github.com&gt;
+Co-authored-by: dependabot[bot] &lt;49699333+dependabot[bot]@users.noreply.github.com&gt;
+Co-authored-by: Vikas Agarwal &lt;75295756+vikas-agarwal76@users.noreply.github.com&gt;
+Co-authored-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`3591851`](https://github.com/oscal-compass/compliance-trestle/commit/3591851a48e309199ca123fc122c614541fc2b42))
+
+### Chore
+
+* chore: add initial CODEOWNERS file (#1753)
+
+* chore: add initial CODEOWNERS file
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* docs: updates contributing guide with CODEOWNERS requirement
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* docs: remove relative link in contributing document
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+---------
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`65d7dce`](https://github.com/oscal-compass/compliance-trestle/commit/65d7dce9c4d0287dbe7611c0c19198cc3aadaacb))
+
+* chore: fix broken URL (#1741)
+
+Signed-off-by: Chris Butler &lt;chris.butler@redhat.com&gt; ([`67196db`](https://github.com/oscal-compass/compliance-trestle/commit/67196dbe8177f44803fee2d36d9f7cdee57cce1d))
+
+* chore(docs): restructuring of API documentation (#1711)
+
+Back end update to clean up documentation website
+
+Signed-off-by: Chris Butler &lt;chris.butler@redhat.com&gt; ([`17e9ae3`](https://github.com/oscal-compass/compliance-trestle/commit/17e9ae3c572622e10bd5f82ecbeecc77cd4ce2df))
+
+* chore: Merge back version tags and changelog into develop. ([`80d9a9f`](https://github.com/oscal-compass/compliance-trestle/commit/80d9a9ff227a29ab167b3b882169f43b88847dc7))
+
+### Ci
+
+* ci: fixes pipeline failures in docs (#1763)
+
+* docs: updates python semantic release link
+
+The existing link is no longer reachable and
+returns a 404
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* ci: updates github variable reference to use github.event.ref
+
+GITHUB_REF can&#39;t be used with the env context
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* fix: updates python test to only check the mike script on PRs
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* chore: removes the mike version check in python-test
+
+Testing locally would be simpler in this case.
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+---------
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`a1bc938`](https://github.com/oscal-compass/compliance-trestle/commit/a1bc938f263a0a67df9080336c08eedb3fbff8ee))
+
+### Feature
+
+* feat: decouple docs release and introduce versioning (#1752)
+
+* fix: decouple docs
+
+Signed-off-by: Chris Butler &lt;chris.butler@redhat.com&gt;
+
+* feat: add support for mike
+
+Signed-off-by: Chris Butler &lt;chris.butler@redhat.com&gt;
+
+---------
+
+Signed-off-by: Chris Butler &lt;chris.butler@redhat.com&gt; ([`0bd1b70`](https://github.com/oscal-compass/compliance-trestle/commit/0bd1b7006b93c976a2275bab1343a027679fde84))
+
+### Fix
+
+* fix: set user id for doco pipeline (#1769)
+
+* fix: set user id for doco pipeline
+
+Signed-off-by: Chris Butler &lt;chris.butler@redhat.com&gt;
+
+* fix: adds --push to mike deploy (#1773)
+
+Ensures changes are pushed to the gh-pages branch
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+---------
+
+Signed-off-by: Chris Butler &lt;chris.butler@redhat.com&gt;
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+Co-authored-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`6f51549`](https://github.com/oscal-compass/compliance-trestle/commit/6f5154931f366cd0eda27ed566df062c28878b30))
+
+* fix: adds outputs context to mike-version output (#1768)
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`9f4919b`](https://github.com/oscal-compass/compliance-trestle/commit/9f4919b81017018dbcdc714cf800ee6597e4ea26))
+
+* fix: Update setup.cfg to change author and email (#1767) ([`700aef4`](https://github.com/oscal-compass/compliance-trestle/commit/700aef4a8f88d8b9ed9f4934acb4d1fc72975f2e))
+
+* fix: needs are explicit (#1766)
+
+Signed-off-by: Chris Butler &lt;chris.butler@redhat.com&gt; ([`82aa27d`](https://github.com/oscal-compass/compliance-trestle/commit/82aa27d12aca3c34314842db364835d8fdc1a064))
+
+* fix: correct missing script (#1754)
+
+Signed-off-by: Chris Butler &lt;chris.butler@redhat.com&gt; ([`605c044`](https://github.com/oscal-compass/compliance-trestle/commit/605c04400f66ca9ac76787d3ffb8a934cf42f690))
+
+* fix: display openssf best practices badge (#1751)
+
+* fix: display openssf best practices badge
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* Move badge location as suggested in PR review
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* mdformat
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* add to docs/index.md
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+---------
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt; ([`4a7c123`](https://github.com/oscal-compass/compliance-trestle/commit/4a7c1235f0cdb0f199684eef0196c187b0380f14))
+
+* fix: merge control markdown with json (#1528) (#1740)
+
+* bug: add test for #1528
+
+Signed-off-by: d10n &lt;d10n@redhat.com&gt;
+
+* fix: merge control markdown with json (#1528)
+
+Function cleanup / unit tests to follow
+
+Signed-off-by: d10n &lt;d10n@redhat.com&gt;
+
+* Reuse existing merge_dicts_deep
+
+Signed-off-by: d10n &lt;d10n@redhat.com&gt;
+
+* Fix SyntaxWarning: invalid escape sequence &#39;\[&#39;
+
+Signed-off-by: d10n &lt;d10n@redhat.com&gt;
+
+* Fix lint errors
+
+Signed-off-by: d10n &lt;d10n@redhat.com&gt;
+
+---------
+
+Signed-off-by: d10n &lt;d10n@redhat.com&gt;
+Co-authored-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`9f1edcf`](https://github.com/oscal-compass/compliance-trestle/commit/9f1edcfbf2e286f4ac8d771272821db4de3fcbab))
+
+* fix: explain code quality checks in contribution guide (#1748)
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt; ([`7f18be2`](https://github.com/oscal-compass/compliance-trestle/commit/7f18be2dab14be9b86bebe225716e486372f5da1))
+
+* fix: add example csv for multiple rules and checks (#1745)
+
+* add example csv for multiple rules and checks
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* mdformat
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* fix csv and markdown text
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+---------
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt; ([`f06f091`](https://github.com/oscal-compass/compliance-trestle/commit/f06f0919b8b496a01bb9543af1133d038bc6e2c9))
+
+* fix: minimize website html during build (#1744)
+
+Signed-off-by: Chris Butler &lt;chris.butler@redhat.com&gt; ([`324121f`](https://github.com/oscal-compass/compliance-trestle/commit/324121f11f6673e6a0a2868b4dde66520529a0e6))
+
+### Unknown
+
+* Merge pull request #1774 from oscal-compass/develop
+
+chore: trestle release ([`32bc1c9`](https://github.com/oscal-compass/compliance-trestle/commit/32bc1c9d2222d4bf153cb1e8aaaaaca14bd6d7c1))
+
 ## v3.5.0 (2024-10-23)
 
 ### Build
