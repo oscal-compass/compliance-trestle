@@ -179,9 +179,6 @@ class CisXlsxToOscalCd(TaskBase):
             csv_to_json_helper = CsvToJsonHelper(self.config_object, tmpdir)
             task_outcome = csv_to_json_helper.run()
             return task_outcome
-        # failure
-        logger.info(traceback.format_exc())
-        return TaskOutcome('failure')
 
     def _get_tempdir(self) -> tempfile.TemporaryDirectory():
         """Get tmpdir."""
@@ -195,13 +192,11 @@ class SortHelper:
     def compare(item1, item2):
         """Compare."""
         # get parts
-        if item1 is None:
-            parts1 = ''.split('.')
-        else:
+        parts1 = ''.split('.')
+        if item1 is not None:
             parts1 = str(item1).split('.')
-        if item2 is None:
-            parts2 = ''.split('.')
-        else:
+        parts2 = ''.split('.')
+        if item2 is not None:
             parts2 = str(item2).split('.')
         # normalize parts length
         while len(parts1) < len(parts2):
@@ -248,10 +243,6 @@ class SheetHelper:
     def get_max_col(self) -> int:
         """Get max column."""
         return self.ws.max_column
-
-    def get_max_row(self) -> int:
-        """Get max row."""
-        return self.ws.max_row
 
     def row_generator(self) -> Iterator[int]:
         """Generate rows until max reached."""
@@ -613,15 +604,13 @@ class CisControlsHelper:
 
     def ctl_generator(self) -> Iterator[Dict]:
         """Generate ctls until finished."""
-        if self.cis_controls:
-            parts = self.cis_controls.split(';TITLE:')
-            # restore TITLE:
-            for n in range(len(parts)):
-                parts[n] = f'TITLE:{parts[n]}'
-            # process triples TITLE, CONTROL, DESCRIPTION
-            for part in parts:
-                if not part:
-                    continue
+        parts = self.cis_controls.split(';TITLE:')
+        # restore TITLE:
+        for n in range(len(parts)):
+            parts[n] = f'TITLE:{parts[n]}'
+        # process triples TITLE, CONTROL, DESCRIPTION
+        for part in parts:
+            if part:
                 s1 = part.split('DESCRIPTION:')
                 description = s1[1].strip()
                 s2 = s1[0].split('CONTROL:')
@@ -641,16 +630,17 @@ class CisControlsHelper:
     def get_ctl_list(self, ctl_pfx: str, profile_version: List[str]) -> List[str]:
         """Get control list."""
         ctl_list = []
-        for ctl in self.ctl_generator():
-            if ctl['control-version'] not in profile_version:
-                continue
-            ctl_id = ctl['control-id']
-            try:
-                float(ctl_id)
-            except Exception:
-                text = f'missing or invalid control-id: "{ctl_id}"'
-                raise RuntimeError(text)
-            ctl_list.append(f'{ctl_pfx}{ctl_id}')
+        if self.cis_controls:
+            for ctl in self.ctl_generator():
+                if ctl['control-version'] not in profile_version:
+                    continue
+                ctl_id = ctl['control-id']
+                try:
+                    float(ctl_id)
+                except Exception:
+                    text = f'missing or invalid control-id: "{ctl_id}"'
+                    raise RuntimeError(text)
+                ctl_list.append(f'{ctl_pfx}{ctl_id}')
         return ctl_list
 
 

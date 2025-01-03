@@ -134,6 +134,14 @@ def test_cis_xlsx_to_oscal_cd_execute_columns_exclude(tmp_path: pathlib.Path):
     _validate_db2(tmp_path)
 
 
+def test_cis_xlsx_to_oscal_cd_execute_config_missing(tmp_path: pathlib.Path):
+    """Test execute call - config_missing."""
+    section = None
+    tgt = cis_xlsx_to_oscal_cd.CisXlsxToOscalCd(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.FAILURE
+
+
 def _validate_db2(tmp_path: pathlib.Path):
     """Validate produced OSCAL for db2 cd."""
     # read catalog
