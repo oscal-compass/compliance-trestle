@@ -94,6 +94,26 @@ def test_cis_xlsx_to_oscal_cd_execute_merge(tmp_path: pathlib.Path):
     _validate_db2(tmp_path)
 
 
+def test_cis_xlsx_to_oscal_cd_execute_rule_prefix(tmp_path: pathlib.Path):
+    """Test execute call - rule prefix."""
+    section = _get_section(tmp_path, db2_config)
+    section['benchmark-rule-prefix'] = 'CIS'
+    tgt = cis_xlsx_to_oscal_cd.CisXlsxToOscalCd(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    _validate_db2(tmp_path)
+
+
+def test_cis_xlsx_to_oscal_cd_execute_control_prefix(tmp_path: pathlib.Path):
+    """Test execute call - control prefix."""
+    section = _get_section(tmp_path, db2_config)
+    section['benchmark-control-prefix'] = 'cisc'
+    tgt = cis_xlsx_to_oscal_cd.CisXlsxToOscalCd(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    _validate_db2(tmp_path)
+
+
 def _validate_db2(tmp_path: pathlib.Path):
     """Validate produced OSCAL for db2 cd."""
     # read catalog
