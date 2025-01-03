@@ -114,6 +114,26 @@ def test_cis_xlsx_to_oscal_cd_execute_control_prefix(tmp_path: pathlib.Path):
     _validate_db2(tmp_path)
 
 
+def test_cis_xlsx_to_oscal_cd_execute_control_bad(tmp_path: pathlib.Path):
+    """Test execute call - control bad."""
+    section = _get_section(tmp_path, db2_config)
+    section['benchmark-file'
+            ] = 'tests/data/tasks/cis-xlsx-to-oscal-cd/CIS_IBM_Db2_11_Benchmark_v1.1.0.snippet_bad_control.xlsx'
+    tgt = cis_xlsx_to_oscal_cd.CisXlsxToOscalCd(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.FAILURE
+
+
+def test_cis_xlsx_to_oscal_cd_execute_columns_exclude(tmp_path: pathlib.Path):
+    """Test execute call - control prefix."""
+    section = _get_section(tmp_path, db2_config)
+    section['columns-exclude'] = '"Recommendation #", "Profile", "Description"'
+    tgt = cis_xlsx_to_oscal_cd.CisXlsxToOscalCd(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    _validate_db2(tmp_path)
+
+
 def _validate_db2(tmp_path: pathlib.Path):
     """Validate produced OSCAL for db2 cd."""
     # read catalog

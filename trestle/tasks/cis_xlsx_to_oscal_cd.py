@@ -645,10 +645,11 @@ class CisControlsHelper:
             if ctl['control-version'] not in profile_version:
                 continue
             ctl_id = ctl['control-id']
-            if not ctl_id:
-                continue
-            if not float(ctl_id):
-                continue
+            try:
+                float(ctl_id)
+            except Exception:
+                text = f'missing or invalid control-id: "{ctl_id}"'
+                raise RuntimeError(text)
             ctl_list.append(f'{ctl_pfx}{ctl_id}')
         return ctl_list
 
