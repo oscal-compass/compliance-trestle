@@ -83,6 +83,17 @@ def test_cis_xlsx_to_oscal_cd_execute_bad_overwrite(tmp_path: pathlib.Path):
     assert retval == TaskOutcome.FAILURE
 
 
+def test_cis_xlsx_to_oscal_cd_execute_merge(tmp_path: pathlib.Path):
+    """Test execute call - merge."""
+    section = _get_section(tmp_path, db2_config)
+    section['benchmark-file'
+            ] = 'tests/data/tasks/cis-xlsx-to-oscal-cd/CIS_IBM_Db2_11_Benchmark_v1.1.0.snippet_merge.xlsx'
+    tgt = cis_xlsx_to_oscal_cd.CisXlsxToOscalCd(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    _validate_db2(tmp_path)
+
+
 def _validate_db2(tmp_path: pathlib.Path):
     """Validate produced OSCAL for db2 cd."""
     # read catalog

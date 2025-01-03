@@ -804,15 +804,12 @@ class XlsxToCsvHelper:
 
     def _get_ctl_list(self, prev_row: int, curr_row: int) -> List[str]:
         """Get_ctl_list."""
+        ctl_list = []
         # if merged row, list is empty
-        if self.merge_row(prev_row, curr_row):
-            ctl_list = []
-        else:
+        if not self.merge_row(prev_row, curr_row):
             # if non-rule row, list is empty
             rec_no = self.get(curr_row, head_recommendation_no)
-            if rec_no is None:
-                ctl_list = []
-            else:
+            if rec_no is not None:
                 # get list
                 cis_controls = self.get(curr_row, 'CIS Controls')
                 cis_control_helper = CisControlsHelper(cis_controls)
