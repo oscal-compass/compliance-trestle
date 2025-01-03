@@ -901,15 +901,15 @@ class NonRuleHelper:
         self.xlsx_helper = xlsx_helper
         default_columns_carry_forward = [head_section_no, 'Title', 'Description']
         self.columns_carry_forward = self.config.get('columns-carry-forward', default_columns_carry_forward)
-        self._init_col_list()
-        self._init_sec_map()
+        self.col_list = []
+        self.sec_map = {}
+        if self.columns_carry_forward:
+            self._init_col_list()
+            self._init_sec_map()
 
     def _init_col_list(self) -> None:
         """Init col list."""
-        self.col_list = []
         biggest = -1
-        if not self.columns_carry_forward:
-            return
         for row in self.xlsx_helper.row_generator():
             rec_no = self.xlsx_helper.get(row, head_recommendation_no)
             if rec_no:
@@ -926,16 +926,11 @@ class NonRuleHelper:
 
     def _init_sec_map(self) -> None:
         """Init sec map."""
-        self.sec_map = {}
-        if not self.columns_carry_forward:
-            return
         for row in self.xlsx_helper.row_generator():
             rec_no = self.xlsx_helper.get(row, head_recommendation_no)
             if rec_no:
                 continue
             sec_no = self.xlsx_helper.get(row, head_section_no)
-            if sec_no in self.sec_map.keys():
-                raise RuntimeError(f'unexpected duplicate {head_section_no} {sec_no}')
             _map = {}
             for name in self.columns_carry_forward:
                 _map[name] = self.xlsx_helper.get(row, name)
