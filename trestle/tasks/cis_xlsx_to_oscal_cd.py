@@ -189,7 +189,7 @@ class SortHelper:
     """SortHelper."""
 
     @staticmethod
-    def compare(item1, item2):
+    def compare(item1: str, item2: str) -> int:
         """Compare."""
         # get parts
         parts1 = ''.split('.')

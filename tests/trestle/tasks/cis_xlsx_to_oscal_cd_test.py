@@ -36,6 +36,18 @@ def _get_section(tmp_path: pathlib.Path, file_: str) -> Dict:
     return section
 
 
+def test_cis_xlsx_to_oscal_cd_compare(tmp_path: pathlib.Path):
+    """Test compare."""
+    x = cis_xlsx_to_oscal_cd.SortHelper.compare('A', 'B')
+    assert x == -1
+    x = cis_xlsx_to_oscal_cd.SortHelper.compare('0.0', '1.0')
+    assert x == -1
+    x = cis_xlsx_to_oscal_cd.SortHelper.compare('1.0', '0.0')
+    assert x == 1
+    x = cis_xlsx_to_oscal_cd.SortHelper.compare('1.1', '1.1')
+    assert x == 0
+
+
 def test_cis_xlsx_to_oscal_cd_print_info(tmp_path: pathlib.Path):
     """Test print_info call."""
     section = _get_section(tmp_path, db2_config)
