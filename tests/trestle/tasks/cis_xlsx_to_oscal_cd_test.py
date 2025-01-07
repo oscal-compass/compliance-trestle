@@ -18,6 +18,7 @@ import configparser
 import os
 import pathlib
 from typing import Dict
+from unittest.mock import patch
 
 import trestle.tasks.cis_xlsx_to_oscal_cd as cis_xlsx_to_oscal_cd
 from trestle.oscal.component import ComponentDefinition
@@ -86,7 +87,7 @@ def test_cis_xlsx_to_oscal_cd_execute_combined(tmp_path: pathlib.Path):
 
 
 def test_cis_xlsx_to_oscal_cd_execute_missing_column(tmp_path: pathlib.Path):
-    """Test execute call - db2."""
+    """Test execute call - missing column."""
     section = _get_section(tmp_path, db2_config)
     section['benchmark-file'
             ] = 'tests/data/tasks/cis-xlsx-to-oscal-cd/CIS_IBM_Db2_11_Benchmark_v1.1.0.snippet_missing_column.xlsx'
@@ -173,6 +174,16 @@ def test_cis_xlsx_to_oscal_cd_execute_config_missing(tmp_path: pathlib.Path):
     tgt = cis_xlsx_to_oscal_cd.CisXlsxToOscalCd(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
+
+
+def test_cis_xlsx_to_oscal_cd_execute_count_mismatch(tmp_path: pathlib.Path):
+    """Test execute call - count mismatch."""
+    with patch('trestle.tasks.cis_xlsx_to_oscal_cd.CombineHelper._populate_combined_map') as mock_original_function:
+        mock_original_function.return_value = -5
+        section = _get_section(tmp_path, db2_config)
+        tgt = cis_xlsx_to_oscal_cd.CisXlsxToOscalCd(section)
+        retval = tgt.execute()
+        assert retval == TaskOutcome.FAILURE
 
 
 def _validate_db2(tmp_path: pathlib.Path):
