@@ -186,6 +186,24 @@ def test_cis_xlsx_to_oscal_cd_execute_count_mismatch(tmp_path: pathlib.Path):
         assert retval == TaskOutcome.FAILURE
 
 
+def test_cis_xlsx_to_oscal_cd_execute_csv_row_mgr(tmp_path: pathlib.Path):
+    """Test execute call - csv row mgr."""
+    row_names = ['row1', 'row2', 'row3']
+    # create new row mgr
+    csv_row_mgr = cis_xlsx_to_oscal_cd.CsvRowMgr(row_names)
+    # test valid case
+    try:
+        csv_row_mgr.put('row1', '')
+    except RuntimeError:
+        assert 0 == 1
+    # test invalid case
+    try:
+        csv_row_mgr.put('rowX', '')
+        assert 0 == 1
+    except RuntimeError:
+        pass
+
+
 def _validate_db2(tmp_path: pathlib.Path):
     """Validate produced OSCAL for db2 cd."""
     # read catalog
