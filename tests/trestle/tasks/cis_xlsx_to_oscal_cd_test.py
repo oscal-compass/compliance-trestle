@@ -85,6 +85,16 @@ def test_cis_xlsx_to_oscal_cd_execute_combined(tmp_path: pathlib.Path):
     _validate_db2(tmp_path)
 
 
+def test_cis_xlsx_to_oscal_cd_execute_missing_column(tmp_path: pathlib.Path):
+    """Test execute call - db2."""
+    section = _get_section(tmp_path, db2_config)
+    section['benchmark-file'
+            ] = 'tests/data/tasks/cis-xlsx-to-oscal-cd/CIS_IBM_Db2_11_Benchmark_v1.1.0.snippet_missing_column.xlsx'
+    tgt = cis_xlsx_to_oscal_cd.CisXlsxToOscalCd(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.FAILURE
+
+
 def test_cis_xlsx_to_oscal_cd_execute_bad_config(tmp_path: pathlib.Path):
     """Test execute call - bad config."""
     section = _get_section(tmp_path, db2_config)
