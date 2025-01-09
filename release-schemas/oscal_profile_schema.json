@@ -1,18 +1,18 @@
 
  { "$schema" : "http://json-schema.org/draft-07/schema#",
-  "$id" : "http://csrc.nist.gov/ns/oscal/1.1.2/oscal-profile-schema.json",
+  "$id" : "http://csrc.nist.gov/ns/oscal/1.1.3/oscal-profile-schema.json",
   "$comment" : "OSCAL Profile Model: JSON Schema",
   "type" : "object",
   "definitions" : 
   { "json-schema-directive" : 
    { "title" : "Schema Directive",
     "description" : "A JSON Schema directive to bind a specific schema to its document instance.",
-    "$id" : "#json-schema-directive",
+    "$id" : "#/definitions/json-schema-directive",
     "$ref" : "#/definitions/URIReferenceDatatype" },
    "oscal-profile-oscal-profile:profile" : 
    { "title" : "Profile",
     "description" : "Each OSCAL profile is defined by a profile element.",
-    "$id" : "#assembly_oscal-profile_profile",
+    "$id" : "#/definitions/oscal-profile-oscal-profile:profile",
     "type" : "object",
     "properties" : 
     { "uuid" : 
@@ -20,18 +20,18 @@
       "description" : "Provides a globally unique means to identify a given profile instance.",
       "$ref" : "#/definitions/UUIDDatatype" },
      "metadata" : 
-     { "$ref" : "#assembly_oscal-metadata_metadata" },
+     { "$ref" : "#/definitions/oscal-profile-oscal-metadata:metadata" },
      "imports" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-profile_import" } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-profile:import" } },
      "merge" : 
-     { "$ref" : "#assembly_oscal-profile_merge" },
+     { "$ref" : "#/definitions/oscal-profile-oscal-profile:merge" },
      "modify" : 
-     { "$ref" : "#assembly_oscal-profile_modify" },
+     { "$ref" : "#/definitions/oscal-profile-oscal-profile:modify" },
      "back-matter" : 
-     { "$ref" : "#assembly_oscal-metadata_back-matter" } },
+     { "$ref" : "#/definitions/oscal-profile-oscal-metadata:back-matter" } },
     "required" : 
     [ "uuid",
      "metadata",
@@ -40,7 +40,7 @@
    "oscal-profile-oscal-profile:import" : 
    { "title" : "Import Resource",
     "description" : "Designates a referenced source catalog or profile that provides a source of control information for use in creating a new overlay or baseline.",
-    "$id" : "#assembly_oscal-profile_import",
+    "$id" : "#/definitions/oscal-profile-oscal-profile:import",
     "type" : "object",
     "properties" : 
     { "href" : 
@@ -48,24 +48,24 @@
       "description" : "A resolvable URL reference to the base catalog or profile that this profile is tailoring.",
       "$ref" : "#/definitions/URIReferenceDatatype" },
      "include-all" : 
-     { "$ref" : "#assembly_oscal-control-common_include-all" },
+     { "$ref" : "#/definitions/oscal-profile-oscal-control-common:include-all" },
      "include-controls" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-profile_select-control-by-id" } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-profile:select-control-by-id" } },
      "exclude-controls" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-profile_select-control-by-id" } } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-profile:select-control-by-id" } } },
     "required" : 
     [ "href" ],
     "additionalProperties" : false },
    "oscal-profile-oscal-profile:merge" : 
    { "title" : "Merge Controls",
     "description" : "Provides structuring directives that instruct how controls are organized after profile resolution.",
-    "$id" : "#assembly_oscal-profile_merge",
+    "$id" : "#/definitions/oscal-profile-oscal-profile:merge",
     "type" : "object",
     "properties" : 
     { "combine" : 
@@ -103,18 +103,18 @@
        { "type" : "array",
         "minItems" : 1,
         "items" : 
-        { "$ref" : "#assembly_oscal-profile_group" } },
+        { "$ref" : "#/definitions/oscal-profile-oscal-profile:group" } },
        "insert-controls" : 
        { "type" : "array",
         "minItems" : 1,
         "items" : 
-        { "$ref" : "#assembly_oscal-profile_insert-controls" } } },
+        { "$ref" : "#/definitions/oscal-profile-oscal-profile:insert-controls" } } },
       "additionalProperties" : false } },
     "additionalProperties" : false },
    "oscal-profile-oscal-profile:group" : 
    { "title" : "Control Group",
     "description" : "A group of (selected) controls or of groups of controls.",
-    "$id" : "#assembly_oscal-profile_group",
+    "$id" : "#/definitions/oscal-profile-oscal-profile:group",
     "type" : "object",
     "properties" : 
     { "id" : 
@@ -133,39 +133,39 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-control-common_parameter" } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-control-common:parameter" } },
      "props" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_property" } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-metadata:property" } },
      "links" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_link" } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-metadata:link" } },
      "parts" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-control-common_part" } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-control-common:part" } },
      "groups" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-profile_group" } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-profile:group" } },
      "insert-controls" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-profile_insert-controls" } } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-profile:insert-controls" } } },
     "required" : 
     [ "title" ],
     "additionalProperties" : false },
    "oscal-profile-oscal-profile:modify" : 
    { "title" : "Modify Controls",
     "description" : "Set parameters or amend controls in resolution.",
-    "$id" : "#assembly_oscal-profile_modify",
+    "$id" : "#/definitions/oscal-profile-oscal-profile:modify",
     "type" : "object",
     "properties" : 
     { "set-parameters" : 
@@ -192,12 +192,12 @@
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_property" } },
+         { "$ref" : "#/definitions/oscal-profile-oscal-metadata:property" } },
         "links" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_link" } },
+         { "$ref" : "#/definitions/oscal-profile-oscal-metadata:link" } },
         "label" : 
         { "title" : "Parameter Label",
          "description" : "A short, placeholder name for the parameter, which can be used as a substitute for a value if no value is assigned.",
@@ -210,19 +210,19 @@
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-control-common_parameter-constraint" } },
+         { "$ref" : "#/definitions/oscal-profile-oscal-control-common:parameter-constraint" } },
         "guidelines" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-control-common_parameter-guideline" } },
+         { "$ref" : "#/definitions/oscal-profile-oscal-control-common:parameter-guideline" } },
         "values" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#field_oscal-control-common_parameter-value" } },
+         { "$ref" : "#/definitions/oscal-profile-oscal-control-common:parameter-value" } },
         "select" : 
-        { "$ref" : "#assembly_oscal-control-common_parameter-selection" } },
+        { "$ref" : "#/definitions/oscal-profile-oscal-control-common:parameter-selection" } },
        "required" : 
        [ "param-id" ],
        "additionalProperties" : false } },
@@ -309,22 +309,22 @@
            { "type" : "array",
             "minItems" : 1,
             "items" : 
-            { "$ref" : "#assembly_oscal-control-common_parameter" } },
+            { "$ref" : "#/definitions/oscal-profile-oscal-control-common:parameter" } },
            "props" : 
            { "type" : "array",
             "minItems" : 1,
             "items" : 
-            { "$ref" : "#assembly_oscal-metadata_property" } },
+            { "$ref" : "#/definitions/oscal-profile-oscal-metadata:property" } },
            "links" : 
            { "type" : "array",
             "minItems" : 1,
             "items" : 
-            { "$ref" : "#assembly_oscal-metadata_link" } },
+            { "$ref" : "#/definitions/oscal-profile-oscal-metadata:link" } },
            "parts" : 
            { "type" : "array",
             "minItems" : 1,
             "items" : 
-            { "$ref" : "#assembly_oscal-control-common_part" } } },
+            { "$ref" : "#/definitions/oscal-profile-oscal-control-common:part" } } },
           "additionalProperties" : false } } },
        "required" : 
        [ "control-id" ],
@@ -333,7 +333,7 @@
    "oscal-profile-oscal-profile:insert-controls" : 
    { "title" : "Insert Controls",
     "description" : "Specifies which controls to use in the containing context.",
-    "$id" : "#assembly_oscal-profile_insert-controls",
+    "$id" : "#/definitions/oscal-profile-oscal-profile:insert-controls",
     "type" : "object",
     "properties" : 
     { "order" : 
@@ -348,22 +348,22 @@
          "ascending",
          "descending" ] } ] },
      "include-all" : 
-     { "$ref" : "#assembly_oscal-control-common_include-all" },
+     { "$ref" : "#/definitions/oscal-profile-oscal-control-common:include-all" },
      "include-controls" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-profile_select-control-by-id" } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-profile:select-control-by-id" } },
      "exclude-controls" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-profile_select-control-by-id" } } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-profile:select-control-by-id" } } },
     "additionalProperties" : false },
    "oscal-profile-oscal-profile:select-control-by-id" : 
    { "title" : "Select Control",
     "description" : "Select a control or controls from an imported control set.",
-    "$id" : "#assembly_oscal-profile_select-control-by-id",
+    "$id" : "#/definitions/oscal-profile-oscal-profile:select-control-by-id",
     "type" : "object",
     "properties" : 
     { "with-child-controls" : 
@@ -380,22 +380,22 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#field_oscal-profile_with-id" } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-profile:with-id" } },
      "matching" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-profile_matching" } } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-profile:matching" } } },
     "additionalProperties" : false },
    "oscal-profile-oscal-profile:with-id" : 
    { "title" : "Match Controls by Identifier",
     "description" : "Selecting a control by its ID given as a literal.",
-    "$id" : "#field_oscal-profile_with-id",
+    "$id" : "#/definitions/oscal-profile-oscal-profile:with-id",
     "$ref" : "#/definitions/TokenDatatype" },
    "oscal-profile-oscal-profile:matching" : 
    { "title" : "Match Controls by Pattern",
     "description" : "Selecting a set of controls by matching their IDs with a wildcard pattern.",
-    "$id" : "#assembly_oscal-profile_matching",
+    "$id" : "#/definitions/oscal-profile-oscal-profile:matching",
     "type" : "object",
     "properties" : 
     { "pattern" : 
@@ -406,7 +406,7 @@
    "oscal-profile-oscal-metadata:metadata" : 
    { "title" : "Document Metadata",
     "description" : "Provides information about the containing document, and defines concepts that are shared across the document.",
-    "$id" : "#assembly_oscal-metadata_metadata",
+    "$id" : "#/definitions/oscal-profile-oscal-metadata:metadata",
     "type" : "object",
     "properties" : 
     { "title" : 
@@ -414,13 +414,13 @@
       "description" : "A name given to the document, which may be used by a tool for display and navigation.",
       "type" : "string" },
      "published" : 
-     { "$ref" : "#field_oscal-metadata_published" },
+     { "$ref" : "#/definitions/oscal-profile-oscal-metadata:published" },
      "last-modified" : 
-     { "$ref" : "#field_oscal-metadata_last-modified" },
+     { "$ref" : "#/definitions/oscal-profile-oscal-metadata:last-modified" },
      "version" : 
-     { "$ref" : "#field_oscal-metadata_version" },
+     { "$ref" : "#/definitions/oscal-profile-oscal-metadata:version" },
      "oscal-version" : 
-     { "$ref" : "#field_oscal-metadata_oscal-version" },
+     { "$ref" : "#/definitions/oscal-profile-oscal-metadata:oscal-version" },
      "revisions" : 
      { "type" : "array",
       "minItems" : 1,
@@ -434,25 +434,25 @@
          "description" : "A name given to the document revision, which may be used by a tool for display and navigation.",
          "type" : "string" },
         "published" : 
-        { "$ref" : "#field_oscal-metadata_published" },
+        { "$ref" : "#/definitions/oscal-profile-oscal-metadata:published" },
         "last-modified" : 
-        { "$ref" : "#field_oscal-metadata_last-modified" },
+        { "$ref" : "#/definitions/oscal-profile-oscal-metadata:last-modified" },
         "version" : 
-        { "$ref" : "#field_oscal-metadata_version" },
+        { "$ref" : "#/definitions/oscal-profile-oscal-metadata:version" },
         "oscal-version" : 
-        { "$ref" : "#field_oscal-metadata_oscal-version" },
+        { "$ref" : "#/definitions/oscal-profile-oscal-metadata:oscal-version" },
         "props" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_property" } },
+         { "$ref" : "#/definitions/oscal-profile-oscal-metadata:property" } },
         "links" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_link" } },
+         { "$ref" : "#/definitions/oscal-profile-oscal-metadata:link" } },
         "remarks" : 
-        { "$ref" : "#field_oscal-metadata_remarks" } },
+        { "$ref" : "#/definitions/oscal-profile-oscal-metadata:remarks" } },
        "required" : 
        [ "version" ],
        "additionalProperties" : false } },
@@ -460,17 +460,17 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#field_oscal-metadata_document-id" } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-metadata:document-id" } },
      "props" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_property" } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-metadata:property" } },
      "links" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_link" } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-metadata:link" } },
      "roles" : 
      { "type" : "array",
       "minItems" : 1,
@@ -499,14 +499,14 @@
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_property" } },
+         { "$ref" : "#/definitions/oscal-profile-oscal-metadata:property" } },
         "links" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_link" } },
+         { "$ref" : "#/definitions/oscal-profile-oscal-metadata:link" } },
         "remarks" : 
-        { "$ref" : "#field_oscal-metadata_remarks" } },
+        { "$ref" : "#/definitions/oscal-profile-oscal-metadata:remarks" } },
        "required" : 
        [ "id",
         "title" ],
@@ -528,17 +528,17 @@
          "description" : "A name given to the location, which may be used by a tool for display and navigation.",
          "type" : "string" },
         "address" : 
-        { "$ref" : "#assembly_oscal-metadata_address" },
+        { "$ref" : "#/definitions/oscal-profile-oscal-metadata:address" },
         "email-addresses" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#field_oscal-metadata_email-address" } },
+         { "$ref" : "#/definitions/oscal-profile-oscal-metadata:email-address" } },
         "telephone-numbers" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#field_oscal-metadata_telephone-number" } },
+         { "$ref" : "#/definitions/oscal-profile-oscal-metadata:telephone-number" } },
         "urls" : 
         { "type" : "array",
          "minItems" : 1,
@@ -550,14 +550,14 @@
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_property" } },
+         { "$ref" : "#/definitions/oscal-profile-oscal-metadata:property" } },
         "links" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_link" } },
+         { "$ref" : "#/definitions/oscal-profile-oscal-metadata:link" } },
         "remarks" : 
-        { "$ref" : "#field_oscal-metadata_remarks" } },
+        { "$ref" : "#/definitions/oscal-profile-oscal-metadata:remarks" } },
        "required" : 
        [ "uuid" ],
        "additionalProperties" : false } },
@@ -618,32 +618,32 @@
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_property" } },
+         { "$ref" : "#/definitions/oscal-profile-oscal-metadata:property" } },
         "links" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_link" } },
+         { "$ref" : "#/definitions/oscal-profile-oscal-metadata:link" } },
         "email-addresses" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#field_oscal-metadata_email-address" } },
+         { "$ref" : "#/definitions/oscal-profile-oscal-metadata:email-address" } },
         "telephone-numbers" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#field_oscal-metadata_telephone-number" } },
+         { "$ref" : "#/definitions/oscal-profile-oscal-metadata:telephone-number" } },
         "addresses" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_address" } },
+         { "$ref" : "#/definitions/oscal-profile-oscal-metadata:address" } },
         "location-uuids" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#field_oscal-metadata_location-uuid" } },
+         { "$ref" : "#/definitions/oscal-profile-oscal-metadata:location-uuid" } },
         "member-of-organizations" : 
         { "type" : "array",
          "minItems" : 1,
@@ -652,7 +652,7 @@
           "description" : "A reference to another party by UUID, typically an organization, that this subject is associated with.",
           "$ref" : "#/definitions/UUIDDatatype" } },
         "remarks" : 
-        { "$ref" : "#field_oscal-metadata_remarks" } },
+        { "$ref" : "#/definitions/oscal-profile-oscal-metadata:remarks" } },
        "required" : 
        [ "uuid",
         "type" ],
@@ -661,14 +661,14 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_responsible-party" } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-metadata:responsible-party" } },
      "actions" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_action" } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-metadata:action" } },
      "remarks" : 
-     { "$ref" : "#field_oscal-metadata_remarks" } },
+     { "$ref" : "#/definitions/oscal-profile-oscal-metadata:remarks" } },
     "required" : 
     [ "title",
      "last-modified",
@@ -678,22 +678,22 @@
    "oscal-profile-oscal-metadata:location-uuid" : 
    { "title" : "Location Universally Unique Identifier Reference",
     "description" : "Reference to a location by UUID.",
-    "$id" : "#field_oscal-metadata_location-uuid",
+    "$id" : "#/definitions/oscal-profile-oscal-metadata:location-uuid",
     "$ref" : "#/definitions/UUIDDatatype" },
    "oscal-profile-oscal-metadata:party-uuid" : 
    { "title" : "Party Universally Unique Identifier Reference",
     "description" : "Reference to a party by UUID.",
-    "$id" : "#field_oscal-metadata_party-uuid",
+    "$id" : "#/definitions/oscal-profile-oscal-metadata:party-uuid",
     "$ref" : "#/definitions/UUIDDatatype" },
    "oscal-profile-oscal-metadata:role-id" : 
    { "title" : "Role Identifier Reference",
     "description" : "Reference to a role by UUID.",
-    "$id" : "#field_oscal-metadata_role-id",
+    "$id" : "#/definitions/oscal-profile-oscal-metadata:role-id",
     "$ref" : "#/definitions/TokenDatatype" },
    "oscal-profile-oscal-metadata:back-matter" : 
    { "title" : "Back matter",
     "description" : "A collection of resources that may be referenced from within the OSCAL document instance.",
-    "$id" : "#assembly_oscal-metadata_back-matter",
+    "$id" : "#/definitions/oscal-profile-oscal-metadata:back-matter",
     "type" : "object",
     "properties" : 
     { "resources" : 
@@ -720,12 +720,12 @@
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_property" } },
+         { "$ref" : "#/definitions/oscal-profile-oscal-metadata:property" } },
         "document-ids" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#field_oscal-metadata_document-id" } },
+         { "$ref" : "#/definitions/oscal-profile-oscal-metadata:document-id" } },
         "citation" : 
         { "title" : "Citation",
          "description" : "An optional citation consisting of end note text using structured markup.",
@@ -739,12 +739,12 @@
           { "type" : "array",
            "minItems" : 1,
            "items" : 
-           { "$ref" : "#assembly_oscal-metadata_property" } },
+           { "$ref" : "#/definitions/oscal-profile-oscal-metadata:property" } },
           "links" : 
           { "type" : "array",
            "minItems" : 1,
            "items" : 
-           { "$ref" : "#assembly_oscal-metadata_link" } } },
+           { "$ref" : "#/definitions/oscal-profile-oscal-metadata:link" } } },
          "required" : 
          [ "text" ],
          "additionalProperties" : false },
@@ -768,7 +768,7 @@
            { "type" : "array",
             "minItems" : 1,
             "items" : 
-            { "$ref" : "#field_oscal-metadata_hash" } } },
+            { "$ref" : "#/definitions/oscal-profile-oscal-metadata:hash" } } },
           "required" : 
           [ "href" ],
           "additionalProperties" : false } },
@@ -791,7 +791,7 @@
          [ "value" ],
          "additionalProperties" : false },
         "remarks" : 
-        { "$ref" : "#field_oscal-metadata_remarks" } },
+        { "$ref" : "#/definitions/oscal-profile-oscal-metadata:remarks" } },
        "required" : 
        [ "uuid" ],
        "additionalProperties" : false } } },
@@ -799,12 +799,12 @@
    "oscal-profile-oscal-metadata:property" : 
    { "title" : "Property",
     "description" : "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.",
-    "$id" : "#assembly_oscal-metadata_property",
+    "$id" : "#/definitions/oscal-profile-oscal-metadata:property",
     "type" : "object",
     "properties" : 
     { "name" : 
      { "title" : "Property Name",
-      "description" : "A textual label, within a namespace, that uniquely identifies a specific attribute, characteristic, or quality of the property's containing object.",
+      "description" : "A textual label, within a namespace, that identifies a specific attribute, characteristic, or quality of the property's containing object.",
       "$ref" : "#/definitions/TokenDatatype" },
      "uuid" : 
      { "title" : "Property Universally Unique Identifier",
@@ -827,7 +827,7 @@
       "description" : "An identifier for relating distinct sets of properties.",
       "$ref" : "#/definitions/TokenDatatype" },
      "remarks" : 
-     { "$ref" : "#field_oscal-metadata_remarks" } },
+     { "$ref" : "#/definitions/oscal-profile-oscal-metadata:remarks" } },
     "required" : 
     [ "name",
      "value" ],
@@ -835,7 +835,7 @@
    "oscal-profile-oscal-metadata:link" : 
    { "title" : "Link",
     "description" : "A reference to a local or remote resource, that has a specific relation to the containing object.",
-    "$id" : "#assembly_oscal-metadata_link",
+    "$id" : "#/definitions/oscal-profile-oscal-metadata:link",
     "type" : "object",
     "properties" : 
     { "href" : 
@@ -869,7 +869,7 @@
    "oscal-profile-oscal-metadata:responsible-party" : 
    { "title" : "Responsible Party",
     "description" : "A reference to a set of persons and/or organizations that have responsibility for performing the referenced role in the context of the containing object.",
-    "$id" : "#assembly_oscal-metadata_responsible-party",
+    "$id" : "#/definitions/oscal-profile-oscal-metadata:responsible-party",
     "type" : "object",
     "properties" : 
     { "role-id" : 
@@ -880,19 +880,19 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#field_oscal-metadata_party-uuid" } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-metadata:party-uuid" } },
      "props" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_property" } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-metadata:property" } },
      "links" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_link" } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-metadata:link" } },
      "remarks" : 
-     { "$ref" : "#field_oscal-metadata_remarks" } },
+     { "$ref" : "#/definitions/oscal-profile-oscal-metadata:remarks" } },
     "required" : 
     [ "role-id",
      "party-uuids" ],
@@ -900,7 +900,7 @@
    "oscal-profile-oscal-metadata:action" : 
    { "title" : "Action",
     "description" : "An action applied by a role within a given party to the content.",
-    "$id" : "#assembly_oscal-metadata_action",
+    "$id" : "#/definitions/oscal-profile-oscal-metadata:action",
     "type" : "object",
     "properties" : 
     { "uuid" : 
@@ -923,19 +923,19 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_property" } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-metadata:property" } },
      "links" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_link" } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-metadata:link" } },
      "responsible-parties" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_responsible-party" } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-metadata:responsible-party" } },
      "remarks" : 
-     { "$ref" : "#field_oscal-metadata_remarks" } },
+     { "$ref" : "#/definitions/oscal-profile-oscal-metadata:remarks" } },
     "required" : 
     [ "uuid",
      "type",
@@ -944,7 +944,7 @@
    "oscal-profile-oscal-metadata:responsible-role" : 
    { "title" : "Responsible Role",
     "description" : "A reference to a role with responsibility for performing a function relative to the containing object, optionally associated with a set of persons and/or organizations that perform that role.",
-    "$id" : "#assembly_oscal-metadata_responsible-role",
+    "$id" : "#/definitions/oscal-profile-oscal-metadata:responsible-role",
     "type" : "object",
     "properties" : 
     { "role-id" : 
@@ -955,26 +955,26 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_property" } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-metadata:property" } },
      "links" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_link" } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-metadata:link" } },
      "party-uuids" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#field_oscal-metadata_party-uuid" } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-metadata:party-uuid" } },
      "remarks" : 
-     { "$ref" : "#field_oscal-metadata_remarks" } },
+     { "$ref" : "#/definitions/oscal-profile-oscal-metadata:remarks" } },
     "required" : 
     [ "role-id" ],
     "additionalProperties" : false },
    "oscal-profile-oscal-metadata:hash" : 
    { "title" : "Hash",
     "description" : "A representation of a cryptographic digest generated over a resource using a specified hash algorithm.",
-    "$id" : "#field_oscal-metadata_hash",
+    "$id" : "#/definitions/oscal-profile-oscal-metadata:hash",
     "type" : "object",
     "properties" : 
     { "algorithm" : 
@@ -1002,37 +1002,37 @@
    "oscal-profile-oscal-metadata:remarks" : 
    { "title" : "Remarks",
     "description" : "Additional commentary about the containing object.",
-    "$id" : "#field_oscal-metadata_remarks",
+    "$id" : "#/definitions/oscal-profile-oscal-metadata:remarks",
     "type" : "string" },
    "oscal-profile-oscal-metadata:published" : 
    { "title" : "Publication Timestamp",
     "description" : "The date and time the document was last made available.",
-    "$id" : "#field_oscal-metadata_published",
+    "$id" : "#/definitions/oscal-profile-oscal-metadata:published",
     "$ref" : "#/definitions/DateTimeWithTimezoneDatatype" },
    "oscal-profile-oscal-metadata:last-modified" : 
    { "title" : "Last Modified Timestamp",
     "description" : "The date and time the document was last stored for later retrieval.",
-    "$id" : "#field_oscal-metadata_last-modified",
+    "$id" : "#/definitions/oscal-profile-oscal-metadata:last-modified",
     "$ref" : "#/definitions/DateTimeWithTimezoneDatatype" },
    "oscal-profile-oscal-metadata:version" : 
    { "title" : "Document Version",
     "description" : "Used to distinguish a specific revision of an OSCAL document from other previous and future versions.",
-    "$id" : "#field_oscal-metadata_version",
+    "$id" : "#/definitions/oscal-profile-oscal-metadata:version",
     "$ref" : "#/definitions/StringDatatype" },
    "oscal-profile-oscal-metadata:oscal-version" : 
    { "title" : "OSCAL Version",
     "description" : "The OSCAL model version the document was authored against and will conform to as valid.",
-    "$id" : "#field_oscal-metadata_oscal-version",
+    "$id" : "#/definitions/oscal-profile-oscal-metadata:oscal-version",
     "$ref" : "#/definitions/StringDatatype" },
    "oscal-profile-oscal-metadata:email-address" : 
    { "title" : "Email Address",
     "description" : "An email address as defined by RFC 5322 Section 3.4.1.",
-    "$id" : "#field_oscal-metadata_email-address",
+    "$id" : "#/definitions/oscal-profile-oscal-metadata:email-address",
     "$ref" : "#/definitions/EmailAddressDatatype" },
    "oscal-profile-oscal-metadata:telephone-number" : 
    { "title" : "Telephone Number",
     "description" : "A telephone service number as defined by ITU-T E.164.",
-    "$id" : "#field_oscal-metadata_telephone-number",
+    "$id" : "#/definitions/oscal-profile-oscal-metadata:telephone-number",
     "type" : "object",
     "properties" : 
     { "type" : 
@@ -1054,7 +1054,7 @@
    "oscal-profile-oscal-metadata:address" : 
    { "title" : "Address",
     "description" : "A postal address for the location.",
-    "$id" : "#assembly_oscal-metadata_address",
+    "$id" : "#/definitions/oscal-profile-oscal-metadata:address",
     "type" : "object",
     "properties" : 
     { "type" : 
@@ -1071,7 +1071,7 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#field_oscal-metadata_addr-line" } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-metadata:addr-line" } },
      "city" : 
      { "title" : "City",
       "description" : "City, town or geographical region for the mailing address.",
@@ -1092,12 +1092,12 @@
    "oscal-profile-oscal-metadata:addr-line" : 
    { "title" : "Address line",
     "description" : "A single line of an address.",
-    "$id" : "#field_oscal-metadata_addr-line",
+    "$id" : "#/definitions/oscal-profile-oscal-metadata:addr-line",
     "$ref" : "#/definitions/StringDatatype" },
    "oscal-profile-oscal-metadata:document-id" : 
    { "title" : "Document Identifier",
     "description" : "A document identifier qualified by an identifier scheme.",
-    "$id" : "#field_oscal-metadata_document-id",
+    "$id" : "#/definitions/oscal-profile-oscal-metadata:document-id",
     "type" : "object",
     "properties" : 
     { "scheme" : 
@@ -1117,7 +1117,7 @@
    "oscal-profile-oscal-control-common:part" : 
    { "title" : "Part",
     "description" : "An annotated, markup-based textual element of a control's or catalog group's definition, or a child of another part.",
-    "$id" : "#assembly_oscal-control-common_part",
+    "$id" : "#/definitions/oscal-profile-oscal-control-common:part",
     "type" : "object",
     "properties" : 
     { "id" : 
@@ -1144,7 +1144,7 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_property" } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-metadata:property" } },
      "prose" : 
      { "title" : "Part Text",
       "description" : "Permits multiple paragraphs, lists, tables etc.",
@@ -1153,19 +1153,19 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-control-common_part" } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-control-common:part" } },
      "links" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_link" } } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-metadata:link" } } },
     "required" : 
     [ "name" ],
     "additionalProperties" : false },
    "oscal-profile-oscal-control-common:parameter" : 
    { "title" : "Parameter",
     "description" : "Parameters provide a mechanism for the dynamic assignment of value(s) in a control.",
-    "$id" : "#assembly_oscal-control-common_parameter",
+    "$id" : "#/definitions/oscal-profile-oscal-control-common:parameter",
     "type" : "object",
     "properties" : 
     { "id" : 
@@ -1184,12 +1184,12 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_property" } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-metadata:property" } },
      "links" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_link" } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-metadata:link" } },
      "label" : 
      { "title" : "Parameter Label",
       "description" : "A short, placeholder name for the parameter, which can be used as a substitute for a value if no value is assigned.",
@@ -1202,28 +1202,28 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-control-common_parameter-constraint" } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-control-common:parameter-constraint" } },
      "guidelines" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-control-common_parameter-guideline" } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-control-common:parameter-guideline" } },
      "values" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#field_oscal-control-common_parameter-value" } },
+      { "$ref" : "#/definitions/oscal-profile-oscal-control-common:parameter-value" } },
      "select" : 
-     { "$ref" : "#assembly_oscal-control-common_parameter-selection" },
+     { "$ref" : "#/definitions/oscal-profile-oscal-control-common:parameter-selection" },
      "remarks" : 
-     { "$ref" : "#field_oscal-metadata_remarks" } },
+     { "$ref" : "#/definitions/oscal-profile-oscal-metadata:remarks" } },
     "required" : 
     [ "id" ],
     "additionalProperties" : false },
    "oscal-profile-oscal-control-common:parameter-constraint" : 
    { "title" : "Constraint",
     "description" : "A formal or informal expression of a constraint or test.",
-    "$id" : "#assembly_oscal-control-common_parameter-constraint",
+    "$id" : "#/definitions/oscal-profile-oscal-control-common:parameter-constraint",
     "type" : "object",
     "properties" : 
     { "description" : 
@@ -1243,7 +1243,7 @@
          "description" : "A formal (executable) expression of a constraint.",
          "$ref" : "#/definitions/StringDatatype" },
         "remarks" : 
-        { "$ref" : "#field_oscal-metadata_remarks" } },
+        { "$ref" : "#/definitions/oscal-profile-oscal-metadata:remarks" } },
        "required" : 
        [ "expression" ],
        "additionalProperties" : false } } },
@@ -1251,7 +1251,7 @@
    "oscal-profile-oscal-control-common:parameter-guideline" : 
    { "title" : "Guideline",
     "description" : "A prose statement that provides a recommendation for the use of a parameter.",
-    "$id" : "#assembly_oscal-control-common_parameter-guideline",
+    "$id" : "#/definitions/oscal-profile-oscal-control-common:parameter-guideline",
     "type" : "object",
     "properties" : 
     { "prose" : 
@@ -1264,12 +1264,12 @@
    "oscal-profile-oscal-control-common:parameter-value" : 
    { "title" : "Parameter Value",
     "description" : "A parameter value or set of values.",
-    "$id" : "#field_oscal-control-common_parameter-value",
+    "$id" : "#/definitions/oscal-profile-oscal-control-common:parameter-value",
     "$ref" : "#/definitions/StringDatatype" },
    "oscal-profile-oscal-control-common:parameter-selection" : 
    { "title" : "Selection",
     "description" : "Presenting a choice among alternatives.",
-    "$id" : "#assembly_oscal-control-common_parameter-selection",
+    "$id" : "#/definitions/oscal-profile-oscal-control-common:parameter-selection",
     "type" : "object",
     "properties" : 
     { "how-many" : 
@@ -1293,7 +1293,7 @@
    "oscal-profile-oscal-control-common:include-all" : 
    { "title" : "Include All",
     "description" : "Include all controls from the imported catalog or profile resources.",
-    "$id" : "#assembly_oscal-control-common_include-all",
+    "$id" : "#/definitions/oscal-profile-oscal-control-common:include-all",
     "type" : "object",
     "additionalProperties" : false },
    "Base64Datatype" : 
@@ -1341,9 +1341,9 @@
     "pattern" : "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$" } },
   "properties" : 
   { "$schema" : 
-   { "$ref" : "#json-schema-directive" },
+   { "$ref" : "#/definitions/json-schema-directive" },
    "profile" : 
-   { "$ref" : "#assembly_oscal-profile_profile" } },
+   { "$ref" : "#/definitions/oscal-profile-oscal-profile:profile" } },
   "required" : 
   [ "profile" ],
   "additionalProperties" : false }
