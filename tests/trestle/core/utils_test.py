@@ -41,6 +41,7 @@ from trestle.common import str_utils
 from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import AliasMode
+from trestle.common.str_utils import as_bool
 
 
 def load_good_catalog() -> catalog.Catalog:
@@ -352,3 +353,10 @@ def test_prune_empty_dirs(tmp_path: pathlib.Path) -> None:
     assert not (tmp_path / 'sub1/sub11/sub111').exists()
     assert foo_path.exists()
     assert bar_path.exists()
+
+
+def test_as_bool(tmp_path: pathlib.Path) -> None:
+    """Test as_bool function."""
+    assert as_bool('true')
+    assert not as_bool('false')
+    assert not as_bool(None)
