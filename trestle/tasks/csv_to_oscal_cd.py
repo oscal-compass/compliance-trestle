@@ -1576,7 +1576,7 @@ class _CsvMgr():
     def __init__(self, csv_path: pathlib.Path) -> None:
         """Initialize."""
         self._csv = []
-        with open(csv_path, 'r', newline='') as f:
+        with open(csv_path, 'r', newline='', encoding='utf8') as f:
             csv_reader = csv.reader(f, delimiter=',', quoting=csv.QUOTE_MINIMAL)
             for row in csv_reader:
                 self._csv.append(row)
