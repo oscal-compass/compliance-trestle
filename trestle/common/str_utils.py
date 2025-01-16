@@ -123,6 +123,18 @@ def as_string(string_or_none: Optional[str]) -> str:
     return string_or_none if string_or_none else ''
 
 
+def as_bool(string_or_none: Optional[str]) -> bool:
+    """Convert string to boolean."""
+    if string_or_none:
+        if string_or_none.lower() in ['false']:
+            rval = False
+        else:
+            rval = True
+    else:
+        rval = False
+    return rval
+
+
 def string_from_root(item_with_root: Optional[Any]) -> str:
     """Convert root to string if present."""
     return as_string(item_with_root.__root__) if item_with_root else ''
