@@ -44,7 +44,7 @@ Below shows trestle versions correspondence with OSCAL versions:
 trestle 3.x => OSCAL 1.1.2
 trestle 2.x => OSCAL 1.0.4
 trestle 1.x => OSCAL 1.0.2
-trestle 0.x => OSCAL 1.0.0
+trestle 0.3.7 => OSCAL 1.0.0
 ```
 
 Visit [pypi](https://pypi.org/project/compliance-trestle/#history) for trestle release history and downloads.
