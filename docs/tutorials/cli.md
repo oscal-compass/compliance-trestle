@@ -148,7 +148,7 @@ This command will return the current version of Trestle and OSCAL it is using.
 
 Running `trestle version` will return:
 
-> Trestle version v3.6.0 based on OSCAL version 1.1.2
+> Trestle version v3.x.x based on OSCAL version 1.1.2
 
 It can also be used to retrieve the metadata version of the OSCAL object:
 
