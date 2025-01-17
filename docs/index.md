@@ -37,11 +37,61 @@ Trestle provides tooling to help orchestrate the compliance process across a num
 
 ## Important Note:
 
-The current version of trestle supports NIST OSCAL 1.0.0-4.  There was a breaking change in OSCAL moving from
-version 1.0.0 to 1.0.2 mainly due to `prop` becoming `props` in AssessmentResults.  As a result, the current development path of trestle requires OSCAL 1.0.4, but for those who require OSCAL 1.0.0 please use trestle version 0.37.x.  That version is stable but will not have any features added, and we encourage users to move to OSCAL 1.0.4.
+The current version of trestle 3.x supports NIST OSCAL 1.1.2.
+Below shows trestle versions correspondence with OSCAL versions:
 
-OSCAL version 1.0.0 files are still handled on import but any AssessmentResults must conform to the OSCAL 1.0.4 schema, with
-props instead of prop.  And all files created by trestle will be output as OSCAL version 1.0.4.
+```
+trestle 3.x => OSCAL 1.1.2
+trestle 2.x => OSCAL 1.0.4
+trestle 1.x => OSCAL 1.0.2
+trestle 0.37.x => OSCAL 1.0.0
+```
+
+Visit [pypi](https://pypi.org/project/compliance-trestle/#history) for trestle release history and downloads.
+
+## Notes for install of current and older versions of trestle
+
+#### Install of trestle 3.x
+
+Use python 3.11.
+
+```
+python3.11 -m venv venv.trestle
+source venv.trestle/bin/activate
+pip install compliance-trestle==3.6.0
+trestle version
+Trestle version v3.6.0 based on OSCAL version 1.1.2
+```
+
+#### Install of trestle 2.x
+
+Use python 3.9.
+
+```
+python3.9 -m venv venv.trestle
+source venv.trestle/bin/activate
+pip install compliance-trestle==2.6.0
+trestle version
+Trestle version v2.6.0 based on OSCAL version 1.0.4
+```
+
+#### Install of trestle 1.x
+
+Use python 3.9.
+
+Due to dependency updates since the release of trestle 1.2.0, perform the following in your venv:
+
+```
+python3.9 -m venv venv.trestle
+source venv.trestle/bin/activate
+pip install compliance-trestle==1.2.0
+pip uninstall pydantic
+pip uninstall pydantic_core
+pip install pydantic==1.10.2
+pip install requests
+trestle version
+Trestle version v1.2.0 based on OSCAL version 1.0.2
+```
 
 ## Why Trestle
 
@@ -79,7 +129,7 @@ Trestle runs on most all python platforms (e.g. Linux, Mac, Windows) and is avai
 
 ## Development status
 
-Compliance trestle is currently stable and is based on NIST OSCAL version 1.0.4, with active development continuing.
+Compliance trestle is currently stable and is based on NIST OSCAL version 1.1.2, with active development continuing.
 
 ## Contributing to Trestle
 
