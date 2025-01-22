@@ -690,7 +690,7 @@ CLI evocation:
 
 > trestle author catalog-assemble
 
-The `catalog` author commands allow you to convert a control catalog to markdown and edit its control statement, then assemble markdown back into an OSCAL catalog with the modifications to the statement.  Items in the statement may be edited or added.  For more details on its usage please see [the catalog authoring tutorial](https://oscal-compass.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).
+The `catalog` author commands allow you to convert a control catalog to markdown and edit its control statement, then assemble markdown back into an OSCAL catalog with the modifications to the statement.  Items in the statement may be edited or added.  For more details on its usage please see [the catalog authoring tutorial](https://oscal-compass.github.io/compliance-trestle/latest/tutorials/Trestle_authoring/ssp_profile_catalog_authoring/).
 
 ### Profile authoring
 
@@ -704,7 +704,7 @@ CLI evocation:
 
 > trestle author profile-assemble
 
-The `profile` author commands allow you to edit additions made by a profile to its imported controls that end up in the final resolved profile catalog.  Only the additions may be edited or added to the generated markdown control files - and those additions can then be assembled into a new version of the original profile, with those additions.  For more details on its usage please see [the profile authoring tutorial](https://oscal-compass.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).
+The `profile` author commands allow you to edit additions made by a profile to its imported controls that end up in the final resolved profile catalog.  Only the additions may be edited or added to the generated markdown control files - and those additions can then be assembled into a new version of the original profile, with those additions.  For more details on its usage please see [the profile authoring tutorial](https://oscal-compass.github.io/compliance-trestle/latest/tutorials/Trestle_authoring/ssp_profile_catalog_authoring/).
 
 ### Profile generation with inheritance
 
@@ -719,7 +719,7 @@ All components must have exported provided statements, no exported responsibilit
 
 As with the other related author commands, if an existing destination file already exists, it is not updated if no changes would be made.
 
-For more details on its usage please see [the ssp-filter tutorial](https://oscal-compass.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).
+For more details on its usage please see [the ssp-filter tutorial](https://oscal-compass.github.io/compliance-trestle/latest/tutorials/Trestle_authoring/ssp_profile_catalog_authoring/).
 
 ### SSP authoring
 
@@ -735,7 +735,7 @@ CLI evocation:
 
 The `ssp-generate` sub-command creates a partial SSP (System Security Plan) from a profile and optional yaml header file.  `ssp-assemble` can then assemble the markdown files into a single json SSP file.
 
-For more details on its usage please see [the ssp authoring tutorial](https://oscal-compass.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).
+For more details on its usage please see [the ssp authoring tutorial](https://oscal-compass.github.io/compliance-trestle/latest/tutorials/Trestle_authoring/ssp_profile_catalog_authoring/).
 
 ### SSP Content Filtering
 
@@ -757,6 +757,6 @@ You may filter by a combination of a profile, list of component names, implement
 
 As with the other related author commands, if an existing destination file already exists, it is not updated if no changes would be made.
 
-For more details on its usage please see [the ssp-filter tutorial](https://oscal-compass.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).
+For more details on its usage please see [the ssp-filter tutorial](https://oscal-compass.github.io/compliance-trestle/latest/tutorials/Trestle_authoring/ssp_profile_catalog_authoring/).
 
 </details>

@@ -349,7 +349,7 @@ class CatalogReader():
         # add the props at control level
         if props:
             imp_req.props = as_list(imp_req.props)
-            imp_req.props.extend(props)
+            ControlInterface.reconcile_props(imp_req, props)
 
         # add the props at the part level
         for label, part_id in control_part_id_map.items():
@@ -359,7 +359,7 @@ class CatalogReader():
             for statement in as_list(imp_req.statements):
                 if statement.statement_id == part_id:
                     statement.props = as_list(statement.props)
-                    statement.props.extend(props)
+                    ControlInterface.reconcile_props(statement, props)
 
     @staticmethod
     def _update_ssp_with_md_header(
