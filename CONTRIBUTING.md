@@ -7,7 +7,7 @@ To contribute code or documentation, please submit a [pull request](https://gith
 
 A good way to familiarize yourself with the codebase and contribution process is
 to look for and tackle low-hanging fruit in the [issue tracker](https://github.com/oscal-compass/compliance-trestle/issues).
-Before embarking on a more ambitious contribution, please quickly [get in touch](https://oscal-compass.github.io/compliance-trestle/maintainers/) with us.
+Before embarking on a more ambitious contribution, please quickly [get in touch](https://oscal-compass.github.io/compliance-trestle/latest/contributing/maintainers/) with us.
 
 **Note: We appreciate your effort, and want to avoid a situation where a contribution
 requires extensive rework (by you or by us), sits in backlog for a long time, or
@@ -32,7 +32,7 @@ review to indicate acceptance.
 
 A change requires LGTMs from at least two reviewers. One of the reviewers must be a [`CODEOWNER`](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners).
 
-For a list of the maintainers (also codeowners), see the [maintainers](https://oscal-compass.github.io/compliance-trestle/maintainers/) page.
+For a list of the maintainers (also codeowners), see the [maintainers](https://oscal-compass.github.io/compliance-trestle/latest/contributing/maintainers/)
 
 ### Trestle updating, testing and release logistics
 
@@ -88,7 +88,7 @@ The devops process does not _strictly_ enforce typing, however, the expectation 
 commits with a focus on quality over quantity (e.g. don't add `Any` everywhere just to meet coverage requirements).
 Python typing of functions is an active work in progress.
 
-`mkbuild` is used to generate the [trestle documenation site](https://oscal-compass.github.io/compliance-trestle). The `mkbuild`
+`mkbuild` is used to generate the [trestle documenation site](https://oscal-compass.github.io/compliance-trestle/latest). The `mkbuild`
 website includes an API reference section generated from the code. Docstrings within the code are expected to follow
 [google style docstrings](https://www.sphinx-doc.org/en/master/usage/extensions/example_google.html).
 
@@ -116,7 +116,7 @@ e.g.
 
 We have tried to make it as easy as possible to make contributions. This
 applies to how we handle the legal aspects of contribution. We use the
-same approach - the [Developer's Certificate of Origin 1.1 (DCO)](https://oscal-compass.github.io/compliance-trestle/contributing/DCO/) - that the Linux® Kernel [community](https://developercertificate.org/)
+same approach - the [Developer's Certificate of Origin 1.1 (DCO)](https://oscal-compass.github.io/compliance-trestle/latest/contributing/DCO/) - that the Linux® Kernel [community](https://developercertificate.org/)
 uses to manage code contributions.
 
 We simply ask that when submitting a patch for review, the developer

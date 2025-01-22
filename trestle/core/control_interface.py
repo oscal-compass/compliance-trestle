@@ -1122,6 +1122,18 @@ class ControlInterface:
         ControlInterface._replace_prop(item, prop)
 
     @staticmethod
+    def reconcile_props(item: TypeWithProps, props: List[common.Property]) -> None:
+        """Add properties to an item with properties while replacing existing."""
+        names = [prop.name for prop in as_list(item.props)]
+        item.props = as_list(item.props)
+        for prop in props:
+            if prop.name in names:
+                index = names.index(prop.name)
+                item.props[index] = prop
+            else:
+                item.props.append(prop)
+
+    @staticmethod
     def _copy_status_in_props(dest: TypeWithProps, src: TypeWithProps) -> None:
         """Copy status in props from one object to another."""
         status = ControlInterface.get_status_from_props(src)
