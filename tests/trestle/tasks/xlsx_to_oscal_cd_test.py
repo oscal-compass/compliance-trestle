@@ -20,7 +20,7 @@ import pathlib
 import uuid
 from unittest.mock import Mock, patch
 
-from tests.test_utils import text_files_equal
+from tests.test_utils import text_files_similar
 
 import trestle.tasks.xlsx_to_oscal_cd as xlsx_to_oscal_cd
 from trestle.tasks.base_task import TaskOutcome
@@ -77,7 +77,7 @@ def test_xlsx_execute(tmp_path):
     for fn in list_dir:
         f_expected = d_expected / fn
         f_produced = d_produced / fn
-        result = text_files_equal(f_expected, f_produced)
+        result = text_files_similar(f_expected, f_produced, 'oscal-version')
         assert result
 
 

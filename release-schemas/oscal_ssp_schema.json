@@ -1,18 +1,18 @@
 
  { "$schema" : "http://json-schema.org/draft-07/schema#",
-  "$id" : "http://csrc.nist.gov/ns/oscal/1.1.2/oscal-ssp-schema.json",
+  "$id" : "http://csrc.nist.gov/ns/oscal/1.1.3/oscal-ssp-schema.json",
   "$comment" : "OSCAL System Security Plan (SSP) Model: JSON Schema",
   "type" : "object",
   "definitions" : 
   { "json-schema-directive" : 
    { "title" : "Schema Directive",
     "description" : "A JSON Schema directive to bind a specific schema to its document instance.",
-    "$id" : "#json-schema-directive",
+    "$id" : "#/definitions/json-schema-directive",
     "$ref" : "#/definitions/URIReferenceDatatype" },
    "oscal-ssp-oscal-ssp:system-security-plan" : 
    { "title" : "System Security Plan (SSP)",
     "description" : "A system security plan, such as those described in NIST SP 800-18.",
-    "$id" : "#assembly_oscal-ssp_system-security-plan",
+    "$id" : "#/definitions/oscal-ssp-oscal-ssp:system-security-plan",
     "type" : "object",
     "properties" : 
     { "uuid" : 
@@ -20,17 +20,17 @@
       "description" : "A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this system security plan (SSP) elsewhere in this or other OSCAL instances. The locally defined UUID of the SSP can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance).This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.",
       "$ref" : "#/definitions/UUIDDatatype" },
      "metadata" : 
-     { "$ref" : "#assembly_oscal-metadata_metadata" },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:metadata" },
      "import-profile" : 
-     { "$ref" : "#assembly_oscal-ssp_import-profile" },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-ssp:import-profile" },
      "system-characteristics" : 
-     { "$ref" : "#assembly_oscal-ssp_system-characteristics" },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-ssp:system-characteristics" },
      "system-implementation" : 
-     { "$ref" : "#assembly_oscal-ssp_system-implementation" },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-ssp:system-implementation" },
      "control-implementation" : 
-     { "$ref" : "#assembly_oscal-ssp_control-implementation" },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-ssp:control-implementation" },
      "back-matter" : 
-     { "$ref" : "#assembly_oscal-metadata_back-matter" } },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:back-matter" } },
     "required" : 
     [ "uuid",
      "metadata",
@@ -42,7 +42,7 @@
    "oscal-ssp-oscal-ssp:import-profile" : 
    { "title" : "Import Profile",
     "description" : "Used to import the OSCAL profile representing the system's control baseline.",
-    "$id" : "#assembly_oscal-ssp_import-profile",
+    "$id" : "#/definitions/oscal-ssp-oscal-ssp:import-profile",
     "type" : "object",
     "properties" : 
     { "href" : 
@@ -50,21 +50,21 @@
       "description" : "A resolvable URL reference to the profile or catalog to use as the system's control baseline.",
       "$ref" : "#/definitions/URIReferenceDatatype" },
      "remarks" : 
-     { "$ref" : "#field_oscal-metadata_remarks" } },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
     "required" : 
     [ "href" ],
     "additionalProperties" : false },
    "oscal-ssp-oscal-ssp:system-characteristics" : 
    { "title" : "System Characteristics",
     "description" : "Contains the characteristics of the system, such as its name, purpose, and security impact level.",
-    "$id" : "#assembly_oscal-ssp_system-characteristics",
+    "$id" : "#/definitions/oscal-ssp-oscal-ssp:system-characteristics",
     "type" : "object",
     "properties" : 
     { "system-ids" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#field_oscal-implementation-common_system-id" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-implementation-common:system-id" } },
      "system-name" : 
      { "title" : "System Name - Full",
       "description" : "The full name of the system.",
@@ -81,37 +81,37 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_property" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
      "links" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_link" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } },
      "date-authorized" : 
-     { "$ref" : "#field_oscal-ssp_date-authorized" },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-ssp:date-authorized" },
      "security-sensitivity-level" : 
      { "title" : "Security Sensitivity Level",
       "description" : "The overall information system sensitivity categorization, such as defined by FIPS-199.",
       "$ref" : "#/definitions/StringDatatype" },
      "system-information" : 
-     { "$ref" : "#assembly_oscal-ssp_system-information" },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-ssp:system-information" },
      "security-impact-level" : 
-     { "$ref" : "#assembly_oscal-ssp_security-impact-level" },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-ssp:security-impact-level" },
      "status" : 
-     { "$ref" : "#assembly_oscal-ssp_status" },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-ssp:status" },
      "authorization-boundary" : 
-     { "$ref" : "#assembly_oscal-ssp_authorization-boundary" },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-ssp:authorization-boundary" },
      "network-architecture" : 
-     { "$ref" : "#assembly_oscal-ssp_network-architecture" },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-ssp:network-architecture" },
      "data-flow" : 
-     { "$ref" : "#assembly_oscal-ssp_data-flow" },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-ssp:data-flow" },
      "responsible-parties" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_responsible-party" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:responsible-party" } },
      "remarks" : 
-     { "$ref" : "#field_oscal-metadata_remarks" } },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
     "required" : 
     [ "system-ids",
      "system-name",
@@ -123,19 +123,19 @@
    "oscal-ssp-oscal-ssp:system-information" : 
    { "title" : "System Information",
     "description" : "Contains details about all information types that are stored, processed, or transmitted by the system, such as privacy information, and those defined in NIST SP 800-60.",
-    "$id" : "#assembly_oscal-ssp_system-information",
+    "$id" : "#/definitions/oscal-ssp-oscal-ssp:system-information",
     "type" : "object",
     "properties" : 
     { "props" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_property" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
      "links" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_link" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } },
      "information-types" : 
      { "type" : "array",
       "minItems" : 1,
@@ -187,18 +187,18 @@
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_property" } },
+         { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
         "links" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_link" } },
+         { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } },
         "confidentiality-impact" : 
-        { "$ref" : "#assembly_oscal-ssp_impact" },
+        { "$ref" : "#/definitions/oscal-ssp-oscal-ssp:impact" },
         "integrity-impact" : 
-        { "$ref" : "#assembly_oscal-ssp_impact" },
+        { "$ref" : "#/definitions/oscal-ssp-oscal-ssp:impact" },
         "availability-impact" : 
-        { "$ref" : "#assembly_oscal-ssp_impact" } },
+        { "$ref" : "#/definitions/oscal-ssp-oscal-ssp:impact" } },
        "required" : 
        [ "title",
         "description" ],
@@ -209,47 +209,47 @@
    "oscal-ssp-oscal-ssp:impact" : 
    { "title" : "Impact Level",
     "description" : "The expected level of impact resulting from the described information.",
-    "$id" : "#assembly_oscal-ssp_impact",
+    "$id" : "#/definitions/oscal-ssp-oscal-ssp:impact",
     "type" : "object",
     "properties" : 
     { "props" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_property" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
      "links" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_link" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } },
      "base" : 
-     { "$ref" : "#field_oscal-ssp_base" },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-ssp:base" },
      "selected" : 
-     { "$ref" : "#field_oscal-ssp_selected" },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-ssp:selected" },
      "adjustment-justification" : 
-     { "$ref" : "#field_oscal-ssp_adjustment-justification" } },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-ssp:adjustment-justification" } },
     "required" : 
     [ "base" ],
     "additionalProperties" : false },
    "oscal-ssp-oscal-ssp:base" : 
    { "title" : "Base Level (Confidentiality, Integrity, or Availability)",
     "description" : "The prescribed base (Confidentiality, Integrity, or Availability) security impact level.",
-    "$id" : "#field_oscal-ssp_base",
+    "$id" : "#/definitions/oscal-ssp-oscal-ssp:base",
     "$ref" : "#/definitions/StringDatatype" },
    "oscal-ssp-oscal-ssp:selected" : 
    { "title" : "Selected Level (Confidentiality, Integrity, or Availability)",
     "description" : "The selected (Confidentiality, Integrity, or Availability) security impact level.",
-    "$id" : "#field_oscal-ssp_selected",
+    "$id" : "#/definitions/oscal-ssp-oscal-ssp:selected",
     "$ref" : "#/definitions/StringDatatype" },
    "oscal-ssp-oscal-ssp:adjustment-justification" : 
    { "title" : "Adjustment Justification",
     "description" : "If the selected security level is different from the base security level, this contains the justification for the change.",
-    "$id" : "#field_oscal-ssp_adjustment-justification",
+    "$id" : "#/definitions/oscal-ssp-oscal-ssp:adjustment-justification",
     "type" : "string" },
    "oscal-ssp-oscal-ssp:security-impact-level" : 
    { "title" : "Security Impact Level",
     "description" : "The overall level of expected impact resulting from unauthorized disclosure, modification, or loss of access to information.",
-    "$id" : "#assembly_oscal-ssp_security-impact-level",
+    "$id" : "#/definitions/oscal-ssp-oscal-ssp:security-impact-level",
     "type" : "object",
     "properties" : 
     { "security-objective-confidentiality" : 
@@ -272,7 +272,7 @@
    "oscal-ssp-oscal-ssp:status" : 
    { "title" : "Status",
     "description" : "Describes the operational status of the system.",
-    "$id" : "#assembly_oscal-ssp_status",
+    "$id" : "#/definitions/oscal-ssp-oscal-ssp:status",
     "type" : "object",
     "properties" : 
     { "state" : 
@@ -289,19 +289,19 @@
          "disposition",
          "other" ] } ] },
      "remarks" : 
-     { "$ref" : "#field_oscal-metadata_remarks" } },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
     "required" : 
     [ "state" ],
     "additionalProperties" : false },
    "oscal-ssp-oscal-ssp:date-authorized" : 
    { "title" : "System Authorization Date",
     "description" : "The date the system received its authorization.",
-    "$id" : "#field_oscal-ssp_date-authorized",
+    "$id" : "#/definitions/oscal-ssp-oscal-ssp:date-authorized",
     "$ref" : "#/definitions/DateDatatype" },
    "oscal-ssp-oscal-ssp:authorization-boundary" : 
    { "title" : "Authorization Boundary",
     "description" : "A description of this system's authorization boundary, optionally supplemented by diagrams that illustrate the authorization boundary.",
-    "$id" : "#assembly_oscal-ssp_authorization-boundary",
+    "$id" : "#/definitions/oscal-ssp-oscal-ssp:authorization-boundary",
     "type" : "object",
     "properties" : 
     { "description" : 
@@ -312,26 +312,26 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_property" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
      "links" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_link" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } },
      "diagrams" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-ssp_diagram" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-ssp:diagram" } },
      "remarks" : 
-     { "$ref" : "#field_oscal-metadata_remarks" } },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
     "required" : 
     [ "description" ],
     "additionalProperties" : false },
    "oscal-ssp-oscal-ssp:diagram" : 
    { "title" : "Diagram",
     "description" : "A graphic that provides a visual representation the system, or some aspect of it.",
-    "$id" : "#assembly_oscal-ssp_diagram",
+    "$id" : "#/definitions/oscal-ssp-oscal-ssp:diagram",
     "type" : "object",
     "properties" : 
     { "uuid" : 
@@ -346,25 +346,25 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_property" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
      "links" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_link" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } },
      "caption" : 
      { "title" : "Caption",
       "description" : "A brief caption to annotate the diagram.",
       "type" : "string" },
      "remarks" : 
-     { "$ref" : "#field_oscal-metadata_remarks" } },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
     "required" : 
     [ "uuid" ],
     "additionalProperties" : false },
    "oscal-ssp-oscal-ssp:network-architecture" : 
    { "title" : "Network Architecture",
     "description" : "A description of the system's network architecture, optionally supplemented by diagrams that illustrate the network architecture.",
-    "$id" : "#assembly_oscal-ssp_network-architecture",
+    "$id" : "#/definitions/oscal-ssp-oscal-ssp:network-architecture",
     "type" : "object",
     "properties" : 
     { "description" : 
@@ -375,26 +375,26 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_property" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
      "links" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_link" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } },
      "diagrams" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-ssp_diagram" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-ssp:diagram" } },
      "remarks" : 
-     { "$ref" : "#field_oscal-metadata_remarks" } },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
     "required" : 
     [ "description" ],
     "additionalProperties" : false },
    "oscal-ssp-oscal-ssp:data-flow" : 
    { "title" : "Data Flow",
     "description" : "A description of the logical flow of information within the system and across its boundaries, optionally supplemented by diagrams that illustrate these flows.",
-    "$id" : "#assembly_oscal-ssp_data-flow",
+    "$id" : "#/definitions/oscal-ssp-oscal-ssp:data-flow",
     "type" : "object",
     "properties" : 
     { "description" : 
@@ -405,38 +405,38 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_property" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
      "links" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_link" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } },
      "diagrams" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-ssp_diagram" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-ssp:diagram" } },
      "remarks" : 
-     { "$ref" : "#field_oscal-metadata_remarks" } },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
     "required" : 
     [ "description" ],
     "additionalProperties" : false },
    "oscal-ssp-oscal-ssp:system-implementation" : 
    { "title" : "System Implementation",
     "description" : "Provides information as to how the system is implemented.",
-    "$id" : "#assembly_oscal-ssp_system-implementation",
+    "$id" : "#/definitions/oscal-ssp-oscal-ssp:system-implementation",
     "type" : "object",
     "properties" : 
     { "props" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_property" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
      "links" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_link" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } },
      "leveraged-authorizations" : 
      { "type" : "array",
       "minItems" : 1,
@@ -457,20 +457,20 @@
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_property" } },
+         { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
         "links" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_link" } },
+         { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } },
         "party-uuid" : 
         { "title" : "party-uuid field",
          "description" : "A machine-oriented identifier reference to the party that manages the leveraged system.",
          "$ref" : "#/definitions/UUIDDatatype" },
         "date-authorized" : 
-        { "$ref" : "#field_oscal-ssp_date-authorized" },
+        { "$ref" : "#/definitions/oscal-ssp-oscal-ssp:date-authorized" },
         "remarks" : 
-        { "$ref" : "#field_oscal-metadata_remarks" } },
+        { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
        "required" : 
        [ "uuid",
         "title",
@@ -481,19 +481,19 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-implementation-common_system-user" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-implementation-common:system-user" } },
      "components" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-implementation-common_system-component" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-implementation-common:system-component" } },
      "inventory-items" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-implementation-common_inventory-item" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-implementation-common:inventory-item" } },
      "remarks" : 
-     { "$ref" : "#field_oscal-metadata_remarks" } },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
     "required" : 
     [ "users",
      "components" ],
@@ -501,7 +501,7 @@
    "oscal-ssp-oscal-ssp:control-implementation" : 
    { "title" : "Control Implementation",
     "description" : "Describes how the system satisfies a set of controls.",
-    "$id" : "#assembly_oscal-ssp_control-implementation",
+    "$id" : "#/definitions/oscal-ssp-oscal-ssp:control-implementation",
     "type" : "object",
     "properties" : 
     { "description" : 
@@ -512,12 +512,12 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-implementation-common_set-parameter" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-implementation-common:set-parameter" } },
      "implemented-requirements" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-ssp_implemented-requirement" } } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-ssp:implemented-requirement" } } },
     "required" : 
     [ "description",
      "implemented-requirements" ],
@@ -525,7 +525,7 @@
    "oscal-ssp-oscal-ssp:implemented-requirement" : 
    { "title" : "Control-based Requirement",
     "description" : "Describes how the system satisfies the requirements of an individual control.",
-    "$id" : "#assembly_oscal-ssp_implemented-requirement",
+    "$id" : "#/definitions/oscal-ssp-oscal-ssp:implemented-requirement",
     "type" : "object",
     "properties" : 
     { "uuid" : 
@@ -540,34 +540,34 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_property" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
      "links" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_link" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } },
      "set-parameters" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-implementation-common_set-parameter" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-implementation-common:set-parameter" } },
      "responsible-roles" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_responsible-role" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:responsible-role" } },
      "statements" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-ssp_statement" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-ssp:statement" } },
      "by-components" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-ssp_by-component" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-ssp:by-component" } },
      "remarks" : 
-     { "$ref" : "#field_oscal-metadata_remarks" } },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
     "required" : 
     [ "uuid",
      "control-id" ],
@@ -575,7 +575,7 @@
    "oscal-ssp-oscal-ssp:statement" : 
    { "title" : "Specific Control Statement",
     "description" : "Identifies which statements within a control are addressed.",
-    "$id" : "#assembly_oscal-ssp_statement",
+    "$id" : "#/definitions/oscal-ssp-oscal-ssp:statement",
     "type" : "object",
     "properties" : 
     { "statement-id" : 
@@ -590,24 +590,24 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_property" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
      "links" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_link" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } },
      "responsible-roles" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_responsible-role" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:responsible-role" } },
      "by-components" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-ssp_by-component" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-ssp:by-component" } },
      "remarks" : 
-     { "$ref" : "#field_oscal-metadata_remarks" } },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
     "required" : 
     [ "statement-id",
      "uuid" ],
@@ -615,7 +615,7 @@
    "oscal-ssp-oscal-ssp:by-component" : 
    { "title" : "Component Control Implementation",
     "description" : "Defines how the referenced component implements a set of controls.",
-    "$id" : "#assembly_oscal-ssp_by-component",
+    "$id" : "#/definitions/oscal-ssp-oscal-ssp:by-component",
     "type" : "object",
     "properties" : 
     { "component-uuid" : 
@@ -634,19 +634,19 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_property" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
      "links" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_link" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } },
      "set-parameters" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-implementation-common_set-parameter" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-implementation-common:set-parameter" } },
      "implementation-status" : 
-     { "$ref" : "#assembly_oscal-implementation-common_implementation-status" },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-implementation-common:implementation-status" },
      "export" : 
      { "title" : "Export",
       "description" : "Identifies content intended for external consumption, such as with leveraged organizations.",
@@ -660,12 +660,12 @@
        { "type" : "array",
         "minItems" : 1,
         "items" : 
-        { "$ref" : "#assembly_oscal-metadata_property" } },
+        { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
        "links" : 
        { "type" : "array",
         "minItems" : 1,
         "items" : 
-        { "$ref" : "#assembly_oscal-metadata_link" } },
+        { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } },
        "provided" : 
        { "type" : "array",
         "minItems" : 1,
@@ -686,19 +686,19 @@
           { "type" : "array",
            "minItems" : 1,
            "items" : 
-           { "$ref" : "#assembly_oscal-metadata_property" } },
+           { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
           "links" : 
           { "type" : "array",
            "minItems" : 1,
            "items" : 
-           { "$ref" : "#assembly_oscal-metadata_link" } },
+           { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } },
           "responsible-roles" : 
           { "type" : "array",
            "minItems" : 1,
            "items" : 
-           { "$ref" : "#assembly_oscal-metadata_responsible-role" } },
+           { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:responsible-role" } },
           "remarks" : 
-          { "$ref" : "#field_oscal-metadata_remarks" } },
+          { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
          "required" : 
          [ "uuid",
           "description" ],
@@ -727,25 +727,25 @@
           { "type" : "array",
            "minItems" : 1,
            "items" : 
-           { "$ref" : "#assembly_oscal-metadata_property" } },
+           { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
           "links" : 
           { "type" : "array",
            "minItems" : 1,
            "items" : 
-           { "$ref" : "#assembly_oscal-metadata_link" } },
+           { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } },
           "responsible-roles" : 
           { "type" : "array",
            "minItems" : 1,
            "items" : 
-           { "$ref" : "#assembly_oscal-metadata_responsible-role" } },
+           { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:responsible-role" } },
           "remarks" : 
-          { "$ref" : "#field_oscal-metadata_remarks" } },
+          { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
          "required" : 
          [ "uuid",
           "description" ],
          "additionalProperties" : false } },
        "remarks" : 
-       { "$ref" : "#field_oscal-metadata_remarks" } },
+       { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
       "additionalProperties" : false },
      "inherited" : 
      { "type" : "array",
@@ -771,17 +771,17 @@
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_property" } },
+         { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
         "links" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_link" } },
+         { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } },
         "responsible-roles" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_responsible-role" } } },
+         { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:responsible-role" } } },
        "required" : 
        [ "uuid",
         "description" ],
@@ -810,19 +810,19 @@
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_property" } },
+         { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
         "links" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_link" } },
+         { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } },
         "responsible-roles" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_responsible-role" } },
+         { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:responsible-role" } },
         "remarks" : 
-        { "$ref" : "#field_oscal-metadata_remarks" } },
+        { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
        "required" : 
        [ "uuid",
         "description" ],
@@ -831,9 +831,9 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_responsible-role" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:responsible-role" } },
      "remarks" : 
-     { "$ref" : "#field_oscal-metadata_remarks" } },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
     "required" : 
     [ "component-uuid",
      "uuid",
@@ -842,7 +842,7 @@
    "oscal-ssp-oscal-metadata:metadata" : 
    { "title" : "Document Metadata",
     "description" : "Provides information about the containing document, and defines concepts that are shared across the document.",
-    "$id" : "#assembly_oscal-metadata_metadata",
+    "$id" : "#/definitions/oscal-ssp-oscal-metadata:metadata",
     "type" : "object",
     "properties" : 
     { "title" : 
@@ -850,13 +850,13 @@
       "description" : "A name given to the document, which may be used by a tool for display and navigation.",
       "type" : "string" },
      "published" : 
-     { "$ref" : "#field_oscal-metadata_published" },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:published" },
      "last-modified" : 
-     { "$ref" : "#field_oscal-metadata_last-modified" },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:last-modified" },
      "version" : 
-     { "$ref" : "#field_oscal-metadata_version" },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:version" },
      "oscal-version" : 
-     { "$ref" : "#field_oscal-metadata_oscal-version" },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:oscal-version" },
      "revisions" : 
      { "type" : "array",
       "minItems" : 1,
@@ -870,25 +870,25 @@
          "description" : "A name given to the document revision, which may be used by a tool for display and navigation.",
          "type" : "string" },
         "published" : 
-        { "$ref" : "#field_oscal-metadata_published" },
+        { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:published" },
         "last-modified" : 
-        { "$ref" : "#field_oscal-metadata_last-modified" },
+        { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:last-modified" },
         "version" : 
-        { "$ref" : "#field_oscal-metadata_version" },
+        { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:version" },
         "oscal-version" : 
-        { "$ref" : "#field_oscal-metadata_oscal-version" },
+        { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:oscal-version" },
         "props" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_property" } },
+         { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
         "links" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_link" } },
+         { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } },
         "remarks" : 
-        { "$ref" : "#field_oscal-metadata_remarks" } },
+        { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
        "required" : 
        [ "version" ],
        "additionalProperties" : false } },
@@ -896,17 +896,17 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#field_oscal-metadata_document-id" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:document-id" } },
      "props" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_property" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
      "links" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_link" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } },
      "roles" : 
      { "type" : "array",
       "minItems" : 1,
@@ -935,14 +935,14 @@
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_property" } },
+         { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
         "links" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_link" } },
+         { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } },
         "remarks" : 
-        { "$ref" : "#field_oscal-metadata_remarks" } },
+        { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
        "required" : 
        [ "id",
         "title" ],
@@ -964,17 +964,17 @@
          "description" : "A name given to the location, which may be used by a tool for display and navigation.",
          "type" : "string" },
         "address" : 
-        { "$ref" : "#assembly_oscal-metadata_address" },
+        { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:address" },
         "email-addresses" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#field_oscal-metadata_email-address" } },
+         { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:email-address" } },
         "telephone-numbers" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#field_oscal-metadata_telephone-number" } },
+         { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:telephone-number" } },
         "urls" : 
         { "type" : "array",
          "minItems" : 1,
@@ -986,14 +986,14 @@
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_property" } },
+         { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
         "links" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_link" } },
+         { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } },
         "remarks" : 
-        { "$ref" : "#field_oscal-metadata_remarks" } },
+        { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
        "required" : 
        [ "uuid" ],
        "additionalProperties" : false } },
@@ -1054,32 +1054,32 @@
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_property" } },
+         { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
         "links" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_link" } },
+         { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } },
         "email-addresses" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#field_oscal-metadata_email-address" } },
+         { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:email-address" } },
         "telephone-numbers" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#field_oscal-metadata_telephone-number" } },
+         { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:telephone-number" } },
         "addresses" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_address" } },
+         { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:address" } },
         "location-uuids" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#field_oscal-metadata_location-uuid" } },
+         { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:location-uuid" } },
         "member-of-organizations" : 
         { "type" : "array",
          "minItems" : 1,
@@ -1088,7 +1088,7 @@
           "description" : "A reference to another party by UUID, typically an organization, that this subject is associated with.",
           "$ref" : "#/definitions/UUIDDatatype" } },
         "remarks" : 
-        { "$ref" : "#field_oscal-metadata_remarks" } },
+        { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
        "required" : 
        [ "uuid",
         "type" ],
@@ -1097,14 +1097,14 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_responsible-party" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:responsible-party" } },
      "actions" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_action" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:action" } },
      "remarks" : 
-     { "$ref" : "#field_oscal-metadata_remarks" } },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
     "required" : 
     [ "title",
      "last-modified",
@@ -1114,22 +1114,22 @@
    "oscal-ssp-oscal-metadata:location-uuid" : 
    { "title" : "Location Universally Unique Identifier Reference",
     "description" : "Reference to a location by UUID.",
-    "$id" : "#field_oscal-metadata_location-uuid",
+    "$id" : "#/definitions/oscal-ssp-oscal-metadata:location-uuid",
     "$ref" : "#/definitions/UUIDDatatype" },
    "oscal-ssp-oscal-metadata:party-uuid" : 
    { "title" : "Party Universally Unique Identifier Reference",
     "description" : "Reference to a party by UUID.",
-    "$id" : "#field_oscal-metadata_party-uuid",
+    "$id" : "#/definitions/oscal-ssp-oscal-metadata:party-uuid",
     "$ref" : "#/definitions/UUIDDatatype" },
    "oscal-ssp-oscal-metadata:role-id" : 
    { "title" : "Role Identifier Reference",
     "description" : "Reference to a role by UUID.",
-    "$id" : "#field_oscal-metadata_role-id",
+    "$id" : "#/definitions/oscal-ssp-oscal-metadata:role-id",
     "$ref" : "#/definitions/TokenDatatype" },
    "oscal-ssp-oscal-metadata:back-matter" : 
    { "title" : "Back matter",
     "description" : "A collection of resources that may be referenced from within the OSCAL document instance.",
-    "$id" : "#assembly_oscal-metadata_back-matter",
+    "$id" : "#/definitions/oscal-ssp-oscal-metadata:back-matter",
     "type" : "object",
     "properties" : 
     { "resources" : 
@@ -1156,12 +1156,12 @@
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_property" } },
+         { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
         "document-ids" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#field_oscal-metadata_document-id" } },
+         { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:document-id" } },
         "citation" : 
         { "title" : "Citation",
          "description" : "An optional citation consisting of end note text using structured markup.",
@@ -1175,12 +1175,12 @@
           { "type" : "array",
            "minItems" : 1,
            "items" : 
-           { "$ref" : "#assembly_oscal-metadata_property" } },
+           { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
           "links" : 
           { "type" : "array",
            "minItems" : 1,
            "items" : 
-           { "$ref" : "#assembly_oscal-metadata_link" } } },
+           { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } } },
          "required" : 
          [ "text" ],
          "additionalProperties" : false },
@@ -1204,7 +1204,7 @@
            { "type" : "array",
             "minItems" : 1,
             "items" : 
-            { "$ref" : "#field_oscal-metadata_hash" } } },
+            { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:hash" } } },
           "required" : 
           [ "href" ],
           "additionalProperties" : false } },
@@ -1227,7 +1227,7 @@
          [ "value" ],
          "additionalProperties" : false },
         "remarks" : 
-        { "$ref" : "#field_oscal-metadata_remarks" } },
+        { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
        "required" : 
        [ "uuid" ],
        "additionalProperties" : false } } },
@@ -1235,12 +1235,12 @@
    "oscal-ssp-oscal-metadata:property" : 
    { "title" : "Property",
     "description" : "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.",
-    "$id" : "#assembly_oscal-metadata_property",
+    "$id" : "#/definitions/oscal-ssp-oscal-metadata:property",
     "type" : "object",
     "properties" : 
     { "name" : 
      { "title" : "Property Name",
-      "description" : "A textual label, within a namespace, that uniquely identifies a specific attribute, characteristic, or quality of the property's containing object.",
+      "description" : "A textual label, within a namespace, that identifies a specific attribute, characteristic, or quality of the property's containing object.",
       "$ref" : "#/definitions/TokenDatatype" },
      "uuid" : 
      { "title" : "Property Universally Unique Identifier",
@@ -1263,7 +1263,7 @@
       "description" : "An identifier for relating distinct sets of properties.",
       "$ref" : "#/definitions/TokenDatatype" },
      "remarks" : 
-     { "$ref" : "#field_oscal-metadata_remarks" } },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
     "required" : 
     [ "name",
      "value" ],
@@ -1271,7 +1271,7 @@
    "oscal-ssp-oscal-metadata:link" : 
    { "title" : "Link",
     "description" : "A reference to a local or remote resource, that has a specific relation to the containing object.",
-    "$id" : "#assembly_oscal-metadata_link",
+    "$id" : "#/definitions/oscal-ssp-oscal-metadata:link",
     "type" : "object",
     "properties" : 
     { "href" : 
@@ -1305,7 +1305,7 @@
    "oscal-ssp-oscal-metadata:responsible-party" : 
    { "title" : "Responsible Party",
     "description" : "A reference to a set of persons and/or organizations that have responsibility for performing the referenced role in the context of the containing object.",
-    "$id" : "#assembly_oscal-metadata_responsible-party",
+    "$id" : "#/definitions/oscal-ssp-oscal-metadata:responsible-party",
     "type" : "object",
     "properties" : 
     { "role-id" : 
@@ -1316,19 +1316,19 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#field_oscal-metadata_party-uuid" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:party-uuid" } },
      "props" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_property" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
      "links" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_link" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } },
      "remarks" : 
-     { "$ref" : "#field_oscal-metadata_remarks" } },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
     "required" : 
     [ "role-id",
      "party-uuids" ],
@@ -1336,7 +1336,7 @@
    "oscal-ssp-oscal-metadata:action" : 
    { "title" : "Action",
     "description" : "An action applied by a role within a given party to the content.",
-    "$id" : "#assembly_oscal-metadata_action",
+    "$id" : "#/definitions/oscal-ssp-oscal-metadata:action",
     "type" : "object",
     "properties" : 
     { "uuid" : 
@@ -1359,19 +1359,19 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_property" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
      "links" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_link" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } },
      "responsible-parties" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_responsible-party" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:responsible-party" } },
      "remarks" : 
-     { "$ref" : "#field_oscal-metadata_remarks" } },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
     "required" : 
     [ "uuid",
      "type",
@@ -1380,7 +1380,7 @@
    "oscal-ssp-oscal-metadata:responsible-role" : 
    { "title" : "Responsible Role",
     "description" : "A reference to a role with responsibility for performing a function relative to the containing object, optionally associated with a set of persons and/or organizations that perform that role.",
-    "$id" : "#assembly_oscal-metadata_responsible-role",
+    "$id" : "#/definitions/oscal-ssp-oscal-metadata:responsible-role",
     "type" : "object",
     "properties" : 
     { "role-id" : 
@@ -1391,26 +1391,26 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_property" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
      "links" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_link" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } },
      "party-uuids" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#field_oscal-metadata_party-uuid" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:party-uuid" } },
      "remarks" : 
-     { "$ref" : "#field_oscal-metadata_remarks" } },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
     "required" : 
     [ "role-id" ],
     "additionalProperties" : false },
    "oscal-ssp-oscal-metadata:hash" : 
    { "title" : "Hash",
     "description" : "A representation of a cryptographic digest generated over a resource using a specified hash algorithm.",
-    "$id" : "#field_oscal-metadata_hash",
+    "$id" : "#/definitions/oscal-ssp-oscal-metadata:hash",
     "type" : "object",
     "properties" : 
     { "algorithm" : 
@@ -1438,37 +1438,37 @@
    "oscal-ssp-oscal-metadata:remarks" : 
    { "title" : "Remarks",
     "description" : "Additional commentary about the containing object.",
-    "$id" : "#field_oscal-metadata_remarks",
+    "$id" : "#/definitions/oscal-ssp-oscal-metadata:remarks",
     "type" : "string" },
    "oscal-ssp-oscal-metadata:published" : 
    { "title" : "Publication Timestamp",
     "description" : "The date and time the document was last made available.",
-    "$id" : "#field_oscal-metadata_published",
+    "$id" : "#/definitions/oscal-ssp-oscal-metadata:published",
     "$ref" : "#/definitions/DateTimeWithTimezoneDatatype" },
    "oscal-ssp-oscal-metadata:last-modified" : 
    { "title" : "Last Modified Timestamp",
     "description" : "The date and time the document was last stored for later retrieval.",
-    "$id" : "#field_oscal-metadata_last-modified",
+    "$id" : "#/definitions/oscal-ssp-oscal-metadata:last-modified",
     "$ref" : "#/definitions/DateTimeWithTimezoneDatatype" },
    "oscal-ssp-oscal-metadata:version" : 
    { "title" : "Document Version",
     "description" : "Used to distinguish a specific revision of an OSCAL document from other previous and future versions.",
-    "$id" : "#field_oscal-metadata_version",
+    "$id" : "#/definitions/oscal-ssp-oscal-metadata:version",
     "$ref" : "#/definitions/StringDatatype" },
    "oscal-ssp-oscal-metadata:oscal-version" : 
    { "title" : "OSCAL Version",
     "description" : "The OSCAL model version the document was authored against and will conform to as valid.",
-    "$id" : "#field_oscal-metadata_oscal-version",
+    "$id" : "#/definitions/oscal-ssp-oscal-metadata:oscal-version",
     "$ref" : "#/definitions/StringDatatype" },
    "oscal-ssp-oscal-metadata:email-address" : 
    { "title" : "Email Address",
     "description" : "An email address as defined by RFC 5322 Section 3.4.1.",
-    "$id" : "#field_oscal-metadata_email-address",
+    "$id" : "#/definitions/oscal-ssp-oscal-metadata:email-address",
     "$ref" : "#/definitions/EmailAddressDatatype" },
    "oscal-ssp-oscal-metadata:telephone-number" : 
    { "title" : "Telephone Number",
     "description" : "A telephone service number as defined by ITU-T E.164.",
-    "$id" : "#field_oscal-metadata_telephone-number",
+    "$id" : "#/definitions/oscal-ssp-oscal-metadata:telephone-number",
     "type" : "object",
     "properties" : 
     { "type" : 
@@ -1490,7 +1490,7 @@
    "oscal-ssp-oscal-metadata:address" : 
    { "title" : "Address",
     "description" : "A postal address for the location.",
-    "$id" : "#assembly_oscal-metadata_address",
+    "$id" : "#/definitions/oscal-ssp-oscal-metadata:address",
     "type" : "object",
     "properties" : 
     { "type" : 
@@ -1507,7 +1507,7 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#field_oscal-metadata_addr-line" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:addr-line" } },
      "city" : 
      { "title" : "City",
       "description" : "City, town or geographical region for the mailing address.",
@@ -1528,12 +1528,12 @@
    "oscal-ssp-oscal-metadata:addr-line" : 
    { "title" : "Address line",
     "description" : "A single line of an address.",
-    "$id" : "#field_oscal-metadata_addr-line",
+    "$id" : "#/definitions/oscal-ssp-oscal-metadata:addr-line",
     "$ref" : "#/definitions/StringDatatype" },
    "oscal-ssp-oscal-metadata:document-id" : 
    { "title" : "Document Identifier",
     "description" : "A document identifier qualified by an identifier scheme.",
-    "$id" : "#field_oscal-metadata_document-id",
+    "$id" : "#/definitions/oscal-ssp-oscal-metadata:document-id",
     "type" : "object",
     "properties" : 
     { "scheme" : 
@@ -1553,7 +1553,7 @@
    "oscal-ssp-oscal-implementation-common:system-component" : 
    { "title" : "Component",
     "description" : "A defined component that can be part of an implemented system.",
-    "$id" : "#assembly_oscal-implementation-common_system-component",
+    "$id" : "#/definitions/oscal-ssp-oscal-implementation-common:system-component",
     "type" : "object",
     "properties" : 
     { "uuid" : 
@@ -1598,12 +1598,12 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_property" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
      "links" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_link" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } },
      "status" : 
      { "title" : "Status",
       "description" : "Describes the operational status of the system component.",
@@ -1622,7 +1622,7 @@
            "disposition",
            "other" ] } ] },
        "remarks" : 
-       { "$ref" : "#field_oscal-metadata_remarks" } },
+       { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
       "required" : 
       [ "state" ],
       "additionalProperties" : false },
@@ -1630,14 +1630,14 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_responsible-role" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:responsible-role" } },
      "protocols" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-implementation-common_protocol" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-implementation-common:protocol" } },
      "remarks" : 
-     { "$ref" : "#field_oscal-metadata_remarks" } },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
     "required" : 
     [ "uuid",
      "type",
@@ -1648,7 +1648,7 @@
    "oscal-ssp-oscal-implementation-common:protocol" : 
    { "title" : "Service Protocol Information",
     "description" : "Information about the protocol used to provide a service.",
-    "$id" : "#assembly_oscal-implementation-common_protocol",
+    "$id" : "#/definitions/oscal-ssp-oscal-implementation-common:protocol",
     "type" : "object",
     "properties" : 
     { "uuid" : 
@@ -1667,23 +1667,21 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-implementation-common_port-range" } } },
-    "required" : 
-    [ "name" ],
+      { "$ref" : "#/definitions/oscal-ssp-oscal-implementation-common:port-range" } } },
     "additionalProperties" : false },
    "oscal-ssp-oscal-implementation-common:port-range" : 
    { "title" : "Port Range",
-    "description" : "Where applicable this is the IPv4 port range on which the service operates.",
-    "$id" : "#assembly_oscal-implementation-common_port-range",
+    "description" : "Where applicable this is the transport layer protocol port range an IPv4-based or IPv6-based service uses.",
+    "$id" : "#/definitions/oscal-ssp-oscal-implementation-common:port-range",
     "type" : "object",
     "properties" : 
     { "start" : 
      { "title" : "Start",
-      "description" : "Indicates the starting port number in a port range",
+      "description" : "Indicates the starting port number in a port range for a transport layer protocol",
       "$ref" : "#/definitions/NonNegativeIntegerDatatype" },
      "end" : 
      { "title" : "End",
-      "description" : "Indicates the ending port number in a port range",
+      "description" : "Indicates the ending port number in a port range for a transport layer protocol",
       "$ref" : "#/definitions/NonNegativeIntegerDatatype" },
      "transport" : 
      { "title" : "Transport",
@@ -1699,7 +1697,7 @@
    "oscal-ssp-oscal-implementation-common:implementation-status" : 
    { "title" : "Implementation Status",
     "description" : "Indicates the degree to which the a given control is implemented.",
-    "$id" : "#assembly_oscal-implementation-common_implementation-status",
+    "$id" : "#/definitions/oscal-ssp-oscal-implementation-common:implementation-status",
     "type" : "object",
     "properties" : 
     { "state" : 
@@ -1716,14 +1714,14 @@
          "alternative",
          "not-applicable" ] } ] },
      "remarks" : 
-     { "$ref" : "#field_oscal-metadata_remarks" } },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
     "required" : 
     [ "state" ],
     "additionalProperties" : false },
    "oscal-ssp-oscal-implementation-common:system-user" : 
    { "title" : "System User",
     "description" : "A type of user that interacts with the system based on an associated role.",
-    "$id" : "#assembly_oscal-implementation-common_system-user",
+    "$id" : "#/definitions/oscal-ssp-oscal-implementation-common:system-user",
     "type" : "object",
     "properties" : 
     { "uuid" : 
@@ -1746,31 +1744,31 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_property" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
      "links" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_link" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } },
      "role-ids" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#field_oscal-metadata_role-id" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:role-id" } },
      "authorized-privileges" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-implementation-common_authorized-privilege" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-implementation-common:authorized-privilege" } },
      "remarks" : 
-     { "$ref" : "#field_oscal-metadata_remarks" } },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
     "required" : 
     [ "uuid" ],
     "additionalProperties" : false },
    "oscal-ssp-oscal-implementation-common:authorized-privilege" : 
    { "title" : "Privilege",
     "description" : "Identifies a specific system privilege held by the user, along with an associated description and/or rationale for the privilege.",
-    "$id" : "#assembly_oscal-implementation-common_authorized-privilege",
+    "$id" : "#/definitions/oscal-ssp-oscal-implementation-common:authorized-privilege",
     "type" : "object",
     "properties" : 
     { "title" : 
@@ -1785,7 +1783,7 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#field_oscal-implementation-common_function-performed" } } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-implementation-common:function-performed" } } },
     "required" : 
     [ "title",
      "functions-performed" ],
@@ -1793,12 +1791,12 @@
    "oscal-ssp-oscal-implementation-common:function-performed" : 
    { "title" : "Functions Performed",
     "description" : "Describes a function performed for a given authorized privilege by this user class.",
-    "$id" : "#field_oscal-implementation-common_function-performed",
+    "$id" : "#/definitions/oscal-ssp-oscal-implementation-common:function-performed",
     "$ref" : "#/definitions/StringDatatype" },
    "oscal-ssp-oscal-implementation-common:inventory-item" : 
    { "title" : "Inventory Item",
     "description" : "A single managed inventory item within the system.",
-    "$id" : "#assembly_oscal-implementation-common_inventory-item",
+    "$id" : "#/definitions/oscal-ssp-oscal-implementation-common:inventory-item",
     "type" : "object",
     "properties" : 
     { "uuid" : 
@@ -1813,17 +1811,17 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_property" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
      "links" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_link" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } },
      "responsible-parties" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_responsible-party" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:responsible-party" } },
      "implemented-components" : 
      { "type" : "array",
       "minItems" : 1,
@@ -1840,24 +1838,24 @@
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_property" } },
+         { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
         "links" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_link" } },
+         { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } },
         "responsible-parties" : 
         { "type" : "array",
          "minItems" : 1,
          "items" : 
-         { "$ref" : "#assembly_oscal-metadata_responsible-party" } },
+         { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:responsible-party" } },
         "remarks" : 
-        { "$ref" : "#field_oscal-metadata_remarks" } },
+        { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
        "required" : 
        [ "component-uuid" ],
        "additionalProperties" : false } },
      "remarks" : 
-     { "$ref" : "#field_oscal-metadata_remarks" } },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
     "required" : 
     [ "uuid",
      "description" ],
@@ -1865,7 +1863,7 @@
    "oscal-ssp-oscal-implementation-common:set-parameter" : 
    { "title" : "Set Parameter Value",
     "description" : "Identifies the parameter that will be set by the enclosed value.",
-    "$id" : "#assembly_oscal-implementation-common_set-parameter",
+    "$id" : "#/definitions/oscal-ssp-oscal-implementation-common:set-parameter",
     "type" : "object",
     "properties" : 
     { "param-id" : 
@@ -1880,7 +1878,7 @@
        "description" : "A parameter value or set of values.",
        "$ref" : "#/definitions/StringDatatype" } },
      "remarks" : 
-     { "$ref" : "#field_oscal-metadata_remarks" } },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
     "required" : 
     [ "param-id",
      "values" ],
@@ -1888,7 +1886,7 @@
    "oscal-ssp-oscal-implementation-common:system-id" : 
    { "title" : "System Identification",
     "description" : "A human-oriented, globally unique identifier with cross-instance scope that can be used to reference this system identification property elsewhere in this or other OSCAL instances. When referencing an externally defined system identification, the system identification must be used in the context of the external / imported OSCAL instance (e.g., uri-reference). This string should be assigned per-subject, which means it should be consistently used to identify the same system across revisions of the document.",
-    "$id" : "#field_oscal-implementation-common_system-id",
+    "$id" : "#/definitions/oscal-ssp-oscal-implementation-common:system-id",
     "type" : "object",
     "properties" : 
     { "identifier-type" : 
@@ -1911,7 +1909,7 @@
    "oscal-ssp-oscal-control-common:part" : 
    { "title" : "Part",
     "description" : "An annotated, markup-based textual element of a control's or catalog group's definition, or a child of another part.",
-    "$id" : "#assembly_oscal-control-common_part",
+    "$id" : "#/definitions/oscal-ssp-oscal-control-common:part",
     "type" : "object",
     "properties" : 
     { "id" : 
@@ -1938,7 +1936,7 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_property" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
      "prose" : 
      { "title" : "Part Text",
       "description" : "Permits multiple paragraphs, lists, tables etc.",
@@ -1947,19 +1945,19 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-control-common_part" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-control-common:part" } },
      "links" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_link" } } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } } },
     "required" : 
     [ "name" ],
     "additionalProperties" : false },
    "oscal-ssp-oscal-control-common:parameter" : 
    { "title" : "Parameter",
     "description" : "Parameters provide a mechanism for the dynamic assignment of value(s) in a control.",
-    "$id" : "#assembly_oscal-control-common_parameter",
+    "$id" : "#/definitions/oscal-ssp-oscal-control-common:parameter",
     "type" : "object",
     "properties" : 
     { "id" : 
@@ -1978,12 +1976,12 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_property" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:property" } },
      "links" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-metadata_link" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:link" } },
      "label" : 
      { "title" : "Parameter Label",
       "description" : "A short, placeholder name for the parameter, which can be used as a substitute for a value if no value is assigned.",
@@ -1996,28 +1994,28 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-control-common_parameter-constraint" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-control-common:parameter-constraint" } },
      "guidelines" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#assembly_oscal-control-common_parameter-guideline" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-control-common:parameter-guideline" } },
      "values" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#field_oscal-control-common_parameter-value" } },
+      { "$ref" : "#/definitions/oscal-ssp-oscal-control-common:parameter-value" } },
      "select" : 
-     { "$ref" : "#assembly_oscal-control-common_parameter-selection" },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-control-common:parameter-selection" },
      "remarks" : 
-     { "$ref" : "#field_oscal-metadata_remarks" } },
+     { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
     "required" : 
     [ "id" ],
     "additionalProperties" : false },
    "oscal-ssp-oscal-control-common:parameter-constraint" : 
    { "title" : "Constraint",
     "description" : "A formal or informal expression of a constraint or test.",
-    "$id" : "#assembly_oscal-control-common_parameter-constraint",
+    "$id" : "#/definitions/oscal-ssp-oscal-control-common:parameter-constraint",
     "type" : "object",
     "properties" : 
     { "description" : 
@@ -2037,7 +2035,7 @@
          "description" : "A formal (executable) expression of a constraint.",
          "$ref" : "#/definitions/StringDatatype" },
         "remarks" : 
-        { "$ref" : "#field_oscal-metadata_remarks" } },
+        { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
        "required" : 
        [ "expression" ],
        "additionalProperties" : false } } },
@@ -2045,7 +2043,7 @@
    "oscal-ssp-oscal-control-common:parameter-guideline" : 
    { "title" : "Guideline",
     "description" : "A prose statement that provides a recommendation for the use of a parameter.",
-    "$id" : "#assembly_oscal-control-common_parameter-guideline",
+    "$id" : "#/definitions/oscal-ssp-oscal-control-common:parameter-guideline",
     "type" : "object",
     "properties" : 
     { "prose" : 
@@ -2058,12 +2056,12 @@
    "oscal-ssp-oscal-control-common:parameter-value" : 
    { "title" : "Parameter Value",
     "description" : "A parameter value or set of values.",
-    "$id" : "#field_oscal-control-common_parameter-value",
+    "$id" : "#/definitions/oscal-ssp-oscal-control-common:parameter-value",
     "$ref" : "#/definitions/StringDatatype" },
    "oscal-ssp-oscal-control-common:parameter-selection" : 
    { "title" : "Selection",
     "description" : "Presenting a choice among alternatives.",
-    "$id" : "#assembly_oscal-control-common_parameter-selection",
+    "$id" : "#/definitions/oscal-ssp-oscal-control-common:parameter-selection",
     "type" : "object",
     "properties" : 
     { "how-many" : 
@@ -2087,7 +2085,7 @@
    "oscal-ssp-oscal-control-common:include-all" : 
    { "title" : "Include All",
     "description" : "Include all controls from the imported catalog or profile resources.",
-    "$id" : "#assembly_oscal-control-common_include-all",
+    "$id" : "#/definitions/oscal-ssp-oscal-control-common:include-all",
     "type" : "object",
     "additionalProperties" : false },
    "Base64Datatype" : 
@@ -2147,9 +2145,9 @@
     "pattern" : "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$" } },
   "properties" : 
   { "$schema" : 
-   { "$ref" : "#json-schema-directive" },
+   { "$ref" : "#/definitions/json-schema-directive" },
    "system-security-plan" : 
-   { "$ref" : "#assembly_oscal-ssp_system-security-plan" } },
+   { "$ref" : "#/definitions/oscal-ssp-oscal-ssp:system-security-plan" } },
   "required" : 
   [ "system-security-plan" ],
   "additionalProperties" : false }

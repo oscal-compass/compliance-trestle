@@ -21,7 +21,7 @@ import uuid
 
 from _pytest.monkeypatch import MonkeyPatch
 
-from tests.test_utils import text_files_equal
+from tests.test_utils import text_files_similar
 
 import trestle
 import trestle.tasks.ocp4_cis_profile_to_oscal_cd as ocp4_cis_profile_to_oscal_cd
@@ -89,7 +89,7 @@ def test_ocp4_cis_profile_to_oscal_cd_execute(tmp_path: pathlib.Path, monkeypatc
     for fn in list_dir:
         f_expected = d_expected / fn
         f_produced = d_produced / fn
-        result = text_files_equal(f_expected, f_produced)
+        result = text_files_similar(f_expected, f_produced, 'oscal-version')
         assert result
 
 
@@ -115,7 +115,7 @@ def test_ocp4_cis_profile_to_oscal_cd_execute_selected_rules2(tmp_path: pathlib.
     for fn in list_dir:
         f_expected = d_expected / fn
         f_produced = d_produced / fn
-        result = text_files_equal(f_expected, f_produced)
+        result = text_files_similar(f_expected, f_produced, 'oscal-version')
         assert result
 
 
@@ -141,7 +141,7 @@ def test_ocp4_cis_profile_to_oscal_cd_execute_enabled_rules2(tmp_path: pathlib.P
     for fn in list_dir:
         f_expected = d_expected / fn
         f_produced = d_produced / fn
-        result = text_files_equal(f_expected, f_produced)
+        result = text_files_similar(f_expected, f_produced, 'oscal-version')
         assert result
 
 
