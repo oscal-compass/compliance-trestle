@@ -476,8 +476,6 @@ class ControlWriter():
                        context: ControlContext) -> Dict[str, Any]:
         merged_header = copy.deepcopy(md_header)
         ControlInterface.merge_dicts_deep(merged_header, memory_header, False, 1)
-        # merge additional cli yaml header, if specified
-        ControlInterface.merge_dicts_deep(merged_header, context.cli_yaml_header, False, 1)
         return merged_header
 
     def write_control_for_editing(
@@ -551,6 +549,11 @@ class ControlWriter():
             ControlInterface.merge_dicts_deep(
                 context.merged_header, context.cli_yaml_header, context.overwrite_header_values
             )
+        elif context.overwrite_header_values:
+            ControlInterface.merge_dicts_deep(
+                context.merged_header, context.cli_yaml_header, context.overwrite_header_values
+            )
+
         # the global contents are special and get overwritten on generate
         set_or_pop(
             context.merged_header,
