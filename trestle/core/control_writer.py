@@ -549,6 +549,11 @@ class ControlWriter():
             ControlInterface.merge_dicts_deep(
                 context.merged_header, context.cli_yaml_header, context.overwrite_header_values
             )
+        elif context.overwrite_header_values:
+            ControlInterface.merge_dicts_deep(
+                context.merged_header, context.cli_yaml_header, context.overwrite_header_values
+            )
+
         # the global contents are special and get overwritten on generate
         set_or_pop(
             context.merged_header,
