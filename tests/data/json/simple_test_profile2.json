@@ -88,10 +88,23 @@
             "all meetings"
           ]
         },
-        {  "param_id": "ac-1_prm_6",
-            "values": [
-              "monthly"
-            ]
+        {
+          "param_id": "ac-1_prm_6",
+          "props": [
+            {
+              "name": "display-name",
+              "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal",
+              "value": "Pretty ac-1 prm 6"
+            },
+            {
+              "name": "param-value-origin",
+              "value": "comes from mno policy"
+            }
+          ],
+          "label": "label from profile",
+          "values": [
+            "monthly"
+          ]
         },
         {  "param_id": "ac-2_prm_1",
             "values": [
