@@ -360,7 +360,7 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
     """Test profile generate assemble with overwrite-header-values."""
     ac1_path, assembled_prof_dir, profile_path, markdown_path = setup_profile_generate(
         tmp_trestle_dir,
-        'simple_test_profile.json'
+        'simple_test_profile2.json'
     )
     yaml_header_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
     new_version = '1.2.3'
@@ -419,7 +419,7 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
             assert set_params[3].label == 'meetings cancelled from cli yaml'
         else:
             assert set_params[3].values[0] == 'all meetings'
-            assert set_params[3].label is None
+            assert set_params[3].label == 'label from profile'
 
         catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, assembled_prof_dir / 'profile.json')
         catalog_interface = CatalogInterface(catalog)
