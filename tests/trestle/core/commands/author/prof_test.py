@@ -404,6 +404,9 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
             FileContentType.JSON
         )
         set_params = profile.modify.set_parameters
+        
+        with open("/tmp/set_params.txt", "w") as file:
+            file.write(f"{set_params}")
 
         assert len(set_params) == 14
         assert set_params[0].values[0] == 'all personnel'
