@@ -1489,6 +1489,7 @@ def test_profile_values_included_if_replaced(tmp_trestle_dir: pathlib.Path, monk
 
     profile, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'my_assembled_prof',
                                                  prof.Profile, FileContentType.JSON)
+    set_params = sorted(profile.modify.set_parameters, key=lambda x: x.param_id)
 
     # grabs 6 parameter in line and test out the value is in there
-    assert 'Test value' in profile.modify.set_parameters[6].values
+    assert 'Test value' in set_params[6].values
