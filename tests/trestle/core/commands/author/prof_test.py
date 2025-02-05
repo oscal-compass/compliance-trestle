@@ -403,8 +403,8 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
             prof.Profile,
             FileContentType.JSON
         )
-        set_params = profile.modify.set_parameters
-
+        # assure sorted by param_id
+        set_params = sorted(profile.modify.set_parameters, key=lambda x: x.param_id)
         assert len(set_params) == 14
         assert set_params[0].values[0] == 'all personnel'
         # the label is present in the header so it ends up in the set_parameter
