@@ -360,7 +360,7 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
     """Test profile generate assemble with overwrite-header-values."""
     ac1_path, assembled_prof_dir, profile_path, markdown_path = setup_profile_generate(
         tmp_trestle_dir,
-        'simple_test_profile.json'
+        'simple_test_profile2.json'
     )
     yaml_header_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
     new_version = '1.2.3'
