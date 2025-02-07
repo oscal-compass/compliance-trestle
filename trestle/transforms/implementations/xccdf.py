@@ -219,7 +219,7 @@ class _XccdfResult():
 
     def _get_version(self, root: Element) -> str:
         """Extract version from the XML."""
-        value = None
+        value = '0'
         for key, val in root.attrib.items():
             if key == 'version':
                 value = val
