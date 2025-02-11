@@ -20,14 +20,10 @@ It then reorders the classes so there are minimal forwards required.
 This script is normally called by gen_oscal.py when models are generated.
 
 gen_oscal.py only need to be run when there is a need to update the python oscal classes to track new schemas
-in the nist-source repository at the nist oscal web site.  The local version of that site is cloned as a
-submodule in the trestle directory, and it would only be updated if you run the git submodule update command
-(see gen_oscal.py for details).
-
-Normally the submodule is set to track the main, or release, branch of the nist-source - but there may be a need
-to work with 'draft' versions of the schemas, which are found in the develop branch of nist-source.  In that case
-the makefile should specify the develop branch for the submodule and execute the `git submodule update --remote` as
-shown in the Makefile for trestle.
+in the https://github.com/usnistgov/OSCAL/releases web site.  The local version is created manually by:
+- download the zip/tar for the desired version
+- extract the contents
+- copy the json/schema/*.json files into the release-schemas folder
 
 The main purpose of this script is to collapse the long-name versions of the classes into as simple a version as
 possible, while also collecting common classes into a separate file, common.py.
