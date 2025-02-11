@@ -148,7 +148,7 @@ This command will return the current version of Trestle and OSCAL it is using.
 
 Running `trestle version` will return:
 
-> Trestle version v2.0.0 based on OSCAL version 1.0.4
+> Trestle version v3.x.x based on OSCAL version 1.1.2
 
 It can also be used to retrieve the metadata version of the OSCAL object:
 
@@ -165,7 +165,7 @@ It can also be used to retrieve the metadata version of the OSCAL object:
 
       "version": "0.1.10", <<< this version here
 
-      "oscal-version": "1.0.4"
+      "oscal-version": "1.1.2"
 
     },
 ...
@@ -176,7 +176,7 @@ It can also be used to retrieve the metadata version of the OSCAL object:
 
 Running `trestle version -n nist -t catalog` will return:
 
-> Version of OSCAL object of nist catalog is: 1.0.0
+> Version of OSCAL object of nist catalog is: 1.1.2
 
 ## `trestle init`
 

@@ -321,7 +321,7 @@ Access control policy and procedures address the controls in the AC family that 
 <!-- "## Part" parts are new subparts added into the existing top-level statement part with that label. -->
 <!-- Subparts may be added with nested hash levels of the form ### My Subpart Name -->
 <!-- underneath the parent ## Control or ## Part being added -->
-<!-- See https://oscal-compass.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring for guidance. -->
+<!-- See https://oscal-compass.github.io/compliance-trestle/latest/tutorials/Trestle_authoring/ssp_profile_catalog_authoring/ for guidance. -->
 
 ## Control Implementation Guidance
 
