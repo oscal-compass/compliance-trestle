@@ -231,6 +231,7 @@ class CisXlsxToOscalCatalog(TaskBase):
             config_object: Config section associated with the task.
         """
         super().__init__(config_object)
+        logger.warning('This task is deprecated. Use task cis-xlsx-to-oscal-cd.')
 
     def print_info(self) -> None:
         """Print the help string."""
