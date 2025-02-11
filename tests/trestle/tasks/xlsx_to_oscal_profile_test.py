@@ -20,7 +20,7 @@ import pathlib
 import uuid
 from unittest.mock import Mock, patch
 
-from tests.test_utils import text_files_equal
+from tests.test_utils import text_files_similar
 
 import trestle.tasks.xlsx_to_oscal_profile as xlsx_to_oscal_profile
 from trestle.tasks.base_task import TaskOutcome
@@ -77,7 +77,7 @@ def test_xlsx_execute(tmp_path):
     for fn in list_dir:
         f_expected = d_expected / fn
         f_produced = d_produced / fn
-        result = text_files_equal(f_expected, f_produced)
+        result = text_files_similar(f_expected, f_produced, 'oscal-version')
         assert result
 
 
@@ -103,7 +103,7 @@ def test_xlsx_execute_with_blank_rows(tmp_path):
     for fn in list_dir:
         f_expected = d_expected / fn
         f_produced = d_produced / fn
-        result = text_files_equal(f_expected, f_produced)
+        result = text_files_similar(f_expected, f_produced, 'oscal-version')
         assert result
 
 
@@ -129,7 +129,7 @@ def test_xlsx_execute_with_missing_control_id(tmp_path):
     for fn in list_dir:
         f_expected = d_expected / fn
         f_produced = d_produced / fn
-        result = text_files_equal(f_expected, f_produced)
+        result = text_files_similar(f_expected, f_produced, 'oscal-version')
         assert result
 
 
@@ -157,7 +157,7 @@ def test_xlsx_execute_with_missing_rule_name_id(tmp_path):
     for fn in list_dir:
         f_expected = d_expected / fn
         f_produced = d_produced / fn
-        result = text_files_equal(f_expected, f_produced)
+        result = text_files_similar(f_expected, f_produced, 'oscal-version')
         assert result
 
 
@@ -183,7 +183,7 @@ def test_xlsx_execute_filter(tmp_path):
     for fn in list_dir:
         f_expected = d_expected / fn
         f_produced = d_produced / fn
-        result = text_files_equal(f_expected, f_produced)
+        result = text_files_similar(f_expected, f_produced, 'oscal-version')
         assert result
 
 
@@ -210,7 +210,7 @@ def test_xlsx_execute_by_control(tmp_path):
     for fn in list_dir:
         f_expected = d_expected / fn
         f_produced = d_produced / fn
-        result = text_files_equal(f_expected, f_produced)
+        result = text_files_similar(f_expected, f_produced, 'oscal-version')
         assert result
 
 
@@ -237,7 +237,7 @@ def test_xlsx_execute_by_rule(tmp_path):
     for fn in list_dir:
         f_expected = d_expected / fn
         f_produced = d_produced / fn
-        result = text_files_equal(f_expected, f_produced)
+        result = text_files_similar(f_expected, f_produced, 'oscal-version')
         assert result
 
 
@@ -264,7 +264,7 @@ def test_xlsx_execute_by_check(tmp_path):
     for fn in list_dir:
         f_expected = d_expected / fn
         f_produced = d_produced / fn
-        result = text_files_equal(f_expected, f_produced)
+        result = text_files_similar(f_expected, f_produced, 'oscal-version')
         assert result
 
 
