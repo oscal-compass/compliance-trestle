@@ -556,8 +556,7 @@
 <span class=normal>588</span>
 <span class=normal>589</span>
 <span class=normal>590</span>
-<span class=normal>591</span>
-<span class=normal>592</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ControlWriter</span><span class=p>():</span>
+<span class=normal>591</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ControlWriter</span><span class=p>():</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Class to write controls as markdown.&quot;&quot;&quot;</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
@@ -1072,10 +1071,9 @@
         <span class=c1># in the yaml header and allow overwrite_header_values to control whether it overwrites an existing one</span>
         <span class=c1># in the markdown header</span>
         <span class=n>context</span><span class=o>.</span><span class=n>cli_yaml_header</span> <span class=o>=</span> <span class=n>as_dict</span><span class=p>(</span><span class=n>context</span><span class=o>.</span><span class=n>cli_yaml_header</span><span class=p>)</span>
-        <span class=k>if</span> <span class=n>context</span><span class=o>.</span><span class=n>purpose</span> <span class=o>!=</span> <span class=n>ContextPurpose</span><span class=o>.</span><span class=n>PROFILE</span><span class=p>:</span>
-            <span class=n>ControlInterface</span><span class=o>.</span><span class=n>merge_dicts_deep</span><span class=p>(</span>
-                <span class=n>context</span><span class=o>.</span><span class=n>merged_header</span><span class=p>,</span> <span class=n>context</span><span class=o>.</span><span class=n>cli_yaml_header</span><span class=p>,</span> <span class=n>context</span><span class=o>.</span><span class=n>overwrite_header_values</span>
-            <span class=p>)</span>
+        <span class=n>ControlInterface</span><span class=o>.</span><span class=n>merge_dicts_deep</span><span class=p>(</span>
+            <span class=n>context</span><span class=o>.</span><span class=n>merged_header</span><span class=p>,</span> <span class=n>context</span><span class=o>.</span><span class=n>cli_yaml_header</span><span class=p>,</span> <span class=n>context</span><span class=o>.</span><span class=n>overwrite_header_values</span>
+        <span class=p>)</span>
         <span class=c1># the global contents are special and get overwritten on generate</span>
         <span class=n>set_or_pop</span><span class=p>(</span>
             <span class=n>context</span><span class=o>.</span><span class=n>merged_header</span><span class=p>,</span>
@@ -1232,8 +1230,7 @@
 <span class=normal>588</span>
 <span class=normal>589</span>
 <span class=normal>590</span>
-<span class=normal>591</span>
-<span class=normal>592</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>write_control_for_editing</span><span class=p>(</span>
+<span class=normal>591</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>write_control_for_editing</span><span class=p>(</span>
     <span class=bp>self</span><span class=p>,</span>
     <span class=n>context</span><span class=p>:</span> <span class=n>ControlContext</span><span class=p>,</span>
     <span class=n>control</span><span class=p>:</span> <span class=n>cat</span><span class=o>.</span><span class=n>Control</span><span class=p>,</span>
@@ -1300,10 +1297,9 @@
     <span class=c1># in the yaml header and allow overwrite_header_values to control whether it overwrites an existing one</span>
     <span class=c1># in the markdown header</span>
     <span class=n>context</span><span class=o>.</span><span class=n>cli_yaml_header</span> <span class=o>=</span> <span class=n>as_dict</span><span class=p>(</span><span class=n>context</span><span class=o>.</span><span class=n>cli_yaml_header</span><span class=p>)</span>
-    <span class=k>if</span> <span class=n>context</span><span class=o>.</span><span class=n>purpose</span> <span class=o>!=</span> <span class=n>ContextPurpose</span><span class=o>.</span><span class=n>PROFILE</span><span class=p>:</span>
-        <span class=n>ControlInterface</span><span class=o>.</span><span class=n>merge_dicts_deep</span><span class=p>(</span>
-            <span class=n>context</span><span class=o>.</span><span class=n>merged_header</span><span class=p>,</span> <span class=n>context</span><span class=o>.</span><span class=n>cli_yaml_header</span><span class=p>,</span> <span class=n>context</span><span class=o>.</span><span class=n>overwrite_header_values</span>
-        <span class=p>)</span>
+    <span class=n>ControlInterface</span><span class=o>.</span><span class=n>merge_dicts_deep</span><span class=p>(</span>
+        <span class=n>context</span><span class=o>.</span><span class=n>merged_header</span><span class=p>,</span> <span class=n>context</span><span class=o>.</span><span class=n>cli_yaml_header</span><span class=p>,</span> <span class=n>context</span><span class=o>.</span><span class=n>overwrite_header_values</span>
+    <span class=p>)</span>
     <span class=c1># the global contents are special and get overwritten on generate</span>
     <span class=n>set_or_pop</span><span class=p>(</span>
         <span class=n>context</span><span class=o>.</span><span class=n>merged_header</span><span class=p>,</span>
