@@ -91,12 +91,15 @@ docs-ubuntu-deps:
 docs-automation::
 	python ./scripts/website_automation.py
 
+
+# docs validate remains using mkdocs as mike does not have a build validation tool for serving
 docs-validate:: docs-automation
 	mkdocs build -c -s
 	rm -rf site
 
 docs-serve: docs-automation
-	mkdocs serve	
+	git fetch origin gh-pages
+	mike serve	
 
 mdformat:
 	pre-commit run mdformat --all-files
