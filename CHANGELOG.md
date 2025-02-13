@@ -1,5 +1,111 @@
 # CHANGELOG
 
+## v3.8.0 (2025-02-13)
+
+### Chore
+
+* chore: Merge back version tags and changelog into develop. ([`729bf44`](https://github.com/oscal-compass/compliance-trestle/commit/729bf4454ee5006915a156e52e6c570c4311b7a4))
+
+### Feature
+
+* feat: upgrade to OSCAL 1.1.3 (#1795)
+
+* feat: upgrade to OSCAL 1.1.3
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* fix: update README to OSCAL 1.1.3
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+---------
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt; ([`ffc17c3`](https://github.com/oscal-compass/compliance-trestle/commit/ffc17c31ee570c08a8e39d837150ce0b7c1f04aa))
+
+### Fix
+
+* fix: issue 1797 (#1806)
+
+* fix issue 1797
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* fix: merge header for prof when ohv specified
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* fix: remove profile header merge restriction
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* fix: test_profile_ohv
+
+* fix bdist
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* remove debug code
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* fix: assure sorted by param_id
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* disable prof_test ohv else clause (for now)
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* use simple_test_profile2.json for proftest ohv
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* prof_test sort by pram_id for test ohv
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* add sort to test_profile_values_included_if_replaced
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+---------
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt; ([`3de80bc`](https://github.com/oscal-compass/compliance-trestle/commit/3de80bc78e02fb380be6b53f207fc9fce48580f1))
+
+* fix: remove submodule nist-source (#1809)
+
+* remove submodule nist-source
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* fix: remove nist-source references
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+---------
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt; ([`0d65f59`](https://github.com/oscal-compass/compliance-trestle/commit/0d65f59667b0101a85dcef371f6c0d8a71763b5c))
+
+* fix: add deprecation warning (#1812)
+
+* fix: add deprecation warning
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* make lint ahppy
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+---------
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt; ([`cfae19b`](https://github.com/oscal-compass/compliance-trestle/commit/cfae19b6dd0b303ecd9137a8a41288f8fe828d44))
+
+### Unknown
+
+* Merge pull request #1818 from oscal-compass/develop
+
+chore: trestle release 3.8.0 ([`815d74b`](https://github.com/oscal-compass/compliance-trestle/commit/815d74b7f1fe78ec83ec2ab93832b1404d9d1cbb))
+
 ## v3.7.0 (2025-01-22)
 
 ### Build
