@@ -362,7 +362,7 @@ class Property(OscalBaseModel):
     ) = Field(
         ...,
         description=
-        "A textual label, within a namespace, that uniquely identifies a specific attribute, characteristic, or quality of the property's containing object.",
+        "A textual label, within a namespace, that identifies a specific attribute, characteristic, or quality of the property's containing object.",
         title='Property Name'
     )
     uuid: Optional[constr(
@@ -410,17 +410,21 @@ class PortRangeValidValues(Enum):
 
 class PortRange(OscalBaseModel):
     """
-    Where applicable this is the IPv4 port range on which the service operates.
+    Where applicable this is the transport layer protocol port range an IPv4-based or IPv6-based service uses.
     """
 
     class Config:
         extra = Extra.forbid
 
     start: Optional[conint(ge=0, multiple_of=1)] = Field(
-        None, description='Indicates the starting port number in a port range', title='Start'
+        None,
+        description='Indicates the starting port number in a port range for a transport layer protocol',
+        title='Start'
     )
     end: Optional[conint(ge=0, multiple_of=1)] = Field(
-        None, description='Indicates the ending port number in a port range', title='End'
+        None,
+        description='Indicates the ending port number in a port range for a transport layer protocol',
+        title='End'
     )
     transport: Optional[PortRangeValidValues] = Field(
         None, description='Indicates the transport type.', title='Transport'
@@ -556,6 +560,7 @@ class NamingSystemValidValues(Enum):
     http___www_first_org_cvss_v2_0 = 'http://www.first.org/cvss/v2.0'
     http___www_first_org_cvss_v3_0 = 'http://www.first.org/cvss/v3.0'
     http___www_first_org_cvss_v3_1 = 'http://www.first.org/cvss/v3.1'
+    https___www_first_org_cvss_v4_0 = 'https://www.first.org/cvss/v4-0'
 
 
 class Name(Enum):
@@ -1592,8 +1597,8 @@ class Protocol(OscalBaseModel):
         'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this service protocol information elsewhere in this or other OSCAL instances. The locally defined UUID of the service protocol can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Service Protocol Information Universally Unique Identifier',
     )
-    name: constr(regex=r'^\S(.*\S)?$') = Field(
-        ...,
+    name: Optional[constr(regex=r'^\S(.*\S)?$')] = Field(
+        None,
         description=
         'The common name of the protocol, which should be the appropriate "service name" from the IANA Service Name and Transport Protocol Port Number Registry.',
         title='Protocol Name'

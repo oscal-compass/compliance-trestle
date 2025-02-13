@@ -55,14 +55,16 @@ running `make docs-automation` will ensure that the website is ready to deploy.
 
 The creation of the OSCAL models in `trestle/oscal` is a multi-step process:
 
-- The oscal schemas are downloaded as modules from NIST into the `nist-source/json/schema` directory.
+- The OSCAL schames can be found here: [https://github.com/usnistgov/OSCAL/releases](https://github.com/usnistgov/OSCAL/releases)
+- Select the zip/tar of interest and extract.
+- Copy the `json/schema/*.json` files into the `release-schemas` folder
 - The script `scripts/gen-oscal.py` loads each schema file and converts it to pydantic/python with `datamodel-codegen`.
 - The generated python files may need some fixup, so a separate script `scripts/fix_any.py` is run on each file.
 - Note that there is one schema specific to IBM needs and it is loaded from `3rd-party-schema-documents/IBM_target_schema_v1.0.0.json`.
 
 The whole process is handled in the Makefile by `make code-gen`.  A normal user would never need to run this but developers may need to, particularly if there are changes to the OSCAL schemas.
 
-Also note that the depenedent tools, pydantic and datamodel-codegen, may get updated by doing a fresh `make install` or `make develop`, which may then result in a change to the model files.
+Also note that the dependent tools, pydantic and datamodel-codegen, may get updated by doing a fresh `make install` or `make develop`, which may then result in a change to the model files.
 
 ### Items handled by `fix_any.py`.
 
