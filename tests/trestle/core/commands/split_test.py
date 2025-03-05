@@ -39,8 +39,7 @@ from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.sdk.oscal import catalog as oscatalog
-from trestle.sdk.oscal import component
-from trestle.sdk.oscal import common
+from trestle.sdk.oscal import common, component
 
 
 def test_split_model_plans(tmp_path: pathlib.Path, sample_nist_component_def: component.ComponentDefinition) -> None:
