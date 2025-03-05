@@ -23,13 +23,13 @@ from trestle.common import const, file_utils, log, type_utils
 from trestle.common.err import TrestleError, handle_generic_command_exception
 from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import AliasMode, classname_to_alias
-from trestle.sdk.models.base_model import OscalBaseModel
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.models.actions import CreatePathAction, RemovePathAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
+from trestle.sdk.models.base_model import OscalBaseModel
 
 logger = logging.getLogger(__name__)
 trace = log.Trace(logger)

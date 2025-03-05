@@ -34,13 +34,13 @@ from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import AliasMode
 from trestle.core import generators
-from trestle.sdk.models.base_model import OscalBaseModel
 from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.commands.author.ssp import SSPGenerate
 from trestle.core.commands.href import HrefCmd
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.repository import Repository
+from trestle.sdk.models.base_model import OscalBaseModel
 from trestle.sdk.oscal import catalog as cat
 from trestle.sdk.oscal import common
 from trestle.sdk.oscal import component as comp

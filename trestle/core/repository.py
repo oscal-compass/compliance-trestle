@@ -37,12 +37,12 @@ from trestle.common.load_validate import load_validate_model_path
 from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import AliasMode, classname_to_alias
 from trestle.core import parser
-from trestle.sdk.models.base_model import OscalBaseModel
 from trestle.core.models.actions import CreatePathAction, RemovePathAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.core.remote import cache
+from trestle.sdk.models.base_model import OscalBaseModel
 
 logger = logging.getLogger(__name__)
 

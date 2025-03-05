@@ -19,8 +19,7 @@ from typing import List
 
 from trestle.core.models.actions import RemoveAction, UpdateAction
 from trestle.core.models.elements import Element, ElementPath
-from trestle.sdk.oscal import component
-from trestle.sdk.oscal import common
+from trestle.sdk.oscal import common, component
 
 
 def prepare_element(sample_nist_component_def: component.ComponentDefinition):
