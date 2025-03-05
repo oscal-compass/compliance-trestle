@@ -34,18 +34,18 @@ from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import AliasMode
 from trestle.core import generators
-from trestle.core.base_model import OscalBaseModel
+from trestle.sdk.models.base_model import OscalBaseModel
 from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.commands.author.ssp import SSPGenerate
 from trestle.core.commands.href import HrefCmd
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.repository import Repository
-from trestle.oscal import catalog as cat
-from trestle.oscal import common
-from trestle.oscal import component as comp
-from trestle.oscal import profile as prof
-from trestle.oscal import ssp
+from trestle.sdk.oscal import catalog as cat
+from trestle.sdk.oscal import common
+from trestle.sdk.oscal import component as comp
+from trestle.sdk.oscal import profile as prof
+from trestle.sdk.oscal import ssp
 
 if file_utils.is_windows():  # pragma: no cover
     import win32api

@@ -20,7 +20,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Dict, Type
 
 from trestle.common.err import TrestleError
-from trestle.core.base_model import OscalBaseModel
+from trestle.sdk.models.base_model import OscalBaseModel
 from trestle.transforms.results import Results
 
 

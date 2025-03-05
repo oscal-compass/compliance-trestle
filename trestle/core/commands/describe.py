@@ -23,7 +23,7 @@ from typing import List, Optional, Union
 import trestle.common.log as log
 from trestle.common.err import TrestleError, TrestleIncorrectArgsError, handle_generic_command_exception
 from trestle.common.model_utils import ModelUtils
-from trestle.core.base_model import OscalBaseModel
+from trestle.sdk.models.base_model import OscalBaseModel
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common import cmd_utils as utils
 from trestle.core.commands.common.return_codes import CmdReturnCodes
@@ -69,7 +69,7 @@ class DescribeCmd(CommandPlusDocs):
     @classmethod
     def _clean_type_string(cls, text: str) -> str:
         text = text.replace("<class '", '').replace("'>", '')
-        text = text.replace('trestle.oscal.', '')
+        text = text.replace('trestle.sdk.oscal.', '')
         text = text.replace('pydantic.main.', 'stripped.')
         return text
 

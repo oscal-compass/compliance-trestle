@@ -19,8 +19,8 @@ import pathlib
 from typing import Dict, List, Optional
 
 import trestle.core.generators as gens
-import trestle.oscal.common as common
-import trestle.oscal.ssp as ossp
+import trestle.sdk.oscal.common as common
+import trestle.sdk.oscal.ssp as ossp
 from trestle.common import const
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list, none_if_empty

@@ -24,7 +24,7 @@ from ruamel.yaml import YAML
 from ruamel.yaml.parser import ParserError
 
 import trestle.common.const as const
-import trestle.oscal.component as component
+import trestle.sdk.oscal.component as component
 
 yaml_path = pathlib.Path('tests/data/yaml/')
 json_path = pathlib.Path('tests/data/json/')

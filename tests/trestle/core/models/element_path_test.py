@@ -21,10 +21,11 @@ import pytest
 
 import trestle.common.type_utils as utils
 from trestle.common.err import TrestleError
-from trestle.core.base_model import OscalBaseModel
+from trestle.sdk.models.base_model import OscalBaseModel
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
-from trestle.oscal import catalog, common, component
+from trestle.sdk.oscal import catalog, common
+from trestle.sdk.oscal import component
 
 
 def test_element_path_init(sample_nist_component_def: component.ComponentDefinition):

@@ -18,9 +18,9 @@ import pathlib
 from typing import Optional
 
 from trestle.common.model_utils import ModelUtils
-from trestle.core.base_model import OscalBaseModel
+from trestle.sdk.models.base_model import OscalBaseModel
 from trestle.core.validator import Validator
-from trestle.oscal.profile import Profile
+from trestle.sdk.oscal.profile import Profile
 
 
 class DuplicatesValidator(Validator):

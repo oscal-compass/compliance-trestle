@@ -20,8 +20,8 @@ from uuid import uuid4
 
 import tests.test_utils as test_utils
 
-import trestle.oscal.catalog as catalog
-import trestle.oscal.ssp as ssp
+import trestle.sdk.oscal.catalog as catalog
+import trestle.sdk.oscal.ssp as ssp
 from trestle.common.model_utils import ModelUtils
 
 ssp_path = pathlib.Path('nist-content/examples/ssp/json/ssp-example.json')

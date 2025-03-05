@@ -1,7 +1,7 @@
 ---
-title: trestle.oscal.catalog
-description: Documentation for trestle.oscal.catalog module
+title: trestle.sdk.oscal.catalog
+description: Documentation for trestle.sdk.oscal.catalog module
 ---
 
-::: trestle.oscal.catalog
+::: trestle.sdk.oscal.catalog
 handler: python

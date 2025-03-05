@@ -27,7 +27,7 @@ from trestle.common import common_types, str_utils, type_utils as utils
 from trestle.common.err import TrestleError, TrestleNotFoundError
 from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import AliasMode, classname_to_alias
-from trestle.core.base_model import OscalBaseModel
+from trestle.sdk.models.base_model import OscalBaseModel
 from trestle.core.models.file_content_type import FileContentType
 
 logger = logging.getLogger(__name__)

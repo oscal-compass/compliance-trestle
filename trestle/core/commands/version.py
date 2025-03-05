@@ -23,7 +23,7 @@ from trestle.common.err import TrestleError, handle_generic_command_exception
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.command_docs import CommandBase
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.oscal import OSCAL_VERSION
+from trestle.sdk.oscal import OSCAL_VERSION
 
 logger = logging.getLogger(__name__)
 

@@ -22,7 +22,7 @@ from tests import test_utils
 from tests.test_utils import execute_command_and_assert
 
 from trestle import __version__
-from trestle.oscal import OSCAL_VERSION
+from trestle.sdk.oscal import OSCAL_VERSION
 
 
 def test_version(monkeypatch: MonkeyPatch) -> None:

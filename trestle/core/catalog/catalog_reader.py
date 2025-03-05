@@ -19,10 +19,10 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 import trestle.common.const as const
 import trestle.core.generators as gens
-import trestle.core.generic_oscal as generic
-import trestle.oscal.catalog as cat
-import trestle.oscal.common as com
-import trestle.oscal.component as comp
+import trestle.sdk.models.generic_oscal as generic
+import trestle.sdk.oscal.catalog as cat
+import trestle.sdk.oscal.common as com
+import trestle.sdk.oscal.component as comp
 from trestle.common.common_types import TypeWithSetParams
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list, none_if_empty
@@ -30,8 +30,8 @@ from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.control_context import ControlContext
 from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlInterface
 from trestle.core.control_reader import ControlReader
-from trestle.oscal import profile as prof
-from trestle.oscal import ssp as ossp
+from trestle.sdk.oscal import profile as prof
+from trestle.sdk.oscal import ssp as ossp
 
 logger = logging.getLogger(__name__)
 

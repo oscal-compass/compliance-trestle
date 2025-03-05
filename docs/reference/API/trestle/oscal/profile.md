@@ -1,7 +1,7 @@
 ---
-title: trestle.oscal.profile
-description: Documentation for trestle.oscal.profile module
+title: trestle.sdk.oscal.profile
+description: Documentation for trestle.sdk.oscal.profile module
 ---
 
-::: trestle.oscal.profile
+::: trestle.sdk.oscal.profile
 handler: python

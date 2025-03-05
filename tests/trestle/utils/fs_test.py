@@ -22,12 +22,12 @@ import pytest
 from tests import test_utils
 
 import trestle.common.const as const
-import trestle.oscal.common as common
+import trestle.sdk.oscal.common as common
 from trestle.common import file_utils, trash
 from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.core.models.file_content_type import FileContentType
-from trestle.oscal import catalog
+from trestle.sdk.oscal import catalog
 
 if file_utils.is_windows():  # pragma: no cover
     import win32api
