@@ -18,7 +18,7 @@ import logging
 import pathlib
 
 import trestle.common.const as const
-import trestle.oscal.catalog as cat
+import trestle.sdk.oscal.catalog as cat
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_dict, as_filtered_list, as_list, delete_item_from_list, deep_set, get_item_from_list, none_if_empty, set_or_pop  # noqa E501
 from trestle.core.catalog.catalog_interface import CatalogInterface

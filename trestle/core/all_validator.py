@@ -18,7 +18,7 @@ import pathlib
 from typing import Optional
 
 import trestle.core.validator_factory as vfact
-from trestle.core.base_model import OscalBaseModel
+from trestle.sdk.models.base_model import OscalBaseModel
 from trestle.core.validator import Validator
 
 

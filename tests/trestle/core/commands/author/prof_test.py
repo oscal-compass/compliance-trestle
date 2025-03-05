@@ -29,9 +29,9 @@ from tests import test_utils
 
 import trestle.common.const as const
 import trestle.core.generators as gens
-import trestle.oscal.catalog as cat
-import trestle.oscal.common as com
-import trestle.oscal.profile as prof
+import trestle.sdk.oscal.catalog as cat
+import trestle.sdk.oscal.common as com
+import trestle.sdk.oscal.profile as prof
 from trestle.cli import Trestle
 from trestle.common import file_utils
 from trestle.common.err import TrestleError

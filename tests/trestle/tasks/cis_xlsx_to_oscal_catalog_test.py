@@ -23,7 +23,7 @@ from unittest import mock
 from openpyxl import load_workbook
 
 import trestle.tasks.cis_xlsx_to_oscal_catalog as cis_xlsx_to_oscal_catalog
-from trestle.oscal.catalog import Catalog
+from trestle.sdk.oscal.catalog import Catalog
 from trestle.tasks.base_task import TaskOutcome
 
 ocp_config = 'tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.ocp.config'

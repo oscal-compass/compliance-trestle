@@ -22,8 +22,8 @@ from typing import Any, Dict, List, Optional
 
 from trestle.common.list_utils import as_dict
 from trestle.core.control_interface import CompDict
-from trestle.oscal import component as comp
-from trestle.oscal import profile as prof
+from trestle.sdk.oscal import component as comp
+from trestle.sdk.oscal import profile as prof
 
 
 class ContextPurpose(Enum):

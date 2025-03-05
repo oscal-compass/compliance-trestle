@@ -19,8 +19,8 @@ import pathlib
 from typing import Iterator, List, Optional, Union
 
 import trestle.common.const as const
-import trestle.oscal.catalog as cat
-import trestle.oscal.profile as prof
+import trestle.sdk.oscal.catalog as cat
+import trestle.sdk.oscal.profile as prof
 from trestle.common.err import TrestleError
 from trestle.core.control_interface import ParameterRep
 from trestle.core.pipeline import Pipeline
@@ -28,7 +28,7 @@ from trestle.core.remote import cache
 from trestle.core.resolver.merge import Merge
 from trestle.core.resolver.modify import Modify
 from trestle.core.resolver.prune import Prune
-from trestle.oscal.common import Resource
+from trestle.sdk.oscal.common import Resource
 
 logger = logging.getLogger(__name__)
 

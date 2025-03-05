@@ -29,9 +29,9 @@ from trestle.core.markdown.docs_markdown_node import DocsMarkdownNode
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.remote import cache
 from trestle.core.ssp_io import SSPMarkdownWriter
-from trestle.oscal.common import Property
-from trestle.oscal.profile import Profile
-from trestle.oscal.ssp import SystemSecurityPlan
+from trestle.sdk.oscal.common import Property
+from trestle.sdk.oscal.profile import Profile
+from trestle.sdk.oscal.ssp import SystemSecurityPlan
 
 prof_name = 'comp_prof'
 ssp_name = 'my_ssp'

@@ -21,17 +21,17 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
-import trestle.oscal.catalog as cat
-import trestle.oscal.ssp as ossp
+import trestle.sdk.oscal.catalog as cat
+import trestle.sdk.oscal.ssp as ossp
 from trestle.common import const
 from trestle.common.common_types import TypeWithParamId, TypeWithParts, TypeWithProps
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_filtered_list, as_list, none_if_empty
 from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import as_string, string_from_root, strip_lower_equals
-from trestle.oscal import common
-from trestle.oscal import component as comp
-from trestle.oscal import profile as prof
+from trestle.sdk.oscal import common
+from trestle.sdk.oscal import component as comp
+from trestle.sdk.oscal import profile as prof
 
 logger = logging.getLogger(__name__)
 

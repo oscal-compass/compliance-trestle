@@ -16,8 +16,8 @@
 import logging
 from typing import Iterator, List, Optional
 
-import trestle.oscal.catalog as cat
-import trestle.oscal.profile as prof
+import trestle.sdk.oscal.catalog as cat
+import trestle.sdk.oscal.profile as prof
 from trestle.common.common_types import OBT
 from trestle.common.const import RESOLUTION_SOURCE, TRESTLE_INHERITED_PROPS_TRACKER
 from trestle.common.err import TrestleNotFoundError
@@ -25,7 +25,8 @@ from trestle.common.list_utils import as_list, get_item_from_list, none_if_empty
 from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.control_interface import ParameterRep
 from trestle.core.pipeline import Pipeline
-from trestle.oscal import OSCAL_VERSION, common
+from trestle.sdk.oscal import OSCAL_VERSION
+from trestle.sdk.oscal import common
 
 logger = logging.getLogger(__name__)
 

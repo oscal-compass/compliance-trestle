@@ -38,8 +38,8 @@ from trestle.core.docs_control_writer import DocsControlWriter
 from trestle.core.jinja.ext import extensions
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.ssp_io import SSPMarkdownWriter
-from trestle.oscal.profile import Profile
-from trestle.oscal.ssp import SystemSecurityPlan
+from trestle.sdk.oscal.profile import Profile
+from trestle.sdk.oscal.ssp import SystemSecurityPlan
 
 logger = logging.getLogger(__name__)
 

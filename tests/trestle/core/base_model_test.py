@@ -24,14 +24,14 @@ import tests.test_utils as test_utils
 
 import trestle.common.const as const
 import trestle.common.err as err
-import trestle.core.base_model as ospydantic
-import trestle.oscal
-import trestle.oscal.assessment_plan as ap
-import trestle.oscal.catalog as oscatalog
-import trestle.oscal.common as common
-import trestle.oscal.component as component
-import trestle.oscal.ssp as ssp
-from trestle.core.base_model import OscalBaseModel
+import trestle.sdk.models.base_model as ospydantic
+import trestle.sdk.oscal
+import trestle.sdk.oscal.assessment_plan as ap
+import trestle.sdk.oscal.catalog as oscatalog
+import trestle.sdk.oscal.common as common
+import trestle.sdk.oscal.component as component
+import trestle.sdk.oscal.ssp as ssp
+from trestle.sdk.models.base_model import OscalBaseModel
 
 
 def test_echo_tmp_path(tmp_path) -> None:
@@ -47,7 +47,7 @@ def simple_catalog() -> oscatalog.Catalog:
             'title': 'My simple catalog',
             'last-modified': datetime.now(),
             'version': '0.0.0',
-            'oscal-version': trestle.oscal.OSCAL_VERSION
+            'oscal-version': trestle.sdk.oscal.OSCAL_VERSION
         }
     )
     catalog = oscatalog.Catalog(metadata=m, uuid=str(uuid4()))
@@ -61,7 +61,7 @@ def simple_catalog_utc() -> oscatalog.Catalog:
             'title': 'My simple catalog',
             'last-modified': datetime.now().astimezone(timezone.utc),
             'version': '0.0.0',
-            'oscal-version': trestle.oscal.OSCAL_VERSION
+            'oscal-version': trestle.sdk.oscal.OSCAL_VERSION
         }
     )
     catalog = oscatalog.Catalog(metadata=m, uuid=str(uuid4()))
@@ -75,7 +75,7 @@ def simple_catalog_with_tz() -> oscatalog.Catalog:
             'title': 'My simple catalog',
             'last-modified': datetime.now().astimezone(),
             'version': '0.0.0',
-            'oscal-version': trestle.oscal.OSCAL_VERSION
+            'oscal-version': trestle.sdk.oscal.OSCAL_VERSION
         }
     )
     catalog = oscatalog.Catalog(metadata=m, uuid=str(uuid4()))
@@ -137,7 +137,7 @@ def test_broken_tz() -> None:
             'title': 'My simple catalog',
             'last-modified': datetime.now(tz=taz),
             'version': '0.0.0',
-            'oscal-version': trestle.oscal.OSCAL_VERSION
+            'oscal-version': trestle.sdk.oscal.OSCAL_VERSION
         }
     )
     catalog = oscatalog.Catalog(metadata=m, uuid=str(uuid4()))
@@ -241,7 +241,7 @@ def test_copy_to() -> None:
             'title': 'My simple catalog',
             'last-modified': datetime.now().astimezone(),
             'version': '0.0.0',
-            'oscal-version': trestle.oscal.OSCAL_VERSION
+            'oscal-version': trestle.sdk.oscal.OSCAL_VERSION
         }
     )
 
@@ -281,7 +281,7 @@ def test_copy_from() -> None:
             'title': 'My simple catalog',
             'last-modified': datetime.now().astimezone(),
             'version': '0.0.0',
-            'oscal-version': trestle.oscal.OSCAL_VERSION
+            'oscal-version': trestle.sdk.oscal.OSCAL_VERSION
         }
     )
     catalog = oscatalog.Catalog(metadata=m, uuid=str(uuid4()))
@@ -291,7 +291,7 @@ def test_copy_from() -> None:
             'title': 'My simple target_title',
             'last-modified': datetime.now().astimezone(),
             'version': '99.0.0',
-            'oscal-version': trestle.oscal.OSCAL_VERSION
+            'oscal-version': trestle.sdk.oscal.OSCAL_VERSION
         }
     )
     catalog.metadata.copy_from(target_md)

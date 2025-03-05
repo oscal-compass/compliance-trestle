@@ -16,13 +16,13 @@ from typing import Dict, Optional
 
 from pydantic.v1 import Extra
 
-import trestle.oscal.assessment_plan as o_ap
-import trestle.oscal.assessment_results as o_ar
-import trestle.oscal.catalog as o_catalog
-import trestle.oscal.component as o_component
-import trestle.oscal.poam as o_poam
-import trestle.oscal.profile as o_profile
-import trestle.oscal.ssp as o_ssp
+import trestle.sdk.oscal.assessment_plan as o_ap
+import trestle.sdk.oscal.assessment_results as o_ar
+import trestle.sdk.oscal.catalog as o_catalog
+import trestle.sdk.oscal.component as o_component
+import trestle.sdk.oscal.poam as o_poam
+import trestle.sdk.oscal.profile as o_profile
+import trestle.sdk.oscal.ssp as o_ssp
 from trestle.core.trestle_base_model import TrestleBaseModel
 
 

@@ -22,7 +22,7 @@ from trestle.common import const, str_utils, type_utils
 from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import AliasMode, classname_to_alias
-from trestle.core.base_model import OscalBaseModel
+from trestle.sdk.models.base_model import OscalBaseModel
 from trestle.core.models.elements import ElementPath
 from trestle.core.models.file_content_type import FileContentType
 

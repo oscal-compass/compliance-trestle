@@ -34,10 +34,10 @@ from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.repository import Repository
 from trestle.core.resolver.merge import Merge
-from trestle.oscal import OSCAL_VERSION
-from trestle.oscal import catalog as cat
-from trestle.oscal import common as com
-from trestle.oscal import profile as prof
+from trestle.sdk.oscal import OSCAL_VERSION
+from trestle.sdk.oscal import catalog as cat
+from trestle.sdk.oscal import common as com
+from trestle.sdk.oscal import profile as prof
 
 
 def find_string_in_all_controls_prose(interface: CatalogInterface, seek_str: str) -> List[Tuple[str, str]]:

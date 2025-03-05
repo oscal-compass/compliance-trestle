@@ -32,5 +32,5 @@ def test_parse_dict() -> None:
     with open(pathlib.Path.joinpath(yaml_path, file_name), 'r', encoding=const.FILE_ENCODING) as f:
         yaml = YAML(typ='safe')
         data = yaml.load(f)
-        target = parser.parse_dict(data['component-definition'], 'trestle.oscal.component.ComponentDefinition')
+        target = parser.parse_dict(data['component-definition'], 'trestle.sdk.oscal.component.ComponentDefinition')
         assert target is not None

@@ -1,7 +1,7 @@
 ---
-title: trestle.oscal.common
-description: Documentation for trestle.oscal.common module
+title: trestle.sdk.oscal.common
+description: Documentation for trestle.sdk.oscal.common module
 ---
 
-::: trestle.oscal.common
+::: trestle.sdk.oscal.common
 handler: python

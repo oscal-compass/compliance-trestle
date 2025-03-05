@@ -28,7 +28,7 @@ from trestle import __version__
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import is_ordered_sublist
 from trestle.core.catalog.catalog_interface import CatalogInterface
-from trestle.oscal.catalog import Catalog
+from trestle.sdk.oscal.catalog import Catalog
 from trestle.tasks.base_task import TaskBase
 
 logger = logging.getLogger(__name__)

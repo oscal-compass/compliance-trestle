@@ -18,7 +18,7 @@ import pathlib
 from typing import Dict
 
 import trestle.common.const as const
-import trestle.oscal.ssp as ossp
+import trestle.sdk.oscal.ssp as ossp
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list
 from trestle.core.crm.bycomp_interface import ByComponentInterface

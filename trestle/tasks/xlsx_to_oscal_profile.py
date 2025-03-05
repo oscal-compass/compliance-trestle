@@ -23,13 +23,13 @@ import traceback
 import uuid
 from typing import List, Optional, Tuple
 
-from trestle.oscal import OSCAL_VERSION
-from trestle.oscal.common import Metadata
-from trestle.oscal.profile import Import
-from trestle.oscal.profile import Modify
-from trestle.oscal.profile import Profile
-from trestle.oscal.profile import SelectControl as SelectControlById
-from trestle.oscal.profile import SetParameter
+from trestle.sdk.oscal import OSCAL_VERSION
+from trestle.sdk.oscal.common import Metadata
+from trestle.sdk.oscal.profile import Import
+from trestle.sdk.oscal.profile import Modify
+from trestle.sdk.oscal.profile import Profile
+from trestle.sdk.oscal.profile import SelectControl as SelectControlById
+from trestle.sdk.oscal.profile import SetParameter
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
 from trestle.tasks.xlsx_helper import XlsxHelper

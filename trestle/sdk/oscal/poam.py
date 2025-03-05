@@ -31,13 +31,13 @@ from typing import Any, Dict, List, Optional, Union
 
 from pydantic.v1 import AnyUrl, EmailStr, Extra, Field, conint, constr, validator
 
-from trestle.core.base_model import OscalBaseModel
-from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
-import trestle.oscal.common as common
-from trestle.oscal.common import RelatedObservation
-from trestle.oscal.common import TaskValidValues
-from trestle.oscal.common import TokenDatatype
-from trestle.oscal.common import RelatedObservation as RelatedObservation1
+from trestle.sdk.models.base_model import OscalBaseModel
+from trestle.sdk.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
+import trestle.sdk.oscal.common as common
+from trestle.sdk.oscal.common import RelatedObservation
+from trestle.sdk.oscal.common import TaskValidValues
+from trestle.sdk.oscal.common import TokenDatatype
+from trestle.sdk.oscal.common import RelatedObservation as RelatedObservation1
 
 
 class LocalDefinitions(OscalBaseModel):

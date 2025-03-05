@@ -16,9 +16,9 @@
 import logging
 from typing import Iterator, List, Optional, Tuple, Union
 
-import trestle.oscal.catalog as cat
-import trestle.oscal.common as com
-import trestle.oscal.profile as prof
+import trestle.sdk.oscal.catalog as cat
+import trestle.sdk.oscal.common as com
+import trestle.sdk.oscal.profile as prof
 from trestle.common.common_types import OBT
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list, none_if_empty

@@ -14,7 +14,7 @@
 # limitations under the License.
 """Testing of valid values."""
 
-import trestle.oscal.profile as prof
+import trestle.sdk.oscal.profile as prof
 
 
 def test_position_valid(tmp_path) -> None:

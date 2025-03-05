@@ -20,7 +20,7 @@ import pathlib
 
 from tests import test_utils
 
-import trestle.oscal.ssp as ossp
+import trestle.sdk.oscal.ssp as ossp
 from trestle.common import const
 from trestle.common.model_utils import ModelUtils
 from trestle.core.crm.ssp_inheritance_api import SSPInheritanceAPI

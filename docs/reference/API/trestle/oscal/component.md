@@ -1,7 +1,7 @@
 ---
-title: trestle.oscal.component
-description: Documentation for trestle.oscal.component module
+title: trestle.sdk.oscal.component
+description: Documentation for trestle.sdk.oscal.component module
 ---
 
-::: trestle.oscal.component
+::: trestle.sdk.oscal.component
 handler: python

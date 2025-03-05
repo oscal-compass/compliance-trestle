@@ -24,7 +24,7 @@ import pytest
 from tests import test_utils
 
 import trestle.core.generators as gens
-import trestle.oscal.ssp as ossp
+import trestle.sdk.oscal.ssp as ossp
 from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.core.crm.bycomp_interface import ByComponentInterface

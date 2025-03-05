@@ -21,9 +21,9 @@ import pytest
 from tests import test_utils
 
 import trestle.common.const as const
-import trestle.oscal as oscal
-import trestle.oscal.catalog as cat
-import trestle.oscal.profile as prof
+import trestle.sdk.oscal as oscal
+import trestle.sdk.oscal.catalog as cat
+import trestle.sdk.oscal.profile as prof
 from trestle.common.err import TrestleError
 from trestle.core import generators, parser
 from trestle.core.repository import AgileAuthoring, ManagedOSCAL, Repository
@@ -103,7 +103,7 @@ def test_import_validation_fail(tmp_trestle_dir: pathlib.Path) -> None:
             ]
         }
     }
-    catalog_data = parser.parse_dict(dup_cat, 'trestle.oscal.catalog.Catalog')
+    catalog_data = parser.parse_dict(dup_cat, 'trestle.sdk.oscal.catalog.Catalog')
 
     repo = Repository(tmp_trestle_dir)
     with pytest.raises(TrestleError, match=r'Validation .* did not pass'):

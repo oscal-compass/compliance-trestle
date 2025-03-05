@@ -28,13 +28,13 @@ from defusedxml import ElementTree
 from ruamel.yaml import YAML
 
 from trestle.common.list_utils import as_list
-from trestle.oscal.assessment_results import (
+from trestle.sdk.oscal.assessment_results import (
     LocalDefinitions1,
     Observation,
     Result,
     SystemComponent,
 )
-from trestle.oscal.common import (
+from trestle.sdk.oscal.common import (
     ControlSelection,
     ImplementedComponent,
     InventoryItem,
@@ -43,7 +43,7 @@ from trestle.oscal.common import (
     Status,
     SubjectReference,
 )
-from trestle.oscal.profile import Profile
+from trestle.sdk.oscal.profile import Profile
 from trestle.transforms.results import Results
 from trestle.transforms.transformer_factory import FromOscalTransformer, ResultsTransformer
 from trestle.transforms.transformer_helper import TransformerHelper

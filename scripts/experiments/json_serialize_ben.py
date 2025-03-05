@@ -18,7 +18,7 @@ import logging
 import pathlib
 import timeit
 
-from trestle.oscal.catalog import Catalog
+from trestle.sdk.oscal.catalog import Catalog
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)

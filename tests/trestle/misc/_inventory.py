@@ -1,7 +1,7 @@
 # test.py
 from uuid import uuid4
 
-from trestle.oscal.common import InventoryItem, ResponsibleParty
+from trestle.sdk.oscal.common import InventoryItem, ResponsibleParty
 
 try:
     role_id = 'x'

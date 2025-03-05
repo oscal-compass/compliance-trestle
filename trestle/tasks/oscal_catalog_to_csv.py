@@ -26,12 +26,12 @@ import traceback
 from typing import Iterator, List, Optional
 
 from trestle.core.catalog.catalog_interface import CatalogInterface
-from trestle.oscal.catalog import Catalog
-from trestle.oscal.catalog import Control
-from trestle.oscal.common import HowMany
-from trestle.oscal.common import Link
-from trestle.oscal.common import Parameter
-from trestle.oscal.common import Part
+from trestle.sdk.oscal.catalog import Catalog
+from trestle.sdk.oscal.catalog import Control
+from trestle.sdk.oscal.common import HowMany
+from trestle.sdk.oscal.common import Link
+from trestle.sdk.oscal.common import Parameter
+from trestle.sdk.oscal.common import Part
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
 

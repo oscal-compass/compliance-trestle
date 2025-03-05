@@ -1,7 +1,7 @@
 ---
-title: trestle.oscal.poam
-description: Documentation for trestle.oscal.poam module
+title: trestle.sdk.oscal.poam
+description: Documentation for trestle.sdk.oscal.poam module
 ---
 
-::: trestle.oscal.poam
+::: trestle.sdk.oscal.poam
 handler: python

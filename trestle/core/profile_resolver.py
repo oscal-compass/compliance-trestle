@@ -17,9 +17,9 @@ import logging
 import pathlib
 from typing import Any, Dict, List, Optional, Tuple
 
-import trestle.oscal.catalog as cat
-import trestle.oscal.common as com
-import trestle.oscal.profile as prof
+import trestle.sdk.oscal.catalog as cat
+import trestle.sdk.oscal.common as com
+import trestle.sdk.oscal.profile as prof
 from trestle.common.const import TRESTLE_INHERITED_PROPS_TRACKER
 from trestle.common.list_utils import as_list, pop_item_from_list
 from trestle.core.catalog.catalog_interface import CatalogInterface

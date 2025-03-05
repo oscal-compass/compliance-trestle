@@ -21,7 +21,8 @@ import pytest
 
 from trestle.common.err import TrestleError
 from trestle.core.models.elements import Element, ElementPath
-from trestle.oscal import common, component
+from trestle.sdk.oscal import component
+from trestle.sdk.oscal import common
 
 
 def test_element_get_at(sample_nist_component_def: component.ComponentDefinition):

@@ -30,15 +30,15 @@ import trestle.common.err as err
 import trestle.common.type_utils as utils
 from trestle.common import str_utils
 from trestle.common.str_utils import AliasMode
-from trestle.core.base_model import OscalBaseModel
-from trestle.oscal import OSCAL_VERSION
-from trestle.oscal.common import Base64
-from trestle.oscal.common import Base64Datatype
-from trestle.oscal.common import Methods
-from trestle.oscal.common import ObservationTypeValidValues
-from trestle.oscal.common import OscalVersion
-from trestle.oscal.common import TaskValidValues
-from trestle.oscal.ssp import DateDatatype
+from trestle.sdk.models.base_model import OscalBaseModel
+from trestle.sdk.oscal import OSCAL_VERSION
+from trestle.sdk.oscal.common import Base64
+from trestle.sdk.oscal.common import Base64Datatype
+from trestle.sdk.oscal.common import Methods
+from trestle.sdk.oscal.common import ObservationTypeValidValues
+from trestle.sdk.oscal.common import OscalVersion
+from trestle.sdk.oscal.common import TaskValidValues
+from trestle.sdk.oscal.ssp import DateDatatype
 
 logger = logging.getLogger(__name__)
 

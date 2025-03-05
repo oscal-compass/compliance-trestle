@@ -25,7 +25,7 @@ from tests import test_utils
 
 import trestle.tasks.oscal_catalog_to_csv as oscal_catalog_to_csv
 from trestle.core.catalog.catalog_interface import CatalogInterface
-from trestle.oscal.common import HowMany
+from trestle.sdk.oscal.common import HowMany
 from trestle.tasks.base_task import TaskOutcome
 
 CONFIG_BY_CONTROL = 'test-oscal-catalog-to-csv-rev-5-by-control.config'

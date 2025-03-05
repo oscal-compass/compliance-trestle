@@ -27,7 +27,7 @@ import pytest
 from tests import test_utils
 from tests.test_utils import execute_command_and_assert
 
-import trestle.oscal.common as common
+import trestle.sdk.oscal.common as common
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.merge import MergeCmd
 from trestle.core.commands.split import SplitCmd

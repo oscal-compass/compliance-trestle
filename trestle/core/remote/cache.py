@@ -40,7 +40,7 @@ from requests.auth import HTTPBasicAuth
 from trestle.common import const, file_utils
 from trestle.common.err import TrestleError
 from trestle.core import parser
-from trestle.core.base_model import OscalBaseModel
+from trestle.sdk.models.base_model import OscalBaseModel
 
 logger = logging.getLogger(__name__)
 

@@ -27,12 +27,12 @@ from pydantic.v1 import BaseModel, Field
 
 import trestle
 from trestle.common import const
-from trestle.oscal import OSCAL_VERSION
-from trestle.oscal.catalog import Catalog
-from trestle.oscal.catalog import Control
-from trestle.oscal.catalog import Group
-from trestle.oscal.common import Link
-from trestle.oscal.common import Metadata
+from trestle.sdk.oscal import OSCAL_VERSION
+from trestle.sdk.oscal.catalog import Catalog
+from trestle.sdk.oscal.catalog import Control
+from trestle.sdk.oscal.catalog import Group
+from trestle.sdk.oscal.common import Link
+from trestle.sdk.oscal.common import Metadata
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
 

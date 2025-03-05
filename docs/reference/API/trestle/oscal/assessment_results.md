@@ -1,7 +1,7 @@
 ---
-title: trestle.oscal.assessment_results
-description: Documentation for trestle.oscal.assessment_results module
+title: trestle.sdk.oscal.assessment_results
+description: Documentation for trestle.sdk.oscal.assessment_results module
 ---
 
-::: trestle.oscal.assessment_results
+::: trestle.sdk.oscal.assessment_results
 handler: python

@@ -33,7 +33,7 @@ from trestle.core.models.actions import RemoveAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
-from trestle.oscal.catalog import Catalog
+from trestle.sdk.oscal.catalog import Catalog
 
 
 def test_remove(tmp_path: pathlib.Path):

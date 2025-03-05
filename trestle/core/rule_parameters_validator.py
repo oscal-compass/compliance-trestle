@@ -24,7 +24,7 @@ from trestle.common.list_utils import as_list, deep_set
 from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.validator import Validator
-from trestle.oscal.ssp import ImplementedRequirement, SystemSecurityPlan
+from trestle.sdk.oscal.ssp import ImplementedRequirement, SystemSecurityPlan
 
 logger = logging.getLogger(__name__)
 

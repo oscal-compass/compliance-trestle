@@ -28,14 +28,14 @@ import pytest
 from tests import test_utils
 
 import trestle.core.generators as gens
-import trestle.oscal.common as common
+import trestle.sdk.oscal.common as common
 from trestle.cli import Trestle
 from trestle.common.err import TrestleError
-from trestle.oscal import catalog as cat
-from trestle.oscal.common import Party
-from trestle.oscal.component import ComponentDefinition, DefinedComponent
-from trestle.oscal.profile import Profile
-from trestle.oscal.ssp import SystemSecurityPlan
+from trestle.sdk.oscal import catalog as cat
+from trestle.sdk.oscal.common import Party
+from trestle.sdk.oscal.component import ComponentDefinition, DefinedComponent
+from trestle.sdk.oscal.profile import Profile
+from trestle.sdk.oscal.ssp import SystemSecurityPlan
 
 TEST_CONFIG: dict = {}
 

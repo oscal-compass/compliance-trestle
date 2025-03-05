@@ -20,7 +20,7 @@ from typing import Dict
 from unittest.mock import patch
 
 import trestle.tasks.cis_xlsx_to_oscal_cd as cis_xlsx_to_oscal_cd
-from trestle.oscal.component import ComponentDefinition
+from trestle.sdk.oscal.component import ComponentDefinition
 from trestle.tasks.base_task import TaskOutcome
 
 db2_config = 'tests/data/tasks/cis-xlsx-to-oscal-cd/test-cis-xlsx-to-oscal-cd.db2.snippet.config'

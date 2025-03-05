@@ -1,7 +1,7 @@
 ---
-title: trestle.oscal.ssp
-description: Documentation for trestle.oscal.ssp module
+title: trestle.sdk.oscal.ssp
+description: Documentation for trestle.sdk.oscal.ssp module
 ---
 
-::: trestle.oscal.ssp
+::: trestle.sdk.oscal.ssp
 handler: python

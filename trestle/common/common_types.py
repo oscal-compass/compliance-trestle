@@ -16,15 +16,15 @@
 """Special types are defined here."""
 from typing import TypeVar
 
-import trestle.oscal.component as comp
-import trestle.oscal.profile as prof
-import trestle.oscal.ssp as ossp
-from trestle.core.base_model import OscalBaseModel
-from trestle.oscal.assessment_plan import AssessmentPlan
-from trestle.oscal.assessment_results import AssessmentResults
-from trestle.oscal.catalog import Catalog, Control, Group
-from trestle.oscal.common import AssessmentPart, Part, Resource
-from trestle.oscal.poam import PlanOfActionAndMilestones
+import trestle.sdk.oscal.component as comp
+import trestle.sdk.oscal.profile as prof
+import trestle.sdk.oscal.ssp as ossp
+from trestle.sdk.models.base_model import OscalBaseModel
+from trestle.sdk.oscal.assessment_plan import AssessmentPlan
+from trestle.sdk.oscal.assessment_results import AssessmentResults
+from trestle.sdk.oscal.catalog import Catalog, Control, Group
+from trestle.sdk.oscal.common import AssessmentPart, Part, Resource
+from trestle.sdk.oscal.poam import PlanOfActionAndMilestones
 
 # model types containing uuids that should not regenerate
 FixedUuidModel = Resource

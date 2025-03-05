@@ -23,7 +23,7 @@ from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
-from trestle.oscal import component
+from trestle.sdk.oscal import component
 
 
 def test_plan_execution(tmp_path, sample_nist_component_def: component.ComponentDefinition):

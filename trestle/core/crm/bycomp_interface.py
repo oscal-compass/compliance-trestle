@@ -17,7 +17,7 @@ import copy
 import logging
 from typing import Dict, List, Tuple
 
-import trestle.oscal.ssp as ossp
+import trestle.sdk.oscal.ssp as ossp
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_dict, as_list, none_if_empty
 

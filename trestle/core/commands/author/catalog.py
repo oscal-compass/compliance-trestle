@@ -34,8 +34,8 @@ from trestle.core.commands.common.cmd_utils import clear_folder
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.models.file_content_type import FileContentType
-from trestle.oscal import OSCAL_VERSION
-from trestle.oscal.catalog import Catalog
+from trestle.sdk.oscal import OSCAL_VERSION
+from trestle.sdk.oscal.catalog import Catalog
 
 logger = logging.getLogger(__name__)
 

@@ -30,12 +30,12 @@ import pytest
 import trestle.common.const as const
 import trestle.common.err as err
 import trestle.core.generators as gens
-import trestle.oscal as oscal
-import trestle.oscal.assessment_results as ar
-import trestle.oscal.catalog as catalog
-import trestle.oscal.common as common
-import trestle.oscal.ssp as ssp
-from trestle.core.base_model import OscalBaseModel
+import trestle.sdk.oscal as oscal
+import trestle.sdk.oscal.assessment_results as ar
+import trestle.sdk.oscal.catalog as catalog
+import trestle.sdk.oscal.common as common
+import trestle.sdk.oscal.ssp as ssp
+from trestle.sdk.models.base_model import OscalBaseModel
 
 
 def is_valid_uuid(val: Any) -> bool:
@@ -116,8 +116,8 @@ def test_get_all_sample_models() -> None:
     """Test we can get all models which exist."""
     pkgpath = os.path.dirname(oscal.__file__)
     for _, name, _ in pkgutil.iter_modules([pkgpath]):
-        __import__(f'trestle.oscal.{name}')
-        clsmembers = inspect.getmembers(sys.modules[f'trestle.oscal.{name}'], inspect.isclass)
+        __import__(f'trestle.sdk.oscal.{name}')
+        clsmembers = inspect.getmembers(sys.modules[f'trestle.sdk.oscal.{name}'], inspect.isclass)
         for _, oscal_cls in clsmembers:
 
             # This removes some enums and other objects.
@@ -130,8 +130,8 @@ def test_get_all_sample_models_optional() -> None:
     """Test we can get all models which exist."""
     pkgpath = os.path.dirname(oscal.__file__)
     for _, name, _ in pkgutil.iter_modules([pkgpath]):
-        __import__(f'trestle.oscal.{name}')
-        clsmembers = inspect.getmembers(sys.modules[f'trestle.oscal.{name}'], inspect.isclass)
+        __import__(f'trestle.sdk.oscal.{name}')
+        clsmembers = inspect.getmembers(sys.modules[f'trestle.sdk.oscal.{name}'], inspect.isclass)
         for _, oscal_cls in clsmembers:
 
             # This removes some enums and other objects.
