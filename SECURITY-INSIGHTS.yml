@@ -40,7 +40,7 @@ repository:
     primary:     true
   - name:        Manjiree Gadgil
     primary:     true
-  - name:        Vikas Agarwa
+  - name:        Vikas Agarwal
     primary:     true
   documentation:
     contributing-guide: https://github.com/oscal-compass/compliance-trestle/blob/develop/CONTRIBUTING.md
