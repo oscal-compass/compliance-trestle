@@ -21,13 +21,13 @@ from uuid import uuid4
 
 from pydantic.v1 import Field, constr
 
-import trestle.oscal.component as comp
-import trestle.oscal.ssp as ossp
+import trestle.sdk.oscal.component as comp
+import trestle.sdk.oscal.ssp as ossp
 from trestle.common import const
 from trestle.common.list_utils import as_list, none_if_empty
 from trestle.core.control_interface import ControlInterface
 from trestle.core.trestle_base_model import TrestleBaseModel
-from trestle.oscal import common
+from trestle.sdk.oscal import common
 
 logger = logging.getLogger(__name__)
 

@@ -23,7 +23,7 @@ from typing import Optional
 
 from ruamel.yaml import YAML
 
-from trestle.oscal.profile import Profile
+from trestle.sdk.oscal.profile import Profile
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
 from trestle.transforms.implementations.osco import OscalProfileToOscoProfileTransformer

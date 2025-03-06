@@ -28,7 +28,7 @@ import pytest
 from tests import test_utils
 
 import trestle.tasks.csv_to_oscal_cd as csv_to_oscal_cd
-from trestle.oscal.component import ComponentDefinition
+from trestle.sdk.oscal.component import ComponentDefinition
 from trestle.tasks.base_task import TaskOutcome
 
 

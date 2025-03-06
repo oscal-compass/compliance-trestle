@@ -20,8 +20,8 @@ from typing import Any, Dict, List, Optional
 
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list
-from trestle.oscal.assessment_results import Observation
-from trestle.oscal.common import Property
+from trestle.sdk.oscal.assessment_results import Observation
+from trestle.sdk.oscal.common import Property
 
 _segment_separator = '|'
 

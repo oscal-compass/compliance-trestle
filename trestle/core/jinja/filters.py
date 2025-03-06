@@ -21,8 +21,8 @@ from jinja2.environment import Environment
 
 from trestle.common.list_utils import as_list, get_default
 from trestle.core.jinja.base import TrestleJinjaExtension
-from trestle.oscal.common import Party, ResponsibleParty
-from trestle.oscal.ssp import Diagram, SystemSecurityPlan
+from trestle.sdk.oscal.common import Party, ResponsibleParty
+from trestle.sdk.oscal.ssp import Diagram, SystemSecurityPlan
 
 logger = logging.getLogger(__name__)
 

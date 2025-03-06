@@ -22,7 +22,7 @@ from uuid import uuid4
 
 import trestle.common.const as const
 import trestle.common.log as log
-import trestle.oscal.component as comp
+import trestle.sdk.oscal.component as comp
 from trestle.common import file_utils
 from trestle.common.err import TrestleError, handle_generic_command_exception
 from trestle.common.list_utils import as_list, deep_get

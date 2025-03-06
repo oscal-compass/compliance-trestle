@@ -25,14 +25,14 @@ from defusedxml import ElementTree
 
 from ruamel.yaml import YAML
 
-from trestle.oscal.assessment_results import (
+from trestle.sdk.oscal.assessment_results import (
     AssessmentAssets,
     LocalDefinitions1,
     Observation,
     Result,
     SystemComponent,
 )
-from trestle.oscal.common import (
+from trestle.sdk.oscal.common import (
     AssessmentPlatform,
     ControlSelection,
     ImplementedComponent,

@@ -16,8 +16,8 @@ import logging
 import pathlib
 from typing import Any, Dict, List, Optional, Tuple
 
-import trestle.core.generic_oscal as generic
-import trestle.oscal.catalog as cat
+import trestle.sdk.models.generic_oscal as generic
+import trestle.sdk.oscal.catalog as cat
 from trestle.common import const
 from trestle.common.common_types import TypeWithProps
 from trestle.common.err import TrestleError
@@ -28,10 +28,10 @@ from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlInterface
 from trestle.core.markdown.control_markdown_node import ControlMarkdownNode
 from trestle.core.markdown.markdown_api import MarkdownAPI
-from trestle.oscal import common
-from trestle.oscal import component as comp
-from trestle.oscal import profile as prof
-from trestle.oscal import ssp as ossp
+from trestle.sdk.oscal import common
+from trestle.sdk.oscal import component as comp
+from trestle.sdk.oscal import profile as prof
+from trestle.sdk.oscal import ssp as ossp
 
 logger = logging.getLogger(__name__)
 

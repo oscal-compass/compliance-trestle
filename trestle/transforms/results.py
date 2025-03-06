@@ -17,8 +17,8 @@
 
 from typing import List
 
-from trestle.core.base_model import OscalBaseModel
-from trestle.oscal.assessment_results import Result
+from trestle.sdk.models.base_model import OscalBaseModel
+from trestle.sdk.oscal.assessment_results import Result
 
 
 class Results(OscalBaseModel):

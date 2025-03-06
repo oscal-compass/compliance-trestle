@@ -21,8 +21,8 @@ from _pytest.monkeypatch import MonkeyPatch
 
 from tests import test_utils
 
-import trestle.core.generic_oscal as generic
-import trestle.oscal.component as comp
+import trestle.sdk.models.generic_oscal as generic
+import trestle.sdk.oscal.component as comp
 from trestle.common import const, file_utils, model_utils
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_interface import ControlInterface

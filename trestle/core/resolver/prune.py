@@ -17,14 +17,14 @@ import logging
 from typing import Dict, Iterator, List, Optional
 from uuid import uuid4
 
-import trestle.oscal.catalog as cat
-import trestle.oscal.profile as prof
+import trestle.sdk.oscal.catalog as cat
+import trestle.sdk.oscal.profile as prof
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list, none_if_empty
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.pipeline import Pipeline
-from trestle.oscal import common
+from trestle.sdk.oscal import common
 
 logger = logging.getLogger(__name__)
 

@@ -24,8 +24,8 @@ from tests import test_utils
 
 from trestle.core.commands.describe import DescribeCmd
 from trestle.core.models.file_content_type import FileContentType
-from trestle.oscal import catalog as oscatalog
-from trestle.oscal.component import ComponentDefinition
+from trestle.sdk.oscal import catalog as oscatalog
+from trestle.sdk.oscal.component import ComponentDefinition
 
 
 @pytest.mark.parametrize('element_path', ['', 'catalog.metadata.roles', 'catalog.metadata'])

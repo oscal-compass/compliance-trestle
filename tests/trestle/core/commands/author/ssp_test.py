@@ -23,9 +23,9 @@ from tests import test_utils
 from tests.test_utils import FileChecker, setup_for_ssp, setup_for_ssp_fedramp
 
 import trestle.core.generators as gens
-import trestle.core.generic_oscal as generic
-import trestle.oscal.profile as prof
-import trestle.oscal.ssp as ossp
+import trestle.sdk.models.generic_oscal as generic
+import trestle.sdk.oscal.profile as prof
+import trestle.sdk.oscal.ssp as ossp
 from trestle.common import const, file_utils, list_utils
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.author.ssp import SSPAssemble, SSPFilter, SSPGenerate

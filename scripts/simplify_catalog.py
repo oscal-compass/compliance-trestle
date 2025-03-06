@@ -23,7 +23,7 @@ import ilcli
 
 import trestle.cli
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.oscal import catalog as oscatalog
+from trestle.sdk.oscal import catalog as oscatalog
 
 logger = logging.getLogger(__name__)
 
