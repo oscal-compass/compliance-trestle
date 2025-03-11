@@ -302,8 +302,6 @@ class SSPMarkdownWriter():
                     header = f'Implementation for part {label}'
                     md_writer.new_header(1, title=header)
                 for comp_name, comp_response in response_per_component.items():
-                    if comp_name == SSP_MAIN_COMP_NAME:
-                        continue
                     prose, rules, status = comp_response
                     if show_comp:
                         SSPMarkdownWriter._write_component_prompt(
