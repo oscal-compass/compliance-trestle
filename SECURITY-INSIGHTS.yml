@@ -1,0 +1,69 @@
+header:
+  schema-version: 2.0.0
+  last-updated: '2025-03-06'
+  last-reviewed: '2025-03-06'
+  url: https://github.com/oscal-compass
+
+project:
+  name: OSCAL Compass
+  administrators:
+    - name: OSCAL Compass Oversight Committee
+      email: oscal-compass-oversight@googlegroups.com
+      primary: true
+  documentation:
+    code-of-conduct: https://github.com/oscal-compass/community/blob/main/CODE_OF_CONDUCT.md
+  repositories:
+    - name: Trestle
+      url: https://github.com/oscal-compass/compliance-trestle
+      comment: |
+        Command line tool and SDK for interacting with OSCAL-based compliance-as-code documents.
+  vulnerability-reporting:
+    reports-accepted: true
+    bug-bounty-available: false
+    security-policy: https://github.com/oscal-compass/community/blob/main/SECURITY.md
+
+repository:
+  url: https://github.com/oscal-compass/compliance-trestle
+  status: active
+  accepts-change-request: true
+  accepts-automated-change-request: true
+  # From the complaince-trestle MAINTAINER.md file
+  # https://github.com/oscal-compass/compliance-trestle/blob/develop/MAINTAINERS.md
+  core-team:
+  - name:        Alejandro Jose Leiva Palomo
+    primary:     true
+  - name:        Christopher Butler
+    primary:     true
+  - name:        Lou Degenaro
+    primary:     true
+  - name:        Jennifer Power
+    primary:     true
+  - name:        Manjiree Gadgil
+    primary:     true
+  - name:        Vikas Agarwal
+    primary:     true
+  documentation:
+    contributing-guide: https://github.com/oscal-compass/compliance-trestle/blob/develop/CONTRIBUTING.md
+    security-policy: https://github.com/oscal-compass/community/blob/main/SECURITY.md
+  license:
+    url: https://github.com/oscal-compass/compliance-trestle/blob/develop/LICENSE
+    expression: Apache 2.0
+  release:
+    changelog: https://github.com/oscal-compass/compliance-trestle/blob/develop/CHANGELOG.md
+    automated-pipeline: true
+    attestations:
+      - name: PyPI Publish Attestation
+        location: https://pypi.org/project/compliance-trestle/#compliance_trestle-{version}.tar.gz
+        predicate-uri: https://docs.pypi.org/attestations/publish/v1
+        comment: |
+          This attestation communicates the Trusted Publisher identity
+          used to publish the project.
+    distribution-points:
+      - uri: https://github.com/oscal-compass/compliance-trestle/releases
+        comment: GitHub Release Page
+      - uri: https://pypi.org/project/compliance-trestle/
+  security:
+    assessments:
+      self:
+        comment: |
+          Self assessment has not yet been completed.
