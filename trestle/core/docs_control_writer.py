@@ -16,8 +16,8 @@ import logging
 import re
 from typing import Dict, List, Optional
 
-import trestle.oscal.catalog as cat
-import trestle.oscal.profile as prof
+import trestle.sdk.oscal.catalog as cat
+import trestle.sdk.oscal.profile as prof
 from trestle.common import const
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_filtered_list, as_list

@@ -28,7 +28,7 @@ from trestle.cli import Trestle
 from trestle.common import const
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.replicate import ReplicateCmd
-from trestle.oscal.catalog import Catalog
+from trestle.sdk.oscal.catalog import Catalog
 
 subcommand_list = const.MODEL_TYPE_LIST
 

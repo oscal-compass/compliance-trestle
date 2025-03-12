@@ -29,7 +29,7 @@ from trestle.common.str_utils import spaces_and_caps_to_snake
 from trestle.core.control_interface import ControlInterface
 from trestle.core.markdown.base_markdown_node import BaseMarkdownNode, BaseSectionContent
 from trestle.core.markdown.markdown_const import CODEBLOCK_DEF, HTML_COMMENT_END_REGEX, HTML_COMMENT_START
-from trestle.oscal import common
+from trestle.sdk.oscal import common
 
 logger = logging.getLogger(__name__)
 

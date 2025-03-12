@@ -31,15 +31,15 @@ from tests import test_utils
 import trestle.common.const as const
 import trestle.common.err as err
 import trestle.core.commands.import_ as importcmd
-import trestle.oscal
+import trestle.sdk.oscal
 from trestle.cli import Trestle
 from trestle.common import file_utils as fs
 from trestle.common.model_utils import ModelUtils
 from trestle.core import generators
 from trestle.core.commands import create
 from trestle.core.models.plans import Plan
-from trestle.oscal.catalog import Catalog, Group
-from trestle.oscal.profile import Modify, Profile, SetParameter
+from trestle.sdk.oscal.catalog import Catalog, Group
+from trestle.sdk.oscal.profile import Modify, Profile, SetParameter
 
 
 def test_import_cmd(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
@@ -47,7 +47,7 @@ def test_import_cmd(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> 
     # 1. Input file, profile:
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
     profile_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
-    profile_data = generators.generate_sample_model(trestle.oscal.profile.Profile)
+    profile_data = generators.generate_sample_model(trestle.sdk.oscal.profile.Profile)
     profile_data.oscal_write(pathlib.Path(profile_file))
     # 2. Input file, target:
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
@@ -71,7 +71,7 @@ def test_import_profile_with_optional_added(tmp_trestle_dir: pathlib.Path, monke
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
     profile_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
     # create generic profile
-    profile_data = generators.generate_sample_model(trestle.oscal.profile.Profile)
+    profile_data = generators.generate_sample_model(trestle.sdk.oscal.profile.Profile)
     # create special parameter and add it to profile
     set_parameter = SetParameter(param_id='my_param', depends_on='my_depends')
     modify = Modify(set_parameters=[set_parameter])
@@ -119,7 +119,7 @@ def test_import_run_rollback(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyP
                 'title': 'Generic catalog created by trestle.',
                 'last-modified': '2020-12-11T02:04:51.053+00:00',
                 'version': '0.0.0',
-                'oscal-version': trestle.oscal.OSCAL_VERSION
+                'oscal-version': trestle.sdk.oscal.OSCAL_VERSION
             },
             'back-matter': {
                 'resources': [

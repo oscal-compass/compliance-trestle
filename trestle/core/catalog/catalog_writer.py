@@ -18,7 +18,7 @@ import logging
 from typing import Any, Dict, List
 
 import trestle.common.const as const
-import trestle.oscal.catalog as cat
+import trestle.sdk.oscal.catalog as cat
 from trestle.common.list_utils import as_list, deep_get, none_if_empty
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog.catalog_interface import CatalogInterface
@@ -26,9 +26,9 @@ from trestle.core.catalog.catalog_merger import CatalogMerger
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_interface import ComponentImpInfo, ControlInterface
 from trestle.core.control_writer import ControlWriter
-from trestle.oscal import common
-from trestle.oscal import component as comp
-from trestle.oscal import profile as prof
+from trestle.sdk.oscal import common
+from trestle.sdk.oscal import component as comp
+from trestle.sdk.oscal import profile as prof
 
 logger = logging.getLogger(__name__)
 

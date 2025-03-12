@@ -24,7 +24,7 @@ from trestle.common.err import TrestleError, handle_generic_command_exception
 from trestle.common.load_validate import load_validate_model_name
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.oscal.profile import Profile
+from trestle.sdk.oscal.profile import Profile
 
 logger = logging.getLogger(__name__)
 

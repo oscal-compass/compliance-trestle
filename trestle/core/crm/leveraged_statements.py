@@ -20,7 +20,7 @@ from typing import Any, Dict, List, Optional
 
 import trestle.common.const as const
 import trestle.core.generators as gens
-import trestle.oscal.ssp as ssp
+import trestle.sdk.oscal.ssp as ssp
 from trestle.common.err import TrestleError
 from trestle.core.markdown.docs_markdown_node import DocsMarkdownNode
 from trestle.core.markdown.markdown_api import MarkdownAPI

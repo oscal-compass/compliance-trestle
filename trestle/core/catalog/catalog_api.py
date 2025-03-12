@@ -18,7 +18,7 @@ import pathlib
 from typing import Any, Dict, List, Optional, Tuple
 
 import trestle.core.generators as gens
-import trestle.oscal.catalog as cat
+import trestle.sdk.oscal.catalog as cat
 from trestle.common.err import TrestleError
 from trestle.common.file_utils import prune_empty_dirs
 from trestle.core.catalog.catalog_interface import CatalogInterface
@@ -26,7 +26,7 @@ from trestle.core.catalog.catalog_merger import CatalogMerger
 from trestle.core.catalog.catalog_reader import CatalogReader
 from trestle.core.catalog.catalog_writer import CatalogWriter
 from trestle.core.control_context import ContextPurpose, ControlContext
-from trestle.oscal import profile as prof
+from trestle.sdk.oscal import profile as prof
 
 logger = logging.getLogger(__name__)
 

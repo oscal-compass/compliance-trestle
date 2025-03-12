@@ -41,9 +41,9 @@ from trestle.core.control_interface import ControlInterface, ParameterRep
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
-from trestle.oscal import catalog as cat
-from trestle.oscal import profile as prof
-from trestle.oscal.common import Part, Property
+from trestle.sdk.oscal import catalog as cat
+from trestle.sdk.oscal import profile as prof
+from trestle.sdk.oscal.common import Part, Property
 
 markdown_name = 'my_md'
 

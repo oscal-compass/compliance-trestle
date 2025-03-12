@@ -21,7 +21,7 @@ FIELDS_SET = '__fields_set__'
 
 ROOT = '__root__'
 
-PACKAGE_OSCAL = 'trestle.oscal'
+PACKAGE_OSCAL = 'trestle.sdk.oscal'
 
 TRESTLE_CONFIG_DIR = '.trestle'
 TRESTLE_DIST_DIR = 'dist'

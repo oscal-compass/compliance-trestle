@@ -17,7 +17,7 @@
 from tests import test_utils
 
 import trestle.core.generators as gens
-import trestle.oscal.ssp as ossp
+import trestle.sdk.oscal.ssp as ossp
 from trestle.core.crm.bycomp_interface import ByComponentInterface
 
 test_provided_uuid = '18ac4e2a-b5f2-46e4-94fa-cc84ab6fe114'
