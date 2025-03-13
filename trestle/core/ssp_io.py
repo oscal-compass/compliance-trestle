@@ -17,8 +17,7 @@ import pathlib
 from typing import Dict, List, Optional, Tuple
 
 from trestle.common.common_types import TypeWithByComps
-from trestle.common.const import CONTROL_ORIGINATION, IMPLEMENTATION_STATUS, ITEM, SSP_MAIN_COMP_NAME
-from trestle.common.const import STATUS_OPERATIONAL
+from trestle.common.const import CONTROL_ORIGINATION, IMPLEMENTATION_STATUS, ITEM
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list
 from trestle.core.catalog import catalog_interface
@@ -219,20 +218,23 @@ class SSPMarkdownWriter():
         rules: List[str],
         status: str,
         show_rules: bool,
-        show_status: bool
+        show_status: bool,
+        show_comp: bool,
+        level: int
     ) -> None:
-        header = f'Component: {comp_name}'
-        md_writer.new_header(1, header)
+        if comp_name and show_comp:
+            header = f'Component: {comp_name}'
+            md_writer.new_header(level, header)
         md_writer.set_indent_level(-1)
         md_writer.new_line(prose)
         md_writer.set_indent_level(-1)
         if rules and show_rules:
-            md_writer.new_header(2, title='Rules:')
+            md_writer.new_header((level + 1), title='Rules:')
             md_writer.set_indent_level(-1)
             md_writer.new_list(rules)
             md_writer.set_indent_level(-1)
         if status and show_status:
-            md_writer.new_header(2, title=f'Implementation Status: {status}')
+            md_writer.new_header((level + 1), title=f'Implementation Status: {status}')
 
     def get_control_response(
         self,
@@ -267,21 +269,16 @@ class SSPMarkdownWriter():
 
         md_writer = MDWriter(None)
 
-        system_prose = ''
-        system_rules = []
-        system_status = STATUS_OPERATIONAL
+        # write out top-level implementation statements, whether or not this control has parts
         imp_req_responses = self._get_responses_by_components(imp_req, write_empty_responses)
-        if SSP_MAIN_COMP_NAME in imp_req_responses:
-            system_prose, system_rules, system_status = imp_req_responses[SSP_MAIN_COMP_NAME]
+        for comp_name, comp_response in imp_req_responses.items():
+            prose, rules, status = comp_response
+            SSPMarkdownWriter._write_component_prompt(
+                md_writer, comp_name, prose, rules, status, show_rules, show_status, show_comp, 1
+            )
 
-        SSPMarkdownWriter._write_component_prompt(
-            md_writer, SSP_MAIN_COMP_NAME, system_prose, system_rules, system_status, show_rules, show_status
-        )
-
-        # if a control has no statement sub-parts then get the response bycomps from the imp_req itself
-        # otherwise get them from the statements in the imp_req
-        # an imp_req and a statement are both things that can have bycomps
-        has_bycomps = imp_req.statements if imp_req.statements else [imp_req]
+        # iterate over statements, if present, to write out each part
+        has_bycomps = imp_req.statements if imp_req.statements else []
         for has_bycomp in has_bycomps:
             statement_id = getattr(has_bycomp, 'statement_id', f'{control_id}_smt')
             label = statement_id
@@ -303,10 +300,9 @@ class SSPMarkdownWriter():
                     md_writer.new_header(1, title=header)
                 for comp_name, comp_response in response_per_component.items():
                     prose, rules, status = comp_response
-                    if show_comp:
-                        SSPMarkdownWriter._write_component_prompt(
-                            md_writer, comp_name, prose, rules, status, show_rules, show_status
-                        )
+                    SSPMarkdownWriter._write_component_prompt(
+                        md_writer, comp_name, prose, rules, status, show_rules, show_status, show_comp, 2
+                    )
 
         lines = md_writer.get_lines()
 
@@ -337,7 +333,7 @@ class SSPMarkdownWriter():
                 status = by_comp.implementation_status.state
             rules, _ = ControlInterface.get_rule_list_for_item(by_comp)
 
-            if prose or (not prose and write_empty_responses):
+            if prose or write_empty_responses:
                 if subheader:
                     response_per_component[subheader] = (prose, rules, status)
 
