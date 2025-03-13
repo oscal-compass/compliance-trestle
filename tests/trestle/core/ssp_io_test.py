@@ -90,7 +90,7 @@ def test_ssp_writer(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, m
 
 def test_ssp_get_control_response(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test generating SSP from the sample profile and generate markdown representation of it."""
-    args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
+    args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name, include_all_parts=True)
     ssp_cmd = SSPGenerate()
     assert ssp_cmd._run(args) == 0
 
@@ -119,13 +119,19 @@ def test_ssp_get_control_response(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
     assert md_text
     tree = DocsMarkdownNode.build_tree_from_markdown(md_text.split('\n'))
 
-    assert tree.get_node_for_key('## Implementation for part a.')
-    assert len(list(tree.get_all_headers_for_level(2))) == 4
-    assert len(list(tree.get_all_headers_for_level(3))) == 5
+    assert len(list(tree.get_all_headers_for_level(2))) == 6  # top level This, aa, ab + 3 part labels
+
+    part_a = tree.get_node_for_key('## Implementation for part a.')
+    assert part_a
+    assert len(list(part_a.get_all_headers_for_level(3))) == 3  # should be 3 components: This, aa, bb
+    assert len(list(part_a.get_all_headers_for_level(4))) == 5  # should be 3 statuses + 2 rules
 
     md_text = ssp_io.get_control_response('ac-3', 1, True)
     assert md_text
     tree = DocsMarkdownNode.build_tree_from_markdown(md_text.split('\n'))
+
+    assert len(list(tree.get_all_headers_for_level(2))) == 2  # should be 2 components: This, aa
+    assert len(list(tree.get_all_headers_for_level(3))) == 2  # should be 2 statuses
 
     # change responses
     new_imp_prose = 'edited imp req prose'
@@ -146,12 +152,12 @@ def test_ssp_get_control_response(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
     # confirm edited response is there and that comp name presence is controlled
     md_text = ssp_io.get_control_response('ac-1', 1, False, False)
     assert 'comp_aa' not in md_text
-    assert new_a_prose not in md_text
+    assert new_a_prose in md_text
 
     md_text = ssp_io.get_control_response('ac-1', 1, False, True)
     assert 'comp_aa' in md_text
     assert new_a_prose in md_text
-    assert '\n### Implementation Status: partial' in md_text
+    assert '\n#### Implementation Status: partial' in md_text
 
 
 def test_writers(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
