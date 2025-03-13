@@ -1,5 +1,319 @@
 # CHANGELOG
 
+## v3.8.0 (2025-02-13)
+
+### Chore
+
+* chore: Merge back version tags and changelog into develop. ([`729bf44`](https://github.com/oscal-compass/compliance-trestle/commit/729bf4454ee5006915a156e52e6c570c4311b7a4))
+
+### Feature
+
+* feat: upgrade to OSCAL 1.1.3 (#1795)
+
+* feat: upgrade to OSCAL 1.1.3
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* fix: update README to OSCAL 1.1.3
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+---------
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt; ([`ffc17c3`](https://github.com/oscal-compass/compliance-trestle/commit/ffc17c31ee570c08a8e39d837150ce0b7c1f04aa))
+
+### Fix
+
+* fix: issue 1797 (#1806)
+
+* fix issue 1797
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* fix: merge header for prof when ohv specified
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* fix: remove profile header merge restriction
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* fix: test_profile_ohv
+
+* fix bdist
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* remove debug code
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* fix: assure sorted by param_id
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* disable prof_test ohv else clause (for now)
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* use simple_test_profile2.json for proftest ohv
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* prof_test sort by pram_id for test ohv
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* add sort to test_profile_values_included_if_replaced
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+---------
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt; ([`3de80bc`](https://github.com/oscal-compass/compliance-trestle/commit/3de80bc78e02fb380be6b53f207fc9fce48580f1))
+
+* fix: remove submodule nist-source (#1809)
+
+* remove submodule nist-source
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* fix: remove nist-source references
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+---------
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt; ([`0d65f59`](https://github.com/oscal-compass/compliance-trestle/commit/0d65f59667b0101a85dcef371f6c0d8a71763b5c))
+
+* fix: add deprecation warning (#1812)
+
+* fix: add deprecation warning
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* make lint ahppy
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+---------
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt; ([`cfae19b`](https://github.com/oscal-compass/compliance-trestle/commit/cfae19b6dd0b303ecd9137a8a41288f8fe828d44))
+
+### Unknown
+
+* Merge pull request #1818 from oscal-compass/develop
+
+chore: trestle release 3.8.0 ([`815d74b`](https://github.com/oscal-compass/compliance-trestle/commit/815d74b7f1fe78ec83ec2ab93832b1404d9d1cbb))
+
+## v3.7.0 (2025-01-22)
+
+### Build
+
+* build(deps): bump paramiko from 3.4.0 to 3.5.0 (#1705)
+
+Bumps [paramiko](https://github.com/paramiko/paramiko) from 3.4.0 to 3.5.0.
+- [Commits](https://github.com/paramiko/paramiko/compare/3.4.0...3.5.0)
+
+---
+updated-dependencies:
+- dependency-name: paramiko
+  dependency-type: direct:production
+  update-type: version-update:semver-minor
+...
+
+Signed-off-by: dependabot[bot] &lt;support@github.com&gt;
+Co-authored-by: dependabot[bot] &lt;49699333+dependabot[bot]@users.noreply.github.com&gt; ([`9327576`](https://github.com/oscal-compass/compliance-trestle/commit/93275766a7558c5113bedfaa53858c4b0448fee5))
+
+### Chore
+
+* chore: Merge back version tags and changelog into develop. ([`5736cea`](https://github.com/oscal-compass/compliance-trestle/commit/5736cea34a3fa338a603ced07c082351360f2ba9))
+
+### Feature
+
+* feat: task cis-xlsx-to-oscal-cd (#1764)
+
+* task cis-xlsx-to-oscal-cd
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* docs
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* signatures &amp; trace
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* tmpdir
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* hack
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* give up.
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* Fix failing macos pipeline (thanks Vikas!)
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* SortHelper
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* Add debugging try/except
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* 2nd try
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* add utf-8 encoding to open
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* Fix sonar code smells
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* Fix sonar code smells
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* Fix sonar code smells
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* Fix sonar code smells
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* Fix sonar code smells
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* Fix sonar code smells
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* Fix sonar code smells
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* Fix sonar code smells
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* improve test spot checking
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* tests: bad_confg and bad_overwrite
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* simplify &amp; improve test coverage
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* simplify &amp; improve test coverage
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* simplify &amp; improve test coverage
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* simplify &amp; improve test coverage
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* simplify &amp; improve test coverage
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* simplify &amp; improve test coverage
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* simplify &amp; improve test coverage
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* Simplify &amp; improve test coverage
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* Simplify &amp; improve test coverage
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* 100% test coverage!
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* Fix license.
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+---------
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt; ([`8171357`](https://github.com/oscal-compass/compliance-trestle/commit/8171357bf01030f8d96d079be90100b0a37f8087))
+
+### Fix
+
+* fix: updates ssp add-props to replace existing properties (#1801)
+
+* fix: updates ssp add-props to replace existing properties
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* docs: fixes broken links
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+---------
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`b261ead`](https://github.com/oscal-compass/compliance-trestle/commit/b261eadc99da57bba3fd5df038b66efd7ba1156e))
+
+* fix: release info in docs (#1794)
+
+* Fix release info in docs.
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* add trestle v0 and generalize current version to 3.x.x
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* specify 0.3.7 explicitly
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+* fix: version is 0.37.x
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt;
+
+---------
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt; ([`bdb6444`](https://github.com/oscal-compass/compliance-trestle/commit/bdb64444971275aed458dee85e1222fc4f77fd48))
+
+* fix: activate mike (#1776)
+
+Signed-off-by: Chris Butler &lt;chris.butler@redhat.com&gt;
+Co-authored-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`9d5ebf3`](https://github.com/oscal-compass/compliance-trestle/commit/9d5ebf3eec7fc95b721a659206905d11d6ffd724))
+
+### Unknown
+
+* Merge pull request #1787 from oscal-compass/develop
+
+chore: Trestle Release ([`6e33ed2`](https://github.com/oscal-compass/compliance-trestle/commit/6e33ed27ba5c4eace8b3fbb621647d4174d3d179))
+
 ## v3.6.0 (2024-12-05)
 
 ### Build

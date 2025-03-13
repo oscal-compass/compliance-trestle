@@ -1,6 +1,6 @@
 # -*- mode:python; coding:utf-8 -*-
 
-# Copyright (c) 2024 IBM Corp. All rights reserved.
+# Copyright (c) 2025 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,5 +15,5 @@
 # limitations under the License.
 
 #TODO: Ensure this is automatically updated successfully.
-OSCAL_VERSION = '1.1.2'
-OSCAL_VERSION_REGEX = r'^1\.1\.[0-2]$'
+OSCAL_VERSION = '1.1.3'
+OSCAL_VERSION_REGEX = r'^1\.1\.[0-3]$'

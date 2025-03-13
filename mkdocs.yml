@@ -1,5 +1,7 @@
 edit_uri: ''
 extra:
+  version:
+    provider: mike
   analytics:
     property: G-XT3KGMHSY8
     provider: google
@@ -36,7 +38,7 @@ plugins:
     raise_error_excludes:
       # This is to remove some false positives for links which work.
       # Anchors are validated again by core mkdocs
-      404: [ '#trestle.*' ]
+      404: [ '*#trestle.*' ]
 - mkdocstrings:
     default_handler: python
     handlers:

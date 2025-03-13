@@ -545,10 +545,9 @@ class ControlWriter():
         # in the yaml header and allow overwrite_header_values to control whether it overwrites an existing one
         # in the markdown header
         context.cli_yaml_header = as_dict(context.cli_yaml_header)
-        if context.purpose != ContextPurpose.PROFILE:
-            ControlInterface.merge_dicts_deep(
-                context.merged_header, context.cli_yaml_header, context.overwrite_header_values
-            )
+        ControlInterface.merge_dicts_deep(
+            context.merged_header, context.cli_yaml_header, context.overwrite_header_values
+        )
         # the global contents are special and get overwritten on generate
         set_or_pop(
             context.merged_header,

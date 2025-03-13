@@ -64,11 +64,11 @@ Users needing to import XML OSCAL artifacts are recommended to look at NIST's XM
 
 Trestle runs on almost all Python platforms (e.g. Linux, Mac, Windows), is available on PyPi and can be easily installed via pip. It is under active development and new releases are made available regularly.\
 To install run: `pip install compliance-trestle`\
-See [Install trestle in a python virtual environment](https://oscal-compass.github.io/compliance-trestle/python_trestle_setup/) for the full installation guide.
+See [Install trestle in a python virtual environment](https://oscal-compass.github.io/compliance-trestle/latest/installation/) for the full installation guide.
 
 ## Complete documentation and tutorials
 
-Complete documentation, tutorials, and background on compliance can be found [here](https://oscal-compass.github.io/compliance-trestle).
+Complete documentation, tutorials, and background on compliance can be found [here](https://oscal-compass.github.io/compliance-trestle/latest).
 
 ## Agile Authoring
 
@@ -89,7 +89,7 @@ A collection of demos utilizing trestle can be found in the related project [com
 
 ### v3: stable (actively developed)
 
-- supports NIST OSCAL 1.1.2 as well as previous versions
+- supports NIST OSCAL 1.1.3 as well as previous versions
 
 ### v2: stable (maintenance mode)
 
@@ -101,7 +101,7 @@ Please refer to the community [README](https://github.com/oscal-compass/communit
 
 ## Contributing to Trestle
 
-Our project welcomes external contributions. Please consult [contributing](https://oscal-compass.github.io/compliance-trestle/contributing/mkdocs_contributing/) to get started.
+Our project welcomes external contributions. Please consult [contributing](https://oscal-compass.github.io/compliance-trestle/latest/contributing/mkdocs_contributing/) to get started.
 
 ## Code of Conduct
 

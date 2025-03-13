@@ -1160,14 +1160,19 @@ def test_ssp_gen_and_assemble_add_props(tmp_trestle_dir: pathlib.Path) -> None:
     impl_reqs = assem_ssp.control_implementation.implemented_requirements
     impl_req = next((i_req for i_req in impl_reqs if i_req.control_id == 'ac-1'), None)
     assert len(impl_req.props) == 1
-    assert impl_req.props[0].name == 'prop_with_ns'
-    assert impl_req.props[0].value == 'prop with ns'
-    assert impl_req.props[0].ns == 'https://my_new_namespace'
+    assert impl_req.props[0].name == 'prop_with_ns'  # type: ignore
+    assert impl_req.props[0].value == 'prop with ns'  # type: ignore
+    assert impl_req.props[0].ns == 'https://my_new_namespace'  # type: ignore
 
     smt_a = next((smt for smt in impl_req.statements if smt.statement_id == 'ac-1_smt.a'), None)
     assert len(smt_a.props) == 1
-    assert smt_a.props[0].name == 'smt_prop'
-    assert smt_a.props[0].value == 'smt prop'
+    assert smt_a.props[0].name == 'smt_prop'  # type: ignore
+    assert smt_a.props[0].value == 'smt prop'  # type: ignore
+
+    # Run again and check that there is no change
+    assert ssp_assemble._run(args) == 0
+    assem_ssp_2, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+    assert assem_ssp_2.metadata.last_modified == assem_ssp.metadata.last_modified
 
 
 def test_ssp_gen_and_assemble_implementation_parts(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
