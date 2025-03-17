@@ -21,8 +21,8 @@ from typing import Optional
 from trestle.common.common_types import TopLevelOscalModel
 from trestle.common.list_utils import as_list
 from trestle.core.catalog.catalog_interface import CatalogInterface
-from trestle.sdk.validation.validator import Validator
 from trestle.sdk.oscal.catalog import Catalog
+from trestle.sdk.validation.validator import Validator
 
 logger = logging.getLogger(__name__)
 
