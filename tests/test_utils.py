@@ -485,7 +485,8 @@ def setup_for_ssp(
     output_name: str,
     use_yaml: bool = False,
     leveraged_ssp_name: str = '',
-    comp_names='comp_def_a,comp_def_b'
+    comp_names='comp_def_a,comp_def_b',
+    include_all_parts: bool = False
 ) -> Tuple[argparse.Namespace, pathlib.Path]:
     """Create the comp_def, profile and catalog content needed for ssp-generate."""
     for comp_name in comp_names.split(','):
@@ -508,7 +509,7 @@ def setup_for_ssp(
         output=output_name,
         verbose=0,
         overwrite_header_values=False,
-        include_all_parts=False,
+        include_all_parts=include_all_parts,
         yaml_header=yaml_path,
         allowed_sections=None,
         force_overwrite=None
