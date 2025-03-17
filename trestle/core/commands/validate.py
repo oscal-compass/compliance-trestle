@@ -19,7 +19,7 @@ import argparse
 import logging
 
 import trestle.common.log as log
-import trestle.sdk.validation.validator_factory as vfact
+import trestle.core.validator_factory as vfact
 from trestle.common.const import ARG_VALIDATE, VAL_MODE_ALL
 from trestle.common.err import handle_generic_command_exception
 from trestle.core.commands.command_docs import CommandPlusDocs

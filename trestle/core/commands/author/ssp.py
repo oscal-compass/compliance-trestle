@@ -47,8 +47,8 @@ from trestle.core.crm.ssp_inheritance_api import SSPInheritanceAPI
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.remote.cache import FetcherFactory
+from trestle.core.validator_factory import validator_factory
 from trestle.sdk.validation.validator import Validator
-from trestle.sdk.validation.validator_factory import validator_factory
 
 logger = logging.getLogger(__name__)
 
