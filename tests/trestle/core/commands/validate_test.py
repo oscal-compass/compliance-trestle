@@ -40,8 +40,8 @@ from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.commands.split import SplitCmd
 from trestle.core.generators import generate_sample_model
 from trestle.core.models.file_content_type import FileContentType
-from trestle.core.validator import Validator
-from trestle.core.validator_factory import validator_factory
+from trestle.sdk.validation.validator import Validator
+from trestle.sdk.validation.validator_factory import validator_factory
 from trestle.sdk.oscal.catalog import Catalog
 from trestle.sdk.oscal.common import ResponsibleParty, Role
 from trestle.sdk.oscal.component import ComponentDefinition, ControlImplementation

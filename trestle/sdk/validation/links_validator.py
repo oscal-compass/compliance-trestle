@@ -20,7 +20,7 @@ from typing import List, Optional, Set
 
 from trestle.common.common_types import TopLevelOscalModel
 from trestle.common.model_utils import ModelUtils
-from trestle.core.validator import Validator
+from trestle.sdk.validation.validator import Validator
 
 logger = logging.getLogger(__name__)
 

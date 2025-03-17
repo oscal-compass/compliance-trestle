@@ -23,8 +23,8 @@ from trestle.common import const
 from trestle.common.common_types import TG, TopLevelOscalModel
 from trestle.common.file_utils import FileContentType
 from trestle.common.model_utils import ModelUtils
-from trestle.core.validator import Validator
-from trestle.core.validator_factory import validator_factory
+from trestle.sdk.validation.validator import Validator
+from trestle.sdk.validation.validator_factory import validator_factory
 
 logger = logging.getLogger(__name__)
 
