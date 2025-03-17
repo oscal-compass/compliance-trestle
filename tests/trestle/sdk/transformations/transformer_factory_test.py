@@ -20,8 +20,8 @@ import pytest
 import trestle.common.err as err
 from trestle.sdk.models.base_model import OscalBaseModel
 from trestle.sdk.oscal.common import RoleId
-from trestle.transforms.results import Results
-from trestle.transforms.transformer_factory import ResultsTransformer, TransformerBase
+from trestle.sdk.transformations.results import Results
+from trestle.sdk.transformations.transformer_factory import ResultsTransformer, TransformerBase
 from trestle.transforms.transformer_singleton import transformer_factory as tf
 
 

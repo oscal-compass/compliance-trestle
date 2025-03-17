@@ -42,9 +42,9 @@ from trestle.sdk.oscal.common import (
     Status,
     SubjectReference,
 )
-from trestle.transforms.results import Results
-from trestle.transforms.transformer_factory import ResultsTransformer
-from trestle.transforms.transformer_helper import TransformerHelper
+from trestle.sdk.transformations.results import Results
+from trestle.sdk.transformations.transformer_factory import ResultsTransformer
+from trestle.sdk.transformations.transformer_helper import TransformerHelper
 
 
 class XccdfResultToOscalARTransformer(ResultsTransformer):

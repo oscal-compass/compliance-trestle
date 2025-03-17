@@ -14,8 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Transformer helper tests."""
-from trestle.transforms.transformer_helper import PropertyAccounting
-from trestle.transforms.transformer_helper import PropertyManager
+from trestle.sdk.transformations.transformer_helper import PropertyAccounting
+from trestle.sdk.transformations.transformer_helper import PropertyManager
 
 
 def _get_property_set(gid, pid):

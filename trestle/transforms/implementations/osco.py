@@ -44,9 +44,9 @@ from trestle.sdk.oscal.common import (
     SubjectReference,
 )
 from trestle.sdk.oscal.profile import Profile
-from trestle.transforms.results import Results
-from trestle.transforms.transformer_factory import FromOscalTransformer, ResultsTransformer
-from trestle.transforms.transformer_helper import TransformerHelper
+from trestle.sdk.transformations.results import Results
+from trestle.sdk.transformations.transformer_factory import FromOscalTransformer, ResultsTransformer
+from trestle.sdk.transformations.transformer_helper import TransformerHelper
 
 logger = logging.getLogger(__name__)
 

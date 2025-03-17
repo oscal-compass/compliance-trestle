@@ -21,7 +21,7 @@ from typing import Any, Dict, Type
 
 from trestle.common.err import TrestleError
 from trestle.sdk.models.base_model import OscalBaseModel
-from trestle.transforms.results import Results
+from trestle.sdk.transformations.results import Results
 
 
 class TransformerBase(ABC):

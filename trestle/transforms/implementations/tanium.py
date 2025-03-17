@@ -36,10 +36,10 @@ from trestle.sdk.oscal.common import Property
 from trestle.sdk.oscal.common import ReviewedControls
 from trestle.sdk.oscal.common import Status
 from trestle.sdk.oscal.common import SubjectReference
-from trestle.transforms.results import Results
-from trestle.transforms.transformer_factory import ResultsTransformer
-from trestle.transforms.transformer_helper import PropertyAccounting
-from trestle.transforms.transformer_helper import PropertyManager
+from trestle.sdk.transformations.results import Results
+from trestle.sdk.transformations.transformer_factory import ResultsTransformer
+from trestle.sdk.transformations.transformer_helper import PropertyAccounting
+from trestle.sdk.transformations.transformer_helper import PropertyManager
 
 logger = logging.getLogger(__name__)
 
