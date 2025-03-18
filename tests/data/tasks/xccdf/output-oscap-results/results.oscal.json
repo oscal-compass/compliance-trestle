@@ -61,7 +61,8 @@
                 },
                 {
                   "name": "version",
-                  "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP"
+                  "ns": "https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/OpenSCAP",
+                  "value": "0"
                 },
                 {
                   "name": "severity",
