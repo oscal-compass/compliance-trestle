@@ -224,6 +224,8 @@ class _XccdfResult():
             if key == 'version':
                 value = val
                 break
+        if value is None:
+            value = '0'
         return value
 
     def _get_id(self, root: Element) -> str:
