@@ -28,7 +28,7 @@ from tests import test_utils
 from tests.test_utils import setup_for_ssp
 
 import trestle.common.const as const
-import trestle.core.generators as gens
+import trestle.sdk.models.generators as gens
 import trestle.sdk.oscal.assessment_plan as ap
 import trestle.sdk.oscal.common as common
 import trestle.sdk.oscal.profile as prof
@@ -38,13 +38,13 @@ from trestle.cli import Trestle
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.commands.split import SplitCmd
-from trestle.core.generators import generate_sample_model
+from trestle.sdk.models.generators import generate_sample_model
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.validator_factory import validator_factory
 from trestle.sdk.oscal.catalog import Catalog
 from trestle.sdk.oscal.common import ResponsibleParty, Role
 from trestle.sdk.oscal.component import ComponentDefinition, ControlImplementation
-from trestle.sdk.validation.validator import Validator
+from trestle.core.validator import Validator
 
 test_data_dir = pathlib.Path('tests/data').resolve()
 

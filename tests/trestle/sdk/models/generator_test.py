@@ -29,7 +29,7 @@ import pytest
 
 import trestle.common.const as const
 import trestle.common.err as err
-import trestle.core.generators as gens
+import trestle.sdk.models.generators as gens
 import trestle.sdk.oscal as oscal
 import trestle.sdk.oscal.assessment_results as ar
 import trestle.sdk.oscal.catalog as catalog

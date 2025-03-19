@@ -23,7 +23,7 @@ import trestle.sdk.oscal.component as o_component
 import trestle.sdk.oscal.poam as o_poam
 import trestle.sdk.oscal.profile as o_profile
 import trestle.sdk.oscal.ssp as o_ssp
-from trestle.core.trestle_base_model import TrestleBaseModel
+from trestle.sdk.models.trestle_base_model import TrestleBaseModel
 
 
 class OSCALAssembly(TrestleBaseModel):

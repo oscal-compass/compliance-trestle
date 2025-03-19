@@ -32,7 +32,7 @@ from typing import Any, Dict, List, Optional, Union
 from pydantic.v1 import AnyUrl, EmailStr, Extra, Field, conint, constr, validator
 
 from trestle.sdk.models.base_model import OscalBaseModel
-from trestle.sdk.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
+from trestle.sdk.oscal import OSCAL_VERSION, OSCAL_VERSION_REGEX
 
 
 class WithinDateRange(OscalBaseModel):

@@ -27,7 +27,7 @@ import pytest
 
 from tests import test_utils
 
-import trestle.core.generators as gens
+import trestle.sdk.models.generators as gens
 import trestle.sdk.oscal.common as common
 from trestle.cli import Trestle
 from trestle.common.err import TrestleError

@@ -24,7 +24,7 @@ from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.catalog.catalog_merger import CatalogMerger
 from trestle.core.control_context import ContextPurpose, ControlContext
-from trestle.core.control_interface import ComponentImpInfo, ControlInterface
+from trestle.sdk.models.control_interface import ComponentImpInfo, ControlInterface
 from trestle.core.control_writer import ControlWriter
 from trestle.sdk.oscal import common
 from trestle.sdk.oscal import component as comp

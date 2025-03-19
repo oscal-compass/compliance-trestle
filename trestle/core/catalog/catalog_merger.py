@@ -24,7 +24,7 @@ from trestle.common.list_utils import as_dict, as_filtered_list, as_list, delete
 from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.catalog.catalog_reader import CatalogReader
 from trestle.core.control_context import ControlContext
-from trestle.core.control_interface import ControlInterface
+from trestle.sdk.models.control_interface import ControlInterface
 
 logger = logging.getLogger(__name__)
 

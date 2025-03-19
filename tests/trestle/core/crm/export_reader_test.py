@@ -22,7 +22,7 @@ from tests import test_utils
 
 import trestle.common.const as const
 import trestle.core.crm.export_reader as exportreader
-import trestle.core.generators as gens
+import trestle.sdk.models.generators as gens
 import trestle.sdk.oscal.ssp as ossp
 from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils

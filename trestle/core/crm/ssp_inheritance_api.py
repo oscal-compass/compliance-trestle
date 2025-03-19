@@ -18,7 +18,7 @@ import logging
 import pathlib
 from typing import Dict, List, Optional
 
-import trestle.core.generators as gens
+import trestle.sdk.models.generators as gens
 import trestle.sdk.oscal.common as common
 import trestle.sdk.oscal.ssp as ossp
 from trestle.common import const

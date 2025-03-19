@@ -20,7 +20,7 @@ import pathlib
 from typing import List, Tuple
 
 import trestle.common.err as err
-import trestle.core.generators as gens
+import trestle.sdk.models.generators as gens
 from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import AliasMode, classname_to_alias
 from trestle.core.commands.common.return_codes import CmdReturnCodes

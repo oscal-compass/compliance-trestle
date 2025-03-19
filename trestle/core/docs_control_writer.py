@@ -21,7 +21,7 @@ import trestle.sdk.oscal.profile as prof
 from trestle.common import const
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_filtered_list, as_list
-from trestle.core.control_interface import ControlInterface, ParameterRep, PartInfo
+from trestle.sdk.models.control_interface import ControlInterface, ParameterRep, PartInfo
 from trestle.core.control_writer import ControlWriter
 from trestle.core.markdown.md_writer import MDWriter
 

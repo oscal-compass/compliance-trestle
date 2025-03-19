@@ -32,11 +32,9 @@ import pathlib
 from typing import Any, Dict, List, Optional, Type, cast
 
 import orjson
-
 from pydantic.v1 import Extra, Field, create_model
 from pydantic.v1.fields import ModelField
 from pydantic.v1.parse import load_file
-
 from ruamel.yaml import YAML
 
 import trestle.common.const as const
@@ -44,7 +42,7 @@ import trestle.common.err as err
 from trestle.common.str_utils import AliasMode, classname_to_alias
 from trestle.common.type_utils import get_origin, is_collection_field_type
 from trestle.core.models.file_content_type import FileContentType
-from trestle.core.trestle_base_model import TrestleBaseModel
+from trestle.sdk.models.trestle_base_model import TrestleBaseModel
 
 logger = logging.getLogger(__name__)
 

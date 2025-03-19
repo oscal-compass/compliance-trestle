@@ -19,7 +19,7 @@ from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
 import trestle.common.const as const
-import trestle.core.generators as gens
+import trestle.sdk.models.generators as gens
 import trestle.sdk.oscal.ssp as ssp
 from trestle.common.err import TrestleError
 from trestle.core.markdown.docs_markdown_node import DocsMarkdownNode

@@ -29,7 +29,7 @@ from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.core.remote import cache
 from trestle.core.validator_factory import validator_factory
-from trestle.sdk.validation.validator import Validator
+from trestle.core.validator import Validator
 
 logger = logging.getLogger(__name__)
 

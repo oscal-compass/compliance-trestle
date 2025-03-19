@@ -25,8 +25,8 @@ import trestle.sdk.oscal.component as comp
 import trestle.sdk.oscal.ssp as ossp
 from trestle.common import const
 from trestle.common.list_utils import as_list, none_if_empty
-from trestle.core.control_interface import ControlInterface
-from trestle.core.trestle_base_model import TrestleBaseModel
+from trestle.sdk.models.control_interface import ControlInterface
+from trestle.sdk.models.trestle_base_model import TrestleBaseModel
 from trestle.sdk.oscal import common
 
 logger = logging.getLogger(__name__)

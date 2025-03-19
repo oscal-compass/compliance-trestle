@@ -25,7 +25,7 @@ from ruamel.yaml.error import YAMLError
 
 import trestle.common.const as const
 import trestle.common.log as log
-import trestle.core.generators as gens
+import trestle.sdk.models.generators as gens
 import trestle.sdk.oscal.profile as prof
 import trestle.sdk.oscal.ssp as ssp
 from trestle.common import file_utils
@@ -38,7 +38,7 @@ from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.cmd_utils import clear_folder
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_context import ContextPurpose, ControlContext
-from trestle.core.control_interface import ParameterRep
+from trestle.sdk.models.control_interface import ParameterRep
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.sdk.oscal import OSCAL_VERSION

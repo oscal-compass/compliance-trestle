@@ -15,7 +15,7 @@
 
 import pytest
 
-import trestle.core.models.interfaces as interfaces
+import trestle.sdk.models.interfaces as interfaces
 
 
 def test_oscal_assembly() -> None:

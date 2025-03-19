@@ -22,7 +22,7 @@ from typing import Any, Dict, List, Optional, Set
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
 
-import trestle.core.generators as gens
+import trestle.sdk.models.generators as gens
 import trestle.sdk.models.generic_oscal as generic
 import trestle.sdk.oscal.common as com
 import trestle.sdk.oscal.component as comp
@@ -41,14 +41,14 @@ from trestle.core.commands.author.component import ComponentAssemble
 from trestle.core.commands.common.cmd_utils import clear_folder
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_context import ContextPurpose, ControlContext
-from trestle.core.control_interface import ControlInterface, ParameterRep
+from trestle.sdk.models.control_interface import ControlInterface, ParameterRep
 from trestle.core.control_reader import ControlReader
 from trestle.core.crm.ssp_inheritance_api import SSPInheritanceAPI
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.remote.cache import FetcherFactory
 from trestle.core.validator_factory import validator_factory
-from trestle.sdk.validation.validator import Validator
+from trestle.core.validator import Validator
 
 logger = logging.getLogger(__name__)
 

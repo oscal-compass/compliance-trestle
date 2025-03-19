@@ -25,7 +25,7 @@ from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_dict, as_filtered_list, as_list, deep_append, deep_get, deep_set, deep_update, delete_item_from_list, get_item_from_list, none_if_empty, set_or_pop  # noqa E501
 from trestle.common.model_utils import ModelUtils
 from trestle.core.control_context import ControlContext
-from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlInterface
+from trestle.sdk.models.control_interface import CompDict, ComponentImpInfo, ControlInterface
 from trestle.sdk.oscal import common
 from trestle.sdk.oscal import component as comp
 from trestle.sdk.oscal import profile as prof

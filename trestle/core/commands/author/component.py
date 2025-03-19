@@ -34,7 +34,7 @@ from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.cmd_utils import clear_folder
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_context import ContextPurpose, ControlContext
-from trestle.core.control_interface import ControlInterface, ParameterRep
+from trestle.sdk.models.control_interface import ControlInterface, ParameterRep
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver

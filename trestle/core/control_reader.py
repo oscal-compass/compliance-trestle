@@ -19,13 +19,13 @@ from typing import Any, Dict, List, Optional, Tuple
 import trestle.sdk.models.generic_oscal as generic
 import trestle.sdk.oscal.catalog as cat
 from trestle.common import const
-from trestle.common.common_types import TypeWithProps
+from trestle.sdk.models.common_types import TypeWithProps
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list, deep_get, delete_list_from_list, none_if_empty
 from trestle.common.model_utils import ModelUtils
-from trestle.core import generators as gens
+from trestle.sdk.models import generators as gens
 from trestle.core.control_context import ContextPurpose, ControlContext
-from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlInterface
+from trestle.sdk.models.control_interface import CompDict, ComponentImpInfo, ControlInterface
 from trestle.core.markdown.control_markdown_node import ControlMarkdownNode
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.sdk.oscal import common

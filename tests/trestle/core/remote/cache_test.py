@@ -34,7 +34,7 @@ import trestle.common.err as err
 from trestle.common import file_utils
 from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
-from trestle.core import generators
+from trestle.sdk.models import generators
 from trestle.core.remote import cache
 from trestle.sdk.oscal.catalog import Catalog
 

@@ -24,9 +24,9 @@ import trestle.common.err as err
 import trestle.common.file_utils
 import trestle.sdk.oscal
 from trestle.common import const, file_utils, log
-from trestle.common.common_types import TopLevelOscalModel
+from trestle.sdk.models.common_types import TopLevelOscalModel
 from trestle.common.model_utils import ModelUtils
-from trestle.core import generators
+from trestle.sdk.models import generators
 from trestle.core.commands.add import Add
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes

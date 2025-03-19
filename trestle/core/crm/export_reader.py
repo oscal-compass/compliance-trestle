@@ -18,9 +18,9 @@ import os
 import pathlib
 from typing import Dict, List, Tuple
 
-import trestle.core.generators as gens
+import trestle.sdk.models.generators as gens
 import trestle.sdk.oscal.ssp as ossp
-from trestle.common.common_types import TypeWithByComps
+from trestle.sdk.models.common_types import TypeWithByComps
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list, none_if_empty
 from trestle.core.crm.bycomp_interface import ByComponentInterface

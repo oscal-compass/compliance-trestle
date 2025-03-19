@@ -16,7 +16,7 @@
 """Trestle List Utils."""
 from typing import Any, Callable, Dict, List, Optional
 
-from trestle.common.common_types import TG, TG2
+from trestle.sdk.models.common_types import TG, TG2
 from trestle.common.err import TrestleError
 
 

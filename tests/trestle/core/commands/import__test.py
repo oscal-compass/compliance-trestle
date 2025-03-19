@@ -35,7 +35,7 @@ import trestle.sdk.oscal
 from trestle.cli import Trestle
 from trestle.common import file_utils as fs
 from trestle.common.model_utils import ModelUtils
-from trestle.core import generators
+from trestle.sdk.models import generators
 from trestle.core.commands import create
 from trestle.core.models.plans import Plan
 from trestle.sdk.oscal.catalog import Catalog, Group

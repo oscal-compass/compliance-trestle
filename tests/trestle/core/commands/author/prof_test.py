@@ -28,7 +28,7 @@ from ruamel.yaml import YAML
 from tests import test_utils
 
 import trestle.common.const as const
-import trestle.core.generators as gens
+import trestle.sdk.models.generators as gens
 import trestle.sdk.oscal.catalog as cat
 import trestle.sdk.oscal.common as com
 import trestle.sdk.oscal.profile as prof
@@ -39,7 +39,7 @@ from trestle.common.list_utils import comma_colon_sep_to_dict, comma_sep_to_list
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.commands.author.prof import ProfileAssemble, ProfileGenerate, ProfileInherit
-from trestle.core.control_interface import ControlInterface
+from trestle.sdk.models.control_interface import ControlInterface
 from trestle.core.markdown.docs_markdown_node import DocsMarkdownNode
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.models.file_content_type import FileContentType

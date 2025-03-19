@@ -16,7 +16,7 @@
 
 from tests import test_utils
 
-import trestle.core.generators as gens
+import trestle.sdk.models.generators as gens
 import trestle.sdk.oscal.ssp as ossp
 from trestle.core.crm.bycomp_interface import ByComponentInterface
 

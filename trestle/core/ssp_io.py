@@ -16,16 +16,16 @@ import logging
 import pathlib
 from typing import Dict, List, Optional, Tuple
 
-from trestle.common.common_types import TypeWithByComps
 from trestle.common.const import CONTROL_ORIGINATION, IMPLEMENTATION_STATUS, ITEM
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list
 from trestle.core.catalog import catalog_interface
 from trestle.core.catalog.catalog_interface import CatalogInterface
-from trestle.core.control_interface import ControlInterface
+from trestle.sdk.models.control_interface import ControlInterface
 from trestle.core.docs_control_writer import DocsControlWriter
 from trestle.core.markdown.docs_markdown_node import DocsMarkdownNode
 from trestle.core.markdown.md_writer import MDWriter
+from trestle.sdk.models.common_types import TypeWithByComps
 from trestle.sdk.oscal import ssp
 from trestle.sdk.oscal.catalog import Catalog
 

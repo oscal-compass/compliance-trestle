@@ -26,10 +26,10 @@ from typing import Any, Dict, List, Optional, Set, Tuple, Type, Union
 from pydantic.v1 import BaseModel, create_model
 
 import trestle.common
-import trestle.common.common_types
+import trestle.sdk.models.common_types
 from trestle.common import const, err, list_utils, str_utils
 from trestle.common import type_utils as utils
-from trestle.common.common_types import TG, TopLevelOscalModel
+from trestle.sdk.models.common_types import TG, TopLevelOscalModel
 from trestle.common.err import TrestleError, TrestleNotFoundError
 from trestle.common.file_utils import extract_trestle_project_root, iterdir_without_hidden_files
 from trestle.common.list_utils import as_filtered_list, none_if_empty

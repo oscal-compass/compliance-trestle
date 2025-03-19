@@ -33,7 +33,7 @@ from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.control_interface import ControlInterface, ParameterRep
+from trestle.sdk.models.control_interface import ControlInterface, ParameterRep
 from trestle.core.docs_control_writer import DocsControlWriter
 from trestle.core.jinja.ext import extensions
 from trestle.core.profile_resolver import ProfileResolver

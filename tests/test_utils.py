@@ -29,11 +29,11 @@ from _pytest.monkeypatch import MonkeyPatch
 
 from trestle.cli import Trestle
 from trestle.common import const, file_utils, list_utils, str_utils
-from trestle.common.common_types import TopLevelOscalModel
+from trestle.sdk.models.common_types import TopLevelOscalModel
 from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import AliasMode
-from trestle.core import generators
+from trestle.sdk.models import generators
 from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.commands.author.ssp import SSPGenerate
 from trestle.core.commands.href import HrefCmd

@@ -22,7 +22,7 @@ from _pytest.monkeypatch import MonkeyPatch
 from tests import test_utils
 from tests.test_utils import FileChecker, setup_for_ssp, setup_for_ssp_fedramp
 
-import trestle.core.generators as gens
+import trestle.sdk.models.generators as gens
 import trestle.sdk.models.generic_oscal as generic
 import trestle.sdk.oscal.profile as prof
 import trestle.sdk.oscal.ssp as ossp

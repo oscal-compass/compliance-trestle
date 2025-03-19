@@ -21,7 +21,7 @@ from enum import Enum
 from typing import Any, Dict, List, Optional
 
 from trestle.common.list_utils import as_dict
-from trestle.core.control_interface import CompDict
+from trestle.sdk.models.control_interface import CompDict
 from trestle.sdk.oscal import component as comp
 from trestle.sdk.oscal import profile as prof
 

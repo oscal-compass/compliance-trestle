@@ -17,7 +17,7 @@ import logging
 import pathlib
 from typing import Any, Dict, List, Optional, Tuple
 
-import trestle.core.generators as gens
+import trestle.sdk.models.generators as gens
 import trestle.sdk.oscal.catalog as cat
 from trestle.common.err import TrestleError
 from trestle.common.file_utils import prune_empty_dirs
