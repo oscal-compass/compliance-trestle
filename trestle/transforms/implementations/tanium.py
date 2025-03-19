@@ -25,21 +25,21 @@ import uuid
 from typing import Any, Dict, List, Optional, ValuesView
 
 from trestle.common.list_utils import join_key_to_list_dicts
-from trestle.oscal.assessment_results import LocalDefinitions1
-from trestle.oscal.assessment_results import Observation
-from trestle.oscal.assessment_results import Result
-from trestle.oscal.assessment_results import SystemComponent
-from trestle.oscal.common import ControlSelection
-from trestle.oscal.common import ImplementedComponent
-from trestle.oscal.common import InventoryItem
-from trestle.oscal.common import Property
-from trestle.oscal.common import ReviewedControls
-from trestle.oscal.common import Status
-from trestle.oscal.common import SubjectReference
-from trestle.transforms.results import Results
-from trestle.transforms.transformer_factory import ResultsTransformer
-from trestle.transforms.transformer_helper import PropertyAccounting
-from trestle.transforms.transformer_helper import PropertyManager
+from trestle.sdk.oscal.assessment_results import LocalDefinitions1
+from trestle.sdk.oscal.assessment_results import Observation
+from trestle.sdk.oscal.assessment_results import Result
+from trestle.sdk.oscal.assessment_results import SystemComponent
+from trestle.sdk.oscal.common import ControlSelection
+from trestle.sdk.oscal.common import ImplementedComponent
+from trestle.sdk.oscal.common import InventoryItem
+from trestle.sdk.oscal.common import Property
+from trestle.sdk.oscal.common import ReviewedControls
+from trestle.sdk.oscal.common import Status
+from trestle.sdk.oscal.common import SubjectReference
+from trestle.sdk.transformations.results import Results
+from trestle.sdk.transformations.transformer_factory import ResultsTransformer
+from trestle.sdk.transformations.transformer_helper import PropertyAccounting
+from trestle.sdk.transformations.transformer_helper import PropertyManager
 
 logger = logging.getLogger(__name__)
 

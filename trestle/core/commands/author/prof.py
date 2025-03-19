@@ -25,9 +25,9 @@ from ruamel.yaml.error import YAMLError
 
 import trestle.common.const as const
 import trestle.common.log as log
-import trestle.core.generators as gens
-import trestle.oscal.profile as prof
-import trestle.oscal.ssp as ssp
+import trestle.sdk.models.generators as gens
+import trestle.sdk.oscal.profile as prof
+import trestle.sdk.oscal.ssp as ssp
 from trestle.common import file_utils
 from trestle.common.err import TrestleError, TrestleNotFoundError, handle_generic_command_exception
 from trestle.common.list_utils import as_filtered_list, as_list, comma_sep_to_list, comma_colon_sep_to_dict, deep_set, none_if_empty  # noqa E501
@@ -38,10 +38,10 @@ from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.cmd_utils import clear_folder
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_context import ContextPurpose, ControlContext
-from trestle.core.control_interface import ParameterRep
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
-from trestle.oscal import OSCAL_VERSION
+from trestle.sdk.models.control_interface import ParameterRep
+from trestle.sdk.oscal import OSCAL_VERSION
 
 logger = logging.getLogger(__name__)
 

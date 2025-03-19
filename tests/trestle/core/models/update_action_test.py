@@ -20,7 +20,8 @@ from typing import List
 
 from trestle.core.models.actions import UpdateAction
 from trestle.core.models.elements import Element, ElementPath
-from trestle.oscal import OSCAL_VERSION, common
+from trestle.sdk.oscal import OSCAL_VERSION
+from trestle.sdk.oscal import common
 
 
 def test_update_action(sample_nist_component_def):

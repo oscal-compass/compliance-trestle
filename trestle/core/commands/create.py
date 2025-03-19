@@ -22,11 +22,9 @@ from typing import Type
 
 import trestle.common.err as err
 import trestle.common.file_utils
-import trestle.oscal
+import trestle.sdk.oscal
 from trestle.common import const, file_utils, log
-from trestle.common.common_types import TopLevelOscalModel
 from trestle.common.model_utils import ModelUtils
-from trestle.core import generators
 from trestle.core.commands.add import Add
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes
@@ -34,6 +32,8 @@ from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
+from trestle.sdk.models import generators
+from trestle.sdk.models.common_types import TopLevelOscalModel
 
 logger = logging.getLogger(__name__)
 
@@ -104,7 +104,7 @@ class CreateCmd(CommandPlusDocs):
         # Presuming top level level model not sure how to do the typing for this.
         sample_model.metadata.title = f'Generic {model_alias} created by trestle named {args.output}.'
         sample_model.metadata.last_modified = datetime.now().astimezone()
-        sample_model.metadata.oscal_version = trestle.oscal.OSCAL_VERSION
+        sample_model.metadata.oscal_version = trestle.sdk.oscal.OSCAL_VERSION
         sample_model.metadata.version = '0.0.0'
 
         top_element = Element(sample_model, model_alias)

@@ -23,19 +23,19 @@ import traceback
 import uuid
 from typing import Dict, List, Optional
 
-from trestle.oscal import OSCAL_VERSION
-from trestle.oscal.common import Metadata
-from trestle.oscal.common import Party
-from trestle.oscal.common import Property
-from trestle.oscal.common import ResponsibleParty
-from trestle.oscal.common import ResponsibleRole
-from trestle.oscal.common import Role
-from trestle.oscal.component import ComponentDefinition
-from trestle.oscal.component import ControlImplementation
-from trestle.oscal.component import DefinedComponent
-from trestle.oscal.component import ImplementedRequirement
-from trestle.oscal.component import SetParameter
-from trestle.oscal.component import Statement
+from trestle.sdk.oscal import OSCAL_VERSION
+from trestle.sdk.oscal.common import Metadata
+from trestle.sdk.oscal.common import Party
+from trestle.sdk.oscal.common import Property
+from trestle.sdk.oscal.common import ResponsibleParty
+from trestle.sdk.oscal.common import ResponsibleRole
+from trestle.sdk.oscal.common import Role
+from trestle.sdk.oscal.component import ComponentDefinition
+from trestle.sdk.oscal.component import ControlImplementation
+from trestle.sdk.oscal.component import DefinedComponent
+from trestle.sdk.oscal.component import ImplementedRequirement
+from trestle.sdk.oscal.component import SetParameter
+from trestle.sdk.oscal.component import Statement
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
 from trestle.tasks.xlsx_helper import XlsxHelper

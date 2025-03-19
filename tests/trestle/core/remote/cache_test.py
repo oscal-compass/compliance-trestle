@@ -34,9 +34,9 @@ import trestle.common.err as err
 from trestle.common import file_utils
 from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
-from trestle.core import generators
 from trestle.core.remote import cache
-from trestle.oscal.catalog import Catalog
+from trestle.sdk.models import generators
+from trestle.sdk.oscal.catalog import Catalog
 
 
 def as_file_uri(path: str) -> str:

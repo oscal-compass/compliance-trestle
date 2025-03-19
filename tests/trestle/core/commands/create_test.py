@@ -27,7 +27,7 @@ from trestle.cli import Trestle
 from trestle.common import const
 from trestle.common.err import TrestleError
 from trestle.core.commands import create
-from trestle.oscal.catalog import Catalog
+from trestle.sdk.oscal.catalog import Catalog
 
 subcommand_list = const.MODEL_TYPE_LIST
 

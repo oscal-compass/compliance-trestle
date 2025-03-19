@@ -20,7 +20,7 @@ import sys
 import timeit
 from pathlib import Path
 
-from trestle.core.base_model import OscalBaseModel
+from trestle.sdk.models.base_model import OscalBaseModel
 from trestle.transforms.transformer_singleton import transformer_factory
 
 logger = logging.getLogger(__name__)

@@ -24,7 +24,7 @@ from ruamel.yaml import YAML
 from tests.test_utils import text_files_equal
 
 import trestle.tasks.oscal_profile_to_osco_profile as oscal_profile_to_osco_profile
-from trestle.oscal.profile import Profile
+from trestle.sdk.oscal.profile import Profile
 from trestle.tasks.base_task import TaskOutcome
 from trestle.transforms.implementations.osco import OscalProfileToOscoProfileTransformer
 
