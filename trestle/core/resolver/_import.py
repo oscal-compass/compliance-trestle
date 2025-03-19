@@ -22,12 +22,12 @@ import trestle.common.const as const
 import trestle.sdk.oscal.catalog as cat
 import trestle.sdk.oscal.profile as prof
 from trestle.common.err import TrestleError
-from trestle.sdk.models.control_interface import ParameterRep
 from trestle.core.pipeline import Pipeline
 from trestle.core.remote import cache
 from trestle.core.resolver.merge import Merge
 from trestle.core.resolver.modify import Modify
 from trestle.core.resolver.prune import Prune
+from trestle.sdk.models.control_interface import ParameterRep
 from trestle.sdk.oscal.common import Resource
 
 logger = logging.getLogger(__name__)

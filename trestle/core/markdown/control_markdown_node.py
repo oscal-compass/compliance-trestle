@@ -26,9 +26,9 @@ from trestle.common import const
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_filtered_list, as_list, none_if_empty
 from trestle.common.str_utils import spaces_and_caps_to_snake
-from trestle.sdk.models.control_interface import ControlInterface
 from trestle.core.markdown.base_markdown_node import BaseMarkdownNode, BaseSectionContent
 from trestle.core.markdown.markdown_const import CODEBLOCK_DEF, HTML_COMMENT_END_REGEX, HTML_COMMENT_START
+from trestle.sdk.models.control_interface import ControlInterface
 from trestle.sdk.oscal import common
 
 logger = logging.getLogger(__name__)

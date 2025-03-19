@@ -39,11 +39,11 @@ from trestle.common.list_utils import comma_colon_sep_to_dict, comma_sep_to_list
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.commands.author.prof import ProfileAssemble, ProfileGenerate, ProfileInherit
-from trestle.sdk.models.control_interface import ControlInterface
 from trestle.core.markdown.docs_markdown_node import DocsMarkdownNode
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
+from trestle.sdk.models.control_interface import ControlInterface
 
 # test dicts are of form {'name_exp': [(name, exp_str)...], 'text': prose}
 # the text is appended to the end of the file

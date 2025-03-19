@@ -27,13 +27,13 @@ from tests import test_utils
 from trestle.common.const import RESOLUTION_SOURCE
 from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
-from trestle.sdk.models import generators as gens
 from trestle.core.catalog.catalog_interface import CatalogInterface
-from trestle.sdk.models.control_interface import ControlInterface, ParameterRep
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.repository import Repository
 from trestle.core.resolver.merge import Merge
+from trestle.sdk.models import generators as gens
+from trestle.sdk.models.control_interface import ControlInterface, ParameterRep
 from trestle.sdk.oscal import OSCAL_VERSION
 from trestle.sdk.oscal import catalog as cat
 from trestle.sdk.oscal import common as com

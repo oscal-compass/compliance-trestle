@@ -20,11 +20,11 @@ from typing import Dict, List, Tuple
 
 import trestle.sdk.models.generators as gens
 import trestle.sdk.oscal.ssp as ossp
-from trestle.sdk.models.common_types import TypeWithByComps
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list, none_if_empty
 from trestle.core.crm.bycomp_interface import ByComponentInterface
 from trestle.core.crm.leveraged_statements import InheritanceMarkdownReader
+from trestle.sdk.models.common_types import TypeWithByComps
 
 logger = logging.getLogger(__name__)
 

@@ -18,12 +18,12 @@ import logging
 import pathlib
 from typing import Any, Dict, Optional
 
-from trestle.sdk.models.common_types import TopLevelOscalModel, TypeWithSetParams
 from trestle.common.list_utils import as_list, deep_set
 from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.profile_resolver import ProfileResolver
-from trestle.sdk.oscal.ssp import ImplementedRequirement, SystemSecurityPlan
 from trestle.core.validator import Validator
+from trestle.sdk.models.common_types import TopLevelOscalModel, TypeWithSetParams
+from trestle.sdk.oscal.ssp import ImplementedRequirement, SystemSecurityPlan
 
 logger = logging.getLogger(__name__)
 

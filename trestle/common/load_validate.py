@@ -20,11 +20,11 @@ from pathlib import Path
 from typing import Optional, Tuple
 
 from trestle.common import const
-from trestle.sdk.models.common_types import TG, TopLevelOscalModel
 from trestle.common.file_utils import FileContentType
 from trestle.common.model_utils import ModelUtils
-from trestle.core.validator_factory import validator_factory
 from trestle.core.validator import Validator
+from trestle.core.validator_factory import validator_factory
+from trestle.sdk.models.common_types import TG, TopLevelOscalModel
 
 logger = logging.getLogger(__name__)
 

@@ -16,8 +16,8 @@
 """Trestle List Utils."""
 from typing import Any, Callable, Dict, List, Optional
 
-from trestle.sdk.models.common_types import TG, TG2
 from trestle.common.err import TrestleError
+from trestle.sdk.models.common_types import TG, TG2
 
 
 def as_list(list_or_none: Optional[List[TG]]) -> List[TG]:

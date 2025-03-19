@@ -21,13 +21,13 @@ import pytest
 from tests import test_utils
 
 import trestle.common.const as const
-from trestle.sdk.models import generators
 import trestle.sdk.oscal as oscal
 import trestle.sdk.oscal.catalog as cat
 import trestle.sdk.oscal.profile as prof
 from trestle.common.err import TrestleError
 from trestle.core import parser
 from trestle.core.repository import AgileAuthoring, ManagedOSCAL, Repository
+from trestle.sdk.models import generators
 
 prof_name = 'comp_prof'
 ssp_name = 'my_ssp'

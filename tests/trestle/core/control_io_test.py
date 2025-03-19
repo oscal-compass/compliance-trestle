@@ -30,7 +30,6 @@ from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.control_context import ContextPurpose, ControlContext
-from trestle.sdk.models.control_interface import ComponentImpInfo, ControlInterface, ParameterRep
 from trestle.core.control_reader import ControlReader
 from trestle.core.control_writer import ControlWriter
 from trestle.core.markdown.control_markdown_node import ControlMarkdownNode, tree_context
@@ -38,6 +37,7 @@ from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.markdown.markdown_processor import MarkdownProcessor
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
+from trestle.sdk.models.control_interface import ComponentImpInfo, ControlInterface, ParameterRep
 from trestle.sdk.oscal import common
 
 case_1 = 'indent_normal'

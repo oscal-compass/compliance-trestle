@@ -18,9 +18,9 @@ import logging
 import pathlib
 from typing import List, Optional, Set
 
-from trestle.sdk.models.common_types import TopLevelOscalModel
 from trestle.common.model_utils import ModelUtils
 from trestle.core.validator import Validator
+from trestle.sdk.models.common_types import TopLevelOscalModel
 
 logger = logging.getLogger(__name__)
 

@@ -32,9 +32,11 @@ import pathlib
 from typing import Any, Dict, List, Optional, Type, cast
 
 import orjson
+
 from pydantic.v1 import Extra, Field, create_model
 from pydantic.v1.fields import ModelField
 from pydantic.v1.parse import load_file
+
 from ruamel.yaml import YAML
 
 import trestle.common.const as const

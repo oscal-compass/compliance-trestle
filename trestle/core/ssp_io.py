@@ -21,7 +21,6 @@ from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list
 from trestle.core.catalog import catalog_interface
 from trestle.core.catalog.catalog_interface import CatalogInterface
-from trestle.sdk.models.control_interface import ControlInterface
 from trestle.core.docs_control_writer import DocsControlWriter
 from trestle.core.markdown.docs_markdown_node import DocsMarkdownNode
 from trestle.core.markdown.md_writer import MDWriter

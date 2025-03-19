@@ -21,9 +21,9 @@ import trestle.sdk.oscal.catalog as cat
 from trestle.common import const
 from trestle.common.list_utils import as_dict, as_list, deep_set, merge_dicts, set_or_pop
 from trestle.core.control_context import ContextPurpose, ControlContext
-from trestle.sdk.models.control_interface import CompDict, ComponentImpInfo, ControlInterface, PartInfo
 from trestle.core.control_reader import ControlReader
 from trestle.core.markdown.md_writer import MDWriter
+from trestle.sdk.models.control_interface import CompDict, ComponentImpInfo, ControlInterface, PartInfo
 from trestle.sdk.oscal import profile as prof
 from trestle.sdk.oscal.common import ImplementationStatus, Part
 

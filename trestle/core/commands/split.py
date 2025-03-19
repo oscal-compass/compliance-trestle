@@ -31,8 +31,8 @@ from trestle.core.models.actions import Action, CreatePathAction, WriteFileActio
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
-from trestle.sdk.models.trestle_base_model import TrestleBaseModel
 from trestle.sdk.models.base_model import OscalBaseModel
+from trestle.sdk.models.trestle_base_model import TrestleBaseModel
 
 logger = logging.getLogger(__name__)
 trace = log.Trace(logger)

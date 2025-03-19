@@ -21,11 +21,11 @@ from abc import ABC, abstractmethod
 from typing import Optional
 
 import trestle.common.file_utils
-from trestle.sdk.models.common_types import TopLevelOscalModel
 from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.models.file_content_type import FileContentType
+from trestle.sdk.models.common_types import TopLevelOscalModel
 
 logger = logging.getLogger(__name__)
 

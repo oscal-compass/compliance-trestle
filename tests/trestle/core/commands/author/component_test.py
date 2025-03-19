@@ -25,8 +25,8 @@ import trestle.sdk.models.generic_oscal as generic
 import trestle.sdk.oscal.component as comp
 from trestle.common import const, file_utils, model_utils
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.sdk.models.control_interface import ControlInterface
 from trestle.core.markdown.markdown_processor import MarkdownProcessor
+from trestle.sdk.models.control_interface import ControlInterface
 
 md_path = 'md_comp'
 

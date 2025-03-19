@@ -32,7 +32,14 @@ from trestle.common import str_utils
 from trestle.common.str_utils import AliasMode
 from trestle.sdk.models.base_model import OscalBaseModel
 from trestle.sdk.oscal import OSCAL_VERSION
-from trestle.sdk.oscal.common import Base64, Base64Datatype, Methods, ObservationTypeValidValues, OscalVersion, TaskValidValues
+from trestle.sdk.oscal.common import (
+    Base64,
+    Base64Datatype,
+    Methods,
+    ObservationTypeValidValues,
+    OscalVersion,
+    TaskValidValues,
+)
 from trestle.sdk.oscal.ssp import DateDatatype
 
 logger = logging.getLogger(__name__)

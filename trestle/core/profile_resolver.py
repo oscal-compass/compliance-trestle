@@ -23,8 +23,8 @@ import trestle.sdk.oscal.profile as prof
 from trestle.common.const import TRESTLE_INHERITED_PROPS_TRACKER
 from trestle.common.list_utils import as_list, pop_item_from_list
 from trestle.core.catalog.catalog_interface import CatalogInterface
-from trestle.sdk.models.control_interface import ParameterRep
 from trestle.core.resolver._import import Import
+from trestle.sdk.models.control_interface import ParameterRep
 
 logger = logging.getLogger(__name__)
 
