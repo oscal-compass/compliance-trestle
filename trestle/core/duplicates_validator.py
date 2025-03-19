@@ -13,38 +13,34 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Validate based on all registered validators."""
+"""Validate by confirming no duplicate uuids."""
 import pathlib
 from typing import Optional
 
-import trestle.core.validator_factory as vfact
+from trestle.common.model_utils import ModelUtils
 from trestle.sdk.models.base_model import OscalBaseModel
-from trestle.sdk.validation.validator import Validator
+from trestle.sdk.oscal.profile import Profile
+from trestle.core.validator import Validator
 
 
-class AllValidator(Validator):
-    """Validator to confirm the model passes all registered validation tests."""
-
-    last_failure_msg: str
-
-    def error_msg(self) -> str:
-        """Return information on which validation failed."""
-        return self.last_failure_msg
+class DuplicatesValidator(Validator):
+    """Validator to check for duplicate uuids and param_ids in the model."""
 
     def model_is_valid(self, model: OscalBaseModel, quiet: bool, trestle_root: Optional[pathlib.Path] = None) -> bool:
         """
-        Validate an oscal model against all available validators in the trestle library.
+        Test if the model is valid and contains no duplicate uuids or param_ids.
 
         args:
             model: An Oscal model that can be passed to the validator.
             quiet: Don't report msgs unless invalid.
 
         returns:
-            True (valid) if the model passed all registered validators.
+            True (valid) if the model does not contain duplicate uuid's.
         """
-        self.last_failure_msg = self.__doc__
-        for val in vfact.validator_factory.get_all():
-            if val != self and not val.model_is_valid(model, quiet, trestle_root):
-                self.last_failure_msg = val.error_msg()
-                return False
+        if not ModelUtils.has_no_duplicate_values_by_name(model, 'uuid'):
+            return False
+        # only profile, comp-def and ssp have set-params and only set-params have param_id
+        # param_id is required to be unique in profiles but not in other models
+        if isinstance(model, Profile):
+            return ModelUtils.has_no_duplicate_values_by_name(model, 'param_id')
         return True

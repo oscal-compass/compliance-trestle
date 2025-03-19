@@ -21,7 +21,7 @@ from abc import ABC, abstractmethod
 from typing import Optional
 
 import trestle.common.file_utils
-from trestle.common.common_types import TopLevelOscalModel
+from trestle.sdk.models.common_types import TopLevelOscalModel
 from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.common.return_codes import CmdReturnCodes
