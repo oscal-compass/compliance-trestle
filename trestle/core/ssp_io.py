@@ -25,6 +25,7 @@ from trestle.core.docs_control_writer import DocsControlWriter
 from trestle.core.markdown.docs_markdown_node import DocsMarkdownNode
 from trestle.core.markdown.md_writer import MDWriter
 from trestle.sdk.models.common_types import TypeWithByComps
+from trestle.sdk.models.control_interface import ControlInterface
 from trestle.sdk.oscal import ssp
 from trestle.sdk.oscal.catalog import Catalog
 
