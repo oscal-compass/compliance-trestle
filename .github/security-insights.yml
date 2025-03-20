@@ -1,32 +1,19 @@
 header:
   schema-version: 2.0.0
-  last-updated: '2025-03-06'
-  last-reviewed: '2025-03-06'
-  url: https://github.com/oscal-compass
-
-project:
-  name: OSCAL Compass
-  administrators:
-    - name: OSCAL Compass Oversight Committee
-      email: oscal-compass-oversight@googlegroups.com
-      primary: true
-  documentation:
-    code-of-conduct: https://github.com/oscal-compass/community/blob/main/CODE_OF_CONDUCT.md
-  repositories:
-    - name: Trestle
-      url: https://github.com/oscal-compass/compliance-trestle
-      comment: |
-        Command line tool and SDK for interacting with OSCAL-based compliance-as-code documents.
-  vulnerability-reporting:
-    reports-accepted: true
-    bug-bounty-available: false
-    security-policy: https://github.com/oscal-compass/community/blob/main/SECURITY.md
+  last-updated: '2025-03-20'
+  last-reviewed: '2025-03-20'
+  url: https://github.com/oscal-compass/compliance-trestle/blob/develop/.github/security-insights.yml
+  project-si-source: https://raw.githubusercontent.com/oscal-compass/.github/refs/heads/main/.github/security-insights.yml
+  comment: |
+    This file contains only the repository information for the Trestle project.
 
 repository:
   url: https://github.com/oscal-compass/compliance-trestle
   status: active
+  bug-fixes-only: false
   accepts-change-request: true
   accepts-automated-change-request: true
+  no-third-party-packages: false
   # From the complaince-trestle MAINTAINER.md file
   # https://github.com/oscal-compass/compliance-trestle/blob/develop/MAINTAINERS.md
   core-team:
@@ -47,7 +34,7 @@ repository:
     security-policy: https://github.com/oscal-compass/community/blob/main/SECURITY.md
   license:
     url: https://github.com/oscal-compass/compliance-trestle/blob/develop/LICENSE
-    expression: Apache 2.0
+    expression: Apache-2.0
   release:
     changelog: https://github.com/oscal-compass/compliance-trestle/blob/develop/CHANGELOG.md
     automated-pipeline: true
