@@ -34,7 +34,7 @@ repository:
     security-policy: https://github.com/oscal-compass/community/blob/main/SECURITY.md
   license:
     url: https://github.com/oscal-compass/compliance-trestle/blob/develop/LICENSE
-    expression: Apache 2.0
+    expression: Apache-2.0
   release:
     changelog: https://github.com/oscal-compass/compliance-trestle/blob/develop/CHANGELOG.md
     automated-pipeline: true
