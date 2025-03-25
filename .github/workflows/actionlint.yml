@@ -19,6 +19,6 @@ jobs:
       - name: Add problem matcher
         run: echo "::add-matcher::.github/actionlint-matcher.json"
       - name: Check workflow files
-        uses: docker://rhysd/actionlint:1.7.4
+        uses: docker://rhysd/actionlint:1.7.7
         with:
           args: -color -shellcheck=
