@@ -1,5 +1,72 @@
 # CHANGELOG
 
+## v3.8.1 (2025-03-25)
+
+### Build
+
+* build(deps): bump jinja2 from 3.1.4 to 3.1.6 (#1832)
+
+Bumps [jinja2](https://github.com/pallets/jinja) from 3.1.4 to 3.1.6.
+- [Release notes](https://github.com/pallets/jinja/releases)
+- [Changelog](https://github.com/pallets/jinja/blob/main/CHANGES.rst)
+- [Commits](https://github.com/pallets/jinja/compare/3.1.4...3.1.6)
+
+---
+updated-dependencies:
+- dependency-name: jinja2
+  dependency-type: direct:production
+  update-type: version-update:semver-patch
+...
+
+Signed-off-by: dependabot[bot] &lt;support@github.com&gt;
+Co-authored-by: dependabot[bot] &lt;49699333+dependabot[bot]@users.noreply.github.com&gt; ([`b643059`](https://github.com/oscal-compass/compliance-trestle/commit/b643059ba0afa85b3dae71daf0a12d507d2bac2b))
+
+### Chore
+
+* chore: Merge back version tags and changelog into develop. ([`e4f3a22`](https://github.com/oscal-compass/compliance-trestle/commit/e4f3a22868853db3aba437a956319de4550c3b02))
+
+### Documentation
+
+* docs: add OpenSSF Security Insights file (#1831)
+
+* docs: adds initial ossf security insights file
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* fix: typo in maintainer name
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+---------
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`de52d29`](https://github.com/oscal-compass/compliance-trestle/commit/de52d29c74ff4d4b241f04ffc5754a91b407f749))
+
+### Fix
+
+* fix: don&#39;t skip main component when creating SSP with author jinja (#1834)
+
+* Don&#39;t skip main component in ssp_io.get_control_response
+
+Signed-off-by: Ryan Ahearn &lt;ryan.ahearn@gsa.gov&gt;
+
+* Include all responses in get_control_response
+
+Signed-off-by: Ryan Ahearn &lt;ryan.ahearn@gsa.gov&gt;
+
+---------
+
+Signed-off-by: Ryan Ahearn &lt;ryan.ahearn@gsa.gov&gt; ([`0520515`](https://github.com/oscal-compass/compliance-trestle/commit/0520515e68c9df02cfa5f9fe38cb9db3270eef30))
+
+* fix: updates mkdocs.yml to ignore anchors on relative paths (#1828)
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`0a6eb71`](https://github.com/oscal-compass/compliance-trestle/commit/0a6eb71bd2b198264d2721eb411ea940f3a7bd46))
+
+### Unknown
+
+* Merge pull request #1837 from oscal-compass/develop
+
+chore: trestle patch release ([`8f6bd29`](https://github.com/oscal-compass/compliance-trestle/commit/8f6bd29f1975362c0c8a21b4f6627bfc0e6140c2))
+
 ## v3.8.0 (2025-02-13)
 
 ### Chore
