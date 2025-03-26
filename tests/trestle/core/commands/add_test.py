@@ -32,8 +32,8 @@ from trestle.core.commands.add import Add
 from trestle.core.models.actions import UpdateAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
-from trestle.oscal.catalog import Catalog
-from trestle.oscal.common import BackMatter
+from trestle.sdk.oscal.catalog import Catalog
+from trestle.sdk.oscal.common import BackMatter
 
 # Add was originally its own command but was incorporated as part of the Create command.
 

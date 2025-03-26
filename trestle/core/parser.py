@@ -26,7 +26,7 @@ from typing import Any, Dict
 from trestle.common import const
 from trestle.common.err import TrestleError
 from trestle.common.str_utils import AliasMode, alias_to_classname
-from trestle.core.base_model import OscalBaseModel
+from trestle.sdk.models.base_model import OscalBaseModel
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +39,7 @@ def parse_dict(data: Dict[str, Any], model_name: str) -> OscalBaseModel:
 
     Args:
         data: Oscal data loaded into memory as a dictionary with the `root key` removed.
-        model_name: should be of the form 'module.class' from trestle.oscal.* modules
+        model_name: should be of the form 'module.class' from trestle.sdk.oscal.* modules
 
     Returns:
         The oscal model of the desired model.

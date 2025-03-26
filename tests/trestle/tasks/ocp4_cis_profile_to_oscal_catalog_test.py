@@ -21,7 +21,7 @@ import pathlib
 from _pytest.monkeypatch import MonkeyPatch
 
 import trestle.tasks.ocp4_cis_profile_to_oscal_catalog as ocp4_cis_profile_to_oscal_catalog
-from trestle.oscal.catalog import Catalog
+from trestle.sdk.oscal.catalog import Catalog
 from trestle.tasks.base_task import TaskOutcome
 
 

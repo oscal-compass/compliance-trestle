@@ -26,7 +26,7 @@ from trestle.cli import Trestle
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.models.file_content_type import FileContentType
-from trestle.oscal import profile
+from trestle.sdk.oscal import profile
 
 
 def test_href_cmd(

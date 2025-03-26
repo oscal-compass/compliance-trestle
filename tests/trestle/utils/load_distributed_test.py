@@ -24,8 +24,8 @@ from tests import test_utils
 
 from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
-from trestle.oscal.catalog import Catalog
-from trestle.oscal.common import Role
+from trestle.sdk.oscal.catalog import Catalog
+from trestle.sdk.oscal.common import Role
 
 
 def test_load_list(testdata_dir, tmp_trestle_dir):

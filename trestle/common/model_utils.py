@@ -26,17 +26,18 @@ from typing import Any, Dict, List, Optional, Set, Tuple, Type, Union
 from pydantic.v1 import BaseModel, create_model
 
 import trestle.common
-import trestle.common.common_types
-from trestle.common import const, err, list_utils, str_utils, type_utils as utils
-from trestle.common.common_types import TG, TopLevelOscalModel
+import trestle.sdk.models.common_types
+from trestle.common import const, err, list_utils, str_utils
+from trestle.common import type_utils as utils
 from trestle.common.err import TrestleError, TrestleNotFoundError
 from trestle.common.file_utils import extract_trestle_project_root, iterdir_without_hidden_files
 from trestle.common.list_utils import as_filtered_list, none_if_empty
 from trestle.common.str_utils import AliasMode, alias_to_classname
-from trestle.core.base_model import OscalBaseModel
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.remote import cache
-from trestle.oscal import assessment_plan, assessment_results, common, poam
+from trestle.sdk.models.base_model import OscalBaseModel
+from trestle.sdk.models.common_types import TG, TopLevelOscalModel
+from trestle.sdk.oscal import assessment_plan, assessment_results, common, poam
 
 logger = logging.getLogger(__name__)
 
@@ -65,7 +66,7 @@ class ModelUtils:
                 Defaults to None.
 
         Returns:
-            Return a tuple of Model Type (e.g. class 'trestle.oscal.catalog.Catalog'),
+            Return a tuple of Model Type (e.g. class 'trestle.sdk.oscal.catalog.Catalog'),
             Model Alias (e.g. 'catalog.metadata') and Instance of the Model.
             If the model is decomposed/split/distributed, the instance of the model contains
                 the decomposed models loaded recursively.

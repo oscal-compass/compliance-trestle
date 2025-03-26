@@ -14,10 +14,10 @@
 # limitations under the License.
 """Create the singleton transformer factory here."""
 
+from trestle.sdk.transformations.transformer_factory import TransformerFactory
 from trestle.transforms.implementations.osco import OscalProfileToOscoProfileTransformer
 from trestle.transforms.implementations.osco import OscoResultToOscalARTransformer
 from trestle.transforms.implementations.tanium import TaniumResultToOscalARTransformer
-from trestle.transforms.transformer_factory import TransformerFactory
 
 transformer_factory = TransformerFactory()
 

@@ -22,7 +22,7 @@ from uuid import uuid4
 
 import trestle.common.const as const
 import trestle.common.log as log
-import trestle.oscal.component as comp
+import trestle.sdk.oscal.component as comp
 from trestle.common import file_utils
 from trestle.common.err import TrestleError, handle_generic_command_exception
 from trestle.common.list_utils import as_list, deep_get
@@ -34,11 +34,11 @@ from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.cmd_utils import clear_folder
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_context import ContextPurpose, ControlContext
-from trestle.core.control_interface import ControlInterface, ParameterRep
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.remote.cache import FetcherFactory
+from trestle.sdk.models.control_interface import ControlInterface, ParameterRep
 
 logger = logging.getLogger(__name__)
 

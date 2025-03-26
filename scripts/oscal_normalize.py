@@ -71,7 +71,7 @@ import logging
 import pathlib
 import re
 
-from trestle.oscal import OSCAL_VERSION_REGEX
+from trestle.sdk.oscal import OSCAL_VERSION_REGEX
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
