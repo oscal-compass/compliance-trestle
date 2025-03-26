@@ -17,6 +17,20 @@
 - [ ] All new and existing tests passed.
 - [ ] All commits are signed-off.
 
+<!--- Uncomment below if changes are for GitHub Actions -->
+
+<!--
+### How To Test
+
+If using [act](https://github.com/nektos/act), fill in below:
+
+**act version**  
+
+**act command**
+```bash
+```
+-->
+
 ## Summary
 
 ## Key links:
