@@ -702,6 +702,7 @@ class XlsxToCsvHelper:
         """Sanitize value."""
         rval = value
         if value:
+            value = str(value)
             rval = value.replace('\n', ' ')
         return rval
 
