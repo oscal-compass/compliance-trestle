@@ -13,7 +13,7 @@ repos:
       - id: yapf
         args: [--in-place, --parallel, --recursive, --style, .yapf-config]
         files: "^(trestle|tests|scripts)"
-        stages: [commit]
+        stages: [pre-commit]
         additional_dependencies: [toml]
   - repo: https://github.com/PyCQA/flake8
     rev: 5.0.4
@@ -42,7 +42,7 @@ repos:
           ]
         files: "^(tests|scripts)"
         exclude: "(oscal/|third_party)"
-        stages: [commit]
+        stages: [pre-commit]
       - id: flake8
         args: [--extend-ignore, "P1,C812,C813,C814,C815,C816,W503,W605,B017,B028", "--illegal-import-packages=filecmp"]
         additional_dependencies:
@@ -69,7 +69,7 @@ repos:
           ]
         files: "^(trestle)"
         exclude: "(oscal/)"
-        stages: [commit]
+        stages: [pre-commit]
   - repo: https://github.com/executablebooks/mdformat
     rev: 0.7.16
     hooks:
