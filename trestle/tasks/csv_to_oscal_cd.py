@@ -548,10 +548,6 @@ class CsvToOscalComponentDefinition(TaskBase):
         if name:
             value = self._csv_mgr.get_value(rule_key, PARAMETER_VALUE_DEFAULT).replace(' ', '')
             if value:
-            #    row_number = self._csv_mgr.get_row_number(rule_key)
-            #    column_name = PARAMETER_VALUE_DEFAULT
-            #    text = f'row "{row_number}" missing value for "{column_name}"'
-            #    raise RuntimeError(text)
                 values = value.split(',')
                 if values:
                     set_parameter = SetParameter(
