@@ -365,6 +365,9 @@ class CatalogInterface():
         Notes:
             This follows the actual structure of the catalog and groups
         """
+        
+        print(f'HERE')
+        
         if self._catalog.groups:
             for group in self._catalog.groups:
                 controls = self._get_all_controls_in_group(group, recurse)
