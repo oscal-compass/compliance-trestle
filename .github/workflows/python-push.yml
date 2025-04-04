@@ -38,14 +38,14 @@ jobs:
     - name: Don't mess with  line endings
       run: |
         git config --global core.autocrlf false
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         submodules: true
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
-    - uses: actions/cache@v2
+    - uses: actions/cache@v4
       with:
         path: ${{ matrix.path }}
         key: ${{ matrix.os }}-${{ matrix.python-version }}-pip-${{ hashFiles('setup.cfg') }}
@@ -97,13 +97,13 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/main' && github.repository == 'IBM/compliance-trestle'
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         submodules: true
         fetch-depth: 0
         token: ${{ secrets.ADMIN_PAT }} 
     - name: Set up Python 3.8
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: 3.8
     - name: Install build tools
@@ -126,13 +126,13 @@ jobs:
     # Temporary hack: allow develop as well as master to deploy docs.
     if: github.ref == 'refs/heads/main'
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         submodules: true
         fetch-depth: 0
         token: ${{ secrets.ADMIN_PAT }} 
     - name: Set up Python 3.8
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       # This is deliberately not using a custom credential as it relies on native github actions token to have push rights.
       with:
         python-version: 3.8
