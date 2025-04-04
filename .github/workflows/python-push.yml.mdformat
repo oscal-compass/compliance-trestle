@@ -73,6 +73,10 @@ jobs:
     - name: Install dependencies
       run: |
         make install
+    - name: Run md document formatting (mdformat)
+      if: steps.core-version.outputs.core == 'true'
+      run: |
+        make mdformat
     - name: Run code formatting (yapf)
       if: steps.core-version.outputs.core == 'true'
       run: |

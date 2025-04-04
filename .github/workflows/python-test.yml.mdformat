@@ -49,6 +49,9 @@ jobs:
     - name: Install dependencies
       run: |
         make install
+    - name: Run md document formatting (mdformat)
+      run: |
+        make mdformat
     - name: Run code formatting (yapf)
       run: |
         make code-format
