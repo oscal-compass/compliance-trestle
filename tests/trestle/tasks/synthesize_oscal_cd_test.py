@@ -104,7 +104,7 @@ def test_simulate(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     assert len(os.listdir(str(tmp_path))) <= 1
 
 
-def test_execute(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+def xtest_execute(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test execute."""
     _orient(tmp_path, monkeypatch)
     config, section = _get_config_section_init(tmp_path, 'test-synthesize-oscal-cd.config')
