@@ -82,10 +82,6 @@ jobs:
       continue-on-error: true 
       run: |
         make code-typing
-    - name: Install documenation dependencies
-      if: steps.core-version.outputs.core == 'true'
-      run: |
-        make docs-ubuntu-deps
     - name: Validate website content (mkdocs)
       if: steps.core-version.outputs.core == 'true'
       run: |
