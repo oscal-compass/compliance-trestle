@@ -21,13 +21,13 @@ import datetime
 import logging
 import pathlib
 import traceback
-import uuid
 from typing import Dict, Iterator, List, Optional
 
+from trestle.core.catalog.catalog_interface import CatalogInterface
+from trestle.oscal.catalog import Catalog
+from trestle.oscal.common import Property
 from trestle.oscal.component import ComponentDefinition
-from trestle.oscal.component import ControlImplementation
 from trestle.oscal.component import DefinedComponent
-from trestle.oscal.component import ImplementedRequirement
 from trestle.oscal.mapping import MappingCollection
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
@@ -35,6 +35,192 @@ from trestle.tasks.base_task import TaskOutcome
 logger = logging.getLogger(__name__)
 
 timestamp = datetime.datetime.utcnow().replace(microsecond=0).replace(tzinfo=datetime.timezone.utc).isoformat()
+
+
+class MCHelper:
+    """OSCAL MC Helper."""
+
+    def __init__(self, path: pathlib.Path) -> None:
+        """Initialize."""
+        self.path = path
+        self.checks_map = {}
+        self._read()
+        self._enforce_limitation()
+        self._create_checks_map()
+
+    def _read(self) -> None:
+        """Read."""
+        self.mc = MappingCollection.oscal_read(self.path)
+        self.mapping = self.mc.mappings[0]
+        self.catalog_helper = CatalogHelper(pathlib.Path(self.mapping.source_resource.href))
+
+    def _enforce_limitation(self):
+        """Enforce limitation."""
+        if len(self.mc.mappings) != 1:
+            text = 'Expected exactly one mapping: {self.path}'
+            raise RuntimeError(text)
+
+    def _create_checks_map(self):
+        """Create checks map."""
+        for _map in self.mapping.maps:
+            control = self._get_control(_map)
+            checks = self._get_checks(_map)
+            for check in checks:
+                if check not in self.checks_map.keys():
+                    self.checks_map[check] = []
+                if control not in self.checks_map[check]:
+                    self.checks_map[check].append(control)
+
+    def _get_checks(self, _map: Dict) -> List[str]:
+        """Get checks."""
+        rval = []
+        for prop in _map.props:
+            if prop.name != 'target_rules_list':
+                continue
+            rval = prop.value.split(',')
+            break
+        return rval
+
+    def _get_control(self, _map: Dict) -> str:
+        """Get control."""
+        rval = []
+        for source in _map.sources:
+            if source.type != 'control':
+                continue
+            rval = source.id_ref
+            break
+        return rval
+
+    def get_source_href(self) -> str:
+        """Get source href."""
+        return self.mapping.source_resource.href
+
+    def get_source_title(self) -> str:
+        """Get source title."""
+        return self.mc.metadata.title.replace('Mapping Collection for ', '')
+
+    def get_control_ids_for_check_id(self, check_id: str) -> List[str]:
+        """Get control ids for check id."""
+        rval = []
+        if check_id in self.checks_map.keys():
+            rval = self.checks_map[check_id]
+        return rval
+
+
+class CDHelper:
+    """OSCAL CD Helper."""
+
+    def __init__(self, path: pathlib.Path) -> None:
+        """Initialize."""
+        self.path = path
+        self.rule_sets = []
+        self.prop_names = []
+        self.rule_id_to_check_id_map = {}
+        self.check_id_to_check_description = {}
+        self._read()
+        self._process()
+
+    def _read(self) -> None:
+        """Read."""
+        self.cd = ComponentDefinition.oscal_read(self.path)
+
+    def _process(self) -> None:
+        """Process."""
+        for component in self.component_generator():
+            if component.type.lower() == 'validation':
+                self._validation(component)
+            else:
+                self._non_validation(component)
+
+    def _get_cd_ruleset_value(self, rule_set: str, name: str, props: List[Property]) -> str:
+        """Get value of name in ruleset."""
+        rval = ''
+        for prop in props:
+            if prop.remarks != rule_set:
+                continue
+            if prop.name != name:
+                continue
+            rval = prop.value
+            break
+        return rval
+
+    def _add_rule(self, rule_id: str, check_id: str):
+        """Add rule."""
+        if rule_id not in self.rule_id_to_check_id_map:
+            self.rule_id_to_check_id_map[rule_id] = []
+        if check_id not in self.rule_id_to_check_id_map[rule_id]:
+            self.rule_id_to_check_id_map[rule_id].append(check_id)
+
+    def _validation(self, component: DefinedComponent) -> None:
+        """Process validation."""
+        rule_sets = []
+        # find all rule sets
+        for prop in component.props:
+            if prop.remarks not in rule_sets:
+                rule_sets.append(prop.remarks)
+        # create maps
+        for rule_set in rule_sets:
+            rule_id = self._get_cd_ruleset_value(rule_set, 'Rule_Id', component.props)
+            check_id = self._get_cd_ruleset_value(rule_set, 'Check_Id', component.props)
+            check_description = self._get_cd_ruleset_value(rule_set, 'Check_Description', component.props)
+            self._add_rule(rule_id, check_id)
+            self.check_id_to_check_description[check_id] = check_description
+
+    def _non_validation(self, component: DefinedComponent) -> None:
+        """Process non-validation."""
+        props = component.props
+        for prop in props:
+            if prop.remarks not in self.rule_sets:
+                self.rule_sets.append(prop.remarks)
+            if prop.name not in self.prop_names:
+                self.prop_names.append(prop.name)
+
+    def get_prop_names(self):
+        """Get prop names."""
+        return self.prop_names
+
+    def get_check_ids_for_rule(self, rule_id: str) -> List[str]:
+        """Get check ids for rule."""
+        rval = []
+        if rule_id in self.rule_id_to_check_id_map.keys():
+            rval = self.rule_id_to_check_id_map[rule_id]
+        return rval
+
+    def component_generator(self) -> Iterator[Dict]:
+        """Component generator."""
+        for component in self.cd.components:
+            yield component
+
+
+class ControlsHelper:
+    """Controls Helper."""
+
+    def __init__(self, mc_helper: MCHelper, cd_helper: CDHelper) -> None:
+        """Initialize."""
+        self.mc_helper = mc_helper
+        self.cd_helper = cd_helper
+
+    def get_source_href(self):
+        """Get source href."""
+        return self.mc_helper.get_source_href()
+
+    def get_source_title(self):
+        """Get source title."""
+        return self.mc_helper.get_source_title()
+
+    def get_mappped_controls_for_rule_id(self, rule_id: str) -> List[str]:
+        """Get mapped controls for rule."""
+        rval = []
+        # get all checks for rule
+        check_ids = self.cd_helper.get_check_ids_for_rule(rule_id)
+        # for each check, get all controls
+        for check_id in check_ids:
+            control_ids = self.mc_helper.get_control_ids_for_check_id(check_id)
+            # add each control to list, if not already present
+            for control_id in control_ids:
+                if control_id not in rval:
+                    rval.append(control_id)
+        return rval
 
 
 class CsvHelper:
@@ -74,13 +260,22 @@ class CsvHelper:
         'A description of the check of the policy (desired state) including the method (interview or examine or test) and procedure details.',  # noqa
         'A namespace qualifying the property\'s name. This allows different organizations to associate distinct semantics with the same name. Used in conjunction with "class" as the ontology concept.',  # noqa
     ]
+    head_extra = []
     rows = []
-    rows.append(head0)
-    rows.append(head1)
 
-    def __init__(self, path: pathlib.Path) -> None:
+    def __init__(self, path: pathlib.Path, controls_helper: ControlsHelper) -> None:
         """Initialize."""
         self.path = path
+        self.controls_helper = controls_helper
+
+    def _init_headings(self):
+        """Initialize headings."""
+        if not len(self.rows):
+            for name in self.head_extra:
+                self.head0.append(name)
+                self.head1.append(name)
+            self.rows.append(self.head0)
+            self.rows.append(self.head1)
 
     def _get_rule_sets(self, defined_component: DefinedComponent) -> Dict:
         """Get rule sets."""
@@ -125,36 +320,88 @@ class CsvHelper:
                         rval = f'{rval} {implemented_requirement.control_id}'
         return rval.strip()
 
-    def add_column(self, row: List, ruleset: Dict, name: str):
-        """Add column."""
+    def add_head_extra(self, headings: List[str]):
+        """Add extra headings."""
+        normalized_headings = []
+        for h in self.head0:
+            normalized_headings.append(h.replace('$', ''))
+        for heading in headings:
+            if heading not in normalized_headings:
+                if heading not in self.head_extra:
+                    self.head_extra.append(heading)
+
+    def _get_csv_ruleset_value(self, ruleset: Dict, name: str) -> str:
+        """Get ruleset  value."""
+        rval = ''
         if name in ruleset.keys():
-            row.append(ruleset[name])
-        else:
-            row.append('')
+            rval = ruleset[name]
+        return rval
+
+    def _get_parameter_value_default(self, defined_component: DefinedComponent, parameter_id: str) -> str:
+        """Get parameter value default."""
+        rval = ''
+        if defined_component.control_implementations:
+            for control_implementation in defined_component.control_implementations:
+                if control_implementation.set_parameters:
+                    for set_parameter in control_implementation.set_parameters:
+                        if set_parameter.param_id == parameter_id:
+                            rval = ','.join(set_parameter.values)
+                            break
+                    if rval:
+                        break
+        return rval
 
     def component_add(self, defined_component: DefinedComponent) -> None:
         """Component add."""
+        self._init_headings()
         rule_sets = self._get_rule_sets(defined_component)
-        profile_source = self._get_profile_source(defined_component)
-        profile_description = self._get_profile_description(defined_component)
-        control_id_list = self._get_control_id_list(defined_component)
+        profile_source = self.controls_helper.get_source_href()
+        profile_description = self.controls_helper.get_source_title()
         for rule_set in rule_sets.values():
+            # get column values
+            rule_id = self._get_csv_ruleset_value(rule_set, 'Rule_Id')
+            control_id_list = self.controls_helper.get_mappped_controls_for_rule_id(rule_id)
+            if not control_id_list:
+                continue
+            control_ids = ' '.join(control_id_list)
+            rule_description = self._get_csv_ruleset_value(rule_set, 'Rule_Description')
+            if defined_component.type.lower() == 'validation':
+                parameter_id = ''
+                parameter_description = ''
+                parameter_value_alternatives = ''
+                parameter_value_default = ''
+            else:
+                parameter_id = self._get_csv_ruleset_value(rule_set, 'Parameter_Id')
+                parameter_description = self._get_csv_ruleset_value(rule_set, 'Parameter_Description')
+                parameter_value_alternatives = self._get_csv_ruleset_value(rule_set, 'Parameter_Value_Alternatives')
+                parameter_value_default = self._get_parameter_value_default(defined_component, parameter_id)
+            check_id = self._get_csv_ruleset_value(rule_set, 'Check_Id')
+            check_description = self._get_csv_ruleset_value(rule_set, 'Check_Description')
+            namespace = self._get_csv_ruleset_value(rule_set, 'Namespace')
+            # add column values to row
             row = []
             row.append(defined_component.title)
             row.append(defined_component.description)
             row.append(defined_component.type)
-            self.add_column(row, rule_set, 'Rule_Id')
-            self.add_column(row, rule_set, 'Rule_Description')
-            self.add_column(row, rule_set, 'Parameter_Id')
-            self.add_column(row, rule_set, 'Parameter_Description')
-            self.add_column(row, rule_set, 'Parameter_Value_Alternatives')
-            self.add_column(row, rule_set, 'Parameter_Value_Default')
+            row.append(rule_id)
+            row.append(rule_description)
+            row.append(parameter_id)
+            row.append(parameter_description)
+            row.append(parameter_value_alternatives)
+            row.append(parameter_value_default)
             row.append(profile_source)
             row.append(profile_description)
-            row.append(control_id_list)
-            self.add_column(row, rule_set, 'Check_Id')
-            self.add_column(row, rule_set, 'Check_Description')
-            self.add_column(row, rule_set, 'Namespace')
+            row.append(control_ids)
+            row.append(check_id)
+            row.append(check_description)
+            row.append(namespace)
+            for name in self.head_extra:
+                if defined_component.type.lower() == 'validation':
+                    value = ''
+                else:
+                    value = self._get_csv_ruleset_value(rule_set, name)
+                row.append(value)
+            # add row to rows
             self.rows.append(row)
 
     def write(self) -> None:
@@ -165,103 +412,34 @@ class CsvHelper:
                 csv_writer.writerow(row)
 
 
-class CDHelper:
-    """OSCAL CD Helper."""
+class CatalogHelper:
+    """OSCAL Catalog Helper."""
 
     def __init__(self, path: pathlib.Path) -> None:
         """Initialize."""
         self.path = path
+        self._read()
 
-    def read(self) -> None:
+    def _read(self) -> None:
         """Read."""
-        self.cd = ComponentDefinition.oscal_read(self.path)
+        self.catalog = Catalog.oscal_read(self.path)
+        self.catalog_interface = CatalogInterface(self.catalog)
+        self._create_map_control_id_to_title()
 
-    def component_generator(self) -> Iterator[Dict]:
-        """Component generator."""
-        for component in self.cd.components:
-            yield component
+    def _create_map_control_id_to_title(self) -> None:
+        """Create map."""
+        self.map_control_id_to_title = {}
+        for control_id in self.get_control_ids():
+            control = self.catalog_interface.get_control(control_id)
+            self.map_control_id_to_title[control.id] = control.title
 
+    def get_title(self, control_id: str) -> str:
+        """Get title."""
+        return self.map_control_id_to_title[control_id]
 
-class MCHelper:
-    """OSCAL MC Helper."""
-
-    def __init__(self, path: pathlib.Path) -> None:
-        """Initialize."""
-        self.path = path
-
-    def read(self) -> None:
-        """Read."""
-        self.mc = MappingCollection.oscal_read(self.path)
-
-    def get_rules(self, props: List[Dict]) -> List[str]:
-        """Get rules."""
-        rval = []
-        for prop in props:
-            if prop.name == 'target_rules_list':
-                rval = prop.value.split()
-                break
-        return rval
-
-    def get_controls(self, sources: List[Dict]) -> List[str]:
-        """Get controls."""
-        rval = []
-        for source in sources:
-            rval.append(source.id_ref)
-        return rval
-
-    def get_tuples(self) -> List:
-        """Get tuples."""
-        rval = []
-        for mapping in self.mc.mappings:
-            source_resource = mapping.source_resource.href
-            for map_ in mapping.maps:
-                rules = self.get_rules(map_.props)
-                controls = self.get_controls(map_.sources)
-                for rule in rules:
-                    for control in controls:
-                        item = [rule, source_resource, control]
-                        rval.append(item)
-        return rval
-
-
-class ControlImplementationHelper:
-    """ControlImplementation Helper."""
-
-    @classmethod
-    def get_rules(cls, component: DefinedComponent) -> List:
-        """Get rules."""
-        rval = []
-        if component.props:
-            for prop in component.props:
-                if prop.name == 'Rule_Id':
-                    rval.append(prop.value)
-        return rval
-
-    @classmethod
-    def get_control_implementations(cls, component: DefinedComponent, mc_tuples: List) -> List[ControlImplementation]:
-        """Get control implementations."""
-        rval = None
-        rules = ControlImplementationHelper.get_rules(component)
-        implemented_requirements = []
-        source = ''
-        for rule in rules:
-            for mc_tuple in mc_tuples:
-                if mc_tuple[0] != rule:
-                    continue
-                implemented_requirement = ImplementedRequirement(
-                    uuid=str(uuid.uuid4()), control_id=mc_tuple[2], description=''
-                )
-                implemented_requirements.append(implemented_requirement)
-                source = mc_tuple[1]
-        if implemented_requirements:
-            control_implementation = ControlImplementation(
-                uuid=str(uuid.uuid4()),
-                source=source,
-                description='',
-                implemented_requirements=implemented_requirements
-            )
-            rval = [control_implementation]
-        return rval
+    def get_control_ids(self) -> List[str]:
+        """Get control ids."""
+        return self.catalog_interface.get_control_ids()
 
 
 class SynthesizeOscalComponentDefinition(TaskBase):
@@ -367,16 +545,12 @@ class SynthesizeOscalComponentDefinition(TaskBase):
         self.configure()
         # helpers
         cd_helper = CDHelper(self._cd_path)
-        cd_helper.read()
         mc_helper = MCHelper(self._mc_path)
-        mc_helper.read()
-        mc_tuples = mc_helper.get_tuples()
-        csv_helper = CsvHelper(self._ofile)
-        # synthesize cd
+        controls_helper = ControlsHelper(mc_helper, cd_helper)
+        csv_helper = CsvHelper(self._ofile, controls_helper)
+        # process components
+        csv_helper.add_head_extra(cd_helper.get_prop_names())
         for component in cd_helper.component_generator():
-            component.control_implementations = ControlImplementationHelper.get_control_implementations(
-                component, mc_tuples
-            )
             csv_helper.component_add(component)
         csv_helper.write()
         return TaskOutcome('success')
