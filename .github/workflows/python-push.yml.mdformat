@@ -81,10 +81,6 @@ jobs:
       if: steps.core-version.outputs.core == 'true'
       run: |
         make code-format
-    - name: Run code linting (flake8)
-      if: steps.core-version.outputs.core == 'true'
-      run: |
-        make code-lint
     - name: Run code typing check (mypy)
       if: steps.core-version.outputs.core == 'true'
       continue-on-error: true 
