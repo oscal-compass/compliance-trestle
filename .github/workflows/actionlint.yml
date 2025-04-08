@@ -1,0 +1,24 @@
+name: Lint GitHub Actions workflows
+
+on:
+    push:
+      branches:
+        - develop
+    pull_request:
+      paths:
+        - '.github/**'
+
+permissions: read-all
+
+jobs:
+  actionlint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Add problem matcher
+        run: echo "::add-matcher::.github/actionlint-matcher.json"
+      - name: Check workflow files
+        uses: docker://rhysd/actionlint:1.7.7@sha256:1d74bfc9fd1963af8f89a7c22afaaafd42f49aad711a09951d02cb996398f61d
+        with:
+          args: -color -shellcheck=
