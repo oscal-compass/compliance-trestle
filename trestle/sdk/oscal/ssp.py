@@ -51,7 +51,7 @@ class System(Enum):
     Specifies the information type identification system used.
     """
 
-    http___doi_org_10_6028_NIST_SP_800_60v2r1 = 'http://doi.org/10.6028/NIST.SP.800-60v2r1'
+    http___doi_org_10_6028_NIST_SP_800_60v2r1 = 'http://doi.org/10.6028/NIST.SP.800-60v2r1'  # NOSONAR
 
 
 class SetParameter(OscalBaseModel):

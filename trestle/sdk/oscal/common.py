@@ -90,8 +90,8 @@ class TimeUnitValidValues(Enum):
 
 
 class ThreatIdValidValues(Enum):
-    http___fedramp_gov = 'http://fedramp.gov'
-    http___fedramp_gov_ns_oscal = 'http://fedramp.gov/ns/oscal'
+    http___fedramp_gov = 'http://fedramp.gov'  # NOSONAR
+    http___fedramp_gov_ns_oscal = 'http://fedramp.gov/ns/oscal'  # NOSONAR
 
 
 class ThreatId(OscalBaseModel):
@@ -552,14 +552,14 @@ class NonNegativeIntegerDatatype(OscalBaseModel):
 
 
 class NamingSystemValidValues(Enum):
-    http___fedramp_gov = 'http://fedramp.gov'
-    http___fedramp_gov_ns_oscal = 'http://fedramp.gov/ns/oscal'
-    http___csrc_nist_gov_ns_oscal = 'http://csrc.nist.gov/ns/oscal'
-    http___csrc_nist_gov_ns_oscal_unknown = 'http://csrc.nist.gov/ns/oscal/unknown'
-    http___cve_mitre_org = 'http://cve.mitre.org'
-    http___www_first_org_cvss_v2_0 = 'http://www.first.org/cvss/v2.0'
-    http___www_first_org_cvss_v3_0 = 'http://www.first.org/cvss/v3.0'
-    http___www_first_org_cvss_v3_1 = 'http://www.first.org/cvss/v3.1'
+    http___fedramp_gov = 'http://fedramp.gov'  # NOSONAR
+    http___fedramp_gov_ns_oscal = 'http://fedramp.gov/ns/oscal'  # NOSONAR
+    http___csrc_nist_gov_ns_oscal = 'http://csrc.nist.gov/ns/oscal'  # NOSONAR
+    http___csrc_nist_gov_ns_oscal_unknown = 'http://csrc.nist.gov/ns/oscal/unknown'  # NOSONAR
+    http___cve_mitre_org = 'http://cve.mitre.org'  # NOSONAR
+    http___www_first_org_cvss_v2_0 = 'http://www.first.org/cvss/v2.0'  # NOSONAR
+    http___www_first_org_cvss_v3_0 = 'http://www.first.org/cvss/v3.0'  # NOSONAR
+    http___www_first_org_cvss_v3_1 = 'http://www.first.org/cvss/v3.1'  # NOSONAR
     https___www_first_org_cvss_v4_0 = 'https://www.first.org/cvss/v4-0'
 
 
@@ -730,10 +730,10 @@ class IdentifierType(Enum):
     Identifies the identification system from which the provided identifier was assigned.
     """
 
-    https___fedramp_gov = 'https://fedramp.gov'
-    http___fedramp_gov_ns_oscal = 'http://fedramp.gov/ns/oscal'
-    https___ietf_org_rfc_rfc4122 = 'https://ietf.org/rfc/rfc4122'
-    http___ietf_org_rfc_rfc4122 = 'http://ietf.org/rfc/rfc4122'
+    https___fedramp_gov = 'https://fedramp.gov'  # NOSONAR
+    http___fedramp_gov_ns_oscal = 'http://fedramp.gov/ns/oscal'  # NOSONAR
+    https___ietf_org_rfc_rfc4122 = 'https://ietf.org/rfc/rfc4122'  # NOSONAR
+    http___ietf_org_rfc_rfc4122 = 'http://ietf.org/rfc/rfc4122'  # NOSONAR
 
 
 class HowManyValidValues(Enum):
@@ -823,7 +823,7 @@ class Facet(OscalBaseModel):
 
 
 class ExternalSchemeValidValues(Enum):
-    http___orcid_org_ = 'http://orcid.org/'
+    http___orcid_org_ = 'http://orcid.org/'  # NOSONAR
 
 
 class ExternalId(OscalBaseModel):
@@ -853,7 +853,7 @@ class EmailAddress(OscalBaseModel):
 
 
 class DocumentSchemeValidValues(Enum):
-    http___www_doi_org_ = 'http://www.doi.org/'
+    http___www_doi_org_ = 'http://www.doi.org/'  # NOSONAR
 
 
 class DocumentId(OscalBaseModel):
