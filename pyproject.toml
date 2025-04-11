@@ -1,13 +1,118 @@
 # Added to aide with eventual transition away from setup.py
 [build-system]
 requires = [
-    "setuptools >= 35.0.2",
+    "setuptools >= 34.0.2",
     "wheel",
-    "setuptools_scm >= 2.0.0"
+    "setuptools_scm >= 1.0.0"
 ]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools_scm]
+[project]
+name = "compliance-trestle"
+description = "Tools to manage & autogenerate python objects representing the OSCAL layers/models"
+authors = [
+    {name = "OSCAL Compass", email = "oscal-compass-oversight@googlegroups.com"}
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: POSIX",
+    "Operating System :: Microsoft",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+readme = "README.md"
+license = {file = "LICENSE"}
+dynamic = ["version"]
+requires-python = ">=3.9"
+dependencies = [
+    "attrs",
+    "ilcli",
+    "cryptography==44.0.2",
+    "paramiko==3.5.0",
+    "ruamel.yaml",
+    "furl",
+    "pydantic[email]>=2.0.0",
+    "python-dotenv>=0.10.4",
+    "datamodel-code-generator[http] == 0.25.3",
+    "python-frontmatter",
+    "pywin32 >= 1.0;platform_system=='Windows'",
+    "defusedxml",
+    "openpyxl~=3.0",
+    "Jinja2 == 3.1.6",
+    "cmarkgfm==2024.1.*", ## Update regularly
+    "orjson",
+    "requests>=2.32.2",
+    "importlib_resources"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=5.4.3",
+    "pytest-cov>=2.10.0",
+    "pytest-xdist",
+    "pre-commit>=2.4.0",
+    "setuptools>=61",
+    "urllib3==1.26.19",
+    "wheel",
+    "yapf",
+    "python-semantic-release>=9.8.0",
+    "pep8-naming",
+    "pytest-random-order",
+    "python-dateutil",
+    "mypy",
+    "types-PyYAML",
+    "types-paramiko",
+    "types-requests",
+    "types-setuptools",
+    ## Docs website
+    "mike",
+    "mkdocs>=1.6.0",
+    "mkdocs-awesome-pages-plugin",
+    "mkdocstrings[python]>=0.25.2",
+    "mkdocs-htmlproofer-plugin",
+    "mkdocs-material",
+    "markdown-include",
+    "mkdocs-minify-plugin",
+    "mkdocs-git-revision-date-localized-plugin",
+    "pymdown-extensions",
+    "livereload",
+    "pillow",
+    "cairosvg",
+    ## Constrain system
+    "pylint",
+    # Checking repo after docs generation.
+    "gitpython"
+]
+
+[project.urls]
+Homepage = "https://oscal-compass.github.io/compliance-trestle"
+
+[project.scripts]
+trestle = "trestle.cli:run"
+
+[tool.setuptools_scm] # this section must exist
+
+[tool.distutils.bdist_wheel]
+universal = true
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["trestle*"]
+exclude = ["tests"]
+
+[tool.setuptools.package-data]
+trestle = ["*.ini", "*.md", "*.jinja", "*.drawio", "*.json", "*.yaml", "*.yml"]
+
+[tool.setuptools.dynamic]
+version = {attr = "trestle.__init__.__version__"}
 
 [tool.pytest.ini_options]
 minversion = "6.2"
@@ -20,6 +125,41 @@ line-length = 500
 
 [tool.isort]
 line_length = 500
+
+[tool.flake8]
+# WARNING: This should be kept compatible with .pre-commit-config.yaml
+ignore = ["P1", "C812", "C813", "C814", "C815", "C816"]
+max-line-length = 120
+exclude = [
+    "trestle/oscal"
+]
+
+[tool.mypy]
+plugins = "pydantic.v1.mypy"
+ignore_missing_imports = true
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+disallow_any_generics = true
+check_untyped_defs = true
+no_implicit_reexport = true
+show_error_codes = true
+show_error_context = true
+disallow_untyped_defs = true
+disable_error_code = ["union-attr", "attr-defined", "no-redef", "assignment", "arg-type", "list-item"]
+
+[[tool.mypy.overrides]]
+module = "trestle.oscal.*"
+ignore_errors = true
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+warn_untyped_fields = true
+
+[tool.coverage.run]
+relative_files = true
 
 [tool.semantic_release]
 build_command = """
@@ -35,12 +175,10 @@ minor_tags = ["feat"]
 patch_tags = ["fix", "perf"]
 default_bump_level = 0
 
-
 [tool.semantic_release.branches.main]
 match = "(main)"
 prerelease_token = "rc"
 prerelease = false
-
 
 [tool.semantic_release.remote]
 name = "origin"
