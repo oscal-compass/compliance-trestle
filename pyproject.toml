@@ -1,11 +1,13 @@
 # Added to aide with eventual transition away from setup.py
 [build-system]
 requires = [
-    "setuptools >= 34.0.2",
+    "setuptools >= 35.0.2",
     "wheel",
-    "setuptools_scm >= 1.0.0"
+    "setuptools_scm >= 2.0.0"
 ]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm] # this section must exist
 
 [project]
 name = "compliance-trestle"
@@ -95,8 +97,6 @@ Homepage = "https://oscal-compass.github.io/compliance-trestle"
 
 [project.scripts]
 trestle = "trestle.cli:run"
-
-[tool.setuptools_scm] # this section must exist
 
 [tool.distutils.bdist_wheel]
 universal = true
