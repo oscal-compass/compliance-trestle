@@ -98,9 +98,6 @@ Homepage = "https://oscal-compass.github.io/compliance-trestle"
 [project.scripts]
 trestle = "trestle.cli:run"
 
-[tool.distutils.bdist_wheel]
-universal = true
-
 [tool.setuptools]
 include-package-data = true
 
