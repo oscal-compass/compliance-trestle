@@ -1,5 +1,136 @@
 # CHANGELOG
 
+## v3.9.0 (2025-04-30)
+
+### Build
+
+* build(deps): bump cryptography from 43.0.3 to 44.0.2 (#1830)
+
+Bumps [cryptography](https://github.com/pyca/cryptography) from 43.0.3 to 44.0.2.
+- [Changelog](https://github.com/pyca/cryptography/blob/main/CHANGELOG.rst)
+- [Commits](https://github.com/pyca/cryptography/compare/43.0.3...44.0.2)
+
+---
+updated-dependencies:
+- dependency-name: cryptography
+  dependency-type: direct:production
+  update-type: version-update:semver-major
+...
+
+Signed-off-by: dependabot[bot] &lt;support@github.com&gt;
+Co-authored-by: dependabot[bot] &lt;49699333+dependabot[bot]@users.noreply.github.com&gt; ([`61c0b95`](https://github.com/oscal-compass/compliance-trestle/commit/61c0b95477fd3e237e7ce4203e2e448a943a4af1))
+
+* build(deps): bump actions/stale from 9.0.0 to 9.1.0 (#1804)
+
+Bumps [actions/stale](https://github.com/actions/stale) from 9.0.0 to 9.1.0.
+- [Release notes](https://github.com/actions/stale/releases)
+- [Changelog](https://github.com/actions/stale/blob/main/CHANGELOG.md)
+- [Commits](https://github.com/actions/stale/compare/28ca1036281a5e5922ead5184a1bbf96e5fc984e...5bef64f19d7facfb25b37b414482c7164d639639)
+
+---
+updated-dependencies:
+- dependency-name: actions/stale
+  dependency-type: direct:production
+  update-type: version-update:semver-minor
+...
+
+Signed-off-by: dependabot[bot] &lt;support@github.com&gt;
+Co-authored-by: dependabot[bot] &lt;49699333+dependabot[bot]@users.noreply.github.com&gt; ([`b7b5656`](https://github.com/oscal-compass/compliance-trestle/commit/b7b5656a6686d7d270e724dd24e0ea237d4d7155))
+
+### Chore
+
+* chore: Merge back version tags and changelog into develop. ([`c578be8`](https://github.com/oscal-compass/compliance-trestle/commit/c578be815d0e1061eac02af94fa671fb07046899))
+
+### Ci
+
+* ci: adds actionlint workflow (#1771)
+
+* ci: adds an actionlint workflow
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* docs: adds steps for testing GH Actions in PR template
+
+The steps are commented and can be uncommeted when changes
+are to GitHub Actions workflows
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* style: adds newline at the end of new files
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* chore(deps): updates action image version to latest
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+---------
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`95d5f71`](https://github.com/oscal-compass/compliance-trestle/commit/95d5f71349d3ecafb50b69963faad2ce0a97af5c))
+
+### Documentation
+
+* docs: updates security insights location and content (#1840)
+
+* docs: updates security insights location and content
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* docs: fixes license expression of security insights
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+---------
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`87c4f80`](https://github.com/oscal-compass/compliance-trestle/commit/87c4f80e15f2fa0efe705ddd862ea0b1593a32b3))
+
+### Feature
+
+* feat: move dependencies from setup.cfg to pyproject.toml (#1859)
+
+* feat: add content to pyproject.toml for parity with setup.cfg
+
+Signed-off-by: George Vauter &lt;gvauter@redhat.com&gt;
+
+* remove project metadata and deps from setup.cfg
+
+Signed-off-by: George Vauter &lt;gvauter@redhat.com&gt;
+
+* fix: replace deprecated license metadata
+
+Signed-off-by: George Vauter &lt;gvauter@redhat.com&gt;
+
+* fix: remove experimental distutils section from pyproject
+
+Signed-off-by: George Vauter &lt;gvauter@redhat.com&gt;
+
+---------
+
+Signed-off-by: George Vauter &lt;gvauter@redhat.com&gt; ([`2779edf`](https://github.com/oscal-compass/compliance-trestle/commit/2779edf026347ed45c2c997eff64db320a4aef97))
+
+### Fix
+
+* fix: add the score card workflow and badge (#1854)
+
+Signed-off-by: thealberto &lt;barbaro.alberto@gmail.com&gt;
+Co-authored-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`7ec8006`](https://github.com/oscal-compass/compliance-trestle/commit/7ec80063469e2bafa8bf3e2e865972edeb8300b1))
+
+* fix: OSCAL Property must have value field (#1839)
+
+Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt; ([`b243c4a`](https://github.com/oscal-compass/compliance-trestle/commit/b243c4adcdd3280a35ce3d0c9b22713a9c00b3c9))
+
+### Unknown
+
+* Merge pull request #1863 from oscal-compass/develop
+
+chore: Trestle Release ([`ae6d100`](https://github.com/oscal-compass/compliance-trestle/commit/ae6d10070981d7987ba8d58cdb2df01bb2ee9086))
+
+* [StepSecurity] ci: Harden GitHub Actions (#1853)
+
+Signed-off-by: StepSecurity Bot &lt;bot@stepsecurity.io&gt;
+Co-authored-by: StepSecurity Bot &lt;bot@stepsecurity.io&gt;
+Co-authored-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`5bdcd51`](https://github.com/oscal-compass/compliance-trestle/commit/5bdcd51efbbec0758edcf08be94195c633663740))
+
 ## v3.8.1 (2025-03-25)
 
 ### Build
