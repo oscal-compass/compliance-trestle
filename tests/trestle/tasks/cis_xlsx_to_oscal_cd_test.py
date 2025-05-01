@@ -19,11 +19,14 @@ import pathlib
 from typing import Dict
 from unittest.mock import patch
 
+from tests.test_utils import TEST_DIR, set_cwd_unsafe
+
 import trestle.tasks.cis_xlsx_to_oscal_cd as cis_xlsx_to_oscal_cd
 from trestle.oscal.component import ComponentDefinition
 from trestle.tasks.base_task import TaskOutcome
 
-db2_config = 'tests/data/tasks/cis-xlsx-to-oscal-cd/test-cis-xlsx-to-oscal-cd.db2.snippet.config'
+root_dir = TEST_DIR / '../'
+db2_config = TEST_DIR / 'data/tasks/cis-xlsx-to-oscal-cd/test-cis-xlsx-to-oscal-cd.db2.snippet.config'
 
 
 def _get_section(tmp_path: pathlib.Path, file_: str) -> Dict:
@@ -65,6 +68,7 @@ def test_cis_xlsx_to_oscal_cd_simulate(tmp_path: pathlib.Path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
+@set_cwd_unsafe(root_dir)
 def test_cis_xlsx_to_oscal_cd_execute(tmp_path: pathlib.Path):
     """Test execute call - db2."""
     section = _get_section(tmp_path, db2_config)
@@ -74,6 +78,7 @@ def test_cis_xlsx_to_oscal_cd_execute(tmp_path: pathlib.Path):
     _validate_db2(tmp_path)
 
 
+@set_cwd_unsafe(root_dir)
 def test_cis_xlsx_to_oscal_cd_execute_combined(tmp_path: pathlib.Path):
     """Test execute call - db2."""
     section = _get_section(tmp_path, db2_config)
@@ -85,6 +90,7 @@ def test_cis_xlsx_to_oscal_cd_execute_combined(tmp_path: pathlib.Path):
     _validate_db2(tmp_path)
 
 
+@set_cwd_unsafe(root_dir)
 def test_cis_xlsx_to_oscal_cd_execute_missing_column(tmp_path: pathlib.Path):
     """Test execute call - missing column."""
     section = _get_section(tmp_path, db2_config)
@@ -95,6 +101,7 @@ def test_cis_xlsx_to_oscal_cd_execute_missing_column(tmp_path: pathlib.Path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_cis_xlsx_to_oscal_cd_execute_bad_config(tmp_path: pathlib.Path):
     """Test execute call - bad config."""
     section = _get_section(tmp_path, db2_config)
@@ -104,6 +111,7 @@ def test_cis_xlsx_to_oscal_cd_execute_bad_config(tmp_path: pathlib.Path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_cis_xlsx_to_oscal_cd_execute_bad_overwrite(tmp_path: pathlib.Path):
     """Test execute call - bad overwrite."""
     section = _get_section(tmp_path, db2_config)
@@ -116,6 +124,7 @@ def test_cis_xlsx_to_oscal_cd_execute_bad_overwrite(tmp_path: pathlib.Path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_cis_xlsx_to_oscal_cd_execute_merge(tmp_path: pathlib.Path):
     """Test execute call - merge."""
     section = _get_section(tmp_path, db2_config)
@@ -127,6 +136,7 @@ def test_cis_xlsx_to_oscal_cd_execute_merge(tmp_path: pathlib.Path):
     _validate_db2(tmp_path)
 
 
+@set_cwd_unsafe(root_dir)
 def test_cis_xlsx_to_oscal_cd_execute_rule_prefix(tmp_path: pathlib.Path):
     """Test execute call - rule prefix."""
     section = _get_section(tmp_path, db2_config)
@@ -137,6 +147,7 @@ def test_cis_xlsx_to_oscal_cd_execute_rule_prefix(tmp_path: pathlib.Path):
     _validate_db2(tmp_path)
 
 
+@set_cwd_unsafe(root_dir)
 def test_cis_xlsx_to_oscal_cd_execute_control_prefix(tmp_path: pathlib.Path):
     """Test execute call - control prefix."""
     section = _get_section(tmp_path, db2_config)
@@ -157,6 +168,7 @@ def test_cis_xlsx_to_oscal_cd_execute_control_bad(tmp_path: pathlib.Path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_cis_xlsx_to_oscal_cd_execute_columns_exclude(tmp_path: pathlib.Path):
     """Test execute call - control prefix."""
     section = _get_section(tmp_path, db2_config)
