@@ -35,7 +35,7 @@ requires-python = ">=3.9"
 dependencies = [
     "attrs",
     "ilcli",
-    "cryptography==44.0.2",
+    "cryptography==44.0.3",
     "paramiko==3.5.0",
     "ruamel.yaml",
     "furl",
