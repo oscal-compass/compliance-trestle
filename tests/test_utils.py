@@ -85,6 +85,13 @@ def set_cwd_unsafe(cwd: pathlib.Path = TEST_DIR):
 
     Not safe for concurrent tests which may change directory.
     """
+    # This is practically a no-op in the case of `make test` because
+    # the decorator cds to the root directory and `make test` only works
+    # in the root directory anyway, so the decorator starts at the test root,
+    # then cds to the test root, then cds back to the test root after the test runs.
+    # This workaround is named "unsafe" to raises a mental flag
+    # because it is only needed on tests that have an implicit dependency
+    # on paths relative to the test root directory
 
     def decorator(f):
 
