@@ -47,7 +47,7 @@ dependencies = [
     "defusedxml",
     "openpyxl~=3.0",
     "Jinja2 == 3.1.6",
-    "cmarkgfm==2024.1.*", ## Update regularly
+    "cmarkgfm>=2024.1,<2024.12", ## Update regularly
     "orjson",
     "requests>=2.32.2",
     "importlib_resources"
