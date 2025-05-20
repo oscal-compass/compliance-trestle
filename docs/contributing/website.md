@@ -27,7 +27,7 @@ the documentation website.
 
 Trestle has adopted the `mkdocs` system to generate this website using a small number of extensions to mkdocs.
 The most significant extension is `mike` which supports having multiple versions of the website.
-Mike as been configured to provide the latest documentation for each minor version (e.g. given versions `1.1.0`, `1.1.1`, `1.2.1`, `1.2.2` mike will display `1.1` and `1.2` pointing to `1.1.1` and `1.2.2`, respectively).
+Mike has been configured to provide the latest documentation for each minor version (e.g. given versions `1.1.0`, `1.1.1`, `1.2.1`, `1.2.2` mike will display `1.1` and `1.2` pointing to `1.1.1` and `1.2.2`, respectively).
 The website can be viewed locally from a clone of the `compliance-trestle` repo by running `make docs-serve` in the root
 directory bringing the website up at `http://localhost:8000`.
 Note to see multiple versions locally you must have fetched the `gh-pages` branch from hosted repository.
