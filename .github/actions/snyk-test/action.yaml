@@ -22,7 +22,6 @@ runs:
       run: |
         echo "::group::Running synk test ..."
         pipx install pip-tools
-        source ~/.bashrc
         python -m venv venv-test
         source ./venv-test/bin/activate
         pip-compile pyproject.toml -o requirements.txt
