@@ -235,8 +235,8 @@ class OscalBaseModel(TrestleBaseModel):
         else:
             odict = self.dict(by_alias=True, exclude_none=True)
         if pretty:
-            return orjson.dumps(odict, default=self.__json_encoder__, option=orjson.OPT_INDENT_2)  # type: ignore
-        return orjson.dumps(odict, default=self.__json_encoder__)  # type: ignore
+            return orjson.dumps(odict, default=self.__json_encoder__, option=orjson.OPT_INDENT_2)
+        return orjson.dumps(odict, default=self.__json_encoder__)
 
     def oscal_serialize_json(self, pretty: bool = False, wrapped: bool = True) -> str:
         """
@@ -274,8 +274,8 @@ class OscalBaseModel(TrestleBaseModel):
             write_file.flush()
             write_file.close()
         elif content_type == FileContentType.JSON:
-            write_file = pathlib.Path(path).open('wb')  # type: ignore
-            write_file.write(self.oscal_serialize_json_bytes(pretty=True))  # type: ignore
+            write_file = pathlib.Path(path).open('wb')
+            write_file.write(self.oscal_serialize_json_bytes(pretty=True))
             # Flush / close required (by experience) due to flushing issues in tests.
             write_file.flush()
             write_file.close()
@@ -353,7 +353,7 @@ class OscalBaseModel(TrestleBaseModel):
         if ('__root__' in self.__fields__ and len(self.__fields__) == 1 and '__root__' in new_oscal_type.__fields__
                 and len(new_oscal_type.__fields__) == 1):
             logger.debug('Root element based copy too')
-            return new_oscal_type.parse_obj(self.__root__)  # type: ignore
+            return new_oscal_type.parse_obj(self.__root__)
 
         # bad place here.
         raise err.TrestleError('Provided inconsistent classes to copy to methodology.')
