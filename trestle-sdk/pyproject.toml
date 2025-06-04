@@ -1,0 +1,45 @@
+[build-system]
+requires = [
+    "setuptools >= 35.0.2",
+    "wheel",
+    "setuptools_scm >= 2.0.0"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "trestle-sdk"
+version = "0.1.0"
+readme = "README.md"
+description = "Tools to manage & autogenerate python objects representing the OSCAL layers/models"
+authors = [
+    {name = "OSCAL Compass", email = "oscal-compass-oversight@googlegroups.com"}
+]
+requires-python = ">=3.9"
+
+dependencies = [
+    "pydantic[email]>=2.0.0",
+]
+
+[[tool.mypy.overrides]]
+module = "trestle_sdk.oscal.*"
+ignore_errors = true
+
+[tool.pytest.ini_options]
+minversion = "6.2"
+testpaths = [
+    "tests",
+]
+
+[tool.black]
+line-length = 500
+
+[tool.isort]
+line_length = 500
+
+[tool.flake8]
+# WARNING: This should be kept compatible with .pre-commit-config.yaml
+ignore = ["P1", "C812", "C813", "C814", "C815", "C816"]
+max-line-length = 120
+exclude = [
+    "trestle_sdk/oscal"
+]

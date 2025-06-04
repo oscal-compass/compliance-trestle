@@ -71,7 +71,7 @@ import logging
 import pathlib
 import re
 
-from trestle.oscal import OSCAL_VERSION_REGEX
+from trestle_sdk.oscal import OSCAL_VERSION_REGEX
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -171,7 +171,7 @@ from typing import Any, Dict, List, Optional, Union
 from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr, validator
 
 from trestle.core.base_model import OscalBaseModel
-from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
+from trestle_sdk.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
 """
 
 oscal_validator_code = """
@@ -703,7 +703,7 @@ def write_oscal(classes, forward_refs, fstem):
         out_file.write(main_header)
 
         if not is_common:
-            out_file.write('import trestle.oscal.common as common\n')
+            out_file.write('import trestle_sdk.oscal.common as common\n')
         out_file.write('\n\n')
 
         for c in classes:
@@ -740,33 +740,33 @@ def write_oscal(classes, forward_refs, fstem):
 
 additions = {
     'assessment_plan': [
-        'from trestle.oscal.common import RelatedObservation',
-        'from trestle.oscal.common import SystemComponent',
-        'from trestle.oscal.common import TaskValidValues',
-        'from trestle.oscal.common import TokenDatatype',
+        'from trestle_sdk.oscal.common import RelatedObservation',
+        'from trestle_sdk.oscal.common import SystemComponent',
+        'from trestle_sdk.oscal.common import TaskValidValues',
+        'from trestle_sdk.oscal.common import TokenDatatype',
     ],
     'assessment_results': [
-        'from trestle.oscal.common import AssessmentAssets',
-        'from trestle.oscal.common import Observation',
-        'from trestle.oscal.common import RelatedObservation',
-        'from trestle.oscal.common import SystemComponent',
-        'from trestle.oscal.common import TaskValidValues',
-        'from trestle.oscal.common import TokenDatatype',
+        'from trestle_sdk.oscal.common import AssessmentAssets',
+        'from trestle_sdk.oscal.common import Observation',
+        'from trestle_sdk.oscal.common import RelatedObservation',
+        'from trestle_sdk.oscal.common import SystemComponent',
+        'from trestle_sdk.oscal.common import TaskValidValues',
+        'from trestle_sdk.oscal.common import TokenDatatype',
     ],
     'catalog': [],
     'common': [],
     'component': [
-        'from trestle.oscal.common import URIReferenceDatatype',
+        'from trestle_sdk.oscal.common import URIReferenceDatatype',
     ],
     'poam': [
-        'from trestle.oscal.common import RelatedObservation',
-        'from trestle.oscal.common import TaskValidValues',
-        'from trestle.oscal.common import TokenDatatype',
-        'from trestle.oscal.common import RelatedObservation as RelatedObservation1',
+        'from trestle_sdk.oscal.common import RelatedObservation',
+        'from trestle_sdk.oscal.common import TaskValidValues',
+        'from trestle_sdk.oscal.common import TokenDatatype',
+        'from trestle_sdk.oscal.common import RelatedObservation as RelatedObservation1',
     ],
     'profile': [],
     'ssp': [
-        'from trestle.oscal.common import Status, SystemComponent',
+        'from trestle_sdk.oscal.common import Status, SystemComponent',
     ],
 }
 
@@ -779,7 +779,7 @@ def bkwd_compat_1_0_4(fstem):
         with open(fname, 'r') as f:
             for line in f:
                 lines.append(line)
-                if 'import trestle.oscal.common as common' in line:
+                if 'import trestle_sdk.oscal.common as common' in line:
                     for item in additions[fstem]:
                         line = f'{item}\n'
                         lines.append(line)

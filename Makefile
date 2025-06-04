@@ -18,7 +18,7 @@ submodules:
 	git submodule update --init
 
 develop: submodules
-	python -m pip install -e .[dev] --upgrade --upgrade-strategy eager --
+	uv sync --all-extras --dev --all-packages
 
 pre-commit: 
 	pre-commit install
@@ -26,9 +26,10 @@ pre-commit:
 pre-commit-update:
 	pre-commit autoupdate
 
+
 install:
-	python -m pip install  --upgrade pip setuptools
-	python -m pip install . --upgrade --upgrade-strategy eager
+	uv pip install  --upgrade pip setuptools
+	uv pip install . --upgrade --upgrade-strategy eager
 
 code-format:
 	pre-commit run yapf --all-files
@@ -40,28 +41,28 @@ code-typing:
 	mypy --pretty trestle
 
 test-all::
-	python -m pytest -n auto
+	uv run pytest -n auto
 
 test::
-	python -m pytest --exitfirst -n auto
+	uv run pytest --exitfirst -n auto
 
 test-cov::
-	python -m pytest --cov=trestle  --exitfirst -n auto -vv --cov-report=xml --cov-fail-under=96
+	uv run pytest --cov=trestle  --exitfirst -n auto -vv --cov-report=xml --cov-fail-under=96
 
 test-all-random::
-	python -m pytest --cov=trestle --cov-report=xml --random-order
+	uv run pytest --cov=trestle --cov-report=xml --random-order
 
 test-verbose:
-	python -m pytest  -vv -n auto
+	uv run pytest  -vv -n auto
 
 test-speed-measure:
-	python -m pytest -n auto --durations=30
+	uv run pytest -n auto --durations=30
 
 test-fast:
-	python -m pytest -n auto --exitfirst -k "not fetcher and not from_nist and not from_url"
+	uv run pytest -n auto --exitfirst -k "not fetcher and not from_nist and not from_url"
 
 test-bdist:: clean
-	. tests/manual_tests/test_binary.sh
+	. trestle-cli/tests/manual_tests/test_binary.sh
 
 
 release::
