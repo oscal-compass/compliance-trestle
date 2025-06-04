@@ -2505,7 +2505,6 @@ dev = [
 
 [[package]]
 name = "trestle-sdk"
-version = "0.1.0"
 source = { editable = "trestle-sdk" }
 dependencies = [
     { name = "pydantic", extra = ["email"] },

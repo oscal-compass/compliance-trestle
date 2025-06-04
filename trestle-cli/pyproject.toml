@@ -113,10 +113,7 @@ warn_untyped_fields = true
 relative_files = true
 
 [tool.semantic_release]
-build_command = """
-    python -m pip install -e .[dev] --upgrade --upgrade-strategy eager --
-    python setup.py sdist bdist_wheel
-"""
+build_command = "uv build"
 version_variables = ["trestle/__init__.py:__version__"]
 commit_author = "semantic-release <semantic-release>"
 
