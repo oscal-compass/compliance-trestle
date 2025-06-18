@@ -84,9 +84,10 @@ then the best mapping would be to an Observations only.
 <summary>example snippet: instance suitable for mapping to Observation</summary>
 
 ```yaml
-data: <rule-result idref="xccdf_org.ssgproject.content_rule_scheduler_profiling_argument"
-  time="2020-08-03T02:26:26+00:00" severity="low" weight="1.000000"> <result>fail</result>
-  </rule-result>
+data: <rule-result 
+  idref="xccdf_org.ssgproject.content_rule_scheduler_profiling_argument" 
+  time="2020-08-03T02:26:26+00:00" severity="low" weight="1.000000"> 
+  <result>fail</result> </rule-result>
 metadata:
   name: ssg-ocp4-ds-cis-111.222.333.444-pod
 ```
