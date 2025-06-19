@@ -28,8 +28,8 @@ pre-commit-update:
 
 
 install:
-	uv pip install  --upgrade pip setuptools
-	uv pip install . --upgrade --upgrade-strategy eager
+	uv pip install --upgrade pip setuptools
+	uv pip install . --upgrade
 
 code-format:
 	pre-commit run yapf --all-files
