@@ -23,7 +23,7 @@ import trestle.tasks.cis_xlsx_to_oscal_cd as cis_xlsx_to_oscal_cd
 from trestle_sdk.oscal.component import ComponentDefinition
 from trestle.tasks.base_task import TaskOutcome
 
-db2_config = 'tests/data/tasks/cis-xlsx-to-oscal-cd/test-cis-xlsx-to-oscal-cd.db2.snippet.config'
+db2_config = 'trestle-cli/tests/data/tasks/cis-xlsx-to-oscal-cd/test-cis-xlsx-to-oscal-cd.db2.snippet.config'
 
 
 def _get_section(tmp_path: pathlib.Path, file_: str) -> Dict:
@@ -78,7 +78,7 @@ def test_cis_xlsx_to_oscal_cd_execute_combined(tmp_path: pathlib.Path):
     """Test execute call - db2."""
     section = _get_section(tmp_path, db2_config)
     section['benchmark-file'
-            ] = 'tests/data/tasks/cis-xlsx-to-oscal-cd/CIS_IBM_Db2_11_Benchmark_v1.1.0.snippet_combined.xlsx'
+            ] = 'trestle-cli/tests/data/tasks/cis-xlsx-to-oscal-cd/CIS_IBM_Db2_11_Benchmark_v1.1.0.snippet_combined.xlsx'
     tgt = cis_xlsx_to_oscal_cd.CisXlsxToOscalCd(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
@@ -89,7 +89,7 @@ def test_cis_xlsx_to_oscal_cd_execute_missing_column(tmp_path: pathlib.Path):
     """Test execute call - missing column."""
     section = _get_section(tmp_path, db2_config)
     section['benchmark-file'
-            ] = 'tests/data/tasks/cis-xlsx-to-oscal-cd/CIS_IBM_Db2_11_Benchmark_v1.1.0.snippet_missing_column.xlsx'
+            ] = 'trestle-cli/tests/data/tasks/cis-xlsx-to-oscal-cd/CIS_IBM_Db2_11_Benchmark_v1.1.0.snippet_missing_column.xlsx'
     tgt = cis_xlsx_to_oscal_cd.CisXlsxToOscalCd(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
@@ -120,7 +120,7 @@ def test_cis_xlsx_to_oscal_cd_execute_merge(tmp_path: pathlib.Path):
     """Test execute call - merge."""
     section = _get_section(tmp_path, db2_config)
     section['benchmark-file'
-            ] = 'tests/data/tasks/cis-xlsx-to-oscal-cd/CIS_IBM_Db2_11_Benchmark_v1.1.0.snippet_merge.xlsx'
+            ] = 'trestle-cli/tests/data/tasks/cis-xlsx-to-oscal-cd/CIS_IBM_Db2_11_Benchmark_v1.1.0.snippet_merge.xlsx'
     tgt = cis_xlsx_to_oscal_cd.CisXlsxToOscalCd(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
@@ -151,7 +151,7 @@ def test_cis_xlsx_to_oscal_cd_execute_control_bad(tmp_path: pathlib.Path):
     """Test execute call - control bad."""
     section = _get_section(tmp_path, db2_config)
     section['benchmark-file'
-            ] = 'tests/data/tasks/cis-xlsx-to-oscal-cd/CIS_IBM_Db2_11_Benchmark_v1.1.0.snippet_bad_control.xlsx'
+            ] = 'trestle-cli/tests/data/tasks/cis-xlsx-to-oscal-cd/CIS_IBM_Db2_11_Benchmark_v1.1.0.snippet_bad_control.xlsx'
     tgt = cis_xlsx_to_oscal_cd.CisXlsxToOscalCd(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE

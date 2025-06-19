@@ -26,8 +26,8 @@ import trestle.tasks.cis_xlsx_to_oscal_catalog as cis_xlsx_to_oscal_catalog
 from trestle_sdk.oscal.catalog import Catalog
 from trestle.tasks.base_task import TaskOutcome
 
-ocp_config = 'tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.ocp.config'
-rhel_config = 'tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.rhel.config'
+ocp_config = 'trestle-cli/tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.ocp.config'
+rhel_config = 'trestle-cli/tests/data/tasks/cis-xlsx-to-oscal-catalog/test-cis-xlsx-to-oscal-catalog.rhel.config'
 
 
 def _get_section(tmp_path: pathlib.Path, file_: str) -> Dict:
@@ -128,7 +128,7 @@ def test_cis_xlsx_to_oscal_catalog_missing_version(tmp_path: pathlib.Path):
 
 def test_cis_xlsx_to_oscal_catalog_missing_sheet(tmp_path: pathlib.Path):
     """Test missing sheet."""
-    folder = 'tests/data/tasks/cis-xlsx-to-oscal-catalog'
+    folder = 'trestle-cli/tests/data/tasks/cis-xlsx-to-oscal-catalog'
     file_ = f'{folder}/CIS_RedHat_OpenShift_Container_Platform_Benchmark_v1.2.0-2.snippet.xlsx'
     wb_hacked = load_workbook(file_)
     sheet = wb_hacked['Combined Profiles']
@@ -143,7 +143,7 @@ def test_cis_xlsx_to_oscal_catalog_missing_sheet(tmp_path: pathlib.Path):
 
 def test_cis_xlsx_to_oscal_catalog_one_dot_added_part(tmp_path: pathlib.Path):
     """Test group part."""
-    folder = 'tests/data/tasks/cis-xlsx-to-oscal-catalog'
+    folder = 'trestle-cli/tests/data/tasks/cis-xlsx-to-oscal-catalog'
     file_ = f'{folder}/CIS_RedHat_OpenShift_Container_Platform_Benchmark_v1.2.0-2.snippet.xlsx'
     wb_hacked = load_workbook(file_)
     sheet = wb_hacked['Combined Profiles']
@@ -170,7 +170,7 @@ def test_cis_xlsx_to_oscal_catalog_one_dot_added_part(tmp_path: pathlib.Path):
 
 def test_cis_xlsx_to_oscal_catalog_unexpected_section(tmp_path: pathlib.Path):
     """Test group part."""
-    folder = 'tests/data/tasks/cis-xlsx-to-oscal-catalog'
+    folder = 'trestle-cli/tests/data/tasks/cis-xlsx-to-oscal-catalog'
     file_ = f'{folder}/CIS_RedHat_OpenShift_Container_Platform_Benchmark_v1.2.0-2.snippet.xlsx'
     wb_hacked = load_workbook(file_)
     sheet = wb_hacked['Combined Profiles']
@@ -187,7 +187,7 @@ def test_cis_xlsx_to_oscal_catalog_unexpected_section(tmp_path: pathlib.Path):
 
 def test_cis_xlsx_to_oscal_catalog_no_status(tmp_path: pathlib.Path):
     """Test no column with name status."""
-    folder = 'tests/data/tasks/cis-xlsx-to-oscal-catalog'
+    folder = 'trestle-cli/tests/data/tasks/cis-xlsx-to-oscal-catalog'
     file_ = f'{folder}/CIS_RedHat_OpenShift_Container_Platform_Benchmark_v1.2.0-2.snippet.xlsx'
     wb_hacked = load_workbook(file_)
     sheet = wb_hacked['Combined Profiles']
@@ -204,7 +204,7 @@ def test_cis_xlsx_to_oscal_catalog_no_status(tmp_path: pathlib.Path):
 
 def test_cis_xlsx_to_oscal_catalog_no_mitre(tmp_path: pathlib.Path):
     """Test no column with name mitre."""
-    folder = 'tests/data/tasks/cis-xlsx-to-oscal-catalog'
+    folder = 'trestle-cli/tests/data/tasks/cis-xlsx-to-oscal-catalog'
     file_ = f'{folder}/CIS_RedHat_OpenShift_Container_Platform_Benchmark_v1.2.0-2.snippet.xlsx'
     wb_hacked = load_workbook(file_)
     sheet = wb_hacked['Combined Profiles']
@@ -221,7 +221,7 @@ def test_cis_xlsx_to_oscal_catalog_no_mitre(tmp_path: pathlib.Path):
 
 def test_cis_xlsx_to_oscal_catalog_no_v7_ig1(tmp_path: pathlib.Path):
     """Test no column with name v7 IG1."""
-    folder = 'tests/data/tasks/cis-xlsx-to-oscal-catalog'
+    folder = 'trestle-cli/tests/data/tasks/cis-xlsx-to-oscal-catalog'
     file_ = f'{folder}/CIS_RedHat_OpenShift_Container_Platform_Benchmark_v1.2.0-2.snippet.xlsx'
     wb_hacked = load_workbook(file_)
     sheet = wb_hacked['Combined Profiles']

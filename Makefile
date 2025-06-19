@@ -96,7 +96,7 @@ mdformat:
 	pre-commit run mdformat --all-files
 
 simplified-catalog:
-	python ./scripts/simplify_retain_ac.py ./nist-content/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json ./tests/data/json/simplified_nist_catalog.json
+	python ./scripts/simplify_retain_ac.py ./nist-content/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json ./trestle-cli/tests/data/json/simplified_nist_catalog.json
 
 # POSIX ONLY
 clean::

@@ -28,127 +28,127 @@ from trestle.core.markdown.markdown_validator import MarkdownValidator
     'template_path, instance_path, status, header_validate, header_only_validate',
     [
         (
-            pathlib.Path('tests/data/author/0.0.1/test_1_md_format/template.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_1_md_format/correct_instance.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_1_md_format/template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_1_md_format/correct_instance.md'),
             True,
             True,
             False
         ),
         (
-            pathlib.Path('tests/data/author/0.0.1/test_1_md_format/template.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_1_md_format/correct_instance_extra_features.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_1_md_format/template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_1_md_format/correct_instance_extra_features.md'),
             True,
             True,
             False
         ),
         (
-            pathlib.Path('tests/data/author/0.0.1/test_1_md_format/template.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_1_md_format/bad_instance_yaml_header_change.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_1_md_format/template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_1_md_format/bad_instance_yaml_header_change.md'),
             False,
             True,
             False
         ),
         (
-            pathlib.Path('tests/data/author/0.0.1/test_1_md_format/template.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_1_md_format/bad_instance_yaml_header_change.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_1_md_format/template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_1_md_format/bad_instance_yaml_header_change.md'),
             True,
             False,
             False
         ),
         (
-            pathlib.Path('tests/data/author/0.0.1/test_1_md_format/template.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_1_md_format/bad_instance_missing_heading.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_1_md_format/template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_1_md_format/bad_instance_missing_heading.md'),
             False,
             False,
             False
         ),
         (
-            pathlib.Path('tests/data/author/0.0.1/test_1_md_format/template.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_1_md_format/bad_instance_missing_heading.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_1_md_format/template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_1_md_format/bad_instance_missing_heading.md'),
             True,
             True,
             True
         ),
         (
-            pathlib.Path('tests/data/author/0.0.1/test_1_md_format/template.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_1_md_format/bad_instance_heading_wrong_type.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_1_md_format/template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_1_md_format/bad_instance_heading_wrong_type.md'),
             False,
             False,
             False
         ),
         (
-            pathlib.Path('tests/data/author/0.0.1/test_1_md_format/template.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_1_md_format/bad_instance_bold_heading.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_1_md_format/template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_1_md_format/bad_instance_bold_heading.md'),
             False,
             False,
             False
         ),
         (
-            pathlib.Path('tests/data/author/0.0.1/test_1_md_format/bad_instance_bold_heading.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_1_md_format/template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_1_md_format/bad_instance_bold_heading.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_1_md_format/template.md'),
             False,
             False,
             False
         ),
         (
-            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/template.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/correct_instance.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_4_md_format_extras/template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_4_md_format_extras/correct_instance.md'),
             True,
             True,
             False
         ),
         (
-            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/template.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/correct_instance_extra_features.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_4_md_format_extras/template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_4_md_format_extras/correct_instance_extra_features.md'),
             True,
             True,
             False
         ),
         (
-            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/template.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/bad_instance_yaml_header_change.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_4_md_format_extras/template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_4_md_format_extras/bad_instance_yaml_header_change.md'),
             False,
             True,
             False
         ),
         (
-            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/template.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/bad_instance_yaml_header_change.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_4_md_format_extras/template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_4_md_format_extras/bad_instance_yaml_header_change.md'),
             True,
             False,
             False
         ),
         (
-            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/template.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/bad_instance_missing_heading.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_4_md_format_extras/template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_4_md_format_extras/bad_instance_missing_heading.md'),
             False,
             False,
             False
         ),
         (
-            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/template.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/bad_instance_missing_heading.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_4_md_format_extras/template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_4_md_format_extras/bad_instance_missing_heading.md'),
             True,
             True,
             True
         ),
         (
-            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/template.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/bad_instance_heading_wrong_type.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_4_md_format_extras/template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_4_md_format_extras/bad_instance_heading_wrong_type.md'),
             False,
             False,
             False
         ),
         (
-            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/template.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/bad_instance_bold_heading.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_4_md_format_extras/template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_4_md_format_extras/bad_instance_bold_heading.md'),
             False,
             False,
             False
         ),
         (
-            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/bad_instance_bold_heading.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_4_md_format_extras/bad_instance_bold_heading.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_4_md_format_extras/template.md'),
             False,
             False,
             False
@@ -171,8 +171,8 @@ def test_md_validator_pass(
 
 def test_md_by_hand() -> None:
     """Simpler test to enable debugging."""
-    template_path = pathlib.Path('tests/data/author/0.0.1/test_3_md_hand_edited/template.md')
-    instance_path = pathlib.Path('tests/data/author/0.0.1/test_3_md_hand_edited/decisions_000.md')
+    template_path = pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_3_md_hand_edited/template.md')
+    instance_path = pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_3_md_hand_edited/decisions_000.md')
     header_validate = False
     status = True
     md_api = MarkdownAPI()
@@ -185,26 +185,26 @@ def test_md_by_hand() -> None:
     'template_path, instance_path, status, yaml_header_validate',
     [
         (
-            pathlib.Path('tests/data/author/0.0.1/test_2_md_with_md_header/template.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_2_md_with_md_header/instance.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_2_md_with_md_header/template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_2_md_with_md_header/instance.md'),
             True,
             False
         ),
         (
-            pathlib.Path('tests/data/author/0.0.1/test_3_md_hand_edited/template.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_3_md_hand_edited/decisions_000.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_3_md_hand_edited/template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_3_md_hand_edited/decisions_000.md'),
             True,
             False
         ),
         (
-            pathlib.Path('tests/data/author/0.0.1/test_3_md_hand_edited/template.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_3_md_hand_edited/decisions_001.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_3_md_hand_edited/template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_3_md_hand_edited/decisions_001.md'),
             True,
             False
         ),
         (
-            pathlib.Path('tests/data/author/0.0.1/test_3_md_hand_edited/template.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_3_md_hand_edited/decisions_002.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_3_md_hand_edited/template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_3_md_hand_edited/decisions_002.md'),
             True,
             False
         )
@@ -306,38 +306,38 @@ def test_key_compare(template: Dict[str, Any], candidate: Dict[str, Any], expect
     'template_path, instance_path, status, governed_header',
     [
         (
-            pathlib.Path('tests/data/author/0.0.1/test_2_md_with_md_header/template.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_2_md_with_md_header/instance.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_2_md_with_md_header/template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_2_md_with_md_header/instance.md'),
             True,
             'Governed Document'
         ),
         (
-            pathlib.Path('tests/data/author/0.0.1/test_2_md_with_md_header/template.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_2_md_with_md_header/instance.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_2_md_with_md_header/template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_2_md_with_md_header/instance.md'),
             True,
             'Governed Document      '
         ),
         (
-            pathlib.Path('tests/data/author/0.0.1/test_2_md_with_md_header/template.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_2_md_with_md_header/instance.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_2_md_with_md_header/template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_2_md_with_md_header/instance.md'),
             False,
             'Governed Documeent'
         ),
         (
-            pathlib.Path('tests/data/author/0.0.1/test_2_md_with_md_header/template.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_2_md_with_md_header/bad_heading_content_changed_header.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_2_md_with_md_header/template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_2_md_with_md_header/bad_heading_content_changed_header.md'),
             False,
             'Governed Document'
         ),
         (
-            pathlib.Path('tests/data/author/0.0.1/test_2_md_with_md_header/template.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_2_md_with_md_header/bad_heading_content_extra_lines.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_2_md_with_md_header/template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_2_md_with_md_header/bad_heading_content_extra_lines.md'),
             False,
             'Governed Document'
         ),
         (
-            pathlib.Path('tests/data/author/0.0.1/test_2_md_with_md_header/template.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_2_md_with_md_header/wrong_heading_title.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_2_md_with_md_header/template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_2_md_with_md_header/wrong_heading_title.md'),
             False,
             'Governed Document'
         )
@@ -375,29 +375,29 @@ def test_broken_yaml_header(testdata_dir: pathlib.Path):
     'template_path, instance_path, status, header_validate, validate_md_body',
     [
         (
-            pathlib.Path('tests/data/author/0.0.1/test_4_md_substitutions/template.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_4_md_substitutions/correct_instance.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_4_md_substitutions/template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_4_md_substitutions/correct_instance.md'),
             True,
             True,
             True
         ),
         (
-            pathlib.Path('tests/data/author/0.0.1/test_4_md_substitutions/template.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_4_md_substitutions/correct_instance_empty_subs.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_4_md_substitutions/template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_4_md_substitutions/correct_instance_empty_subs.md'),
             True,
             True,
             True
         ),
         (
-            pathlib.Path('tests/data/author/0.0.1/test_4_md_substitutions/template.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_4_md_substitutions/bad_added_header.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_4_md_substitutions/template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_4_md_substitutions/bad_added_header.md'),
             False,
             True,
             True
         ),
         (
-            pathlib.Path('tests/data/author/0.0.1/test_4_md_substitutions/template.md'),
-            pathlib.Path('tests/data/author/0.0.1/test_4_md_substitutions/bad_modified_header_deep.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_4_md_substitutions/template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/0.0.1/test_4_md_substitutions/bad_modified_header_deep.md'),
             False,
             True,
             True
@@ -422,10 +422,10 @@ def test_md_validator_substitutions(
     'template_path, status',
     [
         (
-            pathlib.Path('tests/data/author/versions/1.0.0/good_template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/versions/1.0.0/good_template.md'),
             True,
         ), (
-            pathlib.Path('tests/data/author/versions/1.1.0/good_template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/versions/1.1.0/good_template.md'),
             True,
         )
     ]
@@ -442,18 +442,18 @@ def test_template_version(template_path: pathlib.Path, status: bool) -> None:
     'template_path, instance_path, status',
     [
         (
-            pathlib.Path('tests/data/author/versions/1.1.0/good_template.md'),
-            pathlib.Path('tests/data/author/versions/good_instance_with_version_outside_structure.md'),
+            pathlib.Path('trestle-cli/tests/data/author/versions/1.1.0/good_template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/versions/good_instance_with_version_outside_structure.md'),
             True,
         ),
         (
-            pathlib.Path('tests/data/author/versions/1.1.0/good_template.md'),
-            pathlib.Path('tests/data/author/versions/1.1.0/good_instance.md'),
+            pathlib.Path('trestle-cli/tests/data/author/versions/1.1.0/good_template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/versions/1.1.0/good_instance.md'),
             True,
         ),
         (
-            pathlib.Path('tests/data/author/versions/1.1.0/good_template.md'),
-            pathlib.Path('tests/data/author/versions/1.1.0/bad_instance_mismatched_versions.md'),
+            pathlib.Path('trestle-cli/tests/data/author/versions/1.1.0/good_template.md'),
+            pathlib.Path('trestle-cli/tests/data/author/versions/1.1.0/bad_instance_mismatched_versions.md'),
             False,
         )
     ]
@@ -469,8 +469,8 @@ def test_instance_template_version(template_path: pathlib.Path, instance_path: p
 @pytest.mark.parametrize(
     'template_path',
     [
-        (pathlib.Path('tests/data/author/versions/1.0.0/bad_template_wrong_folder.md')),
-        (pathlib.Path('tests/data/author/versions/1.1.0/bad_template_mismatched_versions.md'))
+        (pathlib.Path('trestle-cli/tests/data/author/versions/1.0.0/bad_template_wrong_folder.md')),
+        (pathlib.Path('trestle-cli/tests/data/author/versions/1.1.0/bad_template_mismatched_versions.md'))
     ]
 )
 def test_template_path_mismatch(template_path: pathlib.Path) -> None:

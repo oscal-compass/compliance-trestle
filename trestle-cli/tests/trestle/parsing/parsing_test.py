@@ -26,8 +26,8 @@ from ruamel.yaml.parser import ParserError
 import trestle.common.const as const
 import trestle_sdk.oscal.component as component
 
-yaml_path = pathlib.Path('tests/data/yaml/')
-json_path = pathlib.Path('tests/data/json/')
+yaml_path = pathlib.Path('trestle-cli/tests/data/yaml/')
+json_path = pathlib.Path('trestle-cli/tests/data/json/')
 encoding = const.FILE_ENCODING
 
 

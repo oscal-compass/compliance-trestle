@@ -97,7 +97,7 @@ def _test_init(tmp_path: pathlib.Path):
 def _get_config_section(tmp_path: pathlib.Path, fname: str) -> tuple:
     """Get config section."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path(f'tests/data/tasks/oscal-catalog-to-csv/{fname}')
+    config_path = pathlib.Path(f'trestle-cli/tests/data/tasks/oscal-catalog-to-csv/{fname}')
     config.read(config_path)
     section = config['task.oscal-catalog-to-csv']
     section['output-dir'] = str(tmp_path)

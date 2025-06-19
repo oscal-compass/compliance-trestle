@@ -17,7 +17,7 @@
 import pathlib
 import subprocess
 
-folder = pathlib.Path('tests') / 'trestle' / 'misc'
+folder = pathlib.Path('trestle-cli/tests') / 'trestle' / 'misc'
 subject = folder / '_inventory.py'
 config = folder / 'mypy.cfg'
 

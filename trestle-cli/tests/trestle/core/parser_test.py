@@ -22,7 +22,7 @@ from ruamel.yaml import YAML
 from trestle.common import const
 from trestle.core import parser
 
-yaml_path = pathlib.Path('tests/data/yaml/')
+yaml_path = pathlib.Path('trestle-cli/tests/data/yaml/')
 
 
 def test_parse_dict() -> None:

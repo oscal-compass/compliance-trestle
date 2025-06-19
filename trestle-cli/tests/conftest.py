@@ -259,7 +259,7 @@ def tmp_empty_cwd(tmp_path: pathlib.Path) -> Iterator[pathlib.Path]:
 @pytest.fixture(scope='function')
 def testdata_dir() -> pathlib.Path:
     """Return absolute path to test data directory."""
-    test_data_source = pathlib.Path('tests/data')
+    test_data_source = pathlib.Path('trestle-cli/tests/data')
     return test_data_source.resolve()
 
 

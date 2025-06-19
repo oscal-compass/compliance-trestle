@@ -40,7 +40,7 @@ def test_ocp4_cis_profile_to_oscal_catalog_print_info(tmp_path: pathlib.Path):
     """Test print_info call."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path(
-        'tests/data/tasks/ocp4-cis-profile-to-oscal-catalog/test-ocp4-cis-profile-to-oscal-catalog.config'
+        'trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-catalog/test-ocp4-cis-profile-to-oscal-catalog.config'
     )
     config.read(config_path)
     section = config['task.ocp4-cis-profile-to-oscal-catalog']
@@ -54,7 +54,7 @@ def test_ocp4_cis_profile_to_oscal_catalog_simulate(tmp_path: pathlib.Path):
     """Test simulate call."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path(
-        'tests/data/tasks/ocp4-cis-profile-to-oscal-catalog/test-ocp4-cis-profile-to-oscal-catalog.config'
+        'trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-catalog/test-ocp4-cis-profile-to-oscal-catalog.config'
     )
     config.read(config_path)
     section = config['task.ocp4-cis-profile-to-oscal-catalog']
@@ -69,7 +69,7 @@ def test_ocp4_cis_profile_to_oscal_catalog_execute(tmp_path: pathlib.Path):
     """Test execute call."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path(
-        'tests/data/tasks/ocp4-cis-profile-to-oscal-catalog/test-ocp4-cis-profile-to-oscal-catalog.config'
+        'trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-catalog/test-ocp4-cis-profile-to-oscal-catalog.config'
     )
     config.read(config_path)
     section = config['task.ocp4-cis-profile-to-oscal-catalog']
@@ -119,7 +119,7 @@ def test_ocp4_cis_profile_to_oscal_catalog_config_missing_key(tmp_path: pathlib.
     """Test config missing key."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path(
-        'tests/data/tasks/ocp4-cis-profile-to-oscal-catalog/test-ocp4-cis-profile-to-oscal-catalog.config'
+        'trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-catalog/test-ocp4-cis-profile-to-oscal-catalog.config'
     )
     config.read(config_path)
     section = config['task.ocp4-cis-profile-to-oscal-catalog']
@@ -134,7 +134,7 @@ def test_ocp4_cis_profile_to_oscal_catalog_exception(tmp_path: pathlib.Path, mon
     monkeypatch.setattr(ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog, '_parse', monkey_exception)
     config = configparser.ConfigParser()
     config_path = pathlib.Path(
-        'tests/data/tasks/ocp4-cis-profile-to-oscal-catalog/test-ocp4-cis-profile-to-oscal-catalog.config'
+        'trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-catalog/test-ocp4-cis-profile-to-oscal-catalog.config'
     )
     config.read(config_path)
     section = config['task.ocp4-cis-profile-to-oscal-catalog']
@@ -148,7 +148,7 @@ def test_ocp4_cis_profile_to_oscal_catalog_no_overwrite(tmp_path: pathlib.Path):
     """Test no overwrite."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path(
-        'tests/data/tasks/ocp4-cis-profile-to-oscal-catalog/test-ocp4-cis-profile-to-oscal-catalog.config'
+        'trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-catalog/test-ocp4-cis-profile-to-oscal-catalog.config'
     )
     config.read(config_path)
     section = config['task.ocp4-cis-profile-to-oscal-catalog']
@@ -165,7 +165,7 @@ def test_ocp4_cis_profile_to_oscal_catalog_no_input(tmp_path: pathlib.Path):
     """Test no input."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path(
-        'tests/data/tasks/ocp4-cis-profile-to-oscal-catalog/test-ocp4-cis-profile-to-oscal-catalog.config'
+        'trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-catalog/test-ocp4-cis-profile-to-oscal-catalog.config'
     )
     config.read(config_path)
     section = config['task.ocp4-cis-profile-to-oscal-catalog']
@@ -185,7 +185,7 @@ def test_ocp4_cis_profile_to_oscal_catalog_no_file(tmp_path: pathlib.Path, monke
     )
     config = configparser.ConfigParser()
     config_path = pathlib.Path(
-        'tests/data/tasks/ocp4-cis-profile-to-oscal-catalog/test-ocp4-cis-profile-to-oscal-catalog.config'
+        'trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-catalog/test-ocp4-cis-profile-to-oscal-catalog.config'
     )
     config.read(config_path)
     section = config['task.ocp4-cis-profile-to-oscal-catalog']
@@ -198,11 +198,11 @@ def test_ocp4_cis_profile_to_oscal_catalog_input_bogus(tmp_path: pathlib.Path):
     """Test no input."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path(
-        'tests/data/tasks/ocp4-cis-profile-to-oscal-catalog/test-ocp4-cis-profile-to-oscal-catalog.config'
+        'trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-catalog/test-ocp4-cis-profile-to-oscal-catalog.config'
     )
     config.read(config_path)
     section = config['task.ocp4-cis-profile-to-oscal-catalog']
-    section['input-dir'] = 'tests/data/tasks/ocp4-cis-profile-to-oscal-catalog/input-bogus'
+    section['input-dir'] = 'trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-catalog/input-bogus'
     tgt = ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE

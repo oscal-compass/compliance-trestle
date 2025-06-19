@@ -126,7 +126,7 @@ def _test_init(tmp_path: pathlib.Path):
 def _get_config_section(tmp_path: pathlib.Path, fname: str) -> tuple:
     """Get config section."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path(f'tests/data/tasks/csv-to-oscal-cd/{fname}')
+    config_path = pathlib.Path(f'trestle-cli/tests/data/tasks/csv-to-oscal-cd/{fname}')
     config.read(config_path)
     section = config['task.csv-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
@@ -223,7 +223,7 @@ def test_execute_mock(tmp_path: pathlib.Path) -> None:
     """Test execute mock."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
     # get good data & test that mocking works
-    rows = _get_rows('tests/data/csv/ocp4-user.v2.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/ocp4-user.v2.csv')
     with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
         mock_csv_reader.return_value = rows
         tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
@@ -234,13 +234,13 @@ def test_execute_mock(tmp_path: pathlib.Path) -> None:
 
 def _setup_workspace(workspace: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test workspace setup."""
-    src = 'tests/data/tasks/csv-to-oscal-cd'
+    src = 'trestle-cli/tests/data/tasks/csv-to-oscal-cd'
     tgt = workspace / src
     test_utils.copy_tree_with_hidden(src, tgt)
-    src = 'tests/data/csv'
+    src = 'trestle-cli/tests/data/csv'
     tgt = workspace / src
     test_utils.copy_tree_with_hidden(src, tgt)
-    src = 'tests/data/ocp4-cis'
+    src = 'trestle-cli/tests/data/ocp4-cis'
     tgt = workspace / src
     test_utils.copy_tree_with_hidden(src, tgt)
     src = 'nist-content/nist.gov/SP800-53/rev4/json'
@@ -280,14 +280,14 @@ def test_execute_validate_controls_nist(tmp_path: pathlib.Path, monkeypatch: Mon
         os.chdir(workspace)
         _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
         # replace resolved profile (catalog)
-        rows = _get_rows('tests/data/csv/ocp4-user.v2.csv')
+        rows = _get_rows('trestle-cli/tests/data/csv/ocp4-user.v2.csv')
         for i, row in enumerate(rows):
             if i == 0:
                 assert row[3] == 'Profile_Source'
                 continue
             elif i == 1:
                 continue
-            assert row[3] == 'tests/data/ocp4-cis/catalog.json'
+            assert row[3] == 'trestle-cli/tests/data/ocp4-cis/catalog.json'
             row[3] = 'nist-content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json'
         # test
         with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
@@ -309,7 +309,7 @@ def test_execute_control_invalid(tmp_path: pathlib.Path, monkeypatch: MonkeyPatc
         os.chdir(workspace)
         _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
         # inject error
-        rows = _get_rows('tests/data/csv/ocp4-user.v2.csv')
+        rows = _get_rows('trestle-cli/tests/data/csv/ocp4-user.v2.csv')
         row = rows[2]
         assert row[6] == 'CIS-1.2.1'
         row[6] = 'CIS-9.9.9'
@@ -333,7 +333,7 @@ def test_execute_control_invalid_fail(tmp_path: pathlib.Path, monkeypatch: Monke
         os.chdir(workspace)
         _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
         # inject error
-        rows = _get_rows('tests/data/csv/ocp4-user.v2.csv')
+        rows = _get_rows('trestle-cli/tests/data/csv/ocp4-user.v2.csv')
         row = rows[2]
         assert row[6] == 'CIS-1.2.1'
         row[6] = 'CIS-9.9.9'
@@ -373,7 +373,7 @@ def test_execute_missing_heading(tmp_path: pathlib.Path) -> None:
     """Test execute missing heading."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
     # inject error
-    rows = _get_rows('tests/data/csv/ocp4-user.v2.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/ocp4-user.v2.csv')
     row = rows[0]
     assert row[2] == 'Rule_Description'
     row[2] = 'foobar'
@@ -388,7 +388,7 @@ def test_execute_case_insensitive_heading(tmp_path: pathlib.Path) -> None:
     """Test execute case insensitive heading."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
     # inject headings with different case
-    rows = _get_rows('tests/data/csv/ocp4-user.v2.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/ocp4-user.v2.csv')
     row = rows[0]
     assert row[2] == 'Rule_Description'
     assert row[9] == 'Parameter_Id'
@@ -406,7 +406,7 @@ def test_execute_missing_value(tmp_path: pathlib.Path) -> None:
     """Test execute missing value."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
     # inject error
-    rows = _get_rows('tests/data/csv/ocp4-user.v2.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/ocp4-user.v2.csv')
     row = rows[2]
     assert row[2] == 'Ensure that the --anonymous-auth argument is set to false'
     row[2] = ''
@@ -421,7 +421,7 @@ def test_execute_missing_rule_id(tmp_path: pathlib.Path) -> None:
     """Test execute missing rule id."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
     # inject error
-    rows = _get_rows('tests/data/csv/ocp4-user.v2.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/ocp4-user.v2.csv')
     row = rows[2]
     assert row[1] == 'xccdf_org.ssgproject.content_rule_api_server_anonymous_auth'
     row[1] = ''
@@ -436,7 +436,7 @@ def test_execute_missing_control_id_list(tmp_path: pathlib.Path) -> None:
     """Test execute missing control id list."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
     # inject error
-    rows = _get_rows('tests/data/csv/ocp4-user.v2.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/ocp4-user.v2.csv')
     row = rows[2]
     assert row[6] == 'CIS-1.2.1'
     row[6] = ''
@@ -465,7 +465,7 @@ def test_execute_bp_sample(tmp_path: pathlib.Path) -> None:
 def test_execute_bp3_sample(tmp_path: pathlib.Path) -> None:
     """Test execute bp3 sample."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
-    section['csv-file'] = 'tests/data/csv/bp.sample.v3.csv'
+    section['csv-file'] = 'trestle-cli/tests/data/csv/bp.sample.v3.csv'
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
@@ -493,7 +493,7 @@ def test_execute_bp3_sample(tmp_path: pathlib.Path) -> None:
 def test_execute_bp4_sample(tmp_path: pathlib.Path) -> None:
     """Test execute bp4 sample."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
-    section['csv-file'] = 'tests/data/csv/bp.sample.v4.csv'
+    section['csv-file'] = 'trestle-cli/tests/data/csv/bp.sample.v4.csv'
     # perform transformation from csv to OSCAL json
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
@@ -566,9 +566,9 @@ def test_execute_bp4_sample(tmp_path: pathlib.Path) -> None:
 def test_execute_bp4_modify_additional_param_set(tmp_path: pathlib.Path) -> None:
     """Test execute bp4 modify additional param set."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
-    section['csv-file'] = 'tests/data/csv/bp.sample.v4.csv'
+    section['csv-file'] = 'trestle-cli/tests/data/csv/bp.sample.v4.csv'
     # modify additional param set
-    rows = _get_rows('tests/data/csv/bp.sample.v4.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/bp.sample.v4.csv')
     row = rows[3]
     assert row[17] == 'allowed_admins_per_account2'
     assert row[19] == '20'
@@ -613,9 +613,9 @@ def test_execute_bp4_modify_additional_param_set(tmp_path: pathlib.Path) -> None
 def test_execute_bp4_delete_additional_param_set(tmp_path: pathlib.Path) -> None:
     """Test execute bp4 delete additional param set."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
-    section['csv-file'] = 'tests/data/csv/bp.sample.v4.csv'
+    section['csv-file'] = 'trestle-cli/tests/data/csv/bp.sample.v4.csv'
     # delete additional param set
-    rows = _get_rows('tests/data/csv/bp.sample.v4.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/bp.sample.v4.csv')
     row = rows[3]
     assert row[17] == 'allowed_admins_per_account2'
     assert row[19] == '20'
@@ -645,7 +645,7 @@ def test_execute_bp4_delete_additional_param_set(tmp_path: pathlib.Path) -> None
 def test_execute_bp_cd(tmp_path: pathlib.Path) -> None:
     """Test execute bp cd."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
-    section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
+    section['component-definition'] = 'trestle-cli/tests/data/csv/component-definitions/bp/component-definition.json'
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
@@ -655,7 +655,7 @@ def test_execute_bp_cd(tmp_path: pathlib.Path) -> None:
 def test_execute_bp_cd_missing(tmp_path: pathlib.Path) -> None:
     """Test execute bp cd missing."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
-    section['component-definition'] = 'tests/data/csv/component-definitions/foobar/component-definition.json'
+    section['component-definition'] = 'trestle-cli/tests/data/csv/component-definitions/foobar/component-definition.json'
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
@@ -664,9 +664,9 @@ def test_execute_bp_cd_missing(tmp_path: pathlib.Path) -> None:
 def test_execute_duplicate_rule(tmp_path: pathlib.Path) -> None:
     """Test execute duplicate rule."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
-    section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
+    section['component-definition'] = 'trestle-cli/tests/data/csv/component-definitions/bp/component-definition.json'
     # duplicate rule
-    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/bp.sample.v2.csv')
     rows.append(rows[2])
     with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
         mock_csv_reader.return_value = rows
@@ -678,9 +678,9 @@ def test_execute_duplicate_rule(tmp_path: pathlib.Path) -> None:
 def test_execute_delete_rule(tmp_path: pathlib.Path) -> None:
     """Test execute delete rule."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
-    section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
+    section['component-definition'] = 'trestle-cli/tests/data/csv/component-definitions/bp/component-definition.json'
     # delete rule
-    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/bp.sample.v2.csv')
     rows.pop(1)
     with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
         mock_csv_reader.return_value = rows
@@ -703,9 +703,9 @@ def test_execute_delete_rule(tmp_path: pathlib.Path) -> None:
 def test_execute_delete_all_rules_with_params(tmp_path: pathlib.Path) -> None:
     """Test execute delete all rules with params."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
-    section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
+    section['component-definition'] = 'trestle-cli/tests/data/csv/component-definitions/bp/component-definition.json'
     # delete all rules with params
-    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/bp.sample.v2.csv')
     rows.pop(11)
     rows.pop(8)
     rows.pop(6)
@@ -729,9 +729,9 @@ def test_execute_delete_all_rules_with_params(tmp_path: pathlib.Path) -> None:
 def test_execute_delete_rule_with_params(tmp_path: pathlib.Path) -> None:
     """Test execute delete rule with params."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
-    section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
+    section['component-definition'] = 'trestle-cli/tests/data/csv/component-definitions/bp/component-definition.json'
     # delete rule with params
-    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/bp.sample.v2.csv')
     rows.pop(3)
     with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
         mock_csv_reader.return_value = rows
@@ -752,9 +752,9 @@ def test_execute_delete_rule_with_params(tmp_path: pathlib.Path) -> None:
 def test_execute_column_bad_data(tmp_path: pathlib.Path) -> None:
     """Test execute column bad data."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
-    section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
+    section['component-definition'] = 'trestle-cli/tests/data/csv/component-definitions/bp/component-definition.json'
     # add rule
-    rows = _get_rows('tests/data/csv/soc2.sample.v1.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/soc2.sample.v1.csv')
     rows[3][2] = '```'
     with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
         mock_csv_reader.return_value = rows
@@ -766,9 +766,9 @@ def test_execute_column_bad_data(tmp_path: pathlib.Path) -> None:
 def test_execute_column_ignore(tmp_path: pathlib.Path) -> None:
     """Test execute column ignore."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
-    section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
+    section['component-definition'] = 'trestle-cli/tests/data/csv/component-definitions/bp/component-definition.json'
     # add rule
-    rows = _get_rows('tests/data/csv/soc2.sample.v2.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/soc2.sample.v2.csv')
     rows[3][2] = '```'
     with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
         mock_csv_reader.return_value = rows
@@ -780,9 +780,9 @@ def test_execute_column_ignore(tmp_path: pathlib.Path) -> None:
 def test_execute_add_rule(tmp_path: pathlib.Path) -> None:
     """Test execute add rule."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
-    section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
+    section['component-definition'] = 'trestle-cli/tests/data/csv/component-definitions/bp/component-definition.json'
     # add rule
-    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/bp.sample.v2.csv')
     row = [
         'add-reference-id',
         'add-rule-id',
@@ -865,7 +865,7 @@ def test_execute_param_duplicate_value(tmp_path: pathlib.Path) -> None:
     """Test execute param duplicate default value."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     # duplicate default param default value
-    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/bp.sample.v2.csv')
     row = rows[3]
     assert row[13] == 'allowed_admins_per_account'
     assert row[15] == '10'
@@ -890,7 +890,7 @@ def test_execute_param_duplicate_value(tmp_path: pathlib.Path) -> None:
 def test_execute_correct_rule_key(tmp_path: pathlib.Path) -> None:
     """Test execute missing value."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd.config')
-    rows = _get_rows('tests/data/csv/ocp4-user.v2.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/ocp4-user.v2.csv')
     row = rows[2]
     # ensure component_title and component_description are different
     assert row[7] == 'OSCO'
@@ -919,7 +919,7 @@ def test_execute_missing_param_default_value(tmp_path: pathlib.Path) -> None:
     """Test execute missing param default_value."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     # delete default param default value
-    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/bp.sample.v2.csv')
     row = rows[3]
     assert row[13] == 'allowed_admins_per_account'
     assert row[15] == '10'
@@ -934,9 +934,9 @@ def test_execute_missing_param_default_value(tmp_path: pathlib.Path) -> None:
 def test_execute_change_param_default_value(tmp_path: pathlib.Path) -> None:
     """Test execute change param default_value."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
-    section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
+    section['component-definition'] = 'trestle-cli/tests/data/csv/component-definitions/bp/component-definition.json'
     # change default param default value
-    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/bp.sample.v2.csv')
     row = rows[3]
     assert row[13] == 'allowed_admins_per_account'
     assert row[15] == '10'
@@ -964,9 +964,9 @@ def test_execute_change_param_default_value(tmp_path: pathlib.Path) -> None:
 def test_execute_delete_param(tmp_path: pathlib.Path) -> None:
     """Test execute delete param."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
-    section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
+    section['component-definition'] = 'trestle-cli/tests/data/csv/component-definitions/bp/component-definition.json'
     # delete param
-    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/bp.sample.v2.csv')
     row = rows[3]
     assert row[13] == 'allowed_admins_per_account'
     row[13] = ''
@@ -994,9 +994,9 @@ def test_execute_delete_param(tmp_path: pathlib.Path) -> None:
 def test_execute_delete_params(tmp_path: pathlib.Path) -> None:
     """Test execute delete params."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
-    section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
+    section['component-definition'] = 'trestle-cli/tests/data/csv/component-definitions/bp/component-definition.json'
     # delete params
-    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/bp.sample.v2.csv')
     for i in [3, 6, 8, 11]:
         for j in [13, 14, 15, 16]:
             rows[i][j] = ''
@@ -1018,9 +1018,9 @@ def test_execute_delete_params(tmp_path: pathlib.Path) -> None:
 def test_execute_add_param(tmp_path: pathlib.Path) -> None:
     """Test execute add param."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
-    section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
+    section['component-definition'] = 'trestle-cli/tests/data/csv/component-definitions/bp/component-definition.json'
     # add param
-    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/bp.sample.v2.csv')
     row = rows[2]
     assert row[13] == ''
     row[13] = 'add-parameter-id'
@@ -1057,9 +1057,9 @@ def test_execute_add_param(tmp_path: pathlib.Path) -> None:
 def test_execute_delete_all_control_id_list(tmp_path: pathlib.Path) -> None:
     """Test execute delete all control id list."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
-    section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
+    section['component-definition'] = 'trestle-cli/tests/data/csv/component-definitions/bp/component-definition.json'
     # delete all control lists
-    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/bp.sample.v2.csv')
     for i in range(1, len(rows)):
         rows[i][10] = ''
     with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
@@ -1078,9 +1078,9 @@ def test_execute_delete_all_control_id_list(tmp_path: pathlib.Path) -> None:
 def test_execute_delete_control_id(tmp_path: pathlib.Path) -> None:
     """Test execute delete control id."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
-    section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
+    section['component-definition'] = 'trestle-cli/tests/data/csv/component-definitions/bp/component-definition.json'
     # delete control id
-    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/bp.sample.v2.csv')
     assert rows[2][10] == 'sc-7_smt.a sc-7_smt.b sc-7.3 sc-7.4_smt.a sc-7.5 ia-3'
     rows[2][10] = rows[2][10].replace(' ia-3', '')
     with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
@@ -1103,9 +1103,9 @@ def test_execute_delete_control_id(tmp_path: pathlib.Path) -> None:
 def test_execute_delete_control_id_multi(tmp_path: pathlib.Path) -> None:
     """Test execute delete control id multi."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
-    section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
+    section['component-definition'] = 'trestle-cli/tests/data/csv/component-definitions/bp/component-definition.json'
     # delete control id multi
-    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/bp.sample.v2.csv')
     for i in range(1, len(rows)):
         rows[i][10] = rows[i][10].replace('ac-6', '')
     with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
@@ -1128,9 +1128,9 @@ def test_execute_delete_control_id_multi(tmp_path: pathlib.Path) -> None:
 def test_execute_delete_control_id_smt(tmp_path: pathlib.Path) -> None:
     """Test execute delete control id smt."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
-    section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
+    section['component-definition'] = 'trestle-cli/tests/data/csv/component-definitions/bp/component-definition.json'
     # delete control id smt
-    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/bp.sample.v2.csv')
     assert rows[4][10] == 'ac-3 ac-4 ac-6 sc-7_smt.a sc-7_smt.b sc-7.4_smt.a ac-14_smt.a cm-7_smt.a cm-7_smt.b'
     rows[4][10] = rows[4][10].replace(' cm-7_smt.b', '')
     with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
@@ -1155,9 +1155,9 @@ def test_execute_delete_control_id_smt(tmp_path: pathlib.Path) -> None:
 def test_execute_add_control_id(tmp_path: pathlib.Path) -> None:
     """Test execute add control id."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
-    section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
+    section['component-definition'] = 'trestle-cli/tests/data/csv/component-definitions/bp/component-definition.json'
     # add control id
-    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/bp.sample.v2.csv')
     assert rows[2][10] == 'sc-7_smt.a sc-7_smt.b sc-7.3 sc-7.4_smt.a sc-7.5 ia-3'
     rows[2][10] = rows[2][10] + ' ld-0'
     with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
@@ -1179,9 +1179,9 @@ def test_execute_add_control_id(tmp_path: pathlib.Path) -> None:
 def test_execute_add_control_id_smt(tmp_path: pathlib.Path) -> None:
     """Test execute add control mapping smt."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
-    section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
+    section['component-definition'] = 'trestle-cli/tests/data/csv/component-definitions/bp/component-definition.json'
     # add control mapping smt
-    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/bp.sample.v2.csv')
     assert rows[2][10] == 'sc-7_smt.a sc-7_smt.b sc-7.3 sc-7.4_smt.a sc-7.5 ia-3'
     rows[2][10] = rows[2][10] + ' ld-0_smt.a'
     with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
@@ -1209,9 +1209,9 @@ def test_execute_add_control_id_smt(tmp_path: pathlib.Path) -> None:
 def test_execute_delete_property(tmp_path: pathlib.Path) -> None:
     """Test execute delete property."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
-    section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
+    section['component-definition'] = 'trestle-cli/tests/data/csv/component-definitions/bp/component-definition.json'
     # delete property
-    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/bp.sample.v2.csv')
     assert rows[2][3] == 'account_owner_authorized_ip_range_configured'
     assert rows[2][4] == 'Check whether authorized IP ranges are configured by the account owner'
     rows[2][3] = ''
@@ -1235,9 +1235,9 @@ def test_execute_delete_property(tmp_path: pathlib.Path) -> None:
 def test_execute_add_property(tmp_path: pathlib.Path) -> None:
     """Test execute add property."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
-    section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
+    section['component-definition'] = 'trestle-cli/tests/data/csv/component-definitions/bp/component-definition.json'
     # add property
-    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/bp.sample.v2.csv')
     assert rows[2][5] == ''
     assert rows[2][6] == ''
     rows[2][5] = 'add-fetcher'
@@ -1268,7 +1268,7 @@ def test_execute_with_risk_properties(tmp_path: pathlib.Path) -> None:
     """Test execute with risk properties."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     # add risk properties
-    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/bp.sample.v2.csv')
     rows[0].append('Original_Risk_Rating')
     rows[0].append('Adjusted_Risk_Rating')
     rows[0].append('Risk_Adjustment')
@@ -1309,7 +1309,7 @@ def test_execute_with_ignored_risk_properties(tmp_path: pathlib.Path) -> None:
     """Test execute with ignored risk properties when component type is validation."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     # add risk properties
-    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/bp.sample.v2.csv')
     rows[0].append('Original_Risk_Rating')
     rows[0].append('Adjusted_Risk_Rating')
     rows[0].append('Risk_Adjustment')
@@ -1374,9 +1374,9 @@ def test_execute_rule_name_overlap(tmp_path: pathlib.Path) -> None:
 def test_execute_add_user_property(tmp_path: pathlib.Path) -> None:
     """Test execute add user property."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
-    section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
+    section['component-definition'] = 'trestle-cli/tests/data/csv/component-definitions/bp/component-definition.json'
     # add user property
-    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/bp.sample.v2.csv')
     rows[0].append('New_Column_Name')
     rows[1].append('New_Column_Name column description')
     for i in range(2, len(rows)):
@@ -1399,9 +1399,9 @@ def test_execute_add_user_property(tmp_path: pathlib.Path) -> None:
 def test_execute_validation(tmp_path: pathlib.Path) -> None:
     """Test execute validation."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
-    section['component-definition'] = 'tests/data/csv/component-definitions/bp/component-definition.json'
+    section['component-definition'] = 'trestle-cli/tests/data/csv/component-definitions/bp/component-definition.json'
     # set validation component type
-    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/bp.sample.v2.csv')
     row = [
         'validation-reference-id',
         'validation-rule-id',
@@ -1451,7 +1451,7 @@ def test_execute_invalid_set_parameter_values(tmp_path: pathlib.Path) -> None:
     """Test execute invalid set parameter (PARAMETER_ID, Parameter_Value_Default) values."""
     _, section = _get_config_section_init(tmp_path, 'test-csv-to-oscal-cd-bp.config')
     # inject invalid set parameter values
-    rows = _get_rows('tests/data/csv/bp.sample.v2.csv')
+    rows = _get_rows('trestle-cli/tests/data/csv/bp.sample.v2.csv')
     assert rows[3][13] == 'allowed_admins_per_account'
     assert rows[3][15] == '10'
     rows[3][13] = 'allowed admins per account'

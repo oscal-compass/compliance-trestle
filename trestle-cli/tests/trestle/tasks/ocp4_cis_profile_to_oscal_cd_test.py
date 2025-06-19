@@ -46,7 +46,7 @@ def monkey_trestle_version():
 def test_ocp4_cis_profile_to_oscal_cd_print_info(tmp_path: pathlib.Path):
     """Test print_info call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
+    config_path = pathlib.Path('trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
     config.read(config_path)
     section = config['task.ocp4-cis-profile-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
@@ -58,7 +58,7 @@ def test_ocp4_cis_profile_to_oscal_cd_print_info(tmp_path: pathlib.Path):
 def test_ocp4_cis_profile_to_oscal_cd_simulate(tmp_path: pathlib.Path):
     """Test simulate call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
+    config_path = pathlib.Path('trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
     config.read(config_path)
     section = config['task.ocp4-cis-profile-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
@@ -73,7 +73,7 @@ def test_ocp4_cis_profile_to_oscal_cd_execute(tmp_path: pathlib.Path, monkeypatc
     monkeypatch.setattr(uuid, 'uuid4', monkey_uuid_1)
     monkeypatch.setattr(trestle, '__version__', monkey_trestle_version())
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
+    config_path = pathlib.Path('trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
     config.read(config_path)
     section = config['task.ocp4-cis-profile-to-oscal-cd']
     d_expected = pathlib.Path(section['output-dir'])
@@ -98,13 +98,13 @@ def test_ocp4_cis_profile_to_oscal_cd_execute_selected_rules2(tmp_path: pathlib.
     monkeypatch.setattr(uuid, 'uuid4', monkey_uuid_1)
     monkeypatch.setattr(trestle, '__version__', monkey_trestle_version())
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
+    config_path = pathlib.Path('trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
     config.read(config_path)
     section = config['task.ocp4-cis-profile-to-oscal-cd']
     d_expected = pathlib.Path(section['output-dir'])
     d_produced = tmp_path
     section['output-dir'] = str(tmp_path)
-    section['selected-rules'] = 'tests/data/tasks/ocp4-cis-profile-to-oscal-cd/extras/selected_rules2.json'
+    section['selected-rules'] = 'trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-cd/extras/selected_rules2.json'
     tgt = ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD(section)
     tgt.set_timestamp('2021-07-19T14:03:03.000+00:00')
     retval = tgt.execute()
@@ -124,13 +124,13 @@ def test_ocp4_cis_profile_to_oscal_cd_execute_enabled_rules2(tmp_path: pathlib.P
     monkeypatch.setattr(uuid, 'uuid4', monkey_uuid_1)
     monkeypatch.setattr(trestle, '__version__', monkey_trestle_version())
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
+    config_path = pathlib.Path('trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
     config.read(config_path)
     section = config['task.ocp4-cis-profile-to-oscal-cd']
     d_expected = pathlib.Path(section['output-dir'])
     d_produced = tmp_path
     section['output-dir'] = str(tmp_path)
-    section['enabled-rules'] = 'tests/data/tasks/ocp4-cis-profile-to-oscal-cd/extras/enabled_rules2.json'
+    section['enabled-rules'] = 'trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-cd/extras/enabled_rules2.json'
     tgt = ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD(section)
     tgt.set_timestamp('2021-07-19T14:03:03.000+00:00')
     retval = tgt.execute()
@@ -150,13 +150,13 @@ def test_ocp4_cis_profile_to_oscal_cd_execute_enabled_rules3(tmp_path: pathlib.P
     monkeypatch.setattr(uuid, 'uuid4', monkey_uuid_1)
     monkeypatch.setattr(trestle, '__version__', monkey_trestle_version())
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
+    config_path = pathlib.Path('trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
     config.read(config_path)
     section = config['task.ocp4-cis-profile-to-oscal-cd']
     d_expected = pathlib.Path(section['output-dir'])
     d_produced = tmp_path
     section['output-dir'] = str(tmp_path)
-    section['enabled-rules'] = 'tests/data/tasks/ocp4-cis-profile-to-oscal-cd/extras/enabled_rules3.json'
+    section['enabled-rules'] = 'trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-cd/extras/enabled_rules3.json'
     tgt = ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD(section)
     tgt.set_timestamp('2021-07-19T14:03:03.000+00:00')
     retval = tgt.execute()
@@ -177,7 +177,7 @@ def test_ocp4_cis_profile_to_oscal_cd_bogus_config(tmp_path: pathlib.Path):
 def test_ocp4_cis_profile_to_oscal_cd_missing_profile_list(tmp_path: pathlib.Path):
     """Test execute call missing profile-list."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
+    config_path = pathlib.Path('trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
     config.read(config_path)
     section = config['task.ocp4-cis-profile-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
@@ -190,7 +190,7 @@ def test_ocp4_cis_profile_to_oscal_cd_missing_profile_list(tmp_path: pathlib.Pat
 def test_ocp4_cis_profile_to_oscal_cd_missing_component_name(tmp_path: pathlib.Path):
     """Test execute call missing component-name."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
+    config_path = pathlib.Path('trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
     config.read(config_path)
     section = config['task.ocp4-cis-profile-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
@@ -203,7 +203,7 @@ def test_ocp4_cis_profile_to_oscal_cd_missing_component_name(tmp_path: pathlib.P
 def test_ocp4_cis_profile_to_oscal_cd_missing_profile_type(tmp_path: pathlib.Path):
     """Test execute call missing profile-type."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
+    config_path = pathlib.Path('trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
     config.read(config_path)
     section = config['task.ocp4-cis-profile-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
@@ -216,7 +216,7 @@ def test_ocp4_cis_profile_to_oscal_cd_missing_profile_type(tmp_path: pathlib.Pat
 def test_ocp4_cis_profile_to_oscal_cd_missing_profile_ns(tmp_path: pathlib.Path):
     """Test execute call missing profile-ns."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
+    config_path = pathlib.Path('trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
     config.read(config_path)
     section = config['task.ocp4-cis-profile-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
@@ -229,7 +229,7 @@ def test_ocp4_cis_profile_to_oscal_cd_missing_profile_ns(tmp_path: pathlib.Path)
 def test_ocp4_cis_profile_to_oscal_cd_missing_profile_key(tmp_path: pathlib.Path):
     """Test execute missing profile-file."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
+    config_path = pathlib.Path('trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
     config.read(config_path)
     section = config['task.ocp4-cis-profile-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
@@ -244,7 +244,7 @@ def test_ocp4_cis_profile_to_oscal_cd_missing_profile_key(tmp_path: pathlib.Path
 def test_ocp4_cis_profile_to_oscal_cd_missing_profile_file(tmp_path: pathlib.Path):
     """Test execute missing profile-file."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
+    config_path = pathlib.Path('trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
     config.read(config_path)
     section = config['task.ocp4-cis-profile-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
@@ -259,7 +259,7 @@ def test_ocp4_cis_profile_to_oscal_cd_missing_profile_file(tmp_path: pathlib.Pat
 def test_ocp4_cis_profile_to_oscal_cd_missing_profile_url(tmp_path: pathlib.Path):
     """Test execute missinf profile-url."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
+    config_path = pathlib.Path('trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
     config.read(config_path)
     section = config['task.ocp4-cis-profile-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
@@ -274,7 +274,7 @@ def test_ocp4_cis_profile_to_oscal_cd_missing_profile_url(tmp_path: pathlib.Path
 def test_ocp4_cis_profile_to_oscal_cd_missing_profile_title(tmp_path: pathlib.Path):
     """Test execute call missing profile-title."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
+    config_path = pathlib.Path('trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
     config.read(config_path)
     section = config['task.ocp4-cis-profile-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
@@ -289,7 +289,7 @@ def test_ocp4_cis_profile_to_oscal_cd_missing_profile_title(tmp_path: pathlib.Pa
 def test_ocp4_cis_profile_to_oscal_cd_missing_output_dir(tmp_path: pathlib.Path):
     """Test execute call missing output-dir."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
+    config_path = pathlib.Path('trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
     config.read(config_path)
     section = config['task.ocp4-cis-profile-to-oscal-cd']
     section.pop('output-dir')
@@ -301,7 +301,7 @@ def test_ocp4_cis_profile_to_oscal_cd_missing_output_dir(tmp_path: pathlib.Path)
 def test_ocp4_cis_profile_to_oscal_cd_no_overwrite(tmp_path: pathlib.Path):
     """Test execute no overwrite."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
+    config_path = pathlib.Path('trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
     config.read(config_path)
     section = config['task.ocp4-cis-profile-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
@@ -317,7 +317,7 @@ def test_ocp4_cis_profile_to_oscal_cd_duplicate_rule(tmp_path: pathlib.Path):
     """Test execute duplicate rule exists."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path(
-        'tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd2.config'
+        'trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd2.config'
     )
     config.read(config_path)
     section = config['task.ocp4-cis-profile-to-oscal-cd']
@@ -335,7 +335,7 @@ def test_ocp4_cis_profile_to_oscal_cd_exception(tmp_path: pathlib.Path, monkeypa
     monkeypatch.setattr(ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD, '_get_cis_rules', monkey_exception)
     config = configparser.ConfigParser()
     config_path = pathlib.Path(
-        'tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd2.config'
+        'trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd2.config'
     )
     config.read(config_path)
     section = config['task.ocp4-cis-profile-to-oscal-cd']
@@ -350,7 +350,7 @@ def test_ocp4_cis_profile_to_oscal_cd_missing_rules_section(tmp_path: pathlib.Pa
     monkeypatch.setattr(ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD, '_get_cis_rules', monkey_exception)
     config = configparser.ConfigParser()
     config_path = pathlib.Path(
-        'tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd2.config'
+        'trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd2.config'
     )
     config.read(config_path)
     section = config['task.ocp4-cis-profile-to-oscal-cd']
@@ -366,7 +366,7 @@ def test_ocp4_cis_profile_to_oscal_cd_missing_rules_file(tmp_path: pathlib.Path,
     monkeypatch.setattr(ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD, '_get_cis_rules', monkey_exception)
     config = configparser.ConfigParser()
     config_path = pathlib.Path(
-        'tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd2.config'
+        'trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd2.config'
     )
     config.read(config_path)
     section = config['task.ocp4-cis-profile-to-oscal-cd']
@@ -382,7 +382,7 @@ def test_ocp4_cis_profile_to_oscal_cd_missing_parameters_key(tmp_path: pathlib.P
     monkeypatch.setattr(ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD, '_get_cis_rules', monkey_exception)
     config = configparser.ConfigParser()
     config_path = pathlib.Path(
-        'tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd2.config'
+        'trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd2.config'
     )
     config.read(config_path)
     section = config['task.ocp4-cis-profile-to-oscal-cd']
@@ -398,7 +398,7 @@ def test_ocp4_cis_profile_to_oscal_cd_missing_parameters_file(tmp_path: pathlib.
     monkeypatch.setattr(ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD, '_get_cis_rules', monkey_exception)
     config = configparser.ConfigParser()
     config_path = pathlib.Path(
-        'tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd2.config'
+        'trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd2.config'
     )
     config.read(config_path)
     section = config['task.ocp4-cis-profile-to-oscal-cd']
@@ -413,7 +413,7 @@ def test_ocp4_cis_profile_to_oscal_cd_bogus_rules_file(tmp_path: pathlib.Path):
     """Test bogus rules."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path(
-        'tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd3.config'
+        'trestle-cli/tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd3.config'
     )
     config.read(config_path)
     section = config['task.ocp4-cis-profile-to-oscal-cd']

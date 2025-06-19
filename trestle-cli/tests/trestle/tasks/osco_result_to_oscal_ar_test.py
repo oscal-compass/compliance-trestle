@@ -40,14 +40,14 @@ class MonkeyBusiness():
         return uuid.UUID('46aADFAC-A1fd-4Cf0-a6aA-d1AfAb3e0d3e')
 
 
-cf01 = 'tests/data/tasks/osco/test-osco-result-to-oscal-ar.config'
-cf02 = 'tests/data/tasks/osco/test-osco-result-to-oscal-ar-compressed.config'
-cf03 = 'tests/data/tasks/osco/test-osco-result-to-oscal-ar-fetcher.config'
-cf04 = 'tests/data/tasks/osco/test-osco-result-to-oscal-ar-bad-yaml.config'
-cf05 = 'tests/data/tasks/osco/test-osco-result-to-oscal-ar-1.3.5.config'
-cf06 = 'tests/data/tasks/osco/test-osco-result-to-oscal-ar-xml-rhel7.config'
-cf07 = 'tests/data/tasks/osco/test-osco-result-to-oscal-ar-xml-ocp4.config'
-cf08 = 'tests/data/tasks/osco/test-osco-result-to-oscal-ar-configmaps.config'
+cf01 = 'trestle-cli/tests/data/tasks/osco/test-osco-result-to-oscal-ar.config'
+cf02 = 'trestle-cli/tests/data/tasks/osco/test-osco-result-to-oscal-ar-compressed.config'
+cf03 = 'trestle-cli/tests/data/tasks/osco/test-osco-result-to-oscal-ar-fetcher.config'
+cf04 = 'trestle-cli/tests/data/tasks/osco/test-osco-result-to-oscal-ar-bad-yaml.config'
+cf05 = 'trestle-cli/tests/data/tasks/osco/test-osco-result-to-oscal-ar-1.3.5.config'
+cf06 = 'trestle-cli/tests/data/tasks/osco/test-osco-result-to-oscal-ar-xml-rhel7.config'
+cf07 = 'trestle-cli/tests/data/tasks/osco/test-osco-result-to-oscal-ar-xml-ocp4.config'
+cf08 = 'trestle-cli/tests/data/tasks/osco/test-osco-result-to-oscal-ar-configmaps.config'
 
 
 def setup_config(path: str):

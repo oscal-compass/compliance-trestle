@@ -28,7 +28,7 @@ from trestle.tasks.base_task import TaskOutcome
 uuid_mock1 = Mock(return_value=uuid.UUID('56666738-0f9a-4e38-9aac-c0fad00a5821'))
 get_trestle_version_mock1 = Mock(return_value='0.21.0')
 
-CONFIG_PATH = 'tests/data/tasks/xlsx/test-xlsx-to-oscal-cd.config'
+CONFIG_PATH = 'trestle-cli/tests/data/tasks/xlsx/test-xlsx-to-oscal-cd.config'
 
 
 def test_xlsx_print_info(tmp_path):
@@ -137,7 +137,7 @@ def test_xlsx_execute_embedded_blank_in_parameter_name(tmp_path):
     config.read(config_path)
     section = config['task.xlsx-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
-    section['spread-sheet-file'] = 'tests/data/spread-sheet/embedded_blank_in_parameter_name.xlsx'
+    section['spread-sheet-file'] = 'trestle-cli/tests/data/spread-sheet/embedded_blank_in_parameter_name.xlsx'
     tgt = xlsx_to_oscal_cd.XlsxToOscalComponentDefinition(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
@@ -150,7 +150,7 @@ def test_xlsx_execute_bad_entry(tmp_path):
     config.read(config_path)
     section = config['task.xlsx-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
-    section['spread-sheet-file'] = 'tests/data/spread-sheet/bad_parameter_name_and_description.xlsx'
+    section['spread-sheet-file'] = 'trestle-cli/tests/data/spread-sheet/bad_parameter_name_and_description.xlsx'
     tgt = xlsx_to_oscal_cd.XlsxToOscalComponentDefinition(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
@@ -163,7 +163,7 @@ def test_xlsx_execute_missing_column_heading(tmp_path):
     config.read(config_path)
     section = config['task.xlsx-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
-    section['spread-sheet-file'] = 'tests/data/spread-sheet/missing_column_heading.xlsx'
+    section['spread-sheet-file'] = 'trestle-cli/tests/data/spread-sheet/missing_column_heading.xlsx'
     tgt = xlsx_to_oscal_cd.XlsxToOscalComponentDefinition(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
@@ -176,7 +176,7 @@ def test_xlsx_execute_duplicate_column_heading(tmp_path):
     config.read(config_path)
     section = config['task.xlsx-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
-    section['spread-sheet-file'] = 'tests/data/spread-sheet/duplicate_column_heading.xlsx'
+    section['spread-sheet-file'] = 'trestle-cli/tests/data/spread-sheet/duplicate_column_heading.xlsx'
     tgt = xlsx_to_oscal_cd.XlsxToOscalComponentDefinition(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
@@ -189,7 +189,7 @@ def test_xlsx_execute_missing_resource_title(tmp_path):
     config.read(config_path)
     section = config['task.xlsx-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
-    section['spread-sheet-file'] = 'tests/data/spread-sheet/missing_resource_title.xlsx'
+    section['spread-sheet-file'] = 'trestle-cli/tests/data/spread-sheet/missing_resource_title.xlsx'
     tgt = xlsx_to_oscal_cd.XlsxToOscalComponentDefinition(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE

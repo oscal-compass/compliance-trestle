@@ -46,7 +46,7 @@ from trestle_sdk.oscal.catalog import Catalog
 from trestle_sdk.oscal.common import ResponsibleParty, Role
 from trestle_sdk.oscal.component import ComponentDefinition, ControlImplementation
 
-test_data_dir = pathlib.Path('tests/data').resolve()
+test_data_dir = pathlib.Path('trestle-cli/tests/data').resolve()
 
 md_path = 'md_comp'
 

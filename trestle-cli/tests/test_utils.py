@@ -53,10 +53,10 @@ if file_utils.is_windows():  # pragma: no cover
 
 logger = logging.getLogger(__name__)
 
-BASE_TMP_DIR = pathlib.Path('tests/__tmp_path').resolve()
-YAML_TEST_DATA_PATH = pathlib.Path('tests/data/yaml/').resolve()
-JSON_TEST_DATA_PATH = pathlib.Path('tests/data/json/').resolve()
-ENV_TEST_DATA_PATH = pathlib.Path('tests/data/env/').resolve()
+BASE_TMP_DIR = pathlib.Path('trestle-cli/tests/__tmp_path').resolve()
+YAML_TEST_DATA_PATH = pathlib.Path('trestle-cli/tests/data/yaml/').resolve()
+JSON_TEST_DATA_PATH = pathlib.Path('trestle-cli/tests/data/json/').resolve()
+ENV_TEST_DATA_PATH = pathlib.Path('trestle-cli/tests/data/env/').resolve()
 JSON_NIST_DATA_PATH = pathlib.Path('nist-content/nist.gov/SP800-53/rev5/json/').resolve()
 JSON_NIST_CATALOG_NAME = 'NIST_SP-800-53_rev5_catalog.json'
 JSON_NIST_PROFILE_NAME = 'NIST_SP-800-53_rev5_MODERATE-baseline_profile.json'
@@ -66,7 +66,7 @@ JSON_NIST_REV_5_CATALOG_NAME = 'nist-rev5-catalog-full.json'
 JSON_NIST_REV_4_PROFILE_NAME = 'NIST_SP-800-53_rev4_MODERATE-baseline_profile.json'
 SIMPLIFIED_NIST_CATALOG_NAME = 'simplified_nist_catalog.json'
 SIMPLIFIED_NIST_PROFILE_NAME = 'simplified_nist_profile.json'
-TASK_XLSX_OUTPUT_PATH = pathlib.Path('tests/data/tasks/xlsx/output').resolve()
+TASK_XLSX_OUTPUT_PATH = pathlib.Path('trestle-cli/tests/data/tasks/xlsx/output').resolve()
 
 CATALOGS_DIR = 'catalogs'
 PROFILES_DIR = 'profiles'

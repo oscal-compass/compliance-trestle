@@ -341,7 +341,7 @@ def test_get_control_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
 def test_write_control_header_params(overwrite_header_values, tmp_path: pathlib.Path) -> None:
     """Test write/read of control header params."""
     # orig file just has one param ac-1_prm_3
-    src_control_path = pathlib.Path('tests/data/author/controls/control_with_components_and_params.md')
+    src_control_path = pathlib.Path('trestle-cli/tests/data/author/controls/control_with_components_and_params.md')
     # header has two params - 3 and 4
     header = {
         const.SET_PARAMS_TAG: {

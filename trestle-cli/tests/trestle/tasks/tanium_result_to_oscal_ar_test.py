@@ -71,7 +71,7 @@ def setup_config(path: str):
     return config
 
 
-cf01 = 'tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config'
+cf01 = 'trestle-cli/tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config'
 
 
 def test_tanium_print_info(tmp_path):
@@ -147,7 +147,7 @@ def test_tanium_simulate_bad_input_file(tmp_path):
     """Test simulate with bad input file call."""
     config = setup_config(cf01)
     config.remove_option('task.tanium-result-to-oscal-ar', 'input-dir')
-    config.set('task.tanium-result-to-oscal-ar', 'input-dir', 'tests/data/tasks/tanium/input-bad')
+    config.set('task.tanium-result-to-oscal-ar', 'input-dir', 'trestle-cli/tests/data/tasks/tanium/input-bad')
     section = config['task.tanium-result-to-oscal-ar']
     section['output-dir'] = str(tmp_path)
     tgt = tanium_result_to_oscal_ar.TaniumResultToOscalAR(section)
@@ -173,7 +173,7 @@ def test_tanium_execute(tmp_path, monkeypatch: MonkeyPatch):
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
     assert len(os.listdir(str(tmp_path))) == 1
-    f_expected = pathlib.Path('tests/data/tasks/tanium/output/') / 'Tanium.oscal.json'
+    f_expected = pathlib.Path('trestle-cli/tests/data/tasks/tanium/output/') / 'Tanium.oscal.json'
     f_produced = tmp_path / 'Tanium.oscal.json'
     assert list(open(f_produced, encoding=const.FILE_ENCODING)) == list(open(f_expected, encoding=const.FILE_ENCODING))
 
@@ -196,7 +196,7 @@ def test_tanium_execute_checking(tmp_path, monkeypatch: MonkeyPatch):
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
     assert len(os.listdir(str(tmp_path))) == 1
-    f_expected = pathlib.Path('tests/data/tasks/tanium/output/') / 'Tanium.oscal.json'
+    f_expected = pathlib.Path('trestle-cli/tests/data/tasks/tanium/output/') / 'Tanium.oscal.json'
     f_produced = tmp_path / 'Tanium.oscal.json'
     assert list(open(f_produced, encoding=const.FILE_ENCODING)) == list(open(f_expected, encoding=const.FILE_ENCODING))
 
@@ -268,7 +268,7 @@ def test_tanium_execute_no_overwrite_dir(tmp_path, monkeypatch: MonkeyPatch):
     tanium.TaniumTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
     execute_no_overwrite_dir_part1(tmp_path, monkeypatch)
     execute_no_overwrite_dir_part2(tmp_path, monkeypatch)
-    f_expected = pathlib.Path('tests/data/tasks/tanium/output/') / 'Tanium.oscal.json'
+    f_expected = pathlib.Path('trestle-cli/tests/data/tasks/tanium/output/') / 'Tanium.oscal.json'
     f_produced = tmp_path / 'Tanium.oscal.json'
     assert list(open(f_produced, encoding=const.FILE_ENCODING)) == list(open(f_expected, encoding=const.FILE_ENCODING))
 
@@ -358,6 +358,6 @@ def test_tanium_execute_override_timestamp(tmp_path, monkeypatch: MonkeyPatch):
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
     assert len(os.listdir(str(tmp_path))) == 1
-    f_expected = pathlib.Path('tests/data/tasks/tanium/output/') / 'Tanium.oscal.2020.json'
+    f_expected = pathlib.Path('trestle-cli/tests/data/tasks/tanium/output/') / 'Tanium.oscal.2020.json'
     f_produced = tmp_path / 'Tanium.oscal.json'
     assert list(open(f_produced, encoding=const.FILE_ENCODING)) == list(open(f_expected, encoding=const.FILE_ENCODING))

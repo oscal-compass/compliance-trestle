@@ -28,7 +28,7 @@ from trestle.tasks.base_task import TaskOutcome
 uuid_mock1 = Mock(return_value=uuid.UUID('56666738-0f9a-4e38-9aac-c0fad00a5821'))
 get_trestle_version_mock1 = Mock(return_value='0.21.0')
 
-CONFIG_PATH = pathlib.Path('tests/data/tasks/xlsx/test-xlsx-to-oscal-profile.config')
+CONFIG_PATH = pathlib.Path('trestle-cli/tests/data/tasks/xlsx/test-xlsx-to-oscal-profile.config')
 
 
 def test_xlsx_print_info(tmp_path):
@@ -92,7 +92,7 @@ def test_xlsx_execute_with_blank_rows(tmp_path):
     d_expected = pathlib.Path(section['output-dir'])
     d_produced = tmp_path
     section['output-dir'] = str(tmp_path)
-    section['spread-sheet-file'] = 'tests/data/spread-sheet/good_with_blank_rows.xlsx'
+    section['spread-sheet-file'] = 'trestle-cli/tests/data/spread-sheet/good_with_blank_rows.xlsx'
     tgt = xlsx_to_oscal_profile.XlsxToOscalProfile(section)
     tgt.set_timestamp('2021-07-19T14:03:03.000+00:00')
     retval = tgt.execute()
@@ -118,7 +118,7 @@ def test_xlsx_execute_with_missing_control_id(tmp_path):
     d_expected = pathlib.Path(section['output-dir'] + '-missing-control-id')
     d_produced = tmp_path
     section['output-dir'] = str(tmp_path)
-    section['spread-sheet-file'] = 'tests/data/spread-sheet/missing_control_id.xlsx'
+    section['spread-sheet-file'] = 'trestle-cli/tests/data/spread-sheet/missing_control_id.xlsx'
     tgt = xlsx_to_oscal_profile.XlsxToOscalProfile(section)
     tgt.set_timestamp('2021-07-19T14:03:03.000+00:00')
     retval = tgt.execute()
@@ -144,7 +144,7 @@ def test_xlsx_execute_with_missing_rule_name_id(tmp_path):
     d_expected = pathlib.Path(section['output-dir'] + '-missing-rule-name-id')
     d_produced = tmp_path
     section['output-dir'] = str(tmp_path)
-    section['spread-sheet-file'] = 'tests/data/spread-sheet/missing_rule_name_id.xlsx'
+    section['spread-sheet-file'] = 'trestle-cli/tests/data/spread-sheet/missing_rule_name_id.xlsx'
     section['profile-title'] = 'Profile for IBM Best Practices SCC Rules'
     section['profile-type'] = 'by-rule'
     tgt = xlsx_to_oscal_profile.XlsxToOscalProfile(section)
@@ -402,7 +402,7 @@ def test_xlsx_execute_missing_column_heading(tmp_path):
     config.read(config_path)
     section = config['task.xlsx-to-oscal-profile']
     section['output-dir'] = str(tmp_path)
-    section['spread-sheet-file'] = 'tests/data/spread-sheet/missing_column_heading.xlsx'
+    section['spread-sheet-file'] = 'trestle-cli/tests/data/spread-sheet/missing_column_heading.xlsx'
     tgt = xlsx_to_oscal_profile.XlsxToOscalProfile(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
@@ -415,7 +415,7 @@ def test_xlsx_execute_embedded_blank_in_goal_name_id(tmp_path):
     config.read(config_path)
     section = config['task.xlsx-to-oscal-profile']
     section['output-dir'] = str(tmp_path)
-    section['spread-sheet-file'] = 'tests/data/spread-sheet/embedded_blank_in_goal_name_id.xlsx'
+    section['spread-sheet-file'] = 'trestle-cli/tests/data/spread-sheet/embedded_blank_in_goal_name_id.xlsx'
     tgt = xlsx_to_oscal_profile.XlsxToOscalProfile(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
@@ -428,7 +428,7 @@ def test_xlsx_execute_embedded_blank_in_rule_name_id(tmp_path):
     config.read(config_path)
     section = config['task.xlsx-to-oscal-profile']
     section['output-dir'] = str(tmp_path)
-    section['spread-sheet-file'] = 'tests/data/spread-sheet/embedded_blank_in_rule_name_id.xlsx'
+    section['spread-sheet-file'] = 'trestle-cli/tests/data/spread-sheet/embedded_blank_in_rule_name_id.xlsx'
     section['profile-title'] = 'Profile for IBM Best Practices SCC Rules'
     section['profile-type'] = 'by-rule'
     tgt = xlsx_to_oscal_profile.XlsxToOscalProfile(section)
