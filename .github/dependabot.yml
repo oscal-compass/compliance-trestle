@@ -7,8 +7,6 @@ updates:
     commit-message:
       prefix: fix
       include: scope
-    reviewers:
-      - "oscal-compass/compliance-trestle-maintainers"
 
   - package-ecosystem: "pip"
     directory: "/"
@@ -17,6 +15,4 @@ updates:
     commit-message:
       prefix: fix
       include: scope
-    reviewers:
-      - "oscal-compass/compliance-trestle-maintainers"
     open-pull-requests-limit: 10
