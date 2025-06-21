@@ -21,12 +21,14 @@ import pathlib
 
 from ruamel.yaml import YAML
 
-from tests.test_utils import text_files_equal
+from tests.test_utils import TEST_DIR, set_cwd_unsafe, text_files_equal
 
 import trestle.tasks.oscal_profile_to_osco_profile as oscal_profile_to_osco_profile
 from trestle.oscal.profile import Profile
 from trestle.tasks.base_task import TaskOutcome
 from trestle.transforms.implementations.osco import OscalProfileToOscoProfileTransformer
+
+root_dir = TEST_DIR / '../'
 
 
 def setup_config(path: str):
@@ -37,6 +39,7 @@ def setup_config(path: str):
     return config
 
 
+@set_cwd_unsafe(root_dir)
 def test_oscal_profile_to_osco_profile_print_info(tmp_path):
     """Test print_info call."""
     config = setup_config('tests/data/tasks/oscal-profile-to-osco-profile/oscal-profile-to-osco-profile.config')
@@ -47,6 +50,7 @@ def test_oscal_profile_to_osco_profile_print_info(tmp_path):
     assert retval is None
 
 
+@set_cwd_unsafe(root_dir)
 def test_oscal_profile_to_osco_profile_simulate(tmp_path):
     """Test simulate call."""
     config = setup_config('tests/data/tasks/oscal-profile-to-osco-profile/oscal-profile-to-osco-profile.config')
@@ -58,12 +62,14 @@ def test_oscal_profile_to_osco_profile_simulate(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
+@set_cwd_unsafe(root_dir)
 def test_oscal_profile_to_osco_profile_execute(tmp_path):
     """Test execute call."""
     config = setup_config('tests/data/tasks/oscal-profile-to-osco-profile/oscal-profile-to-osco-profile.config')
     _test_oscal_profile_to_osco_profile_execute_common(tmp_path, config)
 
 
+@set_cwd_unsafe(root_dir)
 def test_oscal_profile_to_osco_profile_execute_osco_0_1_39_parms_no(tmp_path):
     """Test execute call."""
     config = setup_config(
@@ -72,6 +78,7 @@ def test_oscal_profile_to_osco_profile_execute_osco_0_1_39_parms_no(tmp_path):
     _test_oscal_profile_to_osco_profile_execute_common(tmp_path, config)
 
 
+@set_cwd_unsafe(root_dir)
 def test_oscal_profile_to_osco_profile_execute_osco_0_1_39_parms_yes(tmp_path):
     """Test execute call."""
     config = setup_config(
@@ -80,6 +87,7 @@ def test_oscal_profile_to_osco_profile_execute_osco_0_1_39_parms_yes(tmp_path):
     _test_oscal_profile_to_osco_profile_execute_common(tmp_path, config)
 
 
+@set_cwd_unsafe(root_dir)
 def test_oscal_profile_to_osco_profile_execute_osco_0_1_40_parms_no(tmp_path):
     """Test execute call."""
     config = setup_config(
@@ -88,6 +96,7 @@ def test_oscal_profile_to_osco_profile_execute_osco_0_1_40_parms_no(tmp_path):
     _test_oscal_profile_to_osco_profile_execute_common(tmp_path, config)
 
 
+@set_cwd_unsafe(root_dir)
 def test_oscal_profile_to_osco_profile_execute_osco_0_1_40_parms_yes(tmp_path):
     """Test execute call."""
     config = setup_config(
@@ -96,6 +105,7 @@ def test_oscal_profile_to_osco_profile_execute_osco_0_1_40_parms_yes(tmp_path):
     _test_oscal_profile_to_osco_profile_execute_common(tmp_path, config)
 
 
+@set_cwd_unsafe(root_dir)
 def test_oscal_profile_to_osco_profile_execute_osco_0_2_0_parms_no(tmp_path):
     """Test execute call."""
     config = setup_config(
@@ -104,6 +114,7 @@ def test_oscal_profile_to_osco_profile_execute_osco_0_2_0_parms_no(tmp_path):
     _test_oscal_profile_to_osco_profile_execute_common(tmp_path, config)
 
 
+@set_cwd_unsafe(root_dir)
 def test_oscal_profile_to_osco_profile_execute_osco_1_0_0_parms_yes(tmp_path):
     """Test execute call."""
     config = setup_config(
@@ -112,6 +123,7 @@ def test_oscal_profile_to_osco_profile_execute_osco_1_0_0_parms_yes(tmp_path):
     _test_oscal_profile_to_osco_profile_execute_common(tmp_path, config)
 
 
+@set_cwd_unsafe(root_dir)
 def test_oscal_profile_to_osco_profile_execute_osco_parms_no(tmp_path):
     """Test execute call."""
     config = setup_config(
@@ -120,6 +132,7 @@ def test_oscal_profile_to_osco_profile_execute_osco_parms_no(tmp_path):
     _test_oscal_profile_to_osco_profile_execute_common(tmp_path, config)
 
 
+@set_cwd_unsafe(root_dir)
 def test_oscal_profile_to_osco_profile_execute_osco_parms_yes(tmp_path):
     """Test execute call."""
     config = setup_config(
@@ -128,6 +141,7 @@ def test_oscal_profile_to_osco_profile_execute_osco_parms_yes(tmp_path):
     _test_oscal_profile_to_osco_profile_execute_common(tmp_path, config)
 
 
+@set_cwd_unsafe(root_dir)
 def test_oscal_profile_to_osco_profile_execute_osco_scc(tmp_path):
     """Test execute call."""
     config = setup_config('tests/data/tasks/oscal-profile-to-osco-profile/oscal-profile-to-osco-profile-scc.config')
@@ -156,6 +170,7 @@ def _test_oscal_profile_to_osco_profile_execute_common(tmp_path, config):
         assert result
 
 
+@set_cwd_unsafe(root_dir)
 def test_oscal_profile_to_osco_profile_execute_bogus_profile(tmp_path):
     """Test execute call bogus profile."""
     config = setup_config('tests/data/tasks/oscal-profile-to-osco-profile/oscal-profile-to-osco-profile-bogus.config')
@@ -166,6 +181,7 @@ def test_oscal_profile_to_osco_profile_execute_bogus_profile(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_oscal_profile_to_osco_profile_execute_bogus_config(tmp_path):
     """Test execute call bogus config."""
     section = None
@@ -174,6 +190,7 @@ def test_oscal_profile_to_osco_profile_execute_bogus_config(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_oscal_profile_to_osco_profile_execute_no_input_file(tmp_path):
     """Test execute call no input file."""
     config = setup_config(
@@ -186,6 +203,7 @@ def test_oscal_profile_to_osco_profile_execute_no_input_file(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_oscal_profile_to_osco_profile_execute_no_output_dir(tmp_path):
     """Test execute call no output file."""
     config = setup_config(
@@ -197,6 +215,7 @@ def test_oscal_profile_to_osco_profile_execute_no_output_dir(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_oscal_profile_to_osco_profile_execute_no_overwrite(tmp_path):
     """Test execute call no overwrite."""
     config = setup_config(
@@ -224,6 +243,7 @@ def test_oscal_profile_to_osco_profile_execute_no_overwrite(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_oscal_profile_to_osco_profile_execute_set(tmp_path):
     """Test execute call with set variables."""
     config = setup_config('tests/data/tasks/oscal-profile-to-osco-profile/oscal-profile-to-osco-profile-set.config')

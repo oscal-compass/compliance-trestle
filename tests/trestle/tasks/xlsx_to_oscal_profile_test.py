@@ -20,7 +20,7 @@ import pathlib
 import uuid
 from unittest.mock import Mock, patch
 
-from tests.test_utils import text_files_similar
+from tests.test_utils import TEST_DIR, set_cwd_unsafe, text_files_similar
 
 import trestle.tasks.xlsx_to_oscal_profile as xlsx_to_oscal_profile
 from trestle.tasks.base_task import TaskOutcome
@@ -28,9 +28,11 @@ from trestle.tasks.base_task import TaskOutcome
 uuid_mock1 = Mock(return_value=uuid.UUID('56666738-0f9a-4e38-9aac-c0fad00a5821'))
 get_trestle_version_mock1 = Mock(return_value='0.21.0')
 
-CONFIG_PATH = pathlib.Path('tests/data/tasks/xlsx/test-xlsx-to-oscal-profile.config')
+root_dir = TEST_DIR / '../'
+CONFIG_PATH = TEST_DIR / 'data/tasks/xlsx/test-xlsx-to-oscal-profile.config'
 
 
+@set_cwd_unsafe(root_dir)
 def test_xlsx_print_info(tmp_path):
     """Test print_info call."""
     config = configparser.ConfigParser()
@@ -43,6 +45,7 @@ def test_xlsx_print_info(tmp_path):
     assert retval is None
 
 
+@set_cwd_unsafe(root_dir)
 def test_xlsx_simulate(tmp_path):
     """Test simulate call."""
     config = configparser.ConfigParser()
@@ -58,6 +61,7 @@ def test_xlsx_simulate(tmp_path):
 
 @patch(target='uuid.uuid4', new=uuid_mock1)
 @patch(target='trestle.tasks.xlsx_to_oscal_profile.get_trestle_version', new=get_trestle_version_mock1)
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute(tmp_path):
     """Test execute call."""
     config = configparser.ConfigParser()
@@ -83,6 +87,7 @@ def test_xlsx_execute(tmp_path):
 
 @patch(target='uuid.uuid4', new=uuid_mock1)
 @patch(target='trestle.tasks.xlsx_to_oscal_profile.get_trestle_version', new=get_trestle_version_mock1)
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_with_blank_rows(tmp_path):
     """Test execute call."""
     config = configparser.ConfigParser()
@@ -109,6 +114,7 @@ def test_xlsx_execute_with_blank_rows(tmp_path):
 
 @patch(target='uuid.uuid4', new=uuid_mock1)
 @patch(target='trestle.tasks.xlsx_to_oscal_profile.get_trestle_version', new=get_trestle_version_mock1)
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_with_missing_control_id(tmp_path):
     """Test execute call."""
     config = configparser.ConfigParser()
@@ -135,6 +141,7 @@ def test_xlsx_execute_with_missing_control_id(tmp_path):
 
 @patch(target='uuid.uuid4', new=uuid_mock1)
 @patch(target='trestle.tasks.xlsx_to_oscal_profile.get_trestle_version', new=get_trestle_version_mock1)
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_with_missing_rule_name_id(tmp_path):
     """Test execute call."""
     config = configparser.ConfigParser()
@@ -163,6 +170,7 @@ def test_xlsx_execute_with_missing_rule_name_id(tmp_path):
 
 @patch(target='uuid.uuid4', new=uuid_mock1)
 @patch(target='trestle.tasks.xlsx_to_oscal_profile.get_trestle_version', new=get_trestle_version_mock1)
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_filter(tmp_path):
     """Test execute filter call."""
     config = configparser.ConfigParser()
@@ -189,6 +197,7 @@ def test_xlsx_execute_filter(tmp_path):
 
 @patch(target='uuid.uuid4', new=uuid_mock1)
 @patch(target='trestle.tasks.xlsx_to_oscal_profile.get_trestle_version', new=get_trestle_version_mock1)
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_by_control(tmp_path):
     """Test execute call."""
     config = configparser.ConfigParser()
@@ -216,6 +225,7 @@ def test_xlsx_execute_by_control(tmp_path):
 
 @patch(target='uuid.uuid4', new=uuid_mock1)
 @patch(target='trestle.tasks.xlsx_to_oscal_profile.get_trestle_version', new=get_trestle_version_mock1)
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_by_rule(tmp_path):
     """Test execute call."""
     config = configparser.ConfigParser()
@@ -243,6 +253,7 @@ def test_xlsx_execute_by_rule(tmp_path):
 
 @patch(target='uuid.uuid4', new=uuid_mock1)
 @patch(target='trestle.tasks.xlsx_to_oscal_profile.get_trestle_version', new=get_trestle_version_mock1)
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_by_check(tmp_path):
     """Test execute call."""
     config = configparser.ConfigParser()
@@ -268,6 +279,7 @@ def test_xlsx_execute_by_check(tmp_path):
         assert result
 
 
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_bogus_profile_type(tmp_path):
     """Test execute call bogus spread sheet."""
     config = configparser.ConfigParser()
@@ -281,6 +293,7 @@ def test_xlsx_execute_bogus_profile_type(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_bogus_spread_sheet(tmp_path):
     """Test execute call bogus spread sheet."""
     config = configparser.ConfigParser()
@@ -294,6 +307,7 @@ def test_xlsx_execute_bogus_spread_sheet(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_bogus_config(tmp_path):
     """Test execute call bogus config."""
     section = None
@@ -302,6 +316,7 @@ def test_xlsx_execute_bogus_config(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_missing_spread_sheet(tmp_path):
     """Test execute call missing spread sheet."""
     config = configparser.ConfigParser()
@@ -315,6 +330,7 @@ def test_xlsx_execute_missing_spread_sheet(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_missing_spread_sheet_url(tmp_path):
     """Test execute call missing spread sheet url."""
     config = configparser.ConfigParser()
@@ -328,6 +344,7 @@ def test_xlsx_execute_missing_spread_sheet_url(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_missing_profile_title(tmp_path):
     """Test execute call missing profile title."""
     config = configparser.ConfigParser()
@@ -341,6 +358,7 @@ def test_xlsx_execute_missing_profile_title(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_no_overwrite(tmp_path):
     """Test execute call output already exists."""
     config = configparser.ConfigParser()
@@ -356,6 +374,7 @@ def test_xlsx_execute_no_overwrite(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_spread_sheet_missing(tmp_path):
     """Test execute call spread sheet missing."""
     config = configparser.ConfigParser()
@@ -369,6 +388,7 @@ def test_xlsx_execute_spread_sheet_missing(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_spread_sheet_not_found(tmp_path):
     """Test execute call spread sheet not found."""
     config = configparser.ConfigParser()
@@ -382,6 +402,7 @@ def test_xlsx_execute_spread_sheet_not_found(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_work_sheet_name_missing(tmp_path):
     """Test execute call work sheet name missing."""
     config = configparser.ConfigParser()
@@ -395,6 +416,7 @@ def test_xlsx_execute_work_sheet_name_missing(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_missing_column_heading(tmp_path):
     """Test execute call missing column heading."""
     config = configparser.ConfigParser()
@@ -408,6 +430,7 @@ def test_xlsx_execute_missing_column_heading(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_embedded_blank_in_goal_name_id(tmp_path):
     """Test execute with embedded blank in goal_name_id."""
     config = configparser.ConfigParser()
@@ -421,6 +444,7 @@ def test_xlsx_execute_embedded_blank_in_goal_name_id(tmp_path):
     assert retval == TaskOutcome.SUCCESS
 
 
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_embedded_blank_in_rule_name_id(tmp_path):
     """Test execute with embedded blank in rule_name_id."""
     config = configparser.ConfigParser()

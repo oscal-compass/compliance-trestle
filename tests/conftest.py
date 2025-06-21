@@ -259,7 +259,9 @@ def tmp_empty_cwd(tmp_path: pathlib.Path) -> Iterator[pathlib.Path]:
 @pytest.fixture(scope='function')
 def testdata_dir() -> pathlib.Path:
     """Return absolute path to test data directory."""
-    test_data_source = pathlib.Path('tests/data')
+    test_dir = pathlib.Path(__file__).parent.resolve()
+    data_path = test_dir / 'data'
+    test_data_source = pathlib.Path(data_path)
     return test_data_source.resolve()
 
 
