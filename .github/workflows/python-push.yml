@@ -137,7 +137,7 @@ jobs:
     # This action uses Python Semantic Release v8
     - name: Python Semantic Release
       id: release
-      uses: python-semantic-release/python-semantic-release@fe6b271e942115b528c85e42bc19611b01dcea59 # v9.8.8
+      uses: python-semantic-release/python-semantic-release@2896129e02bb7809d2cf0c1b8e9e795ee27acbcf # v10.2.0
       with:
         github_token: ${{ steps.app-token.outputs.token }}
 
