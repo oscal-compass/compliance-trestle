@@ -5,18 +5,14 @@ updates:
     schedule:
       interval: "weekly"
     commit-message:
-      prefix: build
+      prefix: fix
       include: scope
-    reviewers:
-      - "oscal-compass/compliance-trestle-maintainers"
 
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
       interval: "weekly"
     commit-message:
-      prefix: build
+      prefix: fix
       include: scope
-    reviewers:
-      - "oscal-compass/compliance-trestle-maintainers"
     open-pull-requests-limit: 10
