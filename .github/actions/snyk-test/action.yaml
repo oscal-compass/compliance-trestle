@@ -1,0 +1,37 @@
+name: 'Run Snyk Test'
+description: 'Run tests with synk test'
+
+inputs:
+  token:
+    description: 'Snyk Token'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - uses: snyk/actions/setup@cdb760004ba9ea4d525f2e043745dfe85bb9077e
+
+    - name: Set environment variable
+      run: echo "PATH=${PATH}:/root/.local/bin" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Run Snyk Test
+      env:
+        SNYK_TOKEN: ${{ inputs.token }}
+      run: |
+        echo "::group::Running synk test ..."
+        pipx install pip-tools
+        python -m venv venv-test
+        source ./venv-test/bin/activate
+        pip-compile pyproject.toml -o requirements.txt
+        pip install -r requirements.txt
+        snyk test --file=requirements.txt
+        echo "::endgroup::"
+      shell: bash
+
+    - name: Cleanup
+      if: success() || failure()
+      run: |
+        rm requirements.txt
+        rm -rf ./venv-test
+      shell: bash
