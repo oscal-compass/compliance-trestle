@@ -1,7 +1,3 @@
-[submodule "nist-source"]
-	path = nist-source
-	url = https://github.com/usnistgov/OSCAL.git
-	branch = develop
 [submodule "nist-content"]
 	path = nist-content
 	url = https://github.com/usnistgov/oscal-content.git
