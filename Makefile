@@ -28,7 +28,9 @@ nist-default:
 	git submodule update --remote
 
 develop: submodules
-	python -m pip install -e .[dev] --upgrade --upgrade-strategy eager --
+	python -m pip install setuptools==58.2.0
+	python -m pip install wheel
+	python -m pip install -e .[dev] --use-pep517 --no-build-isolation --upgrade --
 
 pre-commit: 
 	pre-commit install
@@ -37,8 +39,10 @@ pre-commit-update:
 	pre-commit autoupdate
 
 install:
-	python -m pip install  --upgrade pip setuptools
-	python -m pip install . --upgrade --upgrade-strategy eager
+	python -m pip install setuptools==58.2.0
+	python -m pip install wheel
+	python -m pip install  --use-pep517 --no-build-isolation --upgrade pip setuptools
+	python -m pip install . --use-pep517 --no-build-isolation --upgrade --upgrade-strategy eager
 
 code-format:
 	pre-commit run yapf --all-files
