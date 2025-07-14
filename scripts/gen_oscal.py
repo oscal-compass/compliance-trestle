@@ -111,7 +111,7 @@ def generate_models():
     new classes.
     """
     logger.info('generating models')
-    out_dir = Path('trestle/oscal')
+    out_dir = Path('src/trestle-sdk/oscal')
     out_dir.mkdir(exist_ok=True, parents=True)
     tmp_dir = out_dir / 'tmp'
     tmp_dir.mkdir(exist_ok=True, parents=True)

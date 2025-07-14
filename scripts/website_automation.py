@@ -20,7 +20,7 @@ mkdocs is a great system, however, there are a few areas where it's a bit messy.
 this script is designed to close a few automation gaps for files that it is desirable
 they are included and must be moved.
 
-::: trestle.oscal.catalog
+::: trestle_sdk.oscal.catalog
 handler: python
 """
 import pathlib

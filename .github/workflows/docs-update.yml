@@ -61,6 +61,8 @@ jobs:
       # This is deliberately not using a custom credential as it relies on native github actions token to have push rights.
       with:
         python-version: ${{ needs.set-versions.outputs.max }}
+    - name: Install uv
+      uses: astral-sh/setup-uv@445689ea25e0de0a23313031f5fe577c74ae45a1 # 6.3.0
     - name: Install build tools
       run: |
         make develop
