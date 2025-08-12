@@ -1,5 +1,105 @@
 # CHANGELOG
 
+## v3.9.1 (2025-07-07)
+
+### Build
+
+* build(deps): bump actions/setup-python from 5.5.0 to 5.6.0 (#1865)
+
+Bumps [actions/setup-python](https://github.com/actions/setup-python) from 5.5.0 to 5.6.0.
+- [Release notes](https://github.com/actions/setup-python/releases)
+- [Commits](https://github.com/actions/setup-python/compare/8d9ed9ac5c53483de85588cdf95a591a75ab9f55...a26af69be951a213d495a4c3e4e4022e16d87065)
+
+---
+updated-dependencies:
+- dependency-name: actions/setup-python
+  dependency-version: 5.6.0
+  dependency-type: direct:production
+  update-type: version-update:semver-minor
+...
+
+Signed-off-by: dependabot[bot] &lt;support@github.com&gt;
+Co-authored-by: dependabot[bot] &lt;49699333+dependabot[bot]@users.noreply.github.com&gt; ([`c79f7bc`](https://github.com/oscal-compass/compliance-trestle/commit/c79f7bc9baa7fafc6610cc38eeef812806d7ac0e))
+
+* build(deps): update cmarkgfm requirement (#1757)
+
+Updates the requirements on [cmarkgfm](https://github.com/theacodes/cmarkgfm) to permit the latest version.
+- [Release notes](https://github.com/theacodes/cmarkgfm/releases)
+- [Commits](https://github.com/theacodes/cmarkgfm/compare/2024.1.14...2024.11.20)
+
+---
+updated-dependencies:
+- dependency-name: cmarkgfm
+  dependency-type: direct:production
+...
+
+Signed-off-by: dependabot[bot] &lt;support@github.com&gt;
+Co-authored-by: dependabot[bot] &lt;49699333+dependabot[bot]@users.noreply.github.com&gt;
+Co-authored-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`e1430c0`](https://github.com/oscal-compass/compliance-trestle/commit/e1430c0ac970d595d9ce840b2e76fa4ea5d9c823))
+
+### Chore
+
+* chore: Merge back version tags and changelog into develop. ([`03c5beb`](https://github.com/oscal-compass/compliance-trestle/commit/03c5bebd11f5ef0a081f6d0b596eb140b6595547))
+
+### Ci
+
+* ci: updates for failing CI jobs (#1886)
+
+* docs: updates python-semantic-release link in guide
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+* fix: updates ignore comments for mypy version 1.16.0
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+---------
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`c96da54`](https://github.com/oscal-compass/compliance-trestle/commit/c96da54f1418948a18899f1f185f733c0db7d3c9))
+
+### Documentation
+
+* docs: fixes markdown formatting in docs (#1893)
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`df4091c`](https://github.com/oscal-compass/compliance-trestle/commit/df4091ced8e0b3bf023a320c924909d95022cbe6))
+
+### Fix
+
+* fix: removes reviewers from dependabot configuration (#1894)
+
+The field is no longer supported. CODEOWNERS will be used.
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`ba41c68`](https://github.com/oscal-compass/compliance-trestle/commit/ba41c68e962ad5673ec9f9771c7bef87d9eba3d0))
+
+* fix: prefix dependabot messages with fix (#1872)
+
+Fixes #1788
+
+Signed-off-by: d10n &lt;d10n@redhat.com&gt;
+Co-authored-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`357f8ca`](https://github.com/oscal-compass/compliance-trestle/commit/357f8ca2831ad61a3a6ae659cd2cb8d4ea3536ff))
+
+* fix: website documentation for using mike (#1817)
+
+* fix: website documentation for using mike
+
+Signed-off-by: Chris Butler &lt;chris.butler@redhat.com&gt;
+
+* fix: typofix in website.md
+
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+
+---------
+
+Signed-off-by: Chris Butler &lt;chris.butler@redhat.com&gt;
+Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
+Co-authored-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt; ([`9d9ff68`](https://github.com/oscal-compass/compliance-trestle/commit/9d9ff683e0d9652108e92c18e3b0524405404ffc))
+
+### Unknown
+
+* Merge pull request #1899 from oscal-compass/develop
+
+chore: Trestle release 3.9.1 ([`dc59ed5`](https://github.com/oscal-compass/compliance-trestle/commit/dc59ed5c31072baaeb3d77c36d5c0e9c867bc635))
+
 ## v3.9.0 (2025-04-30)
 
 ### Build

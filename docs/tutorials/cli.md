@@ -705,7 +705,8 @@ ssg-ocp4-ds-cis-111.222.333.444-pod:
       type: inventory-item
       title: Pod
       properties:
-        target: kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp
+        target: 
+          kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp
         target-ip: 111.222.333.444
         cluster-name: ROKS-OpenSCAP-1
         cluster-type: openshift
@@ -725,7 +726,8 @@ ssg-rhel7-ds-cis-111.222.333.444-pod:
       type: inventory-item
       title: VM
       properties:
-        target: kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp
+        target: 
+          kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp
         target-ip: 111.222.333.444
         cluster-name: ROKS-OpenSCAP-1
         cluster-type: openshift
