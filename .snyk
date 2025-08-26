@@ -14,7 +14,7 @@ ignore:
         created: 2025-08-12T14:30:53.423Z
   'snyk:lic:pip:paramiko:LGPL-3.0':
     - '*':
-        reason: 'Pending exception or replacement'
-        expires: 2025-09-11T14:33:58.229Z
+        reason: 'Pending submitted exception to the CNCF GB #1108'
+        expires: 2025-12-11T14:30:53.420Z
         created: 2025-08-12T14:33:58.233Z
 patch: {}
