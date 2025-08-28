@@ -20,7 +20,7 @@ The validation reports are created in XML and HTML format and provide details on
 
 ## `trestle fedramp-transform`
 
-This command allows users to extract information from an OSCAL SSP and transform it into a Word document based on the FedRAMP SSP Appendix A Template. The templates for the High, Moderate, and Low baseline security control requirements were retrieved from this [location](https://www.fedramp.gov/documents-templates) and are bundled with the application. The `Control Summary Information` tables are populated for each control based on the OSCAL SSP.
+This command allows users to extract information from an OSCAL SSP and transform it into a Word document based on the FedRAMP SSP Appendix A Template. The templates for the High, Moderate, and Low baseline security control requirements were retrieved from this [location](https://www.fedramp.gov/documents-templates/) and are bundled with the application. The `Control Summary Information` tables are populated for each control based on the OSCAL SSP.
 
 For example, `trestle fedramp-transform -n ssp-name -l 'high' -o my_ssp.docx` will transform the OSCAL SSP file `ssp-name` into a Word document `my_ssp.docx` based on the SSP Appendix A - High FedRAMP Security Controls template.
 
