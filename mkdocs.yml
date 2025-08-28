@@ -39,6 +39,10 @@ plugins:
       # This is to remove some false positives for links which work.
       # Anchors are validated again by core mkdocs
       404: [ '*#trestle.*' ]
+    # These URLs work from the browser but fail when accesssed via htmlproofer:
+    ignore_urls:
+        - 'https://www.fedramp.gov/documents-templates/'
+        - 'https://www.cncf.io/wp-content/uploads/2022/07/cncf-color-bg.svg'
 - mkdocstrings:
     default_handler: python
     handlers:
