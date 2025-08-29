@@ -34,7 +34,7 @@ dynamic = ["version"]
 requires-python = ">=3.9"
 dependencies = [
     "attrs",
-    "ilcli"
+    "ilcli",
     "cryptography==45.0.6",
     "paramiko==4.0.0",
     "ruamel.yaml",
