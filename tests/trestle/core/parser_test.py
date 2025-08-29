@@ -19,10 +19,12 @@ import pathlib
 
 from ruamel.yaml import YAML
 
+from tests.test_utils import TEST_DIR
+
 from trestle.common import const
 from trestle.core import parser
 
-yaml_path = pathlib.Path('tests/data/yaml/')
+yaml_path = TEST_DIR / 'data/yaml/'
 
 
 def test_parse_dict() -> None:

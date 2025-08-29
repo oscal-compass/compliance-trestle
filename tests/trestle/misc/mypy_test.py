@@ -14,10 +14,11 @@
 # limitations under the License.
 """Testing mypy."""
 
-import pathlib
 import subprocess
 
-folder = pathlib.Path('tests') / 'trestle' / 'misc'
+from tests.test_utils import TEST_DIR
+
+folder = TEST_DIR / 'trestle' / 'misc'
 subject = folder / '_inventory.py'
 config = folder / 'mypy.cfg'
 

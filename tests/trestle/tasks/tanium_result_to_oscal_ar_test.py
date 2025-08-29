@@ -20,10 +20,14 @@ import pathlib
 
 from _pytest.monkeypatch import MonkeyPatch
 
+from tests.test_utils import TEST_DIR, set_cwd_unsafe
+
 import trestle.common.const as const
 import trestle.tasks.tanium_result_to_oscal_ar as tanium_result_to_oscal_ar
 import trestle.transforms.implementations.tanium as tanium
 from trestle.tasks.base_task import TaskOutcome
+
+root_dir = TEST_DIR / '../'
 
 
 class MonkeyBusiness():
@@ -71,9 +75,10 @@ def setup_config(path: str):
     return config
 
 
-cf01 = 'tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config'
+cf01 = TEST_DIR / 'data/tasks/tanium/demo-tanium-result-to-oscal-ar.config'
 
 
+@set_cwd_unsafe(root_dir)
 def test_tanium_print_info(tmp_path):
     """Test print_info call."""
     config = setup_config(cf01)
@@ -84,6 +89,7 @@ def test_tanium_print_info(tmp_path):
     assert retval is None
 
 
+@set_cwd_unsafe(root_dir)
 def test_tanium_simulate(tmp_path):
     """Test simulate call."""
     config = setup_config(cf01)
@@ -95,6 +101,7 @@ def test_tanium_simulate(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
+@set_cwd_unsafe(root_dir)
 def test_tanium_simulate_no_config(tmp_path):
     """Test simulate no config call."""
     tgt = tanium_result_to_oscal_ar.TaniumResultToOscalAR(None)
@@ -103,6 +110,7 @@ def test_tanium_simulate_no_config(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
+@set_cwd_unsafe(root_dir)
 def test_tanium_simulate_no_overwrite(tmp_path):
     """Test simulate no overwrite call."""
     config = setup_config(cf01)
@@ -120,6 +128,7 @@ def test_tanium_simulate_no_overwrite(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 1
 
 
+@set_cwd_unsafe(root_dir)
 def test_tanium_simulate_no_input_dir(tmp_path):
     """Test simulate with no input dir call."""
     config = setup_config(cf01)
@@ -132,6 +141,7 @@ def test_tanium_simulate_no_input_dir(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
+@set_cwd_unsafe(root_dir)
 def test_tanium_simulate_no_ouput_dir(tmp_path):
     """Test simulate with no output dir call."""
     config = setup_config(cf01)
@@ -143,6 +153,7 @@ def test_tanium_simulate_no_ouput_dir(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
+@set_cwd_unsafe(root_dir)
 def test_tanium_simulate_bad_input_file(tmp_path):
     """Test simulate with bad input file call."""
     config = setup_config(cf01)
@@ -156,6 +167,7 @@ def test_tanium_simulate_bad_input_file(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
+@set_cwd_unsafe(root_dir)
 def test_tanium_execute(tmp_path, monkeypatch: MonkeyPatch):
     """Test execute call."""
     monkeybusiness = MonkeyBusiness()
@@ -178,6 +190,7 @@ def test_tanium_execute(tmp_path, monkeypatch: MonkeyPatch):
     assert list(open(f_produced, encoding=const.FILE_ENCODING)) == list(open(f_expected, encoding=const.FILE_ENCODING))
 
 
+@set_cwd_unsafe(root_dir)
 def test_tanium_execute_checking(tmp_path, monkeypatch: MonkeyPatch):
     """Test execute call."""
     monkeybusiness = MonkeyBusiness()
@@ -201,6 +214,7 @@ def test_tanium_execute_checking(tmp_path, monkeypatch: MonkeyPatch):
     assert list(open(f_produced, encoding=const.FILE_ENCODING)) == list(open(f_expected, encoding=const.FILE_ENCODING))
 
 
+@set_cwd_unsafe(root_dir)
 def test_tanium_execute_one_file(tmp_path, monkeypatch: MonkeyPatch):
     """Test execute call."""
     monkeybusiness = MonkeyBusiness()
@@ -219,6 +233,7 @@ def test_tanium_execute_one_file(tmp_path, monkeypatch: MonkeyPatch):
     assert len(os.listdir(str(tmp_path))) == 1
 
 
+@set_cwd_unsafe(root_dir)
 def test_tanium_execute_blocksize(tmp_path, monkeypatch: MonkeyPatch):
     """Test execute optional call."""
     monkeybusiness = MonkeyBusiness()
@@ -237,6 +252,7 @@ def test_tanium_execute_blocksize(tmp_path, monkeypatch: MonkeyPatch):
     assert retval == TaskOutcome.SUCCESS
 
 
+@set_cwd_unsafe(root_dir)
 def test_tanium_execute_cpus(tmp_path, monkeypatch: MonkeyPatch):
     """Test execute optional call."""
     monkeybusiness = MonkeyBusiness()
@@ -255,6 +271,7 @@ def test_tanium_execute_cpus(tmp_path, monkeypatch: MonkeyPatch):
     assert retval == TaskOutcome.SUCCESS
 
 
+@set_cwd_unsafe(root_dir)
 def test_tanium_execute_no_config(tmp_path):
     """Test execute no config call."""
     tgt = tanium_result_to_oscal_ar.TaniumResultToOscalAR(None)
@@ -263,6 +280,7 @@ def test_tanium_execute_no_config(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
+@set_cwd_unsafe(root_dir)
 def test_tanium_execute_no_overwrite_dir(tmp_path, monkeypatch: MonkeyPatch):
     """Test execute no overwrite directory call."""
     tanium.TaniumTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
@@ -307,6 +325,7 @@ def execute_no_overwrite_dir_part2(tmp_path, monkeypatch: MonkeyPatch):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_tanium_execute_no_input_dir(tmp_path):
     """Test execute with no input dir call."""
     config = setup_config(cf01)
@@ -319,6 +338,7 @@ def test_tanium_execute_no_input_dir(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
+@set_cwd_unsafe(root_dir)
 def test_tanium_execute_no_ouput_dir(tmp_path):
     """Test execute with no output dir call."""
     config = setup_config(cf01)
@@ -330,6 +350,7 @@ def test_tanium_execute_no_ouput_dir(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
+@set_cwd_unsafe(root_dir)
 def test_tanium_execute_bad_timestamp(tmp_path):
     """Test execute with bad timestamp."""
     config = setup_config(cf01)
@@ -341,6 +362,7 @@ def test_tanium_execute_bad_timestamp(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
+@set_cwd_unsafe(root_dir)
 def test_tanium_execute_override_timestamp(tmp_path, monkeypatch: MonkeyPatch):
     """Test execute override timestamp call."""
     monkeybusiness = MonkeyBusiness()

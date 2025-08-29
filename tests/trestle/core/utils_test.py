@@ -24,6 +24,7 @@ from pydantic.v1 import ValidationError
 import pytest
 
 from tests import test_utils
+from tests.test_utils import TEST_DIR
 
 import trestle.common.const as const
 import trestle.common.err as err
@@ -46,7 +47,7 @@ from trestle.common.str_utils import as_bool
 
 def load_good_catalog() -> catalog.Catalog:
     """Load nist 800-53 as a catalog example."""
-    good_sample_path = pathlib.Path('nist-content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json')
+    good_sample_path = TEST_DIR / '../nist-content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json'
 
     assert (good_sample_path.exists())
     return catalog.Catalog.oscal_read(good_sample_path)
