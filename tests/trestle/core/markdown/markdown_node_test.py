@@ -20,12 +20,14 @@ import frontmatter
 
 import pytest
 
+from tests.test_utils import TEST_DIR
+
 import trestle.common.const as const
 from trestle.core.markdown.docs_markdown_node import DocsMarkdownNode, DocsSectionContent
 from trestle.core.markdown.markdown_api import MarkdownAPI
 
 
-@pytest.mark.parametrize('md_path', [(pathlib.Path('tests/data/markdown/valid_complex_md.md'))])
+@pytest.mark.parametrize('md_path', [(TEST_DIR / 'data/markdown/valid_complex_md.md')])
 def test_tree_text_equal_to_md(md_path: pathlib.Path) -> None:
     """Test tree construction."""
     contents = frontmatter.loads(md_path.open('r', encoding=const.FILE_ENCODING).read())
@@ -36,7 +38,7 @@ def test_tree_text_equal_to_md(md_path: pathlib.Path) -> None:
     assert markdown_wo_header == tree.content.raw_text
 
 
-@pytest.mark.parametrize('md_path', [(pathlib.Path('tests/data/markdown/valid_complex_md.md'))])
+@pytest.mark.parametrize('md_path', [(TEST_DIR / 'data/markdown/valid_complex_md.md')])
 def test_md_get_node_for_key(md_path: pathlib.Path) -> None:
     """Test node fetching."""
     contents = frontmatter.loads(md_path.open('r', encoding=const.FILE_ENCODING).read())
@@ -64,7 +66,7 @@ def test_md_get_node_for_key(md_path: pathlib.Path) -> None:
     assert node.key == '### 5.1.1 A deeper section 1'
 
 
-@pytest.mark.parametrize('md_path', [(pathlib.Path('tests/data/markdown/valid_complex_md.md'))])
+@pytest.mark.parametrize('md_path', [(TEST_DIR / 'data/markdown/valid_complex_md.md')])
 def test_md_content_is_correct(md_path: pathlib.Path) -> None:
     """Test that read content is correct."""
     contents = frontmatter.loads(md_path.open('r', encoding=const.FILE_ENCODING).read())
@@ -83,7 +85,7 @@ def test_md_content_is_correct(md_path: pathlib.Path) -> None:
     assert deep_node.content.text[1] == 'some very deep text'
 
 
-@pytest.mark.parametrize('md_path', [(pathlib.Path('tests/data/markdown/valid_complex_md.md'))])
+@pytest.mark.parametrize('md_path', [(TEST_DIR / 'data/markdown/valid_complex_md.md')])
 def test_md_headers_in_html_blocks_are_ignored(md_path: pathlib.Path) -> None:
     """Test that headers in the various html blocks are ignored."""
     contents = frontmatter.loads(md_path.open('r', encoding=const.FILE_ENCODING).read())

@@ -20,7 +20,7 @@ import pathlib
 import uuid
 from unittest.mock import Mock, patch
 
-from tests.test_utils import text_files_similar
+from tests.test_utils import TEST_DIR, set_cwd_unsafe, text_files_similar
 
 import trestle.tasks.xlsx_to_oscal_cd as xlsx_to_oscal_cd
 from trestle.tasks.base_task import TaskOutcome
@@ -28,9 +28,11 @@ from trestle.tasks.base_task import TaskOutcome
 uuid_mock1 = Mock(return_value=uuid.UUID('56666738-0f9a-4e38-9aac-c0fad00a5821'))
 get_trestle_version_mock1 = Mock(return_value='0.21.0')
 
-CONFIG_PATH = 'tests/data/tasks/xlsx/test-xlsx-to-oscal-cd.config'
+root_dir = TEST_DIR / '../'
+CONFIG_PATH = TEST_DIR / 'data/tasks/xlsx/test-xlsx-to-oscal-cd.config'
 
 
+@set_cwd_unsafe(root_dir)
 def test_xlsx_print_info(tmp_path):
     """Test print_info call."""
     config = configparser.ConfigParser()
@@ -43,6 +45,7 @@ def test_xlsx_print_info(tmp_path):
     assert retval is None
 
 
+@set_cwd_unsafe(root_dir)
 def test_xlsx_simulate(tmp_path):
     """Test simulate call."""
     config = configparser.ConfigParser()
@@ -58,6 +61,7 @@ def test_xlsx_simulate(tmp_path):
 
 @patch(target='uuid.uuid4', new=uuid_mock1)
 @patch(target='trestle.tasks.xlsx_to_oscal_cd.get_trestle_version', new=get_trestle_version_mock1)
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute(tmp_path):
     """Test execute call."""
     config = configparser.ConfigParser()
@@ -81,6 +85,7 @@ def test_xlsx_execute(tmp_path):
         assert result
 
 
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_bogus_spread_sheet(tmp_path):
     """Test execute call bogus spread sheet."""
     config = configparser.ConfigParser()
@@ -94,6 +99,7 @@ def test_xlsx_execute_bogus_spread_sheet(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_bogus_config(tmp_path):
     """Test execute call bogus config."""
     section = None
@@ -102,6 +108,7 @@ def test_xlsx_execute_bogus_config(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_missing_spread_sheet(tmp_path):
     """Test execute call missing spread sheet."""
     config = configparser.ConfigParser()
@@ -115,6 +122,7 @@ def test_xlsx_execute_missing_spread_sheet(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_no_overwrite(tmp_path):
     """Test execute call output already exists."""
     config = configparser.ConfigParser()
@@ -130,6 +138,7 @@ def test_xlsx_execute_no_overwrite(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_embedded_blank_in_parameter_name(tmp_path):
     """Test execute call embedded blank in parameter name."""
     config = configparser.ConfigParser()
@@ -143,6 +152,7 @@ def test_xlsx_execute_embedded_blank_in_parameter_name(tmp_path):
     assert retval == TaskOutcome.SUCCESS
 
 
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_bad_entry(tmp_path):
     """Test execute call bad entry."""
     config = configparser.ConfigParser()
@@ -156,6 +166,7 @@ def test_xlsx_execute_bad_entry(tmp_path):
     assert retval == TaskOutcome.SUCCESS
 
 
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_missing_column_heading(tmp_path):
     """Test execute call missing column heading."""
     config = configparser.ConfigParser()
@@ -169,6 +180,7 @@ def test_xlsx_execute_missing_column_heading(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_duplicate_column_heading(tmp_path):
     """Test execute call duplicate column heading."""
     config = configparser.ConfigParser()
@@ -182,6 +194,7 @@ def test_xlsx_execute_duplicate_column_heading(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_missing_resource_title(tmp_path):
     """Test execute call missing resource title."""
     config = configparser.ConfigParser()
@@ -195,6 +208,7 @@ def test_xlsx_execute_missing_resource_title(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_catalog_missing(tmp_path):
     """Test execute call missing catalog."""
     config = configparser.ConfigParser()
@@ -208,6 +222,7 @@ def test_xlsx_execute_catalog_missing(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_catalog_not_found(tmp_path):
     """Test execute call catalog not found."""
     config = configparser.ConfigParser()
@@ -221,6 +236,7 @@ def test_xlsx_execute_catalog_not_found(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_spread_sheet_missing(tmp_path):
     """Test execute call spread sheet missing."""
     config = configparser.ConfigParser()
@@ -234,6 +250,7 @@ def test_xlsx_execute_spread_sheet_missing(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_spread_sheet_not_found(tmp_path):
     """Test execute call spread sheet not found."""
     config = configparser.ConfigParser()
@@ -247,6 +264,7 @@ def test_xlsx_execute_spread_sheet_not_found(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_xlsx_execute_work_sheet_name_missing(tmp_path):
     """Test execute call work sheet name missing."""
     config = configparser.ConfigParser()

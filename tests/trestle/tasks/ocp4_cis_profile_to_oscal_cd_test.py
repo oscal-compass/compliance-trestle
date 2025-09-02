@@ -21,11 +21,13 @@ import uuid
 
 from _pytest.monkeypatch import MonkeyPatch
 
-from tests.test_utils import text_files_similar
+from tests.test_utils import TEST_DIR, set_cwd_unsafe, text_files_similar
 
 import trestle
 import trestle.tasks.ocp4_cis_profile_to_oscal_cd as ocp4_cis_profile_to_oscal_cd
 from trestle.tasks.base_task import TaskOutcome
+
+root_dir = TEST_DIR / '../'
 
 
 def monkey_uuid_1():
@@ -43,6 +45,7 @@ def monkey_trestle_version():
     return '0.21.0'
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_cd_print_info(tmp_path: pathlib.Path):
     """Test print_info call."""
     config = configparser.ConfigParser()
@@ -55,6 +58,7 @@ def test_ocp4_cis_profile_to_oscal_cd_print_info(tmp_path: pathlib.Path):
     assert retval is None
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_cd_simulate(tmp_path: pathlib.Path):
     """Test simulate call."""
     config = configparser.ConfigParser()
@@ -68,6 +72,7 @@ def test_ocp4_cis_profile_to_oscal_cd_simulate(tmp_path: pathlib.Path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_cd_execute(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test execute call."""
     monkeypatch.setattr(uuid, 'uuid4', monkey_uuid_1)
@@ -93,6 +98,7 @@ def test_ocp4_cis_profile_to_oscal_cd_execute(tmp_path: pathlib.Path, monkeypatc
         assert result
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_cd_execute_selected_rules2(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test execute selected rules call."""
     monkeypatch.setattr(uuid, 'uuid4', monkey_uuid_1)
@@ -119,6 +125,7 @@ def test_ocp4_cis_profile_to_oscal_cd_execute_selected_rules2(tmp_path: pathlib.
         assert result
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_cd_execute_enabled_rules2(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test execute enabled rules call."""
     monkeypatch.setattr(uuid, 'uuid4', monkey_uuid_1)
@@ -145,6 +152,7 @@ def test_ocp4_cis_profile_to_oscal_cd_execute_enabled_rules2(tmp_path: pathlib.P
         assert result
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_cd_execute_enabled_rules3(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test execute enabled rules call."""
     monkeypatch.setattr(uuid, 'uuid4', monkey_uuid_1)
@@ -166,6 +174,7 @@ def test_ocp4_cis_profile_to_oscal_cd_execute_enabled_rules3(tmp_path: pathlib.P
     assert d_expected != d_produced
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_cd_bogus_config(tmp_path: pathlib.Path):
     """Test execute call bogus config."""
     section = None
@@ -174,6 +183,7 @@ def test_ocp4_cis_profile_to_oscal_cd_bogus_config(tmp_path: pathlib.Path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_cd_missing_profile_list(tmp_path: pathlib.Path):
     """Test execute call missing profile-list."""
     config = configparser.ConfigParser()
@@ -187,6 +197,7 @@ def test_ocp4_cis_profile_to_oscal_cd_missing_profile_list(tmp_path: pathlib.Pat
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_cd_missing_component_name(tmp_path: pathlib.Path):
     """Test execute call missing component-name."""
     config = configparser.ConfigParser()
@@ -200,6 +211,7 @@ def test_ocp4_cis_profile_to_oscal_cd_missing_component_name(tmp_path: pathlib.P
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_cd_missing_profile_type(tmp_path: pathlib.Path):
     """Test execute call missing profile-type."""
     config = configparser.ConfigParser()
@@ -213,6 +225,7 @@ def test_ocp4_cis_profile_to_oscal_cd_missing_profile_type(tmp_path: pathlib.Pat
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_cd_missing_profile_ns(tmp_path: pathlib.Path):
     """Test execute call missing profile-ns."""
     config = configparser.ConfigParser()
@@ -226,6 +239,7 @@ def test_ocp4_cis_profile_to_oscal_cd_missing_profile_ns(tmp_path: pathlib.Path)
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_cd_missing_profile_key(tmp_path: pathlib.Path):
     """Test execute missing profile-file."""
     config = configparser.ConfigParser()
@@ -241,6 +255,7 @@ def test_ocp4_cis_profile_to_oscal_cd_missing_profile_key(tmp_path: pathlib.Path
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_cd_missing_profile_file(tmp_path: pathlib.Path):
     """Test execute missing profile-file."""
     config = configparser.ConfigParser()
@@ -256,6 +271,7 @@ def test_ocp4_cis_profile_to_oscal_cd_missing_profile_file(tmp_path: pathlib.Pat
     assert retval == TaskOutcome.SUCCESS
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_cd_missing_profile_url(tmp_path: pathlib.Path):
     """Test execute missinf profile-url."""
     config = configparser.ConfigParser()
@@ -271,6 +287,7 @@ def test_ocp4_cis_profile_to_oscal_cd_missing_profile_url(tmp_path: pathlib.Path
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_cd_missing_profile_title(tmp_path: pathlib.Path):
     """Test execute call missing profile-title."""
     config = configparser.ConfigParser()
@@ -286,6 +303,7 @@ def test_ocp4_cis_profile_to_oscal_cd_missing_profile_title(tmp_path: pathlib.Pa
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_cd_missing_output_dir(tmp_path: pathlib.Path):
     """Test execute call missing output-dir."""
     config = configparser.ConfigParser()
@@ -298,6 +316,7 @@ def test_ocp4_cis_profile_to_oscal_cd_missing_output_dir(tmp_path: pathlib.Path)
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_cd_no_overwrite(tmp_path: pathlib.Path):
     """Test execute no overwrite."""
     config = configparser.ConfigParser()
@@ -313,6 +332,7 @@ def test_ocp4_cis_profile_to_oscal_cd_no_overwrite(tmp_path: pathlib.Path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_cd_duplicate_rule(tmp_path: pathlib.Path):
     """Test execute duplicate rule exists."""
     config = configparser.ConfigParser()
@@ -330,6 +350,7 @@ def test_ocp4_cis_profile_to_oscal_cd_duplicate_rule(tmp_path: pathlib.Path):
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_cd_exception(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test _get_cis_rules exception."""
     monkeypatch.setattr(ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD, '_get_cis_rules', monkey_exception)
@@ -345,6 +366,7 @@ def test_ocp4_cis_profile_to_oscal_cd_exception(tmp_path: pathlib.Path, monkeypa
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_cd_missing_rules_section(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test missing section selected-rules."""
     monkeypatch.setattr(ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD, '_get_cis_rules', monkey_exception)
@@ -361,6 +383,7 @@ def test_ocp4_cis_profile_to_oscal_cd_missing_rules_section(tmp_path: pathlib.Pa
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_cd_missing_rules_file(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test missing file enabled-rules."""
     monkeypatch.setattr(ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD, '_get_cis_rules', monkey_exception)
@@ -377,6 +400,7 @@ def test_ocp4_cis_profile_to_oscal_cd_missing_rules_file(tmp_path: pathlib.Path,
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_cd_missing_parameters_key(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test missing file enabled-rules."""
     monkeypatch.setattr(ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD, '_get_cis_rules', monkey_exception)
@@ -393,6 +417,7 @@ def test_ocp4_cis_profile_to_oscal_cd_missing_parameters_key(tmp_path: pathlib.P
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_cd_missing_parameters_file(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test missing file enabled-rules."""
     monkeypatch.setattr(ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD, '_get_cis_rules', monkey_exception)
@@ -409,6 +434,7 @@ def test_ocp4_cis_profile_to_oscal_cd_missing_parameters_file(tmp_path: pathlib.
     assert retval == TaskOutcome.FAILURE
 
 
+@set_cwd_unsafe(root_dir)
 def test_ocp4_cis_profile_to_oscal_cd_bogus_rules_file(tmp_path: pathlib.Path):
     """Test bogus rules."""
     config = configparser.ConfigParser()
