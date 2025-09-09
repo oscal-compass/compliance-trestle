@@ -15,6 +15,7 @@
 # limitations under the License.
 """Trestle String Utils."""
 import enum
+import re
 import string
 from typing import Any, Optional
 
@@ -149,3 +150,11 @@ def strip_lower_equals(str_a: Optional[str], str_b: Optional[str]) -> bool:
     if str_a is None or str_b is None:
         return False
     return str_a.strip().lower() == str_b.strip().lower()
+
+
+def to_ncname(name: str) -> str:
+    """Convert to NCName."""
+    rval = name
+    if name:
+        rval = re.sub(r'[^A-Za-z0-9_.-]', '_', name)
+    return rval
