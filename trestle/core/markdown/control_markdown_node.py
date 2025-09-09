@@ -25,7 +25,7 @@ from typing import Dict, List, Optional, Tuple
 from trestle.common import const
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_filtered_list, as_list, none_if_empty
-from trestle.common.str_utils import spaces_and_caps_to_snake
+from trestle.common.str_utils import spaces_and_caps_to_snake, to_ncname
 from trestle.core.control_interface import ControlInterface
 from trestle.core.markdown.base_markdown_node import BaseMarkdownNode, BaseSectionContent
 from trestle.core.markdown.markdown_const import CODEBLOCK_DEF, HTML_COMMENT_END_REGEX, HTML_COMMENT_START
@@ -364,6 +364,7 @@ class ControlMarkdownNode(BaseMarkdownNode):
             parent_suffix = parent_id + '.' if parent_id else ''
             part_id = parent_suffix + part_name
 
+        logger.debug(f'part_id: {part_id} part_name: {part_name} part_title: {part_title} by_part_id: {by_part_id}')
         return part_id, part_name, part_title, by_part_id
 
     def get_other_control_parts(self) -> List[Optional[ControlMarkdownNode]]:
@@ -392,7 +393,7 @@ class ControlMarkdownNode(BaseMarkdownNode):
                     'However, none was found.'
                 )
 
-            content_part = common.Part(name=part_name, id=part_id, prose=prose)
+            content_part = common.Part(name=to_ncname(part_name), id=to_ncname(part_id), prose=prose)
 
         return content_part
 
@@ -461,7 +462,7 @@ class ControlMarkdownNode(BaseMarkdownNode):
                 id_ = ControlInterface.strip_to_make_ncname(parent_id.rstrip('.') + '.' + id_text.strip('.'))
                 name = const.OBJECTIVE_PART if id_.find('_obj') > 0 else const.ITEM
                 prop = common.Property(name='label', value=id_text)
-                part = common.Part(name=name, id=id_, prose=prose, props=[prop])
+                part = common.Part(name=to_ncname(name), id=to_ncname(id_), prose=prose, props=[prop])
                 if id_ in [p.id for p in parts]:
                     logger.warning(
                         f'Duplicate part id {id_} is found in markdown '

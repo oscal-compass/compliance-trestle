@@ -243,8 +243,8 @@ This is a general guide on how to go about upgrading compliance-trestle to suppo
 The steps are as follows:
 
 <ol>
-<li> Create  in GitHub repo <i style="color:darkgrey;">(remote)</i>
-<li> Clone upgrade branch into <span style="color:darkgreen;">/trestle-upgrade</span> folder <i style="color:darkgrey;">(local <- remote)</i>
+<li> Create feat/trestle-upgrade branch in GitHub repo <i style="color:darkgrey;">(remote)</i>
+<li> Clone feat/trestle-upgrade branch into <span style="color:darkgreen;">/trestle-upgrade</span> folder <i style="color:darkgrey;">(local <- remote)</i>
 <li> Download revised and new OSCAL models into folder <span style="color:darkgreen;">/trestle-upgrade/release-schemas</span> <i style="color:darkgrey;">(local <- remote)</i>
 <ul>
 <li> See <a href="https://github.com/usnistgov/OSCAL/releases">https://github.com/usnistgov/OSCAL/releases</a>
