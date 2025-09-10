@@ -1,0 +1,20 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.25.1
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  'snyk:lic:pip:certifi:MPL-2.0':
+    - '*':
+        reason: 'Pending submitted exception to the CNCF GB #1091'
+        expires: 2025-12-11T14:24:35.014Z
+        created: 2025-08-12T14:24:35.017Z
+  'snyk:lic:pip:pathspec:MPL-2.0':
+    - '*':
+        reason: 'Pending submitted exception to the CNCF GB #1090'
+        expires: 2025-12-11T14:30:53.420Z
+        created: 2025-08-12T14:30:53.423Z
+  'snyk:lic:pip:paramiko:LGPL-2.1':
+    - '*':
+        reason: 'Pending submitted exception to the CNCF GB #1108'
+        expires: 2025-12-11T14:30:53.420Z
+        created: 2025-08-12T14:33:58.233Z
+patch: {}

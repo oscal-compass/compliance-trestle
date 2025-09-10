@@ -67,6 +67,47 @@ def test_assemble_catalog(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.P
     assert actual_model == expected_model
 
 
+def test_assemble_catalog_part(
+    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """Test assemble a catalog with non-NCName data."""
+    # prep
+    src = testdata_dir / 'author' / 'catalogs'
+    tgt = tmp_trestle_dir / 'catalogs'
+    shutil.rmtree(tgt)
+    shutil.copytree(src, tgt)
+    # generate markdown
+    testargs = [
+        'trestle',
+        'author',
+        'catalog-generate',
+        '--trestle-root',
+        str(tmp_trestle_dir),
+        '--output',
+        'test',
+        '--name',
+        'NIST-SP800-218-ver1-selected'
+    ]
+    monkeypatch.setattr(sys, 'argv', testargs)
+    rc = Trestle().run()
+    assert rc == 0
+    # assemble markdown
+    testargs = [
+        'trestle',
+        'author',
+        'catalog-assemble',
+        '--trestle-root',
+        str(tmp_trestle_dir),
+        '--output',
+        'test',
+        '--markdown',
+        'test'
+    ]
+    monkeypatch.setattr(sys, 'argv', testargs)
+    rc = Trestle().run()
+    assert rc == 0
+
+
 def test_assemble_not_trestle_project(tmp_empty_cwd: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test failure if not trestle workspace."""
     testargs = ['trestle', 'assemble', 'catalog', '-n', 'mycatalog', '-x', 'json']

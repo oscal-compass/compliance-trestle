@@ -13,7 +13,7 @@ jobs:
       min: ${{ steps.versions.outputs.min }}
       max: ${{ steps.versions.outputs.max }}
     steps:
-    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
     - id: versions
       run: |
         min_version=$(jq '.PYTHON_MIN' -r version.json)
@@ -27,14 +27,14 @@ jobs:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
       with:
         submodules: true
     - name: Set up Python
       uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
       with:
         python-version: ${{ needs.set-versions.outputs.max }}
-    - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+    - uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 # v4.2.4
       with:
         path: ~/.cache/pip
         key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-${{ hashFiles('setup.cfg') }}
@@ -84,14 +84,14 @@ jobs:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
       with:
         submodules: true
     - name: Set up Python
       uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
       with:
         python-version: ${{ needs.set-versions.outputs.max }}
-    - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+    - uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 # v4.2.4
       with:
         path: ~/.cache/pip
         key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-${{ hashFiles('setup.cfg') }}
@@ -123,7 +123,7 @@ jobs:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
       with:
         fetch-depth: 0
         submodules: true
@@ -131,7 +131,7 @@ jobs:
       uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
       with:
         python-version: ${{ matrix.python-version }}
-    - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+    - uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 # v4.2.4
       with:
         path: ${{ matrix.path }}
         key: ${{ matrix.os }}-${{ matrix.python-version }}-pip-${{ hashFiles('setup.cfg') }}
@@ -170,14 +170,14 @@ jobs:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
       with:
         submodules: true
     - name: Set up Python
       uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
       with:
         python-version: ${{ needs.set-versions.outputs.max }}
-    - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+    - uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 # v4.2.4
       with:
         path: ~/.cache/pip
         key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-${{ hashFiles('setup.cfg') }}
@@ -187,11 +187,11 @@ jobs:
       run: |
         make develop
     - name: Get coverage
-      uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4.2.1
+      uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
       with:
         name: coverage
     - name: SonarCloud Scan
-      uses: SonarSource/sonarcloud-github-action@b42848bfdabac7fefc656c08af7a7864240124a3 # master
+      uses: SonarSource/sonarcloud-github-action@ba3875ecf642b2129de2b589510c81a8b53dbf4e # master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -211,3 +211,31 @@ jobs:
       timeout-minutes: 5
       env:
        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  snyk:
+    if: ${{ (github.event.pull_request.base.repo.url == github.event.pull_request.head.repo.url && github.triggering_actor != 'dependabot[bot]' ) }}
+    runs-on: ubuntu-latest
+    needs: [ set-versions ]
+    steps:
+      - name: Don't mess with line endings
+        run: |
+          git config --global core.autocrlf false
+      - name: Don't mess with line endings
+        run: |
+          git config --global core.autocrlf false
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          submodules: true
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: ${{ needs.set-versions.outputs.max }}
+      - uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 # v4.2.4
+        with:
+          path: ~/.cache/pip
+          key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-${{ hashFiles('setup.cfg') }}
+          restore-keys: |
+            ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-
+      - uses: ./.github/actions/snyk-test
+        with:
+          token: ${{ secrets.SNYK_TOKEN }}

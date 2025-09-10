@@ -17,6 +17,7 @@
 
 import argparse
 import difflib
+import functools
 import logging
 import os
 import pathlib
@@ -53,29 +54,59 @@ if file_utils.is_windows():  # pragma: no cover
 
 logger = logging.getLogger(__name__)
 
-BASE_TMP_DIR = pathlib.Path('tests/__tmp_path').resolve()
-YAML_TEST_DATA_PATH = pathlib.Path('tests/data/yaml/').resolve()
-JSON_TEST_DATA_PATH = pathlib.Path('tests/data/json/').resolve()
-ENV_TEST_DATA_PATH = pathlib.Path('tests/data/env/').resolve()
-JSON_NIST_DATA_PATH = pathlib.Path('nist-content/nist.gov/SP800-53/rev5/json/').resolve()
+TEST_DIR = pathlib.Path(__file__).parent.resolve()
+BASE_TMP_DIR = pathlib.Path(TEST_DIR / '__tmp_path').resolve()
+YAML_TEST_DATA_PATH = pathlib.Path(TEST_DIR / 'data/yaml/').resolve()
+JSON_TEST_DATA_PATH = pathlib.Path(TEST_DIR / 'data/json/').resolve()
+ENV_TEST_DATA_PATH = pathlib.Path(TEST_DIR / 'data/env/').resolve()
+JSON_NIST_DATA_PATH = pathlib.Path(TEST_DIR / '../nist-content/nist.gov/SP800-53/rev5/json/').resolve()
 JSON_NIST_CATALOG_NAME = 'NIST_SP-800-53_rev5_catalog.json'
 JSON_NIST_PROFILE_NAME = 'NIST_SP-800-53_rev5_MODERATE-baseline_profile.json'
-JSON_NIST_REV_4_DATA_PATH = pathlib.Path('nist-content/nist.gov/SP800-53/rev4/json/').resolve()
+JSON_NIST_REV_4_DATA_PATH = pathlib.Path(TEST_DIR / '../nist-content/nist.gov/SP800-53/rev4/json/').resolve()
 JSON_NIST_REV_4_CATALOG_NAME = 'NIST_SP-800-53_rev4_catalog.json'
 JSON_NIST_REV_5_CATALOG_NAME = 'nist-rev5-catalog-full.json'
 JSON_NIST_REV_4_PROFILE_NAME = 'NIST_SP-800-53_rev4_MODERATE-baseline_profile.json'
 SIMPLIFIED_NIST_CATALOG_NAME = 'simplified_nist_catalog.json'
 SIMPLIFIED_NIST_PROFILE_NAME = 'simplified_nist_profile.json'
-TASK_XLSX_OUTPUT_PATH = pathlib.Path('tests/data/tasks/xlsx/output').resolve()
+TASK_XLSX_OUTPUT_PATH = pathlib.Path(TEST_DIR / 'data/tasks/xlsx/output').resolve()
 
 CATALOGS_DIR = 'catalogs'
 PROFILES_DIR = 'profiles'
 COMPONENT_DEF_DIR = 'component-definitions'
 
-NIST_EXAMPLES = pathlib.Path('nist-content/examples')
+NIST_EXAMPLES = pathlib.Path(TEST_DIR / '../nist-content/examples')
 NIST_SAMPLE_CD_JSON = NIST_EXAMPLES / 'component-definition' / 'json' / 'example-component.json'
 
 NEW_MODEL_AGE_SECONDS = 100
+
+
+def set_cwd_unsafe(cwd: pathlib.Path = TEST_DIR):
+    """Set the current working directory to the test directory.
+
+    Not safe for concurrent tests which may change directory.
+    This is practically a no-op in the case of `make test` because
+    the decorator cds to the root directory and `make test` only works
+    in the root directory anyway, so the decorator starts at the test root,
+    then cds to the test root, then cds back to the test root after the test runs.
+    This workaround is named "unsafe" to raises a mental flag
+    because it is only needed on tests that have an implicit dependency
+    on paths relative to the test root directory
+    """
+
+    def decorator(f):
+
+        @functools.wraps(f)
+        def wrapper(*args, **kwargs):
+            original_cwd = os.getcwd()
+            os.chdir(cwd)
+            try:
+                f(*args, **kwargs)
+            finally:
+                os.chdir(original_cwd)
+
+        return wrapper
+
+    return decorator
 
 
 def clean_tmp_path(tmp_path: pathlib.Path):
