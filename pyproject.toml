@@ -63,7 +63,7 @@ dev = [
     "urllib3==2.5.0",
     "wheel",
     "yapf",
-    "python-semantic-release>=10.3.0",
+    "python-semantic-release>=10.4.0",
     "pep8-naming",
     "pytest-random-order",
     "python-dateutil",
