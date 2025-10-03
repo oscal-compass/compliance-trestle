@@ -25,7 +25,7 @@ REVERSE:
 
 or
 
-cd $TRESTLE_BASEDIR/catalogs/mycatalog
+cd '${TRESTLE_BASEDIR}/catalogs/mycatalog'
     trestle split -e 'catalog.metadata.roles,catalog.metadata.parties,catalog.metadata.responsible-parties'
 
     trestle merge -e 'catalog.metadata.roles,catalog.metadata.parties,catalog.metadata.responsible-parties'
