@@ -84,7 +84,6 @@ Agile authoring comprises the following beneficial features:
 
 ## Demos
 
-
 An [end to end demo](https://github.com/oscal-compass/e2e-demo?tab=readme-ov-file#end-to-end-demo---cncf-oscal-compass) utilizing trestle, agile authoring and compliance-to-policy.
 
 A collection of demos utilizing trestle can be found in the related project [compliance-trestle-demos](https://github.com/oscal-compass/compliance-trestle-demos).
