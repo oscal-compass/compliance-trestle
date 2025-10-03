@@ -311,7 +311,7 @@ For that to happen you will need to provide your template with the following par
 
 Please, take into consideration that for the validation to happen you will also need to provide each instance document in the task folder a field called `x-trestle-template-type: insert_template_type_here` in the yaml header matching with the template name.
 
-```yaml
+```yaml-ish
 ---
 authors: tmp
 owner: tmp
