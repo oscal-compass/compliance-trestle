@@ -1,4 +1,4 @@
-cd ${TRESTLE_BASEDIR}/catalogs/mycatalog
+cd '${TRESTLE_BASEDIR}/catalogs/mycatalog'
 
 # Splits the properties listed in the -e option that must exist in the file specified in the -f option.
 trestle split -f ./catalog.json -e 'catalog.metadata,catalog.groups,catalog.back-matter'
