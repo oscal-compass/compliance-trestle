@@ -21,7 +21,7 @@ REVERSE:
 
 or
 
-cd $TRESTLE_BASEDIR/catalogs/mycatalog/catalog
+cd '${TRESTLE_BASEDIR}/catalogs/mycatalog/catalog'
     trestle merge -e 'metadata.roles.*,metadata.responsible-parties.*'
 which is different from:
     trestle merge -e 'metadata.roles,metadata.responsible-parties'
