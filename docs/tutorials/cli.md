@@ -152,7 +152,7 @@ Running `trestle version` will return:
 
 It can also be used to retrieve the metadata version of the OSCAL object:
 
-```
+```json-ish
 "catalog": {
 
     "uuid": "fa3f44a8-25cd-4f6a-8175-7afe647df7ed",
