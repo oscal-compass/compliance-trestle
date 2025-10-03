@@ -544,25 +544,27 @@ Both the parent profile and the SSP must be present in the trestle workspace. Th
 <summary>Example imports generated from profile-inherit</summary>
 
 ```json
+{
   "imports": [
-      {
-        "href": "trestle://profiles/controls_delta/profile.json",
-        "include-controls": [
-          {
-            "with-ids": [
-              "ac-2"
-            ]
-          }
-        ],
-        "exclude-controls": [
-          {
-            "with-ids": [
-              "ac-1"
-            ]
-          }
-        ]
-      }
-    ]
+    {
+      "href": "trestle://profiles/controls_delta/profile.json",
+      "include-controls": [
+        {
+          "with-ids": [
+            "ac-2"
+          ]
+        }
+      ],
+      "exclude-controls": [
+        {
+          "with-ids": [
+            "ac-1"
+          ]
+        }
+      ]
+    }
+  ]
+}
 ```
 
 </details>
@@ -695,62 +697,66 @@ There is no direct way to specify rules in the ComponentDefinition, so they are 
 
 ```json
 [
+  [
+    {
+      "name": "Rule_Id",
+      "ns": "http://comp_ns",
+      "value": "comp_rule_aa_1",
+      "class": "Rule_Id",
+      "remarks": "rule_2"
+    },
+    {
+      "name": "Rule_Description",
+      "ns": "http://comp_ns",
+      "value": "comp rule aa 1",
+      "remarks": "rule_2"
+    },
+    {
+      "name": "Rule_Id",
+      "ns": "http://comp_ns",
+      "value": "comp_rule_aa_2",
+      "class": "Rule_Id",
+      "remarks": "rule_3"
+    },
+    {
+      "name": "Rule_Description",
+      "ns": "http://comp_ns",
+      "value": "comp rule aa 2",
+      "class": "Rule_Description",
+      "remarks": "rule_3"
+    },
+    {
+      "name": "Parameter_Id",
+      "ns": "http://comp_ns",
+      "value": "shared_param_1",
+      "class": "Parameter_Id",
+      "remarks": "rule_1"
+    },
+    {
+      "name": "Parameter_Description",
+      "ns": "http://comp_ns",
+      "value": "shared param 1 in aa",
+      "class": "Parameter_Description",
+      "remarks": "rule_1"
+    },
+    {
+      "name": "Parameter_Value_Alternatives",
+      "ns": "http://comp_ns",
+      "value": "[\"shared_param_1_aa_opt_1\", \"shared_param_1_aa_opt_2\"]",
+      "class": "Parameter_Value_Alternatives",
+      "remarks": "rule_1"
+    }
+  ],
   {
-    "name": "Rule_Id",
-    "ns": "http://comp_ns",
-    "value": "comp_rule_aa_1",
-    "class": "Rule_Id",
-    "remarks": "rule_2"
-  },
-  {
-    "name": "Rule_Description",
-    "ns": "http://comp_ns",
-    "value": "comp rule aa 1",
-    "remarks": "rule_2"
-  },
-  {
-    "name": "Rule_Id",
-    "ns": "http://comp_ns",
-    "value": "comp_rule_aa_2",
-    "class": "Rule_Id",
-    "remarks": "rule_3"
-  },
-  {
-    "name": "Rule_Description",
-    "ns": "http://comp_ns",
-    "value": "comp rule aa 2",
-    "class": "Rule_Description",
-    "remarks": "rule_3"
-  },
-  {
-    "name": "Parameter_Id",
-    "ns": "http://comp_ns",
-    "value": "shared_param_1",
-    "class": "Parameter_Id",
-    "remarks": "rule_1"
-  },
-  {
-    "name": "Parameter_Description",
-    "ns": "http://comp_ns",
-    "value": "shared param 1 in aa",
-    "class": "Parameter_Description",
-    "remarks": "rule_1"
-  },
-  {
-    "name": "Parameter_Value_Alternatives",
-    "ns": "http://comp_ns",
-    "value": "[\"shared_param_1_aa_opt_1\", \"shared_param_1_aa_opt_2\"]",
-    "class": "Parameter_Value_Alternatives",
-    "remarks": "rule_1"
-  }
-],
-"set-parameters": [
-  {
-    "param-id": "shared_param_1",
-    "values": [
-      "shared_param_1_aa_opt_1"
-    ],
-    "remarks": "set shared param aa 1"
+    "set-parameters": [
+      {
+        "param-id": "shared_param_1",
+        "values": [
+          "shared_param_1_aa_opt_1"
+        ],
+        "remarks": "set shared param aa 1"
+      }
+    ]
   }
 ]
 ```
