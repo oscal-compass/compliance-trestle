@@ -427,16 +427,18 @@ The future version of this command would be:
 OSCAL also makes use of named fields by leveraging`additionalProperties` supported by JSON Schema which behaves as a map or dict. OSCAL normally uses this feature as a way to assign multiple objects to a property without necessarily having to enforce a specific order as is the case with JSON array properties. It is like assigning a map/dict to a property. An example of such property in the catalog schema is the `responsible-parties` under `metadata`. One example of contents for a `responsible-parties` property is:
 
 ```json
-"responsible-parties": {
-  "creator": {
-    "party-uuids": [
-      "4ae7292e-6d8e-4735-86ea-11047c575e87"
-    ]
-  },
-  "contact": {
-    "party-uuids": [
-      "4ae7292e-6d8e-4735-86ea-11047c575e87"
-    ]
+{
+  "responsible-parties": {
+    "creator": {
+      "party-uuids": [
+        "4ae7292e-6d8e-4735-86ea-11047c575e87"
+      ]
+    },
+    "contact": {
+      "party-uuids": [
+        "4ae7292e-6d8e-4735-86ea-11047c575e87"
+      ]
+    }
   }
 }
 ```
@@ -516,11 +518,14 @@ This command allows users to add an OSCAL model to a subcomponent in source dire
 will add the following property under the `metadata` property for a catalog that will be written to the appropriate file under `catalogs/nist800-53` directory:
 
 ```json
-"roles": [
-  {
-    "id": "REPLACE_ME",
-    "title": "REPLACE_ME"
-  }
+{
+  "roles": [
+    {
+      "id": "REPLACE_ME",
+      "title": "REPLACE_ME"
+    }
+  ]
+}
 ```
 
 Default values for mandatory datatypes will be like below. All UUID's will be populated by default whether or not they are mandatory.
