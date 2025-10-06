@@ -7,7 +7,7 @@ on:
     - develop
     tags:
     - v*
-
+permissions: read-all
 jobs:
   set-versions:
     runs-on: ubuntu-latest
