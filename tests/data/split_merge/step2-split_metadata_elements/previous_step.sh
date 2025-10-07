@@ -1,4 +1,4 @@
-cd $TRESTLE_BASEDIR/catalogs/mycatalog/catalog
+cd '${TRESTLE_BASEDIR}/catalogs/mycatalog/catalog'
 
 # Merges the properties inside each of the files passed in via the -f option to a destination file specified with the -d option.
 trestle merge -f parties.json,responsible-parties.json,roles.json -d ../metadata.json
