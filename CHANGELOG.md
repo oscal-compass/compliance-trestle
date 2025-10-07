@@ -1,5 +1,86 @@
 # CHANGELOG
 
+<!-- version list -->
+
+## v3.9.2 (2025-09-10)
+
+Note: this entry added manually due to python-semantic-version upgrade issue
+
+### Bug Fixes
+
+Add comment (#1756, 929ee37)
+
+Add newline to workflow file (#1878, 82bc3bb)
+
+Bad part name/id when generate/assemble markdown (#1928, 428d880)
+
+Do not continue on error in synk scan job (#1878, 82bc3bb)
+
+Removes unnecessary line (#1878, 82bc3bb)
+
+Unit test execution in PyCharm (#1756, 929ee37)
+
+Unit test execution in PyCharm (#1755) (#1756, 929ee37)
+
+Update new tests for cwd (#1756, 929ee37)
+
+deps: Bump actions/cache from 4.2.3 to 4.2.4 (#1930, 719eb72)
+
+deps: Bump actions/cache from 4.2.3 to 4.2.4 (#1927, 4470d53)
+
+deps: Bump actions/checkout from 4.2.2 to 5.0.0 (#1932, 3fb4ccc)
+
+deps: Bump actions/checkout from 4.2.2 to 5.0.0 (#1923, 98bd38f)
+
+deps: Bump actions/create-github-app-token from 1.12.0 to 2.1.1 (#1915, 7211962)
+
+deps: Bump actions/download-artifact from 4.2.1 to 5.0.0 (#1911, 9acb8e9)
+
+deps: Bump actions/stale from 9.1.0 to 10.0.0 (#1931, 2a048f2)
+
+deps: Bump cryptography from 44.0.2 to 45.0.6 (#1910, 9cec58e)
+
+deps: Bump cryptography from 45.0.6 to 45.0.7 (#1924, 2a09b91)
+
+deps: Bump datamodel-code-generator[http] from 0.25.3 to 0.33.0 (#1918, b655f46)
+deps: Bump github/codeql-action from 3.28.13 to 3.29.11 (#1916, 3950083)
+
+deps: Bump github/codeql-action from 3.29.11 to 3.30.1 (#1933, 5a9e53d)
+
+deps: Bump ossf/scorecard-action from 2.4.1 to 2.4.2 (#1925, 9d7c5ce)
+
+deps: Bump paramiko from 3.5.0 to 4.0.0 (#1909, a9bfc17)
+
+deps: Bump pypa/gh-action-pypi-publish from 1.12.4 to 1.13.0 (#1929, adb68ef)
+
+deps: Bump python-semantic-release/python-semantic-release (#1912, 94826da)
+
+deps: Bump SonarSource/sonarcloud-github-action (#1926, 3d6eddb)
+
+deps: Bump SonarSource/sonarcloud-github-action (#1884, 823bf68)
+
+deps: Bump urllib3 from 1.26.19 to 2.5.0 (#1897, 2fe4fb6)
+
+### Chores
+
+Add .synk file with pending license exceptions (#1878, 82bc3bb)
+
+Add slash at the end of fedramp link (#1878, 82bc3bb)
+
+Revert docs change (#1878, 82bc3bb)
+
+Update .snyk to correct paramiko license (#1878, 82bc3bb)
+
+Update .snyk to include pending exception (#1878, 82bc3bb)
+
+### Continuous Integration
+
+Add snyk license scanning to PR CI workflow (#1878, 82bc3bb)
+
+### Documentation
+
+Update FedRAMP doc templates link (#1878, 82bc3bb)
+
 ## v3.9.1 (2025-07-07)
 
 ### Build
