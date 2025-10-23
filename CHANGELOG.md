@@ -2,6 +2,97 @@
 
 <!-- version list -->
 
+## v3.9.3 (2025-10-23)
+
+### Bug Fixes
+
+- Changelog ([#1945](https://github.com/oscal-compass/compliance-trestle/pull/1945),
+  [`3bb09e0`](https://github.com/oscal-compass/compliance-trestle/commit/3bb09e09dd511f1f34d40ac6f7dccfbaffdcbe62))
+
+- CHANGELOG.md semantic-verioning
+  ([#1945](https://github.com/oscal-compass/compliance-trestle/pull/1945),
+  [`3bb09e0`](https://github.com/oscal-compass/compliance-trestle/commit/3bb09e09dd511f1f34d40ac6f7dccfbaffdcbe62))
+
+- Cli.md not strictly json ([#1947](https://github.com/oscal-compass/compliance-trestle/pull/1947),
+  [`7c781d7`](https://github.com/oscal-compass/compliance-trestle/commit/7c781d75dac7ddbf2c14f49b097cd177cb121b29))
+
+- Md format ([#1947](https://github.com/oscal-compass/compliance-trestle/pull/1947),
+  [`7c781d7`](https://github.com/oscal-compass/compliance-trestle/commit/7c781d75dac7ddbf2c14f49b097cd177cb121b29))
+
+- Openssf scorecard report token-permissions 0
+  ([#1935](https://github.com/oscal-compass/compliance-trestle/pull/1935),
+  [`f77beac`](https://github.com/oscal-compass/compliance-trestle/commit/f77beac28a87a79ecaa7d64288c62681de6a474a))
+
+- Openssf scorecard report token-permissions 0/10
+  ([#1935](https://github.com/oscal-compass/compliance-trestle/pull/1935),
+  [`f77beac`](https://github.com/oscal-compass/compliance-trestle/commit/f77beac28a87a79ecaa7d64288c62681de6a474a))
+
+- Sonar complaints ([#1947](https://github.com/oscal-compass/compliance-trestle/pull/1947),
+  [`7c781d7`](https://github.com/oscal-compass/compliance-trestle/commit/7c781d75dac7ddbf2c14f49b097cd177cb121b29))
+
+- Trestle_author.md yml-ish ([#1947](https://github.com/oscal-compass/compliance-trestle/pull/1947),
+  [`7c781d7`](https://github.com/oscal-compass/compliance-trestle/commit/7c781d75dac7ddbf2c14f49b097cd177cb121b29))
+
+- Update README with link to end-to-end demo
+  ([#1947](https://github.com/oscal-compass/compliance-trestle/pull/1947),
+  [`7c781d7`](https://github.com/oscal-compass/compliance-trestle/commit/7c781d75dac7ddbf2c14f49b097cd177cb121b29))
+
+- Valid json ([#1947](https://github.com/oscal-compass/compliance-trestle/pull/1947),
+  [`7c781d7`](https://github.com/oscal-compass/compliance-trestle/commit/7c781d75dac7ddbf2c14f49b097cd177cb121b29))
+
+- What is going on with mdformat?
+  ([#1947](https://github.com/oscal-compass/compliance-trestle/pull/1947),
+  [`7c781d7`](https://github.com/oscal-compass/compliance-trestle/commit/7c781d75dac7ddbf2c14f49b097cd177cb121b29))
+
+- **deps**: Bump actions/cache from 4.2.4 to 4.3.0
+  ([#1943](https://github.com/oscal-compass/compliance-trestle/pull/1943),
+  [`6e78c2a`](https://github.com/oscal-compass/compliance-trestle/commit/6e78c2aa572a389e2266aa5743a577491e145835))
+
+- **deps**: Bump actions/create-github-app-token from 2.1.1 to 2.1.4
+  ([#1937](https://github.com/oscal-compass/compliance-trestle/pull/1937),
+  [`5aab873`](https://github.com/oscal-compass/compliance-trestle/commit/5aab8738cf0be3e6ec9a80114f0c6c0fd5b19b9e))
+
+- **deps**: Bump actions/setup-python from 5.6.0 to 6.0.0
+  ([#1938](https://github.com/oscal-compass/compliance-trestle/pull/1938),
+  [`7536c09`](https://github.com/oscal-compass/compliance-trestle/commit/7536c093a9fff37727544705a8d9dde0546a9cca))
+
+- **deps**: Bump actions/stale from 10.0.0 to 10.1.0
+  ([#1952](https://github.com/oscal-compass/compliance-trestle/pull/1952),
+  [`04c9423`](https://github.com/oscal-compass/compliance-trestle/commit/04c942310cb084ec7ad017ce0281585d888302a9))
+
+- **deps**: Bump datamodel-code-generator[http] from 0.33.0 to 0.34.0
+  ([#1942](https://github.com/oscal-compass/compliance-trestle/pull/1942),
+  [`4fa737e`](https://github.com/oscal-compass/compliance-trestle/commit/4fa737e82de58cec8f769c3361c1938c76795325))
+
+- **deps**: Bump datamodel-code-generator[http] from 0.34.0 to 0.35.0
+  ([#1954](https://github.com/oscal-compass/compliance-trestle/pull/1954),
+  [`906481f`](https://github.com/oscal-compass/compliance-trestle/commit/906481fbc6863fdbccd047bc2adcc4186036cffd))
+
+- **deps**: Bump github/codeql-action from 3.30.1 to 3.30.5
+  ([#1944](https://github.com/oscal-compass/compliance-trestle/pull/1944),
+  [`68bc246`](https://github.com/oscal-compass/compliance-trestle/commit/68bc246c0a9a0e7af7a16610602fd29868974538))
+
+- **deps**: Bump github/codeql-action from 3.30.5 to 3.30.6
+  ([#1950](https://github.com/oscal-compass/compliance-trestle/pull/1950),
+  [`b8e4d54`](https://github.com/oscal-compass/compliance-trestle/commit/b8e4d5439814c4c05f3f35bd8dc8414c724a96d1))
+
+- **deps**: Bump github/codeql-action from 3.30.6 to 4.30.8
+  ([#1955](https://github.com/oscal-compass/compliance-trestle/pull/1955),
+  [`c9269df`](https://github.com/oscal-compass/compliance-trestle/commit/c9269df66b080d4f6a3cf3cf053265dd764c1c10))
+
+- **deps**: Bump github/codeql-action from 4.30.8 to 4.30.9
+  ([#1957](https://github.com/oscal-compass/compliance-trestle/pull/1957),
+  [`8e0ed3b`](https://github.com/oscal-compass/compliance-trestle/commit/8e0ed3b1582f7574f22446f9d21761d1c14dffa2))
+
+- **deps**: Bump ossf/scorecard-action from 2.4.2 to 2.4.3
+  ([#1951](https://github.com/oscal-compass/compliance-trestle/pull/1951),
+  [`84500bc`](https://github.com/oscal-compass/compliance-trestle/commit/84500bcb8fbc2cdc1218624a888b1b4fc8d1fdce))
+
+- **deps**: Bump python-semantic-release/python-semantic-release
+  ([#1939](https://github.com/oscal-compass/compliance-trestle/pull/1939),
+  [`ee4a006`](https://github.com/oscal-compass/compliance-trestle/commit/ee4a006a37fee41b84def23ad9b3df9b84fcbe25))
+
+
 ## v3.9.2 (2025-09-10)
 
 Note: this entry added manually due to python-semantic-version upgrade issue
