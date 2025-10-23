@@ -41,7 +41,7 @@ dependencies = [
     "furl",
     "pydantic[email]>=2.0.0",
     "python-dotenv>=0.10.4",
-    "datamodel-code-generator[http] == 0.33.0",
+    "datamodel-code-generator[http] == 0.35.0",
     "python-frontmatter",
     "pywin32 >= 1.0;platform_system=='Windows'",
     "defusedxml",
@@ -63,7 +63,7 @@ dev = [
     "urllib3==2.5.0",
     "wheel",
     "yapf",
-    "python-semantic-release>=9.8.0",
+    "python-semantic-release>=10.4.0",
     "pep8-naming",
     "pytest-random-order",
     "python-dateutil",
@@ -165,6 +165,18 @@ build_command = """
 """
 version_variables = ["trestle/__init__.py:__version__"]
 commit_author = "semantic-release <semantic-release>"
+
+# Define different release groups.
+# Branches that match these patterns will be treated differently.
+[tool.semantic_release.branches.alpha]
+# Use a regex pattern to match branches for alpha pre-releases.
+match = "^(feat|fix|perf)/.+"
+prerelease = true
+prerelease_token = "alpha"
+# For testing, issue:
+# > semantic-release changelog
+# > git diff --staged CHANGELOG.md
+# See https://github.com/python-semantic-release/python-semantic-release/issues/1338
 
 [tool.semantic_release.commit_parser_options]
 allowed_tags = ["build", "chore", "ci", "docs", "feat", "fix", "perf", "style", "refactor", "test"]

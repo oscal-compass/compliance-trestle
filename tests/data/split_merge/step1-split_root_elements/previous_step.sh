@@ -1,4 +1,4 @@
-cd $TRESTLE_BASEDIR/catalogs/mycatalog
+cd '$TRESTLE_BASEDIR/catalogs/mycatalog'
 
 # In the near future, trestle merge should be smart enough to figure out which json files contain the elemenets that you want to be merged
 # as well as the destination file that the elements should go in (every directory contains just one possible destination/parent file).
