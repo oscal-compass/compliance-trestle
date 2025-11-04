@@ -9,7 +9,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: snyk/actions/setup@cdb760004ba9ea4d525f2e043745dfe85bb9077e
+    - uses: snyk/actions/setup
 
     - name: Set environment variable
       run: echo "PATH=${PATH}:/root/.local/bin" >> $GITHUB_ENV
