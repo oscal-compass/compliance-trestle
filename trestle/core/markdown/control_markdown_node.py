@@ -513,8 +513,8 @@ class ControlMarkdownNode(BaseMarkdownNode):
             raise TrestleError(f'Cannot parse control markdown title for control_id group and title: {line}')
         # first token after the #
         control_id = split_line[1]
-        group_title_start = line.find('\[')
-        group_title_end = line.find('\]')
+        group_title_start = line.find('\\[')
+        group_title_end = line.find('\\]')
         if group_title_start < 0 or group_title_end < 0 or group_title_start > group_title_end:
             raise TrestleError(f'unable to read group title for control {control_id}')
         group_title = line[group_title_start + 2:group_title_end].strip()
