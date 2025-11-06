@@ -20,9 +20,9 @@ runs:
         SNYK_TOKEN: ${{ inputs.token }}
       run: |
         echo "::group::Running synk test ..."
-        pipx install pip-tools
         python -m venv venv-test
         source ./venv-test/bin/activate
+        pip install pip-tools
         pip-compile pyproject.toml -o requirements.txt
         pip install -r requirements.txt
         snyk test --file=requirements.txt
