@@ -141,7 +141,7 @@ class DocsControlWriter(ControlWriter):
         control_title = control.title
 
         if print_group_title:
-            group_name = ' \[' + group_title + '\]'
+            group_name = ' \\[' + group_title + '\\]'
 
         control_id = self._get_pretty_control_id_if_exists(control)
 
