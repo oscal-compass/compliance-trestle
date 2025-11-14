@@ -68,7 +68,7 @@ class XlsxHelper:
         return self._sheet_name == 'Combined Profiles'
 
     def _normalize(self, name: str) -> str:
-        """Normalize."""
+        """Normalize - add a comment."""
         return name.lower()
 
     def _translate(self, name: str) -> str:
