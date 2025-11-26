@@ -42,6 +42,6 @@ def run(path: pathlib.Path, count: int) -> None:
 
 
 if __name__ == '__main__':
-    path = pathlib.Path('nist-content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json')
+    path = pathlib.Path('nist-content/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json')
     count = 50
     run(path, count)
