@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v3.10.1 (2025-12-01)
+
+### Bug Fixes
+
+- Permissions
+  ([`f21ec83`](https://github.com/oscal-compass/compliance-trestle/commit/f21ec83cb250d442b3c2ae3e56182c5f2964fc26))
+
+
 ## v3.10.0 (2025-12-01)
 
 ### Bug Fixes
