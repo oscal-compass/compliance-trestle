@@ -2,8 +2,6 @@
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 name: Trestle Deploy
 
-
-
 on:
   push:
     branches:
@@ -27,6 +25,7 @@ jobs:
         echo "max=$max_version"
         echo "min=$min_version" >> $GITHUB_OUTPUT
         echo "max=$max_version" >> $GITHUB_OUTPUT
+
   build:
     needs: set-versions
     runs-on: ${{ matrix.os }}
@@ -111,6 +110,7 @@ jobs:
     needs: [ build, set-versions ]
     permissions:
       id-token: write
+      contents: write   # <<< REQUIRED to attach provenance to GitHub Release
     environment:
       name: release
       url: https://pypi.org/p/compliance-trestle
@@ -139,6 +139,14 @@ jobs:
       uses: python-semantic-release/python-semantic-release@02f2a5c74dbb6aa2989f10fc4af12cd8e6bf025f # v10.5.2
       with:
         github_token: ${{ steps.app-token.outputs.token }}
+
+    # --- Generate provenance for the ACTUAL RELEASE ARTIFACTS ---
+    - name: Generate provenance for release artifacts
+      if: steps.release.outputs.released == 'true'
+      uses: actions/attest-build-provenance@v1
+      with:
+        subject-path: "dist/*"
+    # ------------------------------------------------------------
 
     - name: Publish package distributions to PyPI
       uses: pypa/gh-action-pypi-publish@ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e # release/v1
