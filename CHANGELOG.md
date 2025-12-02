@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v3.10.2 (2025-12-02)
+
+### Bug Fixes
+
+- Add id-token write ([#1997](https://github.com/oscal-compass/compliance-trestle/pull/1997),
+  [`ae5eed0`](https://github.com/oscal-compass/compliance-trestle/commit/ae5eed0541de1630ad7864b1951ce1041e2a0bdb))
+
+
 ## v3.10.1 (2025-12-01)
 
 ### Bug Fixes
