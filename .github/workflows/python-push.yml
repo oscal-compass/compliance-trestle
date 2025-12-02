@@ -110,7 +110,7 @@ jobs:
     needs: [ build, set-versions ]
     permissions:
       id-token: write
-	  attestations: write
+      attestations: write
       contents: write   # <<< REQUIRED to attach provenance to GitHub Release
     environment:
       name: release
