@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v3.10.3 (2025-12-02)
+
+### Bug Fixes
+
+- Sign with sigstore ([#1999](https://github.com/oscal-compass/compliance-trestle/pull/1999),
+  [`db540da`](https://github.com/oscal-compass/compliance-trestle/commit/db540dad74efc00e4c515427b7466b90e3acecac))
+
+
 ## v3.10.2 (2025-12-02)
 
 ### Bug Fixes
