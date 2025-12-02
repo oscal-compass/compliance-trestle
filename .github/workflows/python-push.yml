@@ -7,10 +7,7 @@ on:
     branches:
       - main
 
-permissions:
-  contents: read
-  id-token: write
-  attestations: write
+permissions: {}
 
 jobs:
   set-versions:
@@ -113,6 +110,7 @@ jobs:
     needs: [ build, set-versions ]
     permissions:
       id-token: write
+	  attestations: write
       contents: write   # <<< REQUIRED to attach provenance to GitHub Release
     environment:
       name: release
