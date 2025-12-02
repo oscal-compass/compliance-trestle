@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v3.10.4 (2025-12-02)
+
+### Bug Fixes
+
+- Simplify sigstore config ([#2001](https://github.com/oscal-compass/compliance-trestle/pull/2001),
+  [`70a754a`](https://github.com/oscal-compass/compliance-trestle/commit/70a754a081d0fac03b7cf6f3caa9869c57435165))
+
+
 ## v3.10.3 (2025-12-02)
 
 ### Bug Fixes
