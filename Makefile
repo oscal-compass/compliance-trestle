@@ -69,8 +69,12 @@ release::
 	git config --global user.email "semantic-release@github-actions"
 	semantic-release publish
 
-gen-oscal::
+gen-oscal:: gen-oscal-clean
 	python ./scripts/gen_oscal.py
+
+gen-oscal-clean::
+	rm -fr ./trestle/oscal/tmp
+	rm -fr ./tmp
 
 docs-osx-deps:
 	brew install cairo freetype libffi libjpeg libpng zlib

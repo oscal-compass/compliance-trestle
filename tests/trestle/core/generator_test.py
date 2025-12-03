@@ -22,8 +22,9 @@ import uuid
 from datetime import date, datetime
 from typing import Any, List
 
-import pydantic.v1.networks
-from pydantic.v1 import ConstrainedStr
+from pydantic import StringConstraints
+from pydantic.networks import EmailStr, AnyUrl
+from typing_extensions import Annotated
 
 import pytest
 
@@ -54,16 +55,24 @@ def test_get_sample_value_by_type() -> None:
     assert gens.generate_sample_value_by_type(int, '') == 0
     assert gens.generate_sample_value_by_type(str, '') == const.REPLACE_ME
     assert gens.generate_sample_value_by_type(float, '') == 0.0
-    assert gens.generate_sample_value_by_type(ConstrainedStr, '') == const.REPLACE_ME
-    assert gens.generate_sample_value_by_type(ConstrainedStr, 'oarty-uuid') == const.SAMPLE_UUID_STR
-    uuid_ = gens.generate_sample_value_by_type(ConstrainedStr, 'uuid')
+    
+    # Test string constraints - Pydantic v2 uses Annotated[str, StringConstraints]
+    uuid_constraint = Annotated[str, StringConstraints(pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$')]
+    assert gens.generate_sample_value_by_type(uuid_constraint, '') == const.SAMPLE_UUID_STR
+    
+    # Test with field names that trigger special handling
+    uuid_ = gens.generate_sample_value_by_type(str, 'uuid')
     assert is_valid_uuid(uuid_) and str(uuid_) != const.SAMPLE_UUID_STR
-    assert gens.generate_sample_value_by_type(ConstrainedStr, 'date_authorized') == date.today().isoformat()
-    assert gens.generate_sample_value_by_type(pydantic.v1.networks.EmailStr,
-                                              'anything') == pydantic.v1.networks.EmailStr('dummy@sample.com')
-    assert gens.generate_sample_value_by_type(pydantic.v1.networks.AnyUrl, 'anything') == pydantic.v1.networks.AnyUrl(
-        'https://sample.com/replaceme.html', scheme='http', host='sample.com'
-    )
+    
+    assert gens.generate_sample_value_by_type(str, 'date_authorized') == date.today().isoformat()
+    
+    # Test EmailStr and AnyUrl - in Pydantic v2 these are just string validators
+    email_value = gens.generate_sample_value_by_type(EmailStr, 'anything')
+    assert email_value == 'dummy@sample.com'
+    
+    url_value = gens.generate_sample_value_by_type(AnyUrl, 'anything')
+    assert url_value == 'https://sample.com/replaceme.html'
+    
     with pytest.raises(err.TrestleError):
         gens.generate_sample_value_by_type(list, 'uuid')
 

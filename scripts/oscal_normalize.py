@@ -63,8 +63,6 @@ The only exception to this is OscalVersion, which has a special validator insert
 Note that __root__ classes in the other oscal .py files are left as-is since they don't tend to be referenced much
 if at all in the trestle code - but they could also be removed by extensions to this script.
 
-NOTE: The routine is fully automatic except the new Mapping class requires a slight manual edit to MappingCollection.
-
 """
 
 import logging
@@ -168,7 +166,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr, validator
+from pydantic import AnyUrl, AwareDatetime, ConfigDict, EmailStr, Extra, Field, RootModel, conint, constr, model_validator
 
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
@@ -176,16 +174,12 @@ from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
 
 oscal_validator_code = """
 
-    @validator('__root__')
-    def oscal_version_is_valid(cls, v):
+    @model_validator(mode='after')
+    def oscal_version_is_valid(cls, model: 'OscalVersion') -> 'OscalVersion':
+        v = model.root # Access the underlying value via .root
         strict_version = False
         if not strict_version:
-            return v
-        p = re.compile(OSCAL_VERSION_REGEX)
-        matched = p.match(v)
-        if matched is None:
-            raise ValueError(f'OSCAL version: {v} is not supported, use {OSCAL_VERSION} instead.')
-        return v
+            return model # Return the model instance
 
 """
 
@@ -393,6 +387,7 @@ def constrain_oscal_version(class_list):
                     class_list[j] = cls
     return class_list
 
+obm_list = []
 
 def load_classes(fstem):
     """Load all classes from a python file."""
@@ -415,6 +410,14 @@ def load_classes(fstem):
                 if class_text is not None:  # we are done with current class so add it
                     all_classes.append(class_text)
                 class_text = ClassText(r, fstem)
+            elif ' = OscalBaseModel' in r:
+                done_header = True
+                if class_text is not None:  # we are done with current class so add it
+                    all_classes.append(class_text)
+                class_text = ClassText(r, fstem)
+                obm = r.strip()
+                if obm not in obm_list:
+                    obm_list.append(obm)
             else:
                 if not done_header:  # still in header
                     header.append(r.rstrip())
@@ -704,6 +707,11 @@ def write_oscal(classes, forward_refs, fstem):
 
         if not is_common:
             out_file.write('import trestle.oscal.common as common\n')
+        else:
+            if obm_list:
+                out_file.write('\n\n')
+            for obm in obm_list:
+                out_file.write(f'{obm}\n')
         out_file.write('\n\n')
 
         for c in classes:
@@ -734,9 +742,6 @@ def write_oscal(classes, forward_refs, fstem):
 # The below "additions" items have moved from individual model class to common.
 # For backward compatibility between 1.1.2 and 1.0.4, add back these classes
 # from common into the individual models via the bkwd_compat_1_0_4 method below.
-
-# The list of stems (dict keys) is also used by the pydantic_interface_v1 modification
-# method below, and thus the empty contents for some.
 
 additions = {
     'assessment_plan': [
@@ -784,23 +789,6 @@ def bkwd_compat_1_0_4(fstem):
                         line = f'{item}\n'
                         lines.append(line)
                         logger.debug(f'bkwd_compat_1_0_4: file {fstem}.py insert "{line.strip()}"')
-        with open(fname, 'w') as f:
-            for line in lines:
-                f.write(line)
-
-
-def pydantic_interface_v1(fstem):
-    """Patch for trestle use of pydantic v1 interface from pydantic v2 lib."""
-    # This function should be removed once the v2 interface is supported in trestle.
-    lines = []
-    if fstem in additions.keys():
-        fname = f'trestle/oscal/{fstem}.py'
-        with open(fname, 'r') as f:
-            for line in f:
-                if line.startswith('from pydantic'):
-                    line = line.replace('pydantic', 'pydantic.v1')
-                    logger.debug(f'pydantic_interface_v1: file {fstem}.py modify "{line.strip()}"')
-                lines.append(line)
         with open(fname, 'w') as f:
             for line in lines:
                 f.write(line)
@@ -877,7 +865,6 @@ def reorder_and_dump_as_python(file_classes):
         forward_refs = None
         write_oscal(ordered, forward_refs, item[0])
         bkwd_compat_1_0_4(item[0])
-        pydantic_interface_v1(item[0])
 
 
 def find_full_changes(file_classes):

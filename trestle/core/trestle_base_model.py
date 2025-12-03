@@ -16,7 +16,7 @@
 """Trestle Base Model."""
 from typing import Any, Type, TypeVar
 
-from pydantic.v1 import BaseModel, ValidationError
+from pydantic import BaseModel, ValidationError
 
 from trestle.common.err import TrestleError
 

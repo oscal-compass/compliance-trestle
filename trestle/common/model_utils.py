@@ -23,7 +23,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple, Type, Union
 
-from pydantic.v1 import BaseModel, create_model
+from pydantic import BaseModel, create_model
 
 import trestle.common
 import trestle.common.common_types
