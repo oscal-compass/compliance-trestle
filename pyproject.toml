@@ -133,7 +133,7 @@ exclude = [
 ]
 
 [tool.mypy]
-plugins = "pydantic.v1.mypy"
+plugins = "pydantic.mypy"
 ignore_missing_imports = true
 strict_optional = true
 warn_redundant_casts = true

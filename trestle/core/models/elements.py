@@ -17,8 +17,8 @@ import logging
 import pathlib
 from typing import Any, List, Optional, Type, Union, cast
 
-from pydantic.v1 import Field, create_model
-from pydantic.v1.error_wrappers import ValidationError
+from pydantic import Field, create_model
+from pydantic.error_wrappers import ValidationError
 
 from ruamel.yaml import YAML
 
