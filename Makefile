@@ -14,30 +14,37 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-submodules: 
+submodules:
 	git submodule update --init
 
 develop: submodules
-	python -m pip install -e .[dev] --upgrade --upgrade-strategy eager --
+	python -m pip install -e .[dev] --upgrade --upgrade-strategy eager
 
-pre-commit: 
+pre-commit:
 	pre-commit install
 
 pre-commit-update:
 	pre-commit autoupdate
 
 install:
-	python -m pip install  --upgrade pip setuptools
+	python -m pip install --upgrade pip hatch
 	python -m pip install . --upgrade --upgrade-strategy eager
 
+# Code quality with hatch fmt (uses ruff)
 code-format:
-	pre-commit run yapf --all-files
+	hatch fmt
+
+code-format-check:
+	hatch fmt --check
 
 code-lint:
-	pre-commit run flake8 --all-files
+	hatch fmt --linter
 
 code-typing:
 	mypy --pretty trestle
+
+# Run all code quality checks
+code-check: code-format-check code-lint code-typing
 
 test-all::
 	python -m pytest -n auto
@@ -46,13 +53,13 @@ test::
 	python -m pytest --exitfirst -n auto
 
 test-cov::
-	python -m pytest --cov=trestle  --exitfirst -n auto -vv --cov-report=xml --cov-fail-under=96
+	python -m pytest --cov=trestle --exitfirst -n auto -vv --cov-report=xml --cov-fail-under=96
 
 test-all-random::
 	python -m pytest --cov=trestle --cov-report=xml --random-order
 
 test-verbose:
-	python -m pytest  -vv -n auto
+	python -m pytest -vv -n auto
 
 test-speed-measure:
 	python -m pytest -n auto --durations=30
@@ -63,6 +70,10 @@ test-fast:
 test-bdist:: clean
 	. tests/manual_tests/test_binary.sh
 
+# Build package using hatch
+build:
+	python -m pip install build --upgrade
+	python -m build
 
 release::
 	git config --global user.name "semantic-release (via Github actions)"
@@ -89,7 +100,7 @@ docs-validate:: docs-automation
 
 docs-serve: docs-automation
 	git fetch origin gh-pages
-	mike serve	
+	mike serve
 
 mdformat:
 	pre-commit run mdformat --all-files
@@ -107,6 +118,7 @@ clean::
 	rm -rf coverage.xml
 	rm -rf .coverage*
 	rm -rf .mypy_cache
+	rm -rf .ruff_cache
 	find . | grep -E "__pycache__|\.pyc|\.pyo" | xargs rm -rf
 
 pylint:
