@@ -31,14 +31,13 @@ install:
 	python -m pip install . --upgrade --upgrade-strategy eager
 
 # Code quality with hatch fmt (uses ruff)
-code-format:
-	hatch fmt
-
+# Note: ruff formatter is not yet enabled - it would reformat the entire codebase
+# To enable formatter in future: hatch fmt --formatter --check
 code-format-check:
-	hatch fmt --check
+	hatch fmt --linter --check
 
 code-lint:
-	hatch fmt --linter
+	hatch fmt --linter --check
 
 code-typing:
 	mypy --pretty trestle
