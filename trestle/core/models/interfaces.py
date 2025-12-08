@@ -14,7 +14,7 @@
 """Interfaces for use within other trestle functions defined as pydantic data models."""
 from typing import Dict, Optional
 
-from pydantic import Extra
+from pydantic import ConfigDict
 
 import trestle.oscal.assessment_plan as o_ap
 import trestle.oscal.assessment_results as o_ar
@@ -40,12 +40,4 @@ class OSCALAssembly(TrestleBaseModel):
     profiles: Optional[Dict[str, o_profile.Profile]] = None
     catalogs: Optional[Dict[str, o_catalog.Catalog]] = None
     components: Optional[Dict[str, o_component.ComponentDefinition]] = None
-
-    class Config:
-        """Pydantic config overrides."""
-
-        allow_population_by_field_name = True
-        # Enforce strict schema
-        extra = Extra.forbid
-        # Validate on assignment of variables to ensure no escapes
-        validate_assignment = True
+    model_config = ConfigDict(populate_by_name=True, extra="forbid", validate_assignment=True)
