@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Interfaces for use within other trestle functions defined as pydantic data models."""
+
 from typing import Dict, Optional
 
 from pydantic.v1 import Extra

@@ -104,8 +104,10 @@ def _validate(tmp_path: pathlib.Path):
     assert group.groups[0].controls[2].title == '1.2.3 Ensure that the --token-auth-file parameter is not set'
     assert group.groups[1].title == '1.3 Controller Manager'
     assert len(group.groups[1].controls) == 1
-    assert group.groups[1].controls[
-        0].title == '1.3.2 Ensure that controller manager healthz endpoints are protected by RBAC. (Automated)'
+    assert (
+        group.groups[1].controls[0].title
+        == '1.3.2 Ensure that controller manager healthz endpoints are protected by RBAC. (Automated)'
+    )
     # group 1
     group = catalog.groups[1]
     assert group.title == '2 etcd'

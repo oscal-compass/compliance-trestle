@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Script to generate python models from oscal using datamodel-code-generator."""
+
 import logging
 import re
 import sys
@@ -63,7 +64,7 @@ def generate_model(full_name, out_full_name):
         '--base-class',
         'trestle.core.base_model.OscalBaseModel',
         '--output',
-        str(out_full_name)
+        str(out_full_name),
     ]
     try:
         check_call(args)

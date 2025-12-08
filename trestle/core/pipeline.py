@@ -17,7 +17,7 @@ from abc import ABC, abstractclassmethod
 from typing import Any, List
 
 
-class Pipeline():
+class Pipeline:
     """Pipeline base class."""
 
     class Filter(ABC):

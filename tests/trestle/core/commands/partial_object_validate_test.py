@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for the partial-object-validate command."""
+
 import pathlib
 import sys
 
@@ -31,14 +32,14 @@ benchmark_args = ['sample_file', 'element_path', 'rc']
 benchmark_values = [
     (pathlib.Path('json/minimal_catalog.json'), 'catalog', 0),
     (pathlib.Path('split_merge/load_distributed/groups.json'), 'catalog.groups', 0),
-    (pathlib.Path('split_merge/load_distributed/groups.json'), 'catalog.groups.group.groups', 0)
+    (pathlib.Path('split_merge/load_distributed/groups.json'), 'catalog.groups.group.groups', 0),
 ]
 
 bechmark_values_failed = [
     (pathlib.Path('json/minimal_catalog.json'), 'catalog.metadata', 4),
     (pathlib.Path('split_merge/load_distributed/groups.json'), 'catalog.groups.group', 4),
     (pathlib.Path('json/minimal_catalog_missing_uuid.json'), 'catalog', 4),
-    (pathlib.Path('json/minimal_catalog.json'), 'catalogs', 4)
+    (pathlib.Path('json/minimal_catalog.json'), 'catalogs', 4),
 ]
 
 
@@ -102,7 +103,7 @@ def test_handling_unexpected_exception(testdata_dir: pathlib.Path, monkeypatch: 
     monkeypatch.setattr(sys, 'argv', command_str.split())
     monkeypatch.setattr(
         'trestle.core.commands.partial_object_validate.PartialObjectValidate.partial_object_validate',
-        test_utils.patch_raise_exception
+        test_utils.patch_raise_exception,
     )
     rc = Trestle().run()
     assert rc > 0

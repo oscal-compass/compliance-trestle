@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle Remove Command."""
+
 import argparse
 import logging
 import pathlib
@@ -43,13 +44,13 @@ class RemoveCmd(CommandPlusDocs):
             f'-{const.ARG_FILE_SHORT}',
             f'--{const.ARG_FILE}',
             help=const.ARG_DESC_FILE + ' to remove component/subcomponent to.',
-            required=True
+            required=True,
         )
         self.add_argument(
             f'-{const.ARG_ELEMENT_SHORT}',
             f'--{const.ARG_ELEMENT}',
             help=const.ARG_DESC_ELEMENT + ' to remove.',
-            required=True
+            required=True,
         )
 
     def _run(self, args: argparse.Namespace) -> int:
@@ -118,8 +119,7 @@ class RemoveCmd(CommandPlusDocs):
             # The element already exists
             if type(deleting_element) is list:
                 logger.warning(
-                    'Warning: trestle remove does not support removing elements of a list: '
-                    'this removes the entire list'
+                    'Warning: trestle remove does not support removing elements of a list: this removes the entire list'
                 )
             elif type(deleting_element) is dict:
                 logger.warning(

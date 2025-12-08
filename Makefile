@@ -33,8 +33,8 @@ install:
 # Code quality with hatch fmt (uses ruff)
 # Note: ruff formatter is not yet enabled - it would reformat the entire codebase
 # To enable formatter in future: hatch fmt --formatter --check
-code-format-check:
-	hatch fmt --linter --check
+code-format:
+	hatch fmt --formatter 
 
 code-lint:
 	hatch fmt --linter --check

@@ -92,15 +92,21 @@ def _validate_ocp(tmp_path: pathlib.Path) -> None:
     assert len(component.control_implementations[0].implemented_requirements) == 88
     assert component.control_implementations[0].implemented_requirements[0].control_id == 'CIS-1.2.1'
     assert component.control_implementations[0].implemented_requirements[0].props[0].name == 'Rule_Id'
-    assert component.control_implementations[0].implemented_requirements[0].props[
-        0].value == 'xccdf_org.ssgproject.content_rule_api_server_anonymous_auth'
+    assert (
+        component.control_implementations[0].implemented_requirements[0].props[0].value
+        == 'xccdf_org.ssgproject.content_rule_api_server_anonymous_auth'
+    )
     assert component.control_implementations[1].description == 'ocp4-node'
     assert len(component.control_implementations[1].implemented_requirements) == 31
     assert component.control_implementations[1].implemented_requirements[0].control_id == 'CIS-1.1.1'
-    assert component.control_implementations[1].implemented_requirements[30].props[
-        0].value == 'xccdf_org.ssgproject.content_rule_kubelet_enable_protect_kernel_sysctl'
-    assert component.control_implementations[1].implemented_requirements[30].props[
-        1].value == 'xccdf_org.ssgproject.content_rule_kubelet_enable_protect_kernel_defaults'
+    assert (
+        component.control_implementations[1].implemented_requirements[30].props[0].value
+        == 'xccdf_org.ssgproject.content_rule_kubelet_enable_protect_kernel_sysctl'
+    )
+    assert (
+        component.control_implementations[1].implemented_requirements[30].props[1].value
+        == 'xccdf_org.ssgproject.content_rule_kubelet_enable_protect_kernel_defaults'
+    )
 
 
 def _validate_bp(tmp_path: pathlib.Path) -> None:
@@ -117,8 +123,10 @@ def _validate_bp(tmp_path: pathlib.Path) -> None:
     assert component.type == 'Service'
     assert component.title == 'IAM'
     assert len(component.control_implementations) == 1
-    assert component.control_implementations[
-        0].description == 'NIST Special Publication 800-53 Revision 5 HIGH IMPACT BASELINE'
+    assert (
+        component.control_implementations[0].description
+        == 'NIST Special Publication 800-53 Revision 5 HIGH IMPACT BASELINE'
+    )
 
 
 def _test_init(tmp_path: pathlib.Path):
@@ -839,7 +847,7 @@ def test_execute_add_rule(tmp_path: pathlib.Path) -> None:
         'add-parameter-description',
         'add-parameter-value-default',
         'add-parameter-value-alternatives',
-        'https://abc.com/add-namespace'
+        'https://abc.com/add-namespace',
     ]
     rows.append(row)
     with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
@@ -1478,7 +1486,7 @@ def test_execute_validation(tmp_path: pathlib.Path) -> None:
         'validation-parameter-description',
         'validation-parameter-value-default',
         'validation-parameter-value-alternatives',
-        'https://abc.com/validation-namespace'
+        'https://abc.com/validation-namespace',
     ]
     rows.append(row)
     with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:

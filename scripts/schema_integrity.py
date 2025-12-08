@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Basic test script to test whether each reference in a json scema is referred to presuming there is one root model."""
+
 import argparse
 import json
 import logging

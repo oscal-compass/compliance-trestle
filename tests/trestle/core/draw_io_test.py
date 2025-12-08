@@ -50,13 +50,16 @@ def test_missing_file(tmp_path) -> None:
         (TEST_DIR / 'data/author/0.0.1/drawio/single_tab_no_metadata_compressed.drawio', False, False),
         (TEST_DIR / 'data/author/0.0.1/drawio/single_tab_no_metadata_uncompressed.drawio', False, False),
         (TEST_DIR / 'data/author/0.0.1/drawio/two_tabs_metadata_compressed.drawio', True, True),
-        (TEST_DIR / 'data/author/0.0.1/drawio/two_tabs_metadata_second_tab_compressed.drawio', True, False)
-    ]
+        (TEST_DIR / 'data/author/0.0.1/drawio/two_tabs_metadata_second_tab_compressed.drawio', True, False),
+    ],
 )
 def test_valid_drawio(file_path: pathlib.Path, metadata_exists: bool, metadata_valid: bool) -> None:
     """Run various scenarios with a valid drawio and various metadata status."""
     expected_metadata_flat = {
-        'test': 'value', 'nested.test': 'value', 'nested.nested.test': 'value', 'nested.extra': 'value'
+        'test': 'value',
+        'nested.test': 'value',
+        'nested.nested.test': 'value',
+        'nested.extra': 'value',
     }
     draw_io = DrawIO(file_path)
     metadata = draw_io.get_metadata()
@@ -75,8 +78,8 @@ def test_valid_drawio(file_path: pathlib.Path, metadata_exists: bool, metadata_v
     [
         (TEST_DIR / 'data/author/0.0.1/drawio/single_tab_no_metadata_uncompressed_mangled.drawio'),
         (TEST_DIR / 'data/author/0.0.1/drawio/not_mxfile.drawio'),
-        (TEST_DIR / 'data/author/0.0.1/drawio/single_tab_no_metadata_bad_internal_structure.drawio')
-    ]
+        (TEST_DIR / 'data/author/0.0.1/drawio/single_tab_no_metadata_bad_internal_structure.drawio'),
+    ],
 )
 def test_bad_drawio_files(bad_file_name: pathlib.Path) -> None:
     """This tests that exceptions are properly thrown on bad drawio files."""
@@ -91,33 +94,33 @@ def test_bad_drawio_files(bad_file_name: pathlib.Path) -> None:
             TEST_DIR / 'data/author/0.0.1/drawio/single_tab_metadata_compressed.drawio',
             TEST_DIR / 'data/author/0.0.1/drawio/single_tab_metadata_compressed.drawio',
             True,
-            True
+            True,
         ),
         (
             TEST_DIR / 'data/author/0.0.1/drawio/single_tab_metadata_compressed.drawio',
             TEST_DIR / 'data/author/0.0.1/drawio/two_tabs_metadata_compressed.drawio',
             True,
-            True
+            True,
         ),
         (
             TEST_DIR / 'data/author/0.0.1/drawio/single_tab_metadata_compressed.drawio',
             TEST_DIR / 'data/author/0.0.1/drawio/two_tabs_metadata_second_tab_compressed.drawio',
             True,
-            False
+            False,
         ),
         (
             TEST_DIR / 'data/author/0.0.1/drawio/single_tab_metadata_compressed.drawio',
             TEST_DIR / 'data/author/0.0.1/drawio/two_tabs_metadata_second_tab_compressed.drawio',
             False,
-            True
+            True,
         ),
         (
             TEST_DIR / 'data/author/0.0.1/drawio/single_tab_metadata_compressed.drawio',
             TEST_DIR / 'data/author/0.0.1/drawio/two_tabs_metadata_second_tab_bad_md.drawio',
             False,
-            False
-        )
-    ]
+            False,
+        ),
+    ],
 )
 def test_valid_drawio_second_tab(
     template_file: pathlib.Path, sample_file: pathlib.Path, must_be_first_tab: bool, metadata_valid: bool

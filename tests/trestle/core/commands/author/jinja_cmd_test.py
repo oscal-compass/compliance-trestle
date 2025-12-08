@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for Jinja command."""
+
 import os
 import pathlib
 import shutil
@@ -26,10 +27,7 @@ from trestle.core.markdown.docs_markdown_node import DocsMarkdownNode
 
 
 def setup_ssp(
-    testdata_dir: pathlib.Path,
-    tmp_trestle_dir: pathlib.Path,
-    monkeypatch: MonkeyPatch,
-    profile_name: str = 'comp_prof'
+    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch, profile_name: str = 'comp_prof'
 ):
     """Prepare repository for docs generation."""
     args, _ = setup_for_ssp(tmp_trestle_dir, profile_name, 'my_ssp')
@@ -69,8 +67,10 @@ def test_jinja_lookup_table(
     input_template = 'use_lookup_table.md.jinja'
     luk_table = 'lookup_table.yaml'
     setup_ssp(testdata_dir, tmp_trestle_dir, monkeypatch)
-    command_import = f'trestle author jinja -i {input_template} -o output_file.md ' \
-                     f'-lut {luk_table} -ssp ssp_json -p comp_prof -elp lut.prefix'  # noqa: N400
+    command_import = (
+        f'trestle author jinja -i {input_template} -o output_file.md '
+        f'-lut {luk_table} -ssp ssp_json -p comp_prof -elp lut.prefix'
+    )  # noqa: N400
     execute_command_and_assert(command_import, 0, monkeypatch)
 
     with open('output_file.md') as test_output:

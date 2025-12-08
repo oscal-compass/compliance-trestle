@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """A base markdown node."""
+
 from __future__ import annotations
 
 import logging
@@ -83,10 +84,7 @@ class BaseMarkdownNode:
         return self._rec_traverse(self, key, strict_matching)
 
     def get_all_nodes_for_keys(
-        self,
-        keys: List[str],
-        strict_matching: bool = True,
-        stop_recurse_on_first_match: bool = False
+        self, keys: List[str], strict_matching: bool = True, stop_recurse_on_first_match: bool = False
     ) -> List[BaseMarkdownNode]:
         """
         Return all nodes for the given keys, substring matching is supported.
@@ -150,8 +148,9 @@ class BaseMarkdownNode:
         return text_lines
 
     @abstractmethod
-    def _build_tree(self, lines: List[str], root_key: str, starting_line: int,
-                    level: int) -> Tuple[BaseMarkdownNode, int]:
+    def _build_tree(
+        self, lines: List[str], root_key: str, starting_line: int, level: int
+    ) -> Tuple[BaseMarkdownNode, int]:
         """Build a tree from the markdown recursively."""
         pass
 
@@ -256,10 +255,9 @@ class BaseMarkdownNode:
         """
         if key.lower() == node.key.lower() or (not strict_matching and key.lower() in node.key.lower()):
             return node
-        if (not strict_matching and any(key.lower() in el.lower()
-                                        for el in node.content.subnodes_keys)) or (key.lower() in [
-                                            el.lower() for el in node.content.subnodes_keys
-                                        ]):
+        if (not strict_matching and any(key.lower() in el.lower() for el in node.content.subnodes_keys)) or (
+            key.lower() in [el.lower() for el in node.content.subnodes_keys]
+        ):
             for subnode in node.subnodes:
                 matched_node = self._rec_traverse(subnode, key, strict_matching)
                 if matched_node is not None:

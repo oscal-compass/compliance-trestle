@@ -18,6 +18,7 @@ Trestle author command.
 
 Umbrella command for all markdown related transformations
 """
+
 import logging
 
 from trestle.core.commands.author.catalog import CatalogAssemble, CatalogGenerate
@@ -53,5 +54,5 @@ class AuthorCmd(CommandPlusDocs):
         ProfileResolve,
         SSPAssemble,
         SSPFilter,
-        SSPGenerate
+        SSPGenerate,
     ]

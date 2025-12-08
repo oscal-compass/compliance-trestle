@@ -156,7 +156,7 @@ def synthesize_rule_key(
     component_type: str,
     rule_id: str,
     check_id: Union[str, None],
-    target_component: Union[str, None]
+    target_component: Union[str, None],
 ) -> tuple:
     """Synthesize rule_key."""
     if is_validation(component_type):
@@ -942,7 +942,7 @@ class CsvToOscalComponentDefinition(TaskBase):
                 statement.props.append(prop)
 
 
-class _OscalHelper():
+class _OscalHelper:
     """Oscal Helper."""
 
     @staticmethod
@@ -991,7 +991,7 @@ class _OscalHelper():
         return rval
 
 
-class _RuleSetHelper():
+class _RuleSetHelper:
     """RuleSet Helper."""
 
     @staticmethod
@@ -1006,7 +1006,7 @@ class _RuleSetHelper():
         return rule_set
 
 
-class _RuleSetIdMgr():
+class _RuleSetIdMgr:
     """RuleSetId Manager."""
 
     def __init__(self, max_rule_set_number: int, add_rules_count: int) -> None:
@@ -1021,7 +1021,7 @@ class _RuleSetIdMgr():
         return rval
 
 
-class _RuleSetMgr():
+class _RuleSetMgr:
     """RuleSet manager."""
 
     def __init__(self, row_number: int, rule_set: str) -> None:
@@ -1070,7 +1070,7 @@ class _RuleSetMgr():
         return rval
 
 
-class _ResolvedProfileCatalogHelper():
+class _ResolvedProfileCatalogHelper:
     """Resolved Profile Catalog Helper."""
 
     def __init__(self, profile_list: List[str], root: str = '.') -> None:
@@ -1103,7 +1103,7 @@ class _ResolvedProfileCatalogHelper():
         return rval
 
 
-class _CdMgr():
+class _CdMgr:
     """CD Manager."""
 
     def __init__(self, cd_path: pathlib.Path, title: str, timestamp: str, version: str) -> None:
@@ -1249,7 +1249,7 @@ class _CdMgr():
                     rule_id,
                     control_implementation.source,
                     control_implementation.description,
-                    set_parameter.param_id
+                    set_parameter.param_id,
                 )
                 value = set_parameter.values
                 self._cd_set_params_map[key] = value
@@ -1267,7 +1267,7 @@ class _CdMgr():
         self,
         component: DefinedComponent,
         control_implementation: ControlImplementation,
-        implemented_requirement: ImplementedRequirement
+        implemented_requirement: ImplementedRequirement,
     ) -> None:
         """Accounting, control mappings props."""
         if implemented_requirement.props:
@@ -1288,7 +1288,7 @@ class _CdMgr():
         self,
         component: DefinedComponent,
         control_implementation: ControlImplementation,
-        implemented_requirement: ImplementedRequirement
+        implemented_requirement: ImplementedRequirement,
     ) -> None:
         """Accounting, control mappings statements."""
         if implemented_requirement.statements:
@@ -1390,7 +1390,7 @@ class _CdMgr():
         component.props = props
 
 
-class CsvColumn():
+class CsvColumn:
     """CsvColumn."""
 
     _columns_required = [
@@ -1570,7 +1570,7 @@ class CsvColumn():
 Row = Iterator[List[str]]
 
 
-class _CsvMgr():
+class _CsvMgr:
     """Csv Manager."""
 
     def __init__(self, csv_path: pathlib.Path) -> None:
@@ -1626,7 +1626,7 @@ class _CsvMgr():
         component_type: str,
         rule_id: str,
         source: str,
-        description: str
+        description: str,
     ) -> None:
         """Control_mappings."""
         control_mappings = self.get_row_value(row, CONTROL_ID_LIST)

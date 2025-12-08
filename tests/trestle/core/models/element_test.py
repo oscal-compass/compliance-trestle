@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle elements module."""
+
 from datetime import datetime
 from typing import List
 
@@ -29,9 +30,10 @@ def test_element_get_at(sample_nist_component_def: component.ComponentDefinition
     element = Element(sample_nist_component_def)
 
     # field alias should succeed
-    assert element.get_at(
-        ElementPath('component-definition.metadata.last-modified')
-    ) == sample_nist_component_def.metadata.last_modified
+    assert (
+        element.get_at(ElementPath('component-definition.metadata.last-modified'))
+        == sample_nist_component_def.metadata.last_modified
+    )
 
     # field name should fail
     assert element.get_at(ElementPath('component-definition.metadata.last_modified')) is None
@@ -39,18 +41,23 @@ def test_element_get_at(sample_nist_component_def: component.ComponentDefinition
     assert element.get() == sample_nist_component_def
     assert element.get_at() == element.get()
     assert element.get_at(ElementPath('component-definition.metadata')) == sample_nist_component_def.metadata
-    assert element.get_at(
-        ElementPath('component-definition.metadata.title')
-    ) == sample_nist_component_def.metadata.title
+    assert (
+        element.get_at(ElementPath('component-definition.metadata.title')) == sample_nist_component_def.metadata.title
+    )
     assert element.get_at(ElementPath('component-definition.components')) == sample_nist_component_def.components
     assert element.get_at(ElementPath('component-definition.components.*')) == sample_nist_component_def.components
-    assert element.get_at(
-        ElementPath('component-definition.metadata.parties.*')
-    ) == sample_nist_component_def.metadata.parties
-    assert element.get_at(ElementPath('component-definition.metadata.parties.0')
-                          ) == sample_nist_component_def.metadata.parties[0]
-    assert element.get_at(ElementPath('component-definition.metadata.parties.0.uuid')
-                          ) == sample_nist_component_def.metadata.parties[0].uuid
+    assert (
+        element.get_at(ElementPath('component-definition.metadata.parties.*'))
+        == sample_nist_component_def.metadata.parties
+    )
+    assert (
+        element.get_at(ElementPath('component-definition.metadata.parties.0'))
+        == sample_nist_component_def.metadata.parties[0]
+    )
+    assert (
+        element.get_at(ElementPath('component-definition.metadata.parties.0.uuid'))
+        == sample_nist_component_def.metadata.parties[0].uuid
+    )
 
     for index in range(len(sample_nist_component_def.components)):
         path_str = f'component-definition.components.{index}'
@@ -89,43 +96,61 @@ def test_element_set_at(sample_nist_component_def: component.ComponentDefinition
     element = Element(sample_nist_component_def)
 
     metadata = common.Metadata(
-        **{
-            'title': 'My simple catalog', 'last-modified': datetime.now(), 'version': '0.0.0', 'oscal-version': '1.0.0'
-        }
+        **{'title': 'My simple catalog', 'last-modified': datetime.now(), 'version': '0.0.0', 'oscal-version': '1.0.0'}
     )
 
     parties: List[common.Party] = []
     parties.append(
-        common.Party(**{
-            'uuid': 'ff47836c-877c-4007-bbf3-c9d9bd805000', 'name': 'TEST1', 'type': 'organization'
-        })
+        common.Party(**{'uuid': 'ff47836c-877c-4007-bbf3-c9d9bd805000', 'name': 'TEST1', 'type': 'organization'})
     )
     parties.append(
-        common.Party(**{
-            'uuid': 'ee88836c-877c-4007-bbf3-c9d9bd805000', 'name': 'TEST2', 'type': 'organization'
-        })
+        common.Party(**{'uuid': 'ee88836c-877c-4007-bbf3-c9d9bd805000', 'name': 'TEST2', 'type': 'organization'})
     )
 
-    assert element.set_at(ElementPath('component-definition.metadata'),
-                          metadata).get_at(ElementPath('component-definition.metadata')) == metadata
+    assert (
+        element.set_at(ElementPath('component-definition.metadata'), metadata).get_at(
+            ElementPath('component-definition.metadata')
+        )
+        == metadata
+    )
 
-    assert element.set_at(ElementPath('component-definition.metadata.parties'),
-                          parties).get_at(ElementPath('component-definition.metadata.parties')) == parties
+    assert (
+        element.set_at(ElementPath('component-definition.metadata.parties'), parties).get_at(
+            ElementPath('component-definition.metadata.parties')
+        )
+        == parties
+    )
 
-    assert element.set_at(ElementPath('component-definition.metadata.parties.*'),
-                          parties).get_at(ElementPath('component-definition.metadata.parties')) == parties
+    assert (
+        element.set_at(ElementPath('component-definition.metadata.parties.*'), parties).get_at(
+            ElementPath('component-definition.metadata.parties')
+        )
+        == parties
+    )
 
     # unset
-    assert element.set_at(ElementPath('component-definition.metadata.parties'),
-                          None).get_at(ElementPath('component-definition.metadata.parties')) is None
+    assert (
+        element.set_at(ElementPath('component-definition.metadata.parties'), None).get_at(
+            ElementPath('component-definition.metadata.parties')
+        )
+        is None
+    )
 
     # string element path
-    assert element.set_at('component-definition.metadata.parties',
-                          parties).get_at(ElementPath('component-definition.metadata.parties')) == parties
+    assert (
+        element.set_at('component-definition.metadata.parties', parties).get_at(
+            ElementPath('component-definition.metadata.parties')
+        )
+        == parties
+    )
 
     with pytest.raises(TrestleError):
-        assert element.set_at(ElementPath('component-definition.metadata'),
-                              parties).get_at(ElementPath('component-definition.metadata.parties')) == parties
+        assert (
+            element.set_at(ElementPath('component-definition.metadata'), parties).get_at(
+                ElementPath('component-definition.metadata.parties')
+            )
+            == parties
+        )
 
     # wildcard requires it to be an OscalBaseModel or list
     with pytest.raises(TrestleError):

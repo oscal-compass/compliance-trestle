@@ -83,7 +83,6 @@ class Validator(ABC):
         if args.all:
             model_tups = ModelUtils.get_all_models(trestle_root)
             for mt in model_tups:
-
                 model_dir = trestle_root / ModelUtils.model_type_to_model_dir(mt[0]) / mt[1]
                 extension_type = trestle.common.file_utils.get_contextual_file_type(model_dir)
                 model_path = model_dir / f'{mt[0]}{FileContentType.to_file_extension(extension_type)}'

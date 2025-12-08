@@ -152,13 +152,7 @@ class CatalogHelper:
                 control.props.append(prop)
 
     def add_control(
-        self,
-        section: str,
-        recommendation: str,
-        title: str,
-        props: List[Property],
-        parts: List[Part],
-        links: List[Link]
+        self, section: str, recommendation: str, title: str, props: List[Property], parts: List[Part], links: List[Link]
     ) -> None:
         """Add control."""
         group = self._all_groups[section]
@@ -207,7 +201,7 @@ class CatalogHelper:
             uuid=str(uuid.uuid4()),
             metadata=self._metadata,
             groups=list(self._root_group.values()),
-            back_matter=back_matter
+            back_matter=back_matter,
         )
         return catalog
 

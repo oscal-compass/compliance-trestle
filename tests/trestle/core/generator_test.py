@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for generators module."""
+
 import inspect
 import os
 import pkgutil
@@ -59,8 +60,9 @@ def test_get_sample_value_by_type() -> None:
     uuid_ = gens.generate_sample_value_by_type(ConstrainedStr, 'uuid')
     assert is_valid_uuid(uuid_) and str(uuid_) != const.SAMPLE_UUID_STR
     assert gens.generate_sample_value_by_type(ConstrainedStr, 'date_authorized') == date.today().isoformat()
-    assert gens.generate_sample_value_by_type(pydantic.v1.networks.EmailStr,
-                                              'anything') == pydantic.v1.networks.EmailStr('dummy@sample.com')
+    assert gens.generate_sample_value_by_type(
+        pydantic.v1.networks.EmailStr, 'anything'
+    ) == pydantic.v1.networks.EmailStr('dummy@sample.com')
     assert gens.generate_sample_value_by_type(pydantic.v1.networks.AnyUrl, 'anything') == pydantic.v1.networks.AnyUrl(
         'https://sample.com/replaceme.html', scheme='http', host='sample.com'
     )
@@ -87,8 +89,8 @@ def test_generate_sample_model() -> None:
             'title': const.REPLACE_ME,
             'last-modified': '2020-10-21T06:52:10.387+00:00',
             'version': const.REPLACE_ME,
-            'oscal-version': oscal.OSCAL_VERSION
-        }
+            'oscal-version': oscal.OSCAL_VERSION,
+        },
     }
     expected_ctlg = catalog.Catalog(**expected_ctlg_dict)
 
@@ -119,7 +121,6 @@ def test_get_all_sample_models() -> None:
         __import__(f'trestle.oscal.{name}')
         clsmembers = inspect.getmembers(sys.modules[f'trestle.oscal.{name}'], inspect.isclass)
         for _, oscal_cls in clsmembers:
-
             # This removes some enums and other objects.
             # add check that it is not OscalBaseModel
             if issubclass(oscal_cls, OscalBaseModel):
@@ -133,7 +134,6 @@ def test_get_all_sample_models_optional() -> None:
         __import__(f'trestle.oscal.{name}')
         clsmembers = inspect.getmembers(sys.modules[f'trestle.oscal.{name}'], inspect.isclass)
         for _, oscal_cls in clsmembers:
-
             # This removes some enums and other objects.
             # add check that it is not OscalBaseModel
             if issubclass(oscal_cls, OscalBaseModel):
