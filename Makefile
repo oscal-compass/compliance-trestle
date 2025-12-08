@@ -45,6 +45,9 @@ test-all::
 test::
 	python -m pytest --exitfirst -n auto
 
+test0:: gen-oscal-clean
+	python -m pytest --exitfirst -n 0
+
 test-cov::
 	python -m pytest --cov=trestle  --exitfirst -n auto -vv --cov-report=xml --cov-fail-under=96
 
@@ -69,8 +72,12 @@ release::
 	git config --global user.email "semantic-release@github-actions"
 	semantic-release publish
 
-gen-oscal::
+gen-oscal:: gen-oscal-clean
 	python ./scripts/gen_oscal.py
+
+gen-oscal-clean::
+	rm -fr ./trestle/oscal/tmp
+	rm -fr ./tmp
 
 docs-osx-deps:
 	brew install cairo freetype libffi libjpeg libpng zlib

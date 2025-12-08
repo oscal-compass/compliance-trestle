@@ -29,7 +29,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic.v1 import AnyUrl, EmailStr, Extra, Field, conint, constr, validator
+from pydantic import AnyUrl, AwareDatetime, ConfigDict, EmailStr, Extra, Field, RootModel, conint, constr, model_validator
 
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
@@ -40,6 +40,7 @@ from trestle.oscal.common import RelatedObservation
 from trestle.oscal.common import SystemComponent
 from trestle.oscal.common import TaskValidValues
 from trestle.oscal.common import TokenDatatype
+from trestle.oscal.common import UUIDDatatype
 
 
 class LocalDefinitions1(OscalBaseModel):
@@ -47,14 +48,12 @@ class LocalDefinitions1(OscalBaseModel):
     Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.
     """
 
-    class Config:
-        extra = Extra.forbid
-
-    components: Optional[List[common.SystemComponent]] = Field(None)
-    inventory_items: Optional[List[common.InventoryItem]] = Field(None, alias='inventory-items')
-    users: Optional[List[common.SystemUser]] = Field(None)
+    model_config = ConfigDict(extra='forbid', )
+    components: Optional[List[common.SystemComponent]] = Field(None, min_length=1)
+    inventory_items: Optional[List[common.InventoryItem]] = Field(None, alias='inventory-items', min_length=1)
+    users: Optional[List[common.SystemUser]] = Field(None, min_length=1)
     assessment_assets: Optional[common.AssessmentAssets] = Field(None, alias='assessment-assets')
-    tasks: Optional[List[common.Task]] = Field(None)
+    tasks: Optional[List[common.Task]] = Field(None, min_length=1)
 
 
 class LocalDefinitions(OscalBaseModel):
@@ -62,12 +61,12 @@ class LocalDefinitions(OscalBaseModel):
     Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.
     """
 
-    class Config:
-        extra = Extra.forbid
-
-    objectives_and_methods: Optional[List[common.LocalObjective]] = Field(None, alias='objectives-and-methods')
-    activities: Optional[List[common.Activity]] = Field(None)
-    remarks: Optional[str] = None
+    model_config = ConfigDict(extra='forbid', )
+    objectives_and_methods: Optional[List[common.LocalObjective]] = Field(
+        None, alias='objectives-and-methods', min_length=1
+    )
+    activities: Optional[List[common.Activity]] = Field(None, min_length=1)
+    remarks: Optional[common.Remarks] = None
 
 
 class ImportAp(OscalBaseModel):
@@ -75,15 +74,13 @@ class ImportAp(OscalBaseModel):
     Used by assessment-results to import information about the original plan for assessing the system.
     """
 
-    class Config:
-        extra = Extra.forbid
-
-    href: str = Field(
+    model_config = ConfigDict(extra='forbid', )
+    href: URIReferenceDatatype = Field(
         ...,
         description='A resolvable URL reference to the assessment plan governing the assessment activities.',
         title='Assessment Plan Reference'
     )
-    remarks: Optional[str] = None
+    remarks: Optional[common.Remarks] = None
 
 
 class Entry1(OscalBaseModel):
@@ -91,12 +88,8 @@ class Entry1(OscalBaseModel):
     Identifies the result of an action and/or task that occurred as part of executing an assessment plan or an assessment event that occurred in producing the assessment results.
     """
 
-    class Config:
-        extra = Extra.forbid
-
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
+    model_config = ConfigDict(extra='forbid', )
+    uuid: common.UUIDDatatype = Field(
         ...,
         description=
         'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference an assessment event in this or other OSCAL instances. The locally defined UUID of the assessment log entry can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
@@ -106,18 +99,20 @@ class Entry1(OscalBaseModel):
     description: Optional[str] = Field(
         None, description='A human-readable description of this event.', title='Action Description'
     )
-    start: datetime = Field(..., description='Identifies the start date and time of an event.', title='Start')
-    end: Optional[datetime] = Field(
+    start: DateTimeWithTimezoneDatatype = Field(
+        ..., description='Identifies the start date and time of an event.', title='Start'
+    )
+    end: Optional[DateTimeWithTimezoneDatatype] = Field(
         None,
         description=
         'Identifies the end date and time of an event. If the event is a point in time, the start and end will be the same date and time.',
         title='End'
     )
-    props: Optional[List[common.Property]] = Field(None)
-    links: Optional[List[common.Link]] = Field(None)
-    logged_by: Optional[List[common.LoggedBy]] = Field(None, alias='logged-by')
-    related_tasks: Optional[List[common.RelatedTask]] = Field(None, alias='related-tasks')
-    remarks: Optional[str] = None
+    props: Optional[List[common.Property]] = Field(None, min_length=1)
+    links: Optional[List[common.Link]] = Field(None, min_length=1)
+    logged_by: Optional[List[common.LoggedBy]] = Field(None, alias='logged-by', min_length=1)
+    related_tasks: Optional[List[common.RelatedTask]] = Field(None, alias='related-tasks', min_length=1)
+    remarks: Optional[common.Remarks] = None
 
 
 class Attestation(OscalBaseModel):
@@ -125,11 +120,11 @@ class Attestation(OscalBaseModel):
     A set of textual statements, typically written by the assessor.
     """
 
-    class Config:
-        extra = Extra.forbid
-
-    responsible_parties: Optional[List[common.ResponsibleParty]] = Field(None, alias='responsible-parties')
-    parts: List[common.AssessmentPart] = Field(...)
+    model_config = ConfigDict(extra='forbid', )
+    responsible_parties: Optional[List[common.ResponsibleParty]] = Field(
+        None, alias='responsible-parties', min_length=1
+    )
+    parts: List[common.AssessmentPart] = Field(..., min_length=1)
 
 
 class AssessmentLog(OscalBaseModel):
@@ -137,10 +132,8 @@ class AssessmentLog(OscalBaseModel):
     A log of all assessment-related actions taken.
     """
 
-    class Config:
-        extra = Extra.forbid
-
-    entries: List[Entry1] = Field(...)
+    model_config = ConfigDict(extra='forbid', )
+    entries: List[Entry1] = Field(..., min_length=1)
 
 
 class Result(OscalBaseModel):
@@ -148,12 +141,8 @@ class Result(OscalBaseModel):
     Used by the assessment results and POA&M. In the assessment results, this identifies all of the assessment observations and findings, initial and residual risks, deviations, and disposition. In the POA&M, this identifies initial and residual risks, deviations, and disposition.
     """
 
-    class Config:
-        extra = Extra.forbid
-
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
+    model_config = ConfigDict(extra='forbid', )
+    uuid: common.UUIDDatatype = Field(
         ...,
         description=
         'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this set of results in this or other OSCAL instances. The locally defined UUID of the assessment result can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
@@ -163,19 +152,19 @@ class Result(OscalBaseModel):
     description: str = Field(
         ..., description='A human-readable description of this set of test results.', title='Results Description'
     )
-    start: datetime = Field(
+    start: DateTimeWithTimezoneDatatype = Field(
         ...,
         description='Date/time stamp identifying the start of the evidence collection reflected in these results.',
         title='start field'
     )
-    end: Optional[datetime] = Field(
+    end: Optional[DateTimeWithTimezoneDatatype] = Field(
         None,
         description=
         'Date/time stamp identifying the end of the evidence collection reflected in these results. In a continuous motoring scenario, this may contain the same value as start if appropriate.',
         title='end field'
     )
-    props: Optional[List[common.Property]] = Field(None)
-    links: Optional[List[common.Link]] = Field(None)
+    props: Optional[List[common.Property]] = Field(None, min_length=1)
+    links: Optional[List[common.Link]] = Field(None, min_length=1)
     local_definitions: Optional[LocalDefinitions1] = Field(
         None,
         alias='local-definitions',
@@ -184,17 +173,17 @@ class Result(OscalBaseModel):
         title='Local Definitions'
     )
     reviewed_controls: common.ReviewedControls = Field(..., alias='reviewed-controls')
-    attestations: Optional[List[Attestation]] = Field(None)
+    attestations: Optional[List[Attestation]] = Field(None, min_length=1)
     assessment_log: Optional[AssessmentLog] = Field(
         None,
         alias='assessment-log',
         description='A log of all assessment-related actions taken.',
         title='Assessment Log'
     )
-    observations: Optional[List[common.Observation]] = Field(None)
-    risks: Optional[List[common.Risk]] = Field(None)
-    findings: Optional[List[common.Finding]] = Field(None)
-    remarks: Optional[str] = None
+    observations: Optional[List[common.Observation]] = Field(None, min_length=1)
+    risks: Optional[List[common.Risk]] = Field(None, min_length=1)
+    findings: Optional[List[common.Finding]] = Field(None, min_length=1)
+    remarks: Optional[common.Remarks] = None
 
 
 class AssessmentResults(OscalBaseModel):
@@ -202,12 +191,8 @@ class AssessmentResults(OscalBaseModel):
     Security assessment results, such as those provided by a FedRAMP assessor in the FedRAMP Security Assessment Report.
     """
 
-    class Config:
-        extra = Extra.forbid
-
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
+    model_config = ConfigDict(extra='forbid', )
+    uuid: common.UUIDDatatype = Field(
         ...,
         description=
         'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this assessment results instance in this or other OSCAL instances. The locally defined UUID of the assessment result can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
@@ -222,7 +207,7 @@ class AssessmentResults(OscalBaseModel):
         'Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.',
         title='Local Definitions'
     )
-    results: List[Result] = Field(...)
+    results: List[Result] = Field(..., min_length=1)
     back_matter: Optional[common.BackMatter] = Field(None, alias='back-matter')
 
 

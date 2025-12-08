@@ -23,7 +23,7 @@ import traceback
 import uuid
 from typing import List, Optional, Tuple, ValuesView
 
-from pydantic.v1 import BaseModel, Field
+from pydantic import BaseModel, Field
 
 import trestle
 from trestle.common import const

@@ -19,7 +19,7 @@ import pathlib
 
 from _pytest.monkeypatch import MonkeyPatch
 
-from pydantic.v1 import ValidationError
+from pydantic import ValidationError
 
 import pytest
 
