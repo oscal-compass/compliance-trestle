@@ -61,7 +61,7 @@ dev = [
     "pytest-xdist",
     "pre-commit>=2.4.0",
     "setuptools>=61",
-    "urllib3==2.5.0",
+    "urllib3==2.6.0",
     "wheel",
     "yapf",
     "python-semantic-release>=10.4.0",
