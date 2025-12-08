@@ -23,8 +23,7 @@ from datetime import date, datetime
 from typing import Any, List
 
 from pydantic import StringConstraints
-from pydantic.networks import EmailStr, AnyUrl
-from typing_extensions import Annotated
+from pydantic.networks import AnyUrl, EmailStr
 
 import pytest
 
@@ -37,6 +36,8 @@ import trestle.oscal.catalog as catalog
 import trestle.oscal.common as common
 import trestle.oscal.ssp as ssp
 from trestle.core.base_model import OscalBaseModel
+
+from typing_extensions import Annotated
 
 
 def is_valid_uuid(val: Any) -> bool:
@@ -55,24 +56,28 @@ def test_get_sample_value_by_type() -> None:
     assert gens.generate_sample_value_by_type(int, '') == 0
     assert gens.generate_sample_value_by_type(str, '') == const.REPLACE_ME
     assert gens.generate_sample_value_by_type(float, '') == 0.0
-    
+
     # Test string constraints - Pydantic v2 uses Annotated[str, StringConstraints]
-    uuid_constraint = Annotated[str, StringConstraints(pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$')]
+    uuid_constraint = Annotated[
+        str,
+        StringConstraints(
+            pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        )]
     assert gens.generate_sample_value_by_type(uuid_constraint, '') == const.SAMPLE_UUID_STR
-    
+
     # Test with field names that trigger special handling
     uuid_ = gens.generate_sample_value_by_type(str, 'uuid')
     assert is_valid_uuid(uuid_) and str(uuid_) != const.SAMPLE_UUID_STR
-    
+
     assert gens.generate_sample_value_by_type(str, 'date_authorized') == date.today().isoformat()
-    
+
     # Test EmailStr and AnyUrl - in Pydantic v2 these are just string validators
     email_value = gens.generate_sample_value_by_type(EmailStr, 'anything')
     assert email_value == 'dummy@sample.com'
-    
+
     url_value = gens.generate_sample_value_by_type(AnyUrl, 'anything')
     assert url_value == 'https://sample.com/replaceme.html'
-    
+
     with pytest.raises(err.TrestleError):
         gens.generate_sample_value_by_type(list, 'uuid')
 

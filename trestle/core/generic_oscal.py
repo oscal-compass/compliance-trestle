@@ -16,11 +16,10 @@ from __future__ import annotations
 
 import copy
 import logging
-import re
-from typing import List, Optional, Annotated
+from typing import Annotated, List, Optional
 from uuid import uuid4
 
-from pydantic import Field, StringConstraints, ConfigDict
+from pydantic import ConfigDict, Field, StringConstraints
 
 import trestle.oscal.component as comp
 import trestle.oscal.ssp as ossp
@@ -36,7 +35,7 @@ IMPLEMENTED_REQUIREMENTS = 'implemented_requirements'
 
 # Common regex patterns used in the code
 UUID_REGEX = r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-ID_REGEX = r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+ID_REGEX = r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'  # noqa
 TYPE_REGEX = r'^\S(.*\S)?$'
 
 
@@ -46,12 +45,12 @@ class GenericSetParameter(TrestleBaseModel):
     param_id: Annotated[str, StringConstraints(pattern=ID_REGEX)] = Field(
         ...,
         alias='param-id',
-        description="A human-oriented reference to a parameter within a control, who's catalog has been imported into the current implementation context.",
+        description='A human-oriented reference to a parameter within a control.',
         title='Parameter ID',
     )
     values: List[str] = Field(...)
     remarks: Optional[str] = None
-    
+
     model_config = ConfigDict(populate_by_name=True)
 
     @staticmethod
@@ -77,12 +76,12 @@ class GenericByComponent(TrestleBaseModel):
     )
     uuid: Annotated[str, StringConstraints(pattern=UUID_REGEX)] = Field(
         ...,
-        description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this by-component entry elsewhere in this or other OSCAL instances. The locally defined UUID of the by-component entry can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
+        description='A machine-oriented, globally unique identifier.',
         title='By-Component Universally Unique Identifier',
     )
     description: str = Field(
         ...,
-        description='An implementation statement that describes how a control or a control statement is implemented within the referenced system component.',
+        description='An implementation statement that describes how a control or a control statement is implemented.',
         title='Control Implementation Description',
     )
     props: Optional[List[common.Property]] = Field(None)
@@ -91,7 +90,7 @@ class GenericByComponent(TrestleBaseModel):
     implementation_status: Optional[common.ImplementationStatus] = Field(None, alias='implementation-status')
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
     remarks: Optional[str] = None
-    
+
     model_config = ConfigDict(populate_by_name=True)
 
     @staticmethod
@@ -132,7 +131,7 @@ class GenericStatement(TrestleBaseModel):
     )
     uuid: Annotated[str, StringConstraints(pattern=UUID_REGEX)] = Field(
         ...,
-        description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this control statement elsewhere in this or other OSCAL instances. The UUID of the control statement in the source OSCAL instance is sufficient to reference the data item locally or globally (e.g., in an imported OSCAL instance).',
+        description='A machine-oriented, globally unique identifier.',
         title='Control Statement Reference Universally Unique Identifier',
     )
     # this is not in ssp statement
@@ -147,7 +146,7 @@ class GenericStatement(TrestleBaseModel):
     remarks: Optional[str] = None
     # ssp has following
     by_components: Optional[List[GenericByComponent]] = Field(None, alias='by-components')
-    
+
     model_config = ConfigDict(populate_by_name=True)
 
     def as_ssp(self) -> ossp.Statement:
@@ -174,19 +173,19 @@ class GenericImplementedRequirement(TrestleBaseModel):
 
     uuid: Annotated[str, StringConstraints(pattern=UUID_REGEX)] = Field(
         ...,
-        description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference a specific control implementation elsewhere in this or other OSCAL instances. The locally defined UUID of the control implementation can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
+        description='A machine-oriented, globally unique identifier.',
         title='Control Implementation Identifier',
     )
     control_id: Annotated[str, StringConstraints(pattern=ID_REGEX)] = Field(
         ...,
         alias='control-id',
-        description='A human-oriented identifier reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).',
+        description='A human-oriented identifier reference to a control with a corresponding id value.',
         title='Control Identifier Reference',
     )
     # only compdef has description
     description: str = Field(
         ...,
-        description='A description of how the specified control is implemented for the containing component or capability.',
+        description='A description of how the specified control is implemented .',
         title='Control Implementation Description',
     )
     props: Optional[List[common.Property]] = Field(None)
@@ -197,7 +196,7 @@ class GenericImplementedRequirement(TrestleBaseModel):
     remarks: Optional[str] = None
     # ssp has following
     by_components: Optional[List[GenericByComponent]] = Field(None, alias='by-components')
-    
+
     model_config = ConfigDict(populate_by_name=True)
 
     @staticmethod
@@ -232,18 +231,18 @@ class GenericControlImplementation(TrestleBaseModel):
     # not in ssp
     uuid: Annotated[str, StringConstraints(pattern=UUID_REGEX)] = Field(
         ...,
-        description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference a set of implemented controls elsewhere in this or other OSCAL instances. The locally defined UUID of the control implementation set can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
+        description='A machine-oriented, globally unique identifier.',
         title='Control Implementation Set Identifier',
     )
     # not in ssp
     source: str = Field(
         ...,
-        description='A reference to an OSCAL catalog or profile providing the referenced control or subcontrol definition.',
+        description='A reference to an OSCAL catalog or profile.',
         title='Source Resource Reference',
     )
     description: str = Field(
         ...,
-        description='A description of how the specified set of controls are implemented for the containing component or capability.',
+        description='A description of how the specified set of controls are implemented.',
         title='Control Implementation Description',
     )
     # not in ssp
@@ -252,7 +251,7 @@ class GenericControlImplementation(TrestleBaseModel):
     links: Optional[List[common.Link]] = Field(None)
     set_parameters: Optional[List[GenericSetParameter]] = Field(None, alias='set-parameters')
     implemented_requirements: List[GenericImplementedRequirement] = Field(..., alias='implemented-requirements')
-    
+
     model_config = ConfigDict(populate_by_name=True)
 
     @staticmethod
@@ -260,12 +259,7 @@ class GenericControlImplementation(TrestleBaseModel):
         """Generate instance of this class."""
         uuid = str(uuid4())
         imp_reqs = [GenericImplementedRequirement.generate()]
-        class_dict = {
-            'uuid': uuid,
-            'source': const.REPLACE_ME,
-            'description': '',
-            'implemented-requirements': imp_reqs
-        }
+        class_dict = {'uuid': uuid, 'source': const.REPLACE_ME, 'description': '', 'implemented-requirements': imp_reqs}
         return GenericControlImplementation(**class_dict)
 
     @classmethod
@@ -308,7 +302,7 @@ class GenericComponent(TrestleBaseModel):
 
     uuid: Annotated[str, StringConstraints(pattern=UUID_REGEX)] = Field(
         ...,
-        description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this component elsewhere in this or other OSCAL instances. The locally defined UUID of the component can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
+        description='A machine-oriented, globally unique identifier.',
         title='Component Identifier',
     )
     type: Annotated[str, StringConstraints(pattern=TYPE_REGEX)] = Field(  # noqa A003
@@ -340,7 +334,7 @@ class GenericComponent(TrestleBaseModel):
     remarks: Optional[str] = None
     # ssp has
     status: common.ImplementationStatus
-    
+
     model_config = ConfigDict(populate_by_name=True)
 
     def as_defined_component(self) -> comp.DefinedComponent:

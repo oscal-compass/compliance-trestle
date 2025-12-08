@@ -13,6 +13,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""
+Pydantic base model for use within a trestle workspace and associated configuration.
+
+The heart of the current OSCAL model within trestle is based on pydantic
+(https://pydantic-docs.helpmanual.io/) which itself is a veneer on-top of python
+data classes.
+
+Functionality here defines a base-model which all trestle oscal data models inherit
+from. This allows additional functionality to be easily inserted.
+
+I can write a comment in here and you can even edit on the same line.
+"""
 
 import datetime
 import logging
@@ -20,17 +32,14 @@ import pathlib
 from typing import Any, Dict, List, Optional, Type, cast
 
 import orjson
-from pydantic import Field, create_model
-from pydantic import ConfigDict
-from pydantic.fields import FieldInfo
-from pydantic_core import from_json
+
+from pydantic import ConfigDict, Field, create_model
 
 from ruamel.yaml import YAML
 
 import trestle.common.const as const
 import trestle.common.err as err
 from trestle.common.str_utils import AliasMode, classname_to_alias
-from trestle.common.type_utils import get_origin, is_collection_field_type
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.trestle_base_model import TrestleBaseModel
 
@@ -77,13 +86,9 @@ class OscalBaseModel(TrestleBaseModel):
     ) -> Type['OscalBaseModel']:
         """Create a new runtime model type with certain fields removed."""
         if stripped_fields and stripped_fields_aliases:
-            raise err.TrestleError(
-                'Provide only one: stripped_fields OR stripped_fields_aliases.'
-            )
+            raise err.TrestleError('Provide only one: stripped_fields OR stripped_fields_aliases.')
         if not stripped_fields and not stripped_fields_aliases:
-            raise err.TrestleError(
-                'Exactly one of stripped_fields or stripped_fields_aliases must be provided.'
-            )
+            raise err.TrestleError('Exactly one of stripped_fields or stripped_fields_aliases must be provided.')
 
         # Convert aliases → field names if needed
         if stripped_fields_aliases is not None:
@@ -105,21 +110,11 @@ class OscalBaseModel(TrestleBaseModel):
             annotation = field.annotation
 
             if field.is_required():
-                new_fields[name] = (
-                    annotation,
-                    Field(..., alias=field.alias or name)
-                )
+                new_fields[name] = (annotation, Field(..., alias=field.alias or name))
             else:
-                new_fields[name] = (
-                    Optional[annotation],
-                    Field(None, alias=field.alias or name)
-                )
+                new_fields[name] = (Optional[annotation], Field(None, alias=field.alias or name))
 
-        new_model = create_model(
-            cls.__name__,
-            __base__=OscalBaseModel,
-            **new_fields
-        )
+        new_model = create_model(cls.__name__, __base__=OscalBaseModel, **new_fields)
 
         return cast(Type[OscalBaseModel], new_model)
 
@@ -129,13 +124,8 @@ class OscalBaseModel(TrestleBaseModel):
 
     @classmethod
     def alias_to_field_map(cls) -> Dict[str, str]:
-        """
-        Return mapping of alias → internal field name (Pydantic v2 compliant).
-        """
-        return {
-            (field.alias or name): name
-            for name, field in cls.model_fields.items()
-        }
+        """Return mapping of alias → internal field name (Pydantic v2 compliant)."""
+        return {(field.alias or name): name for name, field in cls.model_fields.items()}
 
     def get_field_by_alias(self, alias: str) -> Optional[Any]:
         """Return field info by its alias."""
@@ -147,6 +137,7 @@ class OscalBaseModel(TrestleBaseModel):
         return None
 
     def get_field_value_by_alias(self, alias: str) -> Optional[Any]:
+        """Get attribute value by field alias."""
         field = self.get_field_by_alias(alias)
         if field:
             return getattr(self, field.name, None)
@@ -161,15 +152,24 @@ class OscalBaseModel(TrestleBaseModel):
         stripped_fields: Optional[List[str]] = None,
         stripped_fields_aliases: Optional[List[str]] = None
     ) -> 'OscalBaseModel':
+        """Return a new model instance with the specified fields being stripped.
+
+        Args:
+            stripped_fields: The fields to be removed from the current data class.
+            stripped_fields_aliases: The fields to be removed from the current data class provided by alias.
+
+        Returns:
+            The current datamodel with the fields provided removed in a derivate (run time created) data model.
+
+        Raises:
+            err.TrestleError: If user provided both stripped_fields and stripped_field_aliases or neither.
+            err.TrestleError: If incorrect aliases or field names are provided.
+        """
         stripped_class = self.create_stripped_model_type(
-            stripped_fields=stripped_fields,
-            stripped_fields_aliases=stripped_fields_aliases
+            stripped_fields=stripped_fields, stripped_fields_aliases=stripped_fields_aliases
         )
 
-        remaining = {
-            name: getattr(self, name)
-            for name in stripped_class.model_fields
-        }
+        remaining = {name: getattr(self, name) for name in stripped_class.model_fields}
 
         return stripped_class(**remaining)
 
@@ -191,18 +191,30 @@ class OscalBaseModel(TrestleBaseModel):
         return {wrapped: raw}
 
     def oscal_serialize_json_bytes(self, pretty: bool = False, wrapped: bool = True) -> bytes:
-        obj = self.oscal_dict() if wrapped else self.model_dump(
-            by_alias=True, exclude_none=True
-        )
+        """
+        Return an 'oscal wrapped' json object serialized in a compressed form as bytes.
+
+        Args:
+            pretty: Whether or not to pretty-print json output or have in compressed form.
+        Returns:
+            Oscal model serialized to a json object including packaging inside of a single top level key.
+        """
+        obj = self.oscal_dict() if wrapped else self.model_dump(by_alias=True, exclude_none=True)
         if pretty:
             # orjson.dumps handles the object directly
             return orjson.dumps(obj, option=orjson.OPT_INDENT_2)
         return orjson.dumps(obj)
 
     def oscal_serialize_json(self, pretty: bool = False, wrapped: bool = True) -> str:
-        return self.oscal_serialize_json_bytes(pretty, wrapped).decode(
-            const.FILE_ENCODING
-        )
+        """
+        Return an 'oscal wrapped' json object serialized in a compressed form as bytes.
+
+        Args:
+            pretty: Whether or not to pretty-print json output or have in compressed form.
+        Returns:
+            Oscal model serialized to a json object including packaging inside of a single top level key.
+        """
+        return self.oscal_serialize_json_bytes(pretty, wrapped).decode(const.FILE_ENCODING)
 
     #
     # ─────────────── FILE IO ───────────────
@@ -244,14 +256,10 @@ class OscalBaseModel(TrestleBaseModel):
             raise err.TrestleError(f'Error loading file {path}: {str(e)}')
 
         if not isinstance(obj, dict) or len(obj) != 1:
-            raise err.TrestleError(
-                f'Invalid OSCAL structure: requires single top-level key, found {len(obj)}.'
-            )
+            raise err.TrestleError(f'Invalid OSCAL structure: requires single top-level key, found {len(obj)}.')
 
         if alias not in obj:
-            raise err.TrestleError(
-                f'Missing top-level OSCAL wrapper key: {alias}'
-            )
+            raise err.TrestleError(f'Missing top-level OSCAL wrapper key: {alias}')
 
         try:
             # Use model_validate for v2 compatible validation of the data structure

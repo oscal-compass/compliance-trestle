@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 #
 #
 ####### DO NOT EDIT DO NOT EDIT DO NOT EDIT DO NOT EDIT DO NOT EDIT ######
@@ -46,12 +45,24 @@ class Statement(OscalBaseModel):
     Identifies which statements within a control are addressed.
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
+    model_config = ConfigDict(extra='forbid', )
+    statement_id: TokenDatatype = Field(
+        ...,
+        alias='statement-id',
+        description='A human-oriented identifier reference to a control statement.',
+        title='Control Statement Reference'
     )
-    statement_id: TokenDatatype = Field(..., alias='statement-id', description='A human-oriented identifier reference to a control statement.', title='Control Statement Reference')
-    uuid: UUIDDatatype = Field(..., description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this control statement elsewhere in this or other OSCAL instances. The UUID of the control statement in the source OSCAL instance is sufficient to reference the data item locally or globally (e.g., in an imported OSCAL instance).', title='Control Statement Reference Universally Unique Identifier')
-    description: str = Field(..., description='A summary of how the containing control statement is implemented by the component or capability.', title='Statement Implementation Description')
+    uuid: UUIDDatatype = Field(
+        ...,
+        description=
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this control statement elsewhere in this or other OSCAL instances. The UUID of the control statement in the source OSCAL instance is sufficient to reference the data item locally or globally (e.g., in an imported OSCAL instance).',
+        title='Control Statement Reference Universally Unique Identifier'
+    )
+    description: str = Field(
+        ...,
+        description='A summary of how the containing control statement is implemented by the component or capability.',
+        title='Statement Implementation Description'
+    )
     props: Optional[List[common.Property]] = Field(None, min_length=1)
     links: Optional[List[common.Link]] = Field(None, min_length=1)
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles', min_length=1)
@@ -63,10 +74,14 @@ class SetParameter(OscalBaseModel):
     Identifies the parameter that will be set by the enclosed value.
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
+    model_config = ConfigDict(extra='forbid', )
+    param_id: TokenDatatype = Field(
+        ...,
+        alias='param-id',
+        description=
+        "A human-oriented reference to a parameter within a control, who's catalog has been imported into the current implementation context.",
+        title='Parameter ID'
     )
-    param_id: TokenDatatype = Field(..., alias='param-id', description="A human-oriented reference to a parameter within a control, who's catalog has been imported into the current implementation context.", title='Parameter ID')
     values: List[common.StringDatatype] = Field(..., min_length=1)
     remarks: Optional[common.Remarks] = None
 
@@ -76,11 +91,18 @@ class IncorporatesComponent(OscalBaseModel):
     The collection of components comprising this capability.
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
+    model_config = ConfigDict(extra='forbid', )
+    component_uuid: UUIDDatatype = Field(
+        ...,
+        alias='component-uuid',
+        description='A machine-oriented identifier reference to a component.',
+        title='Component Reference'
     )
-    component_uuid: UUIDDatatype = Field(..., alias='component-uuid', description='A machine-oriented identifier reference to a component.', title='Component Reference')
-    description: str = Field(..., description='A description of the component, including information about its function.', title='Component Description')
+    description: str = Field(
+        ...,
+        description='A description of the component, including information about its function.',
+        title='Component Description'
+    )
 
 
 class ImportComponentDefinition(OscalBaseModel):
@@ -88,10 +110,13 @@ class ImportComponentDefinition(OscalBaseModel):
     Loads a component definition from another resource.
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
+    model_config = ConfigDict(extra='forbid', )
+    href: URIReferenceDatatype = Field(
+        ...,
+        description=
+        'A link to a resource that defines a set of components and/or capabilities to import into this collection.',
+        title='Hyperlink Reference'
     )
-    href: URIReferenceDatatype = Field(..., description='A link to a resource that defines a set of components and/or capabilities to import into this collection.', title='Hyperlink Reference')
 
 
 class ImplementedRequirement(OscalBaseModel):
@@ -99,12 +124,25 @@ class ImplementedRequirement(OscalBaseModel):
     Describes how the containing component or capability implements an individual control.
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
+    model_config = ConfigDict(extra='forbid', )
+    uuid: UUIDDatatype = Field(
+        ...,
+        description='Provides a globally unique means to identify a given control implementation by a component.',
+        title='Control Implementation Identifier'
     )
-    uuid: UUIDDatatype = Field(..., description='Provides a globally unique means to identify a given control implementation by a component.', title='Control Implementation Identifier')
-    control_id: TokenDatatype = Field(..., alias='control-id', description='A reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).', title='Control Identifier Reference')
-    description: str = Field(..., description='A suggestion from the supplier (e.g., component vendor or author) for how the specified control may be implemented if the containing component or capability is instantiated in a system security plan.', title='Control Implementation Description')
+    control_id: TokenDatatype = Field(
+        ...,
+        alias='control-id',
+        description=
+        'A reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).',
+        title='Control Identifier Reference'
+    )
+    description: str = Field(
+        ...,
+        description=
+        'A suggestion from the supplier (e.g., component vendor or author) for how the specified control may be implemented if the containing component or capability is instantiated in a system security plan.',
+        title='Control Implementation Description'
+    )
     props: Optional[List[common.Property]] = Field(None, min_length=1)
     links: Optional[List[common.Link]] = Field(None, min_length=1)
     set_parameters: Optional[List[SetParameter]] = Field(None, alias='set-parameters', min_length=1)
@@ -132,12 +170,25 @@ class ControlImplementation(OscalBaseModel):
     Defines how the component or capability supports a set of controls.
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
+    model_config = ConfigDict(extra='forbid', )
+    uuid: UUIDDatatype = Field(
+        ...,
+        description=
+        'Provides a means to identify a set of control implementations that are supported by a given component or capability.',
+        title='Control Implementation Set Identifier'
     )
-    uuid: UUIDDatatype = Field(..., description='Provides a means to identify a set of control implementations that are supported by a given component or capability.', title='Control Implementation Set Identifier')
-    source: URIReferenceDatatype = Field(..., description='A reference to an OSCAL catalog or profile providing the referenced control or subcontrol definition.', title='Source Resource Reference')
-    description: str = Field(..., description='A description of how the specified set of controls are implemented for the containing component or capability.', title='Control Implementation Description')
+    source: URIReferenceDatatype = Field(
+        ...,
+        description=
+        'A reference to an OSCAL catalog or profile providing the referenced control or subcontrol definition.',
+        title='Source Resource Reference'
+    )
+    description: str = Field(
+        ...,
+        description=
+        'A description of how the specified set of controls are implemented for the containing component or capability.',
+        title='Control Implementation Description'
+    )
     props: Optional[List[common.Property]] = Field(None, min_length=1)
     links: Optional[List[common.Link]] = Field(None, min_length=1)
     set_parameters: Optional[List[SetParameter]] = Field(None, alias='set-parameters', min_length=1)
@@ -149,16 +200,22 @@ class Capability(OscalBaseModel):
     A grouping of other components and/or capabilities.
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
+    model_config = ConfigDict(extra='forbid', )
+    uuid: UUIDDatatype = Field(
+        ...,
+        description='Provides a globally unique means to identify a given capability.',
+        title='Capability Identifier'
     )
-    uuid: UUIDDatatype = Field(..., description='Provides a globally unique means to identify a given capability.', title='Capability Identifier')
     name: StringDatatype = Field(..., description="The capability's human-readable name.", title='Capability Name')
     description: str = Field(..., description='A summary of the capability.', title='Capability Description')
     props: Optional[List[common.Property]] = Field(None, min_length=1)
     links: Optional[List[common.Link]] = Field(None, min_length=1)
-    incorporates_components: Optional[List[IncorporatesComponent]] = Field(None, alias='incorporates-components', min_length=1)
-    control_implementations: Optional[List[ControlImplementation]] = Field(None, alias='control-implementations', min_length=1)
+    incorporates_components: Optional[List[IncorporatesComponent]] = Field(
+        None, alias='incorporates-components', min_length=1
+    )
+    control_implementations: Optional[List[ControlImplementation]] = Field(
+        None, alias='control-implementations', min_length=1
+    )
     remarks: Optional[common.Remarks] = None
 
 
@@ -167,19 +224,31 @@ class DefinedComponent(OscalBaseModel):
     A defined component that can be part of an implemented system.
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
+    model_config = ConfigDict(extra='forbid', )
+    uuid: UUIDDatatype = Field(
+        ...,
+        description='Provides a globally unique means to identify a given component.',
+        title='Component Identifier'
     )
-    uuid: UUIDDatatype = Field(..., description='Provides a globally unique means to identify a given component.', title='Component Identifier')
-    type: Union[StringDatatype, DefinedComponentTypeValidValues] = Field(..., description='A category describing the purpose of the component.', title='Component Type')
+    type: Union[StringDatatype, DefinedComponentTypeValidValues] = Field(
+        ..., description='A category describing the purpose of the component.', title='Component Type'
+    )
     title: str = Field(..., description='A human readable name for the component.', title='Component Title')
-    description: str = Field(..., description='A description of the component, including information about its function.', title='Component Description')
-    purpose: Optional[str] = Field(None, description='A summary of the technological or business purpose of the component.', title='Purpose')
+    description: str = Field(
+        ...,
+        description='A description of the component, including information about its function.',
+        title='Component Description'
+    )
+    purpose: Optional[str] = Field(
+        None, description='A summary of the technological or business purpose of the component.', title='Purpose'
+    )
     props: Optional[List[common.Property]] = Field(None, min_length=1)
     links: Optional[List[common.Link]] = Field(None, min_length=1)
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles', min_length=1)
     protocols: Optional[List[common.Protocol]] = Field(None, min_length=1)
-    control_implementations: Optional[List[ControlImplementation]] = Field(None, alias='control-implementations', min_length=1)
+    control_implementations: Optional[List[ControlImplementation]] = Field(
+        None, alias='control-implementations', min_length=1
+    )
     remarks: Optional[common.Remarks] = None
 
 
@@ -188,12 +257,16 @@ class ComponentDefinition(OscalBaseModel):
     A collection of component descriptions, which may optionally be grouped by capability.
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
+    model_config = ConfigDict(extra='forbid', )
+    uuid: UUIDDatatype = Field(
+        ...,
+        description='Provides a globally unique means to identify a given component definition instance.',
+        title='Component Definition Universally Unique Identifier'
     )
-    uuid: UUIDDatatype = Field(..., description='Provides a globally unique means to identify a given component definition instance.', title='Component Definition Universally Unique Identifier')
     metadata: common.Metadata
-    import_component_definitions: Optional[List[ImportComponentDefinition]] = Field(None, alias='import-component-definitions', min_length=1)
+    import_component_definitions: Optional[List[ImportComponentDefinition]] = Field(
+        None, alias='import-component-definitions', min_length=1
+    )
     components: Optional[List[DefinedComponent]] = Field(None, min_length=1)
     capabilities: Optional[List[Capability]] = Field(None, min_length=1)
     back_matter: Optional[common.BackMatter] = Field(None, alias='back-matter')

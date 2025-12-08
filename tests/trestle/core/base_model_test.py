@@ -120,28 +120,28 @@ def test_with_timezone() -> None:
 
 def test_broken_tz() -> None:
     """Test that invalid timezone raises exception during validation in pydantic v2."""
-    
+
     class BrokenTimezone(tzinfo):
         """TimeZone class that returns None for utcoffset - invalid in pydantic v2."""
-        
+
         def fromutc(self, dt):
             return dt
-        
+
         def utcoffset(self, dt):
             # Return None - this should cause validation error in pydantic v2
             return None
-        
+
         def dst(self, dt):
             return None
-        
+
         def tzname(self, dt):
             return 'Broken'
-    
+
     taz = BrokenTimezone()
-    
+
     # This should fail during validation in pydantic v2
     with pytest.raises(Exception):
-        m = common.Metadata(
+        _ = common.Metadata(
             **{
                 'title': 'My simple catalog',
                 'last-modified': datetime.now(tz=taz),
@@ -149,7 +149,7 @@ def test_broken_tz() -> None:
                 'oscal-version': trestle.oscal.OSCAL_VERSION
             }
         )
-        
+
 
 def test_stripped_model() -> None:
     """Test whether model is can be stripped when acting as an intstance function."""
@@ -253,7 +253,7 @@ def test_copy_to() -> None:
     data = c_m.model_dump()
     target_metadata = common.Metadata.model_validate(data)
     assert target_metadata.title == c_m.title
-    
+
     # Non matching object - should fail validation
     with pytest.raises(Exception):
         data = c_m.model_dump()
@@ -308,16 +308,16 @@ def test_copy_from() -> None:
             'oscal-version': trestle.oscal.OSCAL_VERSION
         }
     )
-    
+
     # For pydantic v2, create a new metadata object with updated values
     # Get current metadata data, update with target data
     current_data = catalog.metadata.model_dump()
     target_data = target_md.model_dump(exclude_unset=True)
     updated_data = {**current_data, **target_data}
-    
+
     # Create new metadata instance
     catalog.metadata = common.Metadata.model_validate(updated_data)
-    
+
     assert catalog.metadata.title == target_md.title
     assert catalog.metadata.version == target_md.version
     # last-modified might be different due to time, but should be from target_md

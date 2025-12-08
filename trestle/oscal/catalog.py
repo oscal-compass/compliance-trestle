@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 #
 #
 ####### DO NOT EDIT DO NOT EDIT DO NOT EDIT DO NOT EDIT DO NOT EDIT ######
@@ -44,12 +43,24 @@ class Control(OscalBaseModel):
     A structured object representing a requirement or guideline, which when implemented will reduce an aspect of risk related to an information system and its information.
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
+    model_config = ConfigDict(extra='forbid', )
+    id: TokenDatatype = Field(
+        ...,
+        description=
+        'Identifies a control such that it can be referenced in the defining catalog and other OSCAL instances (e.g., profiles).',
+        title='Control Identifier'
     )
-    id: TokenDatatype = Field(..., description='Identifies a control such that it can be referenced in the defining catalog and other OSCAL instances (e.g., profiles).', title='Control Identifier')
-    class_: Optional[TokenDatatype] = Field(None, alias='class', description='A textual label that provides a sub-type or characterization of the control.', title='Control Class')
-    title: str = Field(..., description='A name given to the control, which may be used by a tool for display and navigation.', title='Control Title')
+    class_: Optional[TokenDatatype] = Field(
+        None,
+        alias='class',
+        description='A textual label that provides a sub-type or characterization of the control.',
+        title='Control Class'
+    )
+    title: str = Field(
+        ...,
+        description='A name given to the control, which may be used by a tool for display and navigation.',
+        title='Control Title'
+    )
     params: Optional[List[common.Parameter]] = Field(None, min_length=1)
     props: Optional[List[common.Property]] = Field(None, min_length=1)
     links: Optional[List[common.Link]] = Field(None, min_length=1)
@@ -62,12 +73,24 @@ class Group(OscalBaseModel):
     A group of controls, or of groups of controls.
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
+    model_config = ConfigDict(extra='forbid', )
+    id: Optional[TokenDatatype] = Field(
+        None,
+        description=
+        'Identifies the group for the purpose of cross-linking within the defining instance or from other instances that reference the catalog.',
+        title='Group Identifier'
     )
-    id: Optional[TokenDatatype] = Field(None, description='Identifies the group for the purpose of cross-linking within the defining instance or from other instances that reference the catalog.', title='Group Identifier')
-    class_: Optional[TokenDatatype] = Field(None, alias='class', description='A textual label that provides a sub-type or characterization of the group.', title='Group Class')
-    title: str = Field(..., description='A name given to the group, which may be used by a tool for display and navigation.', title='Group Title')
+    class_: Optional[TokenDatatype] = Field(
+        None,
+        alias='class',
+        description='A textual label that provides a sub-type or characterization of the group.',
+        title='Group Class'
+    )
+    title: str = Field(
+        ...,
+        description='A name given to the group, which may be used by a tool for display and navigation.',
+        title='Group Title'
+    )
     params: Optional[List[common.Parameter]] = Field(None, min_length=1)
     props: Optional[List[common.Property]] = Field(None, min_length=1)
     links: Optional[List[common.Link]] = Field(None, min_length=1)
@@ -81,10 +104,12 @@ class Catalog(OscalBaseModel):
     A structured, organized collection of control information.
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
+    model_config = ConfigDict(extra='forbid', )
+    uuid: UUIDDatatype = Field(
+        ...,
+        description='Provides a globally unique means to identify a given catalog instance.',
+        title='Catalog Universally Unique Identifier'
     )
-    uuid: UUIDDatatype = Field(..., description='Provides a globally unique means to identify a given catalog instance.', title='Catalog Universally Unique Identifier')
     metadata: common.Metadata
     params: Optional[List[common.Parameter]] = Field(None, min_length=1)
     controls: Optional[List[Control]] = Field(None, min_length=1)

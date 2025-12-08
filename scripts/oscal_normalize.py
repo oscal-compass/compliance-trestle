@@ -166,7 +166,8 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic import AnyUrl, AwareDatetime, ConfigDict, EmailStr, Extra, Field, RootModel, conint, constr, model_validator
+from pydantic import AnyUrl, AwareDatetime, ConfigDict, EmailStr, Extra, Field, RootModel
+from pydantic import conint, constr, model_validator
 
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
@@ -387,7 +388,9 @@ def constrain_oscal_version(class_list):
                     class_list[j] = cls
     return class_list
 
+
 obm_list = []
+
 
 def load_classes(fstem):
     """Load all classes from a python file."""

@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 #
 #
 ####### DO NOT EDIT DO NOT EDIT DO NOT EDIT DO NOT EDIT DO NOT EDIT ######
@@ -47,9 +46,7 @@ class TermsAndConditions(OscalBaseModel):
     Used to define various terms and conditions under which an assessment, described by the plan, can be performed. Each child part defines a different type of term or condition.
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
-    )
+    model_config = ConfigDict(extra='forbid', )
     parts: Optional[List[common.AssessmentPart]] = Field(None, min_length=1)
 
 
@@ -58,13 +55,13 @@ class LocalDefinitions(OscalBaseModel):
     Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
-    )
+    model_config = ConfigDict(extra='forbid', )
     components: Optional[List[common.SystemComponent]] = Field(None, min_length=1)
     inventory_items: Optional[List[common.InventoryItem]] = Field(None, alias='inventory-items', min_length=1)
     users: Optional[List[common.SystemUser]] = Field(None, min_length=1)
-    objectives_and_methods: Optional[List[common.LocalObjective]] = Field(None, alias='objectives-and-methods', min_length=1)
+    objectives_and_methods: Optional[List[common.LocalObjective]] = Field(
+        None, alias='objectives-and-methods', min_length=1
+    )
     activities: Optional[List[common.Activity]] = Field(None, min_length=1)
     remarks: Optional[common.Remarks] = None
 
@@ -74,20 +71,33 @@ class AssessmentPlan(OscalBaseModel):
     An assessment plan, such as those provided by a FedRAMP assessor.
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
-    )
+    model_config = ConfigDict(extra='forbid', )
     uuid: common.UUIDDatatype = Field(
         ...,
-        description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this assessment plan in this or other OSCAL instances. The locally defined UUID of the assessment plan can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
+        description=
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this assessment plan in this or other OSCAL instances. The locally defined UUID of the assessment plan can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Assessment Plan Universally Unique Identifier',
     )
     metadata: common.Metadata
     import_ssp: common.ImportSsp = Field(..., alias='import-ssp')
-    local_definitions: Optional[LocalDefinitions] = Field(None, alias='local-definitions', description='Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.', title='Local Definitions')
-    terms_and_conditions: Optional[TermsAndConditions] = Field(None, alias='terms-and-conditions', description='Used to define various terms and conditions under which an assessment, described by the plan, can be performed. Each child part defines a different type of term or condition.', title='Assessment Plan Terms and Conditions')
+    local_definitions: Optional[LocalDefinitions] = Field(
+        None,
+        alias='local-definitions',
+        description=
+        'Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.',
+        title='Local Definitions'
+    )
+    terms_and_conditions: Optional[TermsAndConditions] = Field(
+        None,
+        alias='terms-and-conditions',
+        description=
+        'Used to define various terms and conditions under which an assessment, described by the plan, can be performed. Each child part defines a different type of term or condition.',
+        title='Assessment Plan Terms and Conditions'
+    )
     reviewed_controls: common.ReviewedControls = Field(..., alias='reviewed-controls')
-    assessment_subjects: Optional[List[common.AssessmentSubject]] = Field(None, alias='assessment-subjects', min_length=1)
+    assessment_subjects: Optional[List[common.AssessmentSubject]] = Field(
+        None, alias='assessment-subjects', min_length=1
+    )
     assessment_assets: Optional[common.AssessmentAssets] = Field(None, alias='assessment-assets')
     tasks: Optional[List[common.Task]] = Field(None, min_length=1)
     back_matter: Optional[common.BackMatter] = Field(None, alias='back-matter')

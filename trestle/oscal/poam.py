@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 #
 #
 ####### DO NOT EDIT DO NOT EDIT DO NOT EDIT DO NOT EDIT DO NOT EDIT ######
@@ -47,9 +46,7 @@ class LocalDefinitions(OscalBaseModel):
     Allows components, and inventory-items to be defined within the POA&M for circumstances where no OSCAL-based SSP exists, or is not delivered with the POA&M.
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
-    )
+    model_config = ConfigDict(extra='forbid', )
     components: Optional[List[common.SystemComponent]] = Field(None, min_length=1)
     inventory_items: Optional[List[common.InventoryItem]] = Field(None, alias='inventory-items', min_length=1)
     assessment_assets: Optional[common.AssessmentAssets] = Field(None, alias='assessment-assets')
@@ -61,9 +58,7 @@ class Origination(OscalBaseModel):
     Identifies the source of the finding, such as a tool or person.
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
-    )
+    model_config = ConfigDict(extra='forbid', )
     actors: List[common.OriginActor] = Field(..., min_length=1)
 
 
@@ -72,10 +67,13 @@ class RelatedFinding(OscalBaseModel):
     Relates the finding to referenced finding(s).
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
+    model_config = ConfigDict(extra='forbid', )
+    finding_uuid: UUIDDatatype = Field(
+        ...,
+        alias='finding-uuid',
+        description='A machine-oriented identifier reference to a finding defined in the list of findings.',
+        title='Finding Universally Unique Identifier Reference'
     )
-    finding_uuid: UUIDDatatype = Field(..., alias='finding-uuid', description='A machine-oriented identifier reference to a finding defined in the list of findings.', title='Finding Universally Unique Identifier Reference')
 
 
 class PoamItem(OscalBaseModel):
@@ -83,16 +81,23 @@ class PoamItem(OscalBaseModel):
     Describes an individual POA&M item.
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
+    model_config = ConfigDict(extra='forbid', )
+    uuid: Optional[UUIDDatatype] = Field(
+        None,
+        description=
+        'A machine-oriented, globally unique identifier with instance scope that can be used to reference this POA&M item entry in this OSCAL instance. This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
+        title='POA&M Item Universally Unique Identifier'
     )
-    uuid: Optional[UUIDDatatype] = Field(None, description='A machine-oriented, globally unique identifier with instance scope that can be used to reference this POA&M item entry in this OSCAL instance. This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.', title='POA&M Item Universally Unique Identifier')
     title: str = Field(..., description='The title or name for this POA&M item .', title='POA&M Item Title')
-    description: str = Field(..., description='A human-readable description of POA&M item.', title='POA&M Item Description')
+    description: str = Field(
+        ..., description='A human-readable description of POA&M item.', title='POA&M Item Description'
+    )
     props: Optional[List[common.Property]] = Field(None, min_length=1)
     links: Optional[List[common.Link]] = Field(None, min_length=1)
     related_findings: Optional[List[RelatedFinding]] = Field(None, alias='related-findings', min_length=1)
-    related_observations: Optional[List[common.RelatedObservation]] = Field(None, alias='related-observations', min_length=1)
+    related_observations: Optional[List[common.RelatedObservation]] = Field(
+        None, alias='related-observations', min_length=1
+    )
     related_risks: Optional[List[common.RelatedRisk]] = Field(None, alias='related-risks', min_length=1)
     remarks: Optional[common.Remarks] = None
     origins: Optional[List[Origination]] = Field(None, min_length=1)
@@ -103,10 +108,13 @@ class PlanOfActionAndMilestones(OscalBaseModel):
     A plan of action and milestones which identifies initial and residual risks, deviations, and disposition, such as those required by FedRAMP.
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
+    model_config = ConfigDict(extra='forbid', )
+    uuid: UUIDDatatype = Field(
+        ...,
+        description=
+        'A machine-oriented, globally unique identifier with instancescope that can be used to reference this POA&M instance in this OSCAL instance. This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
+        title='POA&M Universally Unique Identifier'
     )
-    uuid: UUIDDatatype = Field(..., description='A machine-oriented, globally unique identifier with instancescope that can be used to reference this POA&M instance in this OSCAL instance. This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.', title='POA&M Universally Unique Identifier')
     metadata: common.Metadata
     import_ssp: Optional[common.ImportSsp] = Field(None, alias='import-ssp')
     system_id: Optional[common.SystemId] = Field(None, alias='system-id')

@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 #
 #
 ####### DO NOT EDIT DO NOT EDIT DO NOT EDIT DO NOT EDIT DO NOT EDIT ######
@@ -41,7 +40,9 @@ from trestle.oscal.common import UUIDDatatype
 
 
 class WithId(RootModel[common.TokenDatatype]):
-    root: TokenDatatype = Field(..., description='Selecting a control by its ID given as a literal.', title='Match Controls by Identifier')
+    root: TokenDatatype = Field(
+        ..., description='Selecting a control by its ID given as a literal.', title='Match Controls by Identifier'
+    )
 
 
 class WithChildControlsValidValues(Enum):
@@ -54,16 +55,34 @@ class SetParameter(OscalBaseModel):
     A parameter setting, to be propagated to points of insertion.
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
+    model_config = ConfigDict(extra='forbid', )
+    param_id: TokenDatatype = Field(
+        ..., alias='param-id', description='An identifier for the parameter.', title='Parameter ID'
     )
-    param_id: TokenDatatype = Field(..., alias='param-id', description='An identifier for the parameter.', title='Parameter ID')
-    class_: Optional[TokenDatatype] = Field(None, alias='class', description='A textual label that provides a characterization of the parameter.', title='Parameter Class')
-    depends_on: Optional[TokenDatatype] = Field(None, alias='depends-on', description='**(deprecated)** Another parameter invoking this one. This construct has been deprecated and should not be used.', title='Depends On')
+    class_: Optional[TokenDatatype] = Field(
+        None,
+        alias='class',
+        description='A textual label that provides a characterization of the parameter.',
+        title='Parameter Class'
+    )
+    depends_on: Optional[TokenDatatype] = Field(
+        None,
+        alias='depends-on',
+        description=
+        '**(deprecated)** Another parameter invoking this one. This construct has been deprecated and should not be used.',
+        title='Depends On'
+    )
     props: Optional[List[common.Property]] = Field(None, min_length=1)
     links: Optional[List[common.Link]] = Field(None, min_length=1)
-    label: Optional[str] = Field(None, description='A short, placeholder name for the parameter, which can be used as a substitute for a value if no value is assigned.', title='Parameter Label')
-    usage: Optional[str] = Field(None, description='Describes the purpose and use of a parameter.', title='Parameter Usage Description')
+    label: Optional[str] = Field(
+        None,
+        description=
+        'A short, placeholder name for the parameter, which can be used as a substitute for a value if no value is assigned.',
+        title='Parameter Label'
+    )
+    usage: Optional[str] = Field(
+        None, description='Describes the purpose and use of a parameter.', title='Parameter Usage Description'
+    )
     constraints: Optional[List[common.ParameterConstraint]] = Field(None, min_length=1)
     guidelines: Optional[List[common.ParameterGuideline]] = Field(None, min_length=1)
     values: Optional[List[common.ParameterValue]] = Field(None, min_length=1)
@@ -88,10 +107,10 @@ class Matching(OscalBaseModel):
     Selecting a set of controls by matching their IDs with a wildcard pattern.
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
+    model_config = ConfigDict(extra='forbid', )
+    pattern: Optional[StringDatatype] = Field(
+        None, description='A glob expression matching the IDs of one or more controls to be selected.', title='Pattern'
     )
-    pattern: Optional[StringDatatype] = Field(None, description='A glob expression matching the IDs of one or more controls to be selected.', title='Pattern')
 
 
 class ItemNameValidValues(Enum):
@@ -118,12 +137,20 @@ class Add(OscalBaseModel):
     Specifies contents to be added into controls, in resolution.
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
+    model_config = ConfigDict(extra='forbid', )
+    position: Optional[PositionValidValues] = Field(
+        None,
+        description='Where to add the new content with respect to the targeted element (beside it or inside it).',
+        title='Position'
     )
-    position: Optional[PositionValidValues] = Field(None, description='Where to add the new content with respect to the targeted element (beside it or inside it).', title='Position')
-    by_id: Optional[TokenDatatype] = Field(None, alias='by-id', description='Target location of the addition.', title='Reference by ID')
-    title: Optional[str] = Field(None, description='A name given to the control, which may be used by a tool for display and navigation.', title='Title Change')
+    by_id: Optional[TokenDatatype] = Field(
+        None, alias='by-id', description='Target location of the addition.', title='Reference by ID'
+    )
+    title: Optional[str] = Field(
+        None,
+        description='A name given to the control, which may be used by a tool for display and navigation.',
+        title='Title Change'
+    )
     params: Optional[List[common.Parameter]] = Field(None, min_length=1)
     props: Optional[List[common.Property]] = Field(None, min_length=1)
     links: Optional[List[common.Link]] = Field(None, min_length=1)
@@ -135,10 +162,13 @@ class SelectControl(OscalBaseModel):
     Select a control or controls from an imported control set.
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
+    model_config = ConfigDict(extra='forbid', )
+    with_child_controls: Optional[WithChildControlsValidValues] = Field(
+        None,
+        alias='with-child-controls',
+        description='When a control is included, whether its child (dependent) controls are also included.',
+        title='Include Contained Controls with Control'
     )
-    with_child_controls: Optional[WithChildControlsValidValues] = Field(None, alias='with-child-controls', description='When a control is included, whether its child (dependent) controls are also included.', title='Include Contained Controls with Control')
     with_ids: Optional[List[WithId]] = Field(None, alias='with-ids', min_length=1)
     matching: Optional[List[Matching]] = Field(None, min_length=1)
 
@@ -148,10 +178,12 @@ class Import(OscalBaseModel):
     Designates a referenced source catalog or profile that provides a source of control information for use in creating a new overlay or baseline.
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
+    model_config = ConfigDict(extra='forbid', )
+    href: URIReferenceDatatype = Field(
+        ...,
+        description='A resolvable URL reference to the base catalog or profile that this profile is tailoring.',
+        title='Catalog or Profile Reference'
     )
-    href: URIReferenceDatatype = Field(..., description='A resolvable URL reference to the base catalog or profile that this profile is tailoring.', title='Catalog or Profile Reference')
     include_all: Optional[common.IncludeAll] = Field(None, alias='include-all')
     include_controls: Optional[List[SelectControl]] = Field(None, alias='include-controls', min_length=1)
     exclude_controls: Optional[List[SelectControl]] = Field(None, alias='exclude-controls', min_length=1)
@@ -162,14 +194,34 @@ class Remove(OscalBaseModel):
     Specifies objects to be removed from a control based on specific aspects of the object that must all match.
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
+    model_config = ConfigDict(extra='forbid', )
+    by_name: Optional[TokenDatatype] = Field(
+        None,
+        alias='by-name',
+        description='Identify items remove by matching their assigned name.',
+        title='Reference by (assigned) name'
     )
-    by_name: Optional[TokenDatatype] = Field(None, alias='by-name', description='Identify items remove by matching their assigned name.', title='Reference by (assigned) name')
-    by_class: Optional[TokenDatatype] = Field(None, alias='by-class', description='Identify items to remove by matching their class.', title='Reference by class')
-    by_id: Optional[TokenDatatype] = Field(None, alias='by-id', description='Identify items to remove indicated by their id.', title='Reference by ID')
-    by_item_name: Optional[ItemNameValidValues] = Field(None, alias='by-item-name', description="Identify items to remove by the name of the item's information object name, e.g. title or prop.", title='Item Name Reference')
-    by_ns: Optional[TokenDatatype] = Field(None, alias='by-ns', description="Identify items to remove by the item's ns, which is the namespace associated with a part, or prop.", title='Item Namespace Reference')
+    by_class: Optional[TokenDatatype] = Field(
+        None,
+        alias='by-class',
+        description='Identify items to remove by matching their class.',
+        title='Reference by class'
+    )
+    by_id: Optional[TokenDatatype] = Field(
+        None, alias='by-id', description='Identify items to remove indicated by their id.', title='Reference by ID'
+    )
+    by_item_name: Optional[ItemNameValidValues] = Field(
+        None,
+        alias='by-item-name',
+        description="Identify items to remove by the name of the item's information object name, e.g. title or prop.",
+        title='Item Name Reference'
+    )
+    by_ns: Optional[TokenDatatype] = Field(
+        None,
+        alias='by-ns',
+        description="Identify items to remove by the item's ns, which is the namespace associated with a part, or prop.",
+        title='Item Namespace Reference'
+    )
 
 
 class Alter(OscalBaseModel):
@@ -177,10 +229,14 @@ class Alter(OscalBaseModel):
     Specifies changes to be made to an included control when a profile is resolved.
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
+    model_config = ConfigDict(extra='forbid', )
+    control_id: TokenDatatype = Field(
+        ...,
+        alias='control-id',
+        description=
+        'A reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).',
+        title='Control Identifier Reference'
     )
-    control_id: TokenDatatype = Field(..., alias='control-id', description='A reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).', title='Control Identifier Reference')
     removes: Optional[List[Remove]] = Field(None, min_length=1)
     adds: Optional[List[Add]] = Field(None, min_length=1)
 
@@ -190,9 +246,7 @@ class Modify(OscalBaseModel):
     Set parameters or amend controls in resolution.
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
-    )
+    model_config = ConfigDict(extra='forbid', )
     set_parameters: Optional[List[SetParameter]] = Field(None, alias='set-parameters', min_length=1)
     alters: Optional[List[Alter]] = Field(None, min_length=1)
 
@@ -202,10 +256,10 @@ class InsertControls(OscalBaseModel):
     Specifies which controls to use in the containing context.
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
+    model_config = ConfigDict(extra='forbid', )
+    order: Optional[OrderValidValues] = Field(
+        None, description='A designation of how a selection of controls in a profile is to be ordered.', title='Order'
     )
-    order: Optional[OrderValidValues] = Field(None, description='A designation of how a selection of controls in a profile is to be ordered.', title='Order')
     include_all: Optional[common.IncludeAll] = Field(None, alias='include-all')
     include_controls: Optional[List[SelectControl]] = Field(None, alias='include-controls', min_length=1)
     exclude_controls: Optional[List[SelectControl]] = Field(None, alias='exclude-controls', min_length=1)
@@ -216,11 +270,14 @@ class Group(OscalBaseModel):
     A group of (selected) controls or of groups of controls.
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
-    )
+    model_config = ConfigDict(extra='forbid', )
     id: Optional[TokenDatatype] = Field(None, description='Identifies the group.', title='Group Identifier')
-    class_: Optional[TokenDatatype] = Field(None, alias='class', description='A textual label that provides a sub-type or characterization of the group.', title='Group Class')
+    class_: Optional[TokenDatatype] = Field(
+        None,
+        alias='class',
+        description='A textual label that provides a sub-type or characterization of the group.',
+        title='Group Class'
+    )
     title: str = Field(..., description='A name to be given to the group for use in display.', title='Group Title')
     params: Optional[List[common.Parameter]] = Field(None, min_length=1)
     props: Optional[List[common.Property]] = Field(None, min_length=1)
@@ -235,9 +292,7 @@ class Custom(OscalBaseModel):
     Provides an alternate grouping structure that selected controls will be placed in.
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
-    )
+    model_config = ConfigDict(extra='forbid', )
     groups: Optional[List[Group]] = Field(None, min_length=1)
     insert_controls: Optional[List[InsertControls]] = Field(None, alias='insert-controls', min_length=1)
 
@@ -247,10 +302,10 @@ class Combine(OscalBaseModel):
     A Combine element defines how to resolve duplicate instances of the same control (e.g., controls with the same ID).
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
+    model_config = ConfigDict(extra='forbid', )
+    method: Optional[CombinationMethodValidValues] = Field(
+        None, description='Declare how clashing controls should be handled.', title='Combination Method'
     )
-    method: Optional[CombinationMethodValidValues] = Field(None, description='Declare how clashing controls should be handled.', title='Combination Method')
 
 
 class Merge(OscalBaseModel):
@@ -258,13 +313,28 @@ class Merge(OscalBaseModel):
     Provides structuring directives that instruct how controls are organized after profile resolution.
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
+    model_config = ConfigDict(extra='forbid', )
+    combine: Optional[Combine] = Field(
+        None,
+        description=
+        'A Combine element defines how to resolve duplicate instances of the same control (e.g., controls with the same ID).',
+        title='Combination Rule'
     )
-    combine: Optional[Combine] = Field(None, description='A Combine element defines how to resolve duplicate instances of the same control (e.g., controls with the same ID).', title='Combination Rule')
-    flat: Optional[Dict[str, Any]] = Field(None, description='Directs that controls appear without any grouping structure.', title='Flat Without Grouping')
-    as_is: Optional[BooleanDatatype] = Field(None, alias='as-is', description='Indicates that the controls selected should retain their original grouping as defined in the import source.', title='Group As-Is')
-    custom: Optional[Custom] = Field(None, description='Provides an alternate grouping structure that selected controls will be placed in.', title='Custom Grouping')
+    flat: Optional[Dict[str, Any]] = Field(
+        None, description='Directs that controls appear without any grouping structure.', title='Flat Without Grouping'
+    )
+    as_is: Optional[BooleanDatatype] = Field(
+        None,
+        alias='as-is',
+        description=
+        'Indicates that the controls selected should retain their original grouping as defined in the import source.',
+        title='Group As-Is'
+    )
+    custom: Optional[Custom] = Field(
+        None,
+        description='Provides an alternate grouping structure that selected controls will be placed in.',
+        title='Custom Grouping'
+    )
 
 
 class Profile(OscalBaseModel):
@@ -272,10 +342,12 @@ class Profile(OscalBaseModel):
     Each OSCAL profile is defined by a profile element.
     """
 
-    model_config = ConfigDict(
-        extra='forbid',
+    model_config = ConfigDict(extra='forbid', )
+    uuid: UUIDDatatype = Field(
+        ...,
+        description='Provides a globally unique means to identify a given profile instance.',
+        title='Profile Universally Unique Identifier'
     )
-    uuid: UUIDDatatype = Field(..., description='Provides a globally unique means to identify a given profile instance.', title='Profile Universally Unique Identifier')
     metadata: common.Metadata
     imports: List[Import] = Field(..., min_length=1)
     merge: Optional[Merge] = None

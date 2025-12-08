@@ -40,4 +40,4 @@ class OSCALAssembly(TrestleBaseModel):
     profiles: Optional[Dict[str, o_profile.Profile]] = None
     catalogs: Optional[Dict[str, o_catalog.Catalog]] = None
     components: Optional[Dict[str, o_component.ComponentDefinition]] = None
-    model_config = ConfigDict(populate_by_name=True, extra="forbid", validate_assignment=True)
+    model_config = ConfigDict(populate_by_name=True, extra='forbid', validate_assignment=True)
