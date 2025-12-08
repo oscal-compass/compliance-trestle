@@ -218,6 +218,7 @@ ignore = [
     "UP035",  # FIXME: `typing.X` is deprecated, use `x` instead (208 errors)
     "UP037",  # FIXME: Remove quotes from type annotation (1 error)
     "UP039",  # FIXME: Unnecessary parentheses after class definition (43 errors)
+    "UP045",  # FIXME: Use `X | None` for type annotations (112 errors)
     # FIXME: B - flake8-bugbear rules to fix
     "B017",   # FIXME: `assertRaises(Exception)` should be considered evil (6 errors)
     "B018",   # FIXME: Found useless expression (1 error)
@@ -239,6 +240,7 @@ ignore = [
     "SIM211", # FIXME: Use `not ...` instead of `False if ... else True` (2 errors)
     "SIM212", # FIXME: Use `... if ... else ...` instead of `... if not ... else ...` (2 errors)
     "SIM300", # FIXME: Yoda conditions are discouraged (29 errors)
+    "SIM905", # FIXME: Consider using a list literal instead of `str.split` (14 errors)
     "SIM910", # FIXME: Use `dict.get(key)` instead of `dict.get(key, None)` (3 errors)
     # FIXME: E - pycodestyle rules to fix
     "E713",   # FIXME: Test for membership should be `not in` (1 error)
@@ -254,6 +256,11 @@ ignore = [
     "S311",   # FIXME: Standard pseudo-random generators not suitable for crypto (14 errors)
     "S605",   # FIXME: Starting a process with a shell, possible injection (1 error)
     "S701",   # FIXME: Using jinja2 templates with `autoescape=False` (5 errors)
+    # FIXME: F - Pyflakes rules to fix
+    "F401",   # FIXME: Unused import (7 errors)
+    "F541",   # FIXME: f-string without any placeholders (1 error)
+    # FIXME: C4 - flake8-comprehensions rules to fix
+    "C408",   # FIXME: Unnecessary dict/list/tuple call (1 error)
 ]
 
 [tool.ruff.lint.per-file-ignores]
