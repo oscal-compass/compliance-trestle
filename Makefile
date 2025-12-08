@@ -45,6 +45,9 @@ test-all::
 test::
 	python -m pytest --exitfirst -n auto
 
+test0:: gen-oscal-clean
+	python -m pytest --exitfirst -n 0
+
 test-cov::
 	python -m pytest --cov=trestle  --exitfirst -n auto -vv --cov-report=xml --cov-fail-under=96
 

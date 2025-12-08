@@ -39,6 +39,7 @@ from trestle.oscal.common import RelatedObservation
 from trestle.oscal.common import TaskValidValues
 from trestle.oscal.common import TokenDatatype
 from trestle.oscal.common import RelatedObservation as RelatedObservation1
+from trestle.oscal.common import UUIDDatatype
 
 
 class LocalDefinitions(OscalBaseModel):

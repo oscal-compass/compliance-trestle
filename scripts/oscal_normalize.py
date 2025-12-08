@@ -749,6 +749,7 @@ additions = {
         'from trestle.oscal.common import SystemComponent',
         'from trestle.oscal.common import TaskValidValues',
         'from trestle.oscal.common import TokenDatatype',
+        'from trestle.oscal.common import UUIDDatatype',
     ],
     'assessment_results': [
         'from trestle.oscal.common import AssessmentAssets',
@@ -757,21 +758,37 @@ additions = {
         'from trestle.oscal.common import SystemComponent',
         'from trestle.oscal.common import TaskValidValues',
         'from trestle.oscal.common import TokenDatatype',
+        'from trestle.oscal.common import UUIDDatatype',
     ],
-    'catalog': [],
+    'catalog': [
+        'from trestle.oscal.common import TokenDatatype',
+        'from trestle.oscal.common import UUIDDatatype',
+    ],
     'common': [],
     'component': [
+        'from trestle.oscal.common import StringDatatype',
+        'from trestle.oscal.common import TokenDatatype',
         'from trestle.oscal.common import URIReferenceDatatype',
+        'from trestle.oscal.common import UUIDDatatype',
     ],
     'poam': [
         'from trestle.oscal.common import RelatedObservation',
         'from trestle.oscal.common import TaskValidValues',
         'from trestle.oscal.common import TokenDatatype',
         'from trestle.oscal.common import RelatedObservation as RelatedObservation1',
+        'from trestle.oscal.common import UUIDDatatype',
     ],
-    'profile': [],
+    'profile': [
+        'from trestle.oscal.common import StringDatatype',
+        'from trestle.oscal.common import TokenDatatype',
+        'from trestle.oscal.common import UUIDDatatype',
+    ],
     'ssp': [
-        'from trestle.oscal.common import Status, SystemComponent',
+        'from trestle.oscal.common import StringDatatype',
+        'from trestle.oscal.common import Status',
+        'from trestle.oscal.common import SystemComponent',
+        'from trestle.oscal.common import TokenDatatype',
+        'from trestle.oscal.common import UUIDDatatype',
     ],
 }
 

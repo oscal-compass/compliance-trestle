@@ -35,6 +35,8 @@ from pydantic import AnyUrl, AwareDatetime, ConfigDict, EmailStr, Extra, Field, 
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
 import trestle.oscal.common as common
+from trestle.oscal.common import TokenDatatype
+from trestle.oscal.common import UUIDDatatype
 
 
 class Control(OscalBaseModel):

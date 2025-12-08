@@ -30,10 +30,11 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic import AnyUrl, AwareDatetime, ConfigDict, EmailStr, Extra, Field, RootModel, conint, constr, model_validator
+from pydantic import StringConstraints, AnyUrl, AwareDatetime, ConfigDict, EmailStr, Extra, Field, RootModel, conint, model_validator
 
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
+from typing_extensions import Annotated
 
 
 NonNegativeIntegerDatatype = OscalBaseModel
@@ -41,8 +42,8 @@ PositiveIntegerDatatype = OscalBaseModel
 EmailAddressDatatype = OscalBaseModel
 
 
-class UUIDDatatype(RootModel[constr(pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$')]):
-    root: constr(pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(..., description="A type 4 ('random' or 'pseudorandom') or type 5 UUID per RFC 4122.")
+class UUIDDatatype(RootModel[Annotated[str, StringConstraints(pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$')]]):
+    root: Annotated[str, StringConstraints(pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$')] = Field(..., description="A type 4 ('random' or 'pseudorandom') or type 5 UUID per RFC 4122.")
 
 
 class URIReferenceDatatype(RootModel[str]):
@@ -53,8 +54,8 @@ class URIDatatype(RootModel[AnyUrl]):
     root: AnyUrl = Field(..., description='A universal resource identifier (URI) formatted according to RFC3986.')
 
 
-class TokenDatatype(RootModel[constr(pattern=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$')]):
-    root: constr(pattern=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') = Field(..., description='A non-colonized name as defined by XML Schema Part 2: Datatypes Second Edition. https://www.w3.org/TR/xmlschema11-2/#NCName.')
+class TokenDatatype(RootModel[Annotated[str, StringConstraints(pattern=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$')]]):
+    root: Annotated[str, StringConstraints(pattern=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$')] = Field(..., description='A non-colonized name as defined by XML Schema Part 2: Datatypes Second Edition. https://www.w3.org/TR/xmlschema11-2/#NCName.')
 
 
 class TimeUnitValidValues(Enum):
@@ -128,8 +129,8 @@ class SubjectReferenceValidValues(Enum):
     resource = 'resource'
 
 
-class StringDatatype(RootModel[constr(pattern=r'^\S(.*\S)?$')]):
-    root: constr(pattern=r'^\S(.*\S)?$') = Field(..., description='A non-empty string with leading and trailing whitespace disallowed. Whitespace is: U+9, U+10, U+32 or [ \n\t]+')
+class StringDatatype(RootModel[Annotated[str, StringConstraints(pattern=r'^\S(.*\S)?$')]]):
+    root: Annotated[str, StringConstraints(pattern=r'^\S(.*\S)?$')] = Field(..., description='A non-empty string with leading and trailing whitespace disallowed. Whitespace is: U+9, U+10, U+32 or [ \n\t]+')
 
 
 class State(Enum):
@@ -635,8 +636,8 @@ class Citation(OscalBaseModel):
     links: Optional[List[Link]] = Field(None, min_length=1)
 
 
-class Base64Datatype(RootModel[constr(pattern=r'^[0-9A-Za-z+/]+={0,2}$')]):
-    root: constr(pattern=r'^[0-9A-Za-z+/]+={0,2}$') = Field(..., description='Binary data encoded using the Base 64 encoding algorithm as defined by RFC4648.')
+class Base64Datatype(RootModel[Annotated[str, StringConstraints(pattern=r'^[0-9A-Za-z+/]+={0,2}$')]]):
+    root: Annotated[str, StringConstraints(pattern=r'^[0-9A-Za-z+/]+={0,2}$')] = Field(..., description='Binary data encoded using the Base 64 encoding algorithm as defined by RFC4648.')
 
 
 class Base64(OscalBaseModel):
