@@ -39,11 +39,13 @@ code-format:
 code-lint:
 	hatch fmt --linter --check
 
+code-lint-fix:
+	hatch fmt --linter
 code-typing:
 	mypy --pretty trestle
 
 # Run all code quality checks
-code-check: code-format-check code-lint code-typing
+code-check: code-format code-lint code-typing
 
 test-all::
 	python -m pytest -n auto
