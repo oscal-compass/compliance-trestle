@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for cli module command validate."""
+
 import argparse
 import pathlib
 import shutil
@@ -52,9 +53,13 @@ md_path = 'md_comp'
 @pytest.mark.parametrize(
     'name, mode, parent',
     [
-        ('my_test_model', '-f', False), ('my_test_model', '-n', False), ('my_test_model', '-f', True),
-        ('my_test_model', '-t', False), ('my_test_model', '-a', False), ('my_test_model', '-x', False)
-    ]
+        ('my_test_model', '-f', False),
+        ('my_test_model', '-n', False),
+        ('my_test_model', '-f', True),
+        ('my_test_model', '-t', False),
+        ('my_test_model', '-a', False),
+        ('my_test_model', '-x', False),
+    ],
 )
 def test_validation_happy(
     name, mode, parent, tmp_trestle_dir: pathlib.Path, testdata_dir: pathlib.Path, monkeypatch: MonkeyPatch
@@ -64,11 +69,11 @@ def test_validation_happy(
     (tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model2').mkdir(exist_ok=True, parents=True)
     shutil.copyfile(
         testdata_dir / 'json/minimal_catalog.json',
-        tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model/catalog.json'
+        tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model/catalog.json',
     )
     shutil.copyfile(
         testdata_dir / 'json/minimal_catalog.json',
-        tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model2/catalog.json'
+        tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model2/catalog.json',
     )
 
     model_def_file = tmp_trestle_dir / test_utils.CATALOGS_DIR / ('my_test_model/catalog.json')
@@ -95,10 +100,14 @@ def test_validation_happy(
 @pytest.mark.parametrize(
     'name, mode, parent, status',
     [
-        ('my_test_model', '-f', False, 1), ('my_test_model', '-n', False, 4), ('my_test_model', '-f', True, 1),
-        ('my_test_model', '-t', False, 1), ('my_test_model', '-a', False, 1), ('foo', '-n', False, 4),
-        ('my_test_model', '-x', False, 4)
-    ]
+        ('my_test_model', '-f', False, 1),
+        ('my_test_model', '-n', False, 4),
+        ('my_test_model', '-f', True, 1),
+        ('my_test_model', '-t', False, 1),
+        ('my_test_model', '-a', False, 1),
+        ('foo', '-n', False, 4),
+        ('my_test_model', '-x', False, 4),
+    ],
 )
 def test_validation_unhappy(
     name, mode, parent, status, tmp_trestle_dir: pathlib.Path, testdata_dir: pathlib.Path, monkeypatch: MonkeyPatch
@@ -108,11 +117,11 @@ def test_validation_unhappy(
     (tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model2').mkdir(exist_ok=True, parents=True)
     shutil.copyfile(
         testdata_dir / 'json/minimal_catalog_bad_oscal_version.json',
-        tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model/catalog.json'
+        tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model/catalog.json',
     )
     shutil.copyfile(
         testdata_dir / 'json/minimal_catalog.json',
-        tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model2/catalog.json'
+        tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model2/catalog.json',
     )
 
     model_def_file = tmp_trestle_dir / test_utils.CATALOGS_DIR / ('my_test_model/catalog.json')
@@ -137,11 +146,18 @@ def test_validation_unhappy(
 @pytest.mark.parametrize(
     'name, mode, parent, test_id, code',
     [
-        ('my_ap', '-f', False, 'id1', 0), ('my_ap', '-n', False, 'id1', 0), ('my_ap', '-f', True, 'id1', 0),
-        ('my_ap', '-t', False, 'id1', 0), ('my_ap', '-a', False, 'id1', 0), ('my_ap', '-f', False, 'foo', 4),
-        ('my_ap', '-n', False, 'foo', 4), ('my_ap', '-f', True, 'foo', 4), ('my_ap', '-t', False, 'foo', 4),
-        ('my_ap', '-a', False, 'foo', 4), ('foo', '-n', False, 'id1', 4)
-    ]
+        ('my_ap', '-f', False, 'id1', 0),
+        ('my_ap', '-n', False, 'id1', 0),
+        ('my_ap', '-f', True, 'id1', 0),
+        ('my_ap', '-t', False, 'id1', 0),
+        ('my_ap', '-a', False, 'id1', 0),
+        ('my_ap', '-f', False, 'foo', 4),
+        ('my_ap', '-n', False, 'foo', 4),
+        ('my_ap', '-f', True, 'foo', 4),
+        ('my_ap', '-t', False, 'foo', 4),
+        ('my_ap', '-a', False, 'foo', 4),
+        ('foo', '-n', False, 'id1', 4),
+    ],
 )
 def test_role_refs_validator(
     name, mode, parent, test_id, code, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
@@ -260,7 +276,8 @@ def test_validate_dup_uuids(
 
     # force the control implementation to have same uuid as the first component and confirm invalid
     sample_component_definition.components[1].control_implementations[0].uuid = sample_component_definition.components[
-        0].uuid
+        0
+    ].uuid
     assert not validator.model_is_valid(sample_component_definition, True, None)
 
     assert validator.model_is_valid(sample_trestle_profile, True)
@@ -289,7 +306,7 @@ def test_validate_distributed(
         file='catalogs/mycatalog/catalog.json',
         verbose=1,
         element='catalog.groups.*.controls.*',
-        trestle_root=tmp_trestle_dir
+        trestle_root=tmp_trestle_dir,
     )
     _ = SplitCmd()._run(args)
     test_args = 'trestle validate -a -v'.split(' ')

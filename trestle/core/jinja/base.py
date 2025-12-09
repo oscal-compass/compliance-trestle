@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle core.jinja base class."""
+
 from jinja2 import lexer, nodes
 from jinja2.environment import Environment
 from jinja2.ext import Extension

@@ -173,7 +173,7 @@ class XccdfTransformer(XccdfResultToOscalARTransformer):
     """Legacy class name."""
 
 
-class RuleUse():
+class RuleUse:
     """Represents one rule of XCCDF data."""
 
     def __init__(self, args: Dict[str, str]) -> None:
@@ -210,7 +210,7 @@ class RuleUse():
         return f'https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/{self.scanner_name}'  # noqa: E231
 
 
-class _XccdfResult():
+class _XccdfResult:
     """Represents one result of XCCDF data."""
 
     def __init__(self, xccdf_xml: str) -> None:
@@ -365,7 +365,7 @@ class _XccdfResult():
                     'time': time,
                     'result': result,
                     'severity': severity,
-                    'weight': weight
+                    'weight': weight,
                 }
                 rule_use = RuleUse(args)
                 yield rule_use
@@ -375,7 +375,7 @@ class _XccdfResult():
         return self._parse_xml()
 
 
-class _OscalResultsFactory():
+class _OscalResultsFactory:
     """Build XCCDF OSCAL entities."""
 
     default_timestamp = ResultsTransformer.get_timestamp()
@@ -387,7 +387,7 @@ class _OscalResultsFactory():
         type_: str,
         timestamp: str = default_timestamp,
         checking: bool = False,
-        tags: Dict = None
+        tags: Dict = None,
     ) -> None:
         """Initialize."""
         self._title = title

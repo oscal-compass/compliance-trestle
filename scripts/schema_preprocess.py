@@ -456,7 +456,15 @@ def create_refs(model_name: str) -> None:
         'oscal-ssp-oscal-metadata:metadata',
     ]
     navigation = [
-        'properties', 'parties', 'items', 'properties', 'external-ids', 'items', 'properties', 'scheme', 'anyOf'
+        'properties',
+        'parties',
+        'items',
+        'properties',
+        'external-ids',
+        'items',
+        'properties',
+        'scheme',
+        'anyOf',
     ]
     ref_name = 'ExternalSchemeValidValues'
     for root in list_:
@@ -560,7 +568,15 @@ def create_refs(model_name: str) -> None:
         'oscal-profile-oscal-profile:modify',
     ]
     navigation = [
-        'properties', 'alters', 'items', 'properties', 'removes', 'items', 'properties', 'by-item-name', 'allOf'
+        'properties',
+        'alters',
+        'items',
+        'properties',
+        'removes',
+        'items',
+        'properties',
+        'by-item-name',
+        'allOf',
     ]
     ref_name = 'ItemNameValidValues'
     for root in list_:

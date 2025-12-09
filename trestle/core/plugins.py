@@ -25,11 +25,7 @@ from typing import Any, Iterator, Tuple
 logger = logging.getLogger(__name__)
 
 _discovered_plugins = {
-    name: importlib.import_module(name)
-    for finder,
-    name,
-    ispkg in pkgutil.iter_modules()
-    if name.startswith('trestle_')
+    name: importlib.import_module(name) for finder, name, ispkg in pkgutil.iter_modules() if name.startswith('trestle_')
 }
 
 

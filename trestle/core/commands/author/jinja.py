@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle Commands."""
+
 import argparse
 import logging
 import operator
@@ -58,25 +59,25 @@ class JinjaCmd(CommandPlusDocs):
             '-lut',
             '--look-up-table',
             help='Key-value pair table, stored as yaml, to be passed to jinja as variables',
-            required=False
+            required=False,
         )
         self.add_argument(
             '-elp',
             '--external-lut-prefix',
             help='Prefix paths for LUT, to maintain compatibility with other templating systems',
-            required=False
+            required=False,
         )
         self.add_argument(
             '-nc',
             '--number-captions',
             help='Add incremental numbering to table and image captions, in the form Table n - ... and Figure n - ...',
-            action='store_true'
+            action='store_true',
         )
         self.add_argument(
             '-bf',
             '--bracket-format',
             help='With -sv, allows brackets around value, e.g. [.] or ((.)), with the dot representing the value.',
-            required=False
+            required=False,
         )
         self.add_argument(
             '-vap',
@@ -84,7 +85,7 @@ class JinjaCmd(CommandPlusDocs):
             help='Places a prefix in front of the parameter string if a value has been assigned.',
             required=False,
             type=str,
-            default=''
+            default='',
         )
         self.add_argument(
             '-vnap',
@@ -92,7 +93,7 @@ class JinjaCmd(CommandPlusDocs):
             help='Places a prefix in front of the parameter string if a value has *not* been assigned.',
             required=False,
             type=str,
-            default=''
+            default='',
         )
         self.add_argument(
             '-ssp', '--system-security-plan', help='An optional SSP to be passed', default=None, required=False
@@ -103,7 +104,7 @@ class JinjaCmd(CommandPlusDocs):
             '--docs-profile',
             help='Output profile controls to separate markdown files',
             action='store_true',
-            required=False
+            required=False,
         )
 
     def _run(self, args: argparse.Namespace) -> None:
@@ -141,7 +142,7 @@ class JinjaCmd(CommandPlusDocs):
                     lut,
                     parameters_formatting=args.bracket_format,
                     value_assigned_prefix=args.value_assigned_prefix,
-                    value_not_assigned_prefix=args.value_not_assigned_prefix
+                    value_not_assigned_prefix=args.value_not_assigned_prefix,
                 )
 
             return JinjaCmd.jinja_ify(
@@ -154,7 +155,7 @@ class JinjaCmd(CommandPlusDocs):
                 number_captions=args.number_captions,
                 parameters_formatting=args.bracket_format,
                 value_assigned_prefix=args.value_assigned_prefix,
-                value_not_assigned_prefix=args.value_not_assigned_prefix
+                value_not_assigned_prefix=args.value_not_assigned_prefix,
             )
 
         except Exception as e:  # pragma: no cover
@@ -186,7 +187,7 @@ class JinjaCmd(CommandPlusDocs):
         number_captions: Optional[bool] = False,
         parameters_formatting: Optional[str] = None,
         value_assigned_prefix: Optional[str] = None,
-        value_not_assigned_prefix: Optional[str] = None
+        value_not_assigned_prefix: Optional[str] = None,
     ) -> int:
         """Run jinja over an input file with additional booleans."""
         template_folder = pathlib.Path.cwd()
@@ -213,7 +214,7 @@ class JinjaCmd(CommandPlusDocs):
                 ParameterRep.ASSIGNMENT_FORM,
                 False,
                 value_assigned_prefix,
-                value_not_assigned_prefix
+                value_not_assigned_prefix,
             )
 
             ssp_writer = SSPMarkdownWriter(trestle_root)
@@ -244,7 +245,7 @@ class JinjaCmd(CommandPlusDocs):
         lut: Dict[str, Any],
         parameters_formatting: Optional[str] = None,
         value_assigned_prefix: Optional[str] = None,
-        value_not_assigned_prefix: Optional[str] = None
+        value_not_assigned_prefix: Optional[str] = None,
     ) -> int:
         """Output profile as multiple markdown files using Jinja."""
         template_folder = pathlib.Path.cwd()
@@ -261,7 +262,7 @@ class JinjaCmd(CommandPlusDocs):
             ParameterRep.ASSIGNMENT_FORM,
             False,
             value_assigned_prefix,
-            value_not_assigned_prefix
+            value_not_assigned_prefix,
         )
         catalog_interface = CatalogInterface(resolved_catalog)
 
@@ -279,10 +280,7 @@ class JinjaCmd(CommandPlusDocs):
                 control_writer = DocsControlWriter()
 
                 jinja_env = Environment(
-                    loader=FileSystemLoader(template_folder),
-                    extensions=extensions(),
-                    trim_blocks=True,
-                    autoescape=True
+                    loader=FileSystemLoader(template_folder), extensions=extensions(), trim_blocks=True, autoescape=True
                 )
                 template = jinja_env.get_template(str(r_input_file))
                 lut['catalog_interface'] = catalog_interface
@@ -314,7 +312,7 @@ class JinjaCmd(CommandPlusDocs):
                 loader=ChoiceLoader([dict_loader, FileSystemLoader(template_folder)]),
                 extensions=extensions(),
                 autoescape=True,
-                trim_blocks=True
+                trim_blocks=True,
             )
             template = jinja_env.get_template(str(random_name))
             new_output = template.render(**lut)

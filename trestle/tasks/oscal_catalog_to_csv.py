@@ -276,7 +276,7 @@ class CatalogHelper:
         return choices
 
 
-class ContentManager():
+class ContentManager:
     """Content manager."""
 
     def __init__(self, catalog_helper: CatalogHelper) -> None:

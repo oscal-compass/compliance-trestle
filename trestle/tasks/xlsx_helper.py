@@ -39,7 +39,7 @@ def get_trestle_version() -> str:
     return __version__
 
 
-class Column():
+class Column:
     """Spread sheet columns."""
 
     control_id = 'ControlId'
@@ -473,16 +473,18 @@ class XlsxHelper:
             elif self._column.resource_title in cell_tokens:
                 self._add_column(self._column.resource_title, column, 0)
         # insure expected columns found
-        for name in [self._column.control_id,
-                     self._column.control_text,
-                     self._column.rule_name_id,
-                     self._column.rule_version,
-                     self._column.goal_name_id,
-                     self._column.goal_version,
-                     self._column.nist_mappings,
-                     self._column.resource_title,
-                     self._column.rename_parameter_opt_parm,
-                     self._column.rename_values_alternatives]:
+        for name in [
+            self._column.control_id,
+            self._column.control_text,
+            self._column.rule_name_id,
+            self._column.rule_version,
+            self._column.goal_name_id,
+            self._column.goal_version,
+            self._column.nist_mappings,
+            self._column.resource_title,
+            self._column.rename_parameter_opt_parm,
+            self._column.rename_values_alternatives,
+        ]:
             if name not in self.map_name_to_letters.keys():
                 raise RuntimeError(f'missing column {name}')
 

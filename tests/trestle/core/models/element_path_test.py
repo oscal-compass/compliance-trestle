@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle elements module."""
+
 import pathlib
 from typing import Any, List, Type
 
@@ -33,7 +34,11 @@ def test_element_path_init(sample_nist_component_def: component.ComponentDefinit
     assert ElementPath('component-definition.components.*').get() == ['component-definition', 'components', '*']
     assert ElementPath('component-definition.components.0').get() == ['component-definition', 'components', '0']
     assert ElementPath('component-definition.metadata.parties.0.uuid').get() == [
-        'component-definition', 'metadata', 'parties', '0', 'uuid'
+        'component-definition',
+        'metadata',
+        'parties',
+        '0',
+        'uuid',
     ]
     assert ElementPath('groups.*').get() == ['groups', '*']
 
@@ -72,13 +77,16 @@ def test_element_path_get_element_name():
 
 def test_element_path_get_preceding_path(sample_nist_component_def: component.ComponentDefinition):
     """Test get parent path method."""
-    assert ElementPath('component-definition.metadata.title'
-                       ).get_preceding_path() == ElementPath('component-definition.metadata')
+    assert ElementPath('component-definition.metadata.title').get_preceding_path() == ElementPath(
+        'component-definition.metadata'
+    )
     assert ElementPath('component-definition.metadata').get_preceding_path() == ElementPath('component-definition')
-    assert ElementPath('component-definition.metadata.parties.*'
-                       ).get_preceding_path() == ElementPath('component-definition.metadata.parties')
-    assert ElementPath('component-definition.metadata.*'
-                       ).get_preceding_path() == ElementPath('component-definition.metadata')
+    assert ElementPath('component-definition.metadata.parties.*').get_preceding_path() == ElementPath(
+        'component-definition.metadata.parties'
+    )
+    assert ElementPath('component-definition.metadata.*').get_preceding_path() == ElementPath(
+        'component-definition.metadata'
+    )
 
     # element_path with parent path
     parent_path = ElementPath('component-definition.metadata')
@@ -113,23 +121,25 @@ def test_element_path_eq(sample_nist_component_def):
 
 def test_element_path_to_file_path():
     """Test to file path method."""
-    assert ElementPath('component-definition.metadata.title'
-                       ).to_file_path() == pathlib.Path('./component-definition/metadata/title')
+    assert ElementPath('component-definition.metadata.title').to_file_path() == pathlib.Path(
+        './component-definition/metadata/title'
+    )
 
-    assert ElementPath('component-definition.metadata.title').to_file_path(
-        FileContentType.YAML
-    ) == pathlib.Path('./component-definition/metadata/title.yaml')
+    assert ElementPath('component-definition.metadata.title').to_file_path(FileContentType.YAML) == pathlib.Path(
+        './component-definition/metadata/title.yaml'
+    )
 
-    assert ElementPath('component-definition.metadata.parties').to_file_path(
-        FileContentType.JSON
-    ) == pathlib.Path('./component-definition/metadata/parties.json')
+    assert ElementPath('component-definition.metadata.parties').to_file_path(FileContentType.JSON) == pathlib.Path(
+        './component-definition/metadata/parties.json'
+    )
 
-    assert ElementPath('component-definition.metadata.parties.*').to_file_path(
-        FileContentType.YAML
-    ) == pathlib.Path('./component-definition/metadata/parties.yaml')
+    assert ElementPath('component-definition.metadata.parties.*').to_file_path(FileContentType.YAML) == pathlib.Path(
+        './component-definition/metadata/parties.yaml'
+    )
 
-    assert ElementPath('group.controls.*').to_file_path(FileContentType.YAML,
-                                                        '00000__group') == pathlib.Path('./00000__group/controls.yaml')
+    assert ElementPath('group.controls.*').to_file_path(FileContentType.YAML, '00000__group') == pathlib.Path(
+        './00000__group/controls.yaml'
+    )
 
     element_path = ElementPath('component.control-implementations.*', ElementPath('component-definition.components.*'))
     assert element_path.to_file_path() == pathlib.Path('./component/control-implementations')
@@ -142,12 +152,12 @@ def test_element_path_to_file_path():
 def test_element_path_to_root_path():
     """Test to file path method."""
     assert ElementPath('component-definition.metadata.title').to_root_path() == pathlib.Path('./component-definition')
-    assert ElementPath('component-definition.metadata.title').to_root_path(
-        FileContentType.YAML
-    ) == pathlib.Path('./component-definition.yaml')
-    assert ElementPath('component-definition.metadata.title').to_root_path(
-        FileContentType.JSON
-    ) == pathlib.Path('./component-definition.json')
+    assert ElementPath('component-definition.metadata.title').to_root_path(FileContentType.YAML) == pathlib.Path(
+        './component-definition.yaml'
+    )
+    assert ElementPath('component-definition.metadata.title').to_root_path(FileContentType.JSON) == pathlib.Path(
+        './component-definition.json'
+    )
 
     # error for invalid content type - 1
     with pytest.raises(TrestleError):
@@ -180,14 +190,17 @@ def test_make_relative():
     'element_path, leaf_type, provided_type, raise_exception',
     [
         ('catalog.metadata', common.Metadata, None, False),
-        ('catalog.metadata', common.Metadata, catalog.Catalog, False), ('catalog', catalog.Catalog, None, False),
+        ('catalog.metadata', common.Metadata, catalog.Catalog, False),
+        ('catalog', catalog.Catalog, None, False),
         ('catalog.controls.control', catalog.Control, None, False),
-        ('catalog.controls.*', catalog.Control, None, False), ('catalog.controls.0', catalog.Control, None, False),
+        ('catalog.controls.*', catalog.Control, None, False),
+        ('catalog.controls.0', catalog.Control, None, False),
         ('catalog.controls.1', catalog.Control, None, False),
         ('group.controls.*.parts.part', common.Part, catalog.Group, False),
-        ('catalog.*.roles.role', common.Role, None, True), ('metadata.roles.role', common.Role, None, True),
-        ('catalog.controls', List[catalog.Control], None, False)
-    ]
+        ('catalog.*.roles.role', common.Role, None, True),
+        ('metadata.roles.role', common.Role, None, True),
+        ('catalog.controls', List[catalog.Control], None, False),
+    ],
 )
 def test_get_type_from_element_path(
     element_path: str, leaf_type: Type[Any], provided_type: Type[Any], raise_exception: bool
@@ -213,11 +226,13 @@ def test_get_type_from_element_path(
 @pytest.mark.parametrize(
     'element_path, collection, type_or_inner_type, exception_expected',
     [
-        ('catalog.metadata', False, common.Metadata, False), ('catalog.controls', True, catalog.Control, False),
+        ('catalog.metadata', False, common.Metadata, False),
+        ('catalog.controls', True, catalog.Control, False),
         ('catalog.controls.control.controls', True, catalog.Control, False),
-        ('catalog.controls.control', False, catalog.Control, False), ('catalog.*', False, List[catalog.Control], True),
-        ('catalog.controls.*', False, catalog.Control, False)
-    ]
+        ('catalog.controls.control', False, catalog.Control, False),
+        ('catalog.*', False, List[catalog.Control], True),
+        ('catalog.controls.*', False, catalog.Control, False),
+    ],
 )
 def test_get_obm_wrapped_type(
     element_path: str, collection: bool, type_or_inner_type: Type[OscalBaseModel], exception_expected: bool

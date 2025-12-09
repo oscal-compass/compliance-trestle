@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle task command."""
+
 import argparse
 import configparser
 import inspect
@@ -45,7 +46,7 @@ class TaskCmd(CommandPlusDocs):
             'task',
             nargs='?',
             type=str,
-            help='The name of the task to be run, trestle task -l will list available tasks.'
+            help='The name of the task to be run, trestle task -l will list available tasks.',
         )
         self.add_argument('-l', '--list', action='store_true', help='List the available tasks')
         self.add_argument(

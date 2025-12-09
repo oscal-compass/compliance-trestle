@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 """Parsing of tags for mike."""
+
 import sys
 
 if __name__ == '__main__':

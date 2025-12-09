@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle file system utils."""
+
 import glob
 import json
 import logging
@@ -202,7 +203,7 @@ def extract_project_model_path(path: pathlib.Path) -> Optional[pathlib.Path]:
     """Get the base path of the trestle model project."""
     if len(path.parts) > 2:
         for i in range(2, len(path.parts)):
-            current = pathlib.Path(path.parts[0]).joinpath(*path.parts[1:i + 1])
+            current = pathlib.Path(path.parts[0]).joinpath(*path.parts[1 : i + 1])
             if _is_valid_project_model_path(current):
                 return current
     return None

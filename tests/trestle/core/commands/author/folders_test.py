@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle author folders subcommand."""
+
 import pathlib
 import shutil
 import sys
@@ -33,9 +34,10 @@ from trestle.core.commands.author.consts import START_TEMPLATE_VERSION
 @pytest.mark.parametrize(
     'command_string, return_code',
     [
-        ('trestle author folders setup', 2), ('trestle author folders setup --task-name foobaa', 0),
-        ('trestle author folders setup --task-name catalogs', 1)
-    ]
+        ('trestle author folders setup', 2),
+        ('trestle author folders setup --task-name foobaa', 0),
+        ('trestle author folders setup --task-name catalogs', 1),
+    ],
 )
 def test_governed_folders_high(
     tmp_trestle_dir: pathlib.Path, command_string: str, return_code: int, monkeypatch: MonkeyPatch
@@ -59,7 +61,7 @@ def test_governed_folders_high(
             0,
             0,
             0,
-            False
+            False,
         ),
         (
             'catalogs',
@@ -68,7 +70,7 @@ def test_governed_folders_high(
             1,
             1,
             1,
-            False
+            False,
         ),
         (
             'another_test_task/with_a_sub_dir',
@@ -77,7 +79,7 @@ def test_governed_folders_high(
             0,
             0,
             0,
-            False
+            False,
         ),
         (
             'another_test_task/with_a_sub_dir',
@@ -86,7 +88,7 @@ def test_governed_folders_high(
             0,
             0,
             1,
-            False
+            False,
         ),
         (
             'another_test_task/with_a_sub_dir',
@@ -95,7 +97,7 @@ def test_governed_folders_high(
             0,
             0,
             1,
-            False
+            False,
         ),
         (
             'another_test_task/with_a_sub_dir',
@@ -104,7 +106,7 @@ def test_governed_folders_high(
             0,
             0,
             1,
-            False
+            False,
         ),
         (
             'another_test_task/with_a_sub_dir',
@@ -113,7 +115,7 @@ def test_governed_folders_high(
             0,
             0,
             1,
-            False
+            False,
         ),
         (
             'another_test_task_1',
@@ -122,7 +124,7 @@ def test_governed_folders_high(
             0,
             0,
             1,
-            False
+            False,
         ),
         (
             'another_test_task_2',
@@ -131,7 +133,7 @@ def test_governed_folders_high(
             0,
             1,
             1,
-            False
+            False,
         ),
         (
             'another_test_task_3',
@@ -140,7 +142,7 @@ def test_governed_folders_high(
             0,
             1,
             1,
-            False
+            False,
         ),
         (
             'another_test_task_4',
@@ -149,7 +151,7 @@ def test_governed_folders_high(
             0,
             0,
             0,
-            True
+            True,
         ),
         (
             'another_test_task_5',
@@ -158,7 +160,7 @@ def test_governed_folders_high(
             0,
             0,
             0,
-            False
+            False,
         ),
         # Note this will pass as templates are permissive to allow extra files
         # (e.g. it validates what people want to be validated and not supplementary assets)
@@ -169,7 +171,7 @@ def test_governed_folders_high(
             0,
             0,
             0,
-            True
+            True,
         ),
         (
             'another_test_task_7',
@@ -178,7 +180,7 @@ def test_governed_folders_high(
             0,
             0,
             1,
-            True
+            True,
         ),
         (
             'another_test_task_8',
@@ -187,7 +189,7 @@ def test_governed_folders_high(
             0,
             1,
             1,
-            False
+            False,
         ),
         (
             'another_test_task_9',
@@ -196,7 +198,7 @@ def test_governed_folders_high(
             0,
             0,
             0,  # this passes as random extra files are allowed there. This should be looked at.
-            True
+            True,
         ),
         (
             'another_test_task_10',
@@ -205,7 +207,7 @@ def test_governed_folders_high(
             0,
             1,
             1,
-            True
+            True,
         ),
         (
             'another_test_task_11',
@@ -214,7 +216,7 @@ def test_governed_folders_high(
             0,
             0,
             0,
-            True
+            True,
         ),
         (
             'another_test_task_12',
@@ -223,9 +225,9 @@ def test_governed_folders_high(
             0,
             0,
             1,
-            True
-        )
-    ]
+            True,
+        ),
+    ],
 )
 def test_e2e(
     task_name: str,
@@ -237,7 +239,7 @@ def test_e2e(
     readme_validate: bool,
     testdata_dir: pathlib.Path,
     tmp_trestle_dir: pathlib.Path,
-    monkeypatch: MonkeyPatch
+    monkeypatch: MonkeyPatch,
 ) -> None:
     """Run an E2E workflow with two test criteria for success."""
     # Note testdata_dir must be before tmp_trestle_dir in the argument order.
@@ -291,7 +293,7 @@ def test_e2e(
             0,
             0,
             0,
-            False
+            False,
         ),
         (
             'catalogs',
@@ -300,7 +302,7 @@ def test_e2e(
             1,
             1,
             1,
-            False
+            False,
         ),
         (
             'another_test_task/with_a_sub_dir',
@@ -309,7 +311,7 @@ def test_e2e(
             0,
             0,
             0,
-            False
+            False,
         ),
         (
             'another_test_task/with_a_sub_dir',
@@ -318,7 +320,7 @@ def test_e2e(
             0,
             0,
             1,
-            False
+            False,
         ),
         (
             'another_test_task/with_a_sub_dir',
@@ -327,7 +329,7 @@ def test_e2e(
             0,
             0,
             1,
-            False
+            False,
         ),
         (
             'another_test_task/with_a_sub_dir',
@@ -336,7 +338,7 @@ def test_e2e(
             0,
             0,
             1,
-            False
+            False,
         ),
         (
             'another_test_task/with_a_sub_dir',
@@ -345,7 +347,7 @@ def test_e2e(
             0,
             0,
             1,
-            False
+            False,
         ),
         (
             'another_test_task_1',
@@ -354,7 +356,7 @@ def test_e2e(
             0,
             0,
             1,
-            False
+            False,
         ),
         (
             'another_test_task_2',
@@ -363,7 +365,7 @@ def test_e2e(
             0,
             1,
             1,
-            False
+            False,
         ),
         (
             'another_test_task_3',
@@ -372,7 +374,7 @@ def test_e2e(
             0,
             1,
             1,
-            False
+            False,
         ),
         (
             'another_test_task_4',
@@ -381,7 +383,7 @@ def test_e2e(
             0,
             0,
             0,
-            True
+            True,
         ),
         (
             'another_test_task_5',
@@ -390,7 +392,7 @@ def test_e2e(
             0,
             0,
             0,
-            False
+            False,
         ),
         # Note this will pass as templates are permissive to allow extra files
         # (e.g. it validates what people want to be validated and not supplementary assets)
@@ -401,7 +403,7 @@ def test_e2e(
             0,
             0,
             0,
-            True
+            True,
         ),
         (
             'another_test_task_7',
@@ -410,7 +412,7 @@ def test_e2e(
             0,
             0,
             1,
-            True
+            True,
         ),
         (
             'another_test_task_8',
@@ -419,7 +421,7 @@ def test_e2e(
             0,
             1,
             1,
-            False
+            False,
         ),
         (
             'another_test_task_9',
@@ -428,7 +430,7 @@ def test_e2e(
             0,
             0,
             0,  # this passes as random extra files are allowed there. This should be looked at.
-            True
+            True,
         ),
         (
             'another_test_task_10',
@@ -437,7 +439,7 @@ def test_e2e(
             0,
             1,
             1,
-            True
+            True,
         ),
         (
             'another_test_task_11',
@@ -446,7 +448,7 @@ def test_e2e(
             0,
             0,
             0,
-            True
+            True,
         ),
         (
             'another_test_task_12',
@@ -455,9 +457,9 @@ def test_e2e(
             0,
             0,
             1,
-            True
-        )
-    ]
+            True,
+        ),
+    ],
 )
 def test_e2e_backward_compatibility(
     task_name: str,
@@ -469,7 +471,7 @@ def test_e2e_backward_compatibility(
     readme_validate: bool,
     testdata_dir: pathlib.Path,
     tmp_trestle_dir: pathlib.Path,
-    monkeypatch: MonkeyPatch
+    monkeypatch: MonkeyPatch,
 ) -> None:
     """Run same E2E workflow but pretend that there are existing templates."""
     # Note testdata_dir must be before tmp_trestle_dir in the argument order.

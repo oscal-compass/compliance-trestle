@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle Base Model."""
+
 from typing import Any, Type, TypeVar
 
 from pydantic.v1 import BaseModel, ValidationError

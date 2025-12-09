@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """A markdown processor."""
+
 import logging
 import pathlib
 import traceback
@@ -49,10 +50,9 @@ class MarkdownProcessor:
         except ValueError as e:
             raise TrestleError(f'Not a valid Github Flavored markdown: {e}.')
 
-    def process_markdown(self,
-                         md_path: pathlib.Path,
-                         read_header: bool = True,
-                         read_body: bool = True) -> Tuple[Dict, DocsMarkdownNode]:
+    def process_markdown(
+        self, md_path: pathlib.Path, read_header: bool = True, read_body: bool = True
+    ) -> Tuple[Dict, DocsMarkdownNode]:
         """Parse the markdown and builds the tree to operate over it."""
         header, markdown_wo_header = self.read_markdown_wo_processing(md_path, read_header, read_body)
 
@@ -66,7 +66,7 @@ class MarkdownProcessor:
         self,
         md_path: pathlib.Path,
         cli_section_dict: Dict[str, str] = None,
-        part_label_to_id_map: Dict[str, str] = None
+        part_label_to_id_map: Dict[str, str] = None,
     ) -> Tuple[Dict, ControlMarkdownNode]:
         """Parse control markdown and build tree with identified OSCAL components."""
         try:
@@ -91,10 +91,9 @@ class MarkdownProcessor:
             logger.error(f'Error while reading control markdown: {md_path}: {e}')
             raise e
 
-    def read_markdown_wo_processing(self,
-                                    md_path: pathlib.Path,
-                                    read_header: bool = True,
-                                    read_body: bool = True) -> Tuple[Dict, str]:
+    def read_markdown_wo_processing(
+        self, md_path: pathlib.Path, read_header: bool = True, read_body: bool = True
+    ) -> Tuple[Dict, str]:
         """Read markdown header to dictionary and body to string."""
         try:
             contents = frontmatter.loads(md_path.open('r', encoding=const.FILE_ENCODING).read())

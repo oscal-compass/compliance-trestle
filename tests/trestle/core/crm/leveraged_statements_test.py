@@ -20,7 +20,10 @@ from typing import Any, Dict
 
 import trestle.common.const as const
 from trestle.core.crm.leveraged_statements import (
-    InheritanceMarkdownReader, StatementProvided, StatementResponsibility, StatementTree
+    InheritanceMarkdownReader,
+    StatementProvided,
+    StatementResponsibility,
+    StatementTree,
 )
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.markdown.md_writer import MDWriter
@@ -89,8 +92,11 @@ def test_write_inheritance_tree(tmp_path: pathlib.Path) -> None:
     comp_header_value = header[const.TRESTLE_LEVERAGING_COMP_TAG]
     assert comp_header_value == [{'name': 'My_Comp'}]
     node = tree.get_node_for_key(const.SATISFIED_STATEMENT_DESCRIPTION, False)
-    assert node.content.raw_text == """# Satisfied Statement Description\n
+    assert (
+        node.content.raw_text
+        == """# Satisfied Statement Description\n
 <!-- Use this section to explain how the inherited responsibility is being satisfied. -->\nMy Satisfied Description"""
+    )
 
 
 def test_write_inheritance_provided(tmp_path: pathlib.Path) -> None:
@@ -155,8 +161,11 @@ def test_write_inheritance_responsibility(tmp_path: pathlib.Path) -> None:
     node = tree.get_node_for_key(const.RESPONSIBILITY_STATEMENT_DESCRIPTION, False)
     assert node.content.raw_text == '# Responsibility Statement Description\n\nresp statement description\n'
     node = tree.get_node_for_key(const.SATISFIED_STATEMENT_DESCRIPTION, False)
-    assert node.content.raw_text == """# Satisfied Statement Description\n
+    assert (
+        node.content.raw_text
+        == """# Satisfied Statement Description\n
 <!-- Use this section to explain how the inherited responsibility is being satisfied. -->"""
+    )
 
     # Update the component mapping and run again to make sure it persists
     add_authored_content(statement_resp_path, header)
@@ -171,8 +180,11 @@ def test_write_inheritance_responsibility(tmp_path: pathlib.Path) -> None:
     comp_header_value = header[const.TRESTLE_LEVERAGING_COMP_TAG]
     assert comp_header_value == [{'name': 'My_Comp'}]
     node = tree.get_node_for_key(const.SATISFIED_STATEMENT_DESCRIPTION, False)
-    assert node.content.raw_text == """# Satisfied Statement Description\n
+    assert (
+        node.content.raw_text
+        == """# Satisfied Statement Description\n
 <!-- Use this section to explain how the inherited responsibility is being satisfied. -->\nMy Satisfied Description"""
+    )
 
 
 def test_process_leveraged_statement_default_mapping(tmp_path: pathlib.Path) -> None:

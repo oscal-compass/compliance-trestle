@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """AuthorCommonCommands - reusable utilities to increase code base abstraction for author command."""
+
 import argparse
 import logging
 import pathlib

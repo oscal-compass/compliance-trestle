@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle utilities to customize jinja filters."""
+
 import logging
 from typing import Any, Iterator, List, Optional
 
@@ -37,8 +38,9 @@ def get_party(uuid: str, ssp: SystemSecurityPlan) -> Optional[Party]:
     return next((x for x in as_list(ssp.metadata.parties) if x.uuid == uuid), None)
 
 
-def parties_for_role(responsible_parties: List[ResponsibleParty], role_id: str,
-                     ssp: SystemSecurityPlan) -> Iterator[Party]:
+def parties_for_role(
+    responsible_parties: List[ResponsibleParty], role_id: str, ssp: SystemSecurityPlan
+) -> Iterator[Party]:
     """Get a list of parties from a list of responsible_parties and a given role_id."""
     logger.debug(f'Finding parties for role: {role_id}')
     for responsible_party in as_list(responsible_parties):

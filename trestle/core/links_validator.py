@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Validate catalog by confirming control links match resources in backmatter."""
+
 import logging
 import pathlib
 from typing import List, Optional, Set

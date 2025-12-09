@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Special types are defined here."""
+
 from typing import TypeVar
 
 import trestle.oscal.component as comp
@@ -37,7 +38,7 @@ TopLevelOscalModel = TypeVar(
     comp.ComponentDefinition,
     PlanOfActionAndMilestones,
     prof.Profile,
-    ossp.SystemSecurityPlan
+    ossp.SystemSecurityPlan,
 )
 
 OBT = TypeVar('OBT', bound=OscalBaseModel)
@@ -52,7 +53,7 @@ TypeWithProps = TypeVar(
     comp.Statement,
     ossp.Statement,
     comp.ImplementedRequirement,
-    ossp.ImplementedRequirement
+    ossp.ImplementedRequirement,
 )
 
 TypeWithParts = TypeVar('TypeWithParts', Control, Part, Group, prof.Add, prof.Group)
@@ -68,7 +69,7 @@ TypeWithSetParams = TypeVar(
     ossp.ControlImplementation,
     comp.ImplementedRequirement,
     comp.ControlImplementation,
-    prof.Modify
+    prof.Modify,
 )
 
 TypeWithParamId = TypeVar('TypeWithParamId', ossp.SetParameter, prof.SetParameter, comp.SetParameter)

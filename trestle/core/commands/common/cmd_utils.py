@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle command related utilities."""
+
 import pathlib
 import shutil
 from typing import Any, List, Optional, Type, Union
@@ -59,9 +60,7 @@ def split_is_too_fine(split_paths: str, model_obj: OscalBaseModel) -> bool:
 
 
 def parse_element_args(
-    model: Union[OscalBaseModel, None],
-    element_args: List[str],
-    relative_path: Optional[pathlib.Path] = None
+    model: Union[OscalBaseModel, None], element_args: List[str], relative_path: Optional[pathlib.Path] = None
 ) -> List[ElementPath]:
     """Parse element args into a list of ElementPath.
 
@@ -99,9 +98,7 @@ def parse_element_args(
 
 
 def parse_chain(
-    model_obj: Union[OscalBaseModel, None],
-    path_parts: List[str],
-    relative_path: Optional[pathlib.Path] = None
+    model_obj: Union[OscalBaseModel, None], path_parts: List[str], relative_path: Optional[pathlib.Path] = None
 ) -> List[ElementPath]:
     """Parse the model chain starting from the beginning.
 
@@ -194,9 +191,7 @@ def parse_chain(
 
 
 def parse_element_arg(
-    model_obj: Union[OscalBaseModel, None],
-    element_arg: str,
-    relative_path: Optional[pathlib.Path] = None
+    model_obj: Union[OscalBaseModel, None], element_arg: str, relative_path: Optional[pathlib.Path] = None
 ) -> List[ElementPath]:
     """Parse an element arg string into a list of ElementPath.
 

@@ -43,7 +43,7 @@ class CommandBase(Command):
         parent: Optional[Command] = None,
         name: Optional[str] = None,
         out: Optional[TextIO] = None,
-        err: Optional[TextIO] = None
+        err: Optional[TextIO] = None,
     ) -> None:
         """Override default ILCLI behaviour to include class documentation in command help description."""
         super(CommandBase, self).__init__(parser, parent, name, out, err)

@@ -20,6 +20,7 @@ Load every class in a file as lines of text and output them sorted by class name
 This allows a standard diff to reveal changes in class content without regard to order.
 Missing classes are also revealed.
 """
+
 import operator
 import sys
 

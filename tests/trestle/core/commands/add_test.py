@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle add via its new interface as part of the Create command."""
+
 import os
 import pathlib
 import sys
@@ -57,7 +58,7 @@ def test_run(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
         '-f',
         str(dest_file_location),
         '-e',
-        'catalog.metadata.roles, catalog.metadata.roles, catalog.metadata.responsible-parties'
+        'catalog.metadata.roles, catalog.metadata.roles, catalog.metadata.responsible-parties',
     ]
 
     monkeypatch.setattr(sys, 'argv', testargs)
@@ -81,7 +82,7 @@ def test_run_iof(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> Non
         str(dest_file_location),
         '-e',
         'catalog.metadata.roles, catalog.metadata.roles, catalog.metadata.responsible-parties',
-        IOF_SHORT
+        IOF_SHORT,
     ]
 
     monkeypatch.setattr(sys, 'argv', testargs)
@@ -108,10 +109,7 @@ def test_add(tmp_path: pathlib.Path, keep_cwd: pathlib.Path) -> None:
     content_type = FileContentType.JSON
 
     _, _ = test_utils.prepare_trestle_project_dir(
-        tmp_path,
-        content_type,
-        minimal_catalog_missing_roles,
-        test_utils.CATALOGS_DIR
+        tmp_path, content_type, minimal_catalog_missing_roles, test_utils.CATALOGS_DIR
     )
 
     # Execute first _add
@@ -146,10 +144,7 @@ def test_add_failure(tmp_path: pathlib.Path, sample_catalog_minimal: Catalog, ke
     content_type = FileContentType.JSON
 
     _, _ = test_utils.prepare_trestle_project_dir(
-        tmp_path,
-        content_type,
-        sample_catalog_minimal,
-        test_utils.CATALOGS_DIR
+        tmp_path, content_type, sample_catalog_minimal, test_utils.CATALOGS_DIR
     )
 
     element_path = ElementPath('catalog.metadata.*')
@@ -186,10 +181,7 @@ def test_stripped_model(
     """Test CreateCmd creating element for stripped model."""
     content_type = FileContentType.JSON
     catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
-        tmp_path,
-        content_type,
-        sample_catalog_minimal,
-        test_utils.CATALOGS_DIR
+        tmp_path, content_type, sample_catalog_minimal, test_utils.CATALOGS_DIR
     )
     os.chdir(catalog_def_dir)
     testargs = ['trestle', 'split', '-f', 'catalog.json', '-e', 'catalog.metadata']

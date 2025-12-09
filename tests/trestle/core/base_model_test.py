@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Testing of customization of pydantic base model."""
+
 import json
 import pathlib
 from datetime import datetime, timezone, tzinfo
@@ -47,7 +48,7 @@ def simple_catalog() -> oscatalog.Catalog:
             'title': 'My simple catalog',
             'last-modified': datetime.now(),
             'version': '0.0.0',
-            'oscal-version': trestle.oscal.OSCAL_VERSION
+            'oscal-version': trestle.oscal.OSCAL_VERSION,
         }
     )
     catalog = oscatalog.Catalog(metadata=m, uuid=str(uuid4()))
@@ -61,7 +62,7 @@ def simple_catalog_utc() -> oscatalog.Catalog:
             'title': 'My simple catalog',
             'last-modified': datetime.now().astimezone(timezone.utc),
             'version': '0.0.0',
-            'oscal-version': trestle.oscal.OSCAL_VERSION
+            'oscal-version': trestle.oscal.OSCAL_VERSION,
         }
     )
     catalog = oscatalog.Catalog(metadata=m, uuid=str(uuid4()))
@@ -75,7 +76,7 @@ def simple_catalog_with_tz() -> oscatalog.Catalog:
             'title': 'My simple catalog',
             'last-modified': datetime.now().astimezone(),
             'version': '0.0.0',
-            'oscal-version': trestle.oscal.OSCAL_VERSION
+            'oscal-version': trestle.oscal.OSCAL_VERSION,
         }
     )
     catalog = oscatalog.Catalog(metadata=m, uuid=str(uuid4()))
@@ -105,7 +106,7 @@ def test_with_timezone() -> None:
     popo_json = json.loads(jsoned_catalog)
     time = popo_json['metadata']['last-modified']
     assert isinstance(time, str)
-    assert ('Z' in time or '+' in time or '-' in time)
+    assert 'Z' in time or '+' in time or '-' in time
 
 
 def test_broken_tz() -> None:
@@ -137,7 +138,7 @@ def test_broken_tz() -> None:
             'title': 'My simple catalog',
             'last-modified': datetime.now(tz=taz),
             'version': '0.0.0',
-            'oscal-version': trestle.oscal.OSCAL_VERSION
+            'oscal-version': trestle.oscal.OSCAL_VERSION,
         }
     )
     catalog = oscatalog.Catalog(metadata=m, uuid=str(uuid4()))
@@ -241,12 +242,12 @@ def test_copy_to() -> None:
             'title': 'My simple catalog',
             'last-modified': datetime.now().astimezone(),
             'version': '0.0.0',
-            'oscal-version': trestle.oscal.OSCAL_VERSION
+            'oscal-version': trestle.oscal.OSCAL_VERSION,
         }
     )
 
     target_metadata = c_m.copy_to(common.Metadata)
-    assert (target_metadata.title == c_m.title)
+    assert target_metadata.title == c_m.title
     # Non matching object
     with pytest.raises(err.TrestleError):
         c_m.copy_to(component.DefinedComponent)
@@ -267,7 +268,7 @@ def test_copy_components() -> None:
         type='Hello',
         title='My title',
         description='Hello world',
-        status=ssp.Status(state=state_obj)
+        status=ssp.Status(state=state_obj),
     )
     ap_component = sys_component.copy_to(ap.SystemComponent)
     assert sys_component.title == ap_component.title
@@ -281,7 +282,7 @@ def test_copy_from() -> None:
             'title': 'My simple catalog',
             'last-modified': datetime.now().astimezone(),
             'version': '0.0.0',
-            'oscal-version': trestle.oscal.OSCAL_VERSION
+            'oscal-version': trestle.oscal.OSCAL_VERSION,
         }
     )
     catalog = oscatalog.Catalog(metadata=m, uuid=str(uuid4()))
@@ -291,7 +292,7 @@ def test_copy_from() -> None:
             'title': 'My simple target_title',
             'last-modified': datetime.now().astimezone(),
             'version': '99.0.0',
-            'oscal-version': trestle.oscal.OSCAL_VERSION
+            'oscal-version': trestle.oscal.OSCAL_VERSION,
         }
     )
     catalog.metadata.copy_from(target_md)
@@ -302,16 +303,16 @@ def test_copy_from() -> None:
 def test_oscal_read() -> None:
     """Test ability to read and uwrap oscal object."""
     path_component_definition = pathlib.Path(test_utils.NIST_SAMPLE_CD_JSON)
-    assert (path_component_definition.exists())
+    assert path_component_definition.exists()
 
     cd = component.ComponentDefinition.oscal_read(path_component_definition)
-    assert (len(str(cd.metadata.title)) > 1)
+    assert len(str(cd.metadata.title)) > 1
 
 
 def test_oscal_write(tmp_path: pathlib.Path) -> None:
     """Test Oscal write by repetitive operations."""
     path_target_definition = pathlib.Path(test_utils.NIST_SAMPLE_CD_JSON)
-    assert (path_target_definition.exists())
+    assert path_target_definition.exists()
 
     component1 = component.ComponentDefinition.oscal_read(path_target_definition)
 
@@ -331,9 +332,10 @@ def test_oscal_write(tmp_path: pathlib.Path) -> None:
 
 def test_get_field_value_by_alias(sample_nist_component_def: component.ComponentDefinition) -> None:
     """Test get attribute by alias method."""
-    assert sample_nist_component_def.metadata.get_field_value_by_alias(
-        'last-modified'
-    ) == sample_nist_component_def.metadata.last_modified
+    assert (
+        sample_nist_component_def.metadata.get_field_value_by_alias('last-modified')
+        == sample_nist_component_def.metadata.last_modified
+    )
     assert sample_nist_component_def.metadata.get_field_value_by_alias('last_modified') is None
 
 

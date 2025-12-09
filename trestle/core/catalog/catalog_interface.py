@@ -22,7 +22,19 @@ from typing import Any, Callable, Dict, Iterator, List, Optional, Set, Tuple
 import trestle.common.const as const
 import trestle.oscal.catalog as cat
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import as_dict, as_filtered_list, as_list, deep_append, deep_get, deep_set, deep_update, delete_item_from_list, get_item_from_list, none_if_empty, set_or_pop  # noqa E501
+from trestle.common.list_utils import (
+    as_dict,
+    as_filtered_list,
+    as_list,
+    deep_append,
+    deep_get,
+    deep_set,
+    deep_update,
+    delete_item_from_list,
+    get_item_from_list,
+    none_if_empty,
+    set_or_pop,
+)  # noqa E501
 from trestle.common.model_utils import ModelUtils
 from trestle.core.control_context import ControlContext
 from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlInterface
@@ -33,7 +45,7 @@ from trestle.oscal import profile as prof
 logger = logging.getLogger(__name__)
 
 
-class CatalogInterface():
+class CatalogInterface:
     """
     Interface to query and modify catalog contents.
 
@@ -76,8 +88,9 @@ class CatalogInterface():
         self._param_control_map: Dict[str, str] = {}
         self._generate_group_index: int = 0
         self._control_dict = self._create_control_dict() if catalog else None
-        self.loose_param_dict: Dict[str, common.Parameter] = {param.id: param
-                                                              for param in as_list(catalog.params)} if catalog else {}
+        self.loose_param_dict: Dict[str, common.Parameter] = (
+            {param.id: param for param in as_list(catalog.params)} if catalog else {}
+        )
         # map control id to CompDict
         self._control_comp_dicts: Dict[str, CompDict] = {}
         # map control id to dict containing set parameters by component
@@ -146,7 +159,7 @@ class CatalogInterface():
                     group_class=group_class,
                     group_path=group_path,
                     control_path=control_path,
-                    control=sub_control
+                    control=sub_control,
                 )
                 control_dict[sub_control.id] = control_handle
                 self._add_sub_controls(control_handle, control_dict, control_path)
@@ -165,7 +178,7 @@ class CatalogInterface():
                     group_class=group.class_,
                     control=control,
                     group_path=group_path,
-                    control_path=group_path
+                    control_path=group_path,
                 )
                 control_dict[control.id] = control_handle
                 self._add_sub_controls(control_handle, control_dict, group_path)
@@ -194,7 +207,7 @@ class CatalogInterface():
                     group_class=const.MODEL_TYPE_CATALOG,
                     control=control,
                     group_path=group_path,
-                    control_path=group_path
+                    control_path=group_path,
                 )
                 control_dict[control.id] = control_handle
                 self._add_sub_controls(control_handle, control_dict, group_path)
@@ -408,8 +421,9 @@ class CatalogInterface():
                     groups.append(res)
         return sorted(groups, key=lambda group: group.id)
 
-    def get_statement_label_if_exists(self, control_id: str,
-                                      statement_id: str) -> Tuple[Optional[str], Optional[common.Part]]:
+    def get_statement_label_if_exists(
+        self, control_id: str, statement_id: str
+    ) -> Tuple[Optional[str], Optional[common.Part]]:
         """Get statement label if available."""
 
         def does_part_exists(part: common.Part) -> bool:
@@ -471,7 +485,7 @@ class CatalogInterface():
         return (
             '' if self._control_dict is None else self._control_dict[control_id].group_id,
             '' if self._control_dict is None else self._control_dict[control_id].group_title,
-            '' if self._control_dict is None else self._control_dict[control_id].group_class
+            '' if self._control_dict is None else self._control_dict[control_id].group_class,
         )
 
     def get_control_path(self, control_id: str) -> List[str]:
@@ -663,7 +677,7 @@ class CatalogInterface():
         param_rep,
         show_value_warnings: bool,
         value_assigned_prefix: Optional[str] = None,
-        value_not_assigned_prefix: Optional[str] = None
+        value_not_assigned_prefix: Optional[str] = None,
     ) -> None:
         """Go through all controls and change prose based on param values."""
         param_dict = self._get_full_param_dict()
@@ -676,7 +690,7 @@ class CatalogInterface():
                 param_rep,
                 show_value_warnings,
                 value_assigned_prefix,
-                value_not_assigned_prefix
+                value_not_assigned_prefix,
             )
 
     @staticmethod
@@ -760,8 +774,9 @@ class CatalogInterface():
                             rule_parameter[const.HEADER_RULE_ID] = rule_id_rule_name_map[comp_name].get(rule_id, None)
                             deep_append(rules_params, [comp_name], rule_parameter)
                             deep_set(
-                                param_id_rule_name_map, [comp_name, rule_parameter['name']],
-                                rule_id_rule_name_map[comp_name][rule_id]
+                                param_id_rule_name_map,
+                                [comp_name, rule_parameter['name']],
+                                rule_id_rule_name_map[comp_name][rule_id],
                             )
             set_or_pop(header, const.RULES_PARAMS_TAG, rules_params)
 
@@ -815,7 +830,9 @@ class CatalogInterface():
         self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]], comp_rules_props: List[common.Property]
     ) -> None:
         """Add component info to the impreqs of the control implementation based on applied rules."""
-        control_imp_rules_dict, control_imp_rules_params_dict, ci_rules_props = ControlInterface.get_rules_and_params_dict_from_item(context.control_implementation)  # noqa E501
+        control_imp_rules_dict, control_imp_rules_params_dict, ci_rules_props = (
+            ControlInterface.get_rules_and_params_dict_from_item(context.control_implementation)
+        )  # noqa E501
         context.rules_dict[context.comp_name].update(control_imp_rules_dict)
         comp_rules_params_dict = context.rules_params_dict.get(context.comp_name, {})
         comp_rules_params_dict.update(control_imp_rules_params_dict)
@@ -877,9 +894,7 @@ class CatalogInterface():
         comps_uuids = []
         for comp_def_name in context.comp_def_name_list:
             context.comp_def, _ = ModelUtils.load_model_for_class(
-                context.trestle_root,
-                comp_def_name,
-                comp.ComponentDefinition
+                context.trestle_root, comp_def_name, comp.ComponentDefinition
             )
             component_uuids = [comp.uuid for comp in context.comp_def.components]
             comps_uuids.extend(component_uuids)
@@ -887,7 +902,9 @@ class CatalogInterface():
                 context.component = component
                 context.comp_name = component.title
                 # get top level rule info applying to all controls from the component props
-                comp_rules_dict, comp_rules_params_dict, comp_rules_props = ControlInterface.get_rules_and_params_dict_from_item(component)  # noqa E501
+                comp_rules_dict, comp_rules_params_dict, comp_rules_props = (
+                    ControlInterface.get_rules_and_params_dict_from_item(component)
+                )  # noqa E501
                 context.rules_dict[context.comp_name] = comp_rules_dict
                 deep_update(context.rules_params_dict, [context.comp_name], comp_rules_params_dict)
                 for control_imp in as_list(component.control_implementations):

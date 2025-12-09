@@ -23,6 +23,7 @@ import pytest
 def test_init(monkeypatch: MonkeyPatch):
     """Test initialisation function for main."""
     import trestle.__main__ as main_mod
+
     monkeypatch.setattr(main_mod, '__name__', '__main__')
     with pytest.raises(SystemExit) as pytest_wrapped_e:
         main_mod.init()

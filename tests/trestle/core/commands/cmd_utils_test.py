@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle cmd utils module."""
+
 from typing import List
 
 import pytest
@@ -161,9 +162,9 @@ def test_parse_element_args_split_model(element_arg, simplified_nist_catalog):
         ('component-definition.components.*', [['component-definition', 'components', '*']]),
         (
             'component-definition.components.*.roles',
-            [['component-definition', 'components', '*'], ['defined-component', 'roles']]
-        )
-    ]
+            [['component-definition', 'components', '*'], ['defined-component', 'roles']],
+        ),
+    ],
 )
 def test_parse_element_args_split_compdef(element_arg, sample_component_definition):
     """Test split of model with wildcard."""
