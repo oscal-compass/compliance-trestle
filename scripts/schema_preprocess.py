@@ -163,6 +163,7 @@ def calculate_patch_key(key: str) -> str:
     patch_key = patch_key.replace('oscal-ar-', '')
     patch_key = patch_key.replace('oscal-catalog-', '')
     patch_key = patch_key.replace('oscal-component-definition-', '')
+    patch_key = patch_key.replace('oscal-mapping-', '')
     patch_key = patch_key.replace('oscal-poam-', '')
     patch_key = patch_key.replace('oscal-profile-', '')
     patch_key = patch_key.replace('oscal-ssp-', '')
@@ -282,9 +283,10 @@ def patch_profile(model_name: str) -> None:
 
 def _find(needle: str, haystack: Dict) -> Any:
     """Find needle in haystack."""
-    for item in haystack:
-        if item == needle:
-            return haystack[item]
+    if needle and haystack:
+        for item in haystack:
+            if item == needle:
+                return haystack[item]
     return None
 
 
@@ -409,6 +411,7 @@ def create_refs(model_name: str) -> None:
         'oscal-ar-oscal-control-common:parameter-selection',
         'oscal-catalog-oscal-control-common:parameter-selection',
         'oscal-component-definition-oscal-control-common:parameter-selection',
+        'oscal-mapping-oscal-control-common:parameter-selection',
         'oscal-poam-oscal-control-common:parameter-selection',
         'oscal-profile-oscal-control-common:parameter-selection',
         'oscal-ssp-oscal-control-common:parameter-selection',
@@ -423,6 +426,7 @@ def create_refs(model_name: str) -> None:
         'oscal-ar-oscal-metadata:telephone-number',
         'oscal-catalog-oscal-metadata:telephone-number',
         'oscal-component-definition-oscal-metadata:telephone-number',
+        'oscal-mapping-oscal-metadata:telephone-number',
         'oscal-poam-oscal-metadata:telephone-number',
         'oscal-profile-oscal-metadata:telephone-number',
         'oscal-ssp-oscal-metadata:telephone-number',
@@ -437,6 +441,7 @@ def create_refs(model_name: str) -> None:
         'oscal-ar-oscal-metadata:address',
         'oscal-catalog-oscal-metadata:address',
         'oscal-component-definition-oscal-metadata:address',
+        'oscal-mapping-oscal-metadata:address',
         'oscal-poam-oscal-metadata:address',
         'oscal-profile-oscal-metadata:address',
         'oscal-ssp-oscal-metadata:address',
@@ -451,6 +456,7 @@ def create_refs(model_name: str) -> None:
         'oscal-ar-oscal-metadata:metadata',
         'oscal-catalog-oscal-metadata:metadata',
         'oscal-component-definition-oscal-metadata:metadata',
+        'oscal-mapping-oscal-metadata:metadata',
         'oscal-poam-oscal-metadata:metadata',
         'oscal-profile-oscal-metadata:metadata',
         'oscal-ssp-oscal-metadata:metadata',
@@ -467,6 +473,7 @@ def create_refs(model_name: str) -> None:
         'oscal-ar-oscal-metadata:metadata',
         'oscal-catalog-oscal-metadata:metadata',
         'oscal-component-definition-oscal-metadata:metadata',
+        'oscal-mapping-oscal-metadata:metadata',
         'oscal-poam-oscal-metadata:metadata',
         'oscal-profile-oscal-metadata:metadata',
         'oscal-ssp-oscal-metadata:metadata',
@@ -481,6 +488,7 @@ def create_refs(model_name: str) -> None:
         'oscal-ar-oscal-metadata:document-id',
         'oscal-catalog-oscal-metadata:document-id',
         'oscal-component-definition-oscal-metadata:document-id',
+        'oscal-mapping-oscal-metadata:document-id',
         'oscal-poam-oscal-metadata:document-id',
         'oscal-profile-oscal-metadata:document-id',
         'oscal-ssp-oscal-metadata:document-id',
@@ -630,6 +638,8 @@ def create_ref(model_name: str, root: str, navigation: List[str], ref_name: str)
         return
     for leaf in navigation:
         tgt = _fetch(tgt, leaf)
+    if not tgt:
+        return
     item = tgt[1]
     replacement = {'$ref': f'#/definitions/{ref_name}'}
     tgt[1] = replacement
@@ -695,6 +705,8 @@ def get_order(key: str) -> int:
         if key.endswith('catalog:catalog'):
             return 1
         if key.endswith('component-definition:component-definition'):
+            return 1
+        if key.endswith('oscal-mapping:mapping-collection'):
             return 1
         if key.endswith('poam:plan-of-action-and-milestones'):
             return 1

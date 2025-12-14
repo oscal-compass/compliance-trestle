@@ -16,6 +16,7 @@
 """Special types are defined here."""
 from typing import TypeVar
 
+import trestle.oscal.common as common
 import trestle.oscal.component as comp
 import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
@@ -71,4 +72,4 @@ TypeWithSetParams = TypeVar(
     prof.Modify
 )
 
-TypeWithParamId = TypeVar('TypeWithParamId', ossp.SetParameter, prof.SetParameter, comp.SetParameter)
+TypeWithParamId = TypeVar('TypeWithParamId', bound=common.SetParameter)
