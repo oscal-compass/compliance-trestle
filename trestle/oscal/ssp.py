@@ -27,7 +27,7 @@ from __future__ import annotations
 import re
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, TypeVar, Union
 
 from pydantic.v1 import AnyUrl, EmailStr, Extra, Field, conint, constr, validator
 
@@ -52,28 +52,6 @@ class System(Enum):
     """
 
     http___doi_org_10_6028_NIST_SP_800_60v2r1 = 'http://doi.org/10.6028/NIST.SP.800-60v2r1'
-
-
-class SetParameter(OscalBaseModel):
-    """
-    Identifies the parameter that will be set by the enclosed value.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    param_id: constr(
-        regex=
-        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    ) = Field(
-        ...,
-        alias='param-id',
-        description=
-        "A human-oriented reference to a parameter within a control, who's catalog has been imported into the current implementation context.",
-        title='Parameter ID'
-    )
-    values: List[constr(regex=r'^\S(.*\S)?$')] = Field(...)
-    remarks: Optional[str] = None
 
 
 class Selected(OscalBaseModel):
@@ -217,6 +195,14 @@ class Provided(OscalBaseModel):
     remarks: Optional[str] = None
 
 
+class Parameter(OscalBaseModel):
+    __root__: Union[OscalSspOscalControlCommonParameter1, OscalSspOscalControlCommonParameter2] = Field(
+        ...,
+        description='Parameters provide a mechanism for the dynamic assignment of value(s) in a control.',
+        title='Parameter'
+    )
+
+
 class OperationalStateValidValues(Enum):
     operational = 'operational'
     under_development = 'under-development'
@@ -317,7 +303,9 @@ class Diagram(OscalBaseModel):
     description: Optional[str] = Field(None, description='A summary of the diagram.', title='Diagram Description')
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
-    caption: Optional[str] = Field(None, description='A brief caption to annotate the diagram.', title='Caption')
+    caption: Optional[constr(regex=r'^[^\n]+$')] = Field(
+        None, description='A brief caption to annotate the diagram.', title='Caption'
+    )
     remarks: Optional[str] = None
 
 
@@ -378,7 +366,7 @@ class ByComponent(OscalBaseModel):
     ) = Field(
         ...,
         alias='component-uuid',
-        description='A machine-oriented identifier reference to the component that is implemeting a given control.',
+        description='A machine-oriented identifier reference to the component that is implementing a given control.',
         title='Component Universally Unique Identifier Reference'
     )
     uuid: constr(
@@ -397,7 +385,7 @@ class ByComponent(OscalBaseModel):
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
-    set_parameters: Optional[List[SetParameter]] = Field(None, alias='set-parameters')
+    set_parameters: Optional[List[common.SetParameter]] = Field(None, alias='set-parameters')
     implementation_status: Optional[common.ImplementationStatus] = Field(None, alias='implementation-status')
     export: Optional[Export] = Field(
         None,
@@ -509,7 +497,7 @@ class ImplementedRequirement(OscalBaseModel):
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
-    set_parameters: Optional[List[SetParameter]] = Field(None, alias='set-parameters')
+    set_parameters: Optional[List[common.SetParameter]] = Field(None, alias='set-parameters')
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
     statements: Optional[List[Statement]] = Field(None)
     by_components: Optional[List[ByComponent]] = Field(None, alias='by-components')
@@ -530,7 +518,7 @@ class ControlImplementation(OscalBaseModel):
         'A statement describing important things to know about how this set of control satisfaction documentation is approached.',
         title='Control Implementation Description'
     )
-    set_parameters: Optional[List[SetParameter]] = Field(None, alias='set-parameters')
+    set_parameters: Optional[List[common.SetParameter]] = Field(None, alias='set-parameters')
     implemented_requirements: List[ImplementedRequirement] = Field(..., alias='implemented-requirements')
 
 
@@ -567,7 +555,7 @@ class LeveragedAuthorization(OscalBaseModel):
         'A machine-oriented, globally unique identifier with cross-instance scope and can be used to reference this leveraged authorization elsewhere in this or other OSCAL instances. The locally defined UUID of the leveraged authorization can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Leveraged Authorization Universally Unique Identifier',
     )
-    title: str = Field(
+    title: constr(regex=r'^[^\n]+$') = Field(
         ...,
         description='A human readable name for the leveraged authorization in the context of the system.',
         title='title field'
@@ -597,7 +585,7 @@ class SystemImplementation(OscalBaseModel):
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     leveraged_authorizations: Optional[List[LeveragedAuthorization]] = Field(None, alias='leveraged-authorizations')
-    users: List[common.SystemUser] = Field(...)
+    users: Optional[List[common.SystemUser]] = Field(None)
     components: List[common.SystemComponent] = Field(...)
     inventory_items: Optional[List[common.InventoryItem]] = Field(None, alias='inventory-items')
     remarks: Optional[str] = None
@@ -634,7 +622,7 @@ class InformationType(OscalBaseModel):
         'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this information type elsewhere in this or other OSCAL instances. The locally defined UUID of the information type can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Information Type Universally Unique Identifier',
     )
-    title: str = Field(
+    title: constr(regex=r'^[^\n]+$') = Field(
         ...,
         description=
         'A human readable name for the information type. This title should be meaningful within the context of the system.',

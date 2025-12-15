@@ -27,7 +27,7 @@ from __future__ import annotations
 import re
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, TypeVar, Union
 
 from pydantic.v1 import AnyUrl, EmailStr, Extra, Field, conint, constr, validator
 
@@ -36,10 +36,55 @@ from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
 import trestle.oscal.common as common
 from trestle.oscal.common import AssessmentAssets
 from trestle.oscal.common import Observation
-from trestle.oscal.common import RelatedObservation
 from trestle.oscal.common import SystemComponent
 from trestle.oscal.common import TaskValidValues
 from trestle.oscal.common import TokenDatatype
+
+
+class Type(Enum):
+    """
+    Indicates the type of assessment subject, such as a component, inventory, item, location, or party represented by this selection statement.
+    """
+
+    component = 'component'
+    inventory_item = 'inventory-item'
+    location = 'location'
+    party = 'party'
+    user = 'user'
+
+
+class SelectControlById(OscalBaseModel):
+    """
+    Used to select a control for inclusion/exclusion based on one or more control identifiers. A set of statement identifiers can be used to target the inclusion/exclusion to only specific control statements providing more granularity over the specific statements that are within the assessment scope.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    control_id: constr(
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+    ) = Field(
+        ...,
+        alias='control-id',
+        description=
+        'A reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).',
+        title='Control Identifier Reference'
+    )
+    statement_ids: Optional[List[constr(
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+    )]] = Field(
+        None, alias='statement-ids'
+    )
+
+
+class Parameter(OscalBaseModel):
+    __root__: Union[OscalArOscalControlCommonParameter1, OscalArOscalControlCommonParameter2] = Field(
+        ...,
+        description='Parameters provide a mechanism for the dynamic assignment of value(s) in a control.',
+        title='Parameter'
+    )
 
 
 class LocalDefinitions1(OscalBaseModel):
@@ -102,7 +147,9 @@ class Entry1(OscalBaseModel):
         'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference an assessment event in this or other OSCAL instances. The locally defined UUID of the assessment log entry can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Assessment Log Entry Universally Unique Identifier',
     )
-    title: Optional[str] = Field(None, description='The title for this event.', title='Action Title')
+    title: Optional[constr(regex=r'^[^\n]+$')] = Field(
+        None, description='The title for this event.', title='Action Title'
+    )
     description: Optional[str] = Field(
         None, description='A human-readable description of this event.', title='Action Description'
     )
@@ -159,7 +206,8 @@ class Result(OscalBaseModel):
         'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this set of results in this or other OSCAL instances. The locally defined UUID of the assessment result can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Results Universally Unique Identifier',
     )
-    title: str = Field(..., description='The title for this set of results.', title='Results Title')
+    title: constr(regex=r'^[^\n]+$'
+                  ) = Field(..., description='The title for this set of results.', title='Results Title')
     description: str = Field(
         ..., description='A human-readable description of this set of test results.', title='Results Description'
     )
