@@ -12,10 +12,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Transform POAM spreadsheet to OSCAL POAM JSON format."""
+"""Transform POAM CSV to OSCAL POAM JSON format."""
 
 # mypy: ignore-errors  # noqa E800
 import configparser
+import csv
 import datetime
 import logging
 import pathlib
@@ -23,9 +24,6 @@ import re
 import traceback
 import uuid
 from typing import Any, Dict, Iterator, List, Optional, Tuple
-
-from openpyxl import load_workbook
-from openpyxl.cell.cell import MergedCell
 
 from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.common import (
@@ -199,8 +197,8 @@ class PoamValidator:
         return True
 
 
-class PoamXlsxHelper:
-    """Helper class for reading POAM spreadsheet templates."""
+class PoamCsvHelper:
+    """Helper class for reading POAM CSV files."""
 
     # Column name constants
     POAM_ID = 'POAM ID'
@@ -237,47 +235,29 @@ class PoamXlsxHelper:
 
     def __init__(self) -> None:
         """Initialize helper."""
-        self._column_map: Dict[str, int] = {}
-        self._work_sheet = None
-        self._header_row = 5  # Template has headers at row 5 (1-indexed)
+        self._rows: List[Dict[str, Any]] = []
 
-    def load(self, xlsx_path: pathlib.Path, sheet_name: str = 'Open POA&M Items') -> None:
+    def load(self, csv_path: pathlib.Path) -> None:
         """
-        Load spreadsheet file and map columns.
+        Load CSV file.
 
         Args:
-            xlsx_path: Path to spreadsheet file
-            sheet_name: Name of worksheet to load
+            csv_path: Path to CSV file
 
         Raises:
             FileNotFoundError: If file doesn't exist
-            KeyError: If worksheet doesn't exist
         """
-        if not xlsx_path.exists():
-            raise FileNotFoundError(f'Spreadsheet file not found: {xlsx_path}')
+        if not csv_path.exists():
+            raise FileNotFoundError(f'CSV file not found: {csv_path}')
 
-        workbook = load_workbook(filename=str(xlsx_path), data_only=True)
+        with open(csv_path, 'r', newline='', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                # Clean all values in the row
+                cleaned_row = {k: self._clean_value(v) for k, v in row.items()}
+                self._rows.append(cleaned_row)
 
-        if sheet_name not in workbook.sheetnames:
-            available = ', '.join(workbook.sheetnames)
-            raise KeyError(f'Worksheet "{sheet_name}" not found. Available sheets: {available}')
-
-        self._work_sheet = workbook[sheet_name]
-        self._map_columns()
-
-    def _map_columns(self) -> None:
-        """Map column names to column indices from header row."""
-        if self._work_sheet is None:
-            return
-
-        # Read header row (row 5 in template, 1-indexed)
-        for cell in self._work_sheet[self._header_row]:
-            if cell.value and isinstance(cell.value, str):
-                col_name = cell.value.strip()
-                if col_name:
-                    self._column_map[col_name] = cell.column
-
-        logger.debug(f'Mapped {len(self._column_map)} columns')
+        logger.debug(f'Loaded {len(self._rows)} rows from CSV')
 
     def row_generator(self) -> Iterator[Tuple[int, Dict[str, Any]]]:
         """
@@ -286,40 +266,12 @@ class PoamXlsxHelper:
         Yields:
             Tuple of (row_number, row_data_dict)
         """
-        if self._work_sheet is None:
-            return
-
-        # Data starts at row 6 (after header at row 5)
-        data_start_row = self._header_row + 1
-        max_row = self._work_sheet.max_row
-
-        for row_num in range(data_start_row, max_row + 1):
-            row_data = self._get_row_data(row_num)
-
+        for idx, row_data in enumerate(self._rows, start=2):  # Start at 2 (row 1 is header)
             # Skip empty rows (no POAM ID)
             if not row_data.get(self.POAM_ID):
                 continue
 
-            yield row_num, row_data
-
-    def _get_row_data(self, row_num: int) -> Dict[str, Any]:
-        """
-        Extract data from a row as dictionary.
-
-        Args:
-            row_num: Row number (1-indexed)
-
-        Returns:
-            Dictionary mapping column names to cell values
-        """
-        row_data = {}
-
-        for col_name, col_idx in self._column_map.items():
-            cell = self._work_sheet.cell(row=row_num, column=col_idx)
-            value = None if isinstance(cell, MergedCell) else cell.value
-            row_data[col_name] = self._clean_value(value)
-
-        return row_data
+            yield idx, row_data
 
     def _clean_value(self, value: Any) -> Any:
         """
@@ -440,13 +392,13 @@ class PoamBuilder:
             PoamItem object
         """
         # Required fields
-        weakness_name = row_data.get(PoamXlsxHelper.WEAKNESS_NAME, '')
+        weakness_name = row_data.get(PoamCsvHelper.WEAKNESS_NAME, '')
         title = weakness_name.strip() if weakness_name else ''
-        weakness_desc = row_data.get(PoamXlsxHelper.WEAKNESS_DESCRIPTION, '')
+        weakness_desc = row_data.get(PoamCsvHelper.WEAKNESS_DESCRIPTION, '')
         description = weakness_desc.strip() if weakness_desc else ''
 
         # Optional fields
-        comments = row_data.get(PoamXlsxHelper.COMMENTS)
+        comments = row_data.get(PoamCsvHelper.COMMENTS)
         if comments and isinstance(comments, str):
             comments = comments.strip() if comments.strip() else None
 
@@ -459,7 +411,7 @@ class PoamBuilder:
             props.append(Property(name='poam-id', value=clean_poam_id))
 
         # Add control IDs as properties
-        controls_str = row_data.get(PoamXlsxHelper.CONTROLS, '')
+        controls_str = row_data.get(PoamCsvHelper.CONTROLS, '')
         if controls_str:
             controls = self._validator.parse_controls(controls_str)
             for ctrl_id in controls:
@@ -476,31 +428,31 @@ class PoamBuilder:
 
         return poam_item
 
-    def create_observation(self, poam_id: str, row_data: Dict[str, Any], helper: PoamXlsxHelper) -> Observation:
+    def create_observation(self, poam_id: str, row_data: Dict[str, Any], helper: PoamCsvHelper) -> Observation:
         """
         Create Observation from row data.
 
         Args:
             poam_id: POAM ID
             row_data: Row data dictionary
-            helper: PoamXlsxHelper instance
+            helper: PoamCsvHelper instance
 
         Returns:
             Observation object
         """
-        weakness_name_raw = row_data.get(PoamXlsxHelper.WEAKNESS_NAME, '')
+        weakness_name_raw = row_data.get(PoamCsvHelper.WEAKNESS_NAME, '')
         weakness_name = weakness_name_raw.strip() if weakness_name_raw else ''
 
         # Description is required
         description = f'Weakness detected: {weakness_name}'
-        weakness_source_id = row_data.get(PoamXlsxHelper.WEAKNESS_SOURCE_IDENTIFIER)
+        weakness_source_id = row_data.get(PoamCsvHelper.WEAKNESS_SOURCE_IDENTIFIER)
         if weakness_source_id and isinstance(weakness_source_id, str):
             weakness_source_id = weakness_source_id.strip()
             if weakness_source_id:
                 description += f' (Source: {weakness_source_id})'
 
         # Collected date (required)
-        detection_date_value = row_data.get(PoamXlsxHelper.ORIGINAL_DETECTION_DATE)
+        detection_date_value = row_data.get(PoamCsvHelper.ORIGINAL_DETECTION_DATE)
         collected = helper.parse_date(detection_date_value)
         if collected is None:
             # Default to current timestamp if no date provided
@@ -511,7 +463,7 @@ class PoamBuilder:
 
         # Origins are optional
         origins = None
-        detector_source = row_data.get(PoamXlsxHelper.WEAKNESS_DETECTOR_SOURCE)
+        detector_source = row_data.get(PoamCsvHelper.WEAKNESS_DETECTOR_SOURCE)
         if detector_source:
             actor = OriginActor(type='tool', actor_uuid=UUIDManager.actor_uuid(detector_source))
             origin = Origin(actors=[actor])
@@ -519,7 +471,7 @@ class PoamBuilder:
 
         # Subjects are optional
         subjects = None
-        asset_id = row_data.get(PoamXlsxHelper.ASSET_IDENTIFIER)
+        asset_id = row_data.get(PoamCsvHelper.ASSET_IDENTIFIER)
         if asset_id:
             subject = SubjectReference(subject_uuid=UUIDManager.actor_uuid(asset_id), type='component')
             subjects = [subject]
@@ -535,24 +487,24 @@ class PoamBuilder:
 
         return observation
 
-    def create_risk(self, poam_id: str, row_data: Dict[str, Any], helper: PoamXlsxHelper) -> Risk:
+    def create_risk(self, poam_id: str, row_data: Dict[str, Any], helper: PoamCsvHelper) -> Risk:
         """
         Create Risk from row data.
 
         Args:
             poam_id: POAM ID
             row_data: Row data dictionary
-            helper: PoamXlsxHelper instance
+            helper: PoamCsvHelper instance
 
         Returns:
             Risk object
         """
         # Required fields - clean all text fields
-        weakness_name = row_data.get(PoamXlsxHelper.WEAKNESS_NAME, '')
+        weakness_name = row_data.get(PoamCsvHelper.WEAKNESS_NAME, '')
         title = weakness_name.strip() if weakness_name else ''
-        weakness_desc = row_data.get(PoamXlsxHelper.WEAKNESS_DESCRIPTION, '')
+        weakness_desc = row_data.get(PoamCsvHelper.WEAKNESS_DESCRIPTION, '')
         description = weakness_desc.strip() if weakness_desc else ''
-        statement_raw = row_data.get(PoamXlsxHelper.OVERALL_REMEDIATION_PLAN, description)
+        statement_raw = row_data.get(PoamCsvHelper.OVERALL_REMEDIATION_PLAN, description)
         if statement_raw and isinstance(statement_raw, str):
             statement = statement_raw.strip()
         else:
@@ -582,22 +534,22 @@ class PoamBuilder:
                 props.append(Property(name=name, value=str(value)))
 
         # Risk ratings as properties
-        add_property_if_valid('original-risk-rating', row_data.get(PoamXlsxHelper.ORIGINAL_RISK_RATING))
-        add_property_if_valid('adjusted-risk-rating', row_data.get(PoamXlsxHelper.ADJUSTED_RISK_RATING))
-        add_property_if_valid('risk-adjustment', row_data.get(PoamXlsxHelper.RISK_ADJUSTMENT))
-        add_property_if_valid('false-positive', row_data.get(PoamXlsxHelper.FALSE_POSITIVE))
-        add_property_if_valid('operational-requirement', row_data.get(PoamXlsxHelper.OPERATIONAL_REQUIREMENT))
-        add_property_if_valid('deviation-rationale', row_data.get(PoamXlsxHelper.DEVIATION_RATIONALE))
+        add_property_if_valid('original-risk-rating', row_data.get(PoamCsvHelper.ORIGINAL_RISK_RATING))
+        add_property_if_valid('adjusted-risk-rating', row_data.get(PoamCsvHelper.ADJUSTED_RISK_RATING))
+        add_property_if_valid('risk-adjustment', row_data.get(PoamCsvHelper.RISK_ADJUSTMENT))
+        add_property_if_valid('false-positive', row_data.get(PoamCsvHelper.FALSE_POSITIVE))
+        add_property_if_valid('operational-requirement', row_data.get(PoamCsvHelper.OPERATIONAL_REQUIREMENT))
+        add_property_if_valid('deviation-rationale', row_data.get(PoamCsvHelper.DEVIATION_RATIONALE))
 
         # Deadline is optional
         deadline = None
-        completion_date_value = row_data.get(PoamXlsxHelper.SCHEDULED_COMPLETION_DATE)
+        completion_date_value = row_data.get(PoamCsvHelper.SCHEDULED_COMPLETION_DATE)
         if completion_date_value:
             deadline = helper.parse_date(completion_date_value)
 
         # Remediations with milestones (optional)
         remediations = None
-        milestones_str = row_data.get(PoamXlsxHelper.PLANNED_MILESTONES)
+        milestones_str = row_data.get(PoamCsvHelper.PLANNED_MILESTONES)
         if milestones_str:
             milestones = helper.parse_milestones(milestones_str)
             if milestones:
@@ -625,14 +577,14 @@ class PoamBuilder:
         return risk
 
     def _create_milestone_tasks(self, poam_id: str, milestones: List[Dict[str, Any]],
-                                helper: PoamXlsxHelper) -> List[OscalTask]:
+                                helper: PoamCsvHelper) -> List[OscalTask]:
         """
         Create OSCAL Task objects from milestone data.
 
         Args:
             poam_id: POAM ID
             milestones: List of milestone dictionaries
-            helper: PoamXlsxHelper instance
+            helper: PoamCsvHelper instance
 
         Returns:
             List of OscalTask objects
@@ -686,42 +638,39 @@ class PoamBuilder:
         risk.related_observations = [RelatedObservation(observation_uuid=observation.uuid)]
 
 
-class XlsxToOscalPoam(TaskBase):
+class CsvToOscalPoam(TaskBase):
     """
-    Transform POAM spreadsheet to OSCAL POAM JSON.
+    Transform POAM CSV to OSCAL POAM JSON.
 
-    This task reads a POAM spreadsheet template (specifically the
-    "Open POA&M Items" worksheet) and transforms each row into an
+    This task reads a POAM CSV file and transforms each row into an
     OSCAL Plan of Action and Milestones (POAM) JSON file.
 
-    Each spreadsheet row creates three linked OSCAL objects:
+    Each CSV row creates three linked OSCAL objects:
     1. PoamItem: The main weakness/issue description
     2. Observation: Details about when/how the weakness was detected
     3. Risk: Risk assessment, remediation plan, and milestones
 
     Configuration Example:
-        [task.xlsx-to-oscal-poam]
-        xlsx-file = POAM-Template.xlsx
+        [task.csv-to-oscal-poam]
+        csv-file = poam-data.csv
         output-dir = output/
         title = MySystem POA&M
         version = 1.0
 
-    Spreadsheet Requirements:
-        - Must use POAM template structure
-        - Headers at row 5
-        - Data starts at row 6
+    CSV Requirements:
+        - Must have header row with column names
         - Required columns: POAM ID, Weakness Name, Weakness Description, Controls
 
     See Also:
-        - docs/tutorials/task.xlsx-to-oscal-poam.md
+        - docs/tutorials/task.csv-to-oscal-poam.md
         - OSCAL POAM specification
     """
 
-    name = 'xlsx-to-oscal-poam'
+    name = 'csv-to-oscal-poam'
 
     def __init__(self, config_object: Optional[configparser.SectionProxy]) -> None:
         """
-        Initialize trestle task xlsx-to-oscal-poam.
+        Initialize trestle task csv-to-oscal-poam.
 
         Args:
             config_object: Config section associated with the task.
@@ -737,20 +686,19 @@ class XlsxToOscalPoam(TaskBase):
         """Print the help string."""
         logger.info(f'Help information for {self.name} task.')
         logger.info('')
-        logger.info('Purpose: Transform POAM spreadsheet to OSCAL POAM JSON format.')
+        logger.info('Purpose: Transform POAM CSV to OSCAL POAM JSON format.')
         logger.info('')
         logger.info('Configuration flags:')
-        logger.info('  xlsx-file      = (required) Path to POAM spreadsheet file')
+        logger.info('  csv-file       = (required) Path to POAM CSV file')
         logger.info('  output-dir     = (required) Output directory for POAM JSON file')
         logger.info('  title          = (required) Title for the POAM')
         logger.info('  version        = (required) Version of the POAM')
-        logger.info('  work-sheet-name= (optional) Worksheet name (default: "Open POA&M Items")')
         logger.info('  system-id      = (optional) System identifier')
         logger.info('  output-overwrite = (optional) Overwrite existing output (default: true)')
         logger.info('  validate-required-fields = (optional) Validation mode: on/warn/off (default: warn)')
         logger.info('  quiet          = (optional) Suppress info messages (default: false)')
         logger.info('')
-        logger.info('Expected columns in spreadsheet:')
+        logger.info('Expected columns in CSV:')
         logger.info('  Required columns:')
         logger.info('    - POAM ID')
         logger.info('    - Weakness Name')
@@ -788,9 +736,9 @@ class XlsxToOscalPoam(TaskBase):
             return False
 
         # Required parameters
-        self._xlsx_file = self._config.get('xlsx-file')
-        if not self._xlsx_file:
-            logger.error('Missing required parameter: xlsx-file')
+        self._csv_file = self._config.get('csv-file')
+        if not self._csv_file:
+            logger.error('Missing required parameter: csv-file')
             return False
 
         self._output_dir = self._config.get('output-dir')
@@ -809,7 +757,6 @@ class XlsxToOscalPoam(TaskBase):
             return False
 
         # Optional parameters
-        self._work_sheet_name = self._config.get('work-sheet-name', 'Open POA&M Items')
         self._system_id = self._config.get('system-id')
         self._overwrite = self._config.getboolean('output-overwrite', True)
         self._validate_mode = self._config.get('validate-required-fields', 'warn')
@@ -839,16 +786,13 @@ class XlsxToOscalPoam(TaskBase):
         output_path = pathlib.Path(self._output_dir)
         output_path.mkdir(exist_ok=True, parents=True)
 
-        # Setup Excel helper
-        xlsx_path = pathlib.Path(self._xlsx_file)
-        helper = PoamXlsxHelper()
+        # Setup CSV helper
+        csv_path = pathlib.Path(self._csv_file)
+        helper = PoamCsvHelper()
 
         try:
-            helper.load(xlsx_path, self._work_sheet_name)
+            helper.load(csv_path)
         except FileNotFoundError as e:
-            logger.error(str(e))
-            return TaskOutcome('failure')
-        except KeyError as e:
             logger.error(str(e))
             return TaskOutcome('failure')
 
@@ -872,7 +816,7 @@ class XlsxToOscalPoam(TaskBase):
                     continue  # Skip invalid rows in strict mode
 
             # Extract POAM ID
-            poam_id = row_data.get(PoamXlsxHelper.POAM_ID, '')
+            poam_id = row_data.get(PoamCsvHelper.POAM_ID, '')
 
             # Create OSCAL objects
             poam_item = builder.create_poam_item(poam_id, row_data)
@@ -893,7 +837,7 @@ class XlsxToOscalPoam(TaskBase):
             return TaskOutcome('failure')
 
         if not poam_items:
-            logger.error('No valid POAM items found in Excel file')
+            logger.error('No valid POAM items found in CSV file')
             return TaskOutcome('failure')
 
         # Create POAM

@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Tests for xlsx_to_oscal_poam task."""
+"""Tests for csv_to_oscal_poam task."""
 
 import configparser
 import datetime
@@ -20,12 +20,12 @@ import pathlib
 import uuid
 
 from trestle.tasks.base_task import TaskOutcome
-from trestle.tasks.xlsx_to_oscal_poam import (
+from trestle.tasks.csv_to_oscal_poam import (
     PoamBuilder,
     PoamValidator,
-    PoamXlsxHelper,
+    PoamCsvHelper,
     UUIDManager,
-    XlsxToOscalPoam,
+    CsvToOscalPoam,
 )
 
 
@@ -40,11 +40,11 @@ def _get_config_section(tmp_path: pathlib.Path, config_filename: str) -> configp
     Returns:
         Config section proxy
     """
-    config_path = pathlib.Path('tests/data/tasks/xlsx-to-oscal-poam') / config_filename
+    config_path = pathlib.Path('tests/data/tasks/csv-to-oscal-poam') / config_filename
     config = configparser.ConfigParser()
     config.read(str(config_path))
 
-    section = config['task.xlsx-to-oscal-poam']
+    section = config['task.csv-to-oscal-poam']
     section['output-dir'] = str(tmp_path)
 
     return section
@@ -179,12 +179,12 @@ def test_validator_invalid_risk_rating():
     assert 'Invalid Original Risk Rating' in errors[0]
 
 
-# PoamXlsxHelper Tests
+# PoamCsvHelper Tests
 
 
-def test_xlsx_helper_column_constants():
+def test_csv_helper_column_constants():
     """Test that all column constants are defined."""
-    helper = PoamXlsxHelper()
+    helper = PoamCsvHelper()
 
     assert helper.POAM_ID == 'POAM ID'
     assert helper.CONTROLS == 'Controls'
@@ -192,9 +192,9 @@ def test_xlsx_helper_column_constants():
     assert helper.ORIGINAL_RISK_RATING == 'Original Risk Rating'
 
 
-def test_xlsx_helper_parse_date_datetime():
+def test_csv_helper_parse_date_datetime():
     """Test parsing datetime object."""
-    helper = PoamXlsxHelper()
+    helper = PoamCsvHelper()
     dt = datetime.datetime(2024, 1, 15, 10, 30)
 
     result = helper.parse_date(dt)
@@ -202,9 +202,9 @@ def test_xlsx_helper_parse_date_datetime():
     assert result.tzinfo is not None  # Should have timezone
 
 
-def test_xlsx_helper_parse_date_string():
+def test_csv_helper_parse_date_string():
     """Test parsing ISO date string."""
-    helper = PoamXlsxHelper()
+    helper = PoamCsvHelper()
 
     result = helper.parse_date('2024-01-15T10:30:00Z')
     assert result is not None
@@ -213,25 +213,25 @@ def test_xlsx_helper_parse_date_string():
     assert result.day == 15
 
 
-def test_xlsx_helper_parse_date_invalid():
+def test_csv_helper_parse_date_invalid():
     """Test parsing invalid date."""
-    helper = PoamXlsxHelper()
+    helper = PoamCsvHelper()
 
     result = helper.parse_date('invalid date')
     assert result is None
 
 
-def test_xlsx_helper_parse_date_none():
+def test_csv_helper_parse_date_none():
     """Test parsing None date."""
-    helper = PoamXlsxHelper()
+    helper = PoamCsvHelper()
 
     result = helper.parse_date(None)
     assert result is None
 
 
-def test_xlsx_helper_parse_milestones_single():
+def test_csv_helper_parse_milestones_single():
     """Test parsing single milestone."""
-    helper = PoamXlsxHelper()
+    helper = PoamCsvHelper()
     text = 'Milestone 1: Complete analysis by 2024-01-15'
 
     result = helper.parse_milestones(text)
@@ -240,9 +240,9 @@ def test_xlsx_helper_parse_milestones_single():
     assert result[0]['timing'] == '2024-01-15'
 
 
-def test_xlsx_helper_parse_milestones_multiple():
+def test_csv_helper_parse_milestones_multiple():
     """Test parsing multiple milestones."""
-    helper = PoamXlsxHelper()
+    helper = PoamCsvHelper()
     text = 'Milestone 1: Complete analysis by 2024-01-15\nMilestone 2: Deploy fix by 2024-02-01'
 
     result = helper.parse_milestones(text)
@@ -251,9 +251,9 @@ def test_xlsx_helper_parse_milestones_multiple():
     assert result[1]['title'] == 'Deploy fix'
 
 
-def test_xlsx_helper_parse_milestones_no_date():
+def test_csv_helper_parse_milestones_no_date():
     """Test parsing milestones without dates."""
-    helper = PoamXlsxHelper()
+    helper = PoamCsvHelper()
     text = 'Milestone 1: Complete analysis\nMilestone 2: Deploy fix'
 
     result = helper.parse_milestones(text)
@@ -261,9 +261,9 @@ def test_xlsx_helper_parse_milestones_no_date():
     assert 'timing' not in result[0] or result[0].get('timing') is None
 
 
-def test_xlsx_helper_parse_milestones_empty():
+def test_csv_helper_parse_milestones_empty():
     """Test parsing empty milestone string."""
-    helper = PoamXlsxHelper()
+    helper = PoamCsvHelper()
 
     result = helper.parse_milestones('')
     assert result == []
@@ -297,7 +297,7 @@ def test_builder_create_observation():
     """Test creating Observation."""
     validator = PoamValidator()
     builder = PoamBuilder('2024-01-15T10:00:00+00:00', validator)
-    helper = PoamXlsxHelper()
+    helper = PoamCsvHelper()
 
     row_data = {
         'Weakness Name': 'Test Weakness',
@@ -319,7 +319,7 @@ def test_builder_create_risk():
     """Test creating Risk."""
     validator = PoamValidator()
     builder = PoamBuilder('2024-01-15T10:00:00+00:00', validator)
-    helper = PoamXlsxHelper()
+    helper = PoamCsvHelper()
 
     row_data = {
         'Weakness Name': 'Test Weakness',
@@ -346,7 +346,7 @@ def test_builder_link_objects():
     """Test linking POAM objects."""
     validator = PoamValidator()
     builder = PoamBuilder('2024-01-15T10:00:00+00:00', validator)
-    helper = PoamXlsxHelper()
+    helper = PoamCsvHelper()
 
     row_data = {
         'Weakness Name': 'Test',
@@ -368,38 +368,38 @@ def test_builder_link_objects():
     assert risk.related_observations is not None
 
 
-# XlsxToOscalPoam Task Tests
+# CsvToOscalPoam Task Tests
 
 
 def test_print_info():
     """Test print_info method."""
-    task = XlsxToOscalPoam(None)
+    task = CsvToOscalPoam(None)
     task.print_info()  # Should not raise
 
 
 def test_simulate():
     """Test simulate method."""
-    task = XlsxToOscalPoam(None)
+    task = CsvToOscalPoam(None)
     result = task.simulate()
     assert result == TaskOutcome('simulated-success')
 
 
 def test_configure_missing_config():
     """Test configure with missing config."""
-    task = XlsxToOscalPoam(None)
+    task = CsvToOscalPoam(None)
     result = task.configure()
     assert result is False
 
 
 def test_configure_missing_xlsx_file(tmp_path: pathlib.Path):
-    """Test configure with missing xlsx-file parameter."""
+    """Test configure with missing csv-file parameter."""
     config = configparser.ConfigParser()
-    config.add_section('task.xlsx-to-oscal-poam')
-    config['task.xlsx-to-oscal-poam']['output-dir'] = str(tmp_path)
-    config['task.xlsx-to-oscal-poam']['title'] = 'Test'
-    config['task.xlsx-to-oscal-poam']['version'] = '1.0'
+    config.add_section('task.csv-to-oscal-poam')
+    config['task.csv-to-oscal-poam']['output-dir'] = str(tmp_path)
+    config['task.csv-to-oscal-poam']['title'] = 'Test'
+    config['task.csv-to-oscal-poam']['version'] = '1.0'
 
-    task = XlsxToOscalPoam(config['task.xlsx-to-oscal-poam'])
+    task = CsvToOscalPoam(config['task.csv-to-oscal-poam'])
     result = task.configure()
     assert result is False
 
@@ -407,12 +407,12 @@ def test_configure_missing_xlsx_file(tmp_path: pathlib.Path):
 def test_configure_missing_output_dir(tmp_path: pathlib.Path):
     """Test configure with missing output-dir parameter."""
     config = configparser.ConfigParser()
-    config.add_section('task.xlsx-to-oscal-poam')
-    config['task.xlsx-to-oscal-poam']['xlsx-file'] = 'test.xlsx'
-    config['task.xlsx-to-oscal-poam']['title'] = 'Test'
-    config['task.xlsx-to-oscal-poam']['version'] = '1.0'
+    config.add_section('task.csv-to-oscal-poam')
+    config['task.csv-to-oscal-poam']['csv-file'] = 'test.csv'
+    config['task.csv-to-oscal-poam']['title'] = 'Test'
+    config['task.csv-to-oscal-poam']['version'] = '1.0'
 
-    task = XlsxToOscalPoam(config['task.xlsx-to-oscal-poam'])
+    task = CsvToOscalPoam(config['task.csv-to-oscal-poam'])
     result = task.configure()
     assert result is False
 
@@ -420,12 +420,12 @@ def test_configure_missing_output_dir(tmp_path: pathlib.Path):
 def test_configure_missing_title(tmp_path: pathlib.Path):
     """Test configure with missing title parameter."""
     config = configparser.ConfigParser()
-    config.add_section('task.xlsx-to-oscal-poam')
-    config['task.xlsx-to-oscal-poam']['xlsx-file'] = 'test.xlsx'
-    config['task.xlsx-to-oscal-poam']['output-dir'] = str(tmp_path)
-    config['task.xlsx-to-oscal-poam']['version'] = '1.0'
+    config.add_section('task.csv-to-oscal-poam')
+    config['task.csv-to-oscal-poam']['csv-file'] = 'test.csv'
+    config['task.csv-to-oscal-poam']['output-dir'] = str(tmp_path)
+    config['task.csv-to-oscal-poam']['version'] = '1.0'
 
-    task = XlsxToOscalPoam(config['task.xlsx-to-oscal-poam'])
+    task = CsvToOscalPoam(config['task.csv-to-oscal-poam'])
     result = task.configure()
     assert result is False
 
@@ -433,12 +433,12 @@ def test_configure_missing_title(tmp_path: pathlib.Path):
 def test_configure_missing_version(tmp_path: pathlib.Path):
     """Test configure with missing version parameter."""
     config = configparser.ConfigParser()
-    config.add_section('task.xlsx-to-oscal-poam')
-    config['task.xlsx-to-oscal-poam']['xlsx-file'] = 'test.xlsx'
-    config['task.xlsx-to-oscal-poam']['output-dir'] = str(tmp_path)
-    config['task.xlsx-to-oscal-poam']['title'] = 'Test'
+    config.add_section('task.csv-to-oscal-poam')
+    config['task.csv-to-oscal-poam']['csv-file'] = 'test.csv'
+    config['task.csv-to-oscal-poam']['output-dir'] = str(tmp_path)
+    config['task.csv-to-oscal-poam']['title'] = 'Test'
 
-    task = XlsxToOscalPoam(config['task.xlsx-to-oscal-poam'])
+    task = CsvToOscalPoam(config['task.csv-to-oscal-poam'])
     result = task.configure()
     assert result is False
 
@@ -446,16 +446,16 @@ def test_configure_missing_version(tmp_path: pathlib.Path):
 def test_configure_valid(tmp_path: pathlib.Path):
     """Test configure with all required parameters."""
     config = configparser.ConfigParser()
-    config.add_section('task.xlsx-to-oscal-poam')
-    config['task.xlsx-to-oscal-poam']['xlsx-file'] = 'test.xlsx'
-    config['task.xlsx-to-oscal-poam']['output-dir'] = str(tmp_path)
-    config['task.xlsx-to-oscal-poam']['title'] = 'Test POAM'
-    config['task.xlsx-to-oscal-poam']['version'] = '1.0'
+    config.add_section('task.csv-to-oscal-poam')
+    config['task.csv-to-oscal-poam']['csv-file'] = 'test.csv'
+    config['task.csv-to-oscal-poam']['output-dir'] = str(tmp_path)
+    config['task.csv-to-oscal-poam']['title'] = 'Test POAM'
+    config['task.csv-to-oscal-poam']['version'] = '1.0'
 
-    task = XlsxToOscalPoam(config['task.xlsx-to-oscal-poam'])
+    task = CsvToOscalPoam(config['task.csv-to-oscal-poam'])
     result = task.configure()
     assert result is True
-    assert task._xlsx_file == 'test.xlsx'
+    assert task._csv_file == 'test.csv'
     assert task._title == 'Test POAM'
     assert task._version == '1.0'
 
@@ -463,21 +463,19 @@ def test_configure_valid(tmp_path: pathlib.Path):
 def test_configure_optional_parameters(tmp_path: pathlib.Path):
     """Test configure with optional parameters."""
     config = configparser.ConfigParser()
-    config.add_section('task.xlsx-to-oscal-poam')
-    config['task.xlsx-to-oscal-poam']['xlsx-file'] = 'test.xlsx'
-    config['task.xlsx-to-oscal-poam']['output-dir'] = str(tmp_path)
-    config['task.xlsx-to-oscal-poam']['title'] = 'Test'
-    config['task.xlsx-to-oscal-poam']['version'] = '1.0'
-    config['task.xlsx-to-oscal-poam']['work-sheet-name'] = 'Custom Sheet'
-    config['task.xlsx-to-oscal-poam']['system-id'] = 'sys-123'
-    config['task.xlsx-to-oscal-poam']['output-overwrite'] = 'false'
-    config['task.xlsx-to-oscal-poam']['validate-required-fields'] = 'on'
-    config['task.xlsx-to-oscal-poam']['quiet'] = 'true'
+    config.add_section('task.csv-to-oscal-poam')
+    config['task.csv-to-oscal-poam']['csv-file'] = 'test.csv'
+    config['task.csv-to-oscal-poam']['output-dir'] = str(tmp_path)
+    config['task.csv-to-oscal-poam']['title'] = 'Test'
+    config['task.csv-to-oscal-poam']['version'] = '1.0'
+    config['task.csv-to-oscal-poam']['system-id'] = 'sys-123'
+    config['task.csv-to-oscal-poam']['output-overwrite'] = 'false'
+    config['task.csv-to-oscal-poam']['validate-required-fields'] = 'on'
+    config['task.csv-to-oscal-poam']['quiet'] = 'true'
 
-    task = XlsxToOscalPoam(config['task.xlsx-to-oscal-poam'])
+    task = CsvToOscalPoam(config['task.csv-to-oscal-poam'])
     result = task.configure()
     assert result is True
-    assert task._work_sheet_name == 'Custom Sheet'
     assert task._system_id == 'sys-123'
     assert task._overwrite is False
     assert task._validate_mode == 'on'
@@ -486,11 +484,11 @@ def test_configure_optional_parameters(tmp_path: pathlib.Path):
 
 def test_set_timestamp():
     """Test set_timestamp method."""
-    task = XlsxToOscalPoam(None)
+    task = CsvToOscalPoam(None)
     test_timestamp = '2024-01-15T10:00:00+00:00'
     task.set_timestamp(test_timestamp)
     assert task._timestamp == test_timestamp
 
 
-# Note: Integration tests would require actual Excel test fixtures
-# which will be created in the next step
+# Note: Integration tests would require actual CSV test fixtures
+# which have been created in tests/data/tasks/csv-to-oscal-poam/

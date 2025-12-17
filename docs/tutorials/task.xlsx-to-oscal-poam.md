@@ -33,10 +33,10 @@ trestle task xlsx-to-oscal-poam -c .trestle/config.ini
 
 ### 3. Verify Output
 
-The task creates `output/poams/poam.json` with your OSCAL POAM:
+The task creates `output/poams/plan-of-action-and-milestones.json` with your OSCAL POAM:
 
 ```bash
-cat output/poams/poam.json | jq '.plan-of-action-and-milestones.poam-items | length'
+cat output/poams/plan-of-action-and-milestones.json | jq '.plan-of-action-and-milestones.poam-items | length'
 ```
 
 ## Configuration Parameters
