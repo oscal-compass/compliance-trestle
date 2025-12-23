@@ -41,34 +41,31 @@ jobs:
         key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-${{ hashFiles('pyproject.toml') }}
         restore-keys: |
           ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-
-    - name: Install build tools
+    - name: Install hatch
       run: |
-        make develop
+        pip install hatch
     - name: Setup pre-commit
       run: |
         make pre-commit
-    - name: Install dependencies
-      run: |
-        make install
     - name: Run md document formatting (mdformat)
       run: |
         make mdformat
-    - name: Run code formatting (yapf)
+    - name: Run code formatting (ruff)
       run: |
         make code-format
-    - name: Run code linting (flake8)
+    - name: Run code linting (ruff)
       run: |
         make code-lint
     - name: Run code typing check (mypy)
       continue-on-error: true
       run: |
         make code-typing
-    - name: Install documenation dependencies
+    - name: Install documentation dependencies
       run: |
         make docs-ubuntu-deps
     - name: Validate website content (mkdocs)
       run: |
-        make docs-validate
+        hatch run docs:validate
     - name: Check if dirty (mkdocs)
       run: |
         make check-for-changes
@@ -98,9 +95,9 @@ jobs:
         key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-${{ hashFiles('pyproject.toml') }}
         restore-keys: |
           ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-
-    - name: Install build tools
+    - name: Install hatch
       run: |
-        make develop
+        pip install hatch
     - name: Run binary tests
       run: |
         make test-bdist
@@ -141,17 +138,17 @@ jobs:
     - name: Is core test version
       id: core-version
       run: echo "core=${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.set-versions.outputs.max ) }}" >> $GITHUB_OUTPUT
-    - name: Install build tools
+    - name: Install hatch
       run: |
-        make develop
-    - name: Pytest Fast
+        pip install hatch
+    - name: Run tests
       if: steps.core-version.outputs.core != 'true'
       run: |
-        make test
-    - name: Pytest Cov
+        hatch test -py ${{ matrix.python-version }}
+    - name: Run tests with coverage
       if: steps.core-version.outputs.core == 'true'
       run: |
-        make test-cov
+        hatch test --cover -py ${{ matrix.python-version }}
 
     - name: Upload artifact
       if: steps.core-version.outputs.core == 'true'
@@ -184,9 +181,6 @@ jobs:
         key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-${{ hashFiles('pyproject.toml') }}
         restore-keys: |
           ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-
-    - name: Install build tools
-      run: |
-        make develop
     - name: Get coverage
       uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
       with:

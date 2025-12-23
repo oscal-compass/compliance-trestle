@@ -54,23 +54,16 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = [
-    "pytest>=5.4.3",
-    "pytest-cov>=2.10.0",
-    "pytest-xdist",
-    "pre-commit>=2.4.0",
-    "setuptools>=61",
-    "urllib3==2.5.0",
-    "wheel",
-    "python-semantic-release>=10.4.0",
-    "pytest-random-order",
-    "python-dateutil",
+# Type checking
+typing = [
     "mypy",
     "types-PyYAML",
     "types-paramiko",
     "types-requests",
     "types-setuptools",
-    # Docs website
+]
+# Documentation website
+docs = [
     "mike",
     "mkdocs>=1.6.0",
     "mkdocs-awesome-pages-plugin",
@@ -84,10 +77,14 @@ dev = [
     "livereload",
     "pillow",
     "cairosvg",
-    # Constrain system
-    "pylint",
-    # Checking repo after docs generation
     "gitpython",
+]
+# Development tools (testing via hatch test)
+dev = [
+    "compliance-trestle[typing,docs]",
+    "pre-commit>=2.4.0",
+    "python-semantic-release>=10.4.0",
+    "pylint",
 ]
 
 [project.urls]
@@ -112,32 +109,30 @@ exclude = [
 [tool.hatch.build.targets.wheel]
 packages = ["trestle"]
 
-[tool.hatch.envs.default]
-dependencies = [
-    "pytest>=5.4.3",
-    "pytest-cov>=2.10.0",
-    "pytest-xdist",
-    "pytest-random-order",
-]
-
-[tool.hatch.envs.default.scripts]
-test = "pytest {args:tests}"
-test-cov = "pytest --cov=trestle --cov-report=xml --cov-fail-under=96 {args:tests}"
-
 [tool.hatch.envs.hatch-test]
 default-args = ["tests"]
-randomize = true
 parallel = true
-extra-dependencies = [
-    "mypy",
-    "types-PyYAML",
-    "types-paramiko",
-    "types-requests",
-    "types-setuptools",
+randomize = true
+# Pin coverage for Python 3.9 compatibility (7.7+ requires Python 3.10+)
+dependencies = [
+    "coverage[toml]~=7.4",
+    "pytest>=8.1",
+    "pytest-xdist[psutil]>=3.5",
+    "pytest-randomly>=3.15", 
+    "mypy"
 ]
 
 [[tool.hatch.envs.hatch-test.matrix]]
 python = ["3.9", "3.10", "3.11", "3.12"]
+
+[tool.hatch.envs.docs]
+features = ["docs"]
+
+[tool.hatch.envs.docs.scripts]
+build = "mkdocs build -c -s"
+serve = "mkdocs serve"
+automation = "python ./scripts/website_automation.py"
+validate = ["automation", "build"]
 
 [tool.hatch.envs.hatch-static-analysis]
 config-path = "none"
