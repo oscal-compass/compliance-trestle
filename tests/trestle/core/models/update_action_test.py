@@ -32,7 +32,7 @@ def test_update_action(sample_nist_component_def):
             'title': 'My simple catalog',
             'last-modified': datetime.now().astimezone(),
             'version': '0.0.0',
-            'oscal-version': OSCAL_VERSION
+            'oscal-version': OSCAL_VERSION,
         }
     )
 
@@ -58,14 +58,10 @@ def test_update_list_sub_element_action(sample_nist_component_def):
 
     parties: List[common.Party] = []
     parties.append(
-        common.Party(**{
-            'uuid': 'ff47836c-877c-4007-bbf3-c9d9bd805000', 'name': 'TEST1', 'type': 'organization'
-        })
+        common.Party(**{'uuid': 'ff47836c-877c-4007-bbf3-c9d9bd805000', 'name': 'TEST1', 'type': 'organization'})
     )
     parties.append(
-        common.Party(**{
-            'uuid': 'ee88836c-877c-4007-bbf3-c9d9bd805000', 'name': 'TEST2', 'type': 'organization'
-        })
+        common.Party(**{'uuid': 'ee88836c-877c-4007-bbf3-c9d9bd805000', 'name': 'TEST2', 'type': 'organization'})
     )
 
     sub_element_path = ElementPath('component-definition.metadata.parties.*')

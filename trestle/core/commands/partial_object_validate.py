@@ -40,14 +40,14 @@ class PartialObjectValidate(CommandBase):
             f'--{const.ARG_FILE}',
             help=const.ARG_DESC_FILE + ' to validate',
             required=True,
-            type=pathlib.Path
+            type=pathlib.Path,
         )
 
         self.add_argument(
             f'-{const.ARG_ELEMENT_SHORT}',
             f'--{const.ARG_ELEMENT}',
             help=const.ARG_DESC_ELEMENT + ' to validate.',
-            required=True
+            required=True,
         )
 
         self.add_argument(

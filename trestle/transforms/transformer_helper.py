@@ -26,7 +26,7 @@ from trestle.oscal.common import Property
 _segment_separator = '|'
 
 
-class PropertyAccounting():
+class PropertyAccounting:
     """Property accounting class.
 
     Help transformers do accounting.
@@ -60,7 +60,7 @@ class PropertyAccounting():
         name: Optional[str] = None,
         value: Optional[str] = None,
         class_: Optional[str] = None,
-        ns: Optional[str] = None
+        ns: Optional[str] = None,
     ) -> None:
         """Property accounting."""
         key = _segment_separator.join([str(name), str(value), str(class_), str(ns)])
@@ -76,7 +76,7 @@ class PropertyAccounting():
         name: Optional[str] = None,
         value: Optional[str] = None,
         class_: Optional[str] = None,
-        ns: Optional[str] = None
+        ns: Optional[str] = None,
     ) -> bool:
         """Check for common property."""
         rval = False
@@ -86,7 +86,7 @@ class PropertyAccounting():
         return rval
 
 
-class PropertyManager():
+class PropertyManager:
     """Property manager class.
 
     Help transformer manage properties.
@@ -121,7 +121,7 @@ class PropertyManager():
         name: Optional[str] = None,
         value: Optional[str] = None,
         class_: Optional[str] = None,
-        ns: Optional[str] = None
+        ns: Optional[str] = None,
     ) -> Property:
         """Get property from cache or create new property."""
         self._requests += 1
@@ -142,7 +142,7 @@ class PropertyManager():
         name: Optional[str] = None,
         value: Optional[str] = None,
         class_: Optional[str] = None,
-        ns: Optional[str] = None
+        ns: Optional[str] = None,
     ) -> None:
         """Remember common property."""
         if not group:
@@ -168,7 +168,7 @@ class PropertyManager():
         name: Optional[str] = None,
         value: Optional[str] = None,
         class_: Optional[str] = None,
-        ns: Optional[str] = None
+        ns: Optional[str] = None,
     ) -> Property:
         """Create new property."""
         if self._checking:
@@ -176,7 +176,7 @@ class PropertyManager():
         return Property.construct(name=name, value=value, class_=class_, ns=ns)  # type: ignore
 
 
-class TransformerHelper():
+class TransformerHelper:
     """OSCAL transformer helper."""
 
     def remove_common_observation_properties(self, observations: List[Observation]) -> List[Property]:

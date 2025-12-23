@@ -38,7 +38,7 @@ jobs:
     - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
       with:
         path: ~/.cache/pip
-        key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-${{ hashFiles('setup.cfg') }}
+        key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-${{ hashFiles('pyproject.toml') }}
         restore-keys: |
           ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-
     - name: Install build tools
@@ -95,7 +95,7 @@ jobs:
     - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
       with:
         path: ~/.cache/pip
-        key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-${{ hashFiles('setup.cfg') }}
+        key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-${{ hashFiles('pyproject.toml') }}
         restore-keys: |
           ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-
     - name: Install build tools
@@ -135,7 +135,7 @@ jobs:
     - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
       with:
         path: ${{ matrix.path }}
-        key: ${{ matrix.os }}-${{ matrix.python-version }}-pip-${{ hashFiles('setup.cfg') }}
+        key: ${{ matrix.os }}-${{ matrix.python-version }}-pip-${{ hashFiles('pyproject.toml') }}
         restore-keys: |
          ${{ matrix.os }}-${{ matrix.python-version }}-pip-
     - name: Is core test version
@@ -181,7 +181,7 @@ jobs:
     - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
       with:
         path: ~/.cache/pip
-        key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-${{ hashFiles('setup.cfg') }}
+        key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-${{ hashFiles('pyproject.toml') }}
         restore-keys: |
           ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-
     - name: Install build tools
@@ -234,7 +234,7 @@ jobs:
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: ~/.cache/pip
-          key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-${{ hashFiles('setup.cfg') }}
+          key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-${{ hashFiles('pyproject.toml') }}
           restore-keys: |
             ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-
       - uses: ./.github/actions/snyk-test

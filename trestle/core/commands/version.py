@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle Validate Command."""
+
 import argparse
 import logging
 import pathlib
@@ -40,7 +41,7 @@ class VersionCmd(CommandBase):
             '--type',
             help='Type of the model being queried: (catalog, profile, component-definition, ...)',
             default=None,
-            type=str
+            type=str,
         )
 
     def _get_version(self, type_name: str, obj_name: str, trestle_root: pathlib.Path) -> str:

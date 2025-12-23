@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle describe command."""
+
 import argparse
 import os
 import pathlib
@@ -35,10 +36,8 @@ def test_describe_functionality(
     """Test basic functionality of describe."""
     # prepare trestle project dir with the file
     catalog_dir, catalog_file = test_utils.prepare_trestle_project_dir(
-        tmp_path,
-        FileContentType.JSON,
-        simplified_nist_catalog,
-        test_utils.CATALOGS_DIR)
+        tmp_path, FileContentType.JSON, simplified_nist_catalog, test_utils.CATALOGS_DIR
+    )
 
     os.chdir(catalog_dir)
     args = argparse.Namespace(file='catalog.json', element=element_path, verbose=1, trestle_root=tmp_path)
@@ -55,10 +54,8 @@ def test_describe_failures(
 ) -> None:
     """Test describe failure modes."""
     comp_def_dir, comp_def_file = test_utils.prepare_trestle_project_dir(
-        tmp_path,
-        FileContentType.JSON,
-        sample_component_definition,
-        test_utils.COMPONENT_DEF_DIR)
+        tmp_path, FileContentType.JSON, sample_component_definition, test_utils.COMPONENT_DEF_DIR
+    )
 
     # not in trestle directory
     args = argparse.Namespace(
@@ -79,7 +76,7 @@ def test_describe_failures(
         file=comp_def_file,
         element='component-definition.metadata,component-definition.back-matter',
         verbose=1,
-        trestle_root=tmp_path
+        trestle_root=tmp_path,
     )
     assert DescribeCmd()._run(args) == 1
 
