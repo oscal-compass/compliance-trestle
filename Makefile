@@ -65,6 +65,9 @@ test-all:
 test-cov:
 	hatch test --cover
 
+test-cov-xml: test-cov
+	coverage xml
+
 test-bdist:: clean
 	bash tests/manual_tests/test_binary.sh
 
