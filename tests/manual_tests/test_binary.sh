@@ -34,7 +34,7 @@ python -m venv "$TEST_DIR/venv"
 source "$TEST_DIR/venv/bin/activate"
 
 # Install wheel and test dependencies
-pip install --quiet dist/*.whl pytest pytest-xdist
+pip install --quiet dist/*.whl pytest pytest-xdist mypy
 
 # Run tests from isolated directory (away from source)
 cd "$TEST_DIR"
