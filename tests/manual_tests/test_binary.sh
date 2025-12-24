@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,24 +13,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# This script is designed to test whether the bdist is behaving correctly.
-# Note that it encodes the stanndard testing protocol and should be updated.
+# Binary Distribution Test
+# ========================
+# This test verifies the wheel package works correctly when installed
+# in isolation, ensuring all required assets are bundled properly.
+# This cannot be done with `hatch test` as that uses editable installs.
 
-# Build trestle as a wheel
-python setup.py bdist_wheel
-# Create an isolated venv with fresh packages
-mkdir tmp_bin_test
-python -m venv tmp_bin_test/venv
-source tmp_bin_test/venv/bin/activate
-# Install in the compliance-trestle wheel away from the source repo
-python -m pip install dist/*.whl
-# install required test libraries
-python -m pip install pytest-xdist
-# this is required to get away from the damn base directory
-cd tmp_bin_test
-# link in the tests.
+set -euo pipefail
+
+TEST_DIR="tmp_bin_test"
+
+# Clean up any previous test artifacts
+rm -rf "$TEST_DIR" dist/
+
+# Build wheel using hatch
+hatch build -t wheel
+
+# Create isolated test environment
+python -m venv "$TEST_DIR/venv"
+source "$TEST_DIR/venv/bin/activate"
+
+# Install wheel and test dependencies
+pip install --quiet dist/*.whl pytest pytest-xdist
+
+# Run tests from isolated directory (away from source)
+cd "$TEST_DIR"
 ln -s ../tests
-# Ensure nist content is accessible (requires submodules to be checked out.)
 ln -s ../nist-content
-python -m pytest --exitfirst -n auto
 
+pytest --exitfirst -n auto tests/
