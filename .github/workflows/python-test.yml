@@ -41,9 +41,9 @@ jobs:
         key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-${{ hashFiles('pyproject.toml') }}
         restore-keys: |
           ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-
-    - name: Install hatch
+    - name: Install tools
       run: |
-        pip install hatch
+        pip install hatch pre-commit
     - name: Setup pre-commit
       run: |
         make pre-commit
