@@ -66,7 +66,7 @@ test-cov:
 	hatch test --cover
 
 test-bdist:: clean
-	. tests/manual_tests/test_binary.sh
+	bash tests/manual_tests/test_binary.sh
 
 # ============================================================================
 # Build & Release

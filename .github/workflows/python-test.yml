@@ -149,6 +149,11 @@ jobs:
       if: steps.core-version.outputs.core == 'true'
       run: |
         hatch test --cover -py ${{ matrix.python-version }}
+    - name: Generate coverage report
+      if: steps.core-version.outputs.core == 'true'
+      run: |
+        pip install coverage
+        coverage xml
 
     - name: Upload artifact
       if: steps.core-version.outputs.core == 'true'
