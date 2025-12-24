@@ -165,9 +165,7 @@ class XccdfResultToOscalAR(TaskBase):
                 logger.warning('config invalid "timestamp"')
                 return TaskOutcome(mode + 'failure')
         # config optional performance
-        modes = {
-            'checking': self._config.getboolean('checking', False),
-        }
+        modes = {'checking': self._config.getboolean('checking', False)}
         # insure output dir exists
         opth.mkdir(exist_ok=True, parents=True)
         # process

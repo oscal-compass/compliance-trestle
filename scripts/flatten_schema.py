@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Script to remove references in json schema to simplify work done by datamodel-generator."""
+
 import json
 import logging
 import os
@@ -23,7 +24,7 @@ logger.setLevel(logging.INFO)
 logger.addHandler(logging.StreamHandler())
 
 
-class FlattenSchema():
+class FlattenSchema:
     """Flatten the schema by resolving references as much as possible."""
 
     _ref_str = '$ref'
@@ -32,7 +33,7 @@ class FlattenSchema():
 
     def _find_ref(self, name):
         """Find the full definition of the given reference name from the list of definitions."""
-        for (key, value) in self._def_list:
+        for key, value in self._def_list:
             if key == name:
                 return value
         raise AssertionError()
@@ -42,7 +43,7 @@ class FlattenSchema():
         """Extract the name from the ref definition value."""
         pref_string = '#/definitions/'
         assert s.find(pref_string) == 0
-        return s[len(pref_string):]
+        return s[len(pref_string) :]
 
     def _replace_ref(self, d, ref_set):
         """Input is known to be ref: /definitions/bar so just return replacement def from def_list."""
@@ -128,7 +129,7 @@ class FlattenSchema():
             for line in fin.readlines():
                 nref = line.find(ref_str)
                 if nref >= 0:
-                    new_ref = line[(nref + len(ref_str)):].strip()
+                    new_ref = line[(nref + len(ref_str)) :].strip()
                     needed_refs.add(new_ref)
 
         out_lines = []

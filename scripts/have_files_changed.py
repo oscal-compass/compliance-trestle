@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Check whether repo is clear of fixes - to be used in combination with scripts in the CI pipeline."""
+
 import logging
 import pathlib
 import sys

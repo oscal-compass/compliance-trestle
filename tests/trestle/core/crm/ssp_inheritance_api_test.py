@@ -45,7 +45,7 @@ def prep_dir(component_dir: pathlib.Path) -> None:
         provided_uuid=example_provided_uuid,
         responsibility_uuid=example_responsibility_uuid,
         leveraged_statement_names=['Access Control Appliance', 'THIS SYSTEM (SaaS)'],
-        leveraged_ssp_href='trestle://system-security-plans/leveraged_ssp/system-security-plan.json'
+        leveraged_ssp_href='trestle://system-security-plans/leveraged_ssp/system-security-plan.json',
     )
 
     file = ac_2 / f'{expected_application_uuid}.md'
@@ -70,7 +70,7 @@ def unmapped_prep_dir(component_dir: pathlib.Path) -> None:
         provided_uuid=example_provided_uuid,
         responsibility_uuid=example_responsibility_uuid,
         leveraged_statement_names=[const.REPLACE_ME],
-        leveraged_ssp_href='trestle://system-security-plans/leveraged_ssp/system-security-plan.json'
+        leveraged_ssp_href='trestle://system-security-plans/leveraged_ssp/system-security-plan.json',
     )
 
     file = ac_2 / f'{expected_application_uuid}.md'
@@ -96,10 +96,8 @@ def test_update_ssp_inheritance(tmp_trestle_dir: pathlib.Path) -> None:
     test_utils.load_from_json(tmp_trestle_dir, 'leveraging_ssp', leveraging_ssp, ossp.SystemSecurityPlan)
 
     orig_ssp, _ = ModelUtils.load_model_for_class(
-        tmp_trestle_dir,
-        leveraging_ssp,
-        ossp.SystemSecurityPlan,
-        FileContentType.JSON)
+        tmp_trestle_dir, leveraging_ssp, ossp.SystemSecurityPlan, FileContentType.JSON
+    )
 
     components = orig_ssp.system_implementation.components
 
@@ -158,10 +156,8 @@ def test_no_leveraged_comps(tmp_trestle_dir: pathlib.Path) -> None:
     test_utils.load_from_json(tmp_trestle_dir, 'leveraging_ssp', leveraging_ssp, ossp.SystemSecurityPlan)
 
     orig_ssp, _ = ModelUtils.load_model_for_class(
-        tmp_trestle_dir,
-        leveraging_ssp,
-        ossp.SystemSecurityPlan,
-        FileContentType.JSON)
+        tmp_trestle_dir, leveraging_ssp, ossp.SystemSecurityPlan, FileContentType.JSON
+    )
 
     components = orig_ssp.system_implementation.components
 

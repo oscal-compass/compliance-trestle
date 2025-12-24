@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle Validate command tests."""
+
 import argparse
 import configparser
 import pathlib
@@ -67,7 +68,7 @@ def test_arguments(tmp_trestle_dir: pathlib.Path) -> None:
         verbose=1,
         list=False,
         task=None,
-        info=False
+        info=False,
     )
     rc = taskcmd.TaskCmd()._run(args)
     assert rc > 0
@@ -79,7 +80,7 @@ def test_arguments(tmp_trestle_dir: pathlib.Path) -> None:
         verbose=1,
         task='this-is-not-a-task',
         config=False,
-        info=False
+        info=False,
     )
     rc = taskcmd.TaskCmd()._run(args)
     assert rc > 0
@@ -132,7 +133,7 @@ def test_load_custom_config(tmp_trestle_dir: pathlib.Path) -> None:
         verbose=1,
         task='pass-fail',
         config='config_file.json',
-        info=True
+        info=True,
     )
     rc = taskcmd.TaskCmd()._run(args)
     assert rc == 0
@@ -144,7 +145,7 @@ def test_load_custom_config(tmp_trestle_dir: pathlib.Path) -> None:
         verbose=1,
         task='pass-fail',
         config='config_file.json',
-        info=False
+        info=False,
     )
     rc = taskcmd.TaskCmd()._run(args)
     assert rc == 0
@@ -169,7 +170,7 @@ def test_task_cmd_not_trestle_dir(tmp_empty_cwd: pathlib.Path) -> None:
         verbose=1,
         task='pass-fail',
         config='config_file.json',
-        info=True
+        info=True,
     )
     rc = taskcmd.TaskCmd()._run(args)
     assert rc > 0
@@ -184,7 +185,7 @@ def test_task_cmd_incorrect_config_path_when_passed(tmp_trestle_dir: pathlib.Pat
         verbose=1,
         task='pass-fail',
         config='made_up.json',
-        info=False
+        info=False,
     )
     rc = taskcmd.TaskCmd()._run(args)
     assert rc > 0

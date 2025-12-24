@@ -152,13 +152,7 @@ class CatalogHelper:
                 control.props.append(prop)
 
     def add_control(
-        self,
-        section: str,
-        recommendation: str,
-        title: str,
-        props: List[Property],
-        parts: List[Part],
-        links: List[Link]
+        self, section: str, recommendation: str, title: str, props: List[Property], parts: List[Part], links: List[Link]
     ) -> None:
         """Add control."""
         group = self._all_groups[section]
@@ -182,22 +176,14 @@ class CatalogHelper:
                 control.links = links
             group.controls.append(control)
 
-    def add_link(
-        self,
-        recommendation: str,
-        reference: str,
-        links: List[Link],
-    ) -> None:
+    def add_link(self, recommendation: str, reference: str, links: List[Link]) -> None:
         """Add link."""
         id_ = f'CIS-{recommendation}'
         if id_ not in self._root_resources:
             res_id = str(uuid.uuid4())
             link = Link(href=f'#{res_id}', rel='reference')
             links.append(link)
-            resource = Resource(
-                uuid=res_id,
-                description=reference,
-            )
+            resource = Resource(uuid=res_id, description=reference)
             self._root_resources[id_] = resource
 
     def get_catalog(self) -> Catalog:
@@ -207,7 +193,7 @@ class CatalogHelper:
             uuid=str(uuid.uuid4()),
             metadata=self._metadata,
             groups=list(self._root_group.values()),
-            back_matter=back_matter
+            back_matter=back_matter,
         )
         return catalog
 

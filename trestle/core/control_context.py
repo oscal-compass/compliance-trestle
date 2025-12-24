@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Provide a context for control operations."""
+
 from __future__ import annotations
 
 import copy
@@ -90,7 +91,7 @@ class ControlContext:
         control_implementation: Optional[comp.ControlImplementation] = None,
         uri_name_map: Optional[Dict[str, str]] = None,
         comp_dict: Optional[CompDict] = None,
-        merged_header: Optional[Dict[str, Any]] = None
+        merged_header: Optional[Dict[str, Any]] = None,
     ) -> ControlContext:
         """Generate control context of the needed type."""
         context = cls(
@@ -116,7 +117,7 @@ class ControlContext:
             rules_params_dict=rules_params_dict,
             control_implementation=control_implementation,
             uri_name_map=uri_name_map,
-            comp_dict=comp_dict
+            comp_dict=comp_dict,
         )
         context.cli_yaml_header = as_dict(cli_yaml_header)
         context.sections_dict = as_dict(sections_dict)
@@ -153,6 +154,6 @@ class ControlContext:
             control_implementation=copy.deepcopy(context.control_implementation),
             uri_name_map=context.uri_name_map,
             comp_dict=copy.deepcopy(context.comp_dict),
-            merged_header=copy.deepcopy(context.merged_header)
+            merged_header=copy.deepcopy(context.merged_header),
         )
         return new_context

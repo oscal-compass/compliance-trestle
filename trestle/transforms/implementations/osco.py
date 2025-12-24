@@ -28,12 +28,7 @@ from defusedxml import ElementTree
 from ruamel.yaml import YAML
 
 from trestle.common.list_utils import as_list
-from trestle.oscal.assessment_results import (
-    LocalDefinitions1,
-    Observation,
-    Result,
-    SystemComponent,
-)
+from trestle.oscal.assessment_results import LocalDefinitions1, Observation, Result, SystemComponent
 from trestle.oscal.common import (
     ControlSelection,
     ImplementedComponent,
@@ -150,7 +145,7 @@ class OscoTransformer(OscoResultToOscalARTransformer):
     """Legacy class name."""
 
 
-class RuleUse():
+class RuleUse:
     """Represents one rule of OSCO data."""
 
     def __init__(self, args: Dict[str, str]) -> None:
@@ -182,7 +177,7 @@ class RuleUse():
         return rval
 
 
-class _ComplianceOperatorResult():
+class _ComplianceOperatorResult:
     """Represents one result of OSCO data."""
 
     def __init__(self, osco_xml: str) -> None:
@@ -330,7 +325,7 @@ class _ComplianceOperatorResult():
                     'time': time,
                     'result': result,
                     'severity': severity,
-                    'weight': weight
+                    'weight': weight,
                 }
                 rule_use = RuleUse(args)
                 yield rule_use
@@ -340,7 +335,7 @@ class _ComplianceOperatorResult():
         return self._parse_xml()
 
 
-class _OscalResultsFactory():
+class _OscalResultsFactory:
     """Build OSCO OSCAL entities."""
 
     default_timestamp = ResultsTransformer.get_timestamp()

@@ -43,7 +43,7 @@ class Modify(Pipeline.Filter):
         param_rep: ParameterRep = ParameterRep.LEAVE_MOUSTACHE,
         show_value_warnings: bool = False,
         value_assigned_prefix: Optional[str] = None,
-        value_not_assigned_prefix: Optional[str] = None
+        value_not_assigned_prefix: Optional[str] = None,
     ) -> None:
         """Initialize the filter."""
         self._profile = profile
@@ -313,7 +313,7 @@ class Modify(Pipeline.Filter):
                 self._param_rep,
                 self.show_value_warnings,
                 self._value_assigned_prefix,
-                self._value_not_assigned_prefix
+                self._value_not_assigned_prefix,
             )
 
         catalog = self._catalog_interface.get_catalog()

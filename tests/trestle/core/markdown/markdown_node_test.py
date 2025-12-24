@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle markdown_validator module."""
+
 import pathlib
 
 import frontmatter
@@ -115,9 +116,10 @@ def test_modify_md_node_header_lvl(testdata_dir: pathlib.Path, tmp_trestle_dir: 
     assert len(list(tree.get_all_headers_for_level(1))) == len(list(tree_expected.get_all_headers_for_level(1)))
     assert len(list(tree.get_all_headers_for_level(2))) == len(list(tree_expected.get_all_headers_for_level(2)))
     assert len(list(tree.get_all_headers_for_level(3))) == len(list(tree_expected.get_all_headers_for_level(3)))
-    assert tree.get_node_for_key('####### Header 3.2.1.1.1.1').content.raw_text == tree_expected.get_node_for_key(
-        '####### Header 3.2.1.1.1.1'
-    ).content.raw_text
+    assert (
+        tree.get_node_for_key('####### Header 3.2.1.1.1.1').content.raw_text
+        == tree_expected.get_node_for_key('####### Header 3.2.1.1.1.1').content.raw_text
+    )
     assert len(tree.get_node_for_key('## Header 3 a deeper tree').subnodes) == len(
         tree_expected.get_node_for_key('## Header 3 a deeper tree').subnodes
     )

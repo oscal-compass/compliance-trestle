@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Handle reading of writing controls from markdown."""
+
 import logging
 import pathlib
 from typing import Any, Dict, List, Optional, Tuple
@@ -53,7 +54,7 @@ class ControlReader:
             if line.strip() and not line.startswith('____'):
                 break
             reverse_index += 1
-        clean_prose = new_prose[:len(new_prose) - reverse_index]
+        clean_prose = new_prose[: len(new_prose) - reverse_index]
         clean_prose = clean_prose if clean_prose else ['']
         # if there is no useful prose this will return [''] and allow generation of a statement with empty prose
         return clean_prose
@@ -75,7 +76,7 @@ class ControlReader:
         node: ControlMarkdownNode,
         control_id: str,
         comp_list: List[str],
-        context: ControlContext
+        context: ControlContext,
     ) -> None:
         """
         Extract the label, prose, possible component name - along with implementation status.
@@ -189,8 +190,9 @@ class ControlReader:
         return split_header[4].strip()
 
     @staticmethod
-    def read_control_info_from_md(control_file: pathlib.Path,
-                                  context: ControlContext) -> Tuple[Dict[str, List[str]], CompDict]:
+    def read_control_info_from_md(
+        control_file: pathlib.Path, context: ControlContext
+    ) -> Tuple[Dict[str, List[str]], CompDict]:
         """
         Find all labels and associated implementation prose in the markdown for this control.
 
@@ -254,8 +256,9 @@ class ControlReader:
         return prose
 
     @staticmethod
-    def read_implemented_requirement(control_file: pathlib.Path,
-                                     context: ControlContext) -> Tuple[str, comp.ImplementedRequirement]:
+    def read_implemented_requirement(
+        control_file: pathlib.Path, context: ControlContext
+    ) -> Tuple[str, comp.ImplementedRequirement]:
         """
         Get the implementated requirement associated with given control and link to existing components or new ones.
 
@@ -322,8 +325,9 @@ class ControlReader:
         return sort_id, imp_req
 
     @staticmethod
-    def get_props_list(control_id: str, label_map: Dict[str, str],
-                       yaml_header: Dict[str, Any]) -> Tuple[List[common.Property], Dict[str, List[common.Property]]]:
+    def get_props_list(
+        control_id: str, label_map: Dict[str, str], yaml_header: Dict[str, Any]
+    ) -> Tuple[List[common.Property], Dict[str, List[common.Property]]]:
         """Get the list of props in the yaml header of this control as separate lists with and without by_id."""
         prop_list = yaml_header.get(const.TRESTLE_ADD_PROPS_TAG, [])
         props = []
@@ -347,13 +351,15 @@ class ControlReader:
         required_sections_list: List[str],
         part_label_to_id_map: Dict[str, Dict[str, str]],
         cli_section_dict: Dict[str, str],
-        write_mode: bool
+        write_mode: bool,
     ) -> Tuple[str, List[prof.Alter], Dict[str, Any]]:
         """Get parts for the markdown control corresponding to Editable Content - along with the set-parameter dict."""
         control_id = control_path.stem
 
         md_api = MarkdownAPI()
-        yaml_header, control_tree = md_api.processor.process_control_markdown(control_path, cli_section_dict, part_label_to_id_map)  # noqa: E501
+        yaml_header, control_tree = md_api.processor.process_control_markdown(
+            control_path, cli_section_dict, part_label_to_id_map
+        )  # noqa: E501
         # extract the sort_id if present in header
         sort_id = yaml_header.get(const.SORT_ID, control_id)
 
@@ -371,8 +377,11 @@ class ControlReader:
 
         # Validate that all required sections have a prose
         for editable_part in editable_parts:
-            if not write_mode and editable_part.name in required_sections_list and editable_part.prose.startswith(
-                    const.PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT):
+            if (
+                not write_mode
+                and editable_part.name in required_sections_list
+                and editable_part.prose.startswith(const.PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT)
+            ):
                 raise TrestleError(f'Control {control_id} is missing prose for required section {editable_part.title}')
 
         # Validate that all required sections are present
@@ -401,7 +410,7 @@ class ControlReader:
                 prof.Add(
                     parts=none_if_empty(editable_parts),
                     props=none_if_empty(props),
-                    position=prof.PositionValidValues.ending.value
+                    position=prof.PositionValidValues.ending.value,
                 )
             )
 

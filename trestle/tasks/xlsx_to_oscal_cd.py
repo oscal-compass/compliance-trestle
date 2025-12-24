@@ -123,12 +123,10 @@ class XlsxToOscalComponentDefinition(TaskBase):
             version=get_trestle_version(),
             roles=roles,
             parties=parties,
-            responsible_parties=responsible_parties
+            responsible_parties=responsible_parties,
         )
         component_definition = ComponentDefinition(
-            uuid=str(uuid.uuid4()),
-            metadata=metadata,
-            components=list(self.defined_components.values()),
+            uuid=str(uuid.uuid4()), metadata=metadata, components=list(self.defined_components.values())
         )
         # write OSCAL ComponentDefinition to file
         if self._verbose:
@@ -155,16 +153,17 @@ class XlsxToOscalComponentDefinition(TaskBase):
             parameter_name, parameter_description = self.xlsx_helper.get_parameter_name_and_description(row)
             # control implementations
             source = self._get_catalog_url()
-            description = component_name + ' implemented controls for ' + self._get_catalog_title(
-            ) + '. It includes assessment asset configuration for CICD.'
+            description = (
+                component_name
+                + ' implemented controls for '
+                + self._get_catalog_title()
+                + '. It includes assessment asset configuration for CICD.'
+            )
             key = source + key_sep + description
             control_implementation = ci_map.get(key)
             if not control_implementation:
                 ci_map[key] = ControlImplementation(
-                    uuid=str(uuid.uuid4()),
-                    source=source,
-                    description=description,
-                    implemented_requirements=[],
+                    uuid=str(uuid.uuid4()), source=source, description=description, implemented_requirements=[]
                 )
                 control_implementation = ci_map[key]
                 if defined_component.control_implementations is None:
@@ -186,7 +185,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         component_name: str,
         parameter_name: str,
         responsible_roles: List[ResponsibleRole],
-        goal_name_id: str
+        goal_name_id: str,
     ) -> None:
         """Add implemented requirements."""
         goal_remarks = self.xlsx_helper.get_goal_remarks(row)
@@ -198,14 +197,14 @@ class XlsxToOscalComponentDefinition(TaskBase):
                 class_=self._get_class_for_property_name('goal_name_id'),
                 value=goal_name_id,
                 ns=self._get_namespace(),
-                remarks=str(goal_remarks)
+                remarks=str(goal_remarks),
             )
             prop2 = Property(
                 name='goal_version',
                 class_=self._get_class_for_property_name('goal_version'),
                 value=self._get_goal_version(),
                 ns=self._get_namespace(),
-                remarks=str(goal_name_id)
+                remarks=str(goal_name_id),
             )
             props = [prop1, prop2]
             control_id, _ = self.catalog_interface.get_control_id_and_status(control)
@@ -233,7 +232,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         control: str,
         controls: Dict[str, List[str]],
         component_name: str,
-        implemented_requirement: ImplementedRequirement
+        implemented_requirement: ImplementedRequirement,
     ) -> None:
         """Add statements."""
         control_statements = controls[control]
@@ -248,7 +247,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
                 statement = Statement(
                     statement_id=control,
                     uuid=str(uuid.uuid4()),
-                    description=f'{component_name} implements {statement_id}'
+                    description=f'{component_name} implements {statement_id}',
                 )
                 statements.append(statement)
             implemented_requirement.statements = statements
@@ -290,10 +289,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
             component_title = component_name
             component_description = component_name
             defined_component = DefinedComponent(
-                uuid=str(uuid.uuid4()),
-                description=component_description,
-                title=component_title,
-                type=component_type,
+                uuid=str(uuid.uuid4()), description=component_description, title=component_title, type=component_type
             )
             self.defined_components[key] = defined_component
         return defined_component
@@ -305,22 +301,19 @@ class XlsxToOscalComponentDefinition(TaskBase):
             Role(id='prepared-for', title='Indicates the organization for which this content was created..'),
             Role(
                 id='content-approver',
-                title='Indicates the organization responsible for all content represented in the "document".'
+                title='Indicates the organization responsible for all content represented in the "document".',
             ),
         ]
         return value
 
-    def _build_responsible_roles(self, party_uuid_01: str, party_uuid_02: str,
-                                 party_uuid_03: str) -> List[ResponsibleRole]:
+    def _build_responsible_roles(
+        self, party_uuid_01: str, party_uuid_02: str, party_uuid_03: str
+    ) -> List[ResponsibleRole]:
         """Build responsible roles."""
         role_prepared_by = ResponsibleRole(role_id='prepared-by', party_uuids=[party_uuid_01])
         role_prepared_for = ResponsibleRole(role_id='prepared-for', party_uuids=[party_uuid_02, party_uuid_03])
         role_content_approver = ResponsibleRole(role_id='content-approver', party_uuids=[party_uuid_01])
-        value = [
-            role_prepared_by,
-            role_prepared_for,
-            role_content_approver,
-        ]
+        value = [role_prepared_by, role_prepared_for, role_content_approver]
         return value
 
     def _build_parties(self, party_uuid_01: str, party_uuid_02: str, party_uuid_03: str) -> List[Party]:
@@ -331,28 +324,25 @@ class XlsxToOscalComponentDefinition(TaskBase):
                 uuid=party_uuid_02,
                 type='organization',
                 name='Customer',
-                remarks='organization to be customized at account creation only for their Component Definition'
+                remarks='organization to be customized at account creation only for their Component Definition',
             ),
             Party(
                 uuid=party_uuid_03,
                 type='organization',
                 name='ISV',
-                remarks='organization to be customized at ISV subscription only for their Component Definition'
+                remarks='organization to be customized at ISV subscription only for their Component Definition',
             ),
         ]
         return value
 
-    def _build_responsible_parties(self, party_uuid_01: str, party_uuid_02: str,
-                                   party_uuid_03: str) -> List[ResponsibleParty]:
+    def _build_responsible_parties(
+        self, party_uuid_01: str, party_uuid_02: str, party_uuid_03: str
+    ) -> List[ResponsibleParty]:
         """Build responsible parties."""
         prepared_by = ResponsibleParty(role_id='prepared-by', party_uuids=[party_uuid_01])
         prepared_for = ResponsibleParty(role_id='prepared-for', party_uuids=[party_uuid_02, party_uuid_03])
         content_approver = ResponsibleParty(role_id='content-approver', party_uuids=[party_uuid_01])
-        value = [
-            prepared_by,
-            prepared_for,
-            content_approver,
-        ]
+        value = [prepared_by, prepared_for, content_approver]
         return value
 
     def _report_issues(self) -> None:

@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle plans module."""
+
 import pathlib
 from typing import List
 
@@ -50,7 +51,6 @@ def test_plan_execution(tmp_path, sample_nist_component_def: component.Component
 
     target_files: List[pathlib.Path] = []
     for index in range(len(sample_nist_component_def.components)):
-
         target_file: pathlib.Path = pathlib.Path.joinpath(targets_dir, f'component_{index}.yaml')
         target_files.append(target_file)
         split_plan.add_action(CreatePathAction(target_file))

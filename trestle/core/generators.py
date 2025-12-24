@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Capabilities to allow the generation of various oscal objects."""
+
 import inspect
 import logging
 import math
@@ -98,10 +99,7 @@ def is_enum_observation_type_valid_value(type_: type) -> bool:
     return rval
 
 
-def generate_sample_value_by_type(
-    type_: type,
-    field_name: str,
-) -> Union[datetime, bool, int, str, float, Enum]:
+def generate_sample_value_by_type(type_: type, field_name: str) -> Union[datetime, bool, int, str, float, Enum]:
     """Given a type, return sample value.
 
     Includes the Optional use of passing down a parent_model

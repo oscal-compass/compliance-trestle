@@ -84,8 +84,7 @@ class DescribeCmd(CommandPlusDocs):
             text = f'list of {n_items} items of type {type_text}'
             return text
         if type(sub_model) is str:
-            return sub_model if len(sub_model
-                                    ) < clip_string else sub_model[:clip_string] + '[truncated]'  # type: ignore
+            return sub_model if len(sub_model) < clip_string else sub_model[:clip_string] + '[truncated]'  # type: ignore
         if hasattr(sub_model, 'type_'):
             return cls._clean_type_string(str(sub_model.type_))
         return cls._clean_type_string(str(type(sub_model)))

@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle author headers command."""
+
 import os
 import pathlib
 import shutil
@@ -40,7 +41,7 @@ from trestle.core.commands.author.consts import START_TEMPLATE_VERSION
             False,
             0,
             0,
-            0
+            0,
         ),
         (
             'test_tasks_2',
@@ -49,7 +50,7 @@ from trestle.core.commands.author.consts import START_TEMPLATE_VERSION
             False,
             0,
             0,
-            0
+            0,
         ),
         (
             'test_tasks_3',
@@ -58,7 +59,7 @@ from trestle.core.commands.author.consts import START_TEMPLATE_VERSION
             False,
             0,
             1,
-            1
+            1,
         ),
         (
             'test_tasks_4',
@@ -67,7 +68,7 @@ from trestle.core.commands.author.consts import START_TEMPLATE_VERSION
             False,
             0,
             1,
-            1
+            1,
         ),
         (
             'test_tasks_5',
@@ -76,7 +77,7 @@ from trestle.core.commands.author.consts import START_TEMPLATE_VERSION
             False,
             0,
             0,
-            3
+            3,
         ),
         (
             'test_tasks_6',
@@ -85,7 +86,7 @@ from trestle.core.commands.author.consts import START_TEMPLATE_VERSION
             False,
             0,
             0,
-            1
+            1,
         ),
         (
             'test_tasks_7',
@@ -94,7 +95,7 @@ from trestle.core.commands.author.consts import START_TEMPLATE_VERSION
             False,
             0,
             0,
-            3
+            3,
         ),
         (
             'test_tasks_8',
@@ -103,7 +104,7 @@ from trestle.core.commands.author.consts import START_TEMPLATE_VERSION
             False,
             0,
             0,
-            3
+            3,
         ),
         (
             'test_tasks_9',
@@ -112,7 +113,7 @@ from trestle.core.commands.author.consts import START_TEMPLATE_VERSION
             False,
             0,
             0,
-            0
+            0,
         ),
         (
             'test_tasks_10',
@@ -121,7 +122,7 @@ from trestle.core.commands.author.consts import START_TEMPLATE_VERSION
             False,
             0,
             1,
-            1
+            1,
         ),
         (
             'test_tasks_11',
@@ -130,7 +131,7 @@ from trestle.core.commands.author.consts import START_TEMPLATE_VERSION
             True,
             0,
             0,
-            0
+            0,
         ),
         (
             None,
@@ -139,7 +140,7 @@ from trestle.core.commands.author.consts import START_TEMPLATE_VERSION
             True,
             0,
             0,
-            0
+            0,
         ),
         (
             None,
@@ -148,9 +149,9 @@ from trestle.core.commands.author.consts import START_TEMPLATE_VERSION
             False,
             1,
             1,
-            1
+            1,
         ),
-    ]
+    ],
 )
 def test_e2e(
     task_name: str,
@@ -162,7 +163,7 @@ def test_e2e(
     validate_rc: int,
     testdata_dir: pathlib.Path,
     tmp_trestle_dir: pathlib.Path,
-    monkeypatch: MonkeyPatch
+    monkeypatch: MonkeyPatch,
 ) -> None:
     """Run an E2E workflow with a number of test criteria."""
     command_string_setup = 'trestle author headers setup'
@@ -268,8 +269,8 @@ def test_taskpath_is_a_file_setup(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
         (pathlib.Path('author/headers/global/pass_with_exceptions'), 'sample_indexable_1', False),
         (pathlib.Path('author/headers/global/pass_with_nested_exceptions'), 'nested/bad', True),
         (pathlib.Path('author/headers/global/pass_with_nested_exceptions'), 'nested/good', False),
-        (pathlib.Path('author/headers/global/pass_with_nested_exceptions'), 'nested', True)
-    ]
+        (pathlib.Path('author/headers/global/pass_with_nested_exceptions'), 'nested', True),
+    ],
 )
 def test_exclude_global(
     sample_project: pathlib.Path,
@@ -277,7 +278,7 @@ def test_exclude_global(
     acceptable: bool,
     testdata_dir: pathlib.Path,
     tmp_path: pathlib.Path,
-    monkeypatch: MonkeyPatch
+    monkeypatch: MonkeyPatch,
 ) -> None:
     """Test behaviour of --all flag for trestle author headers."""
     command_string = f'trestle author headers validate -r --global --trestle-root={tmp_path}'
@@ -312,7 +313,7 @@ def test_exclude_global(
             False,
             0,
             0,
-            0
+            0,
         ),
         (
             'test_tasks_2',
@@ -321,7 +322,7 @@ def test_exclude_global(
             False,
             0,
             0,
-            0
+            0,
         ),
         (
             'test_tasks_3',
@@ -330,7 +331,7 @@ def test_exclude_global(
             False,
             0,
             1,
-            1
+            1,
         ),
         (
             'test_tasks_4',
@@ -339,7 +340,7 @@ def test_exclude_global(
             False,
             0,
             1,
-            1
+            1,
         ),
         (
             'test_tasks_5',
@@ -348,7 +349,7 @@ def test_exclude_global(
             False,
             0,
             0,
-            3
+            3,
         ),
         (
             'test_tasks_6',
@@ -357,7 +358,7 @@ def test_exclude_global(
             False,
             0,
             0,
-            1
+            1,
         ),
         (
             'test_tasks_7',
@@ -366,7 +367,7 @@ def test_exclude_global(
             False,
             0,
             0,
-            3
+            3,
         ),
         (
             'test_tasks_8',
@@ -375,7 +376,7 @@ def test_exclude_global(
             False,
             0,
             0,
-            3
+            3,
         ),
         (
             'test_tasks_9',
@@ -384,7 +385,7 @@ def test_exclude_global(
             False,
             0,
             0,
-            0
+            0,
         ),
         (
             'test_tasks_10',
@@ -393,7 +394,7 @@ def test_exclude_global(
             False,
             0,
             1,
-            1
+            1,
         ),
         (
             'test_tasks_11',
@@ -402,7 +403,7 @@ def test_exclude_global(
             True,
             0,
             0,
-            0
+            0,
         ),
         (
             None,
@@ -411,9 +412,9 @@ def test_exclude_global(
             True,
             0,
             0,
-            0
-        )
-    ]
+            0,
+        ),
+    ],
 )
 def test_e2e_backward_compatibility(
     task_name: str,
@@ -425,7 +426,7 @@ def test_e2e_backward_compatibility(
     validate_rc: int,
     testdata_dir: pathlib.Path,
     tmp_trestle_dir: pathlib.Path,
-    monkeypatch: MonkeyPatch
+    monkeypatch: MonkeyPatch,
 ) -> None:
     """Run an E2E workflow with existing files."""
     command_string_setup = 'trestle author headers setup'

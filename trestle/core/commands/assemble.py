@@ -98,7 +98,7 @@ class AssembleCmd(CommandPlusDocs):
                 WriteFileAction(
                     assembled_model_filepath,
                     Element(assembled_model),
-                    FileContentType.to_content_type(f'.{args.extension}')
+                    FileContentType.to_content_type(f'.{args.extension}'),
                 )
             )
 

@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Handle writing of inherited statements to markdown."""
+
 import logging
 import pathlib
 from abc import ABC, abstractmethod
@@ -39,16 +40,12 @@ class LeveragedStatements(ABC):
         self._md_file: Optional[MDWriter] = None
         self.header_comment_dict: Dict[str, str] = {
             const.TRESTLE_LEVERAGING_COMP_TAG: const.YAML_LEVERAGING_COMP_COMMENT,
-            const.TRESTLE_STATEMENT_TAG: const.YAML_LEVERAGED_COMMENT
+            const.TRESTLE_STATEMENT_TAG: const.YAML_LEVERAGED_COMMENT,
         }
         self.merged_header_dict: Dict[str, Any] = {
             const.TRESTLE_STATEMENT_TAG: '',
             const.TRESTLE_LEVERAGING_COMP_TAG: component_mapping_default,
-            const.TRESTLE_GLOBAL_TAG: {
-                const.LEVERAGED_SSP: {
-                    const.HREF: leveraged_ssp_reference
-                }
-            }
+            const.TRESTLE_GLOBAL_TAG: {const.LEVERAGED_SSP: {const.HREF: leveraged_ssp_reference}},
         }
 
     @abstractmethod
@@ -65,7 +62,7 @@ class StatementTree(LeveragedStatements):
         provided_description: str,
         responsibility_uuid: str,
         responsibility_description: str,
-        leveraged_ssp_reference: str
+        leveraged_ssp_reference: str,
     ) -> None:
         """Initialize the class."""
         self.provided_uuid = provided_uuid
@@ -100,7 +97,8 @@ class StatementTree(LeveragedStatements):
 
     def _add_generated_content(self) -> None:
         statement_dict: Dict[str, str] = {
-            const.PROVIDED_UUID: self.provided_uuid, const.RESPONSIBILITY_UUID: self.responsibility_uuid
+            const.PROVIDED_UUID: self.provided_uuid,
+            const.RESPONSIBILITY_UUID: self.responsibility_uuid,
         }
 
         self.merged_header_dict[const.TRESTLE_STATEMENT_TAG] = statement_dict
@@ -118,12 +116,7 @@ class StatementTree(LeveragedStatements):
 class StatementProvided(LeveragedStatements):
     """Concrete class for managing provided statements."""
 
-    def __init__(
-        self,
-        provided_uuid: str,
-        provided_description: str,
-        leveraged_ssp_reference: str,
-    ) -> None:
+    def __init__(self, provided_uuid: str, provided_description: str, leveraged_ssp_reference: str) -> None:
         """Initialize the class."""
         self.provided_uuid = provided_uuid
         self.provided_description = provided_description
@@ -159,12 +152,7 @@ class StatementProvided(LeveragedStatements):
 class StatementResponsibility(LeveragedStatements):
     """Concrete class for managing responsibility statements."""
 
-    def __init__(
-        self,
-        responsibility_uuid: str,
-        responsibility_description: str,
-        leveraged_ssp_reference: str,
-    ) -> None:
+    def __init__(self, responsibility_uuid: str, responsibility_description: str, leveraged_ssp_reference: str) -> None:
         """Initialize the class."""
         self.responsibility_uuid = responsibility_uuid
         self.responsibility_description = responsibility_description

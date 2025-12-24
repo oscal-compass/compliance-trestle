@@ -100,9 +100,7 @@ class OscalBaseModel(TrestleBaseModel):
 
     @classmethod
     def create_stripped_model_type(
-        cls,
-        stripped_fields: Optional[List[str]] = None,
-        stripped_fields_aliases: Optional[List[str]] = None
+        cls, stripped_fields: Optional[List[str]] = None, stripped_fields_aliases: Optional[List[str]] = None
     ) -> Type['OscalBaseModel']:
         """Create a pydantic model, which is derived from the current model, but missing certain fields.
 
@@ -146,13 +144,14 @@ class OscalBaseModel(TrestleBaseModel):
             # Validate name in the field
             # Cehcke behaviour with an alias
             if current_mfield.required:
-                new_fields_for_model[
-                    current_mfield.name
-                ] = (current_mfield.outer_type_, Field(..., title=current_mfield.name, alias=current_mfield.alias))
+                new_fields_for_model[current_mfield.name] = (
+                    current_mfield.outer_type_,
+                    Field(..., title=current_mfield.name, alias=current_mfield.alias),
+                )
             else:
                 new_fields_for_model[current_mfield.name] = (
                     Optional[current_mfield.outer_type_],
-                    Field(None, title=current_mfield.name, alias=current_mfield.alias)
+                    Field(None, title=current_mfield.name, alias=current_mfield.alias),
                 )
         new_model = create_model(cls.__name__, __base__=OscalBaseModel, **new_fields_for_model)  # type: ignore
         # TODO: This typing cast should NOT be necessary. Potentially fixable with a fix to pydantic. Issue #175
@@ -175,9 +174,7 @@ class OscalBaseModel(TrestleBaseModel):
         return None
 
     def stripped_instance(
-        self,
-        stripped_fields: Optional[List[str]] = None,
-        stripped_fields_aliases: Optional[List[str]] = None
+        self, stripped_fields: Optional[List[str]] = None, stripped_fields_aliases: Optional[List[str]] = None
     ) -> 'OscalBaseModel':
         """Return a new model instance with the specified fields being stripped.
 
@@ -310,10 +307,7 @@ class OscalBaseModel(TrestleBaseModel):
                 obj = yaml.load(fh)
                 fh.close()
             elif content_type == FileContentType.JSON:
-                obj = load_file(
-                    path,
-                    json_loads=cls.__config__.json_loads,
-                )
+                obj = load_file(path, json_loads=cls.__config__.json_loads)
         except Exception as e:
             raise err.TrestleError(f'Error loading file {path} {str(e)}')
         try:
@@ -350,8 +344,12 @@ class OscalBaseModel(TrestleBaseModel):
             # Dev notes: Do not change this from json. Due to enums (in particular) json is the closest we can get.
             return new_oscal_type.parse_raw(self.oscal_serialize_json(pretty=False, wrapped=False))
 
-        if ('__root__' in self.__fields__ and len(self.__fields__) == 1 and '__root__' in new_oscal_type.__fields__
-                and len(new_oscal_type.__fields__) == 1):
+        if (
+            '__root__' in self.__fields__
+            and len(self.__fields__) == 1
+            and '__root__' in new_oscal_type.__fields__
+            and len(new_oscal_type.__fields__) == 1
+        ):
             logger.debug('Root element based copy too')
             return new_oscal_type.parse_obj(self.__root__)
 

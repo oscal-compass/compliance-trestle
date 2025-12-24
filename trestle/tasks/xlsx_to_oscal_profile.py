@@ -104,11 +104,7 @@ class XlsxToOscalProfile(TaskBase):
         )
         if self.xlsx_helper.profile_type == self.xlsx_helper.by_control:
             imports = self._get_imports_by_control()
-            profile = Profile(
-                uuid=str(uuid.uuid4()),
-                metadata=metadata,
-                imports=imports,
-            )
+            profile = Profile(uuid=str(uuid.uuid4()), metadata=metadata, imports=imports)
         else:
             if self.xlsx_helper.profile_type == self.xlsx_helper.by_rule:
                 imports = self._get_imports_by_rule()
@@ -118,12 +114,7 @@ class XlsxToOscalProfile(TaskBase):
                 imports = self._get_imports_by_goal()
             set_parameters = self._get_set_parameters()
             modify = Modify(set_parameters=set_parameters)
-            profile = Profile(
-                uuid=str(uuid.uuid4()),
-                metadata=metadata,
-                imports=imports,
-                modify=modify,
-            )
+            profile = Profile(uuid=str(uuid.uuid4()), metadata=metadata, imports=imports, modify=modify)
         # write OSCAL Profile to file
         if self._verbose:
             logger.info(f'output: {ofile}')
@@ -227,11 +218,7 @@ class XlsxToOscalProfile(TaskBase):
             values = self.xlsx_helper.get_parameter_values(row)
             if param_id is None:
                 continue
-            set_parameter = SetParameter(
-                param_id=param_id,
-                label=label,
-                usage=usage,
-            )
+            set_parameter = SetParameter(param_id=param_id, label=label, usage=usage)
             if values is not None:
                 set_parameter.values = values
             set_parameters.append(set_parameter)

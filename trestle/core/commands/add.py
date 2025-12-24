@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle Add Command."""
+
 import argparse
 import logging
 import pathlib
@@ -32,7 +33,7 @@ from trestle.core.models.plans import Plan
 logger = logging.getLogger(__name__)
 
 
-class Add():
+class Add:
     """
     Class supporting Add of an OSCAL object to a provided file based on element path.
 

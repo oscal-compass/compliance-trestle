@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Plan of action of a command."""
+
 import logging
 from io import UnsupportedOperation
 from typing import List

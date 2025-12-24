@@ -79,7 +79,7 @@ class SSPGenerate(AuthorCommonCommand):
             help=const.HELP_OVERWRITE_HEADER_VALUES,
             required=False,
             action='store_true',
-            default=False
+            default=False,
         )
         self.add_argument(
             '-iap',
@@ -87,7 +87,7 @@ class SSPGenerate(AuthorCommonCommand):
             help=const.HELP_INCLUDE_ALL_PARTS,
             required=False,
             action='store_true',
-            default=False
+            default=False,
         )
 
     def _run(self, args: argparse.Namespace) -> int:
@@ -119,7 +119,7 @@ class SSPGenerate(AuthorCommonCommand):
                 yaml_header,
                 args.overwrite_header_values,
                 args.force_overwrite,
-                args.include_all_parts
+                args.include_all_parts,
             )
 
         except Exception as e:  # pragma: no cover
@@ -135,7 +135,7 @@ class SSPGenerate(AuthorCommonCommand):
         yaml_header: Dict[str, Any],
         overwrite_header_values: bool,
         force_overwrite: bool,
-        include_all_parts: bool
+        include_all_parts: bool,
     ) -> int:
         """
         Generate the ssp markdown from the profile and compdefs.
@@ -190,7 +190,7 @@ class SSPGenerate(AuthorCommonCommand):
             block_params=False,
             params_format='[.]',
             param_rep=ParameterRep.ASSIGNMENT_FORM,
-            show_value_warnings=True
+            show_value_warnings=True,
         )
 
         catalog_api = CatalogAPI(catalog=resolved_catalog, context=context)
@@ -213,7 +213,7 @@ class SSPGenerate(AuthorCommonCommand):
         trestle_root: pathlib.Path,
         leveraged_ssp_name_or_href: str,
         resolved_catalog: CatalogInterface,
-        md_path: str
+        md_path: str,
     ) -> None:
         """
         Generate markdown for inheritance view.
@@ -292,9 +292,7 @@ class SSPAssemble(AuthorCommonCommand):
 
     @staticmethod
     def _merge_statement(
-        imp_req: ossp.ImplementedRequirement,
-        statement: generic.GenericStatement,
-        set_params: List[ossp.SetParameter],
+        imp_req: ossp.ImplementedRequirement, statement: generic.GenericStatement, set_params: List[ossp.SetParameter]
     ) -> None:
         """Merge the generic statement into the statements of the imp_req."""
         # if the statement id is already in the imp_req, merge its by_comps into the existing statement
@@ -311,7 +309,7 @@ class SSPAssemble(AuthorCommonCommand):
     def _merge_imp_req_into_imp_req(
         imp_req: ossp.ImplementedRequirement,
         gen_imp_req: generic.GenericImplementedRequirement,
-        set_params: List[ossp.SetParameter]
+        set_params: List[ossp.SetParameter],
     ) -> None:
         """Merge comp def imp req into existing imp req."""
         # convert generic imp req from comp defs into ssp form
@@ -323,8 +321,9 @@ class SSPAssemble(AuthorCommonCommand):
             SSPAssemble._merge_statement(imp_req, statement, set_params)
 
     @staticmethod
-    def _get_params_for_rules(context: ControlContext, rules_list: List[str],
-                              set_params: List[ossp.SetParameter]) -> List[ossp.SetParameter]:
+    def _get_params_for_rules(
+        context: ControlContext, rules_list: List[str], set_params: List[ossp.SetParameter]
+    ) -> List[ossp.SetParameter]:
         """Get all set_params needed by the rules along with non-rule set_params."""
         needed_param_ids: Set[str] = set()
         rule_dict = context.rules_params_dict.get(context.comp_name, {})
@@ -360,7 +359,7 @@ class SSPAssemble(AuthorCommonCommand):
         gen_comp: generic.GenericComponent,
         gen_imp_req: generic.GenericImplementedRequirement,
         set_params: List[ossp.SetParameter],
-        context: ControlContext
+        context: ControlContext,
     ) -> None:
         """Add imp req from control implementation into new ssp being assembled."""
         # the incoming gen_imp_req comes directly from the comp def
@@ -426,7 +425,7 @@ class SSPAssemble(AuthorCommonCommand):
         ssp: ossp.SystemSecurityPlan,
         comp_dict: Dict[str, generic.GenericComponent],
         context: ControlContext,
-        catalog_interface: CatalogInterface
+        catalog_interface: CatalogInterface,
     ) -> None:
         """Merge the original generic comp defs into the ssp."""
         all_comps: List[ossp.SystemComponent] = []
@@ -708,7 +707,7 @@ class SSPFilter(AuthorCommonCommand):
                     const.STATUS_PARTIAL,
                     const.STATUS_IMPLEMENTED,
                     const.STATUS_ALTERNATIVE,
-                    const.STATUS_NOT_APPLICABLE
+                    const.STATUS_NOT_APPLICABLE,
                 }
                 allowed_is_string = ', '.join(str(item) for item in allowed_is_values)
                 for impl_status in impl_status_values:
@@ -726,7 +725,7 @@ class SSPFilter(AuthorCommonCommand):
                     const.ORIGINATION_SYSTEM_SPECIFIC,
                     const.ORIGINATION_INHERITED,
                     const.ORIGINATION_CUSTOMER_CONFIGURED,
-                    const.ORIGINATION_CUSTOMER_PROVIDED
+                    const.ORIGINATION_CUSTOMER_PROVIDED,
                 }
                 allowed_co_string = ', '.join(str(item) for item in allowed_co_values)
                 for co in co_values:
@@ -746,7 +745,7 @@ class SSPFilter(AuthorCommonCommand):
                 args.version,
                 comp_names,
                 impl_status_values,
-                co_values
+                co_values,
             )
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Error generating the filtered ssp')
@@ -761,7 +760,7 @@ class SSPFilter(AuthorCommonCommand):
         version: Optional[str],
         components: Optional[List[str]] = None,
         implementation_status: Optional[List[str]] = None,
-        control_origination: Optional[List[str]] = None
+        control_origination: Optional[List[str]] = None,
     ) -> int:
         """
         Filter the ssp and output new ssp.

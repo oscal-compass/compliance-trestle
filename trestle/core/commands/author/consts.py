@@ -67,7 +67,8 @@ GLOBAL_SHORT = '-g'
 GLOBAL_LONG = '--global'
 GLOBAL_HELP = (
     'Use a consistent template defined in .trestle/author/__global__,'
-    + 'if used without a task name applies to all files within the repository.' + '\n\n'
+    + 'if used without a task name applies to all files within the repository.'
+    + '\n\n'
 )
 
 EXCLUDE_SHORT = '-ex'

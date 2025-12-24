@@ -218,9 +218,7 @@ class ComponentAssemble(AuthorCommonCommand):
 
         # load the comp-def that will be updated
         parent_comp, parent_comp_path = ModelUtils.load_model_for_class(
-            trestle_root,
-            parent_comp_name,
-            comp.ComponentDefinition
+            trestle_root, parent_comp_name, comp.ComponentDefinition
         )
         new_content_type = FileContentType.path_to_content_type(parent_comp_path)
 

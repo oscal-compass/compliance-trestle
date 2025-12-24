@@ -14,63 +14,78 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-submodules: 
+# ============================================================================
+# Setup
+# ============================================================================
+
+submodules:
 	git submodule update --init
 
 develop: submodules
-	python -m pip install -e .[dev] --upgrade --upgrade-strategy eager --
+	pip install hatch
+	pip install -e .[dev]
 
-pre-commit: 
+pre-commit:
 	pre-commit install
 
 pre-commit-update:
 	pre-commit autoupdate
 
-install:
-	python -m pip install  --upgrade pip setuptools
-	python -m pip install . --upgrade --upgrade-strategy eager
+# ============================================================================
+# Code Quality (via hatch)
+# ============================================================================
 
 code-format:
-	pre-commit run yapf --all-files
+	hatch fmt --formatter
 
 code-lint:
-	pre-commit run flake8 --all-files
+	hatch fmt --linter --check
+
+code-lint-fix:
+	hatch fmt --linter
 
 code-typing:
-	mypy --pretty trestle
+	hatch run -- mypy --pretty trestle
 
-test-all::
-	python -m pytest -n auto
+code-check: code-format code-lint code-typing
 
-test::
-	python -m pytest --exitfirst -n auto
+mdformat:
+	pre-commit run mdformat --all-files
 
-test-cov::
-	python -m pytest --cov=trestle  --exitfirst -n auto -vv --cov-report=xml --cov-fail-under=96
+# ============================================================================
+# Testing (via hatch test)
+# ============================================================================
 
-test-all-random::
-	python -m pytest --cov=trestle --cov-report=xml --random-order
+test:
+	hatch test
 
-test-verbose:
-	python -m pytest  -vv -n auto
+test-all:
+	hatch test --all
 
-test-speed-measure:
-	python -m pytest -n auto --durations=30
+test-cov:
+	hatch test --cover
 
-test-fast:
-	python -m pytest -n auto --exitfirst -k "not fetcher and not from_nist and not from_url"
+test-cov-xml: test-cov
+	coverage xml
 
 test-bdist:: clean
-	. tests/manual_tests/test_binary.sh
+	bash tests/manual_tests/test_binary.sh
 
+# ============================================================================
+# Build & Release
+# ============================================================================
+
+build:
+	hatch build
 
 release::
 	git config --global user.name "semantic-release (via Github actions)"
 	git config --global user.email "semantic-release@github-actions"
 	semantic-release publish
 
-gen-oscal::
-	python ./scripts/gen_oscal.py
+# ============================================================================
+# Documentation
+# ============================================================================
 
 docs-osx-deps:
 	brew install cairo freetype libffi libjpeg libpng zlib
@@ -79,42 +94,31 @@ docs-ubuntu-deps:
 	sudo apt-get update
 	sudo apt-get -y install libcairo2-dev libfreetype6-dev libffi-dev libjpeg-dev libpng-dev libz-dev
 
-docs-automation::
-	python ./scripts/website_automation.py
+docs-build:
+	hatch run docs:build
 
+docs-serve:
+	hatch run docs:serve
 
-# docs validate remains using mkdocs as mike does not have a build validation tool for serving
-docs-validate:: docs-automation
-	mkdocs build -c -s
-	rm -rf site
+docs-validate:
+	hatch run docs:validate
 
-docs-serve: docs-automation
-	git fetch origin gh-pages
-	mike serve	
+# ============================================================================
+# Utilities
+# ============================================================================
 
-mdformat:
-	pre-commit run mdformat --all-files
+gen-oscal::
+	python ./scripts/gen_oscal.py
 
 simplified-catalog:
 	python ./scripts/simplify_retain_ac.py ./nist-content/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json ./tests/data/json/simplified_nist_catalog.json
 
-# POSIX ONLY
-clean::
-	rm -rf build
-	rm -rf dist
-	rm -rf .pytest_cache
-	rm -rf tmp_bin_test
-	rm -rf cov_html
-	rm -rf coverage.xml
-	rm -rf .coverage*
-	rm -rf .mypy_cache
-	find . | grep -E "__pycache__|\.pyc|\.pyo" | xargs rm -rf
-
-pylint:
-	pylint trestle
-
-pylint-test:
-	pylint tests --rcfile=.pylintrc_tests
-
 check-for-changes:
-	python scripts/have_files_changed.py -u
+	hatch run docs:automation
+	git diff --exit-code
+
+clean::
+	rm -rf build dist .pytest_cache tmp_bin_test cov_html coverage.xml .coverage* .mypy_cache .ruff_cache site
+	find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+	find . -type f -name "*.pyc" -delete 2>/dev/null || true
+	find . -type f -name "*.pyo" -delete 2>/dev/null || true

@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """A docs markdown node."""
+
 from __future__ import annotations
 
 import logging
@@ -65,12 +66,7 @@ class DocsMarkdownNode(BaseMarkdownNode):
         return ob
 
     def _build_tree(
-        self,
-        lines: List[str],
-        root_key: str,
-        starting_line: int,
-        level: int,
-        governed_header: Optional[str] = None
+        self, lines: List[str], root_key: str, starting_line: int, level: int, governed_header: Optional[str] = None
     ) -> Tuple[DocsMarkdownNode, int]:
         """
         Build a tree from the markdown recursively.
@@ -118,8 +114,11 @@ class DocsMarkdownNode(BaseMarkdownNode):
             elif self._does_start_with(line, md_const.BLOCKQUOTE_CHAR):
                 content.blockquotes.append(line)
                 i += 1
-            elif governed_header is not None and self._does_contain(
-                    root_key, fr'^[#]+ {governed_header}$') and self._does_contain(line, md_const.GOVERNED_DOC_REGEX):
+            elif (
+                governed_header is not None
+                and self._does_contain(root_key, rf'^[#]+ {governed_header}$')
+                and self._does_contain(line, md_const.GOVERNED_DOC_REGEX)
+            ):
                 regexp = re.compile(md_const.GOVERNED_DOC_REGEX)
                 match = regexp.search(line)
                 header = match.group(0).strip('*').strip(':')

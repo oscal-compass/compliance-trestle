@@ -101,7 +101,11 @@ def test_comma_colon_sep_to_dict() -> None:
     assert list_utils.comma_colon_sep_to_dict('') == {}
     assert list_utils.comma_colon_sep_to_dict('  ') == {}
     assert list_utils.comma_colon_sep_to_dict(' ab: cd ,de:fg, h , i : j k, m: n : op ') == {
-        'ab': 'cd', 'de': 'fg', 'h': 'h', 'i': 'j k', 'm': 'n : op'
+        'ab': 'cd',
+        'de': 'fg',
+        'h': 'h',
+        'i': 'j k',
+        'm': 'n : op',
     }
 
 

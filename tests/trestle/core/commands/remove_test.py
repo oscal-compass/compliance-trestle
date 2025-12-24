@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle remove command."""
+
 import pathlib
 import re
 import shutil
@@ -148,10 +149,7 @@ def test_run_failure_nonexistent_element(
     # Create a temporary catalog file with responsible-parties
     content_type = FileContentType.JSON
     catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
-        tmp_path,
-        content_type,
-        sample_catalog_minimal,
-        test_utils.CATALOGS_DIR
+        tmp_path, content_type, sample_catalog_minimal, test_utils.CATALOGS_DIR
     )
 
     # 1. self.remove() fails -- Should happen if wildcard is given, or nonexistent element.
@@ -171,7 +169,7 @@ def test_run_failure_nonexistent_element(
         '-e',
         'catalog.metadata.roles',
         '--trestle-root',
-        str(tmp_path)
+        str(tmp_path),
     ]
     monkeypatch.setattr(sys, 'argv', testargs)
     exitcode = Trestle().run()
@@ -183,10 +181,7 @@ def test_run_failure_wildcard(tmp_path: pathlib.Path, sample_catalog_minimal: Ca
     # Create a temporary catalog file with responsible-parties
     content_type = FileContentType.JSON
     catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
-        tmp_path,
-        content_type,
-        sample_catalog_minimal,
-        test_utils.CATALOGS_DIR
+        tmp_path, content_type, sample_catalog_minimal, test_utils.CATALOGS_DIR
     )
     testargs = ['trestle', 'remove', '-f', str(catalog_def_file), '-e', 'catalog.*', '--trestle-root', str(tmp_path)]
     monkeypatch.setattr(sys, 'argv', testargs)
@@ -201,15 +196,19 @@ def test_run_failure_required_element(
     # Create a temporary catalog file with responsible-parties
     content_type = FileContentType.JSON
     catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
-        tmp_path,
-        content_type,
-        sample_catalog_minimal,
-        test_utils.CATALOGS_DIR
+        tmp_path, content_type, sample_catalog_minimal, test_utils.CATALOGS_DIR
     )
     # 4. simulate() fails -- Should happen if required element is target for deletion
     monkeypatch.chdir(tmp_path)
     testargs = [
-        'trestle', 'remove', '-f', str(catalog_def_file), '-e', 'catalog.metadata', '--trestle-root', str(tmp_path)
+        'trestle',
+        'remove',
+        '-f',
+        str(catalog_def_file),
+        '-e',
+        'catalog.metadata',
+        '--trestle-root',
+        str(tmp_path),
     ]
     monkeypatch.setattr(sys, 'argv', testargs)
     exitcode = Trestle().run()
@@ -223,10 +222,7 @@ def test_run_failure_project_not_found(
     # Create a temporary catalog file with responsible-parties
     content_type = FileContentType.JSON
     catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
-        tmp_path,
-        content_type,
-        sample_catalog_minimal,
-        test_utils.CATALOGS_DIR
+        tmp_path, content_type, sample_catalog_minimal, test_utils.CATALOGS_DIR
     )
     # 5. get_contextual_model_type() fails, i.e., "Trestle project not found"
     testargs = ['trestle', 'remove', '-f', '/dev/null', '-e', 'catalog.metadata', '--trestle-root', str(tmp_path)]
@@ -242,10 +238,7 @@ def test_run_failure_filenotfounderror(
     # Create a temporary catalog file with responsible-parties
     content_type = FileContentType.JSON
     catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
-        tmp_path,
-        content_type,
-        sample_catalog_minimal,
-        test_utils.CATALOGS_DIR
+        tmp_path, content_type, sample_catalog_minimal, test_utils.CATALOGS_DIR
     )
     # 6. oscal_read fails because file is not found
     # Must specify catalogs/ location, not catalogs/my_test_model/.
@@ -257,7 +250,7 @@ def test_run_failure_filenotfounderror(
         '-e',
         'catalog.metadata',
         '--trestle-root',
-        str(tmp_path)
+        str(tmp_path),
     ]
     monkeypatch.setattr(sys, 'argv', testargs)
     exitcode = Trestle().run()
@@ -269,7 +262,7 @@ def test_run_failure_plan_execute(
     keep_cwd: pathlib.Path,
     sample_catalog_minimal: Catalog,
     monkeypatch: MonkeyPatch,
-    caplog: pytest.LogCaptureFixture
+    caplog: pytest.LogCaptureFixture,
 ):
     """Test failure plan execute() in _run on RemoveCmd."""
     # Plant this specific logged error for failing execution in mock_execute:
@@ -281,10 +274,7 @@ def test_run_failure_plan_execute(
     # Create a temporary file as a valid arg for trestle remove:
     content_type = FileContentType.JSON
     catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
-        tmp_path,
-        content_type,
-        sample_catalog_minimal,
-        test_utils.CATALOGS_DIR
+        tmp_path, content_type, sample_catalog_minimal, test_utils.CATALOGS_DIR
     )
     monkeypatch.chdir(tmp_path)
     # Add remarks here, so it is a valid removal target,
@@ -311,10 +301,7 @@ def test_run(tmp_path: pathlib.Path, sample_catalog_missing_roles, monkeypatch: 
 
     # Create a temporary file with responsible-parties to be removed.
     catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
-        tmp_path,
-        content_type,
-        sample_catalog_missing_roles,
-        test_utils.CATALOGS_DIR
+        tmp_path, content_type, sample_catalog_missing_roles, test_utils.CATALOGS_DIR
     )
 
     testargs = [
@@ -325,7 +312,7 @@ def test_run(tmp_path: pathlib.Path, sample_catalog_missing_roles, monkeypatch: 
         '-f',
         str(catalog_def_file),
         '-e',
-        'catalog.metadata.responsible-parties'
+        'catalog.metadata.responsible-parties',
     ]
 
     monkeypatch.setattr(sys, 'argv', testargs)
@@ -341,10 +328,7 @@ def test_run(tmp_path: pathlib.Path, sample_catalog_missing_roles, monkeypatch: 
 
     # Create a temporary file with Roles and Responsible-Parties to be removed.
     catalog_def_dir, catalog_def_file_2 = test_utils.prepare_trestle_project_dir(
-        tmp_path,
-        content_type,
-        catalog_with_roles_responsible_parties,
-        test_utils.CATALOGS_DIR
+        tmp_path, content_type, catalog_with_roles_responsible_parties, test_utils.CATALOGS_DIR
     )
 
     testargs = [
@@ -355,7 +339,7 @@ def test_run(tmp_path: pathlib.Path, sample_catalog_missing_roles, monkeypatch: 
         '-f',
         str(catalog_def_file_2),
         '-e',
-        'catalog.metadata.responsible-parties,catalog.metadata.roles'
+        'catalog.metadata.responsible-parties,catalog.metadata.roles',
     ]
 
     monkeypatch.setattr(sys, 'argv', testargs)

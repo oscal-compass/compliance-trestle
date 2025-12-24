@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Common logging utilities."""
+
 import argparse
 import logging
 import sys
@@ -111,7 +112,7 @@ def get_current_verbosity_level(logger: logging.Logger) -> int:
     return 0
 
 
-class Trace():
+class Trace:
     """Class allowing low priority trace message when verbose > 1 and log level below DEBUG."""
 
     def __init__(self, logger: logging.Logger) -> None:

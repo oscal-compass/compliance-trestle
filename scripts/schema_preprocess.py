@@ -456,7 +456,15 @@ def create_refs(model_name: str) -> None:
         'oscal-ssp-oscal-metadata:metadata',
     ]
     navigation = [
-        'properties', 'parties', 'items', 'properties', 'external-ids', 'items', 'properties', 'scheme', 'anyOf'
+        'properties',
+        'parties',
+        'items',
+        'properties',
+        'external-ids',
+        'items',
+        'properties',
+        'scheme',
+        'anyOf',
     ]
     ref_name = 'ExternalSchemeValidValues'
     for root in list_:
@@ -490,9 +498,7 @@ def create_refs(model_name: str) -> None:
     for root in list_:
         create_ref(model_name, root, navigation, ref_name)
     # Defined Component Type Valid Values
-    list_ = [
-        'oscal-component-definition-oscal-component-definition:defined-component',
-    ]
+    list_ = ['oscal-component-definition-oscal-component-definition:defined-component']
     navigation = ['properties', 'type', 'anyOf']
     ref_name = 'DefinedComponentTypeValidValues'
     for root in list_:
@@ -548,51 +554,47 @@ def create_refs(model_name: str) -> None:
     for root in list_:
         create_ref(model_name, root, navigation, ref_name)
     # Operational State Valid Values
-    list_ = [
-        'oscal-ssp-oscal-ssp:status',
-    ]
+    list_ = ['oscal-ssp-oscal-ssp:status']
     navigation = ['properties', 'state', 'allOf']
     ref_name = 'OperationalStateValidValues'
     for root in list_:
         create_ref(model_name, root, navigation, ref_name)
     # Item Name Valid Values
-    list_ = [
-        'oscal-profile-oscal-profile:modify',
-    ]
+    list_ = ['oscal-profile-oscal-profile:modify']
     navigation = [
-        'properties', 'alters', 'items', 'properties', 'removes', 'items', 'properties', 'by-item-name', 'allOf'
+        'properties',
+        'alters',
+        'items',
+        'properties',
+        'removes',
+        'items',
+        'properties',
+        'by-item-name',
+        'allOf',
     ]
     ref_name = 'ItemNameValidValues'
     for root in list_:
         create_ref(model_name, root, navigation, ref_name)
     # Order Valid Values
-    list_ = [
-        'oscal-profile-oscal-profile:insert-controls',
-    ]
+    list_ = ['oscal-profile-oscal-profile:insert-controls']
     navigation = ['properties', 'order', 'allOf']
     ref_name = 'OrderValidValues'
     for root in list_:
         create_ref(model_name, root, navigation, ref_name)
     # With Child Controls Valid Values
-    list_ = [
-        'oscal-profile-oscal-profile:select-control',
-    ]
+    list_ = ['oscal-profile-oscal-profile:select-control']
     navigation = ['properties', 'with-child-controls', 'allOf']
     ref_name = 'WithChildControlsValidValues'
     for root in list_:
         create_ref(model_name, root, navigation, ref_name)
     # Position Valid Values
-    list_ = [
-        'oscal-profile-oscal-profile:modify',
-    ]
+    list_ = ['oscal-profile-oscal-profile:modify']
     navigation = ['properties', 'alters', 'items', 'properties', 'adds', 'items', 'properties', 'position', 'allOf']
     ref_name = 'PositionValidValues'
     for root in list_:
         create_ref(model_name, root, navigation, ref_name)
     # Combination Method Valid Values
-    list_ = [
-        'oscal-profile-oscal-profile:merge',
-    ]
+    list_ = ['oscal-profile-oscal-profile:merge']
     navigation = ['properties', 'combine', 'properties', 'method', 'allOf']
     ref_name = 'CombinationMethodValidValues'
     for root in list_:

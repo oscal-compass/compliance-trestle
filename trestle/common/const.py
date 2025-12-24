@@ -75,7 +75,7 @@ MODEL_TYPE_LIST = [
     MODEL_TYPE_COMPDEF,
     MODEL_TYPE_POAM,
     MODEL_TYPE_PROFILE,
-    MODEL_TYPE_SSP
+    MODEL_TYPE_SSP,
 ]
 
 MODEL_DIR_LIST = [
@@ -85,7 +85,7 @@ MODEL_DIR_LIST = [
     MODEL_DIR_COMPDEF,
     MODEL_DIR_POAM,
     MODEL_DIR_PROFILE,
-    MODEL_DIR_SSP
+    MODEL_DIR_SSP,
 ]
 
 MODEL_MODULE_LIST = [
@@ -95,7 +95,7 @@ MODEL_MODULE_LIST = [
     MODEL_MODULE_COMPDEF,
     MODEL_MODULE_POAM,
     MODEL_MODULE_PROFILE,
-    MODEL_MODULE_SSP
+    MODEL_MODULE_SSP,
 ]
 """Map of plural form of a model type to the oscal module that contains the classes related to it."""
 MODEL_DIR_TO_MODEL_MODULE = {
@@ -105,7 +105,7 @@ MODEL_DIR_TO_MODEL_MODULE = {
     MODEL_DIR_COMPDEF: MODEL_MODULE_COMPDEF,
     MODEL_DIR_POAM: MODEL_MODULE_POAM,
     MODEL_DIR_PROFILE: MODEL_MODULE_PROFILE,
-    MODEL_DIR_SSP: MODEL_MODULE_SSP
+    MODEL_DIR_SSP: MODEL_MODULE_SSP,
 }
 """Map of model type to oscal module."""
 MODEL_TYPE_TO_MODEL_MODULE = {
@@ -115,7 +115,7 @@ MODEL_TYPE_TO_MODEL_MODULE = {
     MODEL_TYPE_COMPDEF: MODEL_MODULE_COMPDEF,
     MODEL_TYPE_POAM: MODEL_MODULE_POAM,
     MODEL_TYPE_PROFILE: MODEL_MODULE_PROFILE,
-    MODEL_TYPE_SSP: MODEL_MODULE_SSP
+    MODEL_TYPE_SSP: MODEL_MODULE_SSP,
 }
 """Map of model module to model type."""
 MODEL_MODULE_TO_MODEL_TYPE = {
@@ -125,7 +125,7 @@ MODEL_MODULE_TO_MODEL_TYPE = {
     MODEL_MODULE_COMPDEF: MODEL_TYPE_COMPDEF,
     MODEL_MODULE_POAM: MODEL_TYPE_POAM,
     MODEL_MODULE_PROFILE: MODEL_TYPE_PROFILE,
-    MODEL_MODULE_SSP: MODEL_TYPE_SSP
+    MODEL_MODULE_SSP: MODEL_TYPE_SSP,
 }
 """Map of model type to model directory."""
 MODEL_TYPE_TO_MODEL_DIR = {
@@ -135,7 +135,7 @@ MODEL_TYPE_TO_MODEL_DIR = {
     MODEL_TYPE_COMPDEF: MODEL_DIR_COMPDEF,
     MODEL_TYPE_POAM: MODEL_DIR_POAM,
     MODEL_TYPE_PROFILE: MODEL_DIR_PROFILE,
-    MODEL_TYPE_SSP: MODEL_DIR_SSP
+    MODEL_TYPE_SSP: MODEL_DIR_SSP,
 }
 """Element path separator"""
 ALIAS_PATH_SEPARATOR: str = '.'
@@ -264,7 +264,9 @@ SSP_MD_HRULE_LINE = '___________________________________________________________
 
 SSP_MD_IMPLEMENTATION_QUESTION = 'What is the solution and how is it implemented?'
 
-SSP_MD_LEAVE_BLANK_TEXT = '<!-- Please leave this section blank and enter implementation details in the parts below. -->'  # noqa E501
+SSP_MD_LEAVE_BLANK_TEXT = (
+    '<!-- Please leave this section blank and enter implementation details in the parts below. -->'  # noqa E501
+)
 
 SSP_ADD_IMPLEMENTATION_PREFIX = '<!-- Add control implementation description here for '
 
@@ -278,7 +280,9 @@ SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT = SSP_ADD_IMPLEMENTATION_PREFIX + ITEM
 
 SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT = SSP_ADD_IMPLEMENTATION_PREFIX + 'control'
 
-SSP_ADD_THIS_SYSTEM_IMPLEMENTATION_FOR_CONTROL_TEXT = f'<!-- Add implementation prose for the main {SSP_MAIN_COMP_NAME} component for control'  # noqa E501
+SSP_ADD_THIS_SYSTEM_IMPLEMENTATION_FOR_CONTROL_TEXT = (
+    f'<!-- Add implementation prose for the main {SSP_MAIN_COMP_NAME} component for control'  # noqa E501
+)
 
 SSP_SYSTEM_CONTROL_IMPLEMENTATION_TEXT = 'This is the control implementation for the system.'
 
@@ -427,7 +431,7 @@ STATUS_ALL = [
     STATUS_UNDER_DEVELOPMENT,
     STATUS_DISPOSITION,
     STATUS_OTHER,
-    STATUS_UNDER_MAJOR_MODIFICATION
+    STATUS_UNDER_MAJOR_MODIFICATION,
 ]
 
 STATUS_PROMPT = f'<!-- For implementation status enter one of: {STATUS_IMPLEMENTED}, {STATUS_PARTIAL}, {STATUS_PLANNED}, {STATUS_ALTERNATIVE}, {STATUS_NOT_APPLICABLE} -->'  # noqa E501
@@ -435,8 +439,7 @@ STATUS_PROMPT = f'<!-- For implementation status enter one of: {STATUS_IMPLEMENT
 RULES_WARNING = '<!-- Note that the list of rules under ### Rules: is read-only and changes will not be captured after assembly to JSON -->'  # noqa E501
 
 SATISFIED_STATEMENT_COMMENT = (
-    '<!-- Use this section to explain how'
-    ' the inherited responsibility is being satisfied. -->'
+    '<!-- Use this section to explain how the inherited responsibility is being satisfied. -->'
 )
 
 THIS_SYSTEM_PROMPT = '### ' + SSP_MAIN_COMP_NAME

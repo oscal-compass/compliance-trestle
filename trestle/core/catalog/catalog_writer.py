@@ -33,7 +33,7 @@ from trestle.oscal import profile as prof
 logger = logging.getLogger(__name__)
 
 
-class CatalogWriter():
+class CatalogWriter:
     """
     Catalog writer.
 
@@ -126,7 +126,7 @@ class CatalogWriter():
         self,
         profile_set_param_dict: Dict[str, common.Parameter],
         control_param_dict: Dict[str, Dict[str, Any]],
-        context: ControlContext
+        context: ControlContext,
     ) -> Dict[str, Dict[str, Any]]:
         """
         Build set-parameters dictionary from the given profile.modify.set-parameters and control.params.
@@ -190,14 +190,9 @@ class CatalogWriter():
                 values = tmp_dict.get('values', None)
                 # if values are None then don´t display them in the markdown
                 if values is not None:
-                    new_dict = {
-                        'id': param_id,
-                        'values': values,
-                    }
+                    new_dict = {'id': param_id, 'values': values}
                 else:
-                    new_dict = {
-                        'id': param_id,
-                    }
+                    new_dict = {'id': param_id}
                 new_dict[const.PROFILE_VALUES] = [const.REPLACE_ME_PLACEHOLDER]
                 new_dict[const.PROFILE_PARAM_VALUE_ORIGIN] = const.REPLACE_ME_PLACEHOLDER
             if param_value_origin is not None:
@@ -227,7 +222,7 @@ class CatalogWriter():
                 const.DISPLAY_NAME,
                 const.PROFILE_VALUES,
                 const.PARAM_VALUE_ORIGIN,
-                const.PROFILE_PARAM_VALUE_ORIGIN
+                const.PROFILE_PARAM_VALUE_ORIGIN,
             )
             ordered_dict = {k: new_dict[k] for k in key_order if k in new_dict.keys()}
             set_param_dict[param_id] = ordered_dict
@@ -343,11 +338,15 @@ class CatalogWriter():
             logger.warning(f'Component {context.comp_name} references controls {missing_controls} not in profile.')
 
         # get top level rule info applying to all controls
-        comp_rules_dict, comp_rules_params_dict, _ = ControlInterface.get_rules_and_params_dict_from_item(context.component)  # noqa E501
+        comp_rules_dict, comp_rules_params_dict, _ = ControlInterface.get_rules_and_params_dict_from_item(
+            context.component
+        )  # noqa E501
         context.rules_dict[context.comp_name] = comp_rules_dict
         context.rules_params_dict[context.comp_name] = comp_rules_params_dict
         for control_imp in as_list(context.component.control_implementations):
-            control_imp_rules_dict, control_imp_rules_params_dict, _ = ControlInterface.get_rules_and_params_dict_from_item(control_imp)  # noqa E501
+            control_imp_rules_dict, control_imp_rules_params_dict, _ = (
+                ControlInterface.get_rules_and_params_dict_from_item(control_imp)
+            )  # noqa E501
             context.rules_dict[context.comp_name].update(control_imp_rules_dict)
             comp_rules_params_dict = context.rules_params_dict.get(context.comp_name, {})
             comp_rules_params_dict.update(control_imp_rules_params_dict)
@@ -449,7 +448,7 @@ class CatalogWriter():
         context: ControlContext,
         control: cat.Control,
         part_id_map: Dict[str, Dict[str, str]],
-        found_control_alters: List[prof.Alter]
+        found_control_alters: List[prof.Alter],
     ):
         # we need to create the dir structure on demand because we don't know a priori what groups are included
         _, group_title, _ = self._catalog_interface.get_group_info_by_control(control.id)

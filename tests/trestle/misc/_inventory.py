@@ -6,10 +6,7 @@ from trestle.oscal.common import InventoryItem, ResponsibleParty
 try:
     role_id = 'x'
     party_uuids = [str(uuid4())]
-    rp = ResponsibleParty(
-        role_id=role_id,
-        party_uuids=party_uuids,
-    )
+    rp = ResponsibleParty(role_id=role_id, party_uuids=party_uuids)
     list_rp = [rp]
     item = InventoryItem(
         uuid=str(uuid4()),
