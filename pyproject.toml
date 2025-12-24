@@ -76,7 +76,7 @@ docs = [
     "livereload",
     "pillow",
     "cairosvg",
-    "gitpython",
+
 ]
 # Development tools (testing via hatch test)
 dev = [
@@ -85,6 +85,7 @@ dev = [
     "python-semantic-release>=10.4.0",
     "pylint",
     "datamodel-code-generator[http] >= 0.36.0",
+    "gitpython",
 ]
 
 [project.urls]
