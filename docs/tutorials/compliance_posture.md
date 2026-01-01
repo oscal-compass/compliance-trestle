@@ -48,4 +48,4 @@ Tutorials are available to show you: how to [run a transformer](Transformers_and
 
 #### Step 2 – Reporting
 
-Coming soon is a [trestle](../index.md) tool to assemble the [OSCAL](https://pages.nist.gov/OSCAL) fragments documents together using [OSCAL](https://pages.nist.gov/OSCAL) compliance configuration data (*System Assessment Plan*  and *System Security Plan*) into a complete *System Assessment Results*.
+Coming soon is a [trestle](../index.md) tool to assemble the [OSCAL](https://pages.nist.gov/OSCAL) fragments documents together using [OSCAL](https://pages.nist.gov/OSCAL) compliance configuration data (*System Assessment Plan* and *System Security Plan*) into a complete *System Assessment Results*.

@@ -43,22 +43,22 @@ cat output/poams/plan-of-action-and-milestones.json | jq '.plan-of-action-and-mi
 
 ### Required Parameters
 
-| Parameter | Description | Example |
-|-----------|-------------|---------|
-| `xlsx-file` | Path to FedRAMP POAM Excel file | `FedRAMP-POAM-Template.xlsx` |
-| `output-dir` | Output directory for POAM JSON | `output/poams` |
-| `title` | Title for the POAM document | `Production System POA&M` |
-| `version` | Version of the POAM | `1.0` |
+| Parameter    | Description                     | Example                      |
+| ------------ | ------------------------------- | ---------------------------- |
+| `xlsx-file`  | Path to FedRAMP POAM Excel file | `FedRAMP-POAM-Template.xlsx` |
+| `output-dir` | Output directory for POAM JSON  | `output/poams`               |
+| `title`      | Title for the POAM document     | `Production System POA&M`    |
+| `version`    | Version of the POAM             | `1.0`                        |
 
 ### Optional Parameters
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `work-sheet-name` | Name of Excel worksheet to process | `Open POA&M Items` |
-| `system-id` | System identifier for the POAM | None |
-| `output-overwrite` | Overwrite existing output file | `true` |
-| `validate-required-fields` | Validation mode: `on`, `warn`, or `off` | `warn` |
-| `quiet` | Suppress informational messages | `false` |
+| Parameter                  | Description                             | Default            |
+| -------------------------- | --------------------------------------- | ------------------ |
+| `work-sheet-name`          | Name of Excel worksheet to process      | `Open POA&M Items` |
+| `system-id`                | System identifier for the POAM          | None               |
+| `output-overwrite`         | Overwrite existing output file          | `true`             |
+| `validate-required-fields` | Validation mode: `on`, `warn`, or `off` | `warn`             |
+| `quiet`                    | Suppress informational messages         | `false`            |
 
 ### Validation Modes
 
@@ -81,9 +81,9 @@ The FedRAMP POAM Excel template must have:
 The following columns are required (task will fail if missing):
 
 1. **POAM ID**: Unique identifier for each POAM item (e.g., `P001`)
-2. **Controls**: NIST control IDs (e.g., `AC-1, AC-2, SC-7(5)`)
-3. **Weakness Name**: Title of the weakness/issue
-4. **Weakness Description**: Detailed description
+1. **Controls**: NIST control IDs (e.g., `AC-1, AC-2, SC-7(5)`)
+1. **Weakness Name**: Title of the weakness/issue
+1. **Weakness Description**: Detailed description
 
 ### Optional Columns
 
@@ -106,40 +106,40 @@ All other columns are optional but recommended:
 
 ### PoamItem Mapping
 
-| Excel Column | OSCAL Field | Notes |
-|--------------|-------------|-------|
-| POAM ID | `PoamItem.props[name='poam-id']` | Also used for UUID generation |
-| Weakness Name | `PoamItem.title` | Required |
-| Weakness Description | `PoamItem.description` | Required |
-| Controls | `PoamItem.props[name='control-id']` | One property per control ID |
-| Comments | `PoamItem.remarks` | Optional |
-| Supporting Documents | `PoamItem.links` | If URLs provided |
+| Excel Column         | OSCAL Field                         | Notes                         |
+| -------------------- | ----------------------------------- | ----------------------------- |
+| POAM ID              | `PoamItem.props[name='poam-id']`    | Also used for UUID generation |
+| Weakness Name        | `PoamItem.title`                    | Required                      |
+| Weakness Description | `PoamItem.description`              | Required                      |
+| Controls             | `PoamItem.props[name='control-id']` | One property per control ID   |
+| Comments             | `PoamItem.remarks`                  | Optional                      |
+| Supporting Documents | `PoamItem.links`                    | If URLs provided              |
 
 ### Observation Mapping
 
-| Excel Column | OSCAL Field | Notes |
-|--------------|-------------|-------|
-| Weakness Detector Source | `Observation.origins[0].actors[0]` | Actor type: tool/assessment-platform |
-| Asset Identifier | `Observation.subjects[0]` | Subject type: component/inventory-item |
-| Original Detection Date | `Observation.collected` | Required field |
-| Weakness Source Identifier | Included in `Observation.description` | E.g., CVE ID |
+| Excel Column               | OSCAL Field                           | Notes                                  |
+| -------------------------- | ------------------------------------- | -------------------------------------- |
+| Weakness Detector Source   | `Observation.origins[0].actors[0]`    | Actor type: tool/assessment-platform   |
+| Asset Identifier           | `Observation.subjects[0]`             | Subject type: component/inventory-item |
+| Original Detection Date    | `Observation.collected`               | Required field                         |
+| Weakness Source Identifier | Included in `Observation.description` | E.g., CVE ID                           |
 
 ### Risk Mapping
 
-| Excel Column | OSCAL Field | Notes |
-|--------------|-------------|-------|
-| Weakness Name | `Risk.title` | Required |
-| Weakness Description | `Risk.description` | Required |
-| Overall Remediation Plan | `Risk.statement` | Required |
-| Status | `Risk.status` | Always `"open"` for Open POA&M Items sheet |
-| Original Risk Rating | `Risk.props[name='original-risk-rating']` | Low/Moderate/High/N/A |
-| Adjusted Risk Rating | `Risk.props[name='adjusted-risk-rating']` | Low/Moderate/High/N/A |
-| Scheduled Completion Date | `Risk.deadline` | ISO 8601 datetime |
-| Planned Milestones | `Risk.remediations[0].tasks[]` | Parsed into Task objects |
-| Risk Adjustment | `Risk.props[name='risk-adjustment']` | Yes/No/Pending |
-| False Positive | `Risk.props[name='false-positive']` | Yes/No/Pending |
-| Operational Requirement | `Risk.props[name='operational-requirement']` | Yes/No/Pending |
-| Deviation Rationale | `Risk.props[name='deviation-rationale']` | Free text |
+| Excel Column              | OSCAL Field                                  | Notes                                      |
+| ------------------------- | -------------------------------------------- | ------------------------------------------ |
+| Weakness Name             | `Risk.title`                                 | Required                                   |
+| Weakness Description      | `Risk.description`                           | Required                                   |
+| Overall Remediation Plan  | `Risk.statement`                             | Required                                   |
+| Status                    | `Risk.status`                                | Always `"open"` for Open POA&M Items sheet |
+| Original Risk Rating      | `Risk.props[name='original-risk-rating']`    | Low/Moderate/High/N/A                      |
+| Adjusted Risk Rating      | `Risk.props[name='adjusted-risk-rating']`    | Low/Moderate/High/N/A                      |
+| Scheduled Completion Date | `Risk.deadline`                              | ISO 8601 datetime                          |
+| Planned Milestones        | `Risk.remediations[0].tasks[]`               | Parsed into Task objects                   |
+| Risk Adjustment           | `Risk.props[name='risk-adjustment']`         | Yes/No/Pending                             |
+| False Positive            | `Risk.props[name='false-positive']`          | Yes/No/Pending                             |
+| Operational Requirement   | `Risk.props[name='operational-requirement']` | Yes/No/Pending                             |
+| Deviation Rationale       | `Risk.props[name='deviation-rationale']`     | Free text                                  |
 
 ## Data Format Specifications
 
@@ -148,11 +148,13 @@ All other columns are optional but recommended:
 Control IDs must follow the pattern: `XX-N` or `XX-N(N)`
 
 **Valid examples**:
+
 - `AC-1` (Access Control family, control 1)
 - `SC-7(5)` (System and Communications Protection family, control 7, enhancement 5)
 - `AU-2, AU-3, AU-12` (Multiple controls, comma-separated)
 
 **Invalid examples**:
+
 - `ac1` (missing hyphen)
 - `AC-` (missing number)
 - `A-1` (family must be 2 letters)
@@ -160,6 +162,7 @@ Control IDs must follow the pattern: `XX-N` or `XX-N(N)`
 ### Risk Ratings
 
 Risk rating values must be:
+
 - `Low`
 - `Moderate`
 - `High`
@@ -170,6 +173,7 @@ Case-insensitive, but stored as shown above.
 ### Yes/No/Pending Fields
 
 Fields like Risk Adjustment, False Positive, and Operational Requirement accept:
+
 - `Yes`
 - `No`
 - `Pending`
@@ -179,8 +183,9 @@ Case-insensitive.
 ### Dates
 
 Dates can be in:
+
 1. **Excel date format** (automatically detected)
-2. **ISO 8601 string**: `YYYY-MM-DDTHH:MM:SS±HH:MM` or `YYYY-MM-DD`
+1. **ISO 8601 string**: `YYYY-MM-DDTHH:MM:SS±HH:MM` or `YYYY-MM-DD`
 
 All dates are stored with UTC timezone in the output.
 
@@ -194,6 +199,7 @@ Milestone 2: Deploy fix by 2024-06-30
 ```
 
 The parser handles:
+
 - Multi-line milestone text (separated by newlines)
 - Optional dates (using `by YYYY-MM-DD` pattern)
 - Numbered milestones (`Milestone N:` or `M1:`)
@@ -256,6 +262,7 @@ work-sheet-name = Closed POA&M Items
 **Cause**: The `xlsx-file` path is incorrect or file doesn't exist.
 
 **Solution**:
+
 - Use absolute paths or paths relative to where you run the command
 - Check file name spelling and extension (.xlsx)
 
@@ -264,6 +271,7 @@ work-sheet-name = Closed POA&M Items
 **Cause**: The specified worksheet name doesn't exist in the Excel file.
 
 **Solution**:
+
 - Verify worksheet name matches exactly (case-sensitive)
 - Default is `"Open POA&M Items"` - check if your template uses a different name
 - Error message lists available worksheets
@@ -273,6 +281,7 @@ work-sheet-name = Closed POA&M Items
 **Cause**: One or more required columns are missing or have empty values.
 
 **Solution**:
+
 - Required columns: POAM ID, Controls, Weakness Name, Weakness Description
 - Check that column headers match exactly (case-sensitive)
 - Ensure data rows have values in required columns
@@ -282,6 +291,7 @@ work-sheet-name = Closed POA&M Items
 **Cause**: Control IDs don't match expected pattern.
 
 **Solution**:
+
 - Use format: `XX-N` or `XX-N(N)` (e.g., `AC-1`, `SC-7(5)`)
 - Multiple controls: separate with commas: `AC-1, AC-2`
 - In `warn` mode, invalid controls are skipped with warnings
@@ -291,6 +301,7 @@ work-sheet-name = Closed POA&M Items
 **Cause**: Risk rating value is not one of the valid options.
 
 **Solution**:
+
 - Valid values: Low, Moderate, High, N/A
 - Check for typos or extra spaces
 - Case-insensitive but must match one of the four values
@@ -300,6 +311,7 @@ work-sheet-name = Closed POA&M Items
 **Cause**: Output file exists and `output-overwrite` is `false`.
 
 **Solution**:
+
 - Set `output-overwrite = true` to allow overwriting
 - Or delete/move the existing output file
 - Or change the `output-dir` to a different location
@@ -319,6 +331,7 @@ risk_uuid = uuid5(NAMESPACE, f'risk-{POAM_ID}')
 ```
 
 **Benefits**:
+
 - Same POAM ID always generates same UUID
 - Enables stable updates when re-processing
 - Facilitates merging with existing POAM files
@@ -328,13 +341,16 @@ risk_uuid = uuid5(NAMESPACE, f'risk-{POAM_ID}')
 Each Excel row creates **three linked OSCAL objects**:
 
 1. **PoamItem**: Main weakness description
+
    - Links to → Observation (via `related_observations`)
    - Links to → Risk (via `related_risks`)
 
-2. **Observation**: Detection details
+1. **Observation**: Detection details
+
    - Linked from → PoamItem
 
-3. **Risk**: Risk assessment and remediation
+1. **Risk**: Risk assessment and remediation
+
    - Links to → Observation (via `related_observations`)
    - Linked from → PoamItem
 
@@ -345,7 +361,7 @@ This creates a comprehensive representation of each weakness.
 Properties are created without explicit namespaces by default. To add namespaces:
 
 1. Modify the task source code in `PoamBuilder.create_poam_item()`
-2. Add `ns` parameter to Property creation:
+1. Add `ns` parameter to Property creation:
 
 ```python
 Property(name='poam-id', value=poam_id, ns='https://example.com/ns/poam')
@@ -356,16 +372,19 @@ Property(name='poam-id', value=poam_id, ns='https://example.com/ns/poam')
 ### Planned Features (Not Yet Implemented)
 
 1. **Update/Merge Support**:
+
    - Read existing POAM JSON
    - Merge Excel changes with existing data
    - Preserve UUIDs for unchanged items
    - Track modifications
 
-2. **Closed POA&M Items Support**:
+1. **Closed POA&M Items Support**:
+
    - Process "Closed POA&M Items" worksheet
    - Set Risk.status to `"closed"`
 
-3. **Validation Against Profile**:
+1. **Validation Against Profile**:
+
    - Validate control IDs against resolved profile catalog
    - Similar to `csv-to-oscal-cd` control validation
 

@@ -242,7 +242,7 @@ Notice that trestle is a highly opinionated tool and, therefore, the names of th
 
 ## `trestle create`
 
-This command will create a bare-bones sample file for one of the top level OSCAL models, and it can also create new elements within an existing file.  For example, `trestle create -t catalog -o nist800-53` will create a sample catalog file, `catalog.json` in the catalog subdirectory, `nist800-53` as shown below:
+This command will create a bare-bones sample file for one of the top level OSCAL models, and it can also create new elements within an existing file. For example, `trestle create -t catalog -o nist800-53` will create a sample catalog file, `catalog.json` in the catalog subdirectory, `nist800-53` as shown below:
 
 ```text
 .
@@ -253,11 +253,11 @@ This command will create a bare-bones sample file for one of the top level OSCAL
 ...
 ```
 
-The `-t` specifies the type of the model to create, which can be one of catalog, profile, component-definition, system-security-plan, assessment-plan, assessment-results, plan-of-action-and-milestones.  Each type will be created in its corresponding directory, such as catalogs, profiles, etc.
+The `-t` specifies the type of the model to create, which can be one of catalog, profile, component-definition, system-security-plan, assessment-plan, assessment-results, plan-of-action-and-milestones. Each type will be created in its corresponding directory, such as catalogs, profiles, etc.
 
 The following additional options are supported:
 
-- `-o or --output`: specifies the name/alias of a model. It is used as the prefix for the output filename under the `dist` directory and for naming the source subdirectories under  `catalogs`, `profiles`, `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` or `plan-of-action-and-milestones`.
+- `-o or --output`: specifies the name/alias of a model. It is used as the prefix for the output filename under the `dist` directory and for naming the source subdirectories under `catalogs`, `profiles`, `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` or `plan-of-action-and-milestones`.
 
 The user can edit the parts of the generated OSCAL model by modifying the sample content in those directories.
 
@@ -311,15 +311,15 @@ This command allows users to import existing OSCAL files so that they can be man
 The following options are supported:
 
 - `-f or --file`: specifies the path of an existing OSCAL file or URL to a remote file.
-- `-o or --output`: specifies the name/alias of a model. It is used as the prefix for the output filename under the `dist` directory and for naming the source subdirectories under  `catalogs`, `profiles`, `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` or `plan-of-action-and-milestones`.
+- `-o or --output`: specifies the name/alias of a model. It is used as the prefix for the output filename under the `dist` directory and for naming the source subdirectories under `catalogs`, `profiles`, `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` or `plan-of-action-and-milestones`.
 
-The `--file` option may be an absolute or relative path, and it may be a URL.  For details on allowed formats please see the documentation for the `href` command.  The file must be imported from outside the current trestle directory or an error will result.
+The `--file` option may be an absolute or relative path, and it may be a URL. For details on allowed formats please see the documentation for the `href` command. The file must be imported from outside the current trestle directory or an error will result.
 
-The import subcommand can determine the type of the model that is to be imported by the contents of the file.  But the file name must end with an allowed json or yaml extension: `.json, .yaml, .yml`
+The import subcommand can determine the type of the model that is to be imported by the contents of the file. But the file name must end with an allowed json or yaml extension: `.json, .yaml, .yml`
 
-During the import process the file must pass the `validate` test described below for the command, `validate`.  If the file does not pass validation a warning will be given describing the nature of the problem and the import will fail.
+During the import process the file must pass the `validate` test described below for the command, `validate`. If the file does not pass validation a warning will be given describing the nature of the problem and the import will fail.
 
-Once a file has been imported it can be split into a rich tree of sub-components as shown at the top of this document.  But the file must be imported first.
+Once a file has been imported it can be split into a rich tree of sub-components as shown at the top of this document. But the file must be imported first.
 
 ## `trestle replicate`
 
@@ -332,13 +332,13 @@ This command allows users to further decompose a trestle model into additional s
 The following options are currently supported:
 
 - `-f or --file`: this is optional and specifies the file path of the json/yaml file containing the elements that will be split.
-- `-e or --elements`: specifies the model subcomponent element(s) (JSON/YAML property path) that is/are going to be split. Multiple elements can be specified at once using a comma-separated value, e.g `-e 'catalog.metadata,catalog.groups'`.  Make sure to include the quotes that enclose the comma-separated paths.
+- `-e or --elements`: specifies the model subcomponent element(s) (JSON/YAML property path) that is/are going to be split. Multiple elements can be specified at once using a comma-separated value, e.g `-e 'catalog.metadata,catalog.groups'`. Make sure to include the quotes that enclose the comma-separated paths.
 
-If the element is of JSON/YAML type array list and you want trestle to create a separate subcomponent file per array item, the element needs to be suffixed with `.*`, e.g. `-e 'catalog.groups.*'`. If the suffix is not specified, split will place all array items in only one separate subcomponent file, e.g. `'groups.json'`.  Again, make sure to include the quotes around the elements.
+If the element is of JSON/YAML type array list and you want trestle to create a separate subcomponent file per array item, the element needs to be suffixed with `.*`, e.g. `-e 'catalog.groups.*'`. If the suffix is not specified, split will place all array items in only one separate subcomponent file, e.g. `'groups.json'`. Again, make sure to include the quotes around the elements.
 
-If you just want to split a file into all its constituent parts and the file does not contain a simple list of objects, you can still use `*` and the file will be split into all its non-trivial elements.  Thus if you split a catalog with `-e catalog.*` the result will be a new directory, `catalog`, containing files representing the large items, `back-matter.json, groups.json and metadata.json`, but there will still be a `catalog.json` file containing just the catalog's `uuid`.  Small items such as strings and dates cannot be split off and will remain in the original model file that is being split.
+If you just want to split a file into all its constituent parts and the file does not contain a simple list of objects, you can still use `*` and the file will be split into all its non-trivial elements. Thus if you split a catalog with `-e catalog.*` the result will be a new directory, `catalog`, containing files representing the large items, `back-matter.json, groups.json and metadata.json`, but there will still be a `catalog.json` file containing just the catalog's `uuid`. Small items such as strings and dates cannot be split off and will remain in the original model file that is being split.
 
-Here are some examples.  Starting with a single catalog file, `my_catalog/catalog.json`, if you do `trestle split -f catalog.json -e 'catalog.*'` you end up with:
+Here are some examples. Starting with a single catalog file, `my_catalog/catalog.json`, if you do `trestle split -f catalog.json -e 'catalog.*'` you end up with:
 
 ```text
 catalogs
@@ -381,12 +381,12 @@ my_catalog
 
 You can see there is no `roles.json` file anymore and instead there is a subdirectory, `roles` containing a list of files, one for each `role`.
 
-If the `-f or --file` option is not specified, the file to split will be determined from the elements specified, in the context of the current working directory.  The current directory must be
-within a specific model (e.g. `catalog` or `profile`), and the element paths must either be absolute (e.g. `catalog.metadata.roles`) or relative to the current working directory.  For example, if you are in `catalogs/mycat/catalog/groups` and you want to split the file `00000__group.json`, you must use `-f` to specify the filename, and the element path can either be absolute, as `catalog.group.*`, or you can set the current working directory to where the file is and use element path `group.*`.  This makes it easier to specify splits when deep in a directory structure.
+If the `-f or --file` option is not specified, the file to split will be determined from the elements specified, in the context of the current working directory. The current directory must be
+within a specific model (e.g. `catalog` or `profile`), and the element paths must either be absolute (e.g. `catalog.metadata.roles`) or relative to the current working directory. For example, if you are in `catalogs/mycat/catalog/groups` and you want to split the file `00000__group.json`, you must use `-f` to specify the filename, and the element path can either be absolute, as `catalog.group.*`, or you can set the current working directory to where the file is and use element path `group.*`. This makes it easier to specify splits when deep in a directory structure.
 
 Every subdirectory in a trestle directory model should have a corresponding `.json` or `.yaml` file with the same name, except when that subdirectory corresponds to a list of items, such as `catalog.groups`. When those subcomponents are split/expanded each file or subdirectory under them represents an item of the collection. Because of that, if a corresponding `groups.json | groups.yaml` file were to exist, its contents would just be an empty representation of that collection and the user would need to be careful never to edit that file. Therefore, we decided not to create that corresponding file in those cases. Following the same logic, another exception is when all the fields from a `.json | .yaml` file are split, leaving the original file as an empty object. In that case, the file would be deleted as well.
 
-To inspect a file to see what elements can be split from it, use the `describe` command described below.  It is also useful for inspection of files created by the split operation.
+To inspect a file to see what elements can be split from it, use the `describe` command described below. It is also useful for inspection of files created by the split operation.
 
 ## `trestle merge`
 
@@ -400,7 +400,7 @@ For example, in the command `trestle merge -e 'catalog.metadata'`, executed in t
 
 ## `trestle describe`
 
-This command lets users inspect model files to explore contents using an optional element path.  The command can work well in concert with `split` to show what each file contains, and probe within the contents to determine sub-components that can be extracted as separate files.
+This command lets users inspect model files to explore contents using an optional element path. The command can work well in concert with `split` to show what each file contains, and probe within the contents to determine sub-components that can be extracted as separate files.
 
 Unlike split, describe only describes the contents of a single item, so the element path may not contain wildcards (`*`) or commas.
 
@@ -416,9 +416,9 @@ groups: list of 20 items of type catalog.Group
 back_matter: common.BackMatter
 ```
 
-Note that contents are listed even when they are empty (and therefore optional) so the full potential contents can be seen.  Also note that if an item corresponds to a list of elements, the number and type of elements is provided.  Finally, if an item is a simple string such as `id`, `uuid` or `title`, the string is shown directly up to a maximum of 100 characters.  If the string is clipped it will be indicated by `[truncated]` at the end of the string.
+Note that contents are listed even when they are empty (and therefore optional) so the full potential contents can be seen. Also note that if an item corresponds to a list of elements, the number and type of elements is provided. Finally, if an item is a simple string such as `id`, `uuid` or `title`, the string is shown directly up to a maximum of 100 characters. If the string is clipped it will be indicated by `[truncated]` at the end of the string.
 
-An element path can be specified to probe the contents, as in `trestle describe -f catalog.json -e 'catalog.metadata.roles'`.  A possible response is:
+An element path can be specified to probe the contents, as in `trestle describe -f catalog.json -e 'catalog.metadata.roles'`. A possible response is:
 
 ```text
 Model file catalog.json at element path catalog.metadata.roles is a list of 2 items of type common.Role
@@ -442,7 +442,7 @@ controls: list of 5 items of type catalog.Control
 
 In all output from `describe` the type of the item shown corresponds to the python file and class of the corresponding OSCAL model in trestle.
 
-If you split items off a model so they end up in a subdirectory, the original file is referred to as a "stripped" model, with parts of it stripped off and only some elements remaining.  For example, if you do `trestle split -f catalog.json -e 'catalog.metadata'` it will split off metadata from the original `catalog.json` file and place it in `catalog/metadata.json`.  If you then do `trestle describe -f catalog.json` on the new file, it will say something like:
+If you split items off a model so they end up in a subdirectory, the original file is referred to as a "stripped" model, with parts of it stripped off and only some elements remaining. For example, if you do `trestle split -f catalog.json -e 'catalog.metadata'` it will split off metadata from the original `catalog.json` file and place it in `catalog/metadata.json`. If you then do `trestle describe -f catalog.json` on the new file, it will say something like:
 
 ```yaml
 # Model file catalog.json is of type stripped.Catalog and contains:
@@ -453,7 +453,7 @@ groups: list of 20 items of type catalog.Group
 back_matter: common.BackMatter
 ```
 
-Note that the type of the file is now `stripped.Catalog` and it no longer contains `metadata`.  Even though metadata is no longer in the original `.json` file, trestle is still aware it is present in the model since it is properly placed as its own file in the subdirectory, `catalog`.
+Note that the type of the file is now `stripped.Catalog` and it no longer contains `metadata`. Even though metadata is no longer in the original `.json` file, trestle is still aware it is present in the model since it is properly placed as its own file in the subdirectory, `catalog`.
 
 ## `trestle partial-object-validate`
 
@@ -477,7 +477,7 @@ Remembering in the end you only care about the end type. So in this scenario `ca
 ## `trestle href`
 
 This command changes the href of an Import in a profile and is needed when generating an SSP (system security plan) with the author tool, `ssp-generate`.
-The Imports in a profile are used to load associated catalogs of controls and profiles, and must be available at the corresponding href uri.  If an imported catalog is in the trestle directory then the href should be changed with a command of the form:
+The Imports in a profile are used to load associated catalogs of controls and profiles, and must be available at the corresponding href uri. If an imported catalog is in the trestle directory then the href should be changed with a command of the form:
 
 ```bash
 trestle href -n my_profile -hr trestle://catalogs/my_catalog/catalog.json
@@ -486,7 +486,7 @@ trestle href -n my_profile -hr trestle://catalogs/my_catalog/catalog.json
 Similarly, if the item imported is a profile, a corresponding href should point to a json file in the `profiles` directory.
 
 Note that catalogs or profiles in the trestle directory are indicated by the `trestle://` prefix, followed by the path from the top level models directory to the actual
-catalog file.  The profile itself, which is having its imports modified, is just indicated by its name with the `-n` option.
+catalog file. The profile itself, which is having its imports modified, is just indicated by its name with the `-n` option.
 
 If the profile has more than one import, you can display the corresponding hrefs with:
 
@@ -494,18 +494,18 @@ If the profile has more than one import, you can display the corresponding hrefs
 trestle href -n my_profile
 ```
 
-This will give a numbered list of the hrefs.  You can then change them individually by providing the corresponding item number:
+This will give a numbered list of the hrefs. You can then change them individually by providing the corresponding item number:
 
 ```bash
 trestle href -n my_profile -i 1 -hr trestle://catalogs/my_catalog/catalog.json
 ```
 
-This will change the href indexed as `1` when the list was displayed.  The href's are indexed starting from 0.
+This will change the href indexed as `1` when the list was displayed. The href's are indexed starting from 0.
 
 The `trestle href` command can also be used to change the value back to the intended one prior to distribution of the profile.
 
-The provided href can be of form `trestle://`, `https://`, `sftp://`, or `file:///`.  If `file:///` is used, the path provided must be absolute - and on Windows
-it must include the drive letter followed by a slash.  The only time a relative path is allowed is with the `trestle://` heading.
+The provided href can be of form `trestle://`, `https://`, `sftp://`, or `file:///`. If `file:///` is used, the path provided must be absolute - and on Windows
+it must include the drive letter followed by a slash. The only time a relative path is allowed is with the `trestle://` heading.
 
 A username and password may be embedded in the url for `https://`, and a CA certificate path will be searched from environment variables `REQUESTS_CA_BUNDLE` and `CURL_CA_BUNDLE` in that order.
 
@@ -705,8 +705,7 @@ ssg-ocp4-ds-cis-111.222.333.444-pod:
       type: inventory-item
       title: Pod
       properties:
-        target: 
-          kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp
+        target: kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp
         target-ip: 111.222.333.444
         cluster-name: ROKS-OpenSCAP-1
         cluster-type: openshift
@@ -726,8 +725,7 @@ ssg-rhel7-ds-cis-111.222.333.444-pod:
       type: inventory-item
       title: VM
       properties:
-        target: 
-          kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp
+        target: kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp
         target-ip: 111.222.333.444
         cluster-name: ROKS-OpenSCAP-1
         cluster-type: openshift

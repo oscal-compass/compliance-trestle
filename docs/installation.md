@@ -25,7 +25,7 @@ Python 3.9.2
 ## *Setup a virtual environment*
 
 There are many ways to do this on Windows, Mac and Linux and with different Python installations, so please consult
-the documentation associated with your platform.  Below is how it works on a typical Linux platform.
+the documentation associated with your platform. Below is how it works on a typical Linux platform.
 
 ```bash
 $ cd

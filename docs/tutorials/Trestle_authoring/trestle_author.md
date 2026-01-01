@@ -690,7 +690,7 @@ CLI evocation:
 
 > trestle author catalog-assemble
 
-The `catalog` author commands allow you to convert a control catalog to markdown and edit its control statement, then assemble markdown back into an OSCAL catalog with the modifications to the statement.  Items in the statement may be edited or added.  For more details on its usage please see [the catalog authoring tutorial](https://oscal-compass.github.io/compliance-trestle/latest/tutorials/Trestle_authoring/ssp_profile_catalog_authoring/).
+The `catalog` author commands allow you to convert a control catalog to markdown and edit its control statement, then assemble markdown back into an OSCAL catalog with the modifications to the statement. Items in the statement may be edited or added. For more details on its usage please see [the catalog authoring tutorial](https://oscal-compass.github.io/compliance-trestle/latest/tutorials/Trestle_authoring/ssp_profile_catalog_authoring/).
 
 ### Profile authoring
 
@@ -704,7 +704,7 @@ CLI evocation:
 
 > trestle author profile-assemble
 
-The `profile` author commands allow you to edit additions made by a profile to its imported controls that end up in the final resolved profile catalog.  Only the additions may be edited or added to the generated markdown control files - and those additions can then be assembled into a new version of the original profile, with those additions.  For more details on its usage please see [the profile authoring tutorial](https://oscal-compass.github.io/compliance-trestle/latest/tutorials/Trestle_authoring/ssp_profile_catalog_authoring/).
+The `profile` author commands allow you to edit additions made by a profile to its imported controls that end up in the final resolved profile catalog. Only the additions may be edited or added to the generated markdown control files - and those additions can then be assembled into a new version of the original profile, with those additions. For more details on its usage please see [the profile authoring tutorial](https://oscal-compass.github.io/compliance-trestle/latest/tutorials/Trestle_authoring/ssp_profile_catalog_authoring/).
 
 ### Profile generation with inheritance
 
@@ -733,7 +733,7 @@ CLI evocation:
 
 > trestle author ssp-assemble
 
-The `ssp-generate` sub-command creates a partial SSP (System Security Plan) from a profile and optional yaml header file.  `ssp-assemble` can then assemble the markdown files into a single json SSP file.
+The `ssp-generate` sub-command creates a partial SSP (System Security Plan) from a profile and optional yaml header file. `ssp-assemble` can then assemble the markdown files into a single json SSP file.
 
 For more details on its usage please see [the ssp authoring tutorial](https://oscal-compass.github.io/compliance-trestle/latest/tutorials/Trestle_authoring/ssp_profile_catalog_authoring/).
 
@@ -745,9 +745,9 @@ CLI evocation:
 
 The `ssp-filter` sub-command takes a given SSP and filters its contents based on a given profile, list of components, control implementation status and/or control origination.
 
-If filtering by profile, the SSP is assumed to contain a superset of controls needed by the profile, and the filter operation generates a new SSP with just the controls needed by that profile.  If the profile references a control not in the SSP, the routine fails with an error.
+If filtering by profile, the SSP is assumed to contain a superset of controls needed by the profile, and the filter operation generates a new SSP with just the controls needed by that profile. If the profile references a control not in the SSP, the routine fails with an error.
 
-If filtering by components, a colon-delimited list of components should be provided, with `This system` as the default name for the overall required component for the entire system.  Case and spaces are ignored in the component names, so the names could be specified as `--components "this system: my component"`.  The resulting, filtered ssp will have updated implemented requirements with filtered by_components on each requirement, and filtered by_components on each statement.
+If filtering by components, a colon-delimited list of components should be provided, with `This system` as the default name for the overall required component for the entire system. Case and spaces are ignored in the component names, so the names could be specified as `--components "this system: my component"`. The resulting, filtered ssp will have updated implemented requirements with filtered by_components on each requirement, and filtered by_components on each statement.
 
 If filtering by control implementation status, a comma-delimited list of implementation status values should be provided. These values must comply with the OSCAL SSP format references's allowed values, which are as follows: implemented, partial, planned, alternative, and not-applicable.
 
