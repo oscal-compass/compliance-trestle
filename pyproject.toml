@@ -38,6 +38,7 @@ dependencies = [
     "ilcli",
     "cryptography==45.0.7",
     "paramiko==4.0.0",
+    "ziglang",
     "ruamel.yaml",
     "furl",
     "pydantic[email]>=2.0.0",
