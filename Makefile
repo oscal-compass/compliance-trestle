@@ -118,3 +118,6 @@ pylint-test:
 
 check-for-changes:
 	python scripts/have_files_changed.py -u
+	
+nonsense:
+
