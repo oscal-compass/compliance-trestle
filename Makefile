@@ -108,10 +108,10 @@ docs-validate:
 # ============================================================================
 
 gen-oscal::
-	python ./scripts/gen_oscal.py
+	hatch run python ./scripts/gen_oscal.py
 
 simplified-catalog:
-	python ./scripts/simplify_retain_ac.py ./nist-content/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json ./tests/data/json/simplified_nist_catalog.json
+	hatch run python ./scripts/simplify_retain_ac.py ./nist-content/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json ./tests/data/json/simplified_nist_catalog.json
 
 check-for-changes:
 	hatch run docs:automation
