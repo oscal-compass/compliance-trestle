@@ -71,9 +71,25 @@ import logging
 import pathlib
 import re
 
-from trestle.oscal import OSCAL_VERSION_REGEX
-
 logger = logging.getLogger(__name__)
+
+
+def get_oscal_version_regex():
+    """Read OSCAL_VERSION_REGEX from the generated __init__.py file.
+
+    This reads from file rather than importing to avoid module caching issues
+    during generation when the file is being modified.
+    """
+    with open('trestle/oscal/__init__.py', 'r') as f:
+        for line in f:
+            if line.startswith('OSCAL_VERSION_REGEX'):
+                match = re.search(r"= (r'[^']+')", line)
+                if match:
+                    return match.group(1)
+    raise RuntimeError('OSCAL_VERSION_REGEX not found in trestle/oscal/__init__.py')
+
+
+OSCAL_VERSION_REGEX = get_oscal_version_regex()
 logger.setLevel(logging.INFO)
 logger.addHandler(logging.StreamHandler())
 

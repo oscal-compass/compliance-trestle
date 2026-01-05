@@ -272,6 +272,15 @@ ignore = [
 [tool.ruff.lint.isort]
 known-first-party = ["trestle"]
 
+# Black config is used by datamodel-codegen when generating OSCAL models.
+# Line-length 500 ensures single-line Field() definitions for consistent
+# body text comparison in oscal_normalize.py.
+[tool.black]
+line-length = 500
+
+[tool.isort]
+line_length = 500
+
 [tool.mypy]
 plugins = ["pydantic.mypy"]
 ignore_missing_imports = true
