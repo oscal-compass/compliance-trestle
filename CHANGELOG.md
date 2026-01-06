@@ -2,6 +2,109 @@
 
 <!-- version list -->
 
+## v3.10.4 (2025-12-02)
+
+### Bug Fixes
+
+- Simplify sigstore config ([#2001](https://github.com/oscal-compass/compliance-trestle/pull/2001),
+  [`70a754a`](https://github.com/oscal-compass/compliance-trestle/commit/70a754a081d0fac03b7cf6f3caa9869c57435165))
+
+
+## v3.10.3 (2025-12-02)
+
+### Bug Fixes
+
+- Sign with sigstore ([#1999](https://github.com/oscal-compass/compliance-trestle/pull/1999),
+  [`db540da`](https://github.com/oscal-compass/compliance-trestle/commit/db540dad74efc00e4c515427b7466b90e3acecac))
+
+
+## v3.10.2 (2025-12-02)
+
+### Bug Fixes
+
+- Add id-token write ([#1997](https://github.com/oscal-compass/compliance-trestle/pull/1997),
+  [`ae5eed0`](https://github.com/oscal-compass/compliance-trestle/commit/ae5eed0541de1630ad7864b1951ce1041e2a0bdb))
+
+
+## v3.10.1 (2025-12-01)
+
+### Bug Fixes
+
+- Permissions
+  ([`f21ec83`](https://github.com/oscal-compass/compliance-trestle/commit/f21ec83cb250d442b3c2ae3e56182c5f2964fc26))
+
+
+## v3.10.0 (2025-12-01)
+
+### Bug Fixes
+
+- Invalid escape sequence ([#1973](https://github.com/oscal-compass/compliance-trestle/pull/1973),
+  [`3c37da1`](https://github.com/oscal-compass/compliance-trestle/commit/3c37da141674c4613cd3b8917ae82a03205de57e))
+
+- Revise workflow based on AI; keep previous try for comparison
+  ([#1968](https://github.com/oscal-compass/compliance-trestle/pull/1968),
+  [`e77ed6c`](https://github.com/oscal-compass/compliance-trestle/commit/e77ed6cf5a5a75c236348d1845db37d33a89b155))
+
+- Sign releases ([#1968](https://github.com/oscal-compass/compliance-trestle/pull/1968),
+  [`e77ed6c`](https://github.com/oscal-compass/compliance-trestle/commit/e77ed6cf5a5a75c236348d1845db37d33a89b155))
+
+- Snyk-test ([#1972](https://github.com/oscal-compass/compliance-trestle/pull/1972),
+  [`e033694`](https://github.com/oscal-compass/compliance-trestle/commit/e033694e451b07c1059bb0755aff76c1056beaaa))
+
+- **deps**: Bump actions/checkout from 5.0.0 to 6.0.0
+  ([#1987](https://github.com/oscal-compass/compliance-trestle/pull/1987),
+  [`dcf5b70`](https://github.com/oscal-compass/compliance-trestle/commit/dcf5b70aa39e602a77079e4e660910ebe6149a13))
+
+- **deps**: Bump actions/create-github-app-token from 2.1.4 to 2.2.0
+  ([#1988](https://github.com/oscal-compass/compliance-trestle/pull/1988),
+  [`ce25118`](https://github.com/oscal-compass/compliance-trestle/commit/ce251185ea56e821824832d9d81dd83bf0b21f0e))
+
+- **deps**: Bump actions/download-artifact from 5.0.0 to 6.0.0
+  ([#1962](https://github.com/oscal-compass/compliance-trestle/pull/1962),
+  [`984043d`](https://github.com/oscal-compass/compliance-trestle/commit/984043d7d04ef7404a32f061a4e4ee71d56920a5))
+
+- **deps**: Bump actions/setup-python from 6.0.0 to 6.1.0
+  ([#1992](https://github.com/oscal-compass/compliance-trestle/pull/1992),
+  [`452013e`](https://github.com/oscal-compass/compliance-trestle/commit/452013e21f1c77eade875b5fff02d23a3a351542))
+
+- **deps**: Bump actions/upload-artifact from 4.6.2 to 5.0.0
+  ([#1963](https://github.com/oscal-compass/compliance-trestle/pull/1963),
+  [`a43e783`](https://github.com/oscal-compass/compliance-trestle/commit/a43e7839be2f27ac8ffaf39c97e7dede7c3e9af5))
+
+- **deps**: Bump datamodel-code-generator[http] from 0.35.0 to 0.36.0
+  ([#1993](https://github.com/oscal-compass/compliance-trestle/pull/1993),
+  [`001341c`](https://github.com/oscal-compass/compliance-trestle/commit/001341c0dba63357957d34d47f2c074f282511fd))
+
+- **deps**: Bump github/codeql-action from 4.30.9 to 4.31.2
+  ([#1969](https://github.com/oscal-compass/compliance-trestle/pull/1969),
+  [`2f41780`](https://github.com/oscal-compass/compliance-trestle/commit/2f41780f9c60cf135da32d8bc69ce7e8a959b0cc))
+
+- **deps**: Bump github/codeql-action from 4.31.2 to 4.31.5
+  ([#1991](https://github.com/oscal-compass/compliance-trestle/pull/1991),
+  [`d29467c`](https://github.com/oscal-compass/compliance-trestle/commit/d29467c9e44cbeca2c1764bec3dc55de3d062f01))
+
+- **deps**: Bump python-semantic-release/python-semantic-release
+  ([#1985](https://github.com/oscal-compass/compliance-trestle/pull/1985),
+  [`cfd47d6`](https://github.com/oscal-compass/compliance-trestle/commit/cfd47d64b9846b2349d96948d5070d6353ce6ae8))
+
+- **deps**: Bump python-semantic-release/python-semantic-release
+  ([#1979](https://github.com/oscal-compass/compliance-trestle/pull/1979),
+  [`e2eb368`](https://github.com/oscal-compass/compliance-trestle/commit/e2eb368e456386d6da396c53ec73ebfe3d6a40d9))
+
+- **deps**: Update cmarkgfm requirement
+  ([#1965](https://github.com/oscal-compass/compliance-trestle/pull/1965),
+  [`62b01e1`](https://github.com/oscal-compass/compliance-trestle/commit/62b01e1a00ac1501e56406cd9307b16926d1469f))
+
+### Features
+
+- Max python version increase from 3.11 to 3.12
+  ([#1976](https://github.com/oscal-compass/compliance-trestle/pull/1976),
+  [`9866a61`](https://github.com/oscal-compass/compliance-trestle/commit/9866a61ee901085522a265a6ae803e0c2aa6bfd7))
+
+- Python 12 ([#1976](https://github.com/oscal-compass/compliance-trestle/pull/1976),
+  [`9866a61`](https://github.com/oscal-compass/compliance-trestle/commit/9866a61ee901085522a265a6ae803e0c2aa6bfd7))
+
+
 ## v3.9.3 (2025-10-23)
 
 ### Bug Fixes
@@ -1917,7 +2020,7 @@ Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt; ([`7397105`](https://
 
 * docs: updates communication details in README.md
 
-This is a seperate meeting/communication channel
+This is a separate meeting/communication channel
 from the Compliance WG adding new meeting details and slack channel
 
 Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
@@ -10231,9 +10334,9 @@ Trestle release ([`7e8292d`](https://github.com/oscal-compass/compliance-trestle
 
 ### Chore
 
-* chore: Accomodate forked repos by separating sonarqube quality gate (#791)
+* chore: Accommodate forked repos by separating sonarqube quality gate (#791)
 
-* chore: Accomodate forked repos by separting sonarqube quality gate
+* chore: Accommodate forked repos by separting sonarqube quality gate
 
 Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
 
