@@ -87,7 +87,7 @@ test-cov: ## Run tests with coverage report
 	hatch test --cover
 
 test-cov-xml: test-cov ## Run tests with coverage and generate XML report
-	coverage xml
+	hatch run coverage xml
 
 test-bdist: clean ## Test binary distribution (wheel install)
 	bash tests/manual_tests/test_binary.sh
