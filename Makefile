@@ -69,7 +69,11 @@ code-typing: ## Run mypy type checking
 code-check: code-format code-lint code-typing ## Run all code quality checks
 
 mdformat: ## Format markdown files
-	pre-commit run mdformat --all-files
+	@if ! pre-commit run mdformat --all-files; then \
+		echo "mdformat failed, cleaning cache and retrying..."; \
+		pre-commit clean; \
+		pre-commit run mdformat --all-files; \
+	fi
 
 # ============================================================================
 # Testing (via hatch test)
