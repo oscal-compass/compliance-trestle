@@ -123,14 +123,16 @@ docs-ubuntu-deps: ## Install docs dependencies on Ubuntu
 	sudo apt-get update
 	sudo apt-get -y install libcairo2-dev libfreetype6-dev libffi-dev libjpeg-dev libpng-dev libz-dev
 
-docs-build: ## Build documentation site
+docs-build: docs-clean ## Build documentation site
 	hatch run docs:build
 
-docs-serve: ## Serve documentation locally
+docs-serve: docs-clean ## Serve documentation locally
 	hatch run docs:serve
 
-docs-validate: ## Validate documentation (build + link check)
+docs-validate: docs-clean ## Validate documentation (build + link check)
 	hatch run docs:validate
+
+docs-clean: clean-tmp
 
 # ============================================================================
 # Utilities
@@ -148,7 +150,10 @@ check-for-changes: ## Check for uncommitted changes (CI)
 	hatch run docs:automation
 	git diff --exit-code
 
-clean: ## Remove build artifacts and caches
+clean-tmp: ## Remove tmp build artifacts and caches
+	rm -rf trestle/oscal/tmp/
+
+clean: clean-tmp ## Remove build artifacts and caches
 	rm -rf build dist .pytest_cache tmp_bin_test cov_html coverage.xml .coverage* .mypy_cache .ruff_cache site
 	find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 	find . -type f -name "*.pyc" -delete 2>/dev/null || true
