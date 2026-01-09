@@ -27,17 +27,15 @@ from __future__ import annotations
 import re
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, TypeVar, Union
 
 from pydantic.v1 import AnyUrl, EmailStr, Extra, Field, conint, constr, validator
 
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
 import trestle.oscal.common as common
-from trestle.oscal.common import RelatedObservation
 from trestle.oscal.common import TaskValidValues
 from trestle.oscal.common import TokenDatatype
-from trestle.oscal.common import RelatedObservation as RelatedObservation1
 
 
 class LocalDefinitions(OscalBaseModel):
@@ -65,21 +63,49 @@ class Origination(OscalBaseModel):
     actors: List[common.OriginActor] = Field(...)
 
 
-class RelatedFinding(OscalBaseModel):
+class Parameter(OscalBaseModel):
+    __root__: Union[OscalPoamOscalControlCommonParameter1, OscalPoamOscalControlCommonParameter2] = Field(
+        ...,
+        description='Parameters provide a mechanism for the dynamic assignment of value(s) in a control.',
+        title='Parameter'
+    )
+
+
+class Type(Enum):
     """
-    Relates the finding to referenced finding(s).
+    Indicates the type of assessment subject, such as a component, inventory, item, location, or party represented by this selection statement.
+    """
+
+    component = 'component'
+    inventory_item = 'inventory-item'
+    location = 'location'
+    party = 'party'
+    user = 'user'
+
+
+class SelectControlById(OscalBaseModel):
+    """
+    Used to select a control for inclusion/exclusion based on one or more control identifiers. A set of statement identifiers can be used to target the inclusion/exclusion to only specific control statements providing more granularity over the specific statements that are within the assessment scope.
     """
 
     class Config:
         extra = Extra.forbid
 
-    finding_uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    control_id: constr(
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
     ) = Field(
         ...,
-        alias='finding-uuid',
-        description='A machine-oriented identifier reference to a finding defined in the list of findings.',
-        title='Finding Universally Unique Identifier Reference'
+        alias='control-id',
+        description=
+        'A reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).',
+        title='Control Identifier Reference'
+    )
+    statement_ids: Optional[List[constr(
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+    )]] = Field(
+        None, alias='statement-ids'
     )
 
 
@@ -99,15 +125,16 @@ class PoamItem(OscalBaseModel):
         'A machine-oriented, globally unique identifier with instance scope that can be used to reference this POA&M item entry in this OSCAL instance. This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='POA&M Item Universally Unique Identifier'
     )
-    title: str = Field(..., description='The title or name for this POA&M item .', title='POA&M Item Title')
+    title: constr(regex=r'^[^\n]+$'
+                  ) = Field(..., description='The title or name for this POA&M item .', title='POA&M Item Title')
     description: str = Field(
         ..., description='A human-readable description of POA&M item.', title='POA&M Item Description'
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
-    related_findings: Optional[List[RelatedFinding]] = Field(None, alias='related-findings')
-    related_observations: Optional[List[common.RelatedObservation]] = Field(None, alias='related-observations')
-    related_risks: Optional[List[common.RelatedRisk]] = Field(None, alias='related-risks')
+    related_findings: Optional[List[Dict[str, Any]]] = Field(None, alias='related-findings')
+    related_observations: Optional[List[Dict[str, Any]]] = Field(None, alias='related-observations')
+    related_risks: Optional[List[Dict[str, Any]]] = Field(None, alias='related-risks')
     remarks: Optional[str] = None
     origins: Optional[List[Origination]] = Field(None)
 

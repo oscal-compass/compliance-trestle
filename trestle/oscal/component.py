@@ -27,7 +27,7 @@ from __future__ import annotations
 import re
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, TypeVar, Union
 
 from pydantic.v1 import AnyUrl, EmailStr, Extra, Field, conint, constr, validator
 
@@ -73,26 +73,14 @@ class Statement(OscalBaseModel):
     remarks: Optional[str] = None
 
 
-class SetParameter(OscalBaseModel):
-    """
-    Identifies the parameter that will be set by the enclosed value.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    param_id: constr(
-        regex=
-        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    ) = Field(
-        ...,
-        alias='param-id',
-        description=
-        "A human-oriented reference to a parameter within a control, who's catalog has been imported into the current implementation context.",
-        title='Parameter ID'
-    )
-    values: List[constr(regex=r'^\S(.*\S)?$')] = Field(...)
-    remarks: Optional[str] = None
+class Parameter(OscalBaseModel):
+    __root__: Union[
+        OscalComponentDefinitionOscalControlCommonParameter1,
+        OscalComponentDefinitionOscalControlCommonParameter2] = Field(
+            ...,
+            description='Parameters provide a mechanism for the dynamic assignment of value(s) in a control.',
+            title='Parameter'
+        )
 
 
 class IncorporatesComponent(OscalBaseModel):
@@ -125,13 +113,6 @@ class ImportComponentDefinition(OscalBaseModel):
 
     class Config:
         extra = Extra.forbid
-
-    href: str = Field(
-        ...,
-        description=
-        'A link to a resource that defines a set of components and/or capabilities to import into this collection.',
-        title='Hyperlink Reference'
-    )
 
 
 class ImplementedRequirement(OscalBaseModel):
@@ -167,7 +148,7 @@ class ImplementedRequirement(OscalBaseModel):
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
-    set_parameters: Optional[List[SetParameter]] = Field(None, alias='set-parameters')
+    set_parameters: Optional[List[common.SetParameter]] = Field(None, alias='set-parameters')
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
     statements: Optional[List[Statement]] = Field(None)
     remarks: Optional[str] = None
@@ -217,7 +198,7 @@ class ControlImplementation(OscalBaseModel):
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
-    set_parameters: Optional[List[SetParameter]] = Field(None, alias='set-parameters')
+    set_parameters: Optional[List[common.SetParameter]] = Field(None, alias='set-parameters')
     implemented_requirements: List[ImplementedRequirement] = Field(..., alias='implemented-requirements')
 
 
@@ -262,13 +243,14 @@ class DefinedComponent(OscalBaseModel):
     type: Union[constr(regex=r'^\S(.*\S)?$'), DefinedComponentTypeValidValues] = Field(
         ..., description='A category describing the purpose of the component.', title='Component Type'
     )
-    title: str = Field(..., description='A human readable name for the component.', title='Component Title')
+    title: constr(regex=r'^[^\n]+$'
+                  ) = Field(..., description='A human readable name for the component.', title='Component Title')
     description: str = Field(
         ...,
         description='A description of the component, including information about its function.',
         title='Component Description'
     )
-    purpose: Optional[str] = Field(
+    purpose: Optional[constr(regex=r'^[^\n]+$')] = Field(
         None, description='A summary of the technological or business purpose of the component.', title='Purpose'
     )
     props: Optional[List[common.Property]] = Field(None)

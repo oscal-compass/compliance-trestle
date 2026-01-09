@@ -88,11 +88,11 @@
      "title" : 
      { "title" : "POA&M Item Title",
       "description" : "The title or name for this POA&M item .",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupLineDatatype" },
      "description" : 
      { "title" : "POA&M Item Description",
       "description" : "A human-readable description of POA&M item.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupMultilineDatatype" },
      "props" : 
      { "type" : "array",
       "minItems" : 1,
@@ -126,11 +126,6 @@
       { "title" : "Related Finding",
        "description" : "Relates the poam-item to referenced finding(s).",
        "type" : "object",
-       "properties" : 
-       { "finding-uuid" : 
-        { "title" : "Finding Universally Unique Identifier Reference",
-         "description" : "A machine-oriented identifier reference to a finding defined in the list of findings.",
-         "$ref" : "#/definitions/UUIDDatatype" } },
        "required" : 
        [ "finding-uuid" ],
        "additionalProperties" : false } },
@@ -141,11 +136,6 @@
       { "title" : "Related Observation",
        "description" : "Relates the poam-item to a set of referenced observations that were used to determine the finding.",
        "type" : "object",
-       "properties" : 
-       { "observation-uuid" : 
-        { "title" : "Observation Universally Unique Identifier Reference",
-         "description" : "A machine-oriented identifier reference to an observation defined in the list of observations.",
-         "$ref" : "#/definitions/UUIDDatatype" } },
        "required" : 
        [ "observation-uuid" ],
        "additionalProperties" : false } },
@@ -156,11 +146,6 @@
       { "title" : "Associated Risk",
        "description" : "Relates the finding to a set of referenced risks that were used to determine the finding.",
        "type" : "object",
-       "properties" : 
-       { "risk-uuid" : 
-        { "title" : "Risk Universally Unique Identifier Reference",
-         "description" : "A machine-oriented identifier reference to a risk defined in the list of risks.",
-         "$ref" : "#/definitions/UUIDDatatype" } },
        "required" : 
        [ "risk-uuid" ],
        "additionalProperties" : false } },
@@ -179,7 +164,7 @@
     { "title" : 
      { "title" : "Document Title",
       "description" : "A name given to the document, which may be used by a tool for display and navigation.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupLineDatatype" },
      "published" : 
      { "$ref" : "#/definitions/oscal-poam-oscal-metadata:published" },
      "last-modified" : 
@@ -199,7 +184,7 @@
        { "title" : 
         { "title" : "Document Title",
          "description" : "A name given to the document revision, which may be used by a tool for display and navigation.",
-         "type" : "string" },
+         "$ref" : "#/definitions/MarkupLineDatatype" },
         "published" : 
         { "$ref" : "#/definitions/oscal-poam-oscal-metadata:published" },
         "last-modified" : 
@@ -253,7 +238,7 @@
         "title" : 
         { "title" : "Role Title",
          "description" : "A name given to the role, which may be used by a tool for display and navigation.",
-         "type" : "string" },
+         "$ref" : "#/definitions/MarkupLineDatatype" },
         "short-name" : 
         { "title" : "Role Short Name",
          "description" : "A short common name, abbreviation, or acronym for the role.",
@@ -261,7 +246,7 @@
         "description" : 
         { "title" : "Role Description",
          "description" : "A summary of the role's purpose and associated responsibilities.",
-         "type" : "string" },
+         "$ref" : "#/definitions/MarkupMultilineDatatype" },
         "props" : 
         { "type" : "array",
          "minItems" : 1,
@@ -293,7 +278,7 @@
         "title" : 
         { "title" : "Location Title",
          "description" : "A name given to the location, which may be used by a tool for display and navigation.",
-         "type" : "string" },
+         "$ref" : "#/definitions/MarkupLineDatatype" },
         "address" : 
         { "$ref" : "#/definitions/oscal-poam-oscal-metadata:address" },
         "email-addresses" : 
@@ -335,95 +320,171 @@
       { "title" : "Party",
        "description" : "An organization or person, which may be associated with roles or other concepts within the current or linked OSCAL document.",
        "type" : "object",
-       "properties" : 
-       { "uuid" : 
-        { "title" : "Party Universally Unique Identifier",
-         "description" : "A unique identifier for the party.",
-         "$ref" : "#/definitions/UUIDDatatype" },
-        "type" : 
-        { "title" : "Party Type",
-         "description" : "A category describing the kind of party the object describes.",
-         "allOf" : 
-         [ 
-          { "$ref" : "#/definitions/StringDatatype" },
-          
-          { "enum" : 
-           [ "person",
-            "organization" ] } ] },
-        "name" : 
-        { "title" : "Party Name",
-         "description" : "The full name of the party. This is typically the legal name associated with the party.",
-         "$ref" : "#/definitions/StringDatatype" },
-        "short-name" : 
-        { "title" : "Party Short Name",
-         "description" : "A short common name, abbreviation, or acronym for the party.",
-         "$ref" : "#/definitions/StringDatatype" },
-        "external-ids" : 
-        { "type" : "array",
-         "minItems" : 1,
-         "items" : 
-         { "title" : "Party External Identifier",
-          "description" : "An identifier for a person or organization using a designated scheme. e.g. an Open Researcher and Contributor ID (ORCID).",
-          "type" : "object",
-          "properties" : 
-          { "scheme" : 
-           { "title" : "External Identifier Schema",
-            "description" : "Indicates the type of external identifier.",
-            "anyOf" : 
-            [ 
-             { "$ref" : "#/definitions/URIDatatype" },
-             
-             { "enum" : 
-              [ "http://orcid.org/" ] } ] },
-           "id" : 
-           { "$ref" : "#/definitions/StringDatatype" } },
-          "required" : 
-          [ "id",
-           "scheme" ],
-          "additionalProperties" : false } },
-        "props" : 
-        { "type" : "array",
-         "minItems" : 1,
-         "items" : 
-         { "$ref" : "#/definitions/oscal-poam-oscal-metadata:property" } },
-        "links" : 
-        { "type" : "array",
-         "minItems" : 1,
-         "items" : 
-         { "$ref" : "#/definitions/oscal-poam-oscal-metadata:link" } },
-        "email-addresses" : 
-        { "type" : "array",
-         "minItems" : 1,
-         "items" : 
-         { "$ref" : "#/definitions/oscal-poam-oscal-metadata:email-address" } },
-        "telephone-numbers" : 
-        { "type" : "array",
-         "minItems" : 1,
-         "items" : 
-         { "$ref" : "#/definitions/oscal-poam-oscal-metadata:telephone-number" } },
-        "addresses" : 
-        { "type" : "array",
-         "minItems" : 1,
-         "items" : 
-         { "$ref" : "#/definitions/oscal-poam-oscal-metadata:address" } },
-        "location-uuids" : 
-        { "type" : "array",
-         "minItems" : 1,
-         "items" : 
-         { "$ref" : "#/definitions/oscal-poam-oscal-metadata:location-uuid" } },
-        "member-of-organizations" : 
-        { "type" : "array",
-         "minItems" : 1,
-         "items" : 
-         { "title" : "Organizational Affiliation",
-          "description" : "A reference to another party by UUID, typically an organization, that this subject is associated with.",
-          "$ref" : "#/definitions/UUIDDatatype" } },
-        "remarks" : 
-        { "$ref" : "#/definitions/oscal-poam-oscal-metadata:remarks" } },
-       "required" : 
-       [ "uuid",
-        "type" ],
-       "additionalProperties" : false } },
+       "anyOf" : 
+       [ 
+        { "properties" : 
+         { "uuid" : 
+          { "title" : "Party Universally Unique Identifier",
+           "description" : "A unique identifier for the party.",
+           "$ref" : "#/definitions/UUIDDatatype" },
+          "type" : 
+          { "title" : "Party Type",
+           "description" : "A category describing the kind of party the object describes.",
+           "allOf" : 
+           [ 
+            { "$ref" : "#/definitions/StringDatatype" },
+            
+            { "enum" : 
+             [ "person",
+              "organization" ] } ] },
+          "name" : 
+          { "title" : "Party Name",
+           "description" : "The full name of the party. This is typically the legal name associated with the party.",
+           "$ref" : "#/definitions/StringDatatype" },
+          "short-name" : 
+          { "title" : "Party Short Name",
+           "description" : "A short common name, abbreviation, or acronym for the party.",
+           "$ref" : "#/definitions/StringDatatype" },
+          "external-ids" : 
+          { "type" : "array",
+           "minItems" : 1,
+           "items" : 
+           { "title" : "Party External Identifier",
+            "description" : "An identifier for a person or organization using a designated scheme. e.g. an Open Researcher and Contributor ID (ORCID).",
+            "type" : "object",
+            "properties" : 
+            { "scheme" : 
+             { "title" : "External Identifier Schema",
+              "description" : "Indicates the type of external identifier.",
+              "anyOf" : 
+              [ 
+               { "$ref" : "#/definitions/URIDatatype" },
+               
+               { "enum" : 
+                [ "http://orcid.org/" ] } ] },
+             "id" : 
+             { "$ref" : "#/definitions/StringDatatype" } },
+            "required" : 
+            [ "id",
+             "scheme" ],
+            "additionalProperties" : false } },
+          "props" : 
+          { "type" : "array",
+           "minItems" : 1,
+           "items" : 
+           { "$ref" : "#/definitions/oscal-poam-oscal-metadata:property" } },
+          "links" : 
+          { "type" : "array",
+           "minItems" : 1,
+           "items" : 
+           { "$ref" : "#/definitions/oscal-poam-oscal-metadata:link" } },
+          "email-addresses" : 
+          { "type" : "array",
+           "minItems" : 1,
+           "items" : 
+           { "$ref" : "#/definitions/oscal-poam-oscal-metadata:email-address" } },
+          "telephone-numbers" : 
+          { "type" : "array",
+           "minItems" : 1,
+           "items" : 
+           { "$ref" : "#/definitions/oscal-poam-oscal-metadata:telephone-number" } },
+          "addresses" : 
+          { "type" : "array",
+           "minItems" : 1,
+           "items" : 
+           { "$ref" : "#/definitions/oscal-poam-oscal-metadata:address" } },
+          "member-of-organizations" : 
+          { "type" : "array",
+           "minItems" : 1,
+           "items" : 
+           { "title" : "Organizational Affiliation",
+            "description" : "A reference to another party by UUID, typically an organization, that this subject is associated with.",
+            "$ref" : "#/definitions/UUIDDatatype" } },
+          "remarks" : 
+          { "$ref" : "#/definitions/oscal-poam-oscal-metadata:remarks" } },
+         "additionalProperties" : false },
+        
+        { "properties" : 
+         { "uuid" : 
+          { "title" : "Party Universally Unique Identifier",
+           "description" : "A unique identifier for the party.",
+           "$ref" : "#/definitions/UUIDDatatype" },
+          "type" : 
+          { "title" : "Party Type",
+           "description" : "A category describing the kind of party the object describes.",
+           "allOf" : 
+           [ 
+            { "$ref" : "#/definitions/StringDatatype" },
+            
+            { "enum" : 
+             [ "person",
+              "organization" ] } ] },
+          "name" : 
+          { "title" : "Party Name",
+           "description" : "The full name of the party. This is typically the legal name associated with the party.",
+           "$ref" : "#/definitions/StringDatatype" },
+          "short-name" : 
+          { "title" : "Party Short Name",
+           "description" : "A short common name, abbreviation, or acronym for the party.",
+           "$ref" : "#/definitions/StringDatatype" },
+          "external-ids" : 
+          { "type" : "array",
+           "minItems" : 1,
+           "items" : 
+           { "title" : "Party External Identifier",
+            "description" : "An identifier for a person or organization using a designated scheme. e.g. an Open Researcher and Contributor ID (ORCID).",
+            "type" : "object",
+            "properties" : 
+            { "scheme" : 
+             { "title" : "External Identifier Schema",
+              "description" : "Indicates the type of external identifier.",
+              "anyOf" : 
+              [ 
+               { "$ref" : "#/definitions/URIDatatype" },
+               
+               { "enum" : 
+                [ "http://orcid.org/" ] } ] },
+             "id" : 
+             { "$ref" : "#/definitions/StringDatatype" } },
+            "required" : 
+            [ "id",
+             "scheme" ],
+            "additionalProperties" : false } },
+          "props" : 
+          { "type" : "array",
+           "minItems" : 1,
+           "items" : 
+           { "$ref" : "#/definitions/oscal-poam-oscal-metadata:property" } },
+          "links" : 
+          { "type" : "array",
+           "minItems" : 1,
+           "items" : 
+           { "$ref" : "#/definitions/oscal-poam-oscal-metadata:link" } },
+          "email-addresses" : 
+          { "type" : "array",
+           "minItems" : 1,
+           "items" : 
+           { "$ref" : "#/definitions/oscal-poam-oscal-metadata:email-address" } },
+          "telephone-numbers" : 
+          { "type" : "array",
+           "minItems" : 1,
+           "items" : 
+           { "$ref" : "#/definitions/oscal-poam-oscal-metadata:telephone-number" } },
+          "location-uuids" : 
+          { "type" : "array",
+           "minItems" : 1,
+           "items" : 
+           { "$ref" : "#/definitions/oscal-poam-oscal-metadata:location-uuid" } },
+          "member-of-organizations" : 
+          { "type" : "array",
+           "minItems" : 1,
+           "items" : 
+           { "title" : "Organizational Affiliation",
+            "description" : "A reference to another party by UUID, typically an organization, that this subject is associated with.",
+            "$ref" : "#/definitions/UUIDDatatype" } },
+          "remarks" : 
+          { "$ref" : "#/definitions/oscal-poam-oscal-metadata:remarks" } },
+         "additionalProperties" : false } ] } },
      "responsible-parties" : 
      { "type" : "array",
       "minItems" : 1,
@@ -478,11 +539,11 @@
         "title" : 
         { "title" : "Resource Title",
          "description" : "An optional name given to the resource, which may be used by a tool for display and navigation.",
-         "type" : "string" },
+         "$ref" : "#/definitions/MarkupLineDatatype" },
         "description" : 
         { "title" : "Resource Description",
          "description" : "An optional short summary of the resource used to indicate the purpose of the resource.",
-         "type" : "string" },
+         "$ref" : "#/definitions/MarkupMultilineDatatype" },
         "props" : 
         { "type" : "array",
          "minItems" : 1,
@@ -501,7 +562,7 @@
          { "text" : 
           { "title" : "Citation Text",
            "description" : "A line of citation text.",
-           "type" : "string" },
+           "$ref" : "#/definitions/MarkupLineDatatype" },
           "props" : 
           { "type" : "array",
            "minItems" : 1,
@@ -629,7 +690,7 @@
      "text" : 
      { "title" : "Link Text",
       "description" : "A textual label to associate with the link, which may be used for presentation in a tool.",
-      "type" : "string" } },
+      "$ref" : "#/definitions/MarkupLineDatatype" } },
     "required" : 
     [ "href" ],
     "additionalProperties" : false },
@@ -770,7 +831,7 @@
    { "title" : "Remarks",
     "description" : "Additional commentary about the containing object.",
     "$id" : "#/definitions/oscal-poam-oscal-metadata:remarks",
-    "type" : "string" },
+    "$ref" : "#/definitions/MarkupMultilineDatatype" },
    "oscal-poam-oscal-metadata:published" : 
    { "title" : "Publication Timestamp",
     "description" : "The date and time the document was last made available.",
@@ -916,15 +977,15 @@
      "title" : 
      { "title" : "Component Title",
       "description" : "A human readable name for the system component.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupLineDatatype" },
      "description" : 
      { "title" : "Component Description",
       "description" : "A description of the component, including information about its function.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupMultilineDatatype" },
      "purpose" : 
      { "title" : "Purpose",
       "description" : "A summary of the technological or business purpose of the component.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupLineDatatype" },
      "props" : 
      { "type" : "array",
       "minItems" : 1,
@@ -993,7 +1054,7 @@
      "title" : 
      { "title" : "Protocol Title",
       "description" : "A human readable name for the protocol (e.g., Transport Layer Security).",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupLineDatatype" },
      "port-ranges" : 
      { "type" : "array",
       "minItems" : 1,
@@ -1005,25 +1066,6 @@
     "description" : "Where applicable this is the transport layer protocol port range an IPv4-based or IPv6-based service uses.",
     "$id" : "#/definitions/oscal-poam-oscal-implementation-common:port-range",
     "type" : "object",
-    "properties" : 
-    { "start" : 
-     { "title" : "Start",
-      "description" : "Indicates the starting port number in a port range for a transport layer protocol",
-      "$ref" : "#/definitions/NonNegativeIntegerDatatype" },
-     "end" : 
-     { "title" : "End",
-      "description" : "Indicates the ending port number in a port range for a transport layer protocol",
-      "$ref" : "#/definitions/NonNegativeIntegerDatatype" },
-     "transport" : 
-     { "title" : "Transport",
-      "description" : "Indicates the transport type.",
-      "allOf" : 
-      [ 
-       { "$ref" : "#/definitions/TokenDatatype" },
-       
-       { "enum" : 
-        [ "TCP",
-         "UDP" ] } ] } },
     "additionalProperties" : false },
    "oscal-poam-oscal-implementation-common:implementation-status" : 
    { "title" : "Implementation Status",
@@ -1062,7 +1104,7 @@
      "title" : 
      { "title" : "User Title",
       "description" : "A name given to the user, which may be used by a tool for display and navigation.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupLineDatatype" },
      "short-name" : 
      { "title" : "User Short Name",
       "description" : "A short common name, abbreviation, or acronym for the user.",
@@ -1070,7 +1112,7 @@
      "description" : 
      { "title" : "User Description",
       "description" : "A summary of the user's purpose within the system.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupMultilineDatatype" },
      "props" : 
      { "type" : "array",
       "minItems" : 1,
@@ -1105,11 +1147,11 @@
     { "title" : 
      { "title" : "Privilege Title",
       "description" : "A human readable name for the privilege.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupLineDatatype" },
      "description" : 
      { "title" : "Privilege Description",
       "description" : "A summary of the privilege's purpose within the system.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupMultilineDatatype" },
      "functions-performed" : 
      { "type" : "array",
       "minItems" : 1,
@@ -1137,7 +1179,7 @@
      "description" : 
      { "title" : "Inventory Item Description",
       "description" : "A summary of the inventory item stating its purpose within the system.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupMultilineDatatype" },
      "props" : 
      { "type" : "array",
       "minItems" : 1,
@@ -1228,10 +1270,11 @@
        { "$ref" : "#/definitions/URIDatatype" },
        
        { "enum" : 
-        [ "https://fedramp.gov",
+        [ "http://fedramp.gov",
          "http://fedramp.gov/ns/oscal",
          "https://ietf.org/rfc/rfc4122",
-         "http://ietf.org/rfc/rfc4122" ] } ] },
+         "http://ietf.org/rfc/rfc4122",
+         "http://datatracker.ietf.org/doc/html/rfc4122" ] } ] },
      "id" : 
      { "$ref" : "#/definitions/StringDatatype" } },
     "required" : 
@@ -1262,7 +1305,7 @@
      "title" : 
      { "title" : "Part Title",
       "description" : "An optional name given to the part, which may be used by a tool for display and navigation.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupLineDatatype" },
      "props" : 
      { "type" : "array",
       "minItems" : 1,
@@ -1271,7 +1314,7 @@
      "prose" : 
      { "title" : "Part Text",
       "description" : "Permits multiple paragraphs, lists, tables etc.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupMultilineDatatype" },
      "parts" : 
      { "type" : "array",
       "minItems" : 1,
@@ -1290,59 +1333,104 @@
     "description" : "Parameters provide a mechanism for the dynamic assignment of value(s) in a control.",
     "$id" : "#/definitions/oscal-poam-oscal-control-common:parameter",
     "type" : "object",
-    "properties" : 
-    { "id" : 
-     { "title" : "Parameter Identifier",
-      "description" : "A unique identifier for the parameter.",
-      "$ref" : "#/definitions/TokenDatatype" },
-     "class" : 
-     { "title" : "Parameter Class",
-      "description" : "A textual label that provides a characterization of the type, purpose, use or scope of the parameter.",
-      "$ref" : "#/definitions/TokenDatatype" },
-     "depends-on" : 
-     { "title" : "Depends on",
-      "description" : "(deprecated) Another parameter invoking this one. This construct has been deprecated and should not be used.",
-      "$ref" : "#/definitions/TokenDatatype" },
-     "props" : 
-     { "type" : "array",
-      "minItems" : 1,
-      "items" : 
-      { "$ref" : "#/definitions/oscal-poam-oscal-metadata:property" } },
-     "links" : 
-     { "type" : "array",
-      "minItems" : 1,
-      "items" : 
-      { "$ref" : "#/definitions/oscal-poam-oscal-metadata:link" } },
-     "label" : 
-     { "title" : "Parameter Label",
-      "description" : "A short, placeholder name for the parameter, which can be used as a substitute for a value if no value is assigned.",
-      "type" : "string" },
-     "usage" : 
-     { "title" : "Parameter Usage Description",
-      "description" : "Describes the purpose and use of a parameter.",
-      "type" : "string" },
-     "constraints" : 
-     { "type" : "array",
-      "minItems" : 1,
-      "items" : 
-      { "$ref" : "#/definitions/oscal-poam-oscal-control-common:parameter-constraint" } },
-     "guidelines" : 
-     { "type" : "array",
-      "minItems" : 1,
-      "items" : 
-      { "$ref" : "#/definitions/oscal-poam-oscal-control-common:parameter-guideline" } },
-     "values" : 
-     { "type" : "array",
-      "minItems" : 1,
-      "items" : 
-      { "$ref" : "#/definitions/oscal-poam-oscal-control-common:parameter-value" } },
-     "select" : 
-     { "$ref" : "#/definitions/oscal-poam-oscal-control-common:parameter-selection" },
-     "remarks" : 
-     { "$ref" : "#/definitions/oscal-poam-oscal-metadata:remarks" } },
-    "required" : 
-    [ "id" ],
-    "additionalProperties" : false },
+    "anyOf" : 
+    [ 
+     { "properties" : 
+      { "id" : 
+       { "title" : "Parameter Identifier",
+        "description" : "A unique identifier for the parameter.",
+        "$ref" : "#/definitions/TokenDatatype" },
+       "class" : 
+       { "title" : "Parameter Class",
+        "description" : "A textual label that provides a characterization of the type, purpose, use or scope of the parameter.",
+        "$ref" : "#/definitions/TokenDatatype" },
+       "depends-on" : 
+       { "title" : "Depends on",
+        "description" : "(deprecated) Another parameter invoking this one. This construct has been deprecated and should not be used.",
+        "$ref" : "#/definitions/TokenDatatype" },
+       "props" : 
+       { "type" : "array",
+        "minItems" : 1,
+        "items" : 
+        { "$ref" : "#/definitions/oscal-poam-oscal-metadata:property" } },
+       "links" : 
+       { "type" : "array",
+        "minItems" : 1,
+        "items" : 
+        { "$ref" : "#/definitions/oscal-poam-oscal-metadata:link" } },
+       "label" : 
+       { "title" : "Parameter Label",
+        "description" : "A short, placeholder name for the parameter, which can be used as a substitute for a value if no value is assigned.",
+        "$ref" : "#/definitions/MarkupLineDatatype" },
+       "usage" : 
+       { "title" : "Parameter Usage Description",
+        "description" : "Describes the purpose and use of a parameter.",
+        "$ref" : "#/definitions/MarkupMultilineDatatype" },
+       "constraints" : 
+       { "type" : "array",
+        "minItems" : 1,
+        "items" : 
+        { "$ref" : "#/definitions/oscal-poam-oscal-control-common:parameter-constraint" } },
+       "guidelines" : 
+       { "type" : "array",
+        "minItems" : 1,
+        "items" : 
+        { "$ref" : "#/definitions/oscal-poam-oscal-control-common:parameter-guideline" } },
+       "values" : 
+       { "type" : "array",
+        "minItems" : 1,
+        "items" : 
+        { "$ref" : "#/definitions/oscal-poam-oscal-control-common:parameter-value" } },
+       "remarks" : 
+       { "$ref" : "#/definitions/oscal-poam-oscal-metadata:remarks" } },
+      "additionalProperties" : false },
+     
+     { "properties" : 
+      { "id" : 
+       { "title" : "Parameter Identifier",
+        "description" : "A unique identifier for the parameter.",
+        "$ref" : "#/definitions/TokenDatatype" },
+       "class" : 
+       { "title" : "Parameter Class",
+        "description" : "A textual label that provides a characterization of the type, purpose, use or scope of the parameter.",
+        "$ref" : "#/definitions/TokenDatatype" },
+       "depends-on" : 
+       { "title" : "Depends on",
+        "description" : "(deprecated) Another parameter invoking this one. This construct has been deprecated and should not be used.",
+        "$ref" : "#/definitions/TokenDatatype" },
+       "props" : 
+       { "type" : "array",
+        "minItems" : 1,
+        "items" : 
+        { "$ref" : "#/definitions/oscal-poam-oscal-metadata:property" } },
+       "links" : 
+       { "type" : "array",
+        "minItems" : 1,
+        "items" : 
+        { "$ref" : "#/definitions/oscal-poam-oscal-metadata:link" } },
+       "label" : 
+       { "title" : "Parameter Label",
+        "description" : "A short, placeholder name for the parameter, which can be used as a substitute for a value if no value is assigned.",
+        "$ref" : "#/definitions/MarkupLineDatatype" },
+       "usage" : 
+       { "title" : "Parameter Usage Description",
+        "description" : "Describes the purpose and use of a parameter.",
+        "$ref" : "#/definitions/MarkupMultilineDatatype" },
+       "constraints" : 
+       { "type" : "array",
+        "minItems" : 1,
+        "items" : 
+        { "$ref" : "#/definitions/oscal-poam-oscal-control-common:parameter-constraint" } },
+       "guidelines" : 
+       { "type" : "array",
+        "minItems" : 1,
+        "items" : 
+        { "$ref" : "#/definitions/oscal-poam-oscal-control-common:parameter-guideline" } },
+       "select" : 
+       { "$ref" : "#/definitions/oscal-poam-oscal-control-common:parameter-selection" },
+       "remarks" : 
+       { "$ref" : "#/definitions/oscal-poam-oscal-metadata:remarks" } },
+      "additionalProperties" : false } ] },
    "oscal-poam-oscal-control-common:parameter-constraint" : 
    { "title" : "Constraint",
     "description" : "A formal or informal expression of a constraint or test.",
@@ -1352,7 +1440,7 @@
     { "description" : 
      { "title" : "Constraint Description",
       "description" : "A textual summary of the constraint to be applied.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupMultilineDatatype" },
      "tests" : 
      { "type" : "array",
       "minItems" : 1,
@@ -1380,7 +1468,7 @@
     { "prose" : 
      { "title" : "Guideline Text",
       "description" : "Prose permits multiple paragraphs, lists, tables etc.",
-      "type" : "string" } },
+      "$ref" : "#/definitions/MarkupMultilineDatatype" } },
     "required" : 
     [ "prose" ],
     "additionalProperties" : false },
@@ -1411,7 +1499,7 @@
       "items" : 
       { "title" : "Choice",
        "description" : "A value selection among several such options.",
-       "type" : "string" } } },
+       "$ref" : "#/definitions/MarkupLineDatatype" } } },
     "additionalProperties" : false },
    "oscal-poam-oscal-control-common:include-all" : 
    { "title" : "Include All",
@@ -1447,7 +1535,7 @@
      "description" : 
      { "title" : "Objective Description",
       "description" : "A human-readable description of this control objective.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupMultilineDatatype" },
      "props" : 
      { "type" : "array",
       "minItems" : 1,
@@ -1482,7 +1570,7 @@
      "description" : 
      { "title" : "Assessment Method Description",
       "description" : "A human-readable description of this assessment method.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupMultilineDatatype" },
      "props" : 
      { "type" : "array",
       "minItems" : 1,
@@ -1514,11 +1602,11 @@
      "title" : 
      { "title" : "Included Activity Title",
       "description" : "The title for this included activity.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupLineDatatype" },
      "description" : 
      { "title" : "Included Activity Description",
       "description" : "A human-readable description of this included activity.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupMultilineDatatype" },
      "props" : 
      { "type" : "array",
       "minItems" : 1,
@@ -1544,11 +1632,11 @@
         "title" : 
         { "title" : "Step Title",
          "description" : "The title for this step.",
-         "type" : "string" },
+         "$ref" : "#/definitions/MarkupLineDatatype" },
         "description" : 
         { "title" : "Step Description",
          "description" : "A human-readable description of this step.",
-         "type" : "string" },
+         "$ref" : "#/definitions/MarkupMultilineDatatype" },
         "props" : 
         { "type" : "array",
          "minItems" : 1,
@@ -1608,11 +1696,11 @@
      "title" : 
      { "title" : "Task Title",
       "description" : "The title for this task.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupLineDatatype" },
      "description" : 
      { "title" : "Task Description",
       "description" : "A human-readable description of this task.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupMultilineDatatype" },
      "props" : 
      { "type" : "array",
       "minItems" : 1,
@@ -1627,64 +1715,45 @@
      { "title" : "Event Timing",
       "description" : "The timing under which the task is intended to occur.",
       "type" : "object",
-      "properties" : 
-      { "on-date" : 
-       { "title" : "On Date Condition",
-        "description" : "The task is intended to occur on the specified date.",
-        "type" : "object",
-        "properties" : 
-        { "date" : 
+      "anyOf" : 
+      [ 
+       { "properties" : 
+        { "on-date" : 
          { "title" : "On Date Condition",
-          "description" : "The task must occur on the specified date.",
-          "$ref" : "#/definitions/DateTimeWithTimezoneDatatype" } },
+          "description" : "The task is intended to occur on the specified date.",
+          "type" : "object",
+          "required" : 
+          [ "date" ],
+          "additionalProperties" : false } },
         "required" : 
-        [ "date" ],
+        [ "on-date" ],
         "additionalProperties" : false },
-       "within-date-range" : 
-       { "title" : "On Date Range Condition",
-        "description" : "The task is intended to occur within the specified date range.",
-        "type" : "object",
-        "properties" : 
-        { "start" : 
-         { "title" : "Start Date Condition",
-          "description" : "The task must occur on or after the specified date.",
-          "$ref" : "#/definitions/DateTimeWithTimezoneDatatype" },
-         "end" : 
-         { "title" : "End Date Condition",
-          "description" : "The task must occur on or before the specified date.",
-          "$ref" : "#/definitions/DateTimeWithTimezoneDatatype" } },
+       
+       { "properties" : 
+        { "within-date-range" : 
+         { "title" : "On Date Range Condition",
+          "description" : "The task is intended to occur within the specified date range.",
+          "type" : "object",
+          "required" : 
+          [ "start",
+           "end" ],
+          "additionalProperties" : false } },
         "required" : 
-        [ "start",
-         "end" ],
+        [ "within-date-range" ],
         "additionalProperties" : false },
-       "at-frequency" : 
-       { "title" : "Frequency Condition",
-        "description" : "The task is intended to occur at the specified frequency.",
-        "type" : "object",
-        "properties" : 
-        { "period" : 
-         { "title" : "Period",
-          "description" : "The task must occur after the specified period has elapsed.",
-          "$ref" : "#/definitions/PositiveIntegerDatatype" },
-         "unit" : 
-         { "title" : "Time Unit",
-          "description" : "The unit of time for the period.",
-          "allOf" : 
-          [ 
-           { "$ref" : "#/definitions/StringDatatype" },
-           
-           { "enum" : 
-            [ "seconds",
-             "minutes",
-             "hours",
-             "days",
-             "months",
-             "years" ] } ] } },
+       
+       { "properties" : 
+        { "at-frequency" : 
+         { "title" : "Frequency Condition",
+          "description" : "The task is intended to occur at the specified frequency.",
+          "type" : "object",
+          "required" : 
+          [ "period",
+           "unit" ],
+          "additionalProperties" : false } },
         "required" : 
-        [ "period",
-         "unit" ],
-        "additionalProperties" : false } },
-      "additionalProperties" : false },
+        [ "at-frequency" ],
+        "additionalProperties" : false } ] },
      "dependencies" : 
      { "type" : "array",
       "minItems" : 1,
@@ -1771,7 +1840,7 @@
     { "description" : 
      { "title" : "Control Objective Description",
       "description" : "A human-readable description of control objectives.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupMultilineDatatype" },
      "props" : 
      { "type" : "array",
       "minItems" : 1,
@@ -1789,36 +1858,66 @@
       { "title" : "Assessed Controls",
        "description" : "Identifies the controls being assessed. In the assessment plan, these are the planned controls. In the assessment results, these are the actual controls, and reflects any changes from the plan.",
        "type" : "object",
-       "properties" : 
-       { "description" : 
-        { "title" : "Assessed Controls Description",
-         "description" : "A human-readable description of in-scope controls specified for assessment.",
-         "type" : "string" },
-        "props" : 
-        { "type" : "array",
-         "minItems" : 1,
-         "items" : 
-         { "$ref" : "#/definitions/oscal-poam-oscal-metadata:property" } },
-        "links" : 
-        { "type" : "array",
-         "minItems" : 1,
-         "items" : 
-         { "$ref" : "#/definitions/oscal-poam-oscal-metadata:link" } },
-        "include-all" : 
-        { "$ref" : "#/definitions/oscal-poam-oscal-control-common:include-all" },
-        "include-controls" : 
-        { "type" : "array",
-         "minItems" : 1,
-         "items" : 
-         { "$ref" : "#/definitions/oscal-poam-oscal-assessment-common:select-control-by-id" } },
-        "exclude-controls" : 
-        { "type" : "array",
-         "minItems" : 1,
-         "items" : 
-         { "$ref" : "#/definitions/oscal-poam-oscal-assessment-common:select-control-by-id" } },
-        "remarks" : 
-        { "$ref" : "#/definitions/oscal-poam-oscal-metadata:remarks" } },
-       "additionalProperties" : false } },
+       "anyOf" : 
+       [ 
+        { "properties" : 
+         { "description" : 
+          { "title" : "Assessed Controls Description",
+           "description" : "A human-readable description of in-scope controls specified for assessment.",
+           "$ref" : "#/definitions/MarkupMultilineDatatype" },
+          "props" : 
+          { "type" : "array",
+           "minItems" : 1,
+           "items" : 
+           { "$ref" : "#/definitions/oscal-poam-oscal-metadata:property" } },
+          "links" : 
+          { "type" : "array",
+           "minItems" : 1,
+           "items" : 
+           { "$ref" : "#/definitions/oscal-poam-oscal-metadata:link" } },
+          "include-all" : 
+          { "$ref" : "#/definitions/oscal-poam-oscal-control-common:include-all" },
+          "exclude-controls" : 
+          { "type" : "array",
+           "minItems" : 1,
+           "items" : 
+           { "$ref" : "#/definitions/oscal-poam-oscal-assessment-common:select-control-by-id" } },
+          "remarks" : 
+          { "$ref" : "#/definitions/oscal-poam-oscal-metadata:remarks" } },
+         "required" : 
+         [ "include-all" ],
+         "additionalProperties" : false },
+        
+        { "properties" : 
+         { "description" : 
+          { "title" : "Assessed Controls Description",
+           "description" : "A human-readable description of in-scope controls specified for assessment.",
+           "$ref" : "#/definitions/MarkupMultilineDatatype" },
+          "props" : 
+          { "type" : "array",
+           "minItems" : 1,
+           "items" : 
+           { "$ref" : "#/definitions/oscal-poam-oscal-metadata:property" } },
+          "links" : 
+          { "type" : "array",
+           "minItems" : 1,
+           "items" : 
+           { "$ref" : "#/definitions/oscal-poam-oscal-metadata:link" } },
+          "include-controls" : 
+          { "type" : "array",
+           "minItems" : 1,
+           "items" : 
+           { "$ref" : "#/definitions/oscal-poam-oscal-assessment-common:select-control-by-id" } },
+          "exclude-controls" : 
+          { "type" : "array",
+           "minItems" : 1,
+           "items" : 
+           { "$ref" : "#/definitions/oscal-poam-oscal-assessment-common:select-control-by-id" } },
+          "remarks" : 
+          { "$ref" : "#/definitions/oscal-poam-oscal-metadata:remarks" } },
+         "required" : 
+         [ "include-controls" ],
+         "additionalProperties" : false } ] } },
      "control-objective-selections" : 
      { "type" : "array",
       "minItems" : 1,
@@ -1826,36 +1925,66 @@
       { "title" : "Referenced Control Objectives",
        "description" : "Identifies the control objectives of the assessment. In the assessment plan, these are the planned objectives. In the assessment results, these are the assessed objectives, and reflects any changes from the plan.",
        "type" : "object",
-       "properties" : 
-       { "description" : 
-        { "title" : "Control Objectives Description",
-         "description" : "A human-readable description of this collection of control objectives.",
-         "type" : "string" },
-        "props" : 
-        { "type" : "array",
-         "minItems" : 1,
-         "items" : 
-         { "$ref" : "#/definitions/oscal-poam-oscal-metadata:property" } },
-        "links" : 
-        { "type" : "array",
-         "minItems" : 1,
-         "items" : 
-         { "$ref" : "#/definitions/oscal-poam-oscal-metadata:link" } },
-        "include-all" : 
-        { "$ref" : "#/definitions/oscal-poam-oscal-control-common:include-all" },
-        "include-objectives" : 
-        { "type" : "array",
-         "minItems" : 1,
-         "items" : 
-         { "$ref" : "#/definitions/oscal-poam-oscal-assessment-common:select-objective-by-id" } },
-        "exclude-objectives" : 
-        { "type" : "array",
-         "minItems" : 1,
-         "items" : 
-         { "$ref" : "#/definitions/oscal-poam-oscal-assessment-common:select-objective-by-id" } },
-        "remarks" : 
-        { "$ref" : "#/definitions/oscal-poam-oscal-metadata:remarks" } },
-       "additionalProperties" : false } },
+       "anyOf" : 
+       [ 
+        { "properties" : 
+         { "description" : 
+          { "title" : "Control Objectives Description",
+           "description" : "A human-readable description of this collection of control objectives.",
+           "$ref" : "#/definitions/MarkupMultilineDatatype" },
+          "props" : 
+          { "type" : "array",
+           "minItems" : 1,
+           "items" : 
+           { "$ref" : "#/definitions/oscal-poam-oscal-metadata:property" } },
+          "links" : 
+          { "type" : "array",
+           "minItems" : 1,
+           "items" : 
+           { "$ref" : "#/definitions/oscal-poam-oscal-metadata:link" } },
+          "include-all" : 
+          { "$ref" : "#/definitions/oscal-poam-oscal-control-common:include-all" },
+          "exclude-objectives" : 
+          { "type" : "array",
+           "minItems" : 1,
+           "items" : 
+           { "$ref" : "#/definitions/oscal-poam-oscal-assessment-common:select-objective-by-id" } },
+          "remarks" : 
+          { "$ref" : "#/definitions/oscal-poam-oscal-metadata:remarks" } },
+         "required" : 
+         [ "include-all" ],
+         "additionalProperties" : false },
+        
+        { "properties" : 
+         { "description" : 
+          { "title" : "Control Objectives Description",
+           "description" : "A human-readable description of this collection of control objectives.",
+           "$ref" : "#/definitions/MarkupMultilineDatatype" },
+          "props" : 
+          { "type" : "array",
+           "minItems" : 1,
+           "items" : 
+           { "$ref" : "#/definitions/oscal-poam-oscal-metadata:property" } },
+          "links" : 
+          { "type" : "array",
+           "minItems" : 1,
+           "items" : 
+           { "$ref" : "#/definitions/oscal-poam-oscal-metadata:link" } },
+          "include-objectives" : 
+          { "type" : "array",
+           "minItems" : 1,
+           "items" : 
+           { "$ref" : "#/definitions/oscal-poam-oscal-assessment-common:select-objective-by-id" } },
+          "exclude-objectives" : 
+          { "type" : "array",
+           "minItems" : 1,
+           "items" : 
+           { "$ref" : "#/definitions/oscal-poam-oscal-assessment-common:select-objective-by-id" } },
+          "remarks" : 
+          { "$ref" : "#/definitions/oscal-poam-oscal-metadata:remarks" } },
+         "required" : 
+         [ "include-objectives" ],
+         "additionalProperties" : false } ] } },
      "remarks" : 
      { "$ref" : "#/definitions/oscal-poam-oscal-metadata:remarks" } },
     "required" : 
@@ -1863,7 +1992,7 @@
     "additionalProperties" : false },
    "oscal-poam-oscal-assessment-common:select-control-by-id" : 
    { "title" : "Select Control",
-    "description" : "Used to select a control for inclusion/exclusion based on one or more control identifiers. A set of statement identifiers can be used to target the inclusion/exclusion to only specific control statements providing more granularity over the specific statements that are within the asessment scope.",
+    "description" : "Used to select a control for inclusion/exclusion based on one or more control identifiers. A set of statement identifiers can be used to target the inclusion/exclusion to only specific control statements providing more granularity over the specific statements that are within the assessment scope.",
     "$id" : "#/definitions/oscal-poam-oscal-assessment-common:select-control-by-id",
     "type" : "object",
     "properties" : 
@@ -1886,11 +2015,6 @@
     "description" : "Used to select a control objective for inclusion/exclusion based on the control objective's identifier.",
     "$id" : "#/definitions/oscal-poam-oscal-assessment-common:select-objective-by-id",
     "type" : "object",
-    "properties" : 
-    { "objective-id" : 
-     { "title" : "Objective ID",
-      "description" : "Points to an assessment objective.",
-      "$ref" : "#/definitions/TokenDatatype" } },
     "required" : 
     [ "objective-id" ],
     "additionalProperties" : false },
@@ -1907,7 +2031,7 @@
      "description" : 
      { "title" : "Assessment Subject Placeholder Description",
       "description" : "A human-readable description of intent of this assessment subject placeholder.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupMultilineDatatype" },
      "sources" : 
      { "type" : "array",
       "minItems" : 1,
@@ -1915,11 +2039,6 @@
       { "title" : "Assessment Subject Source",
        "description" : "Assessment subjects will be identified while conducting the referenced activity-instance.",
        "type" : "object",
-       "properties" : 
-       { "task-uuid" : 
-        { "title" : "Task Universally Unique Identifier",
-         "description" : "A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference (in this or other OSCAL instances) an assessment activity to be performed as part of the event. The locally defined UUID of the task can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.",
-         "$ref" : "#/definitions/UUIDDatatype" } },
        "required" : 
        [ "task-uuid" ],
        "additionalProperties" : false } },
@@ -1944,51 +2063,92 @@
     "description" : "Identifies system elements being assessed, such as components, inventory items, and locations. In the assessment plan, this identifies a planned assessment subject. In the assessment results this is an actual assessment subject, and reflects any changes from the plan. exactly what will be the focus of this assessment. Any subjects not identified in this way are out-of-scope.",
     "$id" : "#/definitions/oscal-poam-oscal-assessment-common:assessment-subject",
     "type" : "object",
-    "properties" : 
-    { "type" : 
-     { "title" : "Subject Type",
-      "description" : "Indicates the type of assessment subject, such as a component, inventory, item, location, or party represented by this selection statement.",
-      "anyOf" : 
-      [ 
-       { "$ref" : "#/definitions/TokenDatatype" },
-       
-       { "enum" : 
-        [ "component",
-         "inventory-item",
-         "location",
-         "party",
-         "user" ] } ] },
-     "description" : 
-     { "title" : "Include Subjects Description",
-      "description" : "A human-readable description of the collection of subjects being included in this assessment.",
-      "type" : "string" },
-     "props" : 
-     { "type" : "array",
-      "minItems" : 1,
-      "items" : 
-      { "$ref" : "#/definitions/oscal-poam-oscal-metadata:property" } },
-     "links" : 
-     { "type" : "array",
-      "minItems" : 1,
-      "items" : 
-      { "$ref" : "#/definitions/oscal-poam-oscal-metadata:link" } },
-     "include-all" : 
-     { "$ref" : "#/definitions/oscal-poam-oscal-control-common:include-all" },
-     "include-subjects" : 
-     { "type" : "array",
-      "minItems" : 1,
-      "items" : 
-      { "$ref" : "#/definitions/oscal-poam-oscal-assessment-common:select-subject-by-id" } },
-     "exclude-subjects" : 
-     { "type" : "array",
-      "minItems" : 1,
-      "items" : 
-      { "$ref" : "#/definitions/oscal-poam-oscal-assessment-common:select-subject-by-id" } },
-     "remarks" : 
-     { "$ref" : "#/definitions/oscal-poam-oscal-metadata:remarks" } },
-    "required" : 
-    [ "type" ],
-    "additionalProperties" : false },
+    "anyOf" : 
+    [ 
+     { "properties" : 
+      { "type" : 
+       { "title" : "Subject Type",
+        "description" : "Indicates the type of assessment subject, such as a component, inventory, item, location, or party represented by this selection statement.",
+        "anyOf" : 
+        [ 
+         { "$ref" : "#/definitions/TokenDatatype" },
+         
+         { "enum" : 
+          [ "component",
+           "inventory-item",
+           "location",
+           "party",
+           "user" ] } ] },
+       "description" : 
+       { "title" : "Include Subjects Description",
+        "description" : "A human-readable description of the collection of subjects being included in this assessment.",
+        "$ref" : "#/definitions/MarkupMultilineDatatype" },
+       "props" : 
+       { "type" : "array",
+        "minItems" : 1,
+        "items" : 
+        { "$ref" : "#/definitions/oscal-poam-oscal-metadata:property" } },
+       "links" : 
+       { "type" : "array",
+        "minItems" : 1,
+        "items" : 
+        { "$ref" : "#/definitions/oscal-poam-oscal-metadata:link" } },
+       "include-all" : 
+       { "$ref" : "#/definitions/oscal-poam-oscal-control-common:include-all" },
+       "exclude-subjects" : 
+       { "type" : "array",
+        "minItems" : 1,
+        "items" : 
+        { "$ref" : "#/definitions/oscal-poam-oscal-assessment-common:select-subject-by-id" } },
+       "remarks" : 
+       { "$ref" : "#/definitions/oscal-poam-oscal-metadata:remarks" } },
+      "required" : 
+      [ "include-all" ],
+      "additionalProperties" : false },
+     
+     { "properties" : 
+      { "type" : 
+       { "title" : "Subject Type",
+        "description" : "Indicates the type of assessment subject, such as a component, inventory, item, location, or party represented by this selection statement.",
+        "anyOf" : 
+        [ 
+         { "$ref" : "#/definitions/TokenDatatype" },
+         
+         { "enum" : 
+          [ "component",
+           "inventory-item",
+           "location",
+           "party",
+           "user" ] } ] },
+       "description" : 
+       { "title" : "Include Subjects Description",
+        "description" : "A human-readable description of the collection of subjects being included in this assessment.",
+        "$ref" : "#/definitions/MarkupMultilineDatatype" },
+       "props" : 
+       { "type" : "array",
+        "minItems" : 1,
+        "items" : 
+        { "$ref" : "#/definitions/oscal-poam-oscal-metadata:property" } },
+       "links" : 
+       { "type" : "array",
+        "minItems" : 1,
+        "items" : 
+        { "$ref" : "#/definitions/oscal-poam-oscal-metadata:link" } },
+       "include-subjects" : 
+       { "type" : "array",
+        "minItems" : 1,
+        "items" : 
+        { "$ref" : "#/definitions/oscal-poam-oscal-assessment-common:select-subject-by-id" } },
+       "exclude-subjects" : 
+       { "type" : "array",
+        "minItems" : 1,
+        "items" : 
+        { "$ref" : "#/definitions/oscal-poam-oscal-assessment-common:select-subject-by-id" } },
+       "remarks" : 
+       { "$ref" : "#/definitions/oscal-poam-oscal-metadata:remarks" } },
+      "required" : 
+      [ "include-subjects" ],
+      "additionalProperties" : false } ] },
    "oscal-poam-oscal-assessment-common:select-subject-by-id" : 
    { "title" : "Select Assessment Subject",
     "description" : "Identifies a set of assessment subjects to include/exclude by UUID.",
@@ -2056,7 +2216,7 @@
      "title" : 
      { "title" : "Subject Reference Title",
       "description" : "The title or name for the referenced subject.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupLineDatatype" },
      "props" : 
      { "type" : "array",
       "minItems" : 1,
@@ -2099,7 +2259,7 @@
         "title" : 
         { "title" : "Assessment Platform Title",
          "description" : "The title or name for the assessment platform.",
-         "type" : "string" },
+         "$ref" : "#/definitions/MarkupLineDatatype" },
         "props" : 
         { "type" : "array",
          "minItems" : 1,
@@ -2173,11 +2333,11 @@
      "title" : 
      { "title" : "Objective Status Title",
       "description" : "The title for this objective status.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupLineDatatype" },
      "description" : 
      { "title" : "Objective Status Description",
       "description" : "A human-readable description of the assessor's conclusions regarding the degree to which an objective is satisfied.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupMultilineDatatype" },
      "props" : 
      { "type" : "array",
       "minItems" : 1,
@@ -2241,11 +2401,11 @@
      "title" : 
      { "title" : "Finding Title",
       "description" : "The title for this finding.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupLineDatatype" },
      "description" : 
      { "title" : "Finding Description",
       "description" : "A human-readable description of this finding.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupMultilineDatatype" },
      "props" : 
      { "type" : "array",
       "minItems" : 1,
@@ -2274,11 +2434,6 @@
       { "title" : "Related Observation",
        "description" : "Relates the finding to a set of referenced observations that were used to determine the finding.",
        "type" : "object",
-       "properties" : 
-       { "observation-uuid" : 
-        { "title" : "Observation Universally Unique Identifier Reference",
-         "description" : "A machine-oriented identifier reference to an observation defined in the list of observations.",
-         "$ref" : "#/definitions/UUIDDatatype" } },
        "required" : 
        [ "observation-uuid" ],
        "additionalProperties" : false } },
@@ -2289,11 +2444,6 @@
       { "title" : "Associated Risk",
        "description" : "Relates the finding to a set of referenced risks that were used to determine the finding.",
        "type" : "object",
-       "properties" : 
-       { "risk-uuid" : 
-        { "title" : "Risk Universally Unique Identifier Reference",
-         "description" : "A machine-oriented identifier reference to a risk defined in the list of risks.",
-         "$ref" : "#/definitions/UUIDDatatype" } },
        "required" : 
        [ "risk-uuid" ],
        "additionalProperties" : false } },
@@ -2313,16 +2463,16 @@
     "properties" : 
     { "uuid" : 
      { "title" : "Observation Universally Unique Identifier",
-      "description" : "A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this observation elsewhere in this or other OSCAL instances. The locally defined UUID of the observation can be used to reference the data item locally or globally (e.g., in an imorted OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.",
+      "description" : "A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this observation elsewhere in this or other OSCAL instances. The locally defined UUID of the observation can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.",
       "$ref" : "#/definitions/UUIDDatatype" },
      "title" : 
      { "title" : "Observation Title",
       "description" : "The title for this observation.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupLineDatatype" },
      "description" : 
      { "title" : "Observation Description",
       "description" : "A human-readable description of this assessment observation.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupMultilineDatatype" },
      "props" : 
      { "type" : "array",
       "minItems" : 1,
@@ -2363,6 +2513,7 @@
           "control-objective",
           "mitigation",
           "finding",
+          "discovery",
           "historic" ] } ] } },
      "origins" : 
      { "type" : "array",
@@ -2389,7 +2540,7 @@
         "description" : 
         { "title" : "Relevant Evidence Description",
          "description" : "A human-readable description of this evidence.",
-         "type" : "string" },
+         "$ref" : "#/definitions/MarkupMultilineDatatype" },
         "props" : 
         { "type" : "array",
          "minItems" : 1,
@@ -2511,7 +2662,7 @@
       { "$ref" : "#/definitions/oscal-poam-oscal-assessment-common:assessment-subject" } },
      "identified-subject" : 
      { "title" : "Identified Subject",
-      "description" : "Used to detail assessment subjects that were identfied by this task.",
+      "description" : "Used to detail assessment subjects that were identified by this task.",
       "type" : "object",
       "properties" : 
       { "subject-placeholder-uuid" : 
@@ -2571,15 +2722,15 @@
      "title" : 
      { "title" : "Risk Title",
       "description" : "The title for this risk.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupLineDatatype" },
      "description" : 
      { "title" : "Risk Description",
       "description" : "A human-readable summary of the identified risk, to include a statement of how the risk impacts the system.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupMultilineDatatype" },
      "statement" : 
      { "title" : "Risk Statement",
       "description" : "An summary of impact for how the risk affects the system.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupMultilineDatatype" },
      "props" : 
      { "type" : "array",
       "minItems" : 1,
@@ -2626,7 +2777,7 @@
         "description" : 
         { "title" : "Mitigating Factor Description",
          "description" : "A human-readable description of this mitigating factor.",
-         "type" : "string" },
+         "$ref" : "#/definitions/MarkupMultilineDatatype" },
         "props" : 
         { "type" : "array",
          "minItems" : 1,
@@ -2675,11 +2826,11 @@
           "title" : 
           { "title" : "Title",
            "description" : "The title for this risk log entry.",
-           "type" : "string" },
+           "$ref" : "#/definitions/MarkupLineDatatype" },
           "description" : 
           { "title" : "Risk Task Description",
            "description" : "A human-readable description of what was done regarding the risk.",
-           "type" : "string" },
+           "$ref" : "#/definitions/MarkupMultilineDatatype" },
           "start" : 
           { "title" : "Start",
            "description" : "Identifies the start date and time of the event.",
@@ -2753,11 +2904,6 @@
       { "title" : "Related Observation",
        "description" : "Relates the finding to a set of referenced observations that were used to determine the finding.",
        "type" : "object",
-       "properties" : 
-       { "observation-uuid" : 
-        { "title" : "Observation Universally Unique Identifier Reference",
-         "description" : "A machine-oriented identifier reference to an observation defined in the list of observations.",
-         "$ref" : "#/definitions/UUIDDatatype" } },
        "required" : 
        [ "observation-uuid" ],
        "additionalProperties" : false } } },
@@ -2773,15 +2919,6 @@
     "description" : "Used to indicate who created a log entry in what role.",
     "$id" : "#/definitions/oscal-poam-oscal-assessment-common:logged-by",
     "type" : "object",
-    "properties" : 
-    { "party-uuid" : 
-     { "title" : "Party UUID Reference",
-      "description" : "A machine-oriented identifier reference to the party who is making the log entry.",
-      "$ref" : "#/definitions/UUIDDatatype" },
-     "role-id" : 
-     { "title" : "Actor Role",
-      "description" : "A point to the role-id of the role in which the party is making the log entry.",
-      "$ref" : "#/definitions/TokenDatatype" } },
     "required" : 
     [ "party-uuid" ],
     "additionalProperties" : false },
@@ -2896,11 +3033,11 @@
      "title" : 
      { "title" : "Response Title",
       "description" : "The title for this response activity.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupLineDatatype" },
      "description" : 
      { "title" : "Response Description",
       "description" : "A human-readable description of this response plan.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupMultilineDatatype" },
      "props" : 
      { "type" : "array",
       "minItems" : 1,
@@ -2936,11 +3073,11 @@
         "title" : 
         { "title" : "Title for Required Asset",
          "description" : "The title for this required asset.",
-         "type" : "string" },
+         "$ref" : "#/definitions/MarkupLineDatatype" },
         "description" : 
         { "title" : "Description of Required Asset",
          "description" : "A human-readable description of this required asset.",
-         "type" : "string" },
+         "$ref" : "#/definitions/MarkupMultilineDatatype" },
         "props" : 
         { "type" : "array",
          "minItems" : 1,
@@ -3002,7 +3139,7 @@
      "title" : 
      { "title" : "Part Title",
       "description" : "A name given to the part, which may be used by a tool for display and navigation.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupLineDatatype" },
      "props" : 
      { "type" : "array",
       "minItems" : 1,
@@ -3011,7 +3148,7 @@
      "prose" : 
      { "title" : "Part Text",
       "description" : "Permits multiple paragraphs, lists, tables etc.",
-      "type" : "string" },
+      "$ref" : "#/definitions/MarkupMultilineDatatype" },
      "parts" : 
      { "type" : "array",
       "minItems" : 1,
@@ -3047,6 +3184,13 @@
    "IntegerDatatype" : 
    { "description" : "A whole number value.",
     "type" : "integer" },
+   "MarkupLineDatatype" : 
+   { "description" : "A single line of Markdown content conformant to the Commonmark specification.",
+    "type" : "string",
+    "pattern" : "^[^\n]+$" },
+   "MarkupMultilineDatatype" : 
+   { "description" : "A multiple lines of Markdown content conformant to the Commonmark specification.",
+    "type" : "string" },
    "NonNegativeIntegerDatatype" : 
    { "description" : "An integer value that is equal to or greater than 0.",
     "allOf" : 

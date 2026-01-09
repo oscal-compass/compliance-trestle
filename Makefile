@@ -69,7 +69,11 @@ release::
 	git config --global user.email "semantic-release@github-actions"
 	semantic-release publish
 
-gen-oscal::
+gen-oscal-clean:
+	rm -fr tmp
+	rm -fr trestle/oscal/tmp
+	
+gen-oscal:: gen-oscal-clean
 	python ./scripts/gen_oscal.py
 
 docs-osx-deps:
