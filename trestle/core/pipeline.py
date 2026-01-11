@@ -13,7 +13,7 @@
 # limitations under the License.
 """Abstract base class for pipelines and filters."""
 
-from abc import ABC, abstractclassmethod
+from abc import ABC, abstractmethod
 from typing import Any, List
 
 
@@ -23,7 +23,7 @@ class Pipeline():
     class Filter(ABC):
         """Filter class used by pipeline."""
 
-        @abstractclassmethod
+        @abstractmethod
         def process(self, input_: Any) -> Any:
             """Process the input to output."""
             return input_
