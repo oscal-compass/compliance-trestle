@@ -19,8 +19,7 @@
                   return '';
                 }
               });
-            </script> <p>Output version info for trestle and OSCAL.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/version.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>31</span>
-<span class=normal>32</span>
+            </script> <p>Output version info for trestle and OSCAL.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/version.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>32</span>
 <span class=normal>33</span>
 <span class=normal>34</span>
 <span class=normal>35</span>
@@ -64,7 +63,8 @@
 <span class=normal>73</span>
 <span class=normal>74</span>
 <span class=normal>75</span>
-<span class=normal>76</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>VersionCmd</span><span class=p>(</span><span class=n>CommandBase</span><span class=p>):</span>
+<span class=normal>76</span>
+<span class=normal>77</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>VersionCmd</span><span class=p>(</span><span class=n>CommandBase</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Output version info for trestle and OSCAL.&quot;&quot;&quot;</span>
 
     <span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;version&#39;</span>
@@ -76,7 +76,7 @@
             <span class=s1>&#39;--type&#39;</span><span class=p>,</span>
             <span class=n>help</span><span class=o>=</span><span class=s1>&#39;Type of the model being queried: (catalog, profile, component-definition, ...)&#39;</span><span class=p>,</span>
             <span class=n>default</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span>
-            <span class=nb>type</span><span class=o>=</span><span class=nb>str</span>
+            <span class=nb>type</span><span class=o>=</span><span class=nb>str</span><span class=p>,</span>
         <span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_get_version</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>type_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>obj_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>

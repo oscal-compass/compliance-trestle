@@ -44,7 +44,7 @@
 <span class=normal>164</span>
 <span class=normal>165</span>
 <span class=normal>166</span>
-<span class=normal>167</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>RuleUse</span><span class=p>():</span>
+<span class=normal>167</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>RuleUse</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Represents one row of Tanium data.&quot;&quot;&quot;</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>tanium_row</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Any</span><span class=p>],</span> <span class=n>comply</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>],</span> <span class=n>default_timestamp</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
@@ -78,9 +78,9 @@
                     <span class=bp>self</span><span class=o>.</span><span class=n>check_id_benchmark</span> <span class=o>=</span> <span class=n>items</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span>
                     <span class=bp>self</span><span class=o>.</span><span class=n>component</span> <span class=o>=</span> <span class=n>items</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span>
                     <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>component</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=s1>&#39;CIS &#39;</span><span class=p>):</span>
-                        <span class=bp>self</span><span class=o>.</span><span class=n>component</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>component</span><span class=p>[</span><span class=nb>len</span><span class=p>(</span><span class=s1>&#39;CIS &#39;</span><span class=p>):]</span>
+                        <span class=bp>self</span><span class=o>.</span><span class=n>component</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>component</span><span class=p>[</span><span class=nb>len</span><span class=p>(</span><span class=s1>&#39;CIS &#39;</span><span class=p>)</span> <span class=p>:]</span>
                     <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>component</span><span class=o>.</span><span class=n>endswith</span><span class=p>(</span><span class=s1>&#39; Benchmark&#39;</span><span class=p>):</span>
-                        <span class=bp>self</span><span class=o>.</span><span class=n>component</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>component</span><span class=p>[:</span><span class=o>-</span><span class=nb>len</span><span class=p>(</span><span class=s1>&#39; Benchmark&#39;</span><span class=p>)]</span>
+                        <span class=bp>self</span><span class=o>.</span><span class=n>component</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>component</span><span class=p>[:</span> <span class=o>-</span><span class=nb>len</span><span class=p>(</span><span class=s1>&#39; Benchmark&#39;</span><span class=p>)]</span>
                     <span class=bp>self</span><span class=o>.</span><span class=n>component_type</span> <span class=o>=</span> <span class=s1>&#39;Operating System&#39;</span>
             <span class=c1># timestamp</span>
             <span class=bp>self</span><span class=o>.</span><span class=n>timestamp</span> <span class=o>=</span> <span class=n>comply</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>&#39;Timestamp&#39;</span><span class=p>,</span> <span class=n>default_timestamp</span><span class=p>)</span>
@@ -165,9 +165,9 @@
                 <span class=bp>self</span><span class=o>.</span><span class=n>check_id_benchmark</span> <span class=o>=</span> <span class=n>items</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span>
                 <span class=bp>self</span><span class=o>.</span><span class=n>component</span> <span class=o>=</span> <span class=n>items</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span>
                 <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>component</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=s1>&#39;CIS &#39;</span><span class=p>):</span>
-                    <span class=bp>self</span><span class=o>.</span><span class=n>component</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>component</span><span class=p>[</span><span class=nb>len</span><span class=p>(</span><span class=s1>&#39;CIS &#39;</span><span class=p>):]</span>
+                    <span class=bp>self</span><span class=o>.</span><span class=n>component</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>component</span><span class=p>[</span><span class=nb>len</span><span class=p>(</span><span class=s1>&#39;CIS &#39;</span><span class=p>)</span> <span class=p>:]</span>
                 <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>component</span><span class=o>.</span><span class=n>endswith</span><span class=p>(</span><span class=s1>&#39; Benchmark&#39;</span><span class=p>):</span>
-                    <span class=bp>self</span><span class=o>.</span><span class=n>component</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>component</span><span class=p>[:</span><span class=o>-</span><span class=nb>len</span><span class=p>(</span><span class=s1>&#39; Benchmark&#39;</span><span class=p>)]</span>
+                    <span class=bp>self</span><span class=o>.</span><span class=n>component</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>component</span><span class=p>[:</span> <span class=o>-</span><span class=nb>len</span><span class=p>(</span><span class=s1>&#39; Benchmark&#39;</span><span class=p>)]</span>
                 <span class=bp>self</span><span class=o>.</span><span class=n>component_type</span> <span class=o>=</span> <span class=s1>&#39;Operating System&#39;</span>
         <span class=c1># timestamp</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>timestamp</span> <span class=o>=</span> <span class=n>comply</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>&#39;Timestamp&#39;</span><span class=p>,</span> <span class=n>default_timestamp</span><span class=p>)</span>
@@ -214,7 +214,7 @@
 <span class=normal>203</span>
 <span class=normal>204</span>
 <span class=normal>205</span>
-<span class=normal>206</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>RuleUseFactory</span><span class=p>():</span>
+<span class=normal>206</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>RuleUseFactory</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Build RuleUse list.&quot;&quot;&quot;</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>timestamp</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
@@ -663,12 +663,7 @@
 <span class=normal>605</span>
 <span class=normal>606</span>
 <span class=normal>607</span>
-<span class=normal>608</span>
-<span class=normal>609</span>
-<span class=normal>610</span>
-<span class=normal>611</span>
-<span class=normal>612</span>
-<span class=normal>613</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>TaniumOscalFactory</span><span class=p>():</span>
+<span class=normal>608</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>TaniumOscalFactory</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Build Tanium OSCAL entities.&quot;&quot;&quot;</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span>
@@ -680,7 +675,7 @@
         <span class=n>cpus_min</span><span class=p>:</span> <span class=nb>int</span> <span class=o>=</span> <span class=mi>1</span><span class=p>,</span>
         <span class=n>checking</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>,</span>
         <span class=n>caching</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>True</span><span class=p>,</span>
-        <span class=n>aggregate</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>True</span>
+        <span class=n>aggregate</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>True</span><span class=p>,</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Initialize given specified args.&quot;&quot;&quot;</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_rule_use_list</span> <span class=o>=</span> <span class=n>rule_use_list</span>
@@ -741,7 +736,7 @@
                 <span class=nb>type</span><span class=o>=</span><span class=n>component_type</span><span class=p>,</span>
                 <span class=n>title</span><span class=o>=</span><span class=n>component_title</span><span class=p>,</span>
                 <span class=n>description</span><span class=o>=</span><span class=n>component_description</span><span class=p>,</span>
-                <span class=n>status</span><span class=o>=</span><span class=n>status</span>
+                <span class=n>status</span><span class=o>=</span><span class=n>status</span><span class=p>,</span>
             <span class=p>)</span>
             <span class=bp>self</span><span class=o>.</span><span class=n>_component_map</span><span class=p>[</span><span class=n>component_ref</span><span class=p>]</span> <span class=o>=</span> <span class=n>component</span>
 
@@ -772,10 +767,10 @@
                     <span class=n>name</span><span class=o>=</span><span class=s1>&#39;Tanium_Client_IP_Address&#39;</span><span class=p>,</span>
                     <span class=n>value</span><span class=o>=</span><span class=n>rule_use</span><span class=o>.</span><span class=n>tanium_client_ip_address</span><span class=p>,</span>
                     <span class=n>ns</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_ns</span><span class=p>,</span>
-                    <span class=n>class_</span><span class=o>=</span><span class=s1>&#39;scc_inventory_item_id&#39;</span>
+                    <span class=n>class_</span><span class=o>=</span><span class=s1>&#39;scc_inventory_item_id&#39;</span><span class=p>,</span>
                 <span class=p>),</span>
                 <span class=bp>self</span><span class=o>.</span><span class=n>_property_manager</span><span class=o>.</span><span class=n>materialize</span><span class=p>(</span><span class=n>name</span><span class=o>=</span><span class=s1>&#39;IP_Address&#39;</span><span class=p>,</span> <span class=n>value</span><span class=o>=</span><span class=n>rule_use</span><span class=o>.</span><span class=n>ip_address</span><span class=p>,</span> <span class=n>ns</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_ns</span><span class=p>),</span>
-                <span class=bp>self</span><span class=o>.</span><span class=n>_property_manager</span><span class=o>.</span><span class=n>materialize</span><span class=p>(</span><span class=n>name</span><span class=o>=</span><span class=s1>&#39;Count&#39;</span><span class=p>,</span> <span class=n>value</span><span class=o>=</span><span class=n>rule_use</span><span class=o>.</span><span class=n>count</span><span class=p>,</span> <span class=n>ns</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_ns</span><span class=p>)</span>
+                <span class=bp>self</span><span class=o>.</span><span class=n>_property_manager</span><span class=o>.</span><span class=n>materialize</span><span class=p>(</span><span class=n>name</span><span class=o>=</span><span class=s1>&#39;Count&#39;</span><span class=p>,</span> <span class=n>value</span><span class=o>=</span><span class=n>rule_use</span><span class=o>.</span><span class=n>count</span><span class=p>,</span> <span class=n>ns</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_ns</span><span class=p>),</span>
             <span class=p>]</span>
             <span class=n>component_uuid</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_component_ref</span><span class=p>(</span><span class=n>rule_use</span><span class=p>)</span>
             <span class=k>if</span> <span class=n>component_uuid</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
@@ -793,7 +788,7 @@
         <span class=n>name</span><span class=p>:</span> <span class=nb>str</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
         <span class=n>value</span><span class=p>:</span> <span class=nb>str</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
         <span class=n>ns</span><span class=p>:</span> <span class=nb>str</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
-        <span class=n>class_</span><span class=p>:</span> <span class=nb>str</span> <span class=o>=</span> <span class=kc>None</span>
+        <span class=n>class_</span><span class=p>:</span> <span class=nb>str</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Add non-aggregated property or remember common property.&quot;&quot;&quot;</span>
         <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>_aggregate</span><span class=p>:</span>
@@ -815,7 +810,7 @@
             <span class=n>name</span><span class=o>=</span><span class=s1>&#39;Check_ID_Benchmark&#39;</span><span class=p>,</span>
             <span class=n>value</span><span class=o>=</span><span class=n>rule_use</span><span class=o>.</span><span class=n>check_id_benchmark</span><span class=p>,</span>
             <span class=n>ns</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_ns</span><span class=p>,</span>
-            <span class=n>class_</span><span class=o>=</span><span class=s1>&#39;scc_predefined_profile&#39;</span>
+            <span class=n>class_</span><span class=o>=</span><span class=s1>&#39;scc_predefined_profile&#39;</span><span class=p>,</span>
         <span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_conditional_include</span><span class=p>(</span>
             <span class=n>props</span><span class=o>=</span><span class=n>props</span><span class=p>,</span>
@@ -823,18 +818,13 @@
             <span class=n>name</span><span class=o>=</span><span class=s1>&#39;Check_ID_Version&#39;</span><span class=p>,</span>
             <span class=n>value</span><span class=o>=</span><span class=n>rule_use</span><span class=o>.</span><span class=n>check_id_version</span><span class=p>,</span>
             <span class=n>ns</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_ns</span><span class=p>,</span>
-            <span class=n>class_</span><span class=o>=</span><span class=s1>&#39;scc_predefined_profile_version&#39;</span>
+            <span class=n>class_</span><span class=o>=</span><span class=s1>&#39;scc_predefined_profile_version&#39;</span><span class=p>,</span>
         <span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_conditional_include</span><span class=p>(</span>
             <span class=n>props</span><span class=o>=</span><span class=n>props</span><span class=p>,</span> <span class=n>group</span><span class=o>=</span><span class=n>group</span><span class=p>,</span> <span class=n>name</span><span class=o>=</span><span class=s1>&#39;Check_ID_Level&#39;</span><span class=p>,</span> <span class=n>value</span><span class=o>=</span><span class=n>rule_use</span><span class=o>.</span><span class=n>check_id_level</span><span class=p>,</span> <span class=n>ns</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_ns</span>
         <span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_conditional_include</span><span class=p>(</span>
-            <span class=n>props</span><span class=o>=</span><span class=n>props</span><span class=p>,</span>
-            <span class=n>group</span><span class=o>=</span><span class=n>group</span><span class=p>,</span>
-            <span class=n>name</span><span class=o>=</span><span class=s1>&#39;Rule_ID&#39;</span><span class=p>,</span>
-            <span class=n>value</span><span class=o>=</span><span class=n>rule_use</span><span class=o>.</span><span class=n>rule_id</span><span class=p>,</span>
-            <span class=n>ns</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_ns</span><span class=p>,</span>
-            <span class=n>class_</span><span class=o>=</span><span class=s1>&#39;scc_goal_description&#39;</span>
+            <span class=n>props</span><span class=o>=</span><span class=n>props</span><span class=p>,</span> <span class=n>group</span><span class=o>=</span><span class=n>group</span><span class=p>,</span> <span class=n>name</span><span class=o>=</span><span class=s1>&#39;Rule_ID&#39;</span><span class=p>,</span> <span class=n>value</span><span class=o>=</span><span class=n>rule_use</span><span class=o>.</span><span class=n>rule_id</span><span class=p>,</span> <span class=n>ns</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_ns</span><span class=p>,</span> <span class=n>class_</span><span class=o>=</span><span class=s1>&#39;scc_goal_description&#39;</span>
         <span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_conditional_include</span><span class=p>(</span>
             <span class=n>props</span><span class=o>=</span><span class=n>props</span><span class=p>,</span> <span class=n>group</span><span class=o>=</span><span class=n>group</span><span class=p>,</span> <span class=n>name</span><span class=o>=</span><span class=s1>&#39;Rule_ID&#39;</span><span class=p>,</span> <span class=n>value</span><span class=o>=</span><span class=n>rule_use</span><span class=o>.</span><span class=n>rule_id</span><span class=p>,</span> <span class=n>ns</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_ns</span><span class=p>,</span> <span class=n>class_</span><span class=o>=</span><span class=s1>&#39;scc_check_name_id&#39;</span>
@@ -858,14 +848,14 @@
                 <span class=n>name</span><span class=o>=</span><span class=s1>&#39;Check_ID_Benchmark&#39;</span><span class=p>,</span>
                 <span class=n>value</span><span class=o>=</span><span class=n>rule_use</span><span class=o>.</span><span class=n>check_id_benchmark</span><span class=p>,</span>
                 <span class=n>ns</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_ns</span><span class=p>,</span>
-                <span class=n>class_</span><span class=o>=</span><span class=s1>&#39;scc_predefined_profile&#39;</span>
+                <span class=n>class_</span><span class=o>=</span><span class=s1>&#39;scc_predefined_profile&#39;</span><span class=p>,</span>
             <span class=p>)</span>
             <span class=bp>self</span><span class=o>.</span><span class=n>_property_accounting</span><span class=o>.</span><span class=n>count_property</span><span class=p>(</span>
                 <span class=n>group</span><span class=o>=</span><span class=n>group</span><span class=p>,</span>
                 <span class=n>name</span><span class=o>=</span><span class=s1>&#39;Check_ID_Version&#39;</span><span class=p>,</span>
                 <span class=n>value</span><span class=o>=</span><span class=n>rule_use</span><span class=o>.</span><span class=n>check_id_version</span><span class=p>,</span>
                 <span class=n>ns</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_ns</span><span class=p>,</span>
-                <span class=n>class_</span><span class=o>=</span><span class=s1>&#39;scc_predefined_profile_version&#39;</span>
+                <span class=n>class_</span><span class=o>=</span><span class=s1>&#39;scc_predefined_profile_version&#39;</span><span class=p>,</span>
             <span class=p>)</span>
             <span class=bp>self</span><span class=o>.</span><span class=n>_property_accounting</span><span class=o>.</span><span class=n>count_property</span><span class=p>(</span>
                 <span class=n>group</span><span class=o>=</span><span class=n>group</span><span class=p>,</span> <span class=n>name</span><span class=o>=</span><span class=s1>&#39;Check_ID_Level&#39;</span><span class=p>,</span> <span class=n>value</span><span class=o>=</span><span class=n>rule_use</span><span class=o>.</span><span class=n>check_id_level</span><span class=p>,</span> <span class=n>ns</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_ns</span>
@@ -900,7 +890,7 @@
                 <span class=n>uuid</span><span class=o>=</span><span class=n>_uuid_observation</span><span class=p>(),</span>
                 <span class=n>description</span><span class=o>=</span><span class=n>rule_use</span><span class=o>.</span><span class=n>rule_id</span><span class=p>,</span>
                 <span class=n>methods</span><span class=o>=</span><span class=p>[</span><span class=s1>&#39;TEST-AUTOMATED&#39;</span><span class=p>],</span>
-                <span class=n>collected</span><span class=o>=</span><span class=n>rule_use</span><span class=o>.</span><span class=n>collected</span>
+                <span class=n>collected</span><span class=o>=</span><span class=n>rule_use</span><span class=o>.</span><span class=n>collected</span><span class=p>,</span>
             <span class=p>)</span>
             <span class=n>subject_uuid</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_inventory_ref</span><span class=p>(</span><span class=n>rule_use</span><span class=p>)</span>
             <span class=n>subject_reference</span> <span class=o>=</span> <span class=n>SubjectReference</span><span class=p>(</span><span class=n>subject_uuid</span><span class=o>=</span><span class=n>subject_uuid</span><span class=p>,</span> <span class=nb>type</span><span class=o>=</span><span class=s1>&#39;inventory-item&#39;</span><span class=p>)</span>
@@ -1042,7 +1032,7 @@
                 <span class=n>end</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_timestamp</span><span class=p>,</span>
                 <span class=n>reviewed_controls</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>reviewed_controls</span><span class=p>,</span>
                 <span class=n>local_definitions</span><span class=o>=</span><span class=n>local_definitions</span><span class=p>,</span>
-                <span class=n>observations</span><span class=o>=</span><span class=n>observations</span>
+                <span class=n>observations</span><span class=o>=</span><span class=n>observations</span><span class=p>,</span>
             <span class=p>)</span>
             <span class=n>component_ref</span> <span class=o>=</span> <span class=n>component</span><span class=o>.</span><span class=n>uuid</span>
             <span class=n>result</span><span class=o>.</span><span class=n>props</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_properties</span><span class=p>(</span><span class=n>component_ref</span><span class=p>)</span>
@@ -1094,7 +1084,7 @@
     <span class=n>cpus_min</span><span class=p>:</span> <span class=nb>int</span> <span class=o>=</span> <span class=mi>1</span><span class=p>,</span>
     <span class=n>checking</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>,</span>
     <span class=n>caching</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>True</span><span class=p>,</span>
-    <span class=n>aggregate</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>True</span>
+    <span class=n>aggregate</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>True</span><span class=p>,</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Initialize given specified args.&quot;&quot;&quot;</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_rule_use_list</span> <span class=o>=</span> <span class=n>rule_use_list</span>
@@ -1276,7 +1266,7 @@
             <span class=bp>self</span><span class=o>.</span><span class=n>cpus_min</span><span class=p>,</span>
             <span class=bp>self</span><span class=o>.</span><span class=n>checking</span><span class=p>,</span>
             <span class=bp>self</span><span class=o>.</span><span class=n>caching</span><span class=p>,</span>
-            <span class=bp>self</span><span class=o>.</span><span class=n>aggregate</span>
+            <span class=bp>self</span><span class=o>.</span><span class=n>aggregate</span><span class=p>,</span>
         <span class=p>)</span>
         <span class=n>results</span><span class=o>.</span><span class=n>__root__</span> <span class=o>=</span> <span class=n>tanium_oscal_factory</span><span class=o>.</span><span class=n>results</span>
         <span class=n>ts1</span> <span class=o>=</span> <span class=n>datetime</span><span class=o>.</span><span class=n>datetime</span><span class=o>.</span><span class=n>now</span><span class=p>()</span>
@@ -1329,7 +1319,7 @@
         <span class=bp>self</span><span class=o>.</span><span class=n>cpus_min</span><span class=p>,</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>checking</span><span class=p>,</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>caching</span><span class=p>,</span>
-        <span class=bp>self</span><span class=o>.</span><span class=n>aggregate</span>
+        <span class=bp>self</span><span class=o>.</span><span class=n>aggregate</span><span class=p>,</span>
     <span class=p>)</span>
     <span class=n>results</span><span class=o>.</span><span class=n>__root__</span> <span class=o>=</span> <span class=n>tanium_oscal_factory</span><span class=o>.</span><span class=n>results</span>
     <span class=n>ts1</span> <span class=o>=</span> <span class=n>datetime</span><span class=o>.</span><span class=n>datetime</span><span class=o>.</span><span class=n>now</span><span class=p>()</span>

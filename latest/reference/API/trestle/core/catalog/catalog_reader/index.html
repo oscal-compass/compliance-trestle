@@ -399,10 +399,7 @@
 <span class=normal>437</span>
 <span class=normal>438</span>
 <span class=normal>439</span>
-<span class=normal>440</span>
-<span class=normal>441</span>
-<span class=normal>442</span>
-<span class=normal>443</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>CatalogReader</span><span class=p>():</span>
+<span class=normal>440</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>CatalogReader</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    Catalog reader.</span>
 
@@ -420,7 +417,7 @@
         <span class=n>required_sections_list</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>],</span>
         <span class=n>label_map</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]],</span>
         <span class=n>sections_dict</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>],</span>
-        <span class=n>write_mode</span><span class=p>:</span> <span class=nb>bool</span>
+        <span class=n>write_mode</span><span class=p>:</span> <span class=nb>bool</span><span class=p>,</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Tuple</span><span class=p>[</span><span class=n>List</span><span class=p>[</span><span class=n>prof</span><span class=o>.</span><span class=n>Alter</span><span class=p>],</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Any</span><span class=p>],</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]]:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Read all markdown controls and return list of alters plus control param dict and param sort map.&quot;&quot;&quot;</span>
         <span class=n>alters_map</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>prof</span><span class=o>.</span><span class=n>Alter</span><span class=p>]</span> <span class=o>=</span> <span class=p>{}</span>
@@ -429,11 +426,7 @@
         <span class=k>for</span> <span class=n>group_path</span> <span class=ow>in</span> <span class=n>CatalogInterface</span><span class=o>.</span><span class=n>_get_group_ids_and_dirs</span><span class=p>(</span><span class=n>md_path</span><span class=p>)</span><span class=o>.</span><span class=n>values</span><span class=p>():</span>
             <span class=k>for</span> <span class=n>control_file</span> <span class=ow>in</span> <span class=n>group_path</span><span class=o>.</span><span class=n>glob</span><span class=p>(</span><span class=s1>&#39;*.md&#39;</span><span class=p>):</span>
                 <span class=n>sort_id</span><span class=p>,</span> <span class=n>control_alters</span><span class=p>,</span> <span class=n>control_param_dict</span> <span class=o>=</span> <span class=n>ControlReader</span><span class=o>.</span><span class=n>read_editable_content</span><span class=p>(</span>
-                    <span class=n>control_file</span><span class=p>,</span>
-                    <span class=n>required_sections_list</span><span class=p>,</span>
-                    <span class=n>label_map</span><span class=p>,</span>
-                    <span class=n>sections_dict</span><span class=p>,</span>
-                    <span class=n>write_mode</span>
+                    <span class=n>control_file</span><span class=p>,</span> <span class=n>required_sections_list</span><span class=p>,</span> <span class=n>label_map</span><span class=p>,</span> <span class=n>sections_dict</span><span class=p>,</span> <span class=n>write_mode</span>
                 <span class=p>)</span>
                 <span class=n>alters_map</span><span class=p>[</span><span class=n>sort_id</span><span class=p>]</span> <span class=o>=</span> <span class=n>control_alters</span>
                 <span class=k>for</span> <span class=n>param_id</span><span class=p>,</span> <span class=n>param_dict</span> <span class=ow>in</span> <span class=n>control_param_dict</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
@@ -618,8 +611,9 @@
             <span class=k>return</span> <span class=n>by_comp</span>
 
     <span class=nd>@staticmethod</span>
-    <span class=k>def</span><span class=w> </span><span class=nf>_read_comp_info_from_md</span><span class=p>(</span><span class=n>control_file_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span>
-                                <span class=n>context</span><span class=p>:</span> <span class=n>ControlContext</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Tuple</span><span class=p>[</span><span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Any</span><span class=p>],</span> <span class=n>CompDict</span><span class=p>]:</span>
+    <span class=k>def</span><span class=w> </span><span class=nf>_read_comp_info_from_md</span><span class=p>(</span>
+        <span class=n>control_file_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>context</span><span class=p>:</span> <span class=n>ControlContext</span>
+    <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Tuple</span><span class=p>[</span><span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Any</span><span class=p>],</span> <span class=n>CompDict</span><span class=p>]:</span>
         <span class=n>md_header</span> <span class=o>=</span> <span class=p>{}</span>
         <span class=n>comp_dict</span> <span class=o>=</span> <span class=p>{}</span>
         <span class=k>if</span> <span class=n>control_file_path</span><span class=o>.</span><span class=n>exists</span><span class=p>():</span>
@@ -632,7 +626,7 @@
         <span class=n>control_id</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
         <span class=n>gen_comp</span><span class=p>:</span> <span class=n>generic</span><span class=o>.</span><span class=n>GenericComponent</span><span class=p>,</span>
         <span class=n>comp_info_dict</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>ComponentImpInfo</span><span class=p>],</span>
-        <span class=n>part_id_map_by_label</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]]</span>
+        <span class=n>part_id_map_by_label</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]],</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
         <span class=c1># get imp req for control and find one with by_comp, creating if needed</span>
         <span class=n>imp_req</span> <span class=o>=</span> <span class=n>CatalogReader</span><span class=o>.</span><span class=n>_get_imp_req_for_control</span><span class=p>(</span><span class=n>ssp</span><span class=p>,</span> <span class=n>control_id</span><span class=p>)</span>
@@ -650,7 +644,7 @@
         <span class=n>rule_id</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
         <span class=n>param_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
         <span class=n>param_values</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>],</span>
-        <span class=n>comp_uuid</span><span class=p>:</span> <span class=nb>str</span>
+        <span class=n>comp_uuid</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
         <span class=k>for</span> <span class=n>by_comp</span> <span class=ow>in</span> <span class=n>as_list</span><span class=p>(</span><span class=n>item</span><span class=o>.</span><span class=n>by_components</span><span class=p>):</span>
             <span class=k>if</span> <span class=n>by_comp</span><span class=o>.</span><span class=n>component_uuid</span> <span class=o>==</span> <span class=n>comp_uuid</span><span class=p>:</span>
@@ -673,7 +667,7 @@
         <span class=n>param_dict</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>],</span>
         <span class=n>comp_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
         <span class=n>md_header</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]],</span>
-        <span class=n>comp_uuid</span><span class=p>:</span> <span class=nb>str</span>
+        <span class=n>comp_uuid</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
     <span class=p>):</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Insert the param in the by_comps that are supported by the rule.&quot;&quot;&quot;</span>
         <span class=c1># given param name find rule_id in comp name header entry</span>
@@ -707,7 +701,7 @@
         <span class=n>control_id</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
         <span class=n>part_id_map_by_label</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]],</span>
         <span class=n>yaml_header</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Any</span><span class=p>],</span>
-        <span class=n>imp_req</span><span class=p>:</span> <span class=n>ossp</span><span class=o>.</span><span class=n>ImplementedRequirement</span>
+        <span class=n>imp_req</span><span class=p>:</span> <span class=n>ossp</span><span class=o>.</span><span class=n>ImplementedRequirement</span><span class=p>,</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Add the props from the yaml header to the imp_req.&quot;&quot;&quot;</span>
         <span class=n>control_part_id_map</span> <span class=o>=</span> <span class=n>part_id_map_by_label</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=n>control_id</span><span class=p>,</span> <span class=p>{})</span>
@@ -733,7 +727,7 @@
         <span class=n>control_id</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
         <span class=n>comp_dict</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>generic</span><span class=o>.</span><span class=n>GenericComponent</span><span class=p>],</span>
         <span class=n>part_label_to_id_map</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]],</span>
-        <span class=n>md_header</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]]</span>
+        <span class=n>md_header</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]],</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Update the ssp with info from the header of an ssp control markdown file.&quot;&quot;&quot;</span>
         <span class=c1># rules param vals go in bycomps of imp_req</span>
@@ -760,7 +754,7 @@
         <span class=n>ssp</span><span class=p>:</span> <span class=n>ossp</span><span class=o>.</span><span class=n>SystemSecurityPlan</span><span class=p>,</span>
         <span class=n>comp_dict</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>generic</span><span class=o>.</span><span class=n>GenericComponent</span><span class=p>],</span>
         <span class=n>part_id_map_by_label</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]],</span>
-        <span class=n>context</span><span class=p>:</span> <span class=n>ControlContext</span>
+        <span class=n>context</span><span class=p>:</span> <span class=n>ControlContext</span><span class=p>,</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>        Read md content into the ssp.</span>
@@ -812,64 +806,60 @@
 <span class=normal>49</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>catalog_interface</span><span class=p>:</span> <span class=n>CatalogInterface</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Initialize catalog reader.&quot;&quot;&quot;</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_catalog_interface</span> <span class=o>=</span> <span class=n>catalog_interface</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.catalog.catalog_reader.CatalogReader.read_additional_content class="doc doc-heading"> <code class="highlight language-python"><span class=n>read_additional_content</span><span class=p>(</span><span class=n>md_path</span><span class=p>,</span> <span class=n>required_sections_list</span><span class=p>,</span> <span class=n>label_map</span><span class=p>,</span> <span class=n>sections_dict</span><span class=p>,</span> <span class=n>write_mode</span><span class=p>)</span></code> <a href=#trestle.core.catalog.catalog_reader.CatalogReader.read_additional_content class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Read all markdown controls and return list of alters plus control param dict and param sort map.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/catalog/catalog_reader.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 51</span>
-<span class=normal> 52</span>
-<span class=normal> 53</span>
-<span class=normal> 54</span>
-<span class=normal> 55</span>
-<span class=normal> 56</span>
-<span class=normal> 57</span>
-<span class=normal> 58</span>
-<span class=normal> 59</span>
-<span class=normal> 60</span>
-<span class=normal> 61</span>
-<span class=normal> 62</span>
-<span class=normal> 63</span>
-<span class=normal> 64</span>
-<span class=normal> 65</span>
-<span class=normal> 66</span>
-<span class=normal> 67</span>
-<span class=normal> 68</span>
-<span class=normal> 69</span>
-<span class=normal> 70</span>
-<span class=normal> 71</span>
-<span class=normal> 72</span>
-<span class=normal> 73</span>
-<span class=normal> 74</span>
-<span class=normal> 75</span>
-<span class=normal> 76</span>
-<span class=normal> 77</span>
-<span class=normal> 78</span>
-<span class=normal> 79</span>
-<span class=normal> 80</span>
-<span class=normal> 81</span>
-<span class=normal> 82</span>
-<span class=normal> 83</span>
-<span class=normal> 84</span>
-<span class=normal> 85</span>
-<span class=normal> 86</span>
-<span class=normal> 87</span>
-<span class=normal> 88</span>
-<span class=normal> 89</span>
-<span class=normal> 90</span>
-<span class=normal> 91</span>
-<span class=normal> 92</span>
-<span class=normal> 93</span>
-<span class=normal> 94</span>
-<span class=normal> 95</span>
-<span class=normal> 96</span>
-<span class=normal> 97</span>
-<span class=normal> 98</span>
-<span class=normal> 99</span>
-<span class=normal>100</span>
-<span class=normal>101</span>
-<span class=normal>102</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>read_additional_content</span><span class=p>(</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.catalog.catalog_reader.CatalogReader.read_additional_content class="doc doc-heading"> <code class="highlight language-python"><span class=n>read_additional_content</span><span class=p>(</span><span class=n>md_path</span><span class=p>,</span> <span class=n>required_sections_list</span><span class=p>,</span> <span class=n>label_map</span><span class=p>,</span> <span class=n>sections_dict</span><span class=p>,</span> <span class=n>write_mode</span><span class=p>)</span></code> <a href=#trestle.core.catalog.catalog_reader.CatalogReader.read_additional_content class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Read all markdown controls and return list of alters plus control param dict and param sort map.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/catalog/catalog_reader.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>51</span>
+<span class=normal>52</span>
+<span class=normal>53</span>
+<span class=normal>54</span>
+<span class=normal>55</span>
+<span class=normal>56</span>
+<span class=normal>57</span>
+<span class=normal>58</span>
+<span class=normal>59</span>
+<span class=normal>60</span>
+<span class=normal>61</span>
+<span class=normal>62</span>
+<span class=normal>63</span>
+<span class=normal>64</span>
+<span class=normal>65</span>
+<span class=normal>66</span>
+<span class=normal>67</span>
+<span class=normal>68</span>
+<span class=normal>69</span>
+<span class=normal>70</span>
+<span class=normal>71</span>
+<span class=normal>72</span>
+<span class=normal>73</span>
+<span class=normal>74</span>
+<span class=normal>75</span>
+<span class=normal>76</span>
+<span class=normal>77</span>
+<span class=normal>78</span>
+<span class=normal>79</span>
+<span class=normal>80</span>
+<span class=normal>81</span>
+<span class=normal>82</span>
+<span class=normal>83</span>
+<span class=normal>84</span>
+<span class=normal>85</span>
+<span class=normal>86</span>
+<span class=normal>87</span>
+<span class=normal>88</span>
+<span class=normal>89</span>
+<span class=normal>90</span>
+<span class=normal>91</span>
+<span class=normal>92</span>
+<span class=normal>93</span>
+<span class=normal>94</span>
+<span class=normal>95</span>
+<span class=normal>96</span>
+<span class=normal>97</span>
+<span class=normal>98</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>read_additional_content</span><span class=p>(</span>
     <span class=bp>self</span><span class=p>,</span>
     <span class=n>md_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span>
     <span class=n>required_sections_list</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>],</span>
     <span class=n>label_map</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]],</span>
     <span class=n>sections_dict</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>],</span>
-    <span class=n>write_mode</span><span class=p>:</span> <span class=nb>bool</span>
+    <span class=n>write_mode</span><span class=p>:</span> <span class=nb>bool</span><span class=p>,</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Tuple</span><span class=p>[</span><span class=n>List</span><span class=p>[</span><span class=n>prof</span><span class=o>.</span><span class=n>Alter</span><span class=p>],</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Any</span><span class=p>],</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Read all markdown controls and return list of alters plus control param dict and param sort map.&quot;&quot;&quot;</span>
     <span class=n>alters_map</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>prof</span><span class=o>.</span><span class=n>Alter</span><span class=p>]</span> <span class=o>=</span> <span class=p>{}</span>
@@ -878,11 +868,7 @@
     <span class=k>for</span> <span class=n>group_path</span> <span class=ow>in</span> <span class=n>CatalogInterface</span><span class=o>.</span><span class=n>_get_group_ids_and_dirs</span><span class=p>(</span><span class=n>md_path</span><span class=p>)</span><span class=o>.</span><span class=n>values</span><span class=p>():</span>
         <span class=k>for</span> <span class=n>control_file</span> <span class=ow>in</span> <span class=n>group_path</span><span class=o>.</span><span class=n>glob</span><span class=p>(</span><span class=s1>&#39;*.md&#39;</span><span class=p>):</span>
             <span class=n>sort_id</span><span class=p>,</span> <span class=n>control_alters</span><span class=p>,</span> <span class=n>control_param_dict</span> <span class=o>=</span> <span class=n>ControlReader</span><span class=o>.</span><span class=n>read_editable_content</span><span class=p>(</span>
-                <span class=n>control_file</span><span class=p>,</span>
-                <span class=n>required_sections_list</span><span class=p>,</span>
-                <span class=n>label_map</span><span class=p>,</span>
-                <span class=n>sections_dict</span><span class=p>,</span>
-                <span class=n>write_mode</span>
+                <span class=n>control_file</span><span class=p>,</span> <span class=n>required_sections_list</span><span class=p>,</span> <span class=n>label_map</span><span class=p>,</span> <span class=n>sections_dict</span><span class=p>,</span> <span class=n>write_mode</span>
             <span class=p>)</span>
             <span class=n>alters_map</span><span class=p>[</span><span class=n>sort_id</span><span class=p>]</span> <span class=o>=</span> <span class=n>control_alters</span>
             <span class=k>for</span> <span class=n>param_id</span><span class=p>,</span> <span class=n>param_dict</span> <span class=ow>in</span> <span class=n>control_param_dict</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
@@ -915,7 +901,11 @@
     <span class=k>for</span> <span class=n>key</span> <span class=ow>in</span> <span class=nb>sorted</span><span class=p>(</span><span class=n>alters_map</span><span class=o>.</span><span class=n>keys</span><span class=p>()):</span>
         <span class=n>new_alters</span><span class=o>.</span><span class=n>extend</span><span class=p>(</span><span class=n>alters_map</span><span class=p>[</span><span class=n>key</span><span class=p>])</span>
     <span class=k>return</span> <span class=n>new_alters</span><span class=p>,</span> <span class=n>final_param_dict</span><span class=p>,</span> <span class=n>param_sort_map</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.catalog.catalog_reader.CatalogReader.read_catalog_from_markdown class="doc doc-heading"> <code class="highlight language-python"><span class=n>read_catalog_from_markdown</span><span class=p>(</span><span class=n>md_path</span><span class=p>,</span> <span class=n>set_parameters_flag</span><span class=p>)</span></code> <a href=#trestle.core.catalog.catalog_reader.CatalogReader.read_catalog_from_markdown class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Read the groups and catalog controls from the given directory.</p> <p>This will overwrite the existing groups and controls in the catalog.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/catalog/catalog_reader.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>104</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.catalog.catalog_reader.CatalogReader.read_catalog_from_markdown class="doc doc-heading"> <code class="highlight language-python"><span class=n>read_catalog_from_markdown</span><span class=p>(</span><span class=n>md_path</span><span class=p>,</span> <span class=n>set_parameters_flag</span><span class=p>)</span></code> <a href=#trestle.core.catalog.catalog_reader.CatalogReader.read_catalog_from_markdown class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Read the groups and catalog controls from the given directory.</p> <p>This will overwrite the existing groups and controls in the catalog.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/catalog/catalog_reader.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>100</span>
+<span class=normal>101</span>
+<span class=normal>102</span>
+<span class=normal>103</span>
+<span class=normal>104</span>
 <span class=normal>105</span>
 <span class=normal>106</span>
 <span class=normal>107</span>
@@ -954,11 +944,7 @@
 <span class=normal>140</span>
 <span class=normal>141</span>
 <span class=normal>142</span>
-<span class=normal>143</span>
-<span class=normal>144</span>
-<span class=normal>145</span>
-<span class=normal>146</span>
-<span class=normal>147</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>read_catalog_from_markdown</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>md_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>set_parameters_flag</span><span class=p>:</span> <span class=nb>bool</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>cat</span><span class=o>.</span><span class=n>Catalog</span><span class=p>:</span>
+<span class=normal>143</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>read_catalog_from_markdown</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>md_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>set_parameters_flag</span><span class=p>:</span> <span class=nb>bool</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>cat</span><span class=o>.</span><span class=n>Catalog</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    Read the groups and catalog controls from the given directory.</span>
 
@@ -1007,7 +993,11 @@
 
   
       dataclass
-   (trestle.core.control_context.ControlContext)" href=../../control_context/#trestle.core.control_context.ControlContext>ControlContext</a></code> </td> <td> <div class=doc-md-description> <p>Context for the operation</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code><span title=typing.List>List</span>[<a class="autorefs autorefs-internal" title="ImplementedRequirement (trestle.oscal.component.ImplementedRequirement)" href=../../../oscal/component/#trestle.oscal.component.ImplementedRequirement>ImplementedRequirement</a>]</code> </td> <td> <div class=doc-md-description> <p>List of implemented requirements gathered from each control</p> </div> </td> </tr> </tbody> </table> <details class=notes open> <summary>Notes</summary> <p>As the controls are read into the catalog the needed components are added if not already available. avail_comps provides the mapping of component name to the actual component. This is only used during component assemble and only for updating one component</p> </details> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/catalog/catalog_reader.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>149</span>
+   (trestle.core.control_context.ControlContext)" href=../../control_context/#trestle.core.control_context.ControlContext>ControlContext</a></code> </td> <td> <div class=doc-md-description> <p>Context for the operation</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code><span title=typing.List>List</span>[<a class="autorefs autorefs-internal" title="ImplementedRequirement (trestle.oscal.component.ImplementedRequirement)" href=../../../oscal/component/#trestle.oscal.component.ImplementedRequirement>ImplementedRequirement</a>]</code> </td> <td> <div class=doc-md-description> <p>List of implemented requirements gathered from each control</p> </div> </td> </tr> </tbody> </table> <details class=notes open> <summary>Notes</summary> <p>As the controls are read into the catalog the needed components are added if not already available. avail_comps provides the mapping of component name to the actual component. This is only used during component assemble and only for updating one component</p> </details> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/catalog/catalog_reader.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>145</span>
+<span class=normal>146</span>
+<span class=normal>147</span>
+<span class=normal>148</span>
+<span class=normal>149</span>
 <span class=normal>150</span>
 <span class=normal>151</span>
 <span class=normal>152</span>
@@ -1024,11 +1014,7 @@
 <span class=normal>163</span>
 <span class=normal>164</span>
 <span class=normal>165</span>
-<span class=normal>166</span>
-<span class=normal>167</span>
-<span class=normal>168</span>
-<span class=normal>169</span>
-<span class=normal>170</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+<span class=normal>166</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>read_catalog_imp_reqs</span><span class=p>(</span><span class=n>md_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>context</span><span class=p>:</span> <span class=n>ControlContext</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>comp</span><span class=o>.</span><span class=n>ImplementedRequirement</span><span class=p>]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Read the full set of control implemented requirements from markdown.</span>
 
@@ -1055,7 +1041,10 @@
 
   
       dataclass
-   (trestle.core.control_context.ControlContext)" href=../../control_context/#trestle.core.control_context.ControlContext>ControlContext</a></code> </td> <td> <div class=doc-md-description> <p>control context for the procedure</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=notes open> <summary>Notes</summary> <p>The ssp should already contain info from the comp defs and this fills in selected content from md. The only content read from md is: ssp values in the comp def rules param vals of the header ssp values in the set-params of the header all prose for implementaton responses all status values ssp has components but may not have all needed imp reqs and bycomps know controlid and comp name in comp_dict</p> </details> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/catalog/catalog_reader.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>391</span>
+   (trestle.core.control_context.ControlContext)" href=../../control_context/#trestle.core.control_context.ControlContext>ControlContext</a></code> </td> <td> <div class=doc-md-description> <p>control context for the procedure</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=notes open> <summary>Notes</summary> <p>The ssp should already contain info from the comp defs and this fills in selected content from md. The only content read from md is: ssp values in the comp def rules param vals of the header ssp values in the set-params of the header all prose for implementaton responses all status values ssp has components but may not have all needed imp reqs and bycomps know controlid and comp name in comp_dict</p> </details> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/catalog/catalog_reader.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>388</span>
+<span class=normal>389</span>
+<span class=normal>390</span>
+<span class=normal>391</span>
 <span class=normal>392</span>
 <span class=normal>393</span>
 <span class=normal>394</span>
@@ -1104,16 +1093,13 @@
 <span class=normal>437</span>
 <span class=normal>438</span>
 <span class=normal>439</span>
-<span class=normal>440</span>
-<span class=normal>441</span>
-<span class=normal>442</span>
-<span class=normal>443</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+<span class=normal>440</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>read_ssp_md_content</span><span class=p>(</span>
     <span class=n>md_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span>
     <span class=n>ssp</span><span class=p>:</span> <span class=n>ossp</span><span class=o>.</span><span class=n>SystemSecurityPlan</span><span class=p>,</span>
     <span class=n>comp_dict</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>generic</span><span class=o>.</span><span class=n>GenericComponent</span><span class=p>],</span>
     <span class=n>part_id_map_by_label</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]],</span>
-    <span class=n>context</span><span class=p>:</span> <span class=n>ControlContext</span>
+    <span class=n>context</span><span class=p>:</span> <span class=n>ControlContext</span><span class=p>,</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    Read md content into the ssp.</span>

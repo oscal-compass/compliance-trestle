@@ -19,8 +19,7 @@
 
   
       instance-attribute
-   (trestle.common.err.TrestleError.msg)" href=#trestle.common.err.TrestleError.msg>msg</a></code></td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>Human readable string describing the exception.</p> </div> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/err.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>23</span>
-<span class=normal>24</span>
+   (trestle.common.err.TrestleError.msg)" href=#trestle.common.err.TrestleError.msg>msg</a></code></td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>Human readable string describing the exception.</p> </div> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/err.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>24</span>
 <span class=normal>25</span>
 <span class=normal>26</span>
 <span class=normal>27</span>
@@ -38,7 +37,8 @@
 <span class=normal>39</span>
 <span class=normal>40</span>
 <span class=normal>41</span>
-<span class=normal>42</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>TrestleError</span><span class=p>(</span><span class=ne>RuntimeError</span><span class=p>):</span>
+<span class=normal>42</span>
+<span class=normal>43</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>TrestleError</span><span class=p>(</span><span class=ne>RuntimeError</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    General framework (non-application) related errors.</span>
 
@@ -58,14 +58,14 @@
     <span class=k>def</span><span class=w> </span><span class=fm>__str__</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Return Trestle error message if asked for a string.&quot;&quot;&quot;</span>
         <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>msg</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.common.err.TrestleError-attributes>Attributes<a href=#trestle.common.err.TrestleError-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.common.err.TrestleError.msg class="doc doc-heading"> <code class="highlight language-python"><span class=n>msg</span> <span class=o>=</span> <span class=n>msg</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.common.err.TrestleError.msg class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.common.err.TrestleError-functions>Functions<a href=#trestle.common.err.TrestleError-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.common.err.TrestleError.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>msg</span><span class=p>)</span></code> <a href=#trestle.common.err.TrestleError.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Intialization for TresleError.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>msg</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>The error message</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/err.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>31</span>
-<span class=normal>32</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.common.err.TrestleError-attributes>Attributes<a href=#trestle.common.err.TrestleError-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.common.err.TrestleError.msg class="doc doc-heading"> <code class="highlight language-python"><span class=n>msg</span> <span class=o>=</span> <span class=n>msg</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.common.err.TrestleError.msg class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.common.err.TrestleError-functions>Functions<a href=#trestle.common.err.TrestleError-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.common.err.TrestleError.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>msg</span><span class=p>)</span></code> <a href=#trestle.common.err.TrestleError.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Intialization for TresleError.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>msg</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>The error message</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/err.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>32</span>
 <span class=normal>33</span>
 <span class=normal>34</span>
 <span class=normal>35</span>
 <span class=normal>36</span>
 <span class=normal>37</span>
-<span class=normal>38</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>msg</span><span class=p>:</span> <span class=nb>str</span><span class=p>):</span>
+<span class=normal>38</span>
+<span class=normal>39</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>msg</span><span class=p>:</span> <span class=nb>str</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Intialization for TresleError.</span>
 
 <span class=sd>    Args:</span>
@@ -73,9 +73,9 @@
 <span class=sd>    &quot;&quot;&quot;</span>
     <span class=ne>RuntimeError</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>msg</span> <span class=o>=</span> <span class=n>msg</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.common.err.TrestleError.__str__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__str__</span><span class=p>()</span></code> <a href=#trestle.common.err.TrestleError.__str__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Return Trestle error message if asked for a string.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/err.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>40</span>
-<span class=normal>41</span>
-<span class=normal>42</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__str__</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.common.err.TrestleError.__str__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__str__</span><span class=p>()</span></code> <a href=#trestle.common.err.TrestleError.__str__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Return Trestle error message if asked for a string.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/err.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>41</span>
+<span class=normal>42</span>
+<span class=normal>43</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__str__</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Return Trestle error message if asked for a string.&quot;&quot;&quot;</span>
     <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>msg</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> </div> </div> </div> <div class="doc doc-object doc-class"> <h4 id=trestle.common.err.TrestleIncorrectArgsError class="doc doc-heading"> <code>TrestleIncorrectArgsError</code> <a href=#trestle.common.err.TrestleIncorrectArgsError class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p class="doc doc-class-bases"> Bases: <code><a class="autorefs autorefs-internal" title="TrestleError (trestle.common.err.TrestleError)" href=#trestle.common.err.TrestleError>TrestleError</a></code></p> <div style="display: none"> <a class="autorefs autorefs-internal" title="TrestleIncorrectArgsError (trestle.common.err.TrestleIncorrectArgsError)" href=#trestle.common.err.TrestleIncorrectArgsError id=mermaid-link-trestle.common.err.TrestleIncorrectArgsError></a> <a class="autorefs autorefs-internal" title="TrestleError (trestle.common.err.TrestleError)" href=#trestle.common.err.TrestleError id=mermaid-link-trestle.common.err.TrestleError></a> </div> <pre class=mermaid><code id=mermaid-diagram-trestle.common.err.TrestleIncorrectArgsError>
@@ -99,8 +99,7 @@
                   return '';
                 }
               });
-            </script> <p>General error for incorrect args passed to Trestle command.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/err.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>76</span>
-<span class=normal>77</span>
+            </script> <p>General error for incorrect args passed to Trestle command.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/err.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>77</span>
 <span class=normal>78</span>
 <span class=normal>79</span>
 <span class=normal>80</span>
@@ -109,7 +108,8 @@
 <span class=normal>83</span>
 <span class=normal>84</span>
 <span class=normal>85</span>
-<span class=normal>86</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>TrestleIncorrectArgsError</span><span class=p>(</span><span class=n>TrestleError</span><span class=p>):</span>
+<span class=normal>86</span>
+<span class=normal>87</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>TrestleIncorrectArgsError</span><span class=p>(</span><span class=n>TrestleError</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;General error for incorrect args passed to Trestle command.&quot;&quot;&quot;</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>msg</span><span class=p>:</span> <span class=nb>str</span><span class=p>):</span>
@@ -120,14 +120,14 @@
 <span class=sd>            msg (str): The error message</span>
 <span class=sd>        &quot;&quot;&quot;</span>
         <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>msg</span><span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.common.err.TrestleIncorrectArgsError-functions>Functions<a href=#trestle.common.err.TrestleIncorrectArgsError-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.common.err.TrestleIncorrectArgsError.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>msg</span><span class=p>)</span></code> <a href=#trestle.common.err.TrestleIncorrectArgsError.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize TrestleIncorrectArgsError.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>msg</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>The error message</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/err.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>79</span>
-<span class=normal>80</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.common.err.TrestleIncorrectArgsError-functions>Functions<a href=#trestle.common.err.TrestleIncorrectArgsError-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.common.err.TrestleIncorrectArgsError.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>msg</span><span class=p>)</span></code> <a href=#trestle.common.err.TrestleIncorrectArgsError.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize TrestleIncorrectArgsError.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>msg</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>The error message</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/err.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>80</span>
 <span class=normal>81</span>
 <span class=normal>82</span>
 <span class=normal>83</span>
 <span class=normal>84</span>
 <span class=normal>85</span>
-<span class=normal>86</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>msg</span><span class=p>:</span> <span class=nb>str</span><span class=p>):</span>
+<span class=normal>86</span>
+<span class=normal>87</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>msg</span><span class=p>:</span> <span class=nb>str</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    Initialize TrestleIncorrectArgsError.</span>
 
@@ -160,8 +160,7 @@
 
   
       instance-attribute
-   (trestle.common.err.TrestleNotFoundError.msg)" href=#trestle.common.err.TrestleError.msg>msg</a></code></td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>Human readable string describing the exception.</p> </div> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/err.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>45</span>
-<span class=normal>46</span>
+   (trestle.common.err.TrestleNotFoundError.msg)" href=#trestle.common.err.TrestleError.msg>msg</a></code></td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>Human readable string describing the exception.</p> </div> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/err.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>46</span>
 <span class=normal>47</span>
 <span class=normal>48</span>
 <span class=normal>49</span>
@@ -175,7 +174,8 @@
 <span class=normal>57</span>
 <span class=normal>58</span>
 <span class=normal>59</span>
-<span class=normal>60</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>TrestleNotFoundError</span><span class=p>(</span><span class=n>TrestleError</span><span class=p>):</span>
+<span class=normal>60</span>
+<span class=normal>61</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>TrestleNotFoundError</span><span class=p>(</span><span class=n>TrestleError</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    General framework related not found error.</span>
 
@@ -191,14 +191,14 @@
 <span class=sd>            msg: The error message</span>
 <span class=sd>        &quot;&quot;&quot;</span>
         <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>msg</span><span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.common.err.TrestleNotFoundError-functions>Functions<a href=#trestle.common.err.TrestleNotFoundError-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.common.err.TrestleNotFoundError.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>msg</span><span class=p>)</span></code> <a href=#trestle.common.err.TrestleNotFoundError.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Intialize TresleNotFoundError.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>msg</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>The error message</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/err.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>53</span>
-<span class=normal>54</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.common.err.TrestleNotFoundError-functions>Functions<a href=#trestle.common.err.TrestleNotFoundError-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.common.err.TrestleNotFoundError.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>msg</span><span class=p>)</span></code> <a href=#trestle.common.err.TrestleNotFoundError.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Intialize TresleNotFoundError.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>msg</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>The error message</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/err.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>54</span>
 <span class=normal>55</span>
 <span class=normal>56</span>
 <span class=normal>57</span>
 <span class=normal>58</span>
 <span class=normal>59</span>
-<span class=normal>60</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>msg</span><span class=p>:</span> <span class=nb>str</span><span class=p>):</span>
+<span class=normal>60</span>
+<span class=normal>61</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>msg</span><span class=p>:</span> <span class=nb>str</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    Intialize TresleNotFoundError.</span>
 
@@ -227,8 +227,7 @@
                   return '';
                 }
               });
-            </script> <p>General error for trestle workspace root/setup errors.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/err.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>63</span>
-<span class=normal>64</span>
+            </script> <p>General error for trestle workspace root/setup errors.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/err.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>64</span>
 <span class=normal>65</span>
 <span class=normal>66</span>
 <span class=normal>67</span>
@@ -237,7 +236,8 @@
 <span class=normal>70</span>
 <span class=normal>71</span>
 <span class=normal>72</span>
-<span class=normal>73</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>TrestleRootError</span><span class=p>(</span><span class=n>TrestleError</span><span class=p>):</span>
+<span class=normal>73</span>
+<span class=normal>74</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>TrestleRootError</span><span class=p>(</span><span class=n>TrestleError</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;General error for trestle workspace root/setup errors.&quot;&quot;&quot;</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>msg</span><span class=p>:</span> <span class=nb>str</span><span class=p>):</span>
@@ -248,14 +248,14 @@
 <span class=sd>            msg (str): The error message</span>
 <span class=sd>        &quot;&quot;&quot;</span>
         <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>msg</span><span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.common.err.TrestleRootError-functions>Functions<a href=#trestle.common.err.TrestleRootError-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.common.err.TrestleRootError.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>msg</span><span class=p>)</span></code> <a href=#trestle.common.err.TrestleRootError.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize TrestleRootError.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>msg</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>The error message</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/err.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>66</span>
-<span class=normal>67</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.common.err.TrestleRootError-functions>Functions<a href=#trestle.common.err.TrestleRootError-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.common.err.TrestleRootError.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>msg</span><span class=p>)</span></code> <a href=#trestle.common.err.TrestleRootError.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize TrestleRootError.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>msg</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>The error message</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/err.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>67</span>
 <span class=normal>68</span>
 <span class=normal>69</span>
 <span class=normal>70</span>
 <span class=normal>71</span>
 <span class=normal>72</span>
-<span class=normal>73</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>msg</span><span class=p>:</span> <span class=nb>str</span><span class=p>):</span>
+<span class=normal>73</span>
+<span class=normal>74</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>msg</span><span class=p>:</span> <span class=nb>str</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    Initialize TrestleRootError.</span>
 
@@ -263,8 +263,7 @@
 <span class=sd>        msg (str): The error message</span>
 <span class=sd>    &quot;&quot;&quot;</span>
     <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>msg</span><span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> </div> </div> </div> <h3 id=trestle.common.err-functions>Functions<a href=#trestle.common.err-functions class=headerlink title="Permanent link">¤</a></h3> <div class="doc doc-object doc-function"> <h4 id=trestle.common.err.handle_generic_command_exception class="doc doc-heading"> <code class="highlight language-python"><span class=n>handle_generic_command_exception</span><span class=p>(</span><span class=n>exception</span><span class=p>,</span> <span class=n>logger</span><span class=p>,</span> <span class=n>msg</span><span class=o>=</span><span class=s1>&#39;Exception occured during execution&#39;</span><span class=p>)</span></code> <a href=#trestle.common.err.handle_generic_command_exception class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Print out error message based on the verbosity and return appropriate status code.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/err.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>89</span>
-<span class=normal>90</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> </div> </div> </div> <h3 id=trestle.common.err-functions>Functions<a href=#trestle.common.err-functions class=headerlink title="Permanent link">¤</a></h3> <div class="doc doc-object doc-function"> <h4 id=trestle.common.err.handle_generic_command_exception class="doc doc-heading"> <code class="highlight language-python"><span class=n>handle_generic_command_exception</span><span class=p>(</span><span class=n>exception</span><span class=p>,</span> <span class=n>logger</span><span class=p>,</span> <span class=n>msg</span><span class=o>=</span><span class=s1>&#39;Exception occured during execution&#39;</span><span class=p>)</span></code> <a href=#trestle.common.err.handle_generic_command_exception class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Print out error message based on the verbosity and return appropriate status code.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/common/err.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>90</span>
 <span class=normal>91</span>
 <span class=normal>92</span>
 <span class=normal>93</span>
@@ -272,7 +271,8 @@
 <span class=normal>95</span>
 <span class=normal>96</span>
 <span class=normal>97</span>
-<span class=normal>98</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>handle_generic_command_exception</span><span class=p>(</span>
+<span class=normal>98</span>
+<span class=normal>99</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>handle_generic_command_exception</span><span class=p>(</span>
     <span class=n>exception</span><span class=p>:</span> <span class=ne>Exception</span><span class=p>,</span> <span class=n>logger</span><span class=p>:</span> <span class=n>Logger</span><span class=p>,</span> <span class=n>msg</span><span class=p>:</span> <span class=nb>str</span> <span class=o>=</span> <span class=s1>&#39;Exception occured during execution&#39;</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Print out error message based on the verbosity and return appropriate status code.&quot;&quot;&quot;</span>

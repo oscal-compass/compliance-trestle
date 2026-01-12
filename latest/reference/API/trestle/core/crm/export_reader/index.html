@@ -221,11 +221,7 @@
 <span class=normal>260</span>
 <span class=normal>261</span>
 <span class=normal>262</span>
-<span class=normal>263</span>
-<span class=normal>264</span>
-<span class=normal>265</span>
-<span class=normal>266</span>
-<span class=normal>267</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ExportReader</span><span class=p>:</span>
+<span class=normal>263</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ExportReader</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    By-Component Assembly Exports Markdown reader.</span>
 
@@ -308,10 +304,8 @@
     <span class=k>def</span><span class=w> </span><span class=nf>_merge_exports_implemented_requirements</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>markdown_dict</span><span class=p>:</span> <span class=n>InheritanceViewDict</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Merge all exported inheritance info from the markdown into the implemented requirement dict.&quot;&quot;&quot;</span>
         <span class=k>for</span> <span class=n>implemented_requirement</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>_implemented_requirements</span><span class=o>.</span><span class=n>values</span><span class=p>():</span>
-
             <span class=c1># If the control id existing in the markdown, then update the by_components</span>
             <span class=k>if</span> <span class=n>implemented_requirement</span><span class=o>.</span><span class=n>control_id</span> <span class=ow>in</span> <span class=n>markdown_dict</span><span class=p>:</span>
-
                 <span class=c1># Delete the entry from the markdown_dict once processed to avoid duplicates</span>
                 <span class=n>by_comp_dict</span><span class=p>:</span> <span class=n>ByComponentDict</span> <span class=o>=</span> <span class=n>markdown_dict</span><span class=o>.</span><span class=n>pop</span><span class=p>(</span><span class=n>implemented_requirement</span><span class=o>.</span><span class=n>control_id</span><span class=p>)</span>
 
@@ -325,7 +319,6 @@
 
                 <span class=c1># If the statement id existing in the markdown, then update the by_components</span>
                 <span class=k>if</span> <span class=n>statement_id</span> <span class=ow>in</span> <span class=n>markdown_dict</span><span class=p>:</span>
-
                     <span class=c1># Delete the entry from the markdown_dict once processed to avoid duplicates</span>
                     <span class=n>by_comp_dict</span><span class=p>:</span> <span class=n>ByComponentDict</span> <span class=o>=</span> <span class=n>markdown_dict</span><span class=o>.</span><span class=n>pop</span><span class=p>(</span><span class=n>statement_id</span><span class=p>)</span>
 
@@ -342,7 +335,6 @@
         <span class=n>by_comp</span><span class=p>:</span> <span class=n>ossp</span><span class=o>.</span><span class=n>ByComponent</span>
         <span class=n>comp_inheritance_info</span><span class=p>:</span> <span class=n>Tuple</span><span class=p>[</span><span class=n>List</span><span class=p>[</span><span class=n>ossp</span><span class=o>.</span><span class=n>Inherited</span><span class=p>],</span> <span class=n>List</span><span class=p>[</span><span class=n>ossp</span><span class=o>.</span><span class=n>Satisfied</span><span class=p>]]</span>
         <span class=k>for</span> <span class=n>by_comp</span> <span class=ow>in</span> <span class=n>as_list</span><span class=p>(</span><span class=n>with_bycomp</span><span class=o>.</span><span class=n>by_components</span><span class=p>):</span>
-
             <span class=c1># If the by_component uuid exists in the by_comp_dict, then update it</span>
             <span class=c1># If not, clear the by_component inheritance information</span>
             <span class=n>comp_inheritance_info</span> <span class=o>=</span> <span class=n>by_comp_dict</span><span class=o>.</span><span class=n>pop</span><span class=p>(</span><span class=n>by_comp</span><span class=o>.</span><span class=n>component_uuid</span><span class=p>,</span> <span class=p>([],</span> <span class=p>[]))</span>

@@ -19,8 +19,7 @@
                   return '';
                 }
               });
-            </script> <p>Validator to confirm all rule parameter values are consistent.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/rule_parameters_validator.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 32</span>
-<span class=normal> 33</span>
+            </script> <p>Validator to confirm all rule parameter values are consistent.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/rule_parameters_validator.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 33</span>
 <span class=normal> 34</span>
 <span class=normal> 35</span>
 <span class=normal> 36</span>
@@ -107,8 +106,7 @@
 <span class=normal>117</span>
 <span class=normal>118</span>
 <span class=normal>119</span>
-<span class=normal>120</span>
-<span class=normal>121</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>RuleParametersValidator</span><span class=p>(</span><span class=n>Validator</span><span class=p>):</span>
+<span class=normal>120</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>RuleParametersValidator</span><span class=p>(</span><span class=n>Validator</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Validator to confirm all rule parameter values are consistent.&quot;&quot;&quot;</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
@@ -116,9 +114,7 @@
         <span class=bp>self</span><span class=o>.</span><span class=n>_rule_param_values_dict</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Any</span><span class=p>]</span> <span class=o>=</span> <span class=p>{}</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_add_imp_req_rule_params_to_dict</span><span class=p>(</span>
-        <span class=bp>self</span><span class=p>,</span>
-        <span class=n>imp_requirement</span><span class=p>:</span> <span class=n>ImplementedRequirement</span><span class=p>,</span>
-        <span class=n>cat_int</span><span class=p>:</span> <span class=n>CatalogInterface</span><span class=p>,</span>
+        <span class=bp>self</span><span class=p>,</span> <span class=n>imp_requirement</span><span class=p>:</span> <span class=n>ImplementedRequirement</span><span class=p>,</span> <span class=n>cat_int</span><span class=p>:</span> <span class=n>CatalogInterface</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>        Iterate all by components in an object and add the rule shared parameter values to list.</span>
@@ -198,16 +194,17 @@
                         <span class=p>)</span>
                         <span class=k>return</span> <span class=kc>False</span>
         <span class=k>return</span> <span class=kc>True</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.rule_parameters_validator.RuleParametersValidator-functions>Functions<a href=#trestle.core.rule_parameters_validator.RuleParametersValidator-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.rule_parameters_validator.RuleParametersValidator.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>()</span></code> <a href=#trestle.core.rule_parameters_validator.RuleParametersValidator.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize rule param values dictionary.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/rule_parameters_validator.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>35</span>
-<span class=normal>36</span>
-<span class=normal>37</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.rule_parameters_validator.RuleParametersValidator-functions>Functions<a href=#trestle.core.rule_parameters_validator.RuleParametersValidator-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.rule_parameters_validator.RuleParametersValidator.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>()</span></code> <a href=#trestle.core.rule_parameters_validator.RuleParametersValidator.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize rule param values dictionary.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/rule_parameters_validator.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>36</span>
+<span class=normal>37</span>
+<span class=normal>38</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Initialize rule param values dictionary.&quot;&quot;&quot;</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_rule_param_values_dict</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Any</span><span class=p>]</span> <span class=o>=</span> <span class=p>{}</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.rule_parameters_validator.RuleParametersValidator.model_is_valid class="doc doc-heading"> <code class="highlight language-python"><span class=n>model_is_valid</span><span class=p>(</span><span class=n>model</span><span class=p>,</span> <span class=n>quiet</span><span class=p>,</span> <span class=n>trestle_root</span><span class=o>=</span><span class=kc>None</span><span class=p>)</span></code> <a href=#trestle.core.rule_parameters_validator.RuleParametersValidator.model_is_valid class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Test if the model is valid.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>model</code> </td> <td> <code><a class="autorefs autorefs-internal" title="TopLevelOscalModel = TypeVar('TopLevelOscalModel', AssessmentPlan, AssessmentResults, Catalog, comp.ComponentDefinition, PlanOfActionAndMilestones, prof.Profile, ossp.SystemSecurityPlan)
 
   
       module-attribute
-   (trestle.common.common_types.TopLevelOscalModel)" href=../../common/common_types/#trestle.common.common_types.TopLevelOscalModel>TopLevelOscalModel</a></code> </td> <td> <div class=doc-md-description> <p>A top level OSCAL model.</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>quiet</code> </td> <td> <code><span title=bool>bool</span></code> </td> <td> <div class=doc-md-description> <p>Don't report msgs unless invalid.</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>trestle_root</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=pathlib.Path>Path</span>]</code> </td> <td> <div class=doc-md-description> <p>Trestle root path.</p> </div> </td> <td> <code>None</code> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code><span title=bool>bool</span></code> </td> <td> <div class=doc-md-description> <p>True (valid) if the model's rule parameter values are the same across controls.</p> </div> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/rule_parameters_validator.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 82</span>
+   (trestle.common.common_types.TopLevelOscalModel)" href=../../common/common_types/#trestle.common.common_types.TopLevelOscalModel>TopLevelOscalModel</a></code> </td> <td> <div class=doc-md-description> <p>A top level OSCAL model.</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>quiet</code> </td> <td> <code><span title=bool>bool</span></code> </td> <td> <div class=doc-md-description> <p>Don't report msgs unless invalid.</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>trestle_root</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=pathlib.Path>Path</span>]</code> </td> <td> <div class=doc-md-description> <p>Trestle root path.</p> </div> </td> <td> <code>None</code> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code><span title=bool>bool</span></code> </td> <td> <div class=doc-md-description> <p>True (valid) if the model's rule parameter values are the same across controls.</p> </div> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/rule_parameters_validator.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 81</span>
+<span class=normal> 82</span>
 <span class=normal> 83</span>
 <span class=normal> 84</span>
 <span class=normal> 85</span>
@@ -245,8 +242,7 @@
 <span class=normal>117</span>
 <span class=normal>118</span>
 <span class=normal>119</span>
-<span class=normal>120</span>
-<span class=normal>121</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>model_is_valid</span><span class=p>(</span>
+<span class=normal>120</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>model_is_valid</span><span class=p>(</span>
     <span class=bp>self</span><span class=p>,</span> <span class=n>model</span><span class=p>:</span> <span class=n>TopLevelOscalModel</span><span class=p>,</span> <span class=n>quiet</span><span class=p>:</span> <span class=nb>bool</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>

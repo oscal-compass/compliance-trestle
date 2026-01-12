@@ -15,8 +15,7 @@
                   return '';
                 }
               });
-            </script> <p>Trestle Base Model. Serves as wrapper around BaseModel for overriding methods.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/trestle_base_model.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>26</span>
-<span class=normal>27</span>
+            </script> <p>Trestle Base Model. Serves as wrapper around BaseModel for overriding methods.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/trestle_base_model.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>27</span>
 <span class=normal>28</span>
 <span class=normal>29</span>
 <span class=normal>30</span>
@@ -35,7 +34,8 @@
 <span class=normal>43</span>
 <span class=normal>44</span>
 <span class=normal>45</span>
-<span class=normal>46</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>TrestleBaseModel</span><span class=p>(</span><span class=n>BaseModel</span><span class=p>):</span>
+<span class=normal>46</span>
+<span class=normal>47</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>TrestleBaseModel</span><span class=p>(</span><span class=n>BaseModel</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Trestle Base Model. Serves as wrapper around BaseModel for overriding methods.&quot;&quot;&quot;</span>
 
     <span class=nd>@classmethod</span>
@@ -56,8 +56,7 @@
                 <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>message</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
             <span class=k>else</span><span class=p>:</span>
                 <span class=k>raise</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.trestle_base_model.TrestleBaseModel-functions>Functions<a href=#trestle.core.trestle_base_model.TrestleBaseModel-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.trestle_base_model.TrestleBaseModel.parse_obj class="doc doc-heading"> <code class="highlight language-python"><span class=n>parse_obj</span><span class=p>(</span><span class=n>obj</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small> </span> <a href=#trestle.core.trestle_base_model.TrestleBaseModel.parse_obj class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Parse object to the given class.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/trestle_base_model.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>29</span>
-<span class=normal>30</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.trestle_base_model.TrestleBaseModel-functions>Functions<a href=#trestle.core.trestle_base_model.TrestleBaseModel-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.trestle_base_model.TrestleBaseModel.parse_obj class="doc doc-heading"> <code class="highlight language-python"><span class=n>parse_obj</span><span class=p>(</span><span class=n>obj</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small> </span> <a href=#trestle.core.trestle_base_model.TrestleBaseModel.parse_obj class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Parse object to the given class.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/trestle_base_model.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>30</span>
 <span class=normal>31</span>
 <span class=normal>32</span>
 <span class=normal>33</span>
@@ -73,7 +72,8 @@
 <span class=normal>43</span>
 <span class=normal>44</span>
 <span class=normal>45</span>
-<span class=normal>46</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@classmethod</span>
+<span class=normal>46</span>
+<span class=normal>47</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@classmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>parse_obj</span><span class=p>(</span><span class=bp>cls</span><span class=p>:</span> <span class=n>Type</span><span class=p>[</span><span class=s1>&#39;Model&#39;</span><span class=p>],</span> <span class=n>obj</span><span class=p>:</span> <span class=n>Any</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=s1>&#39;Model&#39;</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Parse object to the given class.&quot;&quot;&quot;</span>
     <span class=k>try</span><span class=p>:</span>

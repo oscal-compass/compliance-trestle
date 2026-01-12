@@ -19,7 +19,11 @@
                   return '';
                 }
               });
-            </script> <p>AgileAuthoring extends the Repository class for performing authoring specific operations on Trestle repository.</p> <p>This class provides a set of APIs to perform generate and assemble authoring operations in the trestle repository rather than using the command line.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>371</span>
+            </script> <p>AgileAuthoring extends the Repository class for performing authoring specific operations on Trestle repository.</p> <p>This class provides a set of APIs to perform generate and assemble authoring operations in the trestle repository rather than using the command line.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>367</span>
+<span class=normal>368</span>
+<span class=normal>369</span>
+<span class=normal>370</span>
+<span class=normal>371</span>
 <span class=normal>372</span>
 <span class=normal>373</span>
 <span class=normal>374</span>
@@ -294,16 +298,7 @@
 <span class=normal>643</span>
 <span class=normal>644</span>
 <span class=normal>645</span>
-<span class=normal>646</span>
-<span class=normal>647</span>
-<span class=normal>648</span>
-<span class=normal>649</span>
-<span class=normal>650</span>
-<span class=normal>651</span>
-<span class=normal>652</span>
-<span class=normal>653</span>
-<span class=normal>654</span>
-<span class=normal>655</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>AgileAuthoring</span><span class=p>(</span><span class=n>Repository</span><span class=p>):</span>
+<span class=normal>646</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>AgileAuthoring</span><span class=p>(</span><span class=n>Repository</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    AgileAuthoring extends the Repository class for performing authoring specific operations on Trestle repository.</span>
 
@@ -323,7 +318,7 @@
         <span class=n>markdown_dir</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
         <span class=n>set_parameters</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>,</span>
         <span class=n>regenerate</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>,</span>
-        <span class=n>version</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span>
+        <span class=n>version</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Assemble catalog markdown into OSCAL Catalog in JSON.&quot;&quot;&quot;</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Assembling model </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1> of type catalog.&#39;</span><span class=p>)</span>
@@ -338,7 +333,7 @@
             <span class=n>set_parameters</span><span class=o>=</span><span class=n>set_parameters</span><span class=p>,</span>
             <span class=n>regenerate</span><span class=o>=</span><span class=n>regenerate</span><span class=p>,</span>
             <span class=n>version</span><span class=o>=</span><span class=n>version</span><span class=p>,</span>
-            <span class=n>verbose</span><span class=o>=</span><span class=n>verbose</span>
+            <span class=n>verbose</span><span class=o>=</span><span class=n>verbose</span><span class=p>,</span>
         <span class=p>)</span>
 
         <span class=k>try</span><span class=p>:</span>
@@ -361,7 +356,7 @@
         <span class=n>version</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
         <span class=n>sections</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
         <span class=n>required_sections</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
-        <span class=n>allowed_sections</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span>
+        <span class=n>allowed_sections</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Assemble profile markdown into OSCAL Profile in JSON.&quot;&quot;&quot;</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Assembling model </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1> of type profile.&#39;</span><span class=p>)</span>
@@ -379,7 +374,7 @@
             <span class=n>sections</span><span class=o>=</span><span class=n>sections</span><span class=p>,</span>
             <span class=n>required_sections</span><span class=o>=</span><span class=n>required_sections</span><span class=p>,</span>
             <span class=n>allowed_sections</span><span class=o>=</span><span class=n>allowed_sections</span><span class=p>,</span>
-            <span class=n>verbose</span><span class=o>=</span><span class=n>verbose</span>
+            <span class=n>verbose</span><span class=o>=</span><span class=n>verbose</span><span class=p>,</span>
         <span class=p>)</span>
 
         <span class=k>try</span><span class=p>:</span>
@@ -407,7 +402,7 @@
             <span class=n>trestle_root</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>root_dir</span><span class=p>,</span>
             <span class=n>regenerate</span><span class=o>=</span><span class=n>regenerate</span><span class=p>,</span>
             <span class=n>version</span><span class=o>=</span><span class=n>version</span><span class=p>,</span>
-            <span class=n>verbose</span><span class=o>=</span><span class=n>verbose</span>
+            <span class=n>verbose</span><span class=o>=</span><span class=n>verbose</span><span class=p>,</span>
         <span class=p>)</span>
 
         <span class=k>try</span><span class=p>:</span>
@@ -427,7 +422,7 @@
         <span class=n>markdown_dir</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
         <span class=n>compdefs</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
         <span class=n>regenerate</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>,</span>
-        <span class=n>version</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span>
+        <span class=n>version</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Assemble ssp markdown into OSCAL SSP in JSON.&quot;&quot;&quot;</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Assembling model </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1> of type ssp.&#39;</span><span class=p>)</span>
@@ -442,7 +437,7 @@
             <span class=n>trestle_root</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>root_dir</span><span class=p>,</span>
             <span class=n>regenerate</span><span class=o>=</span><span class=n>regenerate</span><span class=p>,</span>
             <span class=n>version</span><span class=o>=</span><span class=n>version</span><span class=p>,</span>
-            <span class=n>verbose</span><span class=o>=</span><span class=n>verbose</span>
+            <span class=n>verbose</span><span class=o>=</span><span class=n>verbose</span><span class=p>,</span>
         <span class=p>)</span>
 
         <span class=k>try</span><span class=p>:</span>
@@ -461,7 +456,7 @@
         <span class=n>output</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
         <span class=n>force_overwrite</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>,</span>
         <span class=n>yaml_header</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
-        <span class=n>overwrite_header_values</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span>
+        <span class=n>overwrite_header_values</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>,</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Generate catalog markdown from OSCAL Catalog in JSON.&quot;&quot;&quot;</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Generating markdown for </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1> of type catalog.&#39;</span><span class=p>)</span>
@@ -475,7 +470,7 @@
             <span class=n>force_overwrite</span><span class=o>=</span><span class=n>force_overwrite</span><span class=p>,</span>
             <span class=n>yaml_header</span><span class=o>=</span><span class=n>yaml_header</span><span class=p>,</span>
             <span class=n>overwrite_header_values</span><span class=o>=</span><span class=n>overwrite_header_values</span><span class=p>,</span>
-            <span class=n>verbose</span><span class=o>=</span><span class=n>verbose</span>
+            <span class=n>verbose</span><span class=o>=</span><span class=n>verbose</span><span class=p>,</span>
         <span class=p>)</span>
 
         <span class=k>try</span><span class=p>:</span>
@@ -496,7 +491,7 @@
         <span class=n>yaml_header</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
         <span class=n>overwrite_header_values</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>,</span>
         <span class=n>sections</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
-        <span class=n>required_sections</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span>
+        <span class=n>required_sections</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Generate profile markdown from OSCAL Profile in JSON.&quot;&quot;&quot;</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Generating markdown for </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1> of type profile.&#39;</span><span class=p>)</span>
@@ -512,7 +507,7 @@
             <span class=n>overwrite_header_values</span><span class=o>=</span><span class=n>overwrite_header_values</span><span class=p>,</span>
             <span class=n>sections</span><span class=o>=</span><span class=n>sections</span><span class=p>,</span>
             <span class=n>required_sections</span><span class=o>=</span><span class=n>required_sections</span><span class=p>,</span>
-            <span class=n>verbose</span><span class=o>=</span><span class=n>verbose</span>
+            <span class=n>verbose</span><span class=o>=</span><span class=n>verbose</span><span class=p>,</span>
         <span class=p>)</span>
 
         <span class=k>try</span><span class=p>:</span>
@@ -525,12 +520,7 @@
         <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Model </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1> markdown generated successfully.&#39;</span><span class=p>)</span>
         <span class=k>return</span> <span class=n>success</span>
 
-    <span class=k>def</span><span class=w> </span><span class=nf>generate_component_definition_markdown</span><span class=p>(</span>
-        <span class=bp>self</span><span class=p>,</span>
-        <span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
-        <span class=n>output</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
-        <span class=n>force_overwrite</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>,</span>
-    <span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
+    <span class=k>def</span><span class=w> </span><span class=nf>generate_component_definition_markdown</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>output</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>force_overwrite</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Generate component definition markdown from OSCAL Component Definition in JSON.&quot;&quot;&quot;</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Generating markdown for </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1> of type component definition.&#39;</span><span class=p>)</span>
         <span class=n>success</span> <span class=o>=</span> <span class=kc>False</span>
@@ -559,7 +549,7 @@
         <span class=n>force_overwrite</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>,</span>
         <span class=n>include_all_parts</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>,</span>
         <span class=n>yaml_header</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
-        <span class=n>overwrite_header_values</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span>
+        <span class=n>overwrite_header_values</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>,</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Generate ssp markdown from OSCAL Profile and Component Definitions.&quot;&quot;&quot;</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Generating markdown for </span><span class=si>{</span><span class=n>output</span><span class=si>}</span><span class=s1> of type ssp.&#39;</span><span class=p>)</span>
@@ -576,7 +566,7 @@
             <span class=n>include_all_parts</span><span class=o>=</span><span class=n>include_all_parts</span><span class=p>,</span>
             <span class=n>yaml_header</span><span class=o>=</span><span class=n>yaml_header</span><span class=p>,</span>
             <span class=n>overwrite_header_values</span><span class=o>=</span><span class=n>overwrite_header_values</span><span class=p>,</span>
-            <span class=n>verbose</span><span class=o>=</span><span class=n>verbose</span>
+            <span class=n>verbose</span><span class=o>=</span><span class=n>verbose</span><span class=p>,</span>
         <span class=p>)</span>
 
         <span class=k>try</span><span class=p>:</span>
@@ -588,12 +578,16 @@
 
         <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Model </span><span class=si>{</span><span class=n>output</span><span class=si>}</span><span class=s1> markdown generated successfully.&#39;</span><span class=p>)</span>
         <span class=k>return</span> <span class=n>success</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.repository.AgileAuthoring-functions>Functions<a href=#trestle.core.repository.AgileAuthoring-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.AgileAuthoring.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>root_dir</span><span class=p>)</span></code> <a href=#trestle.core.repository.AgileAuthoring.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize trestle repository object.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>380</span>
-<span class=normal>381</span>
-<span class=normal>382</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>root_dir</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.repository.AgileAuthoring-functions>Functions<a href=#trestle.core.repository.AgileAuthoring-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.AgileAuthoring.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>root_dir</span><span class=p>)</span></code> <a href=#trestle.core.repository.AgileAuthoring.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize trestle repository object.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>376</span>
+<span class=normal>377</span>
+<span class=normal>378</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>root_dir</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Initialize trestle repository object.&quot;&quot;&quot;</span>
     <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>root_dir</span><span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.AgileAuthoring.assemble_catalog_markdown class="doc doc-heading"> <code class="highlight language-python"><span class=n>assemble_catalog_markdown</span><span class=p>(</span><span class=n>name</span><span class=p>,</span> <span class=n>output</span><span class=p>,</span> <span class=n>markdown_dir</span><span class=p>,</span> <span class=n>set_parameters</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>regenerate</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>version</span><span class=o>=</span><span class=kc>None</span><span class=p>)</span></code> <a href=#trestle.core.repository.AgileAuthoring.assemble_catalog_markdown class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Assemble catalog markdown into OSCAL Catalog in JSON.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>384</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.AgileAuthoring.assemble_catalog_markdown class="doc doc-heading"> <code class="highlight language-python"><span class=n>assemble_catalog_markdown</span><span class=p>(</span><span class=n>name</span><span class=p>,</span> <span class=n>output</span><span class=p>,</span> <span class=n>markdown_dir</span><span class=p>,</span> <span class=n>set_parameters</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>regenerate</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>version</span><span class=o>=</span><span class=kc>None</span><span class=p>)</span></code> <a href=#trestle.core.repository.AgileAuthoring.assemble_catalog_markdown class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Assemble catalog markdown into OSCAL Catalog in JSON.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>380</span>
+<span class=normal>381</span>
+<span class=normal>382</span>
+<span class=normal>383</span>
+<span class=normal>384</span>
 <span class=normal>385</span>
 <span class=normal>386</span>
 <span class=normal>387</span>
@@ -622,18 +616,14 @@
 <span class=normal>410</span>
 <span class=normal>411</span>
 <span class=normal>412</span>
-<span class=normal>413</span>
-<span class=normal>414</span>
-<span class=normal>415</span>
-<span class=normal>416</span>
-<span class=normal>417</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>assemble_catalog_markdown</span><span class=p>(</span>
+<span class=normal>413</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>assemble_catalog_markdown</span><span class=p>(</span>
     <span class=bp>self</span><span class=p>,</span>
     <span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
     <span class=n>output</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
     <span class=n>markdown_dir</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
     <span class=n>set_parameters</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>,</span>
     <span class=n>regenerate</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>,</span>
-    <span class=n>version</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span>
+    <span class=n>version</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Assemble catalog markdown into OSCAL Catalog in JSON.&quot;&quot;&quot;</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Assembling model </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1> of type catalog.&#39;</span><span class=p>)</span>
@@ -648,7 +638,7 @@
         <span class=n>set_parameters</span><span class=o>=</span><span class=n>set_parameters</span><span class=p>,</span>
         <span class=n>regenerate</span><span class=o>=</span><span class=n>regenerate</span><span class=p>,</span>
         <span class=n>version</span><span class=o>=</span><span class=n>version</span><span class=p>,</span>
-        <span class=n>verbose</span><span class=o>=</span><span class=n>verbose</span>
+        <span class=n>verbose</span><span class=o>=</span><span class=n>verbose</span><span class=p>,</span>
     <span class=p>)</span>
 
     <span class=k>try</span><span class=p>:</span>
@@ -660,7 +650,11 @@
 
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Model </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1> assembled successfully.&#39;</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>success</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.AgileAuthoring.assemble_component_definition_markdown class="doc doc-heading"> <code class="highlight language-python"><span class=n>assemble_component_definition_markdown</span><span class=p>(</span><span class=n>name</span><span class=p>,</span> <span class=n>output</span><span class=p>,</span> <span class=n>markdown_dir</span><span class=p>,</span> <span class=n>regenerate</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>version</span><span class=o>=</span><span class=s1>&#39;&#39;</span><span class=p>)</span></code> <a href=#trestle.core.repository.AgileAuthoring.assemble_component_definition_markdown class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Assemble component definition markdown into OSCAL Component Definition in JSON.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>460</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.AgileAuthoring.assemble_component_definition_markdown class="doc doc-heading"> <code class="highlight language-python"><span class=n>assemble_component_definition_markdown</span><span class=p>(</span><span class=n>name</span><span class=p>,</span> <span class=n>output</span><span class=p>,</span> <span class=n>markdown_dir</span><span class=p>,</span> <span class=n>regenerate</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>version</span><span class=o>=</span><span class=s1>&#39;&#39;</span><span class=p>)</span></code> <a href=#trestle.core.repository.AgileAuthoring.assemble_component_definition_markdown class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Assemble component definition markdown into OSCAL Component Definition in JSON.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>456</span>
+<span class=normal>457</span>
+<span class=normal>458</span>
+<span class=normal>459</span>
+<span class=normal>460</span>
 <span class=normal>461</span>
 <span class=normal>462</span>
 <span class=normal>463</span>
@@ -682,11 +676,7 @@
 <span class=normal>479</span>
 <span class=normal>480</span>
 <span class=normal>481</span>
-<span class=normal>482</span>
-<span class=normal>483</span>
-<span class=normal>484</span>
-<span class=normal>485</span>
-<span class=normal>486</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>assemble_component_definition_markdown</span><span class=p>(</span>
+<span class=normal>482</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>assemble_component_definition_markdown</span><span class=p>(</span>
     <span class=bp>self</span><span class=p>,</span> <span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>output</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>markdown_dir</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>regenerate</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>,</span> <span class=n>version</span><span class=p>:</span> <span class=nb>str</span> <span class=o>=</span> <span class=s1>&#39;&#39;</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Assemble component definition markdown into OSCAL Component Definition in JSON.&quot;&quot;&quot;</span>
@@ -701,7 +691,7 @@
         <span class=n>trestle_root</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>root_dir</span><span class=p>,</span>
         <span class=n>regenerate</span><span class=o>=</span><span class=n>regenerate</span><span class=p>,</span>
         <span class=n>version</span><span class=o>=</span><span class=n>version</span><span class=p>,</span>
-        <span class=n>verbose</span><span class=o>=</span><span class=n>verbose</span>
+        <span class=n>verbose</span><span class=o>=</span><span class=n>verbose</span><span class=p>,</span>
     <span class=p>)</span>
 
     <span class=k>try</span><span class=p>:</span>
@@ -713,7 +703,11 @@
 
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Model </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1> assembled successfully.&#39;</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>success</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.AgileAuthoring.assemble_profile_markdown class="doc doc-heading"> <code class="highlight language-python"><span class=n>assemble_profile_markdown</span><span class=p>(</span><span class=n>name</span><span class=p>,</span> <span class=n>output</span><span class=p>,</span> <span class=n>markdown_dir</span><span class=p>,</span> <span class=n>set_parameters</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>regenerate</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>version</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>sections</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>required_sections</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>allowed_sections</span><span class=o>=</span><span class=kc>None</span><span class=p>)</span></code> <a href=#trestle.core.repository.AgileAuthoring.assemble_profile_markdown class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Assemble profile markdown into OSCAL Profile in JSON.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>419</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.AgileAuthoring.assemble_profile_markdown class="doc doc-heading"> <code class="highlight language-python"><span class=n>assemble_profile_markdown</span><span class=p>(</span><span class=n>name</span><span class=p>,</span> <span class=n>output</span><span class=p>,</span> <span class=n>markdown_dir</span><span class=p>,</span> <span class=n>set_parameters</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>regenerate</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>version</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>sections</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>required_sections</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>allowed_sections</span><span class=o>=</span><span class=kc>None</span><span class=p>)</span></code> <a href=#trestle.core.repository.AgileAuthoring.assemble_profile_markdown class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Assemble profile markdown into OSCAL Profile in JSON.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>415</span>
+<span class=normal>416</span>
+<span class=normal>417</span>
+<span class=normal>418</span>
+<span class=normal>419</span>
 <span class=normal>420</span>
 <span class=normal>421</span>
 <span class=normal>422</span>
@@ -748,11 +742,7 @@
 <span class=normal>451</span>
 <span class=normal>452</span>
 <span class=normal>453</span>
-<span class=normal>454</span>
-<span class=normal>455</span>
-<span class=normal>456</span>
-<span class=normal>457</span>
-<span class=normal>458</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>assemble_profile_markdown</span><span class=p>(</span>
+<span class=normal>454</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>assemble_profile_markdown</span><span class=p>(</span>
     <span class=bp>self</span><span class=p>,</span>
     <span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
     <span class=n>output</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
@@ -762,7 +752,7 @@
     <span class=n>version</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
     <span class=n>sections</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
     <span class=n>required_sections</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
-    <span class=n>allowed_sections</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span>
+    <span class=n>allowed_sections</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Assemble profile markdown into OSCAL Profile in JSON.&quot;&quot;&quot;</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Assembling model </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1> of type profile.&#39;</span><span class=p>)</span>
@@ -780,7 +770,7 @@
         <span class=n>sections</span><span class=o>=</span><span class=n>sections</span><span class=p>,</span>
         <span class=n>required_sections</span><span class=o>=</span><span class=n>required_sections</span><span class=p>,</span>
         <span class=n>allowed_sections</span><span class=o>=</span><span class=n>allowed_sections</span><span class=p>,</span>
-        <span class=n>verbose</span><span class=o>=</span><span class=n>verbose</span>
+        <span class=n>verbose</span><span class=o>=</span><span class=n>verbose</span><span class=p>,</span>
     <span class=p>)</span>
 
     <span class=k>try</span><span class=p>:</span>
@@ -792,7 +782,11 @@
 
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Model </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1> assembled successfully.&#39;</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>success</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.AgileAuthoring.assemble_ssp_markdown class="doc doc-heading"> <code class="highlight language-python"><span class=n>assemble_ssp_markdown</span><span class=p>(</span><span class=n>name</span><span class=p>,</span> <span class=n>output</span><span class=p>,</span> <span class=n>markdown_dir</span><span class=p>,</span> <span class=n>compdefs</span><span class=p>,</span> <span class=n>regenerate</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>version</span><span class=o>=</span><span class=kc>None</span><span class=p>)</span></code> <a href=#trestle.core.repository.AgileAuthoring.assemble_ssp_markdown class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Assemble ssp markdown into OSCAL SSP in JSON.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>488</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.AgileAuthoring.assemble_ssp_markdown class="doc doc-heading"> <code class="highlight language-python"><span class=n>assemble_ssp_markdown</span><span class=p>(</span><span class=n>name</span><span class=p>,</span> <span class=n>output</span><span class=p>,</span> <span class=n>markdown_dir</span><span class=p>,</span> <span class=n>compdefs</span><span class=p>,</span> <span class=n>regenerate</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>version</span><span class=o>=</span><span class=kc>None</span><span class=p>)</span></code> <a href=#trestle.core.repository.AgileAuthoring.assemble_ssp_markdown class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Assemble ssp markdown into OSCAL SSP in JSON.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>484</span>
+<span class=normal>485</span>
+<span class=normal>486</span>
+<span class=normal>487</span>
+<span class=normal>488</span>
 <span class=normal>489</span>
 <span class=normal>490</span>
 <span class=normal>491</span>
@@ -821,18 +815,14 @@
 <span class=normal>514</span>
 <span class=normal>515</span>
 <span class=normal>516</span>
-<span class=normal>517</span>
-<span class=normal>518</span>
-<span class=normal>519</span>
-<span class=normal>520</span>
-<span class=normal>521</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>assemble_ssp_markdown</span><span class=p>(</span>
+<span class=normal>517</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>assemble_ssp_markdown</span><span class=p>(</span>
     <span class=bp>self</span><span class=p>,</span>
     <span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
     <span class=n>output</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
     <span class=n>markdown_dir</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
     <span class=n>compdefs</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
     <span class=n>regenerate</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>,</span>
-    <span class=n>version</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span>
+    <span class=n>version</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Assemble ssp markdown into OSCAL SSP in JSON.&quot;&quot;&quot;</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Assembling model </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1> of type ssp.&#39;</span><span class=p>)</span>
@@ -847,7 +837,7 @@
         <span class=n>trestle_root</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>root_dir</span><span class=p>,</span>
         <span class=n>regenerate</span><span class=o>=</span><span class=n>regenerate</span><span class=p>,</span>
         <span class=n>version</span><span class=o>=</span><span class=n>version</span><span class=p>,</span>
-        <span class=n>verbose</span><span class=o>=</span><span class=n>verbose</span>
+        <span class=n>verbose</span><span class=o>=</span><span class=n>verbose</span><span class=p>,</span>
     <span class=p>)</span>
 
     <span class=k>try</span><span class=p>:</span>
@@ -859,7 +849,11 @@
 
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Model </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1> assembled successfully.&#39;</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>success</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.AgileAuthoring.generate_catalog_markdown class="doc doc-heading"> <code class="highlight language-python"><span class=n>generate_catalog_markdown</span><span class=p>(</span><span class=n>name</span><span class=p>,</span> <span class=n>output</span><span class=p>,</span> <span class=n>force_overwrite</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>yaml_header</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>overwrite_header_values</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span></code> <a href=#trestle.core.repository.AgileAuthoring.generate_catalog_markdown class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Generate catalog markdown from OSCAL Catalog in JSON.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>523</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.AgileAuthoring.generate_catalog_markdown class="doc doc-heading"> <code class="highlight language-python"><span class=n>generate_catalog_markdown</span><span class=p>(</span><span class=n>name</span><span class=p>,</span> <span class=n>output</span><span class=p>,</span> <span class=n>force_overwrite</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>yaml_header</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>overwrite_header_values</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span></code> <a href=#trestle.core.repository.AgileAuthoring.generate_catalog_markdown class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Generate catalog markdown from OSCAL Catalog in JSON.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>519</span>
+<span class=normal>520</span>
+<span class=normal>521</span>
+<span class=normal>522</span>
+<span class=normal>523</span>
 <span class=normal>524</span>
 <span class=normal>525</span>
 <span class=normal>526</span>
@@ -886,17 +880,13 @@
 <span class=normal>547</span>
 <span class=normal>548</span>
 <span class=normal>549</span>
-<span class=normal>550</span>
-<span class=normal>551</span>
-<span class=normal>552</span>
-<span class=normal>553</span>
-<span class=normal>554</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>generate_catalog_markdown</span><span class=p>(</span>
+<span class=normal>550</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>generate_catalog_markdown</span><span class=p>(</span>
     <span class=bp>self</span><span class=p>,</span>
     <span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
     <span class=n>output</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
     <span class=n>force_overwrite</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>,</span>
     <span class=n>yaml_header</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
-    <span class=n>overwrite_header_values</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span>
+    <span class=n>overwrite_header_values</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>,</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Generate catalog markdown from OSCAL Catalog in JSON.&quot;&quot;&quot;</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Generating markdown for </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1> of type catalog.&#39;</span><span class=p>)</span>
@@ -910,7 +900,7 @@
         <span class=n>force_overwrite</span><span class=o>=</span><span class=n>force_overwrite</span><span class=p>,</span>
         <span class=n>yaml_header</span><span class=o>=</span><span class=n>yaml_header</span><span class=p>,</span>
         <span class=n>overwrite_header_values</span><span class=o>=</span><span class=n>overwrite_header_values</span><span class=p>,</span>
-        <span class=n>verbose</span><span class=o>=</span><span class=n>verbose</span>
+        <span class=n>verbose</span><span class=o>=</span><span class=n>verbose</span><span class=p>,</span>
     <span class=p>)</span>
 
     <span class=k>try</span><span class=p>:</span>
@@ -922,7 +912,11 @@
 
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Model </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1> markdown generated successfully.&#39;</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>success</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.AgileAuthoring.generate_component_definition_markdown class="doc doc-heading"> <code class="highlight language-python"><span class=n>generate_component_definition_markdown</span><span class=p>(</span><span class=n>name</span><span class=p>,</span> <span class=n>output</span><span class=p>,</span> <span class=n>force_overwrite</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span></code> <a href=#trestle.core.repository.AgileAuthoring.generate_component_definition_markdown class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Generate component definition markdown from OSCAL Component Definition in JSON.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>593</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.AgileAuthoring.generate_component_definition_markdown class="doc doc-heading"> <code class="highlight language-python"><span class=n>generate_component_definition_markdown</span><span class=p>(</span><span class=n>name</span><span class=p>,</span> <span class=n>output</span><span class=p>,</span> <span class=n>force_overwrite</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span></code> <a href=#trestle.core.repository.AgileAuthoring.generate_component_definition_markdown class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Generate component definition markdown from OSCAL Component Definition in JSON.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>589</span>
+<span class=normal>590</span>
+<span class=normal>591</span>
+<span class=normal>592</span>
+<span class=normal>593</span>
 <span class=normal>594</span>
 <span class=normal>595</span>
 <span class=normal>596</span>
@@ -936,21 +930,7 @@
 <span class=normal>604</span>
 <span class=normal>605</span>
 <span class=normal>606</span>
-<span class=normal>607</span>
-<span class=normal>608</span>
-<span class=normal>609</span>
-<span class=normal>610</span>
-<span class=normal>611</span>
-<span class=normal>612</span>
-<span class=normal>613</span>
-<span class=normal>614</span>
-<span class=normal>615</span>
-<span class=normal>616</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>generate_component_definition_markdown</span><span class=p>(</span>
-    <span class=bp>self</span><span class=p>,</span>
-    <span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
-    <span class=n>output</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
-    <span class=n>force_overwrite</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>,</span>
-<span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
+<span class=normal>607</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>generate_component_definition_markdown</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>output</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>force_overwrite</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Generate component definition markdown from OSCAL Component Definition in JSON.&quot;&quot;&quot;</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Generating markdown for </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1> of type component definition.&#39;</span><span class=p>)</span>
     <span class=n>success</span> <span class=o>=</span> <span class=kc>False</span>
@@ -969,7 +949,11 @@
 
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Model </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1> markdown generated successfully.&#39;</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>success</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.AgileAuthoring.generate_profile_markdown class="doc doc-heading"> <code class="highlight language-python"><span class=n>generate_profile_markdown</span><span class=p>(</span><span class=n>name</span><span class=p>,</span> <span class=n>output</span><span class=p>,</span> <span class=n>force_overwrite</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>yaml_header</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>overwrite_header_values</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>sections</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>required_sections</span><span class=o>=</span><span class=kc>None</span><span class=p>)</span></code> <a href=#trestle.core.repository.AgileAuthoring.generate_profile_markdown class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Generate profile markdown from OSCAL Profile in JSON.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>556</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.AgileAuthoring.generate_profile_markdown class="doc doc-heading"> <code class="highlight language-python"><span class=n>generate_profile_markdown</span><span class=p>(</span><span class=n>name</span><span class=p>,</span> <span class=n>output</span><span class=p>,</span> <span class=n>force_overwrite</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>yaml_header</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>overwrite_header_values</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>sections</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>required_sections</span><span class=o>=</span><span class=kc>None</span><span class=p>)</span></code> <a href=#trestle.core.repository.AgileAuthoring.generate_profile_markdown class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Generate profile markdown from OSCAL Profile in JSON.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>552</span>
+<span class=normal>553</span>
+<span class=normal>554</span>
+<span class=normal>555</span>
+<span class=normal>556</span>
 <span class=normal>557</span>
 <span class=normal>558</span>
 <span class=normal>559</span>
@@ -1000,11 +984,7 @@
 <span class=normal>584</span>
 <span class=normal>585</span>
 <span class=normal>586</span>
-<span class=normal>587</span>
-<span class=normal>588</span>
-<span class=normal>589</span>
-<span class=normal>590</span>
-<span class=normal>591</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>generate_profile_markdown</span><span class=p>(</span>
+<span class=normal>587</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>generate_profile_markdown</span><span class=p>(</span>
     <span class=bp>self</span><span class=p>,</span>
     <span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
     <span class=n>output</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
@@ -1012,7 +992,7 @@
     <span class=n>yaml_header</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
     <span class=n>overwrite_header_values</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>,</span>
     <span class=n>sections</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
-    <span class=n>required_sections</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span>
+    <span class=n>required_sections</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Generate profile markdown from OSCAL Profile in JSON.&quot;&quot;&quot;</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Generating markdown for </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1> of type profile.&#39;</span><span class=p>)</span>
@@ -1028,7 +1008,7 @@
         <span class=n>overwrite_header_values</span><span class=o>=</span><span class=n>overwrite_header_values</span><span class=p>,</span>
         <span class=n>sections</span><span class=o>=</span><span class=n>sections</span><span class=p>,</span>
         <span class=n>required_sections</span><span class=o>=</span><span class=n>required_sections</span><span class=p>,</span>
-        <span class=n>verbose</span><span class=o>=</span><span class=n>verbose</span>
+        <span class=n>verbose</span><span class=o>=</span><span class=n>verbose</span><span class=p>,</span>
     <span class=p>)</span>
 
     <span class=k>try</span><span class=p>:</span>
@@ -1040,7 +1020,16 @@
 
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Model </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1> markdown generated successfully.&#39;</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>success</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.AgileAuthoring.generate_ssp_markdown class="doc doc-heading"> <code class="highlight language-python"><span class=n>generate_ssp_markdown</span><span class=p>(</span><span class=n>profile</span><span class=p>,</span> <span class=n>output</span><span class=p>,</span> <span class=n>compdefs</span><span class=p>,</span> <span class=n>leveraged_ssp</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>force_overwrite</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>include_all_parts</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>yaml_header</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>overwrite_header_values</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span></code> <a href=#trestle.core.repository.AgileAuthoring.generate_ssp_markdown class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Generate ssp markdown from OSCAL Profile and Component Definitions.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>618</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.AgileAuthoring.generate_ssp_markdown class="doc doc-heading"> <code class="highlight language-python"><span class=n>generate_ssp_markdown</span><span class=p>(</span><span class=n>profile</span><span class=p>,</span> <span class=n>output</span><span class=p>,</span> <span class=n>compdefs</span><span class=p>,</span> <span class=n>leveraged_ssp</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>force_overwrite</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>include_all_parts</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>yaml_header</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>overwrite_header_values</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span></code> <a href=#trestle.core.repository.AgileAuthoring.generate_ssp_markdown class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Generate ssp markdown from OSCAL Profile and Component Definitions.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>609</span>
+<span class=normal>610</span>
+<span class=normal>611</span>
+<span class=normal>612</span>
+<span class=normal>613</span>
+<span class=normal>614</span>
+<span class=normal>615</span>
+<span class=normal>616</span>
+<span class=normal>617</span>
+<span class=normal>618</span>
 <span class=normal>619</span>
 <span class=normal>620</span>
 <span class=normal>621</span>
@@ -1068,16 +1057,7 @@
 <span class=normal>643</span>
 <span class=normal>644</span>
 <span class=normal>645</span>
-<span class=normal>646</span>
-<span class=normal>647</span>
-<span class=normal>648</span>
-<span class=normal>649</span>
-<span class=normal>650</span>
-<span class=normal>651</span>
-<span class=normal>652</span>
-<span class=normal>653</span>
-<span class=normal>654</span>
-<span class=normal>655</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>generate_ssp_markdown</span><span class=p>(</span>
+<span class=normal>646</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>generate_ssp_markdown</span><span class=p>(</span>
     <span class=bp>self</span><span class=p>,</span>
     <span class=n>profile</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
     <span class=n>output</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
@@ -1086,7 +1066,7 @@
     <span class=n>force_overwrite</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>,</span>
     <span class=n>include_all_parts</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>,</span>
     <span class=n>yaml_header</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
-    <span class=n>overwrite_header_values</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span>
+    <span class=n>overwrite_header_values</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>,</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Generate ssp markdown from OSCAL Profile and Component Definitions.&quot;&quot;&quot;</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Generating markdown for </span><span class=si>{</span><span class=n>output</span><span class=si>}</span><span class=s1> of type ssp.&#39;</span><span class=p>)</span>
@@ -1103,7 +1083,7 @@
         <span class=n>include_all_parts</span><span class=o>=</span><span class=n>include_all_parts</span><span class=p>,</span>
         <span class=n>yaml_header</span><span class=o>=</span><span class=n>yaml_header</span><span class=p>,</span>
         <span class=n>overwrite_header_values</span><span class=o>=</span><span class=n>overwrite_header_values</span><span class=p>,</span>
-        <span class=n>verbose</span><span class=o>=</span><span class=n>verbose</span>
+        <span class=n>verbose</span><span class=o>=</span><span class=n>verbose</span><span class=p>,</span>
     <span class=p>)</span>
 
     <span class=k>try</span><span class=p>:</span>
@@ -1246,8 +1226,7 @@
 <span class=normal>178</span>
 <span class=normal>179</span>
 <span class=normal>180</span>
-<span class=normal>181</span>
-<span class=normal>182</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ManagedOSCAL</span><span class=p>:</span>
+<span class=normal>181</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ManagedOSCAL</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Object representing OSCAL models in repository for programmatic manipulation.&quot;&quot;&quot;</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>root_dir</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>model_type</span><span class=p>:</span> <span class=n>Type</span><span class=p>[</span><span class=n>OscalBaseModel</span><span class=p>],</span> <span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
@@ -1275,8 +1254,7 @@
         <span class=bp>self</span><span class=o>.</span><span class=n>file_content_type</span> <span class=o>=</span> <span class=n>file_content_type</span>
 
         <span class=n>filepath</span> <span class=o>=</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>(</span>
-            <span class=bp>self</span><span class=o>.</span><span class=n>model_dir</span><span class=p>,</span>
-            <span class=bp>self</span><span class=o>.</span><span class=n>model_alias</span> <span class=o>+</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>path_to_file_extension</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>model_dir</span> <span class=o>/</span> <span class=bp>self</span><span class=o>.</span><span class=n>model_alias</span><span class=p>)</span>
+            <span class=bp>self</span><span class=o>.</span><span class=n>model_dir</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>model_alias</span> <span class=o>+</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>path_to_file_extension</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>model_dir</span> <span class=o>/</span> <span class=bp>self</span><span class=o>.</span><span class=n>model_alias</span><span class=p>)</span>
         <span class=p>)</span>
 
         <span class=bp>self</span><span class=o>.</span><span class=n>filepath</span> <span class=o>=</span> <span class=n>filepath</span>
@@ -1408,8 +1386,7 @@
 <span class=normal>78</span>
 <span class=normal>79</span>
 <span class=normal>80</span>
-<span class=normal>81</span>
-<span class=normal>82</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>root_dir</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>model_type</span><span class=p>:</span> <span class=n>Type</span><span class=p>[</span><span class=n>OscalBaseModel</span><span class=p>],</span> <span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+<span class=normal>81</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>root_dir</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>model_type</span><span class=p>:</span> <span class=n>Type</span><span class=p>[</span><span class=n>OscalBaseModel</span><span class=p>],</span> <span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Initialize repository OSCAL model object.&quot;&quot;&quot;</span>
     <span class=k>if</span> <span class=ow>not</span> <span class=n>file_utils</span><span class=o>.</span><span class=n>is_valid_project_root</span><span class=p>(</span><span class=n>root_dir</span><span class=p>):</span>
         <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Provided root directory </span><span class=si>{</span><span class=nb>str</span><span class=p>(</span><span class=n>root_dir</span><span class=p>)</span><span class=si>}</span><span class=s1> is not a valid Trestle root directory.&#39;</span><span class=p>)</span>
@@ -1434,12 +1411,12 @@
     <span class=bp>self</span><span class=o>.</span><span class=n>file_content_type</span> <span class=o>=</span> <span class=n>file_content_type</span>
 
     <span class=n>filepath</span> <span class=o>=</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>(</span>
-        <span class=bp>self</span><span class=o>.</span><span class=n>model_dir</span><span class=p>,</span>
-        <span class=bp>self</span><span class=o>.</span><span class=n>model_alias</span> <span class=o>+</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>path_to_file_extension</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>model_dir</span> <span class=o>/</span> <span class=bp>self</span><span class=o>.</span><span class=n>model_alias</span><span class=p>)</span>
+        <span class=bp>self</span><span class=o>.</span><span class=n>model_dir</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>model_alias</span> <span class=o>+</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>path_to_file_extension</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>model_dir</span> <span class=o>/</span> <span class=bp>self</span><span class=o>.</span><span class=n>model_alias</span><span class=p>)</span>
     <span class=p>)</span>
 
     <span class=bp>self</span><span class=o>.</span><span class=n>filepath</span> <span class=o>=</span> <span class=n>filepath</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.ManagedOSCAL.merge class="doc doc-heading"> <code class="highlight language-python"><span class=n>merge</span><span class=p>(</span><span class=n>elements</span><span class=p>,</span> <span class=n>parent_model_dir</span><span class=o>=</span><span class=kc>None</span><span class=p>)</span></code> <a href=#trestle.core.repository.ManagedOSCAL.merge class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Merge OSCAL elements in repository.</p> <p>The parent_model_dir specifies the parent model direcotry in which to merge relative to main model dir. For example, if we have to merge 'metadata.*' into 'metadata' then parent_model_dir should be the 'catalog' dir that contains the 'metadata.json' file or the 'metadata' directory</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>152</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.ManagedOSCAL.merge class="doc doc-heading"> <code class="highlight language-python"><span class=n>merge</span><span class=p>(</span><span class=n>elements</span><span class=p>,</span> <span class=n>parent_model_dir</span><span class=o>=</span><span class=kc>None</span><span class=p>)</span></code> <a href=#trestle.core.repository.ManagedOSCAL.merge class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Merge OSCAL elements in repository.</p> <p>The parent_model_dir specifies the parent model direcotry in which to merge relative to main model dir. For example, if we have to merge 'metadata.*' into 'metadata' then parent_model_dir should be the 'catalog' dir that contains the 'metadata.json' file or the 'metadata' directory</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>151</span>
+<span class=normal>152</span>
 <span class=normal>153</span>
 <span class=normal>154</span>
 <span class=normal>155</span>
@@ -1461,8 +1438,7 @@
 <span class=normal>171</span>
 <span class=normal>172</span>
 <span class=normal>173</span>
-<span class=normal>174</span>
-<span class=normal>175</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>merge</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>elements</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>],</span> <span class=n>parent_model_dir</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
+<span class=normal>174</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>merge</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>elements</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>],</span> <span class=n>parent_model_dir</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Merge OSCAL elements in repository.</span>
 
 <span class=sd>    The parent_model_dir specifies the parent model direcotry in which to merge relative to main model dir.</span>
@@ -1486,16 +1462,17 @@
 
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Model </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>model_name</span><span class=si>}</span><span class=s1> merged successfully.&#39;</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>success</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.ManagedOSCAL.read class="doc doc-heading"> <code class="highlight language-python"><span class=n>read</span><span class=p>()</span></code> <a href=#trestle.core.repository.ManagedOSCAL.read class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Read OSCAL model from repository.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>84</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.ManagedOSCAL.read class="doc doc-heading"> <code class="highlight language-python"><span class=n>read</span><span class=p>()</span></code> <a href=#trestle.core.repository.ManagedOSCAL.read class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Read OSCAL model from repository.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>83</span>
+<span class=normal>84</span>
 <span class=normal>85</span>
 <span class=normal>86</span>
-<span class=normal>87</span>
-<span class=normal>88</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>read</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>OscalBaseModel</span><span class=p>:</span>
+<span class=normal>87</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>read</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>OscalBaseModel</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Read OSCAL model from repository.&quot;&quot;&quot;</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Reading model </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>model_name</span><span class=si>}</span><span class=s1>.&#39;</span><span class=p>)</span>
     <span class=n>model</span> <span class=o>=</span> <span class=n>load_validate_model_path</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>root_dir</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>filepath</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>model</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.ManagedOSCAL.split class="doc doc-heading"> <code class="highlight language-python"><span class=n>split</span><span class=p>(</span><span class=n>model_file</span><span class=p>,</span> <span class=n>elements</span><span class=p>)</span></code> <a href=#trestle.core.repository.ManagedOSCAL.split class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Split the given OSCAL model file in repository.</p> <p>Model file path should be relative to the main model directory, e.g., model dir is $TRESTLE_ROOT/catalogs/NIST then model file path can be 'catalog/metadata.json' if metadata is to be split.</p> <p>Elements should be specified relative to model file, e.g., 'metadata.props.*'</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>117</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.ManagedOSCAL.split class="doc doc-heading"> <code class="highlight language-python"><span class=n>split</span><span class=p>(</span><span class=n>model_file</span><span class=p>,</span> <span class=n>elements</span><span class=p>)</span></code> <a href=#trestle.core.repository.ManagedOSCAL.split class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Split the given OSCAL model file in repository.</p> <p>Model file path should be relative to the main model directory, e.g., model dir is $TRESTLE_ROOT/catalogs/NIST then model file path can be 'catalog/metadata.json' if metadata is to be split.</p> <p>Elements should be specified relative to model file, e.g., 'metadata.props.*'</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>116</span>
+<span class=normal>117</span>
 <span class=normal>118</span>
 <span class=normal>119</span>
 <span class=normal>120</span>
@@ -1527,8 +1504,7 @@
 <span class=normal>146</span>
 <span class=normal>147</span>
 <span class=normal>148</span>
-<span class=normal>149</span>
-<span class=normal>150</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>split</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>model_file</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>elements</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
+<span class=normal>149</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>split</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>model_file</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>elements</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Split the given OSCAL model file in repository.</span>
 
 <span class=sd>    Model file path should be relative to the main model directory, e.g., model dir is $TRESTLE_ROOT/catalogs/NIST</span>
@@ -1562,18 +1538,19 @@
 
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Model </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>model_name</span><span class=si>}</span><span class=s1>, file </span><span class=si>{</span><span class=n>model_file</span><span class=si>}</span><span class=s1> splitted successfully.&#39;</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>success</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.ManagedOSCAL.validate class="doc doc-heading"> <code class="highlight language-python"><span class=n>validate</span><span class=p>()</span></code> <a href=#trestle.core.repository.ManagedOSCAL.validate class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Validate OSCAL model in repository.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>177</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.ManagedOSCAL.validate class="doc doc-heading"> <code class="highlight language-python"><span class=n>validate</span><span class=p>()</span></code> <a href=#trestle.core.repository.ManagedOSCAL.validate class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Validate OSCAL model in repository.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>176</span>
+<span class=normal>177</span>
 <span class=normal>178</span>
 <span class=normal>179</span>
 <span class=normal>180</span>
-<span class=normal>181</span>
-<span class=normal>182</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>validate</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
+<span class=normal>181</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>validate</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Validate OSCAL model in repository.&quot;&quot;&quot;</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Validating model </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>model_name</span><span class=si>}</span><span class=s1>.&#39;</span><span class=p>)</span>
     <span class=n>repo</span> <span class=o>=</span> <span class=n>Repository</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>root_dir</span><span class=p>)</span>
     <span class=n>success</span> <span class=o>=</span> <span class=n>repo</span><span class=o>.</span><span class=n>validate_model</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>model_type</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>model_name</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>success</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.ManagedOSCAL.write class="doc doc-heading"> <code class="highlight language-python"><span class=n>write</span><span class=p>(</span><span class=n>model</span><span class=p>)</span></code> <a href=#trestle.core.repository.ManagedOSCAL.write class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Write OSCAL model to repository.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 90</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.ManagedOSCAL.write class="doc doc-heading"> <code class="highlight language-python"><span class=n>write</span><span class=p>(</span><span class=n>model</span><span class=p>)</span></code> <a href=#trestle.core.repository.ManagedOSCAL.write class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Write OSCAL model to repository.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 89</span>
+<span class=normal> 90</span>
 <span class=normal> 91</span>
 <span class=normal> 92</span>
 <span class=normal> 93</span>
@@ -1597,8 +1574,7 @@
 <span class=normal>111</span>
 <span class=normal>112</span>
 <span class=normal>113</span>
-<span class=normal>114</span>
-<span class=normal>115</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>write</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>model</span><span class=p>:</span> <span class=n>OscalBaseModel</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
+<span class=normal>114</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>write</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>model</span><span class=p>:</span> <span class=n>OscalBaseModel</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Write OSCAL model to repository.&quot;&quot;&quot;</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Writing model </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>model_name</span><span class=si>}</span><span class=s1>.&#39;</span><span class=p>)</span>
     <span class=n>model_alias</span> <span class=o>=</span> <span class=n>classname_to_alias</span><span class=p>(</span><span class=n>model</span><span class=o>.</span><span class=vm>__class__</span><span class=o>.</span><span class=vm>__name__</span><span class=p>,</span> <span class=n>AliasMode</span><span class=o>.</span><span class=n>JSON</span><span class=p>)</span>
@@ -1624,7 +1600,8 @@
 
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Model </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>model_name</span><span class=si>}</span><span class=s1> written to repository&#39;</span><span class=p>)</span>
     <span class=k>return</span> <span class=kc>True</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> </div> </div> </div> <div class="doc doc-object doc-class"> <h4 id=trestle.core.repository.Repository class="doc doc-heading"> <code>Repository</code> <a href=#trestle.core.repository.Repository class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Repository class for performing operations on Trestle repository.</p> <p>This class provides a set of APIs to perform operations on trestle repository programmatically rather than using the command line. It takes the trestle root directory as input while creating an instance of this object. Operations such as import and get model return a ManagedOSCAL object representing the specific model that can be used to perform operations on the specific models.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>185</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> </div> </div> </div> <div class="doc doc-object doc-class"> <h4 id=trestle.core.repository.Repository class="doc doc-heading"> <code>Repository</code> <a href=#trestle.core.repository.Repository class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Repository class for performing operations on Trestle repository.</p> <p>This class provides a set of APIs to perform operations on trestle repository programmatically rather than using the command line. It takes the trestle root directory as input while creating an instance of this object. Operations such as import and get model return a ManagedOSCAL object representing the specific model that can be used to perform operations on the specific models.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>184</span>
+<span class=normal>185</span>
 <span class=normal>186</span>
 <span class=normal>187</span>
 <span class=normal>188</span>
@@ -1803,11 +1780,7 @@
 <span class=normal>361</span>
 <span class=normal>362</span>
 <span class=normal>363</span>
-<span class=normal>364</span>
-<span class=normal>365</span>
-<span class=normal>366</span>
-<span class=normal>367</span>
-<span class=normal>368</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>Repository</span><span class=p>:</span>
+<span class=normal>364</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>Repository</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Repository class for performing operations on Trestle repository.</span>
 
 <span class=sd>    This class provides a set of APIs to perform operations on trestle repository programmatically</span>
@@ -1885,10 +1858,7 @@
         <span class=k>return</span> <span class=n>ManagedOSCAL</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>root_dir</span><span class=p>,</span> <span class=n>model</span><span class=o>.</span><span class=vm>__class__</span><span class=p>,</span> <span class=n>name</span><span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>load_and_import_model</span><span class=p>(</span>
-        <span class=bp>self</span><span class=p>,</span>
-        <span class=n>model_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span>
-        <span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
-        <span class=n>content_type</span><span class=p>:</span> <span class=n>FileContentType</span> <span class=o>=</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>JSON</span>
+        <span class=bp>self</span><span class=p>,</span> <span class=n>model_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>content_type</span><span class=p>:</span> <span class=n>FileContentType</span> <span class=o>=</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>JSON</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>ManagedOSCAL</span><span class=p>:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Load the model at the specified path into trestle with the specified name.&quot;&quot;&quot;</span>
         <span class=n>fetcher</span> <span class=o>=</span> <span class=n>cache</span><span class=o>.</span><span class=n>FetcherFactory</span><span class=o>.</span><span class=n>get_fetcher</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>root_dir</span><span class=p>,</span> <span class=nb>str</span><span class=p>(</span><span class=n>model_path</span><span class=p>))</span>
@@ -1991,16 +1961,20 @@
 
         <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Model </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1> validated successfully.&#39;</span><span class=p>)</span>
         <span class=k>return</span> <span class=n>success</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.repository.Repository-attributes>Attributes<a href=#trestle.core.repository.Repository-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.repository.Repository.root_dir class="doc doc-heading"> <code class="highlight language-python"><span class=n>root_dir</span> <span class=o>=</span> <span class=n>root_dir</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.repository.Repository.root_dir class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.repository.Repository-functions>Functions<a href=#trestle.core.repository.Repository-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.Repository.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>root_dir</span><span class=p>)</span></code> <a href=#trestle.core.repository.Repository.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize trestle repository object.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>195</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.repository.Repository-attributes>Attributes<a href=#trestle.core.repository.Repository-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.repository.Repository.root_dir class="doc doc-heading"> <code class="highlight language-python"><span class=n>root_dir</span> <span class=o>=</span> <span class=n>root_dir</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.repository.Repository.root_dir class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.repository.Repository-functions>Functions<a href=#trestle.core.repository.Repository-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.Repository.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>root_dir</span><span class=p>)</span></code> <a href=#trestle.core.repository.Repository.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize trestle repository object.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>194</span>
+<span class=normal>195</span>
 <span class=normal>196</span>
 <span class=normal>197</span>
-<span class=normal>198</span>
-<span class=normal>199</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>root_dir</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+<span class=normal>198</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>root_dir</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Initialize trestle repository object.&quot;&quot;&quot;</span>
     <span class=k>if</span> <span class=ow>not</span> <span class=n>file_utils</span><span class=o>.</span><span class=n>is_valid_project_root</span><span class=p>(</span><span class=n>root_dir</span><span class=p>):</span>
         <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Provided root directory </span><span class=si>{</span><span class=n>root_dir</span><span class=si>}</span><span class=s1> is not a valid Trestle root directory.&#39;</span><span class=p>)</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>root_dir</span> <span class=o>=</span> <span class=n>root_dir</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.Repository.assemble_model class="doc doc-heading"> <code class="highlight language-python"><span class=n>assemble_model</span><span class=p>(</span><span class=n>model_type</span><span class=p>,</span> <span class=n>name</span><span class=p>,</span> <span class=n>extension</span><span class=o>=</span><span class=s1>&#39;json&#39;</span><span class=p>)</span></code> <a href=#trestle.core.repository.Repository.assemble_model class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Assemble an OSCAL model in repository and publish it to 'dist' directory.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>324</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.Repository.assemble_model class="doc doc-heading"> <code class="highlight language-python"><span class=n>assemble_model</span><span class=p>(</span><span class=n>model_type</span><span class=p>,</span> <span class=n>name</span><span class=p>,</span> <span class=n>extension</span><span class=o>=</span><span class=s1>&#39;json&#39;</span><span class=p>)</span></code> <a href=#trestle.core.repository.Repository.assemble_model class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Assemble an OSCAL model in repository and publish it to 'dist' directory.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>320</span>
+<span class=normal>321</span>
+<span class=normal>322</span>
+<span class=normal>323</span>
+<span class=normal>324</span>
 <span class=normal>325</span>
 <span class=normal>326</span>
 <span class=normal>327</span>
@@ -2018,11 +1992,7 @@
 <span class=normal>339</span>
 <span class=normal>340</span>
 <span class=normal>341</span>
-<span class=normal>342</span>
-<span class=normal>343</span>
-<span class=normal>344</span>
-<span class=normal>345</span>
-<span class=normal>346</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>assemble_model</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>model_type</span><span class=p>:</span> <span class=n>Type</span><span class=p>[</span><span class=n>OscalBaseModel</span><span class=p>],</span> <span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>extension</span><span class=p>:</span> <span class=nb>str</span> <span class=o>=</span> <span class=s1>&#39;json&#39;</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
+<span class=normal>342</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>assemble_model</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>model_type</span><span class=p>:</span> <span class=n>Type</span><span class=p>[</span><span class=n>OscalBaseModel</span><span class=p>],</span> <span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>extension</span><span class=p>:</span> <span class=nb>str</span> <span class=o>=</span> <span class=s1>&#39;json&#39;</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Assemble an OSCAL model in repository and publish it to &#39;dist&#39; directory.&quot;&quot;&quot;</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Assembling model </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1> of type </span><span class=si>{</span><span class=n>model_type</span><span class=o>.</span><span class=vm>__name__</span><span class=si>}</span><span class=s1>.&#39;</span><span class=p>)</span>
     <span class=n>success</span> <span class=o>=</span> <span class=kc>False</span>
@@ -2045,7 +2015,11 @@
 
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Model </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1> assembled successfully.&#39;</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>success</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.Repository.delete_model class="doc doc-heading"> <code class="highlight language-python"><span class=n>delete_model</span><span class=p>(</span><span class=n>model_type</span><span class=p>,</span> <span class=n>name</span><span class=p>)</span></code> <a href=#trestle.core.repository.Repository.delete_model class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Delete an OSCAL model from repository.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>298</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.Repository.delete_model class="doc doc-heading"> <code class="highlight language-python"><span class=n>delete_model</span><span class=p>(</span><span class=n>model_type</span><span class=p>,</span> <span class=n>name</span><span class=p>)</span></code> <a href=#trestle.core.repository.Repository.delete_model class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Delete an OSCAL model from repository.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>294</span>
+<span class=normal>295</span>
+<span class=normal>296</span>
+<span class=normal>297</span>
+<span class=normal>298</span>
 <span class=normal>299</span>
 <span class=normal>300</span>
 <span class=normal>301</span>
@@ -2065,11 +2039,7 @@
 <span class=normal>315</span>
 <span class=normal>316</span>
 <span class=normal>317</span>
-<span class=normal>318</span>
-<span class=normal>319</span>
-<span class=normal>320</span>
-<span class=normal>321</span>
-<span class=normal>322</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>delete_model</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>model_type</span><span class=p>:</span> <span class=n>Type</span><span class=p>[</span><span class=n>OscalBaseModel</span><span class=p>],</span> <span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
+<span class=normal>318</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>delete_model</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>model_type</span><span class=p>:</span> <span class=n>Type</span><span class=p>[</span><span class=n>OscalBaseModel</span><span class=p>],</span> <span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Delete an OSCAL model from repository.&quot;&quot;&quot;</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Deleting model </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1> of type </span><span class=si>{</span><span class=n>model_type</span><span class=o>.</span><span class=vm>__name__</span><span class=si>}</span><span class=s1>.&#39;</span><span class=p>)</span>
     <span class=n>model_alias</span> <span class=o>=</span> <span class=n>classname_to_alias</span><span class=p>(</span><span class=n>model_type</span><span class=o>.</span><span class=vm>__name__</span><span class=p>,</span> <span class=n>AliasMode</span><span class=o>.</span><span class=n>JSON</span><span class=p>)</span>
@@ -2094,7 +2064,11 @@
 
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Model </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1> deleted successfully.&#39;</span><span class=p>)</span>
     <span class=k>return</span> <span class=kc>True</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.Repository.get_model class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_model</span><span class=p>(</span><span class=n>model_type</span><span class=p>,</span> <span class=n>name</span><span class=p>)</span></code> <a href=#trestle.core.repository.Repository.get_model class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get a specific OSCAL model from repository.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>284</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.Repository.get_model class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_model</span><span class=p>(</span><span class=n>model_type</span><span class=p>,</span> <span class=n>name</span><span class=p>)</span></code> <a href=#trestle.core.repository.Repository.get_model class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get a specific OSCAL model from repository.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>280</span>
+<span class=normal>281</span>
+<span class=normal>282</span>
+<span class=normal>283</span>
+<span class=normal>284</span>
 <span class=normal>285</span>
 <span class=normal>286</span>
 <span class=normal>287</span>
@@ -2102,11 +2076,7 @@
 <span class=normal>289</span>
 <span class=normal>290</span>
 <span class=normal>291</span>
-<span class=normal>292</span>
-<span class=normal>293</span>
-<span class=normal>294</span>
-<span class=normal>295</span>
-<span class=normal>296</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>get_model</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>model_type</span><span class=p>:</span> <span class=n>Type</span><span class=p>[</span><span class=n>OscalBaseModel</span><span class=p>],</span> <span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>ManagedOSCAL</span><span class=p>:</span>
+<span class=normal>292</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>get_model</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>model_type</span><span class=p>:</span> <span class=n>Type</span><span class=p>[</span><span class=n>OscalBaseModel</span><span class=p>],</span> <span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>ManagedOSCAL</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Get a specific OSCAL model from repository.&quot;&quot;&quot;</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Getting model </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1> of type </span><span class=si>{</span><span class=n>model_type</span><span class=o>.</span><span class=vm>__name__</span><span class=si>}</span><span class=s1>.&#39;</span><span class=p>)</span>
     <span class=n>model_alias</span> <span class=o>=</span> <span class=n>classname_to_alias</span><span class=p>(</span><span class=n>model_type</span><span class=o>.</span><span class=vm>__name__</span><span class=p>,</span> <span class=n>AliasMode</span><span class=o>.</span><span class=n>JSON</span><span class=p>)</span>
@@ -2119,7 +2089,8 @@
         <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Model </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1> does not exist.&#39;</span><span class=p>)</span>
 
     <span class=k>return</span> <span class=n>ManagedOSCAL</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>root_dir</span><span class=p>,</span> <span class=n>model_type</span><span class=p>,</span> <span class=n>name</span><span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.Repository.import_model class="doc doc-heading"> <code class="highlight language-python"><span class=n>import_model</span><span class=p>(</span><span class=n>model</span><span class=p>,</span> <span class=n>name</span><span class=p>,</span> <span class=n>content_type</span><span class=o>=</span><span class=n>FileContentType</span><span class=o>.</span><span class=n>JSON</span><span class=p>)</span></code> <a href=#trestle.core.repository.Repository.import_model class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Import OSCAL object into trestle repository.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>201</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.Repository.import_model class="doc doc-heading"> <code class="highlight language-python"><span class=n>import_model</span><span class=p>(</span><span class=n>model</span><span class=p>,</span> <span class=n>name</span><span class=p>,</span> <span class=n>content_type</span><span class=o>=</span><span class=n>FileContentType</span><span class=o>.</span><span class=n>JSON</span><span class=p>)</span></code> <a href=#trestle.core.repository.Repository.import_model class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Import OSCAL object into trestle repository.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>200</span>
+<span class=normal>201</span>
 <span class=normal>202</span>
 <span class=normal>203</span>
 <span class=normal>204</span>
@@ -2177,8 +2148,7 @@
 <span class=normal>256</span>
 <span class=normal>257</span>
 <span class=normal>258</span>
-<span class=normal>259</span>
-<span class=normal>260</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>import_model</span><span class=p>(</span>
+<span class=normal>259</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>import_model</span><span class=p>(</span>
     <span class=bp>self</span><span class=p>,</span> <span class=n>model</span><span class=p>:</span> <span class=n>OscalBaseModel</span><span class=p>,</span> <span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>content_type</span><span class=p>:</span> <span class=n>FileContentType</span> <span class=o>=</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>JSON</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>ManagedOSCAL</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Import OSCAL object into trestle repository.&quot;&quot;&quot;</span>
@@ -2238,15 +2208,15 @@
     <span class=c1># all well; model was imported and validated successfully</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Model </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1> of type </span><span class=si>{</span><span class=n>model</span><span class=o>.</span><span class=vm>__class__</span><span class=o>.</span><span class=vm>__name__</span><span class=si>}</span><span class=s1> imported successfully.&#39;</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>ManagedOSCAL</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>root_dir</span><span class=p>,</span> <span class=n>model</span><span class=o>.</span><span class=vm>__class__</span><span class=p>,</span> <span class=n>name</span><span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.Repository.list_models class="doc doc-heading"> <code class="highlight language-python"><span class=n>list_models</span><span class=p>(</span><span class=n>model_type</span><span class=p>)</span></code> <a href=#trestle.core.repository.Repository.list_models class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>List models of a given type in trestle repository.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>274</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.Repository.list_models class="doc doc-heading"> <code class="highlight language-python"><span class=n>list_models</span><span class=p>(</span><span class=n>model_type</span><span class=p>)</span></code> <a href=#trestle.core.repository.Repository.list_models class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>List models of a given type in trestle repository.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>270</span>
+<span class=normal>271</span>
+<span class=normal>272</span>
+<span class=normal>273</span>
+<span class=normal>274</span>
 <span class=normal>275</span>
 <span class=normal>276</span>
 <span class=normal>277</span>
-<span class=normal>278</span>
-<span class=normal>279</span>
-<span class=normal>280</span>
-<span class=normal>281</span>
-<span class=normal>282</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>list_models</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>model_type</span><span class=p>:</span> <span class=n>Type</span><span class=p>[</span><span class=n>OscalBaseModel</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
+<span class=normal>278</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>list_models</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>model_type</span><span class=p>:</span> <span class=n>Type</span><span class=p>[</span><span class=n>OscalBaseModel</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;List models of a given type in trestle repository.&quot;&quot;&quot;</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Listing models of type </span><span class=si>{</span><span class=n>model_type</span><span class=o>.</span><span class=vm>__name__</span><span class=si>}</span><span class=s1>.&#39;</span><span class=p>)</span>
     <span class=n>model_alias</span> <span class=o>=</span> <span class=n>classname_to_alias</span><span class=p>(</span><span class=n>model_type</span><span class=o>.</span><span class=vm>__name__</span><span class=p>,</span> <span class=n>AliasMode</span><span class=o>.</span><span class=n>JSON</span><span class=p>)</span>
@@ -2255,28 +2225,26 @@
     <span class=n>models</span> <span class=o>=</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>get_models_of_type</span><span class=p>(</span><span class=n>model_alias</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>root_dir</span><span class=p>)</span>
 
     <span class=k>return</span> <span class=n>models</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.Repository.load_and_import_model class="doc doc-heading"> <code class="highlight language-python"><span class=n>load_and_import_model</span><span class=p>(</span><span class=n>model_path</span><span class=p>,</span> <span class=n>name</span><span class=p>,</span> <span class=n>content_type</span><span class=o>=</span><span class=n>FileContentType</span><span class=o>.</span><span class=n>JSON</span><span class=p>)</span></code> <a href=#trestle.core.repository.Repository.load_and_import_model class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Load the model at the specified path into trestle with the specified name.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>262</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.Repository.load_and_import_model class="doc doc-heading"> <code class="highlight language-python"><span class=n>load_and_import_model</span><span class=p>(</span><span class=n>model_path</span><span class=p>,</span> <span class=n>name</span><span class=p>,</span> <span class=n>content_type</span><span class=o>=</span><span class=n>FileContentType</span><span class=o>.</span><span class=n>JSON</span><span class=p>)</span></code> <a href=#trestle.core.repository.Repository.load_and_import_model class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Load the model at the specified path into trestle with the specified name.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>261</span>
+<span class=normal>262</span>
 <span class=normal>263</span>
 <span class=normal>264</span>
 <span class=normal>265</span>
 <span class=normal>266</span>
 <span class=normal>267</span>
-<span class=normal>268</span>
-<span class=normal>269</span>
-<span class=normal>270</span>
-<span class=normal>271</span>
-<span class=normal>272</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>load_and_import_model</span><span class=p>(</span>
-    <span class=bp>self</span><span class=p>,</span>
-    <span class=n>model_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span>
-    <span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
-    <span class=n>content_type</span><span class=p>:</span> <span class=n>FileContentType</span> <span class=o>=</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>JSON</span>
+<span class=normal>268</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>load_and_import_model</span><span class=p>(</span>
+    <span class=bp>self</span><span class=p>,</span> <span class=n>model_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>content_type</span><span class=p>:</span> <span class=n>FileContentType</span> <span class=o>=</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>JSON</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>ManagedOSCAL</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Load the model at the specified path into trestle with the specified name.&quot;&quot;&quot;</span>
     <span class=n>fetcher</span> <span class=o>=</span> <span class=n>cache</span><span class=o>.</span><span class=n>FetcherFactory</span><span class=o>.</span><span class=n>get_fetcher</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>root_dir</span><span class=p>,</span> <span class=nb>str</span><span class=p>(</span><span class=n>model_path</span><span class=p>))</span>
     <span class=n>model</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>fetcher</span><span class=o>.</span><span class=n>get_oscal</span><span class=p>(</span><span class=kc>True</span><span class=p>)</span>
 
     <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>import_model</span><span class=p>(</span><span class=n>model</span><span class=p>,</span> <span class=n>name</span><span class=p>,</span> <span class=n>content_type</span><span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.Repository.validate_model class="doc doc-heading"> <code class="highlight language-python"><span class=n>validate_model</span><span class=p>(</span><span class=n>model_type</span><span class=p>,</span> <span class=n>name</span><span class=p>)</span></code> <a href=#trestle.core.repository.Repository.validate_model class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Validate an OSCAL model in repository.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>348</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.repository.Repository.validate_model class="doc doc-heading"> <code class="highlight language-python"><span class=n>validate_model</span><span class=p>(</span><span class=n>model_type</span><span class=p>,</span> <span class=n>name</span><span class=p>)</span></code> <a href=#trestle.core.repository.Repository.validate_model class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Validate an OSCAL model in repository.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/repository.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>344</span>
+<span class=normal>345</span>
+<span class=normal>346</span>
+<span class=normal>347</span>
+<span class=normal>348</span>
 <span class=normal>349</span>
 <span class=normal>350</span>
 <span class=normal>351</span>
@@ -2292,11 +2260,7 @@
 <span class=normal>361</span>
 <span class=normal>362</span>
 <span class=normal>363</span>
-<span class=normal>364</span>
-<span class=normal>365</span>
-<span class=normal>366</span>
-<span class=normal>367</span>
-<span class=normal>368</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>validate_model</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>model_type</span><span class=p>:</span> <span class=n>Type</span><span class=p>[</span><span class=n>OscalBaseModel</span><span class=p>],</span> <span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
+<span class=normal>364</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>validate_model</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>model_type</span><span class=p>:</span> <span class=n>Type</span><span class=p>[</span><span class=n>OscalBaseModel</span><span class=p>],</span> <span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Validate an OSCAL model in repository.&quot;&quot;&quot;</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Validating model </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1> of type </span><span class=si>{</span><span class=n>model_type</span><span class=o>.</span><span class=vm>__name__</span><span class=si>}</span><span class=s1>.&#39;</span><span class=p>)</span>
     <span class=n>success</span> <span class=o>=</span> <span class=kc>False</span>

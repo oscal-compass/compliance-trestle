@@ -15,8 +15,7 @@
                   return '';
                 }
               });
-            </script> <p>Trestle CLI return codes.</p> <p>SUCCESS - Operation/validation completed successfully COMMAND_ERROR - Generic expected error while executing command (handled by command) INCORRECT_ARGS - Provided arguments were incorrect/incomplete DOCUMENTS_VALIDATION_ERROR - Validation of the markdown or drawio files failed MODEL_VALIDATION_ERROR - Validation of OSCAL model failed TRESTLE_ROOT_ERROR - Workspace setup has failed, the root is not trestle directory IO_ERROR - IO related errors, i.e. permission issue, non-existing file, etc AUTH_ERROR - Authenication error while accessing/storing cache UNKNOWN_ERROR - Unexpected error (unhandled by command) INVALID_MODEL - Loaded model is invalid</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/common/return_codes.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>20</span>
-<span class=normal>21</span>
+            </script> <p>Trestle CLI return codes.</p> <p>SUCCESS - Operation/validation completed successfully COMMAND_ERROR - Generic expected error while executing command (handled by command) INCORRECT_ARGS - Provided arguments were incorrect/incomplete DOCUMENTS_VALIDATION_ERROR - Validation of the markdown or drawio files failed MODEL_VALIDATION_ERROR - Validation of OSCAL model failed TRESTLE_ROOT_ERROR - Workspace setup has failed, the root is not trestle directory IO_ERROR - IO related errors, i.e. permission issue, non-existing file, etc AUTH_ERROR - Authenication error while accessing/storing cache UNKNOWN_ERROR - Unexpected error (unhandled by command) INVALID_MODEL - Loaded model is invalid</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/common/return_codes.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>21</span>
 <span class=normal>22</span>
 <span class=normal>23</span>
 <span class=normal>24</span>
@@ -39,7 +38,8 @@
 <span class=normal>41</span>
 <span class=normal>42</span>
 <span class=normal>43</span>
-<span class=normal>44</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>CmdReturnCodes</span><span class=p>(</span><span class=n>enum</span><span class=o>.</span><span class=n>Enum</span><span class=p>):</span>
+<span class=normal>44</span>
+<span class=normal>45</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>CmdReturnCodes</span><span class=p>(</span><span class=n>enum</span><span class=o>.</span><span class=n>Enum</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    Trestle CLI return codes.</span>
 

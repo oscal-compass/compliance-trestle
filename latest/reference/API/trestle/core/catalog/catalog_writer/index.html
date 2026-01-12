@@ -425,8 +425,7 @@
 <span class=normal>460</span>
 <span class=normal>461</span>
 <span class=normal>462</span>
-<span class=normal>463</span>
-<span class=normal>464</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>CatalogWriter</span><span class=p>():</span>
+<span class=normal>463</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>CatalogWriter</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    Catalog writer.</span>
 
@@ -519,7 +518,7 @@
         <span class=bp>self</span><span class=p>,</span>
         <span class=n>profile_set_param_dict</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>common</span><span class=o>.</span><span class=n>Parameter</span><span class=p>],</span>
         <span class=n>control_param_dict</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Any</span><span class=p>]],</span>
-        <span class=n>context</span><span class=p>:</span> <span class=n>ControlContext</span>
+        <span class=n>context</span><span class=p>:</span> <span class=n>ControlContext</span><span class=p>,</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Any</span><span class=p>]]:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>        Build set-parameters dictionary from the given profile.modify.set-parameters and control.params.</span>
@@ -583,14 +582,9 @@
                 <span class=n>values</span> <span class=o>=</span> <span class=n>tmp_dict</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>&#39;values&#39;</span><span class=p>,</span> <span class=kc>None</span><span class=p>)</span>
                 <span class=c1># if values are None then don´t display them in the markdown</span>
                 <span class=k>if</span> <span class=n>values</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
-                    <span class=n>new_dict</span> <span class=o>=</span> <span class=p>{</span>
-                        <span class=s1>&#39;id&#39;</span><span class=p>:</span> <span class=n>param_id</span><span class=p>,</span>
-                        <span class=s1>&#39;values&#39;</span><span class=p>:</span> <span class=n>values</span><span class=p>,</span>
-                    <span class=p>}</span>
+                    <span class=n>new_dict</span> <span class=o>=</span> <span class=p>{</span><span class=s1>&#39;id&#39;</span><span class=p>:</span> <span class=n>param_id</span><span class=p>,</span> <span class=s1>&#39;values&#39;</span><span class=p>:</span> <span class=n>values</span><span class=p>}</span>
                 <span class=k>else</span><span class=p>:</span>
-                    <span class=n>new_dict</span> <span class=o>=</span> <span class=p>{</span>
-                        <span class=s1>&#39;id&#39;</span><span class=p>:</span> <span class=n>param_id</span><span class=p>,</span>
-                    <span class=p>}</span>
+                    <span class=n>new_dict</span> <span class=o>=</span> <span class=p>{</span><span class=s1>&#39;id&#39;</span><span class=p>:</span> <span class=n>param_id</span><span class=p>}</span>
                 <span class=n>new_dict</span><span class=p>[</span><span class=n>const</span><span class=o>.</span><span class=n>PROFILE_VALUES</span><span class=p>]</span> <span class=o>=</span> <span class=p>[</span><span class=n>const</span><span class=o>.</span><span class=n>REPLACE_ME_PLACEHOLDER</span><span class=p>]</span>
                 <span class=n>new_dict</span><span class=p>[</span><span class=n>const</span><span class=o>.</span><span class=n>PROFILE_PARAM_VALUE_ORIGIN</span><span class=p>]</span> <span class=o>=</span> <span class=n>const</span><span class=o>.</span><span class=n>REPLACE_ME_PLACEHOLDER</span>
             <span class=k>if</span> <span class=n>param_value_origin</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
@@ -620,7 +614,7 @@
                 <span class=n>const</span><span class=o>.</span><span class=n>DISPLAY_NAME</span><span class=p>,</span>
                 <span class=n>const</span><span class=o>.</span><span class=n>PROFILE_VALUES</span><span class=p>,</span>
                 <span class=n>const</span><span class=o>.</span><span class=n>PARAM_VALUE_ORIGIN</span><span class=p>,</span>
-                <span class=n>const</span><span class=o>.</span><span class=n>PROFILE_PARAM_VALUE_ORIGIN</span>
+                <span class=n>const</span><span class=o>.</span><span class=n>PROFILE_PARAM_VALUE_ORIGIN</span><span class=p>,</span>
             <span class=p>)</span>
             <span class=n>ordered_dict</span> <span class=o>=</span> <span class=p>{</span><span class=n>k</span><span class=p>:</span> <span class=n>new_dict</span><span class=p>[</span><span class=n>k</span><span class=p>]</span> <span class=k>for</span> <span class=n>k</span> <span class=ow>in</span> <span class=n>key_order</span> <span class=k>if</span> <span class=n>k</span> <span class=ow>in</span> <span class=n>new_dict</span><span class=o>.</span><span class=n>keys</span><span class=p>()}</span>
             <span class=n>set_param_dict</span><span class=p>[</span><span class=n>param_id</span><span class=p>]</span> <span class=o>=</span> <span class=n>ordered_dict</span>
@@ -736,11 +730,15 @@
             <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Component </span><span class=si>{</span><span class=n>context</span><span class=o>.</span><span class=n>comp_name</span><span class=si>}</span><span class=s1> references controls </span><span class=si>{</span><span class=n>missing_controls</span><span class=si>}</span><span class=s1> not in profile.&#39;</span><span class=p>)</span>
 
         <span class=c1># get top level rule info applying to all controls</span>
-        <span class=n>comp_rules_dict</span><span class=p>,</span> <span class=n>comp_rules_params_dict</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>ControlInterface</span><span class=o>.</span><span class=n>get_rules_and_params_dict_from_item</span><span class=p>(</span><span class=n>context</span><span class=o>.</span><span class=n>component</span><span class=p>)</span>  <span class=c1># noqa E501</span>
+        <span class=n>comp_rules_dict</span><span class=p>,</span> <span class=n>comp_rules_params_dict</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>ControlInterface</span><span class=o>.</span><span class=n>get_rules_and_params_dict_from_item</span><span class=p>(</span>
+            <span class=n>context</span><span class=o>.</span><span class=n>component</span>
+        <span class=p>)</span>  <span class=c1># noqa E501</span>
         <span class=n>context</span><span class=o>.</span><span class=n>rules_dict</span><span class=p>[</span><span class=n>context</span><span class=o>.</span><span class=n>comp_name</span><span class=p>]</span> <span class=o>=</span> <span class=n>comp_rules_dict</span>
         <span class=n>context</span><span class=o>.</span><span class=n>rules_params_dict</span><span class=p>[</span><span class=n>context</span><span class=o>.</span><span class=n>comp_name</span><span class=p>]</span> <span class=o>=</span> <span class=n>comp_rules_params_dict</span>
         <span class=k>for</span> <span class=n>control_imp</span> <span class=ow>in</span> <span class=n>as_list</span><span class=p>(</span><span class=n>context</span><span class=o>.</span><span class=n>component</span><span class=o>.</span><span class=n>control_implementations</span><span class=p>):</span>
-            <span class=n>control_imp_rules_dict</span><span class=p>,</span> <span class=n>control_imp_rules_params_dict</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>ControlInterface</span><span class=o>.</span><span class=n>get_rules_and_params_dict_from_item</span><span class=p>(</span><span class=n>control_imp</span><span class=p>)</span>  <span class=c1># noqa E501</span>
+            <span class=n>control_imp_rules_dict</span><span class=p>,</span> <span class=n>control_imp_rules_params_dict</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=p>(</span>
+                <span class=n>ControlInterface</span><span class=o>.</span><span class=n>get_rules_and_params_dict_from_item</span><span class=p>(</span><span class=n>control_imp</span><span class=p>)</span>
+            <span class=p>)</span>  <span class=c1># noqa E501</span>
             <span class=n>context</span><span class=o>.</span><span class=n>rules_dict</span><span class=p>[</span><span class=n>context</span><span class=o>.</span><span class=n>comp_name</span><span class=p>]</span><span class=o>.</span><span class=n>update</span><span class=p>(</span><span class=n>control_imp_rules_dict</span><span class=p>)</span>
             <span class=n>comp_rules_params_dict</span> <span class=o>=</span> <span class=n>context</span><span class=o>.</span><span class=n>rules_params_dict</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=n>context</span><span class=o>.</span><span class=n>comp_name</span><span class=p>,</span> <span class=p>{})</span>
             <span class=n>comp_rules_params_dict</span><span class=o>.</span><span class=n>update</span><span class=p>(</span><span class=n>control_imp_rules_params_dict</span><span class=p>)</span>
@@ -842,7 +840,7 @@
         <span class=n>context</span><span class=p>:</span> <span class=n>ControlContext</span><span class=p>,</span>
         <span class=n>control</span><span class=p>:</span> <span class=n>cat</span><span class=o>.</span><span class=n>Control</span><span class=p>,</span>
         <span class=n>part_id_map</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]],</span>
-        <span class=n>found_control_alters</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>prof</span><span class=o>.</span><span class=n>Alter</span><span class=p>]</span>
+        <span class=n>found_control_alters</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>prof</span><span class=o>.</span><span class=n>Alter</span><span class=p>],</span>
     <span class=p>):</span>
         <span class=c1># we need to create the dir structure on demand because we don&#39;t know a priori what groups are included</span>
         <span class=n>_</span><span class=p>,</span> <span class=n>group_title</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_catalog_interface</span><span class=o>.</span><span class=n>get_group_info_by_control</span><span class=p>(</span><span class=n>control</span><span class=o>.</span><span class=n>id</span><span class=p>)</span>
@@ -860,7 +858,8 @@
 <span class=normal>46</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>catalog_interface</span><span class=p>:</span> <span class=n>CatalogInterface</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Initialize catalog writer.&quot;&quot;&quot;</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_catalog_interface</span> <span class=o>=</span> <span class=n>catalog_interface</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.catalog.catalog_writer.CatalogWriter.write_catalog_as_catalog class="doc doc-heading"> <code class="highlight language-python"><span class=n>write_catalog_as_catalog</span><span class=p>(</span><span class=n>context</span><span class=p>,</span> <span class=n>part_id_map</span><span class=p>)</span></code> <a href=#trestle.core.catalog.catalog_writer.CatalogWriter.write_catalog_as_catalog class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Write the catalog as a simple catalog.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/catalog/catalog_writer.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>407</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.catalog.catalog_writer.CatalogWriter.write_catalog_as_catalog class="doc doc-heading"> <code class="highlight language-python"><span class=n>write_catalog_as_catalog</span><span class=p>(</span><span class=n>context</span><span class=p>,</span> <span class=n>part_id_map</span><span class=p>)</span></code> <a href=#trestle.core.catalog.catalog_writer.CatalogWriter.write_catalog_as_catalog class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Write the catalog as a simple catalog.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/catalog/catalog_writer.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>406</span>
+<span class=normal>407</span>
 <span class=normal>408</span>
 <span class=normal>409</span>
 <span class=normal>410</span>
@@ -897,8 +896,7 @@
 <span class=normal>441</span>
 <span class=normal>442</span>
 <span class=normal>443</span>
-<span class=normal>444</span>
-<span class=normal>445</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>write_catalog_as_catalog</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>context</span><span class=p>:</span> <span class=n>ControlContext</span><span class=p>,</span> <span class=n>part_id_map</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]])</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+<span class=normal>444</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>write_catalog_as_catalog</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>context</span><span class=p>:</span> <span class=n>ControlContext</span><span class=p>,</span> <span class=n>part_id_map</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]])</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Write the catalog as a simple catalog.&quot;&quot;&quot;</span>
     <span class=c1># write out the controls</span>
     <span class=k>for</span> <span class=n>control</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>_catalog_interface</span><span class=o>.</span><span class=n>get_all_controls_from_catalog</span><span class=p>(</span><span class=kc>True</span><span class=p>):</span>
@@ -937,7 +935,12 @@
                 <span class=n>new_context</span><span class=o>.</span><span class=n>cli_yaml_header</span><span class=p>[</span><span class=n>const</span><span class=o>.</span><span class=n>SET_PARAMS_TAG</span><span class=p>]</span><span class=o>.</span><span class=n>pop</span><span class=p>(</span><span class=n>pop</span><span class=p>)</span>
 
         <span class=bp>self</span><span class=o>.</span><span class=n>_write_control_into_dir</span><span class=p>(</span><span class=n>new_context</span><span class=p>,</span> <span class=n>control</span><span class=p>,</span> <span class=n>part_id_map</span><span class=p>,</span> <span class=p>[])</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.catalog.catalog_writer.CatalogWriter.write_catalog_as_component_markdown class="doc doc-heading"> <code class="highlight language-python"><span class=n>write_catalog_as_component_markdown</span><span class=p>(</span><span class=n>context</span><span class=p>,</span> <span class=n>part_id_map</span><span class=p>)</span></code> <a href=#trestle.core.catalog.catalog_writer.CatalogWriter.write_catalog_as_component_markdown class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Write out the catalog as component markdown.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/catalog/catalog_writer.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>325</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.catalog.catalog_writer.CatalogWriter.write_catalog_as_component_markdown class="doc doc-heading"> <code class="highlight language-python"><span class=n>write_catalog_as_component_markdown</span><span class=p>(</span><span class=n>context</span><span class=p>,</span> <span class=n>part_id_map</span><span class=p>)</span></code> <a href=#trestle.core.catalog.catalog_writer.CatalogWriter.write_catalog_as_component_markdown class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Write out the catalog as component markdown.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/catalog/catalog_writer.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>320</span>
+<span class=normal>321</span>
+<span class=normal>322</span>
+<span class=normal>323</span>
+<span class=normal>324</span>
+<span class=normal>325</span>
 <span class=normal>326</span>
 <span class=normal>327</span>
 <span class=normal>328</span>
@@ -1016,8 +1019,7 @@
 <span class=normal>401</span>
 <span class=normal>402</span>
 <span class=normal>403</span>
-<span class=normal>404</span>
-<span class=normal>405</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>write_catalog_as_component_markdown</span><span class=p>(</span>
+<span class=normal>404</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>write_catalog_as_component_markdown</span><span class=p>(</span>
     <span class=bp>self</span><span class=p>,</span> <span class=n>context</span><span class=p>:</span> <span class=n>ControlContext</span><span class=p>,</span> <span class=n>part_id_map</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]]</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Write out the catalog as component markdown.&quot;&quot;&quot;</span>
@@ -1038,11 +1040,15 @@
         <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Component </span><span class=si>{</span><span class=n>context</span><span class=o>.</span><span class=n>comp_name</span><span class=si>}</span><span class=s1> references controls </span><span class=si>{</span><span class=n>missing_controls</span><span class=si>}</span><span class=s1> not in profile.&#39;</span><span class=p>)</span>
 
     <span class=c1># get top level rule info applying to all controls</span>
-    <span class=n>comp_rules_dict</span><span class=p>,</span> <span class=n>comp_rules_params_dict</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>ControlInterface</span><span class=o>.</span><span class=n>get_rules_and_params_dict_from_item</span><span class=p>(</span><span class=n>context</span><span class=o>.</span><span class=n>component</span><span class=p>)</span>  <span class=c1># noqa E501</span>
+    <span class=n>comp_rules_dict</span><span class=p>,</span> <span class=n>comp_rules_params_dict</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>ControlInterface</span><span class=o>.</span><span class=n>get_rules_and_params_dict_from_item</span><span class=p>(</span>
+        <span class=n>context</span><span class=o>.</span><span class=n>component</span>
+    <span class=p>)</span>  <span class=c1># noqa E501</span>
     <span class=n>context</span><span class=o>.</span><span class=n>rules_dict</span><span class=p>[</span><span class=n>context</span><span class=o>.</span><span class=n>comp_name</span><span class=p>]</span> <span class=o>=</span> <span class=n>comp_rules_dict</span>
     <span class=n>context</span><span class=o>.</span><span class=n>rules_params_dict</span><span class=p>[</span><span class=n>context</span><span class=o>.</span><span class=n>comp_name</span><span class=p>]</span> <span class=o>=</span> <span class=n>comp_rules_params_dict</span>
     <span class=k>for</span> <span class=n>control_imp</span> <span class=ow>in</span> <span class=n>as_list</span><span class=p>(</span><span class=n>context</span><span class=o>.</span><span class=n>component</span><span class=o>.</span><span class=n>control_implementations</span><span class=p>):</span>
-        <span class=n>control_imp_rules_dict</span><span class=p>,</span> <span class=n>control_imp_rules_params_dict</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>ControlInterface</span><span class=o>.</span><span class=n>get_rules_and_params_dict_from_item</span><span class=p>(</span><span class=n>control_imp</span><span class=p>)</span>  <span class=c1># noqa E501</span>
+        <span class=n>control_imp_rules_dict</span><span class=p>,</span> <span class=n>control_imp_rules_params_dict</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=p>(</span>
+            <span class=n>ControlInterface</span><span class=o>.</span><span class=n>get_rules_and_params_dict_from_item</span><span class=p>(</span><span class=n>control_imp</span><span class=p>)</span>
+        <span class=p>)</span>  <span class=c1># noqa E501</span>
         <span class=n>context</span><span class=o>.</span><span class=n>rules_dict</span><span class=p>[</span><span class=n>context</span><span class=o>.</span><span class=n>comp_name</span><span class=p>]</span><span class=o>.</span><span class=n>update</span><span class=p>(</span><span class=n>control_imp_rules_dict</span><span class=p>)</span>
         <span class=n>comp_rules_params_dict</span> <span class=o>=</span> <span class=n>context</span><span class=o>.</span><span class=n>rules_params_dict</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=n>context</span><span class=o>.</span><span class=n>comp_name</span><span class=p>,</span> <span class=p>{})</span>
         <span class=n>comp_rules_params_dict</span><span class=o>.</span><span class=n>update</span><span class=p>(</span><span class=n>control_imp_rules_params_dict</span><span class=p>)</span>
@@ -1167,7 +1173,12 @@
         <span class=n>found_control_alters</span> <span class=o>=</span> <span class=p>[</span><span class=n>alter</span> <span class=k>for</span> <span class=n>alter</span> <span class=ow>in</span> <span class=n>md_alters</span> <span class=k>if</span> <span class=n>alter</span><span class=o>.</span><span class=n>control_id</span> <span class=o>==</span> <span class=n>control</span><span class=o>.</span><span class=n>id</span><span class=p>]</span>
 
         <span class=bp>self</span><span class=o>.</span><span class=n>_write_control_into_dir</span><span class=p>(</span><span class=n>new_context</span><span class=p>,</span> <span class=n>control</span><span class=p>,</span> <span class=n>part_id_map</span><span class=p>,</span> <span class=n>found_control_alters</span><span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.catalog.catalog_writer.CatalogWriter.write_catalog_as_ssp_markdown class="doc doc-heading"> <code class="highlight language-python"><span class=n>write_catalog_as_ssp_markdown</span><span class=p>(</span><span class=n>context</span><span class=p>,</span> <span class=n>part_id_map</span><span class=p>)</span></code> <a href=#trestle.core.catalog.catalog_writer.CatalogWriter.write_catalog_as_ssp_markdown class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Write out the catalog as component markdown.</p> <p>Already have resolved profile catalog, but with no setparams from compdefs Load all control level rules and param values based on compdefs and profile values</p> <p>In memory: for each compdef: for each comp: load top level rules for each control_imp: load set-params for each imp_req (bound to 1 control): load set-params load control level rules and status load part level rules and status add as compinfo to control comp_dict</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/catalog/catalog_writer.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>247</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.catalog.catalog_writer.CatalogWriter.write_catalog_as_ssp_markdown class="doc doc-heading"> <code class="highlight language-python"><span class=n>write_catalog_as_ssp_markdown</span><span class=p>(</span><span class=n>context</span><span class=p>,</span> <span class=n>part_id_map</span><span class=p>)</span></code> <a href=#trestle.core.catalog.catalog_writer.CatalogWriter.write_catalog_as_ssp_markdown class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Write out the catalog as component markdown.</p> <p>Already have resolved profile catalog, but with no setparams from compdefs Load all control level rules and param values based on compdefs and profile values</p> <p>In memory: for each compdef: for each comp: load top level rules for each control_imp: load set-params for each imp_req (bound to 1 control): load set-params load control level rules and status load part level rules and status add as compinfo to control comp_dict</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/catalog/catalog_writer.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>242</span>
+<span class=normal>243</span>
+<span class=normal>244</span>
+<span class=normal>245</span>
+<span class=normal>246</span>
+<span class=normal>247</span>
 <span class=normal>248</span>
 <span class=normal>249</span>
 <span class=normal>250</span>
@@ -1238,12 +1249,7 @@
 <span class=normal>315</span>
 <span class=normal>316</span>
 <span class=normal>317</span>
-<span class=normal>318</span>
-<span class=normal>319</span>
-<span class=normal>320</span>
-<span class=normal>321</span>
-<span class=normal>322</span>
-<span class=normal>323</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>write_catalog_as_ssp_markdown</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>context</span><span class=p>:</span> <span class=n>ControlContext</span><span class=p>,</span> <span class=n>part_id_map</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]])</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+<span class=normal>318</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>write_catalog_as_ssp_markdown</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>context</span><span class=p>:</span> <span class=n>ControlContext</span><span class=p>,</span> <span class=n>part_id_map</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]])</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    Write out the catalog as component markdown.</span>
 

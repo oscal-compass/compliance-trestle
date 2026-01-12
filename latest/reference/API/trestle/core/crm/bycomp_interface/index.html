@@ -142,8 +142,7 @@
 <span class=normal>168</span>
 <span class=normal>169</span>
 <span class=normal>170</span>
-<span class=normal>171</span>
-<span class=normal>172</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ByComponentInterface</span><span class=p>:</span>
+<span class=normal>171</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ByComponentInterface</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    Interface to query and modify by-component assembly inheritance contents.</span>
 
@@ -233,7 +232,6 @@
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Return a dictionary of every responsibility relationship with provided.&quot;&quot;&quot;</span>
         <span class=n>all_export_sets</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>Tuple</span><span class=p>[</span><span class=n>ossp</span><span class=o>.</span><span class=n>Responsibility</span><span class=p>,</span> <span class=n>ossp</span><span class=o>.</span><span class=n>Provided</span><span class=p>]]</span> <span class=o>=</span> <span class=p>[]</span>
         <span class=k>for</span> <span class=n>provided_uuid</span><span class=p>,</span> <span class=n>responsibilities</span> <span class=ow>in</span> <span class=n>as_dict</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_responsibility_by_provided</span><span class=p>)</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
-
             <span class=c1># Ensure the provided object exists in the dictionary.</span>
             <span class=c1># If it doesn&#39;t this is a bug.</span>
             <span class=k>if</span> <span class=n>provided_uuid</span> <span class=ow>not</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>_provided_dict</span><span class=p>:</span>
@@ -331,12 +329,10 @@
 <span class=normal>123</span>
 <span class=normal>124</span>
 <span class=normal>125</span>
-<span class=normal>126</span>
-<span class=normal>127</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>get_export_sets</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>Tuple</span><span class=p>[</span><span class=n>ossp</span><span class=o>.</span><span class=n>Responsibility</span><span class=p>,</span> <span class=n>ossp</span><span class=o>.</span><span class=n>Provided</span><span class=p>]]:</span>
+<span class=normal>126</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>get_export_sets</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>Tuple</span><span class=p>[</span><span class=n>ossp</span><span class=o>.</span><span class=n>Responsibility</span><span class=p>,</span> <span class=n>ossp</span><span class=o>.</span><span class=n>Provided</span><span class=p>]]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Return a dictionary of every responsibility relationship with provided.&quot;&quot;&quot;</span>
     <span class=n>all_export_sets</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>Tuple</span><span class=p>[</span><span class=n>ossp</span><span class=o>.</span><span class=n>Responsibility</span><span class=p>,</span> <span class=n>ossp</span><span class=o>.</span><span class=n>Provided</span><span class=p>]]</span> <span class=o>=</span> <span class=p>[]</span>
     <span class=k>for</span> <span class=n>provided_uuid</span><span class=p>,</span> <span class=n>responsibilities</span> <span class=ow>in</span> <span class=n>as_dict</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_responsibility_by_provided</span><span class=p>)</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
-
         <span class=c1># Ensure the provided object exists in the dictionary.</span>
         <span class=c1># If it doesn&#39;t this is a bug.</span>
         <span class=k>if</span> <span class=n>provided_uuid</span> <span class=ow>not</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>_provided_dict</span><span class=p>:</span>
@@ -373,7 +369,8 @@
         <span class=k>if</span> <span class=n>resp</span><span class=o>.</span><span class=n>provided_uuid</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
             <span class=n>all_responsibilities</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>resp</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>all_responsibilities</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.crm.bycomp_interface.ByComponentInterface.reconcile_inheritance_by_component class="doc doc-heading"> <code class="highlight language-python"><span class=n>reconcile_inheritance_by_component</span><span class=p>(</span><span class=n>incoming_inherited</span><span class=p>,</span> <span class=n>incoming_satisfied</span><span class=p>)</span></code> <a href=#trestle.core.crm.bycomp_interface.ByComponentInterface.reconcile_inheritance_by_component class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Reconcile the inherited and satisfied statements in the by-component assembly with changes from the export.</p> <details class=notes open> <summary>Notes</summary> <p>A statement is determined as existing if the provided uuid or responsibility uuid is in the existing by-component assembly. If existing, the description will be updated if it has changed.</p> <p>Any existing inherited or satisfied statements that are not in the incoming export will be removed. If a statement is in the incoming export, but not in the existing by-component assembly, it will be added.</p> </details> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/crm/bycomp_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>129</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.crm.bycomp_interface.ByComponentInterface.reconcile_inheritance_by_component class="doc doc-heading"> <code class="highlight language-python"><span class=n>reconcile_inheritance_by_component</span><span class=p>(</span><span class=n>incoming_inherited</span><span class=p>,</span> <span class=n>incoming_satisfied</span><span class=p>)</span></code> <a href=#trestle.core.crm.bycomp_interface.ByComponentInterface.reconcile_inheritance_by_component class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Reconcile the inherited and satisfied statements in the by-component assembly with changes from the export.</p> <details class=notes open> <summary>Notes</summary> <p>A statement is determined as existing if the provided uuid or responsibility uuid is in the existing by-component assembly. If existing, the description will be updated if it has changed.</p> <p>Any existing inherited or satisfied statements that are not in the incoming export will be removed. If a statement is in the incoming export, but not in the existing by-component assembly, it will be added.</p> </details> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/crm/bycomp_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>128</span>
+<span class=normal>129</span>
 <span class=normal>130</span>
 <span class=normal>131</span>
 <span class=normal>132</span>
@@ -411,8 +408,7 @@
 <span class=normal>164</span>
 <span class=normal>165</span>
 <span class=normal>166</span>
-<span class=normal>167</span>
-<span class=normal>168</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>reconcile_inheritance_by_component</span><span class=p>(</span>
+<span class=normal>167</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>reconcile_inheritance_by_component</span><span class=p>(</span>
     <span class=bp>self</span><span class=p>,</span> <span class=n>incoming_inherited</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>ossp</span><span class=o>.</span><span class=n>Inherited</span><span class=p>],</span> <span class=n>incoming_satisfied</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>ossp</span><span class=o>.</span><span class=n>Satisfied</span><span class=p>]</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>ossp</span><span class=o>.</span><span class=n>ByComponent</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>

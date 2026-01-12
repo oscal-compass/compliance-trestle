@@ -23,8 +23,7 @@
                   return '';
                 }
               });
-            </script> <p>Replicate a top level model within the trestle directory structure.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/replicate.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 33</span>
-<span class=normal> 34</span>
+            </script> <p>Replicate a top level model within the trestle directory structure.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/replicate.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 34</span>
 <span class=normal> 35</span>
 <span class=normal> 36</span>
 <span class=normal> 37</span>
@@ -102,7 +101,8 @@
 <span class=normal>109</span>
 <span class=normal>110</span>
 <span class=normal>111</span>
-<span class=normal>112</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ReplicateCmd</span><span class=p>(</span><span class=n>CommandPlusDocs</span><span class=p>):</span>
+<span class=normal>112</span>
+<span class=normal>113</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ReplicateCmd</span><span class=p>(</span><span class=n>CommandPlusDocs</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Replicate a top level model within the trestle directory structure.&quot;&quot;&quot;</span>
 
     <span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;replicate&#39;</span>
@@ -157,8 +157,8 @@
         <span class=c1># 3 Distributed load from file</span>
         <span class=n>_</span><span class=p>,</span> <span class=n>model_alias</span><span class=p>,</span> <span class=n>model_instance</span> <span class=o>=</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>load_distributed</span><span class=p>(</span><span class=n>input_file</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>)</span>
 
-        <span class=n>rep_model_path</span> <span class=o>=</span> <span class=n>trestle_root</span> <span class=o>/</span> <span class=n>plural_path</span> <span class=o>/</span> <span class=n>args</span><span class=o>.</span><span class=n>output</span> <span class=o>/</span> <span class=p>(</span>
-            <span class=n>model_alias</span> <span class=o>+</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>to_file_extension</span><span class=p>(</span><span class=n>content_type</span><span class=p>)</span>
+        <span class=n>rep_model_path</span> <span class=o>=</span> <span class=p>(</span>
+            <span class=n>trestle_root</span> <span class=o>/</span> <span class=n>plural_path</span> <span class=o>/</span> <span class=n>args</span><span class=o>.</span><span class=n>output</span> <span class=o>/</span> <span class=p>(</span><span class=n>model_alias</span> <span class=o>+</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>to_file_extension</span><span class=p>(</span><span class=n>content_type</span><span class=p>))</span>
         <span class=p>)</span>
 
         <span class=k>if</span> <span class=n>rep_model_path</span><span class=o>.</span><span class=n>exists</span><span class=p>():</span>
@@ -182,8 +182,7 @@
         <span class=n>replicate_plan</span><span class=o>.</span><span class=n>execute</span><span class=p>()</span>
 
         <span class=k>return</span> <span class=n>CmdReturnCodes</span><span class=o>.</span><span class=n>SUCCESS</span><span class=o>.</span><span class=n>value</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.commands.replicate.ReplicateCmd-attributes>Attributes<a href=#trestle.core.commands.replicate.ReplicateCmd-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.commands.replicate.ReplicateCmd.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;replicate&#39;</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.commands.replicate.ReplicateCmd.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.commands.replicate.ReplicateCmd-functions>Functions<a href=#trestle.core.commands.replicate.ReplicateCmd-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.replicate.ReplicateCmd.replicate_object class="doc doc-heading"> <code class="highlight language-python"><span class=n>replicate_object</span><span class=p>(</span><span class=n>model_alias</span><span class=p>,</span> <span class=n>args</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small> </span> <a href=#trestle.core.commands.replicate.ReplicateCmd.replicate_object class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Core replicate routine invoked by subcommands.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>model_alias</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>Name of the top level model in the trestle directory.</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>args</code> </td> <td> <code><span title=argparse.Namespace>Namespace</span></code> </td> <td> <div class=doc-md-description> <p>CLI arguments</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <p>Returns: A return code that can be used as standard posix codes. 0 is success.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/replicate.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 54</span>
-<span class=normal> 55</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.commands.replicate.ReplicateCmd-attributes>Attributes<a href=#trestle.core.commands.replicate.ReplicateCmd-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.commands.replicate.ReplicateCmd.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;replicate&#39;</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.commands.replicate.ReplicateCmd.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.commands.replicate.ReplicateCmd-functions>Functions<a href=#trestle.core.commands.replicate.ReplicateCmd-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.replicate.ReplicateCmd.replicate_object class="doc doc-heading"> <code class="highlight language-python"><span class=n>replicate_object</span><span class=p>(</span><span class=n>model_alias</span><span class=p>,</span> <span class=n>args</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small> </span> <a href=#trestle.core.commands.replicate.ReplicateCmd.replicate_object class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Core replicate routine invoked by subcommands.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>model_alias</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>Name of the top level model in the trestle directory.</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>args</code> </td> <td> <code><span title=argparse.Namespace>Namespace</span></code> </td> <td> <div class=doc-md-description> <p>CLI arguments</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <p>Returns: A return code that can be used as standard posix codes. 0 is success.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/replicate.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 55</span>
 <span class=normal> 56</span>
 <span class=normal> 57</span>
 <span class=normal> 58</span>
@@ -240,7 +239,8 @@
 <span class=normal>109</span>
 <span class=normal>110</span>
 <span class=normal>111</span>
-<span class=normal>112</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@classmethod</span>
+<span class=normal>112</span>
+<span class=normal>113</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@classmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>replicate_object</span><span class=p>(</span><span class=bp>cls</span><span class=p>,</span> <span class=n>model_alias</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>args</span><span class=p>:</span> <span class=n>argparse</span><span class=o>.</span><span class=n>Namespace</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    Core replicate routine invoked by subcommands.</span>
@@ -274,8 +274,8 @@
     <span class=c1># 3 Distributed load from file</span>
     <span class=n>_</span><span class=p>,</span> <span class=n>model_alias</span><span class=p>,</span> <span class=n>model_instance</span> <span class=o>=</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>load_distributed</span><span class=p>(</span><span class=n>input_file</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>)</span>
 
-    <span class=n>rep_model_path</span> <span class=o>=</span> <span class=n>trestle_root</span> <span class=o>/</span> <span class=n>plural_path</span> <span class=o>/</span> <span class=n>args</span><span class=o>.</span><span class=n>output</span> <span class=o>/</span> <span class=p>(</span>
-        <span class=n>model_alias</span> <span class=o>+</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>to_file_extension</span><span class=p>(</span><span class=n>content_type</span><span class=p>)</span>
+    <span class=n>rep_model_path</span> <span class=o>=</span> <span class=p>(</span>
+        <span class=n>trestle_root</span> <span class=o>/</span> <span class=n>plural_path</span> <span class=o>/</span> <span class=n>args</span><span class=o>.</span><span class=n>output</span> <span class=o>/</span> <span class=p>(</span><span class=n>model_alias</span> <span class=o>+</span> <span class=n>FileContentType</span><span class=o>.</span><span class=n>to_file_extension</span><span class=p>(</span><span class=n>content_type</span><span class=p>))</span>
     <span class=p>)</span>
 
     <span class=k>if</span> <span class=n>rep_model_path</span><span class=o>.</span><span class=n>exists</span><span class=p>():</span>

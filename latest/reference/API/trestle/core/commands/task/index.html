@@ -23,8 +23,7 @@
                   return '';
                 }
               });
-            </script> <p>Run arbitrary trestle tasks in a simple and extensible methodology.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/task.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 38</span>
-<span class=normal> 39</span>
+            </script> <p>Run arbitrary trestle tasks in a simple and extensible methodology.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/task.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 39</span>
 <span class=normal> 40</span>
 <span class=normal> 41</span>
 <span class=normal> 42</span>
@@ -124,7 +123,8 @@
 <span class=normal>136</span>
 <span class=normal>137</span>
 <span class=normal>138</span>
-<span class=normal>139</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>TaskCmd</span><span class=p>(</span><span class=n>CommandPlusDocs</span><span class=p>):</span>
+<span class=normal>139</span>
+<span class=normal>140</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>TaskCmd</span><span class=p>(</span><span class=n>CommandPlusDocs</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Run arbitrary trestle tasks in a simple and extensible methodology.&quot;&quot;&quot;</span>
 
     <span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;task&#39;</span>
@@ -134,7 +134,7 @@
             <span class=s1>&#39;task&#39;</span><span class=p>,</span>
             <span class=n>nargs</span><span class=o>=</span><span class=s1>&#39;?&#39;</span><span class=p>,</span>
             <span class=nb>type</span><span class=o>=</span><span class=nb>str</span><span class=p>,</span>
-            <span class=n>help</span><span class=o>=</span><span class=s1>&#39;The name of the task to be run, trestle task -l will list available tasks.&#39;</span>
+            <span class=n>help</span><span class=o>=</span><span class=s1>&#39;The name of the task to be run, trestle task -l will list available tasks.&#39;</span><span class=p>,</span>
         <span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>add_argument</span><span class=p>(</span><span class=s1>&#39;-l&#39;</span><span class=p>,</span> <span class=s1>&#39;--list&#39;</span><span class=p>,</span> <span class=n>action</span><span class=o>=</span><span class=s1>&#39;store_true&#39;</span><span class=p>,</span> <span class=n>help</span><span class=o>=</span><span class=s1>&#39;List the available tasks&#39;</span><span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>add_argument</span><span class=p>(</span>

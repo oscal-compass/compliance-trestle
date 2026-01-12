@@ -80,7 +80,7 @@
 <span class=normal>113</span>
 <span class=normal>114</span>
 <span class=normal>115</span>
-<span class=normal>116</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>CatalogAPI</span><span class=p>():</span>
+<span class=normal>116</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>CatalogAPI</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    Main entrypoint to interact with catalog in memory.</span>
 
@@ -144,9 +144,9 @@
 
         <span class=k>return</span> <span class=n>md_catalog</span>
 
-    <span class=k>def</span><span class=w> </span><span class=nf>read_additional_content_from_md</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span>
-                                        <span class=n>label_as_key</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span>
-                                        <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Tuple</span><span class=p>[</span><span class=n>List</span><span class=p>[</span><span class=n>prof</span><span class=o>.</span><span class=n>Alter</span><span class=p>],</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Any</span><span class=p>],</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]]:</span>
+    <span class=k>def</span><span class=w> </span><span class=nf>read_additional_content_from_md</span><span class=p>(</span>
+        <span class=bp>self</span><span class=p>,</span> <span class=n>label_as_key</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span>
+    <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Tuple</span><span class=p>[</span><span class=n>List</span><span class=p>[</span><span class=n>prof</span><span class=o>.</span><span class=n>Alter</span><span class=p>],</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Any</span><span class=p>],</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]]:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Read additional content from markdown.&quot;&quot;&quot;</span>
         <span class=k>if</span> <span class=ow>not</span> <span class=bp>self</span><span class=o>.</span><span class=n>_context</span><span class=p>:</span>
             <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;Reading content from the markdown requires context to be initialized!&#39;</span><span class=p>)</span>
@@ -157,7 +157,7 @@
             <span class=bp>self</span><span class=o>.</span><span class=n>_context</span><span class=o>.</span><span class=n>required_sections</span><span class=p>,</span>
             <span class=n>label_map</span><span class=p>,</span>
             <span class=bp>self</span><span class=o>.</span><span class=n>_context</span><span class=o>.</span><span class=n>sections_dict</span><span class=p>,</span>
-            <span class=bp>self</span><span class=o>.</span><span class=n>_context</span><span class=o>.</span><span class=n>to_markdown</span>
+            <span class=bp>self</span><span class=o>.</span><span class=n>_context</span><span class=o>.</span><span class=n>to_markdown</span><span class=p>,</span>
         <span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>merge_catalog</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>catalog</span><span class=p>:</span> <span class=n>cat</span><span class=o>.</span><span class=n>Catalog</span><span class=p>,</span> <span class=n>replace_params</span><span class=p>:</span> <span class=nb>bool</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
@@ -205,9 +205,9 @@
 <span class=normal>109</span>
 <span class=normal>110</span>
 <span class=normal>111</span>
-<span class=normal>112</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>read_additional_content_from_md</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span>
-                                    <span class=n>label_as_key</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span>
-                                    <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Tuple</span><span class=p>[</span><span class=n>List</span><span class=p>[</span><span class=n>prof</span><span class=o>.</span><span class=n>Alter</span><span class=p>],</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Any</span><span class=p>],</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]]:</span>
+<span class=normal>112</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>read_additional_content_from_md</span><span class=p>(</span>
+    <span class=bp>self</span><span class=p>,</span> <span class=n>label_as_key</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span>
+<span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Tuple</span><span class=p>[</span><span class=n>List</span><span class=p>[</span><span class=n>prof</span><span class=o>.</span><span class=n>Alter</span><span class=p>],</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Any</span><span class=p>],</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Read additional content from markdown.&quot;&quot;&quot;</span>
     <span class=k>if</span> <span class=ow>not</span> <span class=bp>self</span><span class=o>.</span><span class=n>_context</span><span class=p>:</span>
         <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=s1>&#39;Reading content from the markdown requires context to be initialized!&#39;</span><span class=p>)</span>
@@ -218,7 +218,7 @@
         <span class=bp>self</span><span class=o>.</span><span class=n>_context</span><span class=o>.</span><span class=n>required_sections</span><span class=p>,</span>
         <span class=n>label_map</span><span class=p>,</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_context</span><span class=o>.</span><span class=n>sections_dict</span><span class=p>,</span>
-        <span class=bp>self</span><span class=o>.</span><span class=n>_context</span><span class=o>.</span><span class=n>to_markdown</span>
+        <span class=bp>self</span><span class=o>.</span><span class=n>_context</span><span class=o>.</span><span class=n>to_markdown</span><span class=p>,</span>
     <span class=p>)</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.catalog.catalog_api.CatalogAPI.read_catalog_from_markdown class="doc doc-heading"> <code class="highlight language-python"><span class=n>read_catalog_from_markdown</span><span class=p>(</span><span class=n>markdown_dir</span><span class=p>,</span> <span class=n>is_set_parameters</span><span class=p>)</span></code> <a href=#trestle.core.catalog.catalog_api.CatalogAPI.read_catalog_from_markdown class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Read catalog from markdown.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/catalog/catalog_api.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>89</span>
 <span class=normal>90</span>

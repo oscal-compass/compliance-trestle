@@ -350,7 +350,7 @@
         <span class=n>param_rep</span><span class=p>:</span> <span class=n>ParameterRep</span> <span class=o>=</span> <span class=n>ParameterRep</span><span class=o>.</span><span class=n>LEAVE_MOUSTACHE</span><span class=p>,</span>
         <span class=n>show_value_warnings</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>,</span>
         <span class=n>value_assigned_prefix</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
-        <span class=n>value_not_assigned_prefix</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span>
+        <span class=n>value_not_assigned_prefix</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Initialize the filter.&quot;&quot;&quot;</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_profile</span> <span class=o>=</span> <span class=n>profile</span>
@@ -620,7 +620,7 @@
                 <span class=bp>self</span><span class=o>.</span><span class=n>_param_rep</span><span class=p>,</span>
                 <span class=bp>self</span><span class=o>.</span><span class=n>show_value_warnings</span><span class=p>,</span>
                 <span class=bp>self</span><span class=o>.</span><span class=n>_value_assigned_prefix</span><span class=p>,</span>
-                <span class=bp>self</span><span class=o>.</span><span class=n>_value_not_assigned_prefix</span>
+                <span class=bp>self</span><span class=o>.</span><span class=n>_value_not_assigned_prefix</span><span class=p>,</span>
             <span class=p>)</span>
 
         <span class=n>catalog</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_catalog_interface</span><span class=o>.</span><span class=n>get_catalog</span><span class=p>()</span>
@@ -689,7 +689,7 @@
     <span class=n>param_rep</span><span class=p>:</span> <span class=n>ParameterRep</span> <span class=o>=</span> <span class=n>ParameterRep</span><span class=o>.</span><span class=n>LEAVE_MOUSTACHE</span><span class=p>,</span>
     <span class=n>show_value_warnings</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>,</span>
     <span class=n>value_assigned_prefix</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
-    <span class=n>value_not_assigned_prefix</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span>
+    <span class=n>value_not_assigned_prefix</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Initialize the filter.&quot;&quot;&quot;</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_profile</span> <span class=o>=</span> <span class=n>profile</span>

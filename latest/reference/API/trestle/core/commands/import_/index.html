@@ -23,8 +23,7 @@
                   return '';
                 }
               });
-            </script> <p>Import an existing full OSCAL model into the trestle workspace.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/import_.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 37</span>
-<span class=normal> 38</span>
+            </script> <p>Import an existing full OSCAL model into the trestle workspace.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/import_.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 38</span>
 <span class=normal> 39</span>
 <span class=normal> 40</span>
 <span class=normal> 41</span>
@@ -104,7 +103,9 @@
 <span class=normal>115</span>
 <span class=normal>116</span>
 <span class=normal>117</span>
-<span class=normal>118</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ImportCmd</span><span class=p>(</span><span class=n>CommandPlusDocs</span><span class=p>):</span>
+<span class=normal>118</span>
+<span class=normal>119</span>
+<span class=normal>120</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ImportCmd</span><span class=p>(</span><span class=n>CommandPlusDocs</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Import an existing full OSCAL model into the trestle workspace.&quot;&quot;&quot;</span>
 
     <span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;import&#39;</span>
@@ -151,8 +152,9 @@
 
             <span class=n>desired_model_dir</span> <span class=o>=</span> <span class=n>trestle_root</span> <span class=o>/</span> <span class=n>plural_path</span>
             <span class=n>desired_model_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span> <span class=o>=</span> <span class=n>desired_model_dir</span> <span class=o>/</span> <span class=n>output_name</span> <span class=o>/</span> <span class=n>parent_alias</span>
-            <span class=n>desired_model_path</span> <span class=o>=</span> <span class=n>desired_model_path</span><span class=o>.</span><span class=n>with_suffix</span><span class=p>(</span><span class=n>FileContentType</span><span class=o>.</span><span class=n>to_file_extension</span><span class=p>(</span><span class=n>content_type</span><span class=p>)</span>
-                                                                <span class=p>)</span><span class=o>.</span><span class=n>resolve</span><span class=p>()</span>
+            <span class=n>desired_model_path</span> <span class=o>=</span> <span class=n>desired_model_path</span><span class=o>.</span><span class=n>with_suffix</span><span class=p>(</span>
+                <span class=n>FileContentType</span><span class=o>.</span><span class=n>to_file_extension</span><span class=p>(</span><span class=n>content_type</span><span class=p>)</span>
+            <span class=p>)</span><span class=o>.</span><span class=n>resolve</span><span class=p>()</span>
 
             <span class=k>if</span> <span class=n>desired_model_path</span><span class=o>.</span><span class=n>exists</span><span class=p>():</span>
                 <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Cannot import because file to be imported here: </span><span class=si>{</span><span class=n>desired_model_path</span><span class=si>}</span><span class=s1> already exists.&#39;</span><span class=p>)</span>
@@ -180,7 +182,7 @@
                 <span class=n>trestle_root</span><span class=o>=</span><span class=n>args</span><span class=o>.</span><span class=n>trestle_root</span><span class=p>,</span>
                 <span class=nb>type</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span>
                 <span class=nb>all</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span>
-                <span class=n>quiet</span><span class=o>=</span><span class=kc>True</span>
+                <span class=n>quiet</span><span class=o>=</span><span class=kc>True</span><span class=p>,</span>
             <span class=p>)</span>
             <span class=k>return</span> <span class=n>CmdReturnCodes</span><span class=o>.</span><span class=n>SUCCESS</span><span class=o>.</span><span class=n>value</span>
 

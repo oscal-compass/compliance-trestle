@@ -40,7 +40,7 @@
 <span class=normal>81</span>
 <span class=normal>82</span>
 <span class=normal>83</span>
-<span class=normal>84</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>Column</span><span class=p>():</span>
+<span class=normal>84</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>Column</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Spread sheet columns.&quot;&quot;&quot;</span>
 
     <span class=n>control_id</span> <span class=o>=</span> <span class=s1>&#39;ControlId&#39;</span>
@@ -540,7 +540,9 @@
 <span class=normal>541</span>
 <span class=normal>542</span>
 <span class=normal>543</span>
-<span class=normal>544</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>XlsxHelper</span><span class=p>:</span>
+<span class=normal>544</span>
+<span class=normal>545</span>
+<span class=normal>546</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>XlsxHelper</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Xlsx Helper common functions and assistance navigating spread sheet.&quot;&quot;&quot;</span>
 
     <span class=n>by_goal</span> <span class=o>=</span> <span class=s1>&#39;by-goal&#39;</span>
@@ -929,16 +931,18 @@
             <span class=k>elif</span> <span class=bp>self</span><span class=o>.</span><span class=n>_column</span><span class=o>.</span><span class=n>resource_title</span> <span class=ow>in</span> <span class=n>cell_tokens</span><span class=p>:</span>
                 <span class=bp>self</span><span class=o>.</span><span class=n>_add_column</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_column</span><span class=o>.</span><span class=n>resource_title</span><span class=p>,</span> <span class=n>column</span><span class=p>,</span> <span class=mi>0</span><span class=p>)</span>
         <span class=c1># insure expected columns found</span>
-        <span class=k>for</span> <span class=n>name</span> <span class=ow>in</span> <span class=p>[</span><span class=bp>self</span><span class=o>.</span><span class=n>_column</span><span class=o>.</span><span class=n>control_id</span><span class=p>,</span>
-                     <span class=bp>self</span><span class=o>.</span><span class=n>_column</span><span class=o>.</span><span class=n>control_text</span><span class=p>,</span>
-                     <span class=bp>self</span><span class=o>.</span><span class=n>_column</span><span class=o>.</span><span class=n>rule_name_id</span><span class=p>,</span>
-                     <span class=bp>self</span><span class=o>.</span><span class=n>_column</span><span class=o>.</span><span class=n>rule_version</span><span class=p>,</span>
-                     <span class=bp>self</span><span class=o>.</span><span class=n>_column</span><span class=o>.</span><span class=n>goal_name_id</span><span class=p>,</span>
-                     <span class=bp>self</span><span class=o>.</span><span class=n>_column</span><span class=o>.</span><span class=n>goal_version</span><span class=p>,</span>
-                     <span class=bp>self</span><span class=o>.</span><span class=n>_column</span><span class=o>.</span><span class=n>nist_mappings</span><span class=p>,</span>
-                     <span class=bp>self</span><span class=o>.</span><span class=n>_column</span><span class=o>.</span><span class=n>resource_title</span><span class=p>,</span>
-                     <span class=bp>self</span><span class=o>.</span><span class=n>_column</span><span class=o>.</span><span class=n>rename_parameter_opt_parm</span><span class=p>,</span>
-                     <span class=bp>self</span><span class=o>.</span><span class=n>_column</span><span class=o>.</span><span class=n>rename_values_alternatives</span><span class=p>]:</span>
+        <span class=k>for</span> <span class=n>name</span> <span class=ow>in</span> <span class=p>[</span>
+            <span class=bp>self</span><span class=o>.</span><span class=n>_column</span><span class=o>.</span><span class=n>control_id</span><span class=p>,</span>
+            <span class=bp>self</span><span class=o>.</span><span class=n>_column</span><span class=o>.</span><span class=n>control_text</span><span class=p>,</span>
+            <span class=bp>self</span><span class=o>.</span><span class=n>_column</span><span class=o>.</span><span class=n>rule_name_id</span><span class=p>,</span>
+            <span class=bp>self</span><span class=o>.</span><span class=n>_column</span><span class=o>.</span><span class=n>rule_version</span><span class=p>,</span>
+            <span class=bp>self</span><span class=o>.</span><span class=n>_column</span><span class=o>.</span><span class=n>goal_name_id</span><span class=p>,</span>
+            <span class=bp>self</span><span class=o>.</span><span class=n>_column</span><span class=o>.</span><span class=n>goal_version</span><span class=p>,</span>
+            <span class=bp>self</span><span class=o>.</span><span class=n>_column</span><span class=o>.</span><span class=n>nist_mappings</span><span class=p>,</span>
+            <span class=bp>self</span><span class=o>.</span><span class=n>_column</span><span class=o>.</span><span class=n>resource_title</span><span class=p>,</span>
+            <span class=bp>self</span><span class=o>.</span><span class=n>_column</span><span class=o>.</span><span class=n>rename_parameter_opt_parm</span><span class=p>,</span>
+            <span class=bp>self</span><span class=o>.</span><span class=n>_column</span><span class=o>.</span><span class=n>rename_values_alternatives</span><span class=p>,</span>
+        <span class=p>]:</span>
             <span class=k>if</span> <span class=n>name</span> <span class=ow>not</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>map_name_to_letters</span><span class=o>.</span><span class=n>keys</span><span class=p>():</span>
                 <span class=k>raise</span> <span class=ne>RuntimeError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;missing column </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
 
@@ -1487,9 +1491,7 @@
     <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  profile-type      = &#39;</span>
     <span class=n>text2</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>&#39;(optional) one of </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>profile_types</span><span class=si>}</span><span class=s1>&#39;</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.xlsx_helper.XlsxHelper.report_issues class="doc doc-heading"> <code class="highlight language-python"><span class=n>report_issues</span><span class=p>()</span></code> <a href=#trestle.tasks.xlsx_helper.XlsxHelper.report_issues class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Report issues.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/xlsx_helper.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>525</span>
-<span class=normal>526</span>
-<span class=normal>527</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.xlsx_helper.XlsxHelper.report_issues class="doc doc-heading"> <code class="highlight language-python"><span class=n>report_issues</span><span class=p>()</span></code> <a href=#trestle.tasks.xlsx_helper.XlsxHelper.report_issues class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Report issues.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/xlsx_helper.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>527</span>
 <span class=normal>528</span>
 <span class=normal>529</span>
 <span class=normal>530</span>
@@ -1506,7 +1508,9 @@
 <span class=normal>541</span>
 <span class=normal>542</span>
 <span class=normal>543</span>
-<span class=normal>544</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>report_issues</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+<span class=normal>544</span>
+<span class=normal>545</span>
+<span class=normal>546</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>report_issues</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Report issues.&quot;&quot;&quot;</span>
     <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>rows_missing_control_id</span><span class=p>:</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;rows missing control_id: </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>rows_missing_control_id</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>

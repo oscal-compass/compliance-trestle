@@ -88,8 +88,7 @@
 <span class=normal>103</span>
 <span class=normal>104</span>
 <span class=normal>105</span>
-<span class=normal>106</span>
-<span class=normal>107</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>Validator</span><span class=p>(</span><span class=n>ABC</span><span class=p>):</span>
+<span class=normal>106</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>Validator</span><span class=p>(</span><span class=n>ABC</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Validator base class.&quot;&quot;&quot;</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>error_msg</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
@@ -142,7 +141,6 @@
         <span class=k>if</span> <span class=n>args</span><span class=o>.</span><span class=n>all</span><span class=p>:</span>
             <span class=n>model_tups</span> <span class=o>=</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>get_all_models</span><span class=p>(</span><span class=n>trestle_root</span><span class=p>)</span>
             <span class=k>for</span> <span class=n>mt</span> <span class=ow>in</span> <span class=n>model_tups</span><span class=p>:</span>
-
                 <span class=n>model_dir</span> <span class=o>=</span> <span class=n>trestle_root</span> <span class=o>/</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>model_type_to_model_dir</span><span class=p>(</span><span class=n>mt</span><span class=p>[</span><span class=mi>0</span><span class=p>])</span> <span class=o>/</span> <span class=n>mt</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span>
                 <span class=n>extension_type</span> <span class=o>=</span> <span class=n>trestle</span><span class=o>.</span><span class=n>common</span><span class=o>.</span><span class=n>file_utils</span><span class=o>.</span><span class=n>get_contextual_file_type</span><span class=p>(</span><span class=n>model_dir</span><span class=p>)</span>
                 <span class=n>model_path</span> <span class=o>=</span> <span class=n>model_dir</span> <span class=o>/</span> <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>mt</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=si>}{</span><span class=n>FileContentType</span><span class=o>.</span><span class=n>to_file_extension</span><span class=p>(</span><span class=n>extension_type</span><span class=p>)</span><span class=si>}</span><span class=s1>&#39;</span>
@@ -252,8 +250,7 @@
 <span class=normal>103</span>
 <span class=normal>104</span>
 <span class=normal>105</span>
-<span class=normal>106</span>
-<span class=normal>107</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>validate</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>args</span><span class=p>:</span> <span class=n>argparse</span><span class=o>.</span><span class=n>Namespace</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
+<span class=normal>106</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>validate</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>args</span><span class=p>:</span> <span class=n>argparse</span><span class=o>.</span><span class=n>Namespace</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Perform the validation according to user options.&quot;&quot;&quot;</span>
     <span class=n>trestle_root</span> <span class=o>=</span> <span class=n>args</span><span class=o>.</span><span class=n>trestle_root</span>  <span class=c1># trestle root is set via command line in args. Default is cwd.</span>
 
@@ -283,7 +280,6 @@
     <span class=k>if</span> <span class=n>args</span><span class=o>.</span><span class=n>all</span><span class=p>:</span>
         <span class=n>model_tups</span> <span class=o>=</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>get_all_models</span><span class=p>(</span><span class=n>trestle_root</span><span class=p>)</span>
         <span class=k>for</span> <span class=n>mt</span> <span class=ow>in</span> <span class=n>model_tups</span><span class=p>:</span>
-
             <span class=n>model_dir</span> <span class=o>=</span> <span class=n>trestle_root</span> <span class=o>/</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>model_type_to_model_dir</span><span class=p>(</span><span class=n>mt</span><span class=p>[</span><span class=mi>0</span><span class=p>])</span> <span class=o>/</span> <span class=n>mt</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span>
             <span class=n>extension_type</span> <span class=o>=</span> <span class=n>trestle</span><span class=o>.</span><span class=n>common</span><span class=o>.</span><span class=n>file_utils</span><span class=o>.</span><span class=n>get_contextual_file_type</span><span class=p>(</span><span class=n>model_dir</span><span class=p>)</span>
             <span class=n>model_path</span> <span class=o>=</span> <span class=n>model_dir</span> <span class=o>/</span> <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>mt</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=si>}{</span><span class=n>FileContentType</span><span class=o>.</span><span class=n>to_file_extension</span><span class=p>(</span><span class=n>extension_type</span><span class=p>)</span><span class=si>}</span><span class=s1>&#39;</span>

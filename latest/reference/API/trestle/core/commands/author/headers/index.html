@@ -27,8 +27,7 @@
                   return '';
                 }
               });
-            </script> <p>Enforce header / metadata across file types supported by author (markdown and drawio).</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/headers.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 35</span>
-<span class=normal> 36</span>
+            </script> <p>Enforce header / metadata across file types supported by author (markdown and drawio).</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/headers.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 36</span>
 <span class=normal> 37</span>
 <span class=normal> 38</span>
 <span class=normal> 39</span>
@@ -325,7 +324,10 @@
 <span class=normal>330</span>
 <span class=normal>331</span>
 <span class=normal>332</span>
-<span class=normal>333</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>Headers</span><span class=p>(</span><span class=n>AuthorCommonCommand</span><span class=p>):</span>
+<span class=normal>333</span>
+<span class=normal>334</span>
+<span class=normal>335</span>
+<span class=normal>336</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>Headers</span><span class=p>(</span><span class=n>AuthorCommonCommand</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Enforce header / metadata across file types supported by author (markdown and drawio).&quot;&quot;&quot;</span>
 
     <span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;headers&#39;</span>
@@ -344,7 +346,7 @@
                 <span class=s1>&#39;Markdown: .trestle/author/[task name]/template.md&#39;</span><span class=p>,</span>
                 <span class=s1>&#39;Drawio: .trestle/author/[task name]/template.drawio&#39;</span><span class=p>,</span>
                 <span class=s1>&#39;&#39;</span><span class=p>,</span>
-                <span class=s1>&#39;Note that by default this will automatically enforce the task.&#39;</span>
+                <span class=s1>&#39;Note that by default this will automatically enforce the task.&#39;</span><span class=p>,</span>
             <span class=p>]</span>
         <span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>add_argument</span><span class=p>(</span>
@@ -354,13 +356,13 @@
             <span class=n>author_const</span><span class=o>.</span><span class=n>SHORT_README_VALIDATE</span><span class=p>,</span>
             <span class=n>author_const</span><span class=o>.</span><span class=n>LONG_README_VALIDATE</span><span class=p>,</span>
             <span class=n>help</span><span class=o>=</span><span class=n>author_const</span><span class=o>.</span><span class=n>README_VALIDATE_HELP</span><span class=p>,</span>
-            <span class=n>action</span><span class=o>=</span><span class=s1>&#39;store_true&#39;</span>
+            <span class=n>action</span><span class=o>=</span><span class=s1>&#39;store_true&#39;</span><span class=p>,</span>
         <span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>add_argument</span><span class=p>(</span>
             <span class=n>author_const</span><span class=o>.</span><span class=n>SHORT_TEMPLATE_VERSION</span><span class=p>,</span>
             <span class=n>author_const</span><span class=o>.</span><span class=n>LONG_TEMPLATE_VERSION</span><span class=p>,</span>
             <span class=n>help</span><span class=o>=</span><span class=n>author_const</span><span class=o>.</span><span class=n>TEMPLATE_VERSION_HELP</span><span class=p>,</span>
-            <span class=n>action</span><span class=o>=</span><span class=s1>&#39;store&#39;</span>
+            <span class=n>action</span><span class=o>=</span><span class=s1>&#39;store&#39;</span><span class=p>,</span>
         <span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>add_argument</span><span class=p>(</span>
             <span class=n>author_const</span><span class=o>.</span><span class=n>SHORT_IGNORE</span><span class=p>,</span> <span class=n>author_const</span><span class=o>.</span><span class=n>LONG_IGNORE</span><span class=p>,</span> <span class=n>help</span><span class=o>=</span><span class=n>author_const</span><span class=o>.</span><span class=n>IGNORE_HELP</span><span class=p>,</span> <span class=n>default</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=nb>type</span><span class=o>=</span><span class=nb>str</span>
@@ -374,7 +376,7 @@
             <span class=n>help</span><span class=o>=</span><span class=n>author_const</span><span class=o>.</span><span class=n>EXCLUDE_HELP</span><span class=p>,</span>
             <span class=nb>type</span><span class=o>=</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span>
             <span class=n>nargs</span><span class=o>=</span><span class=s1>&#39;*&#39;</span><span class=p>,</span>
-            <span class=n>default</span><span class=o>=</span><span class=kc>None</span>
+            <span class=n>default</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span>
         <span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_run</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>args</span><span class=p>:</span> <span class=n>argparse</span><span class=o>.</span><span class=n>Namespace</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
@@ -440,8 +442,10 @@
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Validate the integrity of the template files.&quot;&quot;&quot;</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;Checking template file integrity&#39;</span><span class=p>)</span>
         <span class=k>for</span> <span class=n>template_file</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>template_dir</span><span class=o>.</span><span class=n>iterdir</span><span class=p>():</span>
-            <span class=k>if</span> <span class=p>(</span><span class=n>template_file</span><span class=o>.</span><span class=n>name</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>author_const</span><span class=o>.</span><span class=n>REFERENCE_TEMPLATES</span><span class=o>.</span><span class=n>values</span><span class=p>()</span>
-                    <span class=ow>and</span> <span class=n>template_file</span><span class=o>.</span><span class=n>name</span><span class=o>.</span><span class=n>lower</span><span class=p>()</span> <span class=o>!=</span> <span class=s1>&#39;readme.md&#39;</span><span class=p>):</span>
+            <span class=k>if</span> <span class=p>(</span>
+                <span class=n>template_file</span><span class=o>.</span><span class=n>name</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>author_const</span><span class=o>.</span><span class=n>REFERENCE_TEMPLATES</span><span class=o>.</span><span class=n>values</span><span class=p>()</span>
+                <span class=ow>and</span> <span class=n>template_file</span><span class=o>.</span><span class=n>name</span><span class=o>.</span><span class=n>lower</span><span class=p>()</span> <span class=o>!=</span> <span class=s1>&#39;readme.md&#39;</span>
+            <span class=p>):</span>
                 <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Unexpected template file </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>rel_dir</span><span class=p>(</span><span class=n>template_file</span><span class=p>)</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
 
             <span class=k>if</span> <span class=n>template_file</span><span class=o>.</span><span class=n>suffix</span> <span class=o>==</span> <span class=n>const</span><span class=o>.</span><span class=n>MARKDOWN_FILE_EXT</span><span class=p>:</span>
@@ -467,7 +471,7 @@
         <span class=n>readme_validate</span><span class=p>:</span> <span class=nb>bool</span><span class=p>,</span>
         <span class=n>relative_exclusions</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>],</span>
         <span class=n>template_version</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
-        <span class=n>ignore</span><span class=p>:</span> <span class=nb>str</span>
+        <span class=n>ignore</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Validate a directory within the trestle workspace.&quot;&quot;&quot;</span>
         <span class=n>all_versioned_templates</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Any</span><span class=p>]</span> <span class=o>=</span> <span class=p>{}</span>
@@ -482,7 +486,7 @@
                 <span class=n>instances</span> <span class=o>=</span> <span class=nb>list</span><span class=p>(</span>
                     <span class=nb>filter</span><span class=p>(</span>
                         <span class=k>lambda</span> <span class=n>f</span><span class=p>:</span> <span class=nb>len</span><span class=p>(</span><span class=nb>list</span><span class=p>(</span><span class=nb>filter</span><span class=p>(</span><span class=n>p</span><span class=o>.</span><span class=n>match</span><span class=p>,</span> <span class=nb>str</span><span class=p>(</span><span class=n>f</span><span class=o>.</span><span class=n>relative_to</span><span class=p>(</span><span class=n>candidate_dir</span><span class=p>))</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;/&#39;</span><span class=p>))))</span> <span class=o>==</span> <span class=mi>0</span><span class=p>,</span>
-                        <span class=n>instances</span>
+                        <span class=n>instances</span><span class=p>,</span>
                     <span class=p>)</span>
                 <span class=p>)</span>
         <span class=k>for</span> <span class=n>instance_file</span> <span class=ow>in</span> <span class=n>instances</span><span class=p>:</span>
@@ -590,7 +594,7 @@
         <span class=n>readme_validate</span><span class=p>:</span> <span class=nb>bool</span><span class=p>,</span>
         <span class=n>relative_excludes</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>],</span>
         <span class=n>template_version</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
-        <span class=n>ignore</span><span class=p>:</span> <span class=nb>str</span>
+        <span class=n>ignore</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Run validation based on available templates.&quot;&quot;&quot;</span>
         <span class=n>paths</span> <span class=o>=</span> <span class=p>[]</span>
@@ -609,7 +613,7 @@
                     <span class=k>continue</span>
                 <span class=k>if</span> <span class=nb>str</span><span class=p>(</span><span class=n>relative_path</span><span class=p>)</span><span class=o>.</span><span class=n>rstrip</span><span class=p>(</span><span class=s1>&#39;/&#39;</span><span class=p>)</span> <span class=ow>in</span> <span class=n>const</span><span class=o>.</span><span class=n>MODEL_DIR_LIST</span><span class=p>:</span>
                     <span class=k>continue</span>
-                <span class=k>if</span> <span class=p>(</span><span class=n>relative_path</span> <span class=ow>in</span> <span class=n>relative_excludes</span><span class=p>):</span>
+                <span class=k>if</span> <span class=n>relative_path</span> <span class=ow>in</span> <span class=n>relative_excludes</span><span class=p>:</span>
                     <span class=k>continue</span>
                 <span class=k>if</span> <span class=ow>not</span> <span class=n>file_utils</span><span class=o>.</span><span class=n>is_hidden</span><span class=p>(</span><span class=n>path</span><span class=p>):</span>
                     <span class=n>paths</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>path</span><span class=p>)</span>
@@ -624,17 +628,16 @@
                 <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Error during header validation on </span><span class=si>{</span><span class=n>path</span><span class=si>}</span><span class=s1> </span><span class=si>{</span><span class=n>e</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
 
         <span class=k>return</span> <span class=n>CmdReturnCodes</span><span class=o>.</span><span class=n>SUCCESS</span><span class=o>.</span><span class=n>value</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.commands.author.headers.Headers-attributes>Attributes<a href=#trestle.core.commands.author.headers.Headers-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.commands.author.headers.Headers.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;headers&#39;</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.commands.author.headers.Headers.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.commands.author.headers.Headers-functions>Functions<a href=#trestle.core.commands.author.headers.Headers-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.author.headers.Headers.create_sample class="doc doc-heading"> <code class="highlight language-python"><span class=n>create_sample</span><span class=p>()</span></code> <a href=#trestle.core.commands.author.headers.Headers.create_sample class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Create sample object, this always defaults to markdown.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/headers.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>121</span>
-<span class=normal>122</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.commands.author.headers.Headers-attributes>Attributes<a href=#trestle.core.commands.author.headers.Headers-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.commands.author.headers.Headers.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;headers&#39;</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.commands.author.headers.Headers.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.commands.author.headers.Headers-functions>Functions<a href=#trestle.core.commands.author.headers.Headers-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.author.headers.Headers.create_sample class="doc doc-heading"> <code class="highlight language-python"><span class=n>create_sample</span><span class=p>()</span></code> <a href=#trestle.core.commands.author.headers.Headers.create_sample class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Create sample object, this always defaults to markdown.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/headers.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>122</span>
 <span class=normal>123</span>
 <span class=normal>124</span>
-<span class=normal>125</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>create_sample</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
+<span class=normal>125</span>
+<span class=normal>126</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>create_sample</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Create sample object, this always defaults to markdown.&quot;&quot;&quot;</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;Header only validation does not support sample creation.&#39;</span><span class=p>)</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;Exiting&#39;</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>CmdReturnCodes</span><span class=o>.</span><span class=n>SUCCESS</span><span class=o>.</span><span class=n>value</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.author.headers.Headers.setup class="doc doc-heading"> <code class="highlight language-python"><span class=n>setup</span><span class=p>(</span><span class=n>template_version</span><span class=p>)</span></code> <a href=#trestle.core.commands.author.headers.Headers.setup class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Create template directory and templates.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/headers.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>127</span>
-<span class=normal>128</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.author.headers.Headers.setup class="doc doc-heading"> <code class="highlight language-python"><span class=n>setup</span><span class=p>(</span><span class=n>template_version</span><span class=p>)</span></code> <a href=#trestle.core.commands.author.headers.Headers.setup class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Create template directory and templates.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/headers.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>128</span>
 <span class=normal>129</span>
 <span class=normal>130</span>
 <span class=normal>131</span>
@@ -650,7 +653,8 @@
 <span class=normal>141</span>
 <span class=normal>142</span>
 <span class=normal>143</span>
-<span class=normal>144</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>setup</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>template_version</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
+<span class=normal>144</span>
+<span class=normal>145</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>setup</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>template_version</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Create template directory and templates.&quot;&quot;&quot;</span>
     <span class=c1># Step 1 - validation</span>
 
@@ -668,8 +672,7 @@
 
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Template directory populated </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>rel_dir</span><span class=p>(</span><span class=n>destination_path</span><span class=p>)</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>CmdReturnCodes</span><span class=o>.</span><span class=n>SUCCESS</span><span class=o>.</span><span class=n>value</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.author.headers.Headers.template_validate class="doc doc-heading"> <code class="highlight language-python"><span class=n>template_validate</span><span class=p>()</span></code> <a href=#trestle.core.commands.author.headers.Headers.template_validate class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Validate the integrity of the template files.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/headers.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>146</span>
-<span class=normal>147</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.author.headers.Headers.template_validate class="doc doc-heading"> <code class="highlight language-python"><span class=n>template_validate</span><span class=p>()</span></code> <a href=#trestle.core.commands.author.headers.Headers.template_validate class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Validate the integrity of the template files.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/headers.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>147</span>
 <span class=normal>148</span>
 <span class=normal>149</span>
 <span class=normal>150</span>
@@ -690,12 +693,17 @@
 <span class=normal>165</span>
 <span class=normal>166</span>
 <span class=normal>167</span>
-<span class=normal>168</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>template_validate</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
+<span class=normal>168</span>
+<span class=normal>169</span>
+<span class=normal>170</span>
+<span class=normal>171</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>template_validate</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Validate the integrity of the template files.&quot;&quot;&quot;</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;Checking template file integrity&#39;</span><span class=p>)</span>
     <span class=k>for</span> <span class=n>template_file</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>template_dir</span><span class=o>.</span><span class=n>iterdir</span><span class=p>():</span>
-        <span class=k>if</span> <span class=p>(</span><span class=n>template_file</span><span class=o>.</span><span class=n>name</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>author_const</span><span class=o>.</span><span class=n>REFERENCE_TEMPLATES</span><span class=o>.</span><span class=n>values</span><span class=p>()</span>
-                <span class=ow>and</span> <span class=n>template_file</span><span class=o>.</span><span class=n>name</span><span class=o>.</span><span class=n>lower</span><span class=p>()</span> <span class=o>!=</span> <span class=s1>&#39;readme.md&#39;</span><span class=p>):</span>
+        <span class=k>if</span> <span class=p>(</span>
+            <span class=n>template_file</span><span class=o>.</span><span class=n>name</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>author_const</span><span class=o>.</span><span class=n>REFERENCE_TEMPLATES</span><span class=o>.</span><span class=n>values</span><span class=p>()</span>
+            <span class=ow>and</span> <span class=n>template_file</span><span class=o>.</span><span class=n>name</span><span class=o>.</span><span class=n>lower</span><span class=p>()</span> <span class=o>!=</span> <span class=s1>&#39;readme.md&#39;</span>
+        <span class=p>):</span>
             <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Unexpected template file </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>rel_dir</span><span class=p>(</span><span class=n>template_file</span><span class=p>)</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
 
         <span class=k>if</span> <span class=n>template_file</span><span class=o>.</span><span class=n>suffix</span> <span class=o>==</span> <span class=n>const</span><span class=o>.</span><span class=n>MARKDOWN_FILE_EXT</span><span class=p>:</span>
@@ -713,10 +721,7 @@
 
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;Templates validated&#39;</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>CmdReturnCodes</span><span class=o>.</span><span class=n>SUCCESS</span><span class=o>.</span><span class=n>value</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.author.headers.Headers.validate class="doc doc-heading"> <code class="highlight language-python"><span class=n>validate</span><span class=p>(</span><span class=n>recurse</span><span class=p>,</span> <span class=n>readme_validate</span><span class=p>,</span> <span class=n>relative_excludes</span><span class=p>,</span> <span class=n>template_version</span><span class=p>,</span> <span class=n>ignore</span><span class=p>)</span></code> <a href=#trestle.core.commands.author.headers.Headers.validate class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Run validation based on available templates.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/headers.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>294</span>
-<span class=normal>295</span>
-<span class=normal>296</span>
-<span class=normal>297</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.author.headers.Headers.validate class="doc doc-heading"> <code class="highlight language-python"><span class=n>validate</span><span class=p>(</span><span class=n>recurse</span><span class=p>,</span> <span class=n>readme_validate</span><span class=p>,</span> <span class=n>relative_excludes</span><span class=p>,</span> <span class=n>template_version</span><span class=p>,</span> <span class=n>ignore</span><span class=p>)</span></code> <a href=#trestle.core.commands.author.headers.Headers.validate class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Run validation based on available templates.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/author/headers.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>297</span>
 <span class=normal>298</span>
 <span class=normal>299</span>
 <span class=normal>300</span>
@@ -752,13 +757,16 @@
 <span class=normal>330</span>
 <span class=normal>331</span>
 <span class=normal>332</span>
-<span class=normal>333</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>validate</span><span class=p>(</span>
+<span class=normal>333</span>
+<span class=normal>334</span>
+<span class=normal>335</span>
+<span class=normal>336</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>validate</span><span class=p>(</span>
     <span class=bp>self</span><span class=p>,</span>
     <span class=n>recurse</span><span class=p>:</span> <span class=nb>bool</span><span class=p>,</span>
     <span class=n>readme_validate</span><span class=p>:</span> <span class=nb>bool</span><span class=p>,</span>
     <span class=n>relative_excludes</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>],</span>
     <span class=n>template_version</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
-    <span class=n>ignore</span><span class=p>:</span> <span class=nb>str</span>
+    <span class=n>ignore</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Run validation based on available templates.&quot;&quot;&quot;</span>
     <span class=n>paths</span> <span class=o>=</span> <span class=p>[]</span>
@@ -777,7 +785,7 @@
                 <span class=k>continue</span>
             <span class=k>if</span> <span class=nb>str</span><span class=p>(</span><span class=n>relative_path</span><span class=p>)</span><span class=o>.</span><span class=n>rstrip</span><span class=p>(</span><span class=s1>&#39;/&#39;</span><span class=p>)</span> <span class=ow>in</span> <span class=n>const</span><span class=o>.</span><span class=n>MODEL_DIR_LIST</span><span class=p>:</span>
                 <span class=k>continue</span>
-            <span class=k>if</span> <span class=p>(</span><span class=n>relative_path</span> <span class=ow>in</span> <span class=n>relative_excludes</span><span class=p>):</span>
+            <span class=k>if</span> <span class=n>relative_path</span> <span class=ow>in</span> <span class=n>relative_excludes</span><span class=p>:</span>
                 <span class=k>continue</span>
             <span class=k>if</span> <span class=ow>not</span> <span class=n>file_utils</span><span class=o>.</span><span class=n>is_hidden</span><span class=p>(</span><span class=n>path</span><span class=p>):</span>
                 <span class=n>paths</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>path</span><span class=p>)</span>

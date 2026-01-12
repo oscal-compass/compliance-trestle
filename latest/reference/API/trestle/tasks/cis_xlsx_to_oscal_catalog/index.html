@@ -91,21 +91,7 @@
 <span class=normal>195</span>
 <span class=normal>196</span>
 <span class=normal>197</span>
-<span class=normal>198</span>
-<span class=normal>199</span>
-<span class=normal>200</span>
-<span class=normal>201</span>
-<span class=normal>202</span>
-<span class=normal>203</span>
-<span class=normal>204</span>
-<span class=normal>205</span>
-<span class=normal>206</span>
-<span class=normal>207</span>
-<span class=normal>208</span>
-<span class=normal>209</span>
-<span class=normal>210</span>
-<span class=normal>211</span>
-<span class=normal>212</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>CatalogHelper</span><span class=p>:</span>
+<span class=normal>198</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>CatalogHelper</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;OSCAL Catalog Helper.&quot;&quot;&quot;</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>title</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>version</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
@@ -155,13 +141,7 @@
                 <span class=n>control</span><span class=o>.</span><span class=n>props</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>prop</span><span class=p>)</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>add_control</span><span class=p>(</span>
-        <span class=bp>self</span><span class=p>,</span>
-        <span class=n>section</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
-        <span class=n>recommendation</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
-        <span class=n>title</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
-        <span class=n>props</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>Property</span><span class=p>],</span>
-        <span class=n>parts</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>Part</span><span class=p>],</span>
-        <span class=n>links</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>Link</span><span class=p>]</span>
+        <span class=bp>self</span><span class=p>,</span> <span class=n>section</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>recommendation</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>title</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>props</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>Property</span><span class=p>],</span> <span class=n>parts</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>Part</span><span class=p>],</span> <span class=n>links</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>Link</span><span class=p>]</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Add control.&quot;&quot;&quot;</span>
         <span class=n>group</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_all_groups</span><span class=p>[</span><span class=n>section</span><span class=p>]</span>
@@ -185,22 +165,14 @@
                 <span class=n>control</span><span class=o>.</span><span class=n>links</span> <span class=o>=</span> <span class=n>links</span>
             <span class=n>group</span><span class=o>.</span><span class=n>controls</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>control</span><span class=p>)</span>
 
-    <span class=k>def</span><span class=w> </span><span class=nf>add_link</span><span class=p>(</span>
-        <span class=bp>self</span><span class=p>,</span>
-        <span class=n>recommendation</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
-        <span class=n>reference</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
-        <span class=n>links</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>Link</span><span class=p>],</span>
-    <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+    <span class=k>def</span><span class=w> </span><span class=nf>add_link</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>recommendation</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>reference</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>links</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>Link</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Add link.&quot;&quot;&quot;</span>
         <span class=n>id_</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>&#39;CIS-</span><span class=si>{</span><span class=n>recommendation</span><span class=si>}</span><span class=s1>&#39;</span>
         <span class=k>if</span> <span class=n>id_</span> <span class=ow>not</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>_root_resources</span><span class=p>:</span>
             <span class=n>res_id</span> <span class=o>=</span> <span class=nb>str</span><span class=p>(</span><span class=n>uuid</span><span class=o>.</span><span class=n>uuid4</span><span class=p>())</span>
             <span class=n>link</span> <span class=o>=</span> <span class=n>Link</span><span class=p>(</span><span class=n>href</span><span class=o>=</span><span class=sa>f</span><span class=s1>&#39;#</span><span class=si>{</span><span class=n>res_id</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>,</span> <span class=n>rel</span><span class=o>=</span><span class=s1>&#39;reference&#39;</span><span class=p>)</span>
             <span class=n>links</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>link</span><span class=p>)</span>
-            <span class=n>resource</span> <span class=o>=</span> <span class=n>Resource</span><span class=p>(</span>
-                <span class=n>uuid</span><span class=o>=</span><span class=n>res_id</span><span class=p>,</span>
-                <span class=n>description</span><span class=o>=</span><span class=n>reference</span><span class=p>,</span>
-            <span class=p>)</span>
+            <span class=n>resource</span> <span class=o>=</span> <span class=n>Resource</span><span class=p>(</span><span class=n>uuid</span><span class=o>=</span><span class=n>res_id</span><span class=p>,</span> <span class=n>description</span><span class=o>=</span><span class=n>reference</span><span class=p>)</span>
             <span class=bp>self</span><span class=o>.</span><span class=n>_root_resources</span><span class=p>[</span><span class=n>id_</span><span class=p>]</span> <span class=o>=</span> <span class=n>resource</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>get_catalog</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Catalog</span><span class=p>:</span>
@@ -210,7 +182,7 @@
             <span class=n>uuid</span><span class=o>=</span><span class=nb>str</span><span class=p>(</span><span class=n>uuid</span><span class=o>.</span><span class=n>uuid4</span><span class=p>()),</span>
             <span class=n>metadata</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_metadata</span><span class=p>,</span>
             <span class=n>groups</span><span class=o>=</span><span class=nb>list</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_root_group</span><span class=o>.</span><span class=n>values</span><span class=p>()),</span>
-            <span class=n>back_matter</span><span class=o>=</span><span class=n>back_matter</span>
+            <span class=n>back_matter</span><span class=o>=</span><span class=n>back_matter</span><span class=p>,</span>
         <span class=p>)</span>
         <span class=k>return</span> <span class=n>catalog</span>
 </code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.tasks.cis_xlsx_to_oscal_catalog.CatalogHelper-functions>Functions<a href=#trestle.tasks.cis_xlsx_to_oscal_catalog.CatalogHelper-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.cis_xlsx_to_oscal_catalog.CatalogHelper.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>title</span><span class=p>,</span> <span class=n>version</span><span class=p>)</span></code> <a href=#trestle.tasks.cis_xlsx_to_oscal_catalog.CatalogHelper.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/cis_xlsx_to_oscal_catalog.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>108</span>
@@ -251,20 +223,8 @@
 <span class=normal>174</span>
 <span class=normal>175</span>
 <span class=normal>176</span>
-<span class=normal>177</span>
-<span class=normal>178</span>
-<span class=normal>179</span>
-<span class=normal>180</span>
-<span class=normal>181</span>
-<span class=normal>182</span>
-<span class=normal>183</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>add_control</span><span class=p>(</span>
-    <span class=bp>self</span><span class=p>,</span>
-    <span class=n>section</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
-    <span class=n>recommendation</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
-    <span class=n>title</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
-    <span class=n>props</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>Property</span><span class=p>],</span>
-    <span class=n>parts</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>Part</span><span class=p>],</span>
-    <span class=n>links</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>Link</span><span class=p>]</span>
+<span class=normal>177</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>add_control</span><span class=p>(</span>
+    <span class=bp>self</span><span class=p>,</span> <span class=n>section</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>recommendation</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>title</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>props</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>Property</span><span class=p>],</span> <span class=n>parts</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>Part</span><span class=p>],</span> <span class=n>links</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>Link</span><span class=p>]</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Add control.&quot;&quot;&quot;</span>
     <span class=n>group</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_all_groups</span><span class=p>[</span><span class=n>section</span><span class=p>]</span>
@@ -332,11 +292,24 @@
             <span class=n>group</span><span class=o>.</span><span class=n>parts</span> <span class=o>=</span> <span class=n>parts</span>
         <span class=n>parent</span><span class=o>.</span><span class=n>groups</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>group</span><span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_all_groups</span><span class=p>[</span><span class=n>section</span><span class=p>]</span> <span class=o>=</span> <span class=n>group</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.cis_xlsx_to_oscal_catalog.CatalogHelper.add_link class="doc doc-heading"> <code class="highlight language-python"><span class=n>add_link</span><span class=p>(</span><span class=n>recommendation</span><span class=p>,</span> <span class=n>reference</span><span class=p>,</span> <span class=n>links</span><span class=p>)</span></code> <a href=#trestle.tasks.cis_xlsx_to_oscal_catalog.CatalogHelper.add_link class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Add link.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/cis_xlsx_to_oscal_catalog.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>185</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.cis_xlsx_to_oscal_catalog.CatalogHelper.add_link class="doc doc-heading"> <code class="highlight language-python"><span class=n>add_link</span><span class=p>(</span><span class=n>recommendation</span><span class=p>,</span> <span class=n>reference</span><span class=p>,</span> <span class=n>links</span><span class=p>)</span></code> <a href=#trestle.tasks.cis_xlsx_to_oscal_catalog.CatalogHelper.add_link class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Add link.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/cis_xlsx_to_oscal_catalog.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>179</span>
+<span class=normal>180</span>
+<span class=normal>181</span>
+<span class=normal>182</span>
+<span class=normal>183</span>
+<span class=normal>184</span>
+<span class=normal>185</span>
 <span class=normal>186</span>
-<span class=normal>187</span>
-<span class=normal>188</span>
-<span class=normal>189</span>
+<span class=normal>187</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>add_link</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>recommendation</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>reference</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>links</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>Link</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+<span class=w>    </span><span class=sd>&quot;&quot;&quot;Add link.&quot;&quot;&quot;</span>
+    <span class=n>id_</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>&#39;CIS-</span><span class=si>{</span><span class=n>recommendation</span><span class=si>}</span><span class=s1>&#39;</span>
+    <span class=k>if</span> <span class=n>id_</span> <span class=ow>not</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>_root_resources</span><span class=p>:</span>
+        <span class=n>res_id</span> <span class=o>=</span> <span class=nb>str</span><span class=p>(</span><span class=n>uuid</span><span class=o>.</span><span class=n>uuid4</span><span class=p>())</span>
+        <span class=n>link</span> <span class=o>=</span> <span class=n>Link</span><span class=p>(</span><span class=n>href</span><span class=o>=</span><span class=sa>f</span><span class=s1>&#39;#</span><span class=si>{</span><span class=n>res_id</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>,</span> <span class=n>rel</span><span class=o>=</span><span class=s1>&#39;reference&#39;</span><span class=p>)</span>
+        <span class=n>links</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>link</span><span class=p>)</span>
+        <span class=n>resource</span> <span class=o>=</span> <span class=n>Resource</span><span class=p>(</span><span class=n>uuid</span><span class=o>=</span><span class=n>res_id</span><span class=p>,</span> <span class=n>description</span><span class=o>=</span><span class=n>reference</span><span class=p>)</span>
+        <span class=bp>self</span><span class=o>.</span><span class=n>_root_resources</span><span class=p>[</span><span class=n>id_</span><span class=p>]</span> <span class=o>=</span> <span class=n>resource</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.cis_xlsx_to_oscal_catalog.CatalogHelper.get_catalog class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_catalog</span><span class=p>()</span></code> <a href=#trestle.tasks.cis_xlsx_to_oscal_catalog.CatalogHelper.get_catalog class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get catalog.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/cis_xlsx_to_oscal_catalog.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>189</span>
 <span class=normal>190</span>
 <span class=normal>191</span>
 <span class=normal>192</span>
@@ -345,43 +318,14 @@
 <span class=normal>195</span>
 <span class=normal>196</span>
 <span class=normal>197</span>
-<span class=normal>198</span>
-<span class=normal>199</span>
-<span class=normal>200</span>
-<span class=normal>201</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>add_link</span><span class=p>(</span>
-    <span class=bp>self</span><span class=p>,</span>
-    <span class=n>recommendation</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
-    <span class=n>reference</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
-    <span class=n>links</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>Link</span><span class=p>],</span>
-<span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
-<span class=w>    </span><span class=sd>&quot;&quot;&quot;Add link.&quot;&quot;&quot;</span>
-    <span class=n>id_</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>&#39;CIS-</span><span class=si>{</span><span class=n>recommendation</span><span class=si>}</span><span class=s1>&#39;</span>
-    <span class=k>if</span> <span class=n>id_</span> <span class=ow>not</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>_root_resources</span><span class=p>:</span>
-        <span class=n>res_id</span> <span class=o>=</span> <span class=nb>str</span><span class=p>(</span><span class=n>uuid</span><span class=o>.</span><span class=n>uuid4</span><span class=p>())</span>
-        <span class=n>link</span> <span class=o>=</span> <span class=n>Link</span><span class=p>(</span><span class=n>href</span><span class=o>=</span><span class=sa>f</span><span class=s1>&#39;#</span><span class=si>{</span><span class=n>res_id</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>,</span> <span class=n>rel</span><span class=o>=</span><span class=s1>&#39;reference&#39;</span><span class=p>)</span>
-        <span class=n>links</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>link</span><span class=p>)</span>
-        <span class=n>resource</span> <span class=o>=</span> <span class=n>Resource</span><span class=p>(</span>
-            <span class=n>uuid</span><span class=o>=</span><span class=n>res_id</span><span class=p>,</span>
-            <span class=n>description</span><span class=o>=</span><span class=n>reference</span><span class=p>,</span>
-        <span class=p>)</span>
-        <span class=bp>self</span><span class=o>.</span><span class=n>_root_resources</span><span class=p>[</span><span class=n>id_</span><span class=p>]</span> <span class=o>=</span> <span class=n>resource</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.cis_xlsx_to_oscal_catalog.CatalogHelper.get_catalog class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_catalog</span><span class=p>()</span></code> <a href=#trestle.tasks.cis_xlsx_to_oscal_catalog.CatalogHelper.get_catalog class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get catalog.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/cis_xlsx_to_oscal_catalog.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>203</span>
-<span class=normal>204</span>
-<span class=normal>205</span>
-<span class=normal>206</span>
-<span class=normal>207</span>
-<span class=normal>208</span>
-<span class=normal>209</span>
-<span class=normal>210</span>
-<span class=normal>211</span>
-<span class=normal>212</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>get_catalog</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Catalog</span><span class=p>:</span>
+<span class=normal>198</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>get_catalog</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Catalog</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Get catalog.&quot;&quot;&quot;</span>
     <span class=n>back_matter</span> <span class=o>=</span> <span class=n>BackMatter</span><span class=p>(</span><span class=n>resources</span><span class=o>=</span><span class=nb>list</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_root_resources</span><span class=o>.</span><span class=n>values</span><span class=p>()))</span>
     <span class=n>catalog</span> <span class=o>=</span> <span class=n>Catalog</span><span class=p>(</span>
         <span class=n>uuid</span><span class=o>=</span><span class=nb>str</span><span class=p>(</span><span class=n>uuid</span><span class=o>.</span><span class=n>uuid4</span><span class=p>()),</span>
         <span class=n>metadata</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_metadata</span><span class=p>,</span>
         <span class=n>groups</span><span class=o>=</span><span class=nb>list</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_root_group</span><span class=o>.</span><span class=n>values</span><span class=p>()),</span>
-        <span class=n>back_matter</span><span class=o>=</span><span class=n>back_matter</span>
+        <span class=n>back_matter</span><span class=o>=</span><span class=n>back_matter</span><span class=p>,</span>
     <span class=p>)</span>
     <span class=k>return</span> <span class=n>catalog</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> </div> </div> </div> <div class="doc doc-object doc-class"> <h4 id=trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog class="doc doc-heading"> <code>CisXlsxToOscalCatalog</code> <a href=#trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p class="doc doc-class-bases"> Bases: <code><a class="autorefs autorefs-internal" title="TaskBase (trestle.tasks.base_task.TaskBase)" href=../base_task/#trestle.tasks.base_task.TaskBase>TaskBase</a></code></p> <div style="display: none"> <a class="autorefs autorefs-internal" title="CisXlsxToOscalCatalog (trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog)" href=#trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog id=mermaid-link-trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog></a> <a class="autorefs autorefs-internal" title="TaskBase (trestle.tasks.base_task.TaskBase)" href=../base_task/#trestle.tasks.base_task.TaskBase id=mermaid-link-trestle.tasks.base_task.TaskBase></a> </div> <pre class=mermaid><code id=mermaid-diagram-trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog>
@@ -410,7 +354,21 @@
   
       class-attribute
       instance-attribute
-   (trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog.name)" href=#trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog.name>name</a></code></td> <td> </td> <td> <div class=doc-md-description> <p>Name of the task.</p> </div> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/cis_xlsx_to_oscal_catalog.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>215</span>
+   (trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog.name)" href=#trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog.name>name</a></code></td> <td> </td> <td> <div class=doc-md-description> <p>Name of the task.</p> </div> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/cis_xlsx_to_oscal_catalog.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>201</span>
+<span class=normal>202</span>
+<span class=normal>203</span>
+<span class=normal>204</span>
+<span class=normal>205</span>
+<span class=normal>206</span>
+<span class=normal>207</span>
+<span class=normal>208</span>
+<span class=normal>209</span>
+<span class=normal>210</span>
+<span class=normal>211</span>
+<span class=normal>212</span>
+<span class=normal>213</span>
+<span class=normal>214</span>
+<span class=normal>215</span>
 <span class=normal>216</span>
 <span class=normal>217</span>
 <span class=normal>218</span>
@@ -628,21 +586,7 @@
 <span class=normal>430</span>
 <span class=normal>431</span>
 <span class=normal>432</span>
-<span class=normal>433</span>
-<span class=normal>434</span>
-<span class=normal>435</span>
-<span class=normal>436</span>
-<span class=normal>437</span>
-<span class=normal>438</span>
-<span class=normal>439</span>
-<span class=normal>440</span>
-<span class=normal>441</span>
-<span class=normal>442</span>
-<span class=normal>443</span>
-<span class=normal>444</span>
-<span class=normal>445</span>
-<span class=normal>446</span>
-<span class=normal>447</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>CisXlsxToOscalCatalog</span><span class=p>(</span><span class=n>TaskBase</span><span class=p>):</span>
+<span class=normal>433</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>CisXlsxToOscalCatalog</span><span class=p>(</span><span class=n>TaskBase</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    Task to transform CIS .xlsx to OSCAL catalog.</span>
 
@@ -875,15 +819,15 @@
                 <span class=bp>self</span><span class=o>.</span><span class=n>_add_property_boolean</span><span class=p>(</span><span class=n>xlsx_helper</span><span class=p>,</span> <span class=n>props</span><span class=p>,</span> <span class=n>row</span><span class=p>,</span> <span class=s1>&#39;v8 IG3&#39;</span><span class=p>)</span>
                 <span class=bp>self</span><span class=o>.</span><span class=n>_add_links</span><span class=p>(</span><span class=n>xlsx_helper</span><span class=p>,</span> <span class=n>catalog_helper</span><span class=p>,</span> <span class=n>links</span><span class=p>,</span> <span class=n>row</span><span class=p>,</span> <span class=s1>&#39;references&#39;</span><span class=p>)</span>
                 <span class=n>catalog_helper</span><span class=o>.</span><span class=n>add_control</span><span class=p>(</span><span class=n>section</span><span class=p>,</span> <span class=n>recommendation</span><span class=p>,</span> <span class=n>title</span><span class=p>,</span> <span class=n>props</span><span class=p>,</span> <span class=n>parts</span><span class=p>,</span> <span class=n>links</span><span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog-attributes>Attributes<a href=#trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;cis-xlsx-to-oscal-catalog&#39;</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <div class="doc doc-object doc-attribute"> <h6 id=trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog.ns class="doc doc-heading"> <code class="highlight language-python"><span class=n>ns</span> <span class=o>=</span> <span class=s1>&#39;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/catalog/cis&#39;</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog.ns class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog-functions>Functions<a href=#trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>config_object</span><span class=p>)</span></code> <a href=#trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize trestle task.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>config_object</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=configparser.SectionProxy>SectionProxy</span>]</code> </td> <td> <div class=doc-md-description> <p>Config section associated with the task.</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/cis_xlsx_to_oscal_catalog.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>226</span>
-<span class=normal>227</span>
-<span class=normal>228</span>
-<span class=normal>229</span>
-<span class=normal>230</span>
-<span class=normal>231</span>
-<span class=normal>232</span>
-<span class=normal>233</span>
-<span class=normal>234</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>config_object</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>configparser</span><span class=o>.</span><span class=n>SectionProxy</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog-attributes>Attributes<a href=#trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;cis-xlsx-to-oscal-catalog&#39;</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <div class="doc doc-object doc-attribute"> <h6 id=trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog.ns class="doc doc-heading"> <code class="highlight language-python"><span class=n>ns</span> <span class=o>=</span> <span class=s1>&#39;https://oscal-compass.github.io/compliance-trestle/schemas/oscal/catalog/cis&#39;</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog.ns class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog-functions>Functions<a href=#trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>config_object</span><span class=p>)</span></code> <a href=#trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize trestle task.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>config_object</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=configparser.SectionProxy>SectionProxy</span>]</code> </td> <td> <div class=doc-md-description> <p>Config section associated with the task.</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/cis_xlsx_to_oscal_catalog.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>212</span>
+<span class=normal>213</span>
+<span class=normal>214</span>
+<span class=normal>215</span>
+<span class=normal>216</span>
+<span class=normal>217</span>
+<span class=normal>218</span>
+<span class=normal>219</span>
+<span class=normal>220</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>config_object</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>configparser</span><span class=o>.</span><span class=n>SectionProxy</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    Initialize trestle task.</span>
 
@@ -892,41 +836,41 @@
 <span class=sd>    &quot;&quot;&quot;</span>
     <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>config_object</span><span class=p>)</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=s1>&#39;This task is deprecated. Use task cis-xlsx-to-oscal-cd.&#39;</span><span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog.execute class="doc doc-heading"> <code class="highlight language-python"><span class=n>execute</span><span class=p>()</span></code> <a href=#trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog.execute class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Provide an actual outcome.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/cis_xlsx_to_oscal_catalog.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>263</span>
-<span class=normal>264</span>
-<span class=normal>265</span>
-<span class=normal>266</span>
-<span class=normal>267</span>
-<span class=normal>268</span>
-<span class=normal>269</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>execute</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>TaskOutcome</span><span class=p>:</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog.execute class="doc doc-heading"> <code class="highlight language-python"><span class=n>execute</span><span class=p>()</span></code> <a href=#trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog.execute class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Provide an actual outcome.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/cis_xlsx_to_oscal_catalog.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>249</span>
+<span class=normal>250</span>
+<span class=normal>251</span>
+<span class=normal>252</span>
+<span class=normal>253</span>
+<span class=normal>254</span>
+<span class=normal>255</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>execute</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>TaskOutcome</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Provide an actual outcome.&quot;&quot;&quot;</span>
     <span class=k>try</span><span class=p>:</span>
         <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_execute</span><span class=p>()</span>
     <span class=k>except</span> <span class=ne>Exception</span><span class=p>:</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>traceback</span><span class=o>.</span><span class=n>format_exc</span><span class=p>())</span>
         <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=s1>&#39;failure&#39;</span><span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog.print_info class="doc doc-heading"> <code class="highlight language-python"><span class=n>print_info</span><span class=p>()</span></code> <a href=#trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog.print_info class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Print the help string.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/cis_xlsx_to_oscal_catalog.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>236</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog.print_info class="doc doc-heading"> <code class="highlight language-python"><span class=n>print_info</span><span class=p>()</span></code> <a href=#trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog.print_info class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Print the help string.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/cis_xlsx_to_oscal_catalog.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>222</span>
+<span class=normal>223</span>
+<span class=normal>224</span>
+<span class=normal>225</span>
+<span class=normal>226</span>
+<span class=normal>227</span>
+<span class=normal>228</span>
+<span class=normal>229</span>
+<span class=normal>230</span>
+<span class=normal>231</span>
+<span class=normal>232</span>
+<span class=normal>233</span>
+<span class=normal>234</span>
+<span class=normal>235</span>
+<span class=normal>236</span>
 <span class=normal>237</span>
 <span class=normal>238</span>
 <span class=normal>239</span>
 <span class=normal>240</span>
 <span class=normal>241</span>
 <span class=normal>242</span>
-<span class=normal>243</span>
-<span class=normal>244</span>
-<span class=normal>245</span>
-<span class=normal>246</span>
-<span class=normal>247</span>
-<span class=normal>248</span>
-<span class=normal>249</span>
-<span class=normal>250</span>
-<span class=normal>251</span>
-<span class=normal>252</span>
-<span class=normal>253</span>
-<span class=normal>254</span>
-<span class=normal>255</span>
-<span class=normal>256</span>
-<span class=normal>257</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>print_info</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+<span class=normal>243</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>print_info</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Print the help string.&quot;&quot;&quot;</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Help information for </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>name</span><span class=si>}</span><span class=s1> task.&#39;</span><span class=p>)</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;&#39;</span><span class=p>)</span>
@@ -948,9 +892,9 @@
     <span class=n>text1</span> <span class=o>=</span> <span class=s1>&#39;  output-overwrite       = &#39;</span>
     <span class=n>text2</span> <span class=o>=</span> <span class=s1>&#39;(optional) true [default] or false; replace existing output when true.&#39;</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=n>text1</span> <span class=o>+</span> <span class=n>text2</span><span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog.simulate class="doc doc-heading"> <code class="highlight language-python"><span class=n>simulate</span><span class=p>()</span></code> <a href=#trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog.simulate class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Provide a simulated outcome.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/cis_xlsx_to_oscal_catalog.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>259</span>
-<span class=normal>260</span>
-<span class=normal>261</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>simulate</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>TaskOutcome</span><span class=p>:</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog.simulate class="doc doc-heading"> <code class="highlight language-python"><span class=n>simulate</span><span class=p>()</span></code> <a href=#trestle.tasks.cis_xlsx_to_oscal_catalog.CisXlsxToOscalCatalog.simulate class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Provide a simulated outcome.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/cis_xlsx_to_oscal_catalog.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>245</span>
+<span class=normal>246</span>
+<span class=normal>247</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>simulate</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>TaskOutcome</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Provide a simulated outcome.&quot;&quot;&quot;</span>
     <span class=k>return</span> <span class=n>TaskOutcome</span><span class=p>(</span><span class=s1>&#39;simulated-success&#39;</span><span class=p>)</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> </div> </div> </div> <div class="doc doc-object doc-class"> <h4 id=trestle.tasks.cis_xlsx_to_oscal_catalog.XlsxHelper class="doc doc-heading"> <code>XlsxHelper</code> <a href=#trestle.tasks.cis_xlsx_to_oscal_catalog.XlsxHelper class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Xlsx Helper common functions and assistance navigating spread sheet.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/cis_xlsx_to_oscal_catalog.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 47</span>

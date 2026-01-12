@@ -374,17 +374,7 @@
 <span class=normal>396</span>
 <span class=normal>397</span>
 <span class=normal>398</span>
-<span class=normal>399</span>
-<span class=normal>400</span>
-<span class=normal>401</span>
-<span class=normal>402</span>
-<span class=normal>403</span>
-<span class=normal>404</span>
-<span class=normal>405</span>
-<span class=normal>406</span>
-<span class=normal>407</span>
-<span class=normal>408</span>
-<span class=normal>409</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>XlsxToOscalComponentDefinition</span><span class=p>(</span><span class=n>TaskBase</span><span class=p>):</span>
+<span class=normal>399</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>XlsxToOscalComponentDefinition</span><span class=p>(</span><span class=n>TaskBase</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    Task to create OSCAL ComponentDefinition json.</span>
 
@@ -461,12 +451,10 @@
             <span class=n>version</span><span class=o>=</span><span class=n>get_trestle_version</span><span class=p>(),</span>
             <span class=n>roles</span><span class=o>=</span><span class=n>roles</span><span class=p>,</span>
             <span class=n>parties</span><span class=o>=</span><span class=n>parties</span><span class=p>,</span>
-            <span class=n>responsible_parties</span><span class=o>=</span><span class=n>responsible_parties</span>
+            <span class=n>responsible_parties</span><span class=o>=</span><span class=n>responsible_parties</span><span class=p>,</span>
         <span class=p>)</span>
         <span class=n>component_definition</span> <span class=o>=</span> <span class=n>ComponentDefinition</span><span class=p>(</span>
-            <span class=n>uuid</span><span class=o>=</span><span class=nb>str</span><span class=p>(</span><span class=n>uuid</span><span class=o>.</span><span class=n>uuid4</span><span class=p>()),</span>
-            <span class=n>metadata</span><span class=o>=</span><span class=n>metadata</span><span class=p>,</span>
-            <span class=n>components</span><span class=o>=</span><span class=nb>list</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>defined_components</span><span class=o>.</span><span class=n>values</span><span class=p>()),</span>
+            <span class=n>uuid</span><span class=o>=</span><span class=nb>str</span><span class=p>(</span><span class=n>uuid</span><span class=o>.</span><span class=n>uuid4</span><span class=p>()),</span> <span class=n>metadata</span><span class=o>=</span><span class=n>metadata</span><span class=p>,</span> <span class=n>components</span><span class=o>=</span><span class=nb>list</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>defined_components</span><span class=o>.</span><span class=n>values</span><span class=p>())</span>
         <span class=p>)</span>
         <span class=c1># write OSCAL ComponentDefinition to file</span>
         <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>_verbose</span><span class=p>:</span>
@@ -493,16 +481,17 @@
             <span class=n>parameter_name</span><span class=p>,</span> <span class=n>parameter_description</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>xlsx_helper</span><span class=o>.</span><span class=n>get_parameter_name_and_description</span><span class=p>(</span><span class=n>row</span><span class=p>)</span>
             <span class=c1># control implementations</span>
             <span class=n>source</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_catalog_url</span><span class=p>()</span>
-            <span class=n>description</span> <span class=o>=</span> <span class=n>component_name</span> <span class=o>+</span> <span class=s1>&#39; implemented controls for &#39;</span> <span class=o>+</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_catalog_title</span><span class=p>(</span>
-            <span class=p>)</span> <span class=o>+</span> <span class=s1>&#39;. It includes assessment asset configuration for CICD.&#39;</span>
+            <span class=n>description</span> <span class=o>=</span> <span class=p>(</span>
+                <span class=n>component_name</span>
+                <span class=o>+</span> <span class=s1>&#39; implemented controls for &#39;</span>
+                <span class=o>+</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_catalog_title</span><span class=p>()</span>
+                <span class=o>+</span> <span class=s1>&#39;. It includes assessment asset configuration for CICD.&#39;</span>
+            <span class=p>)</span>
             <span class=n>key</span> <span class=o>=</span> <span class=n>source</span> <span class=o>+</span> <span class=n>key_sep</span> <span class=o>+</span> <span class=n>description</span>
             <span class=n>control_implementation</span> <span class=o>=</span> <span class=n>ci_map</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=n>key</span><span class=p>)</span>
             <span class=k>if</span> <span class=ow>not</span> <span class=n>control_implementation</span><span class=p>:</span>
                 <span class=n>ci_map</span><span class=p>[</span><span class=n>key</span><span class=p>]</span> <span class=o>=</span> <span class=n>ControlImplementation</span><span class=p>(</span>
-                    <span class=n>uuid</span><span class=o>=</span><span class=nb>str</span><span class=p>(</span><span class=n>uuid</span><span class=o>.</span><span class=n>uuid4</span><span class=p>()),</span>
-                    <span class=n>source</span><span class=o>=</span><span class=n>source</span><span class=p>,</span>
-                    <span class=n>description</span><span class=o>=</span><span class=n>description</span><span class=p>,</span>
-                    <span class=n>implemented_requirements</span><span class=o>=</span><span class=p>[],</span>
+                    <span class=n>uuid</span><span class=o>=</span><span class=nb>str</span><span class=p>(</span><span class=n>uuid</span><span class=o>.</span><span class=n>uuid4</span><span class=p>()),</span> <span class=n>source</span><span class=o>=</span><span class=n>source</span><span class=p>,</span> <span class=n>description</span><span class=o>=</span><span class=n>description</span><span class=p>,</span> <span class=n>implemented_requirements</span><span class=o>=</span><span class=p>[]</span>
                 <span class=p>)</span>
                 <span class=n>control_implementation</span> <span class=o>=</span> <span class=n>ci_map</span><span class=p>[</span><span class=n>key</span><span class=p>]</span>
                 <span class=k>if</span> <span class=n>defined_component</span><span class=o>.</span><span class=n>control_implementations</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
@@ -524,7 +513,7 @@
         <span class=n>component_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
         <span class=n>parameter_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
         <span class=n>responsible_roles</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>ResponsibleRole</span><span class=p>],</span>
-        <span class=n>goal_name_id</span><span class=p>:</span> <span class=nb>str</span>
+        <span class=n>goal_name_id</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Add implemented requirements.&quot;&quot;&quot;</span>
         <span class=n>goal_remarks</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>xlsx_helper</span><span class=o>.</span><span class=n>get_goal_remarks</span><span class=p>(</span><span class=n>row</span><span class=p>)</span>
@@ -536,14 +525,14 @@
                 <span class=n>class_</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_get_class_for_property_name</span><span class=p>(</span><span class=s1>&#39;goal_name_id&#39;</span><span class=p>),</span>
                 <span class=n>value</span><span class=o>=</span><span class=n>goal_name_id</span><span class=p>,</span>
                 <span class=n>ns</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_get_namespace</span><span class=p>(),</span>
-                <span class=n>remarks</span><span class=o>=</span><span class=nb>str</span><span class=p>(</span><span class=n>goal_remarks</span><span class=p>)</span>
+                <span class=n>remarks</span><span class=o>=</span><span class=nb>str</span><span class=p>(</span><span class=n>goal_remarks</span><span class=p>),</span>
             <span class=p>)</span>
             <span class=n>prop2</span> <span class=o>=</span> <span class=n>Property</span><span class=p>(</span>
                 <span class=n>name</span><span class=o>=</span><span class=s1>&#39;goal_version&#39;</span><span class=p>,</span>
                 <span class=n>class_</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_get_class_for_property_name</span><span class=p>(</span><span class=s1>&#39;goal_version&#39;</span><span class=p>),</span>
                 <span class=n>value</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_get_goal_version</span><span class=p>(),</span>
                 <span class=n>ns</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_get_namespace</span><span class=p>(),</span>
-                <span class=n>remarks</span><span class=o>=</span><span class=nb>str</span><span class=p>(</span><span class=n>goal_name_id</span><span class=p>)</span>
+                <span class=n>remarks</span><span class=o>=</span><span class=nb>str</span><span class=p>(</span><span class=n>goal_name_id</span><span class=p>),</span>
             <span class=p>)</span>
             <span class=n>props</span> <span class=o>=</span> <span class=p>[</span><span class=n>prop1</span><span class=p>,</span> <span class=n>prop2</span><span class=p>]</span>
             <span class=n>control_id</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>catalog_interface</span><span class=o>.</span><span class=n>get_control_id_and_status</span><span class=p>(</span><span class=n>control</span><span class=p>)</span>
@@ -571,7 +560,7 @@
         <span class=n>control</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
         <span class=n>controls</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]],</span>
         <span class=n>component_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
-        <span class=n>implemented_requirement</span><span class=p>:</span> <span class=n>ImplementedRequirement</span>
+        <span class=n>implemented_requirement</span><span class=p>:</span> <span class=n>ImplementedRequirement</span><span class=p>,</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Add statements.&quot;&quot;&quot;</span>
         <span class=n>control_statements</span> <span class=o>=</span> <span class=n>controls</span><span class=p>[</span><span class=n>control</span><span class=p>]</span>
@@ -586,7 +575,7 @@
                 <span class=n>statement</span> <span class=o>=</span> <span class=n>Statement</span><span class=p>(</span>
                     <span class=n>statement_id</span><span class=o>=</span><span class=n>control</span><span class=p>,</span>
                     <span class=n>uuid</span><span class=o>=</span><span class=nb>str</span><span class=p>(</span><span class=n>uuid</span><span class=o>.</span><span class=n>uuid4</span><span class=p>()),</span>
-                    <span class=n>description</span><span class=o>=</span><span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>component_name</span><span class=si>}</span><span class=s1> implements </span><span class=si>{</span><span class=n>statement_id</span><span class=si>}</span><span class=s1>&#39;</span>
+                    <span class=n>description</span><span class=o>=</span><span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>component_name</span><span class=si>}</span><span class=s1> implements </span><span class=si>{</span><span class=n>statement_id</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>,</span>
                 <span class=p>)</span>
                 <span class=n>statements</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>statement</span><span class=p>)</span>
             <span class=n>implemented_requirement</span><span class=o>.</span><span class=n>statements</span> <span class=o>=</span> <span class=n>statements</span>
@@ -628,10 +617,7 @@
             <span class=n>component_title</span> <span class=o>=</span> <span class=n>component_name</span>
             <span class=n>component_description</span> <span class=o>=</span> <span class=n>component_name</span>
             <span class=n>defined_component</span> <span class=o>=</span> <span class=n>DefinedComponent</span><span class=p>(</span>
-                <span class=n>uuid</span><span class=o>=</span><span class=nb>str</span><span class=p>(</span><span class=n>uuid</span><span class=o>.</span><span class=n>uuid4</span><span class=p>()),</span>
-                <span class=n>description</span><span class=o>=</span><span class=n>component_description</span><span class=p>,</span>
-                <span class=n>title</span><span class=o>=</span><span class=n>component_title</span><span class=p>,</span>
-                <span class=nb>type</span><span class=o>=</span><span class=n>component_type</span><span class=p>,</span>
+                <span class=n>uuid</span><span class=o>=</span><span class=nb>str</span><span class=p>(</span><span class=n>uuid</span><span class=o>.</span><span class=n>uuid4</span><span class=p>()),</span> <span class=n>description</span><span class=o>=</span><span class=n>component_description</span><span class=p>,</span> <span class=n>title</span><span class=o>=</span><span class=n>component_title</span><span class=p>,</span> <span class=nb>type</span><span class=o>=</span><span class=n>component_type</span>
             <span class=p>)</span>
             <span class=bp>self</span><span class=o>.</span><span class=n>defined_components</span><span class=p>[</span><span class=n>key</span><span class=p>]</span> <span class=o>=</span> <span class=n>defined_component</span>
         <span class=k>return</span> <span class=n>defined_component</span>
@@ -643,22 +629,19 @@
             <span class=n>Role</span><span class=p>(</span><span class=nb>id</span><span class=o>=</span><span class=s1>&#39;prepared-for&#39;</span><span class=p>,</span> <span class=n>title</span><span class=o>=</span><span class=s1>&#39;Indicates the organization for which this content was created..&#39;</span><span class=p>),</span>
             <span class=n>Role</span><span class=p>(</span>
                 <span class=nb>id</span><span class=o>=</span><span class=s1>&#39;content-approver&#39;</span><span class=p>,</span>
-                <span class=n>title</span><span class=o>=</span><span class=s1>&#39;Indicates the organization responsible for all content represented in the &quot;document&quot;.&#39;</span>
+                <span class=n>title</span><span class=o>=</span><span class=s1>&#39;Indicates the organization responsible for all content represented in the &quot;document&quot;.&#39;</span><span class=p>,</span>
             <span class=p>),</span>
         <span class=p>]</span>
         <span class=k>return</span> <span class=n>value</span>
 
-    <span class=k>def</span><span class=w> </span><span class=nf>_build_responsible_roles</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>party_uuid_01</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>party_uuid_02</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
-                                 <span class=n>party_uuid_03</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>ResponsibleRole</span><span class=p>]:</span>
+    <span class=k>def</span><span class=w> </span><span class=nf>_build_responsible_roles</span><span class=p>(</span>
+        <span class=bp>self</span><span class=p>,</span> <span class=n>party_uuid_01</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>party_uuid_02</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>party_uuid_03</span><span class=p>:</span> <span class=nb>str</span>
+    <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>ResponsibleRole</span><span class=p>]:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Build responsible roles.&quot;&quot;&quot;</span>
         <span class=n>role_prepared_by</span> <span class=o>=</span> <span class=n>ResponsibleRole</span><span class=p>(</span><span class=n>role_id</span><span class=o>=</span><span class=s1>&#39;prepared-by&#39;</span><span class=p>,</span> <span class=n>party_uuids</span><span class=o>=</span><span class=p>[</span><span class=n>party_uuid_01</span><span class=p>])</span>
         <span class=n>role_prepared_for</span> <span class=o>=</span> <span class=n>ResponsibleRole</span><span class=p>(</span><span class=n>role_id</span><span class=o>=</span><span class=s1>&#39;prepared-for&#39;</span><span class=p>,</span> <span class=n>party_uuids</span><span class=o>=</span><span class=p>[</span><span class=n>party_uuid_02</span><span class=p>,</span> <span class=n>party_uuid_03</span><span class=p>])</span>
         <span class=n>role_content_approver</span> <span class=o>=</span> <span class=n>ResponsibleRole</span><span class=p>(</span><span class=n>role_id</span><span class=o>=</span><span class=s1>&#39;content-approver&#39;</span><span class=p>,</span> <span class=n>party_uuids</span><span class=o>=</span><span class=p>[</span><span class=n>party_uuid_01</span><span class=p>])</span>
-        <span class=n>value</span> <span class=o>=</span> <span class=p>[</span>
-            <span class=n>role_prepared_by</span><span class=p>,</span>
-            <span class=n>role_prepared_for</span><span class=p>,</span>
-            <span class=n>role_content_approver</span><span class=p>,</span>
-        <span class=p>]</span>
+        <span class=n>value</span> <span class=o>=</span> <span class=p>[</span><span class=n>role_prepared_by</span><span class=p>,</span> <span class=n>role_prepared_for</span><span class=p>,</span> <span class=n>role_content_approver</span><span class=p>]</span>
         <span class=k>return</span> <span class=n>value</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_build_parties</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>party_uuid_01</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>party_uuid_02</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>party_uuid_03</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>Party</span><span class=p>]:</span>
@@ -669,28 +652,25 @@
                 <span class=n>uuid</span><span class=o>=</span><span class=n>party_uuid_02</span><span class=p>,</span>
                 <span class=nb>type</span><span class=o>=</span><span class=s1>&#39;organization&#39;</span><span class=p>,</span>
                 <span class=n>name</span><span class=o>=</span><span class=s1>&#39;Customer&#39;</span><span class=p>,</span>
-                <span class=n>remarks</span><span class=o>=</span><span class=s1>&#39;organization to be customized at account creation only for their Component Definition&#39;</span>
+                <span class=n>remarks</span><span class=o>=</span><span class=s1>&#39;organization to be customized at account creation only for their Component Definition&#39;</span><span class=p>,</span>
             <span class=p>),</span>
             <span class=n>Party</span><span class=p>(</span>
                 <span class=n>uuid</span><span class=o>=</span><span class=n>party_uuid_03</span><span class=p>,</span>
                 <span class=nb>type</span><span class=o>=</span><span class=s1>&#39;organization&#39;</span><span class=p>,</span>
                 <span class=n>name</span><span class=o>=</span><span class=s1>&#39;ISV&#39;</span><span class=p>,</span>
-                <span class=n>remarks</span><span class=o>=</span><span class=s1>&#39;organization to be customized at ISV subscription only for their Component Definition&#39;</span>
+                <span class=n>remarks</span><span class=o>=</span><span class=s1>&#39;organization to be customized at ISV subscription only for their Component Definition&#39;</span><span class=p>,</span>
             <span class=p>),</span>
         <span class=p>]</span>
         <span class=k>return</span> <span class=n>value</span>
 
-    <span class=k>def</span><span class=w> </span><span class=nf>_build_responsible_parties</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>party_uuid_01</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>party_uuid_02</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
-                                   <span class=n>party_uuid_03</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>ResponsibleParty</span><span class=p>]:</span>
+    <span class=k>def</span><span class=w> </span><span class=nf>_build_responsible_parties</span><span class=p>(</span>
+        <span class=bp>self</span><span class=p>,</span> <span class=n>party_uuid_01</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>party_uuid_02</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>party_uuid_03</span><span class=p>:</span> <span class=nb>str</span>
+    <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>ResponsibleParty</span><span class=p>]:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Build responsible parties.&quot;&quot;&quot;</span>
         <span class=n>prepared_by</span> <span class=o>=</span> <span class=n>ResponsibleParty</span><span class=p>(</span><span class=n>role_id</span><span class=o>=</span><span class=s1>&#39;prepared-by&#39;</span><span class=p>,</span> <span class=n>party_uuids</span><span class=o>=</span><span class=p>[</span><span class=n>party_uuid_01</span><span class=p>])</span>
         <span class=n>prepared_for</span> <span class=o>=</span> <span class=n>ResponsibleParty</span><span class=p>(</span><span class=n>role_id</span><span class=o>=</span><span class=s1>&#39;prepared-for&#39;</span><span class=p>,</span> <span class=n>party_uuids</span><span class=o>=</span><span class=p>[</span><span class=n>party_uuid_02</span><span class=p>,</span> <span class=n>party_uuid_03</span><span class=p>])</span>
         <span class=n>content_approver</span> <span class=o>=</span> <span class=n>ResponsibleParty</span><span class=p>(</span><span class=n>role_id</span><span class=o>=</span><span class=s1>&#39;content-approver&#39;</span><span class=p>,</span> <span class=n>party_uuids</span><span class=o>=</span><span class=p>[</span><span class=n>party_uuid_01</span><span class=p>])</span>
-        <span class=n>value</span> <span class=o>=</span> <span class=p>[</span>
-            <span class=n>prepared_by</span><span class=p>,</span>
-            <span class=n>prepared_for</span><span class=p>,</span>
-            <span class=n>content_approver</span><span class=p>,</span>
-        <span class=p>]</span>
+        <span class=n>value</span> <span class=o>=</span> <span class=p>[</span><span class=n>prepared_by</span><span class=p>,</span> <span class=n>prepared_for</span><span class=p>,</span> <span class=n>content_approver</span><span class=p>]</span>
         <span class=k>return</span> <span class=n>value</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>_report_issues</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>

@@ -80,7 +80,8 @@
 <span class=normal>114</span>
 <span class=normal>115</span>
 <span class=normal>116</span>
-<span class=normal>117</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ExportWriter</span><span class=p>:</span>
+<span class=normal>117</span>
+<span class=normal>118</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ExportWriter</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    By-Component Assembly Exports writer.</span>
 
@@ -149,8 +150,9 @@
             <span class=p>)</span>
 
         <span class=k>for</span> <span class=n>provided</span> <span class=ow>in</span> <span class=n>export_interface</span><span class=o>.</span><span class=n>get_isolated_provided</span><span class=p>():</span>
-            <span class=n>all_statements</span><span class=p>[</span><span class=n>provided</span><span class=o>.</span><span class=n>uuid</span>
-                           <span class=p>]</span> <span class=o>=</span> <span class=n>StatementProvided</span><span class=p>(</span><span class=n>provided</span><span class=o>.</span><span class=n>uuid</span><span class=p>,</span> <span class=n>provided</span><span class=o>.</span><span class=n>description</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>_leveraged_ssp_href</span><span class=p>)</span>
+            <span class=n>all_statements</span><span class=p>[</span><span class=n>provided</span><span class=o>.</span><span class=n>uuid</span><span class=p>]</span> <span class=o>=</span> <span class=n>StatementProvided</span><span class=p>(</span>
+                <span class=n>provided</span><span class=o>.</span><span class=n>uuid</span><span class=p>,</span> <span class=n>provided</span><span class=o>.</span><span class=n>description</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>_leveraged_ssp_href</span>
+            <span class=p>)</span>
 
         <span class=k>for</span> <span class=n>responsibility</span><span class=p>,</span> <span class=n>provided</span> <span class=ow>in</span> <span class=n>export_interface</span><span class=o>.</span><span class=n>get_export_sets</span><span class=p>():</span>
             <span class=n>path</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>provided</span><span class=o>.</span><span class=n>uuid</span><span class=si>}</span><span class=s1>_</span><span class=si>{</span><span class=n>responsibility</span><span class=o>.</span><span class=n>uuid</span><span class=si>}</span><span class=s1>&#39;</span>
@@ -159,7 +161,7 @@
                 <span class=n>provided</span><span class=o>.</span><span class=n>description</span><span class=p>,</span>
                 <span class=n>responsibility</span><span class=o>.</span><span class=n>uuid</span><span class=p>,</span>
                 <span class=n>responsibility</span><span class=o>.</span><span class=n>description</span><span class=p>,</span>
-                <span class=bp>self</span><span class=o>.</span><span class=n>_leveraged_ssp_href</span>
+                <span class=bp>self</span><span class=o>.</span><span class=n>_leveraged_ssp_href</span><span class=p>,</span>
             <span class=p>)</span>
 
         <span class=k>return</span> <span class=n>all_statements</span>

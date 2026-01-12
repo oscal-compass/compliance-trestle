@@ -224,20 +224,7 @@
 <span class=normal>238</span>
 <span class=normal>239</span>
 <span class=normal>240</span>
-<span class=normal>241</span>
-<span class=normal>242</span>
-<span class=normal>243</span>
-<span class=normal>244</span>
-<span class=normal>245</span>
-<span class=normal>246</span>
-<span class=normal>247</span>
-<span class=normal>248</span>
-<span class=normal>249</span>
-<span class=normal>250</span>
-<span class=normal>251</span>
-<span class=normal>252</span>
-<span class=normal>253</span>
-<span class=normal>254</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>XlsxToOscalProfile</span><span class=p>(</span><span class=n>TaskBase</span><span class=p>):</span>
+<span class=normal>241</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>XlsxToOscalProfile</span><span class=p>(</span><span class=n>TaskBase</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    Task to create OSCAL Profile json.</span>
 
@@ -303,11 +290,7 @@
         <span class=p>)</span>
         <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>xlsx_helper</span><span class=o>.</span><span class=n>profile_type</span> <span class=o>==</span> <span class=bp>self</span><span class=o>.</span><span class=n>xlsx_helper</span><span class=o>.</span><span class=n>by_control</span><span class=p>:</span>
             <span class=n>imports</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_imports_by_control</span><span class=p>()</span>
-            <span class=n>profile</span> <span class=o>=</span> <span class=n>Profile</span><span class=p>(</span>
-                <span class=n>uuid</span><span class=o>=</span><span class=nb>str</span><span class=p>(</span><span class=n>uuid</span><span class=o>.</span><span class=n>uuid4</span><span class=p>()),</span>
-                <span class=n>metadata</span><span class=o>=</span><span class=n>metadata</span><span class=p>,</span>
-                <span class=n>imports</span><span class=o>=</span><span class=n>imports</span><span class=p>,</span>
-            <span class=p>)</span>
+            <span class=n>profile</span> <span class=o>=</span> <span class=n>Profile</span><span class=p>(</span><span class=n>uuid</span><span class=o>=</span><span class=nb>str</span><span class=p>(</span><span class=n>uuid</span><span class=o>.</span><span class=n>uuid4</span><span class=p>()),</span> <span class=n>metadata</span><span class=o>=</span><span class=n>metadata</span><span class=p>,</span> <span class=n>imports</span><span class=o>=</span><span class=n>imports</span><span class=p>)</span>
         <span class=k>else</span><span class=p>:</span>
             <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>xlsx_helper</span><span class=o>.</span><span class=n>profile_type</span> <span class=o>==</span> <span class=bp>self</span><span class=o>.</span><span class=n>xlsx_helper</span><span class=o>.</span><span class=n>by_rule</span><span class=p>:</span>
                 <span class=n>imports</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_imports_by_rule</span><span class=p>()</span>
@@ -317,12 +300,7 @@
                 <span class=n>imports</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_imports_by_goal</span><span class=p>()</span>
             <span class=n>set_parameters</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_set_parameters</span><span class=p>()</span>
             <span class=n>modify</span> <span class=o>=</span> <span class=n>Modify</span><span class=p>(</span><span class=n>set_parameters</span><span class=o>=</span><span class=n>set_parameters</span><span class=p>)</span>
-            <span class=n>profile</span> <span class=o>=</span> <span class=n>Profile</span><span class=p>(</span>
-                <span class=n>uuid</span><span class=o>=</span><span class=nb>str</span><span class=p>(</span><span class=n>uuid</span><span class=o>.</span><span class=n>uuid4</span><span class=p>()),</span>
-                <span class=n>metadata</span><span class=o>=</span><span class=n>metadata</span><span class=p>,</span>
-                <span class=n>imports</span><span class=o>=</span><span class=n>imports</span><span class=p>,</span>
-                <span class=n>modify</span><span class=o>=</span><span class=n>modify</span><span class=p>,</span>
-            <span class=p>)</span>
+            <span class=n>profile</span> <span class=o>=</span> <span class=n>Profile</span><span class=p>(</span><span class=n>uuid</span><span class=o>=</span><span class=nb>str</span><span class=p>(</span><span class=n>uuid</span><span class=o>.</span><span class=n>uuid4</span><span class=p>()),</span> <span class=n>metadata</span><span class=o>=</span><span class=n>metadata</span><span class=p>,</span> <span class=n>imports</span><span class=o>=</span><span class=n>imports</span><span class=p>,</span> <span class=n>modify</span><span class=o>=</span><span class=n>modify</span><span class=p>)</span>
         <span class=c1># write OSCAL Profile to file</span>
         <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>_verbose</span><span class=p>:</span>
             <span class=n>logger</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;output: </span><span class=si>{</span><span class=n>ofile</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
@@ -426,11 +404,7 @@
             <span class=n>values</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>xlsx_helper</span><span class=o>.</span><span class=n>get_parameter_values</span><span class=p>(</span><span class=n>row</span><span class=p>)</span>
             <span class=k>if</span> <span class=n>param_id</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
                 <span class=k>continue</span>
-            <span class=n>set_parameter</span> <span class=o>=</span> <span class=n>SetParameter</span><span class=p>(</span>
-                <span class=n>param_id</span><span class=o>=</span><span class=n>param_id</span><span class=p>,</span>
-                <span class=n>label</span><span class=o>=</span><span class=n>label</span><span class=p>,</span>
-                <span class=n>usage</span><span class=o>=</span><span class=n>usage</span><span class=p>,</span>
-            <span class=p>)</span>
+            <span class=n>set_parameter</span> <span class=o>=</span> <span class=n>SetParameter</span><span class=p>(</span><span class=n>param_id</span><span class=o>=</span><span class=n>param_id</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=n>label</span><span class=p>,</span> <span class=n>usage</span><span class=o>=</span><span class=n>usage</span><span class=p>)</span>
             <span class=k>if</span> <span class=n>values</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
                 <span class=n>set_parameter</span><span class=o>.</span><span class=n>values</span> <span class=o>=</span> <span class=n>values</span>
             <span class=n>set_parameters</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>set_parameter</span><span class=p>)</span>
