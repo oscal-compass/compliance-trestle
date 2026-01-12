@@ -173,7 +173,7 @@ class Prune(Pipeline.Filter):
             back_matter=common.BackMatter(),
             controls=cat_controls,
             groups=new_groups,
-            params=new_params
+            params=new_params,
         )
 
         # find all referenced uuids - they should be 1:1 with those in backmatter

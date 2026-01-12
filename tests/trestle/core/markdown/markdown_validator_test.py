@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle markdown_validator module."""
+
 import pathlib
 from typing import Any, Dict
 
@@ -34,135 +35,135 @@ from trestle.core.markdown.markdown_validator import MarkdownValidator
             TEST_DIR / 'data/author/0.0.1/test_1_md_format/correct_instance.md',
             True,
             True,
-            False
+            False,
         ),
         (
             TEST_DIR / 'data/author/0.0.1/test_1_md_format/template.md',
             TEST_DIR / 'data/author/0.0.1/test_1_md_format/correct_instance_extra_features.md',
             True,
             True,
-            False
+            False,
         ),
         (
             TEST_DIR / 'data/author/0.0.1/test_1_md_format/template.md',
             TEST_DIR / 'data/author/0.0.1/test_1_md_format/bad_instance_yaml_header_change.md',
             False,
             True,
-            False
+            False,
         ),
         (
             TEST_DIR / 'data/author/0.0.1/test_1_md_format/template.md',
             TEST_DIR / 'data/author/0.0.1/test_1_md_format/bad_instance_yaml_header_change.md',
             True,
             False,
-            False
+            False,
         ),
         (
             TEST_DIR / 'data/author/0.0.1/test_1_md_format/template.md',
             TEST_DIR / 'data/author/0.0.1/test_1_md_format/bad_instance_missing_heading.md',
             False,
             False,
-            False
+            False,
         ),
         (
             TEST_DIR / 'data/author/0.0.1/test_1_md_format/template.md',
             TEST_DIR / 'data/author/0.0.1/test_1_md_format/bad_instance_missing_heading.md',
             True,
             True,
-            True
+            True,
         ),
         (
             TEST_DIR / 'data/author/0.0.1/test_1_md_format/template.md',
             TEST_DIR / 'data/author/0.0.1/test_1_md_format/bad_instance_heading_wrong_type.md',
             False,
             False,
-            False
+            False,
         ),
         (
             TEST_DIR / 'data/author/0.0.1/test_1_md_format/template.md',
             TEST_DIR / 'data/author/0.0.1/test_1_md_format/bad_instance_bold_heading.md',
             False,
             False,
-            False
+            False,
         ),
         (
             TEST_DIR / 'data/author/0.0.1/test_1_md_format/bad_instance_bold_heading.md',
             TEST_DIR / 'data/author/0.0.1/test_1_md_format/template.md',
             False,
             False,
-            False
+            False,
         ),
         (
             TEST_DIR / 'data/author/0.0.1/test_4_md_format_extras/template.md',
             TEST_DIR / 'data/author/0.0.1/test_4_md_format_extras/correct_instance.md',
             True,
             True,
-            False
+            False,
         ),
         (
             TEST_DIR / 'data/author/0.0.1/test_4_md_format_extras/template.md',
             TEST_DIR / 'data/author/0.0.1/test_4_md_format_extras/correct_instance_extra_features.md',
             True,
             True,
-            False
+            False,
         ),
         (
             TEST_DIR / 'data/author/0.0.1/test_4_md_format_extras/template.md',
             TEST_DIR / 'data/author/0.0.1/test_4_md_format_extras/bad_instance_yaml_header_change.md',
             False,
             True,
-            False
+            False,
         ),
         (
             TEST_DIR / 'data/author/0.0.1/test_4_md_format_extras/template.md',
             TEST_DIR / 'data/author/0.0.1/test_4_md_format_extras/bad_instance_yaml_header_change.md',
             True,
             False,
-            False
+            False,
         ),
         (
             TEST_DIR / 'data/author/0.0.1/test_4_md_format_extras/template.md',
             TEST_DIR / 'data/author/0.0.1/test_4_md_format_extras/bad_instance_missing_heading.md',
             False,
             False,
-            False
+            False,
         ),
         (
             TEST_DIR / 'data/author/0.0.1/test_4_md_format_extras/template.md',
             TEST_DIR / 'data/author/0.0.1/test_4_md_format_extras/bad_instance_missing_heading.md',
             True,
             True,
-            True
+            True,
         ),
         (
             TEST_DIR / 'data/author/0.0.1/test_4_md_format_extras/template.md',
             TEST_DIR / 'data/author/0.0.1/test_4_md_format_extras/bad_instance_heading_wrong_type.md',
             False,
             False,
-            False
+            False,
         ),
         (
             TEST_DIR / 'data/author/0.0.1/test_4_md_format_extras/template.md',
             TEST_DIR / 'data/author/0.0.1/test_4_md_format_extras/bad_instance_bold_heading.md',
             False,
             False,
-            False
+            False,
         ),
         (
             TEST_DIR / 'data/author/0.0.1/test_4_md_format_extras/bad_instance_bold_heading.md',
             TEST_DIR / 'data/author/0.0.1/test_4_md_format_extras/template.md',
             False,
             False,
-            False
-        )
-    ]
+            False,
+        ),
+    ],
 )
 def test_md_validator_pass(
     template_path: pathlib.Path,
     instance_path: pathlib.Path,
     status: bool,
     header_validate: bool,
-    header_only_validate: bool
+    header_only_validate: bool,
 ) -> None:
     """Run markdown validator to expected outcome."""
     md_api = MarkdownAPI()
@@ -190,27 +191,27 @@ def test_md_by_hand() -> None:
             TEST_DIR / 'data/author/0.0.1/test_2_md_with_md_header/template.md',
             TEST_DIR / 'data/author/0.0.1/test_2_md_with_md_header/instance.md',
             True,
-            False
+            False,
         ),
         (
             TEST_DIR / 'data/author/0.0.1/test_3_md_hand_edited/template.md',
             TEST_DIR / 'data/author/0.0.1/test_3_md_hand_edited/decisions_000.md',
             True,
-            False
+            False,
         ),
         (
             TEST_DIR / 'data/author/0.0.1/test_3_md_hand_edited/template.md',
             TEST_DIR / 'data/author/0.0.1/test_3_md_hand_edited/decisions_001.md',
             True,
-            False
+            False,
         ),
         (
             TEST_DIR / 'data/author/0.0.1/test_3_md_hand_edited/template.md',
             TEST_DIR / 'data/author/0.0.1/test_3_md_hand_edited/decisions_002.md',
             True,
-            False
-        )
-    ]
+            False,
+        ),
+    ],
 )
 def test_md_validator_with_md_header(
     template_path: pathlib.Path, instance_path: pathlib.Path, status: bool, yaml_header_validate: bool
@@ -233,70 +234,22 @@ def test_bad_file_path(tmp_path: pathlib.Path):
 @pytest.mark.parametrize(
     'template, candidate, expected_status',
     [
-        ({
-            'hello': {
-                'world': 'stuff'
-            }
-        }, {
-            'hello': {
-                'world': 'banana'
-            }
-        }, True), ({
-            'hello': {
-                'world': 'stuff'
-            }
-        }, {
-            'hello': {
-                'banana': 'world'
-            }
-        }, False),
-        ({
-            'hello': {
-                'world': 'stuff'
-            }
-        }, {
-            'hello': {
-                'world': ['results can be arrays with no restrictions']
-            }
-        }, True), ({
-            'hello': 1,
-            'world': 2,
-        }, {
-            'hello': 1,
-            'my-world': 2,
-        }, False), ({
-            'hello': 1,
-            'world': 2,
-        }, {
-            'hello': 1,
-            'world': 2,
-            'banana': 3,
-        }, False),
+        ({'hello': {'world': 'stuff'}}, {'hello': {'world': 'banana'}}, True),
+        ({'hello': {'world': 'stuff'}}, {'hello': {'banana': 'world'}}, False),
+        ({'hello': {'world': 'stuff'}}, {'hello': {'world': ['results can be arrays with no restrictions']}}, True),
+        ({'hello': 1, 'world': 2}, {'hello': 1, 'my-world': 2}, False),
+        ({'hello': 1, 'world': 2}, {'hello': 1, 'world': 2, 'banana': 3}, False),
         (
-            {
-                'hello': 'A simple element', 'world': {
-                    'required_key': '1', 'another_required_key': '2'
-                }
-            }, {
-                'hello': 'A simple element', 'world': {
-                    'required_key': '1', 'another_required_key': '2'
-                }
-            },
-            True
+            {'hello': 'A simple element', 'world': {'required_key': '1', 'another_required_key': '2'}},
+            {'hello': 'A simple element', 'world': {'required_key': '1', 'another_required_key': '2'}},
+            True,
         ),
         (
-            {
-                'hello': 'A simple element', 'world': {
-                    'required_key': '1', 'another_required_key': '2'
-                }
-            }, {
-                'hello': 'A simple element', 'world': {
-                    'required_key': 'there is a missing key',
-                }
-            },
-            False
-        )
-    ]
+            {'hello': 'A simple element', 'world': {'required_key': '1', 'another_required_key': '2'}},
+            {'hello': 'A simple element', 'world': {'required_key': 'there is a missing key'}},
+            False,
+        ),
+    ],
 )
 def test_key_compare(template: Dict[str, Any], candidate: Dict[str, Any], expected_status):
     """Test key_compare behaves as expected."""
@@ -311,39 +264,39 @@ def test_key_compare(template: Dict[str, Any], candidate: Dict[str, Any], expect
             TEST_DIR / 'data/author/0.0.1/test_2_md_with_md_header/template.md',
             TEST_DIR / 'data/author/0.0.1/test_2_md_with_md_header/instance.md',
             True,
-            'Governed Document'
+            'Governed Document',
         ),
         (
             TEST_DIR / 'data/author/0.0.1/test_2_md_with_md_header/template.md',
             TEST_DIR / 'data/author/0.0.1/test_2_md_with_md_header/instance.md',
             True,
-            'Governed Document      '
+            'Governed Document      ',
         ),
         (
             TEST_DIR / 'data/author/0.0.1/test_2_md_with_md_header/template.md',
             TEST_DIR / 'data/author/0.0.1/test_2_md_with_md_header/instance.md',
             False,
-            'Governed Documeent'
+            'Governed Documeent',
         ),
         (
             TEST_DIR / 'data/author/0.0.1/test_2_md_with_md_header/template.md',
             TEST_DIR / 'data/author/0.0.1/test_2_md_with_md_header/bad_heading_content_changed_header.md',
             False,
-            'Governed Document'
+            'Governed Document',
         ),
         (
             TEST_DIR / 'data/author/0.0.1/test_2_md_with_md_header/template.md',
             TEST_DIR / 'data/author/0.0.1/test_2_md_with_md_header/bad_heading_content_extra_lines.md',
             False,
-            'Governed Document'
+            'Governed Document',
         ),
         (
             TEST_DIR / 'data/author/0.0.1/test_2_md_with_md_header/template.md',
             TEST_DIR / 'data/author/0.0.1/test_2_md_with_md_header/wrong_heading_title.md',
             False,
-            'Governed Document'
-        )
-    ]
+            'Governed Document',
+        ),
+    ],
 )
 def test_validate_for_governed_header(
     template_path: pathlib.Path, instance_path: pathlib.Path, status: bool, governed_header: str
@@ -381,37 +334,37 @@ def test_broken_yaml_header(testdata_dir: pathlib.Path):
             TEST_DIR / 'data/author/0.0.1/test_4_md_substitutions/correct_instance.md',
             True,
             True,
-            True
+            True,
         ),
         (
             TEST_DIR / 'data/author/0.0.1/test_4_md_substitutions/template.md',
             TEST_DIR / 'data/author/0.0.1/test_4_md_substitutions/correct_instance_empty_subs.md',
             True,
             True,
-            True
+            True,
         ),
         (
             TEST_DIR / 'data/author/0.0.1/test_4_md_substitutions/template.md',
             TEST_DIR / 'data/author/0.0.1/test_4_md_substitutions/bad_added_header.md',
             False,
             True,
-            True
+            True,
         ),
         (
             TEST_DIR / 'data/author/0.0.1/test_4_md_substitutions/template.md',
             TEST_DIR / 'data/author/0.0.1/test_4_md_substitutions/bad_modified_header_deep.md',
             False,
             True,
-            True
-        )
-    ]
+            True,
+        ),
+    ],
 )
 def test_md_validator_substitutions(
     template_path: pathlib.Path,
     instance_path: pathlib.Path,
     status: bool,
     header_validate: bool,
-    validate_md_body: bool
+    validate_md_body: bool,
 ) -> None:
     """Run markdown validator to expected outcome."""
     md_api = MarkdownAPI()
@@ -423,14 +376,9 @@ def test_md_validator_substitutions(
 @pytest.mark.parametrize(
     'template_path, status',
     [
-        (
-            TEST_DIR / 'data/author/versions/1.0.0/good_template.md',
-            True,
-        ), (
-            TEST_DIR / 'data/author/versions/1.1.0/good_template.md',
-            True,
-        )
-    ]
+        (TEST_DIR / 'data/author/versions/1.0.0/good_template.md', True),
+        (TEST_DIR / 'data/author/versions/1.1.0/good_template.md', True),
+    ],
 )
 def test_template_version(template_path: pathlib.Path, status: bool) -> None:
     """Test for x-trestle-template-version header in templates."""
@@ -457,8 +405,8 @@ def test_template_version(template_path: pathlib.Path, status: bool) -> None:
             TEST_DIR / 'data/author/versions/1.1.0/good_template.md',
             TEST_DIR / 'data/author/versions/1.1.0/bad_instance_mismatched_versions.md',
             False,
-        )
-    ]
+        ),
+    ],
 )
 def test_instance_template_version(template_path: pathlib.Path, instance_path: pathlib.Path, status: bool) -> None:
     """Test for x-trestle-template-version header in instances."""
@@ -472,8 +420,8 @@ def test_instance_template_version(template_path: pathlib.Path, instance_path: p
     'template_path',
     [
         (TEST_DIR / 'data/author/versions/1.0.0/bad_template_wrong_folder.md'),
-        (TEST_DIR / 'data/author/versions/1.1.0/bad_template_mismatched_versions.md')
-    ]
+        (TEST_DIR / 'data/author/versions/1.1.0/bad_template_mismatched_versions.md'),
+    ],
 )
 def test_template_path_mismatch(template_path: pathlib.Path) -> None:
     """Test template path and version mismatch."""

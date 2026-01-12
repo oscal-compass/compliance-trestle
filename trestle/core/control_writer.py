@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Handle writing of controls to markdown."""
+
 import copy
 import logging
 import pathlib
@@ -30,7 +31,7 @@ from trestle.oscal.common import ImplementationStatus, Part
 logger = logging.getLogger(__name__)
 
 
-class ControlWriter():
+class ControlWriter:
     """Class to write controls as markdown."""
 
     def __init__(self):
@@ -343,7 +344,7 @@ class ControlWriter():
         profile: prof.Profile,
         header: Dict[str, Any],
         part_id_map: Dict[str, str],
-        found_alters: List[prof.Alter]
+        found_alters: List[prof.Alter],
     ) -> List[str]:
         # get part and subpart info from adds of the profile
         part_infos = ControlInterface.get_all_add_info(control.id, profile)
@@ -472,8 +473,9 @@ class ControlWriter():
             self._md_file.new_line(f'{const.PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT}: {section_title} -->')
 
     @staticmethod
-    def _merge_headers(memory_header: Dict[str, Any], md_header: Dict[str, Any],
-                       context: ControlContext) -> Dict[str, Any]:
+    def _merge_headers(
+        memory_header: Dict[str, Any], md_header: Dict[str, Any], context: ControlContext
+    ) -> Dict[str, Any]:
         merged_header = copy.deepcopy(md_header)
         ControlInterface.merge_dicts_deep(merged_header, memory_header, False, 1)
         return merged_header
@@ -485,7 +487,7 @@ class ControlWriter():
         dest_path: pathlib.Path,
         group_title: str,
         part_id_map: Dict[str, str],
-        found_alters: List[prof.Alter]
+        found_alters: List[prof.Alter],
     ) -> None:
         """
         Write out the control in markdown format into the specified directory.
@@ -533,8 +535,9 @@ class ControlWriter():
                 if const.TRESTLE_ADD_PROPS_TAG not in md_header:
                     md_header[const.TRESTLE_ADD_PROPS_TAG] = []
             elif context.purpose == ContextPurpose.COMPONENT:
-                header_comment_dict[const.COMP_DEF_RULES_PARAM_VALS_TAG
-                                    ] = const.YAML_RULE_PARAM_VALUES_COMPONENT_COMMENT
+                header_comment_dict[const.COMP_DEF_RULES_PARAM_VALS_TAG] = (
+                    const.YAML_RULE_PARAM_VALUES_COMPONENT_COMMENT
+                )
 
         # begin adding info to the md file
         self._md_file = MDWriter(control_file, header_comment_dict)
@@ -550,9 +553,7 @@ class ControlWriter():
         )
         # the global contents are special and get overwritten on generate
         set_or_pop(
-            context.merged_header,
-            const.TRESTLE_GLOBAL_TAG,
-            context.cli_yaml_header.get(const.TRESTLE_GLOBAL_TAG, None)
+            context.merged_header, const.TRESTLE_GLOBAL_TAG, context.cli_yaml_header.get(const.TRESTLE_GLOBAL_TAG, None)
         )
         sort_id = ControlInterface.get_sort_id(control, True)
         if sort_id:

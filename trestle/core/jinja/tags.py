@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle utilities to customize jinja tags."""
+
 import logging
 from datetime import date
 

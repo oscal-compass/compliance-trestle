@@ -36,7 +36,7 @@ from trestle.oscal import ssp as ossp
 logger = logging.getLogger(__name__)
 
 
-class CatalogReader():
+class CatalogReader:
     """
     Catalog reader.
 
@@ -54,7 +54,7 @@ class CatalogReader():
         required_sections_list: List[str],
         label_map: Dict[str, Dict[str, str]],
         sections_dict: Dict[str, str],
-        write_mode: bool
+        write_mode: bool,
     ) -> Tuple[List[prof.Alter], Dict[str, Any], Dict[str, str]]:
         """Read all markdown controls and return list of alters plus control param dict and param sort map."""
         alters_map: Dict[str, prof.Alter] = {}
@@ -63,11 +63,7 @@ class CatalogReader():
         for group_path in CatalogInterface._get_group_ids_and_dirs(md_path).values():
             for control_file in group_path.glob('*.md'):
                 sort_id, control_alters, control_param_dict = ControlReader.read_editable_content(
-                    control_file,
-                    required_sections_list,
-                    label_map,
-                    sections_dict,
-                    write_mode
+                    control_file, required_sections_list, label_map, sections_dict, write_mode
                 )
                 alters_map[sort_id] = control_alters
                 for param_id, param_dict in control_param_dict.items():
@@ -252,8 +248,9 @@ class CatalogReader():
             return by_comp
 
     @staticmethod
-    def _read_comp_info_from_md(control_file_path: pathlib.Path,
-                                context: ControlContext) -> Tuple[Dict[str, Any], CompDict]:
+    def _read_comp_info_from_md(
+        control_file_path: pathlib.Path, context: ControlContext
+    ) -> Tuple[Dict[str, Any], CompDict]:
         md_header = {}
         comp_dict = {}
         if control_file_path.exists():
@@ -266,7 +263,7 @@ class CatalogReader():
         control_id: str,
         gen_comp: generic.GenericComponent,
         comp_info_dict: Dict[str, ComponentImpInfo],
-        part_id_map_by_label: Dict[str, Dict[str, str]]
+        part_id_map_by_label: Dict[str, Dict[str, str]],
     ) -> None:
         # get imp req for control and find one with by_comp, creating if needed
         imp_req = CatalogReader._get_imp_req_for_control(ssp, control_id)
@@ -284,7 +281,7 @@ class CatalogReader():
         rule_id: str,
         param_name: str,
         param_values: List[str],
-        comp_uuid: str
+        comp_uuid: str,
     ) -> None:
         for by_comp in as_list(item.by_components):
             if by_comp.component_uuid == comp_uuid:
@@ -307,7 +304,7 @@ class CatalogReader():
         param_dict: Dict[str, str],
         comp_name: str,
         md_header: Dict[str, Dict[str, str]],
-        comp_uuid: str
+        comp_uuid: str,
     ):
         """Insert the param in the by_comps that are supported by the rule."""
         # given param name find rule_id in comp name header entry
@@ -341,7 +338,7 @@ class CatalogReader():
         control_id: str,
         part_id_map_by_label: Dict[str, Dict[str, str]],
         yaml_header: Dict[str, Any],
-        imp_req: ossp.ImplementedRequirement
+        imp_req: ossp.ImplementedRequirement,
     ) -> None:
         """Add the props from the yaml header to the imp_req."""
         control_part_id_map = part_id_map_by_label.get(control_id, {})
@@ -367,7 +364,7 @@ class CatalogReader():
         control_id: str,
         comp_dict: Dict[str, generic.GenericComponent],
         part_label_to_id_map: Dict[str, Dict[str, str]],
-        md_header: Dict[str, Dict[str, str]]
+        md_header: Dict[str, Dict[str, str]],
     ) -> None:
         """Update the ssp with info from the header of an ssp control markdown file."""
         # rules param vals go in bycomps of imp_req
@@ -394,7 +391,7 @@ class CatalogReader():
         ssp: ossp.SystemSecurityPlan,
         comp_dict: Dict[str, generic.GenericComponent],
         part_id_map_by_label: Dict[str, Dict[str, str]],
-        context: ControlContext
+        context: ControlContext,
     ) -> None:
         """
         Read md content into the ssp.
