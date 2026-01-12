@@ -38,7 +38,7 @@ def prune_lists(input_model: trestle.core.base_model.OscalBaseModel, list_cap: i
             prune_lists(v, list_cap)
         elif isinstance(v, list):
             if len(v) > fixed_cap:
-                del v[-(len(v) - fixed_cap):]
+                del v[-(len(v) - fixed_cap) :]
             for x in range(len(v)):
                 if isinstance(v[x], trestle.core.base_model.OscalBaseModel):
                     prune_lists(v[x], fixed_cap)

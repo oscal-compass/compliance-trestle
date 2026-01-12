@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Validate by confirming rule parameter values are consistent."""
+
 import logging
 import pathlib
 from typing import Any, Dict, Optional
@@ -37,9 +38,7 @@ class RuleParametersValidator(Validator):
         self._rule_param_values_dict: Dict[str, Any] = {}
 
     def _add_imp_req_rule_params_to_dict(
-        self,
-        imp_requirement: ImplementedRequirement,
-        cat_int: CatalogInterface,
+        self, imp_requirement: ImplementedRequirement, cat_int: CatalogInterface
     ) -> None:
         """
         Iterate all by components in an object and add the rule shared parameter values to list.

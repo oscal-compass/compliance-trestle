@@ -1,17 +1,20 @@
-# Added to aide with eventual transition away from setup.py
 [build-system]
-requires = [
-    "setuptools >= 35.0.2",
-    "wheel",
-    "setuptools_scm >= 2.0.0"
-]
-build-backend = "setuptools.build_meta"
-
-[tool.setuptools_scm] # this section must exist
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
 name = "compliance-trestle"
+dynamic = ["version"]
 description = "Tools to manage & autogenerate python objects representing the OSCAL layers/models"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+keywords = [
+    "Compliance",
+    "Security",
+    "OSCAL",
+]
 authors = [
     {name = "OSCAL Compass", email = "oscal-compass-oversight@googlegroups.com"}
 ]
@@ -20,6 +23,7 @@ classifiers = [
     "Environment :: Console",
     "Intended Audience :: Developers",
     "Intended Audience :: Information Technology",
+    "License :: OSI Approved :: Apache Software License",
     "Operating System :: POSIX",
     "Operating System :: Microsoft",
     "Programming Language :: Python :: 3",
@@ -28,11 +32,6 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
 ]
-readme = "README.md"
-license = "Apache-2.0"
-license-files = ["LICENSE"]
-dynamic = ["version"]
-requires-python = ">=3.9"
 dependencies = [
     "attrs",
     "ilcli",
@@ -42,38 +41,28 @@ dependencies = [
     "furl",
     "pydantic[email]>=2.0.0",
     "python-dotenv>=0.10.4",
-    "datamodel-code-generator[http] == 0.36.0",
     "python-frontmatter",
     "pywin32 >= 1.0;platform_system=='Windows'",
     "defusedxml",
     "openpyxl~=3.0",
     "Jinja2 == 3.1.6",
-    "cmarkgfm>=2024.1,<2025.11", ## Update regularly
+    "cmarkgfm>=2024.1,<2025.11",
     "orjson",
     "requests>=2.32.2",
-    "importlib_resources"
+    "importlib_resources",
 ]
 
 [project.optional-dependencies]
-dev = [
-    "pytest>=5.4.3",
-    "pytest-cov>=2.10.0",
-    "pytest-xdist",
-    "pre-commit>=2.4.0",
-    "setuptools>=61",
-    "urllib3==2.5.0",
-    "wheel",
-    "yapf",
-    "python-semantic-release>=10.4.0",
-    "pep8-naming",
-    "pytest-random-order",
-    "python-dateutil",
+# Type checking
+typing = [
     "mypy",
     "types-PyYAML",
     "types-paramiko",
     "types-requests",
     "types-setuptools",
-    ## Docs website
+]
+# Documentation website
+docs = [
     "mike",
     "mkdocs>=1.6.0",
     "mkdocs-awesome-pages-plugin",
@@ -87,30 +76,72 @@ dev = [
     "livereload",
     "pillow",
     "cairosvg",
-    ## Constrain system
+
+]
+# Development tools (testing via hatch test)
+dev = [
+    "compliance-trestle[typing,docs]",
+    "pre-commit>=2.4.0",
+    "python-semantic-release>=10.4.0",
     "pylint",
-    # Checking repo after docs generation.
-    "gitpython"
+    "datamodel-code-generator[http] == 0.36.0",
+    "gitpython",
 ]
 
 [project.urls]
 Homepage = "https://oscal-compass.github.io/compliance-trestle"
+Documentation = "https://oscal-compass.github.io/compliance-trestle"
+"Source code" = "https://github.com/oscal-compass/compliance-trestle"
 
 [project.scripts]
 trestle = "trestle.cli:run"
 
-[tool.setuptools]
-include-package-data = true
+[tool.hatch.version]
+path = "trestle/__init__.py"
 
-[tool.setuptools.packages.find]
-include = ["trestle*"]
-exclude = ["tests"]
+[tool.hatch.build.targets.sdist]
+include = [
+    "/trestle",
+]
+exclude = [
+    "/tests",
+]
 
-[tool.setuptools.package-data]
-trestle = ["*.ini", "*.md", "*.jinja", "*.drawio", "*.json", "*.yaml", "*.yml"]
+[tool.hatch.build.targets.wheel]
+packages = ["trestle"]
 
-[tool.setuptools.dynamic]
-version = {attr = "trestle.__init__.__version__"}
+[tool.hatch.envs.default]
+dependencies = [
+  "coverage[toml]~=7.4",
+]
+
+[tool.hatch.envs.hatch-test]
+default-args = ["tests"]
+parallel = true
+randomize = true
+# Pin coverage for Python 3.9 compatibility (7.7+ requires Python 3.10+)
+dependencies = [
+    "coverage[toml]~=7.4",
+    "pytest>=8.1",
+    "pytest-xdist[psutil]>=3.5",
+    "pytest-randomly>=3.15", 
+    "mypy"
+]
+
+[[tool.hatch.envs.hatch-test.matrix]]
+python = ["3.9", "3.10", "3.11", "3.12"]
+
+[tool.hatch.envs.docs]
+features = ["docs"]
+
+[tool.hatch.envs.docs.scripts]
+build = "mkdocs build -c -s"
+serve = "mkdocs serve"
+automation = "python ./scripts/website_automation.py"
+validate = ["automation", "build"]
+
+[tool.hatch.envs.hatch-static-analysis]
+config-path = "none"
 
 [tool.pytest.ini_options]
 minversion = "6.2"
@@ -118,22 +149,145 @@ testpaths = [
     "tests",
 ]
 
+[tool.ruff]
+line-length = 120
+indent-width = 4
+target-version = "py39"
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+    "trestle/oscal",
+]
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
+skip-magic-trailing-comma = true
+
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # Pyflakes
+    "I",      # isort
+    "N",      # pep8-naming
+    "UP",     # pyupgrade
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "T20",    # flake8-print
+    "SIM",    # flake8-simplify
+    "S",      # flake8-bandit (security)
+]
+ignore = [
+    "E501",   # line too long (handled by formatter)
+    "S101",   # use of assert (common in tests)
+    "S603",   # subprocess call - check for execution of untrusted input
+    "S607",   # starting a process with a partial executable path
+    # FIXME: UP - pyupgrade rules to fix
+    "UP003",  # FIXME: Use `type` instead of `type(...)` (1 error)
+    "UP006",  # FIXME: Use `type` instead of `Type` for type annotations (1134 errors)
+    "UP007",  # FIXME: Use `X | Y` for Union types (114 errors)
+    "UP008",  # FIXME: Use `super()` instead of `super(__class__, self)` (6 errors)
+    "UP009",  # FIXME: UTF-8 encoding declaration is unnecessary (211 errors)
+    "UP015",  # FIXME: Unnecessary open mode parameters (25 errors)
+    "UP018",  # FIXME: Unnecessary call to `type` (3 errors)
+    "UP024",  # FIXME: Replace aliased errors with `OSError` (2 errors)
+    "UP028",  # FIXME: Replace `yield` in `for` loop with `yield from` (6 errors)
+    "UP035",  # FIXME: `typing.X` is deprecated, use `x` instead (208 errors)
+    "UP037",  # FIXME: Remove quotes from type annotation (1 error)
+    "UP039",  # FIXME: Unnecessary parentheses after class definition (43 errors)
+    "UP045",  # FIXME: Use `X | None` for type annotations (112 errors)
+    # FIXME: B - flake8-bugbear rules to fix
+    "B017",   # FIXME: `assertRaises(Exception)` should be considered evil (6 errors)
+    "B018",   # FIXME: Found useless expression (1 error)
+    "B904",   # FIXME: Within `except` clause, raise from err or None (82 errors)
+    # FIXME: SIM - flake8-simplify rules to fix
+    "SIM101", # FIXME: Multiple `isinstance` calls, merge into one (2 errors)
+    "SIM102", # FIXME: Use a single `if` instead of nested `if` (22 errors)
+    "SIM103", # FIXME: Return condition directly instead of `if`-`else` (1 error)
+    "SIM105", # FIXME: Use `contextlib.suppress(...)` instead of `try`-`except`-`pass` (4 errors)
+    "SIM108", # FIXME: Use ternary operator instead of `if`-`else` block (30 errors)
+    "SIM110", # FIXME: Use `return any(...)` instead of `for` loop (4 errors)
+    "SIM113", # FIXME: Use `enumerate` instead of manual counter (3 errors)
+    "SIM114", # FIXME: Combine `if` branches using logical `or` (3 errors)
+    "SIM115", # FIXME: Use context handler for opening files (18 errors)
+    "SIM117", # FIXME: Use single `with` statement with multiple contexts (2 errors)
+    "SIM118", # FIXME: Use `key in dict` instead of `key in dict.keys()` (67 errors)
+    "SIM201", # FIXME: Use `!=` instead of `not ... ==` (11 errors)
+    "SIM210", # FIXME: Use `bool(...)` instead of `True if ... else False` (3 errors)
+    "SIM211", # FIXME: Use `not ...` instead of `False if ... else True` (2 errors)
+    "SIM212", # FIXME: Use `... if ... else ...` instead of `... if not ... else ...` (2 errors)
+    "SIM300", # FIXME: Yoda conditions are discouraged (29 errors)
+    "SIM905", # FIXME: Consider using a list literal instead of `str.split` (14 errors)
+    "SIM910", # FIXME: Use `dict.get(key)` instead of `dict.get(key, None)` (3 errors)
+    # FIXME: E - pycodestyle rules to fix
+    "E713",   # FIXME: Test for membership should be `not in` (1 error)
+    "E721",   # FIXME: Do not compare types, use `isinstance()` (15 errors)
+    # FIXME: W - pycodestyle warnings to fix
+    "W605",   # FIXME: Invalid escape sequence (36 errors)
+    # FIXME: I - isort rules to fix
+    "I001",   # FIXME: Import block is un-sorted or un-formatted (106 errors)
+    # FIXME: N - pep8-naming rules to fix
+    "N804",   # FIXME: First argument of classmethod should be `cls` (1 error)
+    # FIXME: S - flake8-bandit security rules to fix
+    "S110",   # FIXME: `try`-`except`-`pass` detected (4 errors)
+    "S311",   # FIXME: Standard pseudo-random generators not suitable for crypto (14 errors)
+    "S605",   # FIXME: Starting a process with a shell, possible injection (1 error)
+    "S701",   # FIXME: Using jinja2 templates with `autoescape=False` (5 errors)
+    # FIXME: F - Pyflakes rules to fix
+    "F401",   # FIXME: Unused import (7 errors)
+    "F541",   # FIXME: f-string without any placeholders (1 error)
+    # FIXME: C4 - flake8-comprehensions rules to fix
+    "C408",   # FIXME: Unnecessary dict/list/tuple call (1 error)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = [
+    "S101",   # asserts allowed in tests
+    "S105",   # possible hardcoded password
+    "S106",   # possible hardcoded password
+    "S108",   # probable insecure usage of temp file
+]
+"scripts/**/*.py" = [
+    "T20",    # print statements allowed in scripts
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["trestle"]
+
+# Black config is used by datamodel-codegen when generating OSCAL models.
+# Line-length 500 ensures single-line Field() definitions for consistent
+# body text comparison in oscal_normalize.py.
 [tool.black]
 line-length = 500
 
 [tool.isort]
 line_length = 500
 
-[tool.flake8]
-# WARNING: This should be kept compatible with .pre-commit-config.yaml
-ignore = ["P1", "C812", "C813", "C814", "C815", "C816"]
-max-line-length = 120
-exclude = [
-    "trestle/oscal"
-]
-
 [tool.mypy]
-plugins = "pydantic.v1.mypy"
+plugins = ["pydantic.mypy"]
 ignore_missing_imports = true
 strict_optional = true
 warn_redundant_casts = true
@@ -161,23 +315,16 @@ relative_files = true
 
 [tool.semantic_release]
 build_command = """
-    python -m pip install -e .[dev] --upgrade --upgrade-strategy eager --
-    python setup.py sdist bdist_wheel
+    python -m pip install build --upgrade
+    python -m build
 """
 version_variables = ["trestle/__init__.py:__version__"]
 commit_author = "semantic-release <semantic-release>"
 
-# Define different release groups.
-# Branches that match these patterns will be treated differently.
 [tool.semantic_release.branches.alpha]
-# Use a regex pattern to match branches for alpha pre-releases.
 match = "^(feat|fix|perf)/.+"
 prerelease = true
 prerelease_token = "alpha"
-# For testing, issue:
-# > semantic-release changelog
-# > git diff --staged CHANGELOG.md
-# See https://github.com/python-semantic-release/python-semantic-release/issues/1338
 
 [tool.semantic_release.commit_parser_options]
 allowed_tags = ["build", "chore", "ci", "docs", "feat", "fix", "perf", "style", "refactor", "test"]

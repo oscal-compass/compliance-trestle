@@ -229,40 +229,19 @@ class Ocp4CisProfileToOscalCD(TaskBase):
             version=trestle.__version__,
             roles=roles,
             parties=parties,
-            responsible_parties=responsible_parties
+            responsible_parties=responsible_parties,
         )
         # defined component
         component_title = component_name
         component_description = component_name
         defined_component = DefinedComponent(
-            uuid=str(uuid.uuid4()),
-            description=component_description,
-            title=component_title,
-            type='Service',
+            uuid=str(uuid.uuid4()), description=component_description, title=component_title, type='Service'
         )
         # add control implementation per profile
-        prop1 = Property(
-            name='profile_name',
-            value=profile_name,
-            class_='scc_profile_name',
-            ns=profile_ns,
-        )
-        prop2 = Property(
-            name='profile_mnemonic',
-            value=profile_mnemonic,
-            class_='scc_profile_mnemonic',
-            ns=profile_ns,
-        )
-        prop3 = Property(
-            name='profile_version',
-            value=profile_version,
-            class_='scc_profile_version',
-            ns=profile_ns,
-        )
-        prop4 = Property(
-            name='profile_check_version',
-            value=profile_check_version,
-        )
+        prop1 = Property(name='profile_name', value=profile_name, class_='scc_profile_name', ns=profile_ns)
+        prop2 = Property(name='profile_mnemonic', value=profile_mnemonic, class_='scc_profile_mnemonic', ns=profile_ns)
+        prop3 = Property(name='profile_version', value=profile_version, class_='scc_profile_version', ns=profile_ns)
+        prop4 = Property(name='profile_check_version', value=profile_check_version)
         props = [prop1, prop2, prop3, prop4]
         for profile in profile_list:
             profile_set = profile_sets[profile]
@@ -276,9 +255,7 @@ class Ocp4CisProfileToOscalCD(TaskBase):
         defined_components = [defined_component]
         # component definition
         component_definition = ComponentDefinition(
-            uuid=str(uuid.uuid4()),
-            metadata=metadata,
-            components=defined_components,
+            uuid=str(uuid.uuid4()), metadata=metadata, components=defined_components
         )
         # write OSCAL ComponentDefinition to file
         if verbose:
@@ -297,11 +274,7 @@ class Ocp4CisProfileToOscalCD(TaskBase):
                 options = value['options']
                 default_value = options['default']
                 logger.debug(f'key: {key} options: {options}')
-                set_parameter = SetParameter(
-                    param_id=rule,
-                    values=[f'{default_value}'],
-                    remarks=remarks,
-                )
+                set_parameter = SetParameter(param_id=rule, values=[f'{default_value}'], remarks=remarks)
         return set_parameter
 
     def _get_controls(self, rules: Dict[str, Tuple[str, str, str]]) -> Dict[str, List[str]]:
@@ -457,7 +430,7 @@ class Ocp4CisProfileToOscalCD(TaskBase):
             Role(id='prepared-for', title='Indicates the organization for which this content was created..'),
             Role(
                 id='content-approver',
-                title='Indicates the organization responsible for all content represented in the "document".'
+                title='Indicates the organization responsible for all content represented in the "document".',
             ),
         ]
         return value
@@ -514,8 +487,9 @@ class Ocp4CisProfileToOscalCD(TaskBase):
         logger.debug(f'{title}')
         return title
 
-    def _build_implemented_requirements(self, profile_set: Dict[str, str],
-                                        responsible_roles: List[ResponsibleRole]) -> List[ImplementedRequirement]:
+    def _build_implemented_requirements(
+        self, profile_set: Dict[str, str], responsible_roles: List[ResponsibleRole]
+    ) -> List[ImplementedRequirement]:
         """Build implemented requirements."""
         implemented_requirements = []
         profile_file = profile_set['profile-file']
@@ -532,7 +506,7 @@ class Ocp4CisProfileToOscalCD(TaskBase):
                 ns=profile_set['profile-ns'],
                 name='XCCDF_rule',
                 value=f'{rule_prefix}{rule}',
-                remarks=f'{remarks}'
+                remarks=f'{remarks}',
             )
             props = [prop]
             implemented_requirement = ImplementedRequirement(
@@ -548,17 +522,14 @@ class Ocp4CisProfileToOscalCD(TaskBase):
             implemented_requirements.append(implemented_requirement)
         return implemented_requirements
 
-    def _build_responsible_roles(self, party_uuid_01: str, party_uuid_02: str,
-                                 party_uuid_03: str) -> List[ResponsibleRole]:
+    def _build_responsible_roles(
+        self, party_uuid_01: str, party_uuid_02: str, party_uuid_03: str
+    ) -> List[ResponsibleRole]:
         """Build responsible roles."""
         role_prepared_by = ResponsibleRole(role_id='prepared-by', party_uuids=[party_uuid_01])
         role_prepared_for = ResponsibleRole(role_id='prepared-for', party_uuids=[party_uuid_02, party_uuid_03])
         role_content_approver = ResponsibleRole(role_id='content-approver', party_uuids=[party_uuid_01])
-        value = [
-            role_prepared_by,
-            role_prepared_for,
-            role_content_approver,
-        ]
+        value = [role_prepared_by, role_prepared_for, role_content_approver]
         return value
 
     def _build_parties(
@@ -571,26 +542,23 @@ class Ocp4CisProfileToOscalCD(TaskBase):
                 uuid=party_uuid_02,
                 type='organization',
                 name='Customer',
-                remarks='organization to be customized at account creation only for their Component Definition'
+                remarks='organization to be customized at account creation only for their Component Definition',
             ),
             Party(
                 uuid=party_uuid_03,
                 type='organization',
                 name='ISV',
-                remarks='organization to be customized at ISV subscription only for their Component Definition'
+                remarks='organization to be customized at ISV subscription only for their Component Definition',
             ),
         ]
         return value
 
-    def _build_responsible_parties(self, party_uuid_01: str, party_uuid_02: str,
-                                   party_uuid_03: str) -> List[ResponsibleParty]:
+    def _build_responsible_parties(
+        self, party_uuid_01: str, party_uuid_02: str, party_uuid_03: str
+    ) -> List[ResponsibleParty]:
         """Build responsible parties."""
         prepared_by = ResponsibleParty(role_id='prepared-by', party_uuids=[party_uuid_01])
         prepared_for = ResponsibleParty(role_id='prepared-for', party_uuids=[party_uuid_02, party_uuid_03])
         content_approver = ResponsibleParty(role_id='content-approver', party_uuids=[party_uuid_01])
-        value = [
-            prepared_by,
-            prepared_for,
-            content_approver,
-        ]
+        value = [prepared_by, prepared_for, content_approver]
         return value

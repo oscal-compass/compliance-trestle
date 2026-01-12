@@ -101,8 +101,9 @@ class ExportWriter:
             )
 
         for provided in export_interface.get_isolated_provided():
-            all_statements[provided.uuid
-                           ] = StatementProvided(provided.uuid, provided.description, self._leveraged_ssp_href)
+            all_statements[provided.uuid] = StatementProvided(
+                provided.uuid, provided.description, self._leveraged_ssp_href
+            )
 
         for responsibility, provided in export_interface.get_export_sets():
             path = f'{provided.uuid}_{responsibility.uuid}'
@@ -111,7 +112,7 @@ class ExportWriter:
                 provided.description,
                 responsibility.uuid,
                 responsibility.description,
-                self._leveraged_ssp_href
+                self._leveraged_ssp_href,
             )
 
         return all_statements

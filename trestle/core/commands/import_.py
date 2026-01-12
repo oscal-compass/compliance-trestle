@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle Import Command."""
+
 import argparse
 import logging
 import pathlib
@@ -81,8 +82,9 @@ class ImportCmd(CommandPlusDocs):
 
             desired_model_dir = trestle_root / plural_path
             desired_model_path: pathlib.Path = desired_model_dir / output_name / parent_alias
-            desired_model_path = desired_model_path.with_suffix(FileContentType.to_file_extension(content_type)
-                                                                ).resolve()
+            desired_model_path = desired_model_path.with_suffix(
+                FileContentType.to_file_extension(content_type)
+            ).resolve()
 
             if desired_model_path.exists():
                 logger.warning(f'Cannot import because file to be imported here: {desired_model_path} already exists.')
@@ -110,7 +112,7 @@ class ImportCmd(CommandPlusDocs):
                 trestle_root=args.trestle_root,
                 type=None,
                 all=None,
-                quiet=True
+                quiet=True,
             )
             return CmdReturnCodes.SUCCESS.value
 

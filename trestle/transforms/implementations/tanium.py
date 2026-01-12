@@ -105,7 +105,7 @@ class TaniumResultToOscalARTransformer(ResultsTransformer):
             self.cpus_min,
             self.checking,
             self.caching,
-            self.aggregate
+            self.aggregate,
         )
         results.__root__ = tanium_oscal_factory.results
         ts1 = datetime.datetime.now()
@@ -118,7 +118,7 @@ class TaniumTransformer(TaniumResultToOscalARTransformer):
     """Legacy class name."""
 
 
-class RuleUse():
+class RuleUse:
     """Represents one row of Tanium data."""
 
     def __init__(self, tanium_row: Dict[str, Any], comply: Dict[str, str], default_timestamp: str) -> None:
@@ -152,9 +152,9 @@ class RuleUse():
                     self.check_id_benchmark = items[0]
                     self.component = items[0]
                     if self.component.startswith('CIS '):
-                        self.component = self.component[len('CIS '):]
+                        self.component = self.component[len('CIS ') :]
                     if self.component.endswith(' Benchmark'):
-                        self.component = self.component[:-len(' Benchmark')]
+                        self.component = self.component[: -len(' Benchmark')]
                     self.component_type = 'Operating System'
             # timestamp
             self.timestamp = comply.get('Timestamp', default_timestamp)
@@ -167,7 +167,7 @@ class RuleUse():
             raise e
 
 
-class RuleUseFactory():
+class RuleUseFactory:
     """Build RuleUse list."""
 
     def __init__(self, timestamp: str) -> None:
@@ -231,7 +231,7 @@ def _uuid_result() -> str:
     return _uuid()
 
 
-class TaniumOscalFactory():
+class TaniumOscalFactory:
     """Build Tanium OSCAL entities."""
 
     def __init__(
@@ -243,7 +243,7 @@ class TaniumOscalFactory():
         cpus_min: int = 1,
         checking: bool = False,
         caching: bool = True,
-        aggregate: bool = True
+        aggregate: bool = True,
     ) -> None:
         """Initialize given specified args."""
         self._rule_use_list = rule_use_list
@@ -304,7 +304,7 @@ class TaniumOscalFactory():
                 type=component_type,
                 title=component_title,
                 description=component_description,
-                status=status
+                status=status,
             )
             self._component_map[component_ref] = component
 
@@ -335,10 +335,10 @@ class TaniumOscalFactory():
                     name='Tanium_Client_IP_Address',
                     value=rule_use.tanium_client_ip_address,
                     ns=self._ns,
-                    class_='scc_inventory_item_id'
+                    class_='scc_inventory_item_id',
                 ),
                 self._property_manager.materialize(name='IP_Address', value=rule_use.ip_address, ns=self._ns),
-                self._property_manager.materialize(name='Count', value=rule_use.count, ns=self._ns)
+                self._property_manager.materialize(name='Count', value=rule_use.count, ns=self._ns),
             ]
             component_uuid = self._get_component_ref(rule_use)
             if component_uuid is not None:
@@ -356,7 +356,7 @@ class TaniumOscalFactory():
         name: str = None,
         value: str = None,
         ns: str = None,
-        class_: str = None
+        class_: str = None,
     ) -> None:
         """Add non-aggregated property or remember common property."""
         if self._aggregate:
@@ -378,7 +378,7 @@ class TaniumOscalFactory():
             name='Check_ID_Benchmark',
             value=rule_use.check_id_benchmark,
             ns=self._ns,
-            class_='scc_predefined_profile'
+            class_='scc_predefined_profile',
         )
         self._conditional_include(
             props=props,
@@ -386,18 +386,13 @@ class TaniumOscalFactory():
             name='Check_ID_Version',
             value=rule_use.check_id_version,
             ns=self._ns,
-            class_='scc_predefined_profile_version'
+            class_='scc_predefined_profile_version',
         )
         self._conditional_include(
             props=props, group=group, name='Check_ID_Level', value=rule_use.check_id_level, ns=self._ns
         )
         self._conditional_include(
-            props=props,
-            group=group,
-            name='Rule_ID',
-            value=rule_use.rule_id,
-            ns=self._ns,
-            class_='scc_goal_description'
+            props=props, group=group, name='Rule_ID', value=rule_use.rule_id, ns=self._ns, class_='scc_goal_description'
         )
         self._conditional_include(
             props=props, group=group, name='Rule_ID', value=rule_use.rule_id, ns=self._ns, class_='scc_check_name_id'
@@ -421,14 +416,14 @@ class TaniumOscalFactory():
                 name='Check_ID_Benchmark',
                 value=rule_use.check_id_benchmark,
                 ns=self._ns,
-                class_='scc_predefined_profile'
+                class_='scc_predefined_profile',
             )
             self._property_accounting.count_property(
                 group=group,
                 name='Check_ID_Version',
                 value=rule_use.check_id_version,
                 ns=self._ns,
-                class_='scc_predefined_profile_version'
+                class_='scc_predefined_profile_version',
             )
             self._property_accounting.count_property(
                 group=group, name='Check_ID_Level', value=rule_use.check_id_level, ns=self._ns
@@ -463,7 +458,7 @@ class TaniumOscalFactory():
                 uuid=_uuid_observation(),
                 description=rule_use.rule_id,
                 methods=['TEST-AUTOMATED'],
-                collected=rule_use.collected
+                collected=rule_use.collected,
             )
             subject_uuid = self._get_inventory_ref(rule_use)
             subject_reference = SubjectReference(subject_uuid=subject_uuid, type='inventory-item')
@@ -605,7 +600,7 @@ class TaniumOscalFactory():
                 end=self._timestamp,
                 reviewed_controls=self.reviewed_controls,
                 local_definitions=local_definitions,
-                observations=observations
+                observations=observations,
             )
             component_ref = component.uuid
             result.props = self._get_properties(component_ref)

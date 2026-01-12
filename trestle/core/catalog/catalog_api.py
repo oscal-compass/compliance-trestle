@@ -31,7 +31,7 @@ from trestle.oscal import profile as prof
 logger = logging.getLogger(__name__)
 
 
-class CatalogAPI():
+class CatalogAPI:
     """
     Main entrypoint to interact with catalog in memory.
 
@@ -95,9 +95,9 @@ class CatalogAPI():
 
         return md_catalog
 
-    def read_additional_content_from_md(self,
-                                        label_as_key: bool = False
-                                        ) -> Tuple[List[prof.Alter], Dict[str, Any], Dict[str, str]]:
+    def read_additional_content_from_md(
+        self, label_as_key: bool = False
+    ) -> Tuple[List[prof.Alter], Dict[str, Any], Dict[str, str]]:
         """Read additional content from markdown."""
         if not self._context:
             raise TrestleError('Reading content from the markdown requires context to be initialized!')
@@ -108,7 +108,7 @@ class CatalogAPI():
             self._context.required_sections,
             label_map,
             self._context.sections_dict,
-            self._context.to_markdown
+            self._context.to_markdown,
         )
 
     def merge_catalog(self, catalog: cat.Catalog, replace_params: bool) -> None:
