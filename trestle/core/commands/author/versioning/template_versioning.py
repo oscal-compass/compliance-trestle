@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """A Template Versioning."""
+
 import logging
 import re
 import shutil
@@ -77,7 +78,7 @@ class TemplateVersioning:
             all_non_template_directories = list(
                 filter(
                     lambda p: p.is_dir() and pattern.search(p.parts[-1]) is None,
-                    file_utils.iterdir_without_hidden_files(task_path)
+                    file_utils.iterdir_without_hidden_files(task_path),
                 )
             )
 

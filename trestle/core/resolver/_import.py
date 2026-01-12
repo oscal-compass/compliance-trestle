@@ -50,7 +50,7 @@ class Import(Pipeline.Filter):
         show_value_warnings: bool = False,
         value_assigned_prefix: Optional[str] = None,
         value_not_assigned_prefix: Optional[str] = None,
-        parent_url_root: Optional[str] = None
+        parent_url_root: Optional[str] = None,
     ) -> None:
         """Initialize and store trestle root for cache access."""
         self._trestle_root = trestle_root
@@ -130,7 +130,7 @@ class Import(Pipeline.Filter):
                     sub_import,
                     self._uuid_chain,
                     resources=resources,
-                    parent_url_root=self._parent_url_root
+                    parent_url_root=self._parent_url_root,
                 )
                 prune_filter = Prune(sub_import, profile)
                 pipeline = Pipeline([import_filter, prune_filter])
@@ -146,7 +146,7 @@ class Import(Pipeline.Filter):
                 self._param_rep,
                 self.show_value_warnings,
                 self.value_assigned_prefix,
-                self.value_not_assigned_prefix
+                self.value_not_assigned_prefix,
             )
             final_pipeline = Pipeline([merge_filter, modify_filter])
             yield next(final_pipeline.process(pipelines))

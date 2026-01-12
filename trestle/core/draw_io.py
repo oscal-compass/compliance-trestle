@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Functionality for reading information from a drawio file."""
+
 import base64
 import logging
 import pathlib
@@ -31,7 +32,7 @@ from trestle.core.markdown.markdown_validator import MarkdownValidator
 logger = logging.getLogger(__name__)
 
 
-class DrawIO():
+class DrawIO:
     """Access and process drawio data / metadata."""
 
     def __init__(self, file_path: pathlib.Path) -> None:
@@ -193,7 +194,7 @@ class DrawIO():
         return dict(items)
 
 
-class DrawIOMetadataValidator():
+class DrawIOMetadataValidator:
     """Validator to check whether drawio metadata meets validation expectations."""
 
     def __init__(self, template_path: pathlib.Path, must_be_first_tab: bool = True) -> None:

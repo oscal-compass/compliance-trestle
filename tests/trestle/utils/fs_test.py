@@ -195,6 +195,7 @@ def test_load_file(tmp_path: pathlib.Path) -> None:
 def test_get_relative_model_type(tmp_path: pathlib.Path) -> None:
     """Test get model type and alias based on filesystem context."""
     import trestle.common.type_utils as cutils
+
     with pytest.raises(TrestleError):
         ModelUtils.get_relative_model_type(pathlib.Path('invalidpath'))
 
@@ -216,22 +217,27 @@ def test_get_relative_model_type(tmp_path: pathlib.Path) -> None:
 
     assert ModelUtils.get_relative_model_type(mycatalog_dir) == (catalog.Catalog, 'catalog')
     assert ModelUtils.get_relative_model_type(mycatalog_dir / 'catalog.json') == (catalog.Catalog, 'catalog')
-    assert ModelUtils.get_relative_model_type(catalog_dir / 'back-matter.json'
-                                              ) == (common.BackMatter, 'catalog.back-matter')
+    assert ModelUtils.get_relative_model_type(catalog_dir / 'back-matter.json') == (
+        common.BackMatter,
+        'catalog.back-matter',
+    )
     assert ModelUtils.get_relative_model_type(catalog_dir / 'metadata.yaml') == (common.Metadata, 'catalog.metadata')
     assert ModelUtils.get_relative_model_type(metadata_dir) == (common.Metadata, 'catalog.metadata')
     assert ModelUtils.get_relative_model_type(roles_dir) == (List[common.Role], 'catalog.metadata.roles')
     (type_, element) = ModelUtils.get_relative_model_type(roles_dir)
     assert cutils.get_origin(type_) == list
     assert element == 'catalog.metadata.roles'
-    assert ModelUtils.get_relative_model_type(roles_dir / '00000__role.json'
-                                              ) == (common.Role, 'catalog.metadata.roles.role')
+    assert ModelUtils.get_relative_model_type(roles_dir / '00000__role.json') == (
+        common.Role,
+        'catalog.metadata.roles.role',
+    )
     model_type, full_alias = ModelUtils.get_relative_model_type(rps_dir)
     assert model_type == List[common.ResponsibleParty]
     assert full_alias == 'catalog.metadata.responsible-parties'
-    assert ModelUtils.get_relative_model_type(
-        rps_dir / 'creator__responsible-party.json'
-    ) == (common.ResponsibleParty, 'catalog.metadata.responsible-parties.responsible-party')
+    assert ModelUtils.get_relative_model_type(rps_dir / 'creator__responsible-party.json') == (
+        common.ResponsibleParty,
+        'catalog.metadata.responsible-parties.responsible-party',
+    )
     (type_, element) = ModelUtils.get_relative_model_type(props_dir)
     assert cutils.get_origin(type_) == list
     assert cutils.get_inner_type(type_) == common.Property
@@ -242,11 +248,15 @@ def test_get_relative_model_type(tmp_path: pathlib.Path) -> None:
     assert expected_type == common.Property
     assert expected_json_path == 'catalog.metadata.props.property'
     assert cutils.get_origin(type_) == list
-    assert ModelUtils.get_relative_model_type(groups_dir / f'00000{const.IDX_SEP}group.json'
-                                              ) == (catalog.Group, 'catalog.groups.group')
+    assert ModelUtils.get_relative_model_type(groups_dir / f'00000{const.IDX_SEP}group.json') == (
+        catalog.Group,
+        'catalog.groups.group',
+    )
     assert ModelUtils.get_relative_model_type(group_dir) == (catalog.Group, 'catalog.groups.group')
-    assert ModelUtils.get_relative_model_type(controls_dir / f'00000{const.IDX_SEP}control.json'
-                                              ) == (catalog.Control, 'catalog.groups.group.controls.control')
+    assert ModelUtils.get_relative_model_type(controls_dir / f'00000{const.IDX_SEP}control.json') == (
+        catalog.Control,
+        'catalog.groups.group.controls.control',
+    )
 
 
 def create_sample_catalog_project(trestle_base_dir: pathlib.Path) -> None:
@@ -259,7 +269,7 @@ def create_sample_catalog_project(trestle_base_dir: pathlib.Path) -> None:
         mycatalog_dir / 'catalog' / 'metadata' / 'roles',
         mycatalog_dir / 'catalog' / 'metadata' / 'responsible-parties',
         mycatalog_dir / 'catalog' / 'metadata' / 'props',
-        mycatalog_dir / 'catalog' / 'groups' / f'00000{const.IDX_SEP}group' / 'controls'
+        mycatalog_dir / 'catalog' / 'groups' / f'00000{const.IDX_SEP}group' / 'controls',
     ]
 
     for directory in directories:
@@ -270,11 +280,18 @@ def create_sample_catalog_project(trestle_base_dir: pathlib.Path) -> None:
         mycatalog_dir / 'catalog' / 'back-matter.json',
         mycatalog_dir / 'catalog' / 'metadata.json',
         mycatalog_dir / 'catalog' / 'metadata' / 'roles' / f'00000{const.IDX_SEP}role.json',
-        mycatalog_dir / 'catalog' / 'metadata' / 'responsible-parties'
+        mycatalog_dir
+        / 'catalog'
+        / 'metadata'
+        / 'responsible-parties'
         / f'creator{const.IDX_SEP}responsible-party.json',
         mycatalog_dir / 'catalog' / 'metadata' / 'props' / f'00000{const.IDX_SEP}property.json',
         mycatalog_dir / 'catalog' / 'groups' / f'00000{const.IDX_SEP}group.json',
-        mycatalog_dir / 'catalog' / 'groups' / f'00000{const.IDX_SEP}group' / 'controls'
+        mycatalog_dir
+        / 'catalog'
+        / 'groups'
+        / f'00000{const.IDX_SEP}group'
+        / 'controls'
         / f'00000{const.IDX_SEP}control.json',
     ]
 
@@ -293,9 +310,12 @@ def test_extract_alias() -> None:
     assert ModelUtils._extract_alias(pathlib.Path('/roles').name) == 'roles'
     assert ModelUtils._extract_alias(pathlib.Path('/roles/roles.json').name) == 'roles'
     assert ModelUtils._extract_alias(pathlib.Path(f'/roles/00000{const.IDX_SEP}role.json').name) == 'role'
-    assert ModelUtils._extract_alias(
-        pathlib.Path(f'/metadata/responsible-parties/creator{const.IDX_SEP}responsible-party.json').name
-    ) == 'responsible-party'
+    assert (
+        ModelUtils._extract_alias(
+            pathlib.Path(f'/metadata/responsible-parties/creator{const.IDX_SEP}responsible-party.json').name
+        )
+        == 'responsible-party'
+    )
 
 
 def test_get_stripped_model_type(tmp_path: pathlib.Path) -> None:
@@ -561,10 +581,16 @@ def test_is_hidden_windows(tmp_path) -> None:
 @pytest.mark.parametrize(
     'task_name, outcome',
     [
-        ('hello', True), ('.trestle', False), ('task/name', True), ('.bad,', False), ('catalogs', False),
-        ('catalog', True), ('component-definitions', False), ('hello.world', False),
-        ('component-definitions/hello', False)
-    ]
+        ('hello', True),
+        ('.trestle', False),
+        ('task/name', True),
+        ('.bad,', False),
+        ('catalogs', False),
+        ('catalog', True),
+        ('component-definitions', False),
+        ('hello.world', False),
+        ('component-definitions/hello', False),
+    ],
 )
 def test_allowed_task_name(task_name: str, outcome: bool) -> None:
     """Test whether task names are allowed."""
@@ -607,17 +633,9 @@ def test_local_and_visible(tmp_path) -> None:
         (pathlib.Path('~/random/home_directory/path'), True, False),
         (pathlib.Path('../relative_file.json'), False, True),
         (pathlib.Path('../relative_file.json'), True, True),
-        (
-            pathlib.Path('./hello/../relative_file.json'),
-            False,
-            False,
-        ),
-        (
-            pathlib.Path('./hello/../relative_file.json'),
-            True,
-            False,
-        ),
-    ]
+        (pathlib.Path('./hello/../relative_file.json'), False, False),
+        (pathlib.Path('./hello/../relative_file.json'), True, False),
+    ],
 )
 def test_relative_resolve(tmp_path, candidate: pathlib.Path, build: bool, expect_failure: bool):
     """Test relative resolve capability."""
@@ -650,7 +668,6 @@ def test_iterdir_without_hidden_files(tmp_path: pathlib.Path) -> None:
 
         assert len(list(file_utils.iterdir_without_hidden_files(tmp_path))) == 3
     else:
-
         pathlib.Path(tmp_path / '.DS_Store').touch()
         pathlib.Path(tmp_path / '.hidden.txt').touch()
         pathlib.Path(tmp_path / '.hiddenDir/').mkdir()

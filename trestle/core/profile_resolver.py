@@ -29,7 +29,7 @@ from trestle.core.resolver._import import Import
 logger = logging.getLogger(__name__)
 
 
-class ProfileResolver():
+class ProfileResolver:
     """Class to resolve a catalog given a profile."""
 
     @staticmethod
@@ -74,7 +74,7 @@ class ProfileResolver():
         param_rep: ParameterRep = ParameterRep.LEAVE_MOUSTACHE,
         show_value_warnings: bool = False,
         value_assigned_prefix: Optional[str] = None,
-        value_not_assigned_prefix: Optional[str] = None
+        value_not_assigned_prefix: Optional[str] = None,
     ) -> Tuple[cat.Catalog, Optional[Dict[str, Any]]]:
         """
         Create the resolved profile catalog given a profile path along with inherited props.
@@ -98,7 +98,8 @@ class ProfileResolver():
         # The final Import has change_prose=True to force parameter substitution in the prose only at the last stage.
         import_filter = Import(
             trestle_root,
-            import_, [],
+            import_,
+            [],
             True,
             block_adds,
             block_params,
@@ -107,7 +108,7 @@ class ProfileResolver():
             None,
             show_value_warnings,
             value_assigned_prefix,
-            value_not_assigned_prefix
+            value_not_assigned_prefix,
         )
         logger.debug('launch pipeline')
         resolved_profile_catalog = next(import_filter.process())
@@ -124,7 +125,7 @@ class ProfileResolver():
         param_rep: ParameterRep = ParameterRep.LEAVE_MOUSTACHE,
         show_value_warnings: bool = False,
         value_assigned_prefix: Optional[str] = None,
-        value_not_assigned_prefix: Optional[str] = None
+        value_not_assigned_prefix: Optional[str] = None,
     ) -> cat.Catalog:
         """
         Create the resolved profile catalog given a profile path.
@@ -153,6 +154,6 @@ class ProfileResolver():
             param_rep,
             show_value_warnings,
             value_assigned_prefix,
-            value_not_assigned_prefix
+            value_not_assigned_prefix,
         )
         return resolved_profile_catalog
