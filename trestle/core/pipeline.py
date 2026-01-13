@@ -26,7 +26,7 @@ class Pipeline:
         @abstractmethod
         def process(self, input_: Any) -> Any:
             """Process the input to output."""
-            return input_
+            ... 
 
     def __init__(self, filters: List[Filter]) -> None:
         """Initialize the class."""
