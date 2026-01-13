@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle split command."""
+
 import argparse
 import os
 import pathlib
@@ -50,10 +51,8 @@ def test_split_model_plans(tmp_path: pathlib.Path, sample_nist_component_def: co
 
     # prepare trestle project dir with the file
     component_def_dir, component_def_file = test_utils.prepare_trestle_project_dir(
-        tmp_path,
-        content_type,
-        sample_nist_component_def,
-        test_utils.COMPONENT_DEF_DIR)
+        tmp_path, content_type, sample_nist_component_def, test_utils.COMPONENT_DEF_DIR
+    )
 
     # read the model from file
     component_def = component.ComponentDefinition.oscal_read(component_def_file)
@@ -90,10 +89,8 @@ def test_split_chained_sub_model_plans(
 
     # prepare trestle project dir with the file
     catalog_dir, catalog_file = test_utils.prepare_trestle_project_dir(
-        tmp_path,
-        content_type,
-        simplified_nist_catalog,
-        test_utils.CATALOGS_DIR)
+        tmp_path, content_type, simplified_nist_catalog, test_utils.CATALOGS_DIR
+    )
 
     # read the model from file
     catalog = oscatalog.Catalog.oscal_read(catalog_file)
@@ -145,10 +142,8 @@ def test_subsequent_split_model_plans(
 
     # prepare trestle project dir with the file
     component_def_dir, component_def_file = test_utils.prepare_trestle_project_dir(
-        tmp_path,
-        content_type,
-        sample_nist_component_def,
-        test_utils.COMPONENT_DEF_DIR)
+        tmp_path, content_type, sample_nist_component_def, test_utils.COMPONENT_DEF_DIR
+    )
 
     # first split the component-def into metadata
     component_def = component.ComponentDefinition.oscal_read(component_def_file)
@@ -206,10 +201,8 @@ def test_split_multi_level_dict_plans(
 
     # prepare trestle project dir with the file
     component_def_dir, component_def_file = test_utils.prepare_trestle_project_dir(
-        tmp_path,
-        content_type,
-        sample_nist_component_def,
-        test_utils.COMPONENT_DEF_DIR)
+        tmp_path, content_type, sample_nist_component_def, test_utils.COMPONENT_DEF_DIR
+    )
 
     file_ext = FileContentType.to_file_extension(content_type)
 
@@ -298,7 +291,7 @@ def test_split_run(
         file='component-definition.yaml',
         element='component-definition.components.*,component-definition.metadata',
         verbose=0,
-        trestle_root=tmp_path
+        trestle_root=tmp_path,
     )
 
     os.chdir(component_def_dir)
@@ -315,7 +308,7 @@ def test_split_run(
         file='component-definition.yaml',
         element='component-definition.metadata,component-definition.components.*',
         verbose=0,
-        trestle_root=tmp_path
+        trestle_root=tmp_path,
     )
     os.chdir(component_def_dir)
     assert cmd._run(args) == 0
@@ -327,7 +320,7 @@ def test_split_run_failures(
     keep_cwd: pathlib.Path,
     tmp_path: pathlib.Path,
     sample_nist_component_def: component.ComponentDefinition,
-    monkeypatch: MonkeyPatch
+    monkeypatch: MonkeyPatch,
 ) -> None:
     """Test split run failure."""
     # prepare trestle project dir with the file
@@ -349,7 +342,7 @@ def test_split_run_failures(
         '-f',
         'component-definition.yaml',
         '-e',
-        'component-definition.metadata, component-definition.components.*'
+        'component-definition.metadata, component-definition.components.*',
     ]
     monkeypatch.setattr(sys, 'argv', testargs)
     with pytest.raises(SystemExit) as wrapped_error:
@@ -372,7 +365,7 @@ def test_split_run_failures(
         '-f',
         'missing.yaml',
         '-e',
-        'component-definition.metadata, component-definition.components.*'
+        'component-definition.metadata, component-definition.components.*',
     ]
     monkeypatch.setattr(sys, 'argv', testargs)
     rc = Trestle().run()
@@ -385,7 +378,7 @@ def test_split_run_failures(
         '-f',
         invalid_file.name,
         '-e',
-        'component-definition.metadata, component-definition.components.*'
+        'component-definition.metadata, component-definition.components.*',
     ]
     monkeypatch.setattr(sys, 'argv', testargs)
     rc = Trestle().run()
@@ -398,10 +391,8 @@ def test_split_model_at_path_chain_failures(tmp_path, simplified_nist_catalog: o
 
     # prepare trestle project dir with the file
     catalog_dir, catalog_file = test_utils.prepare_trestle_project_dir(
-        tmp_path,
-        content_type,
-        simplified_nist_catalog,
-        test_utils.CATALOGS_DIR)
+        tmp_path, content_type, simplified_nist_catalog, test_utils.CATALOGS_DIR
+    )
 
     split_plan = Plan()
     element_paths = [ElementPath('catalog.metadata.parties.*')]
@@ -434,7 +425,7 @@ def test_split_comp_def(
     tmp_path,
     keep_cwd: pathlib.Path,
     sample_component_definition: component.ComponentDefinition,
-    monkeypatch: MonkeyPatch
+    monkeypatch: MonkeyPatch,
 ) -> None:
     """Test splitting of component definition and its dictionary."""
     compdef_name = 'mycomp'
@@ -453,7 +444,7 @@ def test_split_comp_def(
             file='component-definition.json',
             element='component-definition.components.*',
             verbose=1,
-            trestle_root=trestle_root
+            trestle_root=trestle_root,
         )
         assert SplitCmd()._run(args) == 0
     elif mode == 'split_two_steps':
@@ -461,7 +452,7 @@ def test_split_comp_def(
             file='component-definition.json',
             element='component-definition.components',
             verbose=1,
-            trestle_root=trestle_root
+            trestle_root=trestle_root,
         )
         assert SplitCmd()._run(args) == 0
         os.chdir('component-definition')
@@ -472,7 +463,7 @@ def test_split_comp_def(
             file='component-definition.json',
             element='component-definition.components.*.props',
             verbose=1,
-            trestle_root=trestle_root
+            trestle_root=trestle_root,
         )
         assert SplitCmd()._run(args) == 0
 
@@ -527,7 +518,7 @@ def test_split_tutorial_workflow(
         file='catalog.json',
         element='catalog.metadata,catalog.groups,catalog.back-matter',
         verbose=1,
-        trestle_root=trestle_root
+        trestle_root=trestle_root,
     )
     assert SplitCmd()._run(args) == 0
 
@@ -566,15 +557,15 @@ def test_split_tutorial_workflow(
         'catalog.metadata.roles,catalog.metadata.links',
         'catalog.metadata.roles.*',
         'catalog.*',
-        'catalog.metadata.*'
-    ]
+        'catalog.metadata.*',
+    ],
 )
 def test_split_catalog_star(
     split_path: str,
     tmp_path: pathlib.Path,
     keep_cwd: pathlib.Path,
     simplified_nist_catalog: oscatalog.Catalog,
-    monkeypatch: MonkeyPatch
+    monkeypatch: MonkeyPatch,
 ) -> None:
     """Test extended depth split operations and split of dicts."""
     # prepare trestle project dir with the file

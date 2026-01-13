@@ -19,19 +19,11 @@ runs:
       env:
         SNYK_TOKEN: ${{ inputs.token }}
       run: |
-        echo "::group::Running synk test ..."
-        python -m venv venv-test
-        source ./venv-test/bin/activate
+        echo "::group::Running snyk test ..."
         pip install pip-tools
         pip-compile pyproject.toml -o requirements.txt
         pip install -r requirements.txt
         snyk test --file=requirements.txt
-        echo "::endgroup::"
-      shell: bash
-
-    - name: Cleanup
-      if: success() || failure()
-      run: |
         rm requirements.txt
-        rm -rf ./venv-test
+        echo "::endgroup::"
       shell: bash

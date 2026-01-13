@@ -49,9 +49,9 @@ def as_file_uri(path: str) -> str:
     return f'file:///{bare_path}'
 
 
-def get_catalog_fetcher(tmp_trestle_dir: pathlib.Path,
-                        in_trestle: bool = False,
-                        relative: bool = False) -> Tuple[cache.FetcherFactory, Catalog, dict]:
+def get_catalog_fetcher(
+    tmp_trestle_dir: pathlib.Path, in_trestle: bool = False, relative: bool = False
+) -> Tuple[cache.FetcherFactory, Catalog, dict]:
     """Instantiate a catalog and fetcher."""
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
     cat_name = f'{rand_str}.json'
@@ -257,8 +257,8 @@ def test_sftp_fetcher_bad_uri(uri: str, tmp_trestle_dir: pathlib.Path) -> None:
         'https://{{myusername}}:{{invalid-var}}@github.com/oscal-compass/test/file',
         'https://{{myusername}}:{{_}}@github.com/oscal-compass/test/file',
         'https://usernamestring:{{mypassword}}@github.com/oscal-compass/test/file',
-        'https://:{{mypassword}}@github.com/oscal-compass/test/file'
-    ]
+        'https://:{{mypassword}}@github.com/oscal-compass/test/file',
+    ],
 )
 def test_fetcher_bad_uri(tmp_trestle_dir: pathlib.Path, uri: str, monkeypatch: MonkeyPatch) -> None:
     """Test fetcher factory with bad URI."""
@@ -272,9 +272,11 @@ def test_fetcher_bad_uri(tmp_trestle_dir: pathlib.Path, uri: str, monkeypatch: M
 def test_fetcher_factory(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test that the fetcher factory correctly resolves functionality."""
     # basic absolute and relative file paths
-    for uri in [as_file_uri('/home/user/oscal_file.json'),
-                as_file_uri('user/oscal_file.json'),
-                as_file_uri('../user/oscal_file.json')]:
+    for uri in [
+        as_file_uri('/home/user/oscal_file.json'),
+        as_file_uri('user/oscal_file.json'),
+        as_file_uri('../user/oscal_file.json'),
+    ]:
         fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
         assert isinstance(fetcher, cache.LocalFetcher)
 

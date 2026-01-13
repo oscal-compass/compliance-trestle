@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle author docs sub-command."""
+
 import argparse
 import logging
 import pathlib
@@ -46,7 +47,7 @@ class Folders(AuthorCommonCommand):
             author_const.SHORT_HEADER_VALIDATE,
             author_const.LONG_HEADER_VALIDATE,
             help=author_const.HEADER_VALIDATE_HELP,
-            action='store_true'
+            action='store_true',
         )
         self.add_argument(
             author_const.HOV_SHORT, author_const.HOV_LONG, help=author_const.HOV_HELP, action='store_true'
@@ -55,7 +56,7 @@ class Folders(AuthorCommonCommand):
             author_const.SHORT_TEMPLATE_VERSION,
             author_const.LONG_TEMPLATE_VERSION,
             help=author_const.TEMPLATE_VERSION_HELP,
-            action='store'
+            action='store',
         )
         self.add_argument(
             author_const.SHORT_IGNORE, author_const.LONG_IGNORE, help=author_const.IGNORE_HELP, default=None, type=str
@@ -67,7 +68,7 @@ class Folders(AuthorCommonCommand):
                 '',
                 'The template files are at .trestle/author/[task-name],',
                 'where the directory tree established and the markdown files within that directory'
-                + 'tree are enforced.'
+                + 'tree are enforced.',
             ]
         )
 
@@ -78,14 +79,14 @@ class Folders(AuthorCommonCommand):
             author_const.SHORT_README_VALIDATE,
             author_const.LONG_README_VALIDATE,
             help=author_const.README_VALIDATE_FOLDERS_HELP,
-            action='store_true'
+            action='store_true',
         )
 
         self.add_argument(
             author_const.TEMPLATE_TYPE_VALIDATE_SHORT,
             author_const.TEMPLATE_TYPE_VALIDATE_LONG,
             help=author_const.TEMPLATE_TYPE_VALIDATE_HELP,
-            action='store_true'
+            action='store_true',
         )
 
     def _run(self, args: argparse.Namespace) -> int:
@@ -110,7 +111,7 @@ class Folders(AuthorCommonCommand):
                     args.readme_validate,
                     args.template_version,
                     args.ignore,
-                    args.validate_template_type
+                    args.validate_template_type,
                 )
             else:
                 raise TrestleIncorrectArgsError(f'Unsupported mode: {args.mode} for folders command.')
@@ -280,8 +281,7 @@ class Folders(AuthorCommonCommand):
 
                 if not is_template_present:
                     logger.info(
-                        f'INFO: File{instance_file} will not be validated '
-                        f'as its name does not match any template file.'
+                        f'INFO: File{instance_file} will not be validated as its name does not match any template file.'
                     )
                     continue
 
@@ -369,10 +369,10 @@ class Folders(AuthorCommonCommand):
         """Get templates for the given version."""
         templates = list(
             filter(
-                lambda p: file_utils.is_local_and_visible(p) and p.is_file()
-                and  # noqa: W504 - conflicting lint and formatting
-                (p.suffix == const.MARKDOWN_FILE_EXT or p.suffix == const.DRAWIO_FILE_EXT),
-                versioned_template_dir.iterdir()
+                lambda p: file_utils.is_local_and_visible(p)
+                and p.is_file()  # noqa: W504 - conflicting lint and formatting
+                and (p.suffix == const.MARKDOWN_FILE_EXT or p.suffix == const.DRAWIO_FILE_EXT),
+                versioned_template_dir.iterdir(),
             )
         )
         if not readme_validate:
@@ -422,7 +422,7 @@ class Folders(AuthorCommonCommand):
                     readme_validate,
                     template_version,
                     ignore,
-                    validate_by_type_field
+                    validate_by_type_field,
                 )
                 if not result:
                     raise TrestleError(

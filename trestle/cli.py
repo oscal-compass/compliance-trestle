@@ -58,7 +58,7 @@ class Trestle(CommandBase):
         SplitCmd,
         TaskCmd,
         ValidateCmd,
-        VersionCmd
+        VersionCmd,
     ]
 
     # This block is uncovered as trestle cannot find plugins in it's unit tests - it is the base module.

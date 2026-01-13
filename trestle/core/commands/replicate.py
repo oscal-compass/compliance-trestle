@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle Replicate Command."""
+
 import argparse
 import logging
 
@@ -85,8 +86,8 @@ class ReplicateCmd(CommandPlusDocs):
         # 3 Distributed load from file
         _, model_alias, model_instance = ModelUtils.load_distributed(input_file, trestle_root)
 
-        rep_model_path = trestle_root / plural_path / args.output / (
-            model_alias + FileContentType.to_file_extension(content_type)
+        rep_model_path = (
+            trestle_root / plural_path / args.output / (model_alias + FileContentType.to_file_extension(content_type))
         )
 
         if rep_model_path.exists():
