@@ -74,7 +74,7 @@ def test_catalog_generate_assemble(
     use_cli: bool,
     dir_exists: bool,
     tmp_trestle_dir: pathlib.Path,
-    monkeypatch: MonkeyPatch
+    monkeypatch: MonkeyPatch,
 ) -> None:
     """Test the catalog markdown generator."""
     nist_catalog_path = test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME
@@ -191,9 +191,7 @@ def test_catalog_assemble_version(sample_catalog_rich_controls: cat.Catalog, tmp
 
     # load the freshly assembled catalog
     assembled_cat, assembled_cat_path = ModelUtils.load_model_for_class(
-        tmp_trestle_dir,
-        assembled_cat_name,
-        cat.Catalog
+        tmp_trestle_dir, assembled_cat_name, cat.Catalog
     )
 
     # confirm it is a fresh file with the version set as requested
@@ -368,10 +366,7 @@ def test_get_profile_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
     """Test get profile param dict for control."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
     profile, profile_path = ModelUtils.load_model_for_class(
-        tmp_trestle_dir,
-        'test_profile_a',
-        prof.Profile,
-        FileContentType.JSON
+        tmp_trestle_dir, 'test_profile_a', prof.Profile, FileContentType.JSON
     )
     profile_resolver = ProfileResolver()
     catalog = profile_resolver.get_resolved_profile_catalog(tmp_trestle_dir, profile_path)
@@ -380,16 +375,19 @@ def test_get_profile_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
 
     full_param_dict = CatalogInterface._get_full_profile_param_dict(profile)
     control_param_dict = CatalogInterface._get_profile_param_dict(control, full_param_dict, False)
-    assert ControlInterface.param_to_str(
-        control_param_dict['ac-1_prm_1'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
-    ) == 'all alert personnel'
-    assert ControlInterface.param_to_str(
-        control_param_dict['ac-1_prm_6'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
-    ) == 'monthly'
+    assert (
+        ControlInterface.param_to_str(control_param_dict['ac-1_prm_1'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES)
+        == 'all alert personnel'
+    )
+    assert (
+        ControlInterface.param_to_str(control_param_dict['ac-1_prm_6'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES)
+        == 'monthly'
+    )
     # param 7 has no value so its label will be used
-    assert ControlInterface.param_to_str(
-        control_param_dict['ac-1_prm_7'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
-    ) == 'organization-defined events'
+    assert (
+        ControlInterface.param_to_str(control_param_dict['ac-1_prm_7'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES)
+        == 'organization-defined events'
+    )
 
 
 def test_catalog_generate_withdrawn(tmp_path: pathlib.Path, sample_catalog_rich_controls: cat.Catalog) -> None:
@@ -532,9 +530,10 @@ def test_validate_catalog_missing_group_id(
     md_path = tmp_trestle_dir / md_name
     md_path.mkdir(parents=True, exist_ok=True)
     cat_generate = CatalogGenerate()
-    assert cat_generate.generate_markdown(
-        tmp_trestle_dir, new_cat_path, md_path, {}, False
-    ) == CmdReturnCodes.SUCCESS.value
+    assert (
+        cat_generate.generate_markdown(tmp_trestle_dir, new_cat_path, md_path, {}, False)
+        == CmdReturnCodes.SUCCESS.value
+    )
 
     assem_cat_name = 'assem_cat'
     cat_assemble = CatalogAssemble()
@@ -662,9 +661,10 @@ Test 4
 
     assert catalog
     assert catalog.groups[0].controls[1].parts[0].prose == control_statement_prose.strip('\n')
-    assert catalog.groups[0].controls[1].parts[0].parts[
-        0
-    ].prose == 'Define and document the types of accounts allowed and specifically prohibited for use within the system;'  # noqa E501
+    assert (
+        catalog.groups[0].controls[1].parts[0].parts[0].prose
+        == 'Define and document the types of accounts allowed and specifically prohibited for use within the system;'
+    )  # noqa E501
 
 
 def test_catalog_duplicate_parts_statement(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch, capsys) -> None:

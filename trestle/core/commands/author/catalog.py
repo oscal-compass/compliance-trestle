@@ -59,7 +59,7 @@ class CatalogGenerate(AuthorCommonCommand):
             help=const.HELP_OVERWRITE_HEADER_VALUES,
             required=False,
             action='store_true',
-            default=False
+            default=False,
         )
 
     def _run(self, args: argparse.Namespace) -> int:
@@ -101,7 +101,7 @@ class CatalogGenerate(AuthorCommonCommand):
         catalog_path: pathlib.Path,
         markdown_path: pathlib.Path,
         yaml_header: Dict[str, Any],
-        overwrite_header_values: bool
+        overwrite_header_values: bool,
     ) -> int:
         """Generate markdown for the controls in the catalog."""
         try:
@@ -113,7 +113,7 @@ class CatalogGenerate(AuthorCommonCommand):
                 markdown_path,
                 cli_yaml_header=yaml_header,
                 overwrite_header_values=overwrite_header_values,
-                set_parameters_flag=True
+                set_parameters_flag=True,
             )
             catalog_api = CatalogAPI(catalog=catalog, context=context)
             catalog_api.write_catalog_as_markdown()
@@ -156,7 +156,7 @@ class CatalogAssemble(AuthorCommonCommand):
                 parent_cat_name=args.name,
                 set_parameters_flag=args.set_parameters,
                 regenerate=args.regenerate,
-                version=args.version
+                version=args.version,
             )
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Error occurred while assembling catalog')
@@ -169,7 +169,7 @@ class CatalogAssemble(AuthorCommonCommand):
         parent_cat_name: Optional[str],
         set_parameters_flag: bool,
         regenerate: bool,
-        version: Optional[str]
+        version: Optional[str],
     ) -> int:
         """
         Assemble the markdown directory into a json catalog model file.

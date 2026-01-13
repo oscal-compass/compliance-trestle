@@ -73,9 +73,10 @@ def _validate(config: str, section: Dict[str, str]) -> None:
         row = rows[1]
         assert row[0] == 'AC-1'
         assert row[1] == 'Policy and Procedures'
-        assert row[
-            2
-        ] == 'a. Develop, document, and disseminate to [Assignment: organization-defined personnel or roles]: 1. [Selection (one or more): organization-level; mission/business process-level; system-level] access control policy that: 2. Procedures to facilitate the implementation of the access control policy and the associated access controls; b. Designate an [Assignment: official] to manage the development, documentation, and dissemination of the access control policy and procedures; and c. Review and update the current access control: 1. Policy [Assignment: frequency] and following [Assignment: events] ; and 2. Procedures [Assignment: frequency] and following [Assignment: events].'  # noqa
+        assert (
+            row[2]
+            == 'a. Develop, document, and disseminate to [Assignment: organization-defined personnel or roles]: 1. [Selection (one or more): organization-level; mission/business process-level; system-level] access control policy that: 2. Procedures to facilitate the implementation of the access control policy and the associated access controls; b. Designate an [Assignment: official] to manage the development, documentation, and dissemination of the access control policy and procedures; and c. Review and update the current access control: 1. Policy [Assignment: frequency] and following [Assignment: events] ; and 2. Procedures [Assignment: frequency] and following [Assignment: events].'
+        )  # noqa
     elif config == CONFIG_BY_STATEMENT:
         assert len(rows) == 1759
         row = rows[0]
@@ -87,9 +88,10 @@ def _validate(config: str, section: Dict[str, str]) -> None:
         assert row[0] == 'AC-1'
         assert row[1] == 'Policy and Procedures'
         assert row[2] == 'AC-1(a)'
-        assert row[
-            3
-        ] == 'a. Develop, document, and disseminate to [Assignment: organization-defined personnel or roles]: 1. [Selection (one or more): organization-level; mission/business process-level; system-level] access control policy that: 2. Procedures to facilitate the implementation of the access control policy and the associated access controls;'  # noqa
+        assert (
+            row[3]
+            == 'a. Develop, document, and disseminate to [Assignment: organization-defined personnel or roles]: 1. [Selection (one or more): organization-level; mission/business process-level; system-level] access control policy that: 2. Procedures to facilitate the implementation of the access control policy and the associated access controls;'
+        )  # noqa
 
 
 def _test_init(tmp_path: pathlib.Path):

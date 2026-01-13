@@ -223,7 +223,7 @@ def test_read_control_no_label(testdata_dir: pathlib.Path) -> None:
 
 @pytest.mark.parametrize(
     ['prev_label', 'bumped_label'],
-    [['', 'a'], ['a', 'b'], ['z', 'aa'], ['aa', 'ab'], ['9', '10'], ['99', '100'], ['zz', 'aaa']]
+    [['', 'a'], ['a', 'b'], ['z', 'aa'], ['aa', 'ab'], ['9', '10'], ['99', '100'], ['zz', 'aaa']],
 )
 def test_bump_label(prev_label, bumped_label) -> None:
     """Test bumping of label strings."""
@@ -231,13 +231,8 @@ def test_bump_label(prev_label, bumped_label) -> None:
 
 
 @pytest.mark.parametrize(
-    ['prev_label', 'next_label', 'indent'], [
-        ['', 'a', 0],
-        ['', '1', 2],
-        ['1z', '1aa', 0],
-        ['1a9', '1a10', 0],
-        ['a_4.99', 'a_4.100', 0],
-    ]
+    ['prev_label', 'next_label', 'indent'],
+    [['', 'a', 0], ['', '1', 2], ['1z', '1aa', 0], ['1a9', '1a10', 0], ['a_4.99', 'a_4.100', 0]],
 )
 def test_create_next_label(prev_label, next_label, indent) -> None:
     """Test bumping of label strings."""
@@ -319,22 +314,26 @@ def test_get_control_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
     # confirm profile value is used
     assert ControlInterface._param_values_as_str(param_dict['ac-1_prm_1']) == 'all alert personnel'
     # confirm original param label is used since no value was assigned
-    assert ControlInterface.param_to_str(
-        param_dict['ac-1_prm_7'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
-    ) == 'organization-defined events'
+    assert (
+        ControlInterface.param_to_str(param_dict['ac-1_prm_7'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES)
+        == 'organization-defined events'
+    )
     param = control.params[0]
     param.values = None
     param.select = common.ParameterSelection(how_many=const.ONE_OR_MORE_HYPHENED, choice=['choice 1', 'choice 2'])
     param_dict = ControlInterface.get_control_param_dict(control, False)
-    assert ControlInterface.param_to_str(
-        param_dict['ac-1_prm_1'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
-    ) == 'choice 1; choice 2'
-    assert ControlInterface.param_to_str(
-        param_dict['ac-1_prm_1'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES, True
-    ) == 'Selection (one or more): choice 1; choice 2'
-    assert ControlInterface.param_to_str(
-        param_dict['ac-1_prm_1'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES, True, True
-    ) == 'Selection (one or more): [choice 1; choice 2]'
+    assert (
+        ControlInterface.param_to_str(param_dict['ac-1_prm_1'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES)
+        == 'choice 1; choice 2'
+    )
+    assert (
+        ControlInterface.param_to_str(param_dict['ac-1_prm_1'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES, True)
+        == 'Selection (one or more): choice 1; choice 2'
+    )
+    assert (
+        ControlInterface.param_to_str(param_dict['ac-1_prm_1'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES, True, True)
+        == 'Selection (one or more): [choice 1; choice 2]'
+    )
 
 
 @pytest.mark.parametrize('overwrite_header_values', [True, False])
@@ -347,17 +346,13 @@ def test_write_control_header_params(
     # header has two params - 3 and 4
     header = {
         const.SET_PARAMS_TAG: {
-            'ac-1_prm_3': {
-                'values': 'new prm_3 val from input header'
-            },
-            'ac-1_prm_4': {
-                'values': 'new prm_4 val from input header'
-            }
+            'ac-1_prm_3': {'values': 'new prm_3 val from input header'},
+            'ac-1_prm_4': {'values': 'new prm_4 val from input header'},
         },
         'foo': 'new bar',
         'new-reviewer': 'James',
         'special': 'new value to ignore',
-        'none-thing': 'none value to ignore'
+        'none-thing': 'none value to ignore',
     }
     control_path = tmp_path / 'ac-1.md'
     shutil.copyfile(src_control_path, control_path)
@@ -415,20 +410,20 @@ def test_merge_control_update(tmp_path: pathlib.Path, testdata_dir: pathlib.Path
                 prose='Text for fancy thing component',
                 rules=[],
                 props=[],
-                status=common.ImplementationStatus(state='planned', remarks=None)
+                status=common.ImplementationStatus(state='planned', remarks=None),
             ),
             'c.': ComponentImpInfo(
                 prose='Just for the default component',
                 rules=[],
                 props=[],
-                status=common.ImplementationStatus(state='planned', remarks=None)
+                status=common.ImplementationStatus(state='planned', remarks=None),
             ),
             'd.': ComponentImpInfo(
                 prose='Example extra component',
                 rules=[],
                 props=[],
-                status=common.ImplementationStatus(state='planned', remarks=None)
-            )
+                status=common.ImplementationStatus(state='planned', remarks=None),
+            ),
         }
     }
     control_writer = ControlWriter()

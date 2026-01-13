@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Transformer helper tests."""
+
 from trestle.transforms.transformer_helper import PropertyAccounting
 from trestle.transforms.transformer_helper import PropertyManager
 

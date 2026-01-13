@@ -47,11 +47,10 @@ def check_common_contents(header: Dict[str, Any]) -> None:
         'name': 'shared_param_1',
         'description': 'shared param 1 in aa',
         'options': '["shared_param_1_aa_opt_1", "shared_param_1_aa_opt_2", "shared_param_1_aa_opt_3"]',
-        'rule-id': 'top_shared_rule_1'
+        'rule-id': 'top_shared_rule_1',
     }
     assert header[const.TRESTLE_GLOBAL_TAG][const.PROFILE]['title'] == 'comp prof aa'
-    assert header[const.TRESTLE_GLOBAL_TAG][const.PROFILE
-                                            ]['href'] == 'trestle://profiles/comp_prof_aa/profile.json'  # noqa E501
+    assert header[const.TRESTLE_GLOBAL_TAG][const.PROFILE]['href'] == 'trestle://profiles/comp_prof_aa/profile.json'  # noqa E501
 
 
 def check_ac1_contents(ac1_path: pathlib.Path) -> None:
@@ -94,8 +93,14 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
             tmp_trestle_dir, assem_name, comp.ComponentDefinition
         )
         for ii in range(3):
-            assert assem_component.components[0].control_implementations[0].implemented_requirements[0].set_parameters[
-                0].values[ii] == f'inserted value {ii}'
+            assert (
+                assem_component.components[0]
+                .control_implementations[0]
+                .implemented_requirements[0]
+                .set_parameters[0]
+                .values[ii]
+                == f'inserted value {ii}'
+            )
 
         statement = assem_component.components[0].control_implementations[0].implemented_requirements[0].statements[0]
         assert statement.description == new_prose
@@ -144,7 +149,9 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
     assert creation_time == assem_comp_path.stat().st_mtime
 
     # edit a rule param value
-    new_text = '      component-values:\n        - inserted value 0\n        - inserted value 1\n        - inserted value 2\n'  # noqa E501
+    new_text = (
+        '      component-values:\n        - inserted value 0\n        - inserted value 1\n        - inserted value 2\n'  # noqa E501
+    )
     file_utils.insert_text_in_file(ac1_path, '- shared_param_1_aa_opt_1', new_text)
 
     # edit a status

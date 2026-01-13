@@ -14,7 +14,7 @@ jobs:
       min: ${{ steps.versions.outputs.min }}
       max: ${{ steps.versions.outputs.max }}
     steps:
-    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
     - id: versions
       run: |
         min_version=$(jq '.PYTHON_MIN' -r version.json)
@@ -28,7 +28,7 @@ jobs:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
       with:
         submodules: true
     - name: Set up Python
@@ -37,33 +37,33 @@ jobs:
         python-version: ${{ needs.set-versions.outputs.max }}
     - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
       with:
-        path: ~/.cache/pip
-        key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-${{ hashFiles('setup.cfg') }}
+        path: |
+          ~/.cache/pip
+          ~/.cache/hatch
+          ~/.local/share/hatch
+        key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-${{ hashFiles('pyproject.toml') }}
         restore-keys: |
-          ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-
-    - name: Install build tools
+          ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-
+    - name: Install tools
       run: |
-        make develop
+        pip install hatch pre-commit
     - name: Setup pre-commit
       run: |
         make pre-commit
-    - name: Install dependencies
-      run: |
-        make install
     - name: Run md document formatting (mdformat)
       run: |
         make mdformat
-    - name: Run code formatting (yapf)
+    - name: Run code formatting (ruff)
       run: |
         make code-format
-    - name: Run code linting (flake8)
+    - name: Run code linting (ruff)
       run: |
         make code-lint
     - name: Run code typing check (mypy)
       continue-on-error: true
       run: |
         make code-typing
-    - name: Install documenation dependencies
+    - name: Install documentation dependencies
       run: |
         make docs-ubuntu-deps
     - name: Validate website content (mkdocs)
@@ -82,10 +82,7 @@ jobs:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - name: Don't mess with line endings
-      run: |
-        git config --global core.autocrlf false
-    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
       with:
         submodules: true
     - name: Set up Python
@@ -94,13 +91,16 @@ jobs:
         python-version: ${{ needs.set-versions.outputs.max }}
     - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
       with:
-        path: ~/.cache/pip
-        key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-${{ hashFiles('setup.cfg') }}
+        path: |
+          ~/.cache/pip
+          ~/.cache/hatch
+          ~/.local/share/hatch
+        key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-${{ hashFiles('pyproject.toml') }}
         restore-keys: |
-          ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-
-    - name: Install build tools
+          ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-
+    - name: Install hatch
       run: |
-        make develop
+        pip install hatch
     - name: Run binary tests
       run: |
         make test-bdist
@@ -115,16 +115,22 @@ jobs:
         python-version: [ '${{ needs.set-versions.outputs.min }}', '${{ needs.set-versions.outputs.max }}' ]
         include:
         - os: ubuntu-latest
-          path: ~/.cache/pip
+          pip-cache: ~/.cache/pip
+          hatch-cache: ~/.cache/hatch
+          hatch-data: ~/.local/share/hatch
         - os: macos-latest
-          path: ~/Library/Caches/pip
+          pip-cache: ~/Library/Caches/pip
+          hatch-cache: ~/Library/Caches/hatch
+          hatch-data: ~/Library/Application Support/hatch
         - os: windows-latest
-          path: ~\AppData\Local\pip\Cache
+          pip-cache: ~\AppData\Local\pip\Cache
+          hatch-cache: ~\AppData\Local\hatch\Cache
+          hatch-data: ~\AppData\Local\hatch
     steps:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
       with:
         fetch-depth: 0
         submodules: true
@@ -134,24 +140,32 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
       with:
-        path: ${{ matrix.path }}
-        key: ${{ matrix.os }}-${{ matrix.python-version }}-pip-${{ hashFiles('setup.cfg') }}
+        path: |
+          ${{ matrix.pip-cache }}
+          ${{ matrix.hatch-cache }}
+          ${{ matrix.hatch-data }}
+        key: ${{ matrix.os }}-${{ matrix.python-version }}-hatch-${{ hashFiles('pyproject.toml') }}
         restore-keys: |
-         ${{ matrix.os }}-${{ matrix.python-version }}-pip-
+          ${{ matrix.os }}-${{ matrix.python-version }}-hatch-
     - name: Is core test version
       id: core-version
       run: echo "core=${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.set-versions.outputs.max ) }}" >> $GITHUB_OUTPUT
-    - name: Install build tools
+    - name: Install hatch
       run: |
-        make develop
-    - name: Pytest Fast
+        pip install hatch
+    - name: Run tests
       if: steps.core-version.outputs.core != 'true'
       run: |
-        make test
-    - name: Pytest Cov
+        hatch test -py ${{ matrix.python-version }}
+    - name: Run tests with coverage
       if: steps.core-version.outputs.core == 'true'
       run: |
-        make test-cov
+        hatch test --cover -py ${{ matrix.python-version }}
+    - name: Generate coverage report
+      if: steps.core-version.outputs.core == 'true'
+      run: |
+        pip install coverage
+        coverage xml
 
     - name: Upload artifact
       if: steps.core-version.outputs.core == 'true'
@@ -168,10 +182,7 @@ jobs:
     - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
-    - name: Don't mess with line endings
-      run: |
-        git config --global core.autocrlf false
-    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
       with:
         submodules: true
     - name: Set up Python
@@ -180,13 +191,13 @@ jobs:
         python-version: ${{ needs.set-versions.outputs.max }}
     - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
       with:
-        path: ~/.cache/pip
-        key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-${{ hashFiles('setup.cfg') }}
+        path: |
+          ~/.cache/pip
+          ~/.cache/hatch
+          ~/.local/share/hatch
+        key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-${{ hashFiles('pyproject.toml') }}
         restore-keys: |
-          ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-
-    - name: Install build tools
-      run: |
-        make develop
+          ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-
     - name: Get coverage
       uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
       with:
@@ -221,10 +232,7 @@ jobs:
       - name: Don't mess with line endings
         run: |
           git config --global core.autocrlf false
-      - name: Don't mess with line endings
-        run: |
-          git config --global core.autocrlf false
-      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           submodules: true
       - name: Set up Python
@@ -233,10 +241,13 @@ jobs:
           python-version: ${{ needs.set-versions.outputs.max }}
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
-          path: ~/.cache/pip
-          key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-${{ hashFiles('setup.cfg') }}
+          path: |
+            ~/.cache/pip
+            ~/.cache/hatch
+            ~/.local/share/hatch
+          key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-${{ hashFiles('pyproject.toml') }}
           restore-keys: |
-            ubuntu-latest-${{ needs.set-versions.outputs.max }}-pip-
+            ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-
       - uses: ./.github/actions/snyk-test
         with:
           token: ${{ secrets.SNYK_TOKEN }}

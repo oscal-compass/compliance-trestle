@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle author docs sub-command."""
+
 import argparse
 import logging
 import pathlib
@@ -47,13 +48,13 @@ class Docs(AuthorCommonCommand):
             author_const.SHORT_HEADER_VALIDATE,
             author_const.LONG_HEADER_VALIDATE,
             help=author_const.HEADER_VALIDATE_HELP,
-            action='store_true'
+            action='store_true',
         )
         self.add_argument(
             author_const.SHORT_TEMPLATE_VERSION,
             author_const.LONG_TEMPLATE_VERSION,
             help=author_const.TEMPLATE_VERSION_HELP,
-            action='store'
+            action='store',
         )
         self.add_argument(
             author_const.HOV_SHORT, author_const.HOV_LONG, help=author_const.HOV_HELP, action='store_true'
@@ -68,9 +69,8 @@ class Docs(AuthorCommonCommand):
         tn_help_str = '\n'.join(
             [
                 'The name of the the task to be governed.',
-                ''
                 'The template file is at .trestle/author/[task-name]/template.md',
-                'Note that by default this will automatically enforce the task.'
+                'Note that by default this will automatically enforce the task.',
             ]
         )
 
@@ -81,14 +81,14 @@ class Docs(AuthorCommonCommand):
             author_const.SHORT_README_VALIDATE,
             author_const.LONG_README_VALIDATE,
             help=author_const.README_VALIDATE_HELP,
-            action='store_true'
+            action='store_true',
         )
 
         self.add_argument(
             author_const.TEMPLATE_TYPE_VALIDATE_SHORT,
             author_const.TEMPLATE_TYPE_VALIDATE_LONG,
             help=author_const.TEMPLATE_TYPE_VALIDATE_HELP,
-            action='store_true'
+            action='store_true',
         )
 
     def _run(self, args: argparse.Namespace) -> int:
@@ -101,11 +101,7 @@ class Docs(AuthorCommonCommand):
                 status = self.create_sample()
 
             elif args.mode == 'template-validate':
-                status = self.template_validate(
-                    args.governed_heading,
-                    args.header_validate,
-                    args.header_only_validate,
-                )
+                status = self.template_validate(args.governed_heading, args.header_validate, args.header_only_validate)
             elif args.mode == 'setup':
                 status = self.setup_template_governed_docs(args.template_version)
             elif args.mode == 'validate':
@@ -118,7 +114,7 @@ class Docs(AuthorCommonCommand):
                     args.readme_validate,
                     args.template_version,
                     args.ignore,
-                    args.validate_template_type
+                    args.validate_template_type,
                 )
 
             return status
@@ -208,7 +204,7 @@ class Docs(AuthorCommonCommand):
         readme_validate: bool,
         template_version: Optional[str] = None,
         ignore: Optional[str] = None,
-        validate_by_type_field: bool = False
+        validate_by_type_field: bool = False,
     ) -> int:
         """
         Validate md files in a directory with option to recurse.
@@ -294,7 +290,7 @@ class Docs(AuthorCommonCommand):
                         readme_validate,
                         template_version,
                         ignore,
-                        validate_by_type_field
+                        validate_by_type_field,
                     )
                     if rc != 0:
                         status = rc
@@ -310,7 +306,7 @@ class Docs(AuthorCommonCommand):
         readme_validate: bool,
         template_version: str,
         ignore: str,
-        validate_by_type_field: bool
+        validate_by_type_field: bool,
     ) -> int:
         """
         Validate task.
@@ -337,5 +333,5 @@ class Docs(AuthorCommonCommand):
             readme_validate,
             template_version,
             ignore,
-            validate_by_type_field
+            validate_by_type_field,
         )

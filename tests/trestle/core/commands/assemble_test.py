@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle assemble command."""
+
 import argparse
 import os
 import pathlib
@@ -86,7 +87,7 @@ def test_assemble_catalog_part(
         '--output',
         'test',
         '--name',
-        'NIST-SP800-218-ver1-selected'
+        'NIST-SP800-218-ver1-selected',
     ]
     monkeypatch.setattr(sys, 'argv', testargs)
     rc = Trestle().run()
@@ -101,7 +102,7 @@ def test_assemble_catalog_part(
         '--output',
         'test',
         '--markdown',
-        'test'
+        'test',
     ]
     monkeypatch.setattr(sys, 'argv', testargs)
     rc = Trestle().run()
