@@ -961,6 +961,6 @@ class CsvToJsonHelper:
         self.config_object['title'] = self.config_object['benchmark-title']
         self.config_object['version'] = self.config_object['benchmark-version']
 
-    def run(self) -> None:
+    def run(self) -> TaskOutcome:
         """Run."""
         return self.csv_to_oscal_cd.execute()

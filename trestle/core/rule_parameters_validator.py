@@ -92,6 +92,10 @@ class RuleParametersValidator(Validator):
         returns:
             True (valid) if the model's rule parameter values are the same across controls.
         """
+        # Clear state from previous validations to avoid cross-test contamination
+        # This is not ideal.
+        self._rule_param_values_dict = {}
+
         # verify if model type is either an SSP of a Component Definition
         if not isinstance(model, SystemSecurityPlan):
             return True

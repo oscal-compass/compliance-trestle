@@ -38,7 +38,7 @@ from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 
 
-def test_merge_invalid_element_path(testdata_dir, tmp_trestle_dir):
+def test_merge_invalid_element_path(testdata_dir, tmp_trestle_dir, keep_cwd):
     """Test to make sure each element in -e contains 2 parts at least, and no chained element paths."""
     cmd = MergeCmd()
     args = argparse.Namespace(verbose=1, element='catalog', trestle_root=tmp_trestle_dir)
@@ -58,7 +58,7 @@ def test_merge_invalid_element_path(testdata_dir, tmp_trestle_dir):
     assert cmd._run(args) == 0
 
 
-def test_merge_plan_simple_case(testdata_dir, tmp_trestle_dir):
+def test_merge_plan_simple_case(testdata_dir, tmp_trestle_dir, keep_cwd):
     """Test '$mycatalog$ trestle merge -e catalog.back-matter'."""
     # Assume we are running a command like below
     # trestle merge -e catalog.back-matter
@@ -124,7 +124,7 @@ def test_merge_plan_simple_case(testdata_dir, tmp_trestle_dir):
     assert generated_plan == expected_plan
 
 
-def test_merge_expanded_metadata_into_catalog(testdata_dir, tmp_trestle_dir):
+def test_merge_expanded_metadata_into_catalog(testdata_dir, tmp_trestle_dir, keep_cwd):
     """Test '$mycatalog$ trestle merge -e catalog.metadata' when metadata is already split."""
     # Assume we are running a command like below
     # trestle merge -e catalog.back-matter
@@ -184,7 +184,7 @@ def test_merge_expanded_metadata_into_catalog(testdata_dir, tmp_trestle_dir):
     assert generated_plan == expected_plan
 
 
-def test_merge_everything_into_catalog(testdata_dir, tmp_trestle_dir):
+def test_merge_everything_into_catalog(testdata_dir, tmp_trestle_dir, keep_cwd):
     """Test '$mycatalog$ trestle merge -e catalog.*' when metadata and catalog is already split."""
     # Assume we are running a command like below
     # trestle merge -e catalog.*
@@ -231,7 +231,7 @@ def test_merge_everything_into_catalog(testdata_dir, tmp_trestle_dir):
     assert generated_plan == expected_plan
 
 
-def test_merge_everything_into_catalog_with_hidden_files_in_folders(testdata_dir, tmp_trestle_dir):
+def test_merge_everything_into_catalog_with_hidden_files_in_folders(testdata_dir, tmp_trestle_dir, keep_cwd):
     """Test trestle merge -e 'catalog.*' when metadata and catalog are split and hidden files are present."""
     # Assume we are running a command like below
     # trestle merge -e catalog.*
@@ -283,7 +283,7 @@ def test_merge_everything_into_catalog_with_hidden_files_in_folders(testdata_dir
     assert generated_plan == expected_plan
 
 
-def test_bad_merge(testdata_dir, tmp_trestle_dir):
+def test_bad_merge(testdata_dir, tmp_trestle_dir, keep_cwd):
     """Test a bad merge element path."""
     # prepare trestle project dir with the file
     test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
@@ -307,7 +307,7 @@ def test_bad_merge(testdata_dir, tmp_trestle_dir):
     assert cmd._run(args) == 1
 
 
-def test_merge_plan_simple_list(testdata_dir, tmp_trestle_dir):
+def test_merge_plan_simple_list(testdata_dir, tmp_trestle_dir, keep_cwd):
     """Test '$mycatalog$ trestle merge -e metadata.roles'."""
     # Assume we are running a command like below
     # trestle merge -e catalog.back-matter
@@ -375,7 +375,7 @@ def test_merge_plan_simple_list(testdata_dir, tmp_trestle_dir):
     assert generated_plan == expected_plan
 
 
-def test_split_merge(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) -> None:
+def test_split_merge(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, keep_cwd) -> None:
     """Test merging data that has been split using the split command- to ensure symmetry."""
     # trestle split -f catalog.json -e catalog.groups.*.controls.*
 
@@ -448,6 +448,7 @@ def test_split_merge(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) 
 def test_split_merge_out_of_context(
     testdata_dir,
     tmp_trestle_dir,
+    keep_cwd,
     rel_context_dir: str,
     use_absolutes: bool,
     split_elem: str,
@@ -510,7 +511,7 @@ def test_split_merge_out_of_context(
 
 
 def test_merge_deletes_folders(
-    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, keep_cwd, monkeypatch: MonkeyPatch
 ) -> None:
     """Test merge all components deletes empty folders."""
     catalog = testdata_dir / 'json/minimal_catalog_with_groups.json'
