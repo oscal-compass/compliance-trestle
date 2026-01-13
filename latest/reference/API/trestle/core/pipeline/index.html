@@ -23,10 +23,10 @@
     <span class=k>class</span><span class=w> </span><span class=nc>Filter</span><span class=p>(</span><span class=n>ABC</span><span class=p>):</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Filter class used by pipeline.&quot;&quot;&quot;</span>
 
-        <span class=nd>@abstractclassmethod</span>
+        <span class=nd>@abstractmethod</span>
         <span class=k>def</span><span class=w> </span><span class=nf>process</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>input_</span><span class=p>:</span> <span class=n>Any</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Any</span><span class=p>:</span>
 <span class=w>            </span><span class=sd>&quot;&quot;&quot;Process the input to output.&quot;&quot;&quot;</span>
-            <span class=k>return</span> <span class=n>input_</span>
+            <span class=o>...</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>filters</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>Filter</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Initialize the class.&quot;&quot;&quot;</span>
@@ -63,17 +63,17 @@
 <span class=normal>29</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>Filter</span><span class=p>(</span><span class=n>ABC</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Filter class used by pipeline.&quot;&quot;&quot;</span>
 
-    <span class=nd>@abstractclassmethod</span>
+    <span class=nd>@abstractmethod</span>
     <span class=k>def</span><span class=w> </span><span class=nf>process</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>input_</span><span class=p>:</span> <span class=n>Any</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Any</span><span class=p>:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Process the input to output.&quot;&quot;&quot;</span>
-        <span class=k>return</span> <span class=n>input_</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h7 id=trestle.core.pipeline.Pipeline.Filter-functions>Functions<a href=#trestle.core.pipeline.Pipeline.Filter-functions class=headerlink title="Permanent link">¤</a></h7> <div class="doc doc-object doc-function"> <h8 id=trestle.core.pipeline.Pipeline.Filter.process class="doc doc-heading"> <code class="highlight language-python"><span class=n>process</span><span class=p>(</span><span class=n>input_</span><span class=p>)</span></code> <a href=#trestle.core.pipeline.Pipeline.Filter.process class=headerlink title="Permanent link">¤</a></h8> <div class="doc doc-contents "> <p>Process the input to output.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/pipeline.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>26</span>
+        <span class=o>...</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h7 id=trestle.core.pipeline.Pipeline.Filter-functions>Functions<a href=#trestle.core.pipeline.Pipeline.Filter-functions class=headerlink title="Permanent link">¤</a></h7> <div class="doc doc-object doc-function"> <h8 id=trestle.core.pipeline.Pipeline.Filter.process class="doc doc-heading"> <code class="highlight language-python"><span class=n>process</span><span class=p>(</span><span class=n>input_</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small> </span> <a href=#trestle.core.pipeline.Pipeline.Filter.process class=headerlink title="Permanent link">¤</a></h8> <div class="doc doc-contents "> <p>Process the input to output.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/pipeline.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>26</span>
 <span class=normal>27</span>
 <span class=normal>28</span>
-<span class=normal>29</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@abstractclassmethod</span>
+<span class=normal>29</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@abstractmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>process</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>input_</span><span class=p>:</span> <span class=n>Any</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Any</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Process the input to output.&quot;&quot;&quot;</span>
-    <span class=k>return</span> <span class=n>input_</span>
+    <span class=o>...</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> </div> </div> </div> <h5 id=trestle.core.pipeline.Pipeline-functions>Functions<a href=#trestle.core.pipeline.Pipeline-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.pipeline.Pipeline.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>filters</span><span class=p>)</span></code> <a href=#trestle.core.pipeline.Pipeline.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize the class.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/pipeline.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>31</span>
 <span class=normal>32</span>
 <span class=normal>33</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>filters</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>Filter</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
