@@ -19,7 +19,7 @@ from typing import Any, List, Optional
 
 import pytest
 
-from trestle.core.jinja.filters import (diagram_href, first_or_none, get_party, parties_for_role)
+from trestle.core.jinja.filters import diagram_href, first_or_none, get_party, parties_for_role
 from trestle.oscal.common import Link, Party, ResponsibleParty
 from trestle.oscal.ssp import Diagram, SystemSecurityPlan
 
@@ -30,11 +30,14 @@ from trestle.oscal.ssp import Diagram, SystemSecurityPlan
         (
             [
                 Link(rel='other', href='./path/to/local/thing'),
-                Link(rel='diagram', href='https://host.name/path/to/diagram.png')
+                Link(rel='diagram', href='https://host.name/path/to/diagram.png'),
             ],
-            'https://host.name/path/to/diagram.png'
-        ), ([Link(rel='other', href='./path/to/local/file')], ''), ([], ''), (None, '')
-    ]
+            'https://host.name/path/to/diagram.png',
+        ),
+        ([Link(rel='other', href='./path/to/local/file')], ''),
+        ([], ''),
+        (None, ''),
+    ],
 )
 def test_diagram_href(links: Optional[List[Link]], expected: str) -> None:
     """Test retrieving the link href for rel='diagram'."""
@@ -62,7 +65,7 @@ def test_parties_for_role(sample_system_security_plan: SystemSecurityPlan, sampl
         parties_for_role(
             sample_system_security_plan.metadata.responsible_parties,
             role_id='pytest-tester',
-            ssp=sample_system_security_plan
+            ssp=sample_system_security_plan,
         )
     )
     assert len(result) == 1

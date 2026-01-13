@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle import command."""
+
 import argparse
 import json
 import os
@@ -119,17 +120,14 @@ def test_import_run_rollback(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyP
                 'title': 'Generic catalog created by trestle.',
                 'last-modified': '2020-12-11T02:04:51.053+00:00',
                 'version': '0.0.0',
-                'oscal-version': trestle.oscal.OSCAL_VERSION
+                'oscal-version': trestle.oscal.OSCAL_VERSION,
             },
             'back-matter': {
                 'resources': [
-                    {
-                        'uuid': 'b1101385-9e36-44a3-ba03-98b6ebe0a367'
-                    }, {
-                        'uuid': 'b1101385-9e36-44a3-ba03-98b6ebe0a367'
-                    }
+                    {'uuid': 'b1101385-9e36-44a3-ba03-98b6ebe0a367'},
+                    {'uuid': 'b1101385-9e36-44a3-ba03-98b6ebe0a367'},
                 ]
-            }
+            },
         }
     }
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))

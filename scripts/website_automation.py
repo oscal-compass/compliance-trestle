@@ -23,6 +23,7 @@ they are included and must be moved.
 ::: trestle.oscal.catalog
 handler: python
 """
+
 import pathlib
 import shutil
 from typing import Any, Dict, List

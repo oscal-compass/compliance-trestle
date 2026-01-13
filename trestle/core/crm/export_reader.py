@@ -120,10 +120,8 @@ class ExportReader:
     def _merge_exports_implemented_requirements(self, markdown_dict: InheritanceViewDict) -> None:
         """Merge all exported inheritance info from the markdown into the implemented requirement dict."""
         for implemented_requirement in self._implemented_requirements.values():
-
             # If the control id existing in the markdown, then update the by_components
             if implemented_requirement.control_id in markdown_dict:
-
                 # Delete the entry from the markdown_dict once processed to avoid duplicates
                 by_comp_dict: ByComponentDict = markdown_dict.pop(implemented_requirement.control_id)
 
@@ -137,7 +135,6 @@ class ExportReader:
 
                 # If the statement id existing in the markdown, then update the by_components
                 if statement_id in markdown_dict:
-
                     # Delete the entry from the markdown_dict once processed to avoid duplicates
                     by_comp_dict: ByComponentDict = markdown_dict.pop(statement_id)
 
@@ -154,7 +151,6 @@ class ExportReader:
         by_comp: ossp.ByComponent
         comp_inheritance_info: Tuple[List[ossp.Inherited], List[ossp.Satisfied]]
         for by_comp in as_list(with_bycomp.by_components):
-
             # If the by_component uuid exists in the by_comp_dict, then update it
             # If not, clear the by_component inheritance information
             comp_inheritance_info = by_comp_dict.pop(by_comp.component_uuid, ([], []))

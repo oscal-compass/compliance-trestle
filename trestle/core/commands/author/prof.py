@@ -30,7 +30,14 @@ import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ssp
 from trestle.common import file_utils
 from trestle.common.err import TrestleError, TrestleNotFoundError, handle_generic_command_exception
-from trestle.common.list_utils import as_filtered_list, as_list, comma_sep_to_list, comma_colon_sep_to_dict, deep_set, none_if_empty  # noqa E501
+from trestle.common.list_utils import (
+    as_filtered_list,
+    as_list,
+    comma_sep_to_list,
+    comma_colon_sep_to_dict,
+    deep_set,
+    none_if_empty,
+)  # noqa E501
 from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog.catalog_api import CatalogAPI
@@ -65,7 +72,7 @@ class ProfileGenerate(AuthorCommonCommand):
             help=const.HELP_OVERWRITE_HEADER_VALUES,
             required=False,
             action='store_true',
-            default=False
+            default=False,
         )
         self.add_argument('-s', '--sections', help=const.HELP_SECTIONS, required=False, type=str)
         self.add_argument('-rs', '--required-sections', help=const.HELP_REQUIRED_SECTIONS, required=False, type=str)
@@ -107,7 +114,7 @@ class ProfileGenerate(AuthorCommonCommand):
                 yaml_header,
                 args.overwrite_header_values,
                 sections_dict,
-                comma_sep_to_list(args.required_sections)
+                comma_sep_to_list(args.required_sections),
             )
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Generation of the profile markdown failed')
@@ -120,7 +127,7 @@ class ProfileGenerate(AuthorCommonCommand):
         yaml_header: Dict[str, Any],
         overwrite_header_values: bool,
         sections_dict: Optional[Dict[str, str]],
-        required_sections: Optional[List[str]]
+        required_sections: Optional[List[str]],
     ) -> int:
         """Generate markdown for the controls in the profile.
 
@@ -201,7 +208,7 @@ class ProfileAssemble(AuthorCommonCommand):
                 version=args.version,
                 sections_dict=comma_colon_sep_to_dict(args.sections),
                 required_sections=comma_sep_to_list(args.required_sections),
-                allowed_sections=args.allowed_sections
+                allowed_sections=args.allowed_sections,
             )
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Assembly of markdown to profile failed')
@@ -271,11 +278,7 @@ class ProfileAssemble(AuthorCommonCommand):
                     param = ModelUtils.dict_to_parameter(sub_param_dict)
                     new_set_params.append(
                         prof.SetParameter(
-                            param_id=key,
-                            label=param.label,
-                            values=param.values,
-                            select=param.select,
-                            props=param.props
+                            param_id=key, label=param.label, values=param.values, select=param.select, props=param.props
                         )
                     )
             if profile.modify.set_parameters != new_set_params:
@@ -299,7 +302,7 @@ class ProfileAssemble(AuthorCommonCommand):
         version: Optional[str],
         sections_dict: Dict[str, str],
         required_sections: List[str],
-        allowed_sections: Optional[List[str]]
+        allowed_sections: Optional[List[str]],
     ) -> int:
         """
         Assemble the markdown directory into a json profile model file.
@@ -359,8 +362,10 @@ class ProfileAssemble(AuthorCommonCommand):
 
         if allowed_sections is not None:
             for bad_part in [
-                    part for alter in found_alters for add in as_list(alter.adds)
-                    for part in as_filtered_list(add.parts, lambda a: a.name not in allowed_sections)  # type: ignore
+                part
+                for alter in found_alters
+                for add in as_list(alter.adds)
+                for part in as_filtered_list(add.parts, lambda a: a.name not in allowed_sections)  # type: ignore
             ]:
                 raise TrestleError(f'Profile has alter with name {bad_part.name} not in allowed sections.')
 
@@ -411,7 +416,7 @@ class ProfileResolve(AuthorCommonCommand):
             help='Show values for parameters in prose',
             required=False,
             action='store_true',
-            default=False
+            default=False,
         )
         self.add_argument(
             '-sl',
@@ -419,7 +424,7 @@ class ProfileResolve(AuthorCommonCommand):
             help='Show labels for parameters in prose instead of values',
             required=False,
             action='store_true',
-            default=False
+            default=False,
         )
         self.add_argument(
             '-bf',
@@ -427,7 +432,7 @@ class ProfileResolve(AuthorCommonCommand):
             help='With -sv, allows brackets around value, e.g. [.] or ((.)), with the dot representing the value.',
             required=False,
             type=str,
-            default=''
+            default='',
         )
         self.add_argument(
             '-vap',
@@ -435,7 +440,7 @@ class ProfileResolve(AuthorCommonCommand):
             help='With -sv, places a prefix in front of the parameter string if a value has been assigned.',
             required=False,
             type=str,
-            default=''
+            default='',
         )
         self.add_argument(
             '-vnap',
@@ -443,7 +448,7 @@ class ProfileResolve(AuthorCommonCommand):
             help='With -sv, places a prefix in front of the parameter string if a value has *not* been assigned.',
             required=False,
             type=str,
-            default=''
+            default='',
         )
         self.add_argument(
             '-lp',
@@ -451,7 +456,7 @@ class ProfileResolve(AuthorCommonCommand):
             help='With -sl, places a prefix in front of the parameter label.',
             required=False,
             type=str,
-            default=''
+            default='',
         )
 
     def _run(self, args: argparse.Namespace) -> int:
@@ -476,7 +481,7 @@ class ProfileResolve(AuthorCommonCommand):
                 value_assigned_prefix,
                 value_not_assigned_prefix,
                 show_labels,
-                label_prefix
+                label_prefix,
             )
 
         except Exception as e:  # pragma: no cover
@@ -492,7 +497,7 @@ class ProfileResolve(AuthorCommonCommand):
         value_assigned_prefix: Optional[str],
         value_not_assigned_prefix: Optional[str],
         show_labels: bool,
-        label_prefix: Optional[str]
+        label_prefix: Optional[str],
     ) -> int:
         """Create resolved profile catalog from given profile.
 
@@ -537,7 +542,7 @@ class ProfileResolve(AuthorCommonCommand):
             param_rep,
             False,
             value_assigned_prefix,
-            value_not_assigned_prefix
+            value_not_assigned_prefix,
         )
         ModelUtils.save_top_level_model(catalog, trestle_root, catalog_name, FileContentType.JSON)
 
@@ -572,7 +577,7 @@ class ProfileInherit(AuthorCommonCommand):
                 parent_prof_name=args.profile,
                 output_prof_name=args.output,
                 leveraged_ssp_name=args.ssp,
-                version=args.version
+                version=args.version,
             )
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Profile generation failed')
@@ -634,7 +639,6 @@ class ProfileInherit(AuthorCommonCommand):
         # be a subset of the catalog and not the ssp controls.
         catalog_control_ids: Set[str] = set(catalog_api._catalog_interface.get_control_ids())
         for control_id in catalog_control_ids:
-
             if control_id not in components_by_id:
                 continue
 
@@ -685,10 +689,9 @@ class ProfileInherit(AuthorCommonCommand):
             # If a profile exists at the output path, use that as a starting point for a new profile.
             # else create a new sample profile.
             if existing_profile_path is not None:
-                existing_profile, _ = load_validate_model_name(trestle_root,
-                                                               output_prof_name,
-                                                               prof.Profile,
-                                                               FileContentType.JSON)
+                existing_profile, _ = load_validate_model_name(
+                    trestle_root, output_prof_name, prof.Profile, FileContentType.JSON
+                )
                 result_profile = copy.deepcopy(existing_profile)
             else:
                 result_profile = gens.generate_sample_model(prof.Profile)
@@ -708,10 +711,7 @@ class ProfileInherit(AuthorCommonCommand):
             leveraged_ssp: ssp.SystemSecurityPlan
             try:
                 leveraged_ssp, _ = load_validate_model_name(
-                    trestle_root,
-                    leveraged_ssp_name,
-                    ssp.SystemSecurityPlan,
-                    FileContentType.JSON
+                    trestle_root, leveraged_ssp_name, ssp.SystemSecurityPlan, FileContentType.JSON
                 )
             except TrestleNotFoundError as e:
                 raise TrestleError(f'SSP {leveraged_ssp_name} not found: {e}')

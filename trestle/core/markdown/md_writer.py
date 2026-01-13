@@ -28,7 +28,7 @@ from trestle.core.markdown.markdown_api import MarkdownAPI
 logger = logging.getLogger(__name__)
 
 
-class MDWriter():
+class MDWriter:
     """Simple class to create markdown files."""
 
     def __init__(self, file_path: pathlib.Path, header_comments_dict: Optional[Dict[str, str]] = None):

@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Function to load and validate files while avoiding circular imports."""
+
 import argparse
 import logging
 from pathlib import Path
@@ -40,10 +41,7 @@ def load_validate_model_path(trestle_root: Path, model_path: Path) -> TopLevelOs
 
 
 def load_validate_model_name(
-    trestle_root: Path,
-    model_name: str,
-    model_class: TG,
-    file_content_type: Optional[FileContentType] = None
+    trestle_root: Path, model_name: str, model_class: TG, file_content_type: Optional[FileContentType] = None
 ) -> Tuple[TG, Path]:
     """Load a model by its name and type and validate it."""
     model_path = ModelUtils.get_model_path_for_name_and_class(trestle_root, model_name, model_class, file_content_type)
