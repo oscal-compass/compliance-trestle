@@ -106,7 +106,11 @@
 <span class=normal>117</span>
 <span class=normal>118</span>
 <span class=normal>119</span>
-<span class=normal>120</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>RuleParametersValidator</span><span class=p>(</span><span class=n>Validator</span><span class=p>):</span>
+<span class=normal>120</span>
+<span class=normal>121</span>
+<span class=normal>122</span>
+<span class=normal>123</span>
+<span class=normal>124</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>RuleParametersValidator</span><span class=p>(</span><span class=n>Validator</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Validator to confirm all rule parameter values are consistent.&quot;&quot;&quot;</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
@@ -168,6 +172,10 @@
 <span class=sd>        returns:</span>
 <span class=sd>            True (valid) if the model&#39;s rule parameter values are the same across controls.</span>
 <span class=sd>        &quot;&quot;&quot;</span>
+        <span class=c1># Clear state from previous validations to avoid cross-test contamination</span>
+        <span class=c1># This is not ideal.</span>
+        <span class=bp>self</span><span class=o>.</span><span class=n>_rule_param_values_dict</span> <span class=o>=</span> <span class=p>{}</span>
+
         <span class=c1># verify if model type is either an SSP of a Component Definition</span>
         <span class=k>if</span> <span class=ow>not</span> <span class=nb>isinstance</span><span class=p>(</span><span class=n>model</span><span class=p>,</span> <span class=n>SystemSecurityPlan</span><span class=p>):</span>
             <span class=k>return</span> <span class=kc>True</span>
@@ -242,7 +250,11 @@
 <span class=normal>117</span>
 <span class=normal>118</span>
 <span class=normal>119</span>
-<span class=normal>120</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>model_is_valid</span><span class=p>(</span>
+<span class=normal>120</span>
+<span class=normal>121</span>
+<span class=normal>122</span>
+<span class=normal>123</span>
+<span class=normal>124</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>model_is_valid</span><span class=p>(</span>
     <span class=bp>self</span><span class=p>,</span> <span class=n>model</span><span class=p>:</span> <span class=n>TopLevelOscalModel</span><span class=p>,</span> <span class=n>quiet</span><span class=p>:</span> <span class=nb>bool</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
@@ -256,6 +268,10 @@
 <span class=sd>    returns:</span>
 <span class=sd>        True (valid) if the model&#39;s rule parameter values are the same across controls.</span>
 <span class=sd>    &quot;&quot;&quot;</span>
+    <span class=c1># Clear state from previous validations to avoid cross-test contamination</span>
+    <span class=c1># This is not ideal.</span>
+    <span class=bp>self</span><span class=o>.</span><span class=n>_rule_param_values_dict</span> <span class=o>=</span> <span class=p>{}</span>
+
     <span class=c1># verify if model type is either an SSP of a Component Definition</span>
     <span class=k>if</span> <span class=ow>not</span> <span class=nb>isinstance</span><span class=p>(</span><span class=n>model</span><span class=p>,</span> <span class=n>SystemSecurityPlan</span><span class=p>):</span>
         <span class=k>return</span> <span class=kc>True</span>
