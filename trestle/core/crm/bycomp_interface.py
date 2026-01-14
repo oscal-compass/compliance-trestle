@@ -114,7 +114,6 @@ class ByComponentInterface:
         """Return a dictionary of every responsibility relationship with provided."""
         all_export_sets: List[Tuple[ossp.Responsibility, ossp.Provided]] = []
         for provided_uuid, responsibilities in as_dict(self._responsibility_by_provided).items():
-
             # Ensure the provided object exists in the dictionary.
             # If it doesn't this is a bug.
             if provided_uuid not in self._provided_dict:

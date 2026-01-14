@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Action wrapper of a command."""
+
 from enum import Enum
 from pathlib import Path
 

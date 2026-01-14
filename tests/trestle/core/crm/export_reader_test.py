@@ -74,17 +74,15 @@ def test_read_exports_from_markdown(tmp_trestle_dir: pathlib.Path) -> None:
         provided_uuid=example_provided_uuid,
         responsibility_uuid=example_responsibility_uuid,
         leveraged_statement_names=['Access Control Appliance', 'THIS SYSTEM (SaaS)'],
-        leveraged_ssp_href='trestle://leveraged_ssp.json'
+        leveraged_ssp_href='trestle://leveraged_ssp.json',
     )
     prep_inheritance_dir(ac_appliance_dir, inheritance_text)
 
     test_utils.load_from_json(tmp_trestle_dir, 'leveraging_ssp', leveraging_ssp, ossp.SystemSecurityPlan)
 
     orig_ssp, _ = ModelUtils.load_model_for_class(
-        tmp_trestle_dir,
-        leveraging_ssp,
-        ossp.SystemSecurityPlan,
-        FileContentType.JSON)
+        tmp_trestle_dir, leveraging_ssp, ossp.SystemSecurityPlan, FileContentType.JSON
+    )
 
     reader = exportreader.ExportReader(inheritance_path, orig_ssp)
     ssp = reader.read_exports_from_markdown()
@@ -120,7 +118,7 @@ def test_read_inheritance_markdown_dir(tmp_trestle_dir: pathlib.Path) -> None:
         provided_uuid=example_provided_uuid,
         responsibility_uuid=example_responsibility_uuid,
         leveraged_statement_names=['Access Control Appliance', 'THIS SYSTEM (SaaS)'],
-        leveraged_ssp_href='trestle://leveraged_ssp.json'
+        leveraged_ssp_href='trestle://leveraged_ssp.json',
     )
     prep_inheritance_dir(ac_appliance_dir, inheritance_text)
 
@@ -128,7 +126,7 @@ def test_read_inheritance_markdown_dir(tmp_trestle_dir: pathlib.Path) -> None:
         provided_uuid=example_provided_uuid,
         responsibility_uuid=example_responsibility_uuid,
         leveraged_statement_names=[const.REPLACE_ME],
-        leveraged_ssp_href='trestle://leveraged_ssp.json'
+        leveraged_ssp_href='trestle://leveraged_ssp.json',
     )
 
     ac_21 = ac_appliance_dir.joinpath('ac-2.1')
@@ -141,10 +139,8 @@ def test_read_inheritance_markdown_dir(tmp_trestle_dir: pathlib.Path) -> None:
     test_utils.load_from_json(tmp_trestle_dir, 'leveraging_ssp', leveraging_ssp, ossp.SystemSecurityPlan)
 
     orig_ssp, _ = ModelUtils.load_model_for_class(
-        tmp_trestle_dir,
-        leveraging_ssp,
-        ossp.SystemSecurityPlan,
-        FileContentType.JSON)
+        tmp_trestle_dir, leveraging_ssp, ossp.SystemSecurityPlan, FileContentType.JSON
+    )
 
     reader = exportreader.ExportReader(inheritance_path, orig_ssp)
     markdown_dict: exportreader.InheritanceViewDict = reader._read_inheritance_markdown_directory()
@@ -172,7 +168,7 @@ def test_read_inheritance_markdown_dir_with_multiple_leveraged_components(tmp_tr
         provided_uuid=example_provided_uuid,
         responsibility_uuid=example_responsibility_uuid,
         leveraged_statement_names=['Access Control Appliance', 'THIS SYSTEM (SaaS)'],
-        leveraged_ssp_href='trestle://leveraged_ssp.json'
+        leveraged_ssp_href='trestle://leveraged_ssp.json',
     )
     prep_inheritance_dir(ac_appliance_dir, inheritance_text)
 
@@ -180,14 +176,14 @@ def test_read_inheritance_markdown_dir_with_multiple_leveraged_components(tmp_tr
         provided_uuid=example_provided_uuid,
         responsibility_uuid=example_responsibility_uuid,
         leveraged_statement_names=['Access Control Appliance'],
-        leveraged_ssp_href='trestle://leveraged_ssp.json'
+        leveraged_ssp_href='trestle://leveraged_ssp.json',
     )
 
     unmapped_text = test_utils.generate_test_inheritance_md(
         provided_uuid=example_provided_uuid,
         responsibility_uuid=example_responsibility_uuid,
         leveraged_statement_names=[const.REPLACE_ME],
-        leveraged_ssp_href='trestle://leveraged_ssp.json'
+        leveraged_ssp_href='trestle://leveraged_ssp.json',
     )
 
     this_system_dir = inheritance_path.joinpath('This System')
@@ -208,10 +204,8 @@ def test_read_inheritance_markdown_dir_with_multiple_leveraged_components(tmp_tr
     test_utils.load_from_json(tmp_trestle_dir, 'leveraging_ssp', leveraging_ssp, ossp.SystemSecurityPlan)
 
     orig_ssp, _ = ModelUtils.load_model_for_class(
-        tmp_trestle_dir,
-        leveraging_ssp,
-        ossp.SystemSecurityPlan,
-        FileContentType.JSON)
+        tmp_trestle_dir, leveraging_ssp, ossp.SystemSecurityPlan, FileContentType.JSON
+    )
 
     reader = exportreader.ExportReader(inheritance_path, orig_ssp)
     markdown_dict: exportreader.InheritanceViewDict = reader._read_inheritance_markdown_directory()
@@ -245,7 +239,7 @@ def test_read_inheritance_markdown_dir_with_invalid_mapping(tmp_trestle_dir: pat
         provided_uuid=example_provided_uuid,
         responsibility_uuid=example_responsibility_uuid,
         leveraged_statement_names=['Invalid Component'],
-        leveraged_ssp_href='trestle://leveraged_ssp.json'
+        leveraged_ssp_href='trestle://leveraged_ssp.json',
     )
 
     this_system_dir = inheritance_path.joinpath('This System')
@@ -259,10 +253,8 @@ def test_read_inheritance_markdown_dir_with_invalid_mapping(tmp_trestle_dir: pat
     test_utils.load_from_json(tmp_trestle_dir, 'leveraging_ssp', leveraging_ssp, ossp.SystemSecurityPlan)
 
     orig_ssp, _ = ModelUtils.load_model_for_class(
-        tmp_trestle_dir,
-        leveraging_ssp,
-        ossp.SystemSecurityPlan,
-        FileContentType.JSON)
+        tmp_trestle_dir, leveraging_ssp, ossp.SystemSecurityPlan, FileContentType.JSON
+    )
 
     with pytest.raises(TrestleError):
         reader = exportreader.ExportReader(inheritance_path, orig_ssp)
@@ -278,17 +270,15 @@ def test_get_leveraged_ssp_reference(tmp_trestle_dir: pathlib.Path) -> None:
         provided_uuid=example_provided_uuid,
         responsibility_uuid=example_responsibility_uuid,
         leveraged_statement_names=['Access Control Appliance', 'THIS SYSTEM (SaaS)'],
-        leveraged_ssp_href='trestle://leveraged_ssp.json'
+        leveraged_ssp_href='trestle://leveraged_ssp.json',
     )
     prep_inheritance_dir(ac_appliance_dir, inheritance_text)
 
     test_utils.load_from_json(tmp_trestle_dir, 'leveraging_ssp', leveraging_ssp, ossp.SystemSecurityPlan)
 
     orig_ssp, _ = ModelUtils.load_model_for_class(
-        tmp_trestle_dir,
-        leveraging_ssp,
-        ossp.SystemSecurityPlan,
-        FileContentType.JSON)
+        tmp_trestle_dir, leveraging_ssp, ossp.SystemSecurityPlan, FileContentType.JSON
+    )
 
     reader = exportreader.ExportReader(inheritance_path, orig_ssp)
     assert reader.get_leveraged_ssp_href() == 'trestle://leveraged_ssp.json'
@@ -303,7 +293,7 @@ def test_get_leveraged_components(tmp_trestle_dir: pathlib.Path) -> None:
         provided_uuid=example_provided_uuid,
         responsibility_uuid=example_responsibility_uuid,
         leveraged_statement_names=[const.REPLACE_ME],
-        leveraged_ssp_href='trestle://leveraged_ssp.json'
+        leveraged_ssp_href='trestle://leveraged_ssp.json',
     )
     prep_inheritance_dir(ac_appliance_dir, unmapped_text)
 
@@ -315,7 +305,7 @@ def test_get_leveraged_components(tmp_trestle_dir: pathlib.Path) -> None:
         provided_uuid=example_provided_uuid,
         responsibility_uuid=example_responsibility_uuid,
         leveraged_statement_names=['Access Control Appliance', 'THIS SYSTEM (SaaS)'],
-        leveraged_ssp_href='trestle://leveraged_ssp.json'
+        leveraged_ssp_href='trestle://leveraged_ssp.json',
     )
 
     file = ac_2 / f'{expected_appliance_uuid}.md'
@@ -325,10 +315,8 @@ def test_get_leveraged_components(tmp_trestle_dir: pathlib.Path) -> None:
     test_utils.load_from_json(tmp_trestle_dir, 'leveraging_ssp', leveraging_ssp, ossp.SystemSecurityPlan)
 
     orig_ssp, _ = ModelUtils.load_model_for_class(
-        tmp_trestle_dir,
-        leveraging_ssp,
-        ossp.SystemSecurityPlan,
-        FileContentType.JSON)
+        tmp_trestle_dir, leveraging_ssp, ossp.SystemSecurityPlan, FileContentType.JSON
+    )
 
     reader = exportreader.ExportReader(inheritance_path, orig_ssp)
     _ = reader.read_exports_from_markdown()

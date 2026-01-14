@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle core errors module."""
+
 from logging import Logger
 
 from trestle.common.log import get_current_verbosity_level

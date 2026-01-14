@@ -71,9 +71,25 @@ import logging
 import pathlib
 import re
 
-from trestle.oscal import OSCAL_VERSION_REGEX
-
 logger = logging.getLogger(__name__)
+
+
+def get_oscal_version_regex():
+    """Read OSCAL_VERSION_REGEX from the generated __init__.py file.
+
+    This reads from file rather than importing to avoid module caching issues
+    during generation when the file is being modified.
+    """
+    with open('trestle/oscal/__init__.py', 'r') as f:
+        for line in f:
+            if line.startswith('OSCAL_VERSION_REGEX'):
+                match = re.search(r"= (r'[^']+')", line)
+                if match:
+                    return match.group(1)
+    raise RuntimeError('OSCAL_VERSION_REGEX not found in trestle/oscal/__init__.py')
+
+
+OSCAL_VERSION_REGEX = get_oscal_version_regex()
 logger.setLevel(logging.INFO)
 logger.addHandler(logging.StreamHandler())
 
@@ -92,7 +108,7 @@ alias_map = {
     'mapping': 'mapping-collection',
     'poam': 'plan-of-action-and-milestones',
     'profile': 'profile',
-    'ssp': 'system-security-plan'
+    'ssp': 'system-security-plan',
 }
 
 camel_map = {
@@ -103,7 +119,7 @@ camel_map = {
     'mapping': 'MappingCollection',
     'poam': 'PlanOfActionAndMilestones',
     'profile': 'Profile',
-    'ssp': 'SystemSecurityPlan'
+    'ssp': 'SystemSecurityPlan',
 }
 
 prefix_map = {
@@ -114,7 +130,7 @@ prefix_map = {
     'mapping': 'Map',
     'poam': 'Poam',
     'profile': 'Prof',
-    'ssp': 'Ssp'
+    'ssp': 'Ssp',
 }
 
 # these prefixes are stripped repeatedly from class names until no more changes
@@ -131,7 +147,7 @@ prefixes_to_strip = [
     'OscalProfile',
     'OscalAr',
     'OscalAp',
-    'Common'
+    'Common',
 ]
 
 license_header = (
@@ -190,7 +206,7 @@ oscal_validator_code = """
 """
 
 
-class RelOrder():
+class RelOrder:
     """Capture relative location of each class in list to its refs and deps."""
 
     def __init__(self, max_index):
@@ -199,14 +215,14 @@ class RelOrder():
         self.earliest_ref = max_index
 
 
-class ClassText():
+class ClassText:
     """Hold class text as named blocks with references to the added classes and capture its refs."""
 
     def __init__(self, first_line, parent_name):
         """Construct with first line of class definition and store the parent file name."""
         self.lines = [first_line.rstrip()]
         n = first_line.find('(')
-        self.name = first_line[len(class_header):n]
+        self.name = first_line[len(class_header) : n]
         self.parent_names = [parent_name]
         self.original_name = self.name
         self.unique_name = None
@@ -755,9 +771,7 @@ additions = {
     ],
     'catalog': [],
     'common': [],
-    'component': [
-        'from trestle.oscal.common import URIReferenceDatatype',
-    ],
+    'component': ['from trestle.oscal.common import URIReferenceDatatype'],
     'poam': [
         'from trestle.oscal.common import RelatedObservation',
         'from trestle.oscal.common import TaskValidValues',
@@ -765,9 +779,7 @@ additions = {
         'from trestle.oscal.common import RelatedObservation as RelatedObservation1',
     ],
     'profile': [],
-    'ssp': [
-        'from trestle.oscal.common import Status, SystemComponent',
-    ],
+    'ssp': ['from trestle.oscal.common import Status, SystemComponent'],
 }
 
 
@@ -831,7 +843,7 @@ def apply_changes_to_class_list(classes, changes):
         paren = lines[0].find('(')
         class_name = classes[i].name
         if paren > 0:
-            class_name = lines[0][len('class '):paren]
+            class_name = lines[0][len('class ') : paren]
         classes[i].name = class_name
         # need to regenerate body since tokens changed
         classes[i].generate_body_text()
@@ -863,7 +875,7 @@ def apply_changes_to_classes(file_classes, changes, com_names):
             paren = lines[0].find('(')
             class_name = classes[i].name
             if paren > 0:
-                class_name = lines[0][len('class '):paren]
+                class_name = lines[0][len('class ') : paren]
             classes[i].name = class_name
             classes[i].generate_body_text()
         file_classes[fc[0]] = classes
@@ -1013,7 +1025,7 @@ def kill_roots(file_classes):
             p_field = body.find('=Field(')
             if p_field > 0:
                 body = body[:p_field]
-            root_classes[c.name] = body[len(match_str):]
+            root_classes[c.name] = body[len(match_str) :]
     new_root_classes = {}
     skip_class_names = ['IntegerDatatype', 'NonNegativeIntegerDatatype', 'PositiveIntegerDatatype', 'OscalVersion']
     # replace references to root classes in the root classes
@@ -1040,7 +1052,9 @@ def kill_roots(file_classes):
                             if any(token in line for token in [' __root__: StringDatatype']):
                                 line = line.replace(name, body, 1)
                             continue
-                        if any(token in line for token in [
+                        if any(
+                            token in line
+                            for token in [
                                 'id: TokenDatatype',
                                 'value: StringDatatype',
                                 'uuid: UUIDDatatype',
@@ -1048,7 +1062,8 @@ def kill_roots(file_classes):
                                 'source: URIReferenceDatatype',
                                 'type: Union[StringDatatype, DefinedComponentTypeValidValues]',
                                 'type: Union[StringDatatype, SystemComponentTypeValidValues]',
-                        ]):
+                            ]
+                        ):
                             line = line.replace(name, body, 1)
                             continue
                         if 'title=' in line and 'Value' in line:

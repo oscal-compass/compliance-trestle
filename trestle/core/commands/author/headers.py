@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle author headers command."""
+
 import argparse
 import logging
 import pathlib
@@ -51,7 +52,7 @@ class Headers(AuthorCommonCommand):
                 'Markdown: .trestle/author/[task name]/template.md',
                 'Drawio: .trestle/author/[task name]/template.drawio',
                 '',
-                'Note that by default this will automatically enforce the task.'
+                'Note that by default this will automatically enforce the task.',
             ]
         )
         self.add_argument(
@@ -61,13 +62,13 @@ class Headers(AuthorCommonCommand):
             author_const.SHORT_README_VALIDATE,
             author_const.LONG_README_VALIDATE,
             help=author_const.README_VALIDATE_HELP,
-            action='store_true'
+            action='store_true',
         )
         self.add_argument(
             author_const.SHORT_TEMPLATE_VERSION,
             author_const.LONG_TEMPLATE_VERSION,
             help=author_const.TEMPLATE_VERSION_HELP,
-            action='store'
+            action='store',
         )
         self.add_argument(
             author_const.SHORT_IGNORE, author_const.LONG_IGNORE, help=author_const.IGNORE_HELP, default=None, type=str
@@ -81,7 +82,7 @@ class Headers(AuthorCommonCommand):
             help=author_const.EXCLUDE_HELP,
             type=pathlib.Path,
             nargs='*',
-            default=None
+            default=None,
         )
 
     def _run(self, args: argparse.Namespace) -> int:
@@ -147,8 +148,10 @@ class Headers(AuthorCommonCommand):
         """Validate the integrity of the template files."""
         logger.info('Checking template file integrity')
         for template_file in self.template_dir.iterdir():
-            if (template_file.name not in author_const.REFERENCE_TEMPLATES.values()
-                    and template_file.name.lower() != 'readme.md'):
+            if (
+                template_file.name not in author_const.REFERENCE_TEMPLATES.values()
+                and template_file.name.lower() != 'readme.md'
+            ):
                 raise TrestleError(f'Unexpected template file {self.rel_dir(template_file)}')
 
             if template_file.suffix == const.MARKDOWN_FILE_EXT:
@@ -174,7 +177,7 @@ class Headers(AuthorCommonCommand):
         readme_validate: bool,
         relative_exclusions: List[pathlib.Path],
         template_version: str,
-        ignore: str
+        ignore: str,
     ) -> bool:
         """Validate a directory within the trestle workspace."""
         all_versioned_templates: Dict[str, Any] = {}
@@ -189,7 +192,7 @@ class Headers(AuthorCommonCommand):
                 instances = list(
                     filter(
                         lambda f: len(list(filter(p.match, str(f.relative_to(candidate_dir)).split('/')))) == 0,
-                        instances
+                        instances,
                     )
                 )
         for instance_file in instances:
@@ -297,7 +300,7 @@ class Headers(AuthorCommonCommand):
         readme_validate: bool,
         relative_excludes: List[pathlib.Path],
         template_version: str,
-        ignore: str
+        ignore: str,
     ) -> int:
         """Run validation based on available templates."""
         paths = []
@@ -316,7 +319,7 @@ class Headers(AuthorCommonCommand):
                     continue
                 if str(relative_path).rstrip('/') in const.MODEL_DIR_LIST:
                     continue
-                if (relative_path in relative_excludes):
+                if relative_path in relative_excludes:
                     continue
                 if not file_utils.is_hidden(path):
                     paths.append(path)

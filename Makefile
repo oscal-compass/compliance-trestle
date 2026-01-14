@@ -14,106 +14,150 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-submodules: 
+.DEFAULT_GOAL := help
+
+# ============================================================================
+# Help
+# ============================================================================
+
+.PHONY: help
+help: ## Show this help message
+	@echo "Usage: make [target]"
+	@echo ""
+	@echo "Targets:"
+	@awk 'BEGIN {FS = ":.*##"} /^[a-zA-Z_-]+:.*##/ {printf "  %-20s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+	@echo ""
+	@echo "For more details, see the project documentation."
+
+# ============================================================================
+# Setup
+# ============================================================================
+
+.PHONY: submodules develop pre-commit pre-commit-update
+
+submodules: ## Initialize git submodules (nist-content, oscal)
 	git submodule update --init
 
-develop: submodules
-	python -m pip install -e .[dev] --upgrade --upgrade-strategy eager --
+develop: submodules ## Set up development environment
+	pip install hatch
+	pip install -e .[dev]
 
-pre-commit: 
+pre-commit: ## Install pre-commit hooks
 	pre-commit install
 
-pre-commit-update:
+pre-commit-update: ## Update pre-commit hooks to latest versions
 	pre-commit autoupdate
 
-install:
-	python -m pip install  --upgrade pip setuptools
-	python -m pip install . --upgrade --upgrade-strategy eager
+# ============================================================================
+# Code Quality (via hatch)
+# ============================================================================
 
-code-format:
-	pre-commit run yapf --all-files
+.PHONY: code-format code-lint code-lint-fix code-typing code-check mdformat
 
-code-lint:
-	pre-commit run flake8 --all-files
+code-format: ## Format code with ruff
+	hatch fmt --formatter
 
-code-typing:
-	mypy --pretty trestle
+code-lint: ## Check code style with ruff (no fixes)
+	hatch fmt --linter --check
 
-test-all::
-	python -m pytest -n auto
+code-lint-fix: ## Fix code style issues with ruff
+	hatch fmt --linter
 
-test::
-	python -m pytest --exitfirst -n auto
+code-typing: ## Run mypy type checking
+	hatch run -- mypy --pretty trestle
 
-test-cov::
-	python -m pytest --cov=trestle  --exitfirst -n auto -vv --cov-report=xml --cov-fail-under=96
+code-check: code-format code-lint code-typing ## Run all code quality checks
 
-test-all-random::
-	python -m pytest --cov=trestle --cov-report=xml --random-order
+mdformat: ## Format markdown files
+	@if ! pre-commit run mdformat --all-files; then \
+		echo "mdformat failed, cleaning cache and retrying..."; \
+		pre-commit clean; \
+		pre-commit run mdformat --all-files; \
+	fi
 
-test-verbose:
-	python -m pytest  -vv -n auto
+# ============================================================================
+# Testing (via hatch test)
+# ============================================================================
 
-test-speed-measure:
-	python -m pytest -n auto --durations=30
+.PHONY: test test-all test-cov test-cov-xml test-bdist
 
-test-fast:
-	python -m pytest -n auto --exitfirst -k "not fetcher and not from_nist and not from_url"
+test: ## Run tests (stops on first failure)
+	hatch test
 
-test-bdist:: clean
-	. tests/manual_tests/test_binary.sh
+test-all: ## Run all tests in parallel
+	hatch test --all
 
+test-cov: ## Run tests with coverage report
+	hatch test --cover
 
-release::
+test-cov-xml: test-cov ## Run tests with coverage and generate XML report
+	hatch run coverage xml
+
+test-bdist: clean ## Test binary distribution (wheel install)
+	bash tests/manual_tests/test_binary.sh
+
+# ============================================================================
+# Build & Release
+# ============================================================================
+
+.PHONY: build release
+
+build: ## Build source and wheel distributions
+	hatch build
+
+release: ## Create a release (CI only)
 	git config --global user.name "semantic-release (via Github actions)"
 	git config --global user.email "semantic-release@github-actions"
 	semantic-release publish
 
-gen-oscal::
-	python ./scripts/gen_oscal.py
+# ============================================================================
+# Documentation
+# ============================================================================
 
-docs-osx-deps:
+.PHONY: docs-osx-deps docs-ubuntu-deps docs-build docs-serve docs-validate
+
+docs-osx-deps: ## Install docs dependencies on macOS
 	brew install cairo freetype libffi libjpeg libpng zlib
 
-docs-ubuntu-deps:
+docs-ubuntu-deps: ## Install docs dependencies on Ubuntu
+	sudo apt-get update
 	sudo apt-get -y install libcairo2-dev libfreetype6-dev libffi-dev libjpeg-dev libpng-dev libz-dev
 
-docs-automation::
-	python ./scripts/website_automation.py
+docs-build: docs-clean ## Build documentation site
+	hatch run docs:build
 
+docs-serve: docs-clean ## Serve documentation locally
+	hatch run docs:serve
 
-# docs validate remains using mkdocs as mike does not have a build validation tool for serving
-docs-validate:: docs-automation
-	mkdocs build -c -s
-	rm -rf site
+docs-validate: docs-clean ## Validate documentation (build + link check)
+	hatch run docs:validate
 
-docs-serve: docs-automation
-	git fetch origin gh-pages
-	mike serve	
+docs-clean: clean-tmp
 
-mdformat:
-	pre-commit run mdformat --all-files
+# ============================================================================
+# Utilities
+# ============================================================================
 
-simplified-catalog:
-	python ./scripts/simplify_retain_ac.py ./nist-content/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json ./tests/data/json/simplified_nist_catalog.json
+.PHONY: gen-oscal simplified-catalog check-for-changes clean clean-env
 
-# POSIX ONLY
-clean::
-	rm -rf build
-	rm -rf dist
-	rm -rf .pytest_cache
-	rm -rf tmp_bin_test
-	rm -rf cov_html
-	rm -rf coverage.xml
-	rm -rf .coverage*
-	rm -rf .mypy_cache
-	find . | grep -E "__pycache__|\.pyc|\.pyo" | xargs rm -rf
+gen-oscal: ## Generate OSCAL Python models from JSON schemas
+	hatch run python ./scripts/gen_oscal.py
 
-pylint:
-	pylint trestle
+simplified-catalog: ## Generate simplified NIST catalog for testing
+	hatch run python ./scripts/simplify_retain_ac.py ./nist-content/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json ./tests/data/json/simplified_nist_catalog.json
 
-pylint-test:
-	pylint tests --rcfile=.pylintrc_tests
+check-for-changes: ## Check for uncommitted changes (CI)
+	hatch run docs:automation
+	git diff --exit-code
 
-check-for-changes:
-	python scripts/have_files_changed.py -u
+clean-tmp: ## Remove tmp build artifacts and caches
+	rm -rf trestle/oscal/tmp/
+
+clean: clean-tmp ## Remove build artifacts and caches
+	rm -rf build dist .pytest_cache tmp_bin_test cov_html coverage.xml .coverage* .mypy_cache .ruff_cache site
+	find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+	find . -type f -name "*.pyc" -delete 2>/dev/null || true
+	find . -type f -name "*.pyo" -delete 2>/dev/null || true
+
+clean-env: ## Remove all hatch environments (forces dependency reinstall)
+	hatch env prune

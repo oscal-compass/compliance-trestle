@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle split command."""
+
 import argparse
 import os
 import pathlib
@@ -37,7 +38,7 @@ from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 
 
-def test_merge_invalid_element_path(testdata_dir, tmp_trestle_dir):
+def test_merge_invalid_element_path(testdata_dir, tmp_trestle_dir, keep_cwd):
     """Test to make sure each element in -e contains 2 parts at least, and no chained element paths."""
     cmd = MergeCmd()
     args = argparse.Namespace(verbose=1, element='catalog', trestle_root=tmp_trestle_dir)
@@ -57,7 +58,7 @@ def test_merge_invalid_element_path(testdata_dir, tmp_trestle_dir):
     assert cmd._run(args) == 0
 
 
-def test_merge_plan_simple_case(testdata_dir, tmp_trestle_dir):
+def test_merge_plan_simple_case(testdata_dir, tmp_trestle_dir, keep_cwd):
     """Test '$mycatalog$ trestle merge -e catalog.back-matter'."""
     # Assume we are running a command like below
     # trestle merge -e catalog.back-matter
@@ -97,7 +98,8 @@ def test_merge_plan_simple_case(testdata_dir, tmp_trestle_dir):
     # Back-matter needs to be inserted in a stripped Catalog that does NOT exclude the back-matter fields
 
     merged_catalog_type, merged_catalog_alias = ModelUtils.get_stripped_model_type(
-        catalog_file.resolve(), tmp_trestle_dir, aliases_not_to_be_stripped=['back-matter'])
+        catalog_file.resolve(), tmp_trestle_dir, aliases_not_to_be_stripped=['back-matter']
+    )
     merged_dict = stripped_catalog.__dict__
     merged_dict['back-matter'] = back_matter
     merged_catalog = merged_catalog_type(**merged_dict)
@@ -122,7 +124,7 @@ def test_merge_plan_simple_case(testdata_dir, tmp_trestle_dir):
     assert generated_plan == expected_plan
 
 
-def test_merge_expanded_metadata_into_catalog(testdata_dir, tmp_trestle_dir):
+def test_merge_expanded_metadata_into_catalog(testdata_dir, tmp_trestle_dir, keep_cwd):
     """Test '$mycatalog$ trestle merge -e catalog.metadata' when metadata is already split."""
     # Assume we are running a command like below
     # trestle merge -e catalog.back-matter
@@ -162,7 +164,8 @@ def test_merge_expanded_metadata_into_catalog(testdata_dir, tmp_trestle_dir):
 
     _, _, merged_metadata_instance = ModelUtils.load_distributed(metadata_file, tmp_trestle_dir)
     merged_catalog_type, _ = ModelUtils.get_stripped_model_type(
-        catalog_file.resolve(), tmp_trestle_dir, aliases_not_to_be_stripped=['metadata'])
+        catalog_file.resolve(), tmp_trestle_dir, aliases_not_to_be_stripped=['metadata']
+    )
     stripped_catalog_type, _ = ModelUtils.get_stripped_model_type(catalog_file, tmp_trestle_dir)
     stripped_catalog = stripped_catalog_type.oscal_read(catalog_file)
     merged_catalog_dict = stripped_catalog.__dict__
@@ -181,7 +184,7 @@ def test_merge_expanded_metadata_into_catalog(testdata_dir, tmp_trestle_dir):
     assert generated_plan == expected_plan
 
 
-def test_merge_everything_into_catalog(testdata_dir, tmp_trestle_dir):
+def test_merge_everything_into_catalog(testdata_dir, tmp_trestle_dir, keep_cwd):
     """Test '$mycatalog$ trestle merge -e catalog.*' when metadata and catalog is already split."""
     # Assume we are running a command like below
     # trestle merge -e catalog.*
@@ -228,7 +231,7 @@ def test_merge_everything_into_catalog(testdata_dir, tmp_trestle_dir):
     assert generated_plan == expected_plan
 
 
-def test_merge_everything_into_catalog_with_hidden_files_in_folders(testdata_dir, tmp_trestle_dir):
+def test_merge_everything_into_catalog_with_hidden_files_in_folders(testdata_dir, tmp_trestle_dir, keep_cwd):
     """Test trestle merge -e 'catalog.*' when metadata and catalog are split and hidden files are present."""
     # Assume we are running a command like below
     # trestle merge -e catalog.*
@@ -280,7 +283,7 @@ def test_merge_everything_into_catalog_with_hidden_files_in_folders(testdata_dir
     assert generated_plan == expected_plan
 
 
-def test_bad_merge(testdata_dir, tmp_trestle_dir):
+def test_bad_merge(testdata_dir, tmp_trestle_dir, keep_cwd):
     """Test a bad merge element path."""
     # prepare trestle project dir with the file
     test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
@@ -304,7 +307,7 @@ def test_bad_merge(testdata_dir, tmp_trestle_dir):
     assert cmd._run(args) == 1
 
 
-def test_merge_plan_simple_list(testdata_dir, tmp_trestle_dir):
+def test_merge_plan_simple_list(testdata_dir, tmp_trestle_dir, keep_cwd):
     """Test '$mycatalog$ trestle merge -e metadata.roles'."""
     # Assume we are running a command like below
     # trestle merge -e catalog.back-matter
@@ -339,13 +342,15 @@ def test_merge_plan_simple_list(testdata_dir, tmp_trestle_dir):
 
     # Back-matter model needs to be complete and if it is decomposed, needs to be merged recursively first
     roles = [
-        common.Role.oscal_read(roles_dir / '00000__role.json'), common.Role.oscal_read(roles_dir / '00001__role.json')
+        common.Role.oscal_read(roles_dir / '00000__role.json'),
+        common.Role.oscal_read(roles_dir / '00001__role.json'),
     ]
 
     # Back-matter needs to be inserted in a stripped Catalog that does NOT exclude the back-matter fields
 
     merged_metadata_type, merged_metadata_alias = ModelUtils.get_stripped_model_type(
-        metadata_file, tmp_trestle_dir, aliases_not_to_be_stripped=['roles'])
+        metadata_file, tmp_trestle_dir, aliases_not_to_be_stripped=['roles']
+    )
     merged_dict = stripped_metadata.__dict__
     merged_dict['roles'] = roles
     merged_metadata = merged_metadata_type(**merged_dict)
@@ -370,7 +375,7 @@ def test_merge_plan_simple_list(testdata_dir, tmp_trestle_dir):
     assert generated_plan == expected_plan
 
 
-def test_split_merge(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) -> None:
+def test_split_merge(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, keep_cwd) -> None:
     """Test merging data that has been split using the split command- to ensure symmetry."""
     # trestle split -f catalog.json -e catalog.groups.*.controls.*
 
@@ -400,7 +405,7 @@ def test_split_merge(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) 
         file='catalog.json',
         verbose=1,
         element='catalog.groups.*.controls.*',
-        trestle_root=tmp_trestle_dir
+        trestle_root=tmp_trestle_dir,
     )
     split = SplitCmd()._run(args)
 
@@ -430,24 +435,25 @@ def test_split_merge(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) 
         ('catalogs/mycatalog', True, 'catalog.groups.*.controls.*', 'catalog.*', False),
         ('', False, 'catalog.groups.*.controls.*', 'catalog.*', True),
         ('catalogs', False, 'catalog.groups.*.controls.*', 'catalog.*', True),
-        ('catalogs/mycatalog', True, 'catalog.groups.*.controls.*', 'catalog.*', True)
+        ('catalogs/mycatalog', True, 'catalog.groups.*.controls.*', 'catalog.*', True),
     ],
     ids=[
         'In expected working directory',
         'In expected, using absolute paths',
         'out of expected relative paths using trestle root',
         'out of expected using something other than trestle root',
-        'out of expected absolute paths'
-    ]
+        'out of expected absolute paths',
+    ],
 )
 def test_split_merge_out_of_context(
     testdata_dir,
     tmp_trestle_dir,
+    keep_cwd,
     rel_context_dir: str,
     use_absolutes: bool,
     split_elem: str,
     merge_elem: str,
-    use_effective_cwd: bool
+    use_effective_cwd: bool,
 ):
     """Test merging data that has been split using the split command- to ensure symmetry."""
     # trestle split -f catalog.json -e catalog.groups.*.controls.*
@@ -505,7 +511,7 @@ def test_split_merge_out_of_context(
 
 
 def test_merge_deletes_folders(
-    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, keep_cwd, monkeypatch: MonkeyPatch
 ) -> None:
     """Test merge all components deletes empty folders."""
     catalog = testdata_dir / 'json/minimal_catalog_with_groups.json'

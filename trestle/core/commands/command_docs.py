@@ -43,7 +43,7 @@ class CommandBase(Command):
         parent: Optional[Command] = None,
         name: Optional[str] = None,
         out: Optional[TextIO] = None,
-        err: Optional[TextIO] = None
+        err: Optional[TextIO] = None,
     ) -> None:
         """Override default ILCLI behaviour to include class documentation in command help description."""
         super(CommandBase, self).__init__(parser, parent, name, out, err)
@@ -59,12 +59,12 @@ class CommandPlusDocs(CommandBase):
 
     def _validate_arguments(self, args: argparse.ArgumentParser) -> int:
         """Check trestle-root argument is a valid trestle root directory."""
-        root = file_utils.extract_trestle_project_root(args.trestle_root)  # type: ignore
+        root = file_utils.extract_trestle_project_root(args.trestle_root)
         if root is None:
             logger.error(f'Given directory {args.trestle_root} is not in a valid trestle root directory')
             return CmdReturnCodes.TRESTLE_ROOT_ERROR.value
-        is_oscal_dir_valid = file_utils.check_oscal_directories(args.trestle_root)  # type: ignore
+        is_oscal_dir_valid = file_utils.check_oscal_directories(args.trestle_root)
         if not is_oscal_dir_valid:
             return CmdReturnCodes.TRESTLE_ROOT_ERROR.value
-        args.trestle_root = root  # type: ignore
+        args.trestle_root = root
         return CmdReturnCodes.SUCCESS.value

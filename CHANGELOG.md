@@ -2020,7 +2020,7 @@ Signed-off-by: Lou DeGenaro &lt;lou.degenaro@gmail.com&gt; ([`7397105`](https://
 
 * docs: updates communication details in README.md
 
-This is a seperate meeting/communication channel
+This is a separate meeting/communication channel
 from the Compliance WG adding new meeting details and slack channel
 
 Signed-off-by: Jennifer Power &lt;barnabei.jennifer@gmail.com&gt;
@@ -10334,9 +10334,9 @@ Trestle release ([`7e8292d`](https://github.com/oscal-compass/compliance-trestle
 
 ### Chore
 
-* chore: Accomodate forked repos by separating sonarqube quality gate (#791)
+* chore: Accommodate forked repos by separating sonarqube quality gate (#791)
 
-* chore: Accomodate forked repos by separting sonarqube quality gate
+* chore: Accommodate forked repos by separting sonarqube quality gate
 
 Signed-off-by: Chris Butler &lt;chris@thebutlers.me&gt;
 
