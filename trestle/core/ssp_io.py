@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Handle direct IO for writing SSP responses as markdown."""
+
 import logging
 import pathlib
 from typing import Dict, List, Optional, Tuple
@@ -32,7 +33,7 @@ from trestle.oscal.catalog import Catalog
 logger = logging.getLogger(__name__)
 
 
-class SSPMarkdownWriter():
+class SSPMarkdownWriter:
     """
     Class to write control responses as markdown.
 
@@ -138,9 +139,10 @@ class SSPMarkdownWriter():
 
                     # dictionary to md table
                     md_list = self._write_table_with_header(
-                        'Responsible Roles.', [[key, role_titles[key]] for key in role_titles.keys()],
+                        'Responsible Roles.',
+                        [[key, role_titles[key]] for key in role_titles.keys()],
                         ['Role ID', 'Title'],
-                        level
+                        level,
                     )
                     return md_list
                 else:
@@ -220,7 +222,7 @@ class SSPMarkdownWriter():
         show_rules: bool,
         show_status: bool,
         show_comp: bool,
-        level: int
+        level: int,
     ) -> None:
         if comp_name and show_comp:
             header = f'Component: {comp_name}'
@@ -243,7 +245,7 @@ class SSPMarkdownWriter():
         write_empty_responses: bool = False,
         show_comp: bool = True,
         show_rules: bool = False,
-        show_status: bool = True
+        show_status: bool = True,
     ) -> str:
         """
         Get the full control implemented requirements, broken down based on the available control responses.
@@ -311,8 +313,9 @@ class SSPMarkdownWriter():
 
         return tree.content.raw_text
 
-    def _get_responses_by_components(self, has_bycomps: TypeWithByComps,
-                                     write_empty_responses: bool) -> Dict[str, Tuple[str, List[str], str]]:
+    def _get_responses_by_components(
+        self, has_bycomps: TypeWithByComps, write_empty_responses: bool
+    ) -> Dict[str, Tuple[str, List[str], str]]:
         """Get response per component, substitute component id with title if possible."""
         response_per_component: Dict[str, Tuple[str, str]] = {}
         for by_comp in as_list(has_bycomps.by_components):  # type: ignore

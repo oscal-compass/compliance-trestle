@@ -30,7 +30,7 @@ from trestle.tasks.base_task import TaskOutcome
 root_dir = TEST_DIR / '../'
 
 
-class MonkeyBusiness():
+class MonkeyBusiness:
     """Monkey business."""
 
     def uuid_mock1(self):

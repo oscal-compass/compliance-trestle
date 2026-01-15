@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """OSCAL transformation tasks."""
+
 import configparser
 import csv
 import datetime
@@ -392,7 +393,7 @@ class CombineHelper:
         kvset: Dict,
         section_no: str,
         recommendation_no: str,
-        rec_count_merged: Int
+        rec_count_merged: Int,
     ) -> None:
         """Handle data row control."""
         profiles = kvset[CombineHelper.tgt_col_profile]
@@ -423,7 +424,7 @@ class CombineHelper:
         kvset: Dict,
         section_no: str,
         recommendation_no: str,
-        rec_count_merged: Int
+        rec_count_merged: Int,
     ) -> None:
         """Handle data row."""
         if recommendation_no:
@@ -622,7 +623,7 @@ class CisControlsHelper:
                     'description': description,
                     'control-version': control_version,
                     'control-id': control_id,
-                    'title': title
+                    'title': title,
                 }
                 yield ctl
 
@@ -960,6 +961,6 @@ class CsvToJsonHelper:
         self.config_object['title'] = self.config_object['benchmark-title']
         self.config_object['version'] = self.config_object['benchmark-version']
 
-    def run(self) -> None:
+    def run(self) -> TaskOutcome:
         """Run."""
         return self.csv_to_oscal_cd.execute()

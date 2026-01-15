@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle Init Command."""
+
 import argparse
 import logging
 import pathlib
@@ -38,7 +39,6 @@ class InitCmd(CommandBase):
     name = 'init'
 
     def _init_arguments(self) -> None:
-
         self.add_argument(const.INIT_FULL_SHORT, const.INIT_FULL_LONG, help=const.INIT_FULL_HELP, action='store_true')
         self.add_argument(
             const.INIT_LOCAL_SHORT, const.INIT_LOCAL_LONG, help=const.INIT_LOCAL_HELP, action='store_true'

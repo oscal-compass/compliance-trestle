@@ -91,17 +91,14 @@ def test_import_validation_fail(tmp_trestle_dir: pathlib.Path) -> None:
             'title': 'Generic catalog created by trestle.',
             'last-modified': '2020-12-11T02:04:51.053+00:00',
             'version': '0.0.0',
-            'oscal-version': oscal.OSCAL_VERSION
+            'oscal-version': oscal.OSCAL_VERSION,
         },
         'back-matter': {
             'resources': [
-                {
-                    'uuid': 'b1101385-9e36-44a3-ba03-98b6ebe0a367'
-                }, {
-                    'uuid': 'b1101385-9e36-44a3-ba03-98b6ebe0a367'
-                }
+                {'uuid': 'b1101385-9e36-44a3-ba03-98b6ebe0a367'},
+                {'uuid': 'b1101385-9e36-44a3-ba03-98b6ebe0a367'},
             ]
-        }
+        },
     }
     catalog_data = parser.parse_dict(dup_cat, 'trestle.oscal.catalog.Catalog')
 

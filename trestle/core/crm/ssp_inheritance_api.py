@@ -32,7 +32,7 @@ from trestle.core.remote.cache import FetcherFactory
 logger = logging.getLogger(__name__)
 
 
-class SSPInheritanceAPI():
+class SSPInheritanceAPI:
     """API for updating inheritance information in SSPs through inheritance markdown."""
 
     def __init__(self, inheritance_md_path: pathlib.Path, trestle_root: pathlib.Path) -> None:
@@ -131,7 +131,7 @@ class SSPInheritanceAPI():
         ssp: ossp.SystemSecurityPlan,
         leveraged_ssp: ossp.SystemSecurityPlan,
         leveraged_components: List[str],
-        leveraged_auth: ossp.LeveragedAuthorization
+        leveraged_auth: ossp.LeveragedAuthorization,
     ) -> None:
         """Reconcile components in the leveraging SSP with those in the leveraged SSP."""
         mapped_components: Dict[str, ossp.SystemComponent] = {}
@@ -178,7 +178,7 @@ class SSPInheritanceAPI():
         new_comp.props = [
             common.Property(name=const.IMPLEMENTATION_POINT, value=const.IMPLEMENTATION_POINT_EXTERNAL),
             common.Property(name=const.LEV_AUTH_UUID, value=leveraged_auth_id),
-            common.Property(name=const.INHERITED_UUID, value=original_comp.uuid)
+            common.Property(name=const.INHERITED_UUID, value=original_comp.uuid),
         ]
 
     def _leveraged_auth_from_existing(
