@@ -46,7 +46,7 @@ logger = logging.getLogger(__name__)
 TG = TypeVar('TG', bound=OscalBaseModel)
 
 sample_base64_value = 0
-sample_base64 = Base64(filename=const.REPLACE_ME, **{'media-type':const.REPLACE_ME}, value=sample_base64_value)
+sample_base64 = Base64(filename=const.REPLACE_ME, **{'media-type': const.REPLACE_ME}, value=sample_base64_value)
 type_base64 = type(sample_base64)
 
 sample_date_value = '2400-02-29'
@@ -99,7 +99,7 @@ def is_enum_observation_type_valid_value(type_: type) -> bool:
     return rval
 
 
-def generate_sample_value_by_type(type_: type, field_name: str) -> Union[datetime, bool, int, str, float, Enum , Base64]:
+def generate_sample_value_by_type(type_: type, field_name: str) -> Union[datetime, bool, int, str, float, Enum, Base64]:
     """Given a type, return sample value.
 
     Includes the Optional use of passing down a parent_model
@@ -127,9 +127,9 @@ def generate_sample_value_by_type(type_: type, field_name: str) -> Union[datetim
         if 'uuid' == field_name:
             return str(uuid.uuid4())
         # some things like location_uuid in lists arrive here with field_name=''
-        if type_.regex and type_.regex.pattern.startswith('^[0-9A-Fa-f]{8}'):    
+        if type_.regex and type_.regex.pattern.startswith('^[0-9A-Fa-f]{8}'):
             return const.SAMPLE_UUID_STR
-        if field_name == 'date_authorized': 
+        if field_name == 'date_authorized':
             return str(date.today().isoformat())
         if field_name == 'oscal_version':
             return OSCAL_VERSION
@@ -141,7 +141,7 @@ def generate_sample_value_by_type(type_: type, field_name: str) -> Union[datetim
         return const.REPLACE_ME
     if hasattr(type_, '__name__') and 'ConstrainedIntValue' in type_.__name__:
         # create an int value as close to the floor as possible does not test upper bound
-        multiple = type_.multiple_of if type_.multiple_of else 1 # default to every integer
+        multiple = type_.multiple_of if type_.multiple_of else 1  # default to every integer
         # this command is a bit of a problem
         floor = type_.ge if type_.ge else 0
         floor = type_.gt + 1 if type_.gt else floor
@@ -165,7 +165,7 @@ def generate_sample_value_by_type(type_: type, field_name: str) -> Union[datetim
     # default to empty dict for dict types, string for anything else
     if type_ is dict:
         return {}  # type: ignore[return-value]
-    return const.REPLACE_ME 
+    return const.REPLACE_ME
 
 
 def is_by_type(model_type: Union[Type[TG], List[TG], Dict[str, TG]]) -> bool:
@@ -197,12 +197,12 @@ def generate_sample_model(
 
     model_type = model
     # This block normalizes model type down to
-    if utils.is_collection_field_type(model):  
-        model_type = utils.get_origin(model)  
-        model = utils.get_inner_type(model)  
-    model = cast(TG, model) 
+    if utils.is_collection_field_type(model):
+        model_type = utils.get_origin(model)
+        model = utils.get_inner_type(model)
+    model = cast(TG, model)
 
-    model_dict = {}  
+    model_dict = {}
     # this block is needed to avoid situations where an inbuilt is inside a list / dict.
     # the only time dict ever appears is with include_all, which is handled specially
     # the only type of collection possible after OSCAL 1.0.0 is list
