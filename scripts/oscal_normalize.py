@@ -296,6 +296,9 @@ class ClassText:
         # add refs found in optional unions
         p = re.compile(r'.*Optional\[Union\[([^,]+)')
         self.add_ref_pattern(p, line)
+        # add refs found in for "Algorithm"
+        if ' Algorithm ' in line:
+            self.add_ref_if_good('Algorithm')
         return line
 
     def find_direct_refs(self, class_names_list):
@@ -757,6 +760,7 @@ def write_oscal(classes, forward_refs, fstem):
 additions = {
     'assessment_plan': [
         'from trestle.oscal.common import RelatedObservation',
+        'from trestle.oscal.common import StringDatatype',
         'from trestle.oscal.common import SystemComponent',
         'from trestle.oscal.common import TaskValidValues',
         'from trestle.oscal.common import TokenDatatype',
@@ -765,21 +769,29 @@ additions = {
         'from trestle.oscal.common import AssessmentAssets',
         'from trestle.oscal.common import Observation',
         'from trestle.oscal.common import RelatedObservation',
+        'from trestle.oscal.common import StringDatatype',
         'from trestle.oscal.common import SystemComponent',
         'from trestle.oscal.common import TaskValidValues',
         'from trestle.oscal.common import TokenDatatype',
     ],
-    'catalog': [],
+    'catalog': ['from trestle.oscal.common import StringDatatype'],
     'common': [],
-    'component': ['from trestle.oscal.common import URIReferenceDatatype'],
+    'component': [
+        'from trestle.oscal.common import StringDatatype',
+        'from trestle.oscal.common import URIReferenceDatatype',
+    ],
     'poam': [
         'from trestle.oscal.common import RelatedObservation',
+        'from trestle.oscal.common import StringDatatype',
         'from trestle.oscal.common import TaskValidValues',
         'from trestle.oscal.common import TokenDatatype',
         'from trestle.oscal.common import RelatedObservation as RelatedObservation1',
     ],
-    'profile': [],
-    'ssp': ['from trestle.oscal.common import Status, SystemComponent'],
+    'profile': ['from trestle.oscal.common import StringDatatype'],
+    'ssp': [
+        'from trestle.oscal.common import StringDatatype',
+        'from trestle.oscal.common import Status, SystemComponent',
+    ],
 }
 
 

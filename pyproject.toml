@@ -84,7 +84,7 @@ dev = [
     "pre-commit>=2.4.0",
     "python-semantic-release>=10.4.0",
     "pylint",
-    "datamodel-code-generator[http] == 0.36.0",
+    "datamodel-code-generator[http]",
     "gitpython",
 ]
 
