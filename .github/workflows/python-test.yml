@@ -46,7 +46,7 @@ jobs:
           ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-
     - name: Install tools
       run: |
-        pip install hatch pre-commit
+        make develop
     - name: Setup pre-commit
       run: |
         make pre-commit
@@ -140,8 +140,7 @@ jobs:
           ${{ matrix.os }}-${{ matrix.python-version }}-hatch-
     - name: Install hatch
       run: |
-        pip install hatch
-    
+        make develop
     - name: gen OSCAL models
       run: |
         make gen-oscal
