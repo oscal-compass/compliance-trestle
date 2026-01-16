@@ -105,6 +105,49 @@ jobs:
       run: |
         make test-bdist
 
+  test-with-codegen:
+    needs: set-versions
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: [ '${{ needs.set-versions.outputs.max }}' ]
+        include:
+        - os: ubuntu-latest
+          pip-cache: ~/.cache/pip
+          hatch-cache: ~/.cache/hatch
+          hatch-data: ~/.local/share/hatch
+    steps:
+    - name: Don't mess with line endings
+      run: |
+        git config --global core.autocrlf false
+    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      with:
+        fetch-depth: 0
+        submodules: true
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
+      with:
+        python-version: ${{ matrix.python-version }}
+    - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+      with:
+        path: |
+          ${{ matrix.pip-cache }}
+          ${{ matrix.hatch-cache }}
+          ${{ matrix.hatch-data }}
+        key: ${{ matrix.os }}-${{ matrix.python-version }}-hatch-${{ hashFiles('pyproject.toml') }}
+        restore-keys: |
+          ${{ matrix.os }}-${{ matrix.python-version }}-hatch-
+    - name: Install hatch
+      run: |
+        pip install hatch
+    
+    - name: gen OSCAL models
+      run: |
+        make gen-oscal
+    - name: Run tests
+      run: |
+        hatch test -py ${{ matrix.python-version }}
   test:
     # This test
     needs: set-versions
