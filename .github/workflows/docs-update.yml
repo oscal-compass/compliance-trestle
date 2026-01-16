@@ -8,6 +8,9 @@ on:
     tags:
     - v*
 permissions: read-all
+concurrency:
+  group: docs-${{ github.sha }}  # Don't double up when tags are on develop
+  cancel-in-progress: false
 jobs:
   set-versions:
     runs-on: ubuntu-latest
