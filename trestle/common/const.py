@@ -337,6 +337,12 @@ HELP_INCLUDE_ALL_PARTS = (
     + ' By default, only controls and parts with an attached rule will be written out.'
 )
 
+HELP_ALL_CONTROLS = (
+    'Include all controls from component definitions when generating SSP markdown, '
+    + 'even those without associated rules. By default, only controls with at least one '
+    + 'attached rule are included in the output.'
+)
+
 FILTER_BY_PROFILE = 'filter-by-profile'
 
 FILTER_BY_COMPONENTS = 'filter-by-components'

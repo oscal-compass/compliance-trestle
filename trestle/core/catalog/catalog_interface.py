@@ -851,7 +851,7 @@ class CatalogInterface:
             rule_props.extend(ci_rules_props)
             rule_props.extend(ir_props)
             rule_props = ControlInterface.clean_props(rule_props, remove_imp_status=False)
-            if control_rules:
+            if control_rules or context.all_controls:
                 status = ControlInterface.get_status_from_props(imp_req)
                 final_props = ControlInterface.cull_props_by_rules(rule_props, control_rules)
                 comp_info = ComponentImpInfo(imp_req.description, control_rules, final_props, status)
