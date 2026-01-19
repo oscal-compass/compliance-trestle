@@ -379,7 +379,19 @@ class ControlInterface:
             a Parameter with param_id and content from the SetParameter
         """
         return common.Parameter(
-            id=param_id, values=set_param.values, select=set_param.select, label=set_param.label, props=set_param.props
+            id=param_id,
+            values=set_param.values,
+            select=set_param.select,
+            label=set_param.label,
+            props=set_param.props,
+            **{
+                'class': None,
+                'depends-on': None,
+                'links': None,
+                'usage': None,
+                'constraints': None,
+                'guidelines': None,
+            },
         )
 
     @staticmethod
@@ -1097,7 +1109,12 @@ class ControlInterface:
     @staticmethod
     def _status_as_prop(status: common.ImplementationStatus) -> common.Property:
         """Convert status to property."""
-        return common.Property(name=const.IMPLEMENTATION_STATUS, value=status.state, remarks=status.remarks)
+        return common.Property(
+            name=const.IMPLEMENTATION_STATUS,
+            value=status.state,
+            remarks=status.remarks,
+            **{'uuid': None, 'ns': None, 'class': None, 'group': None},
+        )
 
     @staticmethod
     def _prop_as_status(prop: common.Property) -> common.ImplementationStatus:
