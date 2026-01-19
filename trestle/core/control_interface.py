@@ -109,7 +109,7 @@ class ControlInterface:
     """Class to interact with controls in memory."""
 
     @staticmethod
-    def _wrap_label(label: str):
+    def _wrap_label(label: str) -> str:
         l_side = r'\['
         r_side = r'\]'
         wrapped = '' if label == '' else f'{l_side}{label}{r_side}'
@@ -152,7 +152,7 @@ class ControlInterface:
     def _find_section_info(part: common.Part, skip_section_list: List[str]) -> Tuple[str, str, str]:
         """Find section not in list."""
         if part.prose and part.name not in skip_section_list:
-            return part.id, part.name, part.title
+            return part.id or '', part.name or '', part.title or ''
         if part.parts:
             for sub_part in part.parts:
                 id_, name, title = ControlInterface._find_section_info(sub_part, skip_section_list)
@@ -239,11 +239,11 @@ class ControlInterface:
         """Find the statement id in the control."""
         for part in as_list(control.parts):
             if part.name == const.STATEMENT:
-                return part.id
+                return part.id or ''
         return ControlInterface.create_statement_id(control.id)
 
     @staticmethod
-    def get_sort_id(control: cat.Control, allow_none=False) -> Optional[str]:
+    def get_sort_id(control: cat.Control, allow_none: bool = False) -> Optional[str]:
         """Get the sort-id for the control."""
         for prop in as_list(control.props):
             if prop.name == const.SORT_ID:
@@ -274,7 +274,7 @@ class ControlInterface:
         For a part in a control find the parts in it that match the item_type
         Return list of string formatted labels and associated descriptive prose
         """
-        items = []
+        items: List[Union[str, List[str]]] = []
         if part.name in [const.STATEMENT, item_type]:
             # the options here are to force the label to be the part.id or the part.label
             # the label may be of the form (a) while the part.id is ac-1_smt.a.1.a
@@ -460,7 +460,7 @@ class ControlInterface:
         return comp_rules, sorted(statement_rules), rule_props
 
     @staticmethod
-    def get_params_dict_from_item(item: TypeWithProps) -> Tuple[Dict[str, Dict[str, str]], List[common.Property]]:
+    def get_params_dict_from_item(item: TypeWithProps) -> Tuple[Dict[str, List[Dict[str, str]]], List[common.Property]]:
         """Get all params found in this item with rule_id as key."""
         # id, description, options - where options is a string containing comma-sep list of items
         # params is dict with rule_id as key and value contains: param_name, description and choices
@@ -471,34 +471,37 @@ class ControlInterface:
                 rule_id = prop.remarks
                 param_name = prop.value
                 # rule already exists in parameters dict
-                if rule_id in params.keys():
-                    existing_param = next((prm for prm in params[rule_id] if prm['name'] == param_name), None)
-                    if existing_param is not None:
-                        raise TrestleError(f'Param id for rule {rule_id} already exists')
+                if rule_id is not None:
+                    if rule_id in params.keys():
+                        existing_param = next((prm for prm in params[rule_id] if prm['name'] == param_name), None)
+                        if existing_param is not None:
+                            raise TrestleError(f'Param id for rule {rule_id} already exists')
+                        else:
+                            # append a new parameter for the current rule
+                            params[rule_id].append({'name': param_name})
                     else:
-                        # append a new parameter for the current rule
-                        params[rule_id].append({'name': param_name})
-                else:
-                    # create new param for this rule for the first parameter
-                    params[rule_id] = [{'name': param_name}]
-                props.append(prop)
+                        # create new param for this rule for the first parameter
+                        params[rule_id] = [{'name': param_name}]
+                        props.append(prop)
             elif const.PARAMETER_DESCRIPTION in prop.name:
                 rule_id = prop.remarks
                 if rule_id in params:
                     param = next((prm for prm in params[rule_id] if prm['name'] == param_name), None)
-                    param['description'] = prop.value
-                    props.append(prop)
-                else:
-                    raise TrestleError(f'Param description for rule {rule_id} found with no param_id')
+                    if param is not None:
+                        param['description'] = prop.value
+                        props.append(prop)
+                    else:
+                        raise TrestleError(f'Param description for rule {rule_id} found with no param_id')
             elif const.PARAMETER_VALUE_ALTERNATIVES in prop.name:
                 rule_id = prop.remarks
                 if rule_id in params:
                     param = next((prm for prm in params[rule_id] if prm['name'] == param_name), None)
-                    param['options'] = prop.value
-                    props.append(prop)
-                else:
-                    raise TrestleError(f'Param options for rule {rule_id} found with no param_id')
-        new_params = {}
+                    if param is not None:
+                        param['options'] = prop.value
+                        props.append(prop)
+                    else:
+                        raise TrestleError(f'Param options for rule {rule_id} found with no param_id')
+        new_params: dict[str, list[dict[str, str]]] = {}
         for rule_id, rule_params in params.items():
             new_params[rule_id] = []
             for param in rule_params:
@@ -513,7 +516,7 @@ class ControlInterface:
     @staticmethod
     def get_rules_and_params_dict_from_item(
         item: TypeWithProps,
-    ) -> Tuple[Dict[str, Dict[str, str]], Dict[str, Dict[str, str]], List[common.Property]]:
+    ) -> Tuple[Dict[str, Dict[str, str]], Dict[str, List[Dict[str, str]]], List[common.Property]]:
         """Get the rule dict and params dict from item with props."""
         rules_dict, rules_props = ControlInterface.get_rules_dict_from_item(item)
         params_dict, params_props = ControlInterface.get_params_dict_from_item(item)
@@ -525,8 +528,9 @@ class ControlInterface:
         item: Union[comp.ControlImplementation, comp.ImplementedRequirement],
     ) -> Dict[str, comp.SetParameter]:
         """Get set params that have values from control implementation or imp req."""
-        return {
-            set_param.param_id: set_param for set_param in as_filtered_list(item.set_parameters, lambda i: i.values)
+        return {  # Mypy incorrectly infers return type despite correct signature - bug with dict comprehension
+            set_param.param_id: set_param
+            for set_param in as_filtered_list(item.set_parameters, lambda i: i.values)  # type: ignore[return-value]
         }
 
     @staticmethod
@@ -535,7 +539,7 @@ class ControlInterface:
     ) -> List[common.Property]:
         """Merge a source list of properties into a destination list."""
         if not src:
-            return dest
+            return dest if dest is not None else []
         new_props: List[common.Property] = []
         src_map = {prop.name: prop for prop in src}
         dest_map = {prop.name: prop for prop in dest}
@@ -657,7 +661,7 @@ class ControlInterface:
         return as_list(param.values)
 
     @staticmethod
-    def _param_values_as_str(param: common.Parameter, brackets=False) -> Optional[str]:
+    def _param_values_as_str(param: common.Parameter, brackets: bool = False) -> Optional[str]:
         """Convert param values to string with optional brackets."""
         if not param.values:
             return None
@@ -829,15 +833,18 @@ class ControlInterface:
         Reject matches where the string has an adjacent alphanumeric char: param_1 and param_10 or aparam_1
         """
         for param in param_dict.values():
-            if param.id not in prose:
+            param_id = param.id
+            if param_id is None:  # Check if None
+                continue
+            if param_id not in prose:  # Now mypy knows param_id is str
                 continue
             # create the replacement text for the param_id
             param_str = ControlInterface.param_to_str(
                 param, param_rep, False, False, params_format, value_assigned_prefix, value_not_assigned_prefix
             )
             # non-capturing groups are odd in re.sub so capture all 3 groups and replace the middle one
-            pattern = r'(^|[^a-zA-Z0-9_])' + param.id + r'($|[^a-zA-Z0-9_])'
-            prose = re.sub(pattern, r'\1' + param_str + r'\2', prose)
+            pattern = r'(^|[^a-zA-Z0-9_])' + param_id + r'($|[^a-zA-Z0-9_])'
+            prose = re.sub(pattern, r'\1' + param_str + r'\2', prose)  # type: ignore[operator]
         return prose
 
     @staticmethod
@@ -1165,7 +1172,7 @@ class ControlInterface:
             have the same source and specify the same control
         """
         for control_imp in as_list(component.control_implementations):
-            _, control_imp_param_dict, _ = ControlInterface.get_rules_and_params_dict_from_item(control_imp)
+            _, control_imp_param_dict, _ = ControlInterface.get_rules_and_params_dict_from_item(control_imp)  # type: ignore
             control_imp_rule_param_ids = [
                 param['name'] for params in control_imp_param_dict.values() for param in params
             ]
@@ -1206,7 +1213,7 @@ class ControlInterface:
                         continue
                     imp_req.set_parameters = as_list(imp_req.set_parameters)
                     imp_req.set_parameters.append(
-                        comp.SetParameter(param_id=set_param.param_id, values=set_param.values)
+                        comp.SetParameter(**{'param_id': set_param.param_id}, values=set_param.values)
                     )
                 new_statements: List[comp.Statement] = []
                 for statement in as_list(new_imp_req.statements):
