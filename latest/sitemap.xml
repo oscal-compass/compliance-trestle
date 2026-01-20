@@ -2,618 +2,618 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/demos/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/installation/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/known_limitations/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/license/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/contributing/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/contributing/DCO/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/contributing/code_of_conduct/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/contributing/github_actions_setup/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/contributing/maintainers/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/contributing/oscal_object_model/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/contributing/plugins/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/contributing/website/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/plugins/fedramp/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/third-party-result-schema-IBM-SCC/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/cli/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/common/common_types/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/common/const/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/common/err/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/common/file_utils/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/common/list_utils/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/common/load_validate/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/common/log/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/common/model_utils/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/common/str_utils/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/common/trash/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/common/type_utils/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/all_validator/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/base_model/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/catalog_validator/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/control_context/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/control_interface/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/control_reader/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/control_writer/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/docs_control_writer/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/draw_io/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/duplicates_validator/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/generators/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/generic_oscal/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/links_validator/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/object_factory/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/parser/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/pipeline/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/plugins/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/profile_resolver/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/refs_validator/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/repository/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/rule_parameters_validator/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/ssp_io/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/trestle_base_model/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/validator/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/validator_factory/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/catalog/catalog_api/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/catalog/catalog_interface/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/catalog/catalog_merger/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/catalog/catalog_reader/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/catalog/catalog_writer/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/commands/add/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/commands/assemble/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/commands/command_docs/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/commands/create/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/commands/describe/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/commands/href/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/commands/import_/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/commands/init/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/commands/merge/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/commands/partial_object_validate/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/commands/remove/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/commands/replicate/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/commands/split/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/commands/task/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/commands/validate/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/commands/version/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/commands/author/catalog/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/commands/author/command/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/commands/author/common/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/commands/author/component/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/commands/author/consts/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/commands/author/docs/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/commands/author/folders/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/commands/author/headers/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/commands/author/jinja/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/commands/author/prof/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/commands/author/ssp/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/commands/author/versioning/template_versioning/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/commands/common/cmd_utils/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/commands/common/return_codes/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/crm/bycomp_interface/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/crm/export_reader/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/crm/export_writer/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/crm/leveraged_statements/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/crm/ssp_inheritance_api/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/jinja/base/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/jinja/ext/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/jinja/filters/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/jinja/tags/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/markdown/base_markdown_node/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/markdown/control_markdown_node/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/markdown/docs_markdown_node/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/markdown/markdown_api/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/markdown/markdown_const/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/markdown/markdown_processor/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/markdown/markdown_validator/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/markdown/md_writer/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/models/actions/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/models/elements/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/models/file_content_type/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/models/interfaces/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/models/plans/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/remote/cache/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/resolver/merge/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/resolver/modify/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/core/resolver/prune/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/oscal/assessment_plan/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/oscal/assessment_results/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/oscal/catalog/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/oscal/common/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/oscal/component/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/oscal/poam/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/oscal/profile/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/oscal/ssp/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/tasks/base_task/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/tasks/cis_xlsx_to_oscal_catalog/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/tasks/cis_xlsx_to_oscal_cd/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/tasks/csv_to_oscal_cd/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/tasks/ocp4_cis_profile_to_oscal_catalog/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/tasks/ocp4_cis_profile_to_oscal_cd/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/tasks/oscal_catalog_to_csv/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/tasks/oscal_profile_to_osco_profile/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/tasks/osco_result_to_oscal_ar/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/tasks/tanium_result_to_oscal_ar/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/tasks/transform/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/tasks/xccdf_result_to_oscal_ar/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/tasks/xlsx_helper/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/tasks/xlsx_to_oscal_cd/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/tasks/xlsx_to_oscal_profile/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/transforms/results/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/transforms/transformer_factory/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/transforms/transformer_helper/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/transforms/transformer_singleton/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/transforms/implementations/osco/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/transforms/implementations/tanium/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/transforms/implementations/xccdf/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/tutorials/cli/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/tutorials/compliance_posture/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/tutorials/introduction_to_trestle/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/tutorials/Transformers_and_Tasks/OCP4_CIS_profile_to_oscal_catalog/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/tutorials/Transformers_and_Tasks/OCP4_CIS_profile_to_oscal_cd/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/tutorials/Transformers_and_Tasks/Tanium_result_to_oscal_ar/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/tutorials/Transformers_and_Tasks/csv_to_oscal_cd/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/tutorials/Transformers_and_Tasks/transformer_construction/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/tutorials/Trestle_authoring/ssp_profile_catalog_authoring/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/tutorials/Trestle_authoring/trestle_author/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/tutorials/Trestle_authoring/trestle_author_jinja/</loc>
-         <lastmod>2026-01-16</lastmod>
+         <lastmod>2026-01-20</lastmod>
     </url>
 </urlset>
