@@ -739,42 +739,79 @@ class XlsxToOscalPoam(TaskBase):
         logger.info('')
         logger.info('Purpose: Transform POAM spreadsheet to OSCAL POAM JSON format.')
         logger.info('')
-        logger.info('Configuration flags:')
-        logger.info('  xlsx-file      = (required) Path to POAM spreadsheet file')
-        logger.info('  output-dir     = (required) Output directory for POAM JSON file')
-        logger.info('  title          = (required) Title for the POAM')
-        logger.info('  version        = (required) Version of the POAM')
-        logger.info('  work-sheet-name= (optional) Worksheet name (default: "Open POA&M Items")')
-        logger.info('  system-id      = (optional) System identifier')
-        logger.info('  output-overwrite = (optional) Overwrite existing output (default: true)')
-        logger.info('  validate-required-fields = (optional) Validation mode: on/warn/off (default: warn)')
-        logger.info('  quiet          = (optional) Suppress info messages (default: false)')
+        logger.info(f'Configuration flags sit under [task.{self.name}]:')
+        text1 = '  xlsx-file                = '
+        text2 = '(required) the path of the POAM spreadsheet file.'
+        logger.info(text1 + text2)
+        text1 = '  work-sheet-name          = '
+        text2 = '(optional) the name of the work sheet in the spreadsheet file (default: "Open POA&M Items").'
+        logger.info(text1 + text2)
+        text1 = '  output-dir               = '
+        text2 = '(required) the path of the output directory for synthesized OSCAL POAM .json file.'
+        logger.info(text1 + text2)
+        text1 = '  title                    = '
+        text2 = '(required) the title for the POAM.'
+        logger.info(text1 + text2)
+        text1 = '  version                  = '
+        text2 = '(required) the version of the POAM.'
+        logger.info(text1 + text2)
+        text1 = '  system-id                = '
+        text2 = '(optional) the system identifier.'
+        logger.info(text1 + text2)
+        text1 = '  output-overwrite         = '
+        text2 = '(optional) true [default] or false; replace existing output when true.'
+        logger.info(text1 + text2)
+        text1 = '  validate-required-fields = '
+        text2 = '(optional) validation mode for required fields: on, warn [default], or off.'
+        logger.info(text1 + text2)
+        text1 = '  quiet                    = '
+        text2 = '(optional) true or false [default]; suppress info messages when true.'
+        logger.info(text1 + text2)
         logger.info('')
         logger.info('Expected columns in spreadsheet:')
-        logger.info('  Required columns:')
-        logger.info('    - POAM ID')
-        logger.info('    - Weakness Name')
-        logger.info('    - Weakness Description')
-        logger.info('    - Controls')
-        logger.info('  Optional columns:')
-        logger.info('    - Weakness Detector Source')
-        logger.info('    - Weakness Source Identifier')
-        logger.info('    - Asset Identifier')
-        logger.info('    - Point of Contact')
-        logger.info('    - Resources Required')
-        logger.info('    - Overall Remediation Plan')
-        logger.info('    - Original Detection Date')
-        logger.info('    - Scheduled Completion Date')
-        logger.info('    - Planned Milestones')
-        logger.info('    - Original Risk Rating')
-        logger.info('    - Adjusted Risk Rating')
-        logger.info('    - Risk Adjustment')
-        logger.info('    - False Positive')
-        logger.info('    - Operational Requirement')
-        logger.info('    - Deviation Rationale')
-        logger.info('    - Supporting Documents')
-        logger.info('    - Comments')
-        logger.info('    - (and 8 additional optional columns)')
+        text1 = '                             '
+        text2 = 'column "POAM ID" contains unique identifier for each POAM item (required).'
+        logger.info(text1 + text2)
+        text2 = 'column "Weakness Name" contains title/name of the weakness (required).'
+        logger.info(text1 + text2)
+        text2 = 'column "Weakness Description" contains description of the weakness (required).'
+        logger.info(text1 + text2)
+        text2 = 'column "Controls" contains related security control IDs (required).'
+        logger.info(text1 + text2)
+        text2 = 'column "Weakness Detector Source" contains source that detected the weakness (optional).'
+        logger.info(text1 + text2)
+        text2 = 'column "Weakness Source Identifier" contains identifier from detection source (optional).'
+        logger.info(text1 + text2)
+        text2 = 'column "Asset Identifier" contains identifier of affected asset (optional).'
+        logger.info(text1 + text2)
+        text2 = 'column "Point of Contact" contains contact information for responsible party (optional).'
+        logger.info(text1 + text2)
+        text2 = 'column "Resources Required" contains resources needed for remediation (optional).'
+        logger.info(text1 + text2)
+        text2 = 'column "Overall Remediation Plan" contains the remediation plan description (optional).'
+        logger.info(text1 + text2)
+        text2 = 'column "Original Detection Date" contains date weakness was first detected (optional).'
+        logger.info(text1 + text2)
+        text2 = 'column "Scheduled Completion Date" contains target completion date (optional).'
+        logger.info(text1 + text2)
+        text2 = 'column "Planned Milestones" contains milestone descriptions and dates (optional).'
+        logger.info(text1 + text2)
+        text2 = 'column "Original Risk Rating" contains initial risk assessment (optional).'
+        logger.info(text1 + text2)
+        text2 = 'column "Adjusted Risk Rating" contains adjusted risk assessment (optional).'
+        logger.info(text1 + text2)
+        text2 = 'column "Risk Adjustment" contains rationale for risk adjustment (optional).'
+        logger.info(text1 + text2)
+        text2 = 'column "False Positive" contains yes/no indicator for false positive (optional).'
+        logger.info(text1 + text2)
+        text2 = 'column "Operational Requirement" contains yes/no indicator for operational requirement (optional).'
+        logger.info(text1 + text2)
+        text2 = 'column "Deviation Rationale" contains rationale for deviation (optional).'
+        logger.info(text1 + text2)
+        text2 = 'column "Supporting Documents" contains references to supporting documentation (optional).'
+        logger.info(text1 + text2)
+        text2 = 'column "Comments" contains additional comments or notes (optional).'
+        logger.info(text1 + text2)
 
     def configure(self) -> bool:
         """
