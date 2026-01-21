@@ -26,6 +26,8 @@ import trestle.core.generators as gens
 import trestle.core.generic_oscal as generic
 import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
+import trestle.oscal.catalog as cat
+import trestle.oscal.component as comp
 from trestle.common import const, file_utils, list_utils
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.author.ssp import SSPAssemble, SSPFilter, SSPGenerate
@@ -34,6 +36,7 @@ from trestle.core.control_reader import ControlReader
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
+
 
 prof_name = 'comp_prof'
 ssp_name = 'my_ssp'
@@ -1366,3 +1369,37 @@ def test_ssp_generate_aggregates_no_param_value_orig(tmp_trestle_dir: pathlib.Pa
     header, _ = md_api.processor.process_markdown(si_7)
     si_7_prm_1 = header['x-trestle-set-params']['si-7_prm_1']
     assert const.PARAM_VALUE_ORIGIN not in si_7_prm_1.keys()
+
+
+def test_ssp_generate_no_rules_all_controls(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test --all-controls flag includes controls without rules."""
+
+    test_utils.load_from_json(tmp_trestle_dir, 'cat_no_rules', 'cat_no_rules', cat.Catalog)
+    test_utils.load_from_json(tmp_trestle_dir, 'prof_no_rules', 'prof_no_rules', prof.Profile)
+    test_utils.load_from_json(tmp_trestle_dir, 'comp_def_no_rules', 'comp_def_no_rules', comp.ComponentDefinition)
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        profile='prof_no_rules',
+        compdefs='comp_def_no_rules',
+        leveraged_ssp='',
+        output='my_ssp',
+        verbose=0,
+        overwrite_header_values=False,
+        include_all_parts=False,
+        all_controls=False,
+        yaml_header=None,
+        allowed_sections=None,
+        force_overwrite=True,
+    )
+    ssp_cmd = SSPGenerate()
+    assert ssp_cmd._run(args) == 0
+    md_path = tmp_trestle_dir / 'my_ssp' / 'AC.2' / 'AC.2.1.10.md'
+    assert md_path.exists()
+    content = md_path.read_text()
+    assert 'AWS-IAM' not in content or 'None of your AWS IAM users' not in content
+
+    args.all_controls = True
+    args.force_overwrite = True
+    assert ssp_cmd._run(args) == 0
+    content = md_path.read_text()
+    assert 'AWS-IAM' in content or 'To be compliant with AC.2.1.10' in content

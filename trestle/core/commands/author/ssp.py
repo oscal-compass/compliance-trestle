@@ -90,12 +90,7 @@ class SSPGenerate(AuthorCommonCommand):
             default=False,
         )
         self.add_argument(
-            '-ac',
-            '--all-controls',
-            help=const.HELP_ALL_CONTROLS,
-            required=False,
-            action='store_true',
-            default=False,
+            '-ac', '--all-controls', help=const.HELP_ALL_CONTROLS, required=False, action='store_true', default=False
         )
 
     def _run(self, args: argparse.Namespace) -> int:
