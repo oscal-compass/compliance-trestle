@@ -179,7 +179,7 @@ class GenericComponent(TrestleBaseModel):
     control_implementations: Optional[List[GenericControlImplementation]] = Field(None, alias='control-implementations')
     remarks: Optional[str] = None
     # ssp has
-    status: common.ImplementationStatus
+    status: Optional[common.ImplementationStatus] = None
 
     def as_defined_component(self) -> comp.DefinedComponent:
         """Convert to DefinedComponent."""
@@ -195,6 +195,9 @@ class GenericComponent(TrestleBaseModel):
         """Convert defined component to generic."""
         status = ControlInterface.get_status_from_props(def_comp)
         class_dict = copy.deepcopy(def_comp.__dict__)
+        # Ensure type is a plain string - Pydantic may store it as a constrained type
+        if 'type' in class_dict:
+            class_dict['type'] = str(class_dict['type'])
         if 'control_implementations' in class_dict:
             new_cis = []
             for ci in class_dict['control_implementations']:
@@ -208,6 +211,9 @@ class GenericComponent(TrestleBaseModel):
         """Convert to SystemComponent."""
         class_dict = copy.deepcopy(self.__dict__)
         class_dict.pop('control_implementations', None)
+        # Ensure type is a string - Pydantic may store it as a constrained type
+        if 'type' in class_dict:
+            class_dict['type'] = str(class_dict['type'])
         status_str = self.status.state if self.status else const.STATUS_OPERATIONAL
         status_str = status_override if status_override else status_str
         if status_str not in ['under-development', 'operational', 'disposition', 'other']:
@@ -215,7 +221,8 @@ class GenericComponent(TrestleBaseModel):
                 f'SystemComponent status {status_str} not recognized.  Setting to {const.STATUS_OPERATIONAL}'
             )
             status_str = const.STATUS_OPERATIONAL
-        class_dict['status'] = ossp.Status(state=status_str, remarks=self.status.remarks)
+        remarks = self.status.remarks if self.status else None
+        class_dict['status'] = ossp.Status(state=status_str, remarks=remarks)
         return ossp.SystemComponent(**class_dict)
 
     @staticmethod
