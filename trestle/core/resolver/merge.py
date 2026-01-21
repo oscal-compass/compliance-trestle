@@ -45,7 +45,7 @@ ITEM_EXCLUDE_MAP = {
     'Property': PROPERTY_EXCLUDE,
     'Parameter': PARAMETER_EXCLUDE,
     'Control': CONTROL_EXCLUDE,
-    'Catalog': CATALOG_EXCLUDE
+    'Catalog': CATALOG_EXCLUDE,
 }
 
 

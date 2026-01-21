@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle Split Command."""
+
 import argparse
 import logging
 import pathlib
@@ -78,7 +79,7 @@ class SplitCmd(CommandPlusDocs):
             f'-{const.ARG_ELEMENT_SHORT}',
             f'--{const.ARG_ELEMENT}',
             help=const.ARG_DESC_ELEMENT + ' to split.',
-            required=False
+            required=False,
         )
 
     def _run(self, args: argparse.Namespace) -> int:
@@ -202,7 +203,7 @@ class SplitCmd(CommandPlusDocs):
         sub_model_item: OscalBaseModel,
         sub_model_dir: pathlib.Path,
         file_prefix: str,
-        content_type: FileContentType
+        content_type: FileContentType,
     ) -> List[Action]:
         """Create split actions of sub model."""
         actions: List[Action] = []
@@ -225,7 +226,7 @@ class SplitCmd(CommandPlusDocs):
         strip_root: bool,
         root_file_name: str,
         aliases_to_strip: Dict[str, AliasTracker],
-        last_one: bool = True
+        last_one: bool = True,
     ) -> int:
         """Recursively split the model at the provided chain of element paths.
 
@@ -283,8 +284,9 @@ class SplitCmd(CommandPlusDocs):
         element_path = element_paths[cur_path_index]
 
         # does the next element_path point back at me
-        is_parent = cur_path_index + 1 < len(element_paths) and element_paths[cur_path_index
-                                                                              + 1].get_parent() == element_path
+        is_parent = (
+            cur_path_index + 1 < len(element_paths) and element_paths[cur_path_index + 1].get_parent() == element_path
+        )
 
         # root dir name for sub models dir
         # 00000__group.json will have the root_dir name as 00000__group for sub models of group
@@ -314,7 +316,7 @@ class SplitCmd(CommandPlusDocs):
                 sub_model_plan,
                 True,
                 '',
-                aliases_to_strip
+                aliases_to_strip,
             )
             sub_model_actions = sub_model_plan.get_actions()
             split_plan.add_actions(sub_model_actions)
@@ -334,8 +336,10 @@ class SplitCmd(CommandPlusDocs):
                 count += 1
                 # recursively split the sub-model if there are more element paths to traverse
                 # e.g. split component.control-implementations.*
-                require_recursive_split = cur_path_index + 1 < len(element_paths) and element_paths[
-                    cur_path_index + 1].get_parent() == element_path
+                require_recursive_split = (
+                    cur_path_index + 1 < len(element_paths)
+                    and element_paths[cur_path_index + 1].get_parent() == element_path
+                )
 
                 if require_recursive_split:
                     # prepare individual directory for each sub-model
@@ -353,7 +357,7 @@ class SplitCmd(CommandPlusDocs):
                         True,
                         sub_root_file_name,
                         aliases_to_strip,
-                        last_one
+                        last_one,
                     )
                     sub_model_actions = sub_model_plan.get_actions()
                 else:
@@ -414,7 +418,7 @@ class SplitCmd(CommandPlusDocs):
         base_dir: pathlib.Path,
         content_type: FileContentType,
         root_file_name: str,
-        aliases_to_strip: Dict[str, AliasTracker]
+        aliases_to_strip: Dict[str, AliasTracker],
     ) -> Plan:
         """Split the model at the provided element paths.
 
@@ -448,7 +452,7 @@ class SplitCmd(CommandPlusDocs):
                 split_plan,
                 False,
                 root_file_name,
-                aliases_to_strip
+                aliases_to_strip,
             )
 
             cur_path_index += 1

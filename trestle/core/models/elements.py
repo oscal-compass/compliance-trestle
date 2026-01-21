@@ -118,8 +118,11 @@ class ElementPath:
                 inner_class_name = classname_to_alias(inner_model.__name__, AliasMode.JSON)
                 # Assert that the current name fits an expected form.
                 # Valid choices here are *, integer (for arrays) and the inner model alias
-                if (inner_class_name == current_element_str or current_element_str == self.WILDCARD
-                        or current_element_str.isnumeric()):
+                if (
+                    inner_class_name == current_element_str
+                    or current_element_str == self.WILDCARD
+                    or current_element_str.isnumeric()
+                ):
                     prev_model = inner_model
 
                 else:
@@ -135,9 +138,9 @@ class ElementPath:
                 prev_model = prev_model.alias_to_field_map()[current_element_str].outer_type_
         return prev_model
 
-    def get_obm_wrapped_type(self,
-                             root_model: Optional[Type[Any]] = None,
-                             use_parent: bool = False) -> Type[OscalBaseModel]:
+    def get_obm_wrapped_type(
+        self, root_model: Optional[Type[Any]] = None, use_parent: bool = False
+    ) -> Type[OscalBaseModel]:
         """Get the type of the element. Wraps the collection type in an OscalBaseModel as a __root__ element.
 
         This should principally be used for validating content.
@@ -165,7 +168,7 @@ class ElementPath:
             new_base_type = create_model(
                 str_utils.alias_to_classname(collection_name, AliasMode.JSON),
                 __base__=OscalBaseModel,
-                __root__=(base_type, ...)
+                __root__=(base_type, ...),
             )
             return new_base_type
         return base_type
@@ -424,9 +427,9 @@ class Element:
 
         return root_model, path_parts
 
-    def get_at(self,
-               element_path: ElementPath = None,
-               check_parent: bool = True) -> Union[OscalBaseModel, List[OscalBaseModel]]:
+    def get_at(
+        self, element_path: ElementPath = None, check_parent: bool = True
+    ) -> Union[OscalBaseModel, List[OscalBaseModel]]:
         """Get the element at the specified element path.
 
         it will return the sub-model object at the path. Sub-model object
@@ -446,8 +449,11 @@ class Element:
             elm = elm.__root__
 
         # if parent exists and does not end with wildcard, use the parent as the starting element for search
-        if check_parent and element_path.get_parent(
-        ) is not None and element_path.get_parent().get_last() != ElementPath.WILDCARD:
+        if (
+            check_parent
+            and element_path.get_parent() is not None
+            and element_path.get_parent().get_last() != ElementPath.WILDCARD
+        ):
             elm_at = self.get_at(element_path.get_parent())
             if elm_at is None:
                 raise TrestleNotFoundError(f'Invalid parent path {element_path.get_parent()}')
@@ -554,6 +560,7 @@ class Element:
         yaml = YAML(typ='safe')
         yaml.default_flow_style = False
         from io import StringIO
+
         string_stream = StringIO()
         yaml.dump(yaml.load(self.to_json(pretty=False)), string_stream)
         yaml_data = string_stream.getvalue()
@@ -595,8 +602,13 @@ class Element:
     def is_allowed_sub_element_type(cls, elm) -> bool:
         """Check if is of allowed sub element type."""
         # FIXME: The following logic does not use the _allowed_sub_element_types being defined for the class
-        if (isinstance(elm, Element) or isinstance(elm, OscalBaseModel) or isinstance(elm, list)
-                or isinstance(elm, dict) or elm is None):
+        if (
+            isinstance(elm, Element)
+            or isinstance(elm, OscalBaseModel)
+            or isinstance(elm, list)
+            or isinstance(elm, dict)
+            or elm is None
+        ):
             return True
 
         return False

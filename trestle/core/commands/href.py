@@ -51,7 +51,7 @@ class HrefCmd(CommandPlusDocs):
             help='New href of form trestle://catalogs/mycat/catalog.json.',
             type=str,
             required=False,
-            default=''
+            default='',
         )
 
         self.add_argument(
@@ -60,7 +60,7 @@ class HrefCmd(CommandPlusDocs):
             help='Item number of href to modify.  Get list by running href with just -n <prof_name> to list values.',
             type=int,
             required=False,
-            default=0
+            default=0,
         )
 
     def _run(self, args: argparse.Namespace) -> int:
