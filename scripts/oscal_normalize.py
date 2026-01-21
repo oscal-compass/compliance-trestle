@@ -296,9 +296,12 @@ class ClassText:
         # add refs found in optional unions
         p = re.compile(r'.*Optional\[Union\[([^,]+)')
         self.add_ref_pattern(p, line)
-        # add refs found in for "Algorithm"
+        # add refs found for "Algorithm"
         if ' Algorithm ' in line:
             self.add_ref_if_good('Algorithm')
+         # add refs found for "IdentifierType"
+        if ' IdentifierType ' in line:
+            self.add_ref_if_good('IdentifierType')
         return line
 
     def find_direct_refs(self, class_names_list):

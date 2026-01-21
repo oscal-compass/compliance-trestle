@@ -114,18 +114,6 @@ class TaskValidValues(Enum):
     action = 'action'
 
 
-class SystemId(OscalBaseModel):
-    """
-    A human-oriented, globally unique identifier with cross-instance scope that can be used to reference this system identification property elsewhere in this or other OSCAL instances. When referencing an externally defined system identification, the system identification must be used in the context of the external / imported OSCAL instance (e.g., uri-reference). This string should be assigned per-subject, which means it should be consistently used to identify the same system across revisions of the document.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    identifier_type: AnyUrl | IdentifierType | None = Field(None, alias='identifier-type', description='Identifies the identification system from which the provided identifier was assigned.', title='Identification System Type')
-    id: constr(regex=r'^\S(.*\S)?$')
-
-
 class SystemComponentTypeValidValues(Enum):
     this_system = 'this-system'
     system = 'system'
@@ -916,6 +904,18 @@ class SystemUser(OscalBaseModel):
     role_ids: list[constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$')] | None = Field(None, alias='role-ids')
     authorized_privileges: list[AuthorizedPrivilege] | None = Field(None, alias='authorized-privileges')
     remarks: str | None = None
+
+
+class SystemId(OscalBaseModel):
+    """
+    A human-oriented, globally unique identifier with cross-instance scope that can be used to reference this system identification property elsewhere in this or other OSCAL instances. When referencing an externally defined system identification, the system identification must be used in the context of the external / imported OSCAL instance (e.g., uri-reference). This string should be assigned per-subject, which means it should be consistently used to identify the same system across revisions of the document.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    identifier_type: AnyUrl | IdentifierType | None = Field(None, alias='identifier-type', description='Identifies the identification system from which the provided identifier was assigned.', title='Identification System Type')
+    id: constr(regex=r'^\S(.*\S)?$')
 
 
 class SubjectReference(OscalBaseModel):
