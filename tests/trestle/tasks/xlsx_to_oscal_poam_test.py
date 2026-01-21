@@ -20,13 +20,7 @@ import pathlib
 import uuid
 
 from trestle.tasks.base_task import TaskOutcome
-from trestle.tasks.xlsx_to_oscal_poam import (
-    PoamBuilder,
-    PoamValidator,
-    PoamXlsxHelper,
-    UUIDManager,
-    XlsxToOscalPoam,
-)
+from trestle.tasks.xlsx_to_oscal_poam import PoamBuilder, PoamValidator, PoamXlsxHelper, UUIDManager, XlsxToOscalPoam
 
 
 def _get_config_section(tmp_path: pathlib.Path, config_filename: str) -> configparser.SectionProxy:

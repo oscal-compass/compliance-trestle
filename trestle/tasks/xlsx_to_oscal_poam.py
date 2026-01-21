@@ -624,8 +624,9 @@ class PoamBuilder:
 
         return risk
 
-    def _create_milestone_tasks(self, poam_id: str, milestones: List[Dict[str, Any]],
-                                helper: PoamXlsxHelper) -> List[OscalTask]:
+    def _create_milestone_tasks(
+        self, poam_id: str, milestones: List[Dict[str, Any]], helper: PoamXlsxHelper
+    ) -> List[OscalTask]:
         """
         Create OSCAL Task objects from milestone data.
 
