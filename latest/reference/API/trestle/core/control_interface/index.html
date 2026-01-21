@@ -1119,11 +1119,35 @@
 <span class=normal>1203</span>
 <span class=normal>1204</span>
 <span class=normal>1205</span>
-<span class=normal>1206</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ControlInterface</span><span class=p>:</span>
+<span class=normal>1206</span>
+<span class=normal>1207</span>
+<span class=normal>1208</span>
+<span class=normal>1209</span>
+<span class=normal>1210</span>
+<span class=normal>1211</span>
+<span class=normal>1212</span>
+<span class=normal>1213</span>
+<span class=normal>1214</span>
+<span class=normal>1215</span>
+<span class=normal>1216</span>
+<span class=normal>1217</span>
+<span class=normal>1218</span>
+<span class=normal>1219</span>
+<span class=normal>1220</span>
+<span class=normal>1221</span>
+<span class=normal>1222</span>
+<span class=normal>1223</span>
+<span class=normal>1224</span>
+<span class=normal>1225</span>
+<span class=normal>1226</span>
+<span class=normal>1227</span>
+<span class=normal>1228</span>
+<span class=normal>1229</span>
+<span class=normal>1230</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>ControlInterface</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Class to interact with controls in memory.&quot;&quot;&quot;</span>
 
     <span class=nd>@staticmethod</span>
-    <span class=k>def</span><span class=w> </span><span class=nf>_wrap_label</span><span class=p>(</span><span class=n>label</span><span class=p>:</span> <span class=nb>str</span><span class=p>):</span>
+    <span class=k>def</span><span class=w> </span><span class=nf>_wrap_label</span><span class=p>(</span><span class=n>label</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
         <span class=n>l_side</span> <span class=o>=</span> <span class=sa>r</span><span class=s1>&#39;\[&#39;</span>
         <span class=n>r_side</span> <span class=o>=</span> <span class=sa>r</span><span class=s1>&#39;\]&#39;</span>
         <span class=n>wrapped</span> <span class=o>=</span> <span class=s1>&#39;&#39;</span> <span class=k>if</span> <span class=n>label</span> <span class=o>==</span> <span class=s1>&#39;&#39;</span> <span class=k>else</span> <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>l_side</span><span class=si>}{</span><span class=n>label</span><span class=si>}{</span><span class=n>r_side</span><span class=si>}</span><span class=s1>&#39;</span>
@@ -1166,7 +1190,7 @@
     <span class=k>def</span><span class=w> </span><span class=nf>_find_section_info</span><span class=p>(</span><span class=n>part</span><span class=p>:</span> <span class=n>common</span><span class=o>.</span><span class=n>Part</span><span class=p>,</span> <span class=n>skip_section_list</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=n>Tuple</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Find section not in list.&quot;&quot;&quot;</span>
         <span class=k>if</span> <span class=n>part</span><span class=o>.</span><span class=n>prose</span> <span class=ow>and</span> <span class=n>part</span><span class=o>.</span><span class=n>name</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>skip_section_list</span><span class=p>:</span>
-            <span class=k>return</span> <span class=n>part</span><span class=o>.</span><span class=n>id</span><span class=p>,</span> <span class=n>part</span><span class=o>.</span><span class=n>name</span><span class=p>,</span> <span class=n>part</span><span class=o>.</span><span class=n>title</span>
+            <span class=k>return</span> <span class=n>part</span><span class=o>.</span><span class=n>id</span> <span class=ow>or</span> <span class=s1>&#39;&#39;</span><span class=p>,</span> <span class=n>part</span><span class=o>.</span><span class=n>name</span> <span class=ow>or</span> <span class=s1>&#39;&#39;</span><span class=p>,</span> <span class=n>part</span><span class=o>.</span><span class=n>title</span> <span class=ow>or</span> <span class=s1>&#39;&#39;</span>
         <span class=k>if</span> <span class=n>part</span><span class=o>.</span><span class=n>parts</span><span class=p>:</span>
             <span class=k>for</span> <span class=n>sub_part</span> <span class=ow>in</span> <span class=n>part</span><span class=o>.</span><span class=n>parts</span><span class=p>:</span>
                 <span class=n>id_</span><span class=p>,</span> <span class=n>name</span><span class=p>,</span> <span class=n>title</span> <span class=o>=</span> <span class=n>ControlInterface</span><span class=o>.</span><span class=n>_find_section_info</span><span class=p>(</span><span class=n>sub_part</span><span class=p>,</span> <span class=n>skip_section_list</span><span class=p>)</span>
@@ -1253,11 +1277,11 @@
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Find the statement id in the control.&quot;&quot;&quot;</span>
         <span class=k>for</span> <span class=n>part</span> <span class=ow>in</span> <span class=n>as_list</span><span class=p>(</span><span class=n>control</span><span class=o>.</span><span class=n>parts</span><span class=p>):</span>
             <span class=k>if</span> <span class=n>part</span><span class=o>.</span><span class=n>name</span> <span class=o>==</span> <span class=n>const</span><span class=o>.</span><span class=n>STATEMENT</span><span class=p>:</span>
-                <span class=k>return</span> <span class=n>part</span><span class=o>.</span><span class=n>id</span>
+                <span class=k>return</span> <span class=n>part</span><span class=o>.</span><span class=n>id</span> <span class=ow>or</span> <span class=s1>&#39;&#39;</span>
         <span class=k>return</span> <span class=n>ControlInterface</span><span class=o>.</span><span class=n>create_statement_id</span><span class=p>(</span><span class=n>control</span><span class=o>.</span><span class=n>id</span><span class=p>)</span>
 
     <span class=nd>@staticmethod</span>
-    <span class=k>def</span><span class=w> </span><span class=nf>get_sort_id</span><span class=p>(</span><span class=n>control</span><span class=p>:</span> <span class=n>cat</span><span class=o>.</span><span class=n>Control</span><span class=p>,</span> <span class=n>allow_none</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
+    <span class=k>def</span><span class=w> </span><span class=nf>get_sort_id</span><span class=p>(</span><span class=n>control</span><span class=p>:</span> <span class=n>cat</span><span class=o>.</span><span class=n>Control</span><span class=p>,</span> <span class=n>allow_none</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Get the sort-id for the control.&quot;&quot;&quot;</span>
         <span class=k>for</span> <span class=n>prop</span> <span class=ow>in</span> <span class=n>as_list</span><span class=p>(</span><span class=n>control</span><span class=o>.</span><span class=n>props</span><span class=p>):</span>
             <span class=k>if</span> <span class=n>prop</span><span class=o>.</span><span class=n>name</span> <span class=o>==</span> <span class=n>const</span><span class=o>.</span><span class=n>SORT_ID</span><span class=p>:</span>
@@ -1288,7 +1312,7 @@
 <span class=sd>        For a part in a control find the parts in it that match the item_type</span>
 <span class=sd>        Return list of string formatted labels and associated descriptive prose</span>
 <span class=sd>        &quot;&quot;&quot;</span>
-        <span class=n>items</span> <span class=o>=</span> <span class=p>[]</span>
+        <span class=n>items</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>Union</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]]]</span> <span class=o>=</span> <span class=p>[]</span>
         <span class=k>if</span> <span class=n>part</span><span class=o>.</span><span class=n>name</span> <span class=ow>in</span> <span class=p>[</span><span class=n>const</span><span class=o>.</span><span class=n>STATEMENT</span><span class=p>,</span> <span class=n>item_type</span><span class=p>]:</span>
             <span class=c1># the options here are to force the label to be the part.id or the part.label</span>
             <span class=c1># the label may be of the form (a) while the part.id is ac-1_smt.a.1.a</span>
@@ -1393,7 +1417,19 @@
 <span class=sd>            a Parameter with param_id and content from the SetParameter</span>
 <span class=sd>        &quot;&quot;&quot;</span>
         <span class=k>return</span> <span class=n>common</span><span class=o>.</span><span class=n>Parameter</span><span class=p>(</span>
-            <span class=nb>id</span><span class=o>=</span><span class=n>param_id</span><span class=p>,</span> <span class=n>values</span><span class=o>=</span><span class=n>set_param</span><span class=o>.</span><span class=n>values</span><span class=p>,</span> <span class=n>select</span><span class=o>=</span><span class=n>set_param</span><span class=o>.</span><span class=n>select</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=n>set_param</span><span class=o>.</span><span class=n>label</span><span class=p>,</span> <span class=n>props</span><span class=o>=</span><span class=n>set_param</span><span class=o>.</span><span class=n>props</span>
+            <span class=nb>id</span><span class=o>=</span><span class=n>param_id</span><span class=p>,</span>
+            <span class=n>values</span><span class=o>=</span><span class=n>set_param</span><span class=o>.</span><span class=n>values</span><span class=p>,</span>
+            <span class=n>select</span><span class=o>=</span><span class=n>set_param</span><span class=o>.</span><span class=n>select</span><span class=p>,</span>
+            <span class=n>label</span><span class=o>=</span><span class=n>set_param</span><span class=o>.</span><span class=n>label</span><span class=p>,</span>
+            <span class=n>props</span><span class=o>=</span><span class=n>set_param</span><span class=o>.</span><span class=n>props</span><span class=p>,</span>
+            <span class=o>**</span><span class=p>{</span>
+                <span class=s1>&#39;class&#39;</span><span class=p>:</span> <span class=kc>None</span><span class=p>,</span>
+                <span class=s1>&#39;depends-on&#39;</span><span class=p>:</span> <span class=kc>None</span><span class=p>,</span>
+                <span class=s1>&#39;links&#39;</span><span class=p>:</span> <span class=kc>None</span><span class=p>,</span>
+                <span class=s1>&#39;usage&#39;</span><span class=p>:</span> <span class=kc>None</span><span class=p>,</span>
+                <span class=s1>&#39;constraints&#39;</span><span class=p>:</span> <span class=kc>None</span><span class=p>,</span>
+                <span class=s1>&#39;guidelines&#39;</span><span class=p>:</span> <span class=kc>None</span><span class=p>,</span>
+            <span class=p>},</span>
         <span class=p>)</span>
 
     <span class=nd>@staticmethod</span>
@@ -1462,7 +1498,7 @@
         <span class=k>return</span> <span class=n>comp_rules</span><span class=p>,</span> <span class=nb>sorted</span><span class=p>(</span><span class=n>statement_rules</span><span class=p>),</span> <span class=n>rule_props</span>
 
     <span class=nd>@staticmethod</span>
-    <span class=k>def</span><span class=w> </span><span class=nf>get_params_dict_from_item</span><span class=p>(</span><span class=n>item</span><span class=p>:</span> <span class=n>TypeWithProps</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Tuple</span><span class=p>[</span><span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]],</span> <span class=n>List</span><span class=p>[</span><span class=n>common</span><span class=o>.</span><span class=n>Property</span><span class=p>]]:</span>
+    <span class=k>def</span><span class=w> </span><span class=nf>get_params_dict_from_item</span><span class=p>(</span><span class=n>item</span><span class=p>:</span> <span class=n>TypeWithProps</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Tuple</span><span class=p>[</span><span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>List</span><span class=p>[</span><span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]]],</span> <span class=n>List</span><span class=p>[</span><span class=n>common</span><span class=o>.</span><span class=n>Property</span><span class=p>]]:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Get all params found in this item with rule_id as key.&quot;&quot;&quot;</span>
         <span class=c1># id, description, options - where options is a string containing comma-sep list of items</span>
         <span class=c1># params is dict with rule_id as key and value contains: param_name, description and choices</span>
@@ -1473,34 +1509,37 @@
                 <span class=n>rule_id</span> <span class=o>=</span> <span class=n>prop</span><span class=o>.</span><span class=n>remarks</span>
                 <span class=n>param_name</span> <span class=o>=</span> <span class=n>prop</span><span class=o>.</span><span class=n>value</span>
                 <span class=c1># rule already exists in parameters dict</span>
-                <span class=k>if</span> <span class=n>rule_id</span> <span class=ow>in</span> <span class=n>params</span><span class=o>.</span><span class=n>keys</span><span class=p>():</span>
-                    <span class=n>existing_param</span> <span class=o>=</span> <span class=nb>next</span><span class=p>((</span><span class=n>prm</span> <span class=k>for</span> <span class=n>prm</span> <span class=ow>in</span> <span class=n>params</span><span class=p>[</span><span class=n>rule_id</span><span class=p>]</span> <span class=k>if</span> <span class=n>prm</span><span class=p>[</span><span class=s1>&#39;name&#39;</span><span class=p>]</span> <span class=o>==</span> <span class=n>param_name</span><span class=p>),</span> <span class=kc>None</span><span class=p>)</span>
-                    <span class=k>if</span> <span class=n>existing_param</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
-                        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Param id for rule </span><span class=si>{</span><span class=n>rule_id</span><span class=si>}</span><span class=s1> already exists&#39;</span><span class=p>)</span>
+                <span class=k>if</span> <span class=n>rule_id</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
+                    <span class=k>if</span> <span class=n>rule_id</span> <span class=ow>in</span> <span class=n>params</span><span class=o>.</span><span class=n>keys</span><span class=p>():</span>
+                        <span class=n>existing_param</span> <span class=o>=</span> <span class=nb>next</span><span class=p>((</span><span class=n>prm</span> <span class=k>for</span> <span class=n>prm</span> <span class=ow>in</span> <span class=n>params</span><span class=p>[</span><span class=n>rule_id</span><span class=p>]</span> <span class=k>if</span> <span class=n>prm</span><span class=p>[</span><span class=s1>&#39;name&#39;</span><span class=p>]</span> <span class=o>==</span> <span class=n>param_name</span><span class=p>),</span> <span class=kc>None</span><span class=p>)</span>
+                        <span class=k>if</span> <span class=n>existing_param</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
+                            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Param id for rule </span><span class=si>{</span><span class=n>rule_id</span><span class=si>}</span><span class=s1> already exists&#39;</span><span class=p>)</span>
+                        <span class=k>else</span><span class=p>:</span>
+                            <span class=c1># append a new parameter for the current rule</span>
+                            <span class=n>params</span><span class=p>[</span><span class=n>rule_id</span><span class=p>]</span><span class=o>.</span><span class=n>append</span><span class=p>({</span><span class=s1>&#39;name&#39;</span><span class=p>:</span> <span class=n>param_name</span><span class=p>})</span>
                     <span class=k>else</span><span class=p>:</span>
-                        <span class=c1># append a new parameter for the current rule</span>
-                        <span class=n>params</span><span class=p>[</span><span class=n>rule_id</span><span class=p>]</span><span class=o>.</span><span class=n>append</span><span class=p>({</span><span class=s1>&#39;name&#39;</span><span class=p>:</span> <span class=n>param_name</span><span class=p>})</span>
-                <span class=k>else</span><span class=p>:</span>
-                    <span class=c1># create new param for this rule for the first parameter</span>
-                    <span class=n>params</span><span class=p>[</span><span class=n>rule_id</span><span class=p>]</span> <span class=o>=</span> <span class=p>[{</span><span class=s1>&#39;name&#39;</span><span class=p>:</span> <span class=n>param_name</span><span class=p>}]</span>
-                <span class=n>props</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>prop</span><span class=p>)</span>
+                        <span class=c1># create new param for this rule for the first parameter</span>
+                        <span class=n>params</span><span class=p>[</span><span class=n>rule_id</span><span class=p>]</span> <span class=o>=</span> <span class=p>[{</span><span class=s1>&#39;name&#39;</span><span class=p>:</span> <span class=n>param_name</span><span class=p>}]</span>
+                        <span class=n>props</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>prop</span><span class=p>)</span>
             <span class=k>elif</span> <span class=n>const</span><span class=o>.</span><span class=n>PARAMETER_DESCRIPTION</span> <span class=ow>in</span> <span class=n>prop</span><span class=o>.</span><span class=n>name</span><span class=p>:</span>
                 <span class=n>rule_id</span> <span class=o>=</span> <span class=n>prop</span><span class=o>.</span><span class=n>remarks</span>
                 <span class=k>if</span> <span class=n>rule_id</span> <span class=ow>in</span> <span class=n>params</span><span class=p>:</span>
                     <span class=n>param</span> <span class=o>=</span> <span class=nb>next</span><span class=p>((</span><span class=n>prm</span> <span class=k>for</span> <span class=n>prm</span> <span class=ow>in</span> <span class=n>params</span><span class=p>[</span><span class=n>rule_id</span><span class=p>]</span> <span class=k>if</span> <span class=n>prm</span><span class=p>[</span><span class=s1>&#39;name&#39;</span><span class=p>]</span> <span class=o>==</span> <span class=n>param_name</span><span class=p>),</span> <span class=kc>None</span><span class=p>)</span>
-                    <span class=n>param</span><span class=p>[</span><span class=s1>&#39;description&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>prop</span><span class=o>.</span><span class=n>value</span>
-                    <span class=n>props</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>prop</span><span class=p>)</span>
-                <span class=k>else</span><span class=p>:</span>
-                    <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Param description for rule </span><span class=si>{</span><span class=n>rule_id</span><span class=si>}</span><span class=s1> found with no param_id&#39;</span><span class=p>)</span>
+                    <span class=k>if</span> <span class=n>param</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
+                        <span class=n>param</span><span class=p>[</span><span class=s1>&#39;description&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>prop</span><span class=o>.</span><span class=n>value</span>
+                        <span class=n>props</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>prop</span><span class=p>)</span>
+                    <span class=k>else</span><span class=p>:</span>
+                        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Param description for rule </span><span class=si>{</span><span class=n>rule_id</span><span class=si>}</span><span class=s1> found with no param_id&#39;</span><span class=p>)</span>
             <span class=k>elif</span> <span class=n>const</span><span class=o>.</span><span class=n>PARAMETER_VALUE_ALTERNATIVES</span> <span class=ow>in</span> <span class=n>prop</span><span class=o>.</span><span class=n>name</span><span class=p>:</span>
                 <span class=n>rule_id</span> <span class=o>=</span> <span class=n>prop</span><span class=o>.</span><span class=n>remarks</span>
                 <span class=k>if</span> <span class=n>rule_id</span> <span class=ow>in</span> <span class=n>params</span><span class=p>:</span>
                     <span class=n>param</span> <span class=o>=</span> <span class=nb>next</span><span class=p>((</span><span class=n>prm</span> <span class=k>for</span> <span class=n>prm</span> <span class=ow>in</span> <span class=n>params</span><span class=p>[</span><span class=n>rule_id</span><span class=p>]</span> <span class=k>if</span> <span class=n>prm</span><span class=p>[</span><span class=s1>&#39;name&#39;</span><span class=p>]</span> <span class=o>==</span> <span class=n>param_name</span><span class=p>),</span> <span class=kc>None</span><span class=p>)</span>
-                    <span class=n>param</span><span class=p>[</span><span class=s1>&#39;options&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>prop</span><span class=o>.</span><span class=n>value</span>
-                    <span class=n>props</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>prop</span><span class=p>)</span>
-                <span class=k>else</span><span class=p>:</span>
-                    <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Param options for rule </span><span class=si>{</span><span class=n>rule_id</span><span class=si>}</span><span class=s1> found with no param_id&#39;</span><span class=p>)</span>
-        <span class=n>new_params</span> <span class=o>=</span> <span class=p>{}</span>
+                    <span class=k>if</span> <span class=n>param</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
+                        <span class=n>param</span><span class=p>[</span><span class=s1>&#39;options&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>prop</span><span class=o>.</span><span class=n>value</span>
+                        <span class=n>props</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>prop</span><span class=p>)</span>
+                    <span class=k>else</span><span class=p>:</span>
+                        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Param options for rule </span><span class=si>{</span><span class=n>rule_id</span><span class=si>}</span><span class=s1> found with no param_id&#39;</span><span class=p>)</span>
+        <span class=n>new_params</span><span class=p>:</span> <span class=nb>dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>list</span><span class=p>[</span><span class=nb>dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]]]</span> <span class=o>=</span> <span class=p>{}</span>
         <span class=k>for</span> <span class=n>rule_id</span><span class=p>,</span> <span class=n>rule_params</span> <span class=ow>in</span> <span class=n>params</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
             <span class=n>new_params</span><span class=p>[</span><span class=n>rule_id</span><span class=p>]</span> <span class=o>=</span> <span class=p>[]</span>
             <span class=k>for</span> <span class=n>param</span> <span class=ow>in</span> <span class=n>rule_params</span><span class=p>:</span>
@@ -1515,7 +1554,7 @@
     <span class=nd>@staticmethod</span>
     <span class=k>def</span><span class=w> </span><span class=nf>get_rules_and_params_dict_from_item</span><span class=p>(</span>
         <span class=n>item</span><span class=p>:</span> <span class=n>TypeWithProps</span><span class=p>,</span>
-    <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Tuple</span><span class=p>[</span><span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]],</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]],</span> <span class=n>List</span><span class=p>[</span><span class=n>common</span><span class=o>.</span><span class=n>Property</span><span class=p>]]:</span>
+    <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Tuple</span><span class=p>[</span><span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]],</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>List</span><span class=p>[</span><span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]]],</span> <span class=n>List</span><span class=p>[</span><span class=n>common</span><span class=o>.</span><span class=n>Property</span><span class=p>]]:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Get the rule dict and params dict from item with props.&quot;&quot;&quot;</span>
         <span class=n>rules_dict</span><span class=p>,</span> <span class=n>rules_props</span> <span class=o>=</span> <span class=n>ControlInterface</span><span class=o>.</span><span class=n>get_rules_dict_from_item</span><span class=p>(</span><span class=n>item</span><span class=p>)</span>
         <span class=n>params_dict</span><span class=p>,</span> <span class=n>params_props</span> <span class=o>=</span> <span class=n>ControlInterface</span><span class=o>.</span><span class=n>get_params_dict_from_item</span><span class=p>(</span><span class=n>item</span><span class=p>)</span>
@@ -1527,8 +1566,9 @@
         <span class=n>item</span><span class=p>:</span> <span class=n>Union</span><span class=p>[</span><span class=n>comp</span><span class=o>.</span><span class=n>ControlImplementation</span><span class=p>,</span> <span class=n>comp</span><span class=o>.</span><span class=n>ImplementedRequirement</span><span class=p>],</span>
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>comp</span><span class=o>.</span><span class=n>SetParameter</span><span class=p>]:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Get set params that have values from control implementation or imp req.&quot;&quot;&quot;</span>
-        <span class=k>return</span> <span class=p>{</span>
-            <span class=n>set_param</span><span class=o>.</span><span class=n>param_id</span><span class=p>:</span> <span class=n>set_param</span> <span class=k>for</span> <span class=n>set_param</span> <span class=ow>in</span> <span class=n>as_filtered_list</span><span class=p>(</span><span class=n>item</span><span class=o>.</span><span class=n>set_parameters</span><span class=p>,</span> <span class=k>lambda</span> <span class=n>i</span><span class=p>:</span> <span class=n>i</span><span class=o>.</span><span class=n>values</span><span class=p>)</span>
+        <span class=k>return</span> <span class=p>{</span>  <span class=c1># Mypy incorrectly infers return type despite correct signature - bug with dict comprehension</span>
+            <span class=n>set_param</span><span class=o>.</span><span class=n>param_id</span><span class=p>:</span> <span class=n>set_param</span>
+            <span class=k>for</span> <span class=n>set_param</span> <span class=ow>in</span> <span class=n>as_filtered_list</span><span class=p>(</span><span class=n>item</span><span class=o>.</span><span class=n>set_parameters</span><span class=p>,</span> <span class=k>lambda</span> <span class=n>i</span><span class=p>:</span> <span class=n>i</span><span class=o>.</span><span class=n>values</span><span class=p>)</span>  <span class=c1># type: ignore[return-value]</span>
         <span class=p>}</span>
 
     <span class=nd>@staticmethod</span>
@@ -1537,7 +1577,7 @@
     <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>common</span><span class=o>.</span><span class=n>Property</span><span class=p>]:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Merge a source list of properties into a destination list.&quot;&quot;&quot;</span>
         <span class=k>if</span> <span class=ow>not</span> <span class=n>src</span><span class=p>:</span>
-            <span class=k>return</span> <span class=n>dest</span>
+            <span class=k>return</span> <span class=n>dest</span> <span class=k>if</span> <span class=n>dest</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span> <span class=k>else</span> <span class=p>[]</span>
         <span class=n>new_props</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>common</span><span class=o>.</span><span class=n>Property</span><span class=p>]</span> <span class=o>=</span> <span class=p>[]</span>
         <span class=n>src_map</span> <span class=o>=</span> <span class=p>{</span><span class=n>prop</span><span class=o>.</span><span class=n>name</span><span class=p>:</span> <span class=n>prop</span> <span class=k>for</span> <span class=n>prop</span> <span class=ow>in</span> <span class=n>src</span><span class=p>}</span>
         <span class=n>dest_map</span> <span class=o>=</span> <span class=p>{</span><span class=n>prop</span><span class=o>.</span><span class=n>name</span><span class=p>:</span> <span class=n>prop</span> <span class=k>for</span> <span class=n>prop</span> <span class=ow>in</span> <span class=n>dest</span><span class=p>}</span>
@@ -1659,7 +1699,7 @@
         <span class=k>return</span> <span class=n>as_list</span><span class=p>(</span><span class=n>param</span><span class=o>.</span><span class=n>values</span><span class=p>)</span>
 
     <span class=nd>@staticmethod</span>
-    <span class=k>def</span><span class=w> </span><span class=nf>_param_values_as_str</span><span class=p>(</span><span class=n>param</span><span class=p>:</span> <span class=n>common</span><span class=o>.</span><span class=n>Parameter</span><span class=p>,</span> <span class=n>brackets</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
+    <span class=k>def</span><span class=w> </span><span class=nf>_param_values_as_str</span><span class=p>(</span><span class=n>param</span><span class=p>:</span> <span class=n>common</span><span class=o>.</span><span class=n>Parameter</span><span class=p>,</span> <span class=n>brackets</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Convert param values to string with optional brackets.&quot;&quot;&quot;</span>
         <span class=k>if</span> <span class=ow>not</span> <span class=n>param</span><span class=o>.</span><span class=n>values</span><span class=p>:</span>
             <span class=k>return</span> <span class=kc>None</span>
@@ -1831,15 +1871,18 @@
 <span class=sd>        Reject matches where the string has an adjacent alphanumeric char: param_1 and param_10 or aparam_1</span>
 <span class=sd>        &quot;&quot;&quot;</span>
         <span class=k>for</span> <span class=n>param</span> <span class=ow>in</span> <span class=n>param_dict</span><span class=o>.</span><span class=n>values</span><span class=p>():</span>
-            <span class=k>if</span> <span class=n>param</span><span class=o>.</span><span class=n>id</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>prose</span><span class=p>:</span>
+            <span class=n>param_id</span> <span class=o>=</span> <span class=n>param</span><span class=o>.</span><span class=n>id</span>
+            <span class=k>if</span> <span class=n>param_id</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>  <span class=c1># Check if None</span>
+                <span class=k>continue</span>
+            <span class=k>if</span> <span class=n>param_id</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>prose</span><span class=p>:</span>  <span class=c1># Now mypy knows param_id is str</span>
                 <span class=k>continue</span>
             <span class=c1># create the replacement text for the param_id</span>
             <span class=n>param_str</span> <span class=o>=</span> <span class=n>ControlInterface</span><span class=o>.</span><span class=n>param_to_str</span><span class=p>(</span>
                 <span class=n>param</span><span class=p>,</span> <span class=n>param_rep</span><span class=p>,</span> <span class=kc>False</span><span class=p>,</span> <span class=kc>False</span><span class=p>,</span> <span class=n>params_format</span><span class=p>,</span> <span class=n>value_assigned_prefix</span><span class=p>,</span> <span class=n>value_not_assigned_prefix</span>
             <span class=p>)</span>
             <span class=c1># non-capturing groups are odd in re.sub so capture all 3 groups and replace the middle one</span>
-            <span class=n>pattern</span> <span class=o>=</span> <span class=sa>r</span><span class=s1>&#39;(^|[^a-zA-Z0-9_])&#39;</span> <span class=o>+</span> <span class=n>param</span><span class=o>.</span><span class=n>id</span> <span class=o>+</span> <span class=sa>r</span><span class=s1>&#39;($|[^a-zA-Z0-9_])&#39;</span>
-            <span class=n>prose</span> <span class=o>=</span> <span class=n>re</span><span class=o>.</span><span class=n>sub</span><span class=p>(</span><span class=n>pattern</span><span class=p>,</span> <span class=sa>r</span><span class=s1>&#39;\1&#39;</span> <span class=o>+</span> <span class=n>param_str</span> <span class=o>+</span> <span class=sa>r</span><span class=s1>&#39;\2&#39;</span><span class=p>,</span> <span class=n>prose</span><span class=p>)</span>
+            <span class=n>pattern</span> <span class=o>=</span> <span class=sa>r</span><span class=s1>&#39;(^|[^a-zA-Z0-9_])&#39;</span> <span class=o>+</span> <span class=n>param_id</span> <span class=o>+</span> <span class=sa>r</span><span class=s1>&#39;($|[^a-zA-Z0-9_])&#39;</span>
+            <span class=n>prose</span> <span class=o>=</span> <span class=n>re</span><span class=o>.</span><span class=n>sub</span><span class=p>(</span><span class=n>pattern</span><span class=p>,</span> <span class=sa>r</span><span class=s1>&#39;\1&#39;</span> <span class=o>+</span> <span class=n>param_str</span> <span class=o>+</span> <span class=sa>r</span><span class=s1>&#39;\2&#39;</span><span class=p>,</span> <span class=n>prose</span><span class=p>)</span>  <span class=c1># type: ignore[operator]</span>
         <span class=k>return</span> <span class=n>prose</span>
 
     <span class=nd>@staticmethod</span>
@@ -2111,7 +2154,12 @@
     <span class=nd>@staticmethod</span>
     <span class=k>def</span><span class=w> </span><span class=nf>_status_as_prop</span><span class=p>(</span><span class=n>status</span><span class=p>:</span> <span class=n>common</span><span class=o>.</span><span class=n>ImplementationStatus</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>common</span><span class=o>.</span><span class=n>Property</span><span class=p>:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Convert status to property.&quot;&quot;&quot;</span>
-        <span class=k>return</span> <span class=n>common</span><span class=o>.</span><span class=n>Property</span><span class=p>(</span><span class=n>name</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>IMPLEMENTATION_STATUS</span><span class=p>,</span> <span class=n>value</span><span class=o>=</span><span class=n>status</span><span class=o>.</span><span class=n>state</span><span class=p>,</span> <span class=n>remarks</span><span class=o>=</span><span class=n>status</span><span class=o>.</span><span class=n>remarks</span><span class=p>)</span>
+        <span class=k>return</span> <span class=n>common</span><span class=o>.</span><span class=n>Property</span><span class=p>(</span>
+            <span class=n>name</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>IMPLEMENTATION_STATUS</span><span class=p>,</span>
+            <span class=n>value</span><span class=o>=</span><span class=n>status</span><span class=o>.</span><span class=n>state</span><span class=p>,</span>
+            <span class=n>remarks</span><span class=o>=</span><span class=n>status</span><span class=o>.</span><span class=n>remarks</span><span class=p>,</span>
+            <span class=o>**</span><span class=p>{</span><span class=s1>&#39;uuid&#39;</span><span class=p>:</span> <span class=kc>None</span><span class=p>,</span> <span class=s1>&#39;ns&#39;</span><span class=p>:</span> <span class=kc>None</span><span class=p>,</span> <span class=s1>&#39;class&#39;</span><span class=p>:</span> <span class=kc>None</span><span class=p>,</span> <span class=s1>&#39;group&#39;</span><span class=p>:</span> <span class=kc>None</span><span class=p>},</span>
+        <span class=p>)</span>
 
     <span class=nd>@staticmethod</span>
     <span class=k>def</span><span class=w> </span><span class=nf>_prop_as_status</span><span class=p>(</span><span class=n>prop</span><span class=p>:</span> <span class=n>common</span><span class=o>.</span><span class=n>Property</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>common</span><span class=o>.</span><span class=n>ImplementationStatus</span><span class=p>:</span>
@@ -2162,7 +2210,7 @@
 <span class=sd>            have the same source and specify the same control</span>
 <span class=sd>        &quot;&quot;&quot;</span>
         <span class=k>for</span> <span class=n>control_imp</span> <span class=ow>in</span> <span class=n>as_list</span><span class=p>(</span><span class=n>component</span><span class=o>.</span><span class=n>control_implementations</span><span class=p>):</span>
-            <span class=n>_</span><span class=p>,</span> <span class=n>control_imp_param_dict</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>ControlInterface</span><span class=o>.</span><span class=n>get_rules_and_params_dict_from_item</span><span class=p>(</span><span class=n>control_imp</span><span class=p>)</span>
+            <span class=n>_</span><span class=p>,</span> <span class=n>control_imp_param_dict</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>ControlInterface</span><span class=o>.</span><span class=n>get_rules_and_params_dict_from_item</span><span class=p>(</span><span class=n>control_imp</span><span class=p>)</span>  <span class=c1># type: ignore</span>
             <span class=n>control_imp_rule_param_ids</span> <span class=o>=</span> <span class=p>[</span>
                 <span class=n>param</span><span class=p>[</span><span class=s1>&#39;name&#39;</span><span class=p>]</span> <span class=k>for</span> <span class=n>params</span> <span class=ow>in</span> <span class=n>control_imp_param_dict</span><span class=o>.</span><span class=n>values</span><span class=p>()</span> <span class=k>for</span> <span class=n>param</span> <span class=ow>in</span> <span class=n>params</span>
             <span class=p>]</span>
@@ -2203,7 +2251,7 @@
                         <span class=k>continue</span>
                     <span class=n>imp_req</span><span class=o>.</span><span class=n>set_parameters</span> <span class=o>=</span> <span class=n>as_list</span><span class=p>(</span><span class=n>imp_req</span><span class=o>.</span><span class=n>set_parameters</span><span class=p>)</span>
                     <span class=n>imp_req</span><span class=o>.</span><span class=n>set_parameters</span><span class=o>.</span><span class=n>append</span><span class=p>(</span>
-                        <span class=n>comp</span><span class=o>.</span><span class=n>SetParameter</span><span class=p>(</span><span class=n>param_id</span><span class=o>=</span><span class=n>set_param</span><span class=o>.</span><span class=n>param_id</span><span class=p>,</span> <span class=n>values</span><span class=o>=</span><span class=n>set_param</span><span class=o>.</span><span class=n>values</span><span class=p>)</span>
+                        <span class=n>comp</span><span class=o>.</span><span class=n>SetParameter</span><span class=p>(</span><span class=o>**</span><span class=p>{</span><span class=s1>&#39;param_id&#39;</span><span class=p>:</span> <span class=n>set_param</span><span class=o>.</span><span class=n>param_id</span><span class=p>},</span> <span class=n>values</span><span class=o>=</span><span class=n>set_param</span><span class=o>.</span><span class=n>values</span><span class=p>)</span>
                     <span class=p>)</span>
                 <span class=n>new_statements</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>comp</span><span class=o>.</span><span class=n>Statement</span><span class=p>]</span> <span class=o>=</span> <span class=p>[]</span>
                 <span class=k>for</span> <span class=n>statement</span> <span class=ow>in</span> <span class=n>as_list</span><span class=p>(</span><span class=n>new_imp_req</span><span class=o>.</span><span class=n>statements</span><span class=p>):</span>
@@ -2218,20 +2266,20 @@
         <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span>
             <span class=sa>f</span><span class=s1>&#39;Unable to add imp req for component </span><span class=si>{</span><span class=n>component</span><span class=o>.</span><span class=n>title</span><span class=si>}</span><span class=s1> control </span><span class=si>{</span><span class=n>new_imp_req</span><span class=o>.</span><span class=n>control_id</span><span class=si>}</span><span class=s1> and source: </span><span class=si>{</span><span class=n>profile_title</span><span class=si>}</span><span class=s1>&#39;</span>  <span class=c1># noqa E501</span>
         <span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.control_interface.ControlInterface-functions>Functions<a href=#trestle.core.control_interface.ControlInterface-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.bad_header class="doc doc-heading"> <code class="highlight language-python"><span class=n>bad_header</span><span class=p>(</span><span class=n>header</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.bad_header class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Return true if header format is bad.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1026</span>
-<span class=normal>1027</span>
-<span class=normal>1028</span>
-<span class=normal>1029</span>
-<span class=normal>1030</span>
-<span class=normal>1031</span>
-<span class=normal>1032</span>
-<span class=normal>1033</span>
-<span class=normal>1034</span>
-<span class=normal>1035</span>
-<span class=normal>1036</span>
-<span class=normal>1037</span>
-<span class=normal>1038</span>
-<span class=normal>1039</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.control_interface.ControlInterface-functions>Functions<a href=#trestle.core.control_interface.ControlInterface-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.bad_header class="doc doc-heading"> <code class="highlight language-python"><span class=n>bad_header</span><span class=p>(</span><span class=n>header</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.bad_header class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Return true if header format is bad.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1045</span>
+<span class=normal>1046</span>
+<span class=normal>1047</span>
+<span class=normal>1048</span>
+<span class=normal>1049</span>
+<span class=normal>1050</span>
+<span class=normal>1051</span>
+<span class=normal>1052</span>
+<span class=normal>1053</span>
+<span class=normal>1054</span>
+<span class=normal>1055</span>
+<span class=normal>1056</span>
+<span class=normal>1057</span>
+<span class=normal>1058</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>bad_header</span><span class=p>(</span><span class=n>header</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Return true if header format is bad.&quot;&quot;&quot;</span>
     <span class=k>if</span> <span class=ow>not</span> <span class=n>header</span> <span class=ow>or</span> <span class=n>header</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>!=</span> <span class=s1>&#39;#&#39;</span><span class=p>:</span>
@@ -2245,30 +2293,30 @@
         <span class=k>if</span> <span class=n>header</span><span class=p>[</span><span class=n>ii</span><span class=p>]</span> <span class=o>!=</span> <span class=s1>&#39;#&#39;</span><span class=p>:</span>
             <span class=k>return</span> <span class=kc>True</span>
     <span class=k>return</span> <span class=kc>True</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.clean_props class="doc doc-heading"> <code class="highlight language-python"><span class=n>clean_props</span><span class=p>(</span><span class=n>props</span><span class=p>,</span> <span class=n>remove_imp_status</span><span class=o>=</span><span class=kc>True</span><span class=p>,</span> <span class=n>remove_all_rule_info</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.clean_props class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Remove duplicate props and implementation status.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1059</span>
-<span class=normal>1060</span>
-<span class=normal>1061</span>
-<span class=normal>1062</span>
-<span class=normal>1063</span>
-<span class=normal>1064</span>
-<span class=normal>1065</span>
-<span class=normal>1066</span>
-<span class=normal>1067</span>
-<span class=normal>1068</span>
-<span class=normal>1069</span>
-<span class=normal>1070</span>
-<span class=normal>1071</span>
-<span class=normal>1072</span>
-<span class=normal>1073</span>
-<span class=normal>1074</span>
-<span class=normal>1075</span>
-<span class=normal>1076</span>
-<span class=normal>1077</span>
-<span class=normal>1078</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.clean_props class="doc doc-heading"> <code class="highlight language-python"><span class=n>clean_props</span><span class=p>(</span><span class=n>props</span><span class=p>,</span> <span class=n>remove_imp_status</span><span class=o>=</span><span class=kc>True</span><span class=p>,</span> <span class=n>remove_all_rule_info</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.clean_props class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Remove duplicate props and implementation status.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1078</span>
 <span class=normal>1079</span>
 <span class=normal>1080</span>
 <span class=normal>1081</span>
-<span class=normal>1082</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+<span class=normal>1082</span>
+<span class=normal>1083</span>
+<span class=normal>1084</span>
+<span class=normal>1085</span>
+<span class=normal>1086</span>
+<span class=normal>1087</span>
+<span class=normal>1088</span>
+<span class=normal>1089</span>
+<span class=normal>1090</span>
+<span class=normal>1091</span>
+<span class=normal>1092</span>
+<span class=normal>1093</span>
+<span class=normal>1094</span>
+<span class=normal>1095</span>
+<span class=normal>1096</span>
+<span class=normal>1097</span>
+<span class=normal>1098</span>
+<span class=normal>1099</span>
+<span class=normal>1100</span>
+<span class=normal>1101</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>clean_props</span><span class=p>(</span>
     <span class=n>props</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>List</span><span class=p>[</span><span class=n>common</span><span class=o>.</span><span class=n>Property</span><span class=p>]],</span> <span class=n>remove_imp_status</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>True</span><span class=p>,</span> <span class=n>remove_all_rule_info</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>common</span><span class=o>.</span><span class=n>Property</span><span class=p>]:</span>
@@ -2301,18 +2349,18 @@
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Create the control statement id from the control id.&quot;&quot;&quot;</span>
     <span class=n>id_</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>control_id</span><span class=si>}</span><span class=s1>_smt&#39;</span>
     <span class=k>return</span> <span class=n>id_</span><span class=o>.</span><span class=n>lower</span><span class=p>()</span> <span class=k>if</span> <span class=n>lower</span> <span class=k>else</span> <span class=n>id_</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.cull_props_by_rules class="doc doc-heading"> <code class="highlight language-python"><span class=n>cull_props_by_rules</span><span class=p>(</span><span class=n>props</span><span class=p>,</span> <span class=n>rules</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.cull_props_by_rules class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Cull properties to the ones needed by rules.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1084</span>
-<span class=normal>1085</span>
-<span class=normal>1086</span>
-<span class=normal>1087</span>
-<span class=normal>1088</span>
-<span class=normal>1089</span>
-<span class=normal>1090</span>
-<span class=normal>1091</span>
-<span class=normal>1092</span>
-<span class=normal>1093</span>
-<span class=normal>1094</span>
-<span class=normal>1095</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.cull_props_by_rules class="doc doc-heading"> <code class="highlight language-python"><span class=n>cull_props_by_rules</span><span class=p>(</span><span class=n>props</span><span class=p>,</span> <span class=n>rules</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.cull_props_by_rules class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Cull properties to the ones needed by rules.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1103</span>
+<span class=normal>1104</span>
+<span class=normal>1105</span>
+<span class=normal>1106</span>
+<span class=normal>1107</span>
+<span class=normal>1108</span>
+<span class=normal>1109</span>
+<span class=normal>1110</span>
+<span class=normal>1111</span>
+<span class=normal>1112</span>
+<span class=normal>1113</span>
+<span class=normal>1114</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>cull_props_by_rules</span><span class=p>(</span><span class=n>props</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>List</span><span class=p>[</span><span class=n>common</span><span class=o>.</span><span class=n>Property</span><span class=p>]],</span> <span class=n>rules</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>common</span><span class=o>.</span><span class=n>Property</span><span class=p>]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Cull properties to the ones needed by rules.&quot;&quot;&quot;</span>
     <span class=n>needed_rule_ids</span><span class=p>:</span> <span class=n>Set</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=nb>set</span><span class=p>()</span>
@@ -2355,41 +2403,41 @@
                 <span class=n>PartInfo</span><span class=p>(</span><span class=n>name</span><span class=o>=</span><span class=n>part</span><span class=o>.</span><span class=n>name</span><span class=p>,</span> <span class=n>prose</span><span class=o>=</span><span class=n>part</span><span class=o>.</span><span class=n>prose</span><span class=p>,</span> <span class=n>smt_part</span><span class=o>=</span><span class=n>add</span><span class=o>.</span><span class=n>by_id</span><span class=p>,</span> <span class=n>props</span><span class=o>=</span><span class=n>part</span><span class=o>.</span><span class=n>props</span><span class=p>,</span> <span class=n>parts</span><span class=o>=</span><span class=n>subpart_info</span><span class=p>)</span>
             <span class=p>)</span>
     <span class=k>return</span> <span class=n>part_infos</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.get_component_by_name class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_component_by_name</span><span class=p>(</span><span class=n>comp_def</span><span class=p>,</span> <span class=n>comp_name</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.get_component_by_name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get the component with this name from the comp_def.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1041</span>
-<span class=normal>1042</span>
-<span class=normal>1043</span>
-<span class=normal>1044</span>
-<span class=normal>1045</span>
-<span class=normal>1046</span>
-<span class=normal>1047</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.get_component_by_name class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_component_by_name</span><span class=p>(</span><span class=n>comp_def</span><span class=p>,</span> <span class=n>comp_name</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.get_component_by_name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get the component with this name from the comp_def.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1060</span>
+<span class=normal>1061</span>
+<span class=normal>1062</span>
+<span class=normal>1063</span>
+<span class=normal>1064</span>
+<span class=normal>1065</span>
+<span class=normal>1066</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>get_component_by_name</span><span class=p>(</span><span class=n>comp_def</span><span class=p>:</span> <span class=n>comp</span><span class=o>.</span><span class=n>ComponentDefinition</span><span class=p>,</span> <span class=n>comp_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Optional</span><span class=p>[</span><span class=n>comp</span><span class=o>.</span><span class=n>DefinedComponent</span><span class=p>]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Get the component with this name from the comp_def.&quot;&quot;&quot;</span>
     <span class=k>for</span> <span class=n>sub_comp</span> <span class=ow>in</span> <span class=n>as_list</span><span class=p>(</span><span class=n>comp_def</span><span class=o>.</span><span class=n>components</span><span class=p>):</span>
         <span class=k>if</span> <span class=n>sub_comp</span><span class=o>.</span><span class=n>title</span> <span class=o>==</span> <span class=n>comp_name</span><span class=p>:</span>
             <span class=k>return</span> <span class=n>sub_comp</span>
     <span class=k>return</span> <span class=kc>None</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.get_control_param_dict class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_control_param_dict</span><span class=p>(</span><span class=n>control</span><span class=p>,</span> <span class=n>values_only</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.get_control_param_dict class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Create mapping of param id's to params for params in the control.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>control</code> </td> <td> <code><a class="autorefs autorefs-internal" title="Control (trestle.oscal.catalog.Control)" href=../../oscal/catalog/#trestle.oscal.catalog.Control>Control</a></code> </td> <td> <div class=doc-md-description> <p>the control containing params of interest</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>values_only</code> </td> <td> <code><span title=bool>bool</span></code> </td> <td> <div class=doc-md-description> <p>only add params to the dict that have actual values</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code><span title=typing.Dict>Dict</span>[<span title=str>str</span>, <a class="autorefs autorefs-internal" title="Parameter (trestle.oscal.common.Parameter)" href=../../oscal/common/#trestle.oscal.common.Parameter>Parameter</a>]</code> </td> <td> <div class=doc-md-description> <p>Dictionary of param_id mapped to param</p> </div> </td> </tr> </tbody> </table> <details class=notes open> <summary>Notes</summary> <p>Warning is given if there is a parameter with no ID</p> </details> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>782</span>
-<span class=normal>783</span>
-<span class=normal>784</span>
-<span class=normal>785</span>
-<span class=normal>786</span>
-<span class=normal>787</span>
-<span class=normal>788</span>
-<span class=normal>789</span>
-<span class=normal>790</span>
-<span class=normal>791</span>
-<span class=normal>792</span>
-<span class=normal>793</span>
-<span class=normal>794</span>
-<span class=normal>795</span>
-<span class=normal>796</span>
-<span class=normal>797</span>
-<span class=normal>798</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.get_control_param_dict class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_control_param_dict</span><span class=p>(</span><span class=n>control</span><span class=p>,</span> <span class=n>values_only</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.get_control_param_dict class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Create mapping of param id's to params for params in the control.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>control</code> </td> <td> <code><a class="autorefs autorefs-internal" title="Control (trestle.oscal.catalog.Control)" href=../../oscal/catalog/#trestle.oscal.catalog.Control>Control</a></code> </td> <td> <div class=doc-md-description> <p>the control containing params of interest</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>values_only</code> </td> <td> <code><span title=bool>bool</span></code> </td> <td> <div class=doc-md-description> <p>only add params to the dict that have actual values</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code><span title=typing.Dict>Dict</span>[<span title=str>str</span>, <a class="autorefs autorefs-internal" title="Parameter (trestle.oscal.common.Parameter)" href=../../oscal/common/#trestle.oscal.common.Parameter>Parameter</a>]</code> </td> <td> <div class=doc-md-description> <p>Dictionary of param_id mapped to param</p> </div> </td> </tr> </tbody> </table> <details class=notes open> <summary>Notes</summary> <p>Warning is given if there is a parameter with no ID</p> </details> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>798</span>
 <span class=normal>799</span>
 <span class=normal>800</span>
 <span class=normal>801</span>
 <span class=normal>802</span>
-<span class=normal>803</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+<span class=normal>803</span>
+<span class=normal>804</span>
+<span class=normal>805</span>
+<span class=normal>806</span>
+<span class=normal>807</span>
+<span class=normal>808</span>
+<span class=normal>809</span>
+<span class=normal>810</span>
+<span class=normal>811</span>
+<span class=normal>812</span>
+<span class=normal>813</span>
+<span class=normal>814</span>
+<span class=normal>815</span>
+<span class=normal>816</span>
+<span class=normal>817</span>
+<span class=normal>818</span>
+<span class=normal>819</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>get_control_param_dict</span><span class=p>(</span><span class=n>control</span><span class=p>:</span> <span class=n>cat</span><span class=o>.</span><span class=n>Control</span><span class=p>,</span> <span class=n>values_only</span><span class=p>:</span> <span class=nb>bool</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>common</span><span class=o>.</span><span class=n>Parameter</span><span class=p>]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    Create mapping of param id&#39;s to params for params in the control.</span>
@@ -2437,19 +2485,7 @@
 <span class=k>def</span><span class=w> </span><span class=nf>get_label</span><span class=p>(</span><span class=n>item</span><span class=p>:</span> <span class=n>TypeWithProps</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Get the label from the props of a part or control.&quot;&quot;&quot;</span>
     <span class=k>return</span> <span class=n>ControlInterface</span><span class=o>.</span><span class=n>get_prop</span><span class=p>(</span><span class=n>item</span><span class=p>,</span> <span class=s1>&#39;label&#39;</span><span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.get_params_dict_from_item class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_params_dict_from_item</span><span class=p>(</span><span class=n>item</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.get_params_dict_from_item class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get all params found in this item with rule_id as key.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>450</span>
-<span class=normal>451</span>
-<span class=normal>452</span>
-<span class=normal>453</span>
-<span class=normal>454</span>
-<span class=normal>455</span>
-<span class=normal>456</span>
-<span class=normal>457</span>
-<span class=normal>458</span>
-<span class=normal>459</span>
-<span class=normal>460</span>
-<span class=normal>461</span>
-<span class=normal>462</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.get_params_dict_from_item class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_params_dict_from_item</span><span class=p>(</span><span class=n>item</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.get_params_dict_from_item class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get all params found in this item with rule_id as key.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>462</span>
 <span class=normal>463</span>
 <span class=normal>464</span>
 <span class=normal>465</span>
@@ -2486,8 +2522,23 @@
 <span class=normal>496</span>
 <span class=normal>497</span>
 <span class=normal>498</span>
-<span class=normal>499</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
-<span class=k>def</span><span class=w> </span><span class=nf>get_params_dict_from_item</span><span class=p>(</span><span class=n>item</span><span class=p>:</span> <span class=n>TypeWithProps</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Tuple</span><span class=p>[</span><span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]],</span> <span class=n>List</span><span class=p>[</span><span class=n>common</span><span class=o>.</span><span class=n>Property</span><span class=p>]]:</span>
+<span class=normal>499</span>
+<span class=normal>500</span>
+<span class=normal>501</span>
+<span class=normal>502</span>
+<span class=normal>503</span>
+<span class=normal>504</span>
+<span class=normal>505</span>
+<span class=normal>506</span>
+<span class=normal>507</span>
+<span class=normal>508</span>
+<span class=normal>509</span>
+<span class=normal>510</span>
+<span class=normal>511</span>
+<span class=normal>512</span>
+<span class=normal>513</span>
+<span class=normal>514</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+<span class=k>def</span><span class=w> </span><span class=nf>get_params_dict_from_item</span><span class=p>(</span><span class=n>item</span><span class=p>:</span> <span class=n>TypeWithProps</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Tuple</span><span class=p>[</span><span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>List</span><span class=p>[</span><span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]]],</span> <span class=n>List</span><span class=p>[</span><span class=n>common</span><span class=o>.</span><span class=n>Property</span><span class=p>]]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Get all params found in this item with rule_id as key.&quot;&quot;&quot;</span>
     <span class=c1># id, description, options - where options is a string containing comma-sep list of items</span>
     <span class=c1># params is dict with rule_id as key and value contains: param_name, description and choices</span>
@@ -2498,34 +2549,37 @@
             <span class=n>rule_id</span> <span class=o>=</span> <span class=n>prop</span><span class=o>.</span><span class=n>remarks</span>
             <span class=n>param_name</span> <span class=o>=</span> <span class=n>prop</span><span class=o>.</span><span class=n>value</span>
             <span class=c1># rule already exists in parameters dict</span>
-            <span class=k>if</span> <span class=n>rule_id</span> <span class=ow>in</span> <span class=n>params</span><span class=o>.</span><span class=n>keys</span><span class=p>():</span>
-                <span class=n>existing_param</span> <span class=o>=</span> <span class=nb>next</span><span class=p>((</span><span class=n>prm</span> <span class=k>for</span> <span class=n>prm</span> <span class=ow>in</span> <span class=n>params</span><span class=p>[</span><span class=n>rule_id</span><span class=p>]</span> <span class=k>if</span> <span class=n>prm</span><span class=p>[</span><span class=s1>&#39;name&#39;</span><span class=p>]</span> <span class=o>==</span> <span class=n>param_name</span><span class=p>),</span> <span class=kc>None</span><span class=p>)</span>
-                <span class=k>if</span> <span class=n>existing_param</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
-                    <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Param id for rule </span><span class=si>{</span><span class=n>rule_id</span><span class=si>}</span><span class=s1> already exists&#39;</span><span class=p>)</span>
+            <span class=k>if</span> <span class=n>rule_id</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
+                <span class=k>if</span> <span class=n>rule_id</span> <span class=ow>in</span> <span class=n>params</span><span class=o>.</span><span class=n>keys</span><span class=p>():</span>
+                    <span class=n>existing_param</span> <span class=o>=</span> <span class=nb>next</span><span class=p>((</span><span class=n>prm</span> <span class=k>for</span> <span class=n>prm</span> <span class=ow>in</span> <span class=n>params</span><span class=p>[</span><span class=n>rule_id</span><span class=p>]</span> <span class=k>if</span> <span class=n>prm</span><span class=p>[</span><span class=s1>&#39;name&#39;</span><span class=p>]</span> <span class=o>==</span> <span class=n>param_name</span><span class=p>),</span> <span class=kc>None</span><span class=p>)</span>
+                    <span class=k>if</span> <span class=n>existing_param</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
+                        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Param id for rule </span><span class=si>{</span><span class=n>rule_id</span><span class=si>}</span><span class=s1> already exists&#39;</span><span class=p>)</span>
+                    <span class=k>else</span><span class=p>:</span>
+                        <span class=c1># append a new parameter for the current rule</span>
+                        <span class=n>params</span><span class=p>[</span><span class=n>rule_id</span><span class=p>]</span><span class=o>.</span><span class=n>append</span><span class=p>({</span><span class=s1>&#39;name&#39;</span><span class=p>:</span> <span class=n>param_name</span><span class=p>})</span>
                 <span class=k>else</span><span class=p>:</span>
-                    <span class=c1># append a new parameter for the current rule</span>
-                    <span class=n>params</span><span class=p>[</span><span class=n>rule_id</span><span class=p>]</span><span class=o>.</span><span class=n>append</span><span class=p>({</span><span class=s1>&#39;name&#39;</span><span class=p>:</span> <span class=n>param_name</span><span class=p>})</span>
-            <span class=k>else</span><span class=p>:</span>
-                <span class=c1># create new param for this rule for the first parameter</span>
-                <span class=n>params</span><span class=p>[</span><span class=n>rule_id</span><span class=p>]</span> <span class=o>=</span> <span class=p>[{</span><span class=s1>&#39;name&#39;</span><span class=p>:</span> <span class=n>param_name</span><span class=p>}]</span>
-            <span class=n>props</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>prop</span><span class=p>)</span>
+                    <span class=c1># create new param for this rule for the first parameter</span>
+                    <span class=n>params</span><span class=p>[</span><span class=n>rule_id</span><span class=p>]</span> <span class=o>=</span> <span class=p>[{</span><span class=s1>&#39;name&#39;</span><span class=p>:</span> <span class=n>param_name</span><span class=p>}]</span>
+                    <span class=n>props</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>prop</span><span class=p>)</span>
         <span class=k>elif</span> <span class=n>const</span><span class=o>.</span><span class=n>PARAMETER_DESCRIPTION</span> <span class=ow>in</span> <span class=n>prop</span><span class=o>.</span><span class=n>name</span><span class=p>:</span>
             <span class=n>rule_id</span> <span class=o>=</span> <span class=n>prop</span><span class=o>.</span><span class=n>remarks</span>
             <span class=k>if</span> <span class=n>rule_id</span> <span class=ow>in</span> <span class=n>params</span><span class=p>:</span>
                 <span class=n>param</span> <span class=o>=</span> <span class=nb>next</span><span class=p>((</span><span class=n>prm</span> <span class=k>for</span> <span class=n>prm</span> <span class=ow>in</span> <span class=n>params</span><span class=p>[</span><span class=n>rule_id</span><span class=p>]</span> <span class=k>if</span> <span class=n>prm</span><span class=p>[</span><span class=s1>&#39;name&#39;</span><span class=p>]</span> <span class=o>==</span> <span class=n>param_name</span><span class=p>),</span> <span class=kc>None</span><span class=p>)</span>
-                <span class=n>param</span><span class=p>[</span><span class=s1>&#39;description&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>prop</span><span class=o>.</span><span class=n>value</span>
-                <span class=n>props</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>prop</span><span class=p>)</span>
-            <span class=k>else</span><span class=p>:</span>
-                <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Param description for rule </span><span class=si>{</span><span class=n>rule_id</span><span class=si>}</span><span class=s1> found with no param_id&#39;</span><span class=p>)</span>
+                <span class=k>if</span> <span class=n>param</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
+                    <span class=n>param</span><span class=p>[</span><span class=s1>&#39;description&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>prop</span><span class=o>.</span><span class=n>value</span>
+                    <span class=n>props</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>prop</span><span class=p>)</span>
+                <span class=k>else</span><span class=p>:</span>
+                    <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Param description for rule </span><span class=si>{</span><span class=n>rule_id</span><span class=si>}</span><span class=s1> found with no param_id&#39;</span><span class=p>)</span>
         <span class=k>elif</span> <span class=n>const</span><span class=o>.</span><span class=n>PARAMETER_VALUE_ALTERNATIVES</span> <span class=ow>in</span> <span class=n>prop</span><span class=o>.</span><span class=n>name</span><span class=p>:</span>
             <span class=n>rule_id</span> <span class=o>=</span> <span class=n>prop</span><span class=o>.</span><span class=n>remarks</span>
             <span class=k>if</span> <span class=n>rule_id</span> <span class=ow>in</span> <span class=n>params</span><span class=p>:</span>
                 <span class=n>param</span> <span class=o>=</span> <span class=nb>next</span><span class=p>((</span><span class=n>prm</span> <span class=k>for</span> <span class=n>prm</span> <span class=ow>in</span> <span class=n>params</span><span class=p>[</span><span class=n>rule_id</span><span class=p>]</span> <span class=k>if</span> <span class=n>prm</span><span class=p>[</span><span class=s1>&#39;name&#39;</span><span class=p>]</span> <span class=o>==</span> <span class=n>param_name</span><span class=p>),</span> <span class=kc>None</span><span class=p>)</span>
-                <span class=n>param</span><span class=p>[</span><span class=s1>&#39;options&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>prop</span><span class=o>.</span><span class=n>value</span>
-                <span class=n>props</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>prop</span><span class=p>)</span>
-            <span class=k>else</span><span class=p>:</span>
-                <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Param options for rule </span><span class=si>{</span><span class=n>rule_id</span><span class=si>}</span><span class=s1> found with no param_id&#39;</span><span class=p>)</span>
-    <span class=n>new_params</span> <span class=o>=</span> <span class=p>{}</span>
+                <span class=k>if</span> <span class=n>param</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
+                    <span class=n>param</span><span class=p>[</span><span class=s1>&#39;options&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>prop</span><span class=o>.</span><span class=n>value</span>
+                    <span class=n>props</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>prop</span><span class=p>)</span>
+                <span class=k>else</span><span class=p>:</span>
+                    <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Param options for rule </span><span class=si>{</span><span class=n>rule_id</span><span class=si>}</span><span class=s1> found with no param_id&#39;</span><span class=p>)</span>
+    <span class=n>new_params</span><span class=p>:</span> <span class=nb>dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>list</span><span class=p>[</span><span class=nb>dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]]]</span> <span class=o>=</span> <span class=p>{}</span>
     <span class=k>for</span> <span class=n>rule_id</span><span class=p>,</span> <span class=n>rule_params</span> <span class=ow>in</span> <span class=n>params</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
         <span class=n>new_params</span><span class=p>[</span><span class=n>rule_id</span><span class=p>]</span> <span class=o>=</span> <span class=p>[]</span>
         <span class=k>for</span> <span class=n>param</span> <span class=ow>in</span> <span class=n>rule_params</span><span class=p>:</span>
@@ -2582,7 +2636,7 @@
 <span class=sd>    For a part in a control find the parts in it that match the item_type</span>
 <span class=sd>    Return list of string formatted labels and associated descriptive prose</span>
 <span class=sd>    &quot;&quot;&quot;</span>
-    <span class=n>items</span> <span class=o>=</span> <span class=p>[]</span>
+    <span class=n>items</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>Union</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]]]</span> <span class=o>=</span> <span class=p>[]</span>
     <span class=k>if</span> <span class=n>part</span><span class=o>.</span><span class=n>name</span> <span class=ow>in</span> <span class=p>[</span><span class=n>const</span><span class=o>.</span><span class=n>STATEMENT</span><span class=p>,</span> <span class=n>item_type</span><span class=p>]:</span>
         <span class=c1># the options here are to force the label to be the part.id or the part.label</span>
         <span class=c1># the label may be of the form (a) while the part.id is ac-1_smt.a.1.a</span>
@@ -2658,18 +2712,18 @@
         <span class=k>if</span> <span class=n>prop</span><span class=o>.</span><span class=n>name</span><span class=o>.</span><span class=n>strip</span><span class=p>()</span><span class=o>.</span><span class=n>lower</span><span class=p>()</span> <span class=o>==</span> <span class=n>prop_name</span><span class=o>.</span><span class=n>strip</span><span class=p>()</span><span class=o>.</span><span class=n>lower</span><span class=p>():</span>
             <span class=k>return</span> <span class=n>prop</span><span class=o>.</span><span class=n>value</span><span class=o>.</span><span class=n>strip</span><span class=p>()</span>
     <span class=k>return</span> <span class=n>default</span> <span class=k>if</span> <span class=n>default</span> <span class=k>else</span> <span class=s1>&#39;&#39;</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.get_rule_list_for_imp_req class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_rule_list_for_imp_req</span><span class=p>(</span><span class=n>imp_req</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.get_rule_list_for_imp_req class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get the list of rules applying to an imp_req as two lists.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>437</span>
-<span class=normal>438</span>
-<span class=normal>439</span>
-<span class=normal>440</span>
-<span class=normal>441</span>
-<span class=normal>442</span>
-<span class=normal>443</span>
-<span class=normal>444</span>
-<span class=normal>445</span>
-<span class=normal>446</span>
-<span class=normal>447</span>
-<span class=normal>448</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.get_rule_list_for_imp_req class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_rule_list_for_imp_req</span><span class=p>(</span><span class=n>imp_req</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.get_rule_list_for_imp_req class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get the list of rules applying to an imp_req as two lists.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>449</span>
+<span class=normal>450</span>
+<span class=normal>451</span>
+<span class=normal>452</span>
+<span class=normal>453</span>
+<span class=normal>454</span>
+<span class=normal>455</span>
+<span class=normal>456</span>
+<span class=normal>457</span>
+<span class=normal>458</span>
+<span class=normal>459</span>
+<span class=normal>460</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>get_rule_list_for_imp_req</span><span class=p>(</span>
     <span class=n>imp_req</span><span class=p>:</span> <span class=n>ossp</span><span class=o>.</span><span class=n>ImplementedRequirement</span><span class=p>,</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Tuple</span><span class=p>[</span><span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>],</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>],</span> <span class=n>List</span><span class=p>[</span><span class=n>common</span><span class=o>.</span><span class=n>Property</span><span class=p>]]:</span>
@@ -2681,16 +2735,16 @@
         <span class=n>statement_rules</span><span class=o>.</span><span class=n>update</span><span class=p>(</span><span class=n>stat_rules</span><span class=p>)</span>
         <span class=n>rule_props</span><span class=o>.</span><span class=n>extend</span><span class=p>(</span><span class=n>statement_props</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>comp_rules</span><span class=p>,</span> <span class=nb>sorted</span><span class=p>(</span><span class=n>statement_rules</span><span class=p>),</span> <span class=n>rule_props</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.get_rule_list_for_item class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_rule_list_for_item</span><span class=p>(</span><span class=n>item</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.get_rule_list_for_item class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get the list of rules applying to this item from its top level props.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>426</span>
-<span class=normal>427</span>
-<span class=normal>428</span>
-<span class=normal>429</span>
-<span class=normal>430</span>
-<span class=normal>431</span>
-<span class=normal>432</span>
-<span class=normal>433</span>
-<span class=normal>434</span>
-<span class=normal>435</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.get_rule_list_for_item class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_rule_list_for_item</span><span class=p>(</span><span class=n>item</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.get_rule_list_for_item class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get the list of rules applying to this item from its top level props.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>438</span>
+<span class=normal>439</span>
+<span class=normal>440</span>
+<span class=normal>441</span>
+<span class=normal>442</span>
+<span class=normal>443</span>
+<span class=normal>444</span>
+<span class=normal>445</span>
+<span class=normal>446</span>
+<span class=normal>447</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>get_rule_list_for_item</span><span class=p>(</span><span class=n>item</span><span class=p>:</span> <span class=n>TypeWithProps</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Tuple</span><span class=p>[</span><span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>],</span> <span class=n>List</span><span class=p>[</span><span class=n>common</span><span class=o>.</span><span class=n>Property</span><span class=p>]]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Get the list of rules applying to this item from its top level props.&quot;&quot;&quot;</span>
     <span class=n>props</span> <span class=o>=</span> <span class=p>[]</span>
@@ -2700,36 +2754,24 @@
             <span class=n>rule_list</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>prop</span><span class=o>.</span><span class=n>value</span><span class=p>)</span>
             <span class=n>props</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>prop</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>rule_list</span><span class=p>,</span> <span class=n>props</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.get_rules_and_params_dict_from_item class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_rules_and_params_dict_from_item</span><span class=p>(</span><span class=n>item</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.get_rules_and_params_dict_from_item class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get the rule dict and params dict from item with props.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>501</span>
-<span class=normal>502</span>
-<span class=normal>503</span>
-<span class=normal>504</span>
-<span class=normal>505</span>
-<span class=normal>506</span>
-<span class=normal>507</span>
-<span class=normal>508</span>
-<span class=normal>509</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.get_rules_and_params_dict_from_item class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_rules_and_params_dict_from_item</span><span class=p>(</span><span class=n>item</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.get_rules_and_params_dict_from_item class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get the rule dict and params dict from item with props.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>516</span>
+<span class=normal>517</span>
+<span class=normal>518</span>
+<span class=normal>519</span>
+<span class=normal>520</span>
+<span class=normal>521</span>
+<span class=normal>522</span>
+<span class=normal>523</span>
+<span class=normal>524</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>get_rules_and_params_dict_from_item</span><span class=p>(</span>
     <span class=n>item</span><span class=p>:</span> <span class=n>TypeWithProps</span><span class=p>,</span>
-<span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Tuple</span><span class=p>[</span><span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]],</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]],</span> <span class=n>List</span><span class=p>[</span><span class=n>common</span><span class=o>.</span><span class=n>Property</span><span class=p>]]:</span>
+<span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Tuple</span><span class=p>[</span><span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]],</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>List</span><span class=p>[</span><span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]]],</span> <span class=n>List</span><span class=p>[</span><span class=n>common</span><span class=o>.</span><span class=n>Property</span><span class=p>]]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Get the rule dict and params dict from item with props.&quot;&quot;&quot;</span>
     <span class=n>rules_dict</span><span class=p>,</span> <span class=n>rules_props</span> <span class=o>=</span> <span class=n>ControlInterface</span><span class=o>.</span><span class=n>get_rules_dict_from_item</span><span class=p>(</span><span class=n>item</span><span class=p>)</span>
     <span class=n>params_dict</span><span class=p>,</span> <span class=n>params_props</span> <span class=o>=</span> <span class=n>ControlInterface</span><span class=o>.</span><span class=n>get_params_dict_from_item</span><span class=p>(</span><span class=n>item</span><span class=p>)</span>
     <span class=n>rules_props</span><span class=o>.</span><span class=n>extend</span><span class=p>(</span><span class=n>params_props</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>rules_dict</span><span class=p>,</span> <span class=n>params_dict</span><span class=p>,</span> <span class=n>rules_props</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.get_rules_dict_from_item class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_rules_dict_from_item</span><span class=p>(</span><span class=n>item</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.get_rules_dict_from_item class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get all rules found in this items props.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>396</span>
-<span class=normal>397</span>
-<span class=normal>398</span>
-<span class=normal>399</span>
-<span class=normal>400</span>
-<span class=normal>401</span>
-<span class=normal>402</span>
-<span class=normal>403</span>
-<span class=normal>404</span>
-<span class=normal>405</span>
-<span class=normal>406</span>
-<span class=normal>407</span>
-<span class=normal>408</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.get_rules_dict_from_item class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_rules_dict_from_item</span><span class=p>(</span><span class=n>item</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.get_rules_dict_from_item class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get all rules found in this items props.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>408</span>
 <span class=normal>409</span>
 <span class=normal>410</span>
 <span class=normal>411</span>
@@ -2739,7 +2781,19 @@
 <span class=normal>415</span>
 <span class=normal>416</span>
 <span class=normal>417</span>
-<span class=normal>418</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+<span class=normal>418</span>
+<span class=normal>419</span>
+<span class=normal>420</span>
+<span class=normal>421</span>
+<span class=normal>422</span>
+<span class=normal>423</span>
+<span class=normal>424</span>
+<span class=normal>425</span>
+<span class=normal>426</span>
+<span class=normal>427</span>
+<span class=normal>428</span>
+<span class=normal>429</span>
+<span class=normal>430</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>get_rules_dict_from_item</span><span class=p>(</span><span class=n>item</span><span class=p>:</span> <span class=n>TypeWithProps</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Tuple</span><span class=p>[</span><span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=nb>str</span><span class=p>]],</span> <span class=n>List</span><span class=p>[</span><span class=n>common</span><span class=o>.</span><span class=n>Property</span><span class=p>]]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Get all rules found in this items props.&quot;&quot;&quot;</span>
     <span class=c1># rules is dict containing rule_id and description</span>
@@ -2775,20 +2829,22 @@
     <span class=k>if</span> <span class=n>id_</span><span class=p>:</span>
         <span class=k>return</span> <span class=n>id_</span><span class=p>,</span> <span class=n>name</span><span class=p>,</span> <span class=n>title</span><span class=p>,</span> <span class=n>ControlInterface</span><span class=o>.</span><span class=n>get_control_section_prose</span><span class=p>(</span><span class=n>control</span><span class=p>,</span> <span class=n>name</span><span class=p>)</span>
     <span class=k>return</span> <span class=s1>&#39;&#39;</span><span class=p>,</span> <span class=s1>&#39;&#39;</span><span class=p>,</span> <span class=s1>&#39;&#39;</span><span class=p>,</span> <span class=s1>&#39;&#39;</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.get_set_params_from_item class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_set_params_from_item</span><span class=p>(</span><span class=n>item</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.get_set_params_from_item class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get set params that have values from control implementation or imp req.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>511</span>
-<span class=normal>512</span>
-<span class=normal>513</span>
-<span class=normal>514</span>
-<span class=normal>515</span>
-<span class=normal>516</span>
-<span class=normal>517</span>
-<span class=normal>518</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.get_set_params_from_item class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_set_params_from_item</span><span class=p>(</span><span class=n>item</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.get_set_params_from_item class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get set params that have values from control implementation or imp req.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>526</span>
+<span class=normal>527</span>
+<span class=normal>528</span>
+<span class=normal>529</span>
+<span class=normal>530</span>
+<span class=normal>531</span>
+<span class=normal>532</span>
+<span class=normal>533</span>
+<span class=normal>534</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>get_set_params_from_item</span><span class=p>(</span>
     <span class=n>item</span><span class=p>:</span> <span class=n>Union</span><span class=p>[</span><span class=n>comp</span><span class=o>.</span><span class=n>ControlImplementation</span><span class=p>,</span> <span class=n>comp</span><span class=o>.</span><span class=n>ImplementedRequirement</span><span class=p>],</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>comp</span><span class=o>.</span><span class=n>SetParameter</span><span class=p>]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Get set params that have values from control implementation or imp req.&quot;&quot;&quot;</span>
-    <span class=k>return</span> <span class=p>{</span>
-        <span class=n>set_param</span><span class=o>.</span><span class=n>param_id</span><span class=p>:</span> <span class=n>set_param</span> <span class=k>for</span> <span class=n>set_param</span> <span class=ow>in</span> <span class=n>as_filtered_list</span><span class=p>(</span><span class=n>item</span><span class=o>.</span><span class=n>set_parameters</span><span class=p>,</span> <span class=k>lambda</span> <span class=n>i</span><span class=p>:</span> <span class=n>i</span><span class=o>.</span><span class=n>values</span><span class=p>)</span>
+    <span class=k>return</span> <span class=p>{</span>  <span class=c1># Mypy incorrectly infers return type despite correct signature - bug with dict comprehension</span>
+        <span class=n>set_param</span><span class=o>.</span><span class=n>param_id</span><span class=p>:</span> <span class=n>set_param</span>
+        <span class=k>for</span> <span class=n>set_param</span> <span class=ow>in</span> <span class=n>as_filtered_list</span><span class=p>(</span><span class=n>item</span><span class=o>.</span><span class=n>set_parameters</span><span class=p>,</span> <span class=k>lambda</span> <span class=n>i</span><span class=p>:</span> <span class=n>i</span><span class=o>.</span><span class=n>values</span><span class=p>)</span>  <span class=c1># type: ignore[return-value]</span>
     <span class=p>}</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.get_sort_id class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_sort_id</span><span class=p>(</span><span class=n>control</span><span class=p>,</span> <span class=n>allow_none</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.get_sort_id class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get the sort-id for the control.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>245</span>
 <span class=normal>246</span>
@@ -2797,7 +2853,7 @@
 <span class=normal>249</span>
 <span class=normal>250</span>
 <span class=normal>251</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
-<span class=k>def</span><span class=w> </span><span class=nf>get_sort_id</span><span class=p>(</span><span class=n>control</span><span class=p>:</span> <span class=n>cat</span><span class=o>.</span><span class=n>Control</span><span class=p>,</span> <span class=n>allow_none</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
+<span class=k>def</span><span class=w> </span><span class=nf>get_sort_id</span><span class=p>(</span><span class=n>control</span><span class=p>:</span> <span class=n>cat</span><span class=o>.</span><span class=n>Control</span><span class=p>,</span> <span class=n>allow_none</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Get the sort-id for the control.&quot;&quot;&quot;</span>
     <span class=k>for</span> <span class=n>prop</span> <span class=ow>in</span> <span class=n>as_list</span><span class=p>(</span><span class=n>control</span><span class=o>.</span><span class=n>props</span><span class=p>):</span>
         <span class=k>if</span> <span class=n>prop</span><span class=o>.</span><span class=n>name</span> <span class=o>==</span> <span class=n>const</span><span class=o>.</span><span class=n>SORT_ID</span><span class=p>:</span>
@@ -2814,17 +2870,17 @@
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Find the statement id in the control.&quot;&quot;&quot;</span>
     <span class=k>for</span> <span class=n>part</span> <span class=ow>in</span> <span class=n>as_list</span><span class=p>(</span><span class=n>control</span><span class=o>.</span><span class=n>parts</span><span class=p>):</span>
         <span class=k>if</span> <span class=n>part</span><span class=o>.</span><span class=n>name</span> <span class=o>==</span> <span class=n>const</span><span class=o>.</span><span class=n>STATEMENT</span><span class=p>:</span>
-            <span class=k>return</span> <span class=n>part</span><span class=o>.</span><span class=n>id</span>
+            <span class=k>return</span> <span class=n>part</span><span class=o>.</span><span class=n>id</span> <span class=ow>or</span> <span class=s1>&#39;&#39;</span>
     <span class=k>return</span> <span class=n>ControlInterface</span><span class=o>.</span><span class=n>create_statement_id</span><span class=p>(</span><span class=n>control</span><span class=o>.</span><span class=n>id</span><span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.get_status_from_props class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_status_from_props</span><span class=p>(</span><span class=n>item</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.get_status_from_props class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get the status of an item from its props.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1049</span>
-<span class=normal>1050</span>
-<span class=normal>1051</span>
-<span class=normal>1052</span>
-<span class=normal>1053</span>
-<span class=normal>1054</span>
-<span class=normal>1055</span>
-<span class=normal>1056</span>
-<span class=normal>1057</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.get_status_from_props class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_status_from_props</span><span class=p>(</span><span class=n>item</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.get_status_from_props class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get the status of an item from its props.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1068</span>
+<span class=normal>1069</span>
+<span class=normal>1070</span>
+<span class=normal>1071</span>
+<span class=normal>1072</span>
+<span class=normal>1073</span>
+<span class=normal>1074</span>
+<span class=normal>1075</span>
+<span class=normal>1076</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>get_status_from_props</span><span class=p>(</span><span class=n>item</span><span class=p>:</span> <span class=n>TypeWithProps</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>common</span><span class=o>.</span><span class=n>ImplementationStatus</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Get the status of an item from its props.&quot;&quot;&quot;</span>
     <span class=n>status</span> <span class=o>=</span> <span class=n>common</span><span class=o>.</span><span class=n>ImplementationStatus</span><span class=p>(</span><span class=n>state</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>STATUS_PLANNED</span><span class=p>)</span>
@@ -2833,31 +2889,7 @@
             <span class=n>status</span> <span class=o>=</span> <span class=n>ControlInterface</span><span class=o>.</span><span class=n>_prop_as_status</span><span class=p>(</span><span class=n>prop</span><span class=p>)</span>
             <span class=k>break</span>
     <span class=k>return</span> <span class=n>status</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.insert_imp_req_into_component class="doc doc-heading"> <code class="highlight language-python"><span class=n>insert_imp_req_into_component</span><span class=p>(</span><span class=n>component</span><span class=p>,</span> <span class=n>new_imp_req</span><span class=p>,</span> <span class=n>profile_title</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.insert_imp_req_into_component class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Insert imp req into component by matching source title and control id to existing imp req.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>component</code> </td> <td> <code><a class="autorefs autorefs-internal" title="DefinedComponent (trestle.oscal.component.DefinedComponent)" href=../../oscal/component/#trestle.oscal.component.DefinedComponent>DefinedComponent</a></code> </td> <td> <div class=doc-md-description> <p>The defined component receiving the imp_req</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>new_imp_req</code> </td> <td> <code><a class="autorefs autorefs-internal" title="ImplementedRequirement (trestle.oscal.component.ImplementedRequirement)" href=../../oscal/component/#trestle.oscal.component.ImplementedRequirement>ImplementedRequirement</a></code> </td> <td> <div class=doc-md-description> <p>The new imp_req being added</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>profile_title</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>The title of the source profile for the control implementation containing the imp_req</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=notes open> <summary>Notes</summary> <p>Inserts the imp_req on the first match found. Note it is possible two control implementations could have the same source and specify the same control</p> </details> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1131</span>
-<span class=normal>1132</span>
-<span class=normal>1133</span>
-<span class=normal>1134</span>
-<span class=normal>1135</span>
-<span class=normal>1136</span>
-<span class=normal>1137</span>
-<span class=normal>1138</span>
-<span class=normal>1139</span>
-<span class=normal>1140</span>
-<span class=normal>1141</span>
-<span class=normal>1142</span>
-<span class=normal>1143</span>
-<span class=normal>1144</span>
-<span class=normal>1145</span>
-<span class=normal>1146</span>
-<span class=normal>1147</span>
-<span class=normal>1148</span>
-<span class=normal>1149</span>
-<span class=normal>1150</span>
-<span class=normal>1151</span>
-<span class=normal>1152</span>
-<span class=normal>1153</span>
-<span class=normal>1154</span>
-<span class=normal>1155</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.insert_imp_req_into_component class="doc doc-heading"> <code class="highlight language-python"><span class=n>insert_imp_req_into_component</span><span class=p>(</span><span class=n>component</span><span class=p>,</span> <span class=n>new_imp_req</span><span class=p>,</span> <span class=n>profile_title</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.insert_imp_req_into_component class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Insert imp req into component by matching source title and control id to existing imp req.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>component</code> </td> <td> <code><a class="autorefs autorefs-internal" title="DefinedComponent (trestle.oscal.component.DefinedComponent)" href=../../oscal/component/#trestle.oscal.component.DefinedComponent>DefinedComponent</a></code> </td> <td> <div class=doc-md-description> <p>The defined component receiving the imp_req</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>new_imp_req</code> </td> <td> <code><a class="autorefs autorefs-internal" title="ImplementedRequirement (trestle.oscal.component.ImplementedRequirement)" href=../../oscal/component/#trestle.oscal.component.ImplementedRequirement>ImplementedRequirement</a></code> </td> <td> <div class=doc-md-description> <p>The new imp_req being added</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>profile_title</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>The title of the source profile for the control implementation containing the imp_req</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=notes open> <summary>Notes</summary> <p>Inserts the imp_req on the first match found. Note it is possible two control implementations could have the same source and specify the same control</p> </details> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1155</span>
 <span class=normal>1156</span>
 <span class=normal>1157</span>
 <span class=normal>1158</span>
@@ -2908,7 +2940,31 @@
 <span class=normal>1203</span>
 <span class=normal>1204</span>
 <span class=normal>1205</span>
-<span class=normal>1206</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+<span class=normal>1206</span>
+<span class=normal>1207</span>
+<span class=normal>1208</span>
+<span class=normal>1209</span>
+<span class=normal>1210</span>
+<span class=normal>1211</span>
+<span class=normal>1212</span>
+<span class=normal>1213</span>
+<span class=normal>1214</span>
+<span class=normal>1215</span>
+<span class=normal>1216</span>
+<span class=normal>1217</span>
+<span class=normal>1218</span>
+<span class=normal>1219</span>
+<span class=normal>1220</span>
+<span class=normal>1221</span>
+<span class=normal>1222</span>
+<span class=normal>1223</span>
+<span class=normal>1224</span>
+<span class=normal>1225</span>
+<span class=normal>1226</span>
+<span class=normal>1227</span>
+<span class=normal>1228</span>
+<span class=normal>1229</span>
+<span class=normal>1230</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>insert_imp_req_into_component</span><span class=p>(</span>
     <span class=n>component</span><span class=p>:</span> <span class=n>comp</span><span class=o>.</span><span class=n>DefinedComponent</span><span class=p>,</span>
     <span class=n>new_imp_req</span><span class=p>:</span> <span class=n>comp</span><span class=o>.</span><span class=n>ImplementedRequirement</span><span class=p>,</span>
@@ -2928,7 +2984,7 @@
 <span class=sd>        have the same source and specify the same control</span>
 <span class=sd>    &quot;&quot;&quot;</span>
     <span class=k>for</span> <span class=n>control_imp</span> <span class=ow>in</span> <span class=n>as_list</span><span class=p>(</span><span class=n>component</span><span class=o>.</span><span class=n>control_implementations</span><span class=p>):</span>
-        <span class=n>_</span><span class=p>,</span> <span class=n>control_imp_param_dict</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>ControlInterface</span><span class=o>.</span><span class=n>get_rules_and_params_dict_from_item</span><span class=p>(</span><span class=n>control_imp</span><span class=p>)</span>
+        <span class=n>_</span><span class=p>,</span> <span class=n>control_imp_param_dict</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>ControlInterface</span><span class=o>.</span><span class=n>get_rules_and_params_dict_from_item</span><span class=p>(</span><span class=n>control_imp</span><span class=p>)</span>  <span class=c1># type: ignore</span>
         <span class=n>control_imp_rule_param_ids</span> <span class=o>=</span> <span class=p>[</span>
             <span class=n>param</span><span class=p>[</span><span class=s1>&#39;name&#39;</span><span class=p>]</span> <span class=k>for</span> <span class=n>params</span> <span class=ow>in</span> <span class=n>control_imp_param_dict</span><span class=o>.</span><span class=n>values</span><span class=p>()</span> <span class=k>for</span> <span class=n>param</span> <span class=ow>in</span> <span class=n>params</span>
         <span class=p>]</span>
@@ -2969,7 +3025,7 @@
                     <span class=k>continue</span>
                 <span class=n>imp_req</span><span class=o>.</span><span class=n>set_parameters</span> <span class=o>=</span> <span class=n>as_list</span><span class=p>(</span><span class=n>imp_req</span><span class=o>.</span><span class=n>set_parameters</span><span class=p>)</span>
                 <span class=n>imp_req</span><span class=o>.</span><span class=n>set_parameters</span><span class=o>.</span><span class=n>append</span><span class=p>(</span>
-                    <span class=n>comp</span><span class=o>.</span><span class=n>SetParameter</span><span class=p>(</span><span class=n>param_id</span><span class=o>=</span><span class=n>set_param</span><span class=o>.</span><span class=n>param_id</span><span class=p>,</span> <span class=n>values</span><span class=o>=</span><span class=n>set_param</span><span class=o>.</span><span class=n>values</span><span class=p>)</span>
+                    <span class=n>comp</span><span class=o>.</span><span class=n>SetParameter</span><span class=p>(</span><span class=o>**</span><span class=p>{</span><span class=s1>&#39;param_id&#39;</span><span class=p>:</span> <span class=n>set_param</span><span class=o>.</span><span class=n>param_id</span><span class=p>},</span> <span class=n>values</span><span class=o>=</span><span class=n>set_param</span><span class=o>.</span><span class=n>values</span><span class=p>)</span>
                 <span class=p>)</span>
             <span class=n>new_statements</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>comp</span><span class=o>.</span><span class=n>Statement</span><span class=p>]</span> <span class=o>=</span> <span class=p>[]</span>
             <span class=k>for</span> <span class=n>statement</span> <span class=ow>in</span> <span class=n>as_list</span><span class=p>(</span><span class=n>new_imp_req</span><span class=o>.</span><span class=n>statements</span><span class=p>):</span>
@@ -2984,33 +3040,33 @@
     <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span>
         <span class=sa>f</span><span class=s1>&#39;Unable to add imp req for component </span><span class=si>{</span><span class=n>component</span><span class=o>.</span><span class=n>title</span><span class=si>}</span><span class=s1> control </span><span class=si>{</span><span class=n>new_imp_req</span><span class=o>.</span><span class=n>control_id</span><span class=si>}</span><span class=s1> and source: </span><span class=si>{</span><span class=n>profile_title</span><span class=si>}</span><span class=s1>&#39;</span>  <span class=c1># noqa E501</span>
     <span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.insert_status_in_props class="doc doc-heading"> <code class="highlight language-python"><span class=n>insert_status_in_props</span><span class=p>(</span><span class=n>item</span><span class=p>,</span> <span class=n>status</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.insert_status_in_props class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Insert status content into props of the item.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1107</span>
-<span class=normal>1108</span>
-<span class=normal>1109</span>
-<span class=normal>1110</span>
-<span class=normal>1111</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.insert_status_in_props class="doc doc-heading"> <code class="highlight language-python"><span class=n>insert_status_in_props</span><span class=p>(</span><span class=n>item</span><span class=p>,</span> <span class=n>status</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.insert_status_in_props class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Insert status content into props of the item.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1131</span>
+<span class=normal>1132</span>
+<span class=normal>1133</span>
+<span class=normal>1134</span>
+<span class=normal>1135</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>insert_status_in_props</span><span class=p>(</span><span class=n>item</span><span class=p>:</span> <span class=n>TypeWithProps</span><span class=p>,</span> <span class=n>status</span><span class=p>:</span> <span class=n>common</span><span class=o>.</span><span class=n>ImplementationStatus</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Insert status content into props of the item.&quot;&quot;&quot;</span>
     <span class=n>prop</span> <span class=o>=</span> <span class=n>ControlInterface</span><span class=o>.</span><span class=n>_status_as_prop</span><span class=p>(</span><span class=n>status</span><span class=p>)</span>
     <span class=n>ControlInterface</span><span class=o>.</span><span class=n>_replace_prop</span><span class=p>(</span><span class=n>item</span><span class=p>,</span> <span class=n>prop</span><span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.is_withdrawn class="doc doc-heading"> <code class="highlight language-python"><span class=n>is_withdrawn</span><span class=p>(</span><span class=n>control</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.is_withdrawn class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Determine if control is marked Withdrawn.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>control</code> </td> <td> <code><a class="autorefs autorefs-internal" title="Control (trestle.oscal.catalog.Control)" href=../../oscal/catalog/#trestle.oscal.catalog.Control>Control</a></code> </td> <td> <div class=doc-md-description> <p>The control that may be marked withdrawn.</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code><span title=bool>bool</span></code> </td> <td> <div class=doc-md-description> <p>True if marked withdrawn, false otherwise.</p> </div> </td> </tr> </tbody> </table> <p>This is determined by property with name 'status' with value 'Withdrawn'.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>611</span>
-<span class=normal>612</span>
-<span class=normal>613</span>
-<span class=normal>614</span>
-<span class=normal>615</span>
-<span class=normal>616</span>
-<span class=normal>617</span>
-<span class=normal>618</span>
-<span class=normal>619</span>
-<span class=normal>620</span>
-<span class=normal>621</span>
-<span class=normal>622</span>
-<span class=normal>623</span>
-<span class=normal>624</span>
-<span class=normal>625</span>
-<span class=normal>626</span>
-<span class=normal>627</span>
-<span class=normal>628</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.is_withdrawn class="doc doc-heading"> <code class="highlight language-python"><span class=n>is_withdrawn</span><span class=p>(</span><span class=n>control</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.is_withdrawn class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Determine if control is marked Withdrawn.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>control</code> </td> <td> <code><a class="autorefs autorefs-internal" title="Control (trestle.oscal.catalog.Control)" href=../../oscal/catalog/#trestle.oscal.catalog.Control>Control</a></code> </td> <td> <div class=doc-md-description> <p>The control that may be marked withdrawn.</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code><span title=bool>bool</span></code> </td> <td> <div class=doc-md-description> <p>True if marked withdrawn, false otherwise.</p> </div> </td> </tr> </tbody> </table> <p>This is determined by property with name 'status' with value 'Withdrawn'.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>627</span>
+<span class=normal>628</span>
+<span class=normal>629</span>
+<span class=normal>630</span>
+<span class=normal>631</span>
+<span class=normal>632</span>
+<span class=normal>633</span>
+<span class=normal>634</span>
+<span class=normal>635</span>
+<span class=normal>636</span>
+<span class=normal>637</span>
+<span class=normal>638</span>
+<span class=normal>639</span>
+<span class=normal>640</span>
+<span class=normal>641</span>
+<span class=normal>642</span>
+<span class=normal>643</span>
+<span class=normal>644</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>is_withdrawn</span><span class=p>(</span><span class=n>control</span><span class=p>:</span> <span class=n>cat</span><span class=o>.</span><span class=n>Control</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    Determine if control is marked Withdrawn.</span>
@@ -3028,32 +3084,16 @@
     <span class=p>):</span>
         <span class=k>return</span> <span class=kc>True</span>
     <span class=k>return</span> <span class=kc>False</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.item_has_rules class="doc doc-heading"> <code class="highlight language-python"><span class=n>item_has_rules</span><span class=p>(</span><span class=n>item</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.item_has_rules class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Determine if the item has rules in its props.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>420</span>
-<span class=normal>421</span>
-<span class=normal>422</span>
-<span class=normal>423</span>
-<span class=normal>424</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.item_has_rules class="doc doc-heading"> <code class="highlight language-python"><span class=n>item_has_rules</span><span class=p>(</span><span class=n>item</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.item_has_rules class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Determine if the item has rules in its props.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>432</span>
+<span class=normal>433</span>
+<span class=normal>434</span>
+<span class=normal>435</span>
+<span class=normal>436</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>item_has_rules</span><span class=p>(</span><span class=n>item</span><span class=p>:</span> <span class=n>TypeWithProps</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Determine if the item has rules in its props.&quot;&quot;&quot;</span>
     <span class=n>_</span><span class=p>,</span> <span class=n>rules_props</span> <span class=o>=</span> <span class=n>ControlInterface</span><span class=o>.</span><span class=n>get_rules_dict_from_item</span><span class=p>(</span><span class=n>item</span><span class=p>)</span>
     <span class=k>return</span> <span class=nb>bool</span><span class=p>(</span><span class=n>rules_props</span><span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.merge_dicts_deep class="doc doc-heading"> <code class="highlight language-python"><span class=n>merge_dicts_deep</span><span class=p>(</span><span class=n>dest</span><span class=p>,</span> <span class=n>src</span><span class=p>,</span> <span class=n>overwrite_header_values</span><span class=p>,</span> <span class=n>depth</span><span class=o>=</span><span class=mi>0</span><span class=p>,</span> <span class=n>level</span><span class=o>=</span><span class=mi>0</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.merge_dicts_deep class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Merge dict src into dest.</p> <p>New items are always added from src to dest. Items present in both will be overriden dest if overwrite_header_values is True.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>578</span>
-<span class=normal>579</span>
-<span class=normal>580</span>
-<span class=normal>581</span>
-<span class=normal>582</span>
-<span class=normal>583</span>
-<span class=normal>584</span>
-<span class=normal>585</span>
-<span class=normal>586</span>
-<span class=normal>587</span>
-<span class=normal>588</span>
-<span class=normal>589</span>
-<span class=normal>590</span>
-<span class=normal>591</span>
-<span class=normal>592</span>
-<span class=normal>593</span>
-<span class=normal>594</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.merge_dicts_deep class="doc doc-heading"> <code class="highlight language-python"><span class=n>merge_dicts_deep</span><span class=p>(</span><span class=n>dest</span><span class=p>,</span> <span class=n>src</span><span class=p>,</span> <span class=n>overwrite_header_values</span><span class=p>,</span> <span class=n>depth</span><span class=o>=</span><span class=mi>0</span><span class=p>,</span> <span class=n>level</span><span class=o>=</span><span class=mi>0</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.merge_dicts_deep class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Merge dict src into dest.</p> <p>New items are always added from src to dest. Items present in both will be overriden dest if overwrite_header_values is True.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>594</span>
 <span class=normal>595</span>
 <span class=normal>596</span>
 <span class=normal>597</span>
@@ -3068,7 +3108,23 @@
 <span class=normal>606</span>
 <span class=normal>607</span>
 <span class=normal>608</span>
-<span class=normal>609</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+<span class=normal>609</span>
+<span class=normal>610</span>
+<span class=normal>611</span>
+<span class=normal>612</span>
+<span class=normal>613</span>
+<span class=normal>614</span>
+<span class=normal>615</span>
+<span class=normal>616</span>
+<span class=normal>617</span>
+<span class=normal>618</span>
+<span class=normal>619</span>
+<span class=normal>620</span>
+<span class=normal>621</span>
+<span class=normal>622</span>
+<span class=normal>623</span>
+<span class=normal>624</span>
+<span class=normal>625</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>merge_dicts_deep</span><span class=p>(</span>
     <span class=n>dest</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=n>Any</span><span class=p>,</span> <span class=n>Any</span><span class=p>],</span> <span class=n>src</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=n>Any</span><span class=p>,</span> <span class=n>Any</span><span class=p>],</span> <span class=n>overwrite_header_values</span><span class=p>:</span> <span class=nb>bool</span><span class=p>,</span> <span class=n>depth</span><span class=p>:</span> <span class=nb>int</span> <span class=o>=</span> <span class=mi>0</span><span class=p>,</span> <span class=n>level</span><span class=p>:</span> <span class=nb>int</span> <span class=o>=</span> <span class=mi>0</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
@@ -3100,16 +3156,16 @@
         <span class=k>else</span><span class=p>:</span>
             <span class=c1># if the item was not already in dest, add it from src</span>
             <span class=n>dest</span><span class=p>[</span><span class=n>key</span><span class=p>]</span> <span class=o>=</span> <span class=n>src</span><span class=p>[</span><span class=n>key</span><span class=p>]</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.merge_part class="doc doc-heading"> <code class="highlight language-python"><span class=n>merge_part</span><span class=p>(</span><span class=n>dest</span><span class=p>,</span> <span class=n>src</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.merge_part class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Merge a source part into the destination part.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>547</span>
-<span class=normal>548</span>
-<span class=normal>549</span>
-<span class=normal>550</span>
-<span class=normal>551</span>
-<span class=normal>552</span>
-<span class=normal>553</span>
-<span class=normal>554</span>
-<span class=normal>555</span>
-<span class=normal>556</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.merge_part class="doc doc-heading"> <code class="highlight language-python"><span class=n>merge_part</span><span class=p>(</span><span class=n>dest</span><span class=p>,</span> <span class=n>src</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.merge_part class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Merge a source part into the destination part.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>563</span>
+<span class=normal>564</span>
+<span class=normal>565</span>
+<span class=normal>566</span>
+<span class=normal>567</span>
+<span class=normal>568</span>
+<span class=normal>569</span>
+<span class=normal>570</span>
+<span class=normal>571</span>
+<span class=normal>572</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>merge_part</span><span class=p>(</span><span class=n>dest</span><span class=p>:</span> <span class=n>common</span><span class=o>.</span><span class=n>Part</span><span class=p>,</span> <span class=n>src</span><span class=p>:</span> <span class=n>common</span><span class=o>.</span><span class=n>Part</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>common</span><span class=o>.</span><span class=n>Part</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Merge a source part into the destination part.&quot;&quot;&quot;</span>
     <span class=n>dest</span><span class=o>.</span><span class=n>name</span> <span class=o>=</span> <span class=n>src</span><span class=o>.</span><span class=n>name</span> <span class=k>if</span> <span class=n>src</span><span class=o>.</span><span class=n>name</span> <span class=k>else</span> <span class=n>dest</span><span class=o>.</span><span class=n>name</span>
@@ -3119,25 +3175,25 @@
     <span class=n>dest</span><span class=o>.</span><span class=n>title</span> <span class=o>=</span> <span class=n>src</span><span class=o>.</span><span class=n>title</span> <span class=k>if</span> <span class=n>src</span><span class=o>.</span><span class=n>title</span> <span class=k>else</span> <span class=n>dest</span><span class=o>.</span><span class=n>title</span>
     <span class=n>ControlInterface</span><span class=o>.</span><span class=n>merge_parts</span><span class=p>(</span><span class=n>dest</span><span class=p>,</span> <span class=n>src</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>dest</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.merge_parts class="doc doc-heading"> <code class="highlight language-python"><span class=n>merge_parts</span><span class=p>(</span><span class=n>dest</span><span class=p>,</span> <span class=n>src</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.merge_parts class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Merge the parts from the source into the destination.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>558</span>
-<span class=normal>559</span>
-<span class=normal>560</span>
-<span class=normal>561</span>
-<span class=normal>562</span>
-<span class=normal>563</span>
-<span class=normal>564</span>
-<span class=normal>565</span>
-<span class=normal>566</span>
-<span class=normal>567</span>
-<span class=normal>568</span>
-<span class=normal>569</span>
-<span class=normal>570</span>
-<span class=normal>571</span>
-<span class=normal>572</span>
-<span class=normal>573</span>
-<span class=normal>574</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.merge_parts class="doc doc-heading"> <code class="highlight language-python"><span class=n>merge_parts</span><span class=p>(</span><span class=n>dest</span><span class=p>,</span> <span class=n>src</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.merge_parts class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Merge the parts from the source into the destination.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>574</span>
 <span class=normal>575</span>
-<span class=normal>576</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+<span class=normal>576</span>
+<span class=normal>577</span>
+<span class=normal>578</span>
+<span class=normal>579</span>
+<span class=normal>580</span>
+<span class=normal>581</span>
+<span class=normal>582</span>
+<span class=normal>583</span>
+<span class=normal>584</span>
+<span class=normal>585</span>
+<span class=normal>586</span>
+<span class=normal>587</span>
+<span class=normal>588</span>
+<span class=normal>589</span>
+<span class=normal>590</span>
+<span class=normal>591</span>
+<span class=normal>592</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>merge_parts</span><span class=p>(</span><span class=n>dest</span><span class=p>:</span> <span class=n>TypeWithParts</span><span class=p>,</span> <span class=n>src</span><span class=p>:</span> <span class=n>TypeWithParts</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Merge the parts from the source into the destination.&quot;&quot;&quot;</span>
     <span class=k>if</span> <span class=ow>not</span> <span class=n>dest</span><span class=o>.</span><span class=n>parts</span><span class=p>:</span>
@@ -3156,23 +3212,7 @@
                 <span class=k>if</span> <span class=n>new_part</span><span class=p>:</span>
                     <span class=n>new_parts</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>new_part</span><span class=p>)</span>
         <span class=n>dest</span><span class=o>.</span><span class=n>parts</span> <span class=o>=</span> <span class=n>new_parts</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.merge_props class="doc doc-heading"> <code class="highlight language-python"><span class=n>merge_props</span><span class=p>(</span><span class=n>dest</span><span class=p>,</span> <span class=n>src</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.merge_props class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Merge a source list of properties into a destination list.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>520</span>
-<span class=normal>521</span>
-<span class=normal>522</span>
-<span class=normal>523</span>
-<span class=normal>524</span>
-<span class=normal>525</span>
-<span class=normal>526</span>
-<span class=normal>527</span>
-<span class=normal>528</span>
-<span class=normal>529</span>
-<span class=normal>530</span>
-<span class=normal>531</span>
-<span class=normal>532</span>
-<span class=normal>533</span>
-<span class=normal>534</span>
-<span class=normal>535</span>
-<span class=normal>536</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.merge_props class="doc doc-heading"> <code class="highlight language-python"><span class=n>merge_props</span><span class=p>(</span><span class=n>dest</span><span class=p>,</span> <span class=n>src</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.merge_props class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Merge a source list of properties into a destination list.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>536</span>
 <span class=normal>537</span>
 <span class=normal>538</span>
 <span class=normal>539</span>
@@ -3181,13 +3221,29 @@
 <span class=normal>542</span>
 <span class=normal>543</span>
 <span class=normal>544</span>
-<span class=normal>545</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+<span class=normal>545</span>
+<span class=normal>546</span>
+<span class=normal>547</span>
+<span class=normal>548</span>
+<span class=normal>549</span>
+<span class=normal>550</span>
+<span class=normal>551</span>
+<span class=normal>552</span>
+<span class=normal>553</span>
+<span class=normal>554</span>
+<span class=normal>555</span>
+<span class=normal>556</span>
+<span class=normal>557</span>
+<span class=normal>558</span>
+<span class=normal>559</span>
+<span class=normal>560</span>
+<span class=normal>561</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>merge_props</span><span class=p>(</span>
     <span class=n>dest</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>List</span><span class=p>[</span><span class=n>common</span><span class=o>.</span><span class=n>Property</span><span class=p>]],</span> <span class=n>src</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>List</span><span class=p>[</span><span class=n>common</span><span class=o>.</span><span class=n>Property</span><span class=p>]]</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>common</span><span class=o>.</span><span class=n>Property</span><span class=p>]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Merge a source list of properties into a destination list.&quot;&quot;&quot;</span>
     <span class=k>if</span> <span class=ow>not</span> <span class=n>src</span><span class=p>:</span>
-        <span class=k>return</span> <span class=n>dest</span>
+        <span class=k>return</span> <span class=n>dest</span> <span class=k>if</span> <span class=n>dest</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span> <span class=k>else</span> <span class=p>[]</span>
     <span class=n>new_props</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>common</span><span class=o>.</span><span class=n>Property</span><span class=p>]</span> <span class=o>=</span> <span class=p>[]</span>
     <span class=n>src_map</span> <span class=o>=</span> <span class=p>{</span><span class=n>prop</span><span class=o>.</span><span class=n>name</span><span class=p>:</span> <span class=n>prop</span> <span class=k>for</span> <span class=n>prop</span> <span class=ow>in</span> <span class=n>src</span><span class=p>}</span>
     <span class=n>dest_map</span> <span class=o>=</span> <span class=p>{</span><span class=n>prop</span><span class=o>.</span><span class=n>name</span><span class=p>:</span> <span class=n>prop</span> <span class=k>for</span> <span class=n>prop</span> <span class=ow>in</span> <span class=n>dest</span><span class=p>}</span>
@@ -3207,23 +3263,7 @@
             <span class=n>new_prop</span><span class=o>.</span><span class=n>value</span> <span class=o>=</span> <span class=n>src_prop</span><span class=o>.</span><span class=n>value</span>
             <span class=n>new_props</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>new_prop</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>new_props</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.param_to_str class="doc doc-heading"> <code class="highlight language-python"><span class=n>param_to_str</span><span class=p>(</span><span class=n>param</span><span class=p>,</span> <span class=n>param_rep</span><span class=p>,</span> <span class=n>verbose</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>brackets</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>params_format</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>value_assigned_prefix</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>value_not_assigned_prefix</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>param_dict</span><span class=o>=</span><span class=kc>None</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.param_to_str class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Convert parameter to string based on best available representation.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>param</code> </td> <td> <code><a class="autorefs autorefs-internal" title="Parameter (trestle.oscal.common.Parameter)" href=../../oscal/common/#trestle.oscal.common.Parameter>Parameter</a></code> </td> <td> <div class=doc-md-description> <p>the parameter to convert</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>param_rep</code> </td> <td> <code><a class="autorefs autorefs-internal" title="ParameterRep (trestle.core.control_interface.ParameterRep)" href=#trestle.core.control_interface.ParameterRep>ParameterRep</a></code> </td> <td> <div class=doc-md-description> <p>how to represent the parameter</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>verbose</code> </td> <td> <code><span title=bool>bool</span></code> </td> <td> <div class=doc-md-description> <p>provide verbose text for selection choices</p> </div> </td> <td> <code>False</code> </td> </tr> <tr class=doc-section-item> <td> <code>brackets</code> </td> <td> <code><span title=bool>bool</span></code> </td> <td> <div class=doc-md-description> <p>add brackets around the lists of items</p> </div> </td> <td> <code>False</code> </td> </tr> <tr class=doc-section-item> <td> <code>params_format</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=str>str</span>]</code> </td> <td> <div class=doc-md-description> <p>a string containing a single dot that represents a form of highlighting around the param</p> </div> </td> <td> <code>None</code> </td> </tr> <tr class=doc-section-item> <td> <code>value_assigned_prefix</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=str>str</span>]</code> </td> <td> <div class=doc-md-description> <p>string to place before the parameter string if a value was assigned</p> </div> </td> <td> <code>None</code> </td> </tr> <tr class=doc-section-item> <td> <code>value_not_assigned_prefix</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=str>str</span>]</code> </td> <td> <div class=doc-md-description> <p>string to place before the parameter string if value not assigned</p> </div> </td> <td> <code>None</code> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code><span title=typing.Optional>Optional</span>[<span title=str>str</span>]</code> </td> <td> <div class=doc-md-description> <p>formatted string or None</p> </div> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>730</span>
-<span class=normal>731</span>
-<span class=normal>732</span>
-<span class=normal>733</span>
-<span class=normal>734</span>
-<span class=normal>735</span>
-<span class=normal>736</span>
-<span class=normal>737</span>
-<span class=normal>738</span>
-<span class=normal>739</span>
-<span class=normal>740</span>
-<span class=normal>741</span>
-<span class=normal>742</span>
-<span class=normal>743</span>
-<span class=normal>744</span>
-<span class=normal>745</span>
-<span class=normal>746</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.param_to_str class="doc doc-heading"> <code class="highlight language-python"><span class=n>param_to_str</span><span class=p>(</span><span class=n>param</span><span class=p>,</span> <span class=n>param_rep</span><span class=p>,</span> <span class=n>verbose</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>brackets</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>params_format</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>value_assigned_prefix</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>value_not_assigned_prefix</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>param_dict</span><span class=o>=</span><span class=kc>None</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.param_to_str class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Convert parameter to string based on best available representation.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>param</code> </td> <td> <code><a class="autorefs autorefs-internal" title="Parameter (trestle.oscal.common.Parameter)" href=../../oscal/common/#trestle.oscal.common.Parameter>Parameter</a></code> </td> <td> <div class=doc-md-description> <p>the parameter to convert</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>param_rep</code> </td> <td> <code><a class="autorefs autorefs-internal" title="ParameterRep (trestle.core.control_interface.ParameterRep)" href=#trestle.core.control_interface.ParameterRep>ParameterRep</a></code> </td> <td> <div class=doc-md-description> <p>how to represent the parameter</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>verbose</code> </td> <td> <code><span title=bool>bool</span></code> </td> <td> <div class=doc-md-description> <p>provide verbose text for selection choices</p> </div> </td> <td> <code>False</code> </td> </tr> <tr class=doc-section-item> <td> <code>brackets</code> </td> <td> <code><span title=bool>bool</span></code> </td> <td> <div class=doc-md-description> <p>add brackets around the lists of items</p> </div> </td> <td> <code>False</code> </td> </tr> <tr class=doc-section-item> <td> <code>params_format</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=str>str</span>]</code> </td> <td> <div class=doc-md-description> <p>a string containing a single dot that represents a form of highlighting around the param</p> </div> </td> <td> <code>None</code> </td> </tr> <tr class=doc-section-item> <td> <code>value_assigned_prefix</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=str>str</span>]</code> </td> <td> <div class=doc-md-description> <p>string to place before the parameter string if a value was assigned</p> </div> </td> <td> <code>None</code> </td> </tr> <tr class=doc-section-item> <td> <code>value_not_assigned_prefix</code> </td> <td> <code><span title=typing.Optional>Optional</span>[<span title=str>str</span>]</code> </td> <td> <div class=doc-md-description> <p>string to place before the parameter string if value not assigned</p> </div> </td> <td> <code>None</code> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code><span title=typing.Optional>Optional</span>[<span title=str>str</span>]</code> </td> <td> <div class=doc-md-description> <p>formatted string or None</p> </div> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>746</span>
 <span class=normal>747</span>
 <span class=normal>748</span>
 <span class=normal>749</span>
@@ -3257,7 +3297,23 @@
 <span class=normal>777</span>
 <span class=normal>778</span>
 <span class=normal>779</span>
-<span class=normal>780</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+<span class=normal>780</span>
+<span class=normal>781</span>
+<span class=normal>782</span>
+<span class=normal>783</span>
+<span class=normal>784</span>
+<span class=normal>785</span>
+<span class=normal>786</span>
+<span class=normal>787</span>
+<span class=normal>788</span>
+<span class=normal>789</span>
+<span class=normal>790</span>
+<span class=normal>791</span>
+<span class=normal>792</span>
+<span class=normal>793</span>
+<span class=normal>794</span>
+<span class=normal>795</span>
+<span class=normal>796</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>param_to_str</span><span class=p>(</span>
     <span class=n>param</span><span class=p>:</span> <span class=n>common</span><span class=o>.</span><span class=n>Parameter</span><span class=p>,</span>
     <span class=n>param_rep</span><span class=p>:</span> <span class=n>ParameterRep</span><span class=p>,</span>
@@ -3308,17 +3364,17 @@
         <span class=k>if</span> <span class=ow>not</span> <span class=n>param_str</span><span class=p>:</span>
             <span class=n>param_str</span> <span class=o>=</span> <span class=s1>&#39;&#39;</span>
     <span class=k>return</span> <span class=n>ControlInterface</span><span class=o>.</span><span class=n>_apply_params_format</span><span class=p>(</span><span class=n>param_str</span><span class=p>,</span> <span class=n>params_format</span><span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.reconcile_props class="doc doc-heading"> <code class="highlight language-python"><span class=n>reconcile_props</span><span class=p>(</span><span class=n>item</span><span class=p>,</span> <span class=n>props</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.reconcile_props class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Add properties to an item with properties while replacing existing.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1113</span>
-<span class=normal>1114</span>
-<span class=normal>1115</span>
-<span class=normal>1116</span>
-<span class=normal>1117</span>
-<span class=normal>1118</span>
-<span class=normal>1119</span>
-<span class=normal>1120</span>
-<span class=normal>1121</span>
-<span class=normal>1122</span>
-<span class=normal>1123</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.reconcile_props class="doc doc-heading"> <code class="highlight language-python"><span class=n>reconcile_props</span><span class=p>(</span><span class=n>item</span><span class=p>,</span> <span class=n>props</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.reconcile_props class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Add properties to an item with properties while replacing existing.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1137</span>
+<span class=normal>1138</span>
+<span class=normal>1139</span>
+<span class=normal>1140</span>
+<span class=normal>1141</span>
+<span class=normal>1142</span>
+<span class=normal>1143</span>
+<span class=normal>1144</span>
+<span class=normal>1145</span>
+<span class=normal>1146</span>
+<span class=normal>1147</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>reconcile_props</span><span class=p>(</span><span class=n>item</span><span class=p>:</span> <span class=n>TypeWithProps</span><span class=p>,</span> <span class=n>props</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>common</span><span class=o>.</span><span class=n>Property</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Add properties to an item with properties while replacing existing.&quot;&quot;&quot;</span>
     <span class=n>names</span> <span class=o>=</span> <span class=p>[</span><span class=n>prop</span><span class=o>.</span><span class=n>name</span> <span class=k>for</span> <span class=n>prop</span> <span class=ow>in</span> <span class=n>as_list</span><span class=p>(</span><span class=n>item</span><span class=o>.</span><span class=n>props</span><span class=p>)]</span>
@@ -3329,26 +3385,7 @@
             <span class=n>item</span><span class=o>.</span><span class=n>props</span><span class=p>[</span><span class=n>index</span><span class=p>]</span> <span class=o>=</span> <span class=n>prop</span>
         <span class=k>else</span><span class=p>:</span>
             <span class=n>item</span><span class=o>.</span><span class=n>props</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>prop</span><span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.replace_control_prose class="doc doc-heading"> <code class="highlight language-python"><span class=n>replace_control_prose</span><span class=p>(</span><span class=n>control</span><span class=p>,</span> <span class=n>param_dict</span><span class=p>,</span> <span class=n>params_format</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>param_rep</span><span class=o>=</span><span class=n>ParameterRep</span><span class=o>.</span><span class=n>VALUE_OR_LABEL_OR_CHOICES</span><span class=p>,</span> <span class=n>show_value_warnings</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>value_assigned_prefix</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>value_not_assigned_prefix</span><span class=o>=</span><span class=kc>None</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.replace_control_prose class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Replace the control prose according to set_param.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 978</span>
-<span class=normal> 979</span>
-<span class=normal> 980</span>
-<span class=normal> 981</span>
-<span class=normal> 982</span>
-<span class=normal> 983</span>
-<span class=normal> 984</span>
-<span class=normal> 985</span>
-<span class=normal> 986</span>
-<span class=normal> 987</span>
-<span class=normal> 988</span>
-<span class=normal> 989</span>
-<span class=normal> 990</span>
-<span class=normal> 991</span>
-<span class=normal> 992</span>
-<span class=normal> 993</span>
-<span class=normal> 994</span>
-<span class=normal> 995</span>
-<span class=normal> 996</span>
-<span class=normal> 997</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.replace_control_prose class="doc doc-heading"> <code class="highlight language-python"><span class=n>replace_control_prose</span><span class=p>(</span><span class=n>control</span><span class=p>,</span> <span class=n>param_dict</span><span class=p>,</span> <span class=n>params_format</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>param_rep</span><span class=o>=</span><span class=n>ParameterRep</span><span class=o>.</span><span class=n>VALUE_OR_LABEL_OR_CHOICES</span><span class=p>,</span> <span class=n>show_value_warnings</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>value_assigned_prefix</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>value_not_assigned_prefix</span><span class=o>=</span><span class=kc>None</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.replace_control_prose class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Replace the control prose according to set_param.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 997</span>
 <span class=normal> 998</span>
 <span class=normal> 999</span>
 <span class=normal>1000</span>
@@ -3375,7 +3412,26 @@
 <span class=normal>1021</span>
 <span class=normal>1022</span>
 <span class=normal>1023</span>
-<span class=normal>1024</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+<span class=normal>1024</span>
+<span class=normal>1025</span>
+<span class=normal>1026</span>
+<span class=normal>1027</span>
+<span class=normal>1028</span>
+<span class=normal>1029</span>
+<span class=normal>1030</span>
+<span class=normal>1031</span>
+<span class=normal>1032</span>
+<span class=normal>1033</span>
+<span class=normal>1034</span>
+<span class=normal>1035</span>
+<span class=normal>1036</span>
+<span class=normal>1037</span>
+<span class=normal>1038</span>
+<span class=normal>1039</span>
+<span class=normal>1040</span>
+<span class=normal>1041</span>
+<span class=normal>1042</span>
+<span class=normal>1043</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>replace_control_prose</span><span class=p>(</span>
     <span class=n>control</span><span class=p>:</span> <span class=n>cat</span><span class=o>.</span><span class=n>Control</span><span class=p>,</span>
     <span class=n>param_dict</span><span class=p>:</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>common</span><span class=o>.</span><span class=n>Parameter</span><span class=p>],</span>
@@ -3436,7 +3492,19 @@
 <span class=normal>380</span>
 <span class=normal>381</span>
 <span class=normal>382</span>
-<span class=normal>383</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+<span class=normal>383</span>
+<span class=normal>384</span>
+<span class=normal>385</span>
+<span class=normal>386</span>
+<span class=normal>387</span>
+<span class=normal>388</span>
+<span class=normal>389</span>
+<span class=normal>390</span>
+<span class=normal>391</span>
+<span class=normal>392</span>
+<span class=normal>393</span>
+<span class=normal>394</span>
+<span class=normal>395</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>setparam_to_param</span><span class=p>(</span><span class=n>param_id</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>set_param</span><span class=p>:</span> <span class=n>prof</span><span class=o>.</span><span class=n>SetParameter</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>common</span><span class=o>.</span><span class=n>Parameter</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    Convert setparameter to parameter.</span>
@@ -3449,7 +3517,19 @@
 <span class=sd>        a Parameter with param_id and content from the SetParameter</span>
 <span class=sd>    &quot;&quot;&quot;</span>
     <span class=k>return</span> <span class=n>common</span><span class=o>.</span><span class=n>Parameter</span><span class=p>(</span>
-        <span class=nb>id</span><span class=o>=</span><span class=n>param_id</span><span class=p>,</span> <span class=n>values</span><span class=o>=</span><span class=n>set_param</span><span class=o>.</span><span class=n>values</span><span class=p>,</span> <span class=n>select</span><span class=o>=</span><span class=n>set_param</span><span class=o>.</span><span class=n>select</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=n>set_param</span><span class=o>.</span><span class=n>label</span><span class=p>,</span> <span class=n>props</span><span class=o>=</span><span class=n>set_param</span><span class=o>.</span><span class=n>props</span>
+        <span class=nb>id</span><span class=o>=</span><span class=n>param_id</span><span class=p>,</span>
+        <span class=n>values</span><span class=o>=</span><span class=n>set_param</span><span class=o>.</span><span class=n>values</span><span class=p>,</span>
+        <span class=n>select</span><span class=o>=</span><span class=n>set_param</span><span class=o>.</span><span class=n>select</span><span class=p>,</span>
+        <span class=n>label</span><span class=o>=</span><span class=n>set_param</span><span class=o>.</span><span class=n>label</span><span class=p>,</span>
+        <span class=n>props</span><span class=o>=</span><span class=n>set_param</span><span class=o>.</span><span class=n>props</span><span class=p>,</span>
+        <span class=o>**</span><span class=p>{</span>
+            <span class=s1>&#39;class&#39;</span><span class=p>:</span> <span class=kc>None</span><span class=p>,</span>
+            <span class=s1>&#39;depends-on&#39;</span><span class=p>:</span> <span class=kc>None</span><span class=p>,</span>
+            <span class=s1>&#39;links&#39;</span><span class=p>:</span> <span class=kc>None</span><span class=p>,</span>
+            <span class=s1>&#39;usage&#39;</span><span class=p>:</span> <span class=kc>None</span><span class=p>,</span>
+            <span class=s1>&#39;constraints&#39;</span><span class=p>:</span> <span class=kc>None</span><span class=p>,</span>
+            <span class=s1>&#39;guidelines&#39;</span><span class=p>:</span> <span class=kc>None</span><span class=p>,</span>
+        <span class=p>},</span>
     <span class=p>)</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.strip_to_make_ncname class="doc doc-heading"> <code class="highlight language-python"><span class=n>strip_to_make_ncname</span><span class=p>(</span><span class=n>label</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.strip_to_make_ncname class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Strip chars to conform with NCNAME regex.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>173</span>
 <span class=normal>174</span>
@@ -3486,16 +3566,16 @@
     <span class=k>if</span> <span class=ow>not</span> <span class=n>match</span><span class=p>:</span>
         <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Unable to convert label </span><span class=si>{</span><span class=n>orig_label</span><span class=si>}</span><span class=s1> to NCNAME format.&#39;</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>new_label</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.uniquify_set_params class="doc doc-heading"> <code class="highlight language-python"><span class=n>uniquify_set_params</span><span class=p>(</span><span class=n>set_params</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.uniquify_set_params class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Remove items with same param_id with priority to later items.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>385</span>
-<span class=normal>386</span>
-<span class=normal>387</span>
-<span class=normal>388</span>
-<span class=normal>389</span>
-<span class=normal>390</span>
-<span class=normal>391</span>
-<span class=normal>392</span>
-<span class=normal>393</span>
-<span class=normal>394</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.control_interface.ControlInterface.uniquify_set_params class="doc doc-heading"> <code class="highlight language-python"><span class=n>uniquify_set_params</span><span class=p>(</span><span class=n>set_params</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.control_interface.ControlInterface.uniquify_set_params class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Remove items with same param_id with priority to later items.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/control_interface.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>397</span>
+<span class=normal>398</span>
+<span class=normal>399</span>
+<span class=normal>400</span>
+<span class=normal>401</span>
+<span class=normal>402</span>
+<span class=normal>403</span>
+<span class=normal>404</span>
+<span class=normal>405</span>
+<span class=normal>406</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>uniquify_set_params</span><span class=p>(</span><span class=n>set_params</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>List</span><span class=p>[</span><span class=n>TypeWithParamId</span><span class=p>]])</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>TypeWithParamId</span><span class=p>]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Remove items with same param_id with priority to later items.&quot;&quot;&quot;</span>
     <span class=n>found_ids</span><span class=p>:</span> <span class=n>Set</span><span class=p>[</span><span class=nb>str</span><span class=p>]</span> <span class=o>=</span> <span class=nb>set</span><span class=p>()</span>
