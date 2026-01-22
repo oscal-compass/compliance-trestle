@@ -59,6 +59,11 @@ sample_observation_type_valid_value = ObservationTypeValidValues.historic
 
 def safe_is_sub(sub: Any, parent: Any) -> bool:
     """Is this a subclass of parent."""
+    # Handle Python 3.10+ generic types (e.g., dict[str, Any])
+    # These are types.GenericAlias and cannot be used with issubclass()
+    if hasattr(sub, '__origin__'):
+        # For generic types like dict[str, Any], check the origin (dict)
+        sub = typing.get_origin(sub)
     is_class = inspect.isclass(sub)
     return is_class and issubclass(sub, parent)
 
