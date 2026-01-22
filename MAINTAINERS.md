@@ -10,7 +10,6 @@ Manjiree Gadgil [mrgadgil](https://github.com/mrgadgil)
 
 Vikas Agarwal [vikas-agarwal76](https://github.com/vikas-agarwal76)
 
-
 ### Emeritus Maintainers
 
 Former Maintainers, thanks for your service!
