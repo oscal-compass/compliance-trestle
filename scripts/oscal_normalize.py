@@ -299,7 +299,7 @@ class ClassText:
         # add refs found for "Algorithm"
         if ' Algorithm ' in line:
             self.add_ref_if_good('Algorithm')
-         # add refs found for "IdentifierType"
+        # add refs found for "IdentifierType"
         if ' IdentifierType ' in line:
             self.add_ref_if_good('IdentifierType')
         return line
