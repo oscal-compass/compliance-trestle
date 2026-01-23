@@ -90,34 +90,3 @@ def get_inner_type(collection_field_type: Union[Type[List[Any]], Type[Dict[str, 
     except Exception as e:
         logger.debug(e)
         raise err.TrestleError('Model type is not a Dict or List') from e
-
-
-def types_are_equal(type1: Type[Any], type2: Type[Any]) -> bool:
-    """Compare two types for equality, handling typing.List vs list differences.
-
-    Args:
-        type1: First type to compare
-        type2: Second type to compare
-
-    Returns:
-        True if types are equivalent, False otherwise
-    """
-    # Direct equality check first
-    if type1 == type2:
-        return True
-
-    # Check if both are list types with same inner type
-    origin1 = get_origin(type1)
-    origin2 = get_origin(type2)
-
-    if origin1 == list and origin2 == list:
-        # Both are list types, compare inner types
-        try:
-            args1 = typing_extensions.get_args(type1)
-            args2 = typing_extensions.get_args(type2)
-            if args1 and args2:
-                return args1[0] == args2[0]
-        except Exception:
-            pass
-
-    return False
