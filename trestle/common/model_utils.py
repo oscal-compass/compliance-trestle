@@ -868,10 +868,39 @@ class ModelUtils:
 
         This does not check for tuples or other structures that won't be found in JSON.
         """
+        from enum import Enum
+
         obj_a_type = type(obj_a)
         obj_b_type = type(obj_b)
-        if bool(obj_a) != bool(obj_b) or obj_a_type != obj_b_type:
+
+        # Check if both are falsy
+        if bool(obj_a) != bool(obj_b):
             return True
+
+        # For dynamically created wrapper classes (like Components, Props), compare by class name
+        # These are created on-the-fly and may have different type identities but same structure
+        if obj_a_type != obj_b_type:
+            # Handle enum vs string comparison (enums get converted to strings after JSON round-trip)
+            if isinstance(obj_a, Enum) and obj_b_type is str:
+                # Compare enum value with string
+                return obj_a.value != obj_b
+            elif isinstance(obj_b, Enum) and obj_a_type is str:
+                # Compare string with enum value
+                return obj_a != obj_b.value
+            # Handle __root__ wrapper vs enum comparison
+            elif hasattr(obj_a, '__root__') and isinstance(obj_b, Enum):
+                return obj_a.__root__ != obj_b.value
+            elif hasattr(obj_b, '__root__') and isinstance(obj_a, Enum):
+                return obj_a.value != obj_b.__root__
+            # If both are BaseModel instances with same class name, treat as equivalent
+            elif isinstance(obj_a, BaseModel) and isinstance(obj_b, BaseModel):
+                if obj_a_type.__name__ == obj_b_type.__name__:
+                    # Same class name, continue with field comparison below
+                    pass
+                else:
+                    return True
+            else:
+                return True
         if not bool(obj_a):
             return False
         if obj_a_type in ignore_type_list:
