@@ -282,6 +282,8 @@ def patch_profile(model_name: str) -> None:
 
 def _find(needle: str, haystack: Dict) -> Any:
     """Find needle in haystack."""
+    if haystack is None:
+        return None
     for item in haystack:
         if item == needle:
             return haystack[item]
@@ -293,6 +295,20 @@ def _find(needle: str, haystack: Dict) -> Any:
 # rather than letting datamodel-codegen tool assign names nondeterministically.
 def create_refs(model_name: str) -> None:
     """Create refs."""
+    # Related Observation - create common class for all identical inline definitions
+    list_ = [
+        'oscal-ap-oscal-assessment-common:finding',
+        'oscal-ap-oscal-assessment-common:risk',
+        'oscal-ar-oscal-assessment-common:finding',
+        'oscal-ar-oscal-assessment-common:risk',
+        'oscal-poam-oscal-assessment-common:finding',
+        'oscal-poam-oscal-assessment-common:risk',
+        'oscal-poam-oscal-poam:poam-item',
+    ]
+    navigation = ['properties', 'related-observations', 'items']
+    ref_name = 'RelatedObservation'
+    for root in list_:
+        create_ref_for_items(model_name, root, navigation, ref_name)
     # Task Valid Values
     list_ = [
         'oscal-ap-oscal-assessment-common:task',
@@ -603,6 +619,8 @@ def create_refs(model_name: str) -> None:
 
 def _fetch(tgt: Any, key: str) -> Any:
     """Fetch."""
+    if tgt is None:
+        return None
     try:
         return tgt.get(key)
     except Exception:
@@ -632,6 +650,8 @@ def create_ref(model_name: str, root: str, navigation: List[str], ref_name: str)
         return
     for leaf in navigation:
         tgt = _fetch(tgt, leaf)
+        if tgt is None:
+            return
     item = tgt[1]
     replacement = {'$ref': f'#/definitions/{ref_name}'}
     tgt[1] = replacement
@@ -643,6 +663,42 @@ def create_ref(model_name: str, root: str, navigation: List[str], ref_name: str)
     title_navigation[-1] = 'title'
     title = _get_title(model_name, root, navigation)
     body_identical_check(root, title, replacement)
+    json_data_put(model_name, data)
+
+
+def create_ref_for_items(model_name: str, root: str, navigation: List[str], ref_name: str) -> None:
+    """Create ref for object items (not arrays like anyOf/allOf)."""
+    data = json_data_get(model_name)
+    tgt = data['definitions']
+    tgt = tgt.get(root)
+    if not tgt:
+        return
+    
+    # Navigate to the parent of the last key
+    parent = tgt
+    for leaf in navigation[:-1]:
+        parent = _fetch(parent, leaf)
+        if parent is None:
+            return
+    
+    # Get the last key (should be 'items')
+    last_key = navigation[-1]
+    if last_key not in parent:
+        return
+    
+    # Save the item definition
+    item = parent[last_key]
+    
+    # Create the ref replacement
+    replacement = {'$ref': f'#/definitions/{ref_name}'}
+    parent[last_key] = replacement
+    
+    # Add to definitions if not already there
+    if ref_name not in data['definitions']:
+        data['definitions'][ref_name] = item
+        logger.debug(f'patch: {model_name} created definition {ref_name}')
+    
+    logger.debug(f'patch: {model_name} {root} -> ${ref_name}')
     json_data_put(model_name, data)
 
 
