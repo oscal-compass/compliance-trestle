@@ -737,6 +737,38 @@ def write_oscal(classes, forward_refs, fstem):
             if c.name == 'HowManyValidValues':
                 out_file.write('HowMany = HowManyValidValues\n\n\n')
 
+        # Add Parameter type aliases for common.py
+        if is_common:
+            # Find Parameter classes and determine which has values vs select
+            values_class_name = None
+            select_class_name = None
+            
+            for c in classes:
+                if c.name in ['Parameter1', 'Parameter2', 'ParameterValues', 'ParameterSelect']:
+                    # Check the body to determine which field it has
+                    body_text = '\n'.join(c.lines)
+                    has_values = 'values: list[constr(' in body_text or 'values: List[constr(' in body_text
+                    has_select = 'select: ParameterSelection' in body_text
+                    
+                    if has_values and not has_select:
+                        values_class_name = c.name
+                    elif has_select and not has_values:
+                        select_class_name = c.name
+            
+            # Add aliases if we found both variants
+            if values_class_name and select_class_name:
+                out_file.write('\n# Parameter type aliases for backward compatibility and convenience\n')
+                
+                # Add backward compatibility aliases if classes were renamed
+                if values_class_name == 'ParameterValues':
+                    out_file.write('Parameter1 = ParameterValues\n')
+                if select_class_name == 'ParameterSelect':
+                    out_file.write('Parameter2 = ParameterSelect\n')
+                
+                # Always add the union type using the actual class names
+                out_file.write(f'Parameter = Union[{values_class_name}, {select_class_name}]\n')
+                out_file.write('\n\n')
+
         if not is_common:
             out_file.writelines('class Model(OscalBaseModel):\n')
             alias = alias_map[fstem]
@@ -1025,6 +1057,25 @@ def patch_items(file_classes):
             # see: schema_preprocess patch_poam_origins
             elif c.name == 'PoamItem':
                 c.lines = patch_lines(c, 'originations', 'origins')
+            # Rename Parameter1 and Parameter2 to more descriptive names based on their fields
+            elif c.name in ['Parameter1', 'Parameter2']:
+                # Check the body to determine which field it has
+                body_text = '\n'.join(c.lines)
+                has_values = 'values:' in body_text and 'list[constr(' in body_text
+                has_select = 'select: ParameterSelection' in body_text
+                
+                if has_values and not has_select:
+                    # This is the values variant
+                    new_name = 'ParameterValues'
+                    c.name = new_name
+                    c.unique_name = new_name
+                    c.lines[0] = c.lines[0].replace(f'class Parameter1(', f'class {new_name}(').replace(f'class Parameter2(', f'class {new_name}(')
+                elif has_select and not has_values:
+                    # This is the select variant
+                    new_name = 'ParameterSelect'
+                    c.name = new_name
+                    c.unique_name = new_name
+                    c.lines[0] = c.lines[0].replace(f'class Parameter1(', f'class {new_name}(').replace(f'class Parameter2(', f'class {new_name}(')
     return file_classes
 
 
