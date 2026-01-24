@@ -14,7 +14,7 @@
 """Create resolved catalog from profile."""
 
 import logging
-from typing import Iterator, List, Optional
+from typing import Iterator, List, Optional, Union
 
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
@@ -174,7 +174,7 @@ class Modify(Pipeline.Filter):
         control.parts = none_if_empty(control.parts)
 
     @staticmethod
-    def _set_overwrite_items(param: common.Parameter, set_param: prof.SetParameter) -> None:
+    def _set_overwrite_items(param: common.Parameter, set_param: Union[prof.SetParameters, prof.SetParameters1]) -> None:
         # these overwrite
         if set_param.class_:
             param.class_ = set_param.class_
@@ -190,7 +190,7 @@ class Modify(Pipeline.Filter):
             param.select = set_param.select
 
     @staticmethod
-    def _set_appended_items(param: common.Parameter, set_param: prof.SetParameter) -> None:
+    def _set_appended_items(param: common.Parameter, set_param: Union[prof.SetParameters, prof.SetParameters1]) -> None:
         # these append
         if set_param.constraints:
             if not param.constraints:
@@ -202,7 +202,7 @@ class Modify(Pipeline.Filter):
             param.guidelines.extend(set_param.guidelines)
 
     @staticmethod
-    def _set_replaced_or_appended_items(param: common.Parameter, set_param: prof.SetParameter) -> None:
+    def _set_replaced_or_appended_items(param: common.Parameter, set_param: Union[prof.SetParameters, prof.SetParameters1]) -> None:
         # these replace or append
         if set_param.props:
             new_props = as_list(param.props)
@@ -223,7 +223,7 @@ class Modify(Pipeline.Filter):
                     new_links.append(link)
             param.links = new_links
 
-    def _set_parameter_in_control_or_loose(self, set_param: prof.SetParameter) -> None:
+    def _set_parameter_in_control_or_loose(self, set_param: Union[prof.SetParameters, prof.SetParameters1]) -> None:
         """
         Find the control with the param_id in it and set the parameter contents.
 

@@ -769,6 +769,38 @@ def write_oscal(classes, forward_refs, fstem):
                 out_file.write(f'Parameter = Union[{values_class_name}, {select_class_name}]\n')
                 out_file.write('\n\n')
 
+        # Add SetParameter type aliases for profile.py
+        if fstem == 'profile':
+            # Find SetParameter classes and determine which has values vs select
+            set_param_values_class_name = None
+            set_param_select_class_name = None
+            
+            for c in classes:
+                if c.name in ['SetParameters', 'SetParameters1', 'SetParameterValues', 'SetParameterSelect']:
+                    # Check the body to determine which field it has
+                    body_text = '\n'.join(c.lines)
+                    has_values = 'values: list[constr(' in body_text or 'values: List[constr(' in body_text
+                    has_select = 'select: ' in body_text and 'ParameterSelection' in body_text
+                    
+                    if has_values and not has_select:
+                        set_param_values_class_name = c.name
+                    elif has_select and not has_values:
+                        set_param_select_class_name = c.name
+            
+            # Add aliases if we found both variants
+            if set_param_values_class_name and set_param_select_class_name:
+                out_file.write('\n# SetParameter type aliases for backward compatibility and convenience\n')
+                
+                # Add backward compatibility aliases if classes were renamed
+                if set_param_values_class_name == 'SetParameterValues':
+                    out_file.write('SetParameters = SetParameterValues\n')
+                if set_param_select_class_name == 'SetParameterSelect':
+                    out_file.write('SetParameters1 = SetParameterSelect\n')
+                
+                # Always add the union type using the actual class names
+                out_file.write(f'SetParameter = Union[{set_param_values_class_name}, {set_param_select_class_name}]\n')
+                out_file.write('\n\n')
+
         if not is_common:
             out_file.writelines('class Model(OscalBaseModel):\n')
             alias = alias_map[fstem]
@@ -795,6 +827,7 @@ def write_oscal(classes, forward_refs, fstem):
 additions = {
     'assessment_plan': [
         'from trestle.oscal.common import RelatedObservation',
+        'from trestle.oscal.common import SetParameter',
         'from trestle.oscal.common import StringDatatype',
         'from trestle.oscal.common import SystemComponent',
         'from trestle.oscal.common import TaskValidValues',
@@ -804,6 +837,7 @@ additions = {
         'from trestle.oscal.common import AssessmentAssets',
         'from trestle.oscal.common import Observation',
         'from trestle.oscal.common import RelatedObservation',
+        'from trestle.oscal.common import SetParameter',
         'from trestle.oscal.common import StringDatatype',
         'from trestle.oscal.common import SystemComponent',
         'from trestle.oscal.common import TaskValidValues',
@@ -812,11 +846,13 @@ additions = {
     'catalog': ['from trestle.oscal.common import StringDatatype'],
     'common': [],
     'component': [
+        'from trestle.oscal.common import SetParameter',
         'from trestle.oscal.common import StringDatatype',
         'from trestle.oscal.common import URIReferenceDatatype',
     ],
     'poam': [
         'from trestle.oscal.common import RelatedObservation',
+        'from trestle.oscal.common import SetParameter',
         'from trestle.oscal.common import StringDatatype',
         'from trestle.oscal.common import TaskValidValues',
         'from trestle.oscal.common import TokenDatatype',
@@ -824,6 +860,7 @@ additions = {
     ],
     'profile': ['from trestle.oscal.common import StringDatatype'],
     'ssp': [
+        'from trestle.oscal.common import SetParameter',
         'from trestle.oscal.common import StringDatatype',
         'from trestle.oscal.common import Status, SystemComponent',
     ],
@@ -1076,6 +1113,25 @@ def patch_items(file_classes):
                     c.name = new_name
                     c.unique_name = new_name
                     c.lines[0] = c.lines[0].replace(f'class Parameter1(', f'class {new_name}(').replace(f'class Parameter2(', f'class {new_name}(')
+            # Rename SetParameters and SetParameters1 to more descriptive names based on their fields
+            elif c.name in ['SetParameters', 'SetParameters1']:
+                # Check the body to determine which field it has
+                body_text = '\n'.join(c.lines)
+                has_values = 'values:' in body_text and 'list[constr(' in body_text
+                has_select = 'select: ' in body_text and 'ParameterSelection' in body_text
+                
+                if has_values and not has_select:
+                    # This is the values variant
+                    new_name = 'SetParameterValues'
+                    c.name = new_name
+                    c.unique_name = new_name
+                    c.lines[0] = c.lines[0].replace(f'class SetParameters(', f'class {new_name}(').replace(f'class SetParameters1(', f'class {new_name}(')
+                elif has_select and not has_values:
+                    # This is the select variant
+                    new_name = 'SetParameterSelect'
+                    c.name = new_name
+                    c.unique_name = new_name
+                    c.lines[0] = c.lines[0].replace(f'class SetParameters(', f'class {new_name}(').replace(f'class SetParameters1(', f'class {new_name}(')
     return file_classes
 
 

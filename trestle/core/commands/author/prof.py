@@ -276,11 +276,26 @@ class ProfileAssemble(AuthorCommonCommand):
                 if sub_param_dict:
                     sub_param_dict['id'] = key
                     param = ModelUtils.dict_to_parameter(sub_param_dict)
-                    new_set_params.append(
-                        prof.SetParameter(
-                            param_id=key, label=param.label, values=param.values, select=param.select, props=param.props
+                    # Choose the correct SetParameter variant based on which field is present
+                    if param.values is not None:
+                        new_set_params.append(
+                            prof.SetParameterValues(
+                                param_id=key, label=param.label, values=param.values, props=param.props
+                            )
                         )
-                    )
+                    elif param.select is not None:
+                        new_set_params.append(
+                            prof.SetParameterSelect(
+                                param_id=key, label=param.label, select=param.select, props=param.props
+                            )
+                        )
+                    else:
+                        # Neither values nor select - use values variant with empty list
+                        new_set_params.append(
+                            prof.SetParameterValues(
+                                param_id=key, label=param.label, props=param.props
+                            )
+                        )
             if profile.modify.set_parameters != new_set_params:
                 changed = True
             # sort the params first by control sorting then by param_id
