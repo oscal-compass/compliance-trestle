@@ -206,10 +206,8 @@ ignore = [
     "S603",   # subprocess call - check for execution of untrusted input
     "S607",   # starting a process with a partial executable path
     # FIXME: UP - pyupgrade rules to fix
-    "UP003",  # FIXME: Use `type` instead of `type(...)` (1 error)
     "UP006",  # FIXME: Use `type` instead of `Type` for type annotations (1134 errors)
     "UP007",  # FIXME: Use `X | Y` for Union types (114 errors)
-    "UP008",  # FIXME: Use `super()` instead of `super(__class__, self)` (6 errors)
     "UP009",  # FIXME: UTF-8 encoding declaration is unnecessary (211 errors)
     "UP015",  # FIXME: Unnecessary open mode parameters (25 errors)
     "UP018",  # FIXME: Unnecessary call to `type` (3 errors)
@@ -229,7 +227,6 @@ ignore = [
     "SIM103", # FIXME: Return condition directly instead of `if`-`else` (1 error)
     "SIM105", # FIXME: Use `contextlib.suppress(...)` instead of `try`-`except`-`pass` (4 errors)
     "SIM108", # FIXME: Use ternary operator instead of `if`-`else` block (30 errors)
-    "SIM110", # FIXME: Use `return any(...)` instead of `for` loop (4 errors)
     "SIM113", # FIXME: Use `enumerate` instead of manual counter (3 errors)
     "SIM114", # FIXME: Combine `if` branches using logical `or` (3 errors)
     "SIM115", # FIXME: Use context handler for opening files (18 errors)

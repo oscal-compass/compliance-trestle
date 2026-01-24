@@ -107,10 +107,7 @@ class Modify(Pipeline.Filter):
         """
         if Modify._add_to_list(parts, add):
             return True
-        for part in parts:
-            if part.parts is not None and Modify._add_to_parts(part.parts, add):
-                return True
-        return False
+        return any(part.parts is not None and Modify._add_to_parts(part.parts, add) for part in parts)
 
     @staticmethod
     def _add_attr_to_part(part: common.Part, items: List[OBT], attr: str, position: Optional[str]) -> None:
