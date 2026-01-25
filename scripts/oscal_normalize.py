@@ -728,6 +728,12 @@ def write_oscal(classes, forward_refs, fstem):
             out_file.write('import trestle.oscal.common as common\n')
         out_file.write('\n\n')
 
+        # Track which union types have been written
+        parameter_union_written = False
+        set_parameter_union_written = False
+        party_union_written = False
+        control_selection_union_written = False
+
         for c in classes:
             out_file.writelines('\n'.join(c.lines) + '\n')
             # add special validator for OscalVersion
@@ -736,135 +742,133 @@ def write_oscal(classes, forward_refs, fstem):
             # add alias HowMany
             if c.name == 'HowManyValidValues':
                 out_file.write('HowMany = HowManyValidValues\n\n\n')
-
-        # Add Parameter type aliases for common.py
-        if is_common:
-            # Find Parameter classes and determine which has values vs select
-            values_class_name = None
-            select_class_name = None
             
-            for c in classes:
-                if c.name in ['Parameter1', 'Parameter2', 'ParameterValues', 'ParameterSelect']:
-                    # Check the body to determine which field it has
-                    body_text = '\n'.join(c.lines)
-                    has_values = 'values: list[constr(' in body_text or 'values: List[constr(' in body_text
-                    has_select = 'select: ParameterSelection' in body_text
-                    
-                    if has_values and not has_select:
-                        values_class_name = c.name
-                    elif has_select and not has_values:
-                        select_class_name = c.name
+            # Write Parameter union type right after Parameter1/ParameterValues class (for common.py)
+            # Must wait for BOTH classes to be written before creating union
+            # Trigger on Parameter1/ParameterValues since it comes after Parameter2/ParameterSelect
+            if is_common and not parameter_union_written and c.name in ['Parameter1', 'ParameterValues']:
+                # Find both parameter classes
+                values_class_name = None
+                select_class_name = None
+                for cls in classes:
+                    if cls.name in ['Parameter1', 'Parameter2', 'ParameterValues', 'ParameterSelect']:
+                        body_text = '\n'.join(cls.lines)
+                        has_values = 'values: list[constr(' in body_text or 'values: List[constr(' in body_text
+                        has_select = 'select: ParameterSelection' in body_text
+                        if has_values and not has_select:
+                            values_class_name = cls.name
+                        elif has_select and not has_values:
+                            select_class_name = cls.name
+                
+                # Only write if we found both classes
+                if values_class_name and select_class_name:
+                    parameter_union_written = True
+                    out_file.write('\n# Parameter type aliases for backward compatibility and convenience\n')
+                    # Write backward compatibility aliases based on actual class names
+                    if values_class_name == 'ParameterValues':
+                        out_file.write('Parameter1 = ParameterValues\n')
+                    elif values_class_name == 'Parameter1':
+                        out_file.write('ParameterValues = Parameter1\n')
+                    if select_class_name == 'ParameterSelect':
+                        out_file.write('Parameter2 = ParameterSelect\n')
+                    elif select_class_name == 'Parameter2':
+                        out_file.write('ParameterSelect = Parameter2\n')
+                    out_file.write(f'Parameter = Union[{values_class_name}, {select_class_name}]\n')
+                    out_file.write('\n\n')
             
-            # Add aliases if we found both variants
-            if values_class_name and select_class_name:
-                out_file.write('\n# Parameter type aliases for backward compatibility and convenience\n')
+            # Write SetParameter union type right after SetParameterSelect class (for profile.py)
+            # Must wait for BOTH classes to be written before creating union
+            if fstem == 'profile' and not set_parameter_union_written and c.name in ['SetParameters1', 'SetParameterSelect']:
+                set_param_values_class_name = None
+                set_param_select_class_name = None
+                for cls in classes:
+                    if cls.name in ['SetParameters', 'SetParameters1', 'SetParameterValues', 'SetParameterSelect']:
+                        body_text = '\n'.join(cls.lines)
+                        has_values = 'values: list[constr(' in body_text or 'values: List[constr(' in body_text
+                        has_select = 'select: ' in body_text and 'ParameterSelection' in body_text
+                        if has_values and not has_select:
+                            set_param_values_class_name = cls.name
+                        elif has_select and not has_values:
+                            set_param_select_class_name = cls.name
                 
-                # Add backward compatibility aliases if classes were renamed
-                if values_class_name == 'ParameterValues':
-                    out_file.write('Parameter1 = ParameterValues\n')
-                if select_class_name == 'ParameterSelect':
-                    out_file.write('Parameter2 = ParameterSelect\n')
-                
-                # Always add the union type using the actual class names
-                out_file.write(f'Parameter = Union[{values_class_name}, {select_class_name}]\n')
-                out_file.write('\n\n')
-
-        # Add SetParameter type aliases for profile.py
-        if fstem == 'profile':
-            # Find SetParameter classes and determine which has values vs select
-            set_param_values_class_name = None
-            set_param_select_class_name = None
+                # Only write if we found both classes
+                if set_param_values_class_name and set_param_select_class_name:
+                    set_parameter_union_written = True
+                    out_file.write('\n# SetParameter type aliases for backward compatibility and convenience\n')
+                    # Write backward compatibility aliases based on actual class names
+                    if set_param_values_class_name == 'SetParameterValues':
+                        out_file.write('SetParameters = SetParameterValues\n')
+                    elif set_param_values_class_name == 'SetParameters':
+                        out_file.write('SetParameterValues = SetParameters\n')
+                    if set_param_select_class_name == 'SetParameterSelect':
+                        out_file.write('SetParameters1 = SetParameterSelect\n')
+                    elif set_param_select_class_name == 'SetParameters1':
+                        out_file.write('SetParameterSelect = SetParameters1\n')
+                    out_file.write(f'SetParameter = Union[{set_param_values_class_name}, {set_param_select_class_name}]\n')
+                    out_file.write('\n\n')
             
-            for c in classes:
-                if c.name in ['SetParameters', 'SetParameters1', 'SetParameterValues', 'SetParameterSelect']:
-                    # Check the body to determine which field it has
-                    body_text = '\n'.join(c.lines)
-                    has_values = 'values: list[constr(' in body_text or 'values: List[constr(' in body_text
-                    has_select = 'select: ' in body_text and 'ParameterSelection' in body_text
-                    
-                    if has_values and not has_select:
-                        set_param_values_class_name = c.name
-                    elif has_select and not has_values:
-                        set_param_select_class_name = c.name
+            # Write Party union type right after PartyAddresses class (for common.py)
+            # Must wait for BOTH classes to be written before creating union
+            if is_common and not party_union_written and c.name in ['Parties', 'PartyAddresses']:
+                # Check if both party classes have been written
+                party_addresses_class_name = None
+                party_location_uuids_class_name = None
+                for cls in classes:
+                    if cls.name in ['Parties', 'Parties1', 'PartyAddresses', 'PartyLocationUuids']:
+                        body_text = '\n'.join(cls.lines)
+                        has_addresses = '    addresses: list[Address]' in body_text
+                        has_location_uuids = '    location_uuids:' in body_text
+                        if has_addresses and not has_location_uuids:
+                            party_addresses_class_name = cls.name
+                        elif has_location_uuids and not has_addresses:
+                            party_location_uuids_class_name = cls.name
+                
+                # Only write if we found both classes
+                if party_addresses_class_name and party_location_uuids_class_name:
+                    party_union_written = True
+                    out_file.write('\n# Party type aliases for backward compatibility and convenience\n')
+                    # Write backward compatibility aliases based on actual class names
+                    if party_addresses_class_name == 'PartyAddresses':
+                        out_file.write('Parties = PartyAddresses\n')
+                    elif party_addresses_class_name == 'Parties':
+                        out_file.write('PartyAddresses = Parties\n')
+                    if party_location_uuids_class_name == 'PartyLocationUuids':
+                        out_file.write('Parties1 = PartyLocationUuids\n')
+                    elif party_location_uuids_class_name == 'Parties1':
+                        out_file.write('PartyLocationUuids = Parties1\n')
+                    out_file.write(f'Party = Union[{party_addresses_class_name}, {party_location_uuids_class_name}]\n')
+                    out_file.write('\n\n')
             
-            # Add aliases if we found both variants
-            if set_param_values_class_name and set_param_select_class_name:
-                out_file.write('\n# SetParameter type aliases for backward compatibility and convenience\n')
+            # Write ControlSelection union type right after ControlSelectionIncludeAll class (for common.py)
+            # Must wait for BOTH classes to be written before creating union
+            if is_common and not control_selection_union_written and c.name in ['ControlSelections', 'ControlSelectionIncludeAll']:
+                control_selection_include_controls_class_name = None
+                control_selection_include_all_class_name = None
+                for cls in classes:
+                    if cls.name in ['ControlSelections', 'ControlSelections1', 'ControlSelectionIncludeControls', 'ControlSelectionIncludeAll']:
+                        body_text = '\n'.join(cls.lines)
+                        has_include_controls = 'include_controls:' in body_text
+                        has_include_all = 'include_all:' in body_text
+                        if has_include_controls and not has_include_all:
+                            control_selection_include_controls_class_name = cls.name
+                        elif has_include_all and not has_include_controls:
+                            control_selection_include_all_class_name = cls.name
                 
-                # Add backward compatibility aliases if classes were renamed
-                if set_param_values_class_name == 'SetParameterValues':
-                    out_file.write('SetParameters = SetParameterValues\n')
-                if set_param_select_class_name == 'SetParameterSelect':
-                    out_file.write('SetParameters1 = SetParameterSelect\n')
-                
-                # Always add the union type using the actual class names
-                out_file.write(f'SetParameter = Union[{set_param_values_class_name}, {set_param_select_class_name}]\n')
-                out_file.write('\n\n')
-
-        # Add Party type aliases for common.py
-        if is_common:
-            # Find Party classes and determine which has addresses vs location_uuids
-            party_addresses_class_name = None
-            party_location_uuids_class_name = None
-            
-            for c in classes:
-                if c.name in ['Parties', 'Parties1', 'PartyAddresses', 'PartyLocationUuids']:
-                    # Check the body to determine which field it has
-                    # Use more specific patterns to avoid matching email_addresses
-                    body_text = '\n'.join(c.lines)
-                    has_addresses = '    addresses: list[Address]' in body_text
-                    has_location_uuids = '    location_uuids:' in body_text
-                    
-                    if has_addresses and not has_location_uuids:
-                        party_addresses_class_name = c.name
-                    elif has_location_uuids and not has_addresses:
-                        party_location_uuids_class_name = c.name
-            
-            # Add aliases if we found both variants
-            if party_addresses_class_name and party_location_uuids_class_name:
-                out_file.write('\n# Party type aliases for backward compatibility and convenience\n')
-                
-                # Add backward compatibility aliases if classes were renamed
-                if party_addresses_class_name == 'PartyAddresses':
-                    out_file.write('Parties = PartyAddresses\n')
-                if party_location_uuids_class_name == 'PartyLocationUuids':
-                    out_file.write('Parties1 = PartyLocationUuids\n')
-                
-                # Always add the union type using the actual class names
-                out_file.write(f'Party = Union[{party_addresses_class_name}, {party_location_uuids_class_name}]\n')
-                out_file.write('\n\n')
-
-        # Add ControlSelection type aliases for common.py
-        if is_common:
-            # Find ControlSelection classes and determine which has include_controls vs include_all
-            control_selection_include_controls_class_name = None
-            control_selection_include_all_class_name = None
-            
-            for c in classes:
-                if c.name in ['ControlSelections', 'ControlSelections1', 'ControlSelectionIncludeControls', 'ControlSelectionIncludeAll']:
-                    # Check the body to determine which field it has
-                    body_text = '\n'.join(c.lines)
-                    has_include_controls = 'include_controls:' in body_text
-                    has_include_all = 'include_all:' in body_text
-                    
-                    if has_include_controls and not has_include_all:
-                        control_selection_include_controls_class_name = c.name
-                    elif has_include_all and not has_include_controls:
-                        control_selection_include_all_class_name = c.name
-            
-            # Add aliases if we found both variants
-            if control_selection_include_controls_class_name and control_selection_include_all_class_name:
-                out_file.write('\n# ControlSelection type aliases for backward compatibility and convenience\n')
-                
-                # Add backward compatibility aliases if classes were renamed
-                if control_selection_include_controls_class_name == 'ControlSelectionIncludeControls':
-                    out_file.write('ControlSelections1 = ControlSelectionIncludeControls\n')
-                if control_selection_include_all_class_name == 'ControlSelectionIncludeAll':
-                    out_file.write('ControlSelections = ControlSelectionIncludeAll\n')
-                
-                # Always add the union type using the actual class names
-                out_file.write(f'ControlSelection = Union[{control_selection_include_controls_class_name}, {control_selection_include_all_class_name}]\n')
-                out_file.write('\n\n')
+                # Only write if we found both classes
+                if control_selection_include_controls_class_name and control_selection_include_all_class_name:
+                    control_selection_union_written = True
+                    out_file.write('\n# ControlSelection type aliases for backward compatibility and convenience\n')
+                    # Write backward compatibility aliases based on actual class names
+                    if control_selection_include_controls_class_name == 'ControlSelectionIncludeControls':
+                        out_file.write('ControlSelections1 = ControlSelectionIncludeControls\n')
+                    elif control_selection_include_controls_class_name == 'ControlSelections1':
+                        out_file.write('ControlSelectionIncludeControls = ControlSelections1\n')
+                    if control_selection_include_all_class_name == 'ControlSelectionIncludeAll':
+                        out_file.write('ControlSelections = ControlSelectionIncludeAll\n')
+                    elif control_selection_include_all_class_name == 'ControlSelections':
+                        out_file.write('ControlSelectionIncludeAll = ControlSelections\n')
+                    out_file.write(f'ControlSelection = Union[{control_selection_include_controls_class_name}, {control_selection_include_all_class_name}]\n')
+                    out_file.write('\n\n')
 
         if not is_common:
             out_file.writelines('class Model(OscalBaseModel):\n')
@@ -1236,6 +1240,21 @@ def patch_items(file_classes):
                     c.name = new_name
                     c.unique_name = new_name
                     c.lines[0] = c.lines[0].replace(f'class ControlSelections(', f'class {new_name}(').replace(f'class ControlSelections1(', f'class {new_name}(')
+    
+    # Update all references to renamed classes throughout all files
+    # This is needed because datamodel-codegen generates references using the original class names
+    for stem in file_classes:
+        for c in file_classes[stem]:
+            # Update references in all lines of the class
+            for i, line in enumerate(c.lines):
+                # Update Party references - datamodel-codegen generated list[Parties | Parties1] but we have a single Party class
+                line = line.replace('list[Parties | Parties1]', 'list[Party]')
+                line = line.replace('Parties | Parties1', 'Party')
+                # Update ControlSelection references
+                line = line.replace('list[ControlSelections | ControlSelections1]', 'list[ControlSelectionIncludeAll | ControlSelectionIncludeControls]')
+                line = line.replace('ControlSelections | ControlSelections1', 'ControlSelectionIncludeAll | ControlSelectionIncludeControls')
+                c.lines[i] = line
+    
     return file_classes
 
 
