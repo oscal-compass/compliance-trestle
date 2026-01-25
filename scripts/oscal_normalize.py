@@ -834,6 +834,38 @@ def write_oscal(classes, forward_refs, fstem):
                 out_file.write(f'Party = Union[{party_addresses_class_name}, {party_location_uuids_class_name}]\n')
                 out_file.write('\n\n')
 
+        # Add ControlSelection type aliases for common.py
+        if is_common:
+            # Find ControlSelection classes and determine which has include_controls vs include_all
+            control_selection_include_controls_class_name = None
+            control_selection_include_all_class_name = None
+            
+            for c in classes:
+                if c.name in ['ControlSelections', 'ControlSelections1', 'ControlSelectionIncludeControls', 'ControlSelectionIncludeAll']:
+                    # Check the body to determine which field it has
+                    body_text = '\n'.join(c.lines)
+                    has_include_controls = 'include_controls:' in body_text
+                    has_include_all = 'include_all:' in body_text
+                    
+                    if has_include_controls and not has_include_all:
+                        control_selection_include_controls_class_name = c.name
+                    elif has_include_all and not has_include_controls:
+                        control_selection_include_all_class_name = c.name
+            
+            # Add aliases if we found both variants
+            if control_selection_include_controls_class_name and control_selection_include_all_class_name:
+                out_file.write('\n# ControlSelection type aliases for backward compatibility and convenience\n')
+                
+                # Add backward compatibility aliases if classes were renamed
+                if control_selection_include_controls_class_name == 'ControlSelectionIncludeControls':
+                    out_file.write('ControlSelections1 = ControlSelectionIncludeControls\n')
+                if control_selection_include_all_class_name == 'ControlSelectionIncludeAll':
+                    out_file.write('ControlSelections = ControlSelectionIncludeAll\n')
+                
+                # Always add the union type using the actual class names
+                out_file.write(f'ControlSelection = Union[{control_selection_include_controls_class_name}, {control_selection_include_all_class_name}]\n')
+                out_file.write('\n\n')
+
         if not is_common:
             out_file.writelines('class Model(OscalBaseModel):\n')
             alias = alias_map[fstem]
@@ -1185,6 +1217,25 @@ def patch_items(file_classes):
                     c.name = new_name
                     c.unique_name = new_name
                     c.lines[0] = c.lines[0].replace(f'class Parties(', f'class {new_name}(').replace(f'class Parties1(', f'class {new_name}(')
+            # Rename ControlSelections and ControlSelections1 to more descriptive names based on their fields
+            elif c.name in ['ControlSelections', 'ControlSelections1']:
+                # Check the body to determine which field it has
+                body_text = '\n'.join(c.lines)
+                has_include_controls = 'include_controls:' in body_text
+                has_include_all = 'include_all:' in body_text
+                
+                if has_include_controls and not has_include_all:
+                    # This is the include-controls variant (specific controls)
+                    new_name = 'ControlSelectionIncludeControls'
+                    c.name = new_name
+                    c.unique_name = new_name
+                    c.lines[0] = c.lines[0].replace(f'class ControlSelections(', f'class {new_name}(').replace(f'class ControlSelections1(', f'class {new_name}(')
+                elif has_include_all and not has_include_controls:
+                    # This is the include-all variant (all controls)
+                    new_name = 'ControlSelectionIncludeAll'
+                    c.name = new_name
+                    c.unique_name = new_name
+                    c.lines[0] = c.lines[0].replace(f'class ControlSelections(', f'class {new_name}(').replace(f'class ControlSelections1(', f'class {new_name}(')
     return file_classes
 
 
