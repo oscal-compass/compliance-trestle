@@ -801,6 +801,39 @@ def write_oscal(classes, forward_refs, fstem):
                 out_file.write(f'SetParameter = Union[{set_param_values_class_name}, {set_param_select_class_name}]\n')
                 out_file.write('\n\n')
 
+        # Add Party type aliases for common.py
+        if is_common:
+            # Find Party classes and determine which has addresses vs location_uuids
+            party_addresses_class_name = None
+            party_location_uuids_class_name = None
+            
+            for c in classes:
+                if c.name in ['Parties', 'Parties1', 'PartyAddresses', 'PartyLocationUuids']:
+                    # Check the body to determine which field it has
+                    # Use more specific patterns to avoid matching email_addresses
+                    body_text = '\n'.join(c.lines)
+                    has_addresses = '    addresses: list[Address]' in body_text
+                    has_location_uuids = '    location_uuids:' in body_text
+                    
+                    if has_addresses and not has_location_uuids:
+                        party_addresses_class_name = c.name
+                    elif has_location_uuids and not has_addresses:
+                        party_location_uuids_class_name = c.name
+            
+            # Add aliases if we found both variants
+            if party_addresses_class_name and party_location_uuids_class_name:
+                out_file.write('\n# Party type aliases for backward compatibility and convenience\n')
+                
+                # Add backward compatibility aliases if classes were renamed
+                if party_addresses_class_name == 'PartyAddresses':
+                    out_file.write('Parties = PartyAddresses\n')
+                if party_location_uuids_class_name == 'PartyLocationUuids':
+                    out_file.write('Parties1 = PartyLocationUuids\n')
+                
+                # Always add the union type using the actual class names
+                out_file.write(f'Party = Union[{party_addresses_class_name}, {party_location_uuids_class_name}]\n')
+                out_file.write('\n\n')
+
         if not is_common:
             out_file.writelines('class Model(OscalBaseModel):\n')
             alias = alias_map[fstem]
@@ -1132,6 +1165,26 @@ def patch_items(file_classes):
                     c.name = new_name
                     c.unique_name = new_name
                     c.lines[0] = c.lines[0].replace(f'class SetParameters(', f'class {new_name}(').replace(f'class SetParameters1(', f'class {new_name}(')
+            # Rename Parties and Parties1 to more descriptive names based on their fields
+            elif c.name in ['Parties', 'Parties1']:
+                # Check the body to determine which field it has
+                # Use more specific patterns to avoid matching email_addresses
+                body_text = '\n'.join(c.lines)
+                has_addresses = '    addresses: list[Address]' in body_text
+                has_location_uuids = '    location_uuids:' in body_text
+                
+                if has_addresses and not has_location_uuids:
+                    # This is the addresses variant (inline addresses)
+                    new_name = 'PartyAddresses'
+                    c.name = new_name
+                    c.unique_name = new_name
+                    c.lines[0] = c.lines[0].replace(f'class Parties(', f'class {new_name}(').replace(f'class Parties1(', f'class {new_name}(')
+                elif has_location_uuids and not has_addresses:
+                    # This is the location_uuids variant (references to Location objects)
+                    new_name = 'PartyLocationUuids'
+                    c.name = new_name
+                    c.unique_name = new_name
+                    c.lines[0] = c.lines[0].replace(f'class Parties(', f'class {new_name}(').replace(f'class Parties1(', f'class {new_name}(')
     return file_classes
 
 
