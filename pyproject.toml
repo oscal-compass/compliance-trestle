@@ -221,7 +221,6 @@ ignore = [
     "UP045",  # FIXME: Use `X | None` for type annotations (112 errors)
     # FIXME: B - flake8-bugbear rules to fix
     "B017",   # FIXME: `assertRaises(Exception)` should be considered evil (6 errors)
-    "B018",   # FIXME: Found useless expression (1 error)
     "B904",   # FIXME: Within `except` clause, raise from err or None (82 errors)
     # FIXME: SIM - flake8-simplify rules to fix
     "SIM101", # FIXME: Multiple `isinstance` calls, merge into one (2 errors)
@@ -243,7 +242,6 @@ ignore = [
     "SIM905", # FIXME: Consider using a list literal instead of `str.split` (14 errors)
     "SIM910", # FIXME: Use `dict.get(key)` instead of `dict.get(key, None)` (3 errors)
     # FIXME: E - pycodestyle rules to fix
-    "E713",   # FIXME: Test for membership should be `not in` (1 error)
     "E721",   # FIXME: Do not compare types, use `isinstance()` (15 errors)
     # FIXME: W - pycodestyle warnings to fix
     "W605",   # FIXME: Invalid escape sequence (36 errors)
@@ -258,7 +256,6 @@ ignore = [
     "S701",   # FIXME: Using jinja2 templates with `autoescape=False` (5 errors)
     # FIXME: F - Pyflakes rules to fix
     "F401",   # FIXME: Unused import (7 errors)
-    "F541",   # FIXME: f-string without any placeholders (1 error)
     # FIXME: C4 - flake8-comprehensions rules to fix
     "C408",   # FIXME: Unnecessary dict/list/tuple call (1 error)
 ]
