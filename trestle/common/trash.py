@@ -222,7 +222,4 @@ def has_parent_path(sub_path: pathlib.Path, parent_path: pathlib.Path) -> bool:
     if len(sub_path.parts) < len(parent_path.parts):
         return False
 
-    for i, part in enumerate(parent_path.parts):
-        if part != sub_path.parts[i]:
-            return False
-    return True
+    return all(part == sub_path.parts[i] for i, part in enumerate(parent_path.parts))

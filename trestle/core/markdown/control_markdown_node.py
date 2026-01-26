@@ -93,7 +93,7 @@ class ControlSectionContent(BaseSectionContent):
             part: A part that is found in markdown. A part is defined in markdown by two or more # symbols
             by_id_name: Required for parts defined as ## Part a in a markdown
         """
-        super(ControlSectionContent, self).__init__()
+        super().__init__()
         self.part = None
         self.by_id_name = ''
 
@@ -107,7 +107,7 @@ class ControlMarkdownNode(BaseMarkdownNode):
 
     def __init__(self, key: str, content: ControlSectionContent, starting_line: int):
         """Initialize markdown node."""
-        super(ControlMarkdownNode, self).__init__(key, content, starting_line)
+        super().__init__(key, content, starting_line)
         self.content: ControlSectionContent = content
 
     def _build_tree(
