@@ -236,7 +236,6 @@ ignore = [
     "SIM211", # FIXME: Use `not ...` instead of `False if ... else True` (2 errors)
     "SIM212", # FIXME: Use `... if ... else ...` instead of `... if not ... else ...` (2 errors)
     "SIM300", # FIXME: Yoda conditions are discouraged (29 errors)
-    "SIM905", # FIXME: Consider using a list literal instead of `str.split` (14 errors)
     "SIM910", # FIXME: Use `dict.get(key)` instead of `dict.get(key, None)` (3 errors)
     # FIXME: E - pycodestyle rules to fix
     "E721",   # FIXME: Do not compare types, use `isinstance()` (15 errors)
@@ -248,7 +247,6 @@ ignore = [
     "N804",   # FIXME: First argument of classmethod should be `cls` (1 error)
     # FIXME: S - flake8-bandit security rules to fix
     "S110",   # FIXME: `try`-`except`-`pass` detected (4 errors)
-    "S311",   # FIXME: Standard pseudo-random generators not suitable for crypto (14 errors)
     "S605",   # FIXME: Starting a process with a shell, possible injection (1 error)
     "S701",   # FIXME: Using jinja2 templates with `autoescape=False` (5 errors)
     # FIXME: F - Pyflakes rules to fix
