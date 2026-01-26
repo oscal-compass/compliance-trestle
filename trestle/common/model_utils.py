@@ -893,7 +893,7 @@ class ModelUtils:
         elif obj_a_type is list:
             if len(obj_a) != len(obj_b):
                 return True
-            for item_a, item_b in zip(obj_a, obj_b):
+            for item_a, item_b in zip(obj_a, obj_b, strict=True):
                 if ModelUtils._objects_differ(item_a, item_b, ignore_type_list, ignore_name_list, ignore_all_uuid):
                     return True
         elif obj_a_type is dict:

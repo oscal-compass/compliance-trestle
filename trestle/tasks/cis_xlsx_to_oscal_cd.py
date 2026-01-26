@@ -738,10 +738,7 @@ class XlsxToCsvHelper:
 
     def is_excluded_column(self, column: str) -> bool:
         """Is excluded column."""
-        for item in self._columns_exclude:
-            if item.lower() == column.lower():
-                return True
-        return False
+        return any(item.lower() == column.lower() for item in self._columns_exclude)
 
     def merge_row(self, prev_row: int, curr_row: int) -> bool:
         """Merge row."""
