@@ -107,7 +107,7 @@
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>key</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>content</span><span class=p>:</span> <span class=n>DocsSectionContent</span><span class=p>,</span> <span class=n>starting_line</span><span class=p>:</span> <span class=nb>int</span><span class=p>):</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Initialize markdown node.&quot;&quot;&quot;</span>
-        <span class=nb>super</span><span class=p>(</span><span class=n>DocsMarkdownNode</span><span class=p>,</span> <span class=bp>self</span><span class=p>)</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>key</span><span class=p>,</span> <span class=n>content</span><span class=p>,</span> <span class=n>starting_line</span><span class=p>)</span>
+        <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>key</span><span class=p>,</span> <span class=n>content</span><span class=p>,</span> <span class=n>starting_line</span><span class=p>)</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>content</span><span class=p>:</span> <span class=n>DocsSectionContent</span> <span class=o>=</span> <span class=n>content</span>
 
     <span class=nd>@classmethod</span>
@@ -191,7 +191,7 @@
 <span class=normal>57</span>
 <span class=normal>58</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>key</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>content</span><span class=p>:</span> <span class=n>DocsSectionContent</span><span class=p>,</span> <span class=n>starting_line</span><span class=p>:</span> <span class=nb>int</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Initialize markdown node.&quot;&quot;&quot;</span>
-    <span class=nb>super</span><span class=p>(</span><span class=n>DocsMarkdownNode</span><span class=p>,</span> <span class=bp>self</span><span class=p>)</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>key</span><span class=p>,</span> <span class=n>content</span><span class=p>,</span> <span class=n>starting_line</span><span class=p>)</span>
+    <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>key</span><span class=p>,</span> <span class=n>content</span><span class=p>,</span> <span class=n>starting_line</span><span class=p>)</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>content</span><span class=p>:</span> <span class=n>DocsSectionContent</span> <span class=o>=</span> <span class=n>content</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.markdown.docs_markdown_node.DocsMarkdownNode.build_tree_from_markdown class="doc doc-heading"> <code class="highlight language-python"><span class=n>build_tree_from_markdown</span><span class=p>(</span><span class=n>lines</span><span class=p>,</span> <span class=n>governed_header</span><span class=o>=</span><span class=kc>None</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small> </span> <a href=#trestle.core.markdown.docs_markdown_node.DocsMarkdownNode.build_tree_from_markdown class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Construct a tree out of the given markdown.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/markdown/docs_markdown_node.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>60</span>
 <span class=normal>61</span>
@@ -251,7 +251,7 @@
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Initialize section content.&quot;&quot;&quot;</span>
-        <span class=nb>super</span><span class=p>(</span><span class=n>DocsSectionContent</span><span class=p>,</span> <span class=bp>self</span><span class=p>)</span><span class=o>.</span><span class=fm>__init__</span><span class=p>()</span>
+        <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>()</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>tables</span> <span class=o>=</span> <span class=p>[]</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>text</span> <span class=o>=</span> <span class=p>[]</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>code_lines</span> <span class=o>=</span> <span class=p>[]</span>
@@ -276,7 +276,7 @@
 <span class=normal>40</span>
 <span class=normal>41</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Initialize section content.&quot;&quot;&quot;</span>
-    <span class=nb>super</span><span class=p>(</span><span class=n>DocsSectionContent</span><span class=p>,</span> <span class=bp>self</span><span class=p>)</span><span class=o>.</span><span class=fm>__init__</span><span class=p>()</span>
+    <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>()</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>tables</span> <span class=o>=</span> <span class=p>[]</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>text</span> <span class=o>=</span> <span class=p>[]</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>code_lines</span> <span class=o>=</span> <span class=p>[]</span>

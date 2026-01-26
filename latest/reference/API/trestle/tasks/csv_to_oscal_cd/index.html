@@ -160,10 +160,7 @@
 <span class=normal>1483</span>
 <span class=normal>1484</span>
 <span class=normal>1485</span>
-<span class=normal>1486</span>
-<span class=normal>1487</span>
-<span class=normal>1488</span>
-<span class=normal>1489</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>CsvColumn</span><span class=p>:</span>
+<span class=normal>1486</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>CsvColumn</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;CsvColumn.&quot;&quot;&quot;</span>
 
     <span class=n>_columns_required</span> <span class=o>=</span> <span class=p>[</span>
@@ -227,10 +224,7 @@
     <span class=nd>@staticmethod</span>
     <span class=k>def</span><span class=w> </span><span class=nf>is_column_name_parameter</span><span class=p>(</span><span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Is column name parameter.&quot;&quot;&quot;</span>
-        <span class=k>for</span> <span class=n>cname</span> <span class=ow>in</span> <span class=n>CsvColumn</span><span class=o>.</span><span class=n>_columns_parameter</span><span class=p>:</span>
-            <span class=k>if</span> <span class=n>name</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=n>cname</span><span class=p>):</span>
-                <span class=k>return</span> <span class=kc>True</span>
-        <span class=k>return</span> <span class=kc>False</span>
+        <span class=k>return</span> <span class=nb>any</span><span class=p>(</span><span class=n>name</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=n>cname</span><span class=p>)</span> <span class=k>for</span> <span class=n>cname</span> <span class=ow>in</span> <span class=n>CsvColumn</span><span class=o>.</span><span class=n>_columns_parameter</span><span class=p>)</span>
 
     <span class=nd>@staticmethod</span>
     <span class=k>def</span><span class=w> </span><span class=nf>get_required_column_names</span><span class=p>()</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
@@ -329,21 +323,21 @@
         <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>PARAMETER_VALUE_ALTERNATIVES</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>,</span>
         <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>PARAMETER_VALUE_DEFAULT</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>,</span>
     <span class=p>]</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.tasks.csv_to_oscal_cd.CsvColumn-functions>Functions<a href=#trestle.tasks.csv_to_oscal_cd.CsvColumn-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.csv_to_oscal_cd.CsvColumn.get_check_property_column_names class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_check_property_column_names</span><span class=p>()</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.tasks.csv_to_oscal_cd.CsvColumn.get_check_property_column_names class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get check property column names.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/csv_to_oscal_cd.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1476</span>
-<span class=normal>1477</span>
-<span class=normal>1478</span>
-<span class=normal>1479</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.tasks.csv_to_oscal_cd.CsvColumn-functions>Functions<a href=#trestle.tasks.csv_to_oscal_cd.CsvColumn-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.csv_to_oscal_cd.CsvColumn.get_check_property_column_names class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_check_property_column_names</span><span class=p>()</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.tasks.csv_to_oscal_cd.CsvColumn.get_check_property_column_names class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get check property column names.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/csv_to_oscal_cd.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1473</span>
+<span class=normal>1474</span>
+<span class=normal>1475</span>
+<span class=normal>1476</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>get_check_property_column_names</span><span class=p>()</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Get check property column names.&quot;&quot;&quot;</span>
     <span class=k>return</span> <span class=n>CsvColumn</span><span class=o>.</span><span class=n>_check_property_column_names</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.csv_to_oscal_cd.CsvColumn.get_filtered_optional_column_names class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_filtered_optional_column_names</span><span class=p>()</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.tasks.csv_to_oscal_cd.CsvColumn.get_filtered_optional_column_names class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get filtered optional column names.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/csv_to_oscal_cd.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1465</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.csv_to_oscal_cd.CsvColumn.get_filtered_optional_column_names class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_filtered_optional_column_names</span><span class=p>()</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.tasks.csv_to_oscal_cd.CsvColumn.get_filtered_optional_column_names class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get filtered optional column names.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/csv_to_oscal_cd.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1462</span>
+<span class=normal>1463</span>
+<span class=normal>1464</span>
+<span class=normal>1465</span>
 <span class=normal>1466</span>
 <span class=normal>1467</span>
 <span class=normal>1468</span>
-<span class=normal>1469</span>
-<span class=normal>1470</span>
-<span class=normal>1471</span>
-<span class=normal>1472</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+<span class=normal>1469</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>get_filtered_optional_column_names</span><span class=p>()</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Get filtered optional column names.&quot;&quot;&quot;</span>
     <span class=n>rval</span> <span class=o>=</span> <span class=p>[]</span>
@@ -351,14 +345,14 @@
         <span class=k>if</span> <span class=n>column_name</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>CsvColumn</span><span class=o>.</span><span class=n>_columns_filtered</span><span class=p>:</span>
             <span class=n>rval</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>column_name</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>rval</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.csv_to_oscal_cd.CsvColumn.get_filtered_required_column_names class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_filtered_required_column_names</span><span class=p>()</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.tasks.csv_to_oscal_cd.CsvColumn.get_filtered_required_column_names class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get filtered required column names.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/csv_to_oscal_cd.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1456</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.csv_to_oscal_cd.CsvColumn.get_filtered_required_column_names class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_filtered_required_column_names</span><span class=p>()</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.tasks.csv_to_oscal_cd.CsvColumn.get_filtered_required_column_names class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get filtered required column names.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/csv_to_oscal_cd.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1453</span>
+<span class=normal>1454</span>
+<span class=normal>1455</span>
+<span class=normal>1456</span>
 <span class=normal>1457</span>
 <span class=normal>1458</span>
 <span class=normal>1459</span>
-<span class=normal>1460</span>
-<span class=normal>1461</span>
-<span class=normal>1462</span>
-<span class=normal>1463</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+<span class=normal>1460</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>get_filtered_required_column_names</span><span class=p>()</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Get filtered required column names.&quot;&quot;&quot;</span>
     <span class=n>rval</span> <span class=o>=</span> <span class=p>[]</span>
@@ -366,12 +360,12 @@
         <span class=k>if</span> <span class=n>column_name</span> <span class=ow>not</span> <span class=ow>in</span> <span class=n>CsvColumn</span><span class=o>.</span><span class=n>_columns_filtered</span><span class=p>:</span>
             <span class=n>rval</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>column_name</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>rval</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.csv_to_oscal_cd.CsvColumn.get_optional_column_names class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_optional_column_names</span><span class=p>()</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.tasks.csv_to_oscal_cd.CsvColumn.get_optional_column_names class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get optional column names.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/csv_to_oscal_cd.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1400</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.csv_to_oscal_cd.CsvColumn.get_optional_column_names class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_optional_column_names</span><span class=p>()</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.tasks.csv_to_oscal_cd.CsvColumn.get_optional_column_names class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get optional column names.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/csv_to_oscal_cd.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1397</span>
+<span class=normal>1398</span>
+<span class=normal>1399</span>
+<span class=normal>1400</span>
 <span class=normal>1401</span>
-<span class=normal>1402</span>
-<span class=normal>1403</span>
-<span class=normal>1404</span>
-<span class=normal>1405</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+<span class=normal>1402</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>get_optional_column_names</span><span class=p>()</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Get optional column names.&quot;&quot;&quot;</span>
     <span class=n>rval</span> <span class=o>=</span> <span class=p>[]</span>
@@ -390,43 +384,43 @@
     <span class=k>if</span> <span class=n>column_name</span> <span class=ow>in</span> <span class=n>CsvColumn</span><span class=o>.</span><span class=n>_columns_ordered</span><span class=p>:</span>
         <span class=n>rval</span> <span class=o>=</span> <span class=n>CsvColumn</span><span class=o>.</span><span class=n>_columns_ordered</span><span class=o>.</span><span class=n>index</span><span class=p>(</span><span class=n>column_name</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>rval</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.csv_to_oscal_cd.CsvColumn.get_parameter_column_names class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_parameter_column_names</span><span class=p>()</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.tasks.csv_to_oscal_cd.CsvColumn.get_parameter_column_names class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get parameter column names.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/csv_to_oscal_cd.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1407</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.csv_to_oscal_cd.CsvColumn.get_parameter_column_names class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_parameter_column_names</span><span class=p>()</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.tasks.csv_to_oscal_cd.CsvColumn.get_parameter_column_names class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get parameter column names.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/csv_to_oscal_cd.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1404</span>
+<span class=normal>1405</span>
+<span class=normal>1406</span>
+<span class=normal>1407</span>
 <span class=normal>1408</span>
-<span class=normal>1409</span>
-<span class=normal>1410</span>
-<span class=normal>1411</span>
-<span class=normal>1412</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+<span class=normal>1409</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>get_parameter_column_names</span><span class=p>()</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Get parameter column names.&quot;&quot;&quot;</span>
     <span class=n>rval</span> <span class=o>=</span> <span class=p>[]</span>
     <span class=n>rval</span> <span class=o>+=</span> <span class=n>CsvColumn</span><span class=o>.</span><span class=n>_columns_parameters</span>
     <span class=k>return</span> <span class=n>rval</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.csv_to_oscal_cd.CsvColumn.get_required_column_names class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_required_column_names</span><span class=p>()</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.tasks.csv_to_oscal_cd.CsvColumn.get_required_column_names class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get required column names.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/csv_to_oscal_cd.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1393</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.csv_to_oscal_cd.CsvColumn.get_required_column_names class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_required_column_names</span><span class=p>()</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.tasks.csv_to_oscal_cd.CsvColumn.get_required_column_names class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get required column names.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/csv_to_oscal_cd.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1390</span>
+<span class=normal>1391</span>
+<span class=normal>1392</span>
+<span class=normal>1393</span>
 <span class=normal>1394</span>
-<span class=normal>1395</span>
-<span class=normal>1396</span>
-<span class=normal>1397</span>
-<span class=normal>1398</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+<span class=normal>1395</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>get_required_column_names</span><span class=p>()</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Get required column names.&quot;&quot;&quot;</span>
     <span class=n>rval</span> <span class=o>=</span> <span class=p>[]</span>
     <span class=n>rval</span> <span class=o>+=</span> <span class=n>CsvColumn</span><span class=o>.</span><span class=n>_columns_required</span>
     <span class=k>return</span> <span class=n>rval</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.csv_to_oscal_cd.CsvColumn.get_required_column_names_validation class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_required_column_names_validation</span><span class=p>()</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.tasks.csv_to_oscal_cd.CsvColumn.get_required_column_names_validation class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get required column names validation.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/csv_to_oscal_cd.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1414</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.csv_to_oscal_cd.CsvColumn.get_required_column_names_validation class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_required_column_names_validation</span><span class=p>()</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.tasks.csv_to_oscal_cd.CsvColumn.get_required_column_names_validation class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get required column names validation.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/csv_to_oscal_cd.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1411</span>
+<span class=normal>1412</span>
+<span class=normal>1413</span>
+<span class=normal>1414</span>
 <span class=normal>1415</span>
-<span class=normal>1416</span>
-<span class=normal>1417</span>
-<span class=normal>1418</span>
-<span class=normal>1419</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+<span class=normal>1416</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>get_required_column_names_validation</span><span class=p>()</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Get required column names validation.&quot;&quot;&quot;</span>
     <span class=n>rval</span> <span class=o>=</span> <span class=p>[]</span>
     <span class=n>rval</span> <span class=o>+=</span> <span class=n>CsvColumn</span><span class=o>.</span><span class=n>_columns_required_validation</span>
     <span class=k>return</span> <span class=n>rval</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.csv_to_oscal_cd.CsvColumn.get_rule_property_column_names class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_rule_property_column_names</span><span class=p>()</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.tasks.csv_to_oscal_cd.CsvColumn.get_rule_property_column_names class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get rule property column names.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/csv_to_oscal_cd.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1435</span>
-<span class=normal>1436</span>
-<span class=normal>1437</span>
-<span class=normal>1438</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.csv_to_oscal_cd.CsvColumn.get_rule_property_column_names class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_rule_property_column_names</span><span class=p>()</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.tasks.csv_to_oscal_cd.CsvColumn.get_rule_property_column_names class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Get rule property column names.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/csv_to_oscal_cd.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1432</span>
+<span class=normal>1433</span>
+<span class=normal>1434</span>
+<span class=normal>1435</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>get_rule_property_column_names</span><span class=p>()</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Get rule property column names.&quot;&quot;&quot;</span>
     <span class=k>return</span> <span class=n>CsvColumn</span><span class=o>.</span><span class=n>_rule_property_column_names</span>
@@ -440,16 +434,10 @@
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.csv_to_oscal_cd.CsvColumn.is_column_name_parameter class="doc doc-heading"> <code class="highlight language-python"><span class=n>is_column_name_parameter</span><span class=p>(</span><span class=n>name</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.tasks.csv_to_oscal_cd.CsvColumn.is_column_name_parameter class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Is column name parameter.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/csv_to_oscal_cd.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1385</span>
 <span class=normal>1386</span>
 <span class=normal>1387</span>
-<span class=normal>1388</span>
-<span class=normal>1389</span>
-<span class=normal>1390</span>
-<span class=normal>1391</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+<span class=normal>1388</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>is_column_name_parameter</span><span class=p>(</span><span class=n>name</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Is column name parameter.&quot;&quot;&quot;</span>
-    <span class=k>for</span> <span class=n>cname</span> <span class=ow>in</span> <span class=n>CsvColumn</span><span class=o>.</span><span class=n>_columns_parameter</span><span class=p>:</span>
-        <span class=k>if</span> <span class=n>name</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=n>cname</span><span class=p>):</span>
-            <span class=k>return</span> <span class=kc>True</span>
-    <span class=k>return</span> <span class=kc>False</span>
+    <span class=k>return</span> <span class=nb>any</span><span class=p>(</span><span class=n>name</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=n>cname</span><span class=p>)</span> <span class=k>for</span> <span class=n>cname</span> <span class=ow>in</span> <span class=n>CsvColumn</span><span class=o>.</span><span class=n>_columns_parameter</span><span class=p>)</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.tasks.csv_to_oscal_cd.CsvColumn.is_column_name_required class="doc doc-heading"> <code class="highlight language-python"><span class=n>is_column_name_required</span><span class=p>(</span><span class=n>name</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.tasks.csv_to_oscal_cd.CsvColumn.is_column_name_required class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Is column name required.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/tasks/csv_to_oscal_cd.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>1375</span>
 <span class=normal>1376</span>
 <span class=normal>1377</span>

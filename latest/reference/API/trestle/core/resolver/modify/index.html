@@ -334,10 +334,7 @@
 <span class=normal>345</span>
 <span class=normal>346</span>
 <span class=normal>347</span>
-<span class=normal>348</span>
-<span class=normal>349</span>
-<span class=normal>350</span>
-<span class=normal>351</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>Modify</span><span class=p>(</span><span class=n>Pipeline</span><span class=o>.</span><span class=n>Filter</span><span class=p>):</span>
+<span class=normal>348</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>Modify</span><span class=p>(</span><span class=n>Pipeline</span><span class=o>.</span><span class=n>Filter</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Modify the controls based on the profile.&quot;&quot;&quot;</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span>
@@ -414,10 +411,7 @@
 <span class=sd>        &quot;&quot;&quot;</span>
         <span class=k>if</span> <span class=n>Modify</span><span class=o>.</span><span class=n>_add_to_list</span><span class=p>(</span><span class=n>parts</span><span class=p>,</span> <span class=n>add</span><span class=p>):</span>
             <span class=k>return</span> <span class=kc>True</span>
-        <span class=k>for</span> <span class=n>part</span> <span class=ow>in</span> <span class=n>parts</span><span class=p>:</span>
-            <span class=k>if</span> <span class=n>part</span><span class=o>.</span><span class=n>parts</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span> <span class=ow>and</span> <span class=n>Modify</span><span class=o>.</span><span class=n>_add_to_parts</span><span class=p>(</span><span class=n>part</span><span class=o>.</span><span class=n>parts</span><span class=p>,</span> <span class=n>add</span><span class=p>):</span>
-                <span class=k>return</span> <span class=kc>True</span>
-        <span class=k>return</span> <span class=kc>False</span>
+        <span class=k>return</span> <span class=nb>any</span><span class=p>(</span><span class=n>part</span><span class=o>.</span><span class=n>parts</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span> <span class=ow>and</span> <span class=n>Modify</span><span class=o>.</span><span class=n>_add_to_parts</span><span class=p>(</span><span class=n>part</span><span class=o>.</span><span class=n>parts</span><span class=p>,</span> <span class=n>add</span><span class=p>)</span> <span class=k>for</span> <span class=n>part</span> <span class=ow>in</span> <span class=n>parts</span><span class=p>)</span>
 
     <span class=nd>@staticmethod</span>
     <span class=k>def</span><span class=w> </span><span class=nf>_add_attr_to_part</span><span class=p>(</span><span class=n>part</span><span class=p>:</span> <span class=n>common</span><span class=o>.</span><span class=n>Part</span><span class=p>,</span> <span class=n>items</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>OBT</span><span class=p>],</span> <span class=n>attr</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>position</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
@@ -703,13 +697,13 @@
     <span class=bp>self</span><span class=o>.</span><span class=n>_value_assigned_prefix</span> <span class=o>=</span> <span class=n>value_assigned_prefix</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_value_not_assigned_prefix</span> <span class=o>=</span> <span class=n>value_not_assigned_prefix</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;modify initialize filter with profile </span><span class=si>{</span><span class=n>profile</span><span class=o>.</span><span class=n>metadata</span><span class=o>.</span><span class=n>title</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.resolver.modify.Modify.process class="doc doc-heading"> <code class="highlight language-python"><span class=n>process</span><span class=p>(</span><span class=n>catalog_iter</span><span class=p>)</span></code> <a href=#trestle.core.resolver.modify.Modify.process class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Make the modifications to the controls based on the profile.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/resolver/modify.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>345</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.resolver.modify.Modify.process class="doc doc-heading"> <code class="highlight language-python"><span class=n>process</span><span class=p>(</span><span class=n>catalog_iter</span><span class=p>)</span></code> <a href=#trestle.core.resolver.modify.Modify.process class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Make the modifications to the controls based on the profile.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/resolver/modify.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>342</span>
+<span class=normal>343</span>
+<span class=normal>344</span>
+<span class=normal>345</span>
 <span class=normal>346</span>
 <span class=normal>347</span>
-<span class=normal>348</span>
-<span class=normal>349</span>
-<span class=normal>350</span>
-<span class=normal>351</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>process</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>catalog_iter</span><span class=p>:</span> <span class=n>Iterator</span><span class=p>[</span><span class=n>cat</span><span class=o>.</span><span class=n>Catalog</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=n>Iterator</span><span class=p>[</span><span class=n>cat</span><span class=o>.</span><span class=n>Catalog</span><span class=p>]:</span>
+<span class=normal>348</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>process</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>catalog_iter</span><span class=p>:</span> <span class=n>Iterator</span><span class=p>[</span><span class=n>cat</span><span class=o>.</span><span class=n>Catalog</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=n>Iterator</span><span class=p>[</span><span class=n>cat</span><span class=o>.</span><span class=n>Catalog</span><span class=p>]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Make the modifications to the controls based on the profile.&quot;&quot;&quot;</span>
     <span class=n>catalog</span> <span class=o>=</span> <span class=nb>next</span><span class=p>(</span><span class=n>catalog_iter</span><span class=p>)</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span>
