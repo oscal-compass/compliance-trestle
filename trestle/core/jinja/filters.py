@@ -68,7 +68,7 @@ class JinjaSSPFilters(TrestleJinjaExtension):
 
     def __init__(self, environment: Environment) -> None:
         """Initialize class and add filters."""
-        super(JinjaSSPFilters, self).__init__(environment)
+        super().__init__(environment)
 
         environment.filters['as_list'] = as_list
         environment.filters['get_default'] = get_default

@@ -60,7 +60,7 @@ def test_is_collection_field_type() -> None:
     # Dicts only appear for include_all, which only needs to be handled specially in the sample generator
     good_catalog = load_good_catalog()
 
-    assert mutils.is_collection_field_type(type('this is a string')) is False
+    assert mutils.is_collection_field_type(str) is False
 
     assert mutils.is_collection_field_type(type(good_catalog)) is False  # Catalog
     catalog_field = catalog.Model.alias_to_field_map()['catalog']
