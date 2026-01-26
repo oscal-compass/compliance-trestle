@@ -246,7 +246,7 @@ def test_ssp_generate_header_edit(tmp_trestle_dir: pathlib.Path) -> None:
 
     # tell it to add the yaml header but not overwrite header values
     args.yaml_header = cli_yaml_header
-    args.overwrite_header_values
+    args.overwrite_header_values = False
 
     assert ssp_cmd._run(args) == 0
     header, tree = md_api.processor.process_markdown(ac_1)
