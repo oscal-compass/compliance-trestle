@@ -59,6 +59,11 @@ sample_observation_type_valid_value = ObservationTypeValidValues.historic
 
 def safe_is_sub(sub: Any, parent: Any) -> bool:
     """Is this a subclass of parent."""
+    # Handle Python 3.10+ generic types (e.g., dict[str, Any])
+    # These are types.GenericAlias and cannot be used with issubclass()
+    if hasattr(sub, '__origin__'):
+        # For generic types like dict[str, Any], check the origin (dict)
+        sub = typing.get_origin(sub)
     is_class = inspect.isclass(sub)
     return is_class and issubclass(sub, parent)
 
@@ -215,11 +220,26 @@ def generate_sample_model(
                 if include_optional:
                     model_dict[field] = {}
                 continue
-            outer_type = model.__fields__[field].outer_type_
-            # next appears to be needed for python 3.7
-            if utils.get_origin(outer_type) == Union:
-                outer_type = outer_type.__args__[0]
-            if model.__fields__[field].required or effective_optional:
+            outer_type = model.__fields__[field].outer_type_  # type: ignore
+            # Handle both typing.Union and types.UnionType (Python 3.10+ uses | operator)
+            origin = utils.get_origin(outer_type)
+            is_union = origin == Union or str(origin) == "<class 'types.UnionType'>"
+            if is_union:
+                # For Union types, prefer Enum types over other types for sample generation
+                # This handles fields like Union[ConstrainedStr, Enum, None]
+                union_args = typing.get_args(outer_type)
+                enum_type = None
+                for arg in union_args:
+                    if arg is not type(None) and safe_is_sub(arg, Enum):
+                        enum_type = arg
+                        break
+                # Use the enum type if found, otherwise fall back to first non-None type
+                if enum_type:
+                    outer_type = enum_type
+                else:
+                    # Get first non-None type
+                    outer_type = next((arg for arg in union_args if arg is not type(None)), union_args[0])
+            if model.__fields__[field].required or effective_optional:  # type: ignore
                 # FIXME could be ForwardRef('SystemComponentStatus')
                 if utils.is_collection_field_type(outer_type):
                     inner_type = utils.get_inner_type(outer_type)

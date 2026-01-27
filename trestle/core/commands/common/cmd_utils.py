@@ -33,6 +33,12 @@ def model_type_is_too_granular(model_type: Type[Any]) -> bool:
     if type_utils.is_collection_field_type(model_type):
         return False
     if hasattr(model_type, '__fields__') and '__root__' in model_type.__fields__:
+        # Check if __root__ contains a collection type (list)
+        root_field = model_type.__fields__['__root__']
+        root_type = root_field.outer_type_ if hasattr(root_field, 'outer_type_') else root_field.type_
+        if type_utils.is_collection_field_type(root_type):
+            return False
+        # __root__ with non-collection types (like StringDatatype) are too granular
         return True
     if model_type.__name__ in ['str', 'ConstrainedStrValue', 'int', 'float', 'datetime']:
         return True
@@ -51,11 +57,32 @@ def clear_folder(folder_path: pathlib.Path) -> None:
 
 def split_is_too_fine(split_paths: str, model_obj: OscalBaseModel) -> bool:
     """Determine if the element path list goes too fine, e.g. individual strings."""
+    # When paths contain wildcards (e.g., 'groups.*.controls.*.id'), ElementPath.get_type()
+    # cannot determine the type. As a heuristic, we check if the final element name is a
+    # common primitive field that typically holds string/int/uuid values in OSCAL models.
+    # This prevents splitting at overly granular levels like individual IDs or names.
+    primitive_fields = {'id', 'uuid', 'name', 'title', 'description', 'value', 'version', 'href', 'rel'}
+
     for split_path in split_paths.split(','):
-        # find model type one level above if finishing with '.*'
-        model_type = ElementPath(split_path.rstrip('.*')).get_type(type(model_obj))
-        if model_type_is_too_granular(model_type):
+        # Strip all trailing .* patterns to get to the actual type
+        clean_path = split_path
+        while clean_path.endswith('.*'):
+            clean_path = clean_path[:-2]
+
+        # Check if the final element is a known primitive field
+        final_element = clean_path.split('.')[-1]
+        if final_element in primitive_fields:
             return True
+
+        # For paths without wildcards, check the actual type
+        try:
+            model_type = ElementPath(clean_path).get_type(type(model_obj))
+            if model_type_is_too_granular(model_type):
+                return True
+        except Exception:
+            # If we can't determine the type (e.g., due to wildcards), assume it's okay
+            pass
+
     return False
 
 
