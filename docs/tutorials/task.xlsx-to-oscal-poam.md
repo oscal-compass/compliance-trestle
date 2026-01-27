@@ -398,6 +398,5 @@ Property(name='poam-id', value=poam_id, ns='https://example.com/ns/poam')
 ## Getting Help
 
 - **GitHub Issues**: [compliance-trestle/issues](https://github.com/oscal-compass/compliance-trestle/issues)
-- **Slack**: [#compliance-trestle](https://oscal-compass.slack.com/)
 - **Command help**: `trestle task xlsx-to-oscal-poam -h`
 - **Task info**: `trestle task xlsx-to-oscal-poam -i`
