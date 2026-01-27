@@ -1409,4 +1409,3 @@ def test_ssp_generate_no_rules_all_controls(tmp_trestle_dir: pathlib.Path) -> No
     ac3_content = ac3_path.read_text()
     assert 'comp_cc' in ac1_content and 'imp req prose for ac-1 from comp cc' in ac1_content
     assert 'comp_cc' in ac3_content and 'imp req prose for ac-3 from comp cc' in ac3_content
-
