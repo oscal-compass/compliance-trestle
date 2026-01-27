@@ -265,7 +265,7 @@ def test_replace_params_assignment_mode(simplified_nist_catalog: cat.Catalog) ->
     ControlInterface.replace_control_prose(ac_44, param_dict, '[.]', ParameterRep.LABEL_FORM, False, None, 'Label:')
     assert (
         ac_44.parts[0].prose
-        != f'Prevent encrypted information from bypassing [organization-defined information flow control mechanisms] by  [Label: organization-defined procedure or method] ].'
+        != 'Prevent encrypted information from bypassing [organization-defined information flow control mechanisms] by  [Label: organization-defined procedure or method] ].'
     )  # noqa E501
 
 

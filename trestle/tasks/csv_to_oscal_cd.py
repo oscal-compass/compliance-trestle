@@ -1385,10 +1385,7 @@ class CsvColumn:
     @staticmethod
     def is_column_name_parameter(name: str) -> bool:
         """Is column name parameter."""
-        for cname in CsvColumn._columns_parameter:
-            if name.startswith(cname):
-                return True
-        return False
+        return any(name.startswith(cname) for cname in CsvColumn._columns_parameter)
 
     @staticmethod
     def get_required_column_names() -> List[str]:

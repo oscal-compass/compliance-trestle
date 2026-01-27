@@ -15,11 +15,11 @@ There are a few things you need to to start using trestle:
 
 ## *Confirm you have python installed*
 
-- Ensure you have a modern [Python](https://www.python.org/downloads/) (3.9, 3.10, 3.11).
+- Ensure you have a modern [Python](https://www.python.org/downloads/) (3.10, 3.11, 3.12, 3.13).
 
 ```bash
 $ python -V
-Python 3.9.2
+Python 3.10.2
 ```
 
 ## *Setup a virtual environment*
