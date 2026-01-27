@@ -206,10 +206,8 @@ ignore = [
     "S603",   # subprocess call - check for execution of untrusted input
     "S607",   # starting a process with a partial executable path
     # FIXME: UP - pyupgrade rules to fix
-    "UP003",  # FIXME: Use `type` instead of `type(...)` (1 error)
     "UP006",  # FIXME: Use `type` instead of `Type` for type annotations (1134 errors)
     "UP007",  # FIXME: Use `X | Y` for Union types (114 errors)
-    "UP008",  # FIXME: Use `super()` instead of `super(__class__, self)` (6 errors)
     "UP009",  # FIXME: UTF-8 encoding declaration is unnecessary (211 errors)
     "UP015",  # FIXME: Unnecessary open mode parameters (25 errors)
     "UP018",  # FIXME: Unnecessary call to `type` (3 errors)
@@ -221,7 +219,6 @@ ignore = [
     "UP045",  # FIXME: Use `X | None` for type annotations (112 errors)
     # FIXME: B - flake8-bugbear rules to fix
     "B017",   # FIXME: `assertRaises(Exception)` should be considered evil (6 errors)
-    "B018",   # FIXME: Found useless expression (1 error)
     "B904",   # FIXME: Within `except` clause, raise from err or None (82 errors)
     # FIXME: SIM - flake8-simplify rules to fix
     "SIM101", # FIXME: Multiple `isinstance` calls, merge into one (2 errors)
@@ -229,7 +226,6 @@ ignore = [
     "SIM103", # FIXME: Return condition directly instead of `if`-`else` (1 error)
     "SIM105", # FIXME: Use `contextlib.suppress(...)` instead of `try`-`except`-`pass` (4 errors)
     "SIM108", # FIXME: Use ternary operator instead of `if`-`else` block (30 errors)
-    "SIM110", # FIXME: Use `return any(...)` instead of `for` loop (4 errors)
     "SIM113", # FIXME: Use `enumerate` instead of manual counter (3 errors)
     "SIM114", # FIXME: Combine `if` branches using logical `or` (3 errors)
     "SIM115", # FIXME: Use context handler for opening files (18 errors)
@@ -240,10 +236,8 @@ ignore = [
     "SIM211", # FIXME: Use `not ...` instead of `False if ... else True` (2 errors)
     "SIM212", # FIXME: Use `... if ... else ...` instead of `... if not ... else ...` (2 errors)
     "SIM300", # FIXME: Yoda conditions are discouraged (29 errors)
-    "SIM905", # FIXME: Consider using a list literal instead of `str.split` (14 errors)
     "SIM910", # FIXME: Use `dict.get(key)` instead of `dict.get(key, None)` (3 errors)
     # FIXME: E - pycodestyle rules to fix
-    "E713",   # FIXME: Test for membership should be `not in` (1 error)
     "E721",   # FIXME: Do not compare types, use `isinstance()` (15 errors)
     # FIXME: W - pycodestyle warnings to fix
     "W605",   # FIXME: Invalid escape sequence (36 errors)
@@ -253,12 +247,10 @@ ignore = [
     "N804",   # FIXME: First argument of classmethod should be `cls` (1 error)
     # FIXME: S - flake8-bandit security rules to fix
     "S110",   # FIXME: `try`-`except`-`pass` detected (4 errors)
-    "S311",   # FIXME: Standard pseudo-random generators not suitable for crypto (14 errors)
     "S605",   # FIXME: Starting a process with a shell, possible injection (1 error)
     "S701",   # FIXME: Using jinja2 templates with `autoescape=False` (5 errors)
     # FIXME: F - Pyflakes rules to fix
     "F401",   # FIXME: Unused import (7 errors)
-    "F541",   # FIXME: f-string without any placeholders (1 error)
     # FIXME: C4 - flake8-comprehensions rules to fix
     "C408",   # FIXME: Unnecessary dict/list/tuple call (1 error)
 ]

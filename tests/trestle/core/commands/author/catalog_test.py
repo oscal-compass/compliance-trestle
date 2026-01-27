@@ -335,12 +335,12 @@ def test_catalog_interface_merge_controls(replace_params: bool, sample_catalog_r
 def test_catalog_generate_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test failures of author catalog."""
     # disallowed output name
-    test_args = 'trestle author catalog-generate -n foo -o profiles'.split()
+    test_args = ['trestle', 'author', 'catalog-generate', '-n', 'foo', '-o', 'profiles']
     monkeypatch.setattr(sys, 'argv', test_args)
     assert Trestle().run() == 1
 
     # catalog doesn't exist
-    test_args = 'trestle author catalog-generate -n foo -o my_md'.split()
+    test_args = ['trestle', 'author', 'catalog-generate', '-n', 'foo', '-o', 'my_md']
     monkeypatch.setattr(sys, 'argv', test_args)
     assert Trestle().run() == 1
 
@@ -353,7 +353,7 @@ def test_catalog_generate_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: M
 
 def test_catalog_assemble_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test failurs of catalog assemble."""
-    test_args = 'trestle author catalog-assemble -m foo -o my_md'.split()
+    test_args = ['trestle', 'author', 'catalog-assemble', '-m', 'foo', '-o', 'my_md']
     monkeypatch.setattr(sys, 'argv', test_args)
     assert Trestle().run() == 1
 
