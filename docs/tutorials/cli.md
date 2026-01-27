@@ -1324,7 +1324,7 @@ Example config:
 ```conf
 [task.xlsx-to-oscal-cd]
 
-catalog-file = nist-content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json
+catalog-file = nist-content/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json
 spread-sheet-file = /home/user/compliance/data/spread-sheet/good.xlsx
 work-sheet-name = example_best_practices_controls
 output-dir = /home/user/compliance/data/tasks/xlsx/output
@@ -1334,8 +1334,8 @@ org-name = International Business Machines
 org-remarks = IBM
 namespace = https://oscal-compass.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud
 property-name-to-class = goal_name_id:scc_goal_name_id, goal_version:scc_goal_version
-catalog-url = https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json
-catalog-title = NIST Special Publication 800-53 Revision 4
+catalog-url = https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json
+catalog-title = NIST Special Publication 800-53 Revision 5
 ```
 
 **catalog-file**
@@ -1344,7 +1344,7 @@ catalog-title = NIST Special Publication 800-53 Revision 4
 Example catalog-file:
 </span>
 
-[nist-content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json](https://github.com/usnistgov/oscal-content/blob/58af5c83ad7ab5620809c5701877a4b959516d25/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json)
+[nist-content/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json](https://github.com/usnistgov/oscal-content/blob/58af5c83ad7ab5620809c5701877a4b959516d25/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json)
 
 **spread-sheet-file**
 
