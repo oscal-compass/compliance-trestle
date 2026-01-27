@@ -2,10 +2,10 @@
   "component-definition": {
     "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
     "metadata": {
-      "title": "Component definition for NIST Special Publication 800-53 Revision 4 profiles",
+      "title": "Component definition for NIST Special Publication 800-53 Revision 5 profiles",
       "last-modified": "2021-07-19T14:03:03+00:00",
       "version": "0.21.0",
-      "oscal-version": "1.1.2",
+      "oscal-version": "1.1.3",
       "roles": [
         {
           "id": "prepared-by",
@@ -71,8 +71,8 @@
         "control-implementations": [
           {
             "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json",
-            "description": "CLOUDANT implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.",
+            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+            "description": "CLOUDANT implemented controls for NIST Special Publication 800-53 Revision 5. It includes assessment asset configuration for CICD.",
             "set-parameters": [
               {
                 "param-id": "no_of_admins_for_cloudant_db",
@@ -500,13 +500,13 @@
         "control-implementations": [
           {
             "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json",
-            "description": "CIS implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.",
+            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+            "description": "CIS implemented controls for NIST Special Publication 800-53 Revision 5. It includes assessment asset configuration for CICD.",
             "implemented-requirements": [
               {
                 "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
                 "control-id": "ac-17.2",
-                "description": "ac-17(2)",
+                "description": "ac-17.2",
                 "props": [
                   {
                     "name": "goal_name_id",
@@ -590,7 +590,7 @@
               {
                 "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
                 "control-id": "sc-8.1",
-                "description": "sc-8(1)",
+                "description": "sc-8.1",
                 "props": [
                   {
                     "name": "goal_name_id",
@@ -725,8 +725,8 @@
         "control-implementations": [
           {
             "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json",
-            "description": "IKS implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.",
+            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+            "description": "IKS implemented controls for NIST Special Publication 800-53 Revision 5. It includes assessment asset configuration for CICD.",
             "set-parameters": [
               {
                 "param-id": "iks_ingress_tls_versions",
@@ -740,7 +740,7 @@
               {
                 "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
                 "control-id": "ac-17.2",
-                "description": "ac-17(2)",
+                "description": "ac-17.2",
                 "props": [
                   {
                     "name": "goal_name_id",
@@ -840,7 +840,7 @@
               {
                 "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
                 "control-id": "sc-8.1",
-                "description": "sc-8(1)",
+                "description": "sc-8.1",
                 "props": [
                   {
                     "name": "goal_name_id",
@@ -1069,19 +1069,12 @@
                       "56666738-0f9a-4e38-9aac-c0fad00a5821"
                     ]
                   }
-                ],
-                "statements": [
-                  {
-                    "statement-id": "cm-7",
-                    "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-                    "description": "IKS implements cm-7(a)"
-                  }
                 ]
               },
               {
                 "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
                 "control-id": "cm-8.1",
-                "description": "cm-8(1)",
+                "description": "cm-8.1",
                 "props": [
                   {
                     "name": "goal_name_id",
@@ -1123,7 +1116,7 @@
               {
                 "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
                 "control-id": "cm-8.3",
-                "description": "cm-8(3)",
+                "description": "cm-8.3",
                 "props": [
                   {
                     "name": "goal_name_id",
@@ -1159,13 +1152,6 @@
                     "party-uuids": [
                       "56666738-0f9a-4e38-9aac-c0fad00a5821"
                     ]
-                  }
-                ],
-                "statements": [
-                  {
-                    "statement-id": "cm-8_3",
-                    "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-                    "description": "IKS implements cm-8(3)(a)"
                   }
                 ]
               },
@@ -1209,13 +1195,6 @@
                       "56666738-0f9a-4e38-9aac-c0fad00a5821"
                     ]
                   }
-                ],
-                "statements": [
-                  {
-                    "statement-id": "sa-3",
-                    "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-                    "description": "IKS implements sa-3(a)"
-                  }
                 ]
               }
             ]
@@ -1230,8 +1209,8 @@
         "control-implementations": [
           {
             "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json",
-            "description": "VPC implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.",
+            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+            "description": "VPC implemented controls for NIST Special Publication 800-53 Revision 5. It includes assessment asset configuration for CICD.",
             "implemented-requirements": [
               {
                 "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -1362,7 +1341,7 @@
               {
                 "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
                 "control-id": "sc-7.3",
-                "description": "sc-7(3)",
+                "description": "sc-7.3",
                 "props": [
                   {
                     "name": "goal_name_id",
@@ -1413,8 +1392,8 @@
         "control-implementations": [
           {
             "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json",
-            "description": "TOOLCHAIN implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.",
+            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+            "description": "TOOLCHAIN implemented controls for NIST Special Publication 800-53 Revision 5. It includes assessment asset configuration for CICD.",
             "set-parameters": [
               {
                 "param-id": "source_code_scaning_vulnerability_threashhold",
@@ -1439,7 +1418,7 @@
               {
                 "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
                 "control-id": "cm-8.3",
-                "description": "cm-8(3)",
+                "description": "cm-8.3",
                 "props": [
                   {
                     "name": "goal_name_id",
@@ -1483,13 +1462,6 @@
                     "party-uuids": [
                       "56666738-0f9a-4e38-9aac-c0fad00a5821"
                     ]
-                  }
-                ],
-                "statements": [
-                  {
-                    "statement-id": "cm-8_3",
-                    "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-                    "description": "TOOLCHAIN implements cm-8(3)(a)"
                   }
                 ]
               },
@@ -1541,19 +1513,12 @@
                       "56666738-0f9a-4e38-9aac-c0fad00a5821"
                     ]
                   }
-                ],
-                "statements": [
-                  {
-                    "statement-id": "ra-5",
-                    "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-                    "description": "TOOLCHAIN implements ra-5(a)"
-                  }
                 ]
               },
               {
                 "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
                 "control-id": "si-2.2",
-                "description": "si-2(2)",
+                "description": "si-2.2",
                 "props": [
                   {
                     "name": "goal_name_id",
@@ -1603,7 +1568,7 @@
               {
                 "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
                 "control-id": "si-7.1",
-                "description": "si-7(1)",
+                "description": "si-7.1",
                 "props": [
                   {
                     "name": "goal_name_id",
