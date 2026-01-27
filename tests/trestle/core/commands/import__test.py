@@ -17,7 +17,8 @@ import argparse
 import json
 import os
 import pathlib
-import random
+import secrets
+import shutil
 import string
 import sys
 import tempfile
@@ -46,12 +47,12 @@ from trestle.oscal.profile import Modify, Profile, SetParameter
 def test_import_cmd(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Happy path test at the cli level."""
     # 1. Input file, profile:
-    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+    rand_str = ''.join(secrets.choice(string.ascii_letters) for x in range(16))
     profile_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
     profile_data = generators.generate_sample_model(trestle.oscal.profile.Profile)
     profile_data.oscal_write(pathlib.Path(profile_file))
     # 2. Input file, target:
-    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+    rand_str = ''.join(secrets.choice(string.ascii_letters) for x in range(16))
     catalog_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
     catalog_data = generators.generate_sample_model(Catalog)
     catalog_data.oscal_write(pathlib.Path(catalog_file))
@@ -69,7 +70,7 @@ def test_import_cmd(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> 
 
 def test_import_profile_with_optional_added(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Create profile, add modify to it, and import."""
-    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+    rand_str = ''.join(secrets.choice(string.ascii_letters) for x in range(16))
     profile_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
     # create generic profile
     profile_data = generators.generate_sample_model(trestle.oscal.profile.Profile)
@@ -97,7 +98,7 @@ def test_import_profile_with_optional_added(tmp_trestle_dir: pathlib.Path, monke
 @pytest.mark.parametrize('regen', [False, True])
 def test_import_run(tmp_trestle_dir: pathlib.Path, regen: bool) -> None:
     """Test successful _run() on valid input."""
-    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+    rand_str = ''.join(secrets.choice(string.ascii_letters) for x in range(16))
     catalog_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
     catalog_data = generators.generate_sample_model(Catalog)
     catalog_data.oscal_write(pathlib.Path(catalog_file))
@@ -130,7 +131,7 @@ def test_import_run_rollback(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyP
             },
         }
     }
-    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+    rand_str = ''.join(secrets.choice(string.ascii_letters) for x in range(16))
     dup_file_name = f'{tmp_trestle_dir.parent}/dup-{rand_str}.json'
     dup_file = pathlib.Path(dup_file_name).open('w+', encoding=const.FILE_ENCODING)
     dup_file.write(json.dumps(dup_cat, ensure_ascii=False))
@@ -153,7 +154,7 @@ def test_import_clash_on_output(tmp_trestle_dir: pathlib.Path) -> None:
     create.CreateCmd.create_object('catalog', Catalog, args)
     # 2. Create a valid oscal object in tmp_trestle_dir.parent,
     sample_data = generators.generate_sample_model(Catalog)
-    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+    rand_str = ''.join(secrets.choice(string.ascii_letters) for x in range(16))
     sample_data.oscal_write(pathlib.Path(f'{tmp_trestle_dir.parent}/{rand_str}.json'))
     # 3. then attempt to import that out to the previously created catalog, forcing the clash:
     i = importcmd.ImportCmd()
@@ -167,7 +168,7 @@ def test_import_clash_on_output(tmp_trestle_dir: pathlib.Path) -> None:
 def test_import_non_top_level_element(tmp_trestle_dir: pathlib.Path) -> None:
     """Test for expected fail to import non-top level element, e.g., groups."""
     # Input file, catalog:
-    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+    rand_str = ''.join(secrets.choice(string.ascii_letters) for x in range(16))
     groups_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
     groups_data = generators.generate_sample_model(Group)
     groups_data.oscal_write(pathlib.Path(groups_file))
@@ -238,7 +239,7 @@ def test_import_load_file_failure(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
 
     # Create a file with bad json
     sample_data = '"star": {'
-    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+    rand_str = ''.join(secrets.choice(string.ascii_letters) for x in range(16))
     bad_file = pathlib.Path(f'{tmp_trestle_dir.parent}/{rand_str}.json').open('w+', encoding=const.FILE_ENCODING)
     bad_file.write(sample_data)
     bad_file.close()
@@ -267,7 +268,7 @@ def test_import_load_file_failure(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
 def test_import_root_key_failure(tmp_trestle_dir: pathlib.Path) -> None:
     """Test root key is not found."""
     sample_data = {'id': '0000', 'title': 'nothing'}
-    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+    rand_str = ''.join(secrets.choice(string.ascii_letters) for x in range(16))
     sample_file = pathlib.Path(f'{tmp_trestle_dir.parent}/{rand_str}.json').open('w+', encoding=const.FILE_ENCODING)
     sample_file.write(json.dumps(sample_data, ensure_ascii=False))
     sample_file.close()
@@ -279,7 +280,7 @@ def test_import_root_key_failure(tmp_trestle_dir: pathlib.Path) -> None:
 
 def test_import_root_key_found(tmp_trestle_dir: pathlib.Path) -> None:
     """Test root key is found."""
-    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+    rand_str = ''.join(secrets.choice(string.ascii_letters) for x in range(16))
     catalog_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
     catalog_data = generators.generate_sample_model(Catalog)
     catalog_data.oscal_write(pathlib.Path(catalog_file))
@@ -297,7 +298,7 @@ def test_import_failure_execute_plan(tmp_trestle_dir: pathlib.Path, monkeypatch:
     def execute_plan_mock(*args, **kwargs):
         raise err.TrestleError('stuff')
 
-    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+    rand_str = ''.join(secrets.choice(string.ascii_letters) for x in range(16))
     catalog_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
     catalog_data = generators.generate_sample_model(Catalog)
     catalog_data.oscal_write(pathlib.Path(catalog_file))

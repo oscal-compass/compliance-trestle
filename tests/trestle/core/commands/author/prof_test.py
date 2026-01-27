@@ -480,7 +480,7 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatc
     assert profile_generate._run(test_args) == 1
 
     # profile not available for load
-    test_args = 'trestle author profile-generate -n my_prof -o my_md -v'.split()
+    test_args = ['trestle', 'author', 'profile-generate', '-n', 'my_prof', '-o', 'my_md', '-v']
     monkeypatch.setattr(sys, 'argv', test_args)
     assert Trestle().run() == 1
 
@@ -545,7 +545,7 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatc
     assert profile_assemble._run(test_args) == 0
 
     # disallowed output name
-    test_args = 'trestle author profile-generate -n my_prof -o profiles -v'.split()
+    test_args = ['trestle', 'author', 'profile-generate', '-n', 'my_prof', '-o', 'profiles', '-v']
     monkeypatch.setattr(sys, 'argv', test_args)
     assert Trestle().run() == 1
 
