@@ -192,10 +192,10 @@ class SortHelper:
     def compare(item1: str, item2: str) -> int:
         """Compare."""
         # get parts
-        parts1 = ''.split('.')
+        parts1 = ['']
         if item1 is not None:
             parts1 = str(item1).split('.')
-        parts2 = ''.split('.')
+        parts2 = ['']
         if item2 is not None:
             parts2 = str(item2).split('.')
         # normalize parts length

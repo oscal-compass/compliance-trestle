@@ -426,7 +426,7 @@ def setup_for_component_definition(tmp_trestle_dir: pathlib.Path, monkeypatch: M
 def setup_component_generate(tmp_trestle_dir: pathlib.Path, comp_name='comp_def_a') -> str:
     """Create the compdef, profile and catalog content component-generate."""
     load_from_json(tmp_trestle_dir, comp_name, comp_name, comp.ComponentDefinition)
-    for prof_name in 'comp_prof,comp_prof_aa,comp_prof_ab,comp_prof_ba,comp_prof_bb'.split(','):
+    for prof_name in ['comp_prof', 'comp_prof_aa', 'comp_prof_ab', 'comp_prof_ba', 'comp_prof_bb']:
         load_from_json(tmp_trestle_dir, prof_name, prof_name, prof.Profile)
     load_from_json(tmp_trestle_dir, 'simplified_nist_catalog', 'simplified_nist_catalog', cat.Catalog)
 
@@ -518,7 +518,7 @@ def setup_for_ssp(
     for comp_name in comp_names.split(','):
         load_from_json(tmp_trestle_dir, comp_name, comp_name, comp.ComponentDefinition)
     prof_name_list = [prof_name]
-    prof_name_list.extend('comp_prof_aa,comp_prof_ab,comp_prof_ba,comp_prof_bb'.split(','))
+    prof_name_list.extend(['comp_prof_aa', 'comp_prof_ab', 'comp_prof_ba', 'comp_prof_bb'])
     for local_prof_name in prof_name_list:
         load_from_json(tmp_trestle_dir, local_prof_name, local_prof_name, prof.Profile)
     load_from_json(tmp_trestle_dir, 'simplified_nist_catalog', 'simplified_nist_catalog', cat.Catalog)

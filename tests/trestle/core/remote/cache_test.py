@@ -18,6 +18,7 @@
 import getpass
 import pathlib
 import random
+import secrets
 import string
 import time
 from typing import Tuple
@@ -53,7 +54,7 @@ def get_catalog_fetcher(
     tmp_trestle_dir: pathlib.Path, in_trestle: bool = False, relative: bool = False
 ) -> Tuple[cache.FetcherFactory, Catalog, dict]:
     """Instantiate a catalog and fetcher."""
-    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+    rand_str = ''.join(secrets.choice(string.ascii_letters) for x in range(16))
     cat_name = f'{rand_str}.json'
     dest_dir = tmp_trestle_dir / 'catalogs' if in_trestle else tmp_trestle_dir.parent
     catalog_file = dest_dir / cat_name
@@ -343,7 +344,7 @@ def test_fetcher_failures_windows(uri: str, tmp_trestle_dir: pathlib.Path) -> No
 def test_fetcher_failure_windows_wrong_drive(tmp_trestle_dir: pathlib.Path) -> None:
     """Test failures specific to Windows."""
     if file_utils.is_windows():
-        rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+        rand_str = ''.join(secrets.choice(string.ascii_letters) for x in range(16))
         catalog_file = tmp_trestle_dir.parent / f'{rand_str}.json'
         catalog_data = generators.generate_sample_model(Catalog)
         catalog_data.oscal_write(catalog_file)
