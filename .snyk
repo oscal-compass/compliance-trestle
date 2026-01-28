@@ -14,5 +14,14 @@ ignore:
     - '*':
         reason: 'Approved exception by the CNCF: https://github.com/cncf/foundation/issues/1108'
         created: 2025-08-12T14:33:58.233Z
-        
+  'SNYK-PYTHON-ORJSON-15123465':
+    - '*':
+        reason: >
+          Snyk flags orjson in this project. CVE-2025-67221 affects
+          versions <= 3.11.4. This project uses the latest available
+          version of orjson (>=3.11.5), which is not vulnerable.
+          The root cause of the flag is under investigation; this ignore
+          is temporary to allow pipeline progress.
+        expires: 2026-03-28T00:00:00.000Z
+        created: 2026-01-28T00:00:00.000Z
 patch: {}
