@@ -47,7 +47,7 @@ dependencies = [
     "openpyxl~=3.0",
     "Jinja2 == 3.1.6",
     "cmarkgfm>=2024.1,<2025.11",
-    "orjson",
+    "orjson>3.11.4",
     "requests>=2.32.2",
     "importlib_resources",
 ]

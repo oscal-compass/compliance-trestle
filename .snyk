@@ -6,24 +6,12 @@ ignore:
     - '*':
         reason: 'Approved exception by the CNCF: https://github.com/cncf/foundation/issues/1191'
         created: 2025-08-12T14:24:35.017Z
-
   'snyk:lic:pip:pathspec:MPL-2.0':
     - '*':
         reason: 'Approved exception by the CNCF: https://github.com/cncf/foundation/issues/1190'
         created: 2025-08-12T14:30:53.423Z
-
   'snyk:lic:pip:paramiko:LGPL-2.1':
     - '*':
         reason: 'Approved exception by the CNCF: https://github.com/cncf/foundation/issues/1108'
         created: 2025-08-12T14:33:58.233Z
-
-  SNYK-PYTHON-ORJSON-15123465:
-    - '*':
-        reason: >
-          No fix available upstream for uncontrolled recursion in orjson.
-          Medium-severity DoS-only risk. Usage is limited to trusted or
-          size-constrained inputs. Re-evaluate once upstream patch is released.
-        expires: 2026-03-29T00:00:00.000Z
-        created: 2026-01-28T00:00:00.000Z
-
 patch: {}
