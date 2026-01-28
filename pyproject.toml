@@ -47,7 +47,7 @@ dependencies = [
     "openpyxl~=3.0",
     "Jinja2 == 3.1.6",
     "cmarkgfm>=2024.1,<2025.11",
-    "orjson>=3.11.5",
+    "orjson",
     "requests>=2.32.2",
     "importlib_resources",
 ]
@@ -210,6 +210,8 @@ ignore = [
     "UP007",  # FIXME: Use `X | Y` for Union types (114 errors)
     "UP009",  # FIXME: UTF-8 encoding declaration is unnecessary (211 errors)
     "UP015",  # FIXME: Unnecessary open mode parameters (25 errors)
+    "UP018",  # FIXME: Unnecessary call to `type` (3 errors)
+    "UP024",  # FIXME: Replace aliased errors with `OSError` (2 errors)
     "UP028",  # FIXME: Replace `yield` in `for` loop with `yield from` (6 errors)
     "UP035",  # FIXME: `typing.X` is deprecated, use `x` instead (208 errors)
     "UP037",  # FIXME: Remove quotes from type annotation (1 error)
@@ -227,6 +229,7 @@ ignore = [
     "SIM113", # FIXME: Use `enumerate` instead of manual counter (3 errors)
     "SIM114", # FIXME: Combine `if` branches using logical `or` (3 errors)
     "SIM115", # FIXME: Use context handler for opening files (18 errors)
+    "SIM117", # FIXME: Use single `with` statement with multiple contexts (2 errors)
     "SIM118", # FIXME: Use `key in dict` instead of `key in dict.keys()` (67 errors)
     "SIM201", # FIXME: Use `!=` instead of `not ... ==` (11 errors)
     "SIM210", # FIXME: Use `bool(...)` instead of `True if ... else False` (3 errors)
@@ -244,6 +247,7 @@ ignore = [
     "N804",   # FIXME: First argument of classmethod should be `cls` (1 error)
     # FIXME: S - flake8-bandit security rules to fix
     "S110",   # FIXME: `try`-`except`-`pass` detected (4 errors)
+    "S605",   # FIXME: Starting a process with a shell, possible injection (1 error)
     "S701",   # FIXME: Using jinja2 templates with `autoescape=False` (5 errors)
     # FIXME: F - Pyflakes rules to fix
     "F401",   # FIXME: Unused import (7 errors)
