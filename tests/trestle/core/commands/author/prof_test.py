@@ -423,9 +423,9 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
         if ohv:
             assert set_params[3].values[0] == 'no meetings from cli yaml'
             assert set_params[3].label == 'meetings cancelled from cli yaml'
-        # temporary skip else:
-        # temporary skip    assert set_params[3].values[0] == 'all meetings'
-        # temporary skip    assert set_params[3].label is None
+        else:
+            assert set_params[3].values[0] == 'all meetings'
+            assert set_params[3].label == 'label from profile'
 
         catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, assembled_prof_dir / 'profile.json')
         catalog_interface = CatalogInterface(catalog)
