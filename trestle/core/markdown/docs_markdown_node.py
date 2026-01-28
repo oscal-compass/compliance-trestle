@@ -32,7 +32,7 @@ class DocsSectionContent(BaseSectionContent):
 
     def __init__(self):
         """Initialize section content."""
-        super(DocsSectionContent, self).__init__()
+        super().__init__()
         self.tables = []
         self.text = []
         self.code_lines = []
@@ -54,7 +54,7 @@ class DocsMarkdownNode(BaseMarkdownNode):
 
     def __init__(self, key: str, content: DocsSectionContent, starting_line: int):
         """Initialize markdown node."""
-        super(DocsMarkdownNode, self).__init__(key, content, starting_line)
+        super().__init__(key, content, starting_line)
         self.content: DocsSectionContent = content
 
     @classmethod
