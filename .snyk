@@ -14,4 +14,5 @@ ignore:
     - '*':
         reason: 'Approved exception by the CNCF: https://github.com/cncf/foundation/issues/1108'
         created: 2025-08-12T14:33:58.233Z
+        
 patch: {}
