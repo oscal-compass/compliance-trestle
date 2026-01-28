@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `xlsx-to-oscal-poam` task transforms FedRAMP Plan of Action and Milestones (POA&M) Excel spreadsheets into OSCAL POAM JSON format. This task is designed specifically for the FedRAMP POAM template structure and creates valid OSCAL v1.1+ POAM documents.
+The `xlsx-to-oscal-poam` task transforms Plan of Action and Milestones (POA&M) Excel spreadsheets into OSCAL POAM JSON format. This task expects input in FedRAMP POAM template structure and creates valid OSCAL v1.1+ POAM documents.
 
 ## Prerequisites
 
@@ -45,7 +45,7 @@ cat output/poams/plan-of-action-and-milestones.json | jq '.plan-of-action-and-mi
 
 | Parameter    | Description                     | Example                      |
 | ------------ | ------------------------------- | ---------------------------- |
-| `xlsx-file`  | Path to FedRAMP POAM Excel file | `FedRAMP-POAM-Template.xlsx` |
+| `xlsx-file`  | Path to POAM Excel file         | `FedRAMP-POAM-Template.xlsx` |
 | `output-dir` | Output directory for POAM JSON  | `output/poams`               |
 | `title`      | Title for the POAM document     | `Production System POA&M`    |
 | `version`    | Version of the POAM             | `1.0`                        |
@@ -70,7 +70,7 @@ cat output/poams/plan-of-action-and-milestones.json | jq '.plan-of-action-and-mi
 
 ### Template Structure
 
-The FedRAMP POAM Excel template must have:
+The POAM Excel template must have:
 
 - **Rows 1-4**: Template metadata and instructions
 - **Row 5**: Column headers
