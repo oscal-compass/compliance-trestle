@@ -45,3 +45,39 @@ class TrestleBaseModel(BaseModel):
                 raise TrestleError(f'{message}')
             else:
                 raise
+
+    def __str__(self) -> str:
+        """Return string representation, unwrapping __root__ if present."""
+        if hasattr(self, '__root__'):
+            return str(self.__root__)
+        return super().__str__()
+
+    def __eq__(self, other: Any) -> bool:
+        """Compare with unwrapped __root__ value if present."""
+        # Only use custom comparison for __root__ models
+        if hasattr(self, '__root__') and '__root__' in self.__fields__:
+            if isinstance(other, type(self)):
+                return self.__root__ == other.__root__
+            return self.__root__ == other
+        # For non-__root__ models, use default Pydantic comparison
+        return super().__eq__(other)
+
+    def __hash__(self) -> int:
+        """Hash the __root__ value if present."""
+        if hasattr(self, '__root__'):
+            try:
+                return hash(self.__root__)
+            except TypeError:
+                # If __root__ is unhashable, fall back to object hash
+                return super().__hash__()
+        return super().__hash__()
+
+    def __getattr__(self, name: str) -> Any:
+        """Delegate attribute access to __root__ if present and attribute not found."""
+        # Avoid infinite recursion by checking if __root__ exists via __dict__
+        if '__root__' in self.__dict__ and name != '__root__':
+            try:
+                return getattr(self.__root__, name)
+            except AttributeError:
+                pass
+        raise AttributeError(f"'{type(self).__name__}' object has no attribute '{name}'")

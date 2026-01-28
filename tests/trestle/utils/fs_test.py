@@ -223,16 +223,17 @@ def test_get_relative_model_type(tmp_path: pathlib.Path) -> None:
     )
     assert ModelUtils.get_relative_model_type(catalog_dir / 'metadata.yaml') == (common.Metadata, 'catalog.metadata')
     assert ModelUtils.get_relative_model_type(metadata_dir) == (common.Metadata, 'catalog.metadata')
-    assert ModelUtils.get_relative_model_type(roles_dir) == (List[common.Role], 'catalog.metadata.roles')
     (type_, element) = ModelUtils.get_relative_model_type(roles_dir)
     assert cutils.get_origin(type_) == list
+    assert cutils.get_inner_type(type_) == common.Role
     assert element == 'catalog.metadata.roles'
     assert ModelUtils.get_relative_model_type(roles_dir / '00000__role.json') == (
         common.Role,
         'catalog.metadata.roles.role',
     )
     model_type, full_alias = ModelUtils.get_relative_model_type(rps_dir)
-    assert model_type == List[common.ResponsibleParty]
+    assert cutils.get_origin(model_type) == list
+    assert cutils.get_inner_type(model_type) == common.ResponsibleParty
     assert full_alias == 'catalog.metadata.responsible-parties'
     assert ModelUtils.get_relative_model_type(rps_dir / 'creator__responsible-party.json') == (
         common.ResponsibleParty,
