@@ -21,7 +21,7 @@ The second is a one-command transformation from `.csv` to `component-definition.
 
 The below table represents the expectations of trestle task `csv-to-oscal-cd` for the contents of the input csv-file for synthesis of the output OSCAL Component Definition json-file.
 
-`Column Name` is the name of the expected column in the input csv-file. Any additional columns not identified here, for example foobar, are also extracted and placed into the output json-file as component.control-implementation.prop\["foobar"\].
+`Column Name` is the name of the expected column in the input csv-file. Any additional columns not identified here, for example foobar, are also extracted and placed into the output json-file as component.control-implementation.prop["foobar"].
 
 `Component Definition Locale` is the `path` within the output json-file into witch the value is stashed.
 
