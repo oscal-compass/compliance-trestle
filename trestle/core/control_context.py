@@ -46,6 +46,7 @@ class ControlContext:
     md_root: pathlib.Path
     prompt_responses: bool
     include_all_parts: bool
+    all_controls: bool
     overwrite_header_values: bool
     set_parameters_flag: bool
     cli_yaml_header: Optional[Dict[Any, Any]] = None
@@ -74,6 +75,7 @@ class ControlContext:
         md_root: pathlib.Path,
         prompt_responses: bool = False,
         include_all_parts: bool = False,
+        all_controls: bool = False,
         overwrite_header_values: bool = False,
         set_parameters_flag: bool = False,
         cli_yaml_header: Optional[Dict[Any, Any]] = None,
@@ -101,6 +103,7 @@ class ControlContext:
             md_root,
             prompt_responses,
             include_all_parts,
+            all_controls,
             overwrite_header_values,
             set_parameters_flag,
             cli_yaml_header=cli_yaml_header,
@@ -137,6 +140,7 @@ class ControlContext:
             context.md_root,
             context.prompt_responses,
             context.include_all_parts,
+            context.all_controls,
             context.overwrite_header_values,
             context.set_parameters_flag,
             cli_yaml_header=copy.deepcopy(context.cli_yaml_header),

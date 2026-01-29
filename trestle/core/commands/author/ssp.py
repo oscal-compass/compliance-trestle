@@ -89,6 +89,9 @@ class SSPGenerate(AuthorCommonCommand):
             action='store_true',
             default=False,
         )
+        self.add_argument(
+            '-ac', '--all-controls', help=const.HELP_ALL_CONTROLS, required=False, action='store_true', default=False
+        )
 
     def _run(self, args: argparse.Namespace) -> int:
         try:
@@ -120,6 +123,7 @@ class SSPGenerate(AuthorCommonCommand):
                 args.overwrite_header_values,
                 args.force_overwrite,
                 args.include_all_parts,
+                args.all_controls,
             )
 
         except Exception as e:  # pragma: no cover
@@ -136,6 +140,7 @@ class SSPGenerate(AuthorCommonCommand):
         overwrite_header_values: bool,
         force_overwrite: bool,
         include_all_parts: bool,
+        all_controls: bool,
     ) -> int:
         """
         Generate the ssp markdown from the profile and compdefs.
@@ -168,6 +173,7 @@ class SSPGenerate(AuthorCommonCommand):
         context.allowed_sections = None
         context.comp_def_name_list = compdef_name_list
         context.include_all_parts = include_all_parts
+        context.all_controls = all_controls
 
         # if file not recognized as URI form, assume it represents name of file in trestle directory
         profile_in_trestle_dir = '://' not in profile_name_or_href

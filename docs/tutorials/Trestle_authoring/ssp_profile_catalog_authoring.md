@@ -1056,6 +1056,8 @@ The markdown can have guidance per-component in the control, as shown by the lin
 
 The `--include-all-parts` flag controls how the main system component (`This System`) is written in the markdown. By default, control parts are not written out unless a component has a rule associated with that particular control part or `statement`. When `--include-all-parts` is set, all control parts will be written with the main component present under the `## Implementation for part <part>` section. All other components will still be conditionally added based on the presence of rules.
 
+The `--all-controls` flag controls whether controls from component definitions are included in the SSP markdown even when they have no rules attached. By default, only controls with at least one attached rule in the component definition have their component implementation prose transported to the SSP markdown. When `--all-controls` is set, all controls that have implemented requirements in the component definitions will have their implementation prose included, regardless of whether rules are present.
+
 After generating the markdown for the resolved profile catalog you may then edit the files and provide text in the sections with `Add control implementation...` in them.  But do not remove the horizontal rule
 lines or modify/remove the lines with `### ` in them, corresponding to system components.
 
