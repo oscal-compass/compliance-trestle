@@ -201,20 +201,19 @@ def list_unordered_equal(list1: List[Any], list2: List[Any]) -> bool:
 def text_files_equal(path_a: pathlib.Path, path_b: pathlib.Path) -> bool:
     """Determine if files are equal, ignoring newline style."""
     try:
-        with open(path_a, 'r') as file_a:
-            with open(path_b, 'r') as file_b:
-                lines_a = file_a.readlines()
-                lines_b = file_b.readlines()
-                nlines = len(lines_a)
-                if nlines != len(lines_b):
-                    logger.error(f'n lines differ: {len(lines_a)} vs. {len(lines_b)}')
+        with open(path_a, 'r') as file_a, open(path_b, 'r') as file_b:
+            lines_a = file_a.readlines()
+            lines_b = file_b.readlines()
+            nlines = len(lines_a)
+            if nlines != len(lines_b):
+                logger.error(f'n lines differ: {len(lines_a)} vs. {len(lines_b)}')
+                return False
+            for ii in range(nlines):
+                if lines_a[ii].rstrip('\r\n') != lines_b[ii].rstrip('\r\n'):
+                    logger.error('lines differ:')
+                    logger.error(lines_a[ii])
+                    logger.error(lines_b[ii])
                     return False
-                for ii in range(nlines):
-                    if lines_a[ii].rstrip('\r\n') != lines_b[ii].rstrip('\r\n'):
-                        logger.error('lines differ:')
-                        logger.error(lines_a[ii])
-                        logger.error(lines_b[ii])
-                        return False
     except Exception:
         return False
     return True
@@ -223,22 +222,21 @@ def text_files_equal(path_a: pathlib.Path, path_b: pathlib.Path) -> bool:
 def text_files_similar(path_a: pathlib.Path, path_b: pathlib.Path, skip: str) -> bool:
     """Determine if files are similar, ignoring newline style and lines containing <skip> text."""
     try:
-        with open(path_a, 'r') as file_a:
-            with open(path_b, 'r') as file_b:
-                lines_a = file_a.readlines()
-                lines_b = file_b.readlines()
-                nlines = len(lines_a)
-                if nlines != len(lines_b):
-                    logger.error(f'n lines differ: {len(lines_a)} vs. {len(lines_b)}')
+        with open(path_a, 'r') as file_a, open(path_b, 'r') as file_b:
+            lines_a = file_a.readlines()
+            lines_b = file_b.readlines()
+            nlines = len(lines_a)
+            if nlines != len(lines_b):
+                logger.error(f'n lines differ: {len(lines_a)} vs. {len(lines_b)}')
+                return False
+            for ii in range(nlines):
+                if lines_a[ii].rstrip('\r\n') != lines_b[ii].rstrip('\r\n'):
+                    if skip in lines_a[ii] and skip in lines_b[ii]:
+                        continue
+                    logger.error('lines differ:')
+                    logger.error(lines_a[ii])
+                    logger.error(lines_b[ii])
                     return False
-                for ii in range(nlines):
-                    if lines_a[ii].rstrip('\r\n') != lines_b[ii].rstrip('\r\n'):
-                        if skip in lines_a[ii] and skip in lines_b[ii]:
-                            continue
-                        logger.error('lines differ:')
-                        logger.error(lines_a[ii])
-                        logger.error(lines_b[ii])
-                        return False
     except Exception:
         return False
     return True
