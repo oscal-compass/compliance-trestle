@@ -267,6 +267,15 @@ class RiskStatus(OscalBaseModel):
     __root__: TokenDatatype | RiskStatusValidValues = Field(..., description='Describes the status of the associated risk.', title='Risk Status')
 
 
+class RelatedObservation(OscalBaseModel):
+    """
+    Relates the finding to a set of referenced observations that were used to determine the finding.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+
 class Rel(Enum):
     """
     Describes the type of relationship provided by the link's hypertext reference. This can be an indicator of the link's purpose.
@@ -1185,6 +1194,11 @@ class Parties(OscalBaseModel):
     remarks: str | None = None
 
 
+# Backward compatibility alias for OSCAL 1.2.0
+# Party renamed to Parties (with variants Parties1 and Parties)
+Party = Union[Parties1, Parties]
+
+
 class Part(OscalBaseModel):
     """
     An annotated, markup-based textual element of a control's or catalog group's definition, or a child of another part.
@@ -1272,6 +1286,11 @@ class Parameter1(OscalBaseModel):
     guidelines: list[ParameterGuideline] | None = Field(None)
     values: list[constr(regex=r'^\S(.*\S)?$')] | None = Field(None)
     remarks: str | None = None
+
+
+# Backward compatibility alias for OSCAL 1.2.0
+# Parameter split into Parameter1 (with values) and Parameter2 (with select)
+Parameter = Union[Parameter1, Parameter2]
 
 
 class OriginActor(OscalBaseModel):
@@ -1445,7 +1464,7 @@ class Finding(OscalBaseModel):
     origins: list[Origin] | None = Field(None)
     target: FindingTarget
     implementation_statement_uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') | None = Field(None, alias='implementation-statement-uuid', description='A machine-oriented identifier reference to the implementation statement in the SSP to which this finding is related.', title='Implementation Statement UUID')
-    related_observations: list[dict[str, Any]] | None = Field(None, alias='related-observations')
+    related_observations: list[RelatedObservation] | None = Field(None, alias='related-observations')
     related_risks: list[dict[str, Any]] | None = Field(None, alias='related-risks')
     remarks: str | None = None
 
@@ -1787,6 +1806,6 @@ class Risk(OscalBaseModel):
     deadline: datetime | None = Field(None, description='The date/time by which the risk must be resolved.', title='Risk Resolution Deadline')
     remediations: list[Response] | None = Field(None)
     risk_log: RiskLog | None = Field(None, alias='risk-log', description='A log of all risk-related tasks taken.', title='Risk Log')
-    related_observations: list[dict[str, Any]] | None = Field(None, alias='related-observations')
+    related_observations: list[RelatedObservation] | None = Field(None, alias='related-observations')
 
 

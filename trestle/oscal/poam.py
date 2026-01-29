@@ -85,7 +85,7 @@ class PoamItem(OscalBaseModel):
     props: list[common.Property] | None = Field(None)
     links: list[common.Link] | None = Field(None)
     related_findings: list[dict[str, Any]] | None = Field(None, alias='related-findings')
-    related_observations: list[dict[str, Any]] | None = Field(None, alias='related-observations')
+    related_observations: list[common.RelatedObservation] | None = Field(None, alias='related-observations')
     related_risks: list[dict[str, Any]] | None = Field(None, alias='related-risks')
     remarks: str | None = None
     origins: list[Origination] | None = Field(None)

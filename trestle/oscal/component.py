@@ -186,5 +186,10 @@ class ComponentDefinition(OscalBaseModel):
     back_matter: common.BackMatter | None = Field(None, alias='back-matter')
 
 
+# Backward compatibility alias for OSCAL 1.2.0
+# SetParameter is now only in common module
+SetParameter = common.SetParameter
+
+
 class Model(OscalBaseModel):
     component_definition: ComponentDefinition = Field(..., alias='component-definition')

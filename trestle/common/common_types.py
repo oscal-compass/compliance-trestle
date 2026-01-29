@@ -24,7 +24,7 @@ from trestle.core.base_model import OscalBaseModel
 from trestle.oscal.assessment_plan import AssessmentPlan
 from trestle.oscal.assessment_results import AssessmentResults
 from trestle.oscal.catalog import Catalog, Control, Group
-from trestle.oscal.common import AssessmentPart, Part, Resource
+from trestle.oscal.common import AssessmentPart, Part, Resource, SetParameter
 from trestle.oscal.poam import PlanOfActionAndMilestones
 
 # model types containing uuids that should not regenerate
@@ -72,4 +72,5 @@ TypeWithSetParams = TypeVar(
     prof.Modify,
 )
 
-TypeWithParamId = TypeVar('TypeWithParamId', ossp.SetParameter, prof.SetParameter, comp.SetParameter)
+# In OSCAL 1.2.0, SetParameter is now a common class rather than separate classes per module
+TypeWithParamId = SetParameter

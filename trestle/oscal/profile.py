@@ -334,5 +334,10 @@ class Import1(OscalBaseModel):
     exclude_controls: list[SelectControl] | None = Field(None, alias='exclude-controls')
 
 
+# Backward compatibility alias for OSCAL 1.2.0
+# SetParameter is now only in common module
+SetParameter = common.SetParameter
+
+
 class Model(OscalBaseModel):
     profile: Profile

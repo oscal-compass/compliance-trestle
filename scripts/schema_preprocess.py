@@ -102,6 +102,8 @@ def fixup_models(input_dir_name: str) -> Path:
     fixup_copy_schemas(input_dir_path, fixup_dir_path)
     # schema reorder entries
     fixup_json(fixup_dir_path)
+    # extract inline array items to create proper definitions
+    extract_inline_array_items(fixup_dir_path)
     # schema patching
     patch_schemas(fixup_dir_path)
     patch_allof(fixup_dir_path)
@@ -138,6 +140,83 @@ def patch_allof(fixup_dir_path: Path) -> None:
         model_name = str(full_name)
         data = json_data_get(model_name)
         traverse_dict(data, model_name)
+        json_data_put(model_name, data)
+
+
+def extract_inline_array_items(fixup_dir_path: Path) -> None:
+    """Extract inline array item definitions and create proper class definitions.
+    
+    In OSCAL 1.2.0, many array items are defined inline rather than as separate definitions.
+    This function extracts them and creates proper definitions to maintain backward compatibility.
+    Specifically handles 'related-observations' to start.
+    """
+    for full_name in fixup_dir_path.glob(schema_file_name_search_template):
+        model_name = str(full_name)
+        data = json_data_get(model_name)
+        
+        # Track the single definition name we create per schema for related-observation
+        related_observation_def_name = None
+        
+        # Iterate through all definitions
+        for def_name, def_content in list(data['definitions'].items()):
+            if 'properties' not in def_content:
+                continue
+                
+            # Look specifically for related-observations property
+            if 'related-observations' not in def_content['properties']:
+                continue
+                
+            prop_content = def_content['properties']['related-observations']
+            
+            # Check if this is an array with inline items definition
+            if prop_content.get('type') != 'array':
+                continue
+                
+            if 'items' not in prop_content:
+                continue
+                
+            items = prop_content['items']
+            
+            # Skip if items already has a $ref
+            if '$ref' in items:
+                continue
+            
+            # Check if items has the structure we expect (title "Related Observation")
+            if items.get('title') != 'Related Observation':
+                continue
+            
+            # If we haven't created the definition yet, create it now
+            if related_observation_def_name is None:
+                # Use the assessment-common prefix if available, otherwise use the first one we find
+                prefix = def_name.split(':')[0]
+                # Prefer assessment-common for consistency
+                if 'assessment-common' in prefix:
+                    new_def_name = f'{prefix}:related-observation'
+                else:
+                    # Find if there's an assessment-common definition in this schema
+                    assessment_common_prefix = None
+                    for dn in data['definitions'].keys():
+                        if 'assessment-common' in dn:
+                            assessment_common_prefix = dn.split(':')[0]
+                            break
+                    if assessment_common_prefix:
+                        new_def_name = f'{assessment_common_prefix}:related-observation'
+                    else:
+                        new_def_name = f'{prefix}:related-observation'
+                
+                # Extract the inline definition
+                inline_def = dict(items)
+                
+                # Add it as a new definition
+                data['definitions'][new_def_name] = inline_def
+                related_observation_def_name = new_def_name
+                
+                logger.info(f'Extracted inline definition: {new_def_name} from {def_name}')
+            
+            # Replace the inline definition with a reference to the single definition
+            prop_content['items'] = {'$ref': f'#/definitions/{related_observation_def_name}'}
+            logger.info(f'Using definition: {related_observation_def_name} in {def_name}')
+        
         json_data_put(model_name, data)
 
 

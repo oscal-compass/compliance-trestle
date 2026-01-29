@@ -728,6 +728,10 @@ def write_oscal(classes, forward_refs, fstem):
             out_file.write('import trestle.oscal.common as common\n')
         out_file.write('\n\n')
 
+        # Track if we've seen both Parameter1 and Parameter2 for adding the alias
+        seen_parameter1 = False
+        seen_parameter2 = False
+        
         for c in classes:
             out_file.writelines('\n'.join(c.lines) + '\n')
             # add special validator for OscalVersion
@@ -736,8 +740,30 @@ def write_oscal(classes, forward_refs, fstem):
             # add alias HowMany
             if c.name == 'HowManyValidValues':
                 out_file.write('HowMany = HowManyValidValues\n\n\n')
+            # Track Parameter1 and Parameter2
+            if c.name == 'Parameter1':
+                seen_parameter1 = True
+            if c.name == 'Parameter2':
+                seen_parameter2 = True
+            # Add alias Parameter after both Parameter1 and Parameter2 have been emitted
+            if seen_parameter1 and seen_parameter2 and c.name == 'Parameter1':
+                out_file.write('# Backward compatibility alias for OSCAL 1.2.0\n')
+                out_file.write('# Parameter split into Parameter1 (with values) and Parameter2 (with select)\n')
+                out_file.write('Parameter = Union[Parameter1, Parameter2]\n\n\n')
+            # Add alias Party after Parties is emitted (Parties is the last variant)
+            if c.name == 'Parties':
+                out_file.write('# Backward compatibility alias for OSCAL 1.2.0\n')
+                out_file.write('# Party renamed to Parties (with variants Parties1 and Parties)\n')
+                out_file.write('Party = Union[Parties1, Parties]\n\n\n')
 
         if not is_common:
+            # Add backward compatibility alias for SetParameter in non-common modules
+            # In OSCAL 1.2.0, SetParameter is only in common module
+            if fstem in ['component', 'profile', 'ssp']:
+                out_file.write('# Backward compatibility alias for OSCAL 1.2.0\n')
+                out_file.write('# SetParameter is now only in common module\n')
+                out_file.write('SetParameter = common.SetParameter\n\n\n')
+            
             out_file.writelines('class Model(OscalBaseModel):\n')
             alias = alias_map[fstem]
             snake = alias.replace('-', '_')

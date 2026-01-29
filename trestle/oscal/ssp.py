@@ -504,5 +504,10 @@ class SystemSecurityPlan(OscalBaseModel):
     back_matter: common.BackMatter | None = Field(None, alias='back-matter')
 
 
+# Backward compatibility alias for OSCAL 1.2.0
+# SetParameter is now only in common module
+SetParameter = common.SetParameter
+
+
 class Model(OscalBaseModel):
     system_security_plan: SystemSecurityPlan = Field(..., alias='system-security-plan')
