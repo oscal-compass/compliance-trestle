@@ -44,6 +44,10 @@ from trestle.oscal.common import TaskValidValues
 from trestle.oscal.common import TokenDatatype
 
 
+class Parameter(OscalBaseModel):
+    __root__: OscalArOscalControlCommonParameter1 | OscalArOscalControlCommonParameter2 = Field(..., description='Parameters provide a mechanism for the dynamic assignment of value(s) in a control.', title='Parameter')
+
+
 class LocalDefinitions1(OscalBaseModel):
     """
     Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.
@@ -97,7 +101,7 @@ class Entry1(OscalBaseModel):
         description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference an assessment event in this or other OSCAL instances. The locally defined UUID of the assessment log entry can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Assessment Log Entry Universally Unique Identifier',
     )
-    title: str | None = Field(None, description='The title for this event.', title='Action Title')
+    title: constr(regex=r'^[^\n]+$') | None = Field(None, description='The title for this event.', title='Action Title')
     description: str | None = Field(None, description='A human-readable description of this event.', title='Action Description')
     start: datetime = Field(..., description='Identifies the start date and time of an event.', title='Start')
     end: datetime | None = Field(None, description='Identifies the end date and time of an event. If the event is a point in time, the start and end will be the same date and time.', title='End')
@@ -144,7 +148,7 @@ class Result(OscalBaseModel):
         description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this set of results in this or other OSCAL instances. The locally defined UUID of the assessment result can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Results Universally Unique Identifier',
     )
-    title: str = Field(..., description='The title for this set of results.', title='Results Title')
+    title: constr(regex=r'^[^\n]+$') = Field(..., description='The title for this set of results.', title='Results Title')
     description: str = Field(..., description='A human-readable description of this set of test results.', title='Results Description')
     start: datetime = Field(..., description='Date/time stamp identifying the start of the evidence collection reflected in these results.', title='start field')
     end: datetime | None = Field(None, description='Date/time stamp identifying the end of the evidence collection reflected in these results. In a continuous motoring scenario, this may contain the same value as start if appropriate.', title='end field')

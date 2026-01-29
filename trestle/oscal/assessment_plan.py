@@ -53,6 +53,10 @@ class TermsAndConditions(OscalBaseModel):
     parts: list[common.AssessmentPart] | None = Field(None)
 
 
+class Parameter(OscalBaseModel):
+    __root__: OscalApOscalControlCommonParameter1 | OscalApOscalControlCommonParameter2 = Field(..., description='Parameters provide a mechanism for the dynamic assignment of value(s) in a control.', title='Parameter')
+
+
 class LocalDefinitions(OscalBaseModel):
     """
     Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.
@@ -87,7 +91,7 @@ class AssessmentPlan(OscalBaseModel):
     local_definitions: LocalDefinitions | None = Field(None, alias='local-definitions', description='Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.', title='Local Definitions')
     terms_and_conditions: TermsAndConditions | None = Field(None, alias='terms-and-conditions', description='Used to define various terms and conditions under which an assessment, described by the plan, can be performed. Each child part defines a different type of term or condition.', title='Assessment Plan Terms and Conditions')
     reviewed_controls: common.ReviewedControls = Field(..., alias='reviewed-controls')
-    assessment_subjects: list[common.AssessmentSubject] | None = Field(None, alias='assessment-subjects')
+    assessment_subjects: list[AssessmentSubject1|AssessmentSubject2] | None = Field(None, alias='assessment-subjects')
     assessment_assets: common.AssessmentAssets | None = Field(None, alias='assessment-assets')
     tasks: list[common.Task] | None = Field(None)
     back_matter: common.BackMatter | None = Field(None, alias='back-matter')

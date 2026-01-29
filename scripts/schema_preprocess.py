@@ -616,11 +616,13 @@ def _get_title(model_name: str, root: str, navigation: List[str]) -> str:
     tgt = data['definitions']
     tgt = tgt.get(root)
     if not tgt:
-        return
+        return ''
     for leaf in navigation:
         tgt = _fetch(tgt, leaf)
+        if tgt is None:
+            return ''
     title = tgt
-    return title
+    return title if title else ''
 
 
 def create_ref(model_name: str, root: str, navigation: List[str], ref_name: str) -> None:
@@ -630,20 +632,27 @@ def create_ref(model_name: str, root: str, navigation: List[str], ref_name: str)
     tgt = tgt.get(root)
     if not tgt:
         return
-    for leaf in navigation:
-        tgt = _fetch(tgt, leaf)
-    item = tgt[1]
-    replacement = {'$ref': f'#/definitions/{ref_name}'}
-    tgt[1] = replacement
-    tgt = data['definitions']
-    tgt[ref_name] = item
-    logger.debug(f'patch: {model_name} {replacement}')
-    # title
-    title_navigation = navigation
-    title_navigation[-1] = 'title'
-    title = _get_title(model_name, root, navigation)
-    body_identical_check(root, title, replacement)
-    json_data_put(model_name, data)
+    try:
+        for leaf in navigation:
+            tgt = _fetch(tgt, leaf)
+            if tgt is None:
+                logger.debug(f'Navigation path not found in {model_name} for {root} -> {ref_name}, skipping')
+                return
+        item = tgt[1]
+        replacement = {'$ref': f'#/definitions/{ref_name}'}
+        tgt[1] = replacement
+        tgt = data['definitions']
+        tgt[ref_name] = item
+        logger.debug(f'patch: {model_name} {replacement}')
+        # title
+        title_navigation = navigation
+        title_navigation[-1] = 'title'
+        title = _get_title(model_name, root, navigation)
+        body_identical_check(root, title, replacement)
+        json_data_put(model_name, data)
+    except (TypeError, KeyError, IndexError) as e:
+        logger.debug(f'Could not create ref {ref_name} in {model_name} for {root}: {e}, skipping')
+        return
 
 
 def data_get(model_name: str) -> List:

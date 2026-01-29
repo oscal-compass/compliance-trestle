@@ -67,15 +67,8 @@ class Origination(OscalBaseModel):
     actors: list[common.OriginActor] = Field(...)
 
 
-class RelatedFinding(OscalBaseModel):
-    """
-    Relates the finding to referenced finding(s).
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    finding_uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(..., alias='finding-uuid', description='A machine-oriented identifier reference to a finding defined in the list of findings.', title='Finding Universally Unique Identifier Reference')
+class Parameter(OscalBaseModel):
+    __root__: OscalPoamOscalControlCommonParameter1 | OscalPoamOscalControlCommonParameter2 = Field(..., description='Parameters provide a mechanism for the dynamic assignment of value(s) in a control.', title='Parameter')
 
 
 class PoamItem(OscalBaseModel):
@@ -87,13 +80,13 @@ class PoamItem(OscalBaseModel):
         extra = Extra.forbid
 
     uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') | None = Field(None, description='A machine-oriented, globally unique identifier with instance scope that can be used to reference this POA&M item entry in this OSCAL instance. This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.', title='POA&M Item Universally Unique Identifier')
-    title: str = Field(..., description='The title or name for this POA&M item .', title='POA&M Item Title')
+    title: constr(regex=r'^[^\n]+$') = Field(..., description='The title or name for this POA&M item .', title='POA&M Item Title')
     description: str = Field(..., description='A human-readable description of POA&M item.', title='POA&M Item Description')
     props: list[common.Property] | None = Field(None)
     links: list[common.Link] | None = Field(None)
-    related_findings: list[RelatedFinding] | None = Field(None, alias='related-findings')
-    related_observations: list[common.RelatedObservation] | None = Field(None, alias='related-observations')
-    related_risks: list[common.RelatedRisk] | None = Field(None, alias='related-risks')
+    related_findings: list[dict[str, Any]] | None = Field(None, alias='related-findings')
+    related_observations: list[dict[str, Any]] | None = Field(None, alias='related-observations')
+    related_risks: list[dict[str, Any]] | None = Field(None, alias='related-risks')
     remarks: str | None = None
     origins: list[Origination] | None = Field(None)
 

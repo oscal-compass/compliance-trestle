@@ -56,17 +56,8 @@ class Statement(OscalBaseModel):
     remarks: str | None = None
 
 
-class SetParameter(OscalBaseModel):
-    """
-    Identifies the parameter that will be set by the enclosed value.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    param_id: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') = Field(..., alias='param-id', description="A human-oriented reference to a parameter within a control, who's catalog has been imported into the current implementation context.", title='Parameter ID')
-    values: list[constr(regex=r'^\S(.*\S)?$')] = Field(...)
-    remarks: str | None = None
+class Parameter(OscalBaseModel):
+    __root__: OscalComponentDefinitionOscalControlCommonParameter1 | OscalComponentDefinitionOscalControlCommonParameter2 = Field(..., description='Parameters provide a mechanism for the dynamic assignment of value(s) in a control.', title='Parameter')
 
 
 class IncorporatesComponent(OscalBaseModel):
@@ -89,8 +80,6 @@ class ImportComponentDefinition(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    href: str = Field(..., description='A link to a resource that defines a set of components and/or capabilities to import into this collection.', title='Hyperlink Reference')
-
 
 class ImplementedRequirement(OscalBaseModel):
     """
@@ -105,7 +94,7 @@ class ImplementedRequirement(OscalBaseModel):
     description: str = Field(..., description='A suggestion from the supplier (e.g., component vendor or author) for how the specified control may be implemented if the containing component or capability is instantiated in a system security plan.', title='Control Implementation Description')
     props: list[common.Property] | None = Field(None)
     links: list[common.Link] | None = Field(None)
-    set_parameters: list[SetParameter] | None = Field(None, alias='set-parameters')
+    set_parameters: list[common.SetParameter] | None = Field(None, alias='set-parameters')
     responsible_roles: list[common.ResponsibleRole] | None = Field(None, alias='responsible-roles')
     statements: list[Statement] | None = Field(None)
     remarks: str | None = None
@@ -138,7 +127,7 @@ class ControlImplementation(OscalBaseModel):
     description: str = Field(..., description='A description of how the specified set of controls are implemented for the containing component or capability.', title='Control Implementation Description')
     props: list[common.Property] | None = Field(None)
     links: list[common.Link] | None = Field(None)
-    set_parameters: list[SetParameter] | None = Field(None, alias='set-parameters')
+    set_parameters: list[common.SetParameter] | None = Field(None, alias='set-parameters')
     implemented_requirements: list[ImplementedRequirement] = Field(..., alias='implemented-requirements')
 
 
@@ -170,9 +159,9 @@ class DefinedComponent(OscalBaseModel):
 
     uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(..., description='Provides a globally unique means to identify a given component.', title='Component Identifier')
     type: StringDatatype | DefinedComponentTypeValidValues = Field(..., description='A category describing the purpose of the component.', title='Component Type')
-    title: str = Field(..., description='A human readable name for the component.', title='Component Title')
+    title: constr(regex=r'^[^\n]+$') = Field(..., description='A human readable name for the component.', title='Component Title')
     description: str = Field(..., description='A description of the component, including information about its function.', title='Component Description')
-    purpose: str | None = Field(None, description='A summary of the technological or business purpose of the component.', title='Purpose')
+    purpose: constr(regex=r'^[^\n]+$') | None = Field(None, description='A summary of the technological or business purpose of the component.', title='Purpose')
     props: list[common.Property] | None = Field(None)
     links: list[common.Link] | None = Field(None)
     responsible_roles: list[common.ResponsibleRole] | None = Field(None, alias='responsible-roles')

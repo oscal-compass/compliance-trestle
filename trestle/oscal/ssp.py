@@ -51,19 +51,6 @@ class System(Enum):
     http___doi_org_10_6028_NIST_SP_800_60v2r1 = 'http://doi.org/10.6028/NIST.SP.800-60v2r1'
 
 
-class SetParameter(OscalBaseModel):
-    """
-    Identifies the parameter that will be set by the enclosed value.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    param_id: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') = Field(..., alias='param-id', description="A human-oriented reference to a parameter within a control, who's catalog has been imported into the current implementation context.", title='Parameter ID')
-    values: list[constr(regex=r'^\S(.*\S)?$')] = Field(...)
-    remarks: str | None = None
-
-
 class Selected(OscalBaseModel):
     __root__: constr(regex=r'^\S(.*\S)?$') = Field(..., description='The selected (Confidentiality, Integrity, or Availability) security impact level.', title='Selected Level (Confidentiality, Integrity, or Availability)')
 
@@ -143,6 +130,10 @@ class Provided(OscalBaseModel):
     remarks: str | None = None
 
 
+class Parameter(OscalBaseModel):
+    __root__: OscalSspOscalControlCommonParameter1 | OscalSspOscalControlCommonParameter2 = Field(..., description='Parameters provide a mechanism for the dynamic assignment of value(s) in a control.', title='Parameter')
+
+
 class OperationalStateValidValues(Enum):
     operational = 'operational'
     under_development = 'under-development'
@@ -213,7 +204,7 @@ class Diagram(OscalBaseModel):
     description: str | None = Field(None, description='A summary of the diagram.', title='Diagram Description')
     props: list[common.Property] | None = Field(None)
     links: list[common.Link] | None = Field(None)
-    caption: str | None = Field(None, description='A brief caption to annotate the diagram.', title='Caption')
+    caption: constr(regex=r'^[^\n]+$') | None = Field(None, description='A brief caption to annotate the diagram.', title='Caption')
     remarks: str | None = None
 
 
@@ -260,7 +251,7 @@ class ByComponent(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    component_uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(..., alias='component-uuid', description='A machine-oriented identifier reference to the component that is implemeting a given control.', title='Component Universally Unique Identifier Reference')
+    component_uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(..., alias='component-uuid', description='A machine-oriented identifier reference to the component that is implementing a given control.', title='Component Universally Unique Identifier Reference')
     uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(
         ...,
         description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this by-component entry elsewhere in this or other OSCAL instances. The locally defined UUID of the by-component entry can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
@@ -269,7 +260,7 @@ class ByComponent(OscalBaseModel):
     description: str = Field(..., description='An implementation statement that describes how a control or a control statement is implemented within the referenced system component.', title='Control Implementation Description')
     props: list[common.Property] | None = Field(None)
     links: list[common.Link] | None = Field(None)
-    set_parameters: list[SetParameter] | None = Field(None, alias='set-parameters')
+    set_parameters: list[common.SetParameter] | None = Field(None, alias='set-parameters')
     implementation_status: common.ImplementationStatus | None = Field(None, alias='implementation-status')
     export: Export | None = Field(None, description='Identifies content intended for external consumption, such as with leveraged organizations.', title='Export')
     inherited: list[Inherited] | None = Field(None)
@@ -342,7 +333,7 @@ class ImplementedRequirement(OscalBaseModel):
     control_id: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') = Field(..., alias='control-id', description='A reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).', title='Control Identifier Reference')
     props: list[common.Property] | None = Field(None)
     links: list[common.Link] | None = Field(None)
-    set_parameters: list[SetParameter] | None = Field(None, alias='set-parameters')
+    set_parameters: list[common.SetParameter] | None = Field(None, alias='set-parameters')
     responsible_roles: list[common.ResponsibleRole] | None = Field(None, alias='responsible-roles')
     statements: list[Statement] | None = Field(None)
     by_components: list[ByComponent] | None = Field(None, alias='by-components')
@@ -358,7 +349,7 @@ class ControlImplementation(OscalBaseModel):
         extra = Extra.forbid
 
     description: str = Field(..., description='A statement describing important things to know about how this set of control satisfaction documentation is approached.', title='Control Implementation Description')
-    set_parameters: list[SetParameter] | None = Field(None, alias='set-parameters')
+    set_parameters: list[common.SetParameter] | None = Field(None, alias='set-parameters')
     implemented_requirements: list[ImplementedRequirement] = Field(..., alias='implemented-requirements')
 
 
@@ -390,7 +381,7 @@ class LeveragedAuthorization(OscalBaseModel):
         description='A machine-oriented, globally unique identifier with cross-instance scope and can be used to reference this leveraged authorization elsewhere in this or other OSCAL instances. The locally defined UUID of the leveraged authorization can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Leveraged Authorization Universally Unique Identifier',
     )
-    title: str = Field(..., description='A human readable name for the leveraged authorization in the context of the system.', title='title field')
+    title: constr(regex=r'^[^\n]+$') = Field(..., description='A human readable name for the leveraged authorization in the context of the system.', title='title field')
     props: list[common.Property] | None = Field(None)
     links: list[common.Link] | None = Field(None)
     party_uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(..., alias='party-uuid', description='A machine-oriented identifier reference to the party that manages the leveraged system.', title='party-uuid field')
@@ -409,7 +400,7 @@ class SystemImplementation(OscalBaseModel):
     props: list[common.Property] | None = Field(None)
     links: list[common.Link] | None = Field(None)
     leveraged_authorizations: list[LeveragedAuthorization] | None = Field(None, alias='leveraged-authorizations')
-    users: list[common.SystemUser] = Field(...)
+    users: list[common.SystemUser] | None = Field(None)
     components: list[common.SystemComponent] = Field(...)
     inventory_items: list[common.InventoryItem] | None = Field(None, alias='inventory-items')
     remarks: str | None = None
@@ -443,7 +434,7 @@ class InformationType(OscalBaseModel):
         description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this information type elsewhere in this or other OSCAL instances. The locally defined UUID of the information type can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Information Type Universally Unique Identifier',
     )
-    title: str = Field(..., description='A human readable name for the information type. This title should be meaningful within the context of the system.', title='title field')
+    title: constr(regex=r'^[^\n]+$') = Field(..., description='A human readable name for the information type. This title should be meaningful within the context of the system.', title='title field')
     description: str = Field(..., description='A summary of how this information type is used within the system.', title='Information Type Description')
     categorizations: list[Categorization] | None = Field(None)
     props: list[common.Property] | None = Field(None)

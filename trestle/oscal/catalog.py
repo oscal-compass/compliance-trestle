@@ -38,6 +38,32 @@ import trestle.oscal.common as common
 from trestle.oscal.common import StringDatatype
 
 
+class Parameter(OscalBaseModel):
+    __root__: OscalCatalogOscalControlCommonParameter1 | OscalCatalogOscalControlCommonParameter2 = Field(..., description='Parameters provide a mechanism for the dynamic assignment of value(s) in a control.', title='Parameter')
+
+
+class Group(OscalBaseModel):
+    __root__: OscalCatalogOscalCatalogGroup1 | OscalCatalogOscalCatalogGroup2 = Field(..., description='A group of controls, or of groups of controls.', title='Control Group')
+
+
+class Group1(OscalBaseModel):
+    """
+    A group of controls, or of groups of controls.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    id: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, description='Identifies the group for the purpose of cross-linking within the defining instance or from other instances that reference the catalog.', title='Group Identifier')
+    class_: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, alias='class', description='A textual label that provides a sub-type or characterization of the group.', title='Group Class')
+    title: constr(regex=r'^[^\n]+$') = Field(..., description='A name given to the group, which may be used by a tool for display and navigation.', title='Group Title')
+    params: list[Parameter] | None = Field(None)
+    props: list[common.Property] | None = Field(None)
+    links: list[common.Link] | None = Field(None)
+    parts: list[common.Part] | None = Field(None)
+    groups: list[Group] | None = Field(None)
+
+
 class Control(OscalBaseModel):
     """
     A structured object representing a requirement or guideline, which when implemented will reduce an aspect of risk related to an information system and its information.
@@ -48,15 +74,15 @@ class Control(OscalBaseModel):
 
     id: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') = Field(..., description='Identifies a control such that it can be referenced in the defining catalog and other OSCAL instances (e.g., profiles).', title='Control Identifier')
     class_: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, alias='class', description='A textual label that provides a sub-type or characterization of the control.', title='Control Class')
-    title: str = Field(..., description='A name given to the control, which may be used by a tool for display and navigation.', title='Control Title')
-    params: list[common.Parameter] | None = Field(None)
+    title: constr(regex=r'^[^\n]+$') = Field(..., description='A name given to the control, which may be used by a tool for display and navigation.', title='Control Title')
+    params: list[Parameter] | None = Field(None)
     props: list[common.Property] | None = Field(None)
     links: list[common.Link] | None = Field(None)
     parts: list[common.Part] | None = Field(None)
     controls: list[Control] | None = None
 
 
-class Group(OscalBaseModel):
+class Group2(OscalBaseModel):
     """
     A group of controls, or of groups of controls.
     """
@@ -66,12 +92,11 @@ class Group(OscalBaseModel):
 
     id: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, description='Identifies the group for the purpose of cross-linking within the defining instance or from other instances that reference the catalog.', title='Group Identifier')
     class_: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, alias='class', description='A textual label that provides a sub-type or characterization of the group.', title='Group Class')
-    title: str = Field(..., description='A name given to the group, which may be used by a tool for display and navigation.', title='Group Title')
-    params: list[common.Parameter] | None = Field(None)
+    title: constr(regex=r'^[^\n]+$') = Field(..., description='A name given to the group, which may be used by a tool for display and navigation.', title='Group Title')
+    params: list[Parameter] | None = Field(None)
     props: list[common.Property] | None = Field(None)
     links: list[common.Link] | None = Field(None)
     parts: list[common.Part] | None = Field(None)
-    groups: list[Group] | None = None
     controls: list[Control] | None = Field(None)
 
 
@@ -85,7 +110,7 @@ class Catalog(OscalBaseModel):
 
     uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(..., description='Provides a globally unique means to identify a given catalog instance.', title='Catalog Universally Unique Identifier')
     metadata: common.Metadata
-    params: list[common.Parameter] | None = Field(None)
+    params: list[Parameter] | None = Field(None)
     controls: list[Control] | None = Field(None)
     groups: list[Group] | None = Field(None)
     back_matter: common.BackMatter | None = Field(None, alias='back-matter')
