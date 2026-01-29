@@ -452,6 +452,36 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
             )
 
 
+@pytest.mark.parametrize('ohv', [True, False])
+def test_profile_ohv_cli(ohv: bool, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test profile generate assemble with -y and optional overwrite-header-values via CLI."""
+    setup_profile_generate(tmp_trestle_dir, 'simple_test_profile2.json')
+    yaml_header_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
+
+    # initial generate to establish markdown with profile set-params
+    base_cmd = f'trestle author profile-generate -n {prof_name} -o {md_name} -y {yaml_header_path}'
+    test_utils.execute_command_and_assert(base_cmd, 0, monkeypatch)
+
+    # regenerate with -y, optionally -ohv to override existing set-params
+    regen_cmd = base_cmd + (' -ohv' if ohv else '')
+    test_utils.execute_command_and_assert(regen_cmd, 0, monkeypatch)
+
+    # assemble with set-parameters enabled
+    assemble_cmd = f'trestle author profile-assemble -n {prof_name} -m {md_name} -o {assembled_prof_name} -sp'
+    test_utils.execute_command_and_assert(assemble_cmd, 0, monkeypatch)
+
+    profile, _ = ModelUtils.load_model_for_class(
+        tmp_trestle_dir, assembled_prof_name, prof.Profile, FileContentType.JSON
+    )
+    set_param = next(p for p in profile.modify.set_parameters if p.param_id == 'ac-1_prm_5')
+    if ohv:
+        assert set_param.values[0] == 'no meetings from cli yaml'
+        assert set_param.label == 'meetings cancelled from cli yaml'
+    else:
+        assert set_param.values[0] == 'all meetings'
+        assert set_param.label == 'label from profile'
+
+
 def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test failure modes of profile generate and assemble."""
     # no trestle root specified direct command
