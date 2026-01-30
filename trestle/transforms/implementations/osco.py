@@ -30,7 +30,7 @@ from ruamel.yaml import YAML
 from trestle.common.list_utils import as_list
 from trestle.oscal.assessment_results import LocalDefinitions1, Observation, Result, SystemComponent
 from trestle.oscal.common import (
-    ControlSelection,
+    ControlSelections,
     ImplementedComponent,
     InventoryItem,
     Property,
@@ -356,10 +356,10 @@ class _OscalResultsFactory:
         return list(self._component_map.values())
 
     @property
-    def control_selections(self) -> List[ControlSelection]:
+    def control_selections(self) -> List[ControlSelections]:
         """OSCAL control selections."""
         prop = []
-        prop.append(ControlSelection())
+        prop.append(ControlSelections(include_controls=[]))
         return prop
 
     @property

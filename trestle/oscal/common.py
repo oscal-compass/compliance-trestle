@@ -645,7 +645,7 @@ class DateTimeWithTimezoneDatatype(OscalBaseModel):
     __root__: datetime = Field(..., description='A string representing a point in time with a required timezone.')
 
 
-class ControlSelections1(OscalBaseModel):
+class ControlSelectionsAll(OscalBaseModel):
     """
     Identifies the controls being assessed. In the assessment plan, these are the planned controls. In the assessment results, these are the actual controls, and reflects any changes from the plan.
     """
@@ -656,7 +656,7 @@ class ControlSelections1(OscalBaseModel):
     description: str | None = Field(None, description='A human-readable description of in-scope controls specified for assessment.', title='Assessed Controls Description')
     props: list[Property] | None = Field(None)
     links: list[Link] | None = Field(None)
-    include_controls: list[SelectControlById] = Field(..., alias='include-controls')
+    include_all: IncludeAll = Field(..., alias='include-all')
     exclude_controls: list[SelectControlById] | None = Field(None, alias='exclude-controls')
     remarks: str | None = None
 
@@ -672,12 +672,12 @@ class ControlSelections(OscalBaseModel):
     description: str | None = Field(None, description='A human-readable description of in-scope controls specified for assessment.', title='Assessed Controls Description')
     props: list[Property] | None = Field(None)
     links: list[Link] | None = Field(None)
-    include_all: IncludeAll = Field(..., alias='include-all')
+    include_controls: list[SelectControlById] = Field(..., alias='include-controls')
     exclude_controls: list[SelectControlById] | None = Field(None, alias='exclude-controls')
     remarks: str | None = None
 
 
-class ControlObjectiveSelections1(OscalBaseModel):
+class ControlObjectiveSelectionsAll(OscalBaseModel):
     """
     Identifies the control objectives of the assessment. In the assessment plan, these are the planned objectives. In the assessment results, these are the assessed objectives, and reflects any changes from the plan.
     """
@@ -688,7 +688,7 @@ class ControlObjectiveSelections1(OscalBaseModel):
     description: str | None = Field(None, description='A human-readable description of this collection of control objectives.', title='Control Objectives Description')
     props: list[Property] | None = Field(None)
     links: list[Link] | None = Field(None)
-    include_objectives: list[SelectObjectiveById] = Field(..., alias='include-objectives')
+    include_all: IncludeAll = Field(..., alias='include-all')
     exclude_objectives: list[SelectObjectiveById] | None = Field(None, alias='exclude-objectives')
     remarks: str | None = None
 
@@ -704,7 +704,7 @@ class ControlObjectiveSelections(OscalBaseModel):
     description: str | None = Field(None, description='A human-readable description of this collection of control objectives.', title='Control Objectives Description')
     props: list[Property] | None = Field(None)
     links: list[Link] | None = Field(None)
-    include_all: IncludeAll = Field(..., alias='include-all')
+    include_objectives: list[SelectObjectiveById] = Field(..., alias='include-objectives')
     exclude_objectives: list[SelectObjectiveById] | None = Field(None, alias='exclude-objectives')
     remarks: str | None = None
 
@@ -1028,8 +1028,8 @@ class ReviewedControls(OscalBaseModel):
     description: str | None = Field(None, description='A human-readable description of control objectives.', title='Control Objective Description')
     props: list[Property] | None = Field(None)
     links: list[Link] | None = Field(None)
-    control_selections: list[ControlSelections | ControlSelections1] = Field(..., alias='control-selections')
-    control_objective_selections: list[ControlObjectiveSelections | ControlObjectiveSelections1] | None = Field(None, alias='control-objective-selections')
+    control_selections: list[ControlSelectionsAll | ControlSelections] = Field(..., alias='control-selections')
+    control_objective_selections: list[ControlObjectiveSelectionsAll | ControlObjectiveSelections] | None = Field(None, alias='control-objective-selections')
     remarks: str | None = None
 
 

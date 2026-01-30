@@ -1038,6 +1038,70 @@ def patch_lines(c, old, new):
     return c.lines
 
 
+def rename_control_selections(file_classes):
+    """Rename ControlSelections and ControlObjectiveSelections variants based on their content.
+    
+    DMCG generates numbered variants (e.g., ControlSelections, ControlSelections1) for anyOf schemas.
+    This function renames them to descriptive names based on their required fields:
+    - Classes with 'include_all' field get 'All' suffix
+    - Classes with 'include_controls' or 'include_objectives' keep base name
+    
+    Args:
+        file_classes: Dictionary mapping file paths to lists of ClassText objects
+        
+    Returns:
+        file_classes: Updated dictionary with renamed classes and references
+    """
+    # Define rename rules: (original_name, identifying_field, new_name)
+    rename_rules = [
+        ('ControlSelections', 'include_all:', 'ControlSelectionsAll'),
+        ('ControlSelections1', 'include_controls:', 'ControlSelections'),
+        ('ControlObjectiveSelections', 'include_all:', 'ControlObjectiveSelectionsAll'),
+        ('ControlObjectiveSelections1', 'include_objectives:', 'ControlObjectiveSelections'),
+    ]
+    
+    # Step 1: Identify and rename classes, storing old names for reference updates
+    for file_class in file_classes.values():
+        for c in file_class:
+            for original_name, identifying_field, new_name in rename_rules:
+                if c.name == original_name:
+                    # Check if class contains the identifying field
+                    if any(identifying_field in line for line in c.lines):
+                        c.old_name = c.name
+                        c.name = new_name
+                        # Update class definition line
+                        c.lines[0] = c.lines[0].replace(f'class {original_name}(', f'class {new_name}(')
+                        break
+    
+    # Step 2: Collect all renames for reference updates
+    all_renames = [
+        (c, c.old_name, c.name)
+        for file_class in file_classes.values()
+        for c in file_class
+        if hasattr(c, 'old_name')
+    ]
+    
+    if not all_renames:
+        return file_classes
+    
+    # Step 3: Update all references to renamed classes
+    for file_class in file_classes.values():
+        for c in file_class:
+            for i, line in enumerate(c.lines):
+                if i == 0:  # Skip class definition line
+                    continue
+                    
+                updated_line = line
+                for renamed_class, old_name, new_name in all_renames:
+                    # Don't update references within the renamed class itself
+                    if c is not renamed_class and old_name in updated_line:
+                        updated_line = replace_token(updated_line, old_name, new_name)
+                        
+                c.lines[i] = updated_line
+    
+    return file_classes
+
+
 def patch_items(file_classes):
     """Patch items."""
     for key in file_classes:
@@ -1167,6 +1231,9 @@ def normalize_files():
 
     # now apply all the changes to the class bodies
     file_classes = apply_changes_to_classes(file_classes, changes, com_names)
+
+    # rename ControlSelections variants based on their content
+    file_classes = rename_control_selections(file_classes)
 
     # patch common items
     file_classes = patch_items(file_classes)

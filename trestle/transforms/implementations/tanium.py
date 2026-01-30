@@ -29,7 +29,7 @@ from trestle.oscal.assessment_results import LocalDefinitions1
 from trestle.oscal.assessment_results import Observation
 from trestle.oscal.assessment_results import Result
 from trestle.oscal.assessment_results import SystemComponent
-from trestle.oscal.common import ControlSelection
+from trestle.oscal.common import ControlSelections
 from trestle.oscal.common import ImplementedComponent
 from trestle.oscal.common import InventoryItem
 from trestle.oscal.common import Property
@@ -512,10 +512,10 @@ class TaniumOscalFactory:
         return rval
 
     @property
-    def control_selections(self) -> List[ControlSelection]:
+    def control_selections(self) -> List[ControlSelections]:
         """OSCAL control selections."""
         rval = []
-        rval.append(ControlSelection())
+        rval.append(ControlSelections(include_controls=[]))
         return rval
 
     @property
