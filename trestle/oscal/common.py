@@ -661,6 +661,11 @@ class ControlSelectionsAll(OscalBaseModel):
     remarks: str | None = None
 
 
+# Backward compatibility alias
+# DEPRECATED: Use ControlSelectionsAll instead
+ControlSelection = ControlSelectionsAll
+
+
 class ControlSelections(OscalBaseModel):
     """
     Identifies the controls being assessed. In the assessment plan, these are the planned controls. In the assessment results, these are the actual controls, and reflects any changes from the plan.
@@ -691,6 +696,11 @@ class ControlObjectiveSelectionsAll(OscalBaseModel):
     include_all: IncludeAll = Field(..., alias='include-all')
     exclude_objectives: list[SelectObjectiveById] | None = Field(None, alias='exclude-objectives')
     remarks: str | None = None
+
+
+# Backward compatibility alias
+# DEPRECATED: Use ControlObjectiveSelectionsAll instead
+ControlObjectiveSelection = ControlObjectiveSelectionsAll
 
 
 class ControlObjectiveSelections(OscalBaseModel):

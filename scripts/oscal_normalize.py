@@ -755,6 +755,16 @@ def write_oscal(classes, forward_refs, fstem):
                 out_file.write('# Backward compatibility alias for OSCAL 1.2.0\n')
                 out_file.write('# Party renamed to Parties (with variants Parties1 and Parties)\n')
                 out_file.write('Party = Union[Parties1, Parties]\n\n\n')
+            # Add backward compatibility alias for ControlSelections after ControlSelectionsAll
+            if c.name == 'ControlSelectionsAll':
+                out_file.write('# Backward compatibility alias\n')
+                out_file.write('# DEPRECATED: Use ControlSelectionsAll instead\n')
+                out_file.write('ControlSelection = ControlSelectionsAll\n\n\n')
+            # Add backward compatibility alias for ControlObjectiveSelections after ControlObjectiveSelectionsAll
+            if c.name == 'ControlObjectiveSelectionsAll':
+                out_file.write('# Backward compatibility alias\n')
+                out_file.write('# DEPRECATED: Use ControlObjectiveSelectionsAll instead\n')
+                out_file.write('ControlObjectiveSelection = ControlObjectiveSelectionsAll\n\n\n')
 
         if not is_common:
             # Add backward compatibility alias for SetParameter in non-common modules
