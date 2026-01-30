@@ -43,9 +43,9 @@ cat output/poams/plan-of-action-and-milestones.json | jq '.plan-of-action-and-mi
 
 ### Required Parameters
 
-| Parameter    | Description                     | Example                      |
-| ------------ | ------------------------------- | ---------------------------- |
-| `xlsx-file`  | Path to POAM Excel file         | `FedRAMP-POAM-Template.xlsx` |
+| Parameter    | Description                    | Example                      |
+| ------------ | ------------------------------ | ---------------------------- |
+| `xlsx-file`  | Path to POAM Excel file        | `FedRAMP-POAM-Template.xlsx` |
 | `output-dir` | Output directory for POAM JSON  | `output/poams`               |
 | `title`      | Title for the POAM document     | `Production System POA&M`    |
 | `version`    | Version of the POAM             | `1.0`                        |
