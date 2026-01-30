@@ -280,7 +280,7 @@ class ControlInterface:
             # the label may be of the form (a) while the part.id is ac-1_smt.a.1.a
             # here we choose the latter and extract the final element
             label = ControlInterface.get_label(part)
-            label = part.id.split('.')[-1] if not label else label
+            label = label if label else part.id.split('.')[-1]
             wrapped_label = ControlInterface._wrap_label(label)
             pad = '' if wrapped_label == '' or not part.prose else ' '
             prose = '' if part.prose is None else part.prose
