@@ -374,9 +374,7 @@ class Ocp4CisProfileToOscalCD(TaskBase):
     def _parse_cis_rules(self, content: List[str]) -> Dict[str, Tuple[str, str, str]]:
         """Parse CIS rules."""
         rules = {}
-        lineno = 0
-        for line in content:
-            lineno += 1
+        for lineno, line in enumerate(content, start=1):
             line = line.replace('\n', '')
             if line.startswith('  #### '):
                 category = line.split('  #### ')[1]

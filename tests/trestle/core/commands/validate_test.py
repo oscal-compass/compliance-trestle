@@ -83,9 +83,7 @@ def test_validation_happy(
             testcmd = f'trestle validate {mode} {model_def_file}'
         else:
             testcmd = f'trestle validate {mode} {model_def_file.parent}'
-    elif mode == '-n':
-        testcmd = f'trestle validate -t catalog -n {name}'
-    elif mode == '-x':
+    elif mode in ('-n', '-x'):
         testcmd = f'trestle validate -t catalog -n {name}'
     else:
         testcmd = 'trestle validate -a'
@@ -131,9 +129,7 @@ def test_validation_unhappy(
             testcmd = f'trestle validate {mode} {model_def_file}'
         else:
             testcmd = f'trestle validate {mode} {model_def_file.parent}'
-    elif mode == '-n':
-        testcmd = f'trestle validate -t catalog -n {name}'
-    elif mode == '-x':
+    elif mode in ('-n', '-x'):
         testcmd = f'trestle validate -t catalog -n {name}'
     else:
         testcmd = 'trestle validate -a'
