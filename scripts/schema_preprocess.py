@@ -211,12 +211,9 @@ def extract_inline_array_items(fixup_dir_path: Path) -> None:
                 data['definitions'][new_def_name] = inline_def
                 related_observation_def_name = new_def_name
                 
-                logger.info(f'Extracted inline definition: {new_def_name} from {def_name}')
-            
             # Replace the inline definition with a reference to the single definition
             prop_content['items'] = {'$ref': f'#/definitions/{related_observation_def_name}'}
-            logger.info(f'Using definition: {related_observation_def_name} in {def_name}')
-        
+            
         json_data_put(model_name, data)
 
 
