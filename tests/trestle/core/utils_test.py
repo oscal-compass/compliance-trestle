@@ -48,7 +48,7 @@ from trestle.common.str_utils import as_bool
 
 def load_good_catalog() -> catalog.Catalog:
     """Load nist 800-53 as a catalog example."""
-    good_sample_path = TEST_DIR / '../nist-content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json'
+    good_sample_path = TEST_DIR / '../nist-content/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json'
 
     assert good_sample_path.exists()
     return catalog.Catalog.oscal_read(good_sample_path)
