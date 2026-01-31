@@ -21,7 +21,7 @@ Standardizing to OSCAL facilitates data interchange and understandability.
 The objective here is to transform your compliance data into valid OSCAL, in particular System Assessment Results
 [SAR](https://pages.nist.gov/OSCAL/documentation/schema/assessment-results-layer/).
 
-Examples of existing transformers  included with trestle are for the
+Examples of existing transformers included with trestle are for the
 OpenShift Compliance Operator [OSCO](https://github.com/oscal-compass/compliance-trestle/blob/develop/trestle/tasks/xccdf_result_to_oscal_ar.py) and
 [Tanium](https://github.com/oscal-compass/compliance-trestle/blob/develop/trestle/tasks/tanium_result_to_oscal_ar.py).
 
@@ -84,9 +84,9 @@ then the best mapping would be to an Observations only.
 <summary>example snippet: instance suitable for mapping to Observation</summary>
 
 ```yaml
-data: <rule-result 
-  idref="xccdf_org.ssgproject.content_rule_scheduler_profiling_argument" 
-  time="2020-08-03T02:26:26+00:00" severity="low" weight="1.000000"> 
+data: <rule-result
+  idref="xccdf_org.ssgproject.content_rule_scheduler_profiling_argument"
+  time="2020-08-03T02:26:26+00:00" severity="low" weight="1.000000">
   <result>fail</result> </rule-result>
 metadata:
   name: ssg-ocp4-ds-cis-111.222.333.444-pod
@@ -449,3 +449,4 @@ or
 [auditree-arboretum](https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/CONTRIBUTING.md)
 or
 other appropriate open source repository.
+

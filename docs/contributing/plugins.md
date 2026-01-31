@@ -9,7 +9,7 @@ Trestle provides a mechanism for 3rd party providers to extend its command inter
 
 ## Create the trestle plugin proejct
 
-A separate plugin project needs to be created that will conatin the code for plugin and its commands. This plugin can be given any name and should be available for installation via `pip`. For example, we created a plugin project called  `compliance-trestle-fedramp` which can be installed as `pip install compliance-trestle-fedramp`. The project name doesn't need to start with `compliance-trestle`.
+A separate plugin project needs to be created that will conatin the code for plugin and its commands. This plugin can be given any name and should be available for installation via `pip`. For example, we created a plugin project called `compliance-trestle-fedramp` which can be installed as `pip install compliance-trestle-fedramp`. The project name doesn't need to start with `compliance-trestle`.
 
 ## Project Organization
 
