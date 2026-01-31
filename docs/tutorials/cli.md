@@ -84,9 +84,9 @@ Users can query the contents of files using `trestle describe`, and probe the co
 ```text
 .
 ├── .trestle
-├── dist 
+├── dist
 │   └── catalogs
-│       └── nist800-53.json 
+│       └── nist800-53.json
 └── catalogs
     └── nist800-53
         ├── catalog.json
@@ -96,17 +96,17 @@ Users can query the contents of files using `trestle describe`, and probe the co
             │   ├── revision-history
             │   │   ├── 00000__revision-history.json
             │   │   ├── 00001__revision-history.json
-            │   │   └── 00002__revision-history.json   
+            │   │   └── 00002__revision-history.json
             │   └── responsible-parties
             │       ├── creator__responsible-party.json
-            │       └── contact__responsible-party.json       
+            │       └── contact__responsible-party.json
             └── groups
-                ├── 00000__group.json        
+                ├── 00000__group.json
                 ├── 00000__group
                 │   └── controls
                 │       ├── 00000__control.json
                 │       └── 00001__control.json
-                ├── 00001__group.json 
+                ├── 00001__group.json
                 └── 00001__group
                     └── controls
                         ├── 00000__control.json
@@ -622,7 +622,7 @@ data:
   exit-code: '2'
   results: |
     <?xml version="1.0" encoding="UTF-8"?>
-    <TestResult xmlns="https://checklists.nist.gov/xccdf/1.2" 
+    <TestResult xmlns="https://checklists.nist.gov/xccdf/1.2"
                 id="xccdf_org.open-scap_testresult_xccdf_org.ssgproject.content_profile_cis"
                 start-time="2020-08-03T02:26:26+00:00" end-time="2020-08-03T02:26:26+00:00"
                 version="0.1.52"
@@ -654,9 +654,9 @@ data:
                 <result>notchecked</result>
                 <message severity="info">No candidate or applicable check found.</message>
               </rule-result>
-              
+
               ...
-              
+
            </TestResult>
 kind: ConfigMap
 metadata:
@@ -671,7 +671,7 @@ metadata:
   name: ssg-ocp4-ds-cis-111.222.333.444-pod
   namespace: openshift-compliance
   resourceVersion: '22693328'
-  selfLink: 
+  selfLink:
     /api/v1/namespaces/openshift-compliance/configmaps/ssg-ocp4-ds-cis-111.222.333.444-pod
   uid: 1da3ea81-0a25-4512-ad86-7ac360246b5d
 
@@ -1412,7 +1412,7 @@ th, td {
 <tr>
 <td>ResourceTitle
 <td><ul>
-    <li>component.title    
+    <li>component.title
     <li>component.description
     <li>component.control-implementation.description + {text}
     </ul>
@@ -1431,7 +1431,7 @@ th, td {
     <li>implemented_requirement.property[name='goal_version'].value
     </ul>
 <td><ul>
-    <li>Value from spreadsheet is not currently used. 
+    <li>Value from spreadsheet is not currently used.
     <li>Value '1.0' is hard coded.
     </ul>
 <tr>
@@ -1449,7 +1449,7 @@ th, td {
     <li>implemented_requirement.set_parameter.values
     </ul>
 <td><ul>
-    <li>The expected text is of the following format: 
+    <li>The expected text is of the following format:
     <li>v0, [v1, v2...]
     <li>The value v0 is used.
     </ul>
