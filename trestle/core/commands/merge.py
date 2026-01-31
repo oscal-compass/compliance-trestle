@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle Merge Command."""
+
 import argparse
 import logging
 from pathlib import Path
@@ -45,7 +46,7 @@ class MergeCmd(CommandPlusDocs):
             f'-{const.ARG_ELEMENT_SHORT}',
             f'--{const.ARG_ELEMENT}',
             help=f'{const.ARG_DESC_ELEMENT}(s) to be merged. The last element is merged into the second last element.',
-            required=True
+            required=True,
         )
 
     def _run(self, args: argparse.Namespace) -> int:
@@ -116,7 +117,8 @@ class MergeCmd(CommandPlusDocs):
                 collection_type = destination_model_type.get_collection_type()
 
             merged_model_type, _, merged_model_instance = ModelUtils.load_distributed(
-                destination_model_path, trestle_root, collection_type)
+                destination_model_path, trestle_root, collection_type
+            )
             plan = Plan()
             reset_destination_action = CreatePathAction(destination_model_path, clear_content=True)
             wrapper_alias = destination_model_alias
@@ -133,8 +135,9 @@ class MergeCmd(CommandPlusDocs):
 
         trace.log(f'get dest model with fields stripped: {target_model_alias}')
         # Get destination model without the target field stripped
-        merged_model_type, _ = ModelUtils.get_stripped_model_type(destination_model_path, trestle_root,
-                                                                  aliases_not_to_be_stripped=[target_model_alias])
+        merged_model_type, _ = ModelUtils.get_stripped_model_type(
+            destination_model_path, trestle_root, aliases_not_to_be_stripped=[target_model_alias]
+        )
         # 3. Load Target model. Target model could be stripped
         try:
             target_model_type = element_path.get_type(merged_model_type)
@@ -167,8 +170,9 @@ class MergeCmd(CommandPlusDocs):
             trace.log(f'get collection type for model type {target_model_type}')
             collection_type = type_utils.get_origin(target_model_type)
             trace.log(f'load {target_model_filename} as collection type {collection_type}')
-            _, _, target_model_object = ModelUtils.load_distributed(target_model_filename,
-                                                                    trestle_root, collection_type)
+            _, _, target_model_object = ModelUtils.load_distributed(
+                target_model_filename, trestle_root, collection_type
+            )
 
         if hasattr(target_model_object, '__dict__') and '__root__' in target_model_object.__dict__:
             trace.log('loaded object has dict and root so set target model object to root contents')

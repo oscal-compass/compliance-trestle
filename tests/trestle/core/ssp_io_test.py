@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for the ssp_io."""
+
 import pathlib
 from typing import Tuple
 
@@ -37,8 +38,9 @@ prof_name = 'comp_prof'
 ssp_name = 'my_ssp'
 
 
-def setup_test(tmp_trestle_dir: pathlib.Path, testdata_dir: pathlib.Path,
-               trestle_root: str) -> Tuple[pathlib.Path, SystemSecurityPlan]:
+def setup_test(
+    tmp_trestle_dir: pathlib.Path, testdata_dir: pathlib.Path, trestle_root: str
+) -> Tuple[pathlib.Path, SystemSecurityPlan]:
     """Prepare ssp test."""
     profile_path = tmp_trestle_dir / f'profiles/{prof_name}/profile.json'
     new_catalog_dir = tmp_trestle_dir / f'catalogs/{prof_name}_resolved_catalog'

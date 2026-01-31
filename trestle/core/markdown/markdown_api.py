@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """A markdown API."""
+
 import logging
 import pathlib
 from typing import Dict, Optional
@@ -42,15 +43,15 @@ class MarkdownAPI:
         validate_yaml_header: bool,
         validate_md_body: bool,
         governed_section: Optional[str] = None,
-        validate_template: bool = False
+        validate_template: bool = False,
     ) -> None:
         """Load and initialize markdown validator."""
         try:
             self.processor.governed_header = governed_section
             if validate_template:
-                template_header, template_tree = self.processor.process_markdown(md_template_path, validate_yaml_header,
-                                                                                 validate_md_body or governed_section is
-                                                                                 not None)
+                template_header, template_tree = self.processor.process_markdown(
+                    md_template_path, validate_yaml_header, validate_md_body or governed_section is not None
+                )
             else:
                 template_header, template_tree = self.processor.process_markdown(md_template_path)
 
@@ -63,7 +64,7 @@ class MarkdownAPI:
                 template_tree,
                 validate_yaml_header,
                 validate_md_body,
-                governed_section
+                governed_section,
             )
         except TrestleError as e:
             raise TrestleError(f'Error while loading markdown template {md_template_path}: {e}.')
@@ -84,5 +85,5 @@ class MarkdownAPI:
                 yaml.safe_dump(header, md_file, sort_keys=False)
                 md_file.write('---\n\n')
                 md_file.write(md_body)
-        except IOError as e:
+        except OSError as e:
             raise TrestleError(f'Error while writing markdown file: {e}')

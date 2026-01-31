@@ -94,7 +94,8 @@ def test_ssp_generate(tmp_trestle_dir: pathlib.Path) -> None:
     header, tree = md_api.processor.process_markdown(ac_1)
     assert header[const.TRESTLE_GLOBAL_TAG][const.SORT_ID] == 'ac-01'
     assert header[const.COMP_DEF_RULES_PARAM_VALS_TAG]['comp_aa'][0] == {
-        'name': 'shared_param_1', 'values': ['shared_param_1_aa_opt_1']
+        'name': 'shared_param_1',
+        'values': ['shared_param_1_aa_opt_1'],
     }
 
     node = tree.get_node_for_key('## Implementation for part a.')
@@ -153,7 +154,7 @@ def test_ssp_failures(tmp_trestle_dir: pathlib.Path) -> None:
         output=ssp_name,
         verbose=0,
         yaml_header=str(yaml_path),
-        overwrite_header_values=False
+        overwrite_header_values=False,
     )
     assert ssp_cmd._run(args) == 1
 
@@ -164,7 +165,7 @@ def test_ssp_failures(tmp_trestle_dir: pathlib.Path) -> None:
         output=ssp_name,
         verbose=0,
         overwrite_header_values=False,
-        yaml_header=None
+        yaml_header=None,
     )
     assert ssp_cmd._run(args) == 1
 
@@ -245,7 +246,7 @@ def test_ssp_generate_header_edit(tmp_trestle_dir: pathlib.Path) -> None:
 
     # tell it to add the yaml header but not overwrite header values
     args.yaml_header = cli_yaml_header
-    args.overwrite_header_values
+    args.overwrite_header_values = False
 
     assert ssp_cmd._run(args) == 0
     header, tree = md_api.processor.process_markdown(ac_1)
@@ -406,7 +407,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
         regenerate=False,
         version=new_version,
         name=None,
-        compdefs=args_compdefs
+        compdefs=args_compdefs,
     )
     assert ssp_assemble._run(args) == 0
 
@@ -442,7 +443,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
         regenerate=False,
         name=None,
         version=None,
-        compdefs=args_compdefs
+        compdefs=args_compdefs,
     )
     assert ssp_assemble._run(args) == 0
 
@@ -463,7 +464,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
         regenerate=True,
         name=None,
         version=None,
-        compdefs=args_compdefs
+        compdefs=args_compdefs,
     )
     assert ssp_assemble._run(args) == 0
     assert orig_uuid == test_utils.get_model_uuid(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
@@ -478,7 +479,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
         regenerate=True,
         name=None,
         version='new version to force write',
-        compdefs=args_compdefs
+        compdefs=args_compdefs,
     )
     assert ssp_assemble._run(args) == 0
     assert orig_uuid != test_utils.get_model_uuid(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
@@ -586,7 +587,7 @@ def test_ssp_assemble_with_inheritance(tmp_trestle_dir: pathlib.Path) -> None:
         regenerate=False,
         name=None,
         compdefs=args_compdefs,
-        version=None
+        version=None,
     )
     assert ssp_assemble._run(args) == 0
 
@@ -620,7 +621,7 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         name=None,
         version=None,
         regenerate=False,
-        compdefs=gen_args.compdefs
+        compdefs=gen_args.compdefs,
     )
     assert ssp_assemble._run(args) == 0
 
@@ -642,16 +643,13 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         version=None,
         components=None,
         implementation_status=None,
-        control_origination=None
+        control_origination=None,
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
 
     ssp, _ = ModelUtils.load_model_for_class(
-        tmp_trestle_dir,
-        filtered_name,
-        ossp.SystemSecurityPlan,
-        FileContentType.JSON
+        tmp_trestle_dir, filtered_name, ossp.SystemSecurityPlan, FileContentType.JSON
     )
 
     # confirm the imp_reqs have been culled by profile_d to only two controls
@@ -671,16 +669,13 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         version=None,
         components='comp_aa',
         implementation_status=None,
-        control_origination=None
+        control_origination=None,
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
 
     ssp, _ = ModelUtils.load_model_for_class(
-        tmp_trestle_dir,
-        filtered_name,
-        ossp.SystemSecurityPlan,
-        FileContentType.JSON
+        tmp_trestle_dir, filtered_name, ossp.SystemSecurityPlan, FileContentType.JSON
     )
 
     # filter the filtered ssp again to confirm uuid does not change even with regen because contents are the same
@@ -694,7 +689,7 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         version=None,
         components='comp_aa',
         implementation_status=None,
-        control_origination=None
+        control_origination=None,
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
@@ -710,16 +705,13 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         version=None,
         components=None,
         implementation_status='not-applicable,implemented',
-        control_origination=None
+        control_origination=None,
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
 
     ssp, _ = ModelUtils.load_model_for_class(
-        tmp_trestle_dir,
-        filtered_name,
-        ossp.SystemSecurityPlan,
-        FileContentType.JSON
+        tmp_trestle_dir, filtered_name, ossp.SystemSecurityPlan, FileContentType.JSON
     )
 
     # confirm the imp_reqs have been culled by impl_status to five controls
@@ -738,16 +730,13 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         version=None,
         components=None,
         implementation_status='not-applicable',
-        control_origination=None
+        control_origination=None,
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
 
     ssp, _ = ModelUtils.load_model_for_class(
-        tmp_trestle_dir,
-        filtered_name,
-        ossp.SystemSecurityPlan,
-        FileContentType.JSON
+        tmp_trestle_dir, filtered_name, ossp.SystemSecurityPlan, FileContentType.JSON
     )
 
     # confirm the imp_reqs have been culled by impl_status to zero controls
@@ -764,7 +753,7 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         version=None,
         components=None,
         implementation_status=None,
-        control_origination=None
+        control_origination=None,
     )
 
     ssp_filter = SSPFilter()
@@ -783,7 +772,7 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         version=None,
         components=None,
         implementation_status=None,
-        control_origination=None
+        control_origination=None,
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 1
@@ -800,7 +789,7 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         version=None,
         components=None,
         implementation_status=bad_impl,
-        control_origination=None
+        control_origination=None,
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 1
@@ -822,7 +811,7 @@ def test_ssp_filter_control_origination(tmp_trestle_dir: pathlib.Path) -> None:
         name=None,
         version=None,
         regenerate=False,
-        compdefs=gen_args.compdefs
+        compdefs=gen_args.compdefs,
     )
     assert ssp_assemble._run(args) == 0
 
@@ -844,16 +833,13 @@ def test_ssp_filter_control_origination(tmp_trestle_dir: pathlib.Path) -> None:
         version=None,
         components=None,
         implementation_status=None,
-        control_origination='customer-configured,system-specific'
+        control_origination='customer-configured,system-specific',
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
 
     ssp, _ = ModelUtils.load_model_for_class(
-        tmp_trestle_dir,
-        filtered_name,
-        ossp.SystemSecurityPlan,
-        FileContentType.JSON
+        tmp_trestle_dir, filtered_name, ossp.SystemSecurityPlan, FileContentType.JSON
     )
 
     # confirm the imp_reqs have been culled to two controls
@@ -870,16 +856,13 @@ def test_ssp_filter_control_origination(tmp_trestle_dir: pathlib.Path) -> None:
         version=None,
         components=None,
         implementation_status=None,
-        control_origination='inherited'
+        control_origination='inherited',
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
 
     ssp, _ = ModelUtils.load_model_for_class(
-        tmp_trestle_dir,
-        filtered_name,
-        ossp.SystemSecurityPlan,
-        FileContentType.JSON
+        tmp_trestle_dir, filtered_name, ossp.SystemSecurityPlan, FileContentType.JSON
     )
 
     # confirm the imp_reqs have been culled to zero controls
@@ -897,7 +880,7 @@ def test_ssp_filter_control_origination(tmp_trestle_dir: pathlib.Path) -> None:
         version=None,
         components=None,
         implementation_status=None,
-        control_origination=bad_co
+        control_origination=bad_co,
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 1
@@ -1035,7 +1018,7 @@ def test_ssp_assemble_no_comps(tmp_trestle_dir: pathlib.Path, capsys) -> None:
         regenerate=False,
         version=None,
         name=None,
-        compdefs=None
+        compdefs=None,
     )
     assert ssp_assemble._run(args) == 0
 
@@ -1094,7 +1077,7 @@ def test_ssp_gen_and_assemble_more_than_one_param(tmp_trestle_dir: pathlib.Path,
         regenerate=False,
         version=new_version,
         name=None,
-        compdefs=args_compdefs
+        compdefs=args_compdefs,
     )
     assert ssp_assemble._run(args) == 0
 
@@ -1109,8 +1092,9 @@ def test_ssp_gen_and_assemble_more_than_one_param(tmp_trestle_dir: pathlib.Path,
 
 def test_ssp_gen_throw_exception_for_rep_comps(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test ssp generate for duplicated component uuids between diff component definition."""
-    gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name, False, '',
-                                'comp_def_more_params,comp_def_more_params_dup')
+    gen_args, _ = setup_for_ssp(
+        tmp_trestle_dir, prof_name, ssp_name, False, '', 'comp_def_more_params,comp_def_more_params_dup'
+    )
     # first create the markdown
     ssp_gen = SSPGenerate()
     assert ssp_gen._run(gen_args) == 1
@@ -1132,7 +1116,9 @@ def test_ssp_gen_and_assemble_add_props(tmp_trestle_dir: pathlib.Path) -> None:
 
     # Create key in header for add props for now
     ac_1_properties: Dict[str, str] = {
-        'name': 'prop_with_ns', 'value': 'prop with ns', 'ns': 'https://my_new_namespace'
+        'name': 'prop_with_ns',
+        'value': 'prop with ns',
+        'ns': 'https://my_new_namespace',
     }
     ac_1_smt_properties: Dict[str, str] = {'name': 'smt_prop', 'value': 'smt prop', 'smt-part': 'a.'}
     # Verify the add props header value is present
@@ -1197,7 +1183,7 @@ def test_ssp_gen_and_assemble_implementation_parts(tmp_trestle_dir: pathlib.Path
     assert test_utils.substitute_text_in_file(
         ac_1_path,
         '<!-- Add implementation prose for the main This System component for control: ac-1_smt.a -->',
-        prose_sys_a
+        prose_sys_a,
     )
     assert test_utils.substitute_text_in_file(ac_1_path, 'imp req prose for ac-1 from comp aa', prose_aa)
     assert test_utils.substitute_text_in_file(ac_1_path, 'statement prose for part a. from comp aa', prose_aa_a)
@@ -1250,7 +1236,7 @@ ______________________________________________________________________
         regenerate=False,
         version='',
         name=None,
-        compdefs=args_compdefs
+        compdefs=args_compdefs,
     )
     assert ssp_assemble._run(args) == 0
 
@@ -1338,7 +1324,7 @@ def test_ssp_generate_aggregates_no_cds(tmp_trestle_dir: pathlib.Path) -> None:
         regenerate=False,
         version='',
         name=None,
-        compdefs=None
+        compdefs=None,
     )
     assert ssp_assemble._run(assemble_args) == 0
 

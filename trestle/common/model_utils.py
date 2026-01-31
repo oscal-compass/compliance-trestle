@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Common utilities for the OSCAL models and directories."""
+
 import importlib
 import logging
 import pathlib
@@ -46,12 +47,10 @@ class ModelUtils:
 
     @staticmethod
     def load_distributed(
-        abs_path: Path,
-        abs_trestle_root: Path,
-        collection_type: Optional[Type[Any]] = None
-    ) -> Tuple[Type[OscalBaseModel],
-               str,
-               Optional[Union[OscalBaseModel, List[OscalBaseModel], Dict[str, OscalBaseModel]]]]:
+        abs_path: Path, abs_trestle_root: Path, collection_type: Optional[Type[Any]] = None
+    ) -> Tuple[
+        Type[OscalBaseModel], str, Optional[Union[OscalBaseModel, List[OscalBaseModel], Dict[str, OscalBaseModel]]]
+    ]:
         """
         Given path to a model, load the model.
 
@@ -127,18 +126,18 @@ class ModelUtils:
                     if model_type.is_collection_container():
                         # This directory is a decomposed List or Dict
                         collection_type = model_type.get_collection_type()
-                        model_type, model_alias, model_instance = ModelUtils.load_distributed(local_path,
-                                                                                              abs_trestle_root,
-                                                                                              collection_type)
+                        model_type, model_alias, model_instance = ModelUtils.load_distributed(
+                            local_path, abs_trestle_root, collection_type
+                        )
                         aliases_not_to_be_stripped.append(model_alias.split('.')[-1])
                         instances_to_be_merged.append(model_instance)
             primary_model_dict = {}
             if primary_model_instance is not None:
                 primary_model_dict = primary_model_instance.__dict__
 
-            merged_model_type, merged_model_alias = ModelUtils.get_stripped_model_type(abs_path,
-                                                                                       abs_trestle_root,
-                                                                                       aliases_not_to_be_stripped)
+            merged_model_type, merged_model_alias = ModelUtils.get_stripped_model_type(
+                abs_path, abs_trestle_root, aliases_not_to_be_stripped
+            )
 
             # The following use of top_level is to allow loading of a top level model by name only, e.g. MyCatalog
             # There may be a better overall way to approach this.
@@ -147,8 +146,11 @@ class ModelUtils:
             for i in range(len(aliases_not_to_be_stripped)):
                 alias = aliases_not_to_be_stripped[i]
                 instance = instances_to_be_merged[i]
-                if hasattr(instance, '__dict__') and '__root__' in instance.__dict__ and isinstance(instance,
-                                                                                                    OscalBaseModel):
+                if (
+                    hasattr(instance, '__dict__')
+                    and '__root__' in instance.__dict__
+                    and isinstance(instance, OscalBaseModel)
+                ):
                     instance = instance.__dict__['__root__']
                 if top_level and not primary_model_dict:
                     primary_model_dict = instance.__dict__
@@ -164,7 +166,7 @@ class ModelUtils:
         trestle_root: pathlib.Path,
         model_name: str,
         model_class: TG,
-        file_content_type: Optional[FileContentType] = None
+        file_content_type: Optional[FileContentType] = None,
     ) -> Tuple[TG, pathlib.Path]:
         """Load a model by name and model class and infer file content type if not specified.
 
@@ -174,9 +176,7 @@ class ModelUtils:
         Note:
             This does not validate the model.  If you want to validate the model use the load_validate utilities.
         """
-        root_model_path = ModelUtils._root_path_for_top_level_model(
-            trestle_root, model_name, model_class
-        )  # type: ignore
+        root_model_path = ModelUtils._root_path_for_top_level_model(trestle_root, model_name, model_class)  # type: ignore
         if file_content_type is None:
             file_content_type = FileContentType.path_to_content_type(root_model_path)
         if not FileContentType.is_readable_file(file_content_type):
@@ -186,8 +186,9 @@ class ModelUtils:
         return model, full_model_path  # type: ignore
 
     @staticmethod
-    def load_model_for_type(trestle_root: pathlib.Path, model_type: str,
-                            model_name: str) -> Tuple[TopLevelOscalModel, pathlib.Path]:
+    def load_model_for_type(
+        trestle_root: pathlib.Path, model_type: str, model_name: str
+    ) -> Tuple[TopLevelOscalModel, pathlib.Path]:
         """Load model for the given type and name."""
         dir_name = ModelUtils.model_type_to_model_dir(model_type)
         model_path = trestle_root / dir_name / model_name
@@ -254,9 +255,7 @@ class ModelUtils:
 
     @staticmethod
     def get_stripped_model_type(
-        absolute_path: pathlib.Path,
-        absolute_trestle_root: pathlib.Path,
-        aliases_not_to_be_stripped: List[str] = None
+        absolute_path: pathlib.Path, absolute_trestle_root: pathlib.Path, aliases_not_to_be_stripped: List[str] = None
     ) -> Tuple[Type[OscalBaseModel], str]:
         """
         Get the stripped contextual model class and alias based on the contextual path.
@@ -268,7 +267,8 @@ class ModelUtils:
         if aliases_not_to_be_stripped is None:
             aliases_not_to_be_stripped = []
         singular_model_type, model_alias = ModelUtils.get_relative_model_type(
-            absolute_path.relative_to(absolute_trestle_root))
+            absolute_path.relative_to(absolute_trestle_root)
+        )
         logger.debug(f'singular model type {singular_model_type} model alias {model_alias}')
 
         # Stripped models do not apply to collection types such as List[] and Dict{}
@@ -353,7 +353,7 @@ class ModelUtils:
         trestle_root: pathlib.Path,
         model_name: str,
         model_class: Type[TopLevelOscalModel],
-        file_content_type: Optional[FileContentType] = None
+        file_content_type: Optional[FileContentType] = None,
     ) -> Optional[pathlib.Path]:
         """
         Find the full path of a model given its name, model type and file content type.
@@ -497,9 +497,9 @@ class ModelUtils:
 
         As we need to do this for multiple parts of a path operating on strings is easier.
         """
-        alias = string_dir.split('.')[0].split(
-            const.IDX_SEP
-        )[-1]  # get suffix of file or directory name representing list or dict item
+        alias = string_dir.split('.')[0].split(const.IDX_SEP)[
+            -1
+        ]  # get suffix of file or directory name representing list or dict item
         return alias
 
     @staticmethod
@@ -514,7 +514,6 @@ class ModelUtils:
         instances_to_be_merged: List[OscalBaseModel] = []
         collection_model_type, collection_model_alias = ModelUtils.get_stripped_model_type(abs_path, abs_trestle_root)
         for path in sorted(trestle.common.file_utils.iterdir_without_hidden_files(abs_path)):
-
             # ASSUMPTION HERE: if it is a directory, there's a file that can not be decomposed further.
             if path.is_dir():
                 continue
@@ -624,11 +623,11 @@ class ModelUtils:
             if choices and values:
                 for value in values:
                     if value not in choices:
-                        logger.warning(f"Parameter {param_dict['id']} has value \"{value}\" not in choices: {choices}.")
+                        logger.warning(f'Parameter {param_dict["id"]} has value "{value}" not in choices: {choices}.')
         props = param_dict.get('props', [])
         if const.DISPLAY_NAME in param_dict:
             display_name = param_dict.pop(const.DISPLAY_NAME)
-            props.append(common.Property(name=const.DISPLAY_NAME, value=display_name, ns=const.TRESTLE_GENERIC_NS))
+            props.append(common.Property(name=const.DISPLAY_NAME, value=display_name, ns=const.TRESTLE_GENERIC_NS))  # type: ignore[call-arg]
         if const.AGGREGATES in param_dict:
             # removing aggregates as this is prop just informative in markdown
             param_dict.pop(const.AGGREGATES)
@@ -636,7 +635,7 @@ class ModelUtils:
         if const.PARAM_VALUE_ORIGIN in param_dict:
             param_value_origin = param_dict.pop(const.PARAM_VALUE_ORIGIN)
             if param_value_origin is not None:
-                props.append(common.Property(name=const.PARAM_VALUE_ORIGIN, value=param_value_origin))
+                props.append(common.Property(name=const.PARAM_VALUE_ORIGIN, value=param_value_origin))  # type:ignore[call-arg]
             else:
                 raise TrestleError(
                     f'Parameter value origin property for parameter {param_dict["id"]}'
@@ -773,8 +772,7 @@ class ModelUtils:
                         uuid_lut[orig_uuid] = new_object
                 else:
                     new_object, uuid_lut = ModelUtils._regenerate_uuids_in_place(
-                        object_of_interest.__dict__[field],
-                        uuid_lut
+                        object_of_interest.__dict__[field], uuid_lut
                     )
                 object_of_interest.__dict__[field] = new_object
         elif type(object_of_interest) is list:
@@ -804,8 +802,7 @@ class ModelUtils:
             fields = getattr(object_of_interest, const.FIELDS_SET, None)
             for field in fields:
                 new_object, n_new_updates = ModelUtils._update_new_uuid_refs(
-                    object_of_interest.__dict__[field],
-                    uuid_lut
+                    object_of_interest.__dict__[field], uuid_lut
                 )
                 n_refs_updated += n_new_updates
                 object_of_interest.__dict__[field] = new_object
@@ -889,16 +886,14 @@ class ModelUtils:
             for field in list_utils.as_filtered_list(fields_a, lambda f: f not in ignore_name_list):  # type: ignore
                 if ignore_all_uuid and 'uuid' in field:
                     continue
-                if ModelUtils._objects_differ(getattr(obj_a, field),
-                                              getattr(obj_b, field),
-                                              ignore_type_list,
-                                              ignore_name_list,
-                                              ignore_all_uuid):
+                if ModelUtils._objects_differ(
+                    getattr(obj_a, field), getattr(obj_b, field), ignore_type_list, ignore_name_list, ignore_all_uuid
+                ):
                     return True
         elif obj_a_type is list:
             if len(obj_a) != len(obj_b):
                 return True
-            for item_a, item_b in zip(obj_a, obj_b):
+            for item_a, item_b in zip(obj_a, obj_b, strict=True):
                 if ModelUtils._objects_differ(item_a, item_b, ignore_type_list, ignore_name_list, ignore_all_uuid):
                     return True
         elif obj_a_type is dict:
@@ -908,7 +903,8 @@ class ModelUtils:
                 if ignore_all_uuid and 'uuid' in key:
                     continue
                 if key not in ignore_name_list and ModelUtils._objects_differ(
-                        val, obj_b[key], ignore_type_list, ignore_name_list, ignore_all_uuid):
+                    val, obj_b[key], ignore_type_list, ignore_name_list, ignore_all_uuid
+                ):
                     return True
         elif obj_a != obj_b:
             return True
@@ -916,9 +912,7 @@ class ModelUtils:
 
     @staticmethod
     def models_are_equivalent(
-        model_a: Optional[TopLevelOscalModel],
-        model_b: Optional[TopLevelOscalModel],
-        ignore_all_uuid: bool = False
+        model_a: Optional[TopLevelOscalModel], model_b: Optional[TopLevelOscalModel], ignore_all_uuid: bool = False
     ) -> bool:
         """
         Test if models are equivalent except for last modified and possibly uuid.
@@ -935,7 +929,7 @@ class ModelUtils:
             assessment_plan.RelatedObservation,
             assessment_results.RelatedObservation,
             poam.RelatedObservation,
-            poam.RelatedObservation1
+            poam.RelatedObservation1,
         ]
         type_list = uuid_type_list if ignore_all_uuid else [common.LastModified]
         return not ModelUtils._objects_differ(model_a, model_b, type_list, ['last_modified'], ignore_all_uuid)

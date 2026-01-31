@@ -13,9 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Common fixtures."""
+
 import os
 import pathlib
-import random
+import secrets
 import string
 import sys
 from typing import Iterator
@@ -43,7 +44,7 @@ TEST_CONFIG: dict = {}
 @pytest.fixture(scope='function')
 def rand_str():
     """Return a random string."""
-    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+    rand_str = ''.join(secrets.choice(string.ascii_letters) for x in range(16))
     return rand_str
 
 

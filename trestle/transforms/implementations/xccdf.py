@@ -25,13 +25,7 @@ from defusedxml import ElementTree
 
 from ruamel.yaml import YAML
 
-from trestle.oscal.assessment_results import (
-    AssessmentAssets,
-    LocalDefinitions1,
-    Observation,
-    Result,
-    SystemComponent,
-)
+from trestle.oscal.assessment_results import AssessmentAssets, LocalDefinitions1, Observation, Result, SystemComponent
 from trestle.oscal.common import (
     AssessmentPlatform,
     ControlSelection,
@@ -173,7 +167,7 @@ class XccdfTransformer(XccdfResultToOscalARTransformer):
     """Legacy class name."""
 
 
-class RuleUse():
+class RuleUse:
     """Represents one rule of XCCDF data."""
 
     def __init__(self, args: Dict[str, str]) -> None:
@@ -210,7 +204,7 @@ class RuleUse():
         return f'https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/{self.scanner_name}'  # noqa: E231
 
 
-class _XccdfResult():
+class _XccdfResult:
     """Represents one result of XCCDF data."""
 
     def __init__(self, xccdf_xml: str) -> None:
@@ -328,7 +322,7 @@ class _XccdfResult():
     def _parse_xml(self) -> Iterator[RuleUse]:
         """Parse the stringified XML."""
         ns = {
-            'checklist12': 'http://checklists.nist.gov/xccdf/1.2',  # NOSONAR
+            'checklist12': 'http://checklists.nist.gov/xccdf/1.2'  # NOSONAR
         }
         results = self.xccdf_xml
         root = ElementTree.fromstring(results, forbid_dtd=True)
@@ -365,7 +359,7 @@ class _XccdfResult():
                     'time': time,
                     'result': result,
                     'severity': severity,
-                    'weight': weight
+                    'weight': weight,
                 }
                 rule_use = RuleUse(args)
                 yield rule_use
@@ -375,7 +369,7 @@ class _XccdfResult():
         return self._parse_xml()
 
 
-class _OscalResultsFactory():
+class _OscalResultsFactory:
     """Build XCCDF OSCAL entities."""
 
     default_timestamp = ResultsTransformer.get_timestamp()
@@ -387,7 +381,7 @@ class _OscalResultsFactory():
         type_: str,
         timestamp: str = default_timestamp,
         checking: bool = False,
-        tags: Dict = None
+        tags: Dict = None,
     ) -> None:
         """Initialize."""
         self._title = title
@@ -447,10 +441,7 @@ class _OscalResultsFactory():
         components = [component]
         assessment_platform = AssessmentPlatform(uuid=str(uuid.uuid4()))
         assessment_platforms = [assessment_platform]
-        prop = AssessmentAssets(
-            components=components,
-            assessment_platforms=assessment_platforms,
-        )
+        prop = AssessmentAssets(components=components, assessment_platforms=assessment_platforms)
         return prop
 
     @property

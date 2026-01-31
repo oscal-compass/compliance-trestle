@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Validate by confirming rule parameter values are consistent."""
+
 import logging
 import pathlib
 from typing import Any, Dict, Optional
@@ -37,9 +38,7 @@ class RuleParametersValidator(Validator):
         self._rule_param_values_dict: Dict[str, Any] = {}
 
     def _add_imp_req_rule_params_to_dict(
-        self,
-        imp_requirement: ImplementedRequirement,
-        cat_int: CatalogInterface,
+        self, imp_requirement: ImplementedRequirement, cat_int: CatalogInterface
     ) -> None:
         """
         Iterate all by components in an object and add the rule shared parameter values to list.
@@ -93,6 +92,10 @@ class RuleParametersValidator(Validator):
         returns:
             True (valid) if the model's rule parameter values are the same across controls.
         """
+        # Clear state from previous validations to avoid cross-test contamination
+        # This is not ideal.
+        self._rule_param_values_dict = {}
+
         # verify if model type is either an SSP of a Component Definition
         if not isinstance(model, SystemSecurityPlan):
             return True

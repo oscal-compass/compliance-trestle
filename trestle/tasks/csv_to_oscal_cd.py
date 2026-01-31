@@ -99,50 +99,30 @@ def row_property_builder(row: int, name: str, value, ns: str, class_: str, remar
     """Row property builder."""
     # name
     try:
-        Property(
-            name=name,
-            value='value',
-        )
+        Property(name=name, value='value')
     except Exception:
         text = f'property for row: {row} name: {name} is {etype(name)}'
         raise RuntimeError(text)
     # value
     try:
-        Property(
-            name=name,
-            value=value,
-        )
+        Property(name=name, value=value)
     except Exception:
         text = f'property for row: {row} value: {value} is {etype(value)}'
         raise RuntimeError(text)
     # ns
     try:
-        Property(
-            name=name,
-            value=value,
-            ns=ns,
-        )
+        Property(name=name, value=value, ns=ns)
     except Exception:
         text = f'property for row: {row} ns: {ns} is {etype(ns)}'
         raise RuntimeError(text)
     # class
     try:
-        Property(
-            name=name,
-            value=value,
-            class_=class_,
-        )
+        Property(name=name, value=value, class_=class_)
     except Exception:
         text = f'property for row: {row} class: {class_} is {etype(class_)}'
         raise RuntimeError(text)
     # prop
-    prop = Property(
-        name=name,
-        value=value,
-        ns=ns,
-        class_=class_,
-        remarks=remarks,
-    )
+    prop = Property(name=name, value=value, ns=ns, class_=class_, remarks=remarks)
     return prop
 
 
@@ -156,7 +136,7 @@ def synthesize_rule_key(
     component_type: str,
     rule_id: str,
     check_id: Union[str, None],
-    target_component: Union[str, None]
+    target_component: Union[str, None],
 ) -> tuple:
     """Synthesize rule_key."""
     if is_validation(component_type):
@@ -625,10 +605,7 @@ class CsvToOscalComponentDefinition(TaskBase):
             # create rule implementation (as property)
             name = RULE_ID
             prop = Property(
-                name=name,
-                value=self._csv_mgr.get_value(rule_key, name),
-                ns=namespace,
-                class_=self.get_class(name),
+                name=name, value=self._csv_mgr.get_value(rule_key, name), ns=namespace, class_=self.get_class(name)
             )
             part_id = derive_part_id(control_mapping)
             if part_id is None:
@@ -707,10 +684,7 @@ class CsvToOscalComponentDefinition(TaskBase):
             if name and value:
                 try:
                     values = self._str_to_list(value)
-                    set_parameter = SetParameter(
-                        param_id=name,
-                        values=values,
-                    )
+                    set_parameter = SetParameter(param_id=name, values=values)
                     set_parameters.append(set_parameter)
                 except Exception:
                     row_number = self._csv_mgr.get_row_number(rule_key)
@@ -736,11 +710,7 @@ class CsvToOscalComponentDefinition(TaskBase):
         for implemented_requirement in control_implementation.implemented_requirements:
             if implemented_requirement.control_id == control_id:
                 return implemented_requirement
-        implemented_requirement = ImplementedRequirement(
-            uuid=str(uuid.uuid4()),
-            control_id=control_id,
-            description='',
-        )
+        implemented_requirement = ImplementedRequirement(uuid=str(uuid.uuid4()), control_id=control_id, description='')
         control_implementation.implemented_requirements.append(implemented_requirement)
         return implemented_requirement
 
@@ -750,12 +720,7 @@ class CsvToOscalComponentDefinition(TaskBase):
         for statement in implemented_requirement.statements:
             if statement.statement_id == part_id:
                 return statement
-        statement = Statement(
-            uuid=str(uuid.uuid4()),
-            statement_id=part_id,
-            description='',
-            props=[],
-        )
+        statement = Statement(uuid=str(uuid.uuid4()), statement_id=part_id, description='', props=[])
         implemented_requirement.statements.append(statement)
         return statement
 
@@ -833,10 +798,7 @@ class CsvToOscalComponentDefinition(TaskBase):
             # add
             rule_key = synthesize_rule_key(component_title, component_type, rule_id, None, None)
             values = [self._csv_mgr.get_default_value_by_id(rule_key, param_id)]
-            set_parameter = SetParameter(
-                param_id=param_id,
-                values=values,
-            )
+            set_parameter = SetParameter(param_id=param_id, values=values)
             _OscalHelper.add_set_parameter(control_implementation.set_parameters, set_parameter)
 
     def set_params_mod(self, mod_set_params: List[str]) -> None:
@@ -859,10 +821,7 @@ class CsvToOscalComponentDefinition(TaskBase):
                         continue
                     rule_key = synthesize_rule_key(component_title, component_type, rule_id, None, None)
                     values = [self._csv_mgr.get_default_value_by_id(rule_key, param_id)]
-                    replacement = SetParameter(
-                        param_id=param_id,
-                        values=values,
-                    )
+                    replacement = SetParameter(param_id=param_id, values=values)
                     if set_parameter.values == replacement.values:
                         continue
                     logger.debug(f'params-mod: {rule_id} {param_id} {set_parameter.values} -> {replacement.values}')
@@ -928,12 +887,7 @@ class CsvToOscalComponentDefinition(TaskBase):
             ns = self._get_namespace(rule_key)
             # create rule implementation (as property)
             name = RULE_ID
-            prop = Property(
-                name=name,
-                value=rule_id,
-                ns=ns,
-                class_=self.get_class(name),
-            )
+            prop = Property(name=name, value=rule_id, ns=ns, class_=self.get_class(name))
             if smt_id == control_id:
                 implemented_requirement.props = as_list(implemented_requirement.props)
                 implemented_requirement.props.append(prop)
@@ -942,7 +896,7 @@ class CsvToOscalComponentDefinition(TaskBase):
                 statement.props.append(prop)
 
 
-class _OscalHelper():
+class _OscalHelper:
     """Oscal Helper."""
 
     @staticmethod
@@ -991,7 +945,7 @@ class _OscalHelper():
         return rval
 
 
-class _RuleSetHelper():
+class _RuleSetHelper:
     """RuleSet Helper."""
 
     @staticmethod
@@ -1006,7 +960,7 @@ class _RuleSetHelper():
         return rule_set
 
 
-class _RuleSetIdMgr():
+class _RuleSetIdMgr:
     """RuleSetId Manager."""
 
     def __init__(self, max_rule_set_number: int, add_rules_count: int) -> None:
@@ -1021,7 +975,7 @@ class _RuleSetIdMgr():
         return rval
 
 
-class _RuleSetMgr():
+class _RuleSetMgr:
     """RuleSet manager."""
 
     def __init__(self, row_number: int, rule_set: str) -> None:
@@ -1034,12 +988,7 @@ class _RuleSetMgr():
         """Add prop."""
         if value is not None and len(value):
             prop = row_property_builder(
-                row=self._row_number,
-                name=name,
-                value=value,
-                ns=ns,
-                class_=class_,
-                remarks=self._rule_set,
+                row=self._row_number, name=name, value=value, ns=ns, class_=class_, remarks=self._rule_set
             )
             self._props[name] = prop
 
@@ -1070,7 +1019,7 @@ class _RuleSetMgr():
         return rval
 
 
-class _ResolvedProfileCatalogHelper():
+class _ResolvedProfileCatalogHelper:
     """Resolved Profile Catalog Helper."""
 
     def __init__(self, profile_list: List[str], root: str = '.') -> None:
@@ -1084,10 +1033,7 @@ class _ResolvedProfileCatalogHelper():
     def _initialize(self):
         if not self._init:
             for profile in self._profile_list:
-                catalog = ProfileResolver.get_resolved_profile_catalog(
-                    pathlib.Path(self._root),
-                    profile,
-                )
+                catalog = ProfileResolver.get_resolved_profile_catalog(pathlib.Path(self._root), profile)
                 self._profile_map[profile] = catalog
                 controls = CatalogInterface.get_control_ids_from_catalog(catalog)
                 self._control_list += controls
@@ -1103,7 +1049,7 @@ class _ResolvedProfileCatalogHelper():
         return rval
 
 
-class _CdMgr():
+class _CdMgr:
     """CD Manager."""
 
     def __init__(self, cd_path: pathlib.Path, title: str, timestamp: str, version: str) -> None:
@@ -1116,17 +1062,8 @@ class _CdMgr():
             metadata.oscal_version = OSCAL_VERSION
             metadata.version = version
         else:
-            metadata = Metadata(
-                title=title,
-                last_modified=timestamp,
-                oscal_version=OSCAL_VERSION,
-                version=version,
-            )
-            self._component_definition = ComponentDefinition(
-                uuid=str(uuid.uuid4()),
-                metadata=metadata,
-                components=[],
-            )
+            metadata = Metadata(title=title, last_modified=timestamp, oscal_version=OSCAL_VERSION, version=version)
+            self._component_definition = ComponentDefinition(uuid=str(uuid.uuid4()), metadata=metadata, components=[])
         #
         self._max_rule_set_number = -1
         self._cd_rules_map = {}
@@ -1249,7 +1186,7 @@ class _CdMgr():
                     rule_id,
                     control_implementation.source,
                     control_implementation.description,
-                    set_parameter.param_id
+                    set_parameter.param_id,
                 )
                 value = set_parameter.values
                 self._cd_set_params_map[key] = value
@@ -1267,7 +1204,7 @@ class _CdMgr():
         self,
         component: DefinedComponent,
         control_implementation: ControlImplementation,
-        implemented_requirement: ImplementedRequirement
+        implemented_requirement: ImplementedRequirement,
     ) -> None:
         """Accounting, control mappings props."""
         if implemented_requirement.props:
@@ -1288,7 +1225,7 @@ class _CdMgr():
         self,
         component: DefinedComponent,
         control_implementation: ControlImplementation,
-        implemented_requirement: ImplementedRequirement
+        implemented_requirement: ImplementedRequirement,
     ) -> None:
         """Accounting, control mappings statements."""
         if implemented_requirement.statements:
@@ -1353,13 +1290,7 @@ class _CdMgr():
         self, component: DefinedComponent, rule_set: str, name: str, value: str, ns: str, class_: str
     ) -> None:
         """Add property."""
-        prop_add = Property(
-            name=name,
-            value=value,
-            ns=ns,
-            class_=class_,
-            remarks=rule_set,
-        )
+        prop_add = Property(name=name, value=value, ns=ns, class_=class_, remarks=rule_set)
         last = 0
         for index, prop in enumerate(component.props):
             if prop.remarks == rule_set:
@@ -1390,7 +1321,7 @@ class _CdMgr():
         component.props = props
 
 
-class CsvColumn():
+class CsvColumn:
     """CsvColumn."""
 
     _columns_required = [
@@ -1454,10 +1385,7 @@ class CsvColumn():
     @staticmethod
     def is_column_name_parameter(name: str) -> bool:
         """Is column name parameter."""
-        for cname in CsvColumn._columns_parameter:
-            if name.startswith(cname):
-                return True
-        return False
+        return any(name.startswith(cname) for cname in CsvColumn._columns_parameter)
 
     @staticmethod
     def get_required_column_names() -> List[str]:
@@ -1540,12 +1468,7 @@ class CsvColumn():
                 rval.append(column_name)
         return rval
 
-    _check_property_column_names = [
-        f'{RULE_ID}',
-        f'{CHECK_ID}',
-        f'{CHECK_DESCRIPTION}',
-        f'{TARGET_COMPONENT}',
-    ]
+    _check_property_column_names = [f'{RULE_ID}', f'{CHECK_ID}', f'{CHECK_DESCRIPTION}', f'{TARGET_COMPONENT}']
 
     @staticmethod
     def get_check_property_column_names() -> List[str]:
@@ -1553,11 +1476,7 @@ class CsvColumn():
         return CsvColumn._check_property_column_names
 
     # optional columns which do become properties, afterwards
-    _columns_parameters = [
-        f'{PARAMETER_ID}',
-        f'{PARAMETER_DESCRIPTION}',
-        f'{PARAMETER_VALUE_ALTERNATIVES}',
-    ]
+    _columns_parameters = [f'{PARAMETER_ID}', f'{PARAMETER_DESCRIPTION}', f'{PARAMETER_VALUE_ALTERNATIVES}']
 
     # optional columns which require Param_Id be present in the row
     _columns_parameters_dependent = [
@@ -1570,7 +1489,7 @@ class CsvColumn():
 Row = Iterator[List[str]]
 
 
-class _CsvMgr():
+class _CsvMgr:
     """Csv Manager."""
 
     def __init__(self, csv_path: pathlib.Path) -> None:
@@ -1626,7 +1545,7 @@ class _CsvMgr():
         component_type: str,
         rule_id: str,
         source: str,
-        description: str
+        description: str,
     ) -> None:
         """Control_mappings."""
         control_mappings = self.get_row_value(row, CONTROL_ID_LIST)

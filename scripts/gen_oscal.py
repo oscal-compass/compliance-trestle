@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Script to generate python models from oscal using datamodel-code-generator."""
+
 import logging
 import re
 import sys
@@ -34,16 +35,16 @@ def load_git():
     """Load git submodule for oscal."""
     # NOTE: this should only be done if the latest nist content is desired
     try:
-        check_call('git submodule add https://github.com/usnistgov/oscal-content.git nist-content'.split())
+        check_call(['git', 'submodule', 'add', 'https://github.com/usnistgov/oscal-content.git', 'nist-content'])
     except CalledProcessError:
         # silently ignore already existing module
         pass
     try:
-        check_call('git submodule update --init'.split())
+        check_call(['git', 'submodule', 'update', '--init'])
     except CalledProcessError as error:
         logger.error(f'Error updating the oscal git submodule {error}')
     try:
-        check_call('git submodule update --remote --merge'.split())
+        check_call(['git', 'submodule', 'update', '--remote', '--merge'])
     except CalledProcessError as error:
         logger.error(f'Error updating the oscal git submodule {error}')
 
@@ -63,7 +64,7 @@ def generate_model(full_name, out_full_name):
         '--base-class',
         'trestle.core.base_model.OscalBaseModel',
         '--output',
-        str(out_full_name)
+        str(out_full_name),
     ]
     try:
         check_call(args)

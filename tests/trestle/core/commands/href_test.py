@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle href command."""
+
 import os
 import pathlib
 import sys
@@ -35,10 +36,8 @@ def test_href_cmd(
     """Test basic cmd invocation of href."""
     # prepare trestle project dir with the file
     models_path, profile_path = test_utils.prepare_trestle_project_dir(
-        tmp_path,
-        FileContentType.JSON,
-        simplified_nist_profile,
-        test_utils.PROFILES_DIR)
+        tmp_path, FileContentType.JSON, simplified_nist_profile, test_utils.PROFILES_DIR
+    )
 
     os.chdir(models_path)
 
@@ -81,10 +80,8 @@ def test_href_failures(
 
     # prepare trestle project dir with the file
     models_path, profile_path = test_utils.prepare_trestle_project_dir(
-        tmp_path,
-        FileContentType.JSON,
-        simplified_nist_profile,
-        test_utils.PROFILES_DIR)
+        tmp_path, FileContentType.JSON, simplified_nist_profile, test_utils.PROFILES_DIR
+    )
 
     os.chdir(models_path)
 

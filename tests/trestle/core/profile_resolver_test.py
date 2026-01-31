@@ -217,14 +217,15 @@ def test_profile_resolver_merge(sample_catalog_rich_controls: cat.Catalog) -> No
 @pytest.mark.parametrize(
     'param_id, param_text, prose, result',
     [
-        ('ac-2_smt.1', 'hello', 'ac-2_smt.1', 'hello'), ('ac-2_smt.1', 'hello', 'ac-2_smt.1 there', 'hello there'),
+        ('ac-2_smt.1', 'hello', 'ac-2_smt.1', 'hello'),
+        ('ac-2_smt.1', 'hello', 'ac-2_smt.1 there', 'hello there'),
         ('ac-2_smt.1', 'hello', ' ac-2_smt.1 there', ' hello there'),
         ('ac-2_smt.1', 'hello', ' xac-2_smt.1 there', ' xac-2_smt.1 there'),
         ('ac-2_smt.1', 'hello', 'ac-2_smt.1 there ac-2_smt.1', 'hello there hello'),
         ('ac-2_smt.1', 'hello', ' ac-2_smt.1 there ac-2_smt.10', ' hello there my 10 str'),
         ('ac-2_smt.1', 'hello', ' ac-2_smt.1 there ac-2_smt.10x', ' hello there ac-2_smt.10x'),
-        ('ac-2_smt.1', 'hello', ' ac-2_smt.1 there _ac-2_smt.10', ' hello there _ac-2_smt.10')
-    ]
+        ('ac-2_smt.1', 'hello', ' ac-2_smt.1 there _ac-2_smt.10', ' hello there _ac-2_smt.10'),
+    ],
 )
 def test_replace_params(param_id, param_text, prose, result) -> None:
     """Test cases of replacing param in string."""
@@ -244,9 +245,10 @@ def test_replace_params_assignment_mode(simplified_nist_catalog: cat.Catalog) ->
     ControlInterface.replace_control_prose(
         ac_44, param_dict, '[.]', ParameterRep.ASSIGNMENT_FORM, False, 'IBM Assignment:', 'Assignment:'
     )
-    assert ac_44.parts[
-        0
-    ].prose == 'Prevent encrypted information from bypassing [Assignment: organization-defined information flow control mechanisms] by [Selection (one or more): decrypting the information; blocking the flow of the encrypted information; terminating communications sessions attempting to pass encrypted information;  [IBM Assignment: my procedure] ].'  # noqa E501
+    assert (
+        ac_44.parts[0].prose
+        == 'Prevent encrypted information from bypassing [Assignment: organization-defined information flow control mechanisms] by [Selection (one or more): decrypting the information; blocking the flow of the encrypted information; terminating communications sessions attempting to pass encrypted information;  [IBM Assignment: my procedure] ].'
+    )  # noqa E501
     value = 'blocking the flow of the encrypted information'
     param_dict['ac-4.4_prm_2'].values = [value]
     ac_44.parts[0].prose = orig_prose
@@ -254,15 +256,17 @@ def test_replace_params_assignment_mode(simplified_nist_catalog: cat.Catalog) ->
     ControlInterface.replace_control_prose(
         ac_44, param_dict, '[.]', ParameterRep.ASSIGNMENT_FORM, False, 'IBM Assignment:', 'Assignment:'
     )
-    assert ac_44.parts[
-        0
-    ].prose == f'Prevent encrypted information from bypassing [Assignment: organization-defined information flow control mechanisms] by [IBM Assignment: {value}].'  # noqa E501
+    assert (
+        ac_44.parts[0].prose
+        == f'Prevent encrypted information from bypassing [Assignment: organization-defined information flow control mechanisms] by [IBM Assignment: {value}].'
+    )  # noqa E501
 
     ac_44 = copy.deepcopy(cat_interface.get_control('ac-4.4'))
     ControlInterface.replace_control_prose(ac_44, param_dict, '[.]', ParameterRep.LABEL_FORM, False, None, 'Label:')
-    assert ac_44.parts[
-        0
-    ].prose != f'Prevent encrypted information from bypassing [organization-defined information flow control mechanisms] by  [Label: organization-defined procedure or method] ].'  # noqa E501
+    assert (
+        ac_44.parts[0].prose
+        != 'Prevent encrypted information from bypassing [organization-defined information flow control mechanisms] by  [Label: organization-defined procedure or method] ].'
+    )  # noqa E501
 
 
 def test_profile_resolver_param_sub() -> None:

@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle author docs subcommand."""
+
 import pathlib
 import shutil
 import sys
@@ -37,9 +38,10 @@ import yaml
 @pytest.mark.parametrize(
     'command_string, return_code',
     [
-        ('trestle author docs setup', 2), ('trestle author docs setup --task-name foobaa', 0),
-        ('trestle author docs setup --task-name catalogs', 1)
-    ]
+        ('trestle author docs setup', 2),
+        ('trestle author docs setup --task-name foobaa', 0),
+        ('trestle author docs setup --task-name catalogs', 1),
+    ],
 )
 def test_governed_docs_high(
     tmp_trestle_dir: pathlib.Path, command_string: str, return_code: int, monkeypatch: MonkeyPatch
@@ -62,7 +64,7 @@ def test_governed_docs_high(
             False,
             0,
             0,
-            0
+            0,
         ),
         (
             'catalogs',
@@ -80,7 +82,7 @@ def test_governed_docs_high(
             False,
             0,
             0,
-            1
+            1,
         ),
         (
             'test_task',
@@ -89,7 +91,7 @@ def test_governed_docs_high(
             False,
             0,
             0,
-            1
+            1,
         ),
         (
             'test_task',
@@ -98,7 +100,7 @@ def test_governed_docs_high(
             False,
             0,
             1,
-            1
+            1,
         ),
         (
             'test_task',
@@ -107,7 +109,7 @@ def test_governed_docs_high(
             True,
             0,
             0,
-            0
+            0,
         ),
         (
             'test_task',
@@ -116,9 +118,9 @@ def test_governed_docs_high(
             True,
             0,
             0,
-            1
-        )
-    ]
+            1,
+        ),
+    ],
 )
 def test_e2e(
     task_name: str,
@@ -130,7 +132,7 @@ def test_e2e(
     validate_code: int,
     testdata_dir: pathlib.Path,
     tmp_trestle_dir: pathlib.Path,
-    monkeypatch: MonkeyPatch
+    monkeypatch: MonkeyPatch,
 ) -> None:
     """Run an E2E workflow with two test criteria for success."""
     # Note testdata_dir must be before tmp_trestle_dir in the argument order.
@@ -138,7 +140,7 @@ def test_e2e(
     command_string_setup = f'trestle author docs setup -tn {task_name}'
     command_string_create_sample = f'trestle author docs create-sample -tn {task_name}'
     command_string_validate_template = f'trestle author docs template-validate -tn {task_name}'
-    command_string_validate_content = (f'trestle author docs validate -tn {task_name} --header-validate {recurse_flag}')
+    command_string_validate_content = f'trestle author docs validate -tn {task_name} --header-validate {recurse_flag}'
     template_target_loc = tmp_trestle_dir / '.trestle' / 'author' / task_name / START_TEMPLATE_VERSION / 'template.md'
     test_content_loc = tmp_trestle_dir / task_name / f'{uuid4()}.md'
     # Test setup
@@ -222,7 +224,7 @@ def test_e2e_debugging(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path
     command_string_setup = f'trestle author docs setup -tn {task_name}'
     command_string_create_sample = f'trestle author docs create-sample -tn {task_name}'
     command_string_validate_template = f'trestle author docs template-validate -tn {task_name}'
-    command_string_validate_content = (f'trestle author docs validate -tn {task_name} --header-validate {recurse_flag}')
+    command_string_validate_content = f'trestle author docs validate -tn {task_name} --header-validate {recurse_flag}'
     template_target_loc = tmp_trestle_dir / '.trestle' / 'author' / task_name / 'template.md'
     test_content_loc = tmp_trestle_dir / task_name / f'{uuid4()}.md'
     # Test setup
@@ -275,7 +277,7 @@ def test_e2e_debugging(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path
             pathlib.Path('author/docs/candidate_valid_readme'),
             False,
             0,
-            0
+            0,
         ),
         (
             'test_task_1',
@@ -283,7 +285,7 @@ def test_e2e_debugging(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path
             pathlib.Path('author/docs/candidate_valid_readme'),
             True,
             0,
-            1
+            1,
         ),
         (
             'test_task_2',
@@ -291,7 +293,7 @@ def test_e2e_debugging(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path
             pathlib.Path('author/docs/candidate_valid_readme'),
             False,
             1,
-            1
+            1,
         ),
         (
             'test_task_3',
@@ -299,7 +301,7 @@ def test_e2e_debugging(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path
             pathlib.Path('author/docs/candidate_valid_readme'),
             True,
             1,
-            1
+            1,
         ),
         (
             'test_task_4',
@@ -307,7 +309,7 @@ def test_e2e_debugging(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path
             pathlib.Path('author/docs/candidate_invalid_readme'),
             False,
             0,
-            1
+            1,
         ),
         (
             'test_task_5',
@@ -315,9 +317,9 @@ def test_e2e_debugging(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path
             pathlib.Path('author/docs/candidate_invalid_readme'),
             True,
             0,
-            1
-        )
-    ]
+            1,
+        ),
+    ],
 )
 def test_directory_content(
     task_name: str,
@@ -328,7 +330,7 @@ def test_directory_content(
     validate_code: int,
     testdata_dir: pathlib.Path,
     tmp_trestle_dir: pathlib.Path,
-    monkeypatch: MonkeyPatch
+    monkeypatch: MonkeyPatch,
 ):
     """Test setup where groups of files are tested to allow testing of readme flags."""
     readme_validate_flag = '-rv' if readme_validate else ''
@@ -373,7 +375,7 @@ def test_directory_content(
             False,
             0,
             0,
-            0
+            0,
         ),
         (
             'catalogs',
@@ -391,7 +393,7 @@ def test_directory_content(
             False,
             0,
             0,
-            1
+            1,
         ),
         (
             'test_task',
@@ -400,7 +402,7 @@ def test_directory_content(
             False,
             0,
             0,
-            1
+            1,
         ),
         (
             'test_task',
@@ -409,7 +411,7 @@ def test_directory_content(
             False,
             0,
             1,
-            1
+            1,
         ),
         (
             'test_task',
@@ -418,7 +420,7 @@ def test_directory_content(
             True,
             0,
             0,
-            0
+            0,
         ),
         (
             'test_task',
@@ -427,9 +429,9 @@ def test_directory_content(
             True,
             0,
             0,
-            1
-        )
-    ]
+            1,
+        ),
+    ],
 )
 def test_e2e_backward_compatibility(
     task_name: str,
@@ -441,7 +443,7 @@ def test_e2e_backward_compatibility(
     validate_code: int,
     testdata_dir: pathlib.Path,
     tmp_trestle_dir: pathlib.Path,
-    monkeypatch: MonkeyPatch
+    monkeypatch: MonkeyPatch,
 ) -> None:
     """Same as E2E test but pretend like trestle workspace existed and needs to be updated."""
     # Note testdata_dir must be before tmp_trestle_dir in the argument order.
@@ -449,7 +451,7 @@ def test_e2e_backward_compatibility(
     command_string_setup = f'trestle author docs setup -tn {task_name}'
     command_string_create_sample = f'trestle author docs create-sample -tn {task_name}'
     command_string_validate_template = f'trestle author docs template-validate -tn {task_name}'
-    command_string_validate_content = (f'trestle author docs validate -tn {task_name} --header-validate {recurse_flag}')
+    command_string_validate_content = f'trestle author docs validate -tn {task_name} --header-validate {recurse_flag}'
     template_target_loc = tmp_trestle_dir / '.trestle' / 'author' / task_name / 'template.md'
     test_content_loc = tmp_trestle_dir / task_name / f'{uuid4()}.md'
 

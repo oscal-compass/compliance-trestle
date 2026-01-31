@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for models util module."""
+
 import copy
 import pathlib
 
@@ -49,7 +50,7 @@ def load_good_catalog() -> catalog.Catalog:
     """Load nist 800-53 as a catalog example."""
     good_sample_path = TEST_DIR / '../nist-content/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json'
 
-    assert (good_sample_path.exists())
+    assert good_sample_path.exists()
     return catalog.Catalog.oscal_read(good_sample_path)
 
 
@@ -59,7 +60,7 @@ def test_is_collection_field_type() -> None:
     # Dicts only appear for include_all, which only needs to be handled specially in the sample generator
     good_catalog = load_good_catalog()
 
-    assert mutils.is_collection_field_type(type('this is a string')) is False
+    assert mutils.is_collection_field_type(str) is False
 
     assert mutils.is_collection_field_type(type(good_catalog)) is False  # Catalog
     catalog_field = catalog.Model.alias_to_field_map()['catalog']
@@ -82,9 +83,9 @@ def test_is_collection_field_type() -> None:
     dct = {'foo': responsible_parties_field}
     assert mutils.is_collection_field_type(dct) is False  # hand-created dict is not collection field type
 
-    assert mutils.is_collection_field_type(
-        type(good_catalog.metadata.parties[0].addresses[0].addr_lines)
-    ) is False  # list
+    assert (
+        mutils.is_collection_field_type(type(good_catalog.metadata.parties[0].addresses[0].addr_lines)) is False
+    )  # list
     postal_address_field = common.Address.alias_to_field_map()['addr-lines']
     assert mutils.is_collection_field_type(postal_address_field.outer_type_) is True  # List[AddrLine]
     assert mutils.is_collection_field_type(postal_address_field.type_) is False  # AddrLine
@@ -137,7 +138,7 @@ def test_get_root_model() -> None:
         const.MODEL_TYPE_SSP: ssp.SystemSecurityPlan,
         const.MODEL_TYPE_A_PLAN: assessment_plan.AssessmentPlan,
         const.MODEL_TYPE_A_RESULT: assessment_results.AssessmentResults,
-        const.MODEL_TYPE_POAM: poam.PlanOfActionAndMilestones
+        const.MODEL_TYPE_POAM: poam.PlanOfActionAndMilestones,
     }
     for key in malias_to_mtype:
         module_name = malias_to_mtype[key].__module__
@@ -224,7 +225,7 @@ def test_parameter_to_dict() -> None:
         props=[prop1, prop2],
         select=sel,
         remarks='remarks1',
-        constraints=constraints
+        constraints=constraints,
     )
     param_dict = ModelUtils.parameter_to_dict(param, False)
     dict_copy = copy.deepcopy(param_dict)

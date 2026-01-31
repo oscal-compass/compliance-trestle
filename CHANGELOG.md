@@ -2,6 +2,123 @@
 
 <!-- version list -->
 
+## v3.11.0 (2026-01-14)
+
+### Bug Fixes
+
+- Clean up bdist ([#2005](https://github.com/oscal-compass/compliance-trestle/pull/2005),
+  [`f85944c`](https://github.com/oscal-compass/compliance-trestle/commit/f85944cf7a544e0073fb66f64725422712494c90))
+
+- Clean up dependency maps ([#2005](https://github.com/oscal-compass/compliance-trestle/pull/2005),
+  [`f85944c`](https://github.com/oscal-compass/compliance-trestle/commit/f85944cf7a544e0073fb66f64725422712494c90))
+
+- Clear RuleParametersValidator state between validations
+  ([#2033](https://github.com/oscal-compass/compliance-trestle/pull/2033),
+  [`d6d4819`](https://github.com/oscal-compass/compliance-trestle/commit/d6d48192b1542eccf772c507d2302cf1be0029dd))
+
+- Correct build caching ([#2005](https://github.com/oscal-compass/compliance-trestle/pull/2005),
+  [`f85944c`](https://github.com/oscal-compass/compliance-trestle/commit/f85944cf7a544e0073fb66f64725422712494c90))
+
+- Ensure coverag fiels are generated
+  ([#2005](https://github.com/oscal-compass/compliance-trestle/pull/2005),
+  [`f85944c`](https://github.com/oscal-compass/compliance-trestle/commit/f85944cf7a544e0073fb66f64725422712494c90))
+
+- Extra safefy on chdir tests
+  ([#2033](https://github.com/oscal-compass/compliance-trestle/pull/2033),
+  [`d6d4819`](https://github.com/oscal-compass/compliance-trestle/commit/d6d48192b1542eccf772c507d2302cf1be0029dd))
+
+- Fixing flaky tests including bug on reuse of a validator instance
+  ([#2033](https://github.com/oscal-compass/compliance-trestle/pull/2033),
+  [`d6d4819`](https://github.com/oscal-compass/compliance-trestle/commit/d6d48192b1542eccf772c507d2302cf1be0029dd))
+
+- Hatch coverage ([#2005](https://github.com/oscal-compass/compliance-trestle/pull/2005),
+  [`f85944c`](https://github.com/oscal-compass/compliance-trestle/commit/f85944cf7a544e0073fb66f64725422712494c90))
+
+- Install mypy in binary distribution test
+  ([#2005](https://github.com/oscal-compass/compliance-trestle/pull/2005),
+  [`f85944c`](https://github.com/oscal-compass/compliance-trestle/commit/f85944cf7a544e0073fb66f64725422712494c90))
+
+- Move dmcg to dev dependencies
+  ([#2005](https://github.com/oscal-compass/compliance-trestle/pull/2005),
+  [`f85944c`](https://github.com/oscal-compass/compliance-trestle/commit/f85944cf7a544e0073fb66f64725422712494c90))
+
+- Move gitpython to dev dependencies
+  ([#2005](https://github.com/oscal-compass/compliance-trestle/pull/2005),
+  [`f85944c`](https://github.com/oscal-compass/compliance-trestle/commit/f85944cf7a544e0073fb66f64725422712494c90))
+
+- Move pre-commit ([#2005](https://github.com/oscal-compass/compliance-trestle/pull/2005),
+  [`f85944c`](https://github.com/oscal-compass/compliance-trestle/commit/f85944cf7a544e0073fb66f64725422712494c90))
+
+- Pin dmcg version ([#2005](https://github.com/oscal-compass/compliance-trestle/pull/2005),
+  [`f85944c`](https://github.com/oscal-compass/compliance-trestle/commit/f85944cf7a544e0073fb66f64725422712494c90))
+
+- Run utility scripts through hatch environment
+  ([#2005](https://github.com/oscal-compass/compliance-trestle/pull/2005),
+  [`f85944c`](https://github.com/oscal-compass/compliance-trestle/commit/f85944cf7a544e0073fb66f64725422712494c90))
+
+- **deps**: Bump actions/checkout from 6.0.0 to 6.0.1
+  ([#2011](https://github.com/oscal-compass/compliance-trestle/pull/2011),
+  [`5023fbc`](https://github.com/oscal-compass/compliance-trestle/commit/5023fbcc1e905a1d3708f8effd6fd9dc12fb13de))
+
+- **deps**: Bump actions/create-github-app-token from 2.2.0 to 2.2.1
+  ([#2006](https://github.com/oscal-compass/compliance-trestle/pull/2006),
+  [`3fc61f4`](https://github.com/oscal-compass/compliance-trestle/commit/3fc61f49808285f3ca8c4eb2166f553923d5e617))
+
+- **deps**: Bump actions/stale from 10.1.0 to 10.1.1
+  ([#2007](https://github.com/oscal-compass/compliance-trestle/pull/2007),
+  [`b7b908a`](https://github.com/oscal-compass/compliance-trestle/commit/b7b908aa52006236e10dd3777beb815a4632146a))
+
+- **deps**: Bump cryptography from 45.0.7 to 46.0.3
+  ([#1958](https://github.com/oscal-compass/compliance-trestle/pull/1958),
+  [`4092387`](https://github.com/oscal-compass/compliance-trestle/commit/40923877afa2fce9b8f3c586ad12b98fa1bd8126))
+
+- **deps**: Bump github/codeql-action from 4.31.5 to 4.31.7
+  ([#2012](https://github.com/oscal-compass/compliance-trestle/pull/2012),
+  [`309aba4`](https://github.com/oscal-compass/compliance-trestle/commit/309aba4b5c70034312a42fe99d75d6537842632c))
+
+- **deps**: Bump sigstore/gh-action-sigstore-python from 3.1.0 to 3.2.0
+  ([#2009](https://github.com/oscal-compass/compliance-trestle/pull/2009),
+  [`6303780`](https://github.com/oscal-compass/compliance-trestle/commit/63037807a77b59a958c109f62d3c0caf64daaefc))
+
+### Chores
+
+- Add makefile utilities ([#2005](https://github.com/oscal-compass/compliance-trestle/pull/2005),
+  [`f85944c`](https://github.com/oscal-compass/compliance-trestle/commit/f85944cf7a544e0073fb66f64725422712494c90))
+
+- Clean up mypy errors in pipeline.py and command_docs.py
+  ([#2030](https://github.com/oscal-compass/compliance-trestle/pull/2030),
+  [`29bdb1a`](https://github.com/oscal-compass/compliance-trestle/commit/29bdb1a669e07b45edfef42f685bbd7a2f62e1f0))
+
+- Correct Snyk configuration to reflect approvals
+  ([#2020](https://github.com/oscal-compass/compliance-trestle/pull/2020),
+  [`fad388c`](https://github.com/oscal-compass/compliance-trestle/commit/fad388cad09ec980569e9d70c3a62fccd4177e44))
+
+- Correct type annotation ([#2033](https://github.com/oscal-compass/compliance-trestle/pull/2033),
+  [`d6d4819`](https://github.com/oscal-compass/compliance-trestle/commit/d6d48192b1542eccf772c507d2302cf1be0029dd))
+
+- Must have apt update to deal with stale images in gh
+  ([#2020](https://github.com/oscal-compass/compliance-trestle/pull/2020),
+  [`fad388c`](https://github.com/oscal-compass/compliance-trestle/commit/fad388cad09ec980569e9d70c3a62fccd4177e44))
+
+- Stage corrections ([#2005](https://github.com/oscal-compass/compliance-trestle/pull/2005),
+  [`f85944c`](https://github.com/oscal-compass/compliance-trestle/commit/f85944cf7a544e0073fb66f64725422712494c90))
+
+### Features
+
+- Migrate to hatch for build process
+  ([#2005](https://github.com/oscal-compass/compliance-trestle/pull/2005),
+  [`f85944c`](https://github.com/oscal-compass/compliance-trestle/commit/f85944cf7a544e0073fb66f64725422712494c90))
+
+- Transition to hatch ([#2005](https://github.com/oscal-compass/compliance-trestle/pull/2005),
+  [`f85944c`](https://github.com/oscal-compass/compliance-trestle/commit/f85944cf7a544e0073fb66f64725422712494c90))
+
+### Refactoring
+
+- Use Makefile abstractions in CI pipeline
+  ([#2005](https://github.com/oscal-compass/compliance-trestle/pull/2005),
+  [`f85944c`](https://github.com/oscal-compass/compliance-trestle/commit/f85944cf7a544e0073fb66f64725422712494c90))
+
+
 ## v3.10.4 (2025-12-02)
 
 ### Bug Fixes

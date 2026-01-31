@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """A control markdown node."""
+
 from __future__ import annotations
 
 import logging
@@ -92,7 +93,7 @@ class ControlSectionContent(BaseSectionContent):
             part: A part that is found in markdown. A part is defined in markdown by two or more # symbols
             by_id_name: Required for parts defined as ## Part a in a markdown
         """
-        super(ControlSectionContent, self).__init__()
+        super().__init__()
         self.part = None
         self.by_id_name = ''
 
@@ -106,15 +107,12 @@ class ControlMarkdownNode(BaseMarkdownNode):
 
     def __init__(self, key: str, content: ControlSectionContent, starting_line: int):
         """Initialize markdown node."""
-        super(ControlMarkdownNode, self).__init__(key, content, starting_line)
+        super().__init__(key, content, starting_line)
         self.content: ControlSectionContent = content
 
-    def _build_tree(self,
-                    lines: List[str],
-                    root_key: str,
-                    starting_line: int,
-                    level: int,
-                    parent_part_id: str = '') -> Tuple[ControlMarkdownNode, int]:
+    def _build_tree(
+        self, lines: List[str], root_key: str, starting_line: int, level: int, parent_part_id: str = ''
+    ) -> Tuple[ControlMarkdownNode, int]:
         """
         Build a tree from the markdown recursively.
 
@@ -137,8 +135,9 @@ class ControlMarkdownNode(BaseMarkdownNode):
 
         section_heading_type = self._get_section_heading_type(root_key)
 
-        part_id, part_name, part_title, by_id_part = self._get_part_info_from_section_name(root_key, parent_part_id,
-                                                                                           section_heading_type)
+        part_id, part_name, part_title, by_id_part = self._get_part_info_from_section_name(
+            root_key, parent_part_id, section_heading_type
+        )
 
         current_key_lvl = self._get_header_level_if_valid(root_key)
 
@@ -160,7 +159,9 @@ class ControlMarkdownNode(BaseMarkdownNode):
                     f'Multiple top-level headers are found but only one header is allowed. See line {root_key} '
                     f'for control {tree_context.control_id}.'
                 )
-            tree_context.control_id, tree_context.control_group, tree_context.control_title = ControlMarkdownNode._parse_control_title_line(root_key)  # noqa: E501
+            tree_context.control_id, tree_context.control_group, tree_context.control_title = (
+                ControlMarkdownNode._parse_control_title_line(root_key)
+            )  # noqa: E501
             content.control_id = tree_context.control_id
             content.control_group = tree_context.control_group
             content.control_title = tree_context.control_title
@@ -188,9 +189,12 @@ class ControlMarkdownNode(BaseMarkdownNode):
                     subtree, i = self._build_tree(lines, line, i + 1, level + 1, part_id)
                     node_children.append(subtree)
                     content.union(subtree)
-                    if content.part and subtree.content.part and section_heading_type not in [
-                            ControlSectionType.STATEMENT, ControlSectionType.OBJECTIVE, ControlSectionType.GUIDANCE
-                    ]:
+                    if (
+                        content.part
+                        and subtree.content.part
+                        and section_heading_type
+                        not in [ControlSectionType.STATEMENT, ControlSectionType.OBJECTIVE, ControlSectionType.GUIDANCE]
+                    ):
                         # Control statement, objective and guidance have special treatment
                         # in those sections any subsections go to the prose rather than subparts.
                         content.part.parts = as_list(content.part.parts)
@@ -201,7 +205,7 @@ class ControlMarkdownNode(BaseMarkdownNode):
                         content.part,
                         subtree.content.raw_text,
                         section_heading_type
-                        in [ControlSectionType.STATEMENT, ControlSectionType.OBJECTIVE, ControlSectionType.GUIDANCE]
+                        in [ControlSectionType.STATEMENT, ControlSectionType.OBJECTIVE, ControlSectionType.GUIDANCE],
                     )
                     continue
                 else:
@@ -267,9 +271,9 @@ class ControlMarkdownNode(BaseMarkdownNode):
         parts = self._get_subparts(editable_node, exclude_parts_id)
         return parts
 
-    def _get_subparts(self,
-                      control_node: ControlMarkdownNode,
-                      exclude_ids: List[str] = None) -> Optional[List[common.Part]]:
+    def _get_subparts(
+        self, control_node: ControlMarkdownNode, exclude_ids: List[str] = None
+    ) -> Optional[List[common.Part]]:
         """Get subparts of the control part node if exists."""
         if not control_node:
             raise TrestleError(
@@ -301,8 +305,9 @@ class ControlMarkdownNode(BaseMarkdownNode):
 
         return ControlSectionType.UNDEFINED
 
-    def _get_part_info_from_section_name(self, root_key: str, parent_id: str,
-                                         section_heading_type: ControlSectionType) -> Tuple[str, str, str, str]:
+    def _get_part_info_from_section_name(
+        self, root_key: str, parent_id: str, section_heading_type: ControlSectionType
+    ) -> Tuple[str, str, str, str]:
         """Get part information such as id, name and title based on the section heading."""
         part_id = ''
         part_name = ''
@@ -311,7 +316,7 @@ class ControlMarkdownNode(BaseMarkdownNode):
 
         if section_heading_type in [ControlSectionType.GUIDANCE, ControlSectionType.GENERIC_CONTROL_PART]:
             prefix = const.CONTROL_HEADER + ' '
-            control_md_heading_label = root_key[len(prefix):].strip()
+            control_md_heading_label = root_key[len(prefix) :].strip()
             control_md_heading_label_ncname = ControlInterface.strip_to_make_ncname(control_md_heading_label)
             control_md_heading_label_snakename = spaces_and_caps_to_snake(control_md_heading_label)
 
@@ -443,8 +448,9 @@ class ControlMarkdownNode(BaseMarkdownNode):
 
         return line_idx
 
-    def _read_parts(self, indent: int, ii: int, lines: List[str], parent_id: str,
-                    parts: List[common.Part]) -> Tuple[int, List[common.Part]]:
+    def _read_parts(
+        self, indent: int, ii: int, lines: List[str], parent_id: str, parts: List[common.Part]
+    ) -> Tuple[int, List[common.Part]]:
         """If indentation level goes up or down, create new list or close current one."""
         while True:
             ii, new_indent, line = ControlMarkdownNode._get_next_indent(ii, lines)
@@ -517,8 +523,8 @@ class ControlMarkdownNode(BaseMarkdownNode):
         group_title_end = line.find('\\]')
         if group_title_start < 0 or group_title_end < 0 or group_title_start > group_title_end:
             raise TrestleError(f'unable to read group title for control {control_id}')
-        group_title = line[group_title_start + 2:group_title_end].strip()
-        control_title = line[group_title_end + 2:].strip()
+        group_title = line[group_title_start + 2 : group_title_end].strip()
+        control_title = line[group_title_end + 2 :].strip()
         return control_id, group_title, control_title
 
     @staticmethod
@@ -526,8 +532,8 @@ class ControlMarkdownNode(BaseMarkdownNode):
         """Extract the part id letter or number and prose from line."""
         start = line.find('\\[')
         end = line.find('\\]')
-        prose = line.strip() if start < 0 else line[end + 2:].strip()
-        id_ = '' if start < 0 or end < 0 else line[start + 2:end]
+        prose = line.strip() if start < 0 else line[end + 2 :].strip()
+        id_ = '' if start < 0 or end < 0 else line[start + 2 : end]
         return id_, prose
 
     @staticmethod
@@ -559,8 +565,8 @@ class ControlMarkdownNode(BaseMarkdownNode):
                     break
                 ii -= 1
             if ii >= 0:
-                label_prefix = prev_label[:(ii + 1)]
-                label_suffix = prev_label[(ii + 1):]
+                label_prefix = prev_label[: (ii + 1)]
+                label_suffix = prev_label[(ii + 1) :]
 
         return label_prefix + ControlMarkdownNode._bump_label(label_suffix)
 

@@ -94,7 +94,6 @@ def set_cwd_unsafe(cwd: pathlib.Path = TEST_DIR):
     """
 
     def decorator(f):
-
         @functools.wraps(f)
         def wrapper(*args, **kwargs):
             original_cwd = os.getcwd()
@@ -202,20 +201,19 @@ def list_unordered_equal(list1: List[Any], list2: List[Any]) -> bool:
 def text_files_equal(path_a: pathlib.Path, path_b: pathlib.Path) -> bool:
     """Determine if files are equal, ignoring newline style."""
     try:
-        with open(path_a, 'r') as file_a:
-            with open(path_b, 'r') as file_b:
-                lines_a = file_a.readlines()
-                lines_b = file_b.readlines()
-                nlines = len(lines_a)
-                if nlines != len(lines_b):
-                    logger.error(f'n lines differ: {len(lines_a)} vs. {len(lines_b)}')
+        with open(path_a, 'r') as file_a, open(path_b, 'r') as file_b:
+            lines_a = file_a.readlines()
+            lines_b = file_b.readlines()
+            nlines = len(lines_a)
+            if nlines != len(lines_b):
+                logger.error(f'n lines differ: {len(lines_a)} vs. {len(lines_b)}')
+                return False
+            for ii in range(nlines):
+                if lines_a[ii].rstrip('\r\n') != lines_b[ii].rstrip('\r\n'):
+                    logger.error('lines differ:')
+                    logger.error(lines_a[ii])
+                    logger.error(lines_b[ii])
                     return False
-                for ii in range(nlines):
-                    if lines_a[ii].rstrip('\r\n') != lines_b[ii].rstrip('\r\n'):
-                        logger.error('lines differ:')
-                        logger.error(lines_a[ii])
-                        logger.error(lines_b[ii])
-                        return False
     except Exception:
         return False
     return True
@@ -224,22 +222,21 @@ def text_files_equal(path_a: pathlib.Path, path_b: pathlib.Path) -> bool:
 def text_files_similar(path_a: pathlib.Path, path_b: pathlib.Path, skip: str) -> bool:
     """Determine if files are similar, ignoring newline style and lines containing <skip> text."""
     try:
-        with open(path_a, 'r') as file_a:
-            with open(path_b, 'r') as file_b:
-                lines_a = file_a.readlines()
-                lines_b = file_b.readlines()
-                nlines = len(lines_a)
-                if nlines != len(lines_b):
-                    logger.error(f'n lines differ: {len(lines_a)} vs. {len(lines_b)}')
+        with open(path_a, 'r') as file_a, open(path_b, 'r') as file_b:
+            lines_a = file_a.readlines()
+            lines_b = file_b.readlines()
+            nlines = len(lines_a)
+            if nlines != len(lines_b):
+                logger.error(f'n lines differ: {len(lines_a)} vs. {len(lines_b)}')
+                return False
+            for ii in range(nlines):
+                if lines_a[ii].rstrip('\r\n') != lines_b[ii].rstrip('\r\n'):
+                    if skip in lines_a[ii] and skip in lines_b[ii]:
+                        continue
+                    logger.error('lines differ:')
+                    logger.error(lines_a[ii])
+                    logger.error(lines_b[ii])
                     return False
-                for ii in range(nlines):
-                    if lines_a[ii].rstrip('\r\n') != lines_b[ii].rstrip('\r\n'):
-                        if skip in lines_a[ii] and skip in lines_b[ii]:
-                            continue
-                        logger.error('lines differ:')
-                        logger.error(lines_a[ii])
-                        logger.error(lines_b[ii])
-                        return False
     except Exception:
         return False
     return True
@@ -271,7 +268,7 @@ def delete_line_in_file(file_path: pathlib.Path, tag: str, extra_lines=0) -> boo
     f.close()
     for ii, line in enumerate(lines):
         if tag in line:
-            del lines[ii:(ii + extra_lines + 1)]
+            del lines[ii : (ii + extra_lines + 1)]
             f = file_path.open('w')
             f.writelines(lines)
             f.flush()
@@ -341,15 +338,15 @@ def generate_control_list(label: str, count: int) -> List[cat.Control]:
             id=f'{control.id}_smt.a',
             name='item',
             props=[common.Property(name='label', value='a.')],
-            prose=f'Prose for item a. of control {control.id}'
+            prose=f'Prose for item a. of control {control.id}',
         )
         control.parts = [
             common.Part(
                 id=f'{control.id}_smt',
                 name=const.STATEMENT,
                 prose=f'Prose for the statement part of control {control.id}',
-                parts=[sub_part]
-            ),
+                parts=[sub_part],
+            )
         ]
         controls.append(control)
     return controls
@@ -402,7 +399,7 @@ def generate_complex_catalog(stem: str = '') -> cat.Catalog:
         common.Part(
             id=f'{test_control.id}_smt',
             name=const.STATEMENT,
-            prose='Statement with no parts.  Prose with param value {{ insert: param, test-1_prm_1 }}'
+            prose='Statement with no parts.  Prose with param value {{ insert: param, test-1_prm_1 }}',
         )
     ]
     catalog.controls.append(test_control)
@@ -427,7 +424,7 @@ def setup_for_component_definition(tmp_trestle_dir: pathlib.Path, monkeypatch: M
 def setup_component_generate(tmp_trestle_dir: pathlib.Path, comp_name='comp_def_a') -> str:
     """Create the compdef, profile and catalog content component-generate."""
     load_from_json(tmp_trestle_dir, comp_name, comp_name, comp.ComponentDefinition)
-    for prof_name in 'comp_prof,comp_prof_aa,comp_prof_ab,comp_prof_ba,comp_prof_bb'.split(','):
+    for prof_name in ['comp_prof', 'comp_prof_aa', 'comp_prof_ab', 'comp_prof_ba', 'comp_prof_bb']:
         load_from_json(tmp_trestle_dir, prof_name, prof_name, prof.Profile)
     load_from_json(tmp_trestle_dir, 'simplified_nist_catalog', 'simplified_nist_catalog', cat.Catalog)
 
@@ -487,12 +484,7 @@ def setup_for_inherit(
         load_from_json(tmp_trestle_dir, ssp_name, ssp_name, ssp.SystemSecurityPlan)
 
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir,
-        profile=prof_name,
-        output=output_name,
-        ssp=ssp_name,
-        version=None,
-        verbose=0,
+        trestle_root=tmp_trestle_dir, profile=prof_name, output=output_name, ssp=ssp_name, version=None, verbose=0
     )
 
     return args
@@ -517,13 +509,13 @@ def setup_for_ssp(
     use_yaml: bool = False,
     leveraged_ssp_name: str = '',
     comp_names='comp_def_a,comp_def_b',
-    include_all_parts: bool = False
+    include_all_parts: bool = False,
 ) -> Tuple[argparse.Namespace, pathlib.Path]:
     """Create the comp_def, profile and catalog content needed for ssp-generate."""
     for comp_name in comp_names.split(','):
         load_from_json(tmp_trestle_dir, comp_name, comp_name, comp.ComponentDefinition)
     prof_name_list = [prof_name]
-    prof_name_list.extend('comp_prof_aa,comp_prof_ab,comp_prof_ba,comp_prof_bb'.split(','))
+    prof_name_list.extend(['comp_prof_aa', 'comp_prof_ab', 'comp_prof_ba', 'comp_prof_bb'])
     for local_prof_name in prof_name_list:
         load_from_json(tmp_trestle_dir, local_prof_name, local_prof_name, prof.Profile)
     load_from_json(tmp_trestle_dir, 'simplified_nist_catalog', 'simplified_nist_catalog', cat.Catalog)
@@ -543,16 +535,13 @@ def setup_for_ssp(
         include_all_parts=include_all_parts,
         yaml_header=yaml_path,
         allowed_sections=None,
-        force_overwrite=None
+        force_overwrite=None,
     )
 
     return args, yaml_path
 
 
-def setup_for_ssp_fedramp(
-    tmp_trestle_dir: pathlib.Path,
-    output_name: str,
-) -> argparse.Namespace:
+def setup_for_ssp_fedramp(tmp_trestle_dir: pathlib.Path, output_name: str) -> argparse.Namespace:
     """Load profile and component needed for ssp-generate with FedRAMP profile."""
     prof_name = 'full_profile_rev5'
     comp_name = 'test_compdef_rev5'
@@ -570,7 +559,7 @@ def setup_for_ssp_fedramp(
         include_all_parts=False,
         yaml_header=None,
         allowed_sections=None,
-        force_overwrite=None
+        force_overwrite=None,
     )
 
     return args

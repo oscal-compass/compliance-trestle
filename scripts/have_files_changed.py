@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Check whether repo is clear of fixes - to be used in combination with scripts in the CI pipeline."""
+
 import logging
 import pathlib
 import sys
@@ -81,7 +82,7 @@ class FilesChanged(Command):
         # None is a reference to current working tree.
         for diff in head_commit.diff(None):
             path = pathlib.Path(diff.a_path)
-            if not path.suffix.lstrip('.') in excludes:
+            if path.suffix.lstrip('.') not in excludes:
                 logger.info(f'The following path has changed {path}.')
                 return True
         return False

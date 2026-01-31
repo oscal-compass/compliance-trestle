@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Handle writing of controls to markdown for docs purposes."""
+
 import logging
 import re
 from typing import Dict, List, Optional
@@ -39,7 +40,7 @@ class DocsControlWriter(ControlWriter):
         sections: List[str],
         sections_dict: Optional[Dict[str, str]] = None,
         label_column: bool = True,
-        add_group_to_title: bool = False
+        add_group_to_title: bool = False,
     ) -> str:
         """Write the control into markdown file with specified sections."""
         self._md_file = MDWriter(None)
@@ -76,7 +77,7 @@ class DocsControlWriter(ControlWriter):
         label_column: bool = False,
         section_dict: Optional[Dict[str, str]] = None,
         tag_pattern: str = None,
-        md_file: MDWriter = None
+        md_file: MDWriter = None,
     ) -> List[str]:
         """Get parameters of a control as a markdown table for ssp_io, with optional third label column."""
 
@@ -109,21 +110,25 @@ class DocsControlWriter(ControlWriter):
                             _get_displayname_if_exists(key),
                             ControlInterface.param_to_str(param_dict[key], ParameterRep.VALUE_OR_EMPTY_STRING),
                             ControlInterface.param_to_str(param_dict[key], ParameterRep.LABEL_OR_CHOICES, True),
-                        ] for key in param_dict.keys()
-                    ], ['Parameter ID', 'Values', 'Label or Choices']
+                        ]
+                        for key in param_dict.keys()
+                    ],
+                    ['Parameter ID', 'Values', 'Label or Choices'],
                 )
             else:
                 self._md_file.new_table(
                     [
                         [
                             _get_displayname_if_exists(key),
-                            ControlInterface.param_to_str(param_dict[key], ParameterRep.VALUE_OR_LABEL_OR_CHOICES)
-                        ] for key in param_dict.keys()
-                    ], ['Parameter ID', 'Values']
+                            ControlInterface.param_to_str(param_dict[key], ParameterRep.VALUE_OR_LABEL_OR_CHOICES),
+                        ]
+                        for key in param_dict.keys()
+                    ],
+                    ['Parameter ID', 'Values'],
                 )
             self._md_file.set_indent_level(-1)
             if tag_pattern:
-                bottom_tag_pattern = '{: #\"Parameters for [.]\" caption-side=\"top\"}'  # noqa: FS003 - not f string
+                bottom_tag_pattern = '{: #"Parameters for [.]" caption-side="top"}'  # noqa: F541 - not f string
                 control_id = self._get_pretty_control_id_if_exists(control)
                 self._md_file.new_line(bottom_tag_pattern.replace('[.]', control_id))
                 self._md_file.new_paragraph()
@@ -205,7 +210,7 @@ class DocsControlWriter(ControlWriter):
         section_name: str,
         tag_pattern: Optional[str] = None,
         section_prefix: str = '',
-        heading_level: int = 2
+        heading_level: int = 2,
     ) -> None:
         section_title = self._sections_dict.get(section_name, part_info.name)
 

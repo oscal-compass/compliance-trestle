@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Validate by confirming all refs have corresponding id."""
+
 import pathlib
 from typing import Optional
 

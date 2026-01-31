@@ -28,7 +28,7 @@ from trestle.core.markdown.markdown_api import MarkdownAPI
 logger = logging.getLogger(__name__)
 
 
-class MDWriter():
+class MDWriter:
     """Simple class to create markdown files."""
 
     def __init__(self, file_path: pathlib.Path, header_comments_dict: Optional[Dict[str, str]] = None):
@@ -160,7 +160,7 @@ class MDWriter():
             for tag, comment in as_dict(self._header_comments_dict).items():
                 if tag in as_dict(self._yaml_header):
                     file_utils.insert_text_in_file(self._file_path, tag, comment)
-        except IOError as e:
+        except OSError as e:
             logger.debug(f'md_writer error attempting to write out md file {self._file_path} {e}')
             raise TrestleError(f'Error attempting to write out md file {self._file_path} {e}')
 

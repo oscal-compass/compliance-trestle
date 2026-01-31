@@ -79,9 +79,9 @@ This is B Guidance.
 multi_guidance_dict = {
     'name_exp': [
         ('ac-1_a_guidance', 'a_guidance', 'This is A Guidance.'),
-        ('ac-1_b_guidance', 'b_guidance', 'This is B Guidance.')
+        ('ac-1_b_guidance', 'b_guidance', 'This is B Guidance.'),
     ],
-    'text': multi_guidance_text
+    'text': multi_guidance_text,
 }
 
 control_subparts_text = """
@@ -116,9 +116,9 @@ control_subparts_dict = {
         ('ac-1_a_guidance.a_subpart.a_subsubpart', 'a_subsubpart', 'A subsubpart prose'),
         ('ac-1_a_guidance.b_subpart', 'b_subpart', 'B subpart prose'),
         ('ac-1_smt.a', 'item', 'Develop, document, and disseminate'),  # this is the original NIST prose
-        ('ac-1_smt.a.a_by_id_subpart', 'a_by_id_subpart', 'a by_id subpart prose')
+        ('ac-1_smt.a.a_by_id_subpart', 'a_by_id_subpart', 'a by_id subpart prose'),
     ],
-    'text': control_subparts_text
+    'text': control_subparts_text,
 }
 
 all_sections_str = (
@@ -138,7 +138,7 @@ all_sections_dict = {
     'a_subpart': 'A Subpart',
     'a_subsubpart': 'A Subsubpart',
     'b_subpart': 'B Subpart',
-    'a_by_id_subpart': 'a by_id subpart'
+    'a_by_id_subpart': 'a by_id subpart',
 }
 
 
@@ -162,8 +162,9 @@ def edit_files(control_path: pathlib.Path, change_parameters: bool, guid_dict: D
         assert file_utils.insert_text_in_file(control_path, 'ac-1_prm_1:', '    label: label from edit\n')
 
 
-def setup_profile_generate(trestle_root: pathlib.Path,
-                           source_prof_name: str) -> Tuple[pathlib.Path, pathlib.Path, pathlib.Path, pathlib.Path]:
+def setup_profile_generate(
+    trestle_root: pathlib.Path, source_prof_name: str
+) -> Tuple[pathlib.Path, pathlib.Path, pathlib.Path, pathlib.Path]:
     """Set up files for profile generate."""
     nist_catalog_path = test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME
     trestle_cat_dir = trestle_root / 'catalogs/nist_cat'
@@ -181,8 +182,9 @@ def setup_profile_generate(trestle_root: pathlib.Path,
     return ac1_path, assembled_prof_dir, profile_path, markdown_path
 
 
-def setup_profile_generate_rev5(trestle_root: pathlib.Path,
-                                source_prof_name: str) -> Tuple[pathlib.Path, pathlib.Path, pathlib.Path, pathlib.Path]:
+def setup_profile_generate_rev5(
+    trestle_root: pathlib.Path, source_prof_name: str
+) -> Tuple[pathlib.Path, pathlib.Path, pathlib.Path, pathlib.Path]:
     """Set up files for profile generate."""
     nist_catalog_path = test_utils.JSON_TEST_DATA_PATH / test_utils.JSON_NIST_REV_5_CATALOG_NAME
     trestle_cat_dir = trestle_root / 'catalogs/nist_cat'
@@ -217,12 +219,11 @@ def test_profile_generate_assemble(
     dir_exists: bool,
     set_parameters_flag: bool,
     tmp_trestle_dir: pathlib.Path,
-    monkeypatch: MonkeyPatch
+    monkeypatch: MonkeyPatch,
 ) -> None:
     """Test the profile markdown generator."""
     ac1_path, assembled_prof_dir, profile_path, markdown_path = setup_profile_generate(
-        tmp_trestle_dir,
-        'simple_test_profile.json'
+        tmp_trestle_dir, 'simple_test_profile.json'
     )
     yaml_header_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
 
@@ -283,16 +284,20 @@ def test_profile_generate_assemble(
         # assemble based on set_parameters_flag
         if dir_exists:
             assembled_prof_dir.mkdir()
-        assert ProfileAssemble.assemble_profile(
-            tmp_trestle_dir, prof_name, md_name, assembled_prof_name, set_parameters_flag, False, None, {}, [], None
-        ) == 0
+        assert (
+            ProfileAssemble.assemble_profile(
+                tmp_trestle_dir, prof_name, md_name, assembled_prof_name, set_parameters_flag, False, None, {}, [], None
+            )
+            == 0
+        )
 
     assert test_utils.confirm_text_in_file(ac1_path, const.TRESTLE_GLOBAL_TAG, 'title: Trestle test profile')
 
     # check the assembled profile is as expected
     profile: prof.Profile
-    profile, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, assembled_prof_name,
-                                                 prof.Profile, FileContentType.JSON)
+    profile, _ = ModelUtils.load_model_for_class(
+        tmp_trestle_dir, assembled_prof_name, prof.Profile, FileContentType.JSON
+    )
     assert ModelUtils.model_age(profile) < test_utils.NEW_MODEL_AGE_SECONDS
     # get the set_params from the assembled profile
     set_params = profile.modify.set_parameters
@@ -359,8 +364,7 @@ def test_profile_generate_assemble(
 def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool, tmp_trestle_dir: pathlib.Path) -> None:
     """Test profile generate assemble with overwrite-header-values."""
     ac1_path, assembled_prof_dir, profile_path, markdown_path = setup_profile_generate(
-        tmp_trestle_dir,
-        'simple_test_profile2.json'
+        tmp_trestle_dir, 'simple_test_profile2.json'
     )
     yaml_header_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
     new_version = '1.2.3'
@@ -384,24 +388,26 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
 
     if success:
         # always doing set_params True
-        assert ProfileAssemble.assemble_profile(
-            tmp_trestle_dir,
-            prof_name,
-            md_name,
-            assembled_prof_name,
-            True,
-            False,
-            new_version, {},
-            required_sections_list,
-            None
-        ) == 0
+        assert (
+            ProfileAssemble.assemble_profile(
+                tmp_trestle_dir,
+                prof_name,
+                md_name,
+                assembled_prof_name,
+                True,
+                False,
+                new_version,
+                {},
+                required_sections_list,
+                None,
+            )
+            == 0
+        )
 
         # check the assembled profile is as expected
         profile: prof.Profile
         profile, _ = ModelUtils.load_model_for_class(
-            tmp_trestle_dir, assembled_prof_name,
-            prof.Profile,
-            FileContentType.JSON
+            tmp_trestle_dir, assembled_prof_name, prof.Profile, FileContentType.JSON
         )
         # assure sorted by param_id
         set_params = sorted(profile.modify.set_parameters, key=lambda x: x.param_id)
@@ -439,9 +445,10 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
                 assembled_prof_name,
                 True,
                 False,
-                new_version, {},
+                new_version,
+                {},
                 required_sections_list,
-                None
+                None,
             )
 
 
@@ -467,13 +474,13 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatc
         verbose=0,
         set_parameters=False,
         sections=None,
-        force_overwrite=False
+        force_overwrite=False,
     )
     profile_generate = ProfileGenerate()
     assert profile_generate._run(test_args) == 1
 
     # profile not available for load
-    test_args = 'trestle author profile-generate -n my_prof -o my_md -v'.split()
+    test_args = ['trestle', 'author', 'profile-generate', '-n', 'my_prof', '-o', 'my_md', '-v']
     monkeypatch.setattr(sys, 'argv', test_args)
     assert Trestle().run() == 1
 
@@ -500,7 +507,7 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatc
         yaml_header=None,
         sections='NeededExtra:Needed Extra,implgdn:Implementation Guidance,expevid:Expected Evidence',
         required_sections=None,
-        force_overwrite=False
+        force_overwrite=False,
     )
     profile_generate = ProfileGenerate()
     assert profile_generate._run(test_args) == 0
@@ -519,7 +526,7 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatc
         version=None,
         allowed_sections=None,
         sections=None,
-        force_overwrite=False
+        force_overwrite=False,
     )
     # fail since required section not present
     profile_assemble = ProfileAssemble()
@@ -538,7 +545,7 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatc
     assert profile_assemble._run(test_args) == 0
 
     # disallowed output name
-    test_args = 'trestle author profile-generate -n my_prof -o profiles -v'.split()
+    test_args = ['trestle', 'author', 'profile-generate', '-n', 'my_prof', '-o', 'profiles', '-v']
     monkeypatch.setattr(sys, 'argv', test_args)
     assert Trestle().run() == 1
 
@@ -551,18 +558,24 @@ def test_profile_overwrite(tmp_trestle_dir: pathlib.Path) -> None:
     profile_generate = ProfileGenerate()
     profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, {}, False, all_sections_dict, [])
 
-    assert ProfileAssemble.assemble_profile(
-        tmp_trestle_dir, prof_name, md_name, prof_name, True, False, None, {}, [], None
-    ) == 0
+    assert (
+        ProfileAssemble.assemble_profile(
+            tmp_trestle_dir, prof_name, md_name, prof_name, True, False, None, {}, [], None
+        )
+        == 0
+    )
 
     # note the file timestamp, then regenerate and assemble again
     orig_time = profile_path.stat().st_mtime
 
     profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, {}, False, all_sections_dict, [])
 
-    assert ProfileAssemble.assemble_profile(
-        tmp_trestle_dir, prof_name, md_name, prof_name, True, False, None, {}, [], None
-    ) == 0
+    assert (
+        ProfileAssemble.assemble_profile(
+            tmp_trestle_dir, prof_name, md_name, prof_name, True, False, None, {}, [], None
+        )
+        == 0
+    )
 
     # the timestamp should be the same, indicating the file was not written
     new_time = profile_path.stat().st_mtime
@@ -573,9 +586,12 @@ def test_profile_overwrite(tmp_trestle_dir: pathlib.Path) -> None:
     new_sections = {'implgdn': 'Different Title'}
     profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, {}, False, new_sections, [])
 
-    assert ProfileAssemble.assemble_profile(
-        tmp_trestle_dir, prof_name, md_name, prof_name, True, False, None, {}, [], None
-    ) == 0
+    assert (
+        ProfileAssemble.assemble_profile(
+            tmp_trestle_dir, prof_name, md_name, prof_name, True, False, None, {}, [], None
+        )
+        == 0
+    )
 
     # the timestamp should now be different
     new_time = profile_path.stat().st_mtime
@@ -614,15 +630,15 @@ def test_profile_alter_props(tmp_trestle_dir: pathlib.Path) -> None:
     sections = {'implgdn': 'Implementation Guidance', 'expevid': 'Expected Evidence', 'guidance': 'Guidance'}
     # generate markdown twice and confirm no changes
     profile_generate = ProfileGenerate()
-    assert profile_generate.generate_markdown(
-        tmp_trestle_dir, profile_path, markdown_path, {}, False, sections, []
-    ) == 0
+    assert (
+        profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, {}, False, sections, []) == 0
+    )
 
     fc = test_utils.FileChecker(ac1_path.parent)
 
-    assert profile_generate.generate_markdown(
-        tmp_trestle_dir, profile_path, markdown_path, {}, False, sections, []
-    ) == 0
+    assert (
+        profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, {}, False, sections, []) == 0
+    )
 
     assert fc.files_unchanged()
 
@@ -644,16 +660,17 @@ def test_profile_alter_props(tmp_trestle_dir: pathlib.Path) -> None:
     # a final one is attached to cannot_add and will give warning that it isn't found on assemble
     assert file_utils.insert_text_in_file(ac1_path, const.TRESTLE_ADD_PROPS_TAG, text)
 
-    assert ProfileAssemble.assemble_profile(
-        tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, None, sections, [], None
-    ) == 0
+    assert (
+        ProfileAssemble.assemble_profile(
+            tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, None, sections, [], None
+        )
+        == 0
+    )
 
     # check the assembled profile is as expected
     profile: prof.Profile
     profile, prof_path = ModelUtils.load_model_for_class(
-        tmp_trestle_dir,
-        assembled_prof_name,
-        prof.Profile, FileContentType.JSON
+        tmp_trestle_dir, assembled_prof_name, prof.Profile, FileContentType.JSON
     )
     adds = profile.modify.alters[0].adds
     assert len(adds) == 5
@@ -711,15 +728,16 @@ More evidence
     sections['newevidence'] = 'New Evidence'
 
     assert file_utils.insert_text_in_file(ac1_path, None, prose)
-    assert ProfileAssemble.assemble_profile(
-        tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, None, sections, [], None
-    ) == 0
+    assert (
+        ProfileAssemble.assemble_profile(
+            tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, None, sections, [], None
+        )
+        == 0
+    )
 
     # check the assembled profile is as expected
     profile, prof_path = ModelUtils.load_model_for_class(
-        tmp_trestle_dir,
-        assembled_prof_name,
-        prof.Profile, FileContentType.JSON
+        tmp_trestle_dir, assembled_prof_name, prof.Profile, FileContentType.JSON
     )
     adds = profile.modify.alters[0].adds
     assert len(adds) == 6
@@ -738,9 +756,12 @@ More evidence
     # Confirm that changed prose in the markdown is retained on new profile-generate
     assert test_utils.substitute_text_in_file(ac1_path, 'More evidence', 'Updated evidence')
     assert profile_generate.generate_markdown(tmp_trestle_dir, prof_path, markdown_path, {}, False, sections, []) == 0
-    assert ProfileAssemble.assemble_profile(
-        tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, None, sections, [], None
-    ) == 0
+    assert (
+        ProfileAssemble.assemble_profile(
+            tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, None, sections, [], None
+        )
+        == 0
+    )
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
     _check_parts(catalog.groups[0].controls[0].parts[0].parts[1], 'Updated evidence')
     _check_multi_section(part=catalog.groups[0].controls[0].parts[4])
@@ -750,9 +771,12 @@ More evidence
     fresh_assem_prof_name = 'fresh_assem'
     fresh_assem_prof_path = tmp_trestle_dir / 'profiles' / fresh_assem_prof_name / 'profile.json'
     assert profile_generate.generate_markdown(tmp_trestle_dir, prof_path, fresh_md_path, {}, False, sections, []) == 0
-    assert ProfileAssemble.assemble_profile(
-        tmp_trestle_dir, prof_name, fresh_md_name, fresh_assem_prof_name, True, False, None, sections, [], None
-    ) == 0
+    assert (
+        ProfileAssemble.assemble_profile(
+            tmp_trestle_dir, prof_name, fresh_md_name, fresh_assem_prof_name, True, False, None, sections, [], None
+        )
+        == 0
+    )
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, fresh_assem_prof_path)
     _check_parts(catalog.groups[0].controls[0].parts[0].parts[1], 'Updated evidence')
     _check_multi_section(part=catalog.groups[0].controls[0].parts[4])
@@ -904,10 +928,7 @@ def test_profile_generate_updates_statement(tmp_trestle_dir: pathlib.Path, monke
     # echidna and wombat came from changes to main profile
     # koala came from edit to the nist catalog
     resolved_cat, _ = ModelUtils.load_model_for_class(
-        tmp_trestle_dir,
-        'resolved_cat',
-        cat.Catalog,
-        FileContentType.JSON
+        tmp_trestle_dir, 'resolved_cat', cat.Catalog, FileContentType.JSON
     )
     ac1 = resolved_cat.groups[0].controls[0]
     assert ac1.params[2].values[0] == 'echidna'
@@ -929,7 +950,9 @@ def test_profile_generate_inherited_props(tmp_trestle_dir: pathlib.Path, monkeyp
     assert len(inherited_props) == 2
     assert inherited_props[0] == {'name': 'add_prof_b_prop', 'value': 'add prof b prop value'}
     assert inherited_props[1] == {
-        'name': 'add_prof_b_prop_by_id', 'value': 'add prof b prop by id value', 'part_name': 'ac-3.3_prm_2'
+        'name': 'add_prof_b_prop_by_id',
+        'value': 'add prof b prop by id value',
+        'part_name': 'ac-3.3_prm_2',
     }
     set_params = header[const.SET_PARAMS_TAG]
     assert set_params['ac-3.3_prm_1'][const.PROFILE_VALUES] == ['from prof f set-param']
@@ -995,9 +1018,10 @@ def test_profile_resolve_assignment(tmp_trestle_dir: pathlib.Path, monkeypatch: 
     expected_prose = f'Designate an {expected_value} to manage the development, documentation, and dissemination of the access control policy and procedures; and'  # noqa E501
     assert ac_1.parts[0].parts[1].prose == expected_prose
     ac_21 = res_cat.groups[0].controls[-1].controls[0]
-    assert ac_21.parts[
-        0
-    ].prose == 'Support the management of system accounts using (Assignment: organization-defined automated mechanisms).'  # noqa E501
+    assert (
+        ac_21.parts[0].prose
+        == 'Support the management of system accounts using (Assignment: organization-defined automated mechanisms).'
+    )  # noqa E501
 
 
 def test_profile_resolve_label_mode(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
@@ -1012,9 +1036,10 @@ def test_profile_resolve_label_mode(tmp_trestle_dir: pathlib.Path, monkeypatch: 
     expected_prose = f'Designate an {expected_value} to manage the development, documentation, and dissemination of the access control policy and procedures; and'  # noqa E501
     assert ac_1.parts[0].parts[1].prose == expected_prose
     ac_21 = res_cat.groups[0].controls[-1].controls[0]
-    assert ac_21.parts[
-        0
-    ].prose == 'Support the management of system accounts using (Label: organization-defined automated mechanisms).'  # noqa E501
+    assert (
+        ac_21.parts[0].prose
+        == 'Support the management of system accounts using (Label: organization-defined automated mechanisms).'
+    )  # noqa E501
 
 
 def test_profile_resolve_assignment_simple(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
@@ -1029,9 +1054,10 @@ def test_profile_resolve_assignment_simple(tmp_trestle_dir: pathlib.Path, monkey
     expected_prose = f'Designate an {expected_value} to manage the development, documentation, and dissemination of the access control policy and procedures; and'  # noqa E501
     assert ac_1.parts[0].parts[1].prose == expected_prose
     ac_21 = res_cat.groups[0].controls[1].controls[0]
-    assert ac_21.parts[
-        0
-    ].prose == 'Support the management of system accounts using (Assignment: organization-defined automated mechanisms).'  # noqa E501
+    assert (
+        ac_21.parts[0].prose
+        == 'Support the management of system accounts using (Assignment: organization-defined automated mechanisms).'
+    )  # noqa E501
 
 
 def test_profile_resolve_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
@@ -1056,10 +1082,7 @@ def test_profile_inherit(tmp_trestle_dir: pathlib.Path):
     assert prof_inherit._run(args) == 0
 
     result_prof, _ = ModelUtils.load_model_for_class(
-        tmp_trestle_dir,
-        output_profile,
-        prof.Profile,
-        FileContentType.JSON
+        tmp_trestle_dir, output_profile, prof.Profile, FileContentType.JSON
     )
 
     assert result_prof.imports[0].href == 'trestle://profiles/simple_test_profile/profile.json'
@@ -1073,10 +1096,7 @@ def test_profile_inherit(tmp_trestle_dir: pathlib.Path):
     assert prof_inherit._run(args) == 0
 
     result_prof, _ = ModelUtils.load_model_for_class(
-        tmp_trestle_dir,
-        output_profile,
-        prof.Profile,
-        FileContentType.JSON
+        tmp_trestle_dir, output_profile, prof.Profile, FileContentType.JSON
     )
 
     assert result_prof.imports[0].href == 'trestle://profiles/simple_test_profile_more/profile.json'
@@ -1090,10 +1110,7 @@ def test_profile_inherit(tmp_trestle_dir: pathlib.Path):
     assert prof_inherit._run(args) == 0
 
     result_prof, _ = ModelUtils.load_model_for_class(
-        tmp_trestle_dir,
-        output_profile,
-        prof.Profile,
-        FileContentType.JSON
+        tmp_trestle_dir, output_profile, prof.Profile, FileContentType.JSON
     )
 
     assert result_prof.imports[0].href == 'trestle://profiles/simple_test_profile_less/profile.json'
@@ -1107,10 +1124,7 @@ def test_profile_inherit(tmp_trestle_dir: pathlib.Path):
     assert prof_inherit._run(args) == 0
 
     result_prof, _ = ModelUtils.load_model_for_class(
-        tmp_trestle_dir,
-        output_profile,
-        prof.Profile,
-        FileContentType.JSON
+        tmp_trestle_dir, output_profile, prof.Profile, FileContentType.JSON
     )
 
     assert result_prof.imports[0].href == 'trestle://profiles/simple_test_profile_single/profile.json'
@@ -1125,10 +1139,7 @@ def test_profile_inherit(tmp_trestle_dir: pathlib.Path):
     assert prof_inherit._run(args) == 0
 
     result_prof, _ = ModelUtils.load_model_for_class(
-        tmp_trestle_dir,
-        output_profile,
-        prof.Profile,
-        FileContentType.JSON
+        tmp_trestle_dir, output_profile, prof.Profile, FileContentType.JSON
     )
 
     assert result_prof.metadata.version == '1.0.0'
@@ -1164,25 +1175,17 @@ def test_profile_generate_assemble_parameter_aggregation(
     ac_1.params[6].props.append(third_appended_prop)
     appended_extra_param = {
         'id': 'at-02_odp.01',
-        'props': [{
-            'name': 'label', 'value': 'AT-02_ODP[01]', 'class': 'sp800-53a'
-        }],
+        'props': [{'name': 'label', 'value': 'AT-02_ODP[01]', 'class': 'sp800-53a'}],
         'label': 'frequency',
         'values': ['value-1', 'value-2'],
-        'guidelines': [{
-            'prose': 'blah'
-        }]
+        'guidelines': [{'prose': 'blah'}],
     }
     second_appended_extra_param = {
         'id': 'at-02_odp.02',
-        'props': [{
-            'name': 'label', 'value': 'AT-02_ODP[02]', 'class': 'sp800-53a'
-        }],
+        'props': [{'name': 'label', 'value': 'AT-02_ODP[02]', 'class': 'sp800-53a'}],
         'label': 'frequency',
         'values': ['value-3', 'value-4'],
-        'guidelines': [{
-            'prose': 'blah'
-        }]
+        'guidelines': [{'prose': 'blah'}],
     }
     ac_1.params.append(appended_extra_param)
     ac_1.params.append(second_appended_extra_param)
@@ -1255,36 +1258,28 @@ def test_profile_generate_assesment_objectives(tmp_trestle_dir: pathlib.Path, mo
     assesment_objectives = {
         'id': 'at-2_obj',
         'name': 'assessment-objective',
-        'props': [{
-            'name': 'label', 'value': 'AT-02', 'class': 'sp800-53a'
-        }],
+        'props': [{'name': 'label', 'value': 'AT-02', 'class': 'sp800-53a'}],
         'parts': [
             {
                 'id': 'at-2_obj.a',
                 'name': 'assessment-objective',
-                'props': [{
-                    'name': 'label', 'value': 'AT-02a.', 'class': 'sp800-53a'
-                }],
+                'props': [{'name': 'label', 'value': 'AT-02a.', 'class': 'sp800-53a'}],
                 'parts': [
                     {
                         'id': 'at-2_obj.a.1-2',
                         'name': 'assessment-objective',
-                        'props': [{
-                            'name': 'label', 'value': 'AT-02a.01[02]', 'class': 'sp800-53a'
-                        }],
-                        'prose': 'some example prose'
+                        'props': [{'name': 'label', 'value': 'AT-02a.01[02]', 'class': 'sp800-53a'}],
+                        'prose': 'some example prose',
                     },
                     {
                         'id': 'at-2_obj.a.1-3',
                         'name': 'assessment-objective',
-                        'props': [{
-                            'name': 'label', 'value': 'AT-02a.01[03]', 'class': 'sp800-53a'
-                        }],
-                        'prose': 'some example prose'
-                    }
-                ]
+                        'props': [{'name': 'label', 'value': 'AT-02a.01[03]', 'class': 'sp800-53a'}],
+                        'prose': 'some example prose',
+                    },
+                ],
             }
-        ]
+        ],
     }
 
     at_2 = nist_cat.groups[1].controls[1]
@@ -1335,8 +1330,9 @@ def test_profile_generate_assemble_param_value_origin(tmp_trestle_dir: pathlib.P
     monkeypatch.setattr(sys, 'argv', test_args)
     assert Trestle().run() == 0
 
-    profile, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'my_assembled_prof',
-                                                 prof.Profile, FileContentType.JSON)
+    profile, _ = ModelUtils.load_model_for_class(
+        tmp_trestle_dir, 'my_assembled_prof', prof.Profile, FileContentType.JSON
+    )
 
     # grabs first parameter in line and test out the value
     assert profile.modify.set_parameters[0].props[1].value == 'Needed to change param value origin'
@@ -1395,8 +1391,9 @@ def test_param_value_origin_from_inherited_profile(tmp_trestle_dir: pathlib.Path
     monkeypatch.setattr(sys, 'argv', test_args)
     assert Trestle().run() == 0
 
-    profile, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'my_assembled_prof',
-                                                 prof.Profile, FileContentType.JSON)
+    profile, _ = ModelUtils.load_model_for_class(
+        tmp_trestle_dir, 'my_assembled_prof', prof.Profile, FileContentType.JSON
+    )
 
     # grabs parameter ac-3.3_prm_1 and verify param-value-origin wasn´t added as
     # profile-param-value-origin wasn´t modified
@@ -1409,10 +1406,12 @@ def test_param_value_origin_from_inherited_profile(tmp_trestle_dir: pathlib.Path
     header, tree = md_api.processor.process_markdown(md_path)
 
     assert header
-    assert header[const.SET_PARAMS_TAG]['ac-3.3_prm_1'][const.PROFILE_PARAM_VALUE_ORIGIN
-                                                        ] == const.REPLACE_ME_PLACEHOLDER
-    header[const.SET_PARAMS_TAG]['ac-3.3_prm_1'][const.PROFILE_PARAM_VALUE_ORIGIN
-                                                 ] = 'Needed to change param value origin'
+    assert (
+        header[const.SET_PARAMS_TAG]['ac-3.3_prm_1'][const.PROFILE_PARAM_VALUE_ORIGIN] == const.REPLACE_ME_PLACEHOLDER
+    )
+    header[const.SET_PARAMS_TAG]['ac-3.3_prm_1'][const.PROFILE_PARAM_VALUE_ORIGIN] = (
+        'Needed to change param value origin'
+    )
     md_api.write_markdown_with_header(md_path, header, tree.content.raw_text)
 
     # assemble based on set_parameters_flag
@@ -1421,8 +1420,9 @@ def test_param_value_origin_from_inherited_profile(tmp_trestle_dir: pathlib.Path
     monkeypatch.setattr(sys, 'argv', test_args)
     assert Trestle().run() == 0
 
-    profile, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'my_assembled_prof',
-                                                 prof.Profile, FileContentType.JSON)
+    profile, _ = ModelUtils.load_model_for_class(
+        tmp_trestle_dir, 'my_assembled_prof', prof.Profile, FileContentType.JSON
+    )
 
     # grabs parameter ac-3.3_prm_1 and verify if it was changed correctly
     assert profile.modify.set_parameters[16].props[0].value == 'Needed to change param value origin'
@@ -1487,8 +1487,9 @@ def test_profile_values_included_if_replaced(tmp_trestle_dir: pathlib.Path, monk
     monkeypatch.setattr(sys, 'argv', test_args)
     assert Trestle().run() == 0
 
-    profile, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, 'my_assembled_prof',
-                                                 prof.Profile, FileContentType.JSON)
+    profile, _ = ModelUtils.load_model_for_class(
+        tmp_trestle_dir, 'my_assembled_prof', prof.Profile, FileContentType.JSON
+    )
     set_params = sorted(profile.modify.set_parameters, key=lambda x: x.param_id)
 
     # grabs 6 parameter in line and test out the value is in there

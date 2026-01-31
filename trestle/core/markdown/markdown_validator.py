@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Markdown Validator."""
+
 import logging
 import pathlib
 import re
@@ -38,7 +39,7 @@ class MarkdownValidator:
         template_tree: DocsMarkdownNode,
         validate_yaml_header: bool,
         validate_md_body: bool,
-        governed_section: Optional[str] = None
+        governed_section: Optional[str] = None,
     ):
         """Initialize markdown validator."""
         self._validate_yaml_header = validate_yaml_header
@@ -119,7 +120,7 @@ class MarkdownValidator:
                 )
                 return False
 
-            for instance_gov_node, template_gov_node in zip(instance_gov_nodes, template_gov_nodes):
+            for instance_gov_node, template_gov_node in zip(instance_gov_nodes, template_gov_nodes, strict=True):
                 instance_keys = instance_gov_node.content.governed_document
                 template_keys = template_gov_node.content.governed_document
 
@@ -148,10 +149,7 @@ class MarkdownValidator:
 
     @classmethod
     def compare_keys(
-        cls,
-        template: Dict[str, Any],
-        candidate: Dict[str, Any],
-        ignore_fields: Optional[Dict[str, Any]] = None
+        cls, template: Dict[str, Any], candidate: Dict[str, Any], ignore_fields: Optional[Dict[str, Any]] = None
     ) -> bool:
         """
         Compare a template dictionary against a candidate as to whether key structure is maintained.
