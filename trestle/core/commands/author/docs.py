@@ -175,7 +175,7 @@ class Docs(AuthorCommonCommand):
             raise TrestleError(f'Required template file: {self.rel_dir(template_file)} does not exist. Exiting.')
         try:
             md_api = MarkdownAPI()
-            validate_body = False if validate_only_header else True
+            validate_body = not validate_only_header
             md_api.load_validator_with_template(
                 template_file, validate_header or validate_only_header, validate_body, heading, True
             )
