@@ -423,6 +423,68 @@ def test_profile_resolver_circular_ref(tmp_trestle_dir: pathlib.Path) -> None:
         _ = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
 
 
+def test_profile_resolver_diamond_dependency(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test that valid diamond profile dependencies resolve correctly.
+
+    This tests the pattern where:
+    - Profile A imports [B, C]
+    - Both B and C import the same profile D
+
+    This is a valid OSCAL pattern (diamond dependency) and should NOT be
+    rejected as a circular reference.
+    """
+    # Setup catalog
+    cat_name = 'nist_cat'
+    cat_path = test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME
+    repo = Repository(tmp_trestle_dir)
+    repo.load_and_import_model(cat_path, cat_name)
+
+    # Create profile D (base profile) that imports the catalog
+    prof_d = gens.generate_sample_model(prof.Profile)
+    prof_d.imports = [prof.Import(href=f'trestle://catalogs/{cat_name}/catalog.json', include_all={})]
+    prof_d.metadata.title = 'Profile D - Base'
+    prof_d_path = tmp_trestle_dir / 'profiles/prof_d/profile.json'
+    prof_d_path.parent.mkdir(parents=True, exist_ok=True)
+    prof_d.oscal_write(prof_d_path)
+
+    # Create profile B that imports profile D
+    prof_b = gens.generate_sample_model(prof.Profile)
+    prof_b.imports = [prof.Import(href='trestle://profiles/prof_d/profile.json', include_all={})]
+    prof_b.metadata.title = 'Profile B'
+    prof_b_path = tmp_trestle_dir / 'profiles/prof_b/profile.json'
+    prof_b_path.parent.mkdir(parents=True, exist_ok=True)
+    prof_b.oscal_write(prof_b_path)
+
+    # Create profile C that also imports profile D (diamond pattern)
+    prof_c = gens.generate_sample_model(prof.Profile)
+    prof_c.imports = [prof.Import(href='trestle://profiles/prof_d/profile.json', include_all={})]
+    prof_c.metadata.title = 'Profile C'
+    prof_c_path = tmp_trestle_dir / 'profiles/prof_c/profile.json'
+    prof_c_path.parent.mkdir(parents=True, exist_ok=True)
+    prof_c.oscal_write(prof_c_path)
+
+    # Create profile A that imports both B and C (creates diamond)
+    prof_a = gens.generate_sample_model(prof.Profile)
+    prof_a.imports = [
+        prof.Import(href='trestle://profiles/prof_b/profile.json', include_all={}),
+        prof.Import(href='trestle://profiles/prof_c/profile.json', include_all={}),
+    ]
+    prof_a.metadata.title = 'Profile A - Diamond Top'
+    prof_a_path = tmp_trestle_dir / 'profiles/prof_a/profile.json'
+    prof_a_path.parent.mkdir(parents=True, exist_ok=True)
+    prof_a.oscal_write(prof_a_path)
+
+    # This should resolve successfully - diamond dependencies are valid
+    resolved_catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
+
+    # Verify resolution succeeded and produced a valid catalog
+    assert resolved_catalog is not None
+    assert resolved_catalog.metadata.title == 'Profile A - Diamond Top'
+    # Should have controls from the catalog (via either B->D or C->D path)
+    cat_interface = CatalogInterface(resolved_catalog)
+    assert cat_interface.get_count_of_controls_in_dict() > 0
+
+
 def test_profile_resolver_no_params(tmp_trestle_dir: pathlib.Path) -> None:
     """Test profile resolver when missing param values."""
     prof_name = 'my_prof'
