@@ -601,6 +601,26 @@ def test_catalog_force_overwrite(tmp_trestle_dir: pathlib.Path, monkeypatch: Mon
     assert fc.files_unchanged()
 
 
+def test_catalog_generate_yaml_header_overwrite(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test catalog generate with -y and overwrite-header-values."""
+    catalog = cat.Catalog.oscal_read(test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME)
+    ModelUtils.save_top_level_model(catalog, tmp_trestle_dir, 'my_catalog', FileContentType.JSON)
+    yaml_header_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
+
+    catalog_generate = f'trestle author catalog-generate -n my_catalog -o md_catalog -y {yaml_header_path} -ohv'
+    test_utils.execute_command_and_assert(catalog_generate, 0, monkeypatch)
+
+    md_path = tmp_trestle_dir / 'md_catalog/ac/ac-1.md'
+    md_api = MarkdownAPI()
+    header, _ = md_api.processor.process_markdown(md_path)
+
+    values = header[const.SET_PARAMS_TAG]['ac-1_prm_5'][const.VALUES]
+    if isinstance(values, list):
+        assert values == ['new values from cli yaml']
+    else:
+        assert values == 'new values from cli yaml'
+
+
 def test_prune_written_controls(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test pruning of written controls."""
     catalog = cat.Catalog.oscal_read(test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME)
