@@ -741,7 +741,7 @@
                             <span class=k>continue</span>
                         <span class=c1># if no label guess the label from the sub-part id</span>
                         <span class=n>part_label</span> <span class=o>=</span> <span class=n>ControlInterface</span><span class=o>.</span><span class=n>get_label</span><span class=p>(</span><span class=n>prt</span><span class=p>)</span>
-                        <span class=n>part_label</span> <span class=o>=</span> <span class=n>prt</span><span class=o>.</span><span class=n>id</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;.&#39;</span><span class=p>)[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=k>if</span> <span class=ow>not</span> <span class=n>part_label</span> <span class=k>else</span> <span class=n>part_label</span>
+                        <span class=n>part_label</span> <span class=o>=</span> <span class=n>part_label</span> <span class=k>if</span> <span class=n>part_label</span> <span class=k>else</span> <span class=n>prt</span><span class=o>.</span><span class=n>id</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;.&#39;</span><span class=p>)[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
 
                         <span class=c1># Determine if this part should be written out</span>
                         <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>_skip_part</span><span class=p>(</span><span class=n>context</span><span class=p>,</span> <span class=n>part_label</span><span class=p>,</span> <span class=n>comp_dict</span><span class=p>):</span>

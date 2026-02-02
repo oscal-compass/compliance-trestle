@@ -536,9 +536,7 @@
 <span class=normal>487</span>
 <span class=normal>488</span>
 <span class=normal>489</span>
-<span class=normal>490</span>
-<span class=normal>491</span>
-<span class=normal>492</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>SplitCmd</span><span class=p>(</span><span class=n>CommandPlusDocs</span><span class=p>):</span>
+<span class=normal>490</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>SplitCmd</span><span class=p>(</span><span class=n>CommandPlusDocs</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Split subcomponents on a trestle model.&quot;&quot;&quot;</span>
 
     <span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;split&#39;</span>
@@ -803,9 +801,7 @@
                     <span class=n>sub_model_items</span><span class=p>[</span><span class=n>prefix</span><span class=p>]</span> <span class=o>=</span> <span class=n>sub_model_item</span>
 
             <span class=c1># process list sub model items</span>
-            <span class=n>count</span> <span class=o>=</span> <span class=mi>0</span>
-            <span class=k>for</span> <span class=n>key</span><span class=p>,</span> <span class=n>sub_model_item</span> <span class=ow>in</span> <span class=n>sub_model_items</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
-                <span class=n>count</span> <span class=o>+=</span> <span class=mi>1</span>
+            <span class=k>for</span> <span class=n>count</span><span class=p>,</span> <span class=p>(</span><span class=n>key</span><span class=p>,</span> <span class=n>sub_model_item</span><span class=p>)</span> <span class=ow>in</span> <span class=nb>enumerate</span><span class=p>(</span><span class=n>sub_model_items</span><span class=o>.</span><span class=n>items</span><span class=p>(),</span> <span class=n>start</span><span class=o>=</span><span class=mi>1</span><span class=p>):</span>
                 <span class=c1># recursively split the sub-model if there are more element paths to traverse</span>
                 <span class=c1># e.g. split component.control-implementations.*</span>
                 <span class=n>require_recursive_split</span> <span class=o>=</span> <span class=p>(</span>
@@ -962,7 +958,9 @@
                 <span class=k>else</span><span class=p>:</span>
                     <span class=n>tracker_map</span><span class=p>[</span><span class=n>root_path</span><span class=p>]</span> <span class=o>=</span> <span class=n>AliasTracker</span><span class=p>(</span><span class=n>aliases</span><span class=o>=</span><span class=p>[</span><span class=n>alias</span><span class=p>])</span>
         <span class=k>return</span> <span class=n>tracker_map</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.commands.split.SplitCmd-attributes>Attributes<a href=#trestle.core.commands.split.SplitCmd-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.commands.split.SplitCmd.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;split&#39;</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.commands.split.SplitCmd.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.commands.split.SplitCmd-functions>Functions<a href=#trestle.core.commands.split.SplitCmd-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.split.SplitCmd.find_aliases_to_strip class="doc doc-heading"> <code class="highlight language-python"><span class=n>find_aliases_to_strip</span><span class=p>(</span><span class=n>element_paths</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small> </span> <a href=#trestle.core.commands.split.SplitCmd.find_aliases_to_strip class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Find list of aliases that need to be stripped as each element written out.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/split.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>475</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.commands.split.SplitCmd-attributes>Attributes<a href=#trestle.core.commands.split.SplitCmd-attributes class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-attribute"> <h6 id=trestle.core.commands.split.SplitCmd.name class="doc doc-heading"> <code class="highlight language-python"><span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;split&#39;</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.commands.split.SplitCmd.name class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> </div> </div> <h5 id=trestle.core.commands.split.SplitCmd-functions>Functions<a href=#trestle.core.commands.split.SplitCmd-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.split.SplitCmd.find_aliases_to_strip class="doc doc-heading"> <code class="highlight language-python"><span class=n>find_aliases_to_strip</span><span class=p>(</span><span class=n>element_paths</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small> </span> <a href=#trestle.core.commands.split.SplitCmd.find_aliases_to_strip class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Find list of aliases that need to be stripped as each element written out.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/split.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>473</span>
+<span class=normal>474</span>
+<span class=normal>475</span>
 <span class=normal>476</span>
 <span class=normal>477</span>
 <span class=normal>478</span>
@@ -977,9 +975,7 @@
 <span class=normal>487</span>
 <span class=normal>488</span>
 <span class=normal>489</span>
-<span class=normal>490</span>
-<span class=normal>491</span>
-<span class=normal>492</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@classmethod</span>
+<span class=normal>490</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@classmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>find_aliases_to_strip</span><span class=p>(</span><span class=bp>cls</span><span class=p>,</span> <span class=n>element_paths</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>ElementPath</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>AliasTracker</span><span class=p>]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Find list of aliases that need to be stripped as each element written out.&quot;&quot;&quot;</span>
     <span class=c1># A given path may be present in several split actions</span>
@@ -1215,7 +1211,9 @@
     <span class=n>actions</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>CreatePathAction</span><span class=p>(</span><span class=n>sub_model_file</span><span class=p>))</span>
     <span class=n>actions</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>WriteFileAction</span><span class=p>(</span><span class=n>sub_model_file</span><span class=p>,</span> <span class=n>Element</span><span class=p>(</span><span class=n>sub_model_item</span><span class=p>,</span> <span class=n>model_type</span><span class=p>),</span> <span class=n>content_type</span><span class=p>))</span>
     <span class=k>return</span> <span class=n>actions</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.split.SplitCmd.split_model class="doc doc-heading"> <code class="highlight language-python"><span class=n>split_model</span><span class=p>(</span><span class=n>model_obj</span><span class=p>,</span> <span class=n>element_paths</span><span class=p>,</span> <span class=n>base_dir</span><span class=p>,</span> <span class=n>content_type</span><span class=p>,</span> <span class=n>root_file_name</span><span class=p>,</span> <span class=n>aliases_to_strip</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small> </span> <a href=#trestle.core.commands.split.SplitCmd.split_model class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Split the model at the provided element paths.</p> <p>It returns a plan for the operation</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/split.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>413</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.commands.split.SplitCmd.split_model class="doc doc-heading"> <code class="highlight language-python"><span class=n>split_model</span><span class=p>(</span><span class=n>model_obj</span><span class=p>,</span> <span class=n>element_paths</span><span class=p>,</span> <span class=n>base_dir</span><span class=p>,</span> <span class=n>content_type</span><span class=p>,</span> <span class=n>root_file_name</span><span class=p>,</span> <span class=n>aliases_to_strip</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small> </span> <a href=#trestle.core.commands.split.SplitCmd.split_model class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Split the model at the provided element paths.</p> <p>It returns a plan for the operation</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/commands/split.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>411</span>
+<span class=normal>412</span>
+<span class=normal>413</span>
 <span class=normal>414</span>
 <span class=normal>415</span>
 <span class=normal>416</span>
@@ -1273,9 +1271,7 @@
 <span class=normal>468</span>
 <span class=normal>469</span>
 <span class=normal>470</span>
-<span class=normal>471</span>
-<span class=normal>472</span>
-<span class=normal>473</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@classmethod</span>
+<span class=normal>471</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@classmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>split_model</span><span class=p>(</span>
     <span class=bp>cls</span><span class=p>,</span>
     <span class=n>model_obj</span><span class=p>:</span> <span class=n>OscalBaseModel</span><span class=p>,</span>
@@ -1528,9 +1524,7 @@
 <span class=normal>406</span>
 <span class=normal>407</span>
 <span class=normal>408</span>
-<span class=normal>409</span>
-<span class=normal>410</span>
-<span class=normal>411</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@classmethod</span>
+<span class=normal>409</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@classmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>split_model_at_path_chain</span><span class=p>(</span>
     <span class=bp>cls</span><span class=p>,</span>
     <span class=n>model_obj</span><span class=p>:</span> <span class=n>OscalBaseModel</span><span class=p>,</span>
@@ -1647,9 +1641,7 @@
                 <span class=n>sub_model_items</span><span class=p>[</span><span class=n>prefix</span><span class=p>]</span> <span class=o>=</span> <span class=n>sub_model_item</span>
 
         <span class=c1># process list sub model items</span>
-        <span class=n>count</span> <span class=o>=</span> <span class=mi>0</span>
-        <span class=k>for</span> <span class=n>key</span><span class=p>,</span> <span class=n>sub_model_item</span> <span class=ow>in</span> <span class=n>sub_model_items</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
-            <span class=n>count</span> <span class=o>+=</span> <span class=mi>1</span>
+        <span class=k>for</span> <span class=n>count</span><span class=p>,</span> <span class=p>(</span><span class=n>key</span><span class=p>,</span> <span class=n>sub_model_item</span><span class=p>)</span> <span class=ow>in</span> <span class=nb>enumerate</span><span class=p>(</span><span class=n>sub_model_items</span><span class=o>.</span><span class=n>items</span><span class=p>(),</span> <span class=n>start</span><span class=o>=</span><span class=mi>1</span><span class=p>):</span>
             <span class=c1># recursively split the sub-model if there are more element paths to traverse</span>
             <span class=c1># e.g. split component.control-implementations.*</span>
             <span class=n>require_recursive_split</span> <span class=o>=</span> <span class=p>(</span>

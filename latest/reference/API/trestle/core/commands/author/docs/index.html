@@ -470,7 +470,7 @@
             <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Required template file: </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>rel_dir</span><span class=p>(</span><span class=n>template_file</span><span class=p>)</span><span class=si>}</span><span class=s1> does not exist. Exiting.&#39;</span><span class=p>)</span>
         <span class=k>try</span><span class=p>:</span>
             <span class=n>md_api</span> <span class=o>=</span> <span class=n>MarkdownAPI</span><span class=p>()</span>
-            <span class=n>validate_body</span> <span class=o>=</span> <span class=kc>False</span> <span class=k>if</span> <span class=n>validate_only_header</span> <span class=k>else</span> <span class=kc>True</span>
+            <span class=n>validate_body</span> <span class=o>=</span> <span class=ow>not</span> <span class=n>validate_only_header</span>
             <span class=n>md_api</span><span class=o>.</span><span class=n>load_validator_with_template</span><span class=p>(</span>
                 <span class=n>template_file</span><span class=p>,</span> <span class=n>validate_header</span> <span class=ow>or</span> <span class=n>validate_only_header</span><span class=p>,</span> <span class=n>validate_body</span><span class=p>,</span> <span class=n>heading</span><span class=p>,</span> <span class=kc>True</span>
             <span class=p>)</span>
@@ -738,7 +738,7 @@
         <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Required template file: </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>rel_dir</span><span class=p>(</span><span class=n>template_file</span><span class=p>)</span><span class=si>}</span><span class=s1> does not exist. Exiting.&#39;</span><span class=p>)</span>
     <span class=k>try</span><span class=p>:</span>
         <span class=n>md_api</span> <span class=o>=</span> <span class=n>MarkdownAPI</span><span class=p>()</span>
-        <span class=n>validate_body</span> <span class=o>=</span> <span class=kc>False</span> <span class=k>if</span> <span class=n>validate_only_header</span> <span class=k>else</span> <span class=kc>True</span>
+        <span class=n>validate_body</span> <span class=o>=</span> <span class=ow>not</span> <span class=n>validate_only_header</span>
         <span class=n>md_api</span><span class=o>.</span><span class=n>load_validator_with_template</span><span class=p>(</span>
             <span class=n>template_file</span><span class=p>,</span> <span class=n>validate_header</span> <span class=ow>or</span> <span class=n>validate_only_header</span><span class=p>,</span> <span class=n>validate_body</span><span class=p>,</span> <span class=n>heading</span><span class=p>,</span> <span class=kc>True</span>
         <span class=p>)</span>
