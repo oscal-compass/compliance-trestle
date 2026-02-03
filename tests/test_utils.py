@@ -352,11 +352,11 @@ def generate_control_list(label: str, count: int) -> List[cat.Control]:
     return controls
 
 
-def generate_param_list(label: str, count: int) -> List[cat.Control]:
+def generate_param_list(label: str, count: int) -> List[common.Parameter1]:
     """Generate a list of params with indexed names."""
-    params: List[common.Parameter] = []
+    params: List[common.Parameter1] = []
     for ii in range(count):
-        param = generators.generate_sample_model(common.Parameter, True)
+        param = generators.generate_sample_model(common.Parameter1, True)
         param.id = f'{label}-{ii + 1}'
         param.label = f'label-{param.id}'
         param.props[0].name = f'name-{param.id}'
@@ -376,17 +376,26 @@ def generate_complex_catalog(stem: str = '') -> cat.Catalog:
     group b has subgroup ba with ba-1, ba-2
     the catalog has its own controls stem-1, stem-2, stem-3 and test-1
     """
-    group_a = generators.generate_sample_model(cat.Group, True)
+    # group_a has controls (Group2)
+    group_a = generators.generate_sample_model(cat.Group2, True)
     group_a.id = f'{stem}a'
     group_a.controls = generate_control_list(group_a.id, 4)
-    group_b = generators.generate_sample_model(cat.Group, True)
-    group_b.id = f'{stem}b'
-    group_b.controls = generate_control_list(group_b.id, 3)
-    group_b.controls[2].controls = generate_control_list(f'{group_b.id}-2', 3)
-    group_ba = generators.generate_sample_model(cat.Group, True)
+
+    # group_b_controls has the controls for b (Group2)
+    group_b_controls = generators.generate_sample_model(cat.Group2, True)
+    group_b_controls.id = f'{stem}b-controls'
+    group_b_controls.controls = generate_control_list(f'{stem}b', 3)
+    group_b_controls.controls[2].controls = generate_control_list(f'{stem}b-2', 3)
+
+    # group_ba has controls (Group2)
+    group_ba = generators.generate_sample_model(cat.Group2, True)
     group_ba.id = f'{stem}ba'
     group_ba.controls = generate_control_list(group_ba.id, 2)
-    group_b.groups = [group_ba]
+
+    # group_b is a container with nested groups (Group1)
+    group_b = generators.generate_sample_model(cat.Group1, True)
+    group_b.id = f'{stem}b'
+    group_b.groups = [group_b_controls, group_ba]
 
     catalog = generators.generate_sample_model(cat.Catalog, True)
     catalog.controls = generate_control_list(f'{stem}cat', 3)
@@ -394,7 +403,7 @@ def generate_complex_catalog(stem: str = '') -> cat.Catalog:
 
     test_control = generators.generate_sample_model(cat.Control, False)
     test_control.id = f'{stem}test-1'
-    test_control.params = [common.Parameter(id=f'{test_control.id}_prm_1', values=['Default', 'Values'])]
+    test_control.params = [common.Parameter1(id=f'{test_control.id}_prm_1', values=['Default', 'Values'])]
     test_control.parts = [
         common.Part(
             id=f'{test_control.id}_smt',
@@ -645,7 +654,7 @@ def execute_command_and_assert(command: str, return_code: int, monkeypatch: Monk
 def create_profile_in_trestle_dir(trestle_root: pathlib.Path, catalog_name: str, profile_name: str) -> None:
     """Create a profile in the trestle dir with href to load all from specified catalog."""
     profile = generators.generate_sample_model(prof.Profile)
-    import_ = prof.Import(href=f'{const.TRESTLE_HREF_HEADING}catalogs/{catalog_name}/catalog.json', include_all={})
+    import_ = prof.Import1(href=f'{const.TRESTLE_HREF_HEADING}catalogs/{catalog_name}/catalog.json', include_all={})
     profile.imports = [import_]
     ModelUtils.save_top_level_model(profile, trestle_root, profile_name, FileContentType.JSON)
 
@@ -692,9 +701,14 @@ def controls_equivalent(a: cat.Control, b: cat.Control, strong: bool = True) -> 
         if n_params_a != n_params_b:
             logger.error(f'control {a.id} has different param counts: {n_params_a} vs. {n_params_b}')
             return False
-    a_param_values = [param.values for param in list_utils.as_list(a.params) if param.values is not None]
+    # Handle Parameter Union - Parameter1 has values, Parameter2 has select
+    a_param_values = [
+        param.values for param in list_utils.as_list(a.params) if hasattr(param, 'values') and param.values is not None
+    ]
     a_vals = [param_value for param_values in a_param_values for param_value in param_values]
-    b_param_values = [param.values for param in list_utils.as_list(b.params) if param.values is not None]
+    b_param_values = [
+        param.values for param in list_utils.as_list(b.params) if hasattr(param, 'values') and param.values is not None
+    ]
     b_vals = [param_value for param_values in b_param_values for param_value in param_values]
 
     # sub-controls are not checked here

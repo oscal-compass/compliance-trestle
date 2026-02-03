@@ -40,8 +40,8 @@ from trestle.common.model_utils import ModelUtils
 from trestle.core import generators
 from trestle.core.commands import create
 from trestle.core.models.plans import Plan
-from trestle.oscal.catalog import Catalog, Group
-from trestle.oscal.profile import Modify, Profile, SetParameter
+from trestle.oscal.catalog import Catalog, Group2
+from trestle.oscal.profile import Modify, Profile, SetParameters
 
 
 def test_import_cmd(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
@@ -75,7 +75,7 @@ def test_import_profile_with_optional_added(tmp_trestle_dir: pathlib.Path, monke
     # create generic profile
     profile_data = generators.generate_sample_model(trestle.oscal.profile.Profile)
     # create special parameter and add it to profile
-    set_parameter = SetParameter(param_id='my_param', depends_on='my_depends')
+    set_parameter = SetParameters(param_id='my_param', depends_on='my_depends')
     modify = Modify(set_parameters=[set_parameter])
     profile_data.modify = modify
     # write it to place outside trestle directory
@@ -170,7 +170,7 @@ def test_import_non_top_level_element(tmp_trestle_dir: pathlib.Path) -> None:
     # Input file, catalog:
     rand_str = ''.join(secrets.choice(string.ascii_letters) for x in range(16))
     groups_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
-    groups_data = generators.generate_sample_model(Group)
+    groups_data = generators.generate_sample_model(Group2)
     groups_data.oscal_write(pathlib.Path(groups_file))
     args = argparse.Namespace(trestle_root=tmp_trestle_dir, file=groups_file, output='imported', verbose=1)
     i = importcmd.ImportCmd()

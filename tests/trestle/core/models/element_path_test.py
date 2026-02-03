@@ -196,7 +196,7 @@ def test_make_relative():
         ('catalog.controls.*', catalog.Control, None, False),
         ('catalog.controls.0', catalog.Control, None, False),
         ('catalog.controls.1', catalog.Control, None, False),
-        ('group.controls.*.parts.part', common.Part, catalog.Group, False),
+        ('group.controls.*.parts.part', common.Part, catalog.Group2, False),
         ('catalog.*.roles.role', common.Role, None, True),
         ('metadata.roles.role', common.Role, None, True),
         ('catalog.controls', List[catalog.Control], None, False),

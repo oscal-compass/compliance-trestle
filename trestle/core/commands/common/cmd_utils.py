@@ -38,7 +38,18 @@ def model_type_is_too_granular(model_type: Type[Any]) -> bool:
         root_type = root_field.outer_type_ if hasattr(root_field, 'outer_type_') else root_field.type_
         if type_utils.is_collection_field_type(root_type):
             return False
-        # __root__ with non-collection types (like StringDatatype) are too granular
+        # Check if __root__ contains a Union type of OscalBaseModel variants
+        # These are splittable (e.g., Group1|Group2, Parameter1|Parameter2)
+        from typing import get_origin, get_args
+        import types
+
+        origin = get_origin(root_type)
+        if origin is Union or (hasattr(types, 'UnionType') and origin is types.UnionType):
+            union_args = get_args(root_type)
+            # If any variant is an OscalBaseModel, it's splittable
+            if any(isinstance(arg, type) and issubclass(arg, OscalBaseModel) for arg in union_args):
+                return False
+        # __root__ with non-collection, non-Union types (like StringDatatype) are too granular
         return True
     if model_type.__name__ in ['str', 'ConstrainedStrValue', 'int', 'float', 'datetime']:
         return True

@@ -120,7 +120,7 @@ class CatalogInterface:
         """Clear the control set params."""
         self._control_comp_set_params = {}
 
-    def _generate_group_id(self, group: cat.Group) -> str:
+    def _generate_group_id(self, group: cat.Group1 | cat.Group2) -> str:
         """Generate sequential group ids."""
         group_id = f'trestle_group_{self._generate_group_index:04d}'
         self._generate_group_index += 1
@@ -164,10 +164,12 @@ class CatalogInterface:
                 control_dict[sub_control.id] = control_handle
                 self._add_sub_controls(control_handle, control_dict, control_path)
 
-    def _add_group_controls(self, group: cat.Group, control_dict: Dict[str, ControlHandle], path: List[str]) -> None:
+    def _add_group_controls(
+        self, group: cat.Group1 | cat.Group2, control_dict: Dict[str, ControlHandle], path: List[str]
+    ) -> None:
         """Add all controls in the group recursively, including sub groups and sub controls."""
         group.id = self._generate_group_id(group) if group.id is None else group.id
-        if group.controls is not None:
+        if hasattr(group, 'controls') and group.controls is not None:
             group_path = path[:]
             if not group_path or group_path[-1] != group.id:
                 group_path.append(group.id)
@@ -182,14 +184,12 @@ class CatalogInterface:
                 )
                 control_dict[control.id] = control_handle
                 self._add_sub_controls(control_handle, control_dict, group_path)
-        if group.groups is not None:
+        if hasattr(group, 'groups') and group.groups is not None:
             group_path = path[:]
             group_path.append(group.id)
             for sub_group in group.groups:
-                new_path = group_path[:]
                 sub_group.id = self._generate_group_id(sub_group) if sub_group.id is None else sub_group.id
-                new_path.append(sub_group.id)
-                self._add_group_controls(sub_group, control_dict, new_path)
+                self._add_group_controls(sub_group, control_dict, group_path)
 
     def _create_control_dict(self) -> Dict[str, ControlHandle]:
         control_dict: Dict[str, CatalogInterface.ControlHandle] = {}
@@ -226,16 +226,16 @@ class CatalogInterface:
         return new_list
 
     @staticmethod
-    def _get_all_controls_in_group(group: cat.Group, recurse: bool) -> List[cat.Control]:
+    def _get_all_controls_in_group(group: cat.Group1 | cat.Group2, recurse: bool) -> List[cat.Control]:
         """
         Create a list of all controls in this group.
 
         recurse specifies to recurse within controls, but groups are always recursed
         """
         controls: List[cat.Control] = []
-        if group.controls:
+        if hasattr(group, 'controls') and group.controls:
             controls.extend(CatalogInterface._get_all_controls_in_list(group.controls, recurse))
-        for sub_group in as_list(group.groups):
+        for sub_group in as_list(getattr(group, 'groups', None)):
             controls.extend(CatalogInterface._get_all_controls_in_group(sub_group, recurse))
         return controls
 
@@ -408,13 +408,13 @@ class CatalogInterface:
         """Get all the group id's as a list of sorted strings."""
         return sorted(filter(lambda id_: id_, list({control.group_id for control in self._control_dict.values()})))
 
-    def get_all_groups_from_catalog(self) -> List[cat.Group]:
+    def get_all_groups_from_catalog(self) -> List[cat.Group1 | cat.Group2]:
         """
         Retrieve all groups in the catalog sorted by group_id.
 
         This ignores controls that are direct children of the catalog.
         """
-        groups: List[cat.Group] = []
+        groups: List[cat.Group1 | cat.Group2] = []
         if self._catalog.groups:
             for my_group in self._catalog.groups:
                 for res in CatalogInterface._get_groups_from_group(my_group):
@@ -473,9 +473,9 @@ class CatalogInterface:
             self.delete_control(id_)
 
     @staticmethod
-    def _get_groups_from_group(group: cat.Group) -> Iterator[cat.Group]:
+    def _get_groups_from_group(group: cat.Group1 | cat.Group2) -> Iterator[cat.Group1 | cat.Group2]:
         yield group
-        if group.groups:
+        if hasattr(group, 'groups') and group.groups:
             for new_group in group.groups:
                 for res in CatalogInterface._get_groups_from_group(new_group):
                     yield res
@@ -554,15 +554,18 @@ class CatalogInterface:
                 new_list.append(new_control)
         return new_list
 
-    def _update_all_controls_in_group(self, group: cat.Group) -> None:
+    def _update_all_controls_in_group(self, group: cat.Group1 | cat.Group2) -> None:
         """Given a group of controls, create fresh version pulled from the control dict."""
-        group.controls = self._update_all_controls_in_list(as_list(group.controls))
-        group.controls = none_if_empty(group.controls)
-        new_groups: List[cat.Group] = []
-        for sub_group in as_list(group.groups):
-            self._update_all_controls_in_group(sub_group)
-            new_groups.append(sub_group)
-        group.groups = none_if_empty(new_groups)
+        if hasattr(group, 'controls'):
+            group.controls = self._update_all_controls_in_list(as_list(group.controls))
+            group.controls = none_if_empty(group.controls)
+        # Update sub-groups if it's a Group1 (has groups)
+        if hasattr(group, 'groups'):
+            new_groups: List[cat.Group1 | cat.Group2] = []
+            for sub_group in as_list(group.groups):
+                self._update_all_controls_in_group(sub_group)
+                new_groups.append(sub_group)
+            group.groups = none_if_empty(new_groups)
 
     def _insert_control_in_catalog(self, control_handle: ControlHandle) -> None:
         """Insert the control into the catalog based on its path."""
@@ -581,11 +584,14 @@ class CatalogInterface:
                     raise TrestleError(f'No controls found in catalog for group {group.id}')
             node.title = control_handle.group_title
             node.class_ = control_handle.group_class
-        node.controls = delete_item_from_list(
-            as_list(node.controls), control_handle.control.id, lambda control: control.id
-        )
-        node.controls.append(control_handle.control)
-        node.controls = none_if_empty(sorted(node.controls, key=lambda control: ControlInterface.get_sort_id(control)))
+        if hasattr(node, 'controls'):
+            node.controls = delete_item_from_list(
+                as_list(node.controls), control_handle.control.id, lambda control: control.id
+            )
+            node.controls.append(control_handle.control)
+            node.controls = none_if_empty(
+                sorted(node.controls, key=lambda control: ControlInterface.get_sort_id(control))
+            )
 
     def update_catalog_controls(self) -> None:
         """
@@ -731,7 +737,8 @@ class CatalogInterface:
         all_set_params = self.get_control_comp_set_params(control_id)
         for comp_name, param_list in all_set_params.items():
             for param in param_list:
-                param_vals = none_if_empty(as_list(param.values))
+                # Parameter is a Union type - check for values field before accessing
+                param_vals = none_if_empty(as_list(param.values)) if hasattr(param, 'values') else None
                 rule_name = deep_get(param_id_rule_name_map, [comp_name, param.param_id], None)
                 if rule_name:
                     param_dict = {'name': param.param_id}
@@ -820,10 +827,20 @@ class CatalogInterface:
 
         This is a simple way to get group info (title etc.) given only group id.
         It is not intended for high performance loops.  Use only as needed.
+
+        In OSCAL 1.2.0, Group1 can contain Group2 objects. If searching for a Group1,
+        we need to find controls in its child Group2 objects.
         """
         for control_id, control_handle in self._control_dict.items():
+            # First try exact match on group_id
             if control_handle.group_id == group_id:
                 return control_id, control_handle
+
+        # If no exact match, check if group_id is in the group_path (parent group)
+        for control_id, control_handle in self._control_dict.items():
+            if group_id in control_handle.group_path:
+                return control_id, control_handle
+
         raise TrestleError(f'No controls found for group {group_id}')
 
     def _add_control_imp_comp_info(

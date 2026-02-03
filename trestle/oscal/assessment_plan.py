@@ -35,26 +35,13 @@ from pydantic.v1 import AnyUrl, EmailStr, Extra, Field, conint, constr, validato
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
 import trestle.oscal.common as common
+from trestle.oscal.common import AssessmentSubject1
+from trestle.oscal.common import AssessmentSubject2
 from trestle.oscal.common import RelatedObservation
 from trestle.oscal.common import StringDatatype
 from trestle.oscal.common import SystemComponent
 from trestle.oscal.common import TaskValidValues
 from trestle.oscal.common import TokenDatatype
-
-
-class TermsAndConditions(OscalBaseModel):
-    """
-    Used to define various terms and conditions under which an assessment, described by the plan, can be performed. Each child part defines a different type of term or condition.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    parts: list[common.AssessmentPart] | None = Field(None)
-
-
-class Parameter(OscalBaseModel):
-    __root__: OscalApOscalControlCommonParameter1 | OscalApOscalControlCommonParameter2 = Field(..., description='Parameters provide a mechanism for the dynamic assignment of value(s) in a control.', title='Parameter')
 
 
 class LocalDefinitions(OscalBaseModel):
@@ -71,6 +58,17 @@ class LocalDefinitions(OscalBaseModel):
     objectives_and_methods: list[common.LocalObjective] | None = Field(None, alias='objectives-and-methods')
     activities: list[common.Activity] | None = Field(None)
     remarks: str | None = None
+
+
+class TermsAndConditions(OscalBaseModel):
+    """
+    Used to define various terms and conditions under which an assessment, described by the plan, can be performed. Each child part defines a different type of term or condition.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    parts: list[common.AssessmentPart] | None = Field(None)
 
 
 class AssessmentPlan(OscalBaseModel):

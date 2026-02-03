@@ -86,8 +86,10 @@ class GenericByComponent(TrestleBaseModel):
         """Convert to ssp format."""
         set_params = []
         for set_param in as_list(self.set_parameters):
+            # SetParameter may be a Union type - check for values field
+            values = set_param.values if hasattr(set_param, 'values') else None
             new_set_param = ossp.SetParameter(
-                **{'param-id': set_param.param_id, 'values': set_param.values, 'remarks': set_param.remarks}
+                **{'param-id': set_param.param_id, 'values': values, 'remarks': set_param.remarks}
             )
             set_params.append(new_set_param)
         set_params = none_if_empty(set_params)
@@ -244,8 +246,8 @@ class GenericComponent(TrestleBaseModel):
             **{
                 'uuid': uuid,
                 'type': const.REPLACE_ME,
-                'title': '',
-                'description': '',
+                'title': const.REPLACE_ME,
+                'description': const.REPLACE_ME,
                 'status': status,
                 'purpose': None,
                 'props': None,
@@ -388,7 +390,7 @@ class GenericControlImplementation(TrestleBaseModel):
             'uuid': uuid,
             'control-id': const.REPLACE_ME,
             'source': const.REPLACE_ME,
-            'description': '',
+            'description': const.REPLACE_ME,
             'implemented-requirements': imp_reqs,
         }
         return GenericControlImplementation(**class_dict)

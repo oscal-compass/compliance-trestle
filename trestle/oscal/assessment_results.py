@@ -44,48 +44,16 @@ from trestle.oscal.common import TaskValidValues
 from trestle.oscal.common import TokenDatatype
 
 
-class Parameter(OscalBaseModel):
-    __root__: OscalArOscalControlCommonParameter1 | OscalArOscalControlCommonParameter2 = Field(..., description='Parameters provide a mechanism for the dynamic assignment of value(s) in a control.', title='Parameter')
-
-
-class LocalDefinitions1(OscalBaseModel):
+class Attestation(OscalBaseModel):
     """
-    Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.
+    A set of textual statements, typically written by the assessor.
     """
 
     class Config:
         extra = Extra.forbid
 
-    components: list[common.SystemComponent] | None = Field(None)
-    inventory_items: list[common.InventoryItem] | None = Field(None, alias='inventory-items')
-    users: list[common.SystemUser] | None = Field(None)
-    assessment_assets: common.AssessmentAssets | None = Field(None, alias='assessment-assets')
-    tasks: list[common.Task] | None = Field(None)
-
-
-class LocalDefinitions(OscalBaseModel):
-    """
-    Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    objectives_and_methods: list[common.LocalObjective] | None = Field(None, alias='objectives-and-methods')
-    activities: list[common.Activity] | None = Field(None)
-    remarks: str | None = None
-
-
-class ImportAp(OscalBaseModel):
-    """
-    Used by assessment-results to import information about the original plan for assessing the system.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    href: str = Field(..., description='A resolvable URL reference to the assessment plan governing the assessment activities.', title='Assessment Plan Reference')
-    remarks: str | None = None
+    responsible_parties: list[common.ResponsibleParty] | None = Field(None, alias='responsible-parties')
+    parts: list[common.AssessmentPart] = Field(...)
 
 
 class Entry1(OscalBaseModel):
@@ -112,16 +80,44 @@ class Entry1(OscalBaseModel):
     remarks: str | None = None
 
 
-class Attestation(OscalBaseModel):
+class ImportAp(OscalBaseModel):
     """
-    A set of textual statements, typically written by the assessor.
+    Used by assessment-results to import information about the original plan for assessing the system.
     """
 
     class Config:
         extra = Extra.forbid
 
-    responsible_parties: list[common.ResponsibleParty] | None = Field(None, alias='responsible-parties')
-    parts: list[common.AssessmentPart] = Field(...)
+    href: str = Field(..., description='A resolvable URL reference to the assessment plan governing the assessment activities.', title='Assessment Plan Reference')
+    remarks: str | None = None
+
+
+class LocalDefinitions(OscalBaseModel):
+    """
+    Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    objectives_and_methods: list[common.LocalObjective] | None = Field(None, alias='objectives-and-methods')
+    activities: list[common.Activity] | None = Field(None)
+    remarks: str | None = None
+
+
+class LocalDefinitions1(OscalBaseModel):
+    """
+    Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    components: list[common.SystemComponent] | None = Field(None)
+    inventory_items: list[common.InventoryItem] | None = Field(None, alias='inventory-items')
+    users: list[common.SystemUser] | None = Field(None)
+    assessment_assets: common.AssessmentAssets | None = Field(None, alias='assessment-assets')
+    tasks: list[common.Task] | None = Field(None)
 
 
 class AssessmentLog(OscalBaseModel):

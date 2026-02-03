@@ -104,7 +104,7 @@ class CatalogReader:
         This will overwrite the existing groups and controls in the catalog.
         """
         id_map = CatalogInterface._get_group_ids_and_dirs(md_path)
-        groups: List[cat.Group] = []
+        groups: List[cat.Group1 | cat.Group2] = []
         # read each group dir
         for group_id, group_dir in id_map.items():
             control_list_raw = []
@@ -131,7 +131,9 @@ class CatalogReader:
                     logger.warning(
                         f'No group title found in controls for group {group_id}.  The title will be recovered if assembling into an existing catalog with the group title defined.'  # noqa E501
                     )
-                new_group = cat.Group(id=group_id, title=group_title)
+                    # Use a placeholder title if none is provided, as Group2 requires a non-empty title
+                    group_title = f'Group {group_id}'
+                new_group = cat.Group2(id=group_id, title=group_title)
                 new_group.controls = none_if_empty(control_list)
                 groups.append(new_group)
             else:

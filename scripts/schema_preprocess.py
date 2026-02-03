@@ -145,7 +145,7 @@ def patch_allof(fixup_dir_path: Path) -> None:
 
 def extract_inline_array_items(fixup_dir_path: Path) -> None:
     """Extract inline array item definitions and create proper class definitions.
-    
+
     In OSCAL 1.2.0, many array items are defined inline rather than as separate definitions.
     This function extracts them and creates proper definitions to maintain backward compatibility.
     Specifically handles 'related-observations' to start.
@@ -153,38 +153,38 @@ def extract_inline_array_items(fixup_dir_path: Path) -> None:
     for full_name in fixup_dir_path.glob(schema_file_name_search_template):
         model_name = str(full_name)
         data = json_data_get(model_name)
-        
+
         # Track the single definition name we create per schema for related-observation
         related_observation_def_name = None
-        
+
         # Iterate through all definitions
         for def_name, def_content in list(data['definitions'].items()):
             if 'properties' not in def_content:
                 continue
-                
+
             # Look specifically for related-observations property
             if 'related-observations' not in def_content['properties']:
                 continue
-                
+
             prop_content = def_content['properties']['related-observations']
-            
+
             # Check if this is an array with inline items definition
             if prop_content.get('type') != 'array':
                 continue
-                
+
             if 'items' not in prop_content:
                 continue
-                
+
             items = prop_content['items']
-            
+
             # Skip if items already has a $ref
             if '$ref' in items:
                 continue
-            
+
             # Check if items has the structure we expect (title "Related Observation")
             if items.get('title') != 'Related Observation':
                 continue
-            
+
             # If we haven't created the definition yet, create it now
             if related_observation_def_name is None:
                 # Use the assessment-common prefix if available, otherwise use the first one we find
@@ -203,17 +203,17 @@ def extract_inline_array_items(fixup_dir_path: Path) -> None:
                         new_def_name = f'{assessment_common_prefix}:related-observation'
                     else:
                         new_def_name = f'{prefix}:related-observation'
-                
+
                 # Extract the inline definition
                 inline_def = dict(items)
-                
+
                 # Add it as a new definition
                 data['definitions'][new_def_name] = inline_def
                 related_observation_def_name = new_def_name
-                
+
             # Replace the inline definition with a reference to the single definition
             prop_content['items'] = {'$ref': f'#/definitions/{related_observation_def_name}'}
-            
+
         json_data_put(model_name, data)
 
 
@@ -229,6 +229,7 @@ def patch_schemas(fixup_dir_path: Path) -> None:
         patch_poam_item(model_name, 'related-findings')
         patch_poam_item(model_name, 'related-observations')
         patch_profile(model_name)
+        patch_profile_group_description(model_name)
         create_refs(model_name)
 
 
@@ -275,6 +276,86 @@ def patch_finding_target(model_name: str) -> None:
         u3 = 'objective_status'
         data['definitions'][k1][k2][u3] = value
         logger.debug(f'patch: {model_name} {k1}.{k2}.{k3} -> {k1}.{k2}.{u3}')
+        json_data_put(model_name, data)
+
+
+def patch_profile_group_description(model_name: str) -> None:
+    """Normalize profile Group descriptions to match catalog.
+
+    The profile and catalog schemas have trivial differences in Group descriptions.
+    We normalize the profile descriptions to match catalog so the classes can be merged.
+
+    Expected differences:
+    1. Main description: profile has "(selected)" that catalog doesn't
+    2. id field: profile has shorter description
+    3. title field: profile has different wording
+
+    Raises exception if unexpected values are found.
+    """
+    if 'profile' not in model_name:
+        return
+
+    data = json_data_get(model_name)
+    modified = False
+
+    # Expected catalog values (what we want to match)
+    catalog_main_desc = 'A group of controls, or of groups of controls.'
+    catalog_id_desc = 'Identifies the group for the purpose of cross-linking within the defining instance or from other instances that reference the catalog.'
+    catalog_title_desc = 'A name given to the group, which may be used by a tool for display and navigation.'
+
+    # Expected profile values (what we're replacing)
+    profile_main_desc = 'A group of (selected) controls or of groups of controls.'
+    profile_id_desc = 'Identifies the group.'
+    profile_title_desc = 'A name to be given to the group for use in display.'
+
+    for key in data['definitions'].keys():
+        if not key.endswith(':group'):
+            continue
+
+        # 1. Check and normalize main Group description
+        if 'description' in data['definitions'][key]:
+            current_desc = data['definitions'][key]['description']
+            if current_desc == profile_main_desc:
+                data['definitions'][key]['description'] = catalog_main_desc
+                logger.info(f'patch: {model_name} {key} main description: profile -> catalog')
+                modified = True
+            elif current_desc != catalog_main_desc:
+                raise ValueError(f'Unexpected main description in {key}: {current_desc}')
+
+        # 2 & 3. Check and normalize property descriptions within anyOf variants
+        if 'anyOf' in data['definitions'][key]:
+            for variant_idx, variant in enumerate(data['definitions'][key]['anyOf']):
+                if 'properties' not in variant:
+                    continue
+
+                # Check and normalize 'id' field description
+                if 'id' in variant['properties'] and 'description' in variant['properties']['id']:
+                    current_id_desc = variant['properties']['id']['description']
+                    if current_id_desc == profile_id_desc:
+                        variant['properties']['id']['description'] = catalog_id_desc
+                        logger.info(
+                            f'patch: {model_name} {key} variant[{variant_idx}] id description: profile -> catalog'
+                        )
+                        modified = True
+                    elif current_id_desc != catalog_id_desc:
+                        raise ValueError(
+                            f'Unexpected id description in {key} variant[{variant_idx}]: {current_id_desc}'
+                        )
+
+                # Check and normalize 'title' field description
+                if 'title' in variant['properties'] and 'description' in variant['properties']['title']:
+                    current_title_desc = variant['properties']['title']['description']
+                    if current_title_desc == profile_title_desc:
+                        variant['properties']['title']['description'] = catalog_title_desc
+                        logger.info(
+                            f'patch: {model_name} {key} variant[{variant_idx}] title description: profile -> catalog'
+                        )
+                        modified = True
+                    elif current_title_desc != catalog_title_desc:
+                        raise ValueError(
+                            f'Unexpected title description in {key} variant[{variant_idx}]: {current_title_desc}'
+                        )
+    if modified:
         json_data_put(model_name, data)
 
 

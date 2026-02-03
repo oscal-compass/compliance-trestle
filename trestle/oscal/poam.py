@@ -67,10 +67,6 @@ class Origination(OscalBaseModel):
     actors: list[common.OriginActor] = Field(...)
 
 
-class Parameter(OscalBaseModel):
-    __root__: OscalPoamOscalControlCommonParameter1 | OscalPoamOscalControlCommonParameter2 = Field(..., description='Parameters provide a mechanism for the dynamic assignment of value(s) in a control.', title='Parameter')
-
-
 class PoamItem(OscalBaseModel):
     """
     Describes an individual POA&M item.

@@ -39,6 +39,41 @@ from trestle.oscal.common import StringDatatype
 from trestle.oscal.common import URIReferenceDatatype
 
 
+class DefinedComponentTypeValidValues(Enum):
+    interconnection = 'interconnection'
+    software = 'software'
+    hardware = 'hardware'
+    service = 'service'
+    policy = 'policy'
+    physical = 'physical'
+    process_procedure = 'process-procedure'
+    plan = 'plan'
+    guidance = 'guidance'
+    standard = 'standard'
+    validation = 'validation'
+
+
+class ImportComponentDefinition(OscalBaseModel):
+    """
+    Loads a component definition from another resource.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+
+class IncorporatesComponent(OscalBaseModel):
+    """
+    The collection of components comprising this capability.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    component_uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(..., alias='component-uuid', description='A machine-oriented identifier reference to a component.', title='Component Reference')
+    description: str = Field(..., description='A description of the component, including information about its function.', title='Component Description')
+
+
 class Statement(OscalBaseModel):
     """
     Identifies which statements within a control are addressed.
@@ -54,31 +89,6 @@ class Statement(OscalBaseModel):
     links: list[common.Link] | None = Field(None)
     responsible_roles: list[common.ResponsibleRole] | None = Field(None, alias='responsible-roles')
     remarks: str | None = None
-
-
-class Parameter(OscalBaseModel):
-    __root__: OscalComponentDefinitionOscalControlCommonParameter1 | OscalComponentDefinitionOscalControlCommonParameter2 = Field(..., description='Parameters provide a mechanism for the dynamic assignment of value(s) in a control.', title='Parameter')
-
-
-class IncorporatesComponent(OscalBaseModel):
-    """
-    The collection of components comprising this capability.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    component_uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(..., alias='component-uuid', description='A machine-oriented identifier reference to a component.', title='Component Reference')
-    description: str = Field(..., description='A description of the component, including information about its function.', title='Component Description')
-
-
-class ImportComponentDefinition(OscalBaseModel):
-    """
-    Loads a component definition from another resource.
-    """
-
-    class Config:
-        extra = Extra.forbid
 
 
 class ImplementedRequirement(OscalBaseModel):
@@ -100,20 +110,6 @@ class ImplementedRequirement(OscalBaseModel):
     remarks: str | None = None
 
 
-class DefinedComponentTypeValidValues(Enum):
-    interconnection = 'interconnection'
-    software = 'software'
-    hardware = 'hardware'
-    service = 'service'
-    policy = 'policy'
-    physical = 'physical'
-    process_procedure = 'process-procedure'
-    plan = 'plan'
-    guidance = 'guidance'
-    standard = 'standard'
-    validation = 'validation'
-
-
 class ControlImplementation(OscalBaseModel):
     """
     Defines how the component or capability supports a set of controls.
@@ -129,24 +125,6 @@ class ControlImplementation(OscalBaseModel):
     links: list[common.Link] | None = Field(None)
     set_parameters: list[common.SetParameter] | None = Field(None, alias='set-parameters')
     implemented_requirements: list[ImplementedRequirement] = Field(..., alias='implemented-requirements')
-
-
-class Capability(OscalBaseModel):
-    """
-    A grouping of other components and/or capabilities.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(..., description='Provides a globally unique means to identify a given capability.', title='Capability Identifier')
-    name: constr(regex=r'^\S(.*\S)?$') = Field(..., description="The capability's human-readable name.", title='Capability Name')
-    description: str = Field(..., description='A summary of the capability.', title='Capability Description')
-    props: list[common.Property] | None = Field(None)
-    links: list[common.Link] | None = Field(None)
-    incorporates_components: list[IncorporatesComponent] | None = Field(None, alias='incorporates-components')
-    control_implementations: list[ControlImplementation] | None = Field(None, alias='control-implementations')
-    remarks: str | None = None
 
 
 class DefinedComponent(OscalBaseModel):
@@ -166,6 +144,24 @@ class DefinedComponent(OscalBaseModel):
     links: list[common.Link] | None = Field(None)
     responsible_roles: list[common.ResponsibleRole] | None = Field(None, alias='responsible-roles')
     protocols: list[common.Protocol] | None = Field(None)
+    control_implementations: list[ControlImplementation] | None = Field(None, alias='control-implementations')
+    remarks: str | None = None
+
+
+class Capability(OscalBaseModel):
+    """
+    A grouping of other components and/or capabilities.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(..., description='Provides a globally unique means to identify a given capability.', title='Capability Identifier')
+    name: constr(regex=r'^\S(.*\S)?$') = Field(..., description="The capability's human-readable name.", title='Capability Name')
+    description: str = Field(..., description='A summary of the capability.', title='Capability Description')
+    props: list[common.Property] | None = Field(None)
+    links: list[common.Link] | None = Field(None)
+    incorporates_components: list[IncorporatesComponent] | None = Field(None, alias='incorporates-components')
     control_implementations: list[ControlImplementation] | None = Field(None, alias='control-implementations')
     remarks: str | None = None
 
