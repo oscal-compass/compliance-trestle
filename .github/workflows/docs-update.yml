@@ -83,11 +83,11 @@ jobs:
         git config --global user.email '${{ env.ID }}+${{ env.SLUG }}[bot]@users.noreply.github.com'
       env:
         SLUG: ${{ steps.app-token.outputs.app-slug }}
-        ID: ${{ steps.get-user-id.outputs.user-id }}
+        ID: ${{ steps.get-user-id.outputs.user-id }}    
     - name: Create release
       shell: bash
       run: |
-        mike deploy --push ${{ needs.mike-version.outputs.mver }}
+        mike deploy --rebase  --push ${{ needs.mike-version.outputs.mver }}
     - name: Ensure latest is latest
       shell: bash
       run: | 
