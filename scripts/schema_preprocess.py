@@ -274,6 +274,94 @@ def patch_mapping_select_control(model_name: str) -> None:
     json_data_put(model_name, data)
 
 
+def patch_mapping_strvalue_fields(model_name: str) -> None:
+    """Fix confidence-score and coverage fields to remove STRVALUE entirely.
+
+    The OSCAL mapping schema incorrectly includes STRVALUE property and required array
+    for confidence-score and coverage. These should be objects with only optional attributes.
+
+    Correct structure for confidence-score:
+    - properties: category (optional), percentage (optional)
+    - no STRVALUE property
+    - no required array
+
+    Correct structure for coverage:
+    - properties: generation-method (optional)
+    - no STRVALUE property
+    - no required array
+
+    This is a workaround for an OSCAL schema bug.
+    """
+    if not model_name.endswith('oscal_mapping_schema.json'):
+        return
+
+    data = json_data_get(model_name)
+
+    # Find confidence-score and coverage definitions
+    confidence_key = None
+    coverage_key = None
+
+    for key in data['definitions'].keys():
+        if key.endswith(':confidence-score'):
+            confidence_key = key
+        elif key.endswith(':coverage'):
+            coverage_key = key
+
+    # Patch confidence-score
+    if confidence_key:
+        defn = data['definitions'][confidence_key]
+        patched = False
+
+        # Remove STRVALUE from properties
+        if 'properties' in defn and 'STRVALUE' in defn['properties']:
+            logger.warning(
+                f'OSCAL schema bug detected in {model_name}: confidence-score has STRVALUE property. '
+                'Removing STRVALUE - confidence-score should only have optional category and percentage fields.'
+            )
+            del defn['properties']['STRVALUE']
+            patched = True
+
+        # Remove required array entirely
+        if 'required' in defn:
+            logger.warning(
+                f'OSCAL schema bug detected in {model_name}: confidence-score has required array. '
+                'Removing required array - all fields should be optional.'
+            )
+            del defn['required']
+            patched = True
+
+        if patched:
+            logger.info(f'Patched confidence-score definition in {model_name}')
+
+    # Patch coverage
+    if coverage_key:
+        defn = data['definitions'][coverage_key]
+        patched = False
+
+        # Remove STRVALUE from properties
+        if 'properties' in defn and 'STRVALUE' in defn['properties']:
+            logger.warning(
+                f'OSCAL schema bug detected in {model_name}: coverage has STRVALUE property. '
+                'Removing STRVALUE - coverage should only have optional generation-method field.'
+            )
+            del defn['properties']['STRVALUE']
+            patched = True
+
+        # Remove required array entirely
+        if 'required' in defn:
+            logger.warning(
+                f'OSCAL schema bug detected in {model_name}: coverage has required array. '
+                'Removing required array - all fields should be optional.'
+            )
+            del defn['required']
+            patched = True
+
+        if patched:
+            logger.info(f'Patched coverage definition in {model_name}')
+
+    json_data_put(model_name, data)
+
+
 # patch_schemas introduced for migrating from OSCAL 1.0.4 to 1.1.2 due to missing/broken
 # support in datamodel-codegen tool. See issue(s):
 # - https://github.com/koxudaxi/datamodel-code-generator/issues/1901
@@ -288,6 +376,7 @@ def patch_schemas(fixup_dir_path: Path) -> None:
         patch_profile(model_name)
         patch_profile_group_description(model_name)
         patch_mapping_select_control(model_name)
+        patch_mapping_strvalue_fields(model_name)
         create_refs(model_name)
 
 

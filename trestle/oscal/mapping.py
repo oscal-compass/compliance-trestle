@@ -37,6 +37,7 @@ from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
 import trestle.oscal.common as common
 from trestle.oscal.common import StringDatatype
 from trestle.oscal.common import TokenDatatype
+from trestle.oscal.common import URIDatatype
 
 
 class Category(Enum):
@@ -116,7 +117,6 @@ class ConfidenceScore(OscalBaseModel):
 
     category: constr(regex=r'^\S(.*\S)?$') | Category | None = None
     percentage: DecimalDatatype | None = None
-    STRVALUE: constr(regex=r'^\S(.*\S)?$')
 
 
 class Coverage(OscalBaseModel):
@@ -128,7 +128,6 @@ class Coverage(OscalBaseModel):
         extra = Extra.forbid
 
     generation_method: constr(regex=r'^\S(.*\S)?$') | GenerationMethod | None = Field(None, alias='generation-method')
-    STRVALUE: DecimalDatatype
 
 
 class GapSummary(OscalBaseModel):

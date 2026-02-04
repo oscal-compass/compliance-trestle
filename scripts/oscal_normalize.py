@@ -1094,7 +1094,11 @@ additions = {
         'from trestle.oscal.common import StringDatatype',
         'from trestle.oscal.common import URIReferenceDatatype',
     ],
-    'mapping': ['from trestle.oscal.common import StringDatatype', 'from trestle.oscal.common import TokenDatatype'],
+    'mapping': [
+        'from trestle.oscal.common import StringDatatype',
+        'from trestle.oscal.common import TokenDatatype',
+        'from trestle.oscal.common import URIDatatype',
+    ],
     'poam': [
         'from trestle.oscal.common import RelatedObservation',
         'from trestle.oscal.common import StringDatatype',
