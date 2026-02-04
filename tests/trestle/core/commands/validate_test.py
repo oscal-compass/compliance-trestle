@@ -704,20 +704,20 @@ def test_validate_mapping_missing_uuid(
 ) -> None:
     """Test validation fails when mapping-collection uuid is missing."""
     jfile = 'mapping-collection.json'
-    
+
     sdir = testdata_dir / 'json'
     spth = sdir / 'comprehensive_mapping.json'
-    
+
     tdir = tmp_trestle_dir / 'mapping-collections' / 'missing_uuid_test'
     tpth = tdir / jfile
-    
+
     tdir.mkdir(exist_ok=True, parents=True)
-    
+
     # Load and modify the mapping to remove required uuid
     mapping_data = json.loads(spth.read_text())
     del mapping_data['mapping-collection']['uuid']
     tpth.write_text(json.dumps(mapping_data, indent=2))
-    
+
     # Test validation fails
     validate_command = f'trestle validate -f {tpth}'
     test_utils.execute_command_and_assert(validate_command, 1, monkeypatch)
@@ -728,20 +728,20 @@ def test_validate_mapping_missing_relationship(
 ) -> None:
     """Test validation fails when map relationship is missing (required field)."""
     jfile = 'mapping-collection.json'
-    
+
     sdir = testdata_dir / 'json'
     spth = sdir / 'comprehensive_mapping.json'
-    
+
     tdir = tmp_trestle_dir / 'mapping-collections' / 'missing_relationship_test'
     tpth = tdir / jfile
-    
+
     tdir.mkdir(exist_ok=True, parents=True)
-    
+
     # Load and modify the mapping to remove required relationship
     mapping_data = json.loads(spth.read_text())
     del mapping_data['mapping-collection']['mappings'][0]['maps'][0]['relationship']
     tpth.write_text(json.dumps(mapping_data, indent=2))
-    
+
     # Test validation fails
     validate_command = f'trestle validate -f {tpth}'
     test_utils.execute_command_and_assert(validate_command, 1, monkeypatch)
@@ -752,20 +752,20 @@ def test_validate_mapping_missing_provenance(
 ) -> None:
     """Test validation fails when required provenance is missing."""
     jfile = 'mapping-collection.json'
-    
+
     sdir = testdata_dir / 'json'
     spth = sdir / 'comprehensive_mapping.json'
-    
+
     tdir = tmp_trestle_dir / 'mapping-collections' / 'missing_provenance_test'
     tpth = tdir / jfile
-    
+
     tdir.mkdir(exist_ok=True, parents=True)
-    
+
     # Load and modify the mapping to remove required provenance
     mapping_data = json.loads(spth.read_text())
     del mapping_data['mapping-collection']['provenance']
     tpth.write_text(json.dumps(mapping_data, indent=2))
-    
+
     # Test validation fails
     validate_command = f'trestle validate -f {tpth}'
     test_utils.execute_command_and_assert(validate_command, 1, monkeypatch)
@@ -776,20 +776,20 @@ def test_validate_mapping_invalid_confidence_score_type(
 ) -> None:
     """Test validation fails when confidence-score has wrong type (not an object)."""
     jfile = 'mapping-collection.json'
-    
+
     sdir = testdata_dir / 'json'
     spth = sdir / 'comprehensive_mapping.json'
-    
+
     tdir = tmp_trestle_dir / 'mapping-collections' / 'invalid_confidence_test'
     tpth = tdir / jfile
-    
+
     tdir.mkdir(exist_ok=True, parents=True)
-    
+
     # Load and modify the mapping to use wrong type for confidence-score
     mapping_data = json.loads(spth.read_text())
     mapping_data['mapping-collection']['mappings'][0]['confidence-score'] = 'not-an-object'
     tpth.write_text(json.dumps(mapping_data, indent=2))
-    
+
     # Test validation fails
     validate_command = f'trestle validate -f {tpth}'
     test_utils.execute_command_and_assert(validate_command, 1, monkeypatch)
@@ -800,20 +800,20 @@ def test_validate_mapping_missing_map_sources(
 ) -> None:
     """Test validation fails when map is missing required sources."""
     jfile = 'mapping-collection.json'
-    
+
     sdir = testdata_dir / 'json'
     spth = sdir / 'comprehensive_mapping.json'
-    
+
     tdir = tmp_trestle_dir / 'mapping-collections' / 'missing_sources_test'
     tpth = tdir / jfile
-    
+
     tdir.mkdir(exist_ok=True, parents=True)
-    
+
     # Load and modify the mapping to remove required sources
     mapping_data = json.loads(spth.read_text())
     del mapping_data['mapping-collection']['mappings'][0]['maps'][0]['sources']
     tpth.write_text(json.dumps(mapping_data, indent=2))
-    
+
     # Test validation fails
     validate_command = f'trestle validate -f {tpth}'
     test_utils.execute_command_and_assert(validate_command, 1, monkeypatch)
