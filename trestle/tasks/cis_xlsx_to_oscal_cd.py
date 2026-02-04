@@ -192,10 +192,10 @@ class SortHelper:
     def compare(item1: str, item2: str) -> int:
         """Compare."""
         # get parts
-        parts1 = ''.split('.')
+        parts1 = ['']
         if item1 is not None:
             parts1 = str(item1).split('.')
-        parts2 = ''.split('.')
+        parts2 = ['']
         if item2 is not None:
             parts2 = str(item2).split('.')
         # normalize parts length
@@ -738,10 +738,7 @@ class XlsxToCsvHelper:
 
     def is_excluded_column(self, column: str) -> bool:
         """Is excluded column."""
-        for item in self._columns_exclude:
-            if item.lower() == column.lower():
-                return True
-        return False
+        return any(item.lower() == column.lower() for item in self._columns_exclude)
 
     def merge_row(self, prev_row: int, curr_row: int) -> bool:
         """Merge row."""

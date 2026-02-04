@@ -1344,7 +1344,7 @@ catalog-title = NIST Special Publication 800-53 Revision 5
 Example catalog-file:
 </span>
 
-[nist-content/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json](https://github.com/usnistgov/oscal-content/tree/58af5c83ad7ab5620809c5701877a4b959516d25/nist.gov/SP800-53/rev5/json)
+[nist-content/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json](https://github.com/usnistgov/oscal-content/blob/58af5c83ad7ab5620809c5701877a4b959516d25/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json)
 
 **spread-sheet-file**
 
