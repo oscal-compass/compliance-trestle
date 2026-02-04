@@ -187,6 +187,15 @@ class MarkupMultilineDatatype(OscalBaseModel):
     __root__: str = Field(..., description='A multiple lines of Markdown content conformant to the Commonmark specification.')
 
 
+class Matching(OscalBaseModel):
+    """
+    Selecting a set of controls by matching their IDs with a wildcard pattern.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+
 class Methods(Enum):
     """
     Identifies how the observation was made.
@@ -858,7 +867,7 @@ class Parameter1(OscalBaseModel):
     @classmethod
     def __get_validators__(cls):
         yield cls._smart_union_validator
-    
+
     @classmethod
     def _smart_union_validator(cls, v):
         """Smart validator that chooses Parameter1 if data has values, otherwise tries Parameter2."""
@@ -914,7 +923,7 @@ class Parameter2(OscalBaseModel):
     @classmethod
     def __get_validators__(cls):
         yield cls._smart_union_validator
-    
+
     @classmethod
     def _smart_union_validator(cls, v):
         """Smart validator that chooses Parameter2 if data has select, otherwise tries Parameter1."""

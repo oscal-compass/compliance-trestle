@@ -217,6 +217,63 @@ def extract_inline_array_items(fixup_dir_path: Path) -> None:
         json_data_put(model_name, data)
 
 
+def patch_mapping_select_control(model_name: str) -> None:
+    """Rename mapping SelectControlById to SelectControlByIdForMapping.
+
+    The mapping schema has a SelectControlById with different fields than the assessment models.
+    Rename it to SelectControlByIdForMapping to avoid conflicts and allow the assessment
+    version to remain in common.py.
+    """
+    if not model_name.endswith('oscal_mapping_schema.json'):
+        return
+
+    data = json_data_get(model_name)
+
+    # Find the select-control-by-id definition in mapping schema
+    select_key = None
+    for key in data['definitions'].keys():
+        if key.endswith(':select-control-by-id'):
+            select_key = key
+            break
+
+    if not select_key:
+        logger.debug(f'patch: {model_name} no select-control-by-id found')
+        return
+
+    # Verify this is the mapping variant with 'with-ids' or 'matching' fields
+    defn = data['definitions'][select_key]
+    if 'properties' not in defn:
+        return
+
+    # Check for mapping-specific fields
+    has_mapping_fields = (
+        'with-ids' in defn['properties']
+        or 'matching' in defn['properties']
+        or 'with-child-controls' in defn['properties']
+    )
+
+    if not has_mapping_fields:
+        logger.debug(f'patch: {model_name} select-control-by-id does not have mapping-specific fields')
+        return
+
+    # Create new key name
+    new_key = select_key.replace(':select-control-by-id', ':select-control-by-id-for-mapping')
+
+    # Copy the definition to the new name
+    data['definitions'][new_key] = data['definitions'][select_key]
+
+    # Update all references from old key to new key
+    data_str = json.dumps(data)
+    data_str = data_str.replace(f'"$ref": "#/definitions/{select_key}"', f'"$ref": "#/definitions/{new_key}"')
+    data = json.loads(data_str)
+
+    # Remove the old definition
+    del data['definitions'][select_key]
+
+    logger.info(f'patch: {model_name} renamed {select_key} -> {new_key}')
+    json_data_put(model_name, data)
+
+
 # patch_schemas introduced for migrating from OSCAL 1.0.4 to 1.1.2 due to missing/broken
 # support in datamodel-codegen tool. See issue(s):
 # - https://github.com/koxudaxi/datamodel-code-generator/issues/1901
@@ -230,6 +287,7 @@ def patch_schemas(fixup_dir_path: Path) -> None:
         patch_poam_item(model_name, 'related-observations')
         patch_profile(model_name)
         patch_profile_group_description(model_name)
+        patch_mapping_select_control(model_name)
         create_refs(model_name)
 
 
@@ -240,6 +298,7 @@ def calculate_patch_key(key: str) -> str:
     patch_key = patch_key.replace('oscal-ar-', '')
     patch_key = patch_key.replace('oscal-catalog-', '')
     patch_key = patch_key.replace('oscal-component-definition-', '')
+    patch_key = patch_key.replace('oscal-mapping-', '')
     patch_key = patch_key.replace('oscal-poam-', '')
     patch_key = patch_key.replace('oscal-profile-', '')
     patch_key = patch_key.replace('oscal-ssp-', '')
@@ -566,6 +625,7 @@ def create_refs(model_name: str) -> None:
         'oscal-ar-oscal-control-common:parameter-selection',
         'oscal-catalog-oscal-control-common:parameter-selection',
         'oscal-component-definition-oscal-control-common:parameter-selection',
+        'oscal-mapping-oscal-control-common:parameter-selection',
         'oscal-poam-oscal-control-common:parameter-selection',
         'oscal-profile-oscal-control-common:parameter-selection',
         'oscal-ssp-oscal-control-common:parameter-selection',
@@ -580,6 +640,7 @@ def create_refs(model_name: str) -> None:
         'oscal-ar-oscal-metadata:telephone-number',
         'oscal-catalog-oscal-metadata:telephone-number',
         'oscal-component-definition-oscal-metadata:telephone-number',
+        'oscal-mapping-oscal-metadata:telephone-number',
         'oscal-poam-oscal-metadata:telephone-number',
         'oscal-profile-oscal-metadata:telephone-number',
         'oscal-ssp-oscal-metadata:telephone-number',
@@ -594,6 +655,7 @@ def create_refs(model_name: str) -> None:
         'oscal-ar-oscal-metadata:address',
         'oscal-catalog-oscal-metadata:address',
         'oscal-component-definition-oscal-metadata:address',
+        'oscal-mapping-oscal-metadata:address',
         'oscal-poam-oscal-metadata:address',
         'oscal-profile-oscal-metadata:address',
         'oscal-ssp-oscal-metadata:address',
@@ -608,6 +670,7 @@ def create_refs(model_name: str) -> None:
         'oscal-ar-oscal-metadata:metadata',
         'oscal-catalog-oscal-metadata:metadata',
         'oscal-component-definition-oscal-metadata:metadata',
+        'oscal-mapping-oscal-metadata:metadata',
         'oscal-poam-oscal-metadata:metadata',
         'oscal-profile-oscal-metadata:metadata',
         'oscal-ssp-oscal-metadata:metadata',
@@ -632,6 +695,7 @@ def create_refs(model_name: str) -> None:
         'oscal-ar-oscal-metadata:metadata',
         'oscal-catalog-oscal-metadata:metadata',
         'oscal-component-definition-oscal-metadata:metadata',
+        'oscal-mapping-oscal-metadata:metadata',
         'oscal-poam-oscal-metadata:metadata',
         'oscal-profile-oscal-metadata:metadata',
         'oscal-ssp-oscal-metadata:metadata',
@@ -646,6 +710,7 @@ def create_refs(model_name: str) -> None:
         'oscal-ar-oscal-metadata:document-id',
         'oscal-catalog-oscal-metadata:document-id',
         'oscal-component-definition-oscal-metadata:document-id',
+        'oscal-mapping-oscal-metadata:document-id',
         'oscal-poam-oscal-metadata:document-id',
         'oscal-profile-oscal-metadata:document-id',
         'oscal-ssp-oscal-metadata:document-id',
@@ -666,6 +731,7 @@ def create_refs(model_name: str) -> None:
         'oscal-ar-oscal-implementation-common:system-component',
         'oscal-catalog-oscal-implementation-common:system-component',
         'oscal-component-definition-oscal-implementation-common:system-component',
+        'oscal-mapping-oscal-implementation-common:system-component',
         'oscal-poam-oscal-implementation-common:system-component',
         'oscal-profile-oscal-implementation-common:system-component',
         'oscal-ssp-oscal-implementation-common:system-component',
@@ -680,6 +746,7 @@ def create_refs(model_name: str) -> None:
         'oscal-ar-oscal-implementation-common:system-component',
         'oscal-catalog-oscal-implementation-common:system-component',
         'oscal-component-definition-oscal-implementation-common:system-component',
+        'oscal-mapping-oscal-implementation-common:system-component',
         'oscal-poam-oscal-implementation-common:system-component',
         'oscal-profile-oscal-implementation-common:system-component',
         'oscal-ssp-oscal-implementation-common:system-component',
@@ -703,6 +770,7 @@ def create_refs(model_name: str) -> None:
         'oscal-ap-oscal-implementation-common:port-range',
         'oscal-ar-oscal-implementation-common:port-range',
         'oscal-component-definition-oscal-implementation-common:port-range',
+        'oscal-mapping-oscal-implementation-common:port-range',
         'oscal-poam-oscal-implementation-common:port-range',
         'oscal-ssp-oscal-implementation-common:port-range',
     ]
@@ -754,6 +822,12 @@ def create_refs(model_name: str) -> None:
     list_ = ['oscal-profile-oscal-profile:merge']
     navigation = ['properties', 'combine', 'properties', 'method', 'allOf']
     ref_name = 'CombinationMethodValidValues'
+    for root in list_:
+        create_ref(model_name, root, navigation, ref_name)
+    # Resource Type Valid Values (Mapping)
+    list_ = ['oscal-mapping-oscal-mapping-common:mapping-resource-reference']
+    navigation = ['properties', 'type', 'anyOf']
+    ref_name = 'ResourceTypeValidValues'
     for root in list_:
         create_ref(model_name, root, navigation, ref_name)
 
@@ -863,6 +937,8 @@ def get_order(key: str) -> int:
         if key.endswith('catalog:catalog'):
             return 1
         if key.endswith('component-definition:component-definition'):
+            return 1
+        if key.endswith('mapping:mapping-collection'):
             return 1
         if key.endswith('poam:plan-of-action-and-milestones'):
             return 1

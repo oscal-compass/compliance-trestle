@@ -79,7 +79,7 @@ class Group2(OscalBaseModel):
     @classmethod
     def __get_validators__(cls):
         yield cls._smart_union_validator
-    
+
     @classmethod
     def _smart_union_validator(cls, v):
         """Smart validator that chooses Group2 if data has controls, otherwise tries Group1."""
@@ -120,7 +120,7 @@ class Group1(OscalBaseModel):
     @classmethod
     def __get_validators__(cls):
         yield cls._smart_union_validator
-    
+
     @classmethod
     def _smart_union_validator(cls, v):
         """Smart validator that chooses Group1 if data has groups, otherwise tries Group2."""

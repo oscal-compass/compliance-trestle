@@ -43,15 +43,6 @@ class BooleanDatatype(OscalBaseModel):
     __root__: bool = Field(..., description='A binary value that is either: true or false.')
 
 
-class Matching(OscalBaseModel):
-    """
-    Selecting a set of controls by matching their IDs with a wildcard pattern.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-
 class Merge1(OscalBaseModel):
     """
     Provides structuring directives that instruct how controls are organized after profile resolution.
@@ -189,7 +180,7 @@ class SelectControl(OscalBaseModel):
 
     with_child_controls: WithChildControlsValidValues | None = Field(None, alias='with-child-controls', description='When a control is included, whether its child (dependent) controls are also included.', title='Include Contained Controls with Control')
     with_ids: list[WithId] | None = Field(None, alias='with-ids')
-    matching: list[Matching] | None = Field(None)
+    matching: list[common.Matching] | None = Field(None)
 
 
 class InsertControls2(OscalBaseModel):
@@ -244,7 +235,7 @@ class Group2(OscalBaseModel):
     @classmethod
     def __get_validators__(cls):
         yield cls._smart_union_validator
-    
+
     @classmethod
     def _smart_union_validator(cls, v):
         """Smart validator that chooses Group2 if data has controls, otherwise tries Group1."""
@@ -285,7 +276,7 @@ class Group1(OscalBaseModel):
     @classmethod
     def __get_validators__(cls):
         yield cls._smart_union_validator
-    
+
     @classmethod
     def _smart_union_validator(cls, v):
         """Smart validator that chooses Group1 if data has groups, otherwise tries Group2."""
