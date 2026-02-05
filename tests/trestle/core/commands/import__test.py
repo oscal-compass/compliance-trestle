@@ -41,6 +41,7 @@ from trestle.core import generators
 from trestle.core.commands import create
 from trestle.core.models.plans import Plan
 from trestle.oscal.catalog import Catalog, Group2
+from trestle.oscal.mapping import MappingCollection
 from trestle.oscal.profile import Modify, Profile, SetParameters
 
 
@@ -360,3 +361,26 @@ def test_import_wrong_oscal_version(tmp_trestle_dir: pathlib.Path) -> None:
     )
     i = importcmd.ImportCmd()
     assert i._run(args) == 1
+
+
+def test_import_mapping_collection(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test import of mapping-collection model."""
+    # Use the simple_mapping.json test file
+    mapping_file = test_utils.JSON_TEST_DATA_PATH / 'simple_mapping.json'
+
+    # Test import via CLI
+    test_args = f'trestle import -f {mapping_file} -o imported_mapping'.split()
+    monkeypatch.setattr(sys, 'argv', test_args)
+    rc = Trestle().run()
+    assert rc == 0
+
+    # Verify the imported file exists in the correct location
+    imported_path = tmp_trestle_dir / 'mapping-collections' / 'imported_mapping' / 'mapping-collection.json'
+    assert imported_path.exists()
+
+    # Verify we can read it back as a MappingCollection
+    mapping: MappingCollection = MappingCollection.oscal_read(imported_path)
+    assert mapping.uuid == 'A0000000-0000-4000-8000-000000000050'
+    assert mapping.metadata.title == 'Trestle test mapping-collection'
+    assert mapping.provenance is not None
+    assert len(mapping.mappings) == 1
