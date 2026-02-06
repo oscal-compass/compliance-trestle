@@ -193,7 +193,7 @@ def test_execute_pci(tmp_path: pathlib.Path) -> None:
     config.read(config_path)
     section = config['task.csv-to-oscal-mc']
     section['output-dir'] = str(tmp_path)
-    
+
     tgt = csv_to_oscal_mc.CsvToOscalMappingCollection(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
@@ -209,7 +209,7 @@ def test_execute_soc2(tmp_path: pathlib.Path) -> None:
     config.read(config_path)
     section = config['task.csv-to-oscal-mc']
     section['output-dir'] = str(tmp_path)
-    
+
     tgt = csv_to_oscal_mc.CsvToOscalMappingCollection(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
@@ -284,11 +284,11 @@ def test_output_overwrite_false(tmp_path: pathlib.Path) -> None:
     config.read(config_path)
     section = config['task.csv-to-oscal-mc']
     section['output-dir'] = str(tmp_path)
-    
+
     tgt = csv_to_oscal_mc.CsvToOscalMappingCollection(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
-    
+
     # Now try again with overwrite=false
     section['output-overwrite'] = 'false'
     tgt = csv_to_oscal_mc.CsvToOscalMappingCollection(section)
@@ -302,18 +302,18 @@ def test_parse_percentage(tmp_path: pathlib.Path) -> None:
     # Create a minimal _McMgr instance to test the method
     mc_path = tmp_path / 'test.json'
     mgr = csv_to_oscal_mc._McMgr(mc_path, 'Test', '1.0.0')
-    
+
     # Test valid percentages
     assert mgr._parse_percentage('50%') == 0.5
     assert mgr._parse_percentage('100%') == 1.0
     assert mgr._parse_percentage('0%') == 0.0
     assert mgr._parse_percentage('75.5%') == 0.755
-    
+
     # Test decimal values
     assert mgr._parse_percentage('0.5') == 0.5
     assert mgr._parse_percentage('1.0') == 1.0
     assert mgr._parse_percentage('0') == 0.0
-    
+
     # Test invalid values
     assert mgr._parse_percentage('invalid') is None
     assert mgr._parse_percentage('') is None
@@ -333,7 +333,7 @@ catalogs/PCI/catalog.json,catalogs/FedRAMP_rev5_HIGH/catalog.json,PCI-1.1.1,ac-1
 """
     csv_path = tmp_path / 'test_user_columns.csv'
     csv_path.write_text(csv_content)
-    
+
     config = configparser.ConfigParser()
     config.add_section('task.csv-to-oscal-mc')
     section = config['task.csv-to-oscal-mc']
@@ -342,11 +342,11 @@ catalogs/PCI/catalog.json,catalogs/FedRAMP_rev5_HIGH/catalog.json,PCI-1.1.1,ac-1
     section['csv-file'] = str(csv_path)
     section['output-dir'] = str(tmp_path / 'output')
     section['output-overwrite'] = 'true'
-    
+
     tgt = csv_to_oscal_mc.CsvToOscalMappingCollection(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
-    
+
     # Verify user columns are in properties
     mc_file = tmp_path / 'output' / 'mapping-collection.json'
     mc = MappingCollection.oscal_read(mc_file)
@@ -354,7 +354,7 @@ catalogs/PCI/catalog.json,catalogs/FedRAMP_rev5_HIGH/catalog.json,PCI-1.1.1,ac-1
         mapping = mc.mappings[0]
     else:
         mapping = mc.mappings
-    
+
     # Check that properties exist with user columns
     if mapping.maps and len(mapping.maps) > 0:
         map_entry = mapping.maps[0]
@@ -373,7 +373,7 @@ catalogs/PCI/catalog.json,catalogs/FedRAMP_rev5_HIGH/catalog.json,PCI-1.1.1
 """
     csv_path = tmp_path / 'test_missing_columns.csv'
     csv_path.write_text(csv_content)
-    
+
     config = configparser.ConfigParser()
     config.add_section('task.csv-to-oscal-mc')
     section = config['task.csv-to-oscal-mc']
@@ -382,7 +382,7 @@ catalogs/PCI/catalog.json,catalogs/FedRAMP_rev5_HIGH/catalog.json,PCI-1.1.1
     section['csv-file'] = str(csv_path)
     section['output-dir'] = str(tmp_path / 'output')
     section['output-overwrite'] = 'true'
-    
+
     tgt = csv_to_oscal_mc.CsvToOscalMappingCollection(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
@@ -397,7 +397,7 @@ catalogs/PCI/catalog.json,catalogs/FedRAMP_rev5_HIGH/catalog.json,invalid_contro
 """
     csv_path = tmp_path / 'test_invalid_controls.csv'
     csv_path.write_text(csv_content)
-    
+
     config = configparser.ConfigParser()
     config.add_section('task.csv-to-oscal-mc')
     section = config['task.csv-to-oscal-mc']
@@ -406,7 +406,7 @@ catalogs/PCI/catalog.json,catalogs/FedRAMP_rev5_HIGH/catalog.json,invalid_contro
     section['csv-file'] = str(csv_path)
     section['output-dir'] = str(tmp_path / 'output')
     section['output-overwrite'] = 'true'
-    
+
     tgt = csv_to_oscal_mc.CsvToOscalMappingCollection(section)
     retval = tgt.execute()
     # Should fail because invalid_control_id doesn't exist in PCI catalog
@@ -422,7 +422,7 @@ catalogs/PCI/catalog.json,catalogs/FedRAMP_rev5_HIGH/catalog.json,PCI-1.1.1,inva
 """
     csv_path = tmp_path / 'test_invalid_target.csv'
     csv_path.write_text(csv_content)
-    
+
     config = configparser.ConfigParser()
     config.add_section('task.csv-to-oscal-mc')
     section = config['task.csv-to-oscal-mc']
@@ -431,7 +431,7 @@ catalogs/PCI/catalog.json,catalogs/FedRAMP_rev5_HIGH/catalog.json,PCI-1.1.1,inva
     section['csv-file'] = str(csv_path)
     section['output-dir'] = str(tmp_path / 'output')
     section['output-overwrite'] = 'true'
-    
+
     tgt = csv_to_oscal_mc.CsvToOscalMappingCollection(section)
     retval = tgt.execute()
     # Should fail because invalid_target_id doesn't exist in FedRAMP catalog
@@ -447,7 +447,7 @@ catalogs/PCI/catalog.json,catalogs/FedRAMP_rev5_HIGH/catalog.json,PCI-1.1.1,ac-1
 """
     csv_path = tmp_path / 'test_empty_column.csv'
     csv_path.write_text(csv_content)
-    
+
     config = configparser.ConfigParser()
     config.add_section('task.csv-to-oscal-mc')
     section = config['task.csv-to-oscal-mc']
@@ -456,12 +456,12 @@ catalogs/PCI/catalog.json,catalogs/FedRAMP_rev5_HIGH/catalog.json,PCI-1.1.1,ac-1
     section['csv-file'] = str(csv_path)
     section['output-dir'] = str(tmp_path / 'output')
     section['output-overwrite'] = 'true'
-    
+
     tgt = csv_to_oscal_mc.CsvToOscalMappingCollection(section)
     retval = tgt.execute()
     # Should succeed - empty values are skipped
     assert retval == TaskOutcome.SUCCESS
-    
+
     # Verify only non-empty user column is in properties
     mc_file = tmp_path / 'output' / 'mapping-collection.json'
     mc = MappingCollection.oscal_read(mc_file)
@@ -469,7 +469,7 @@ catalogs/PCI/catalog.json,catalogs/FedRAMP_rev5_HIGH/catalog.json,PCI-1.1.1,ac-1
         mapping = mc.mappings[0]
     else:
         mapping = mc.mappings
-    
+
     if mapping.maps and len(mapping.maps) > 0:
         map_entry = mapping.maps[0]
         if map_entry.props:
