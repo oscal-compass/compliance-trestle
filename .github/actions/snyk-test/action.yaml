@@ -20,7 +20,7 @@ runs:
         SNYK_TOKEN: ${{ inputs.token }}
       run: |
         echo "::group::Running snyk test ..."
-        pip install pip-tools
+        pip install 'pip-tools>=7.5.3'
         pip-compile pyproject.toml -o requirements.txt
         pip install -r requirements.txt
         snyk test --file=requirements.txt
