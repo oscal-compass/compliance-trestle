@@ -14,7 +14,6 @@
 # limitations under the License.
 """Transform POAM spreadsheet to OSCAL POAM JSON format."""
 
-# mypy: ignore-errors  # noqa E800
 import configparser
 import datetime
 import logging
@@ -98,8 +97,8 @@ class PoamValidator:
             validate_mode: 'on' (fail on error), 'warn' (log warnings), or 'off' (skip validation)
         """
         self.validate_mode = validate_mode
-        self.errors = []
-        self.warnings = []
+        self.errors: List[str] = []
+        self.warnings: List[str] = []
 
     def validate_row(self, row_num: int, row_data: Dict[str, Any]) -> List[str]:
         """
@@ -456,18 +455,28 @@ class PoamBuilder:
         # Add POAM ID as property (clean it first)
         clean_poam_id = poam_id.strip() if poam_id else poam_id
         if clean_poam_id:
-            props.append(Property(name='poam-id', value=clean_poam_id))
+            props.append(Property(name='poam-id', value=clean_poam_id, uuid=None, ns=None, **{'class': None}, group=None))
 
         # Add control IDs as properties
         controls_str = row_data.get(PoamXlsxHelper.CONTROLS, '')
         if controls_str:
             controls = self._validator.parse_controls(controls_str)
             for ctrl_id in controls:
-                props.append(Property(name='control-id', value=ctrl_id))
+                props.append(Property(name='control-id', value=ctrl_id, uuid=None, ns=None, **{'class': None}, group=None))
 
         # Create PoamItem
         poam_item = PoamItem(
-            uuid=UUIDManager.poam_item_uuid(poam_id), title=title, description=description, props=props or None
+            uuid=UUIDManager.poam_item_uuid(poam_id),
+            title=title,
+            description=description,
+            props=props or None,
+            links=None,
+            origins=None,
+            **{
+                'related-findings': None,
+                'related-observations': None,
+                'related-risks': None,
+            },
         )
 
         # Add remarks if present
@@ -513,15 +522,15 @@ class PoamBuilder:
         origins = None
         detector_source = row_data.get(PoamXlsxHelper.WEAKNESS_DETECTOR_SOURCE)
         if detector_source:
-            actor = OriginActor(type='tool', actor_uuid=UUIDManager.actor_uuid(detector_source))
-            origin = Origin(actors=[actor])
+            actor = OriginActor(type='tool', **{'actor-uuid': UUIDManager.actor_uuid(detector_source)})
+            origin = Origin(actors=[actor], **{'related-tasks': None})
             origins = [origin]
 
         # Subjects are optional
         subjects = None
         asset_id = row_data.get(PoamXlsxHelper.ASSET_IDENTIFIER)
         if asset_id:
-            subject = SubjectReference(subject_uuid=UUIDManager.actor_uuid(asset_id), type='component')
+            subject = SubjectReference(**{'subject-uuid': UUIDManager.actor_uuid(asset_id)}, type='component')
             subjects = [subject]
 
         observation = Observation(
@@ -531,6 +540,12 @@ class PoamBuilder:
             collected=collected,
             origins=origins,
             subjects=subjects,
+            title=None,
+            props=None,
+            links=None,
+            types=None,
+            expires=None,
+            **{'relevant-evidence': None},
         )
 
         return observation
@@ -574,12 +589,12 @@ class PoamBuilder:
                 # Additional check: ensure not just whitespace and matches OSCAL pattern
                 if cleaned and not cleaned.isspace():
                     try:
-                        props.append(Property(name=name, value=cleaned))
+                        props.append(Property(name=name, value=cleaned, uuid=None, ns=None, **{'class': None}, group=None))
                     except Exception as e:
                         logger.warning(f'Could not create property {name} with value "{cleaned[:50]}...": {e}')
             elif value:
                 # Non-string value, convert to string
-                props.append(Property(name=name, value=str(value)))
+                props.append(Property(name=name, value=str(value), uuid=None, ns=None, **{'class': None}, group=None))
 
         # Risk ratings as properties
         add_property_if_valid('original-risk-rating', row_data.get(PoamXlsxHelper.ORIGINAL_RISK_RATING))
@@ -608,6 +623,10 @@ class PoamBuilder:
                     title=f'Remediation for {poam_id}',
                     description=statement,
                     tasks=tasks or None,
+                    props=None,
+                    links=None,
+                    origins=None,
+                    **{'required-assets': None},
                 )
                 remediations = [remediation]
 
@@ -620,6 +639,15 @@ class PoamBuilder:
             props=props or None,
             deadline=deadline,
             remediations=remediations,
+            links=None,
+            origins=None,
+            **{
+                'threat-ids': None,
+                'characterizations': None,
+                'mitigating-factors': None,
+                'risk-log': None,
+                'related-observations': None,
+            },
         )
 
         return risk
@@ -653,7 +681,7 @@ class PoamBuilder:
                     if end_date:
                         # Create a date range (start = now, end = milestone date)
                         start_date = datetime.datetime.fromisoformat(self._timestamp)
-                        timing = Timing(within_date_range=WithinDateRange(start=start_date, end=end_date))
+                        timing = Timing(**{'within-date-range': WithinDateRange(start=start_date, end=end_date)})
                 except Exception as e:
                     logger.warning(f'Could not parse milestone date "{date_str}": {e}')
 
@@ -663,6 +691,14 @@ class PoamBuilder:
                 title=title,
                 description=description,
                 timing=timing,
+                props=None,
+                links=None,
+                dependencies=None,
+                subjects=None,
+                **{
+                    'associated-activities': None,
+                    'responsible-roles': None,
+                },
             )
             tasks.append(task)
 
@@ -678,13 +714,13 @@ class PoamBuilder:
             risk: Risk to link
         """
         # Link PoamItem to Observation
-        poam_item.related_observations = [RelatedObservation(observation_uuid=observation.uuid)]
+        setattr(poam_item, 'related-observations', [RelatedObservation(**{'observation-uuid': observation.uuid})])
 
         # Link PoamItem to Risk
-        poam_item.related_risks = [RelatedRisk(risk_uuid=risk.uuid)]
+        setattr(poam_item, 'related-risks', [RelatedRisk(**{'risk-uuid': risk.uuid})])
 
         # Link Risk to Observation
-        risk.related_observations = [RelatedObservation(observation_uuid=observation.uuid)]
+        setattr(risk, 'related-observations', [RelatedObservation(**{'observation-uuid': observation.uuid})])
 
 
 class XlsxToOscalPoam(TaskBase):
@@ -967,22 +1003,29 @@ class XlsxToOscalPoam(TaskBase):
         """
         # Create metadata
         metadata = Metadata(
-            title=self._title, last_modified=self._timestamp, oscal_version=OSCAL_VERSION, version=self._version
+            title=self._title,
+            version=self._version,
+            **{
+                'last-modified': self._timestamp,
+                'oscal-version': OSCAL_VERSION,
+            },
         )
 
         # Optional system-id
         system_id = None
         if self._system_id:
-            system_id = SystemId(identifier_type='https://ietf.org/rfc/rfc4122', id=self._system_id)
+            system_id = SystemId(id=self._system_id, **{'identifier-type': 'https://ietf.org/rfc/rfc4122'})
 
         # Create POAM
         poam = PlanOfActionAndMilestones(
             uuid=str(uuid.uuid4()),
             metadata=metadata,
-            system_id=system_id,
-            poam_items=poam_items,
             observations=observations or None,
             risks=risks or None,
+            **{
+                'system-id': system_id,
+                'poam-items': poam_items,
+            },
         )
 
         return poam

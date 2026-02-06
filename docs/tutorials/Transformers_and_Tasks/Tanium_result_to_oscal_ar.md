@@ -186,7 +186,7 @@ output-dir = tests/data/tasks/tanium/runtime
 
 ```bash
 (venv.trestle)$ cd tanium
-(venv.trestle)$ trestle task tanium-result-to-oscal-ar -c demo-tanium-result-to-oscal-ar.config 
+(venv.trestle)$ trestle task tanium-result-to-oscal-ar -c demo-tanium-result-to-oscal-ar.config
 input: tests/data/tasks/tanium/input/Tanium.doc-json
 output: tests/data/tasks/tanium/runtime/Tanium.oscal.json
 inventory: 1

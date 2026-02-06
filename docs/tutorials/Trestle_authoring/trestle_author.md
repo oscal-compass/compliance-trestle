@@ -634,7 +634,7 @@ The intended workflow in this scenario is to:
 1.Create a new version of the `decisions` template:
 
 ```bash
-cd my_workspace 
+cd my_workspace
 trestle author docs setup -tn decisions -tv 0.1.1
 >>> Set template version to 0.1.1.
 >>> Template file setup for task decisions at .trestle/author/decisions/0.1.1/template.md

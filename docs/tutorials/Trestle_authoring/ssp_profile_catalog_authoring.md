@@ -145,7 +145,7 @@ x-trestle-global:
 
 ## Control guidance
 
-Access control policy and procedures address the controls in the AC family that are implemented within systems and organizations. The risk management strategy is an important factor in establishing such policies and procedures. 
+Access control policy and procedures address the controls in the AC family that are implemented within systems and organizations. The risk management strategy is an important factor in establishing such policies and procedures.
 
 ```
 
@@ -409,9 +409,9 @@ In GFM, headers are considered to be any line of text that has any number of `#`
 
 ```markdown
 # Valid header
-## Valid header 
+## Valid header
 ##### Valid header
-# Valid <ins> header </ins> 
+# Valid <ins> header </ins>
 # Valid header <!-- some comment here -->
 ```
 
@@ -432,7 +432,7 @@ The headers above are valid Control headers and will be added to the control. Ho
    ```
 1. Written in the single-line `# not a header` and multi-line code blocks:
    ```markdown
-   # not a header 
+   # not a header
    ```
 1. Written in the links `[# not a header](url)`
 1. Trestle will also not support headers inside the blockquotes `> # not a header`

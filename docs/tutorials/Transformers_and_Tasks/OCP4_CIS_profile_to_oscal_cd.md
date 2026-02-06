@@ -64,7 +64,7 @@ Configuration flags sit under [task.ocp4-cis-profile-to-oscal-cd]:
   profile-version        = profile version, e.g. 1.1.
   profile-check-version  = profile check version, e.g. 0.1.58.
   profile-type           = profile type, e.g. OCP4.
-  profile-list           = profile list is blank separated list of "<suffix>" for config entries: 
+  profile-list           = profile list is blank separated list of "<suffix>" for config entries:
                            profile-file.<suffix>, profile-title.<suffix>, profile-url.<suffix>, e.g. cis cis-node.
   profile-file.<suffix>  = path of the profile file to ingest, e.g. ${folder-cac}/products/ocp4/profiles/cis-node.profile.
   profile-title.<suffix> = title of the profile, e.g. CIS Red Hat OpenShift Container Platform 4 Benchmark.
