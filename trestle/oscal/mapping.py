@@ -117,6 +117,7 @@ class ConfidenceScore(OscalBaseModel):
 
     category: constr(regex=r'^\S(.*\S)?$') | Category | None = None
     percentage: DecimalDatatype | None = None
+    STRVALUE: constr(regex=r'^\S(.*\S)?$')
 
 
 class Coverage(OscalBaseModel):
@@ -128,6 +129,7 @@ class Coverage(OscalBaseModel):
         extra = Extra.forbid
 
     generation_method: constr(regex=r'^\S(.*\S)?$') | GenerationMethod | None = Field(None, alias='generation-method')
+    STRVALUE: DecimalDatatype
 
 
 class GapSummary(OscalBaseModel):
