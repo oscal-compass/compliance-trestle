@@ -43,7 +43,7 @@ materializes.
 
 import json
 import logging
-import os
+import shutil
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -114,9 +114,9 @@ def fixup_copy_schemas(input_dir_path: Path, fixup_dir_path: Path) -> None:
         model_name = str(full_name)
         if 'complete' in model_name:
             continue
-        cmd = f'cp -p {model_name} {str(fixup_dir_path)}'
-        logger.debug(cmd)
-        os.system(cmd)
+        logger.debug('Copying %s -> %s', full_name, fixup_dir_path)
+        # copy2 preserves metadata similarly to `cp -p` without invoking a shell
+        shutil.copy2(full_name, fixup_dir_path)
 
 
 def traverse_dict(data, model_name):
