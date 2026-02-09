@@ -18,15 +18,9 @@
 from ilcli import Command
 
 from trestle.common import const
-from trestle.core import (
-    all_validator,
-    catalog_validator,
-    duplicates_validator,
-    links_validator,
-    refs_validator,
-    rule_parameters_validator,
-)  # noqa E501
+from trestle.core import all_validator, catalog_validator, duplicates_validator, links_validator, refs_validator  # noqa E501
 from trestle.core.object_factory import ObjectFactory
+from trestle.core.rules import rule_parameters_validator
 
 # Create the singleton validator factory
 validator_factory: ObjectFactory = ObjectFactory()
