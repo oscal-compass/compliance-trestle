@@ -20,6 +20,7 @@ runs:
         SNYK_TOKEN: ${{ inputs.token }}
       run: |
         echo "::group::Running snyk test ..."
+        # latest pip-tools incompatible with pip 26.0
         pip install --force-reinstall 'pip<26.0'
         pip install pip-tools
         pip-compile pyproject.toml -o requirements.txt
