@@ -216,7 +216,7 @@ class ControlWriter:
                             continue
                         # if no label guess the label from the sub-part id
                         part_label = ControlInterface.get_label(prt)
-                        part_label = prt.id.split('.')[-1] if not part_label else part_label
+                        part_label = part_label if part_label else prt.id.split('.')[-1]
 
                         # Determine if this part should be written out
                         if self._skip_part(context, part_label, comp_dict):

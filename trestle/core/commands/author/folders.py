@@ -160,11 +160,9 @@ class Folders(AuthorCommonCommand):
 
         for template_file in template_files:
             try:
-                if not file_utils.is_local_and_visible(template_file):
+                if not file_utils.is_local_and_visible(template_file) or template_file.is_dir():
                     continue
-                elif template_file.is_dir():
-                    continue
-                elif template_file.suffix.lower() == const.MARKDOWN_FILE_EXT:
+                if template_file.suffix.lower() == const.MARKDOWN_FILE_EXT:
                     if not readme_validate and template_file.name == 'readme.md':
                         raise TrestleError('Template directory contains a readme.md file and readme validation is off.')
 
