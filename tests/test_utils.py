@@ -250,7 +250,7 @@ def confirm_text_in_file(file_path: pathlib.Path, tag: str, text: str) -> bool:
     with file_path.open('r', encoding=const.FILE_ENCODING) as f:
         lines = f.readlines()
     # '' for tag will seek text anywhere
-    found_tag = False if tag else True
+    found_tag = not tag
     for line in lines:
         if not found_tag and tag in line:
             found_tag = True
