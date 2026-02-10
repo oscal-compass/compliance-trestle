@@ -1390,7 +1390,7 @@ def test_ssp_generate_includes_all_imp_reqs(tmp_trestle_dir: pathlib.Path) -> No
         yaml_header=None,
         allowed_sections=None,
         force_overwrite=True,
-        leveraged_ssp=''
+        leveraged_ssp='',
     )
 
     ssp_cmd = SSPGenerate()
@@ -1417,7 +1417,11 @@ def test_ssp_generate_includes_all_imp_reqs(tmp_trestle_dir: pathlib.Path) -> No
     assert ac3_path_2.exists()
     ac1_content_2 = ac1_path_2.read_text()
     ac3_content_2 = ac3_path_2.read_text()
-    assert 'comp_aa' in ac1_content_2 and 'imp req prose for ac-1 from comp aa' in ac1_content_2 and 'comp_ab' in ac1_content_2
+    assert (
+        'comp_aa' in ac1_content_2
+        and 'imp req prose for ac-1 from comp aa' in ac1_content_2
+        and 'comp_ab' in ac1_content_2
+    )
     assert 'comp_aa' in ac3_content_2 and 'imp req prose for ac-3 from comp aa' in ac3_content_2
 
     # Testing for the case where some of the controls have rules
@@ -1435,6 +1439,16 @@ def test_ssp_generate_includes_all_imp_reqs(tmp_trestle_dir: pathlib.Path) -> No
     ac1_content_3 = ac1_path_3.read_text()
     ac2_content_3 = ac2_path_3.read_text()
     ac3_content_3 = ac3_path_3.read_text()
-    assert 'OSCO' in ac1_content_3 and 'Ensure that the API server pod specification file permissions are set to 644 or more restrictive' in ac1_content_3
-    assert 'OSCO' in ac2_content_3 and 'Ensure that the API server pod specification file ownership is set to root:root' in ac2_content_3
-    assert 'OSCO' in ac3_content_3 and 'Ensure that the Container Network Interface file ownership is set to root:root' in ac3_content_3
+    assert (
+        'OSCO' in ac1_content_3
+        and 'Ensure that the API server pod specification file permissions are set to 644 or more restrictive'
+        in ac1_content_3
+    )
+    assert (
+        'OSCO' in ac2_content_3
+        and 'Ensure that the API server pod specification file ownership is set to root:root' in ac2_content_3
+    )
+    assert (
+        'OSCO' in ac3_content_3
+        and 'Ensure that the Container Network Interface file ownership is set to root:root' in ac3_content_3
+    )
