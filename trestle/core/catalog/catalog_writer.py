@@ -25,6 +25,7 @@ from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.catalog.catalog_merger import CatalogMerger
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_interface import ComponentImpInfo, ControlInterface
+from trestle.core.rules import RulesInterface
 from trestle.core.control_writer import ControlWriter
 from trestle.oscal import common
 from trestle.oscal import component as comp
@@ -338,14 +339,14 @@ class CatalogWriter:
             logger.warning(f'Component {context.comp_name} references controls {missing_controls} not in profile.')
 
         # get top level rule info applying to all controls
-        comp_rules_dict, comp_rules_params_dict, _ = ControlInterface.get_rules_and_params_dict_from_item(
+        comp_rules_dict, comp_rules_params_dict, _ = RulesInterface.get_rules_and_params_dict_from_item(
             context.component
-        )  # noqa E501
+        )
         context.rules_dict[context.comp_name] = comp_rules_dict
         context.rules_params_dict[context.comp_name] = comp_rules_params_dict
         for control_imp in as_list(context.component.control_implementations):
             control_imp_rules_dict, control_imp_rules_params_dict, _ = (
-                ControlInterface.get_rules_and_params_dict_from_item(control_imp)
+                RulesInterface.get_rules_and_params_dict_from_item(control_imp)
             )  # noqa E501
             context.rules_dict[context.comp_name].update(control_imp_rules_dict)
             comp_rules_params_dict = context.rules_params_dict.get(context.comp_name, {})
@@ -355,7 +356,7 @@ class CatalogWriter:
             for imp_req in as_list(control_imp.implemented_requirements):
                 control_part_id_map = part_id_map.get(imp_req.control_id, {})
                 status = ControlInterface.get_status_from_props(imp_req)
-                control_rules, _ = ControlInterface.get_rule_list_for_item(imp_req)
+                control_rules, _ = RulesInterface.get_rule_list_for_item(imp_req)
                 comp_info = ComponentImpInfo(imp_req.description, control_rules, [], status)
                 self._catalog_interface.add_comp_info(imp_req.control_id, context.comp_name, '', comp_info)
                 set_params = copy.deepcopy(ci_set_params)
@@ -369,7 +370,7 @@ class CatalogWriter:
                         logger.warning(f'No statement label found for statement id {label}.  Defaulting to {label}.')
                     else:
                         label = control_part_id_map[statement.statement_id]
-                    rule_list, _ = ControlInterface.get_rule_list_for_item(statement)
+                    rule_list, _ = RulesInterface.get_rule_list_for_item(statement)
                     comp_info = ComponentImpInfo(statement.description, rule_list, [], status)
                     self._catalog_interface.add_comp_info(imp_req.control_id, context.comp_name, label, comp_info)
 
