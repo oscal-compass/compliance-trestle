@@ -455,14 +455,18 @@ class PoamBuilder:
         # Add POAM ID as property (clean it first)
         clean_poam_id = poam_id.strip() if poam_id else poam_id
         if clean_poam_id:
-            props.append(Property(name='poam-id', value=clean_poam_id, uuid=None, ns=None, **{'class': None}, group=None))
+            props.append(
+                Property(name='poam-id', value=clean_poam_id, uuid=None, ns=None, **{'class': None}, group=None)
+            )
 
         # Add control IDs as properties
         controls_str = row_data.get(PoamXlsxHelper.CONTROLS, '')
         if controls_str:
             controls = self._validator.parse_controls(controls_str)
             for ctrl_id in controls:
-                props.append(Property(name='control-id', value=ctrl_id, uuid=None, ns=None, **{'class': None}, group=None))
+                props.append(
+                    Property(name='control-id', value=ctrl_id, uuid=None, ns=None, **{'class': None}, group=None)
+                )
 
         # Create PoamItem
         poam_item = PoamItem(
@@ -472,11 +476,7 @@ class PoamBuilder:
             props=props or None,
             links=None,
             origins=None,
-            **{
-                'related-findings': None,
-                'related-observations': None,
-                'related-risks': None,
-            },
+            **{'related-findings': None, 'related-observations': None, 'related-risks': None},
         )
 
         # Add remarks if present
@@ -589,7 +589,9 @@ class PoamBuilder:
                 # Additional check: ensure not just whitespace and matches OSCAL pattern
                 if cleaned and not cleaned.isspace():
                     try:
-                        props.append(Property(name=name, value=cleaned, uuid=None, ns=None, **{'class': None}, group=None))
+                        props.append(
+                            Property(name=name, value=cleaned, uuid=None, ns=None, **{'class': None}, group=None)
+                        )
                     except Exception as e:
                         logger.warning(f'Could not create property {name} with value "{cleaned[:50]}...": {e}')
             elif value:
@@ -695,10 +697,7 @@ class PoamBuilder:
                 links=None,
                 dependencies=None,
                 subjects=None,
-                **{
-                    'associated-activities': None,
-                    'responsible-roles': None,
-                },
+                **{'associated-activities': None, 'responsible-roles': None},
             )
             tasks.append(task)
 
@@ -714,13 +713,13 @@ class PoamBuilder:
             risk: Risk to link
         """
         # Link PoamItem to Observation
-        setattr(poam_item, 'related-observations', [RelatedObservation(**{'observation-uuid': observation.uuid})])
+        poam_item.related_observations = [RelatedObservation(**{'observation-uuid': observation.uuid})]
 
         # Link PoamItem to Risk
-        setattr(poam_item, 'related-risks', [RelatedRisk(**{'risk-uuid': risk.uuid})])
+        poam_item.related_risks = [RelatedRisk(**{'risk-uuid': risk.uuid})]
 
         # Link Risk to Observation
-        setattr(risk, 'related-observations', [RelatedObservation(**{'observation-uuid': observation.uuid})])
+        risk.related_observations = [RelatedObservation(**{'observation-uuid': observation.uuid})]
 
 
 class XlsxToOscalPoam(TaskBase):
@@ -1005,10 +1004,7 @@ class XlsxToOscalPoam(TaskBase):
         metadata = Metadata(
             title=self._title,
             version=self._version,
-            **{
-                'last-modified': self._timestamp,
-                'oscal-version': OSCAL_VERSION,
-            },
+            **{'last-modified': self._timestamp, 'oscal-version': OSCAL_VERSION},
         )
 
         # Optional system-id
@@ -1022,10 +1018,7 @@ class XlsxToOscalPoam(TaskBase):
             metadata=metadata,
             observations=observations or None,
             risks=risks or None,
-            **{
-                'system-id': system_id,
-                'poam-items': poam_items,
-            },
+            **{'system-id': system_id, 'poam-items': poam_items},
         )
 
         return poam
