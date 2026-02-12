@@ -1,0 +1,101 @@
+{
+  "component-definition": {
+    "uuid": "11111111-0000-4000-8000-000000000001",
+    "metadata": {
+      "title": "Component Definition with NO rules",
+      "last-modified": "2021-07-19T14:03:03+00:00",
+      "version": "0.21.0",
+      "oscal-version": "1.0.2"
+    },
+    "components": [
+      {
+        "uuid": "22222222-0000-4000-8000-000000000001",
+        "type": "Service",
+        "title": "comp_no_rules",
+        "description": "Component with controls that have NO rules",
+        "control-implementations": [
+          {
+            "uuid": "33333333-0000-4000-8000-000000000001",
+            "source": "trestle://profiles/comp_prof/profile.json",
+            "description": "Control implementation without any rules",
+            "set-parameters": [
+              {
+                "param-id": "ac-1_prm_1",
+                "values": ["value from comp_no_rules"]
+              }
+            ],
+            "implemented-requirements": [
+              {
+                "uuid": "44444444-0000-4000-8000-000000000001",
+                "control-id": "ac-1",
+                "description": "AC-1 implementation without rules",
+                "props": [
+                  {
+                    "name": "implementation-status",
+                    "value": "implemented"
+                  }
+                ],
+                "set-parameters": [
+                  {
+                    "param-id": "ac-1_prm_2",
+                    "values": ["ac-1 param value no rules"]
+                  }
+                ],
+                "responsible-roles": [
+                  {
+                    "role-id": "prepared-by"
+                  }
+                ],
+                "statements": [
+                  {
+                    "statement-id": "ac-1_smt.a",
+                    "uuid": "55555555-0000-4000-8000-000000000001",
+                    "description": "AC-1 part a statement without rules"
+                  }
+                ],
+                "remarks": "AC-1 remarks without rules"
+              },
+              {
+                "uuid": "44444444-0000-4000-8000-000000000002",
+                "control-id": "ac-2",
+                "description": "AC-2 implementation without rules",
+                "props": [
+                  {
+                    "name": "implementation-status",
+                    "value": "implemented"
+                  }
+                ],
+                "statements": [
+                  {
+                    "statement-id": "ac-2_smt.a",
+                    "uuid": "55555555-0000-4000-8000-000000000002",
+                    "description": "AC-2 part a statement without rules"
+                  }
+                ]
+              },
+              {
+                "uuid": "44444444-0000-4000-8000-000000000003",
+                "control-id": "ac-5",
+                "description": "AC-5 implementation without rules and NOT in profile",
+                "props": [
+                  {
+                    "name": "implementation-status",
+                    "value": "implemented"
+                  }
+                ],
+                "statements": [
+                  {
+                    "statement-id": "ac-5_smt.a",
+                    "uuid": "55555555-0000-4000-8000-000000000003",
+                    "description": "AC-5 part a statement without rules, not in profile"
+                  }
+                ],
+                "remarks": "AC-5 not in profile but should be transported"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

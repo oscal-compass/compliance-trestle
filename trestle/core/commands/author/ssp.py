@@ -300,10 +300,10 @@ class SSPAssemble(AuthorCommonCommand):
             if stat.statement_id == statement.statement_id:
                 SSPAssemble._merge_by_comps(stat, statement, set_params)
                 return
-        # otherwise just ad the statement - but only if it has by_comps
-        if statement.by_components:
-            imp_req.statements = as_list(imp_req.statements)
-            imp_req.statements.append(statement)
+        # otherwise add the statement regardless of whether it has by_comps
+        # This ensures statements without rules are also transported
+        imp_req.statements = as_list(imp_req.statements)
+        imp_req.statements.append(statement)
 
     @staticmethod
     def _merge_imp_req_into_imp_req(
@@ -374,6 +374,9 @@ class SSPAssemble(AuthorCommonCommand):
         imp_req.props = none_if_empty(
             ControlInterface.clean_props(gen_imp_req.props, remove_imp_status=True, remove_all_rule_info=True)
         )
+        # Preserve remarks from component definition
+        if gen_imp_req.remarks:
+            imp_req.remarks = gen_imp_req.remarks
         # if we have rules applying or need to make set_params, we need to make a by_comp
         control_set_params = SSPAssemble._get_params_for_rules(context, rules_list, local_set_params)
         if rules_list or control_set_params:
@@ -387,17 +390,17 @@ class SSPAssemble(AuthorCommonCommand):
             imp_req.by_components.append(by_comp)
         # each statement in ci corresponds to by_comp in an ssp imp req
         # so insert the new by_comp directly into the ssp, generating parts as needed
+        # Process ALL statements regardless of whether they have rules
         imp_req.statements = as_list(imp_req.statements)
         for statement in as_list(gen_imp_req.statements):
-            if ControlInterface.item_has_rules(statement):  # type: ignore
-                imp_req = CatalogReader._get_imp_req_for_statement(ssp, gen_imp_req.control_id, statement.statement_id)
-                by_comp = CatalogReader._get_by_comp_from_imp_req(imp_req, statement.statement_id, gen_comp.uuid)
-                by_comp.description = statement.description
-                by_comp.props = none_if_empty(ControlInterface.clean_props(statement.props))
-                rules_list, _ = ControlInterface.get_rule_list_for_item(statement)  # type: ignore
-                by_comp.set_parameters = none_if_empty(
-                    SSPAssemble._get_params_for_rules(context, rules_list, local_set_params)
-                )
+            imp_req = CatalogReader._get_imp_req_for_statement(ssp, gen_imp_req.control_id, statement.statement_id)
+            by_comp = CatalogReader._get_by_comp_from_imp_req(imp_req, statement.statement_id, gen_comp.uuid)
+            by_comp.description = statement.description
+            by_comp.props = none_if_empty(ControlInterface.clean_props(statement.props))
+            rules_list, _ = ControlInterface.get_rule_list_for_item(statement)  # type: ignore
+            by_comp.set_parameters = none_if_empty(
+                SSPAssemble._get_params_for_rules(context, rules_list, local_set_params)
+            )
         imp_req.statements = none_if_empty(imp_req.statements)
         ssp.control_implementation.implemented_requirements = as_list(
             ssp.control_implementation.implemented_requirements

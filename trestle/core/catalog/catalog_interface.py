@@ -851,32 +851,34 @@ class CatalogInterface:
             rule_props.extend(ci_rules_props)
             rule_props.extend(ir_props)
             rule_props = ControlInterface.clean_props(rule_props, remove_imp_status=False)
-            if control_rules:
-                status = ControlInterface.get_status_from_props(imp_req)
-                final_props = ControlInterface.cull_props_by_rules(rule_props, control_rules)
-                comp_info = ComponentImpInfo(imp_req.description, control_rules, final_props, status)
-                self.add_comp_info(imp_req.control_id, context.comp_name, '', comp_info)
+            # Add comp_info regardless of whether there are rules
+            # This ensures implementation requirements without rules are also transported to markdown
+            status = ControlInterface.get_status_from_props(imp_req)
+            final_props = ControlInterface.cull_props_by_rules(rule_props, control_rules) if control_rules else []
+            comp_info = ComponentImpInfo(imp_req.description, control_rules, final_props, status)
+            self.add_comp_info(imp_req.control_id, context.comp_name, '', comp_info)
             set_params = copy.deepcopy(ci_set_params)
             set_params.update(ControlInterface.get_set_params_from_item(imp_req))
             for set_param in set_params.values():
                 # add to control_comp_set_params dict
                 self.add_comp_set_param(imp_req.control_id, context.comp_name, set_param)
+            # Process ALL statements regardless of whether they have rules
+            # This ensures statements without rules are also transported to markdown
             for statement in as_list(imp_req.statements):
                 rule_list, stat_props = ControlInterface.get_rule_list_for_item(statement)
-                if rule_list:
-                    status = ControlInterface.get_status_from_props(statement)
-                    if statement.statement_id not in control_part_id_map:
-                        label = statement.statement_id
-                        logger.warning(
-                            f'No statement label found for statement id {label}.  Defaulting to {label}.'  # noqa E501
-                        )
-                    else:
-                        label = control_part_id_map[statement.statement_id]
-                    all_props = rule_props[:]
-                    all_props.extend(stat_props)
-                    final_props = ControlInterface.cull_props_by_rules(all_props, rule_list)
-                    comp_info = ComponentImpInfo(statement.description, rule_list, final_props, status)
-                    self.add_comp_info(imp_req.control_id, context.comp_name, label, comp_info)
+                status = ControlInterface.get_status_from_props(statement)
+                if statement.statement_id not in control_part_id_map:
+                    label = statement.statement_id
+                    logger.warning(
+                        f'No statement label found for statement id {label}.  Defaulting to {label}.'  # noqa E501
+                    )
+                else:
+                    label = control_part_id_map[statement.statement_id]
+                all_props = rule_props[:]
+                all_props.extend(stat_props)
+                final_props = ControlInterface.cull_props_by_rules(all_props, rule_list) if rule_list else []
+                comp_info = ComponentImpInfo(statement.description, rule_list, final_props, status)
+                self.add_comp_info(imp_req.control_id, context.comp_name, label, comp_info)
 
     def generate_control_rule_info(self, part_id_map: Dict[str, Dict[str, str]], context: ControlContext) -> None:
         """

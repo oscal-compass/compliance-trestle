@@ -1,0 +1,133 @@
+{
+  "component-definition": {
+    "uuid": "11111111-0000-4000-8000-000000000002",
+    "metadata": {
+      "title": "Component Definition with MIXED rules",
+      "last-modified": "2021-07-19T14:03:03+00:00",
+      "version": "0.21.0",
+      "oscal-version": "1.0.2"
+    },
+    "components": [
+      {
+        "uuid": "22222222-0000-4000-8000-000000000002",
+        "type": "Service",
+        "title": "comp_mixed_rules",
+        "description": "Component with SOME controls having rules",
+        "control-implementations": [
+          {
+            "uuid": "33333333-0000-4000-8000-000000000002",
+            "source": "trestle://profiles/comp_prof/profile.json",
+            "description": "Control implementation with mixed rules",
+            "props": [
+              {
+                "name": "Rule_Id",
+                "ns": "http://comp_ns",
+                "value": "rule_for_ac1",
+                "class": "Rule_Id",
+                "remarks": "rule_1"
+              },
+              {
+                "name": "Rule_Description",
+                "ns": "http://comp_ns",
+                "value": "Rule for AC-1",
+                "remarks": "rule_1"
+              }
+            ],
+            "set-parameters": [
+              {
+                "param-id": "ac-1_prm_1",
+                "values": ["value from comp_mixed_rules"]
+              }
+            ],
+            "implemented-requirements": [
+              {
+                "uuid": "44444444-0000-4000-8000-000000000004",
+                "control-id": "ac-1",
+                "description": "AC-1 implementation WITH rules",
+                "props": [
+                  {
+                    "name": "Rule_Id",
+                    "value": "rule_for_ac1"
+                  },
+                  {
+                    "name": "implementation-status",
+                    "value": "implemented"
+                  }
+                ],
+                "set-parameters": [
+                  {
+                    "param-id": "ac-1_prm_2",
+                    "values": ["ac-1 param value with rules"]
+                  }
+                ],
+                "responsible-roles": [
+                  {
+                    "role-id": "prepared-by"
+                  }
+                ],
+                "statements": [
+                  {
+                    "statement-id": "ac-1_smt.a",
+                    "uuid": "55555555-0000-4000-8000-000000000004",
+                    "description": "AC-1 part a statement with rules",
+                    "props": [
+                      {
+                        "name": "Rule_Id",
+                        "value": "rule_for_ac1"
+                      }
+                    ]
+                  }
+                ],
+                "remarks": "AC-1 with rules"
+              },
+              {
+                "uuid": "44444444-0000-4000-8000-000000000005",
+                "control-id": "ac-2",
+                "description": "AC-2 implementation WITHOUT rules",
+                "props": [
+                  {
+                    "name": "implementation-status",
+                    "value": "implemented"
+                  }
+                ],
+                "set-parameters": [
+                  {
+                    "param-id": "ac-2_prm_1",
+                    "values": ["ac-2 param value without rules"]
+                  }
+                ],
+                "statements": [
+                  {
+                    "statement-id": "ac-2_smt.a",
+                    "uuid": "55555555-0000-4000-8000-000000000005",
+                    "description": "AC-2 part a statement without rules"
+                  }
+                ],
+                "remarks": "AC-2 without rules"
+              },
+              {
+                "uuid": "44444444-0000-4000-8000-000000000006",
+                "control-id": "ac-5",
+                "description": "AC-5 implementation WITHOUT rules and NOT in profile",
+                "props": [
+                  {
+                    "name": "implementation-status",
+                    "value": "implemented"
+                  }
+                ],
+                "statements": [
+                  {
+                    "statement-id": "ac-5_smt.a",
+                    "uuid": "55555555-0000-4000-8000-000000000006",
+                    "description": "AC-5 part a statement without rules, not in profile"
+                  }
+                ],
+                "remarks": "AC-5 not in profile, no rules, should be transported"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
