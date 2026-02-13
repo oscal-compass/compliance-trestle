@@ -1,4 +1,4 @@
 {
     "PYTHON_MIN": "3.10",
-    "PYTHON_MAX": "3.13"
+    "PYTHON_MAX": "3.13.5"
 }
