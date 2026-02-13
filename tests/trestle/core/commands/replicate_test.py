@@ -176,7 +176,7 @@ def test_replicate_load_file_failure(tmp_trestle_dir: Path, monkeypatch: MonkeyP
     bad_file.write(sample_data)
     bad_file.close()
 
-    args = 'trestle replicate catalog -n bad_catalog -o rep_bad_catalog'.split()
+    args = ['trestle', 'replicate', 'catalog', '-n', 'bad_catalog', '-o', 'rep_bad_catalog']
     monkeypatch.setattr(sys, 'argv', args)
     rc = Trestle().run()
     assert rc == 1

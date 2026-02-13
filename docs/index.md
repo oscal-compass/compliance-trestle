@@ -65,10 +65,10 @@ Trestle version v3.6.0 based on OSCAL version 1.1.2
 
 #### Install of trestle 2.x
 
-Use python 3.9.
+Use python 3.10 or higher.
 
 ```
-python3.9 -m venv venv.trestle
+python3.10 -m venv venv.trestle
 source venv.trestle/bin/activate
 pip install compliance-trestle==2.6.0
 trestle version

@@ -83,9 +83,7 @@ def test_validation_happy(
             testcmd = f'trestle validate {mode} {model_def_file}'
         else:
             testcmd = f'trestle validate {mode} {model_def_file.parent}'
-    elif mode == '-n':
-        testcmd = f'trestle validate -t catalog -n {name}'
-    elif mode == '-x':
+    elif mode in ('-n', '-x'):
         testcmd = f'trestle validate -t catalog -n {name}'
     else:
         testcmd = 'trestle validate -a'
@@ -131,9 +129,7 @@ def test_validation_unhappy(
             testcmd = f'trestle validate {mode} {model_def_file}'
         else:
             testcmd = f'trestle validate {mode} {model_def_file.parent}'
-    elif mode == '-n':
-        testcmd = f'trestle validate -t catalog -n {name}'
-    elif mode == '-x':
+    elif mode in ('-n', '-x'):
         testcmd = f'trestle validate -t catalog -n {name}'
     else:
         testcmd = 'trestle validate -a'
@@ -309,7 +305,7 @@ def test_validate_distributed(
         trestle_root=tmp_trestle_dir,
     )
     _ = SplitCmd()._run(args)
-    test_args = 'trestle validate -a -v'.split(' ')
+    test_args = ['trestle', 'validate', '-a', '-v']
     monkeypatch.setattr(sys, 'argv', test_args)
     with pytest.raises(SystemExit) as pytest_wrapped_e:
         cli.run()

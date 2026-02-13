@@ -128,7 +128,7 @@ class DocsControlWriter(ControlWriter):
                 )
             self._md_file.set_indent_level(-1)
             if tag_pattern:
-                bottom_tag_pattern = '{: #"Parameters for [.]" caption-side="top"}'  # noqa: FS003 - not f string
+                bottom_tag_pattern = '{: #"Parameters for [.]" caption-side="top"}'  # noqa: F541 - not f string
                 control_id = self._get_pretty_control_id_if_exists(control)
                 self._md_file.new_line(bottom_tag_pattern.replace('[.]', control_id))
                 self._md_file.new_paragraph()

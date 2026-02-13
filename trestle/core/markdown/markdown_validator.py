@@ -120,7 +120,7 @@ class MarkdownValidator:
                 )
                 return False
 
-            for instance_gov_node, template_gov_node in zip(instance_gov_nodes, template_gov_nodes):
+            for instance_gov_node, template_gov_node in zip(instance_gov_nodes, template_gov_nodes, strict=True):
                 instance_keys = instance_gov_node.content.governed_document
                 template_keys = template_gov_node.content.governed_document
 

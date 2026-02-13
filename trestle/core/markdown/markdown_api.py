@@ -85,5 +85,5 @@ class MarkdownAPI:
                 yaml.safe_dump(header, md_file, sort_keys=False)
                 md_file.write('---\n\n')
                 md_file.write(md_body)
-        except IOError as e:
+        except OSError as e:
             raise TrestleError(f'Error while writing markdown file: {e}')

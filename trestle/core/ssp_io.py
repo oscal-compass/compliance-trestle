@@ -131,7 +131,7 @@ class SSPMarkdownWriter:
                     role_ids = [role.role_id.replace('_', ' ') for role in resp_roles]
 
                     # now check if this role exists in the metadata
-                    role_titles = dict(zip(role_ids, role_ids))
+                    role_titles = dict(zip(role_ids, role_ids, strict=True))
                     roles = as_list(self._ssp.metadata.roles)
                     for role in roles:
                         if role.id in role_ids:

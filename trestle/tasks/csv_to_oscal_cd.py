@@ -1385,10 +1385,7 @@ class CsvColumn:
     @staticmethod
     def is_column_name_parameter(name: str) -> bool:
         """Is column name parameter."""
-        for cname in CsvColumn._columns_parameter:
-            if name.startswith(cname):
-                return True
-        return False
+        return any(name.startswith(cname) for cname in CsvColumn._columns_parameter)
 
     @staticmethod
     def get_required_column_names() -> List[str]:
@@ -1665,15 +1662,13 @@ class _CsvMgr:
     def get_col_index(self, column_name: str) -> int:
         """Get index for column name."""
         rval = -1
-        index = 0
         head_row = self._csv[0]
         col_name = self._get_normalized_column_name(column_name)
-        for heading in head_row:
+        for index, heading in enumerate(head_row):
             head_name = self._get_normalized_column_name(heading)
             if head_name == col_name:
                 rval = index
                 break
-            index += 1
         return rval
 
     def get_row(self, rule_key: tuple) -> List:

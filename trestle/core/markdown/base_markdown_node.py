@@ -328,4 +328,6 @@ class BaseMarkdownNode:
             if header_lvl is not None and header_lvl < min_lvl:
                 min_lvl = header_lvl
 
-        return min_lvl - 1
+        if math.isinf(min_lvl):
+            return 0  # No headers found
+        return int(min_lvl - 1)

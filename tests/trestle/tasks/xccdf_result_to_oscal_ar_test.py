@@ -372,7 +372,7 @@ def test_xccdf_execute_bad_timestamp(tmp_path):
     """Test execute with bad timestamp."""
     config = setup_config(cf01)
     section = config['task.xccdf-result-to-oscal-ar']
-    section['timestamp'] = str('bogus')
+    section['timestamp'] = 'bogus'
     tgt = xccdf_result_to_oscal_ar.XccdfResultToOscalAR(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE

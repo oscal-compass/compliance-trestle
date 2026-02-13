@@ -82,7 +82,7 @@ class FilesChanged(Command):
         # None is a reference to current working tree.
         for diff in head_commit.diff(None):
             path = pathlib.Path(diff.a_path)
-            if not path.suffix.lstrip('.') in excludes:
+            if path.suffix.lstrip('.') not in excludes:
                 logger.info(f'The following path has changed {path}.')
                 return True
         return False

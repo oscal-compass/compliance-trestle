@@ -264,7 +264,7 @@ def _setup_workspace(workspace: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     src = 'tests/data/ocp4-cis'
     tgt = workspace / src
     test_utils.copy_tree_with_hidden(src, tgt)
-    src = 'nist-content/nist.gov/SP800-53/rev4/json'
+    src = 'nist-content/nist.gov/SP800-53/rev5/json'
     tgt = workspace / src
     test_utils.copy_tree_with_hidden(src, tgt)
     cwd = os.getcwd()
@@ -311,7 +311,7 @@ def test_execute_validate_controls_nist(tmp_path: pathlib.Path, monkeypatch: Mon
             elif i == 1:
                 continue
             assert row[3] == 'tests/data/ocp4-cis/catalog.json'
-            row[3] = 'nist-content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json'
+            row[3] = 'nist-content/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json'
         # test
         with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
             mock_csv_reader.return_value = rows

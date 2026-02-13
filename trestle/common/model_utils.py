@@ -627,7 +627,7 @@ class ModelUtils:
         props = param_dict.get('props', [])
         if const.DISPLAY_NAME in param_dict:
             display_name = param_dict.pop(const.DISPLAY_NAME)
-            props.append(common.Property(name=const.DISPLAY_NAME, value=display_name, ns=const.TRESTLE_GENERIC_NS))
+            props.append(common.Property(name=const.DISPLAY_NAME, value=display_name, ns=const.TRESTLE_GENERIC_NS))  # type: ignore[call-arg]
         if const.AGGREGATES in param_dict:
             # removing aggregates as this is prop just informative in markdown
             param_dict.pop(const.AGGREGATES)
@@ -635,7 +635,7 @@ class ModelUtils:
         if const.PARAM_VALUE_ORIGIN in param_dict:
             param_value_origin = param_dict.pop(const.PARAM_VALUE_ORIGIN)
             if param_value_origin is not None:
-                props.append(common.Property(name=const.PARAM_VALUE_ORIGIN, value=param_value_origin))
+                props.append(common.Property(name=const.PARAM_VALUE_ORIGIN, value=param_value_origin))  # type:ignore[call-arg]
             else:
                 raise TrestleError(
                     f'Parameter value origin property for parameter {param_dict["id"]}'
@@ -893,7 +893,7 @@ class ModelUtils:
         elif obj_a_type is list:
             if len(obj_a) != len(obj_b):
                 return True
-            for item_a, item_b in zip(obj_a, obj_b):
+            for item_a, item_b in zip(obj_a, obj_b, strict=True):
                 if ModelUtils._objects_differ(item_a, item_b, ignore_type_list, ignore_name_list, ignore_all_uuid):
                     return True
         elif obj_a_type is dict:

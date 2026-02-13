@@ -201,20 +201,19 @@ def list_unordered_equal(list1: List[Any], list2: List[Any]) -> bool:
 def text_files_equal(path_a: pathlib.Path, path_b: pathlib.Path) -> bool:
     """Determine if files are equal, ignoring newline style."""
     try:
-        with open(path_a, 'r') as file_a:
-            with open(path_b, 'r') as file_b:
-                lines_a = file_a.readlines()
-                lines_b = file_b.readlines()
-                nlines = len(lines_a)
-                if nlines != len(lines_b):
-                    logger.error(f'n lines differ: {len(lines_a)} vs. {len(lines_b)}')
+        with open(path_a, 'r') as file_a, open(path_b, 'r') as file_b:
+            lines_a = file_a.readlines()
+            lines_b = file_b.readlines()
+            nlines = len(lines_a)
+            if nlines != len(lines_b):
+                logger.error(f'n lines differ: {len(lines_a)} vs. {len(lines_b)}')
+                return False
+            for ii in range(nlines):
+                if lines_a[ii].rstrip('\r\n') != lines_b[ii].rstrip('\r\n'):
+                    logger.error('lines differ:')
+                    logger.error(lines_a[ii])
+                    logger.error(lines_b[ii])
                     return False
-                for ii in range(nlines):
-                    if lines_a[ii].rstrip('\r\n') != lines_b[ii].rstrip('\r\n'):
-                        logger.error('lines differ:')
-                        logger.error(lines_a[ii])
-                        logger.error(lines_b[ii])
-                        return False
     except Exception:
         return False
     return True
@@ -223,22 +222,21 @@ def text_files_equal(path_a: pathlib.Path, path_b: pathlib.Path) -> bool:
 def text_files_similar(path_a: pathlib.Path, path_b: pathlib.Path, skip: str) -> bool:
     """Determine if files are similar, ignoring newline style and lines containing <skip> text."""
     try:
-        with open(path_a, 'r') as file_a:
-            with open(path_b, 'r') as file_b:
-                lines_a = file_a.readlines()
-                lines_b = file_b.readlines()
-                nlines = len(lines_a)
-                if nlines != len(lines_b):
-                    logger.error(f'n lines differ: {len(lines_a)} vs. {len(lines_b)}')
+        with open(path_a, 'r') as file_a, open(path_b, 'r') as file_b:
+            lines_a = file_a.readlines()
+            lines_b = file_b.readlines()
+            nlines = len(lines_a)
+            if nlines != len(lines_b):
+                logger.error(f'n lines differ: {len(lines_a)} vs. {len(lines_b)}')
+                return False
+            for ii in range(nlines):
+                if lines_a[ii].rstrip('\r\n') != lines_b[ii].rstrip('\r\n'):
+                    if skip in lines_a[ii] and skip in lines_b[ii]:
+                        continue
+                    logger.error('lines differ:')
+                    logger.error(lines_a[ii])
+                    logger.error(lines_b[ii])
                     return False
-                for ii in range(nlines):
-                    if lines_a[ii].rstrip('\r\n') != lines_b[ii].rstrip('\r\n'):
-                        if skip in lines_a[ii] and skip in lines_b[ii]:
-                            continue
-                        logger.error('lines differ:')
-                        logger.error(lines_a[ii])
-                        logger.error(lines_b[ii])
-                        return False
     except Exception:
         return False
     return True
@@ -252,7 +250,7 @@ def confirm_text_in_file(file_path: pathlib.Path, tag: str, text: str) -> bool:
     with file_path.open('r', encoding=const.FILE_ENCODING) as f:
         lines = f.readlines()
     # '' for tag will seek text anywhere
-    found_tag = False if tag else True
+    found_tag = not tag
     for line in lines:
         if not found_tag and tag in line:
             found_tag = True
@@ -426,7 +424,7 @@ def setup_for_component_definition(tmp_trestle_dir: pathlib.Path, monkeypatch: M
 def setup_component_generate(tmp_trestle_dir: pathlib.Path, comp_name='comp_def_a') -> str:
     """Create the compdef, profile and catalog content component-generate."""
     load_from_json(tmp_trestle_dir, comp_name, comp_name, comp.ComponentDefinition)
-    for prof_name in 'comp_prof,comp_prof_aa,comp_prof_ab,comp_prof_ba,comp_prof_bb'.split(','):
+    for prof_name in ['comp_prof', 'comp_prof_aa', 'comp_prof_ab', 'comp_prof_ba', 'comp_prof_bb']:
         load_from_json(tmp_trestle_dir, prof_name, prof_name, prof.Profile)
     load_from_json(tmp_trestle_dir, 'simplified_nist_catalog', 'simplified_nist_catalog', cat.Catalog)
 
@@ -517,7 +515,7 @@ def setup_for_ssp(
     for comp_name in comp_names.split(','):
         load_from_json(tmp_trestle_dir, comp_name, comp_name, comp.ComponentDefinition)
     prof_name_list = [prof_name]
-    prof_name_list.extend('comp_prof_aa,comp_prof_ab,comp_prof_ba,comp_prof_bb'.split(','))
+    prof_name_list.extend(['comp_prof_aa', 'comp_prof_ab', 'comp_prof_ba', 'comp_prof_bb'])
     for local_prof_name in prof_name_list:
         load_from_json(tmp_trestle_dir, local_prof_name, local_prof_name, prof.Profile)
     load_from_json(tmp_trestle_dir, 'simplified_nist_catalog', 'simplified_nist_catalog', cat.Catalog)
