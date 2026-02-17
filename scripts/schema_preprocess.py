@@ -274,6 +274,38 @@ def patch_mapping_select_control(model_name: str) -> None:
     json_data_put(model_name, data)
 
 
+def patch_mapping_confidence_score(model_name: str) -> None:
+    """Make STRVALUE optional in mapping confidence-score.
+    
+    The confidence-score in mapping schema should allow optional STRVALUE and category fields,
+    with only percentage being populated by the csv-to-oscal-mc task.
+    """
+    if not model_name.endswith('oscal_mapping_schema.json'):
+        return
+
+    data = json_data_get(model_name)
+
+    # Find the confidence-score definition in mapping schema
+    confidence_key = None
+    for key in data['definitions'].keys():
+        if key.endswith(':confidence-score'):
+            confidence_key = key
+            break
+
+    if not confidence_key:
+        logger.debug(f'patch: {model_name} no confidence-score found')
+        return
+
+    # Get the confidence-score definition
+    defn = data['definitions'][confidence_key]
+    
+    # Remove STRVALUE from required fields if present
+    if 'required' in defn and 'STRVALUE' in defn['required']:
+        defn['required'].remove('STRVALUE')
+        logger.info(f'patch: {model_name} removed STRVALUE from required fields in {confidence_key}')
+        json_data_put(model_name, data)
+
+
 # patch_schemas introduced for migrating from OSCAL 1.0.4 to 1.1.2 due to missing/broken
 # support in datamodel-codegen tool. See issue(s):
 # - https://github.com/koxudaxi/datamodel-code-generator/issues/1901
@@ -288,6 +320,7 @@ def patch_schemas(fixup_dir_path: Path) -> None:
         patch_profile(model_name)
         patch_profile_group_description(model_name)
         patch_mapping_select_control(model_name)
+        patch_mapping_confidence_score(model_name)
         create_refs(model_name)
 
 

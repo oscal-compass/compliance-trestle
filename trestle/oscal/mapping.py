@@ -117,7 +117,7 @@ class ConfidenceScore(OscalBaseModel):
 
     category: constr(regex=r'^\S(.*\S)?$') | Category | None = None
     percentage: DecimalDatatype | None = None
-    STRVALUE: constr(regex=r'^\S(.*\S)?$')
+    STRVALUE: constr(regex=r'^\S(.*\S)?$') | None = None
 
 
 class Coverage(OscalBaseModel):

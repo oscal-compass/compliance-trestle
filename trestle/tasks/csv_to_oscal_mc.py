@@ -339,9 +339,8 @@ class _McMgr:
         if confidence_score_str:
             confidence_value = self._parse_percentage(confidence_score_str)
             if confidence_value is not None:
-                # ConfidenceScore has STRVALUE for the decimal value
-                # plus optional category and percentage fields
-                map_.confidence_score = ConfidenceScore(STRVALUE=str(confidence_value), percentage=confidence_value)
+                # ConfidenceScore only populates the percentage field
+                map_.confidence_score = ConfidenceScore(percentage=confidence_value)
 
         # Add coverage if provided
         if coverage_str:
