@@ -346,9 +346,8 @@ class _McMgr:
         if coverage_str:
             coverage_value = self._parse_percentage(coverage_str)
             if coverage_value is not None:
-                # Coverage has STRVALUE for the decimal value
-                # plus optional generation_method field
-                map_.coverage = Coverage(STRVALUE=coverage_value, generation_method='arbitrary')
+                # Coverage only populates the STRVALUE field
+                map_.coverage = Coverage(STRVALUE=coverage_value)
 
         # Add other properties
         props = []

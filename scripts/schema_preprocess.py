@@ -276,7 +276,7 @@ def patch_mapping_select_control(model_name: str) -> None:
 
 def patch_mapping_confidence_score(model_name: str) -> None:
     """Make STRVALUE optional in mapping confidence-score.
-    
+
     The confidence-score in mapping schema should allow optional STRVALUE and category fields,
     with only percentage being populated by the csv-to-oscal-mc task.
     """
@@ -298,7 +298,7 @@ def patch_mapping_confidence_score(model_name: str) -> None:
 
     # Get the confidence-score definition
     defn = data['definitions'][confidence_key]
-    
+
     # Remove STRVALUE from required fields if present
     if 'required' in defn and 'STRVALUE' in defn['required']:
         defn['required'].remove('STRVALUE')
