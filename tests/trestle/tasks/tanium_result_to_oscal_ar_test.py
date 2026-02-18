@@ -355,7 +355,7 @@ def test_tanium_execute_bad_timestamp(tmp_path):
     """Test execute with bad timestamp."""
     config = setup_config(cf01)
     section = config['task.tanium-result-to-oscal-ar']
-    section['timestamp'] = str('bogus')
+    section['timestamp'] = 'bogus'
     tgt = tanium_result_to_oscal_ar.TaniumResultToOscalAR(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE

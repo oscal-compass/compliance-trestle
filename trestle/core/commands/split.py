@@ -331,9 +331,7 @@ class SplitCmd(CommandPlusDocs):
                     sub_model_items[prefix] = sub_model_item
 
             # process list sub model items
-            count = 0
-            for key, sub_model_item in sub_model_items.items():
-                count += 1
+            for count, (key, sub_model_item) in enumerate(sub_model_items.items(), start=1):
                 # recursively split the sub-model if there are more element paths to traverse
                 # e.g. split component.control-implementations.*
                 require_recursive_split = (
