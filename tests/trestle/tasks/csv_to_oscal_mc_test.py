@@ -837,11 +837,11 @@ def test_alternate_encoding(tmp_path: pathlib.Path) -> None:
     """Test CSV with non-UTF-8 encoding to trigger alternate encoding path."""
     # Create a CSV header and data rows
     csv_lines = [
-        "$$Source_Resource,$$Target_Resource,$$Map_Source_ID_Ref_list,$$Map_Target_ID_Ref_list,$$Map_Relationship,$Map_Confidence_Score,$Map_Coverage\n",
-        "A reference to a resource,A reference to a resource,A list of source IDs,A list of target IDs,The relationship type,Confidence score,Coverage percentage\n",
-        "catalogs/PCI/catalog.json,catalogs/FedRAMP_rev5_HIGH/catalog.json,PCI-1.1.1,ac-1_smt,subset-of,90%,90%\n"
+        '$$Source_Resource,$$Target_Resource,$$Map_Source_ID_Ref_list,$$Map_Target_ID_Ref_list,$$Map_Relationship,$Map_Confidence_Score,$Map_Coverage\n',
+        'A reference to a resource,A reference to a resource,A list of source IDs,A list of target IDs,The relationship type,Confidence score,Coverage percentage\n',
+        'catalogs/PCI/catalog.json,catalogs/FedRAMP_rev5_HIGH/catalog.json,PCI-1.1.1,ac-1_smt,subset-of,90%,90%\n',
     ]
-    
+
     csv_path = tmp_path / 'test_latin1.csv'
     # Write with latin-1 encoding including a character that's invalid in UTF-8
     # Using 0xE9 (é in latin-1) which will cause UTF-8 decode to fail
