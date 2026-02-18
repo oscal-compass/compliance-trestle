@@ -28,6 +28,7 @@ from trestle.oscal.common import Metadata
 from trestle.oscal.common import Property
 from trestle.oscal.mapping import ConfidenceScore
 from trestle.oscal.mapping import Coverage
+from trestle.oscal.mapping import GapSummary
 from trestle.oscal.mapping import Map
 from trestle.oscal.mapping import Mapping
 from trestle.oscal.mapping import MappingCollection
@@ -35,6 +36,7 @@ from trestle.oscal.mapping import MappingDescription
 from trestle.oscal.mapping import MappingItem
 from trestle.oscal.mapping import MappingProvenance
 from trestle.oscal.mapping import MappingResourceReference
+from trestle.oscal.mapping import SelectControlByIdForMapping
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
 from trestle.tasks.csv_to_oscal_mc_utilities import HrefManager
@@ -203,11 +205,12 @@ class CsvToOscalMappingCollection(TaskBase):
             href_manager.add(tgt_resource_href)
             tgt_id_list = self._csv_mgr.get_cell(row, L_MAP_TARGET_ID_REF_LIST).split()
             tgt_id_ref_list = href_manager.get_id_list(tgt_resource_href, tgt_id_list)
+            # Get relationship type for all rows
+            relationship_type = self._csv_mgr.get_cell(row, L_MAP_RELATIONSHIP)
             # relationship mapping
             if src_id_ref_list and tgt_id_ref_list:
                 src_resource_type = href_manager.get_type(src_resource_href)
                 tgt_resource_type = href_manager.get_type(tgt_resource_href)
-                relationship_type = self._csv_mgr.get_cell(row, L_MAP_RELATIONSHIP)
                 # Get confidence score and coverage
                 confidence_score_str = self._csv_mgr.get_cell(row, L_MAP_CONFIDENCE_SCORE)
                 coverage_str = self._csv_mgr.get_cell(row, L_MAP_COVERAGE)
@@ -229,15 +232,38 @@ class CsvToOscalMappingCollection(TaskBase):
                     kvp_set,
                 )
             else:
-                # keep track of ids not found in specified corresponding href
-                if not src_id_ref_list:
-                    for src_id in src_id_list:
-                        if src_id not in ctl_missing_src:
-                            ctl_missing_src.append(src_id)
-                if not tgt_id_ref_list:
-                    for tgt_id in tgt_id_list:
-                        if tgt_id not in ctl_missing_tgt:
-                            ctl_missing_tgt.append(tgt_id)
+                # Track unmapped controls for gap summary - only when relationship is empty
+                # If relationship is specified but controls are missing, that's an error
+                if relationship_type:
+                    # Relationship specified - missing controls are errors
+                    if not src_id_ref_list:
+                        for src_id in src_id_list:
+                            if src_id not in ctl_missing_src:
+                                ctl_missing_src.append(src_id)
+                    if not tgt_id_ref_list:
+                        for tgt_id in tgt_id_list:
+                            if tgt_id not in ctl_missing_tgt:
+                                ctl_missing_tgt.append(tgt_id)
+                else:
+                    # No relationship - track as unmapped for gap summary
+                    if src_id_ref_list and not tgt_id_ref_list:
+                        # Source has controls but no target = unmapped source controls
+                        for src_id in src_id_list:
+                            self._mc_mgr.add_unmapped_control(src_id, is_source=True)
+                    elif tgt_id_ref_list and not src_id_ref_list:
+                        # Target has controls but no source = unmapped target controls
+                        for tgt_id in tgt_id_list:
+                            self._mc_mgr.add_unmapped_control(tgt_id, is_source=False)
+                    else:
+                        # Both empty - keep track of ids not found in specified corresponding href
+                        if not src_id_ref_list:
+                            for src_id in src_id_list:
+                                if src_id not in ctl_missing_src:
+                                    ctl_missing_src.append(src_id)
+                        if not tgt_id_ref_list:
+                            for tgt_id in tgt_id_list:
+                                if tgt_id not in ctl_missing_tgt:
+                                    ctl_missing_tgt.append(tgt_id)
         # issues?
         text = ''
         if ctl_missing_src:
@@ -264,6 +290,9 @@ class _McMgr:
         self._timestamp = timestamp
         self._version = version
         self._map = {}
+        # Track unmapped controls for gap summaries
+        self._unmapped_source_ids = []
+        self._unmapped_target_ids = []
 
     def _derive_id_ref_type(self, id_ref: str) -> str:
         """Derive id_ref type."""
@@ -363,6 +392,15 @@ class _McMgr:
 
         mapping.maps.append(map_)
 
+    def add_unmapped_control(self, control_id: str, is_source: bool) -> None:
+        """Track unmapped control for gap summary."""
+        if is_source:
+            if control_id not in self._unmapped_source_ids:
+                self._unmapped_source_ids.append(control_id)
+        else:
+            if control_id not in self._unmapped_target_ids:
+                self._unmapped_target_ids.append(control_id)
+
     def _get_mapping(
         self, src_resource_type: str, src_resource_href: str, tgt_resource_type: str, tgt_resource_href: str
     ) -> Mapping:
@@ -381,6 +419,7 @@ class _McMgr:
         metadata = Metadata(
             title=self._title, last_modified=timestamp, oscal_version=OSCAL_VERSION, version=self._version
         )
+
         # provenance
         provenance = MappingProvenance(
             method='manual',
@@ -388,9 +427,41 @@ class _McMgr:
             status='complete',
             mapping_description=MappingDescription(__root__=f'Mapping collection for {self._title}'),
         )
+
+        # Get all mappings and add gap summaries to the first mapping
+        mappings_list = list(self._map.values())
+
+        # Add gap summaries to the first mapping if there are unmapped controls
+        if mappings_list and (self._unmapped_source_ids or self._unmapped_target_ids):
+            first_mapping = mappings_list[0]
+
+            # Add source gap summary if there are unmapped source controls
+            if self._unmapped_source_ids:
+                source_gap = GapSummary(
+                    uuid=str(uuid.uuid4()),
+                    **{
+                        'unmapped-controls': [
+                            SelectControlByIdForMapping(**{'with-ids': sorted(self._unmapped_source_ids)})
+                        ]
+                    },
+                )
+                first_mapping.source_gap_summary = source_gap
+
+            # Add target gap summary if there are unmapped target controls
+            if self._unmapped_target_ids:
+                target_gap = GapSummary(
+                    uuid=str(uuid.uuid4()),
+                    **{
+                        'unmapped-controls': [
+                            SelectControlByIdForMapping(**{'with-ids': sorted(self._unmapped_target_ids)})
+                        ]
+                    },
+                )
+                first_mapping.target_gap_summary = target_gap
+
         # mapping collection
         mapping_collection = MappingCollection(
-            uuid=str(uuid.uuid4()), metadata=metadata, provenance=provenance, mappings=list(self._map.values())
+            uuid=str(uuid.uuid4()), metadata=metadata, provenance=provenance, mappings=mappings_list
         )
         return mapping_collection
 
