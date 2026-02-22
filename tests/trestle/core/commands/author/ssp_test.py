@@ -1401,7 +1401,11 @@ def test_ssp_generate_includes_all_imp_reqs(tmp_trestle_dir: pathlib.Path) -> No
     assert ac3_path.exists()
     ac1_content_1 = ac1_path.read_text()
     ac3_content_1 = ac3_path.read_text()
-    assert 'comp_cc' in ac1_content_1 and 'imp req prose for ac-1 from comp cc' in ac1_content_1
+    assert (
+        'comp_cc' in ac1_content_1
+        and 'imp req prose for ac-1 from comp cc' in ac1_content_1
+        and 'statement prose for part a. from comp cc' in ac1_content_1
+    )
     assert 'comp_cc' in ac3_content_1 and 'imp req prose for ac-3 from comp cc' in ac3_content_1
 
     # Testing for the case where all of the controls have rules
@@ -1420,6 +1424,7 @@ def test_ssp_generate_includes_all_imp_reqs(tmp_trestle_dir: pathlib.Path) -> No
     assert (
         'comp_aa' in ac1_content_2
         and 'imp req prose for ac-1 from comp aa' in ac1_content_2
+        and 'statement prose for part a. from comp aa' in ac1_content_2
         and 'comp_ab' in ac1_content_2
     )
     assert 'comp_aa' in ac3_content_2 and 'imp req prose for ac-3 from comp aa' in ac3_content_2
@@ -1443,6 +1448,7 @@ def test_ssp_generate_includes_all_imp_reqs(tmp_trestle_dir: pathlib.Path) -> No
         'OSCO' in ac1_content_3
         and 'Ensure that the API server pod specification file permissions are set to 644 or more restrictive'
         in ac1_content_3
+        and 'Implement as needed for OSCO' in ac1_content_3
     )
     assert (
         'OSCO' in ac2_content_3
