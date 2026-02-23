@@ -1,6 +1,4 @@
-# -*- mode:python; coding:utf-8 -*-
-
-# Copyright (c) 2023 IBM Corp. All rights reserved.
+# Copyright (c) 2026 The OSCAL Compass Authors. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,8 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Backward-compatible import path for RuleParametersValidator."""
+"""Rules support utilities."""
 
-from trestle.core.rules.rule_parameters_validator import RuleParametersValidator
+from trestle.core.rules.rules_interface import RulesInterface
 
-__all__ = ['RuleParametersValidator']
+__all__ = ['RulesInterface']

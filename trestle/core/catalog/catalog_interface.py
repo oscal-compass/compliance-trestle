@@ -38,6 +38,7 @@ from trestle.common.list_utils import (
 from trestle.common.model_utils import ModelUtils
 from trestle.core.control_context import ControlContext
 from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlInterface
+from trestle.core.rules import RulesInterface
 from trestle.oscal import common
 from trestle.oscal import component as comp
 from trestle.oscal import profile as prof
@@ -831,7 +832,7 @@ class CatalogInterface:
     ) -> None:
         """Add component info to the impreqs of the control implementation based on applied rules."""
         control_imp_rules_dict, control_imp_rules_params_dict, ci_rules_props = (
-            ControlInterface.get_rules_and_params_dict_from_item(context.control_implementation)
+            RulesInterface.get_rules_and_params_dict_from_item(context.control_implementation)
         )  # noqa E501
         context.rules_dict[context.comp_name].update(control_imp_rules_dict)
         comp_rules_params_dict = context.rules_params_dict.get(context.comp_name, {})
@@ -846,14 +847,14 @@ class CatalogInterface:
                 )
             control_part_id_map = part_id_map.get(imp_req.control_id, {})
             # find if any rules apply to this control, including in statements
-            control_rules, statement_rules, ir_props = ControlInterface.get_rule_list_for_imp_req(imp_req)
+            control_rules, statement_rules, ir_props = RulesInterface.get_rule_list_for_imp_req(imp_req)
             rule_props = comp_rules_props[:]
             rule_props.extend(ci_rules_props)
             rule_props.extend(ir_props)
             rule_props = ControlInterface.clean_props(rule_props, remove_imp_status=False)
             if control_rules:
                 status = ControlInterface.get_status_from_props(imp_req)
-                final_props = ControlInterface.cull_props_by_rules(rule_props, control_rules)
+                final_props = RulesInterface.cull_props_by_rules(rule_props, control_rules)
                 comp_info = ComponentImpInfo(imp_req.description, control_rules, final_props, status)
                 self.add_comp_info(imp_req.control_id, context.comp_name, '', comp_info)
             set_params = copy.deepcopy(ci_set_params)
@@ -862,7 +863,7 @@ class CatalogInterface:
                 # add to control_comp_set_params dict
                 self.add_comp_set_param(imp_req.control_id, context.comp_name, set_param)
             for statement in as_list(imp_req.statements):
-                rule_list, stat_props = ControlInterface.get_rule_list_for_item(statement)
+                rule_list, stat_props = RulesInterface.get_rule_list_for_item(statement)
                 if rule_list:
                     status = ControlInterface.get_status_from_props(statement)
                     if statement.statement_id not in control_part_id_map:
@@ -874,7 +875,7 @@ class CatalogInterface:
                         label = control_part_id_map[statement.statement_id]
                     all_props = rule_props[:]
                     all_props.extend(stat_props)
-                    final_props = ControlInterface.cull_props_by_rules(all_props, rule_list)
+                    final_props = RulesInterface.cull_props_by_rules(all_props, rule_list)
                     comp_info = ComponentImpInfo(statement.description, rule_list, final_props, status)
                     self.add_comp_info(imp_req.control_id, context.comp_name, label, comp_info)
 
@@ -903,7 +904,7 @@ class CatalogInterface:
                 context.comp_name = component.title
                 # get top level rule info applying to all controls from the component props
                 comp_rules_dict, comp_rules_params_dict, comp_rules_props = (
-                    ControlInterface.get_rules_and_params_dict_from_item(component)
+                    RulesInterface.get_rules_and_params_dict_from_item(component)
                 )  # noqa E501
                 context.rules_dict[context.comp_name] = comp_rules_dict
                 deep_update(context.rules_params_dict, [context.comp_name], comp_rules_params_dict)
