@@ -202,28 +202,4 @@ Medium to Long-term:
 
 ---
 
-## 10. Questions for Maintainers (Author-Initiated)
 
-The following questions are raised for maintainer feedback and guidance during the community call.
-
-### 10.1 Architecture Feasibility
-
-* Is the current architecture (Atheris, ClusterFuzzLite, CI-based execution) feasible long-term for compliance-trestle?
-* Should any structural changes be made before expanding beyond the Catalog model?
-* Is the staged expansion strategy (Catalog to Profile to SSP) appropriate, or should the scope be adjusted?
-
-### 10.2 Technology Stack & Python Compatibility
-
-* Is the current technology stack appropriate for this project?
-* Given that Atheris is best supported on Python 3.8 to 3.11, will running in Python 3.11 introduce instability in CI or local environments?
-* Should the fuzzing environment explicitly pin a specific Python version (for example, 3.10) for stability?
-* Are there concerns about Atheris instrumentation interacting with Pydantic v1 runtime behavior?
-
-### 10.3 Structural Fuzzing vs. Graph-Level Validation
-
-* Is the current structure-aware JSON fuzzing approach sufficient as a foundation?
-* Should the project move beyond structural validation and incorporate graph-level validation (for example, UUID resolution, cycle detection, referential integrity)?
-* Would a layered validation model (parse, round-trip, semantic graph validation) be preferred?
-* Should graph integrity validation be introduced now, or deferred until after multi-model expansion?
-
-These questions are intended to guide architectural direction before broadening fuzz coverage across additional OSCAL models.
