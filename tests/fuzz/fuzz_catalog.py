@@ -3,6 +3,10 @@ import sys
 import json
 import io
 from pydantic import ValidationError
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 
 with atheris.instrument_imports():
@@ -64,7 +68,7 @@ def mut(data, fdp):
     
     return data
 
-def CustomMutator(data, max_size, seed):
+def  custom_mutator(data, max_size, seed):
     """Structure-aware entry point for Atheris."""
     try:
       
@@ -79,7 +83,7 @@ def CustomMutator(data, max_size, seed):
     except Exception:
         return atheris.Mutate(data, max_size)
 
-def TestOneInput(data):
+def testoneinput(data):
     """The entry point called by the fuzzer."""
     
     if not data:
@@ -101,8 +105,8 @@ def TestOneInput(data):
 
         return 
     except (TrestleError, RecursionError, AttributeError) as e:
-        print(f"CRASH DETECTED: {type(e).__name__}: {e}")
-        raise e
+        logger.error("CRASH DETECTED: %s: %s", type(e).__name__, e)
+        raise
     
 def main():
     atheris.Setup(
