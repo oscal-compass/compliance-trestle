@@ -141,6 +141,7 @@ def main():
     # at this point should load_git() if latest oscal schemas are needed
     generate_models()
     logger.info('DONE')
+    raise RuntimeError('test')
 
 
 if __name__ == '__main__':
