@@ -146,7 +146,7 @@ jobs:
         make gen-oscal
     - name: Run tests
       run: |
-        hatch test -py ${{ matrix.python-version }}
+        make test
   test:
     # This test
     needs: set-versions
