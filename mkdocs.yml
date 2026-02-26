@@ -35,6 +35,7 @@ plugins:
     validate_rendered_template: false
     validate_external_urls: true
     raise_error_after_finish: false
+    retry_max_times: 3
     raise_error_excludes:
       # This is to remove some false positives for links which work.
       # Anchors are validated again by core mkdocs

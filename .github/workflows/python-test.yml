@@ -46,6 +46,7 @@ jobs:
           ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-
     - name: Install tools
       run: |
+        pip install "virtualenv<21.0.0"
         make develop
     - name: Setup pre-commit
       run: |
@@ -100,6 +101,7 @@ jobs:
           ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-
     - name: Install hatch
       run: |
+        pip install "virtualenv<21.0.0"
         pip install hatch
     - name: Run binary tests
       run: |
@@ -140,6 +142,7 @@ jobs:
           ${{ matrix.os }}-${{ matrix.python-version }}-hatch-
     - name: Install hatch
       run: |
+        pip install "virtualenv<21.0.0"
         make develop
     - name: gen OSCAL models
       run: |
@@ -194,6 +197,7 @@ jobs:
       run: echo "core=${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.set-versions.outputs.max ) }}" >> $GITHUB_OUTPUT
     - name: Install hatch
       run: |
+        pip install "virtualenv<21.0.0"
         pip install hatch
     - name: Run tests
       if: steps.core-version.outputs.core != 'true'
