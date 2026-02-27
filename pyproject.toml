@@ -113,6 +113,7 @@ packages = ["trestle"]
 [tool.hatch.envs.default]
 dependencies = [
   "coverage[toml]~=7.4",
+  "virtualenv>=20.26.6,<21",  # Pin until hatch supports virtualenv 21.x
 ]
 
 [tool.hatch.envs.hatch-test]
