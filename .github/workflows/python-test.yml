@@ -100,7 +100,7 @@ jobs:
           ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-
     - name: Install hatch
       run: |
-        pip install hatch
+        pip install hatch "virtualenv>=20.26.6,<21"  # Pin until hatch supports virtualenv 21.x
     - name: Run binary tests
       run: |
         make test-bdist
@@ -194,7 +194,7 @@ jobs:
       run: echo "core=${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.set-versions.outputs.max ) }}" >> $GITHUB_OUTPUT
     - name: Install hatch
       run: |
-        pip install hatch
+        pip install hatch "virtualenv>=20.26.6,<21"  # Pin until hatch supports virtualenv 21.x
     - name: Run tests
       if: steps.core-version.outputs.core != 'true'
       run: |
