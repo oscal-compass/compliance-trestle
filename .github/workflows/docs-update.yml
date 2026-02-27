@@ -9,11 +9,12 @@ on:
     - v*
 permissions: read-all
 concurrency:
-  group: docs-${{ github.sha }}  # Don't double up when tags are on develop
+  group: docs-deploy-global  # Don't double up when tags are on develop
   cancel-in-progress: false
 jobs:
   set-versions:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     outputs:
       min: ${{ steps.versions.outputs.min }}
       max: ${{ steps.versions.outputs.max }}
@@ -87,7 +88,7 @@ jobs:
     - name: Create release
       shell: bash
       run: |
-        mike deploy --rebase  --push ${{ needs.mike-version.outputs.mver }}
+        mike deploy --push ${{ needs.mike-version.outputs.mver }}
     - name: Ensure latest is latest
       shell: bash
       run: | 
