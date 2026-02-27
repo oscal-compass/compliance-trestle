@@ -471,7 +471,7 @@ def test_profile_resolver_diamond_dependency(tmp_trestle_dir: pathlib.Path) -> N
 
     # Create profile D (base profile) that imports the catalog
     prof_d = gens.generate_sample_model(prof.Profile)
-    prof_d.imports = [prof.Import(href=f'trestle://catalogs/{cat_name}/catalog.json', include_all={})]
+    prof_d.imports = [prof.Import1(href=f'trestle://catalogs/{cat_name}/catalog.json', include_all={})]
     prof_d.metadata.title = 'Profile D - Base'
     prof_d_path = tmp_trestle_dir / 'profiles/prof_d/profile.json'
     prof_d_path.parent.mkdir(parents=True, exist_ok=True)
@@ -479,7 +479,7 @@ def test_profile_resolver_diamond_dependency(tmp_trestle_dir: pathlib.Path) -> N
 
     # Create profile B that imports profile D
     prof_b = gens.generate_sample_model(prof.Profile)
-    prof_b.imports = [prof.Import(href='trestle://profiles/prof_d/profile.json', include_all={})]
+    prof_b.imports = [prof.Import1(href='trestle://profiles/prof_d/profile.json', include_all={})]
     prof_b.metadata.title = 'Profile B'
     prof_b_path = tmp_trestle_dir / 'profiles/prof_b/profile.json'
     prof_b_path.parent.mkdir(parents=True, exist_ok=True)
@@ -487,7 +487,7 @@ def test_profile_resolver_diamond_dependency(tmp_trestle_dir: pathlib.Path) -> N
 
     # Create profile C that also imports profile D (diamond pattern)
     prof_c = gens.generate_sample_model(prof.Profile)
-    prof_c.imports = [prof.Import(href='trestle://profiles/prof_d/profile.json', include_all={})]
+    prof_c.imports = [prof.Import1(href='trestle://profiles/prof_d/profile.json', include_all={})]
     prof_c.metadata.title = 'Profile C'
     prof_c_path = tmp_trestle_dir / 'profiles/prof_c/profile.json'
     prof_c_path.parent.mkdir(parents=True, exist_ok=True)
@@ -496,8 +496,8 @@ def test_profile_resolver_diamond_dependency(tmp_trestle_dir: pathlib.Path) -> N
     # Create profile A that imports both B and C (creates diamond)
     prof_a = gens.generate_sample_model(prof.Profile)
     prof_a.imports = [
-        prof.Import(href='trestle://profiles/prof_b/profile.json', include_all={}),
-        prof.Import(href='trestle://profiles/prof_c/profile.json', include_all={}),
+        prof.Import1(href='trestle://profiles/prof_b/profile.json', include_all={}),
+        prof.Import1(href='trestle://profiles/prof_c/profile.json', include_all={}),
     ]
     prof_a.metadata.title = 'Profile A - Diamond Top'
     prof_a_path = tmp_trestle_dir / 'profiles/prof_a/profile.json'
