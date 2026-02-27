@@ -128,7 +128,7 @@ class Import(Pipeline.Filter):
                 import_filter = Import(
                     self._trestle_root,
                     sub_import,
-                    self._uuid_chain,
+                    self._uuid_chain[:],  # Pass a copy to allow valid diamond dependencies
                     resources=resources,
                     parent_url_root=self._parent_url_root,
                 )
