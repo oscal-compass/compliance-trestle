@@ -39,7 +39,7 @@ submodules: ## Initialize git submodules (nist-content, oscal)
 	git submodule update --init
 
 develop: submodules ## Set up development environment
-	pip install hatch
+	pip install hatch "virtualenv>=20.26.6,<21"  # Pin until hatch supports virtualenv 21.x
 	pip install -e .[dev]
 
 pre-commit: ## Install pre-commit hooks
