@@ -46,7 +46,6 @@ jobs:
           ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-
     - name: Install tools
       run: |
-        pip install "virtualenv<21.0.0"
         make develop
     - name: Setup pre-commit
       run: |
@@ -68,6 +67,9 @@ jobs:
       run: |
         make docs-ubuntu-deps
     - name: Validate website content (mkdocs)
+      env:
+        ENABLED_HTMLPROOFER: true
+        HTMLPROOFER_VALIDATE_EXTERNAL_URLS: true
       run: |
         make docs-validate
     - name: Check if dirty (mkdocs)
@@ -101,7 +103,7 @@ jobs:
           ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-
     - name: Install hatch
       run: |
-        pip install hatch "virtualenv>=20.26.6,<21"  # Pin until hatch supports virtualenv 21.x
+        pip install hatch
     - name: Run binary tests
       run: |
         make test-bdist
@@ -141,7 +143,6 @@ jobs:
           ${{ matrix.os }}-${{ matrix.python-version }}-hatch-
     - name: Install hatch
       run: |
-        pip install "virtualenv<21.0.0"
         make develop
     - name: gen OSCAL models
       run: |
@@ -196,7 +197,7 @@ jobs:
       run: echo "core=${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.set-versions.outputs.max ) }}" >> $GITHUB_OUTPUT
     - name: Install hatch
       run: |
-        pip install hatch "virtualenv>=20.26.6,<21"  # Pin until hatch supports virtualenv 21.x
+        pip install hatch
     - name: Run tests
       if: steps.core-version.outputs.core != 'true'
       run: |

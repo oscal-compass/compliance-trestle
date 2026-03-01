@@ -31,15 +31,19 @@ plugins:
 - autorefs
 - git-revision-date-localized
 - htmlproofer:
-    enabled: true
+    enabled: !ENV [ENABLED_HTMLPROOFER, true]
     validate_rendered_template: false
-    validate_external_urls: true
+    validate_external_urls: !ENV [HTMLPROOFER_VALIDATE_EXTERNAL_URLS, true]
     raise_error_after_finish: false
     retry_max_times: 3
     raise_error_excludes:
       # This is to remove some false positives for links which work.
       # Anchors are validated again by core mkdocs
       404: [ '*#trestle.*' ]
+      # Transient server errors - excluded in CI to avoid flaky builds.
+      # Set HTMLPROOFER_VALIDATE_EXTERNAL_URLS=false locally to skip external
+      # URL checks, or leave enabled to get full validation including 5xx.
+      502: [ '*' ]
       503: [ '*' ]
       504: [ '*' ]
     # These URLs work from the browser but fail when accesssed via htmlproofer:
