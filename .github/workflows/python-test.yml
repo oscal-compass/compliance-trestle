@@ -35,18 +35,15 @@ jobs:
       uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
       with:
         python-version: ${{ needs.set-versions.outputs.max }}
-    - uses: actions/cache@v6# v5.0.3
+    - uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
       with:
         path: |
           ~/.cache/pip
           ~/.cache/hatch
           ~/.local/share/hatch
-        key: ${{ runner.os }}-py-${{ needs.set-versions.outputs.max }}-hatch-v2-${{ hashFiles('pyproject.toml') }}
+        key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-${{ hashFiles('pyproject.toml') }}
         restore-keys: |
-          ${{ runner.os }}-py-${{ needs.set-versions.outputs.max }}-hatch-v2-
-    - name: Force compatible virtualenv
-      run: |
-        python -m pip install --upgrade "virtualenv<21" hatch  # Pin until hatch supports virtualenv 21.x      
+          ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-
     - name: Install tools
       run: |
         make develop
@@ -92,15 +89,15 @@ jobs:
       uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
       with:
         python-version: ${{ needs.set-versions.outputs.max }}
-    - uses: actions/cache@v6 # v5.0.3
+    - uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
       with:
         path: |
           ~/.cache/pip
           ~/.cache/hatch
           ~/.local/share/hatch
-        key: ${{ runner.os }}-py-${{ needs.set-versions.outputs.max }}-hatch-v2-${{ hashFiles('pyproject.toml', 'Makefile') }}
+        key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-${{ hashFiles('pyproject.toml') }}
         restore-keys: |
-          ${{ runner.os }}-py-${{ needs.set-versions.outputs.max }}-hatch-v2-
+          ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-
     - name: Install hatch
       run: |
         pip install hatch "virtualenv>=20.26.6,<21"  # Pin until hatch supports virtualenv 21.x
@@ -132,20 +129,16 @@ jobs:
       uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
       with:
         python-version: ${{ matrix.python-version }}
-    - uses: actions/cache@v6# v5.0.3
+    - uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
       with:
         path: |
           ${{ matrix.pip-cache }}
           ${{ matrix.hatch-cache }}
           ${{ matrix.hatch-data }}
-        key: ${{ matrix.os }}-${{ matrix.python-version }}-hatch-v2-${{ hashFiles('pyproject.toml') }}
+        key: ${{ matrix.os }}-${{ matrix.python-version }}-hatch-${{ hashFiles('pyproject.toml') }}
         restore-keys: |
-          ${{ matrix.os }}-${{ matrix.python-version }}-hatch-v2-
+          ${{ matrix.os }}-${{ matrix.python-version }}-hatch-
     - name: Install hatch
-      run: |
-        pip install hatch "virtualenv>=20.26.6,<21"  # Pin until hatch supports virtualenv 21.x  
-
-    - name: Install tools
       run: |
         make develop
     - name: gen OSCAL models
@@ -187,15 +180,15 @@ jobs:
       uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
       with:
         python-version: ${{ matrix.python-version }}
-    - uses: actions/cache@v6  # v5.0.3
+    - uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
       with:
         path: |
           ${{ matrix.pip-cache }}
           ${{ matrix.hatch-cache }}
           ${{ matrix.hatch-data }}
-        key: ${{ matrix.os }}-${{ matrix.python-version }}-hatch-v2-${{ hashFiles('pyproject.toml') }}
+        key: ${{ matrix.os }}-${{ matrix.python-version }}-hatch-${{ hashFiles('pyproject.toml') }}
         restore-keys: |
-          ${{ matrix.os }}-${{ matrix.python-version }}-hatch-v2-
+          ${{ matrix.os }}-${{ matrix.python-version }}-hatch-
     - name: Is core test version
       id: core-version
       run: echo "core=${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.set-versions.outputs.max ) }}" >> $GITHUB_OUTPUT
@@ -238,15 +231,15 @@ jobs:
       uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
       with:
         python-version: ${{ needs.set-versions.outputs.max }}
-    - uses: actions/cache@v6# v5.0.3
+    - uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
       with:
         path: |
           ~/.cache/pip
           ~/.cache/hatch
           ~/.local/share/hatch
-        key: ${{ runner.os }}-py-${{ needs.set-versions.outputs.max }}-hatch-v2-${{ hashFiles('pyproject.toml', 'Makefile') }}
+        key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-${{ hashFiles('pyproject.toml') }}
         restore-keys: |
-          ${{ runner.os }}-py-${{ needs.set-versions.outputs.max }}-hatch-v2-
+          ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-
     - name: Get coverage
       uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
       with:
@@ -288,19 +281,15 @@ jobs:
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: ${{ needs.set-versions.outputs.max }}
-      - uses: actions/cache@v6
+      - uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
         with:
           path: |
             ~/.cache/pip
             ~/.cache/hatch
             ~/.local/share/hatch
-          key: ${{ runner.os }}-py-${{ needs.set-versions.outputs.max }}-hatch-v2-${{ hashFiles('pyproject.toml', 'Makefile') }}
+          key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-${{ hashFiles('pyproject.toml') }}
           restore-keys: |
-            ${{ runner.os }}-py-${{ needs.set-versions.outputs.max }}-hatch-v2-
-      - name: Install hatch
-        run: |
-          pip install hatch "virtualenv>=20.26.6,<21"  # Pin until hatch supports virtualenv 21.x      
-
+            ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-
       - uses: ./.github/actions/snyk-test
         with:
           token: ${{ secrets.SNYK_TOKEN }}
