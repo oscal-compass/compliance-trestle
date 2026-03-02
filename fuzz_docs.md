@@ -7,13 +7,13 @@ Security Goal: OpenSSF Scorecard Fuzzing (10/10) – Contributes to closing #201
 Author: Rohan Dev (nXtCyberNeT)
 Date: February 2026 (Prepared for Maintainer Community Call)
 
----
+______________________________________________________________________
 
 ## 1. Executive Summary
 
 This document describes the pilot implementation in PR #2080 for structure-aware, coverage-guided fuzzing in compliance-trestle, focused on the OSCAL Catalog model. Using Atheris for bytecode instrumentation and ClusterFuzzLite for GitHub Actions orchestration, the harness demonstrates round-trip idempotency testing and has already identified a real-world bug (AttributeError fixed via correct v1 API usage). Once CI is resolved, merged, and running continuously, it will contribute to achieving OpenSSF Fuzzing 10/10.
 
----
+______________________________________________________________________
 
 ## 2. Current Status & Blockers
 
@@ -23,16 +23,16 @@ Key Achievement: Identified and resolved an AttributeError by standardizing Pyda
 
 Current Blockers:
 
-* CI Pipeline Failures: Maintainer noted pipeline failures (see PR comment). Specifics include lint/status checks; pending local verification/fix.
-* Normalization Drift: False positives in idempotency checks from Pydantic v1 quirks (whitespace/None/metadata handling).
+- CI Pipeline Failures: Maintainer noted pipeline failures (see PR comment). Specifics include lint/status checks; pending local verification/fix.
+- Normalization Drift: False positives in idempotency checks from Pydantic v1 quirks (whitespace/None/metadata handling).
 
 Immediate Next Steps:
 
-* Diagnose and fix pipeline failures (lint/status).
-* Seek maintainer guidance on fix strategy (e.g., noqa exemptions if needed).
-* Request 1–2 maintainer reviews for the Catalog harness.
+- Diagnose and fix pipeline failures (lint/status).
+- Seek maintainer guidance on fix strategy (e.g., noqa exemptions if needed).
+- Request 1–2 maintainer reviews for the Catalog harness.
 
----
+______________________________________________________________________
 
 ## 3. Strategic Rationale
 
@@ -42,7 +42,7 @@ ClusterFuzzLite (CFL): Chosen for zero external infrastructure requirements; exe
 
 Pilot Scope: Implementation is strictly limited to the Catalog model to validate the round-trip assertion logic before wider package expansion. This addresses OpenSSF issue #2018 indirectly via a fuzzing baseline.
 
----
+______________________________________________________________________
 
 ## 4. Architecture & Pipeline Flow
 
@@ -115,7 +115,7 @@ I -.-> J
 
 Note: Current PR #2080 implements only the short PR fuzz run (approximately 10 minutes, non-blocking warning via ClusterFuzzLite). Nightly and manual modes are proposed post-merge.
 
----
+______________________________________________________________________
 
 ## 5. The Pydantic Paradox: Versioning Realities
 
@@ -129,7 +129,7 @@ Mitigation: Non-blocking side-test mode and manual crash triage.
 
 Future Recommendation: Adopt semantic diffing (e.g., deep dictionary comparison ignoring order and metadata) or align with any project-wide Pydantic v2 transition (e.g., model_validate_json).
 
----
+______________________________________________________________________
 
 ## 6. Failure Modes & Implementation Details
 
@@ -137,10 +137,10 @@ Custom Mutator: Intercepts raw bytes to generate structured JSON dictionaries. I
 
 Exception Categorization:
 
-* Expected: ValidationError, json.JSONDecodeError (return silently).
-* Critical: RecursionError, MemoryError, AttributeError, and explicit IdempotencyViolation (crash and report).
+- Expected: ValidationError, json.JSONDecodeError (return silently).
+- Critical: RecursionError, MemoryError, AttributeError, and explicit IdempotencyViolation (crash and report).
 
----
+______________________________________________________________________
 
 ## 7. Execution Modes (Current vs. Proposed)
 
@@ -165,7 +165,7 @@ Purpose: Testing new schema versions
 Status: Proposed
 Duration (Current): Not applicable
 
----
+______________________________________________________________________
 
 ## 8. Risks & Mitigations
 
@@ -178,28 +178,26 @@ Mitigation: 10-minute cap on PR fuzz runs and usage of persistent corpus to resu
 Risk: Limited coverage until expanded to other models (Profile and SSP).
 Mitigation: Merge Catalog pilot first and use it as a baseline for incremental pull requests.
 
----
+______________________________________________________________________
 
 ## 9. Proposed Next Steps
 
 Immediate (Pre-merge):
 
-* Diagnose and fix pipeline failures (lint and status checks) in PR #2080.
-* Obtain 1–2 maintainer reviews or approvals.
-* Squash-merge minimal Catalog harness as proof of concept.
+- Diagnose and fix pipeline failures (lint and status checks) in PR #2080.
+- Obtain 1–2 maintainer reviews or approvals.
+- Squash-merge minimal Catalog harness as proof of concept.
 
 Short-term (Next Pull Requests):
 
-* Generalize harness into an OSCALHarness factory.
-* Implement semantic comparison (e.g., deep dictionary comparison or custom equality ignoring metadata).
-* Expand to Profile (inheritance and parameter logic) and SSP models.
+- Generalize harness into an OSCALHarness factory.
+- Implement semantic comparison (e.g., deep dictionary comparison or custom equality ignoring metadata).
+- Expand to Profile (inheritance and parameter logic) and SSP models.
 
 Medium to Long-term:
 
-* Add graph-level validation (back-matter UUID resolution, cycle detection, reachability).
-* Document fuzz policy in SECURITY.md for OpenSSF 10/10.
-* Explore nightly and manual modes via workflow dispatch and scheduled workflows.
+- Add graph-level validation (back-matter UUID resolution, cycle detection, reachability).
+- Document fuzz policy in SECURITY.md for OpenSSF 10/10.
+- Explore nightly and manual modes via workflow dispatch and scheduled workflows.
 
----
-
-
+______________________________________________________________________

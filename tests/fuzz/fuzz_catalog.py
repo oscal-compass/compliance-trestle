@@ -13,20 +13,16 @@ with atheris.instrument_imports():
 
 
 catalogg = {
-    "catalog": {
-        "uuid": "550e8400-e29b-41d4-a716-446655440000",
-        "metadata": {
-            "title": "Fuzz Seed Catalog",
-            "last-modified": "2026-02-10T14:58:41Z",
-            "version": "1.0.0",
-            "oscal-version": "1.1.3",
+    'catalog': {
+        'uuid': '550e8400-e29b-41d4-a716-446655440000',
+        'metadata': {
+            'title': 'Fuzz Seed Catalog',
+            'last-modified': '2026-02-10T14:58:41Z',
+            'version': '1.0.0',
+            'oscal-version': '1.1.3',
         },
-        "groups": [
-            {
-                "id": "grp-1",
-                "title": "Baseline Group",
-                "controls": [{"id": "ac-1", "title": "Access Control 1"}],
-            }
+        'groups': [
+            {'id': 'grp-1', 'title': 'Baseline Group', 'controls': [{'id': 'ac-1', 'title': 'Access Control 1'}]}
         ],
     }
 }
@@ -47,7 +43,7 @@ def mut(data, fdp):
     elif isinstance(data, str):
         try:
             mutated_bytes = fdp.ConsumeBytes(len(data) + 64)
-            return mutated_bytes.decode("utf-8", errors="ignore")
+            return mutated_bytes.decode('utf-8', errors='ignore')
         except Exception:
             return data
     elif isinstance(data, (int, float)):
@@ -61,7 +57,7 @@ def custom_mutator(data, max_size, seed):
         js = json.loads(data)
         fdp = atheris.FuzzedDataProvider(data)
         mutated_obj = mut(js, fdp)
-        return json.dumps(mutated_obj).encode("utf-8")
+        return json.dumps(mutated_obj).encode('utf-8')
     except Exception:
         return data
 
@@ -75,11 +71,11 @@ def testoneinput(data):
         exported = obj.json(by_alias=True, exclude_none=True)
         obj2 = Catalog.parse_raw(exported)
         if obj != obj2:
-            raise RuntimeError("Idempotency violation detected")
+            raise RuntimeError('Idempotency violation detected')
     except (ValidationError, json.JSONDecodeError, UnicodeDecodeError, ValueError):
         return
     except (TrestleError, RecursionError, AttributeError) as e:
-        logger.error("CRASH DETECTED: %s: %s", type(e).__name__, e)
+        logger.error('CRASH DETECTED: %s: %s', type(e).__name__, e)
         raise
 
 
@@ -88,5 +84,5 @@ def main():
     atheris.Fuzz()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
