@@ -1,6 +1,6 @@
 
  { "$schema" : "http://json-schema.org/draft-07/schema#",
-  "$id" : "http://csrc.nist.gov/ns/oscal/1.1.3/oscal-component-definition-schema.json",
+  "$id" : "http://csrc.nist.gov/ns/oscal/1.2.0/oscal-component-definition-schema.json",
   "$comment" : "OSCAL Component Definition Model: JSON Schema",
   "type" : "object",
   "definitions" : 
@@ -47,6 +47,13 @@
     "description" : "Loads a component definition from another resource.",
     "$id" : "#/definitions/oscal-component-definition-oscal-component-definition:import-component-definition",
     "type" : "object",
+    "properties" : 
+    { "href" : 
+     { "title" : "Hyperlink Reference",
+      "description" : "A link to a resource that defines a set of components and/or capabilities to import into this collection.",
+      "$ref" : "#/definitions/URIReferenceDatatype" },
+     "remarks" : 
+     { "$ref" : "#/definitions/oscal-component-definition-oscal-metadata:remarks" } },
     "required" : 
     [ "href" ],
     "additionalProperties" : false },
@@ -445,6 +452,27 @@
     "description" : "Where applicable this is the transport layer protocol port range an IPv4-based or IPv6-based service uses.",
     "$id" : "#/definitions/oscal-component-definition-oscal-implementation-common:port-range",
     "type" : "object",
+    "properties" : 
+    { "start" : 
+     { "title" : "Start",
+      "description" : "Indicates the starting port number in a port range for a transport layer protocol",
+      "$ref" : "#/definitions/NonNegativeIntegerDatatype" },
+     "end" : 
+     { "title" : "End",
+      "description" : "Indicates the ending port number in a port range for a transport layer protocol",
+      "$ref" : "#/definitions/NonNegativeIntegerDatatype" },
+     "transport" : 
+     { "title" : "Transport",
+      "description" : "Indicates the transport type.",
+      "allOf" : 
+      [ 
+       { "$ref" : "#/definitions/TokenDatatype" },
+       
+       { "enum" : 
+        [ "TCP",
+         "UDP" ] } ] },
+     "remarks" : 
+     { "$ref" : "#/definitions/oscal-component-definition-oscal-metadata:remarks" } },
     "additionalProperties" : false },
    "oscal-component-definition-oscal-implementation-common:implementation-status" : 
    { "title" : "Implementation Status",

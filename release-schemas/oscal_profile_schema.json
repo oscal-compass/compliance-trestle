@@ -355,6 +355,39 @@
          { "title" : "Removal",
           "description" : "Specifies objects to be removed from a control based on specific aspects of the object that must all match.",
           "type" : "object",
+          "properties" : 
+          { "by-name" : 
+           { "title" : "Reference by (assigned) name",
+            "description" : "Identify items remove by matching their assigned name.",
+            "$ref" : "#/definitions/TokenDatatype" },
+           "by-class" : 
+           { "title" : "Reference by class",
+            "description" : "Identify items to remove by matching their class.",
+            "$ref" : "#/definitions/TokenDatatype" },
+           "by-id" : 
+           { "title" : "Reference by ID",
+            "description" : "Identify items to remove indicated by their id.",
+            "$ref" : "#/definitions/TokenDatatype" },
+           "by-item-name" : 
+           { "title" : "Item Name Reference",
+            "description" : "Identify items to remove by the name of the item's information object name, e.g. title or prop.",
+            "allOf" : 
+            [ 
+             { "$ref" : "#/definitions/TokenDatatype" },
+             
+             { "enum" : 
+              [ "param",
+               "prop",
+               "link",
+               "part",
+               "mapping",
+               "map" ] } ] },
+           "by-ns" : 
+           { "title" : "Item Namespace Reference",
+            "description" : "Identify items to remove by the item's ns, which is the namespace associated with a part, or prop.",
+            "$ref" : "#/definitions/URIDatatype" },
+           "remarks" : 
+           { "$ref" : "#/definitions/oscal-profile-oscal-metadata:remarks" } },
           "additionalProperties" : false } },
         "adds" : 
         { "type" : "array",
@@ -501,6 +534,13 @@
     "description" : "Selecting a set of controls by matching their IDs with a wildcard pattern.",
     "$id" : "#/definitions/oscal-profile-oscal-profile:matching",
     "type" : "object",
+    "properties" : 
+    { "pattern" : 
+     { "title" : "Pattern",
+      "description" : "A glob expression matching the IDs of one or more controls to be selected.",
+      "$ref" : "#/definitions/StringDatatype" },
+     "remarks" : 
+     { "$ref" : "#/definitions/oscal-profile-oscal-metadata:remarks" } },
     "additionalProperties" : false },
    "oscal-profile-oscal-metadata:metadata" : 
    { "title" : "Document Metadata",

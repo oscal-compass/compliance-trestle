@@ -1185,18 +1185,18 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#/definitions/oscal-mapping-oscal-mapping-common:select-control-by-id" } } },
+      { "$ref" : "#/definitions/oscal-mapping-oscal-mapping-common:match-control-by-id" } } },
     "required" : 
     [ "uuid",
      "unmapped-controls" ],
     "additionalProperties" : false },
-   "oscal-mapping-oscal-mapping-common:select-control-by-id" : 
-   { "title" : "Select Control",
+   "oscal-mapping-oscal-mapping-common:match-control-by-id" : 
+   { "title" : "Select Matched Control",
     "description" : "Select a control or controls from an imported control set.",
-    "$id" : "#/definitions/oscal-mapping-oscal-mapping-common:select-control-by-id",
+    "$id" : "#/definitions/oscal-mapping-oscal-mapping-common:match-control-by-id",
     "type" : "object",
     "properties" : 
-    { "with-child-controls" : 
+    { "match-with-child-controls" : 
      { "title" : "Include Contained Controls with Control",
       "description" : "When a control is included, whether its child (dependent) controls are also included.",
       "allOf" : 
@@ -1213,41 +1213,41 @@
       { "title" : "Match Controls by Identifier",
        "description" : "Selecting a control by its ID given as a literal.",
        "$ref" : "#/definitions/TokenDatatype" } },
-     "matching" : 
+     "match-control-by" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "$ref" : "#/definitions/oscal-mapping-oscal-mapping-common:matching" } } },
+      { "$ref" : "#/definitions/oscal-mapping-oscal-mapping-common:match-control" } } },
     "additionalProperties" : false },
-   "oscal-mapping-oscal-mapping-common:matching" : 
+   "oscal-mapping-oscal-mapping-common:match-control" : 
    { "title" : "Match Controls by Pattern",
     "description" : "Selecting a set of controls by matching their IDs with a wildcard pattern.",
-    "$id" : "#/definitions/oscal-mapping-oscal-mapping-common:matching",
+    "$id" : "#/definitions/oscal-mapping-oscal-mapping-common:match-control",
     "type" : "object",
+    "properties" : 
+    { "match-pattern" : 
+     { "title" : "Matching Pattern",
+      "description" : "A glob expression matching the IDs of one or more controls to be selected.",
+      "$ref" : "#/definitions/StringDatatype" },
+     "remarks" : 
+     { "$ref" : "#/definitions/oscal-mapping-oscal-metadata:remarks" } },
     "additionalProperties" : false },
    "oscal-mapping-oscal-mapping-common:confidence-score" : 
    { "title" : "Confidence Score",
     "description" : "This records either a string category or a decimal value from 0-1 representing a percentage. Both of these values describe an estimation of the author's confidence that this mapping is correct and accurate.",
     "$id" : "#/definitions/oscal-mapping-oscal-mapping-common:confidence-score",
     "type" : "object",
-    "properties" : 
-    { "category" : 
-     { "anyOf" : 
-      [ 
-       { "$ref" : "#/definitions/StringDatatype" },
-       
-       { "enum" : 
-        [ "unspecified",
-         "high",
-         "medium",
-         "low" ] } ] },
-     "percentage" : 
-     { "$ref" : "#/definitions/DecimalDatatype" },
-     "STRVALUE" : 
-     { "$ref" : "#/definitions/StringDatatype" } },
-    "required" : 
-    [ "STRVALUE" ],
-    "additionalProperties" : false },
+    "anyOf" : 
+    [ 
+     { "properties" : 
+      { "category" : 
+       { "$ref" : "#/definitions/StringDatatype" } },
+      "additionalProperties" : false },
+     
+     { "properties" : 
+      { "percentage" : 
+       { "$ref" : "#/definitions/oscal-mapping-oscal-mapping-common:percentage" } },
+      "additionalProperties" : false } ] },
    "oscal-mapping-oscal-mapping-common:coverage" : 
    { "title" : "Coverage",
     "description" : "A decimal value from 0-1, representing the percentage coverage of the targets by the sources.",
@@ -1255,17 +1255,24 @@
     "type" : "object",
     "properties" : 
     { "generation-method" : 
-     { "anyOf" : 
+     { "title" : "Coverage Generation Method",
+      "description" : "The method used to determine the coverage value.",
+      "anyOf" : 
       [ 
        { "$ref" : "#/definitions/StringDatatype" },
        
        { "enum" : 
         [ "arbitrary" ] } ] },
-     "STRVALUE" : 
+     "target-coverage" : 
      { "$ref" : "#/definitions/DecimalDatatype" } },
     "required" : 
-    [ "STRVALUE" ],
+    [ "target-coverage" ],
     "additionalProperties" : false },
+   "oscal-mapping-oscal-mapping-common:percentage" : 
+   { "title" : "Percentage",
+    "description" : "A decimal value from 0-1, representing a percentage.",
+    "$id" : "#/definitions/oscal-mapping-oscal-mapping-common:percentage",
+    "$ref" : "#/definitions/DecimalDatatype" },
    "oscal-mapping-oscal-mapping-common:mapping-description" : 
    { "title" : "Mapping Description",
     "description" : "Description of the context and intended use of the mapping set.",

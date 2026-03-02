@@ -1749,6 +1749,27 @@
     "description" : "Where applicable this is the transport layer protocol port range an IPv4-based or IPv6-based service uses.",
     "$id" : "#/definitions/oscal-ssp-oscal-implementation-common:port-range",
     "type" : "object",
+    "properties" : 
+    { "start" : 
+     { "title" : "Start",
+      "description" : "Indicates the starting port number in a port range for a transport layer protocol",
+      "$ref" : "#/definitions/NonNegativeIntegerDatatype" },
+     "end" : 
+     { "title" : "End",
+      "description" : "Indicates the ending port number in a port range for a transport layer protocol",
+      "$ref" : "#/definitions/NonNegativeIntegerDatatype" },
+     "transport" : 
+     { "title" : "Transport",
+      "description" : "Indicates the transport type.",
+      "allOf" : 
+      [ 
+       { "$ref" : "#/definitions/TokenDatatype" },
+       
+       { "enum" : 
+        [ "TCP",
+         "UDP" ] } ] },
+     "remarks" : 
+     { "$ref" : "#/definitions/oscal-ssp-oscal-metadata:remarks" } },
     "additionalProperties" : false },
    "oscal-ssp-oscal-implementation-common:implementation-status" : 
    { "title" : "Implementation Status",
