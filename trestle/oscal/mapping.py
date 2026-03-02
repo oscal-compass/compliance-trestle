@@ -40,11 +40,15 @@ from trestle.oscal.common import TokenDatatype
 from trestle.oscal.common import URIDatatype
 
 
-class Category(Enum):
-    unspecified = 'unspecified'
-    high = 'high'
-    medium = 'medium'
-    low = 'low'
+class ConfidenceScore1(OscalBaseModel):
+    """
+    This records either a string category or a decimal value from 0-1 representing a percentage. Both of these values describe an estimation of the author's confidence that this mapping is correct and accurate.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    category: constr(regex=r'^\S(.*\S)?$') | None = None
 
 
 class DecimalDatatype(OscalBaseModel):
@@ -52,6 +56,10 @@ class DecimalDatatype(OscalBaseModel):
 
 
 class GenerationMethod(Enum):
+    """
+    The method used to determine the coverage value.
+    """
+
     arbitrary = 'arbitrary'
 
 
@@ -71,6 +79,18 @@ class MappingItem(OscalBaseModel):
     id_ref: constr(regex=r'^\S(.*\S)?$') = Field(..., alias='id-ref', description='A reference to an identified subject that is of the specified type .', title='Subject Identifier Reference')
     props: list[common.Property] | None = Field(None)
     links: list[common.Link] | None = Field(None)
+    remarks: str | None = None
+
+
+class MatchControl(OscalBaseModel):
+    """
+    Selecting a set of controls by matching their IDs with a wildcard pattern.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    match_pattern: constr(regex=r'^\S(.*\S)?$') | None = Field(None, alias='match-pattern', description='A glob expression matching the IDs of one or more controls to be selected.', title='Matching Pattern')
     remarks: str | None = None
 
 
@@ -94,32 +114,6 @@ class ResourceTypeValidValues(Enum):
     profile = 'profile'
 
 
-class SelectControlByIdForMapping(OscalBaseModel):
-    """
-    Select a control or controls from an imported control set.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    with_child_controls: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, alias='with-child-controls', description='When a control is included, whether its child (dependent) controls are also included.', title='Include Contained Controls with Control')
-    with_ids: list[constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$')] | None = Field(None, alias='with-ids')
-    matching: list[common.Matching] | None = Field(None)
-
-
-class ConfidenceScore(OscalBaseModel):
-    """
-    This records either a string category or a decimal value from 0-1 representing a percentage. Both of these values describe an estimation of the author's confidence that this mapping is correct and accurate.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    category: constr(regex=r'^\S(.*\S)?$') | Category | None = None
-    percentage: DecimalDatatype | None = None
-    STRVALUE: constr(regex=r'^\S(.*\S)?$') | None = None
-
-
 class Coverage(OscalBaseModel):
     """
     A decimal value from 0-1, representing the percentage coverage of the targets by the sources.
@@ -128,8 +122,37 @@ class Coverage(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    generation_method: constr(regex=r'^\S(.*\S)?$') | GenerationMethod | None = Field(None, alias='generation-method')
-    STRVALUE: DecimalDatatype
+    generation_method: constr(regex=r'^\S(.*\S)?$') | GenerationMethod | None = Field(None, alias='generation-method', description='The method used to determine the coverage value.', title='Coverage Generation Method')
+    target_coverage: DecimalDatatype = Field(..., alias='target-coverage')
+
+
+class MappingResourceReference(OscalBaseModel):
+    """
+    A reference to a resource that is either the source or the target of a mapping.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    ns: AnyUrl | None = Field(None, description="An optional namespace qualifying the resource's type.", title='Resource Type Namespace')
+    type: TokenDatatype | ResourceTypeValidValues = Field(..., description='The semantic type of the resource.', title='Resource Type')
+    href: str = Field(..., description='A resolvable URL reference to the base catalog or profile that this profile is tailoring.', title='Catalog or Profile Reference')
+    props: list[common.Property] | None = Field(None)
+    links: list[common.Link] | None = Field(None)
+    remarks: str | None = None
+
+
+class MatchControlById(OscalBaseModel):
+    """
+    Select a control or controls from an imported control set.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    match_with_child_controls: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, alias='match-with-child-controls', description='When a control is included, whether its child (dependent) controls are also included.', title='Include Contained Controls with Control')
+    with_ids: list[constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$')] | None = Field(None, alias='with-ids')
+    match_control_by: list[MatchControl] | None = Field(None, alias='match-control-by')
 
 
 class GapSummary(OscalBaseModel):
@@ -145,31 +168,26 @@ class GapSummary(OscalBaseModel):
         description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this mapping gap summary elsewhere in this or other OSCAL instances. The locally defined UUID of the SSP can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance).This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Gap Summary Universally Unique Identifier',
     )
-    unmapped_controls: list[SelectControlByIdForMapping] = Field(..., alias='unmapped-controls')
+    unmapped_controls: list[MatchControlById] = Field(..., alias='unmapped-controls')
 
 
-class Map(OscalBaseModel):
+class Percentage(OscalBaseModel):
+    __root__: DecimalDatatype = Field(..., description='A decimal value from 0-1, representing a percentage.', title='Percentage')
+
+
+class ConfidenceScore2(OscalBaseModel):
     """
-    A relationship-based mapping between a source and target set consisting of members (i.e., controls, control statements) from the respective source and target.
+    This records either a string category or a decimal value from 0-1 representing a percentage. Both of these values describe an estimation of the author's confidence that this mapping is correct and accurate.
     """
 
     class Config:
         extra = Extra.forbid
 
-    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(..., description='The unique identifier for the mapping entry.', title='Mapping Entry Identifier')
-    ns: URIDatatype | None = Field(None, description="A namespace qualifying the relationship's value. This allows different organizations to associate distinct semantics for relationships with the same name.", title='Relationship Value Namespace')
-    matching_rationale: constr(regex=r'^\S(.*\S)?$') | None = Field(None, alias='matching-rationale', description='The method used for relating controls within the mapping. The supported methods are aligned with the NIST Interagency Report (IR) 8477, Section 4.3 Set Theory Relationship Mapping.', title='Matching')
-    relationship: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') = Field(
-        ..., description='The relationship type for the mapping entry, which describes the relationship between the effective requirements of the specified source and target sets in the context of the matching-rationale method globaly defined in the provenance unless overwritten locally in the map. The relationship type and the matching-rationale must be used together. However, more than one matching-rationale method may apply to a source and target pair.', title='Mapping Entry Relationship'
-    )
-    sources: list[MappingItem] = Field(...)
-    targets: list[MappingItem] = Field(...)
-    qualifiers: list[QualifierItem] | None = Field(None)
-    confidence_score: ConfidenceScore | None = Field(None, alias='confidence-score')
-    coverage: Coverage | None = None
-    props: list[common.Property] | None = Field(None)
-    links: list[common.Link] | None = Field(None)
-    remarks: str | None = None
+    percentage: Percentage | None = None
+
+
+class ConfidenceScore(OscalBaseModel):
+    __root__: ConfidenceScore1 | ConfidenceScore2 = Field(..., description="This records either a string category or a decimal value from 0-1 representing a percentage. Both of these values describe an estimation of the author's confidence that this mapping is correct and accurate.", title='Confidence Score')
 
 
 class MappingProvenance(OscalBaseModel):
@@ -192,17 +210,25 @@ class MappingProvenance(OscalBaseModel):
     remarks: str | None = None
 
 
-class MappingResourceReference(OscalBaseModel):
+class Map(OscalBaseModel):
     """
-    A reference to a resource that is either the source or the target of a mapping.
+    A relationship-based mapping between a source and target set consisting of members (i.e., controls, control statements) from the respective source and target.
     """
 
     class Config:
         extra = Extra.forbid
 
-    ns: AnyUrl | None = Field(None, description="An optional namespace qualifying the resource's type.", title='Resource Type Namespace')
-    type: TokenDatatype | ResourceTypeValidValues = Field(..., description='The semantic type of the resource.', title='Resource Type')
-    href: str = Field(..., description='A resolvable URL reference to the base catalog or profile that this profile is tailoring.', title='Catalog or Profile Reference')
+    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(..., description='The unique identifier for the mapping entry.', title='Mapping Entry Identifier')
+    ns: URIDatatype | None = Field(None, description="A namespace qualifying the relationship's value. This allows different organizations to associate distinct semantics for relationships with the same name.", title='Relationship Value Namespace')
+    matching_rationale: constr(regex=r'^\S(.*\S)?$') | None = Field(None, alias='matching-rationale', description='The method used for relating controls within the mapping. The supported methods are aligned with the NIST Interagency Report (IR) 8477, Section 4.3 Set Theory Relationship Mapping.', title='Matching')
+    relationship: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') = Field(
+        ..., description='The relationship type for the mapping entry, which describes the relationship between the effective requirements of the specified source and target sets in the context of the matching-rationale method globaly defined in the provenance unless overwritten locally in the map. The relationship type and the matching-rationale must be used together. However, more than one matching-rationale method may apply to a source and target pair.', title='Mapping Entry Relationship'
+    )
+    sources: list[MappingItem] = Field(...)
+    targets: list[MappingItem] = Field(...)
+    qualifiers: list[QualifierItem] | None = Field(None)
+    confidence_score: ConfidenceScore | None = Field(None, alias='confidence-score')
+    coverage: Coverage | None = None
     props: list[common.Property] | None = Field(None)
     links: list[common.Link] | None = Field(None)
     remarks: str | None = None
