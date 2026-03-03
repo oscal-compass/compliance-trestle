@@ -1,18 +1,18 @@
 ### Maintainers
 
-Alejandro Jose Leiva Palomo [AleJo2995](https://github.com/AleJo2995)
-
 Christopher Butler [butler54](https://github.com/butler54)
 
 Lou Degenaro [degenaro](https://github.com/degenaro)
-
-Manjiree Gadgil [mrgadgil](https://github.com/mrgadgil)
 
 Vikas Agarwal [vikas-agarwal76](https://github.com/vikas-agarwal76)
 
 ### Emeritus Maintainers
 
 Former Maintainers, thanks for your service!
+
+Manjiree Gadgil [mrgadgil](https://github.com/mrgadgil)
+
+Alejandro Jose Leiva Palomo [AleJo2995](https://github.com/AleJo2995)
 
 Jennifer Power [jpower432](https://github.com/jpower432)
 
