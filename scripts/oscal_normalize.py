@@ -1057,7 +1057,7 @@ def write_oscal(classes, forward_refs, fstem):
             if is_common:
                 filtered_refs = [ref for ref in forward_refs if not ref.startswith('Group.')]
             out_file.writelines('\n'.join(filtered_refs) + '\n')
-        
+
         # Add backward compatibility aliases for Timing classes in common module
         if is_common:
             out_file.write('\n\n# Backward compatibility aliases for Timing classes\n')
