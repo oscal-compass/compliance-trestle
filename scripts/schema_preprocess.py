@@ -599,7 +599,6 @@ def patch_timing(model_name: str) -> None:
             new_def_key = f'{namespace}:{new_def_name}'
             
             # Create new definition with variant content
-            base_title = timing_prop.get('title', 'The timing under which the task is intended to occur.')
             base_desc = timing_prop.get('description', 'The timing under which the task is intended to occur.')
             
             new_def = {
