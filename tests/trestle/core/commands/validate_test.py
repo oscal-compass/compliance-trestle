@@ -436,18 +436,20 @@ def test_validate_ssp_with_no_profile(tmp_trestle_dir: pathlib.Path, monkeypatch
 
 
 def test_period(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
-    """Test period - OSCAL 1.2.0 uses Timing2 with at-frequency as dict."""
+    """Test period - OSCAL 1.2.0 uses Timing2 with at-frequency as AtFrequency object."""
     # In OSCAL 1.2.0, timing with frequency is represented as Timing2
-    # with at_frequency containing period and unit
-    timing = common.Timing2(at_frequency={'period': 1, 'unit': 'seconds'})
-    assert timing.at_frequency['period'] == 1
-    assert timing.at_frequency['unit'] == 'seconds'
+    # with at_frequency as an AtFrequency object containing period and unit
+    at_freq = common.AtFrequency(period=1, unit='seconds')
+    timing = common.Timing2(at_frequency=at_freq)
+    assert timing.at_frequency.period == 1
+    assert timing.at_frequency.unit == 'seconds'
 
     # Test that valid units are accepted
     valid_units = ['seconds', 'minutes', 'hours', 'days', 'months', 'years']
     for unit in valid_units:
-        timing = common.Timing2(at_frequency={'period': 5, 'unit': unit})
-        assert timing.at_frequency['unit'] == unit
+        at_freq = common.AtFrequency(period=5, unit=unit)
+        timing = common.Timing2(at_frequency=at_freq)
+        assert timing.at_frequency.unit == unit
 
 
 def test_validate_component_definition(

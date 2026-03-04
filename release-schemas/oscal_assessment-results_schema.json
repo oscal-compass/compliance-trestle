@@ -1244,6 +1244,13 @@
          { "title" : "On Date Condition",
           "description" : "The task is intended to occur on the specified date.",
           "type" : "object",
+          "properties" : 
+          { "date" : 
+           { "title" : "On Date Condition",
+            "description" : "The task must occur on the specified date.",
+            "$ref" : "#/definitions/DateTimeWithTimezoneDatatype" },
+           "remarks" : 
+           { "$ref" : "#/definitions/oscal-ar-oscal-metadata:remarks" } },
           "required" : 
           [ "date" ],
           "additionalProperties" : false } },
@@ -1256,6 +1263,17 @@
          { "title" : "On Date Range Condition",
           "description" : "The task is intended to occur within the specified date range.",
           "type" : "object",
+          "properties" : 
+          { "start" : 
+           { "title" : "Start Date Condition",
+            "description" : "The task must occur on or after the specified date.",
+            "$ref" : "#/definitions/DateTimeWithTimezoneDatatype" },
+           "end" : 
+           { "title" : "End Date Condition",
+            "description" : "The task must occur on or before the specified date.",
+            "$ref" : "#/definitions/DateTimeWithTimezoneDatatype" },
+           "remarks" : 
+           { "$ref" : "#/definitions/oscal-ar-oscal-metadata:remarks" } },
           "required" : 
           [ "start",
            "end" ],
@@ -1269,6 +1287,27 @@
          { "title" : "Frequency Condition",
           "description" : "The task is intended to occur at the specified frequency.",
           "type" : "object",
+          "properties" : 
+          { "period" : 
+           { "title" : "Period",
+            "description" : "The task must occur after the specified period has elapsed.",
+            "$ref" : "#/definitions/PositiveIntegerDatatype" },
+           "unit" : 
+           { "title" : "Time Unit",
+            "description" : "The unit of time for the period.",
+            "allOf" : 
+            [ 
+             { "$ref" : "#/definitions/StringDatatype" },
+             
+             { "enum" : 
+              [ "seconds",
+               "minutes",
+               "hours",
+               "days",
+               "months",
+               "years" ] } ] },
+           "remarks" : 
+           { "$ref" : "#/definitions/oscal-ar-oscal-metadata:remarks" } },
           "required" : 
           [ "period",
            "unit" ],
@@ -1537,6 +1576,13 @@
     "description" : "Used to select a control objective for inclusion/exclusion based on the control objective's identifier.",
     "$id" : "#/definitions/oscal-ar-oscal-assessment-common:select-objective-by-id",
     "type" : "object",
+    "properties" : 
+    { "objective-id" : 
+     { "title" : "Objective ID",
+      "description" : "Points to an assessment objective.",
+      "$ref" : "#/definitions/TokenDatatype" },
+     "remarks" : 
+     { "$ref" : "#/definitions/oscal-ar-oscal-metadata:remarks" } },
     "required" : 
     [ "objective-id" ],
     "additionalProperties" : false },
@@ -1561,6 +1607,13 @@
       { "title" : "Assessment Subject Source",
        "description" : "Assessment subjects will be identified while conducting the referenced activity-instance.",
        "type" : "object",
+       "properties" : 
+       { "task-uuid" : 
+        { "title" : "Task Universally Unique Identifier",
+         "description" : "A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference (in this or other OSCAL instances) an assessment activity to be performed as part of the event. The locally defined UUID of the task can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.",
+         "$ref" : "#/definitions/UUIDDatatype" },
+        "remarks" : 
+        { "$ref" : "#/definitions/oscal-ar-oscal-metadata:remarks" } },
        "required" : 
        [ "task-uuid" ],
        "additionalProperties" : false } },
@@ -1953,22 +2006,12 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "title" : "Related Observation",
-       "description" : "Relates the finding to a set of referenced observations that were used to determine the finding.",
-       "type" : "object",
-       "required" : 
-       [ "observation-uuid" ],
-       "additionalProperties" : false } },
+      { "$ref" : "#/definitions/oscal-ar-oscal-assessment-common:related-observation" } },
      "related-risks" : 
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "title" : "Associated Risk",
-       "description" : "Relates the finding to a set of referenced risks that were used to determine the finding.",
-       "type" : "object",
-       "required" : 
-       [ "risk-uuid" ],
-       "additionalProperties" : false } },
+      { "$ref" : "#/definitions/oscal-ar-oscal-assessment-common:associated-risk" } },
      "remarks" : 
      { "$ref" : "#/definitions/oscal-ar-oscal-metadata:remarks" } },
     "required" : 
@@ -1976,6 +2019,36 @@
      "title",
      "description",
      "target" ],
+    "additionalProperties" : false },
+   "oscal-ar-oscal-assessment-common:related-observation" : 
+   { "title" : "Related Observation",
+    "description" : "Relates the identified element to a set of referenced observations that were used to support its determination.",
+    "$id" : "#/definitions/oscal-ar-oscal-assessment-common:related-observation",
+    "type" : "object",
+    "properties" : 
+    { "observation-uuid" : 
+     { "title" : "Observation Universally Unique Identifier Reference",
+      "description" : "A machine-oriented identifier reference to an observation defined in the list of observations.",
+      "$ref" : "#/definitions/UUIDDatatype" },
+     "remarks" : 
+     { "$ref" : "#/definitions/oscal-ar-oscal-metadata:remarks" } },
+    "required" : 
+    [ "observation-uuid" ],
+    "additionalProperties" : false },
+   "oscal-ar-oscal-assessment-common:associated-risk" : 
+   { "title" : "Associated Risk",
+    "description" : "Relates the finding to a set of referenced risks that were used to determine the finding.",
+    "$id" : "#/definitions/oscal-ar-oscal-assessment-common:associated-risk",
+    "type" : "object",
+    "properties" : 
+    { "risk-uuid" : 
+     { "title" : "Risk Universally Unique Identifier Reference",
+      "description" : "A machine-oriented identifier reference to a risk defined in the list of risks.",
+      "$ref" : "#/definitions/UUIDDatatype" },
+     "remarks" : 
+     { "$ref" : "#/definitions/oscal-ar-oscal-metadata:remarks" } },
+    "required" : 
+    [ "risk-uuid" ],
     "additionalProperties" : false },
    "oscal-ar-oscal-assessment-common:observation" : 
    { "title" : "Observation",
@@ -2423,12 +2496,7 @@
      { "type" : "array",
       "minItems" : 1,
       "items" : 
-      { "title" : "Related Observation",
-       "description" : "Relates the finding to a set of referenced observations that were used to determine the finding.",
-       "type" : "object",
-       "required" : 
-       [ "observation-uuid" ],
-       "additionalProperties" : false } } },
+      { "$ref" : "#/definitions/oscal-ar-oscal-assessment-common:related-observation" } } },
     "required" : 
     [ "uuid",
      "title",
@@ -2441,6 +2509,17 @@
     "description" : "Used to indicate who created a log entry in what role.",
     "$id" : "#/definitions/oscal-ar-oscal-assessment-common:logged-by",
     "type" : "object",
+    "properties" : 
+    { "party-uuid" : 
+     { "title" : "Party UUID Reference",
+      "description" : "A machine-oriented identifier reference to the party who is making the log entry.",
+      "$ref" : "#/definitions/UUIDDatatype" },
+     "role-id" : 
+     { "title" : "Actor Role",
+      "description" : "A point to the role-id of the role in which the party is making the log entry.",
+      "$ref" : "#/definitions/TokenDatatype" },
+     "remarks" : 
+     { "$ref" : "#/definitions/oscal-ar-oscal-metadata:remarks" } },
     "required" : 
     [ "party-uuid" ],
     "additionalProperties" : false },
@@ -2911,6 +2990,51 @@
     "$id" : "#/definitions/oscal-ar-oscal-control-common:include-all",
     "type" : "object",
     "additionalProperties" : false },
+   "oscal-ar-oscal-control-common:with-id" : 
+   { "title" : "Match Controls by Identifier",
+    "description" : "Selecting a control by its ID given as a literal.",
+    "$id" : "#/definitions/oscal-ar-oscal-control-common:with-id",
+    "$ref" : "#/definitions/TokenDatatype" },
+   "oscal-ar-oscal-control-common:matching" : 
+   { "title" : "Match Controls by Pattern",
+    "description" : "Selecting a set of controls by matching their IDs with a wildcard pattern.",
+    "$id" : "#/definitions/oscal-ar-oscal-control-common:matching",
+    "type" : "object",
+    "properties" : 
+    { "pattern" : 
+     { "title" : "Pattern",
+      "description" : "A glob expression matching the IDs of one or more controls to be selected.",
+      "$ref" : "#/definitions/StringDatatype" },
+     "remarks" : 
+     { "$ref" : "#/definitions/oscal-ar-oscal-metadata:remarks" } },
+    "additionalProperties" : false },
+   "oscal-ar-oscal-control-common:select-control-by-id" : 
+   { "title" : "Select Control",
+    "description" : "Select a control or controls from an imported control set.",
+    "$id" : "#/definitions/oscal-ar-oscal-control-common:select-control-by-id",
+    "type" : "object",
+    "properties" : 
+    { "with-child-controls" : 
+     { "title" : "Include Contained Controls with Control",
+      "description" : "When a control is included, whether its child (dependent) controls are also included.",
+      "allOf" : 
+      [ 
+       { "$ref" : "#/definitions/TokenDatatype" },
+       
+       { "enum" : 
+        [ "yes",
+         "no" ] } ] },
+     "with-ids" : 
+     { "type" : "array",
+      "minItems" : 1,
+      "items" : 
+      { "$ref" : "#/definitions/oscal-ar-oscal-control-common:with-id" } },
+     "matching" : 
+     { "type" : "array",
+      "minItems" : 1,
+      "items" : 
+      { "$ref" : "#/definitions/oscal-ar-oscal-control-common:matching" } } },
+    "additionalProperties" : false },
    "oscal-ar-oscal-implementation-common:system-component" : 
    { "title" : "Component",
     "description" : "A defined component that can be part of an implemented system.",
@@ -3035,6 +3159,27 @@
     "description" : "Where applicable this is the transport layer protocol port range an IPv4-based or IPv6-based service uses.",
     "$id" : "#/definitions/oscal-ar-oscal-implementation-common:port-range",
     "type" : "object",
+    "properties" : 
+    { "start" : 
+     { "title" : "Start",
+      "description" : "Indicates the starting port number in a port range for a transport layer protocol",
+      "$ref" : "#/definitions/NonNegativeIntegerDatatype" },
+     "end" : 
+     { "title" : "End",
+      "description" : "Indicates the ending port number in a port range for a transport layer protocol",
+      "$ref" : "#/definitions/NonNegativeIntegerDatatype" },
+     "transport" : 
+     { "title" : "Transport",
+      "description" : "Indicates the transport type.",
+      "allOf" : 
+      [ 
+       { "$ref" : "#/definitions/TokenDatatype" },
+       
+       { "enum" : 
+        [ "TCP",
+         "UDP" ] } ] },
+     "remarks" : 
+     { "$ref" : "#/definitions/oscal-ar-oscal-metadata:remarks" } },
     "additionalProperties" : false },
    "oscal-ar-oscal-implementation-common:implementation-status" : 
    { "title" : "Implementation Status",

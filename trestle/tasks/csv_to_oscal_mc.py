@@ -27,7 +27,9 @@ from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.common import Metadata
 from trestle.oscal.common import Property
 from trestle.oscal.mapping import ConfidenceScore
+from trestle.oscal.mapping import ConfidenceScore2
 from trestle.oscal.mapping import Coverage
+from trestle.oscal.mapping import DecimalDatatype
 from trestle.oscal.mapping import GapSummary
 from trestle.oscal.mapping import Map
 from trestle.oscal.mapping import Mapping
@@ -36,6 +38,7 @@ from trestle.oscal.mapping import MappingDescription
 from trestle.oscal.mapping import MappingItem
 from trestle.oscal.mapping import MappingProvenance
 from trestle.oscal.mapping import MappingResourceReference
+from trestle.oscal.mapping import Percentage
 from trestle.oscal.mapping import SelectControlByIdForMapping
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
@@ -368,15 +371,18 @@ class _McMgr:
         if confidence_score_str:
             confidence_value = self._parse_percentage(confidence_score_str)
             if confidence_value is not None:
-                # ConfidenceScore only populates the percentage field
-                map_.confidence_score = ConfidenceScore(percentage=confidence_value)
+                # ConfidenceScore requires nested structure with __root__
+                percentage_obj = Percentage(__root__=DecimalDatatype(__root__=confidence_value))
+                confidence_score_obj = ConfidenceScore2(percentage=percentage_obj)
+                map_.confidence_score = ConfidenceScore(__root__=confidence_score_obj)
 
         # Add coverage if provided
         if coverage_str:
             coverage_value = self._parse_percentage(coverage_str)
             if coverage_value is not None:
-                # Coverage only populates the STRVALUE field
-                map_.coverage = Coverage(STRVALUE=coverage_value)
+                # Coverage requires target-coverage field
+                target_coverage = DecimalDatatype(__root__=coverage_value)
+                map_.coverage = Coverage(**{'target-coverage': target_coverage})
 
         # Add other properties
         props = []

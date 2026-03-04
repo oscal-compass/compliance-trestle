@@ -274,6 +274,71 @@ def patch_mapping_select_control(model_name: str) -> None:
     json_data_put(model_name, data)
 
 
+def patch_assessment_select_control(model_name: str) -> None:
+    """Rename assessment SelectControlById variants to avoid duplicates.
+    
+    The assessment schemas (assessment-plan, assessment-results, poam) have two different
+    SelectControlById definitions:
+    1. One with 'with-child-controls', 'with-ids', 'matching' fields (for profile selection)
+    2. One with 'control-id', 'statement-ids' fields (for assessment selection)
+    
+    Rename the first variant to SelectControlByIdForProfile to avoid conflicts.
+    """
+    if not any(model_name.endswith(schema) for schema in [
+        'oscal_assessment-plan_schema.json',
+        'oscal_assessment-results_schema.json',
+        'oscal_poam_schema.json'
+    ]):
+        return
+    
+    data = json_data_get(model_name)
+    
+    # Find all select-control-by-id definitions
+    select_keys = []
+    for key in data['definitions'].keys():
+        if key.endswith(':select-control-by-id'):
+            select_keys.append(key)
+    
+    if len(select_keys) < 2:
+        logger.debug(f'patch: {model_name} found {len(select_keys)} select-control-by-id definitions, expected 2')
+        return
+    
+    # Find the profile variant (has with-child-controls, with-ids, or matching)
+    profile_variant_key = None
+    for key in select_keys:
+        defn = data['definitions'][key]
+        if 'properties' in defn:
+            has_profile_fields = (
+                'with-child-controls' in defn['properties']
+                or 'with-ids' in defn['properties']
+                or 'matching' in defn['properties']
+            )
+            if has_profile_fields:
+                profile_variant_key = key
+                break
+    
+    if not profile_variant_key:
+        logger.debug(f'patch: {model_name} could not identify profile variant')
+        return
+    
+    # Create new key name for profile variant
+    new_key = profile_variant_key.replace(':select-control-by-id', ':select-control-by-id-for-profile')
+    
+    # Copy the definition to the new name
+    data['definitions'][new_key] = data['definitions'][profile_variant_key]
+    
+    # Update all references from old key to new key
+    data_str = json.dumps(data)
+    data_str = data_str.replace(f'"$ref": "#/definitions/{profile_variant_key}"', f'"$ref": "#/definitions/{new_key}"')
+    data = json.loads(data_str)
+    
+    # Remove the old definition
+    del data['definitions'][profile_variant_key]
+    
+    logger.info(f'patch: {model_name} renamed {profile_variant_key} -> {new_key}')
+    json_data_put(model_name, data)
+
+
 def patch_mapping_confidence_score(model_name: str) -> None:
     """Make STRVALUE optional in mapping confidence-score.
 
@@ -319,6 +384,7 @@ def patch_schemas(fixup_dir_path: Path) -> None:
         patch_poam_item(model_name, 'related-observations')
         patch_profile(model_name)
         patch_profile_group_description(model_name)
+        patch_assessment_select_control(model_name)
         patch_mapping_select_control(model_name)
         patch_mapping_confidence_score(model_name)
         create_refs(model_name)

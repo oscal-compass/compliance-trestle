@@ -694,7 +694,8 @@ class OscalProfileToOscoProfileTransformer(FromOscalTransformer):
     def _add_disable_rules_for_control(self, value, control):
         """Extract disabled rules for control."""
         for with_id in as_list(control.with_ids):
-            name = self._format_osco_rule_name(with_id.__root__)
+            # In OSCAL 1.2.0, with_ids is a list of strings directly
+            name = self._format_osco_rule_name(with_id)
             rationale = self._get_rationale_for_disable_rule()
             entry = {'name': name, 'rationale': rationale}
             value.append(entry)
