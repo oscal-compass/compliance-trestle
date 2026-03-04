@@ -477,6 +477,72 @@ def patch_control_selections(model_name: str) -> None:
 # patch_schemas introduced for migrating from OSCAL 1.0.4 to 1.1.2 due to missing/broken
 # support in datamodel-codegen tool. See issue(s):
 # - https://github.com/koxudaxi/datamodel-code-generator/issues/1901
+def patch_external_ids(model_name: str) -> None:
+    """Extract inline external-ids item definitions into a named definition.
+    
+    The metadata schemas have inline definitions for external-ids items within
+    the anyOf variants of parties items. Extract into a single named definition
+    so DMCG generates one ExternalId class that will be moved to common.py.
+    """
+    data = json_data_get(model_name)
+    modified = False
+    
+    # Look for metadata definitions with parties
+    for def_key in list(data['definitions'].keys()):
+        defn = data['definitions'][def_key]
+        
+        # Navigate to parties -> items
+        if 'properties' not in defn:
+            continue
+        if 'parties' not in defn['properties']:
+            continue
+        
+        parties = defn['properties']['parties']
+        if 'items' not in parties:
+            continue
+        
+        party_items = parties['items']
+        
+        # Parties items have anyOf with variants
+        if 'anyOf' not in party_items:
+            continue
+        
+        # Process each variant in the anyOf
+        for variant in party_items['anyOf']:
+            if 'properties' not in variant:
+                continue
+            if 'external-ids' not in variant['properties']:
+                continue
+            
+            ext_ids_prop = variant['properties']['external-ids']
+            if 'items' not in ext_ids_prop:
+                continue
+            
+            # Check if items is an inline definition (not a $ref)
+            items = ext_ids_prop['items']
+            if '$ref' in items:
+                continue
+            
+            # Extract the inline definition
+            # Use oscal-metadata namespace so it goes to common
+            new_def_key = 'oscal-metadata:external-id'
+            
+            # Only create the definition once (first time we encounter it)
+            if new_def_key not in data['definitions']:
+                # Create the named definition with the inline content
+                data['definitions'][new_def_key] = items.copy()
+                logger.info(f'patch: {model_name} created {new_def_key}')
+                modified = True
+            
+            # Replace inline definition with reference
+            ext_ids_prop['items'] = {'$ref': f'#/definitions/{new_def_key}'}
+            logger.info(f'patch: {model_name} replaced inline external-ids items in {def_key} anyOf variant with ref to {new_def_key}')
+            modified = True
+    
+    if modified:
+        json_data_put(model_name, data)
+
+
 def patch_schemas(fixup_dir_path: Path) -> None:
     """Patch json schemas."""
     for full_name in fixup_dir_path.glob(schema_file_name_search_template):
@@ -491,6 +557,7 @@ def patch_schemas(fixup_dir_path: Path) -> None:
         patch_mapping_select_control(model_name)
         patch_mapping_confidence_score(model_name)
         patch_control_selections(model_name)
+        patch_external_ids(model_name)
         create_refs(model_name)
 
 

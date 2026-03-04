@@ -627,18 +627,6 @@ class ExternalId(OscalBaseModel):
     id: constr(regex=r'^\S(.*\S)?$')
 
 
-class ExternalId1(OscalBaseModel):
-    """
-    An identifier for a person or organization using a designated scheme. e.g. an Open Researcher and Contributor ID (ORCID).
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    scheme: AnyUrl | Scheme = Field(..., description='Indicates the type of external identifier.', title='External Identifier Schema')
-    id: constr(regex=r'^\S(.*\S)?$')
-
-
 class FunctionPerformed(OscalBaseModel):
     __root__: StringDatatype = Field(..., description='Describes a function performed for a given authorized privilege by this user class.', title='Functions Performed')
 
@@ -1718,7 +1706,7 @@ class Parties1(OscalBaseModel):
     type: constr(regex=r'^\S(.*\S)?$') | None = Field(None, description='A category describing the kind of party the object describes.', title='Party Type')
     name: constr(regex=r'^\S(.*\S)?$') | None = Field(None, description='The full name of the party. This is typically the legal name associated with the party.', title='Party Name')
     short_name: constr(regex=r'^\S(.*\S)?$') | None = Field(None, alias='short-name', description='A short common name, abbreviation, or acronym for the party.', title='Party Short Name')
-    external_ids: list[ExternalId1] | None = Field(None, alias='external-ids')
+    external_ids: list[ExternalId] | None = Field(None, alias='external-ids')
     props: list[Property] | None = Field(None)
     links: list[Link] | None = Field(None)
     email_addresses: list[EmailStr] | None = Field(None, alias='email-addresses')
