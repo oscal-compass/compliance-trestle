@@ -1800,7 +1800,18 @@ class ThreatId(OscalBaseModel):
     id: AnyUrl
 
 
-class Timing(OscalBaseModel):
+class TimingAtFrequency(OscalBaseModel):
+    """
+    The timing under which the task is intended to occur.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    at_frequency: AtFrequency = Field(..., alias='at-frequency', description='The task is intended to occur at the specified frequency.', title='Frequency Condition')
+
+
+class TimingOnDate(OscalBaseModel):
     """
     The timing under which the task is intended to occur.
     """
@@ -1811,7 +1822,7 @@ class Timing(OscalBaseModel):
     on_date: OnDate = Field(..., alias='on-date', description='The task is intended to occur on the specified date.', title='On Date Condition')
 
 
-class Timing1(OscalBaseModel):
+class TimingWithinDateRange(OscalBaseModel):
     """
     The timing under which the task is intended to occur.
     """
@@ -1840,7 +1851,7 @@ class Task(OscalBaseModel):
     description: str | None = Field(None, description='A human-readable description of this task.', title='Task Description')
     props: list[Property] | None = Field(None)
     links: list[Link] | None = Field(None)
-    timing: Timing | Timing1 | Timing2 | None = Field(None, description='The timing under which the task is intended to occur.', title='Event Timing')
+    timing: TimingOnDate | TimingWithinDateRange | TimingAtFrequency | None = None
     dependencies: list[Dependency] | None = Field(None)
     tasks: list[Task] | None = None
     associated_activities: list[AssociatedActivity] | None = Field(None, alias='associated-activities')
@@ -1902,17 +1913,6 @@ class Risk(OscalBaseModel):
     related_observations: list[RelatedObservation] | None = Field(None, alias='related-observations')
 
 
-class Timing2(OscalBaseModel):
-    """
-    The timing under which the task is intended to occur.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    at_frequency: AtFrequency = Field(..., alias='at-frequency', description='The task is intended to occur at the specified frequency.', title='Frequency Condition')
-
-
 class UsesComponent(OscalBaseModel):
     """
     The set of components that are used by the assessment platform.
@@ -1971,3 +1971,10 @@ class WithId(OscalBaseModel):
 AssessmentPart.update_forward_refs()
 Part.update_forward_refs()
 Task.update_forward_refs()
+
+
+# Backward compatibility aliases for Timing classes
+# Use TimingOnDate, TimingWithinDateRange, TimingAtFrequency instead
+Timing = TimingOnDate
+Timing1 = TimingWithinDateRange
+Timing2 = TimingAtFrequency

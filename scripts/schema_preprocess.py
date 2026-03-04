@@ -543,6 +543,96 @@ def patch_external_ids(model_name: str) -> None:
         json_data_put(model_name, data)
 
 
+def patch_timing(model_name: str) -> None:
+    """Extract timing anyOf variants into named definitions with descriptive names.
+    
+    Similar to control-selections, timing has anyOf variants that should have
+    descriptive names like TimingOnDate, TimingWithinDateRange, TimingAtFrequency
+    instead of Timing, Timing1, Timing2.
+    """
+    data = json_data_get(model_name)
+    modified = False
+    
+    # Process each definition looking for timing properties with anyOf
+    for def_key in list(data['definitions'].keys()):
+        defn = data['definitions'][def_key]
+        if 'properties' not in defn:
+            continue
+        
+        # Look for timing property with anyOf
+        if 'timing' not in defn['properties']:
+            continue
+        
+        timing_prop = defn['properties']['timing']
+        if 'anyOf' not in timing_prop:
+            continue
+        
+        anyof_variants = timing_prop['anyOf']
+        if len(anyof_variants) != 3:
+            continue
+        
+        # Use assessment-common namespace so classes go to common.py
+        namespace = 'oscal-assessment-common'
+        
+        # Create new definition keys for each variant based on required field
+        new_refs = []
+        
+        for variant in anyof_variants:
+            if 'required' not in variant:
+                continue
+            
+            required = variant['required']
+            
+            # Determine the new definition name based on required field
+            if 'on-date' in required:
+                new_def_name = 'timing-on-date'
+                variant_title = 'Timing On Date'
+            elif 'within-date-range' in required:
+                new_def_name = 'timing-within-date-range'
+                variant_title = 'Timing Within Date Range'
+            elif 'at-frequency' in required:
+                new_def_name = 'timing-at-frequency'
+                variant_title = 'Timing At Frequency'
+            else:
+                continue
+            
+            new_def_key = f'{namespace}:{new_def_name}'
+            
+            # Create new definition with variant content
+            base_title = timing_prop.get('title', 'The timing under which the task is intended to occur.')
+            base_desc = timing_prop.get('description', 'The timing under which the task is intended to occur.')
+            
+            new_def = {
+                'title': variant_title,
+                'description': base_desc,
+                'type': 'object',
+                **variant
+            }
+            
+            # Add to definitions if not already present
+            if new_def_key not in data['definitions']:
+                data['definitions'][new_def_key] = new_def
+                logger.info(f'patch: {model_name} created {new_def_key}')
+                modified = True
+            
+            new_refs.append(new_def_key)
+        
+        # Replace inline anyOf with references
+        if len(new_refs) == 3:
+            defn['properties']['timing'] = {
+                'anyOf': [
+                    {'$ref': f'#/definitions/{new_refs[0]}'},
+                    {'$ref': f'#/definitions/{new_refs[1]}'},
+                    {'$ref': f'#/definitions/{new_refs[2]}'}
+                ]
+            }
+            logger.info(f'patch: {model_name} replaced inline anyOf in {def_key}.timing with refs')
+            modified = True
+    
+    if modified:
+        json_data_put(model_name, data)
+
+
 def patch_schemas(fixup_dir_path: Path) -> None:
     """Patch json schemas."""
     for full_name in fixup_dir_path.glob(schema_file_name_search_template):
@@ -557,6 +647,7 @@ def patch_schemas(fixup_dir_path: Path) -> None:
         patch_mapping_select_control(model_name)
         patch_mapping_confidence_score(model_name)
         patch_control_selections(model_name)
+        patch_timing(model_name)
         patch_external_ids(model_name)
         create_refs(model_name)
 
