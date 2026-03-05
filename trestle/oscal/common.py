@@ -1289,7 +1289,7 @@ class SelectSubjectById(OscalBaseModel):
     remarks: str | None = None
 
 
-class AssessmentSubject2(OscalBaseModel):
+class AssessmentSubjectSpecific(OscalBaseModel):
     """
     Identifies system elements being assessed, such as components, inventory items, and locations. In the assessment plan, this identifies a planned assessment subject. In the assessment results this is an actual assessment subject, and reflects any changes from the plan. exactly what will be the focus of this assessment. Any subjects not identified in this way are out-of-scope.
     """
@@ -1306,7 +1306,7 @@ class AssessmentSubject2(OscalBaseModel):
     remarks: str | None = None
 
 
-class AssessmentSubject1(OscalBaseModel):
+class AssessmentSubjectAll(OscalBaseModel):
     """
     Identifies system elements being assessed, such as components, inventory items, and locations. In the assessment plan, this identifies a planned assessment subject. In the assessment results this is an actual assessment subject, and reflects any changes from the plan. exactly what will be the focus of this assessment. Any subjects not identified in this way are out-of-scope.
     """
@@ -1324,9 +1324,7 @@ class AssessmentSubject1(OscalBaseModel):
 
 
 class AssessmentSubject(OscalBaseModel):
-    __root__: AssessmentSubject1 | AssessmentSubject2 = Field(
-        ..., description='Identifies system elements being assessed, such as components, inventory items, and locations. In the assessment plan, this identifies a planned assessment subject. In the assessment results this is an actual assessment subject, and reflects any changes from the plan. exactly what will be the focus of this assessment. Any subjects not identified in this way are out-of-scope.', title='Subject of Assessment'
-    )
+    __root__: AssessmentSubjectAll | AssessmentSubjectSpecific
 
 
 class IdentifiedSubject(OscalBaseModel):
@@ -1978,3 +1976,8 @@ Task.update_forward_refs()
 Timing = TimingOnDate
 Timing1 = TimingWithinDateRange
 Timing2 = TimingAtFrequency
+
+# Backward compatibility aliases for AssessmentSubject classes
+# Use AssessmentSubjectAll, AssessmentSubjectSpecific instead
+AssessmentSubject1 = AssessmentSubjectAll
+AssessmentSubject2 = AssessmentSubjectSpecific

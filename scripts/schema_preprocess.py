@@ -629,6 +629,80 @@ def patch_timing(model_name: str) -> None:
         json_data_put(model_name, data)
 
 
+def patch_assessment_subject(model_name: str) -> None:
+    """Extract assessment-subject anyOf variants into named definitions with descriptive names.
+
+    Similar to timing, assessment-subject has anyOf variants that should have
+    descriptive names like AssessmentSubjectAll and AssessmentSubjectSpecific
+    instead of AssessmentSubject1 and AssessmentSubject2.
+    """
+    data = json_data_get(model_name)
+    modified = False
+
+    # Process each definition looking for assessment-subject with anyOf
+    for def_key in list(data['definitions'].keys()):
+        defn = data['definitions'][def_key]
+
+        # Look for assessment-subject definition with anyOf
+        if not def_key.endswith(':assessment-subject'):
+            continue
+
+        if 'anyOf' not in defn:
+            continue
+
+        anyof_variants = defn['anyOf']
+        if len(anyof_variants) != 2:
+            continue
+
+        # Use assessment-common namespace so classes go to common.py
+        namespace = 'oscal-assessment-common'
+
+        # Create new definition keys for each variant based on required field
+        new_refs = []
+
+        for variant in anyof_variants:
+            if 'required' not in variant:
+                continue
+
+            required = variant['required']
+
+            # Determine the new definition name based on required field
+            if 'include-all' in required:
+                new_def_name = 'assessment-subject-all'
+                variant_title = 'Assessment Subject All'
+            elif 'include-subjects' in required:
+                new_def_name = 'assessment-subject-specific'
+                variant_title = 'Assessment Subject Specific'
+            else:
+                continue
+
+            new_def_key = f'{namespace}:{new_def_name}'
+
+            # Create new definition with variant content
+            base_desc = defn.get('description', 'Identifies system elements being assessed.')
+
+            new_def = {'title': variant_title, 'description': base_desc, 'type': 'object', **variant}
+
+            # Add to definitions if not already present
+            if new_def_key not in data['definitions']:
+                data['definitions'][new_def_key] = new_def
+                logger.info(f'patch: {model_name} created {new_def_key}')
+                modified = True
+
+            new_refs.append(new_def_key)
+
+        # Replace inline anyOf with references
+        if len(new_refs) == 2:
+            data['definitions'][def_key] = {
+                'anyOf': [{'$ref': f'#/definitions/{new_refs[0]}'}, {'$ref': f'#/definitions/{new_refs[1]}'}]
+            }
+            logger.info(f'patch: {model_name} replaced inline anyOf in {def_key} with refs')
+            modified = True
+
+    if modified:
+        json_data_put(model_name, data)
+
+
 def patch_schemas(fixup_dir_path: Path) -> None:
     """Patch json schemas."""
     for full_name in fixup_dir_path.glob(schema_file_name_search_template):
@@ -644,6 +718,7 @@ def patch_schemas(fixup_dir_path: Path) -> None:
         patch_mapping_confidence_score(model_name)
         patch_control_selections(model_name)
         patch_timing(model_name)
+        patch_assessment_subject(model_name)
         patch_external_ids(model_name)
         create_refs(model_name)
 

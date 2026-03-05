@@ -1058,13 +1058,17 @@ def write_oscal(classes, forward_refs, fstem):
                 filtered_refs = [ref for ref in forward_refs if not ref.startswith('Group.')]
             out_file.writelines('\n'.join(filtered_refs) + '\n')
 
-        # Add backward compatibility aliases for Timing classes in common module
+        # Add backward compatibility aliases for renamed classes in common module
         if is_common:
             out_file.write('\n\n# Backward compatibility aliases for Timing classes\n')
             out_file.write('# Use TimingOnDate, TimingWithinDateRange, TimingAtFrequency instead\n')
             out_file.write('Timing = TimingOnDate\n')
             out_file.write('Timing1 = TimingWithinDateRange\n')
             out_file.write('Timing2 = TimingAtFrequency\n')
+            out_file.write('\n# Backward compatibility aliases for AssessmentSubject classes\n')
+            out_file.write('# Use AssessmentSubjectAll, AssessmentSubjectSpecific instead\n')
+            out_file.write('AssessmentSubject1 = AssessmentSubjectAll\n')
+            out_file.write('AssessmentSubject2 = AssessmentSubjectSpecific\n')
 
 
 # The below "additions" items have moved from individual model class to common.
@@ -1076,8 +1080,8 @@ def write_oscal(classes, forward_refs, fstem):
 
 additions = {
     'assessment_plan': [
-        'from trestle.oscal.common import AssessmentSubject1',
-        'from trestle.oscal.common import AssessmentSubject2',
+        'from trestle.oscal.common import AssessmentSubjectAll',
+        'from trestle.oscal.common import AssessmentSubjectSpecific',
         'from trestle.oscal.common import RelatedObservation',
         'from trestle.oscal.common import StringDatatype',
         'from trestle.oscal.common import SystemComponent',
