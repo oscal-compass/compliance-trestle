@@ -1,6 +1,9 @@
 name: ClusterFuzzLite PR Fuzzing
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - feat/fuzz   
   pull_request:
     paths:
       - '**'
