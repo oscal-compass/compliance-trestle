@@ -30,7 +30,7 @@ class TrestleError(RuntimeError):
     """
 
     def __init__(self, msg: str):
-        """Intialization for TresleError.
+        """Initialization for TrestleError.
 
         Args:
             msg (str): The error message
@@ -53,7 +53,7 @@ class TrestleNotFoundError(TrestleError):
 
     def __init__(self, msg: str):
         """
-        Intialize TresleNotFoundError.
+        Initialize TrestleNotFoundError.
 
         Args:
             msg: The error message
@@ -88,7 +88,7 @@ class TrestleIncorrectArgsError(TrestleError):
 
 
 def handle_generic_command_exception(
-    exception: Exception, logger: Logger, msg: str = 'Exception occured during execution'
+    exception: Exception, logger: Logger, msg: str = 'Exception occurred during execution'
 ) -> int:
     """Print out error message based on the verbosity and return appropriate status code."""
     if get_current_verbosity_level(logger) == 0:
