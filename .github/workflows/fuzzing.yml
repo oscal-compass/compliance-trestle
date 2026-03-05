@@ -1,5 +1,6 @@
 name: ClusterFuzzLite PR Fuzzing
 on:
+  workflow_dispatch:
   pull_request:
     paths:
       - '**'
