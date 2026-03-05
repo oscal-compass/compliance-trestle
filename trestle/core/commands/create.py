@@ -54,7 +54,7 @@ class CreateCmd(CommandPlusDocs):
             '-f', '--file', help='Optional existing OSCAL file that will have elements created within it.', type=str
         )
         self.add_argument(
-            '-e', '--element', help='Optional path of element to be created whithin the specified file.', type=str
+            '-e', '--element', help='Optional path of element to be created within the specified file.', type=str
         )
 
     def _run(self, args: argparse.Namespace) -> int:
