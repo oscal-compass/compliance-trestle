@@ -7,7 +7,11 @@ on:
   pull_request:
     paths:
       - '**'
-permissions: read-all
+permissions:
+  contents: read
+  actions: write
+  security-events: write
+  
 jobs:
   Fuzzing:
     runs-on: ubuntu-latest
