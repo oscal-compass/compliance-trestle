@@ -836,7 +836,7 @@ class ModelUtils:
         age_seconds = const.DAY_SECONDS * 365
         if model.metadata.last_modified:
             dt = datetime.now().astimezone() - model.metadata.last_modified
-            age_seconds = dt.seconds
+            age_seconds = int(dt.total_seconds())
         return age_seconds
 
     @staticmethod

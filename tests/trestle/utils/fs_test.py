@@ -715,3 +715,12 @@ def test_update_last_modified(sample_catalog_rich_controls: catalog.Catalog) -> 
     assert sample_catalog_rich_controls.metadata.last_modified == hour_ago
     ModelUtils.update_last_modified(sample_catalog_rich_controls)
     assert ModelUtils.model_age(sample_catalog_rich_controls) < test_utils.NEW_MODEL_AGE_SECONDS
+
+
+def test_model_age_multiday(sample_catalog_rich_controls: catalog.Catalog) -> None:
+    """Test that model_age returns correct age for models older than 24 hours."""
+    two_days_ago = datetime.now().astimezone() - timedelta(days=2)
+    ModelUtils.update_last_modified(sample_catalog_rich_controls, two_days_ago)
+    age = ModelUtils.model_age(sample_catalog_rich_controls)
+    # Two days is 172800 seconds; timedelta.seconds (old bug) would return 0, not 172800
+    assert age >= 2 * const.DAY_SECONDS
