@@ -64,7 +64,7 @@ class TaskCmd(CommandPlusDocs):
 
             if not args.task and not args.list:
                 raise TrestleIncorrectArgsError(
-                    'Either a trestle task or "-l/--list" shoudl be passed as input arguments.'
+                    'Either a trestle task or "-l/--list" should be passed as input arguments.'
                 )
 
             # Ensure trestle directory (must be true)
