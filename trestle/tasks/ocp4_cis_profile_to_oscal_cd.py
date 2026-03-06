@@ -29,7 +29,7 @@ import trestle
 from trestle.common import const
 from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.common import Metadata
-from trestle.oscal.common import Party
+from trestle.oscal.common import Parties
 from trestle.oscal.common import Property
 from trestle.oscal.common import ResponsibleParty
 from trestle.oscal.common import ResponsibleRole
@@ -532,17 +532,17 @@ class Ocp4CisProfileToOscalCD(TaskBase):
 
     def _build_parties(
         self, org_name: str, org_remarks: str, party_uuid_01: str, party_uuid_02: str, party_uuid_03: str
-    ) -> List[Party]:
+    ) -> List[Parties]:
         """Build parties."""
         value = [
-            Party(uuid=party_uuid_01, type='organization', name=org_name, remarks=org_remarks),
-            Party(
+            Parties(uuid=party_uuid_01, type='organization', name=org_name, remarks=org_remarks),
+            Parties(
                 uuid=party_uuid_02,
                 type='organization',
                 name='Customer',
                 remarks='organization to be customized at account creation only for their Component Definition',
             ),
-            Party(
+            Parties(
                 uuid=party_uuid_03,
                 type='organization',
                 name='ISV',

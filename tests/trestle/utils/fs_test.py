@@ -249,11 +249,19 @@ def test_get_relative_model_type(tmp_path: pathlib.Path) -> None:
     assert expected_type == common.Property
     assert expected_json_path == 'catalog.metadata.props.property'
     assert cutils.get_origin(type_) == list
-    assert ModelUtils.get_relative_model_type(groups_dir / f'00000{const.IDX_SEP}group.json') == (
-        catalog.Group,
-        'catalog.groups.group',
-    )
-    assert ModelUtils.get_relative_model_type(group_dir) == (catalog.Group, 'catalog.groups.group')
+    # Group can be either Group1 or Group2, so we get the Union type
+    group_type, group_alias = ModelUtils.get_relative_model_type(groups_dir / f'00000{const.IDX_SEP}group.json')
+    assert group_alias == 'catalog.groups.group'
+    # The type should be the Union Group1|Group2
+    import typing_extensions
+
+    union_args = typing_extensions.get_args(group_type)
+    assert catalog.Group1 in union_args and catalog.Group2 in union_args
+
+    group_dir_type, group_dir_alias = ModelUtils.get_relative_model_type(group_dir)
+    assert group_dir_alias == 'catalog.groups.group'
+    union_args = typing_extensions.get_args(group_dir_type)
+    assert catalog.Group1 in union_args and catalog.Group2 in union_args
     assert ModelUtils.get_relative_model_type(controls_dir / f'00000{const.IDX_SEP}control.json') == (
         catalog.Control,
         'catalog.groups.group.controls.control',
@@ -388,8 +396,10 @@ def test_get_stripped_model_type(tmp_path: pathlib.Path) -> None:
         assert 'props' in alias_to_field_map
         assert 'links' in alias_to_field_map
         assert 'parts' in alias_to_field_map
-        assert 'groups' in alias_to_field_map
-        assert 'controls' not in alias_to_field_map
+        # In OSCAL 1.2.0, Group is a Union of Group1 (has groups) and Group2 (has controls)
+        # Since test setup creates a controls subdirectory, this is Group2 with controls stripped out
+        assert 'controls' not in alias_to_field_map  # Stripped because split into subdirectory
+        assert 'groups' not in alias_to_field_map  # Not present in Group2
 
     stripped_catalog = ModelUtils.get_stripped_model_type(groups_dir / f'00000{const.IDX_SEP}group', tmp_path)
     alias_to_field_map = stripped_catalog[0].alias_to_field_map()

@@ -25,7 +25,7 @@ from typing import Dict, List, Optional
 
 from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.common import Metadata
-from trestle.oscal.common import Party
+from trestle.oscal.common import Parties1
 from trestle.oscal.common import Property
 from trestle.oscal.common import ResponsibleParty
 from trestle.oscal.common import ResponsibleRole
@@ -316,17 +316,19 @@ class XlsxToOscalComponentDefinition(TaskBase):
         value = [role_prepared_by, role_prepared_for, role_content_approver]
         return value
 
-    def _build_parties(self, party_uuid_01: str, party_uuid_02: str, party_uuid_03: str) -> List[Party]:
+    def _build_parties(self, party_uuid_01: str, party_uuid_02: str, party_uuid_03: str) -> List[Parties1]:
         """Build parties."""
         value = [
-            Party(uuid=party_uuid_01, type='organization', name=self._get_org_name(), remarks=self._get_org_remarks()),
-            Party(
+            Parties1(
+                uuid=party_uuid_01, type='organization', name=self._get_org_name(), remarks=self._get_org_remarks()
+            ),
+            Parties1(
                 uuid=party_uuid_02,
                 type='organization',
                 name='Customer',
                 remarks='organization to be customized at account creation only for their Component Definition',
             ),
-            Party(
+            Parties1(
                 uuid=party_uuid_03,
                 type='organization',
                 name='ISV',

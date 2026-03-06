@@ -44,44 +44,16 @@ from trestle.oscal.common import TaskValidValues
 from trestle.oscal.common import TokenDatatype
 
 
-class LocalDefinitions1(OscalBaseModel):
+class Attestation(OscalBaseModel):
     """
-    Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    components: list[common.SystemComponent] | None = Field(None)
-    inventory_items: list[common.InventoryItem] | None = Field(None, alias='inventory-items')
-    users: list[common.SystemUser] | None = Field(None)
-    assessment_assets: common.AssessmentAssets | None = Field(None, alias='assessment-assets')
-    tasks: list[common.Task] | None = Field(None)
-
-
-class LocalDefinitions(OscalBaseModel):
-    """
-    Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.
+    A set of textual statements, typically written by the assessor.
     """
 
     class Config:
         extra = Extra.forbid
 
-    objectives_and_methods: list[common.LocalObjective] | None = Field(None, alias='objectives-and-methods')
-    activities: list[common.Activity] | None = Field(None)
-    remarks: str | None = None
-
-
-class ImportAp(OscalBaseModel):
-    """
-    Used by assessment-results to import information about the original plan for assessing the system.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    href: str = Field(..., description='A resolvable URL reference to the assessment plan governing the assessment activities.', title='Assessment Plan Reference')
-    remarks: str | None = None
+    responsible_parties: list[common.ResponsibleParty] | None = Field(None, alias='responsible-parties')
+    parts: list[common.AssessmentPart] = Field(...)
 
 
 class Entry1(OscalBaseModel):
@@ -97,7 +69,7 @@ class Entry1(OscalBaseModel):
         description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference an assessment event in this or other OSCAL instances. The locally defined UUID of the assessment log entry can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Assessment Log Entry Universally Unique Identifier',
     )
-    title: str | None = Field(None, description='The title for this event.', title='Action Title')
+    title: constr(regex=r'^[^\n]+$') | None = Field(None, description='The title for this event.', title='Action Title')
     description: str | None = Field(None, description='A human-readable description of this event.', title='Action Description')
     start: datetime = Field(..., description='Identifies the start date and time of an event.', title='Start')
     end: datetime | None = Field(None, description='Identifies the end date and time of an event. If the event is a point in time, the start and end will be the same date and time.', title='End')
@@ -108,16 +80,44 @@ class Entry1(OscalBaseModel):
     remarks: str | None = None
 
 
-class Attestation(OscalBaseModel):
+class ImportAp(OscalBaseModel):
     """
-    A set of textual statements, typically written by the assessor.
+    Used by assessment-results to import information about the original plan for assessing the system.
     """
 
     class Config:
         extra = Extra.forbid
 
-    responsible_parties: list[common.ResponsibleParty] | None = Field(None, alias='responsible-parties')
-    parts: list[common.AssessmentPart] = Field(...)
+    href: str = Field(..., description='A resolvable URL reference to the assessment plan governing the assessment activities.', title='Assessment Plan Reference')
+    remarks: str | None = None
+
+
+class LocalDefinitions(OscalBaseModel):
+    """
+    Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    objectives_and_methods: list[common.LocalObjective] | None = Field(None, alias='objectives-and-methods')
+    activities: list[common.Activity] | None = Field(None)
+    remarks: str | None = None
+
+
+class LocalDefinitions1(OscalBaseModel):
+    """
+    Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    components: list[common.SystemComponent] | None = Field(None)
+    inventory_items: list[common.InventoryItem] | None = Field(None, alias='inventory-items')
+    users: list[common.SystemUser] | None = Field(None)
+    assessment_assets: common.AssessmentAssets | None = Field(None, alias='assessment-assets')
+    tasks: list[common.Task] | None = Field(None)
 
 
 class AssessmentLog(OscalBaseModel):
@@ -144,7 +144,7 @@ class Result(OscalBaseModel):
         description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this set of results in this or other OSCAL instances. The locally defined UUID of the assessment result can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Results Universally Unique Identifier',
     )
-    title: str = Field(..., description='The title for this set of results.', title='Results Title')
+    title: constr(regex=r'^[^\n]+$') = Field(..., description='The title for this set of results.', title='Results Title')
     description: str = Field(..., description='A human-readable description of this set of test results.', title='Results Description')
     start: datetime = Field(..., description='Date/time stamp identifying the start of the evidence collection reflected in these results.', title='start field')
     end: datetime | None = Field(None, description='Date/time stamp identifying the end of the evidence collection reflected in these results. In a continuous motoring scenario, this may contain the same value as start if appropriate.', title='end field')

@@ -35,61 +35,12 @@ from pydantic.v1 import AnyUrl, EmailStr, Extra, Field, conint, constr, validato
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
 import trestle.oscal.common as common
+from trestle.oscal.common import Parameter1, Parameter2
 from trestle.oscal.common import StringDatatype
 
 
-class WithId(OscalBaseModel):
-    __root__: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') = Field(..., description='Selecting a control by its ID given as a literal.', title='Match Controls by Identifier')
-
-
-class WithChildControlsValidValues(Enum):
-    yes = 'yes'
-    no = 'no'
-
-
-class SetParameter(OscalBaseModel):
-    """
-    A parameter setting, to be propagated to points of insertion.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    param_id: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') = Field(..., alias='param-id', description='An identifier for the parameter.', title='Parameter ID')
-    class_: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, alias='class', description='A textual label that provides a characterization of the parameter.', title='Parameter Class')
-    depends_on: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, alias='depends-on', description='**(deprecated)** Another parameter invoking this one. This construct has been deprecated and should not be used.', title='Depends On')
-    props: list[common.Property] | None = Field(None)
-    links: list[common.Link] | None = Field(None)
-    label: str | None = Field(None, description='A short, placeholder name for the parameter, which can be used as a substitute for a value if no value is assigned.', title='Parameter Label')
-    usage: str | None = Field(None, description='Describes the purpose and use of a parameter.', title='Parameter Usage Description')
-    constraints: list[common.ParameterConstraint] | None = Field(None)
-    guidelines: list[common.ParameterGuideline] | None = Field(None)
-    values: list[constr(regex=r'^\S(.*\S)?$')] | None = Field(None)
-    select: common.ParameterSelection | None = None
-
-
-class PositionValidValues(Enum):
-    before = 'before'
-    after = 'after'
-    starting = 'starting'
-    ending = 'ending'
-
-
-class OrderValidValues(Enum):
-    keep = 'keep'
-    ascending = 'ascending'
-    descending = 'descending'
-
-
-class Matching(OscalBaseModel):
-    """
-    Selecting a set of controls by matching their IDs with a wildcard pattern.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    pattern: constr(regex=r'^\S(.*\S)?$') | None = Field(None, description='A glob expression matching the IDs of one or more controls to be selected.', title='Pattern')
+class BooleanDatatype(OscalBaseModel):
+    __root__: bool = Field(..., description='A binary value that is either: true or false.')
 
 
 class ItemNameValidValues(Enum):
@@ -101,14 +52,81 @@ class ItemNameValidValues(Enum):
     map = 'map'
 
 
-class CombinationMethodValidValues(Enum):
-    use_first = 'use-first'
-    merge = 'merge'
-    keep = 'keep'
+class Merge1(OscalBaseModel):
+    """
+    Provides structuring directives that instruct how controls are organized after profile resolution.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    combine: dict[str, Any] | None = Field(None, description='A Combine element defines how to resolve duplicate instances of the same control (e.g., controls with the same ID).', title='Combination Rule')
+    flat: dict[str, Any] = Field(..., description='Directs that controls appear without any grouping structure.', title='Flat Without Grouping')
 
 
-class BooleanDatatype(OscalBaseModel):
-    __root__: bool = Field(..., description='A binary value that is either: true or false.')
+class PositionValidValues(Enum):
+    before = 'before'
+    after = 'after'
+    starting = 'starting'
+    ending = 'ending'
+
+
+class SelectControl(OscalBaseModel):
+    """
+    Select a control or controls from an imported control set.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    with_child_controls: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, alias='with-child-controls', description='When a control is included, whether its child (dependent) controls are also included.', title='Include Contained Controls with Control')
+    with_ids: list[constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$')] | None = Field(None, alias='with-ids')
+    matching: list[common.Matching] | None = Field(None)
+
+
+class SetParameters(OscalBaseModel):
+    """
+    A parameter setting, to be propagated to points of insertion.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    param_id: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, alias='param-id', description='An identifier for the parameter.', title='Parameter ID')
+    class_: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, alias='class', description='A textual label that provides a characterization of the parameter.', title='Parameter Class')
+    depends_on: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, alias='depends-on', description='**(deprecated)** Another parameter invoking this one. This construct has been deprecated and should not be used.', title='Depends On')
+    props: list[common.Property] | None = Field(None)
+    links: list[common.Link] | None = Field(None)
+    label: constr(regex=r'^[^\n]+$') | None = Field(None, description='A short, placeholder name for the parameter, which can be used as a substitute for a value if no value is assigned.', title='Parameter Label')
+    usage: str | None = Field(None, description='Describes the purpose and use of a parameter.', title='Parameter Usage Description')
+    constraints: list[common.ParameterConstraint] | None = Field(None)
+    guidelines: list[common.ParameterGuideline] | None = Field(None)
+    values: list[constr(regex=r'^\S(.*\S)?$')] | None = Field(None)
+
+
+class SetParameters1(OscalBaseModel):
+    """
+    A parameter setting, to be propagated to points of insertion.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    param_id: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, alias='param-id', description='An identifier for the parameter.', title='Parameter ID')
+    class_: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, alias='class', description='A textual label that provides a characterization of the parameter.', title='Parameter Class')
+    depends_on: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, alias='depends-on', description='**(deprecated)** Another parameter invoking this one. This construct has been deprecated and should not be used.', title='Depends On')
+    props: list[common.Property] | None = Field(None)
+    links: list[common.Link] | None = Field(None)
+    label: constr(regex=r'^[^\n]+$') | None = Field(None, description='A short, placeholder name for the parameter, which can be used as a substitute for a value if no value is assigned.', title='Parameter Label')
+    usage: str | None = Field(None, description='Describes the purpose and use of a parameter.', title='Parameter Usage Description')
+    constraints: list[common.ParameterConstraint] | None = Field(None)
+    guidelines: list[common.ParameterGuideline] | None = Field(None)
+    select: common.ParameterSelection | None = None
+
+
+# Update SetParameters forward references for Parameter constraints/guidelines
+SetParameters.update_forward_refs()
+SetParameters1.update_forward_refs()
 
 
 class Add(OscalBaseModel):
@@ -121,27 +139,14 @@ class Add(OscalBaseModel):
 
     position: PositionValidValues | None = Field(None, description='Where to add the new content with respect to the targeted element (beside it or inside it).', title='Position')
     by_id: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, alias='by-id', description='Target location of the addition.', title='Reference by ID')
-    title: str | None = Field(None, description='A name given to the control, which may be used by a tool for display and navigation.', title='Title Change')
+    title: constr(regex=r'^[^\n]+$') | None = Field(None, description='A name given to the control, which may be used by a tool for display and navigation.', title='Title Change')
     params: list[common.Parameter] | None = Field(None)
     props: list[common.Property] | None = Field(None)
     links: list[common.Link] | None = Field(None)
     parts: list[common.Part] | None = Field(None)
 
 
-class SelectControl(OscalBaseModel):
-    """
-    Select a control or controls from an imported control set.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    with_child_controls: WithChildControlsValidValues | None = Field(None, alias='with-child-controls', description='When a control is included, whether its child (dependent) controls are also included.', title='Include Contained Controls with Control')
-    with_ids: list[WithId] | None = Field(None, alias='with-ids')
-    matching: list[Matching] | None = Field(None)
-
-
-class Import(OscalBaseModel):
+class Import1(OscalBaseModel):
     """
     Designates a referenced source catalog or profile that provides a source of control information for use in creating a new overlay or baseline.
     """
@@ -149,10 +154,178 @@ class Import(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    href: str = Field(..., description='A resolvable URL reference to the base catalog or profile that this profile is tailoring.', title='Catalog or Profile Reference')
-    include_all: common.IncludeAll | None = Field(None, alias='include-all')
-    include_controls: list[SelectControl] | None = Field(None, alias='include-controls')
+    href: str | None = Field(None, description='A resolvable URL reference to the base catalog or profile that this profile is tailoring.', title='Catalog or Profile Reference')
+    include_all: common.IncludeAll = Field(..., alias='include-all')
     exclude_controls: list[SelectControl] | None = Field(None, alias='exclude-controls')
+
+
+class Import2(OscalBaseModel):
+    """
+    Designates a referenced source catalog or profile that provides a source of control information for use in creating a new overlay or baseline.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    href: str | None = Field(None, description='A resolvable URL reference to the base catalog or profile that this profile is tailoring.', title='Catalog or Profile Reference')
+    include_controls: list[SelectControl] = Field(..., alias='include-controls')
+    exclude_controls: list[SelectControl] | None = Field(None, alias='exclude-controls')
+
+
+# Union alias for Import variants
+Import = Union[Import1, Import2]
+
+
+class InsertControls1(OscalBaseModel):
+    """
+    Specifies which controls to use in the containing context.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    order: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, description='A designation of how a selection of controls in a profile is to be ordered.', title='Order')
+    include_all: common.IncludeAll = Field(..., alias='include-all')
+    exclude_controls: list[SelectControl] | None = Field(None, alias='exclude-controls')
+
+
+class InsertControls2(OscalBaseModel):
+    """
+    Specifies which controls to use in the containing context.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    order: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, description='A designation of how a selection of controls in a profile is to be ordered.', title='Order')
+    include_controls: list[SelectControl] = Field(..., alias='include-controls')
+    exclude_controls: list[SelectControl] | None = Field(None, alias='exclude-controls')
+
+
+# Union alias for InsertControls variants
+InsertControls = Union[InsertControls1, InsertControls2]
+
+
+class Group2(OscalBaseModel):
+    """
+    A group of controls, or of groups of controls.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    id: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, description='Identifies the group for the purpose of cross-linking within the defining instance or from other instances that reference the catalog.', title='Group Identifier')
+    class_: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, alias='class', description='A textual label that provides a sub-type or characterization of the group.', title='Group Class')
+    title: constr(regex=r'^[^\n]+$') = Field(..., description='A name given to the group, which may be used by a tool for display and navigation.', title='Group Title')
+    params: list[common.Parameter] | None = Field(None)
+    props: list[common.Property] | None = Field(None)
+    links: list[common.Link] | None = Field(None)
+    parts: list[common.Part] | None = Field(None)
+    insert_controls: list[InsertControls] | None = Field(None, alias='insert-controls')
+
+
+
+    @classmethod
+    def __get_validators__(cls):
+        yield cls._smart_union_validator
+
+    @classmethod
+    def _smart_union_validator(cls, v):
+        """Smart validator that chooses Group2 if data has controls, otherwise tries Group1."""
+        if isinstance(v, dict):
+            # If dict has 'controls' field, use Group2
+            if 'controls' in v:
+                return cls.parse_obj(v)
+            # If dict has 'groups' field, use Group1
+            elif 'groups' in v:
+                return Group1.parse_obj(v)
+        # For non-dict or ambiguous cases, try Group2 first (this class)
+        try:
+            return cls.parse_obj(v) if isinstance(v, dict) else v
+        except Exception:
+            # If Group2 fails, try Group1
+            return Group1.parse_obj(v) if isinstance(v, dict) else v
+
+
+class Custom(OscalBaseModel):
+    """
+    Provides an alternate grouping structure that selected controls will be placed in.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    groups: list[Group1|Cat_Group2] | None = Field(None)
+    insert_controls: list[InsertControls] | None = Field(None, alias='insert-controls')
+
+
+class Group1(OscalBaseModel):
+    """
+    A group of controls, or of groups of controls.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    id: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, description='Identifies the group for the purpose of cross-linking within the defining instance or from other instances that reference the catalog.', title='Group Identifier')
+    class_: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, alias='class', description='A textual label that provides a sub-type or characterization of the group.', title='Group Class')
+    title: constr(regex=r'^[^\n]+$') = Field(..., description='A name given to the group, which may be used by a tool for display and navigation.', title='Group Title')
+    params: list[common.Parameter] | None = Field(None)
+    props: list[common.Property] | None = Field(None)
+    links: list[common.Link] | None = Field(None)
+    parts: list[common.Part] | None = Field(None)
+    groups: list[Group1|Cat_Group2] | None = Field(None)
+
+
+
+    @classmethod
+    def __get_validators__(cls):
+        yield cls._smart_union_validator
+
+    @classmethod
+    def _smart_union_validator(cls, v):
+        """Smart validator that chooses Group1 if data has groups, otherwise tries Group2."""
+        if isinstance(v, dict):
+            # If dict has 'groups' field, use Group1
+            if 'groups' in v:
+                return cls.parse_obj(v)
+            # If dict has 'controls' field, use Group2
+            elif 'controls' in v:
+                return Group2.parse_obj(v)
+        # For non-dict or ambiguous cases, try Group1 first (this class)
+        try:
+            return cls.parse_obj(v) if isinstance(v, dict) else v
+        except Exception:
+            # If Group1 fails, try Group2
+            return Group2.parse_obj(v) if isinstance(v, dict) else v
+
+
+class Merge2(OscalBaseModel):
+    """
+    Provides structuring directives that instruct how controls are organized after profile resolution.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    combine: dict[str, Any] | None = Field(None, description='A Combine element defines how to resolve duplicate instances of the same control (e.g., controls with the same ID).', title='Combination Rule')
+    as_is: BooleanDatatype = Field(..., alias='as-is', description='Indicates that the controls selected should retain their original grouping as defined in the import source.', title='Group As-Is')
+
+
+class Merge3(OscalBaseModel):
+    """
+    Provides structuring directives that instruct how controls are organized after profile resolution.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    combine: dict[str, Any] | None = Field(None, description='A Combine element defines how to resolve duplicate instances of the same control (e.g., controls with the same ID).', title='Combination Rule')
+    custom: Custom = Field(..., description='Provides an alternate grouping structure that selected controls will be placed in.', title='Custom Grouping')
+
+
+# Union alias for Merge variants
+Merge = Union[Merge1, Merge2, Merge3]
 
 
 class Remove(OscalBaseModel):
@@ -167,7 +340,8 @@ class Remove(OscalBaseModel):
     by_class: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, alias='by-class', description='Identify items to remove by matching their class.', title='Reference by class')
     by_id: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, alias='by-id', description='Identify items to remove indicated by their id.', title='Reference by ID')
     by_item_name: ItemNameValidValues | None = Field(None, alias='by-item-name', description="Identify items to remove by the name of the item's information object name, e.g. title or prop.", title='Item Name Reference')
-    by_ns: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, alias='by-ns', description="Identify items to remove by the item's ns, which is the namespace associated with a part, or prop.", title='Item Namespace Reference')
+    by_ns: AnyUrl | None = Field(None, alias='by-ns', description="Identify items to remove by the item's ns, which is the namespace associated with a part, or prop.", title='Item Namespace Reference')
+    remarks: str | None = None
 
 
 class Alter(OscalBaseModel):
@@ -191,78 +365,8 @@ class Modify(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    set_parameters: list[SetParameter] | None = Field(None, alias='set-parameters')
+    set_parameters: list[SetParameters | SetParameters1] | None = Field(None, alias='set-parameters')
     alters: list[Alter] | None = Field(None)
-
-
-class InsertControls(OscalBaseModel):
-    """
-    Specifies which controls to use in the containing context.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    order: OrderValidValues | None = Field(None, description='A designation of how a selection of controls in a profile is to be ordered.', title='Order')
-    include_all: common.IncludeAll | None = Field(None, alias='include-all')
-    include_controls: list[SelectControl] | None = Field(None, alias='include-controls')
-    exclude_controls: list[SelectControl] | None = Field(None, alias='exclude-controls')
-
-
-class Group(OscalBaseModel):
-    """
-    A group of (selected) controls or of groups of controls.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    id: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, description='Identifies the group.', title='Group Identifier')
-    class_: constr(regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') | None = Field(None, alias='class', description='A textual label that provides a sub-type or characterization of the group.', title='Group Class')
-    title: str = Field(..., description='A name to be given to the group for use in display.', title='Group Title')
-    params: list[common.Parameter] | None = Field(None)
-    props: list[common.Property] | None = Field(None)
-    links: list[common.Link] | None = Field(None)
-    parts: list[common.Part] | None = Field(None)
-    groups: list[Group] | None = None
-    insert_controls: list[InsertControls] | None = Field(None, alias='insert-controls')
-
-
-class Custom(OscalBaseModel):
-    """
-    Provides an alternate grouping structure that selected controls will be placed in.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    groups: list[Group] | None = Field(None)
-    insert_controls: list[InsertControls] | None = Field(None, alias='insert-controls')
-
-
-class Combine(OscalBaseModel):
-    """
-    A Combine element defines how to resolve duplicate instances of the same control (e.g., controls with the same ID).
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    method: CombinationMethodValidValues | None = Field(None, description='Declare how clashing controls should be handled.', title='Combination Method')
-
-
-class Merge(OscalBaseModel):
-    """
-    Provides structuring directives that instruct how controls are organized after profile resolution.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    combine: Combine | None = Field(None, description='A Combine element defines how to resolve duplicate instances of the same control (e.g., controls with the same ID).', title='Combination Rule')
-    flat: dict[str, Any] | None = Field(None, description='Directs that controls appear without any grouping structure.', title='Flat Without Grouping')
-    as_is: BooleanDatatype | None = Field(None, alias='as-is', description='Indicates that the controls selected should retain their original grouping as defined in the import source.', title='Group As-Is')
-    custom: Custom | None = Field(None, description='Provides an alternate grouping structure that selected controls will be placed in.', title='Custom Grouping')
 
 
 class Profile(OscalBaseModel):
@@ -279,6 +383,11 @@ class Profile(OscalBaseModel):
     merge: Merge | None = None
     modify: Modify | None = None
     back_matter: common.BackMatter | None = Field(None, alias='back-matter')
+
+
+# Backward compatibility alias for OSCAL 1.2.0
+# SetParameter is now only in common module
+SetParameter = common.SetParameter
 
 
 class Model(OscalBaseModel):

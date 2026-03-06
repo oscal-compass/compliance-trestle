@@ -22,7 +22,8 @@ import re
 import uuid
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple, Type, Union
+from typing import Any, Dict, List, Optional, Set, Tuple, Type, Union, get_args, get_origin
+import types
 
 from pydantic.v1 import BaseModel, create_model
 
@@ -40,6 +41,58 @@ from trestle.core.remote import cache
 from trestle.oscal import assessment_plan, assessment_results, common, poam
 
 logger = logging.getLogger(__name__)
+
+
+def _get_model_type_from_union(model_type: Type[Any], field_name: Optional[str] = None) -> Type[Any]:
+    """
+    If model_type is a Union, return the appropriate concrete type.
+
+    For Union types like Union[Group1, Group2], if field_name is provided,
+    we check which variant has that field and return it.
+
+    Note: For OSCAL 1.2.0 Union types (Group1|Group2, Parameter1|Parameter2),
+    the generated models have smart validators that inspect the data at
+    deserialization time to choose the correct variant. This function is
+    mainly for type resolution in non-deserialization contexts.
+
+    Args:
+        model_type: The model type, which may be a Union
+        field_name: Optional field name to check for in Union variants
+
+    Returns:
+        A concrete model type (not a Union)
+    """
+    origin = get_origin(model_type)
+    # Handle both Union[A, B] and A | B syntax (types.UnionType in Python 3.10+)
+    if origin is Union or (hasattr(types, 'UnionType') and origin is types.UnionType):
+        union_args = get_args(model_type)
+        logger.debug(f'Union type detected: {union_args}, looking for field: {field_name}')
+
+        # If we have a field name, find the Union variant that has that field
+        if field_name:
+            for union_type in union_args:
+                if hasattr(union_type, 'alias_to_field_map'):
+                    try:
+                        field_map = union_type.alias_to_field_map()
+                        if field_name in field_map:
+                            logger.debug(f'Found field {field_name} in {union_type}')
+                            return union_type
+                    except Exception as e:
+                        logger.debug(f'Union type {union_type} does not have alias_to_field_map: {e}')
+                        continue
+
+        # Fallback: return the first type that has alias_to_field_map
+        # The smart validators in the generated models will handle choosing
+        # the correct variant at deserialization time
+        for union_type in union_args:
+            if hasattr(union_type, 'alias_to_field_map'):
+                logger.debug(f'Using {union_type} from Union (no field match)')
+                return union_type
+
+        # Last resort: return the first one
+        logger.debug(f'No suitable type found in Union, using first: {union_args[0]}')
+        return union_args[0]
+    return model_type
 
 
 class ModelUtils:
@@ -97,7 +150,15 @@ class ModelUtils:
         content_type = FileContentType.path_to_content_type(abs_path)
         # if file is sought but it doesn't exist, ignore and load as decomposed model
         if FileContentType.is_readable_file(content_type) and abs_path.exists():
+            # Use the model type as-is (may be wrapped Union) for reading
+            # The smart validators in generated models will choose the correct variant
             primary_model_instance = primary_model_type.oscal_read(abs_path)
+            # If the instance has __root__, unwrap it to get the actual model
+            if hasattr(primary_model_instance, '__root__'):
+                root_val = primary_model_instance.__root__
+                # Only unwrap if it's a single OscalBaseModel, not a list
+                if isinstance(root_val, OscalBaseModel):
+                    primary_model_instance = root_val
         # Is model decomposed?
         decomposed_dir = abs_path.with_name(abs_path.stem)
 
@@ -157,7 +218,30 @@ class ModelUtils:
                 else:
                     primary_model_dict[alias] = instance
 
-            merged_model_instance = merged_model_type(**primary_model_dict)
+            # If merged_model_type is a wrapped Union (has __root__), we need to unwrap it
+            # to get the actual model type for instantiation
+            actual_model_type = merged_model_type
+            if hasattr(merged_model_type, '__fields__') and '__root__' in merged_model_type.__fields__:
+                # This is a wrapped Union model - extract the Union type from __root__
+                root_field = merged_model_type.__fields__['__root__']
+                root_type = root_field.outer_type_ if hasattr(root_field, 'outer_type_') else root_field.type_
+                # Inspect primary_model_dict to determine which Union variant to use
+                # Look for distinctive fields that indicate which variant
+                # For Group1|Group2: 'groups' -> Group1, 'controls' -> Group2
+                # For Parameter1|Parameter2: 'values' -> Parameter1, 'select' -> Parameter2
+                field_hint = None
+                distinctive_fields = ['controls', 'groups', 'values', 'select', 'insert-controls']
+                for key in primary_model_dict.keys():
+                    if key in distinctive_fields:
+                        field_hint = key
+                        break
+                # If no distinctive field found, use any field
+                if field_hint is None and primary_model_dict:
+                    field_hint = next(iter(primary_model_dict.keys()))
+                # Resolve the Union to get an actual model type based on the data
+                actual_model_type = _get_model_type_from_union(root_type, field_hint)
+
+            merged_model_instance = actual_model_type(**primary_model_dict)
             return merged_model_type, merged_model_alias, merged_model_instance
         return primary_model_type, primary_model_alias, primary_model_instance
 
@@ -249,6 +333,7 @@ class ModelUtils:
                 if utils.is_collection_field_type(model_type):
                     model_type = utils.get_inner_type(model_type)
                 else:
+                    model_type = _get_model_type_from_union(model_type, alias)
                     model_type = model_type.alias_to_field_map()[alias].outer_type_
 
         return model_type, full_alias
@@ -283,6 +368,11 @@ class ModelUtils:
 
         malias = model_alias.split('.')[-1]
         logger.debug(f'not collection field type, malias: {malias}')
+
+        # Check if this is a Union type FIRST, before stripping logic
+        origin = get_origin(singular_model_type)
+        is_union = origin is Union or (hasattr(types, 'UnionType') and origin is types.UnionType)
+
         if absolute_path.is_dir() and malias != ModelUtils._extract_alias(absolute_path.name):
             split_subdir = absolute_path / malias
         else:
@@ -296,12 +386,60 @@ class ModelUtils:
                     aliases_to_be_stripped.add(alias)
 
         logger.debug(f'aliases to be stripped: {aliases_to_be_stripped}')
-        if len(aliases_to_be_stripped) > 0:
+
+        # For Union types, use subdirectories to SELECT variant, not strip fields
+        if is_union and len(aliases_to_be_stripped) > 0:
+            # Use the first subdirectory name as a hint for which Union variant to use
+            field_hint = next(iter(aliases_to_be_stripped))
+            logger.debug(f'Union type: using field hint "{field_hint}" to select variant')
+            singular_model_type = _get_model_type_from_union(singular_model_type, field_hint)
+            # Now proceed with stripping for the selected variant
             model_type = singular_model_type.create_stripped_model_type(
                 stripped_fields_aliases=list(aliases_to_be_stripped)
             )
             logger.debug(f'model_type: {model_type}')
             return model_type, model_alias
+        elif len(aliases_to_be_stripped) > 0:
+            # Non-Union type: normal stripping logic
+            model_type = singular_model_type.create_stripped_model_type(
+                stripped_fields_aliases=list(aliases_to_be_stripped)
+            )
+            logger.debug(f'model_type: {model_type}')
+            return model_type, model_alias
+        # Handle Union types even when no stripping is needed
+        origin = get_origin(singular_model_type)
+        if origin is Union or (hasattr(types, 'UnionType') and origin is types.UnionType):
+            # Check if there are subdirectories that indicate which variant to use
+            # If absolute_path is a directory, look inside it; otherwise look in parent
+            if absolute_path.is_dir():
+                split_subdir = absolute_path
+            else:
+                split_subdir = absolute_path.parent / absolute_path.with_suffix('').name
+            field_hint = None
+            if split_subdir.exists() and split_subdir.is_dir():
+                # Check what subdirectories exist to determine which Union variant
+                for item in split_subdir.iterdir():
+                    if item.is_dir():
+                        # Use the subdirectory name as a hint for which field exists
+                        # controls -> catalog Group2, insert-controls -> profile Group2, groups -> Group1
+                        field_hint = item.name
+                        logger.debug(f'Using subdirectory {field_hint} to select Union variant')
+                        break
+
+            # If we have a field hint from subdirectories, resolve to specific variant
+            # Otherwise, wrap the Union for file reading (smart validators will choose)
+            if field_hint:
+                singular_model_type = _get_model_type_from_union(singular_model_type, field_hint)
+            else:
+                # No subdirectory hint - wrap Union for reading
+                # This allows smart validators to choose the correct variant at deserialization time
+                malias = model_alias.split('.')[-1]
+                class_name = alias_to_classname(malias, AliasMode.JSON)
+                logger.debug(f'Wrapping Union type {singular_model_type} in __root__ model')
+                model_type = create_model(class_name, __base__=OscalBaseModel, __root__=(singular_model_type, ...))
+                return model_type, model_alias
+        else:
+            singular_model_type = _get_model_type_from_union(singular_model_type)
         return singular_model_type, model_alias
 
     @staticmethod
@@ -327,15 +465,17 @@ class ModelUtils:
         root_model_dir = trestle_root / model_dir_name
         model_list = []
         for f in root_model_dir.glob('*/'):
-            # only look for proper json and yaml files
-            if not ModelUtils._should_ignore(f.stem):
+            # Use f.name for directories to preserve full directory name including dots
+            # f.stem is for files and incorrectly treats dots as file extensions
+            dir_name = f.name
+            if not ModelUtils._should_ignore(dir_name):
                 if not f.is_dir():
                     logger.warning(
-                        f'Ignoring validation of misplaced file {f.name} '
+                        f'Ignoring validation of misplaced file {dir_name} '
                         + f'found in the model directory, {model_dir_name}.'
                     )
                 else:
-                    model_list.append(f.stem)
+                    model_list.append(dir_name)
         return model_list
 
     @staticmethod
@@ -433,6 +573,7 @@ class ModelUtils:
                 i = i + 1
             else:
                 path_part = path_parts[i]
+                model_type = _get_model_type_from_union(model_type, path_part)
                 field_map = model_type.alias_to_field_map()
                 if path_part not in field_map:
                     continue
@@ -450,10 +591,22 @@ class ModelUtils:
 
         parent_model_type = model_types[-2]
         try:
+            parent_model_type = _get_model_type_from_union(parent_model_type, last_alias)
             field_map = parent_model_type.alias_to_field_map()
             field = field_map[last_alias]
             outer_type = field.outer_type_
             inner_type = utils.get_inner_type(outer_type)
+
+            # Handle Union types - if inner_type is a Union, get the first non-None type
+            origin = utils.get_origin(inner_type)
+            if origin == Union or str(origin) == "<class 'types.UnionType'>":
+                union_args = get_args(inner_type)
+                # Find first non-None type in the union
+                for arg in union_args:
+                    if arg is not type(None):
+                        inner_type = arg
+                        break
+
             inner_type_name = inner_type.__name__
             singular_alias = str_utils.classname_to_alias(inner_type_name, AliasMode.JSON)
         except Exception as e:
@@ -573,10 +726,12 @@ class ModelUtils:
             partial: Whether to convert the entire param or just the parts needed for markdown header
 
         Returns:
-            The converted parameter as dictionary, with values as None if not present
+            The converted parameter as dictionary, with values as None if not present for Parameter1
         """
         res = ModelUtils._parameter_to_dict_recurse(obj, partial)
-        if 'values' not in res:
+        # Only add values: None for Parameter1 (which doesn't have select)
+        # Parameter2 has select and should not have values field
+        if 'values' not in res and 'select' not in res:
             res['values'] = None  # type: ignore
         return res
 
@@ -647,7 +802,18 @@ class ModelUtils:
 
         if 'ns' in param_dict:
             param_dict.pop('ns')
-        param = common.Parameter(**param_dict)
+
+        # Choose Parameter1 (with values) or Parameter2 (with select) based on which field is present
+        # Remove the field that doesn't belong to the chosen variant
+        if 'select' in param_dict and param_dict.get('select') is not None:
+            # Creating Parameter2 - remove values if present
+            param_dict.pop('values', None)
+            param = common.Parameter2(**param_dict)
+        else:
+            # Creating Parameter1 - remove select if present
+            param_dict.pop('select', None)
+            param = common.Parameter1(**param_dict)
+
         param.props = none_if_empty(props)
         return param
 
@@ -953,8 +1119,6 @@ class ModelUtils:
             common.LastModified,
             common.LocationUuid,
             common.PartyUuid,
-            common.RelatedRisk,
-            common.Source,
             assessment_plan.RelatedObservation,
             assessment_results.RelatedObservation,
             poam.RelatedObservation,

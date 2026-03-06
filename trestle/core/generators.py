@@ -21,7 +21,7 @@ import typing
 import uuid
 from datetime import date, datetime
 from enum import Enum
-from typing import Any, Dict, List, Type, TypeVar, Union, cast
+from typing import Any, Dict, ForwardRef, List, Type, TypeVar, Union, cast
 
 import pydantic.v1.networks
 from pydantic.v1 import ConstrainedStr
@@ -168,7 +168,8 @@ def generate_sample_value_by_type(type_: type, field_name: str) -> Union[datetim
     if type_ is list:
         raise err.TrestleError(f'Unable to generate sample for type {type_}')
     # default to empty dict for dict types, string for anything else
-    if type_ is dict:
+    # Check for both dict and generic dict types like dict[str, Any]
+    if type_ is dict or (hasattr(type_, '__origin__') and type_.__origin__ is dict):
         return {}  # type: ignore[return-value]
     return const.REPLACE_ME
 
@@ -205,6 +206,22 @@ def generate_sample_model(
     if utils.is_collection_field_type(model):
         model_type = utils.get_origin(model)
         model = utils.get_inner_type(model)
+
+    # Handle Union types at the top level (e.g., when model is Union[Parameter1, Parameter2])
+    # This can happen when get_inner_type returns a Union from a list[Union[...]]
+    origin = utils.get_origin(model)
+    is_union = origin == Union or str(origin) == "<class 'types.UnionType'>"
+    if is_union:
+        union_args = typing.get_args(model)
+        # Find first non-None OscalBaseModel type in the union
+        for arg in union_args:
+            if arg is not type(None) and safe_is_sub(arg, OscalBaseModel):
+                model = arg
+                break
+        else:
+            # If no OscalBaseModel found, use first non-None type
+            model = next((arg for arg in union_args if arg is not type(None)), union_args[0])
+
     model = cast(TG, model)
 
     model_dict = {}
@@ -216,11 +233,25 @@ def generate_sample_model(
             if model_type in [OscalVersion]:
                 model_dict[field] = OSCAL_VERSION
                 break
+            # Special handling for include_all field - only skip if it's optional
             if field == 'include_all':
-                if include_optional:
+                if model.__fields__[field].required:  # type: ignore
+                    # Field is required, generate it
+                    model_dict[field] = {}
+                elif include_optional:
+                    # Field is optional and we want to include optional fields
                     model_dict[field] = {}
                 continue
             outer_type = model.__fields__[field].outer_type_  # type: ignore
+
+            # Skip fields with unresolved ForwardRefs, but if required, provide empty list
+            if isinstance(outer_type, (str, ForwardRef)):
+                # If it's a required field, we need to provide something
+                # Assume it's a list type and provide an empty list
+                if model.__fields__[field].required:  # type: ignore
+                    model_dict[field] = []
+                continue
+
             # Handle both typing.Union and types.UnionType (Python 3.10+ uses | operator)
             origin = utils.get_origin(outer_type)
             is_union = origin == Union or str(origin) == "<class 'types.UnionType'>"
@@ -233,27 +264,53 @@ def generate_sample_model(
                     if arg is not type(None) and safe_is_sub(arg, Enum):
                         enum_type = arg
                         break
-                # Use the enum type if found, otherwise fall back to first non-None type
+                # Use the enum type if found, otherwise fall back to first non-None, non-ForwardRef type
                 if enum_type:
                     outer_type = enum_type
                 else:
-                    # Get first non-None type
-                    outer_type = next((arg for arg in union_args if arg is not type(None)), union_args[0])
+                    # Get first non-None, non-ForwardRef type
+                    # Skip ForwardRef types as they haven't been resolved yet
+                    outer_type = None
+                    for arg in union_args:
+                        # Check if arg is not None and not a ForwardRef
+                        if arg is not type(None) and not isinstance(arg, (str, ForwardRef)):
+                            outer_type = arg
+                            break
+                    if outer_type is None:
+                        # If all types are ForwardRefs or None, skip this field
+                        continue
             if model.__fields__[field].required or effective_optional:  # type: ignore
                 # FIXME could be ForwardRef('SystemComponentStatus')
                 if utils.is_collection_field_type(outer_type):
                     inner_type = utils.get_inner_type(outer_type)
+                    # Check for circular reference: inner_type might be a Union containing model
                     if inner_type == model:
                         continue
-                    model_dict[field] = generate_sample_model(
-                        outer_type, include_optional=include_optional, depth=depth - 1
-                    )
+                    # Also check if inner_type is a Union and model is one of its variants
+                    inner_origin = utils.get_origin(inner_type)
+                    is_inner_union = inner_origin == Union or str(inner_origin) == "<class 'types.UnionType'>"
+                    if is_inner_union:
+                        union_args = typing.get_args(inner_type)
+                        if model in union_args:
+                            continue  # Circular reference detected
+                    # Skip recursion if depth is 0 (but allow -1 for unlimited)
+                    if depth == 0:
+                        model_dict[field] = []
+                    else:
+                        model_dict[field] = generate_sample_model(
+                            outer_type, include_optional=include_optional, depth=depth - 1
+                        )
                 elif is_by_type(outer_type):
                     model_dict[field] = generate_sample_value_by_type(outer_type, field)
                 elif safe_is_sub(outer_type, OscalBaseModel):
-                    model_dict[field] = generate_sample_model(
-                        outer_type, include_optional=include_optional, depth=depth - 1
-                    )
+                    # Skip recursion if depth is 0 (but allow -1 for unlimited)
+                    # But always generate required fields even at depth 0
+                    if depth == 0 and not model.__fields__[field].required:  # type: ignore
+                        continue  # Skip optional nested models at depth 0
+                    else:
+                        model_dict[field] = generate_sample_model(
+                            outer_type, include_optional=include_optional, depth=depth - 1
+                        )
                 else:
                     # Handle special cases (hacking)
                     if model_type in [Base64Datatype]:
@@ -276,11 +333,7 @@ def generate_sample_model(
                             outer_type, str_utils.classname_to_alias(model.__name__, AliasMode.FIELD)
                         )
                     else:
-                        # Check if outer_type is a dict variant (dict, Dict[K, V], etc.)
-                        if outer_type is dict or (hasattr(outer_type, '__origin__') and outer_type.__origin__ is dict):
-                            model_dict[field] = {}
-                        else:
-                            model_dict[field] = generate_sample_value_by_type(outer_type, field)
+                        model_dict[field] = generate_sample_value_by_type(outer_type, field)
         # Note: this assumes list constrains in oscal are always 1 as a minimum size. if two this may still fail.
     else:
         if model_type is list:
