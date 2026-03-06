@@ -61,6 +61,9 @@ class ImportComponentDefinition(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
+    href: str = Field(..., description='A link to a resource that defines a set of components and/or capabilities to import into this collection.', title='Hyperlink Reference')
+    remarks: str | None = None
+
 
 class IncorporatesComponent(OscalBaseModel):
     """

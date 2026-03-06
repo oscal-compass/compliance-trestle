@@ -35,8 +35,8 @@ from pydantic.v1 import AnyUrl, EmailStr, Extra, Field, conint, constr, validato
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
 import trestle.oscal.common as common
-from trestle.oscal.common import AssessmentSubject1
-from trestle.oscal.common import AssessmentSubject2
+from trestle.oscal.common import AssessmentSubjectAll
+from trestle.oscal.common import AssessmentSubjectSpecific
 from trestle.oscal.common import RelatedObservation
 from trestle.oscal.common import StringDatatype
 from trestle.oscal.common import SystemComponent
@@ -89,7 +89,7 @@ class AssessmentPlan(OscalBaseModel):
     local_definitions: LocalDefinitions | None = Field(None, alias='local-definitions', description='Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.', title='Local Definitions')
     terms_and_conditions: TermsAndConditions | None = Field(None, alias='terms-and-conditions', description='Used to define various terms and conditions under which an assessment, described by the plan, can be performed. Each child part defines a different type of term or condition.', title='Assessment Plan Terms and Conditions')
     reviewed_controls: common.ReviewedControls = Field(..., alias='reviewed-controls')
-    assessment_subjects: list[AssessmentSubject1|AssessmentSubject2] | None = Field(None, alias='assessment-subjects')
+    assessment_subjects: list[AssessmentSubjectAll|AssessmentSubjectSpecific] | None = Field(None, alias='assessment-subjects')
     assessment_assets: common.AssessmentAssets | None = Field(None, alias='assessment-assets')
     tasks: list[common.Task] | None = Field(None)
     back_matter: common.BackMatter | None = Field(None, alias='back-matter')

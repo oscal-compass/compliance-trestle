@@ -1,6 +1,6 @@
 
  { "$schema" : "http://json-schema.org/draft-07/schema#",
-  "$id" : "http://csrc.nist.gov/ns/oscal/1.2.0/oscal-catalog-schema.json",
+  "$id" : "http://csrc.nist.gov/ns/oscal/1.2.1/oscal-catalog-schema.json",
   "$comment" : "OSCAL Control Catalog Model: JSON Schema",
   "type" : "object",
   "definitions" : 
@@ -405,6 +405,51 @@
     "description" : "Include all controls from the imported catalog or profile resources.",
     "$id" : "#/definitions/oscal-catalog-oscal-control-common:include-all",
     "type" : "object",
+    "additionalProperties" : false },
+   "oscal-catalog-oscal-control-common:with-id" : 
+   { "title" : "Match Controls by Identifier",
+    "description" : "Selecting a control by its ID given as a literal.",
+    "$id" : "#/definitions/oscal-catalog-oscal-control-common:with-id",
+    "$ref" : "#/definitions/TokenDatatype" },
+   "oscal-catalog-oscal-control-common:matching" : 
+   { "title" : "Match Controls by Pattern",
+    "description" : "Selecting a set of controls by matching their IDs with a wildcard pattern.",
+    "$id" : "#/definitions/oscal-catalog-oscal-control-common:matching",
+    "type" : "object",
+    "properties" : 
+    { "pattern" : 
+     { "title" : "Pattern",
+      "description" : "A glob expression matching the IDs of one or more controls to be selected.",
+      "$ref" : "#/definitions/StringDatatype" },
+     "remarks" : 
+     { "$ref" : "#/definitions/oscal-catalog-oscal-metadata:remarks" } },
+    "additionalProperties" : false },
+   "oscal-catalog-oscal-control-common:select-control-by-id" : 
+   { "title" : "Select Control",
+    "description" : "Select a control or controls from an imported control set.",
+    "$id" : "#/definitions/oscal-catalog-oscal-control-common:select-control-by-id",
+    "type" : "object",
+    "properties" : 
+    { "with-child-controls" : 
+     { "title" : "Include Contained Controls with Control",
+      "description" : "When a control is included, whether its child (dependent) controls are also included.",
+      "allOf" : 
+      [ 
+       { "$ref" : "#/definitions/TokenDatatype" },
+       
+       { "enum" : 
+        [ "yes",
+         "no" ] } ] },
+     "with-ids" : 
+     { "type" : "array",
+      "minItems" : 1,
+      "items" : 
+      { "$ref" : "#/definitions/oscal-catalog-oscal-control-common:with-id" } },
+     "matching" : 
+     { "type" : "array",
+      "minItems" : 1,
+      "items" : 
+      { "$ref" : "#/definitions/oscal-catalog-oscal-control-common:matching" } } },
     "additionalProperties" : false },
    "oscal-catalog-oscal-metadata:metadata" : 
    { "title" : "Document Metadata",

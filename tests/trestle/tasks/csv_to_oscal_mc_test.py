@@ -109,12 +109,12 @@ def _validate_pci_mapping(tmp_path: pathlib.Path) -> None:
 
     # Check confidence score with percentage field
     if map_entry.confidence_score:
-        assert hasattr(map_entry.confidence_score, 'percentage')
-        assert map_entry.confidence_score.percentage is not None
+        assert hasattr(map_entry.confidence_score, '__root__')
+        assert map_entry.confidence_score.__root__ is not None
 
     if map_entry.coverage:
-        assert hasattr(map_entry.coverage, 'STRVALUE')
-        assert map_entry.coverage.STRVALUE is not None
+        assert hasattr(map_entry.coverage, 'target_coverage')
+        assert map_entry.coverage.target_coverage is not None
 
 
 def _validate_soc2_mapping(tmp_path: pathlib.Path) -> None:
@@ -156,12 +156,12 @@ def _validate_soc2_mapping(tmp_path: pathlib.Path) -> None:
 
     # Check confidence score with percentage field
     if map_entry.confidence_score:
-        assert hasattr(map_entry.confidence_score, 'percentage')
-        assert map_entry.confidence_score.percentage is not None
+        assert hasattr(map_entry.confidence_score, '__root__')
+        assert map_entry.confidence_score.__root__ is not None
 
     if map_entry.coverage:
-        assert hasattr(map_entry.coverage, 'STRVALUE')
-        assert map_entry.coverage.STRVALUE is not None
+        assert hasattr(map_entry.coverage, 'target_coverage')
+        assert map_entry.coverage.target_coverage is not None
 
 
 @set_cwd_unsafe(root_dir)

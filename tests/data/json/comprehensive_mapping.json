@@ -32,12 +32,10 @@
       "status": "complete",
       "mapping-description": "Comprehensive test mapping with all optional fields",
       "confidence-score": {
-        "STRVALUE": 0.95,
-        "category": "high",
         "percentage": 0.95
       },
       "coverage": {
-        "STRVALUE": 0.90,
+        "target-coverage": 0.90,
         "generation-method": "hybrid"
       },
       "responsible-parties": [
@@ -139,12 +137,10 @@
               }
             ],
             "confidence-score": {
-              "STRVALUE": 0.98,
-              "category": "high",
               "percentage": 0.98
             },
             "coverage": {
-              "STRVALUE": 0.95,
+              "target-coverage": 0.95,
               "generation-method": "arbitrary"
             },
             "props": [
@@ -181,7 +177,6 @@
               }
             ],
             "confidence-score": {
-              "STRVALUE": 0.75,
               "category": "medium"
             }
           },
@@ -228,12 +223,10 @@
           ]
         },
         "confidence-score": {
-          "STRVALUE": 0.92,
-          "category": "high",
           "percentage": 0.92
         },
         "coverage": {
-          "STRVALUE": 0.88,
+          "target-coverage": 0.88,
           "generation-method": "manual"
         },
         "props": [

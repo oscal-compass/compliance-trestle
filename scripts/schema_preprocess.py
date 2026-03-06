@@ -274,6 +274,74 @@ def patch_mapping_select_control(model_name: str) -> None:
     json_data_put(model_name, data)
 
 
+def patch_assessment_select_control(model_name: str) -> None:
+    """Rename assessment SelectControlById variants to avoid duplicates.
+
+    The assessment schemas (assessment-plan, assessment-results, poam) have two different
+    SelectControlById definitions:
+    1. One with 'with-child-controls', 'with-ids', 'matching' fields (for profile selection)
+    2. One with 'control-id', 'statement-ids' fields (for assessment selection)
+
+    Rename the first variant to SelectControlByIdForProfile to avoid conflicts.
+    """
+    if not any(
+        model_name.endswith(schema)
+        for schema in [
+            'oscal_assessment-plan_schema.json',
+            'oscal_assessment-results_schema.json',
+            'oscal_poam_schema.json',
+        ]
+    ):
+        return
+
+    data = json_data_get(model_name)
+
+    # Find all select-control-by-id definitions
+    select_keys = []
+    for key in data['definitions'].keys():
+        if key.endswith(':select-control-by-id'):
+            select_keys.append(key)
+
+    if len(select_keys) < 2:
+        logger.debug(f'patch: {model_name} found {len(select_keys)} select-control-by-id definitions, expected 2')
+        return
+
+    # Find the profile variant (has with-child-controls, with-ids, or matching)
+    profile_variant_key = None
+    for key in select_keys:
+        defn = data['definitions'][key]
+        if 'properties' in defn:
+            has_profile_fields = (
+                'with-child-controls' in defn['properties']
+                or 'with-ids' in defn['properties']
+                or 'matching' in defn['properties']
+            )
+            if has_profile_fields:
+                profile_variant_key = key
+                break
+
+    if not profile_variant_key:
+        logger.debug(f'patch: {model_name} could not identify profile variant')
+        return
+
+    # Create new key name for profile variant
+    new_key = profile_variant_key.replace(':select-control-by-id', ':select-control-by-id-for-profile')
+
+    # Copy the definition to the new name
+    data['definitions'][new_key] = data['definitions'][profile_variant_key]
+
+    # Update all references from old key to new key
+    data_str = json.dumps(data)
+    data_str = data_str.replace(f'"$ref": "#/definitions/{profile_variant_key}"', f'"$ref": "#/definitions/{new_key}"')
+    data = json.loads(data_str)
+
+    # Remove the old definition
+    del data['definitions'][profile_variant_key]
+
+    logger.info(f'patch: {model_name} renamed {profile_variant_key} -> {new_key}')
+    json_data_put(model_name, data)
+
+
 def patch_mapping_confidence_score(model_name: str) -> None:
     """Make STRVALUE optional in mapping confidence-score.
 
@@ -306,9 +374,335 @@ def patch_mapping_confidence_score(model_name: str) -> None:
         json_data_put(model_name, data)
 
 
+def patch_control_selections(model_name: str) -> None:
+    """Extract control-selections anyOf variants into named definitions.
+
+    Schemas may have inline anyOf for control-selections and
+    control-objective-selections items. Extract each variant into a separate
+    named definition so DMCG generates descriptive class names like
+    ControlSelectionsAll and ControlSelections instead of ControlSelections
+    and ControlSelections1.
+
+    This processes all schemas so that classes appearing in multiple files
+    will be identified as common during normalization and moved to common.py.
+    """
+    data = json_data_get(model_name)
+    modified = False
+
+    # Process each definition
+    for def_key in list(data['definitions'].keys()):
+        defn = data['definitions'][def_key]
+        if 'properties' not in defn:
+            continue
+
+        # Check for control-selections or control-objective-selections properties
+        for prop_name in ['control-selections', 'control-objective-selections']:
+            if prop_name not in defn['properties']:
+                continue
+
+            prop_defn = defn['properties'][prop_name]
+            if 'items' not in prop_defn or 'anyOf' not in prop_defn['items']:
+                continue
+
+            items = prop_defn['items']
+            if len(items['anyOf']) != 2:
+                continue
+
+            # Use assessment-common namespace so classes go to common.py
+            # The parent might be oscal-ap-oscal-assessment-common or oscal-ar-oscal-assessment-common
+            # but we want just oscal-assessment-common for shared classes
+            namespace_parts = def_key.split(':')
+            if len(namespace_parts) >= 2 and 'assessment-common' in def_key:
+                # Use the common assessment namespace
+                namespace = 'oscal-assessment-common'
+            else:
+                namespace = def_key.rsplit(':', 1)[0]
+
+            # Create new definition keys for each variant
+            new_refs = []
+
+            for variant in items['anyOf']:
+                if 'required' not in variant:
+                    continue
+
+                required = variant['required']
+
+                # Determine the new definition name based on required fields
+                if 'include-all' in required:
+                    new_def_name = f'{prop_name}-all'
+                elif 'include-controls' in required or 'include-objectives' in required:
+                    new_def_name = prop_name
+                else:
+                    continue
+
+                new_def_key = f'{namespace}:{new_def_name}'
+
+                # Determine title based on variant type
+                base_title = items.get('title', '')
+                if 'include-all' in required:
+                    # Add 'All' suffix to title for include-all variant
+                    variant_title = f'{base_title} All' if base_title else 'All'
+                else:
+                    # Keep base title for include-controls/objectives variant
+                    variant_title = base_title
+
+                # Create new definition with variant content
+                new_def = {
+                    'title': variant_title,
+                    'description': items.get('description', ''),
+                    'type': 'object',
+                    **variant,
+                }
+
+                # Add to definitions if not already present
+                if new_def_key not in data['definitions']:
+                    data['definitions'][new_def_key] = new_def
+                    logger.info(f'patch: {model_name} created {new_def_key}')
+                    modified = True
+
+                new_refs.append(new_def_key)
+
+            # Replace inline anyOf with references
+            if len(new_refs) == 2:
+                prop_defn['items'] = {
+                    'anyOf': [{'$ref': f'#/definitions/{new_refs[0]}'}, {'$ref': f'#/definitions/{new_refs[1]}'}]
+                }
+                logger.info(f'patch: {model_name} replaced inline anyOf in {def_key}.{prop_name} with refs')
+                modified = True
+
+    if modified:
+        json_data_put(model_name, data)
+
+
 # patch_schemas introduced for migrating from OSCAL 1.0.4 to 1.1.2 due to missing/broken
 # support in datamodel-codegen tool. See issue(s):
 # - https://github.com/koxudaxi/datamodel-code-generator/issues/1901
+def patch_external_ids(model_name: str) -> None:
+    """Extract inline external-ids item definitions into a named definition.
+
+    The metadata schemas have inline definitions for external-ids items within
+    the anyOf variants of parties items. Extract into a single named definition
+    so DMCG generates one ExternalId class that will be moved to common.py.
+    """
+    data = json_data_get(model_name)
+    modified = False
+
+    # Look for metadata definitions with parties
+    for def_key in list(data['definitions'].keys()):
+        defn = data['definitions'][def_key]
+
+        # Navigate to parties -> items
+        if 'properties' not in defn:
+            continue
+        if 'parties' not in defn['properties']:
+            continue
+
+        parties = defn['properties']['parties']
+        if 'items' not in parties:
+            continue
+
+        party_items = parties['items']
+
+        # Parties items have anyOf with variants
+        if 'anyOf' not in party_items:
+            continue
+
+        # Process each variant in the anyOf
+        for variant in party_items['anyOf']:
+            if 'properties' not in variant:
+                continue
+            if 'external-ids' not in variant['properties']:
+                continue
+
+            ext_ids_prop = variant['properties']['external-ids']
+            if 'items' not in ext_ids_prop:
+                continue
+
+            # Check if items is an inline definition (not a $ref)
+            items = ext_ids_prop['items']
+            if '$ref' in items:
+                continue
+
+            # Extract the inline definition
+            # Use oscal-metadata namespace so it goes to common
+            new_def_key = 'oscal-metadata:external-id'
+
+            # Only create the definition once (first time we encounter it)
+            if new_def_key not in data['definitions']:
+                # Create the named definition with the inline content
+                data['definitions'][new_def_key] = items.copy()
+                logger.info(f'patch: {model_name} created {new_def_key}')
+                modified = True
+
+            # Replace inline definition with reference
+            ext_ids_prop['items'] = {'$ref': f'#/definitions/{new_def_key}'}
+            logger.info(
+                f'patch: {model_name} replaced inline external-ids items in {def_key} anyOf variant with ref to {new_def_key}'
+            )
+            modified = True
+
+    if modified:
+        json_data_put(model_name, data)
+
+
+def patch_timing(model_name: str) -> None:
+    """Extract timing anyOf variants into named definitions with descriptive names.
+
+    Similar to control-selections, timing has anyOf variants that should have
+    descriptive names like TimingOnDate, TimingWithinDateRange, TimingAtFrequency
+    instead of Timing, Timing1, Timing2.
+    """
+    data = json_data_get(model_name)
+    modified = False
+
+    # Process each definition looking for timing properties with anyOf
+    for def_key in list(data['definitions'].keys()):
+        defn = data['definitions'][def_key]
+        if 'properties' not in defn:
+            continue
+
+        # Look for timing property with anyOf
+        if 'timing' not in defn['properties']:
+            continue
+
+        timing_prop = defn['properties']['timing']
+        if 'anyOf' not in timing_prop:
+            continue
+
+        anyof_variants = timing_prop['anyOf']
+        if len(anyof_variants) != 3:
+            continue
+
+        # Use assessment-common namespace so classes go to common.py
+        namespace = 'oscal-assessment-common'
+
+        # Create new definition keys for each variant based on required field
+        new_refs = []
+
+        for variant in anyof_variants:
+            if 'required' not in variant:
+                continue
+
+            required = variant['required']
+
+            # Determine the new definition name based on required field
+            if 'on-date' in required:
+                new_def_name = 'timing-on-date'
+                variant_title = 'Timing On Date'
+            elif 'within-date-range' in required:
+                new_def_name = 'timing-within-date-range'
+                variant_title = 'Timing Within Date Range'
+            elif 'at-frequency' in required:
+                new_def_name = 'timing-at-frequency'
+                variant_title = 'Timing At Frequency'
+            else:
+                continue
+
+            new_def_key = f'{namespace}:{new_def_name}'
+
+            # Create new definition with variant content
+            base_desc = timing_prop.get('description', 'The timing under which the task is intended to occur.')
+
+            new_def = {'title': variant_title, 'description': base_desc, 'type': 'object', **variant}
+
+            # Add to definitions if not already present
+            if new_def_key not in data['definitions']:
+                data['definitions'][new_def_key] = new_def
+                logger.info(f'patch: {model_name} created {new_def_key}')
+                modified = True
+
+            new_refs.append(new_def_key)
+
+        # Replace inline anyOf with references
+        if len(new_refs) == 3:
+            defn['properties']['timing'] = {
+                'anyOf': [
+                    {'$ref': f'#/definitions/{new_refs[0]}'},
+                    {'$ref': f'#/definitions/{new_refs[1]}'},
+                    {'$ref': f'#/definitions/{new_refs[2]}'},
+                ]
+            }
+            logger.info(f'patch: {model_name} replaced inline anyOf in {def_key}.timing with refs')
+            modified = True
+
+    if modified:
+        json_data_put(model_name, data)
+
+
+def patch_assessment_subject(model_name: str) -> None:
+    """Extract assessment-subject anyOf variants into named definitions with descriptive names.
+
+    Similar to timing, assessment-subject has anyOf variants that should have
+    descriptive names like AssessmentSubjectAll and AssessmentSubjectSpecific
+    instead of AssessmentSubject1 and AssessmentSubject2.
+    """
+    data = json_data_get(model_name)
+    modified = False
+
+    # Process each definition looking for assessment-subject with anyOf
+    for def_key in list(data['definitions'].keys()):
+        defn = data['definitions'][def_key]
+
+        # Look for assessment-subject definition with anyOf
+        if not def_key.endswith(':assessment-subject'):
+            continue
+
+        if 'anyOf' not in defn:
+            continue
+
+        anyof_variants = defn['anyOf']
+        if len(anyof_variants) != 2:
+            continue
+
+        # Use assessment-common namespace so classes go to common.py
+        namespace = 'oscal-assessment-common'
+
+        # Create new definition keys for each variant based on required field
+        new_refs = []
+
+        for variant in anyof_variants:
+            if 'required' not in variant:
+                continue
+
+            required = variant['required']
+
+            # Determine the new definition name based on required field
+            if 'include-all' in required:
+                new_def_name = 'assessment-subject-all'
+                variant_title = 'Assessment Subject All'
+            elif 'include-subjects' in required:
+                new_def_name = 'assessment-subject-specific'
+                variant_title = 'Assessment Subject Specific'
+            else:
+                continue
+
+            new_def_key = f'{namespace}:{new_def_name}'
+
+            # Create new definition with variant content
+            base_desc = defn.get('description', 'Identifies system elements being assessed.')
+
+            new_def = {'title': variant_title, 'description': base_desc, 'type': 'object', **variant}
+
+            # Add to definitions if not already present
+            if new_def_key not in data['definitions']:
+                data['definitions'][new_def_key] = new_def
+                logger.info(f'patch: {model_name} created {new_def_key}')
+                modified = True
+
+            new_refs.append(new_def_key)
+
+        # Replace inline anyOf with references
+        if len(new_refs) == 2:
+            data['definitions'][def_key] = {
+                'anyOf': [{'$ref': f'#/definitions/{new_refs[0]}'}, {'$ref': f'#/definitions/{new_refs[1]}'}]
+            }
+            logger.info(f'patch: {model_name} replaced inline anyOf in {def_key} with refs')
+            modified = True
+
+    if modified:
+        json_data_put(model_name, data)
+
+
 def patch_schemas(fixup_dir_path: Path) -> None:
     """Patch json schemas."""
     for full_name in fixup_dir_path.glob(schema_file_name_search_template):
@@ -319,8 +713,13 @@ def patch_schemas(fixup_dir_path: Path) -> None:
         patch_poam_item(model_name, 'related-observations')
         patch_profile(model_name)
         patch_profile_group_description(model_name)
+        patch_assessment_select_control(model_name)
         patch_mapping_select_control(model_name)
         patch_mapping_confidence_score(model_name)
+        patch_control_selections(model_name)
+        patch_timing(model_name)
+        patch_assessment_subject(model_name)
+        patch_external_ids(model_name)
         create_refs(model_name)
 
 

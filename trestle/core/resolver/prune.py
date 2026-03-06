@@ -58,9 +58,8 @@ class Prune(Pipeline.Filter):
                     raise TrestleError('Profiles with SelectControl based on matching are not supported.')
                 include_children = select_control.with_child_controls == 'yes'
                 if select_control.with_ids:
-                    new_ids = select_control.with_ids
-                    for withid_ in new_ids:
-                        id_ = withid_.__root__
+                    # In OSCAL 1.2.0, with_ids is a list of strings directly
+                    for id_ in select_control.with_ids:
                         control_ids.append(id_)
                         if include_children:
                             control_ids.extend(self._catalog_interface.get_dependent_control_ids(id_))
