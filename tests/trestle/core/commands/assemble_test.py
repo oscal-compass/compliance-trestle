@@ -168,6 +168,19 @@ def test_assemble_missing_top_model(
     assert rc == 1
 
 
+def test_assemble_missing_root_model_file_raises(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test that TrestleError is raised with correct message when root model file does not exist."""
+    model_name = 'nonexistent_catalog'
+    catalogs_dir = tmp_trestle_dir / 'catalogs' / model_name
+    catalogs_dir.mkdir(parents=True, exist_ok=True)
+
+    with pytest.raises(err.TrestleError, match='No top level model file at'):
+        AssembleCmd.assemble_model(
+            'catalog',
+            argparse.Namespace(trestle_root=tmp_trestle_dir, name=model_name, extension='json', verbose=0),
+        )
+
+
 def test_assemble_catalog_all(
     testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
 ) -> None:
