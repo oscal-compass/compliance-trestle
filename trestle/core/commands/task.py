@@ -81,7 +81,8 @@ class TaskCmd(CommandPlusDocs):
 
             # permit ${name} in config definitions
             global_config = configparser.ConfigParser(interpolation=configparser.ExtendedInterpolation())
-            global_config.read_file(config_path.open('r', encoding=const.FILE_ENCODING))
+            with config_path.open('r', encoding=const.FILE_ENCODING) as f:
+                global_config.read_file(f)
             # run setup
             task_index = self._build_task_index()
 
