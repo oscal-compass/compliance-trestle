@@ -119,13 +119,12 @@ dependencies = [
 default-args = ["tests"]
 parallel = true
 randomize = true
-# Coverage pinned for compatibility
 dependencies = [
     "coverage[toml]~=7.4",
     "pytest>=8.1",
     "pytest-xdist[psutil]>=3.5",
-    "pytest-randomly>=3.15", 
-    "mypy"
+    "pytest-randomly>=3.15",
+    "mypy",
 ]
 
 [[tool.hatch.envs.hatch-test.matrix]]
