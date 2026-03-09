@@ -124,7 +124,8 @@
 <span class=normal>137</span>
 <span class=normal>138</span>
 <span class=normal>139</span>
-<span class=normal>140</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>TaskCmd</span><span class=p>(</span><span class=n>CommandPlusDocs</span><span class=p>):</span>
+<span class=normal>140</span>
+<span class=normal>141</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>TaskCmd</span><span class=p>(</span><span class=n>CommandPlusDocs</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Run arbitrary trestle tasks in a simple and extensible methodology.&quot;&quot;&quot;</span>
 
     <span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;task&#39;</span>
@@ -169,7 +170,8 @@
 
             <span class=c1># permit ${name} in config definitions</span>
             <span class=n>global_config</span> <span class=o>=</span> <span class=n>configparser</span><span class=o>.</span><span class=n>ConfigParser</span><span class=p>(</span><span class=n>interpolation</span><span class=o>=</span><span class=n>configparser</span><span class=o>.</span><span class=n>ExtendedInterpolation</span><span class=p>())</span>
-            <span class=n>global_config</span><span class=o>.</span><span class=n>read_file</span><span class=p>(</span><span class=n>config_path</span><span class=o>.</span><span class=n>open</span><span class=p>(</span><span class=s1>&#39;r&#39;</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>))</span>
+            <span class=k>with</span> <span class=n>config_path</span><span class=o>.</span><span class=n>open</span><span class=p>(</span><span class=s1>&#39;r&#39;</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span> <span class=k>as</span> <span class=n>f</span><span class=p>:</span>
+                <span class=n>global_config</span><span class=o>.</span><span class=n>read_file</span><span class=p>(</span><span class=n>f</span><span class=p>)</span>
             <span class=c1># run setup</span>
             <span class=n>task_index</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_build_task_index</span><span class=p>()</span>
 
