@@ -64,7 +64,7 @@ typing = [
 # Documentation website
 docs = [
     "mike",
-    "mkdocs>=1.6.0",
+    "mkdocs>=1.6.0,<2.0.0",
     "mkdocs-awesome-pages-plugin",
     "mkdocstrings[python]>=0.25.2",
     "mkdocs-htmlproofer-plugin",
