@@ -144,7 +144,7 @@ def deep_set(dic: Dict[str, Any], path: List[str], value: Any, pop_if_none: bool
     for node in path[:-1]:
         dic[node] = dic.get(node, {})
         dic = dic[node]
-    if value or not pop_if_none:
+    if value is not None or not pop_if_none:
         dic[path[-1]] = value
     else:
         dic.pop(path[-1], None)
@@ -185,7 +185,7 @@ def deep_append(dic: Dict[str, Any], path: List[str], value: Any) -> None:
 
 def set_or_pop(dic: Dict[str, Any], key: str, value: Any) -> None:
     """Set if value is non-empty list or not None otherwise remove."""
-    if value:
+    if value is not None:
         dic[key] = value
     else:
         dic.pop(key, None)
