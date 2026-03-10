@@ -20,6 +20,7 @@ import pathlib
 from trestle.common import const, log
 from trestle.core.commands.assemble import AssembleCmd
 from trestle.core.commands.author.command import AuthorCmd
+from trestle.core.commands.canonicalize import CanonicalizeCmd
 from trestle.core.commands.command_docs import CommandBase
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.create import CreateCmd
@@ -46,6 +47,7 @@ class Trestle(CommandBase):
     subcommands = [
         AssembleCmd,
         AuthorCmd,
+        CanonicalizeCmd,
         CreateCmd,
         DescribeCmd,
         HrefCmd,

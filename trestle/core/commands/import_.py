@@ -47,7 +47,13 @@ class ImportCmd(CommandPlusDocs):
         )
         self.add_argument('-o', '--output', help='Name of output element.', type=str, required=True)
         self.add_argument('-r', '--regenerate', action='store_true', help=const.HELP_REGENERATE)
-
+        self.add_argument(
+            '-j',
+            '--jcs',
+            action='store_true',
+            help='Write the imported file as RFC 8785 canonical JSON (JCS). '
+                 'Only valid when the input is a JSON file.',
+        )
     def _run(self, args: argparse.Namespace) -> int:
         """Top level import run command."""
         try:
@@ -105,6 +111,13 @@ class ImportCmd(CommandPlusDocs):
             import_plan.add_action(write_action)
 
             import_plan.execute()
+
+            if getattr(args, 'jcs', False):
+                if content_type != FileContentType.JSON:
+                    raise TrestleError('--jcs flag is only valid when importing a JSON file.')
+                jcs_bytes = model_read.oscal_serialize_jcs()
+                desired_model_path.write_bytes(jcs_bytes)
+                logger.debug(f'Overwrote imported file with RFC 8785 canonical JSON: {desired_model_path}')
 
             args = argparse.Namespace(
                 file=desired_model_path,

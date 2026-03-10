@@ -56,6 +56,13 @@ class CreateCmd(CommandPlusDocs):
         self.add_argument(
             '-e', '--element', help='Optional path of element to be created within the specified file.', type=str
         )
+        self.add_argument(
+            '-j',
+            '--jcs',
+            action='store_true',
+            help='Write the created model as RFC 8785 canonical JSON (JCS). '
+                 'Implies --extension json.',
+        )
 
     def _run(self, args: argparse.Namespace) -> int:
         """
@@ -119,4 +126,12 @@ class CreateCmd(CommandPlusDocs):
         create_plan.add_action(create_action)
         create_plan.add_action(write_action)
         create_plan.execute()
+
+        if getattr(args, 'jcs', False):
+            if desired_model_path.suffix.lower() != '.json':
+                raise err.TrestleError('--jcs flag is only valid with --extension json.')
+            created_model = sample_model
+            desired_model_path.resolve().write_bytes(created_model.oscal_serialize_jcs())
+            logger.debug(f'Overwrote created model with RFC 8785 canonical JSON: {desired_model_path}')
+
         return CmdReturnCodes.SUCCESS.value

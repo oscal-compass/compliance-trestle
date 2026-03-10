@@ -41,6 +41,7 @@ from ruamel.yaml import YAML
 
 import trestle.common.const as const
 import trestle.common.err as err
+from trestle.common.jcs import canonicalize
 from trestle.common.str_utils import AliasMode, classname_to_alias
 from trestle.common.type_utils import get_origin, is_collection_field_type
 from trestle.core.models.file_content_type import FileContentType
@@ -246,6 +247,28 @@ class OscalBaseModel(TrestleBaseModel):
         """
         # This function is provided for backwards compatibility
         return self.oscal_serialize_json_bytes(pretty, wrapped).decode(const.FILE_ENCODING)
+
+    def oscal_serialize_jcs(self, wrapped: bool = True) -> bytes:
+        """Return the RFC 8785 (JCS) canonical JSON encoding of this OSCAL object.
+
+        The output is a deterministic, compact UTF-8 byte sequence with all object
+        keys sorted by their UTF-16 code-unit sequence.  It contains no insignificant
+        whitespace and is suitable as a pre-image for cryptographic signing.
+
+        Args:
+            wrapped: When True (default) the output is wrapped in the standard OSCAL
+                     top-level key (e.g. ``{"catalog": ...}``).  Pass False to omit
+                     the wrapper.
+
+        Returns:
+            Canonicalized JSON as a ``bytes`` object encoded in UTF-8.
+        """
+        # Serialize to JSON first so that pydantic handles all custom encoders
+        # (e.g. datetime → ISO-8601 string), then re-parse to a plain dict and
+        # pass it through the RFC 8785 canonicalizer.
+        json_bytes = self.oscal_serialize_json_bytes(pretty=False, wrapped=wrapped)
+        data = orjson.loads(json_bytes)
+        return canonicalize(data)
 
     def oscal_write(self, path: pathlib.Path) -> None:
         """
