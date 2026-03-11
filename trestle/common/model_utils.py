@@ -444,9 +444,7 @@ class ModelUtils:
         if last_alias == '*':
             last_alias = path_parts[-2]
         elif last_alias.isdigit():
-            raise err.TrestleError(
-                f'Invalid alias path {alias_path}: path cannot terminate with a numeric index.'
-            )
+            raise err.TrestleError(f'Invalid alias path {alias_path}: path cannot terminate with a numeric index.')
 
         # generic model and not list, so return itself fixme doc
         if not utils.is_collection_field_type(model_type):
