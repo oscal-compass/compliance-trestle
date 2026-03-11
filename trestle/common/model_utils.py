@@ -24,7 +24,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple, Type, Union
 
-from pydantic.v1 import BaseModel, create_model
+from pydantic import BaseModel, create_model
 
 import trestle.common
 import trestle.common.common_types
@@ -437,7 +437,7 @@ class ModelUtils:
                 if path_part not in field_map:
                     continue
                 field = field_map[path_part]
-                model_type = field.outer_type_
+                model_type = field.annotation
             model_types.append(model_type)
 
         last_alias = path_parts[-1]
@@ -452,7 +452,7 @@ class ModelUtils:
         try:
             field_map = parent_model_type.alias_to_field_map()
             field = field_map[last_alias]
-            outer_type = field.outer_type_
+            outer_type = field.annotation
             inner_type = utils.get_inner_type(outer_type)
             inner_type_name = inner_type.__name__
             singular_alias = str_utils.classname_to_alias(inner_type_name, AliasMode.JSON)
@@ -470,8 +470,11 @@ class ModelUtils:
             raise err.TrestleError(str(e))
 
         if hasattr(module, 'Model'):
-            model_metadata = next(iter(module.Model.__fields__.values()))
-            return model_metadata.type_, model_metadata.alias
+            # pydantic v2: use model_fields (returns Dict[str, FieldInfo])
+            model_fields = module.Model.model_fields
+            first_field_name, first_field_info = next(iter(model_fields.items()))
+            # annotation holds the full type; alias may be None if same as field name
+            return first_field_info.annotation, (first_field_info.alias or first_field_name)
         raise err.TrestleError('Invalid module')
 
     @staticmethod
