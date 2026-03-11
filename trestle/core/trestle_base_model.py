@@ -17,7 +17,7 @@
 
 from typing import Any, Type, TypeVar
 
-from pydantic.v1 import BaseModel, ValidationError
+from pydantic import BaseModel, ValidationError
 
 from trestle.common.err import TrestleError
 
@@ -28,17 +28,18 @@ class TrestleBaseModel(BaseModel):
     """Trestle Base Model. Serves as wrapper around BaseModel for overriding methods."""
 
     @classmethod
-    def parse_obj(cls: Type['Model'], obj: Any) -> 'Model':
-        """Parse object to the given class."""
+    def model_validate(cls: Type['Model'], obj: Any, *args, **kwargs) -> 'Model':
+        """Parse object to the given class (pydantic v2 API)."""
         try:
-            return super().parse_obj(obj)
+            return super().model_validate(obj, *args, **kwargs)
         except ValidationError as e:
             # check if failed due to the wrong OSCAL version:
             oscal_version_error = False
-            for err in e.errors():
-                for field in err['loc']:
+            message = ''
+            for error in e.errors():
+                for field in error['loc']:
                     if field == 'oscal-version':
-                        message = err['msg']
+                        message = error['msg']
                         oscal_version_error = True
                         break
             if oscal_version_error:
