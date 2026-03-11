@@ -86,14 +86,14 @@ class PassFail(TaskBase):
         logger.info(f'Help information for {self.name} task.')
         logger.info('This is a template task which reports pass fail depending on the specific configuration.')
         logger.info(
-            'In this case if no config section is provided the task will fail. This a a task specific behavior.'
+            'In this case if no config section is provided the task will fail. This is a task specific behavior.'
         )
         logger.info('Configuration flags sit under [task.pass-fail]')
         logger.info('with two boolean flags')
         logger.info('execute_status = True/False with a default pass')
         logger.info('simulate_status = True/False with a default fail')
         logger.info('Note that if the config file does not have the appropriate section this should fail.')
-        logger.info('The princple goal is a simple development example.')
+        logger.info('The principle goal is a simple development example.')
 
     def simulate(self) -> TaskOutcome:
         """Provide a simulated outcome."""
