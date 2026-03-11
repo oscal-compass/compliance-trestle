@@ -56,7 +56,7 @@ In trestle's CI environment this results in the following rules:
    1. This is enforced by DCO bot and can be overrided by maintainers presuming at least one commit is signed-off.
 1. All commits *SHOULD* use [conventional commits](https://www.conventionalcommits.org/en/v1.0.0-beta.2/)
    1. This is as github, when only one commit is in a PR, will use the native git commit message as the merge commit title.
-      1. When only a single commit is provided the commit MUST be an conventional commit and will be checked the `Lint PR` aciton.
+      1. When only a single commit is provided the commit MUST be an conventional commit and will be checked the `Lint PR` action.
 1. All PR's title's MUST be formed as an [convention commit](https://www.conventionalcommits.org/en/v1.0.0-beta.2/)
    1. This is checked by the `Lint PR` action
 1. All PR's to `develop` and hotfix PR's to `main` must close at least one issue by [linking the PR to an issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword).
@@ -88,7 +88,7 @@ The devops process does not _strictly_ enforce typing, however, the expectation 
 commits with a focus on quality over quantity (e.g. don't add `Any` everywhere just to meet coverage requirements).
 Python typing of functions is an active work in progress.
 
-`mkbuild` is used to generate the [trestle documenation site](https://oscal-compass.github.io/compliance-trestle/latest). The `mkbuild`
+`mkdocs build` is used to generate the [trestle documentation site](https://oscal-compass.github.io/compliance-trestle/latest). The `mkdocs build`
 website includes an API reference section generated from the code. Docstrings within the code are expected to follow
 [google style docstrings](https://www.sphinx-doc.org/en/master/usage/extensions/example_google.html).
 
