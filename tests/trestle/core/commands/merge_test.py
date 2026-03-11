@@ -176,6 +176,10 @@ def test_merge_expanded_metadata_into_catalog(testdata_dir, tmp_trestle_dir, kee
     expected_plan.add_action(write_destination_action)
     delete_element_action = RemovePathAction(metadata_file)
     expected_plan.add_action(delete_element_action)
+    # After merging catalog.metadata, the sibling metadata/ directory (which may hold nested
+    # split artifacts like metadata/roles/ or metadata/responsible-parties/) must also be removed.
+    delete_metadata_dir_action = RemovePathAction(metadata_dir.resolve())
+    expected_plan.add_action(delete_metadata_dir_action)
 
     # Call merge()
     generated_plan = MergeCmd.merge(Path.cwd(), ElementPath('catalog.metadata'), tmp_trestle_dir)
@@ -546,3 +550,54 @@ def test_merge_deletes_folders(
     execute_command_and_assert(command_merge, 0, monkeypatch)
     assert (tmp_trestle_dir / 'catalogs/mycatalog/catalog').exists()
     assert not (tmp_trestle_dir / 'catalogs/mycatalog/catalog/metadata').exists()
+
+
+def test_merge_cleans_nested_split_dirs_on_parent_merge(
+    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, keep_cwd
+) -> None:
+    """Regression test for #2136: nested split artifacts must be cleaned up when parent is merged.
+
+    Scenario (mirrors issue reproduction steps):
+      - step4 test data already has catalog/metadata.json (stripped) alongside the
+        catalog/metadata/ directory which holds nested split files (roles/, responsible-parties/).
+      - Running 'trestle merge -e catalog.metadata' must remove BOTH catalog/metadata.json
+        AND the catalog/metadata/ directory tree.
+    """
+    content_type = FileContentType.JSON
+    fext = FileContentType.to_file_extension(content_type)
+
+    test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
+
+    # step4 data already has the nested split state: catalog/metadata.json + catalog/metadata/
+    test_data_source = testdata_dir / 'split_merge/step4_split_groups_array/catalogs'
+    catalogs_dir = Path('catalogs/')
+    shutil.rmtree(catalogs_dir)
+    shutil.copytree(test_data_source, catalogs_dir)
+
+    mycatalog_dir = catalogs_dir / 'mycatalog'
+    os.chdir(mycatalog_dir)
+
+    catalog_dir = Path('catalog/')
+    metadata_file = (catalog_dir / f'metadata{fext}').resolve()
+    metadata_dir = (catalog_dir / 'metadata').resolve()
+
+    # Verify the test data is in the expected state (both file and nested dir present)
+    assert metadata_file.exists(), 'test data must have catalog/metadata.json'
+    assert metadata_dir.is_dir(), 'test data must have catalog/metadata/ directory with nested splits'
+
+    # Execute the merge
+    cmd = MergeCmd()
+    args = argparse.Namespace(verbose=0, element='catalog.metadata', trestle_root=tmp_trestle_dir)
+    assert cmd._run(args) == 0
+
+    # The merged catalog.json should exist
+    assert Path(f'catalog{fext}').exists(), 'catalog.json should exist after merge'
+
+    # metadata.json must be removed (merged back into catalog.json)
+    assert not metadata_file.exists(), 'catalog/metadata.json should be removed after merging catalog.metadata'
+
+    # The nested split directory must also be removed (the bug in #2136)
+    assert not metadata_dir.exists(), (
+        'catalog/metadata/ directory with nested split artifacts should be removed '
+        'after merging catalog.metadata into catalog.json'
+    )
