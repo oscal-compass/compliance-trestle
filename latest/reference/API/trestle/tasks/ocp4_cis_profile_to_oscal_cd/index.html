@@ -533,12 +533,7 @@
 <span class=normal>554</span>
 <span class=normal>555</span>
 <span class=normal>556</span>
-<span class=normal>557</span>
-<span class=normal>558</span>
-<span class=normal>559</span>
-<span class=normal>560</span>
-<span class=normal>561</span>
-<span class=normal>562</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>Ocp4CisProfileToOscalCD</span><span class=p>(</span><span class=n>TaskBase</span><span class=p>):</span>
+<span class=normal>557</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>Ocp4CisProfileToOscalCD</span><span class=p>(</span><span class=n>TaskBase</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    Task to transform OCP4 CIS profile to OSCAL component-definition.</span>
 
@@ -816,10 +811,8 @@
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Get parameters map.&quot;&quot;&quot;</span>
         <span class=k>try</span><span class=p>:</span>
             <span class=n>fp</span> <span class=o>=</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=n>config_key</span><span class=p>])</span>
-            <span class=n>f</span> <span class=o>=</span> <span class=n>fp</span><span class=o>.</span><span class=n>open</span><span class=p>(</span><span class=s1>&#39;r&#39;</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span>
-            <span class=n>jdata</span> <span class=o>=</span> <span class=n>json</span><span class=o>.</span><span class=n>load</span><span class=p>(</span><span class=n>f</span><span class=p>)</span>
-            <span class=n>parameters_map</span> <span class=o>=</span> <span class=n>jdata</span>
-            <span class=n>f</span><span class=o>.</span><span class=n>close</span><span class=p>()</span>
+            <span class=k>with</span> <span class=n>fp</span><span class=o>.</span><span class=n>open</span><span class=p>(</span><span class=s1>&#39;r&#39;</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span> <span class=k>as</span> <span class=n>f</span><span class=p>:</span>
+                <span class=n>parameters_map</span> <span class=o>=</span> <span class=n>json</span><span class=o>.</span><span class=n>load</span><span class=p>(</span><span class=n>f</span><span class=p>)</span>
         <span class=k>except</span> <span class=ne>KeyError</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
             <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;key </span><span class=si>{</span><span class=n>e</span><span class=o>.</span><span class=n>args</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=si>}</span><span class=s1> missing&#39;</span><span class=p>)</span>
             <span class=n>parameters_map</span> <span class=o>=</span> <span class=p>{}</span>
@@ -833,13 +826,12 @@
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Get filter rules.&quot;&quot;&quot;</span>
         <span class=k>try</span><span class=p>:</span>
             <span class=n>fp</span> <span class=o>=</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_config</span><span class=p>[</span><span class=n>config_key</span><span class=p>])</span>
-            <span class=n>f</span> <span class=o>=</span> <span class=n>fp</span><span class=o>.</span><span class=n>open</span><span class=p>(</span><span class=s1>&#39;r&#39;</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span>
-            <span class=n>jdata</span> <span class=o>=</span> <span class=n>json</span><span class=o>.</span><span class=n>load</span><span class=p>(</span><span class=n>f</span><span class=p>)</span>
+            <span class=k>with</span> <span class=n>fp</span><span class=o>.</span><span class=n>open</span><span class=p>(</span><span class=s1>&#39;r&#39;</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span> <span class=k>as</span> <span class=n>f</span><span class=p>:</span>
+                <span class=n>jdata</span> <span class=o>=</span> <span class=n>json</span><span class=o>.</span><span class=n>load</span><span class=p>(</span><span class=n>f</span><span class=p>)</span>
             <span class=k>try</span><span class=p>:</span>
                 <span class=n>filter_rules</span> <span class=o>=</span> <span class=n>jdata</span><span class=p>[</span><span class=n>file_key</span><span class=p>]</span>
             <span class=k>except</span> <span class=ne>Exception</span><span class=p>:</span>
                 <span class=n>filter_rules</span> <span class=o>=</span> <span class=n>jdata</span>
-            <span class=n>f</span><span class=o>.</span><span class=n>close</span><span class=p>()</span>
         <span class=k>except</span> <span class=ne>KeyError</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
             <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;key </span><span class=si>{</span><span class=n>e</span><span class=o>.</span><span class=n>args</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=si>}</span><span class=s1> missing&#39;</span><span class=p>)</span>
             <span class=n>filter_rules</span> <span class=o>=</span> <span class=p>[]</span>
@@ -855,10 +847,9 @@
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Get CIS rules.&quot;&quot;&quot;</span>
         <span class=k>try</span><span class=p>:</span>
             <span class=n>fp</span> <span class=o>=</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>(</span><span class=n>filename</span><span class=p>)</span>
-            <span class=n>f</span> <span class=o>=</span> <span class=n>fp</span><span class=o>.</span><span class=n>open</span><span class=p>(</span><span class=s1>&#39;r&#39;</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span>
-            <span class=n>content</span> <span class=o>=</span> <span class=n>f</span><span class=o>.</span><span class=n>readlines</span><span class=p>()</span>
+            <span class=k>with</span> <span class=n>fp</span><span class=o>.</span><span class=n>open</span><span class=p>(</span><span class=s1>&#39;r&#39;</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span> <span class=k>as</span> <span class=n>f</span><span class=p>:</span>
+                <span class=n>content</span> <span class=o>=</span> <span class=n>f</span><span class=o>.</span><span class=n>readlines</span><span class=p>()</span>
             <span class=n>rules</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_parse_cis_rules</span><span class=p>(</span><span class=n>content</span><span class=p>)</span>
-            <span class=n>f</span><span class=o>.</span><span class=n>close</span><span class=p>()</span>
         <span class=k>except</span> <span class=ne>Exception</span><span class=p>:</span>
             <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;unable to process </span><span class=si>{</span><span class=n>filename</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
             <span class=n>rules</span> <span class=o>=</span> <span class=p>{}</span>
@@ -963,9 +954,8 @@
                 <span class=n>folder</span> <span class=o>=</span> <span class=n>os</span><span class=o>.</span><span class=n>path</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>path</span><span class=p>,</span> <span class=n>dir_name</span><span class=p>)</span>
                 <span class=n>tpath</span> <span class=o>=</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>(</span><span class=n>folder</span><span class=p>)</span> <span class=o>/</span> <span class=s1>&#39;rule.yml&#39;</span>
                 <span class=n>fp</span> <span class=o>=</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>(</span><span class=n>tpath</span><span class=p>)</span>
-                <span class=n>f</span> <span class=o>=</span> <span class=n>fp</span><span class=o>.</span><span class=n>open</span><span class=p>(</span><span class=s1>&#39;r&#39;</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span>
-                <span class=n>content</span> <span class=o>=</span> <span class=n>f</span><span class=o>.</span><span class=n>readlines</span><span class=p>()</span>
-                <span class=n>f</span><span class=o>.</span><span class=n>close</span><span class=p>()</span>
+                <span class=k>with</span> <span class=n>fp</span><span class=o>.</span><span class=n>open</span><span class=p>(</span><span class=s1>&#39;r&#39;</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span> <span class=k>as</span> <span class=n>f</span><span class=p>:</span>
+                    <span class=n>content</span> <span class=o>=</span> <span class=n>f</span><span class=o>.</span><span class=n>readlines</span><span class=p>()</span>
                 <span class=k>for</span> <span class=n>line</span> <span class=ow>in</span> <span class=n>content</span><span class=p>:</span>
                     <span class=k>if</span> <span class=n>line</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=s1>&#39;title:&#39;</span><span class=p>):</span>
                         <span class=n>title</span> <span class=o>=</span> <span class=n>line</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39;title:&#39;</span><span class=p>)[</span><span class=mi>1</span><span class=p>]</span>
