@@ -52,12 +52,12 @@ The criteria for this are below. Trestle effectively uses a gitflow workflow wit
 
 In trestle's CI environment this results in the following rules:
 
-1. All Commit's *MUST* be signed off with `git commit --signoff` irrespective of the author's affiliation. This ensures all code can be attributed.
-   1. This is enforced by DCO bot and can be overrided by maintainers presuming at least one commit is signed-off.
+1. All Commits *MUST* be signed off with `git commit --signoff` irrespective of the author's affiliation. This ensures all code can be attributed.
+   1. This is enforced by DCO bot and can be overridden by maintainers presuming at least one commit is signed-off.
 1. All commits *SHOULD* use [conventional commits](https://www.conventionalcommits.org/en/v1.0.0-beta.2/)
    1. This is as github, when only one commit is in a PR, will use the native git commit message as the merge commit title.
       1. When only a single commit is provided the commit MUST be an conventional commit and will be checked the `Lint PR` action.
-1. All PR's title's MUST be formed as an [convention commit](https://www.conventionalcommits.org/en/v1.0.0-beta.2/)
+1. All PR's titles MUST be formed as a [conventional commit](https://www.conventionalcommits.org/en/v1.0.0-beta.2/)
    1. This is checked by the `Lint PR` action
 1. All PR's to `develop` and hotfix PR's to `main` must close at least one issue by [linking the PR to an issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword).
 1. Trestle will release on demand the default approach for a hot fix should be to merge into `develop`, followed by releasing to `main`, unless this will release functionality that is not ready.
@@ -204,7 +204,7 @@ A PR without sufficient test coverage will fail the trestle CI process and will 
 
 Additional code scrutiny is applied in the trestle CI pipeline by [SonarCloud](https://sonarcloud.io/project/overview?id=compliance-trestle). Any failures must be addressed before code merging.
 
-### Code style and formating
+### Code style and formatting
 
 Python code should generally follow [PEP 8](https://peps.python.org/pep-0008/).
 
