@@ -23,8 +23,8 @@ from datetime import date, datetime
 from enum import Enum
 from typing import Any, Dict, List, Type, TypeVar, Union, cast
 
-import pydantic.v1.networks
-from pydantic.v1 import ConstrainedStr
+import pydantic.networks
+from pydantic import StringConstraints
 
 import trestle.common.const as const
 import trestle.common.err as err
@@ -121,24 +121,25 @@ def generate_sample_value_by_type(type_: type, field_name: str) -> Union[datetim
         return 0
     if type_ is float:
         return 0.00
-    if safe_is_sub(type_, ConstrainedStr) or (hasattr(type_, '__name__') and 'ConstrainedStr' in type_.__name__):
-        # This code here is messy. we need to meet a set of constraints. If we do
-        # TODO: handle regex directly
-        if 'uuid' == field_name:
-            return str(uuid.uuid4())
-        # some things like location_uuid in lists arrive here with field_name=''
-        if type_.regex and type_.regex.pattern.startswith('^[0-9A-Fa-f]{8}'):
-            return const.SAMPLE_UUID_STR
-        if field_name == 'date_authorized':
-            return str(date.today().isoformat())
-        if field_name == 'oscal_version':
-            return OSCAL_VERSION
-        if 'uuid' in field_name:
-            return const.SAMPLE_UUID_STR
-        # Only case where are UUID is required but not in name.
-        if field_name.rstrip('s') == 'member_of_organization':
-            return const.SAMPLE_UUID_STR
-        return const.REPLACE_ME
+    if safe_is_sub(type_, str) and hasattr(type_, '__metadata__'):
+        # pydantic v2: Annotated[str, StringConstraints(pattern=...)] carries constraints
+        # in __metadata__. Extract the StringConstraints to find the regex pattern.
+        for meta in type_.__metadata__:
+            if isinstance(meta, StringConstraints):
+                if 'uuid' == field_name:
+                    return str(uuid.uuid4())
+                if meta.pattern and meta.pattern.startswith('^[0-9A-Fa-f]{8}'):
+                    return const.SAMPLE_UUID_STR
+                if field_name == 'date_authorized':
+                    return str(date.today().isoformat())
+                if field_name == 'oscal_version':
+                    return OSCAL_VERSION
+                if 'uuid' in field_name:
+                    return const.SAMPLE_UUID_STR
+                if field_name.rstrip('s') == 'member_of_organization':
+                    return const.SAMPLE_UUID_STR
+                return const.REPLACE_ME
+    if safe_is_sub(type_, str) and hasattr(type_, 'regex'):  # legacy ConstrainedStr fallback
     if hasattr(type_, '__name__') and 'ConstrainedIntValue' in type_.__name__:
         # create an int value as close to the floor as possible does not test upper bound
         multiple = type_.multiple_of if type_.multiple_of else 1  # default to every integer
@@ -155,11 +156,12 @@ def generate_sample_value_by_type(type_: type, field_name: str) -> Union[datetim
         if field_name == 'oscal_version':
             return OSCAL_VERSION
         return const.REPLACE_ME
-    if type_ is pydantic.v1.networks.EmailStr:
-        return pydantic.v1.networks.EmailStr('dummy@sample.com')
-    if type_ is pydantic.v1.networks.AnyUrl:
-        # TODO: Cleanup: this should be usable from a url.. but it's not inuitive.
-        return pydantic.v1.networks.AnyUrl('https://sample.com/replaceme.html', scheme='http', host='sample.com')
+    if type_ is pydantic.networks.EmailStr:
+        return 'dummy@sample.com'
+    if type_ is pydantic.networks.AnyUrl:
+        # pydantic v2: AnyUrl is a str subclass validated at assignment time;
+        # return a plain string that satisfies the URI format.
+        return 'https://sample.com/replaceme.html'
     if type_ is list:
         raise err.TrestleError(f'Unable to generate sample for type {type_}')
     # default to empty dict for dict types, string for anything else
@@ -207,7 +209,8 @@ def generate_sample_model(
     # the only time dict ever appears is with include_all, which is handled specially
     # the only type of collection possible after OSCAL 1.0.0 is list
     if safe_is_sub(model, OscalBaseModel):
-        for field in model.__fields__:
+        for field_name_key, field_info in model.model_fields.items():
+            field = field_name_key
             if model_type in [OscalVersion]:
                 model_dict[field] = OSCAL_VERSION
                 break
@@ -215,11 +218,14 @@ def generate_sample_model(
                 if include_optional:
                     model_dict[field] = {}
                 continue
-            outer_type = model.__fields__[field].outer_type_
+            from pydantic import fields as pydantic_fields
+            from pydantic_core import PydanticUndefined
+            outer_type = field_info.annotation
             # next appears to be needed for python 3.7
             if utils.get_origin(outer_type) == Union:
                 outer_type = outer_type.__args__[0]
-            if model.__fields__[field].required or effective_optional:
+            is_required = field_info.default is PydanticUndefined and field_info.default_factory is None
+            if is_required or effective_optional:
                 # FIXME could be ForwardRef('SystemComponentStatus')
                 if utils.is_collection_field_type(outer_type):
                     inner_type = utils.get_inner_type(outer_type)
