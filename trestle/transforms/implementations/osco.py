@@ -649,7 +649,7 @@ class OscalProfileToOscoProfileTransformer(FromOscalTransformer):
         return normalized_version
 
     def _get_set_values(self) -> List[Dict]:
-        """Extract set_paramater name/value pairs from profile."""
+        """Extract set_parameter name/value pairs from profile."""
         set_values = []
         # for check versions prior to 0.1.59 include parameters
         # for later versions parameters should not be specified, caveat emptor

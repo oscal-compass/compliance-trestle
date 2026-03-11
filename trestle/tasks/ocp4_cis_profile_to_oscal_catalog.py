@@ -174,12 +174,9 @@ class Ocp4CisProfileToOscalCatalog(TaskBase):
 
     def _get_content(self, fp: pathlib.Path) -> List[str]:
         """Fetch content from file."""
-        content = None
         try:
-            f = fp.open('r', encoding=const.FILE_ENCODING)
-            content = f.readlines()
-            f.close()
-            return content
+            with fp.open('r', encoding=const.FILE_ENCODING) as f:
+                return f.readlines()
         except Exception as e:
             logger.warning(f'unable to process {fp.name}')
             raise e
