@@ -67,8 +67,8 @@ class FetcherBase(ABC):
     @staticmethod
     def _time_since_modification(file_path: pathlib.Path) -> datetime.timedelta:
         """Get time since last modification."""
-        last_modification = datetime.datetime.fromtimestamp(file_path.stat().st_mtime)
-        return datetime.datetime.now() - last_modification
+        last_modification = datetime.datetime.fromtimestamp(file_path.stat().st_mtime, tz=datetime.timezone.utc)
+        return datetime.datetime.now(tz=datetime.timezone.utc) - last_modification
 
     @abstractmethod
     def _do_fetch(self) -> None:
