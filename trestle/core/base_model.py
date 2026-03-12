@@ -405,7 +405,14 @@ class OscalBaseModel(TrestleBaseModel):
         alias_to_field: Dict[str, Any] = {}
         for field_name, field_info in cls.model_fields.items():
             alias = field_info.alias or field_name
-            alias_to_field[alias] = types.SimpleNamespace(name=field_name, alias=alias, field_info=field_info)
+            # Maintain v1-style attributes used by older utility code/tests.
+            alias_to_field[alias] = types.SimpleNamespace(
+                name=field_name,
+                alias=alias,
+                field_info=field_info,
+                outer_type_=field_info.annotation,
+                type_=field_info.annotation,
+            )
 
         return alias_to_field
 
@@ -448,7 +455,7 @@ class OscalBaseModel(TrestleBaseModel):
         return get_origin(cls.model_fields['root'].annotation)
 
 
-class OscalRootModel(RootModel):
+class OscalRootModel(RootModel):  # type: ignore[type-arg]
     """Base class for OSCAL root-model types, providing copy_to/copy_from analogous to OscalBaseModel."""
 
     def copy_to(self, new_oscal_type: Type['OscalRootModel']) -> 'OscalRootModel':

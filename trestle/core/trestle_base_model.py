@@ -49,7 +49,7 @@ class TrestleBaseModel(BaseModel):
         super().__init__(**snapshot)
 
     @classmethod
-    def model_validate(cls: Type['Model'], obj: Any, *args, **kwargs) -> 'Model':
+    def model_validate(cls: Type['Model'], obj: Any, *args: Any, **kwargs: Any) -> 'Model':
         """Parse object to the given class (pydantic v2 API)."""
         try:
             return super().model_validate(obj, *args, **kwargs)
