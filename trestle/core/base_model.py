@@ -323,11 +323,19 @@ class OscalBaseModel(TrestleBaseModel):
                     f'Invalid OSCAL file structure, oscal file '
                     f'does not have a single top level key wrapping it. It has {len(obj)} keys.'
                 )
-            # For collection containers, validate by wrapping the array value in root key
-            if cls.is_collection_container():
-                parsed = cls.model_validate({'root': obj[alias]})
+            model_fields = getattr(cls, 'model_fields', {})
+            is_collection_container = False
+            if hasattr(cls, 'is_collection_container'):
+                is_collection_container = cls.is_collection_container()
+            elif len(model_fields) == 1 and 'root' in model_fields:
+                is_collection_container = is_collection_field_type(model_fields['root'].annotation)
+            payload = obj[alias]
+            # RootModel wrappers validate against the raw payload, while legacy BaseModel
+            # wrappers still expect the value under the root field name.
+            if is_collection_container:
+                parsed = cls.model_validate(payload if issubclass(cls, RootModel) else {'root': payload})
             else:
-                parsed = cls.model_validate(obj[alias])
+                parsed = cls.model_validate(payload)
         except KeyError:
             raise err.TrestleError(f'Provided oscal file does not have top level key key: {alias}')
         except Exception as e:
