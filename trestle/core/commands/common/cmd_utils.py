@@ -32,9 +32,9 @@ def model_type_is_too_granular(model_type: Type[Any]) -> bool:
     """Is an model_type too fine to split."""
     if type_utils.is_collection_field_type(model_type):
         return False
-    if hasattr(model_type, '__fields__') and '__root__' in model_type.__fields__:
+    if hasattr(model_type, 'model_fields') and 'root' in model_type.model_fields:
         return True
-    if model_type.__name__ in ['str', 'ConstrainedStrValue', 'int', 'float', 'datetime']:
+    if model_type.__name__ in ['str', 'int', 'float', 'datetime']:
         return True
     return False
 
@@ -159,7 +159,7 @@ def parse_chain(
             # Does wildcard mean we need to inspect the sub_model to determine what can be split off from it?
             # If it has __root__ it may mean it contains a list of objects and should be split as a list
             if isinstance(sub_model, OscalBaseModel):
-                root = getattr(sub_model, '__root__', None)
+                root = getattr(sub_model, 'root', None)
                 if root is None or not isinstance(root, list):
                     # Cannot have parts beyond * if it isn't a list
                     if i < len(path_parts) - 1:

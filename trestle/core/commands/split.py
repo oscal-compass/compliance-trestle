@@ -435,7 +435,7 @@ class SplitCmd(CommandPlusDocs):
             if element_path.get_parent() is None and len(element_path.get()) > 1:
                 stripped_part = element_path.get()[1]
                 if stripped_part == ElementPath.WILDCARD:
-                    stripped_field_alias.append('__root__')
+                    stripped_field_alias.append('root')
                 else:
                     if stripped_part not in stripped_field_alias:
                         stripped_field_alias.append(stripped_part)

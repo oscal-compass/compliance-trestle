@@ -107,7 +107,7 @@ class TaniumResultToOscalARTransformer(ResultsTransformer):
             self.caching,
             self.aggregate,
         )
-        results.__root__ = tanium_oscal_factory.results
+        results.root = tanium_oscal_factory.results
         ts1 = datetime.datetime.now()
         self._analysis = tanium_oscal_factory.analysis
         self._analysis.append(f'transform time: {ts1 - ts0}')

@@ -60,7 +60,7 @@ class Prune(Pipeline.Filter):
                 if select_control.with_ids:
                     new_ids = select_control.with_ids
                     for withid_ in new_ids:
-                        id_ = withid_.__root__
+                        id_ = withid_.root
                         control_ids.append(id_)
                         if include_children:
                             control_ids.extend(self._catalog_interface.get_dependent_control_ids(id_))

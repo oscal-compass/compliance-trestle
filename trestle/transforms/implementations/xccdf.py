@@ -110,7 +110,7 @@ class XccdfResultToOscalARTransformer(ResultsTransformer):
         else:
             return None
         results = Results()
-        results.__root__.append(self._results_factory.result)
+        results.root.append(self._results_factory.result)
         return results
 
     def _ingest_configmaps(self, jdata: dict) -> None:
@@ -146,7 +146,7 @@ class XccdfResultToOscalARTransformer(ResultsTransformer):
         except json.decoder.JSONDecodeError:
             return None
         results = Results()
-        results.__root__.append(self._results_factory.result)
+        results.root.append(self._results_factory.result)
         return results
 
     def _ingest_yaml(self, blob: str) -> Results:
@@ -159,7 +159,7 @@ class XccdfResultToOscalARTransformer(ResultsTransformer):
         except Exception as e:
             raise RuntimeError(e)
         results = Results()
-        results.__root__.append(self._results_factory.result)
+        results.root.append(self._results_factory.result)
         return results
 
 

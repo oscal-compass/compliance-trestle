@@ -146,12 +146,8 @@ class ModelUtils:
             for i in range(len(aliases_not_to_be_stripped)):
                 alias = aliases_not_to_be_stripped[i]
                 instance = instances_to_be_merged[i]
-                if (
-                    hasattr(instance, '__dict__')
-                    and '__root__' in instance.__dict__
-                    and isinstance(instance, OscalBaseModel)
-                ):
-                    instance = instance.__dict__['__root__']
+                if isinstance(instance, OscalBaseModel) and type(instance).is_collection_container():
+                    instance = instance.root
                 if top_level and not primary_model_dict:
                     primary_model_dict = instance.__dict__
                 else:
@@ -277,7 +273,7 @@ class ModelUtils:
             malias = model_alias.split('.')[-1]
             class_name = alias_to_classname(malias, AliasMode.JSON)
             logger.debug(f'collection field type class name {class_name} and alias {malias}')
-            model_type = create_model(class_name, __base__=OscalBaseModel, __root__=(singular_model_type, ...))
+            model_type = create_model(class_name, __base__=OscalBaseModel, root=(singular_model_type, ...))
             logger.debug(f'model_type created: {model_type}')
             return model_type, model_alias
 
@@ -541,7 +537,7 @@ class ModelUtils:
         """
         main_fields = ['id', 'label', 'values', 'select', 'choice', 'how_many', 'guidelines', 'prose']
         if isinstance(obj, common.Remarks):
-            return obj.__root__
+            return obj.root
         if isinstance(obj, common.HowMany):
             return obj.value
         # it is either a string already or we cast it to string

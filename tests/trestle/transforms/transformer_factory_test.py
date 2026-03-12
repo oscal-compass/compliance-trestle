@@ -31,7 +31,7 @@ class DummyTransformer(TransformerBase):
     def transform(self, blob: str) -> OscalBaseModel:
         """Transform the blob."""
         # This example uses RoleId because it is a simple string and is otherwise arbitrary
-        return RoleId(__root__='my_string')
+        return RoleId(root='my_string')
 
 
 class DummyResultsTransformer(ResultsTransformer):
@@ -39,21 +39,21 @@ class DummyResultsTransformer(ResultsTransformer):
 
     def transform(self, blob: str) -> Results:
         """Transform the blob."""
-        return Results(__root__=[])
+        return Results(root=[])
 
 
 def test_basic_transformer_operations() -> None:
     """Test basic transformer operations."""
     tf.register_transformer('dummy', DummyTransformer)
     transformer: TransformerBase = tf.get('dummy')
-    assert transformer.transform('foo') == RoleId(__root__='my_string')
+    assert transformer.transform('foo') == RoleId(root='my_string')
 
 
 def test_results_transformer() -> None:
     """Test results transformer."""
     tf.register_transformer('dummy', DummyResultsTransformer)
     transformer: ResultsTransformer = tf.get('dummy')
-    assert transformer.transform('foo') == Results(__root__=[])
+    assert transformer.transform('foo') == Results(root=[])
 
 
 def test_transformer_not_registered() -> None:

@@ -256,7 +256,7 @@ def test_copy_to() -> None:
     # component.Remarks (type str)
     # poam.RiskStatus (type str)
     # note the testing conduction
-    remark = common.Remarks(__root__='hello')
+    remark = common.Remarks(root='hello')
     _ = remark.copy_to(common.RiskStatus)
 
 

@@ -81,7 +81,7 @@ def test_load_list_group(testdata_dir, tmp_trestle_dir):
     expected_groups = actual_model_type.oscal_read(testdata_dir / 'split_merge/load_distributed/groups.json')
 
     # FIXME confirm this is correct.  __root__ was not needed prior to updating oscal to dev branch
-    assert actual_groups == expected_groups.__root__
+    assert actual_groups == expected_groups.root
 
 
 def test_load_distributed(testdata_dir, tmp_trestle_dir):

@@ -139,7 +139,7 @@ def as_bool(string_or_none: Optional[str]) -> bool:
 
 def string_from_root(item_with_root: Optional[Any]) -> str:
     """Convert root to string if present."""
-    return as_string(item_with_root.__root__) if item_with_root else ''
+    return as_string(item_with_root.root) if item_with_root else ''
 
 
 def strip_lower_equals(str_a: Optional[str], str_b: Optional[str]) -> bool:

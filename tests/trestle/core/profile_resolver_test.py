@@ -86,7 +86,7 @@ def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
     assert control.parts[0].parts[0].prose == 'Extra added part in subpart'
 
     assert cat.metadata.title == test_prof.metadata.title
-    assert cat.metadata.oscal_version.__root__ == OSCAL_VERSION
+    assert cat.metadata.oscal_version.root == OSCAL_VERSION
     assert cat.metadata.links[0].href == 'trestle://catalogs/nist_cat/catalog.json'
     assert cat.metadata.links[0].rel == RESOLUTION_SOURCE
     assert cat.metadata.links[1].href == 'trestle://profiles/test_profile_b/profile.json'

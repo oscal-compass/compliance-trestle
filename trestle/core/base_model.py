@@ -210,8 +210,12 @@ class OscalBaseModel(TrestleBaseModel):
     def oscal_dict(self) -> Dict[str, Any]:
         """Return a dictionary including the root wrapping object key."""
         class_name = self.__class__.__name__
+        data = self.model_dump(by_alias=True, exclude_none=True)
+        # For OscalBaseModel collection containers, unwrap the 'root' key to avoid extra nesting
+        if not isinstance(self, RootModel) and type(self).is_collection_container():
+            return {classname_to_alias(class_name, AliasMode.JSON): data.get('root', [])}
         # RootModel.model_dump() returns the root value directly; regular models return a field dict
-        return {classname_to_alias(class_name, AliasMode.JSON): self.model_dump(by_alias=True, exclude_none=True)}
+        return {classname_to_alias(class_name, AliasMode.JSON): data}
 
     def oscal_serialize_json_bytes(self, pretty: bool = False, wrapped: bool = True) -> bytes:
         """
@@ -305,7 +309,11 @@ class OscalBaseModel(TrestleBaseModel):
                     f'Invalid OSCAL file structure, oscal file '
                     f'does not have a single top level key wrapping it. It has {len(obj)} keys.'
                 )
-            parsed = cls.model_validate(obj[alias])
+            # For collection containers, validate by wrapping the array value in root key
+            if cls.is_collection_container():
+                parsed = cls.model_validate({'root': obj[alias]})
+            else:
+                parsed = cls.model_validate(obj[alias])
         except KeyError:
             raise err.TrestleError(f'Provided oscal file does not have top level key key: {alias}')
         except Exception as e:
