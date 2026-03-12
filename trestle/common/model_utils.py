@@ -444,6 +444,9 @@ class ModelUtils:
         if last_alias == '*':
             last_alias = path_parts[-2]
 
+        if last_alias.isnumeric():
+            raise err.TrestleError(f'Invalid json path {alias_path}: terminal index is not a valid alias')
+
         # generic model and not list, so return itself fixme doc
         if not utils.is_collection_field_type(model_type):
             return last_alias
