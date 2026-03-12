@@ -407,7 +407,9 @@ def constrain_oscal_version(class_list):
             if nstart >= 0:
                 nstr = line.find('str')
                 if nstr >= 0:
-                    cls.lines[i] = line.replace('str', f'Annotated[str, StringConstraints(pattern={OSCAL_VERSION_REGEX})]')
+                    cls.lines[i] = line.replace(
+                        'str', f'Annotated[str, StringConstraints(pattern={OSCAL_VERSION_REGEX})]'
+                    )
                     class_list[j] = cls
     return class_list
 
@@ -1034,22 +1036,14 @@ def kill_roots(file_classes):
                         # handle special cases - pydantic v2 uses Annotated[int, ...] instead of conint
                         if 'NonNegativeIntegerDatatype' in line:
                             line = line.replace(
-                                'NonNegativeIntegerDatatype',
-                                'Annotated[int, Field(ge=0, multiple_of=1)]',
-                                1,
+                                'NonNegativeIntegerDatatype', 'Annotated[int, Field(ge=0, multiple_of=1)]', 1
                             )
                         if 'PositiveIntegerDatatype' in line:
                             line = line.replace(
-                                'PositiveIntegerDatatype',
-                                'Annotated[int, Field(ge=1, multiple_of=1)]',
-                                1,
+                                'PositiveIntegerDatatype', 'Annotated[int, Field(ge=1, multiple_of=1)]', 1
                             )
                         if 'IntegerDatatype' in line:
-                            line = line.replace(
-                                'IntegerDatatype',
-                                'Annotated[int, Field(multiple_of=1)]',
-                                1,
-                            )
+                            line = line.replace('IntegerDatatype', 'Annotated[int, Field(multiple_of=1)]', 1)
                         if c.name == 'OscalVersion':
                             if any(token in line for token in [' __root__: StringDatatype']):
                                 line = line.replace(name, body, 1)
