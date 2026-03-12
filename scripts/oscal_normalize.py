@@ -182,17 +182,19 @@ from __future__ import annotations
 import re
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from typing import Annotated, Any, Dict, List, Optional, Union
 
-from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr, validator
+from pydantic import AnyUrl, ConfigDict, EmailStr, Field, RootModel, StringConstraints
+from pydantic import field_validator
 
-from trestle.core.base_model import OscalBaseModel
+from trestle.core.base_model import OscalBaseModel, OscalRootModel
 from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
 """
 
 oscal_validator_code = """
 
-    @validator('__root__')
+    @field_validator('root')
+    @classmethod
     def oscal_version_is_valid(cls, v):
         strict_version = False
         if not strict_version:
@@ -346,7 +348,7 @@ def find_forward_refs(class_list, orders):
     forward_refs = []
     for c in class_list:
         if c.name in forward_names:
-            forward_refs.append(f'{c.name}.update_forward_refs()')
+            forward_refs.append(f'{c.name}.model_rebuild()')
     return forward_refs
 
 
@@ -405,7 +407,7 @@ def constrain_oscal_version(class_list):
             if nstart >= 0:
                 nstr = line.find('str')
                 if nstr >= 0:
-                    cls.lines[i] = line.replace('str', f'constr(regex={OSCAL_VERSION_REGEX})')
+                    cls.lines[i] = line.replace('str', f'Annotated[str, StringConstraints(pattern={OSCAL_VERSION_REGEX})]')
                     class_list[j] = cls
     return class_list
 
@@ -423,8 +425,8 @@ def load_classes(fstem):
 
     with open(fname, 'r', encoding='utf8') as infile:
         for r in infile.readlines():
-            # collect forward references
-            if r.find('.update_forward_refs()') >= 0:
+            # collect forward references (model_rebuild calls)
+            if r.find('.model_rebuild()') >= 0 or r.find('.update_forward_refs()') >= 0:
                 forward_refs.append(r)
             elif r.find(class_header) == 0:  # start of new class
                 done_header = True
@@ -802,20 +804,8 @@ def bkwd_compat_1_0_4(fstem):
 
 
 def pydantic_interface_v1(fstem):
-    """Patch for trestle use of pydantic v1 interface from pydantic v2 lib."""
-    # This function should be removed once the v2 interface is supported in trestle.
-    lines = []
-    if fstem in additions.keys():
-        fname = f'trestle/oscal/{fstem}.py'
-        with open(fname, 'r') as f:
-            for line in f:
-                if line.startswith('from pydantic'):
-                    line = line.replace('pydantic', 'pydantic.v1')
-                    logger.debug(f'pydantic_interface_v1: file {fstem}.py modify "{line.strip()}"')
-                lines.append(line)
-        with open(fname, 'w') as f:
-            for line in lines:
-                f.write(line)
+    """No-op: pydantic v2 native interface is now used directly."""
+    pass
 
 
 def apply_eligible(line):
@@ -1041,13 +1031,25 @@ def kill_roots(file_classes):
                 for ii in range(1, len(c.lines)):
                     line = c.lines[ii]
                     for name, body in new_root_classes.items():
-                        # handle special cases
+                        # handle special cases - pydantic v2 uses Annotated[int, ...] instead of conint
                         if 'NonNegativeIntegerDatatype' in line:
-                            line = line.replace('NonNegativeIntegerDatatype', 'conint(ge=0, multiple_of=1)', 1)
+                            line = line.replace(
+                                'NonNegativeIntegerDatatype',
+                                'Annotated[int, Field(ge=0, multiple_of=1)]',
+                                1,
+                            )
                         if 'PositiveIntegerDatatype' in line:
-                            line = line.replace('PositiveIntegerDatatype', 'conint(ge=1, multiple_of=1)', 1)
+                            line = line.replace(
+                                'PositiveIntegerDatatype',
+                                'Annotated[int, Field(ge=1, multiple_of=1)]',
+                                1,
+                            )
                         if 'IntegerDatatype' in line:
-                            line = line.replace('IntegerDatatype', 'conint(multiple_of=1)', 1)
+                            line = line.replace(
+                                'IntegerDatatype',
+                                'Annotated[int, Field(multiple_of=1)]',
+                                1,
+                            )
                         if c.name == 'OscalVersion':
                             if any(token in line for token in [' __root__: StringDatatype']):
                                 line = line.replace(name, body, 1)

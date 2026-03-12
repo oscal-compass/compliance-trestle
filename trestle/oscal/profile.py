@@ -29,14 +29,14 @@ from datetime import datetime
 from enum import Enum
 from typing import Annotated, Any, Dict, List, Optional, Union
 
-from pydantic import AnyUrl, ConfigDict, EmailStr, Field, RootModel, StringConstraints
+from pydantic import ConfigDict, EmailStr, Field, RootModel, StringConstraints
 
-from trestle.core.base_model import OscalBaseModel
+from trestle.core.base_model import OscalBaseModel, OscalRootModel
 from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
 import trestle.oscal.common as common
 
 
-class WithId(RootModel[Annotated[str, StringConstraints(
+class WithId(OscalRootModel[Annotated[str, StringConstraints(
         pattern=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
     )]]):
@@ -140,7 +140,7 @@ class CombinationMethodValidValues(Enum):
     keep = 'keep'
 
 
-class BooleanDatatype(RootModel[bool]):
+class BooleanDatatype(OscalRootModel[bool]):
     root: bool = Field(..., description='A binary value that is either: true or false.')
 
 

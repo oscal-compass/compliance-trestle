@@ -245,7 +245,13 @@ class ModelUtils:
                 if utils.is_collection_field_type(model_type):
                     model_type = utils.get_inner_type(model_type)
                 else:
-                    model_type = model_type.alias_to_field_map()[alias].outer_type_
+                    ann = model_type.alias_to_field_map()[alias].field_info.annotation
+                    # Unwrap Optional[X] (Union[X, None]) — pydantic v2 annotations may be Optional
+                    if utils.get_origin(ann) is Union:
+                        non_none = [a for a in ann.__args__ if a is not type(None)]
+                        if len(non_none) == 1:
+                            ann = non_none[0]
+                    model_type = ann
 
         return model_type, full_alias
 
@@ -433,7 +439,13 @@ class ModelUtils:
                 if path_part not in field_map:
                     continue
                 field = field_map[path_part]
-                model_type = field.annotation
+                ann = field.field_info.annotation
+                # Unwrap Optional[X] (Union[X, None]) from pydantic v2 annotations
+                if utils.get_origin(ann) is Union:
+                    non_none = [a for a in ann.__args__ if a is not type(None)]
+                    if len(non_none) == 1:
+                        ann = non_none[0]
+                model_type = ann
             model_types.append(model_type)
 
         last_alias = path_parts[-1]
@@ -448,7 +460,12 @@ class ModelUtils:
         try:
             field_map = parent_model_type.alias_to_field_map()
             field = field_map[last_alias]
-            outer_type = field.annotation
+            outer_type = field.field_info.annotation
+            # Unwrap Optional[X] if needed
+            if utils.get_origin(outer_type) is Union:
+                non_none = [a for a in outer_type.__args__ if a is not type(None)]
+                if len(non_none) == 1:
+                    outer_type = non_none[0]
             inner_type = utils.get_inner_type(outer_type)
             inner_type_name = inner_type.__name__
             singular_alias = str_utils.classname_to_alias(inner_type_name, AliasMode.JSON)

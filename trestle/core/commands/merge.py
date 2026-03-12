@@ -174,7 +174,7 @@ class MergeCmd(CommandPlusDocs):
                 target_model_filename, trestle_root, collection_type
             )
 
-        if type(target_model_object).is_collection_container():
+        if not isinstance(target_model_object, list) and type(target_model_object).is_collection_container():
             trace.log('loaded object is collection container so set target model object to root contents')
             target_model_object = target_model_object.root
         # 4. Insert target model into destination model.

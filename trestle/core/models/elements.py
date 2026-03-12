@@ -134,7 +134,13 @@ class ElementPath:
                         'Wild card in unexpected position when trying to find class type.'
                         + ' Element path type lookup can only occur where a single type can be identified.'
                     )
-                prev_model = prev_model.alias_to_field_map()[current_element_str].field_info.annotation
+                annotation = prev_model.alias_to_field_map()[current_element_str].field_info.annotation
+                # Unwrap Optional[X] (Union[X, None]) introduced by pydantic v2 field annotations
+                if utils.get_origin(annotation) is Union:
+                    non_none = [a for a in annotation.__args__ if a is not type(None)]
+                    if len(non_none) == 1:
+                        annotation = non_none[0]
+                prev_model = annotation
         return prev_model
 
     def get_obm_wrapped_type(
@@ -579,7 +585,10 @@ class Element:
                 json_data = self._elem.oscal_serialize_json(pretty=pretty)
             else:
                 dynamic_passer = {}
-                dynamic_passer['TransientField'] = (self._elem.__class__, Field(default=None, alias=self._wrapper_alias))
+                dynamic_passer['TransientField'] = (
+                    self._elem.__class__,
+                    Field(default=None, alias=self._wrapper_alias),
+                )
                 wrapper_model = create_model('TransientModel', __base__=OscalBaseModel, **dynamic_passer)
                 wrapped_model = wrapper_model.model_construct(**{'TransientField': self._elem})
                 json_data = wrapped_model.oscal_serialize_json(pretty=pretty, wrapped=False)

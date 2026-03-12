@@ -55,9 +55,7 @@ def test_get_sample_value_by_type() -> None:
     assert gens.generate_sample_value_by_type(int, '') == 0
     assert gens.generate_sample_value_by_type(str, '') == const.REPLACE_ME
     assert gens.generate_sample_value_by_type(float, '') == 0.0
-    assert gens.generate_sample_value_by_type(
-        EmailStr, 'anything'
-    ) == 'dummy@sample.com'
+    assert gens.generate_sample_value_by_type(EmailStr, 'anything') == 'dummy@sample.com'
     assert gens.generate_sample_value_by_type(AnyUrl, 'anything') == 'https://sample.com/replaceme.html'
     with pytest.raises(err.TrestleError):
         gens.generate_sample_value_by_type(list, 'uuid')

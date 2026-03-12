@@ -42,13 +42,23 @@ class GenericByComponent(TrestleBaseModel):
     """Generic ByComponent for SSP and DefinedComponent."""
 
     # only in SSP
-    component_uuid: Annotated[str, StringConstraints(pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$')] = Field(    # noqa FS003
+    component_uuid: Annotated[
+        str,
+        StringConstraints(
+            pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        ),
+    ] = Field(  # noqa FS003
         ...,
         alias='component_uuid',
         description='A machine-oriented identifier reference to the component that is implemeting a given control.',
         title='Component Universally Unique Identifier Reference',
     )
-    uuid: Annotated[str, StringConstraints(pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$')] = Field(    # noqa FS003
+    uuid: Annotated[
+        str,
+        StringConstraints(
+            pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        ),
+    ] = Field(  # noqa FS003
         ...,
         # noqa E251
         description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this by-component entry elsewhere in this or other OSCAL instances. The locally defined UUID of the by-component entry can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',  # noqa E501
@@ -107,13 +117,23 @@ class GenericByComponent(TrestleBaseModel):
 class GenericStatement(TrestleBaseModel):
     """Generic statement for SSP and DefinedComp."""
 
-    statement_id: Annotated[str, StringConstraints(pattern=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$')] = Field(    # noqa FS003 E501
+    statement_id: Annotated[
+        str,
+        StringConstraints(
+            pattern=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+        ),
+    ] = Field(  # noqa FS003 E501
         ...,
         alias='statement_id',
         description='A human-oriented identifier reference to a control statement.',
         title='Control Statement Reference',
     )
-    uuid: Annotated[str, StringConstraints(pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$')] = Field(    # noqa FS003 F722
+    uuid: Annotated[
+        str,
+        StringConstraints(
+            pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        ),
+    ] = Field(  # noqa FS003 F722
         ...,
         # noqa E251
         description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this control statement elsewhere in this or other OSCAL instances. The UUID of the control statement in the source OSCAL instance is sufficient to reference the data item locally or globally (e.g., in an imported OSCAL instance).',  # noqa E501
@@ -156,13 +176,20 @@ class GenericStatement(TrestleBaseModel):
 class GenericComponent(TrestleBaseModel):
     """Generic component for SSP SystemComponent and DefinedComponent."""
 
-    uuid: Annotated[str, StringConstraints(pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$')] = Field(    # noqa FS003 F722
+    uuid: Annotated[
+        str,
+        StringConstraints(
+            pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        ),
+    ] = Field(  # noqa FS003 F722
         ...,
         # noqa E251
         description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this component elsewhere in this or other OSCAL instances. The locally defined UUID of the component can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',  # noqa E501
         title='Component Identifier',
     )
-    type: Annotated[str, StringConstraints(pattern=r'^\S(.*\S)?$')] = Field(    # noqa A003 F722..., description='A category describing the purpose of the component.', title='Component Type')
+    type: Annotated[str, StringConstraints(pattern=r'^\S(.*\S)?$')] = Field(  # noqa: A003 F722
+        ..., description='A category describing the purpose of the component.', title='Component Type'
+    )
     title: str = Field(..., description='A human readable name for the component.', title='Component Title')
     description: str = Field(
         ...,
@@ -244,7 +271,12 @@ class GenericComponent(TrestleBaseModel):
 class GenericSetParameter(TrestleBaseModel):
     """Generic SetParameter for SSP and DefinedComponent."""
 
-    param_id: Annotated[str, StringConstraints(pattern=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$')] = Field(    # noqa E501
+    param_id: Annotated[
+        str,
+        StringConstraints(
+            pattern=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+        ),
+    ] = Field(  # noqa E501
         ...,
         alias='param-id',
         # noqa E251
@@ -268,13 +300,23 @@ class GenericSetParameter(TrestleBaseModel):
 class GenericImplementedRequirement(TrestleBaseModel):
     """Generic ImplementedRequirement for SSP and DefinedComponent."""
 
-    uuid: Annotated[str, StringConstraints(pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$')] = Field(    # noqa FS003 F722
+    uuid: Annotated[
+        str,
+        StringConstraints(
+            pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        ),
+    ] = Field(  # noqa FS003 F722
         ...,
         # noqa E251
         description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference a specific control implementation elsewhere in this or other OSCAL instances. The locally defined UUID of the control implementation can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance).This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',  # noqa E501
         title='Control Implementation Identifier',
     )
-    control_id: Annotated[str, StringConstraints(pattern=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$')] = Field(    # noqa E501
+    control_id: Annotated[
+        str,
+        StringConstraints(
+            pattern=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+        ),
+    ] = Field(  # noqa E501
         ...,
         alias='control-id',
         # noqa E251
@@ -309,6 +351,13 @@ class GenericImplementedRequirement(TrestleBaseModel):
         """Convert component form of imp req to generic."""
         class_dict = copy.deepcopy(imp_req.__dict__)
         class_dict['control-id'] = class_dict.pop('control_id', None)
+        # In pydantic v2, comp.Statement and comp.SetParameter objects cannot be directly assigned
+        # to GenericStatement/GenericSetParameter fields; convert to dicts for pydantic to coerce.
+        for list_field in ('statements', 'set_parameters'):
+            if class_dict.get(list_field):
+                class_dict[list_field] = [
+                    s.model_dump(by_alias=False) if hasattr(s, 'model_dump') else s for s in class_dict[list_field]
+                ]
         return cls(**class_dict)
 
     def as_ssp(self) -> ossp.ImplementedRequirement:
@@ -327,7 +376,12 @@ class GenericControlImplementation(TrestleBaseModel):
     """Generic control implementation for SSP and CompDef."""
 
     # not in ssp
-    uuid: Annotated[str, StringConstraints(pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$')] = Field(    # noqa FS003 F722
+    uuid: Annotated[
+        str,
+        StringConstraints(
+            pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        ),
+    ] = Field(  # noqa FS003 F722
         ...,
         # noqa E251
         description='A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference a set of implemented controls elsewhere in this or other OSCAL instances. The locally defined UUID of the control implementation set can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',  # noqa E501
@@ -402,4 +456,4 @@ class GenericControlImplementation(TrestleBaseModel):
         return ossp.ControlImplementation(**class_dict)
 
 
-GenericComponent.update_forward_refs()
+GenericComponent.model_rebuild()

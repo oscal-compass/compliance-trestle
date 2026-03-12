@@ -17,7 +17,8 @@
 
 import pathlib
 import shutil
-from typing import Any, List, Optional, Type, Union
+import typing
+from typing import Annotated, Any, List, Optional, Type, Union
 
 from trestle.common import const, str_utils, type_utils
 from trestle.common.err import TrestleError
@@ -32,8 +33,18 @@ def model_type_is_too_granular(model_type: Type[Any]) -> bool:
     """Is an model_type too fine to split."""
     if type_utils.is_collection_field_type(model_type):
         return False
+    # Annotated[str, ...] constrained types (e.g. pydantic v2 StringConstraints) are primitives
+    if typing.get_origin(model_type) is Annotated:
+        inner = typing.get_args(model_type)[0]
+        return model_type_is_too_granular(inner)
     if hasattr(model_type, 'model_fields') and 'root' in model_type.model_fields:
+        root_annotation = model_type.model_fields['root'].annotation
+        # If the root field holds a collection (List/Dict), the model is not too granular
+        if type_utils.is_collection_field_type(root_annotation):
+            return False
         return True
+    if not hasattr(model_type, '__name__'):
+        return False
     if model_type.__name__ in ['str', 'int', 'float', 'datetime']:
         return True
     return False

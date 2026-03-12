@@ -34,11 +34,7 @@ class OSCALAssembly(TrestleBaseModel):
     schema. At this point in time a 'flat' model has been chosen rather than an tree.
     """
 
-    model_config = ConfigDict(
-        populate_by_name=True,
-        extra='forbid',
-        validate_assignment=True,
-    )
+    model_config = ConfigDict(populate_by_name=True, extra='forbid', validate_assignment=True)
 
     poam: Optional[o_poam.PlanOfActionAndMilestones] = None
     sar: Optional[o_ar.AssessmentResults] = None

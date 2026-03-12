@@ -41,6 +41,7 @@ def _get_root_model_info(field_type: Type[Any]) -> Tuple[Optional[Type[Any]], Op
     the v1 __root__: X pattern.  The root value is accessed via .root not .__root__.
     """
     from pydantic import RootModel
+
     root: Optional[Type[Any]] = None
     root_type: Optional[str] = None
     singular_type: Optional[Type[Any]] = None
@@ -79,6 +80,20 @@ def is_collection_field_type(field_type: Type[Any]) -> bool:
     _, root_type, _ = _get_root_model_info(field_type)
     if root_type == 'List':
         return True
+    # also handle dynamically-created OscalBaseModel subclasses with single `root: List[X]` field
+    # (created by get_stripped_model_type via create_model with __base__=OscalBaseModel)
+    try:
+        if (
+            isinstance(field_type, type)
+            and hasattr(field_type, 'model_fields')
+            and len(field_type.model_fields) == 1
+            and 'root' in field_type.model_fields
+        ):
+            root_ann = field_type.model_fields['root'].annotation
+            if get_origin(root_ann) is list:
+                return True
+    except Exception:
+        pass
     # Retrieves type from a type annotation
     origin_type = get_origin(field_type)
     return origin_type == list
@@ -100,6 +115,16 @@ def get_inner_type(collection_field_type: Union[Type[List[Any]], Type[Dict[str, 
         _, _, singular_type = _get_root_model_info(collection_field_type)
         if singular_type is not None:
             return singular_type
+        # dynamically-created OscalBaseModel subclass with single root: List[X] field
+        if (
+            isinstance(collection_field_type, type)
+            and hasattr(collection_field_type, 'model_fields')
+            and len(collection_field_type.model_fields) == 1
+            and 'root' in collection_field_type.model_fields
+        ):
+            root_ann = collection_field_type.model_fields['root'].annotation
+            if get_origin(root_ann) is list:
+                return typing_extensions.get_args(root_ann)[-1]
         return typing_extensions.get_args(collection_field_type)[-1]
     except Exception as e:
         logger.debug(e)

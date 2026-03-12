@@ -367,9 +367,11 @@ class Folders(AuthorCommonCommand):
         """Get templates for the given version."""
         templates = list(
             filter(
-                lambda p: file_utils.is_local_and_visible(p)
-                and p.is_file()  # noqa: W504 - conflicting lint and formatting
-                and (p.suffix == const.MARKDOWN_FILE_EXT or p.suffix == const.DRAWIO_FILE_EXT),
+                lambda p: (
+                    file_utils.is_local_and_visible(p)
+                    and p.is_file()  # noqa: W504 - conflicting lint and formatting
+                    and (p.suffix == const.MARKDOWN_FILE_EXT or p.suffix == const.DRAWIO_FILE_EXT)
+                ),
                 versioned_template_dir.iterdir(),
             )
         )

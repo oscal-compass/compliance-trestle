@@ -29,10 +29,10 @@ from datetime import datetime
 from enum import Enum
 from typing import Annotated, Any, Dict, List, Optional, Union
 
-from pydantic import AnyUrl, ConfigDict, EmailStr, Field, RootModel, StringConstraints
+from pydantic import ConfigDict, EmailStr, Field, RootModel, StringConstraints
 from pydantic import field_validator
 
-from trestle.core.base_model import OscalBaseModel
+from trestle.core.base_model import OscalBaseModel, OscalRootModel
 from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
 
 
@@ -51,7 +51,7 @@ class WithinDateRange(OscalBaseModel):
     )
 
 
-class UUIDDatatype(RootModel[Annotated[str, StringConstraints(
+class UUIDDatatype(OscalRootModel[Annotated[str, StringConstraints(
         pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     )]]):
     root: Annotated[str, StringConstraints(
@@ -59,7 +59,7 @@ class UUIDDatatype(RootModel[Annotated[str, StringConstraints(
     )] = Field(..., description="A type 4 ('random' or 'pseudorandom') or type 5 UUID per RFC 4122.")
 
 
-class URIReferenceDatatype(RootModel[str]):
+class URIReferenceDatatype(OscalRootModel[str]):
     root: str = Field(
         ...,
         description=
@@ -67,11 +67,11 @@ class URIReferenceDatatype(RootModel[str]):
     )
 
 
-class URIDatatype(RootModel[AnyUrl]):
-    root: AnyUrl = Field(..., description='A universal resource identifier (URI) formatted according to RFC3986.')
+class URIDatatype(OscalRootModel[str]):
+    root: str = Field(..., description='A universal resource identifier (URI) formatted according to RFC3986.')
 
 
-class TokenDatatype(RootModel[Annotated[str, StringConstraints(
+class TokenDatatype(OscalRootModel[Annotated[str, StringConstraints(
         pattern=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
     )]]):
@@ -114,7 +114,7 @@ class ThreatId(OscalBaseModel):
         description='An optional location for the threat data, from which this ID originates.',
         title='Threat Information Resource Reference'
     )
-    id: AnyUrl
+    id: str
 
 
 class Test(OscalBaseModel):
@@ -174,7 +174,7 @@ class SubjectReferenceValidValues(Enum):
     resource = 'resource'
 
 
-class StringDatatype(RootModel[Annotated[str, StringConstraints(pattern=r'^\S(.*\S)?$')]]):
+class StringDatatype(OscalRootModel[Annotated[str, StringConstraints(pattern=r'^\S(.*\S)?$')]]):
     root: Annotated[str, StringConstraints(pattern=r'^\S(.*\S)?$')] = Field(
         ...,
         description=
@@ -270,7 +270,7 @@ class SelectControlById(OscalBaseModel):
     )
 
 
-class RoleId(RootModel[TokenDatatype]):
+class RoleId(OscalRootModel[TokenDatatype]):
     root: TokenDatatype = Field(..., description='Reference to a role by UUID.', title='Role Identifier Reference')
 
 
@@ -283,13 +283,13 @@ class RiskStatusValidValues(Enum):
     closed = 'closed'
 
 
-class RiskStatus(RootModel[Union[TokenDatatype, RiskStatusValidValues]]):
+class RiskStatus(OscalRootModel[Union[TokenDatatype, RiskStatusValidValues]]):
     root: Union[TokenDatatype, RiskStatusValidValues] = Field(
         ..., description='Describes the status of the associated risk.', title='Risk Status'
     )
 
 
-class Remarks(RootModel[str]):
+class Remarks(OscalRootModel[str]):
     root: str = Field(..., description='Additional commentary about the containing object.', title='Remarks')
 
 
@@ -366,7 +366,7 @@ class Property(OscalBaseModel):
     )]] = Field(
         None, description='A unique identifier for a property.', title='Property Universally Unique Identifier'
     )
-    ns: Optional[AnyUrl] = Field(
+    ns: Optional[str] = Field(
         None,
         description=
         "A namespace qualifying the property's name. This allows different organizations to associate distinct semantics with the same name.",
@@ -426,7 +426,7 @@ class PortRange(OscalBaseModel):
     )
 
 
-class PartyUuid(RootModel[UUIDDatatype]):
+class PartyUuid(OscalRootModel[UUIDDatatype]):
     root: UUIDDatatype = Field(
         ..., description='Reference to a party by UUID.', title='Party Universally Unique Identifier Reference'
     )
@@ -437,7 +437,7 @@ class PartyTypeValidValues(Enum):
     organization = 'organization'
 
 
-class ParameterValue(RootModel[StringDatatype]):
+class ParameterValue(OscalRootModel[StringDatatype]):
     root: StringDatatype = Field(..., description='A parameter value or set of values.', title='Parameter Value')
 
 
@@ -464,7 +464,7 @@ class ParameterConstraint(OscalBaseModel):
     tests: Optional[List[Test]] = Field(None)
 
 
-class OscalVersion(RootModel[Annotated[str, StringConstraints(pattern=r'^\S(.*\S)?$')]]):
+class OscalVersion(OscalRootModel[Annotated[str, StringConstraints(pattern=r'^\S(.*\S)?$')]]):
     root: Annotated[str, StringConstraints(pattern=r'^\S(.*\S)?$')] = Field(
         ...,
         description='The OSCAL model version the document was authored against and will conform to as valid.',
@@ -602,7 +602,7 @@ class LoggedBy(OscalBaseModel):
     )
 
 
-class LocationUuid(RootModel[UUIDDatatype]):
+class LocationUuid(OscalRootModel[UUIDDatatype]):
     root: UUIDDatatype = Field(
         ..., description='Reference to a location by UUID.', title='Location Universally Unique Identifier Reference'
     )
@@ -658,7 +658,7 @@ class Lifecycle(Enum):
     completed = 'completed'
 
 
-class JsonSchemaDirective(RootModel[URIReferenceDatatype]):
+class JsonSchemaDirective(OscalRootModel[URIReferenceDatatype]):
     root: URIReferenceDatatype = Field(
         ...,
         description='A JSON Schema directive to bind a specific schema to its document instance.',
@@ -666,7 +666,7 @@ class JsonSchemaDirective(RootModel[URIReferenceDatatype]):
     )
 
 
-class IntegerDatatype(RootModel[int]):
+class IntegerDatatype(OscalRootModel[int]):
     root: int = Field(..., description='A whole number value.')
 
 
@@ -731,7 +731,7 @@ class HowManyValidValues(Enum):
 HowMany = HowManyValidValues
 
 
-class FunctionPerformed(RootModel[StringDatatype]):
+class FunctionPerformed(OscalRootModel[StringDatatype]):
     root: StringDatatype = Field(
         ...,
         description='Describes a function performed for a given authorized privilege by this user class.',
@@ -830,7 +830,7 @@ class EmailAddressDatatype(OscalBaseModel):
     """
 
 
-class EmailAddress(RootModel[EmailStr]):
+class EmailAddress(OscalRootModel[EmailStr]):
     root: EmailStr = Field(
         ..., description='An email address as defined by RFC 5322 Section 3.4.1.', title='Email Address'
     )
@@ -874,7 +874,7 @@ class Dependency(OscalBaseModel):
     remarks: Optional[str] = None
 
 
-class DateTimeWithTimezoneDatatype(RootModel[datetime]):
+class DateTimeWithTimezoneDatatype(OscalRootModel[datetime]):
     root: datetime = Field(..., description='A string representing a point in time with a required timezone.')
 
 
@@ -930,7 +930,7 @@ class Citation(OscalBaseModel):
     links: Optional[List[Link]] = Field(None)
 
 
-class Base64Datatype(RootModel[Annotated[str, StringConstraints(
+class Base64Datatype(OscalRootModel[Annotated[str, StringConstraints(
         pattern=r'^[0-9A-Za-z+/]+={0,2}$'
     )]]):
     root: Annotated[str, StringConstraints(
@@ -1048,7 +1048,7 @@ class AssessmentPart(OscalBaseModel):
                     description="A textual label that uniquely identifies the part's semantic type.",
                     title='Part Name'
                 )
-    ns: Optional[AnyUrl] = Field(
+    ns: Optional[str] = Field(
         None,
         description=
         "A namespace qualifying the part's name. This allows different organizations to associate distinct semantics with the same name.",
@@ -1120,11 +1120,11 @@ class Address(OscalBaseModel):
     )
 
 
-class AddrLine(RootModel[StringDatatype]):
+class AddrLine(OscalRootModel[StringDatatype]):
     root: StringDatatype = Field(..., description='A single line of an address.', title='Address line')
 
 
-class Version(RootModel[StringDatatype]):
+class Version(OscalRootModel[StringDatatype]):
     root: StringDatatype = Field(
         ...,
         description=
@@ -1194,7 +1194,7 @@ class Location(OscalBaseModel):
     address: Optional[Address] = None
     email_addresses: Optional[List[EmailAddress]] = Field(None, alias='email-addresses')
     telephone_numbers: Optional[List[TelephoneNumber]] = Field(None, alias='telephone-numbers')
-    urls: Optional[List[AnyUrl]] = Field(None)
+    urls: Optional[List[str]] = Field(None)
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
     remarks: Optional[str] = None
@@ -1248,7 +1248,7 @@ class SystemId(OscalBaseModel):
 
     model_config = ConfigDict(extra='forbid')
 
-    identifier_type: Optional[Union[AnyUrl, IdentifierType]] = Field(
+    identifier_type: Optional[Union[str, IdentifierType]] = Field(
         None,
         alias='identifier-type',
         description='Identifies the identification system from which the provided identifier was assigned.',
@@ -1534,7 +1534,7 @@ class RelevantEvidence(OscalBaseModel):
     remarks: Optional[str] = None
 
 
-class Published(RootModel[DateTimeWithTimezoneDatatype]):
+class Published(OscalRootModel[DateTimeWithTimezoneDatatype]):
     root: DateTimeWithTimezoneDatatype = Field(
         ..., description='The date and time the document was last made available.', title='Publication Timestamp'
     )
@@ -1669,7 +1669,7 @@ class Part(OscalBaseModel):
         "A textual label that uniquely identifies the part's semantic type, which exists in a value space qualified by the ns.",
         title='Part Name'
     )
-    ns: Optional[AnyUrl] = Field(
+    ns: Optional[str] = Field(
         None,
         description=
         "An optional namespace qualifying the part's name. This allows different organizations to associate distinct semantics with the same name.",
@@ -1817,7 +1817,7 @@ class OriginActor(OscalBaseModel):
     links: Optional[List[Link]] = Field(None)
 
 
-class LastModified(RootModel[DateTimeWithTimezoneDatatype]):
+class LastModified(OscalRootModel[DateTimeWithTimezoneDatatype]):
     root: DateTimeWithTimezoneDatatype = Field(
         ...,
         description='The date and time the document was last stored for later retrieval.',
@@ -2174,7 +2174,7 @@ class Action(OscalBaseModel):
     )] = Field(
         ..., description='The type of action documented by the assembly, such as an approval.', title='Action Type'
     )
-    system: AnyUrl = Field(..., description='Specifies the action type system used.', title='Action Type System')
+    system: str = Field(..., description='Specifies the action type system used.', title='Action Type System')
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
     responsible_parties: Optional[List[ResponsibleParty]] = Field(None, alias='responsible-parties')

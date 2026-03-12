@@ -29,15 +29,15 @@ from datetime import datetime
 from enum import Enum
 from typing import Annotated, Any, Dict, List, Optional, Union
 
-from pydantic import AnyUrl, ConfigDict, EmailStr, Field, RootModel, StringConstraints
+from pydantic import ConfigDict, EmailStr, Field, RootModel, StringConstraints
 
-from trestle.core.base_model import OscalBaseModel
+from trestle.core.base_model import OscalBaseModel, OscalRootModel
 from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
 import trestle.oscal.common as common
 from trestle.oscal.common import Status, SystemComponent
 
 
-class AdjustmentJustification(RootModel[str]):
+class AdjustmentJustification(OscalRootModel[str]):
     root: str = Field(
         ...,
         description=
@@ -75,7 +75,7 @@ class SetParameter(OscalBaseModel):
     remarks: Optional[str] = None
 
 
-class Selected(RootModel[Annotated[str, StringConstraints(pattern=r'^\S(.*\S)?$')]]):
+class Selected(OscalRootModel[Annotated[str, StringConstraints(pattern=r'^\S(.*\S)?$')]]):
     root: Annotated[str, StringConstraints(pattern=r'^\S(.*\S)?$')] = Field(
         ...,
         description='The selected (Confidentiality, Integrity, or Availability) security impact level.',
@@ -312,7 +312,7 @@ class Diagram(OscalBaseModel):
     remarks: Optional[str] = None
 
 
-class DateDatatype(RootModel[Annotated[str, StringConstraints(
+class DateDatatype(OscalRootModel[Annotated[str, StringConstraints(
         pattern=
         r'^(((2000|2400|2800|(19|2[0-9](0[48]|[2468][048]|[13579][26])))-02-29)|(((19|2[0-9])[0-9]{2})-02-(0[1-9]|1[0-9]|2[0-8]))|(((19|2[0-9])[0-9]{2})-(0[13578]|10|12)-(0[1-9]|[12][0-9]|3[01]))|(((19|2[0-9])[0-9]{2})-(0[469]|11)-(0[1-9]|[12][0-9]|30)))(Z|(-((0[0-9]|1[0-2]):00|0[39]:30)|\+((0[0-9]|1[0-4]):00|(0[34569]|10):30|(0[58]|12):45)))?$'
     )]]):
@@ -322,7 +322,7 @@ class DateDatatype(RootModel[Annotated[str, StringConstraints(
     )] = Field(..., description='A string representing a 24-hour period with an optional timezone.')
 
 
-class DateAuthorized(RootModel[DateDatatype]):
+class DateAuthorized(OscalRootModel[DateDatatype]):
     root: DateDatatype = Field(
         ..., description='The date the system received its authorization.', title='System Authorization Date'
     )
@@ -349,7 +349,7 @@ class Categorization(OscalBaseModel):
 
     model_config = ConfigDict(extra='forbid')
 
-    system: Union[AnyUrl, System] = Field(
+    system: Union[str, System] = Field(
         ...,
         description='Specifies the information type identification system used.',
         title='Information Type Identification System'
@@ -401,7 +401,7 @@ class ByComponent(OscalBaseModel):
     remarks: Optional[str] = None
 
 
-class Base(RootModel[Annotated[str, StringConstraints(pattern=r'^\S(.*\S)?$')]]):
+class Base(OscalRootModel[Annotated[str, StringConstraints(pattern=r'^\S(.*\S)?$')]]):
     root: Annotated[str, StringConstraints(pattern=r'^\S(.*\S)?$')] = Field(
         ...,
         description='The prescribed base (Confidentiality, Integrity, or Availability) security impact level.',

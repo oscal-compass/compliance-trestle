@@ -34,7 +34,7 @@ from typing import Any, Dict, List, Optional, Type, cast
 
 import orjson
 
-from pydantic import ConfigDict, Field, RootModel, create_model
+from pydantic import AnyUrl, ConfigDict, Field, RootModel, create_model
 from pydantic_core import PydanticUndefined
 
 from ruamel.yaml import YAML
@@ -78,7 +78,9 @@ def _orjson_default(obj: Any) -> Any:
     """Default handler for orjson serialization of non-standard types."""
     if isinstance(obj, datetime.datetime):
         return robust_datetime_serialization(obj)
-    raise TypeError(f'Object of type {type(obj)} is not JSON serializable')
+    if isinstance(obj, AnyUrl):
+        return str(obj)
+    raise TypeError(f'Object of type {type(obj).__name__} is not JSON serializable')
 
 
 class OscalBaseModel(TrestleBaseModel):
@@ -99,6 +101,18 @@ class OscalBaseModel(TrestleBaseModel):
         # Validate on assignment of variables to ensure no escapes
         validate_assignment=True,
     )
+
+    def __eq__(self, other: Any) -> bool:
+        """Compare two OscalBaseModel instances, treating stripped model variants of the same type as equal."""
+        if not isinstance(other, OscalBaseModel):
+            return NotImplemented
+        # If both have the same class, use the standard pydantic comparison
+        if type(self) is type(other):
+            return super().__eq__(other)
+        # For stripped model variants (same __name__, different class objects), compare by data
+        if self.__class__.__name__ == other.__class__.__name__:
+            return self.model_dump(by_alias=True) == other.model_dump(by_alias=True)
+        return False
 
     @classmethod
     def create_stripped_model_type(
@@ -424,3 +438,18 @@ class OscalBaseModel(TrestleBaseModel):
         if not cls.is_collection_container():
             raise err.TrestleError('OscalBaseModel is not wrapping a collection type')
         return get_origin(cls.model_fields['root'].annotation)
+
+
+class OscalRootModel(RootModel):
+    """Base class for OSCAL root-model types, providing copy_to/copy_from analogous to OscalBaseModel."""
+
+    def copy_to(self, new_oscal_type: Type['OscalRootModel']) -> 'OscalRootModel':
+        """Copy root value to a compatible root-model type."""
+        if issubclass(new_oscal_type, RootModel):
+            return new_oscal_type.model_validate(self.root)
+        raise err.TrestleError(f'Cannot copy_to {new_oscal_type.__name__} from {self.__class__.__name__}')
+
+    def copy_from(self, existing_oscal_object: 'OscalRootModel') -> None:
+        """Copy root value from another root-model object."""
+        recast = existing_oscal_object.copy_to(self.__class__)
+        self.root = recast.root

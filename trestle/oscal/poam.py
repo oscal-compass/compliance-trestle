@@ -29,7 +29,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Annotated, Any, Dict, List, Optional, Union
 
-from pydantic import AnyUrl, ConfigDict, EmailStr, Field, RootModel, StringConstraints
+from pydantic import ConfigDict, EmailStr, Field, RootModel, StringConstraints
 
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
