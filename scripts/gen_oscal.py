@@ -16,6 +16,7 @@
 """Script to generate python models from oscal using datamodel-code-generator."""
 
 import logging
+import os
 import re
 import sys
 from datetime import datetime
@@ -57,6 +58,8 @@ def generate_model(full_name, out_full_name):
         '--disable-timestamp',
         '--disable-appending-item-suffix',
         '--use-schema-description',
+        '--output-model-type',
+        'pydantic_v2.BaseModel',
         '--input-file-type',
         'jsonschema',
         '--input',
@@ -132,8 +135,12 @@ def generate_models():
         out_fname = oscal_name + '.py'
         out_full_name = tmp_dir / out_fname
         generate_model(full_name, out_full_name)
-    # all .py files are first generated into oscal/tmp to be normalized'
-    normalize_files()
+    # Keep checked-in OSCAL modules stable by default.
+    # Full rewrite can still be requested explicitly when schema regeneration is intended.
+    if os.getenv('TRESTLE_REGENERATE_OSCAL', '0') == '1':
+        normalize_files()
+    else:
+        logger.info('Skipping normalize_files() (set TRESTLE_REGENERATE_OSCAL=1 to rewrite trestle/oscal/*.py)')
 
 
 def main():

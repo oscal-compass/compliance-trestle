@@ -1074,7 +1074,7 @@ def test_profile_resolve_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
 def test_profile_inherit(tmp_trestle_dir: pathlib.Path):
     """Test profile initialization and seeding for various use cases."""
     output_profile = 'my_profile'
-    excluded = prof.WithId(__root__='ac-1')
+    excluded = prof.WithId(root='ac-1')
 
     # Test with a profile and ssp that has all controls with exported information
     args = test_utils.setup_for_inherit(tmp_trestle_dir, 'simple_test_profile', output_profile, 'leveraged_ssp')
@@ -1247,7 +1247,7 @@ def test_profile_generate_assesment_objectives(tmp_trestle_dir: pathlib.Path, mo
 
     # create with-id to load at-2 control with its corresponding assesment objectives
     with_id_at_2 = gens.generate_sample_model(prof.WithId)
-    with_id_at_2.__root__ = 'at-2'
+    with_id_at_2.root = 'at-2'
 
     profile.imports[0].include_controls[0].with_ids.append(with_id_at_2)
 

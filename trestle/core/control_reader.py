@@ -315,7 +315,7 @@ class ControlReader:
                 values = param_dict.get(const.VALUES, [])
                 comp_values = param_dict.get(const.COMPONENT_VALUES, [])
                 values = comp_values if comp_values else values
-                set_param = ossp.SetParameter(param_id=param_dict['name'], values=values)
+                set_param = comp.SetParameter(param_id=param_dict['name'], values=values)
                 imp_req.set_parameters.append(set_param)
         imp_req.statements = none_if_empty(list(statement_map.values()))
         imp_req.set_parameters = none_if_empty(imp_req.set_parameters)

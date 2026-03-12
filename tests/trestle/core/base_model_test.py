@@ -94,14 +94,14 @@ def test_no_timezone_exception() -> None:
     """Test that an exception occurs when no timezone is passed in datetime."""
     no_tz_catalog = simple_catalog()
     with pytest.raises(Exception):
-        jsoned_catalog = no_tz_catalog.json(exclude_none=True, by_alias=True, indent=2)
+        jsoned_catalog = no_tz_catalog.model_dump_json(exclude_none=True, by_alias=True, indent=2)
         type(jsoned_catalog)
 
 
 def test_with_timezone() -> None:
     """Test where serialzation should work."""
     tz_catalog = simple_catalog_with_tz()
-    jsoned_catalog = tz_catalog.json(exclude_none=True, by_alias=True, indent=2)
+    jsoned_catalog = tz_catalog.model_dump_json(exclude_none=True, by_alias=True, indent=2)
 
     popo_json = json.loads(jsoned_catalog)
     time = popo_json['metadata']['last-modified']
@@ -143,7 +143,7 @@ def test_broken_tz() -> None:
     )
     catalog = oscatalog.Catalog(metadata=m, uuid=str(uuid4()))
     with pytest.raises(Exception):
-        jsoned_catalog = catalog.json(exclude_none=True, by_alias=True, indent=2)
+        jsoned_catalog = catalog.model_dump_json(exclude_none=True, by_alias=True, indent=2)
         type(jsoned_catalog)
 
 
@@ -256,7 +256,7 @@ def test_copy_to() -> None:
     # component.Remarks (type str)
     # poam.RiskStatus (type str)
     # note the testing conduction
-    remark = common.Remarks(__root__='hello')
+    remark = common.Remarks(root='hello')
     _ = remark.copy_to(common.RiskStatus)
 
 

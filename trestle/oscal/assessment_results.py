@@ -27,9 +27,9 @@ from __future__ import annotations
 import re
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from typing import Annotated, Any, Dict, List, Optional, Union
 
-from pydantic.v1 import AnyUrl, EmailStr, Extra, Field, conint, constr, validator
+from pydantic import ConfigDict, EmailStr, Field, RootModel, StringConstraints
 
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
@@ -47,8 +47,7 @@ class LocalDefinitions1(OscalBaseModel):
     Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.
     """
 
-    class Config:
-        extra = Extra.forbid
+    model_config = ConfigDict(extra='forbid')
 
     components: Optional[List[common.SystemComponent]] = Field(None)
     inventory_items: Optional[List[common.InventoryItem]] = Field(None, alias='inventory-items')
@@ -62,8 +61,7 @@ class LocalDefinitions(OscalBaseModel):
     Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.
     """
 
-    class Config:
-        extra = Extra.forbid
+    model_config = ConfigDict(extra='forbid')
 
     objectives_and_methods: Optional[List[common.LocalObjective]] = Field(None, alias='objectives-and-methods')
     activities: Optional[List[common.Activity]] = Field(None)
@@ -75,8 +73,7 @@ class ImportAp(OscalBaseModel):
     Used by assessment-results to import information about the original plan for assessing the system.
     """
 
-    class Config:
-        extra = Extra.forbid
+    model_config = ConfigDict(extra='forbid')
 
     href: str = Field(
         ...,
@@ -91,12 +88,11 @@ class Entry1(OscalBaseModel):
     Identifies the result of an action and/or task that occurred as part of executing an assessment plan or an assessment event that occurred in producing the assessment results.
     """
 
-    class Config:
-        extra = Extra.forbid
+    model_config = ConfigDict(extra='forbid')
 
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
+    uuid: Annotated[str, StringConstraints(
+        pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    )] = Field(
         ...,
         description=
         'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference an assessment event in this or other OSCAL instances. The locally defined UUID of the assessment log entry can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
@@ -125,8 +121,7 @@ class Attestation(OscalBaseModel):
     A set of textual statements, typically written by the assessor.
     """
 
-    class Config:
-        extra = Extra.forbid
+    model_config = ConfigDict(extra='forbid')
 
     responsible_parties: Optional[List[common.ResponsibleParty]] = Field(None, alias='responsible-parties')
     parts: List[common.AssessmentPart] = Field(...)
@@ -137,8 +132,7 @@ class AssessmentLog(OscalBaseModel):
     A log of all assessment-related actions taken.
     """
 
-    class Config:
-        extra = Extra.forbid
+    model_config = ConfigDict(extra='forbid')
 
     entries: List[Entry1] = Field(...)
 
@@ -148,12 +142,11 @@ class Result(OscalBaseModel):
     Used by the assessment results and POA&M. In the assessment results, this identifies all of the assessment observations and findings, initial and residual risks, deviations, and disposition. In the POA&M, this identifies initial and residual risks, deviations, and disposition.
     """
 
-    class Config:
-        extra = Extra.forbid
+    model_config = ConfigDict(extra='forbid')
 
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
+    uuid: Annotated[str, StringConstraints(
+        pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    )] = Field(
         ...,
         description=
         'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this set of results in this or other OSCAL instances. The locally defined UUID of the assessment result can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
@@ -202,12 +195,11 @@ class AssessmentResults(OscalBaseModel):
     Security assessment results, such as those provided by a FedRAMP assessor in the FedRAMP Security Assessment Report.
     """
 
-    class Config:
-        extra = Extra.forbid
+    model_config = ConfigDict(extra='forbid')
 
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
+    uuid: Annotated[str, StringConstraints(
+        pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    )] = Field(
         ...,
         description=
         'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this assessment results instance in this or other OSCAL instances. The locally defined UUID of the assessment result can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',

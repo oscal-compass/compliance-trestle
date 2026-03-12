@@ -15,7 +15,7 @@
 
 from typing import Dict, Optional
 
-from pydantic.v1 import Extra
+from pydantic import ConfigDict
 
 import trestle.oscal.assessment_plan as o_ap
 import trestle.oscal.assessment_results as o_ar
@@ -34,6 +34,8 @@ class OSCALAssembly(TrestleBaseModel):
     schema. At this point in time a 'flat' model has been chosen rather than an tree.
     """
 
+    model_config = ConfigDict(populate_by_name=True, extra='forbid', validate_assignment=True)
+
     poam: Optional[o_poam.PlanOfActionAndMilestones] = None
     sar: Optional[o_ar.AssessmentResults] = None
     sap: Optional[o_ap.AssessmentPlan] = None
@@ -41,12 +43,3 @@ class OSCALAssembly(TrestleBaseModel):
     profiles: Optional[Dict[str, o_profile.Profile]] = None
     catalogs: Optional[Dict[str, o_catalog.Catalog]] = None
     components: Optional[Dict[str, o_component.ComponentDefinition]] = None
-
-    class Config:
-        """Pydantic config overrides."""
-
-        allow_population_by_field_name = True
-        # Enforce strict schema
-        extra = Extra.forbid
-        # Validate on assignment of variables to ensure no escapes
-        validate_assignment = True

@@ -29,13 +29,13 @@ I can write a comment in here and you can even edit on the same line.
 import datetime
 import logging
 import pathlib
-from typing import Any, Dict, List, Optional, Type, cast
+import types
+from typing import Any, Dict, List, Optional, Type, Union, cast, get_args
 
 import orjson
 
-from pydantic.v1 import Extra, Field, create_model
-from pydantic.v1.fields import ModelField
-from pydantic.v1.parse import load_file
+from pydantic import AnyUrl, ConfigDict, Field, RootModel, create_model
+from pydantic_core import PydanticUndefined
 
 from ruamel.yaml import YAML
 
@@ -74,6 +74,15 @@ def robust_datetime_serialization(input_dt: datetime.datetime) -> str:
     return input_dt.astimezone(datetime.timezone.utc).isoformat(timespec='milliseconds')
 
 
+def _orjson_default(obj: Any) -> Any:
+    """Default handler for orjson serialization of non-standard types."""
+    if isinstance(obj, datetime.datetime):
+        return robust_datetime_serialization(obj)
+    if isinstance(obj, AnyUrl):
+        return str(obj)
+    raise TypeError(f'Object of type {type(obj).__name__} is not JSON serializable')
+
+
 class OscalBaseModel(TrestleBaseModel):
     """
     Trestle defined pydantic base model for use with OSCAL pydantic dataclasses.
@@ -83,20 +92,27 @@ class OscalBaseModel(TrestleBaseModel):
     2. Provides utility functions for trestle which are specific to OSCAL and the naming schema associated with it.
     """
 
-    class Config:
-        """Overriding configuration class for pydantic base model, for use with OSCAL data classes."""
-
-        json_loads = orjson.loads
+    model_config = ConfigDict(
         # TODO: json_dumps with orjson.dumps see #840
-
-        json_encoders = {datetime.datetime: lambda x: robust_datetime_serialization(x)}
-        allow_population_by_field_name = True
-
+        json_encoders={datetime.datetime: lambda x: robust_datetime_serialization(x)},
+        populate_by_name=True,
         # Enforce strict schema
-        extra = Extra.forbid
-
+        extra='forbid',
         # Validate on assignment of variables to ensure no escapes
-        validate_assignment = True
+        validate_assignment=True,
+    )
+
+    def __eq__(self, other: Any) -> bool:
+        """Compare two OscalBaseModel instances, treating stripped model variants of the same type as equal."""
+        if not isinstance(other, OscalBaseModel):
+            return NotImplemented
+        # If both have the same class, use the standard pydantic comparison
+        if type(self) is type(other):
+            return super().__eq__(other)
+        # For stripped model variants (same __name__, different class objects), compare by data
+        if self.__class__.__name__ == other.__class__.__name__:
+            return self.model_dump(by_alias=True) == other.model_dump(by_alias=True)
+        return False
 
     @classmethod
     def create_stripped_model_type(
@@ -135,23 +151,22 @@ class OscalBaseModel(TrestleBaseModel):
             except KeyError as e:
                 raise err.TrestleError(f'Field {str(e)} does not exist in the model')
 
-        current_fields = cls.__fields__
         new_fields_for_model = {}
         # Build field list
-        for current_mfield in current_fields.values():
-            if current_mfield.name in excluded_fields:
+        for field_name, field_info in cls.model_fields.items():
+            if field_name in excluded_fields:
                 continue
-            # Validate name in the field
-            # Cehcke behaviour with an alias
-            if current_mfield.required:
-                new_fields_for_model[current_mfield.name] = (
-                    current_mfield.outer_type_,
-                    Field(..., title=current_mfield.name, alias=current_mfield.alias),
+            field_alias = field_info.alias or field_name
+            is_required = field_info.default is PydanticUndefined and field_info.default_factory is None
+            if is_required:
+                new_fields_for_model[field_name] = (
+                    field_info.annotation,
+                    Field(..., title=field_name, alias=field_alias),
                 )
             else:
-                new_fields_for_model[current_mfield.name] = (
-                    Optional[current_mfield.outer_type_],
-                    Field(None, title=current_mfield.name, alias=current_mfield.alias),
+                new_fields_for_model[field_name] = (
+                    Optional[field_info.annotation],
+                    Field(None, title=field_name, alias=field_alias),
                 )
         new_model = create_model(cls.__name__, __base__=OscalBaseModel, **new_fields_for_model)  # type: ignore
         # TODO: This typing cast should NOT be necessary. Potentially fixable with a fix to pydantic. Issue #175
@@ -168,7 +183,7 @@ class OscalBaseModel(TrestleBaseModel):
         """Get attribute value by field alias."""
         # TODO: can this be restricted beyond Any easily.
         attr_field = self.get_field_by_alias(attr_alias)
-        if isinstance(attr_field, ModelField):
+        if attr_field is not None:
             return getattr(self, attr_field.name, None)
 
         return None
@@ -196,9 +211,9 @@ class OscalBaseModel(TrestleBaseModel):
 
         # remaining values
         remaining_values = {}
-        for field in self.__fields__.values():
-            if field.name in stripped_class.__fields__:
-                remaining_values[field.name] = self.__dict__[field.name]
+        for field_name in self.model_fields:
+            if field_name in stripped_class.model_fields:
+                remaining_values[field_name] = getattr(self, field_name)
 
         # create stripped model instance
         # TODO: Not sure if we can avoid type escapes here
@@ -209,14 +224,12 @@ class OscalBaseModel(TrestleBaseModel):
     def oscal_dict(self) -> Dict[str, Any]:
         """Return a dictionary including the root wrapping object key."""
         class_name = self.__class__.__name__
-        result = {}
-        raw_dict = self.dict(by_alias=True, exclude_none=True)
-        # Additional check to avoid root serialization
-        if '__root__' in raw_dict.keys():
-            result[classname_to_alias(class_name, AliasMode.JSON)] = raw_dict['__root__']
-        else:
-            result[classname_to_alias(class_name, AliasMode.JSON)] = raw_dict
-        return result
+        data = self.model_dump(by_alias=True, exclude_none=True)
+        # For OscalBaseModel collection containers, unwrap the 'root' key to avoid extra nesting
+        if not isinstance(self, RootModel) and type(self).is_collection_container():
+            return {classname_to_alias(class_name, AliasMode.JSON): data.get('root', [])}
+        # RootModel.model_dump() returns the root value directly; regular models return a field dict
+        return {classname_to_alias(class_name, AliasMode.JSON): data}
 
     def oscal_serialize_json_bytes(self, pretty: bool = False, wrapped: bool = True) -> bytes:
         """
@@ -230,10 +243,10 @@ class OscalBaseModel(TrestleBaseModel):
         if wrapped:
             odict = self.oscal_dict()
         else:
-            odict = self.dict(by_alias=True, exclude_none=True)
+            odict = self.model_dump(by_alias=True, exclude_none=True)
         if pretty:
-            return orjson.dumps(odict, default=self.__json_encoder__, option=orjson.OPT_INDENT_2)
-        return orjson.dumps(odict, default=self.__json_encoder__)
+            return orjson.dumps(odict, default=_orjson_default, option=orjson.OPT_INDENT_2)
+        return orjson.dumps(odict, default=_orjson_default)
 
     def oscal_serialize_json(self, pretty: bool = False, wrapped: bool = True) -> str:
         """
@@ -301,7 +314,7 @@ class OscalBaseModel(TrestleBaseModel):
                 with path.open('r', encoding=const.FILE_ENCODING) as fh:
                     obj = yaml.load(fh)
             elif content_type == FileContentType.JSON:
-                obj = load_file(path, json_loads=cls.__config__.json_loads)
+                obj = orjson.loads(path.read_bytes())
         except Exception as e:
             raise err.TrestleError(f'Error loading file {path} {str(e)}')
         try:
@@ -310,7 +323,19 @@ class OscalBaseModel(TrestleBaseModel):
                     f'Invalid OSCAL file structure, oscal file '
                     f'does not have a single top level key wrapping it. It has {len(obj)} keys.'
                 )
-            parsed = cls.parse_obj(obj[alias])
+            model_fields = getattr(cls, 'model_fields', {})
+            is_collection_container = False
+            if hasattr(cls, 'is_collection_container'):
+                is_collection_container = cls.is_collection_container()
+            elif len(model_fields) == 1 and 'root' in model_fields:
+                is_collection_container = is_collection_field_type(model_fields['root'].annotation)
+            payload = obj[alias]
+            # RootModel wrappers validate against the raw payload, while legacy BaseModel
+            # wrappers still expect the value under the root field name.
+            if is_collection_container:
+                parsed = cls.model_validate(payload if issubclass(cls, RootModel) else {'root': payload})
+            else:
+                parsed = cls.model_validate(payload)
         except KeyError:
             raise err.TrestleError(f'Provided oscal file does not have top level key key: {alias}')
         except Exception as e:
@@ -336,16 +361,11 @@ class OscalBaseModel(TrestleBaseModel):
             logger.debug('Json based copy')
             # Note: Json based oppportunistic copy
             # Dev notes: Do not change this from json. Due to enums (in particular) json is the closest we can get.
-            return new_oscal_type.parse_raw(self.oscal_serialize_json(pretty=False, wrapped=False))
+            return new_oscal_type.model_validate_json(self.oscal_serialize_json(pretty=False, wrapped=False))
 
-        if (
-            '__root__' in self.__fields__
-            and len(self.__fields__) == 1
-            and '__root__' in new_oscal_type.__fields__
-            and len(new_oscal_type.__fields__) == 1
-        ):
+        if isinstance(self, RootModel) and issubclass(new_oscal_type, RootModel):
             logger.debug('Root element based copy too')
-            return new_oscal_type.parse_obj(self.__root__)
+            return new_oscal_type.model_validate(self.root)
 
         # bad place here.
         raise err.TrestleError('Provided inconsistent classes to copy to methodology.')
@@ -376,15 +396,30 @@ class OscalBaseModel(TrestleBaseModel):
             self.__dict__[raw_field] = recast_object.__dict__[raw_field]
 
     @classmethod
-    def alias_to_field_map(cls) -> Dict[str, ModelField]:
+    def alias_to_field_map(cls) -> Dict[str, Any]:
         """Create a map from field alias to field.
 
         Returns:
-            A dict which has key's of aliases and Fields as values.
+            A dict with aliases as keys and SimpleNamespace objects (with .name and .alias attributes) as values.
         """
-        alias_to_field: Dict[str, ModelField] = {}
-        for field in cls.__fields__.values():
-            alias_to_field[field.alias] = field
+        alias_to_field: Dict[str, Any] = {}
+        for field_name, field_info in cls.model_fields.items():
+            alias = field_info.alias or field_name
+            outer_type = field_info.annotation
+            if get_origin(outer_type) is Union:
+                non_none_types = [arg for arg in get_args(outer_type) if arg is not type(None)]
+                if len(non_none_types) == 1:
+                    outer_type = non_none_types[0]
+            inner_type = outer_type
+            origin = get_origin(outer_type)
+            if origin is list or origin is dict:
+                collection_args = get_args(outer_type)
+                if collection_args:
+                    inner_type = collection_args[-1]
+            # Maintain v1-style attributes used by older utility code/tests.
+            alias_to_field[alias] = types.SimpleNamespace(
+                name=field_name, alias=alias, field_info=field_info, outer_type_=outer_type, type_=inner_type
+            )
 
         return alias_to_field
 
@@ -405,9 +440,9 @@ class OscalBaseModel(TrestleBaseModel):
         When these cases exist we need special handling of the type information.
         """
         # Additional sanity check on field length
-        if len(cls.__fields__) == 1 and '__root__' in cls.__fields__:
-            # This is now a __root__ key only model
-            if is_collection_field_type(cls.__fields__['__root__'].outer_type_):
+        if len(cls.model_fields) == 1 and 'root' in cls.model_fields:
+            # This is a RootModel wrapping a collection
+            if is_collection_field_type(cls.model_fields['root'].annotation):
                 return True
         return False
 
@@ -424,4 +459,19 @@ class OscalBaseModel(TrestleBaseModel):
         """
         if not cls.is_collection_container():
             raise err.TrestleError('OscalBaseModel is not wrapping a collection type')
-        return get_origin(cls.__fields__['__root__'].outer_type_)
+        return get_origin(cls.model_fields['root'].annotation)
+
+
+class OscalRootModel(RootModel):  # type: ignore[type-arg]
+    """Base class for OSCAL root-model types, providing copy_to/copy_from analogous to OscalBaseModel."""
+
+    def copy_to(self, new_oscal_type: Type['OscalRootModel']) -> 'OscalRootModel':
+        """Copy root value to a compatible root-model type."""
+        if issubclass(new_oscal_type, RootModel):
+            return new_oscal_type.model_validate(self.root)
+        raise err.TrestleError(f'Cannot copy_to {new_oscal_type.__name__} from {self.__class__.__name__}')
+
+    def copy_from(self, existing_oscal_object: 'OscalRootModel') -> None:
+        """Copy root value from another root-model object."""
+        recast = existing_oscal_object.copy_to(self.__class__)
+        self.root = recast.root

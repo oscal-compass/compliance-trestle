@@ -95,7 +95,7 @@ class OscoResultToOscalARTransformer(ResultsTransformer):
         else:
             return None
         results = Results()
-        results.__root__.append(self._results_factory.result)
+        results.root.append(self._results_factory.result)
         return results
 
     def _ingest_json(self, blob: str) -> Results:
@@ -123,7 +123,7 @@ class OscoResultToOscalARTransformer(ResultsTransformer):
         except json.decoder.JSONDecodeError:
             return None
         results = Results()
-        results.__root__.append(self._results_factory.result)
+        results.root.append(self._results_factory.result)
         return results
 
     def _ingest_yaml(self, blob: str) -> Results:
@@ -136,7 +136,7 @@ class OscoResultToOscalARTransformer(ResultsTransformer):
         except Exception as e:
             raise e
         results = Results()
-        results.__root__.append(self._results_factory.result)
+        results.root.append(self._results_factory.result)
         return results
 
 
@@ -694,7 +694,7 @@ class OscalProfileToOscoProfileTransformer(FromOscalTransformer):
     def _add_disable_rules_for_control(self, value, control):
         """Extract disabled rules for control."""
         for with_id in as_list(control.with_ids):
-            name = self._format_osco_rule_name(with_id.__root__)
+            name = self._format_osco_rule_name(with_id.root)
             rationale = self._get_rationale_for_disable_rule()
             entry = {'name': name, 'rationale': rationale}
             value.append(entry)

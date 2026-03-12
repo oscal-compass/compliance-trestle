@@ -24,7 +24,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple, Type, Union
 
-from pydantic.v1 import BaseModel, create_model
+from pydantic import BaseModel, create_model
 
 import trestle.common
 import trestle.common.common_types
@@ -146,12 +146,8 @@ class ModelUtils:
             for i in range(len(aliases_not_to_be_stripped)):
                 alias = aliases_not_to_be_stripped[i]
                 instance = instances_to_be_merged[i]
-                if (
-                    hasattr(instance, '__dict__')
-                    and '__root__' in instance.__dict__
-                    and isinstance(instance, OscalBaseModel)
-                ):
-                    instance = instance.__dict__['__root__']
+                if isinstance(instance, OscalBaseModel) and type(instance).is_collection_container():
+                    instance = instance.root
                 if top_level and not primary_model_dict:
                     primary_model_dict = instance.__dict__
                 else:
@@ -249,7 +245,13 @@ class ModelUtils:
                 if utils.is_collection_field_type(model_type):
                     model_type = utils.get_inner_type(model_type)
                 else:
-                    model_type = model_type.alias_to_field_map()[alias].outer_type_
+                    ann = model_type.alias_to_field_map()[alias].field_info.annotation
+                    # Unwrap Optional[X] (Union[X, None]) — pydantic v2 annotations may be Optional
+                    if utils.get_origin(ann) is Union:
+                        non_none = [a for a in ann.__args__ if a is not type(None)]
+                        if len(non_none) == 1:
+                            ann = non_none[0]
+                    model_type = ann
 
         return model_type, full_alias
 
@@ -277,7 +279,7 @@ class ModelUtils:
             malias = model_alias.split('.')[-1]
             class_name = alias_to_classname(malias, AliasMode.JSON)
             logger.debug(f'collection field type class name {class_name} and alias {malias}')
-            model_type = create_model(class_name, __base__=OscalBaseModel, __root__=(singular_model_type, ...))
+            model_type = create_model(class_name, __base__=OscalBaseModel, root=(singular_model_type, ...))
             logger.debug(f'model_type created: {model_type}')
             return model_type, model_alias
 
@@ -437,7 +439,13 @@ class ModelUtils:
                 if path_part not in field_map:
                     continue
                 field = field_map[path_part]
-                model_type = field.outer_type_
+                ann = field.field_info.annotation
+                # Unwrap Optional[X] (Union[X, None]) from pydantic v2 annotations
+                if utils.get_origin(ann) is Union:
+                    non_none = [a for a in ann.__args__ if a is not type(None)]
+                    if len(non_none) == 1:
+                        ann = non_none[0]
+                model_type = ann
             model_types.append(model_type)
 
         last_alias = path_parts[-1]
@@ -452,7 +460,12 @@ class ModelUtils:
         try:
             field_map = parent_model_type.alias_to_field_map()
             field = field_map[last_alias]
-            outer_type = field.outer_type_
+            outer_type = field.field_info.annotation
+            # Unwrap Optional[X] if needed
+            if utils.get_origin(outer_type) is Union:
+                non_none = [a for a in outer_type.__args__ if a is not type(None)]
+                if len(non_none) == 1:
+                    outer_type = non_none[0]
             inner_type = utils.get_inner_type(outer_type)
             inner_type_name = inner_type.__name__
             singular_alias = str_utils.classname_to_alias(inner_type_name, AliasMode.JSON)
@@ -470,8 +483,11 @@ class ModelUtils:
             raise err.TrestleError(str(e))
 
         if hasattr(module, 'Model'):
-            model_metadata = next(iter(module.Model.__fields__.values()))
-            return model_metadata.type_, model_metadata.alias
+            # pydantic v2: use model_fields (returns Dict[str, FieldInfo])
+            model_fields = module.Model.model_fields
+            first_field_name, first_field_info = next(iter(model_fields.items()))
+            # annotation holds the full type; alias may be None if same as field name
+            return first_field_info.annotation, (first_field_info.alias or first_field_name)
         raise err.TrestleError('Invalid module')
 
     @staticmethod
@@ -538,7 +554,7 @@ class ModelUtils:
         """
         main_fields = ['id', 'label', 'values', 'select', 'choice', 'how_many', 'guidelines', 'prose']
         if isinstance(obj, common.Remarks):
-            return obj.__root__
+            return obj.root
         if isinstance(obj, common.HowMany):
             return obj.value
         # it is either a string already or we cast it to string

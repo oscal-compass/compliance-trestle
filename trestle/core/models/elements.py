@@ -17,8 +17,7 @@ import logging
 import pathlib
 from typing import Any, List, Optional, Type, Union, cast
 
-from pydantic.v1 import Field, create_model
-from pydantic.v1.error_wrappers import ValidationError
+from pydantic import Field, RootModel, ValidationError, create_model
 
 from ruamel.yaml import YAML
 
@@ -135,7 +134,13 @@ class ElementPath:
                         'Wild card in unexpected position when trying to find class type.'
                         + ' Element path type lookup can only occur where a single type can be identified.'
                     )
-                prev_model = prev_model.alias_to_field_map()[current_element_str].outer_type_
+                annotation = prev_model.alias_to_field_map()[current_element_str].field_info.annotation
+                # Unwrap Optional[X] (Union[X, None]) introduced by pydantic v2 field annotations
+                if utils.get_origin(annotation) is Union:
+                    non_none = [a for a in annotation.__args__ if a is not type(None)]
+                    if len(non_none) == 1:
+                        annotation = non_none[0]
+                prev_model = annotation
         return prev_model
 
     def get_obm_wrapped_type(
@@ -165,11 +170,10 @@ class ElementPath:
                 raise TrestleError('Unknown error inferring type from element path.')
             # Final path must be the alias
 
-            new_base_type = create_model(
-                str_utils.alias_to_classname(collection_name, AliasMode.JSON),
-                __base__=OscalBaseModel,
-                __root__=(base_type, ...),
-            )
+            model_name = str_utils.alias_to_classname(collection_name, AliasMode.JSON)
+            # In pydantic v2, use RootModel[T] instead of __root__ field; inherit oscal_read from OscalBaseModel
+            root_cls = RootModel[base_type]
+            new_base_type = type(model_name, (root_cls,), {'oscal_read': OscalBaseModel.__dict__['oscal_read']})
             return new_base_type
         return base_type
 
@@ -406,13 +410,13 @@ class Element:
         """Get the inner class name for list or dict objects."""
         # this assumes all items in list and all values in dict are same type
         class_name = None
-        root = getattr(self._elem, '__root__', None)
+        root = getattr(self._elem, 'root', None)
         if root is not None:
             type_str = root.__class__.__name__
             if type_str == 'list':
-                class_name = self._elem.__root__[0].__class__.__name__
+                class_name = self._elem.root[0].__class__.__name__
             elif type_str == 'dict':
-                class_name = list(self._elem.__root__.values())[0].__class__.__name__
+                class_name = list(self._elem.root.values())[0].__class__.__name__
         return class_name
 
     def get(self) -> OscalBaseModel:
@@ -445,8 +449,8 @@ class Element:
 
         # initialize the starting element for search
         elm = self._elem
-        if hasattr(elm, '__root__') and (isinstance(elm.__root__, dict) or isinstance(elm.__root__, list)):
-            elm = elm.__root__
+        if hasattr(elm, 'root') and (isinstance(elm.root, dict) or isinstance(elm.root, list)):
+            elm = elm.root
 
         # if parent exists and does not end with wildcard, use the parent as the starting element for search
         if (
@@ -581,16 +585,19 @@ class Element:
                 json_data = self._elem.oscal_serialize_json(pretty=pretty)
             else:
                 dynamic_passer = {}
-                dynamic_passer['TransientField'] = (self._elem.__class__, Field(self, alias=self._wrapper_alias))
+                dynamic_passer['TransientField'] = (
+                    self._elem.__class__,
+                    Field(default=None, alias=self._wrapper_alias),
+                )
                 wrapper_model = create_model('TransientModel', __base__=OscalBaseModel, **dynamic_passer)
-                wrapped_model = wrapper_model.construct(**{self._wrapper_alias: self._elem})
+                wrapped_model = wrapper_model.model_construct(**{'TransientField': self._elem})
                 json_data = wrapped_model.oscal_serialize_json(pretty=pretty, wrapped=False)
         return json_data
 
     @classmethod
     def get_sub_element_class(cls, parent_elm: OscalBaseModel, sub_element_name: str):
         """Get the class of the sub-element."""
-        sub_element_class = parent_elm.__fields__[sub_element_name].outer_type_
+        sub_element_class = parent_elm.model_fields[sub_element_name].annotation
         return sub_element_class
 
     @classmethod
