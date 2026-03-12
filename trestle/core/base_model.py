@@ -30,7 +30,7 @@ import datetime
 import logging
 import pathlib
 import types
-from typing import Any, Dict, List, Optional, Type, cast
+from typing import Any, Dict, List, Optional, Type, Union, cast, get_args
 
 import orjson
 
@@ -405,13 +405,23 @@ class OscalBaseModel(TrestleBaseModel):
         alias_to_field: Dict[str, Any] = {}
         for field_name, field_info in cls.model_fields.items():
             alias = field_info.alias or field_name
+            outer_type = field_info.annotation
+            if get_origin(outer_type) is Union:
+                non_none_types = [arg for arg in get_args(outer_type) if arg is not type(None)]
+                if len(non_none_types) == 1:
+                    outer_type = non_none_types[0]
+            inner_type = outer_type
+            if get_origin(outer_type) in (list, dict):
+                collection_args = get_args(outer_type)
+                if collection_args:
+                    inner_type = collection_args[-1]
             # Maintain v1-style attributes used by older utility code/tests.
             alias_to_field[alias] = types.SimpleNamespace(
                 name=field_name,
                 alias=alias,
                 field_info=field_info,
-                outer_type_=field_info.annotation,
-                type_=field_info.annotation,
+                outer_type_=outer_type,
+                type_=inner_type,
             )
 
         return alias_to_field
