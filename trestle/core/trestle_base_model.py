@@ -15,6 +15,7 @@
 # limitations under the License.
 """Trestle Base Model."""
 
+import copy
 from typing import Any, Type, TypeVar
 
 from pydantic import BaseModel, ValidationError
@@ -26,6 +27,26 @@ Model = TypeVar('Model', bound='BaseModel')
 
 class TrestleBaseModel(BaseModel):
     """Trestle Base Model. Serves as wrapper around BaseModel for overriding methods."""
+
+    @staticmethod
+    def _snapshot_model_inputs(obj: Any) -> Any:
+        """Recursively copy model values so callers don't retain mutable shared references."""
+        if isinstance(obj, BaseModel):
+            return obj.model_copy(deep=True)
+        if isinstance(obj, list):
+            return [TrestleBaseModel._snapshot_model_inputs(item) for item in obj]
+        if isinstance(obj, tuple):
+            return tuple(TrestleBaseModel._snapshot_model_inputs(item) for item in obj)
+        if isinstance(obj, set):
+            return {TrestleBaseModel._snapshot_model_inputs(item) for item in obj}
+        if isinstance(obj, dict):
+            return {key: TrestleBaseModel._snapshot_model_inputs(value) for key, value in obj.items()}
+        return copy.deepcopy(obj)
+
+    def __init__(self, **data: Any) -> None:
+        """Initialize models from a snapshot of input values to avoid shared nested state."""
+        snapshot = {key: self._snapshot_model_inputs(value) for key, value in data.items()}
+        super().__init__(**snapshot)
 
     @classmethod
     def model_validate(cls: Type['Model'], obj: Any, *args, **kwargs) -> 'Model':
