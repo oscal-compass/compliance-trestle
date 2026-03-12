@@ -411,17 +411,14 @@ class OscalBaseModel(TrestleBaseModel):
                 if len(non_none_types) == 1:
                     outer_type = non_none_types[0]
             inner_type = outer_type
-            if get_origin(outer_type) in (list, dict):
+            origin = get_origin(outer_type)
+            if origin is list or origin is dict:
                 collection_args = get_args(outer_type)
                 if collection_args:
                     inner_type = collection_args[-1]
             # Maintain v1-style attributes used by older utility code/tests.
             alias_to_field[alias] = types.SimpleNamespace(
-                name=field_name,
-                alias=alias,
-                field_info=field_info,
-                outer_type_=outer_type,
-                type_=inner_type,
+                name=field_name, alias=alias, field_info=field_info, outer_type_=outer_type, type_=inner_type
             )
 
         return alias_to_field
