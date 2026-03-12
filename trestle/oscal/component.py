@@ -27,9 +27,9 @@ from __future__ import annotations
 import re
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from typing import Annotated, Any, Dict, List, Optional, Union
 
-from pydantic.v1 import AnyUrl, EmailStr, Extra, Field, conint, constr, validator
+from pydantic import AnyUrl, ConfigDict, EmailStr, Field, RootModel, StringConstraints
 
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
@@ -42,21 +42,20 @@ class Statement(OscalBaseModel):
     Identifies which statements within a control are addressed.
     """
 
-    class Config:
-        extra = Extra.forbid
+    model_config = ConfigDict(extra='forbid')
 
-    statement_id: constr(
-        regex=
+    statement_id: Annotated[str, StringConstraints(
+        pattern=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    ) = Field(
+    )] = Field(
         ...,
         alias='statement-id',
         description='A human-oriented identifier reference to a control statement.',
         title='Control Statement Reference'
     )
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
+    uuid: Annotated[str, StringConstraints(
+        pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    )] = Field(
         ...,
         description=
         'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this control statement elsewhere in this or other OSCAL instances. The UUID of the control statement in the source OSCAL instance is sufficient to reference the data item locally or globally (e.g., in an imported OSCAL instance).',
@@ -78,20 +77,19 @@ class SetParameter(OscalBaseModel):
     Identifies the parameter that will be set by the enclosed value.
     """
 
-    class Config:
-        extra = Extra.forbid
+    model_config = ConfigDict(extra='forbid')
 
-    param_id: constr(
-        regex=
+    param_id: Annotated[str, StringConstraints(
+        pattern=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    ) = Field(
+    )] = Field(
         ...,
         alias='param-id',
         description=
         "A human-oriented reference to a parameter within a control, who's catalog has been imported into the current implementation context.",
         title='Parameter ID'
     )
-    values: List[constr(regex=r'^\S(.*\S)?$')] = Field(...)
+    values: List[Annotated[str, StringConstraints(pattern=r'^\S(.*\S)?$')]] = Field(...)
     remarks: Optional[str] = None
 
 
@@ -100,12 +98,11 @@ class IncorporatesComponent(OscalBaseModel):
     The collection of components comprising this capability.
     """
 
-    class Config:
-        extra = Extra.forbid
+    model_config = ConfigDict(extra='forbid')
 
-    component_uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
+    component_uuid: Annotated[str, StringConstraints(
+        pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    )] = Field(
         ...,
         alias='component-uuid',
         description='A machine-oriented identifier reference to a component.',
@@ -123,8 +120,7 @@ class ImportComponentDefinition(OscalBaseModel):
     Loads a component definition from another resource.
     """
 
-    class Config:
-        extra = Extra.forbid
+    model_config = ConfigDict(extra='forbid')
 
     href: str = Field(
         ...,
@@ -139,20 +135,19 @@ class ImplementedRequirement(OscalBaseModel):
     Describes how the containing component or capability implements an individual control.
     """
 
-    class Config:
-        extra = Extra.forbid
+    model_config = ConfigDict(extra='forbid')
 
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
+    uuid: Annotated[str, StringConstraints(
+        pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    )] = Field(
         ...,
         description='Provides a globally unique means to identify a given control implementation by a component.',
         title='Control Implementation Identifier'
     )
-    control_id: constr(
-        regex=
+    control_id: Annotated[str, StringConstraints(
+        pattern=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    ) = Field(
+    )] = Field(
         ...,
         alias='control-id',
         description=
@@ -192,12 +187,11 @@ class ControlImplementation(OscalBaseModel):
     Defines how the component or capability supports a set of controls.
     """
 
-    class Config:
-        extra = Extra.forbid
+    model_config = ConfigDict(extra='forbid')
 
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
+    uuid: Annotated[str, StringConstraints(
+        pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    )] = Field(
         ...,
         description=
         'Provides a means to identify a set of control implementations that are supported by a given component or capability.',
@@ -226,17 +220,16 @@ class Capability(OscalBaseModel):
     A grouping of other components and/or capabilities.
     """
 
-    class Config:
-        extra = Extra.forbid
+    model_config = ConfigDict(extra='forbid')
 
-    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-                 ) = Field(
+    uuid: Annotated[str, StringConstraints(pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+                 )] = Field(
                      ...,
                      description='Provides a globally unique means to identify a given capability.',
                      title='Capability Identifier'
                  )
-    name: constr(regex=r'^\S(.*\S)?$'
-                 ) = Field(..., description="The capability's human-readable name.", title='Capability Name')
+    name: Annotated[str, StringConstraints(pattern=r'^\S(.*\S)?$'
+                 )] = Field(..., description="The capability's human-readable name.", title='Capability Name')
     description: str = Field(..., description='A summary of the capability.', title='Capability Description')
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
@@ -250,16 +243,15 @@ class DefinedComponent(OscalBaseModel):
     A defined component that can be part of an implemented system.
     """
 
-    class Config:
-        extra = Extra.forbid
+    model_config = ConfigDict(extra='forbid')
 
-    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-                 ) = Field(
+    uuid: Annotated[str, StringConstraints(pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+                 )] = Field(
                      ...,
                      description='Provides a globally unique means to identify a given component.',
                      title='Component Identifier'
                  )
-    type: Union[constr(regex=r'^\S(.*\S)?$'), DefinedComponentTypeValidValues] = Field(
+    type: Union[Annotated[str, StringConstraints(pattern=r'^\S(.*\S)?$')], DefinedComponentTypeValidValues] = Field(
         ..., description='A category describing the purpose of the component.', title='Component Type'
     )
     title: str = Field(..., description='A human readable name for the component.', title='Component Title')
@@ -284,11 +276,10 @@ class ComponentDefinition(OscalBaseModel):
     A collection of component descriptions, which may optionally be grouped by capability.
     """
 
-    class Config:
-        extra = Extra.forbid
+    model_config = ConfigDict(extra='forbid')
 
-    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-                 ) = Field(
+    uuid: Annotated[str, StringConstraints(pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+                 )] = Field(
                      ...,
                      description='Provides a globally unique means to identify a given component definition instance.',
                      title='Component Definition Universally Unique Identifier'
