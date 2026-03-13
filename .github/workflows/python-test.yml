@@ -195,6 +195,7 @@ jobs:
     - name: Install hatch
       run: |
         pip install hatch "virtualenv>=20.26.6,<21"  # Pin until hatch supports virtualenv 21.x
+        hatch --version
     - name: Run tests
       if: steps.core-version.outputs.core != 'true'
       run: |
