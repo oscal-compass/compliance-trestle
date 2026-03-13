@@ -44,9 +44,7 @@ class TransformerBase(ABC):
     def get_timestamp() -> str:
         """Get the default timestamp value."""
         if TransformerBase._timestamp is None:
-            TransformerBase._timestamp = datetime.datetime.now(datetime.timezone.utc).replace(
-                microsecond=0
-            ).isoformat()
+            TransformerBase._timestamp = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat()
         return TransformerBase._timestamp
 
     @abstractmethod
