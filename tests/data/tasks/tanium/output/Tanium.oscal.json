@@ -423,7 +423,9 @@
       },
       "reviewed-controls": {
         "control-selections": [
-          {}
+          {
+            "include-controls": []
+          }
         ]
       },
       "observations": [
@@ -668,7 +670,9 @@
       },
       "reviewed-controls": {
         "control-selections": [
-          {}
+          {
+            "include-controls": []
+          }
         ]
       },
       "observations": [
@@ -17843,7 +17847,9 @@
       },
       "reviewed-controls": {
         "control-selections": [
-          {}
+          {
+            "include-controls": []
+          }
         ]
       },
       "observations": [
