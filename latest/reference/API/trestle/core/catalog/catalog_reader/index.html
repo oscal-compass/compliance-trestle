@@ -399,7 +399,9 @@
 <span class=normal>437</span>
 <span class=normal>438</span>
 <span class=normal>439</span>
-<span class=normal>440</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>CatalogReader</span><span class=p>:</span>
+<span class=normal>440</span>
+<span class=normal>441</span>
+<span class=normal>442</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>CatalogReader</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    Catalog reader.</span>
 
@@ -467,7 +469,7 @@
 <span class=sd>        This will overwrite the existing groups and controls in the catalog.</span>
 <span class=sd>        &quot;&quot;&quot;</span>
         <span class=n>id_map</span> <span class=o>=</span> <span class=n>CatalogInterface</span><span class=o>.</span><span class=n>_get_group_ids_and_dirs</span><span class=p>(</span><span class=n>md_path</span><span class=p>)</span>
-        <span class=n>groups</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>cat</span><span class=o>.</span><span class=n>Group</span><span class=p>]</span> <span class=o>=</span> <span class=p>[]</span>
+        <span class=n>groups</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>cat</span><span class=o>.</span><span class=n>Group1</span> <span class=o>|</span> <span class=n>cat</span><span class=o>.</span><span class=n>Group2</span><span class=p>]</span> <span class=o>=</span> <span class=p>[]</span>
         <span class=c1># read each group dir</span>
         <span class=k>for</span> <span class=n>group_id</span><span class=p>,</span> <span class=n>group_dir</span> <span class=ow>in</span> <span class=n>id_map</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
             <span class=n>control_list_raw</span> <span class=o>=</span> <span class=p>[]</span>
@@ -494,7 +496,9 @@
                     <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span>
                         <span class=sa>f</span><span class=s1>&#39;No group title found in controls for group </span><span class=si>{</span><span class=n>group_id</span><span class=si>}</span><span class=s1>.  The title will be recovered if assembling into an existing catalog with the group title defined.&#39;</span>  <span class=c1># noqa E501</span>
                     <span class=p>)</span>
-                <span class=n>new_group</span> <span class=o>=</span> <span class=n>cat</span><span class=o>.</span><span class=n>Group</span><span class=p>(</span><span class=nb>id</span><span class=o>=</span><span class=n>group_id</span><span class=p>,</span> <span class=n>title</span><span class=o>=</span><span class=n>group_title</span><span class=p>)</span>
+                    <span class=c1># Use a placeholder title if none is provided, as Group2 requires a non-empty title</span>
+                    <span class=n>group_title</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>&#39;Group </span><span class=si>{</span><span class=n>group_id</span><span class=si>}</span><span class=s1>&#39;</span>
+                <span class=n>new_group</span> <span class=o>=</span> <span class=n>cat</span><span class=o>.</span><span class=n>Group2</span><span class=p>(</span><span class=nb>id</span><span class=o>=</span><span class=n>group_id</span><span class=p>,</span> <span class=n>title</span><span class=o>=</span><span class=n>group_title</span><span class=p>)</span>
                 <span class=n>new_group</span><span class=o>.</span><span class=n>controls</span> <span class=o>=</span> <span class=n>none_if_empty</span><span class=p>(</span><span class=n>control_list</span><span class=p>)</span>
                 <span class=n>groups</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>new_group</span><span class=p>)</span>
             <span class=k>else</span><span class=p>:</span>
@@ -944,14 +948,16 @@
 <span class=normal>140</span>
 <span class=normal>141</span>
 <span class=normal>142</span>
-<span class=normal>143</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>read_catalog_from_markdown</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>md_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>set_parameters_flag</span><span class=p>:</span> <span class=nb>bool</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>cat</span><span class=o>.</span><span class=n>Catalog</span><span class=p>:</span>
+<span class=normal>143</span>
+<span class=normal>144</span>
+<span class=normal>145</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>read_catalog_from_markdown</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>md_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>set_parameters_flag</span><span class=p>:</span> <span class=nb>bool</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>cat</span><span class=o>.</span><span class=n>Catalog</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    Read the groups and catalog controls from the given directory.</span>
 
 <span class=sd>    This will overwrite the existing groups and controls in the catalog.</span>
 <span class=sd>    &quot;&quot;&quot;</span>
     <span class=n>id_map</span> <span class=o>=</span> <span class=n>CatalogInterface</span><span class=o>.</span><span class=n>_get_group_ids_and_dirs</span><span class=p>(</span><span class=n>md_path</span><span class=p>)</span>
-    <span class=n>groups</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>cat</span><span class=o>.</span><span class=n>Group</span><span class=p>]</span> <span class=o>=</span> <span class=p>[]</span>
+    <span class=n>groups</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>cat</span><span class=o>.</span><span class=n>Group1</span> <span class=o>|</span> <span class=n>cat</span><span class=o>.</span><span class=n>Group2</span><span class=p>]</span> <span class=o>=</span> <span class=p>[]</span>
     <span class=c1># read each group dir</span>
     <span class=k>for</span> <span class=n>group_id</span><span class=p>,</span> <span class=n>group_dir</span> <span class=ow>in</span> <span class=n>id_map</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
         <span class=n>control_list_raw</span> <span class=o>=</span> <span class=p>[]</span>
@@ -978,7 +984,9 @@
                 <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span>
                     <span class=sa>f</span><span class=s1>&#39;No group title found in controls for group </span><span class=si>{</span><span class=n>group_id</span><span class=si>}</span><span class=s1>.  The title will be recovered if assembling into an existing catalog with the group title defined.&#39;</span>  <span class=c1># noqa E501</span>
                 <span class=p>)</span>
-            <span class=n>new_group</span> <span class=o>=</span> <span class=n>cat</span><span class=o>.</span><span class=n>Group</span><span class=p>(</span><span class=nb>id</span><span class=o>=</span><span class=n>group_id</span><span class=p>,</span> <span class=n>title</span><span class=o>=</span><span class=n>group_title</span><span class=p>)</span>
+                <span class=c1># Use a placeholder title if none is provided, as Group2 requires a non-empty title</span>
+                <span class=n>group_title</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>&#39;Group </span><span class=si>{</span><span class=n>group_id</span><span class=si>}</span><span class=s1>&#39;</span>
+            <span class=n>new_group</span> <span class=o>=</span> <span class=n>cat</span><span class=o>.</span><span class=n>Group2</span><span class=p>(</span><span class=nb>id</span><span class=o>=</span><span class=n>group_id</span><span class=p>,</span> <span class=n>title</span><span class=o>=</span><span class=n>group_title</span><span class=p>)</span>
             <span class=n>new_group</span><span class=o>.</span><span class=n>controls</span> <span class=o>=</span> <span class=n>none_if_empty</span><span class=p>(</span><span class=n>control_list</span><span class=p>)</span>
             <span class=n>groups</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>new_group</span><span class=p>)</span>
         <span class=k>else</span><span class=p>:</span>
@@ -993,9 +1001,7 @@
 
   
       dataclass
-   (trestle.core.control_context.ControlContext)" href=../../control_context/#trestle.core.control_context.ControlContext>ControlContext</a></code> </td> <td> <div class=doc-md-description> <p>Context for the operation</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code><span title=typing.List>List</span>[<a class="autorefs autorefs-internal" title="ImplementedRequirement (trestle.oscal.component.ImplementedRequirement)" href=../../../oscal/component/#trestle.oscal.component.ImplementedRequirement>ImplementedRequirement</a>]</code> </td> <td> <div class=doc-md-description> <p>List of implemented requirements gathered from each control</p> </div> </td> </tr> </tbody> </table> <details class=notes open> <summary>Notes</summary> <p>As the controls are read into the catalog the needed components are added if not already available. avail_comps provides the mapping of component name to the actual component. This is only used during component assemble and only for updating one component</p> </details> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/catalog/catalog_reader.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>145</span>
-<span class=normal>146</span>
-<span class=normal>147</span>
+   (trestle.core.control_context.ControlContext)" href=../../control_context/#trestle.core.control_context.ControlContext>ControlContext</a></code> </td> <td> <div class=doc-md-description> <p>Context for the operation</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code><span title=typing.List>List</span>[<a class="autorefs autorefs-internal" title="ImplementedRequirement (trestle.oscal.component.ImplementedRequirement)" href=../../../oscal/component/#trestle.oscal.component.ImplementedRequirement>ImplementedRequirement</a>]</code> </td> <td> <div class=doc-md-description> <p>List of implemented requirements gathered from each control</p> </div> </td> </tr> </tbody> </table> <details class=notes open> <summary>Notes</summary> <p>As the controls are read into the catalog the needed components are added if not already available. avail_comps provides the mapping of component name to the actual component. This is only used during component assemble and only for updating one component</p> </details> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/catalog/catalog_reader.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>147</span>
 <span class=normal>148</span>
 <span class=normal>149</span>
 <span class=normal>150</span>
@@ -1014,7 +1020,9 @@
 <span class=normal>163</span>
 <span class=normal>164</span>
 <span class=normal>165</span>
-<span class=normal>166</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+<span class=normal>166</span>
+<span class=normal>167</span>
+<span class=normal>168</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>read_catalog_imp_reqs</span><span class=p>(</span><span class=n>md_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>context</span><span class=p>:</span> <span class=n>ControlContext</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>comp</span><span class=o>.</span><span class=n>ImplementedRequirement</span><span class=p>]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Read the full set of control implemented requirements from markdown.</span>
 
@@ -1041,9 +1049,7 @@
 
   
       dataclass
-   (trestle.core.control_context.ControlContext)" href=../../control_context/#trestle.core.control_context.ControlContext>ControlContext</a></code> </td> <td> <div class=doc-md-description> <p>control context for the procedure</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=notes open> <summary>Notes</summary> <p>The ssp should already contain info from the comp defs and this fills in selected content from md. The only content read from md is: ssp values in the comp def rules param vals of the header ssp values in the set-params of the header all prose for implementaton responses all status values ssp has components but may not have all needed imp reqs and bycomps know controlid and comp name in comp_dict</p> </details> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/catalog/catalog_reader.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>388</span>
-<span class=normal>389</span>
-<span class=normal>390</span>
+   (trestle.core.control_context.ControlContext)" href=../../control_context/#trestle.core.control_context.ControlContext>ControlContext</a></code> </td> <td> <div class=doc-md-description> <p>control context for the procedure</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=notes open> <summary>Notes</summary> <p>The ssp should already contain info from the comp defs and this fills in selected content from md. The only content read from md is: ssp values in the comp def rules param vals of the header ssp values in the set-params of the header all prose for implementaton responses all status values ssp has components but may not have all needed imp reqs and bycomps know controlid and comp name in comp_dict</p> </details> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/catalog/catalog_reader.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>390</span>
 <span class=normal>391</span>
 <span class=normal>392</span>
 <span class=normal>393</span>
@@ -1093,7 +1099,9 @@
 <span class=normal>437</span>
 <span class=normal>438</span>
 <span class=normal>439</span>
-<span class=normal>440</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+<span class=normal>440</span>
+<span class=normal>441</span>
+<span class=normal>442</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>read_ssp_md_content</span><span class=p>(</span>
     <span class=n>md_path</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span>
     <span class=n>ssp</span><span class=p>:</span> <span class=n>ossp</span><span class=o>.</span><span class=n>SystemSecurityPlan</span><span class=p>,</span>

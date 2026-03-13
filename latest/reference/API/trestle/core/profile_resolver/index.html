@@ -190,7 +190,7 @@
 <span class=sd>            The resolved profile catalog and a control dict of inherited props</span>
 <span class=sd>        &quot;&quot;&quot;</span>
         <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;get resolved profile catalog and inherited props for </span><span class=si>{</span><span class=n>profile_path</span><span class=si>}</span><span class=s1> via generated Import.&#39;</span><span class=p>)</span>
-        <span class=n>import_</span> <span class=o>=</span> <span class=n>prof</span><span class=o>.</span><span class=n>Import</span><span class=p>(</span><span class=n>href</span><span class=o>=</span><span class=nb>str</span><span class=p>(</span><span class=n>profile_path</span><span class=p>),</span> <span class=n>include_all</span><span class=o>=</span><span class=p>{})</span>
+        <span class=n>import_</span> <span class=o>=</span> <span class=n>prof</span><span class=o>.</span><span class=n>Import1</span><span class=p>(</span><span class=n>href</span><span class=o>=</span><span class=nb>str</span><span class=p>(</span><span class=n>profile_path</span><span class=p>),</span> <span class=n>include_all</span><span class=o>=</span><span class=p>{})</span>
         <span class=c1># The final Import has change_prose=True to force parameter substitution in the prose only at the last stage.</span>
         <span class=n>import_filter</span> <span class=o>=</span> <span class=n>Import</span><span class=p>(</span>
             <span class=n>trestle_root</span><span class=p>,</span>
@@ -425,7 +425,7 @@
 <span class=sd>        The resolved profile catalog and a control dict of inherited props</span>
 <span class=sd>    &quot;&quot;&quot;</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;get resolved profile catalog and inherited props for </span><span class=si>{</span><span class=n>profile_path</span><span class=si>}</span><span class=s1> via generated Import.&#39;</span><span class=p>)</span>
-    <span class=n>import_</span> <span class=o>=</span> <span class=n>prof</span><span class=o>.</span><span class=n>Import</span><span class=p>(</span><span class=n>href</span><span class=o>=</span><span class=nb>str</span><span class=p>(</span><span class=n>profile_path</span><span class=p>),</span> <span class=n>include_all</span><span class=o>=</span><span class=p>{})</span>
+    <span class=n>import_</span> <span class=o>=</span> <span class=n>prof</span><span class=o>.</span><span class=n>Import1</span><span class=p>(</span><span class=n>href</span><span class=o>=</span><span class=nb>str</span><span class=p>(</span><span class=n>profile_path</span><span class=p>),</span> <span class=n>include_all</span><span class=o>=</span><span class=p>{})</span>
     <span class=c1># The final Import has change_prose=True to force parameter substitution in the prose only at the last stage.</span>
     <span class=n>import_filter</span> <span class=o>=</span> <span class=n>Import</span><span class=p>(</span>
         <span class=n>trestle_root</span><span class=p>,</span>

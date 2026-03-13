@@ -88,7 +88,12 @@
 <span class=normal>103</span>
 <span class=normal>104</span>
 <span class=normal>105</span>
-<span class=normal>106</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>Validator</span><span class=p>(</span><span class=n>ABC</span><span class=p>):</span>
+<span class=normal>106</span>
+<span class=normal>107</span>
+<span class=normal>108</span>
+<span class=normal>109</span>
+<span class=normal>110</span>
+<span class=normal>111</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>Validator</span><span class=p>(</span><span class=n>ABC</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Validator base class.&quot;&quot;&quot;</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>error_msg</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>str</span><span class=p>]:</span>
@@ -124,7 +129,12 @@
                 <span class=n>models</span> <span class=o>=</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>get_models_of_type</span><span class=p>(</span><span class=n>args</span><span class=o>.</span><span class=n>type</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>)</span>
             <span class=n>models_path</span> <span class=o>=</span> <span class=n>trestle_root</span> <span class=o>/</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>model_type_to_model_dir</span><span class=p>(</span><span class=n>args</span><span class=o>.</span><span class=n>type</span><span class=p>)</span>
             <span class=k>for</span> <span class=n>m</span> <span class=ow>in</span> <span class=n>models</span><span class=p>:</span>
-                <span class=n>model_path</span> <span class=o>=</span> <span class=n>models_path</span> <span class=o>/</span> <span class=n>m</span>
+                <span class=n>model_dir</span> <span class=o>=</span> <span class=n>models_path</span> <span class=o>/</span> <span class=n>m</span>
+                <span class=k>if</span> <span class=ow>not</span> <span class=n>model_dir</span><span class=o>.</span><span class=n>exists</span><span class=p>():</span>
+                    <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;File load error File </span><span class=si>{</span><span class=n>model_dir</span><span class=si>}</span><span class=s1> not found for load.&#39;</span><span class=p>)</span>
+                    <span class=k>return</span> <span class=n>CmdReturnCodes</span><span class=o>.</span><span class=n>OSCAL_VALIDATION_ERROR</span><span class=o>.</span><span class=n>value</span>
+                <span class=n>extension_type</span> <span class=o>=</span> <span class=n>trestle</span><span class=o>.</span><span class=n>common</span><span class=o>.</span><span class=n>file_utils</span><span class=o>.</span><span class=n>get_contextual_file_type</span><span class=p>(</span><span class=n>model_dir</span><span class=p>)</span>
+                <span class=n>model_path</span> <span class=o>=</span> <span class=n>model_dir</span> <span class=o>/</span> <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>args</span><span class=o>.</span><span class=n>type</span><span class=si>}{</span><span class=n>FileContentType</span><span class=o>.</span><span class=n>to_file_extension</span><span class=p>(</span><span class=n>extension_type</span><span class=p>)</span><span class=si>}</span><span class=s1>&#39;</span>
                 <span class=k>try</span><span class=p>:</span>
                     <span class=n>_</span><span class=p>,</span> <span class=n>_</span><span class=p>,</span> <span class=n>model</span> <span class=o>=</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>load_distributed</span><span class=p>(</span><span class=n>model_path</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>)</span>
                 <span class=k>except</span> <span class=n>TrestleError</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
@@ -250,7 +260,12 @@
 <span class=normal>103</span>
 <span class=normal>104</span>
 <span class=normal>105</span>
-<span class=normal>106</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>validate</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>args</span><span class=p>:</span> <span class=n>argparse</span><span class=o>.</span><span class=n>Namespace</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
+<span class=normal>106</span>
+<span class=normal>107</span>
+<span class=normal>108</span>
+<span class=normal>109</span>
+<span class=normal>110</span>
+<span class=normal>111</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>validate</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>args</span><span class=p>:</span> <span class=n>argparse</span><span class=o>.</span><span class=n>Namespace</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Perform the validation according to user options.&quot;&quot;&quot;</span>
     <span class=n>trestle_root</span> <span class=o>=</span> <span class=n>args</span><span class=o>.</span><span class=n>trestle_root</span>  <span class=c1># trestle root is set via command line in args. Default is cwd.</span>
 
@@ -263,7 +278,12 @@
             <span class=n>models</span> <span class=o>=</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>get_models_of_type</span><span class=p>(</span><span class=n>args</span><span class=o>.</span><span class=n>type</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>)</span>
         <span class=n>models_path</span> <span class=o>=</span> <span class=n>trestle_root</span> <span class=o>/</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>model_type_to_model_dir</span><span class=p>(</span><span class=n>args</span><span class=o>.</span><span class=n>type</span><span class=p>)</span>
         <span class=k>for</span> <span class=n>m</span> <span class=ow>in</span> <span class=n>models</span><span class=p>:</span>
-            <span class=n>model_path</span> <span class=o>=</span> <span class=n>models_path</span> <span class=o>/</span> <span class=n>m</span>
+            <span class=n>model_dir</span> <span class=o>=</span> <span class=n>models_path</span> <span class=o>/</span> <span class=n>m</span>
+            <span class=k>if</span> <span class=ow>not</span> <span class=n>model_dir</span><span class=o>.</span><span class=n>exists</span><span class=p>():</span>
+                <span class=n>logger</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;File load error File </span><span class=si>{</span><span class=n>model_dir</span><span class=si>}</span><span class=s1> not found for load.&#39;</span><span class=p>)</span>
+                <span class=k>return</span> <span class=n>CmdReturnCodes</span><span class=o>.</span><span class=n>OSCAL_VALIDATION_ERROR</span><span class=o>.</span><span class=n>value</span>
+            <span class=n>extension_type</span> <span class=o>=</span> <span class=n>trestle</span><span class=o>.</span><span class=n>common</span><span class=o>.</span><span class=n>file_utils</span><span class=o>.</span><span class=n>get_contextual_file_type</span><span class=p>(</span><span class=n>model_dir</span><span class=p>)</span>
+            <span class=n>model_path</span> <span class=o>=</span> <span class=n>model_dir</span> <span class=o>/</span> <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>args</span><span class=o>.</span><span class=n>type</span><span class=si>}{</span><span class=n>FileContentType</span><span class=o>.</span><span class=n>to_file_extension</span><span class=p>(</span><span class=n>extension_type</span><span class=p>)</span><span class=si>}</span><span class=s1>&#39;</span>
             <span class=k>try</span><span class=p>:</span>
                 <span class=n>_</span><span class=p>,</span> <span class=n>_</span><span class=p>,</span> <span class=n>model</span> <span class=o>=</span> <span class=n>ModelUtils</span><span class=o>.</span><span class=n>load_distributed</span><span class=p>(</span><span class=n>model_path</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>)</span>
             <span class=k>except</span> <span class=n>TrestleError</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>

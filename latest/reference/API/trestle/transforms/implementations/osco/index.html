@@ -149,7 +149,8 @@
 <span class=normal>705</span>
 <span class=normal>706</span>
 <span class=normal>707</span>
-<span class=normal>708</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>OscalProfileToOscoProfileTransformer</span><span class=p>(</span><span class=n>FromOscalTransformer</span><span class=p>):</span>
+<span class=normal>708</span>
+<span class=normal>709</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>OscalProfileToOscoProfileTransformer</span><span class=p>(</span><span class=n>FromOscalTransformer</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Interface for Oscal Profile to Osco Profile transformer.&quot;&quot;&quot;</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span>
@@ -264,7 +265,8 @@
     <span class=k>def</span><span class=w> </span><span class=nf>_add_disable_rules_for_control</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>value</span><span class=p>,</span> <span class=n>control</span><span class=p>):</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Extract disabled rules for control.&quot;&quot;&quot;</span>
         <span class=k>for</span> <span class=n>with_id</span> <span class=ow>in</span> <span class=n>as_list</span><span class=p>(</span><span class=n>control</span><span class=o>.</span><span class=n>with_ids</span><span class=p>):</span>
-            <span class=n>name</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_format_osco_rule_name</span><span class=p>(</span><span class=n>with_id</span><span class=o>.</span><span class=n>__root__</span><span class=p>)</span>
+            <span class=c1># In OSCAL 1.2.0, with_ids is a list of strings directly</span>
+            <span class=n>name</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_format_osco_rule_name</span><span class=p>(</span><span class=n>with_id</span><span class=p>)</span>
             <span class=n>rationale</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_get_rationale_for_disable_rule</span><span class=p>()</span>
             <span class=n>entry</span> <span class=o>=</span> <span class=p>{</span><span class=s1>&#39;name&#39;</span><span class=p>:</span> <span class=n>name</span><span class=p>,</span> <span class=s1>&#39;rationale&#39;</span><span class=p>:</span> <span class=n>rationale</span><span class=p>}</span>
             <span class=n>value</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>entry</span><span class=p>)</span>

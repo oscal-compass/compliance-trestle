@@ -14,13 +14,7 @@
 
   
       module-attribute
-   (trestle.core.generators.TG)" href=#trestle.core.generators.TG>TG</a></code> </td> <td> <div class=doc-md-description> <p>The generated instance with a pro-forma values filled out as best as possible.</p> </div> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/generators.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>179</span>
-<span class=normal>180</span>
-<span class=normal>181</span>
-<span class=normal>182</span>
-<span class=normal>183</span>
-<span class=normal>184</span>
-<span class=normal>185</span>
+   (trestle.core.generators.TG)" href=#trestle.core.generators.TG>TG</a></code> </td> <td> <div class=doc-md-description> <p>The generated instance with a pro-forma values filled out as best as possible.</p> </div> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/generators.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>185</span>
 <span class=normal>186</span>
 <span class=normal>187</span>
 <span class=normal>188</span>
@@ -110,7 +104,80 @@
 <span class=normal>272</span>
 <span class=normal>273</span>
 <span class=normal>274</span>
-<span class=normal>275</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>generate_sample_model</span><span class=p>(</span>
+<span class=normal>275</span>
+<span class=normal>276</span>
+<span class=normal>277</span>
+<span class=normal>278</span>
+<span class=normal>279</span>
+<span class=normal>280</span>
+<span class=normal>281</span>
+<span class=normal>282</span>
+<span class=normal>283</span>
+<span class=normal>284</span>
+<span class=normal>285</span>
+<span class=normal>286</span>
+<span class=normal>287</span>
+<span class=normal>288</span>
+<span class=normal>289</span>
+<span class=normal>290</span>
+<span class=normal>291</span>
+<span class=normal>292</span>
+<span class=normal>293</span>
+<span class=normal>294</span>
+<span class=normal>295</span>
+<span class=normal>296</span>
+<span class=normal>297</span>
+<span class=normal>298</span>
+<span class=normal>299</span>
+<span class=normal>300</span>
+<span class=normal>301</span>
+<span class=normal>302</span>
+<span class=normal>303</span>
+<span class=normal>304</span>
+<span class=normal>305</span>
+<span class=normal>306</span>
+<span class=normal>307</span>
+<span class=normal>308</span>
+<span class=normal>309</span>
+<span class=normal>310</span>
+<span class=normal>311</span>
+<span class=normal>312</span>
+<span class=normal>313</span>
+<span class=normal>314</span>
+<span class=normal>315</span>
+<span class=normal>316</span>
+<span class=normal>317</span>
+<span class=normal>318</span>
+<span class=normal>319</span>
+<span class=normal>320</span>
+<span class=normal>321</span>
+<span class=normal>322</span>
+<span class=normal>323</span>
+<span class=normal>324</span>
+<span class=normal>325</span>
+<span class=normal>326</span>
+<span class=normal>327</span>
+<span class=normal>328</span>
+<span class=normal>329</span>
+<span class=normal>330</span>
+<span class=normal>331</span>
+<span class=normal>332</span>
+<span class=normal>333</span>
+<span class=normal>334</span>
+<span class=normal>335</span>
+<span class=normal>336</span>
+<span class=normal>337</span>
+<span class=normal>338</span>
+<span class=normal>339</span>
+<span class=normal>340</span>
+<span class=normal>341</span>
+<span class=normal>342</span>
+<span class=normal>343</span>
+<span class=normal>344</span>
+<span class=normal>345</span>
+<span class=normal>346</span>
+<span class=normal>347</span>
+<span class=normal>348</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>generate_sample_model</span><span class=p>(</span>
     <span class=n>model</span><span class=p>:</span> <span class=n>Union</span><span class=p>[</span><span class=n>Type</span><span class=p>[</span><span class=n>TG</span><span class=p>],</span> <span class=n>List</span><span class=p>[</span><span class=n>TG</span><span class=p>],</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>TG</span><span class=p>]],</span> <span class=n>include_optional</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>,</span> <span class=n>depth</span><span class=p>:</span> <span class=nb>int</span> <span class=o>=</span> <span class=o>-</span><span class=mi>1</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>TG</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Given a model class, generate an object of that class with sample values.</span>
@@ -134,6 +201,22 @@
     <span class=k>if</span> <span class=n>utils</span><span class=o>.</span><span class=n>is_collection_field_type</span><span class=p>(</span><span class=n>model</span><span class=p>):</span>
         <span class=n>model_type</span> <span class=o>=</span> <span class=n>utils</span><span class=o>.</span><span class=n>get_origin</span><span class=p>(</span><span class=n>model</span><span class=p>)</span>
         <span class=n>model</span> <span class=o>=</span> <span class=n>utils</span><span class=o>.</span><span class=n>get_inner_type</span><span class=p>(</span><span class=n>model</span><span class=p>)</span>
+
+    <span class=c1># Handle Union types at the top level (e.g., when model is Union[Parameter1, Parameter2])</span>
+    <span class=c1># This can happen when get_inner_type returns a Union from a list[Union[...]]</span>
+    <span class=n>origin</span> <span class=o>=</span> <span class=n>utils</span><span class=o>.</span><span class=n>get_origin</span><span class=p>(</span><span class=n>model</span><span class=p>)</span>
+    <span class=n>is_union</span> <span class=o>=</span> <span class=n>origin</span> <span class=o>==</span> <span class=n>Union</span> <span class=ow>or</span> <span class=nb>str</span><span class=p>(</span><span class=n>origin</span><span class=p>)</span> <span class=o>==</span> <span class=s2>&quot;&lt;class &#39;types.UnionType&#39;&gt;&quot;</span>
+    <span class=k>if</span> <span class=n>is_union</span><span class=p>:</span>
+        <span class=n>union_args</span> <span class=o>=</span> <span class=n>typing</span><span class=o>.</span><span class=n>get_args</span><span class=p>(</span><span class=n>model</span><span class=p>)</span>
+        <span class=c1># Find first non-None OscalBaseModel type in the union</span>
+        <span class=k>for</span> <span class=n>arg</span> <span class=ow>in</span> <span class=n>union_args</span><span class=p>:</span>
+            <span class=k>if</span> <span class=n>arg</span> <span class=ow>is</span> <span class=ow>not</span> <span class=nb>type</span><span class=p>(</span><span class=kc>None</span><span class=p>)</span> <span class=ow>and</span> <span class=n>safe_is_sub</span><span class=p>(</span><span class=n>arg</span><span class=p>,</span> <span class=n>OscalBaseModel</span><span class=p>):</span>
+                <span class=n>model</span> <span class=o>=</span> <span class=n>arg</span>
+                <span class=k>break</span>
+        <span class=k>else</span><span class=p>:</span>
+            <span class=c1># If no OscalBaseModel found, use first non-None type</span>
+            <span class=n>model</span> <span class=o>=</span> <span class=nb>next</span><span class=p>((</span><span class=n>arg</span> <span class=k>for</span> <span class=n>arg</span> <span class=ow>in</span> <span class=n>union_args</span> <span class=k>if</span> <span class=n>arg</span> <span class=ow>is</span> <span class=ow>not</span> <span class=nb>type</span><span class=p>(</span><span class=kc>None</span><span class=p>)),</span> <span class=n>union_args</span><span class=p>[</span><span class=mi>0</span><span class=p>])</span>
+
     <span class=n>model</span> <span class=o>=</span> <span class=n>cast</span><span class=p>(</span><span class=n>TG</span><span class=p>,</span> <span class=n>model</span><span class=p>)</span>
 
     <span class=n>model_dict</span> <span class=o>=</span> <span class=p>{}</span>
@@ -145,29 +228,84 @@
             <span class=k>if</span> <span class=n>model_type</span> <span class=ow>in</span> <span class=p>[</span><span class=n>OscalVersion</span><span class=p>]:</span>
                 <span class=n>model_dict</span><span class=p>[</span><span class=n>field</span><span class=p>]</span> <span class=o>=</span> <span class=n>OSCAL_VERSION</span>
                 <span class=k>break</span>
+            <span class=c1># Special handling for include_all field - only skip if it&#39;s optional</span>
             <span class=k>if</span> <span class=n>field</span> <span class=o>==</span> <span class=s1>&#39;include_all&#39;</span><span class=p>:</span>
-                <span class=k>if</span> <span class=n>include_optional</span><span class=p>:</span>
+                <span class=k>if</span> <span class=n>model</span><span class=o>.</span><span class=n>__fields__</span><span class=p>[</span><span class=n>field</span><span class=p>]</span><span class=o>.</span><span class=n>required</span><span class=p>:</span>  <span class=c1># type: ignore</span>
+                    <span class=c1># Field is required, generate it</span>
+                    <span class=n>model_dict</span><span class=p>[</span><span class=n>field</span><span class=p>]</span> <span class=o>=</span> <span class=p>{}</span>
+                <span class=k>elif</span> <span class=n>include_optional</span><span class=p>:</span>
+                    <span class=c1># Field is optional and we want to include optional fields</span>
                     <span class=n>model_dict</span><span class=p>[</span><span class=n>field</span><span class=p>]</span> <span class=o>=</span> <span class=p>{}</span>
                 <span class=k>continue</span>
-            <span class=n>outer_type</span> <span class=o>=</span> <span class=n>model</span><span class=o>.</span><span class=n>__fields__</span><span class=p>[</span><span class=n>field</span><span class=p>]</span><span class=o>.</span><span class=n>outer_type_</span>
-            <span class=c1># next appears to be needed for python 3.7</span>
-            <span class=k>if</span> <span class=n>utils</span><span class=o>.</span><span class=n>get_origin</span><span class=p>(</span><span class=n>outer_type</span><span class=p>)</span> <span class=o>==</span> <span class=n>Union</span><span class=p>:</span>
-                <span class=n>outer_type</span> <span class=o>=</span> <span class=n>outer_type</span><span class=o>.</span><span class=n>__args__</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span>
-            <span class=k>if</span> <span class=n>model</span><span class=o>.</span><span class=n>__fields__</span><span class=p>[</span><span class=n>field</span><span class=p>]</span><span class=o>.</span><span class=n>required</span> <span class=ow>or</span> <span class=n>effective_optional</span><span class=p>:</span>
+            <span class=n>outer_type</span> <span class=o>=</span> <span class=n>model</span><span class=o>.</span><span class=n>__fields__</span><span class=p>[</span><span class=n>field</span><span class=p>]</span><span class=o>.</span><span class=n>outer_type_</span>  <span class=c1># type: ignore</span>
+
+            <span class=c1># Skip fields with unresolved ForwardRefs, but if required, provide empty list</span>
+            <span class=k>if</span> <span class=nb>isinstance</span><span class=p>(</span><span class=n>outer_type</span><span class=p>,</span> <span class=p>(</span><span class=nb>str</span><span class=p>,</span> <span class=n>ForwardRef</span><span class=p>)):</span>
+                <span class=c1># If it&#39;s a required field, we need to provide something</span>
+                <span class=c1># Assume it&#39;s a list type and provide an empty list</span>
+                <span class=k>if</span> <span class=n>model</span><span class=o>.</span><span class=n>__fields__</span><span class=p>[</span><span class=n>field</span><span class=p>]</span><span class=o>.</span><span class=n>required</span><span class=p>:</span>  <span class=c1># type: ignore</span>
+                    <span class=n>model_dict</span><span class=p>[</span><span class=n>field</span><span class=p>]</span> <span class=o>=</span> <span class=p>[]</span>
+                <span class=k>continue</span>
+
+            <span class=c1># Handle both typing.Union and types.UnionType (Python 3.10+ uses | operator)</span>
+            <span class=n>origin</span> <span class=o>=</span> <span class=n>utils</span><span class=o>.</span><span class=n>get_origin</span><span class=p>(</span><span class=n>outer_type</span><span class=p>)</span>
+            <span class=n>is_union</span> <span class=o>=</span> <span class=n>origin</span> <span class=o>==</span> <span class=n>Union</span> <span class=ow>or</span> <span class=nb>str</span><span class=p>(</span><span class=n>origin</span><span class=p>)</span> <span class=o>==</span> <span class=s2>&quot;&lt;class &#39;types.UnionType&#39;&gt;&quot;</span>
+            <span class=k>if</span> <span class=n>is_union</span><span class=p>:</span>
+                <span class=c1># For Union types, prefer Enum types over other types for sample generation</span>
+                <span class=c1># This handles fields like Union[ConstrainedStr, Enum, None]</span>
+                <span class=n>union_args</span> <span class=o>=</span> <span class=n>typing</span><span class=o>.</span><span class=n>get_args</span><span class=p>(</span><span class=n>outer_type</span><span class=p>)</span>
+                <span class=n>enum_type</span> <span class=o>=</span> <span class=kc>None</span>
+                <span class=k>for</span> <span class=n>arg</span> <span class=ow>in</span> <span class=n>union_args</span><span class=p>:</span>
+                    <span class=k>if</span> <span class=n>arg</span> <span class=ow>is</span> <span class=ow>not</span> <span class=nb>type</span><span class=p>(</span><span class=kc>None</span><span class=p>)</span> <span class=ow>and</span> <span class=n>safe_is_sub</span><span class=p>(</span><span class=n>arg</span><span class=p>,</span> <span class=n>Enum</span><span class=p>):</span>
+                        <span class=n>enum_type</span> <span class=o>=</span> <span class=n>arg</span>
+                        <span class=k>break</span>
+                <span class=c1># Use the enum type if found, otherwise fall back to first non-None, non-ForwardRef type</span>
+                <span class=k>if</span> <span class=n>enum_type</span><span class=p>:</span>
+                    <span class=n>outer_type</span> <span class=o>=</span> <span class=n>enum_type</span>
+                <span class=k>else</span><span class=p>:</span>
+                    <span class=c1># Get first non-None, non-ForwardRef type</span>
+                    <span class=c1># Skip ForwardRef types as they haven&#39;t been resolved yet</span>
+                    <span class=n>outer_type</span> <span class=o>=</span> <span class=kc>None</span>
+                    <span class=k>for</span> <span class=n>arg</span> <span class=ow>in</span> <span class=n>union_args</span><span class=p>:</span>
+                        <span class=c1># Check if arg is not None and not a ForwardRef</span>
+                        <span class=k>if</span> <span class=n>arg</span> <span class=ow>is</span> <span class=ow>not</span> <span class=nb>type</span><span class=p>(</span><span class=kc>None</span><span class=p>)</span> <span class=ow>and</span> <span class=ow>not</span> <span class=nb>isinstance</span><span class=p>(</span><span class=n>arg</span><span class=p>,</span> <span class=p>(</span><span class=nb>str</span><span class=p>,</span> <span class=n>ForwardRef</span><span class=p>)):</span>
+                            <span class=n>outer_type</span> <span class=o>=</span> <span class=n>arg</span>
+                            <span class=k>break</span>
+                    <span class=k>if</span> <span class=n>outer_type</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
+                        <span class=c1># If all types are ForwardRefs or None, skip this field</span>
+                        <span class=k>continue</span>
+            <span class=k>if</span> <span class=n>model</span><span class=o>.</span><span class=n>__fields__</span><span class=p>[</span><span class=n>field</span><span class=p>]</span><span class=o>.</span><span class=n>required</span> <span class=ow>or</span> <span class=n>effective_optional</span><span class=p>:</span>  <span class=c1># type: ignore</span>
                 <span class=c1># FIXME could be ForwardRef(&#39;SystemComponentStatus&#39;)</span>
                 <span class=k>if</span> <span class=n>utils</span><span class=o>.</span><span class=n>is_collection_field_type</span><span class=p>(</span><span class=n>outer_type</span><span class=p>):</span>
                     <span class=n>inner_type</span> <span class=o>=</span> <span class=n>utils</span><span class=o>.</span><span class=n>get_inner_type</span><span class=p>(</span><span class=n>outer_type</span><span class=p>)</span>
+                    <span class=c1># Check for circular reference: inner_type might be a Union containing model</span>
                     <span class=k>if</span> <span class=n>inner_type</span> <span class=o>==</span> <span class=n>model</span><span class=p>:</span>
                         <span class=k>continue</span>
-                    <span class=n>model_dict</span><span class=p>[</span><span class=n>field</span><span class=p>]</span> <span class=o>=</span> <span class=n>generate_sample_model</span><span class=p>(</span>
-                        <span class=n>outer_type</span><span class=p>,</span> <span class=n>include_optional</span><span class=o>=</span><span class=n>include_optional</span><span class=p>,</span> <span class=n>depth</span><span class=o>=</span><span class=n>depth</span> <span class=o>-</span> <span class=mi>1</span>
-                    <span class=p>)</span>
+                    <span class=c1># Also check if inner_type is a Union and model is one of its variants</span>
+                    <span class=n>inner_origin</span> <span class=o>=</span> <span class=n>utils</span><span class=o>.</span><span class=n>get_origin</span><span class=p>(</span><span class=n>inner_type</span><span class=p>)</span>
+                    <span class=n>is_inner_union</span> <span class=o>=</span> <span class=n>inner_origin</span> <span class=o>==</span> <span class=n>Union</span> <span class=ow>or</span> <span class=nb>str</span><span class=p>(</span><span class=n>inner_origin</span><span class=p>)</span> <span class=o>==</span> <span class=s2>&quot;&lt;class &#39;types.UnionType&#39;&gt;&quot;</span>
+                    <span class=k>if</span> <span class=n>is_inner_union</span><span class=p>:</span>
+                        <span class=n>union_args</span> <span class=o>=</span> <span class=n>typing</span><span class=o>.</span><span class=n>get_args</span><span class=p>(</span><span class=n>inner_type</span><span class=p>)</span>
+                        <span class=k>if</span> <span class=n>model</span> <span class=ow>in</span> <span class=n>union_args</span><span class=p>:</span>
+                            <span class=k>continue</span>  <span class=c1># Circular reference detected</span>
+                    <span class=c1># Skip recursion if depth is 0 (but allow -1 for unlimited)</span>
+                    <span class=k>if</span> <span class=n>depth</span> <span class=o>==</span> <span class=mi>0</span><span class=p>:</span>
+                        <span class=n>model_dict</span><span class=p>[</span><span class=n>field</span><span class=p>]</span> <span class=o>=</span> <span class=p>[]</span>
+                    <span class=k>else</span><span class=p>:</span>
+                        <span class=n>model_dict</span><span class=p>[</span><span class=n>field</span><span class=p>]</span> <span class=o>=</span> <span class=n>generate_sample_model</span><span class=p>(</span>
+                            <span class=n>outer_type</span><span class=p>,</span> <span class=n>include_optional</span><span class=o>=</span><span class=n>include_optional</span><span class=p>,</span> <span class=n>depth</span><span class=o>=</span><span class=n>depth</span> <span class=o>-</span> <span class=mi>1</span>
+                        <span class=p>)</span>
                 <span class=k>elif</span> <span class=n>is_by_type</span><span class=p>(</span><span class=n>outer_type</span><span class=p>):</span>
                     <span class=n>model_dict</span><span class=p>[</span><span class=n>field</span><span class=p>]</span> <span class=o>=</span> <span class=n>generate_sample_value_by_type</span><span class=p>(</span><span class=n>outer_type</span><span class=p>,</span> <span class=n>field</span><span class=p>)</span>
                 <span class=k>elif</span> <span class=n>safe_is_sub</span><span class=p>(</span><span class=n>outer_type</span><span class=p>,</span> <span class=n>OscalBaseModel</span><span class=p>):</span>
-                    <span class=n>model_dict</span><span class=p>[</span><span class=n>field</span><span class=p>]</span> <span class=o>=</span> <span class=n>generate_sample_model</span><span class=p>(</span>
-                        <span class=n>outer_type</span><span class=p>,</span> <span class=n>include_optional</span><span class=o>=</span><span class=n>include_optional</span><span class=p>,</span> <span class=n>depth</span><span class=o>=</span><span class=n>depth</span> <span class=o>-</span> <span class=mi>1</span>
-                    <span class=p>)</span>
+                    <span class=c1># Skip recursion if depth is 0 (but allow -1 for unlimited)</span>
+                    <span class=c1># But always generate required fields even at depth 0</span>
+                    <span class=k>if</span> <span class=n>depth</span> <span class=o>==</span> <span class=mi>0</span> <span class=ow>and</span> <span class=ow>not</span> <span class=n>model</span><span class=o>.</span><span class=n>__fields__</span><span class=p>[</span><span class=n>field</span><span class=p>]</span><span class=o>.</span><span class=n>required</span><span class=p>:</span>  <span class=c1># type: ignore</span>
+                        <span class=k>continue</span>  <span class=c1># Skip optional nested models at depth 0</span>
+                    <span class=k>else</span><span class=p>:</span>
+                        <span class=n>model_dict</span><span class=p>[</span><span class=n>field</span><span class=p>]</span> <span class=o>=</span> <span class=n>generate_sample_model</span><span class=p>(</span>
+                            <span class=n>outer_type</span><span class=p>,</span> <span class=n>include_optional</span><span class=o>=</span><span class=n>include_optional</span><span class=p>,</span> <span class=n>depth</span><span class=o>=</span><span class=n>depth</span> <span class=o>-</span> <span class=mi>1</span>
+                        <span class=p>)</span>
                 <span class=k>else</span><span class=p>:</span>
                     <span class=c1># Handle special cases (hacking)</span>
                     <span class=k>if</span> <span class=n>model_type</span> <span class=ow>in</span> <span class=p>[</span><span class=n>Base64Datatype</span><span class=p>]:</span>
@@ -190,11 +328,7 @@
                             <span class=n>outer_type</span><span class=p>,</span> <span class=n>str_utils</span><span class=o>.</span><span class=n>classname_to_alias</span><span class=p>(</span><span class=n>model</span><span class=o>.</span><span class=vm>__name__</span><span class=p>,</span> <span class=n>AliasMode</span><span class=o>.</span><span class=n>FIELD</span><span class=p>)</span>
                         <span class=p>)</span>
                     <span class=k>else</span><span class=p>:</span>
-                        <span class=c1># Check if outer_type is a dict variant (dict, Dict[K, V], etc.)</span>
-                        <span class=k>if</span> <span class=n>outer_type</span> <span class=ow>is</span> <span class=nb>dict</span> <span class=ow>or</span> <span class=p>(</span><span class=nb>hasattr</span><span class=p>(</span><span class=n>outer_type</span><span class=p>,</span> <span class=s1>&#39;__origin__&#39;</span><span class=p>)</span> <span class=ow>and</span> <span class=n>outer_type</span><span class=o>.</span><span class=n>__origin__</span> <span class=ow>is</span> <span class=nb>dict</span><span class=p>):</span>
-                            <span class=n>model_dict</span><span class=p>[</span><span class=n>field</span><span class=p>]</span> <span class=o>=</span> <span class=p>{}</span>
-                        <span class=k>else</span><span class=p>:</span>
-                            <span class=n>model_dict</span><span class=p>[</span><span class=n>field</span><span class=p>]</span> <span class=o>=</span> <span class=n>generate_sample_value_by_type</span><span class=p>(</span><span class=n>outer_type</span><span class=p>,</span> <span class=n>field</span><span class=p>)</span>
+                        <span class=n>model_dict</span><span class=p>[</span><span class=n>field</span><span class=p>]</span> <span class=o>=</span> <span class=n>generate_sample_value_by_type</span><span class=p>(</span><span class=n>outer_type</span><span class=p>,</span> <span class=n>field</span><span class=p>)</span>
         <span class=c1># Note: this assumes list constrains in oscal are always 1 as a minimum size. if two this may still fail.</span>
     <span class=k>else</span><span class=p>:</span>
         <span class=k>if</span> <span class=n>model_type</span> <span class=ow>is</span> <span class=nb>list</span><span class=p>:</span>
@@ -207,12 +341,7 @@
     <span class=k>if</span> <span class=n>model_type</span> <span class=ow>is</span> <span class=nb>dict</span><span class=p>:</span>
         <span class=k>return</span> <span class=p>{</span><span class=n>const</span><span class=o>.</span><span class=n>REPLACE_ME</span><span class=p>:</span> <span class=n>model</span><span class=p>(</span><span class=o>**</span><span class=n>model_dict</span><span class=p>)}</span>  <span class=c1># type: ignore</span>
     <span class=k>return</span> <span class=n>model</span><span class=p>(</span><span class=o>**</span><span class=n>model_dict</span><span class=p>)</span>  <span class=c1># type: ignore</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h4 id=trestle.core.generators.generate_sample_value_by_type class="doc doc-heading"> <code class="highlight language-python"><span class=n>generate_sample_value_by_type</span><span class=p>(</span><span class=n>type_</span><span class=p>,</span> <span class=n>field_name</span><span class=p>)</span></code> <a href=#trestle.core.generators.generate_sample_value_by_type class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Given a type, return sample value.</p> <p>Includes the Optional use of passing down a parent_model</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/generators.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>102</span>
-<span class=normal>103</span>
-<span class=normal>104</span>
-<span class=normal>105</span>
-<span class=normal>106</span>
-<span class=normal>107</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h4 id=trestle.core.generators.generate_sample_value_by_type class="doc doc-heading"> <code class="highlight language-python"><span class=n>generate_sample_value_by_type</span><span class=p>(</span><span class=n>type_</span><span class=p>,</span> <span class=n>field_name</span><span class=p>)</span></code> <a href=#trestle.core.generators.generate_sample_value_by_type class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Given a type, return sample value.</p> <p>Includes the Optional use of passing down a parent_model</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/generators.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>107</span>
 <span class=normal>108</span>
 <span class=normal>109</span>
 <span class=normal>110</span>
@@ -273,7 +402,13 @@
 <span class=normal>165</span>
 <span class=normal>166</span>
 <span class=normal>167</span>
-<span class=normal>168</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>generate_sample_value_by_type</span><span class=p>(</span><span class=n>type_</span><span class=p>:</span> <span class=nb>type</span><span class=p>,</span> <span class=n>field_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Union</span><span class=p>[</span><span class=n>datetime</span><span class=p>,</span> <span class=nb>bool</span><span class=p>,</span> <span class=nb>int</span><span class=p>,</span> <span class=nb>str</span><span class=p>,</span> <span class=nb>float</span><span class=p>,</span> <span class=n>Enum</span><span class=p>,</span> <span class=n>Base64</span><span class=p>]:</span>
+<span class=normal>168</span>
+<span class=normal>169</span>
+<span class=normal>170</span>
+<span class=normal>171</span>
+<span class=normal>172</span>
+<span class=normal>173</span>
+<span class=normal>174</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>generate_sample_value_by_type</span><span class=p>(</span><span class=n>type_</span><span class=p>:</span> <span class=nb>type</span><span class=p>,</span> <span class=n>field_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Union</span><span class=p>[</span><span class=n>datetime</span><span class=p>,</span> <span class=nb>bool</span><span class=p>,</span> <span class=nb>int</span><span class=p>,</span> <span class=nb>str</span><span class=p>,</span> <span class=nb>float</span><span class=p>,</span> <span class=n>Enum</span><span class=p>,</span> <span class=n>Base64</span><span class=p>]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Given a type, return sample value.</span>
 
 <span class=sd>    Includes the Optional use of passing down a parent_model</span>
@@ -337,30 +472,31 @@
     <span class=k>if</span> <span class=n>type_</span> <span class=ow>is</span> <span class=nb>list</span><span class=p>:</span>
         <span class=k>raise</span> <span class=n>err</span><span class=o>.</span><span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Unable to generate sample for type </span><span class=si>{</span><span class=n>type_</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
     <span class=c1># default to empty dict for dict types, string for anything else</span>
-    <span class=k>if</span> <span class=n>type_</span> <span class=ow>is</span> <span class=nb>dict</span><span class=p>:</span>
+    <span class=c1># Check for both dict and generic dict types like dict[str, Any]</span>
+    <span class=k>if</span> <span class=n>type_</span> <span class=ow>is</span> <span class=nb>dict</span> <span class=ow>or</span> <span class=p>(</span><span class=nb>hasattr</span><span class=p>(</span><span class=n>type_</span><span class=p>,</span> <span class=s1>&#39;__origin__&#39;</span><span class=p>)</span> <span class=ow>and</span> <span class=n>type_</span><span class=o>.</span><span class=n>__origin__</span> <span class=ow>is</span> <span class=nb>dict</span><span class=p>):</span>
         <span class=k>return</span> <span class=p>{}</span>  <span class=c1># type: ignore[return-value]</span>
     <span class=k>return</span> <span class=n>const</span><span class=o>.</span><span class=n>REPLACE_ME</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h4 id=trestle.core.generators.is_by_type class="doc doc-heading"> <code class="highlight language-python"><span class=n>is_by_type</span><span class=p>(</span><span class=n>model_type</span><span class=p>)</span></code> <a href=#trestle.core.generators.is_by_type class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Check for by type.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/generators.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>171</span>
-<span class=normal>172</span>
-<span class=normal>173</span>
-<span class=normal>174</span>
-<span class=normal>175</span>
-<span class=normal>176</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>is_by_type</span><span class=p>(</span><span class=n>model_type</span><span class=p>:</span> <span class=n>Union</span><span class=p>[</span><span class=n>Type</span><span class=p>[</span><span class=n>TG</span><span class=p>],</span> <span class=n>List</span><span class=p>[</span><span class=n>TG</span><span class=p>],</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>TG</span><span class=p>]])</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h4 id=trestle.core.generators.is_by_type class="doc doc-heading"> <code class="highlight language-python"><span class=n>is_by_type</span><span class=p>(</span><span class=n>model_type</span><span class=p>)</span></code> <a href=#trestle.core.generators.is_by_type class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Check for by type.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/generators.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>177</span>
+<span class=normal>178</span>
+<span class=normal>179</span>
+<span class=normal>180</span>
+<span class=normal>181</span>
+<span class=normal>182</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>is_by_type</span><span class=p>(</span><span class=n>model_type</span><span class=p>:</span> <span class=n>Union</span><span class=p>[</span><span class=n>Type</span><span class=p>[</span><span class=n>TG</span><span class=p>],</span> <span class=n>List</span><span class=p>[</span><span class=n>TG</span><span class=p>],</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>TG</span><span class=p>]])</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Check for by type.&quot;&quot;&quot;</span>
     <span class=n>rval</span> <span class=o>=</span> <span class=kc>False</span>
     <span class=k>if</span> <span class=n>model_type</span> <span class=o>==</span> <span class=n>type_base64</span><span class=p>:</span>
         <span class=n>rval</span> <span class=o>=</span> <span class=kc>True</span>
     <span class=k>return</span> <span class=n>rval</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h4 id=trestle.core.generators.is_enum_method class="doc doc-heading"> <code class="highlight language-python"><span class=n>is_enum_method</span><span class=p>(</span><span class=n>type_</span><span class=p>)</span></code> <a href=#trestle.core.generators.is_enum_method class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Test for method.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/generators.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>66</span>
-<span class=normal>67</span>
-<span class=normal>68</span>
-<span class=normal>69</span>
-<span class=normal>70</span>
-<span class=normal>71</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h4 id=trestle.core.generators.is_enum_method class="doc doc-heading"> <code class="highlight language-python"><span class=n>is_enum_method</span><span class=p>(</span><span class=n>type_</span><span class=p>)</span></code> <a href=#trestle.core.generators.is_enum_method class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Test for method.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/generators.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>71</span>
 <span class=normal>72</span>
 <span class=normal>73</span>
 <span class=normal>74</span>
-<span class=normal>75</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>is_enum_method</span><span class=p>(</span><span class=n>type_</span><span class=p>:</span> <span class=nb>type</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
+<span class=normal>75</span>
+<span class=normal>76</span>
+<span class=normal>77</span>
+<span class=normal>78</span>
+<span class=normal>79</span>
+<span class=normal>80</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>is_enum_method</span><span class=p>(</span><span class=n>type_</span><span class=p>:</span> <span class=nb>type</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Test for method.&quot;&quot;&quot;</span>
     <span class=n>rval</span> <span class=o>=</span> <span class=kc>False</span>
     <span class=k>if</span> <span class=n>utils</span><span class=o>.</span><span class=n>get_origin</span><span class=p>(</span><span class=n>type_</span><span class=p>)</span> <span class=o>==</span> <span class=n>Union</span><span class=p>:</span>
@@ -370,16 +506,16 @@
                 <span class=n>rval</span> <span class=o>=</span> <span class=kc>True</span>
                 <span class=k>break</span>
     <span class=k>return</span> <span class=n>rval</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h4 id=trestle.core.generators.is_enum_observation_type_valid_value class="doc doc-heading"> <code class="highlight language-python"><span class=n>is_enum_observation_type_valid_value</span><span class=p>(</span><span class=n>type_</span><span class=p>)</span></code> <a href=#trestle.core.generators.is_enum_observation_type_valid_value class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Test for observation type valid value.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/generators.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>90</span>
-<span class=normal>91</span>
-<span class=normal>92</span>
-<span class=normal>93</span>
-<span class=normal>94</span>
-<span class=normal>95</span>
-<span class=normal>96</span>
-<span class=normal>97</span>
-<span class=normal>98</span>
-<span class=normal>99</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>is_enum_observation_type_valid_value</span><span class=p>(</span><span class=n>type_</span><span class=p>:</span> <span class=nb>type</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h4 id=trestle.core.generators.is_enum_observation_type_valid_value class="doc doc-heading"> <code class="highlight language-python"><span class=n>is_enum_observation_type_valid_value</span><span class=p>(</span><span class=n>type_</span><span class=p>)</span></code> <a href=#trestle.core.generators.is_enum_observation_type_valid_value class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Test for observation type valid value.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/generators.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal> 95</span>
+<span class=normal> 96</span>
+<span class=normal> 97</span>
+<span class=normal> 98</span>
+<span class=normal> 99</span>
+<span class=normal>100</span>
+<span class=normal>101</span>
+<span class=normal>102</span>
+<span class=normal>103</span>
+<span class=normal>104</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>is_enum_observation_type_valid_value</span><span class=p>(</span><span class=n>type_</span><span class=p>:</span> <span class=nb>type</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Test for observation type valid value.&quot;&quot;&quot;</span>
     <span class=n>rval</span> <span class=o>=</span> <span class=kc>False</span>
     <span class=k>if</span> <span class=n>utils</span><span class=o>.</span><span class=n>get_origin</span><span class=p>(</span><span class=n>type_</span><span class=p>)</span> <span class=o>==</span> <span class=n>Union</span><span class=p>:</span>
@@ -389,16 +525,16 @@
                 <span class=n>rval</span> <span class=o>=</span> <span class=kc>True</span>
                 <span class=k>break</span>
     <span class=k>return</span> <span class=n>rval</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h4 id=trestle.core.generators.is_enum_task_valid_value class="doc doc-heading"> <code class="highlight language-python"><span class=n>is_enum_task_valid_value</span><span class=p>(</span><span class=n>type_</span><span class=p>)</span></code> <a href=#trestle.core.generators.is_enum_task_valid_value class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Test for task valid value.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/generators.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>78</span>
-<span class=normal>79</span>
-<span class=normal>80</span>
-<span class=normal>81</span>
-<span class=normal>82</span>
-<span class=normal>83</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h4 id=trestle.core.generators.is_enum_task_valid_value class="doc doc-heading"> <code class="highlight language-python"><span class=n>is_enum_task_valid_value</span><span class=p>(</span><span class=n>type_</span><span class=p>)</span></code> <a href=#trestle.core.generators.is_enum_task_valid_value class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Test for task valid value.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/generators.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>83</span>
 <span class=normal>84</span>
 <span class=normal>85</span>
 <span class=normal>86</span>
-<span class=normal>87</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>is_enum_task_valid_value</span><span class=p>(</span><span class=n>type_</span><span class=p>:</span> <span class=nb>type</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
+<span class=normal>87</span>
+<span class=normal>88</span>
+<span class=normal>89</span>
+<span class=normal>90</span>
+<span class=normal>91</span>
+<span class=normal>92</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>is_enum_task_valid_value</span><span class=p>(</span><span class=n>type_</span><span class=p>:</span> <span class=nb>type</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Test for task valid value.&quot;&quot;&quot;</span>
     <span class=n>rval</span> <span class=o>=</span> <span class=kc>False</span>
     <span class=k>if</span> <span class=n>utils</span><span class=o>.</span><span class=n>get_origin</span><span class=p>(</span><span class=n>type_</span><span class=p>)</span> <span class=o>==</span> <span class=n>Union</span><span class=p>:</span>
@@ -411,8 +547,18 @@
 </code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h4 id=trestle.core.generators.safe_is_sub class="doc doc-heading"> <code class="highlight language-python"><span class=n>safe_is_sub</span><span class=p>(</span><span class=n>sub</span><span class=p>,</span> <span class=n>parent</span><span class=p>)</span></code> <a href=#trestle.core.generators.safe_is_sub class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Is this a subclass of parent.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/generators.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>60</span>
 <span class=normal>61</span>
 <span class=normal>62</span>
-<span class=normal>63</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>safe_is_sub</span><span class=p>(</span><span class=n>sub</span><span class=p>:</span> <span class=n>Any</span><span class=p>,</span> <span class=n>parent</span><span class=p>:</span> <span class=n>Any</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
+<span class=normal>63</span>
+<span class=normal>64</span>
+<span class=normal>65</span>
+<span class=normal>66</span>
+<span class=normal>67</span>
+<span class=normal>68</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>safe_is_sub</span><span class=p>(</span><span class=n>sub</span><span class=p>:</span> <span class=n>Any</span><span class=p>,</span> <span class=n>parent</span><span class=p>:</span> <span class=n>Any</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Is this a subclass of parent.&quot;&quot;&quot;</span>
+    <span class=c1># Handle Python 3.10+ generic types (e.g., dict[str, Any])</span>
+    <span class=c1># These are types.GenericAlias and cannot be used with issubclass()</span>
+    <span class=k>if</span> <span class=nb>hasattr</span><span class=p>(</span><span class=n>sub</span><span class=p>,</span> <span class=s1>&#39;__origin__&#39;</span><span class=p>):</span>
+        <span class=c1># For generic types like dict[str, Any], check the origin (dict)</span>
+        <span class=n>sub</span> <span class=o>=</span> <span class=n>typing</span><span class=o>.</span><span class=n>get_origin</span><span class=p>(</span><span class=n>sub</span><span class=p>)</span>
     <span class=n>is_class</span> <span class=o>=</span> <span class=n>inspect</span><span class=o>.</span><span class=n>isclass</span><span class=p>(</span><span class=n>sub</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>is_class</span> <span class=ow>and</span> <span class=nb>issubclass</span><span class=p>(</span><span class=n>sub</span><span class=p>,</span> <span class=n>parent</span><span class=p>)</span>
 </code></pre></div></td></tr></table></div> </details> </div> </div> </div> </div> </div><p>handler: python</p> <aside class=md-source-file> <span class=md-source-file__fact> <span class=md-icon title="Last update"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg> </span> <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 31, 2024 02:54:37 UTC">October 31, 2024</span> </span> </aside> </article> </div> <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script> </div> </main> <footer class=md-footer> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-copyright> Made with <a href=https://squidfunk.github.io/mkdocs-material/ target=_blank rel=noopener> Material for MkDocs </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <div class=md-consent data-md-component=consent id=__consent hidden> <div class=md-consent__overlay></div> <aside class=md-consent__inner> <form class="md-consent__form md-grid md-typeset" name=consent> <h4>Cookie consent</h4> <p>We use cookies to recognize your repeated visits and preferences, as well as to measure the effectiveness of our documentation and whether users find what they're searching for. With your consent, you're helping us to make our documentation better.</p> <input class=md-toggle type=checkbox id=__settings> <div class=md-consent__settings> <ul class=task-list> <li class=task-list-item> <label class=task-list-control> <input type=checkbox name=analytics checked> <span class=task-list-indicator></span> Google Analytics </label> </li> <li class=task-list-item> <label class=task-list-control> <input type=checkbox name=github checked> <span class=task-list-indicator></span> GitHub </label> </li> </ul> </div> <div class=md-consent__controls> <button class="md-button md-button--primary">Accept</button> <label class=md-button for=__settings>Manage settings</label> </div> </form> </aside> </div> <script>var consent=__md_get("__consent");if(consent)for(var input of document.forms.consent.elements)input.name&&(input.checked=consent[input.name]||!1);else"file:"!==location.protocol&&setTimeout((function(){document.querySelector("[data-md-component=consent]").hidden=!1}),250);var form=document.forms.consent;for(var action of["submit","reset"])form.addEventListener(action,(function(e){if(e.preventDefault(),"reset"===e.type)for(var n of document.forms.consent.elements)n.name&&(n.checked=!1);__md_set("__consent",Object.fromEntries(Array.from(new FormData(form).keys()).map((function(e){return[e,!0]})))),location.hash="",location.reload()}))</script> <script id=__config type=application/json>{"annotate": null, "base": "../../../../..", "features": ["content.code.annotate", "navigation.tabs"], "search": "../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script> <script src=../../../../../assets/javascripts/bundle.79ae519e.min.js></script> </body> </html>

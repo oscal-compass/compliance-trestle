@@ -374,7 +374,9 @@
 <span class=normal>396</span>
 <span class=normal>397</span>
 <span class=normal>398</span>
-<span class=normal>399</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>XlsxToOscalComponentDefinition</span><span class=p>(</span><span class=n>TaskBase</span><span class=p>):</span>
+<span class=normal>399</span>
+<span class=normal>400</span>
+<span class=normal>401</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>XlsxToOscalComponentDefinition</span><span class=p>(</span><span class=n>TaskBase</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;</span>
 <span class=sd>    Task to create OSCAL ComponentDefinition json.</span>
 
@@ -644,17 +646,19 @@
         <span class=n>value</span> <span class=o>=</span> <span class=p>[</span><span class=n>role_prepared_by</span><span class=p>,</span> <span class=n>role_prepared_for</span><span class=p>,</span> <span class=n>role_content_approver</span><span class=p>]</span>
         <span class=k>return</span> <span class=n>value</span>
 
-    <span class=k>def</span><span class=w> </span><span class=nf>_build_parties</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>party_uuid_01</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>party_uuid_02</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>party_uuid_03</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>Party</span><span class=p>]:</span>
+    <span class=k>def</span><span class=w> </span><span class=nf>_build_parties</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>party_uuid_01</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>party_uuid_02</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>party_uuid_03</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>Parties1</span><span class=p>]:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Build parties.&quot;&quot;&quot;</span>
         <span class=n>value</span> <span class=o>=</span> <span class=p>[</span>
-            <span class=n>Party</span><span class=p>(</span><span class=n>uuid</span><span class=o>=</span><span class=n>party_uuid_01</span><span class=p>,</span> <span class=nb>type</span><span class=o>=</span><span class=s1>&#39;organization&#39;</span><span class=p>,</span> <span class=n>name</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_get_org_name</span><span class=p>(),</span> <span class=n>remarks</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_get_org_remarks</span><span class=p>()),</span>
-            <span class=n>Party</span><span class=p>(</span>
+            <span class=n>Parties1</span><span class=p>(</span>
+                <span class=n>uuid</span><span class=o>=</span><span class=n>party_uuid_01</span><span class=p>,</span> <span class=nb>type</span><span class=o>=</span><span class=s1>&#39;organization&#39;</span><span class=p>,</span> <span class=n>name</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_get_org_name</span><span class=p>(),</span> <span class=n>remarks</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>_get_org_remarks</span><span class=p>()</span>
+            <span class=p>),</span>
+            <span class=n>Parties1</span><span class=p>(</span>
                 <span class=n>uuid</span><span class=o>=</span><span class=n>party_uuid_02</span><span class=p>,</span>
                 <span class=nb>type</span><span class=o>=</span><span class=s1>&#39;organization&#39;</span><span class=p>,</span>
                 <span class=n>name</span><span class=o>=</span><span class=s1>&#39;Customer&#39;</span><span class=p>,</span>
                 <span class=n>remarks</span><span class=o>=</span><span class=s1>&#39;organization to be customized at account creation only for their Component Definition&#39;</span><span class=p>,</span>
             <span class=p>),</span>
-            <span class=n>Party</span><span class=p>(</span>
+            <span class=n>Parties1</span><span class=p>(</span>
                 <span class=n>uuid</span><span class=o>=</span><span class=n>party_uuid_03</span><span class=p>,</span>
                 <span class=nb>type</span><span class=o>=</span><span class=s1>&#39;organization&#39;</span><span class=p>,</span>
                 <span class=n>name</span><span class=o>=</span><span class=s1>&#39;ISV&#39;</span><span class=p>,</span>

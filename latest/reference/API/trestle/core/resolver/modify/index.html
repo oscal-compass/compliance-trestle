@@ -334,7 +334,9 @@
 <span class=normal>345</span>
 <span class=normal>346</span>
 <span class=normal>347</span>
-<span class=normal>348</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>Modify</span><span class=p>(</span><span class=n>Pipeline</span><span class=o>.</span><span class=n>Filter</span><span class=p>):</span>
+<span class=normal>348</span>
+<span class=normal>349</span>
+<span class=normal>350</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>Modify</span><span class=p>(</span><span class=n>Pipeline</span><span class=o>.</span><span class=n>Filter</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Modify the controls based on the profile.&quot;&quot;&quot;</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span>
@@ -485,9 +487,11 @@
             <span class=n>param</span><span class=o>.</span><span class=n>label</span> <span class=o>=</span> <span class=n>set_param</span><span class=o>.</span><span class=n>label</span>
         <span class=k>if</span> <span class=n>set_param</span><span class=o>.</span><span class=n>usage</span><span class=p>:</span>
             <span class=n>param</span><span class=o>.</span><span class=n>usage</span> <span class=o>=</span> <span class=n>set_param</span><span class=o>.</span><span class=n>usage</span>
-        <span class=k>if</span> <span class=n>set_param</span><span class=o>.</span><span class=n>values</span><span class=p>:</span>
+        <span class=c1># Handle Union type: SetParameters has values, SetParameters1 has select</span>
+        <span class=c1># Also check destination param has the field before setting</span>
+        <span class=k>if</span> <span class=nb>hasattr</span><span class=p>(</span><span class=n>set_param</span><span class=p>,</span> <span class=s1>&#39;values&#39;</span><span class=p>)</span> <span class=ow>and</span> <span class=n>set_param</span><span class=o>.</span><span class=n>values</span> <span class=ow>and</span> <span class=nb>hasattr</span><span class=p>(</span><span class=n>param</span><span class=p>,</span> <span class=s1>&#39;values&#39;</span><span class=p>):</span>
             <span class=n>param</span><span class=o>.</span><span class=n>values</span> <span class=o>=</span> <span class=n>set_param</span><span class=o>.</span><span class=n>values</span>
-        <span class=k>if</span> <span class=n>set_param</span><span class=o>.</span><span class=n>select</span><span class=p>:</span>
+        <span class=k>if</span> <span class=nb>hasattr</span><span class=p>(</span><span class=n>set_param</span><span class=p>,</span> <span class=s1>&#39;select&#39;</span><span class=p>)</span> <span class=ow>and</span> <span class=n>set_param</span><span class=o>.</span><span class=n>select</span> <span class=ow>and</span> <span class=nb>hasattr</span><span class=p>(</span><span class=n>param</span><span class=p>,</span> <span class=s1>&#39;select&#39;</span><span class=p>):</span>
             <span class=n>param</span><span class=o>.</span><span class=n>select</span> <span class=o>=</span> <span class=n>set_param</span><span class=o>.</span><span class=n>select</span>
 
     <span class=nd>@staticmethod</span>
@@ -697,13 +701,13 @@
     <span class=bp>self</span><span class=o>.</span><span class=n>_value_assigned_prefix</span> <span class=o>=</span> <span class=n>value_assigned_prefix</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_value_not_assigned_prefix</span> <span class=o>=</span> <span class=n>value_not_assigned_prefix</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;modify initialize filter with profile </span><span class=si>{</span><span class=n>profile</span><span class=o>.</span><span class=n>metadata</span><span class=o>.</span><span class=n>title</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.resolver.modify.Modify.process class="doc doc-heading"> <code class="highlight language-python"><span class=n>process</span><span class=p>(</span><span class=n>catalog_iter</span><span class=p>)</span></code> <a href=#trestle.core.resolver.modify.Modify.process class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Make the modifications to the controls based on the profile.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/resolver/modify.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>342</span>
-<span class=normal>343</span>
-<span class=normal>344</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.resolver.modify.Modify.process class="doc doc-heading"> <code class="highlight language-python"><span class=n>process</span><span class=p>(</span><span class=n>catalog_iter</span><span class=p>)</span></code> <a href=#trestle.core.resolver.modify.Modify.process class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Make the modifications to the controls based on the profile.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/resolver/modify.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>344</span>
 <span class=normal>345</span>
 <span class=normal>346</span>
 <span class=normal>347</span>
-<span class=normal>348</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>process</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>catalog_iter</span><span class=p>:</span> <span class=n>Iterator</span><span class=p>[</span><span class=n>cat</span><span class=o>.</span><span class=n>Catalog</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=n>Iterator</span><span class=p>[</span><span class=n>cat</span><span class=o>.</span><span class=n>Catalog</span><span class=p>]:</span>
+<span class=normal>348</span>
+<span class=normal>349</span>
+<span class=normal>350</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>process</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>catalog_iter</span><span class=p>:</span> <span class=n>Iterator</span><span class=p>[</span><span class=n>cat</span><span class=o>.</span><span class=n>Catalog</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=n>Iterator</span><span class=p>[</span><span class=n>cat</span><span class=o>.</span><span class=n>Catalog</span><span class=p>]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Make the modifications to the controls based on the profile.&quot;&quot;&quot;</span>
     <span class=n>catalog</span> <span class=o>=</span> <span class=nb>next</span><span class=p>(</span><span class=n>catalog_iter</span><span class=p>)</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span>

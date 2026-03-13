@@ -1015,17 +1015,17 @@
 
     <span class=k>def</span><span class=w> </span><span class=nf>_build_parties</span><span class=p>(</span>
         <span class=bp>self</span><span class=p>,</span> <span class=n>org_name</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>org_remarks</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>party_uuid_01</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>party_uuid_02</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>party_uuid_03</span><span class=p>:</span> <span class=nb>str</span>
-    <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>Party</span><span class=p>]:</span>
+    <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>List</span><span class=p>[</span><span class=n>Parties</span><span class=p>]:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Build parties.&quot;&quot;&quot;</span>
         <span class=n>value</span> <span class=o>=</span> <span class=p>[</span>
-            <span class=n>Party</span><span class=p>(</span><span class=n>uuid</span><span class=o>=</span><span class=n>party_uuid_01</span><span class=p>,</span> <span class=nb>type</span><span class=o>=</span><span class=s1>&#39;organization&#39;</span><span class=p>,</span> <span class=n>name</span><span class=o>=</span><span class=n>org_name</span><span class=p>,</span> <span class=n>remarks</span><span class=o>=</span><span class=n>org_remarks</span><span class=p>),</span>
-            <span class=n>Party</span><span class=p>(</span>
+            <span class=n>Parties</span><span class=p>(</span><span class=n>uuid</span><span class=o>=</span><span class=n>party_uuid_01</span><span class=p>,</span> <span class=nb>type</span><span class=o>=</span><span class=s1>&#39;organization&#39;</span><span class=p>,</span> <span class=n>name</span><span class=o>=</span><span class=n>org_name</span><span class=p>,</span> <span class=n>remarks</span><span class=o>=</span><span class=n>org_remarks</span><span class=p>),</span>
+            <span class=n>Parties</span><span class=p>(</span>
                 <span class=n>uuid</span><span class=o>=</span><span class=n>party_uuid_02</span><span class=p>,</span>
                 <span class=nb>type</span><span class=o>=</span><span class=s1>&#39;organization&#39;</span><span class=p>,</span>
                 <span class=n>name</span><span class=o>=</span><span class=s1>&#39;Customer&#39;</span><span class=p>,</span>
                 <span class=n>remarks</span><span class=o>=</span><span class=s1>&#39;organization to be customized at account creation only for their Component Definition&#39;</span><span class=p>,</span>
             <span class=p>),</span>
-            <span class=n>Party</span><span class=p>(</span>
+            <span class=n>Parties</span><span class=p>(</span>
                 <span class=n>uuid</span><span class=o>=</span><span class=n>party_uuid_03</span><span class=p>,</span>
                 <span class=nb>type</span><span class=o>=</span><span class=s1>&#39;organization&#39;</span><span class=p>,</span>
                 <span class=n>name</span><span class=o>=</span><span class=s1>&#39;ISV&#39;</span><span class=p>,</span>
