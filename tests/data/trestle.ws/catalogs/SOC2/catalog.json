@@ -1,0 +1,3750 @@
+{
+"catalog": {
+"uuid": "b67b2c68-cac8-4d48-8de7-e1ff21f23cb4",
+"metadata": {
+"title": "IBM SOC a Standard Control Set",
+"last-modified": "2023-05-09T14:12:16+00:00",
+"version": "0.0.0",
+"oscal-version": "1.0.2"
+},
+"groups": [
+{
+"id": "A",
+"title": "Control Environment Controls",
+"controls": [
+{
+"id": "a1",
+"title": "Organizational Chart",
+"props": [
+{
+"name": "label",
+"value": "A1"
+}
+],
+"parts": [
+{
+"id": "a1_smt",
+"name": "statement",
+"prose": "A formal, documented organizational chart is maintained and evidences organizational structures and reporting lines."
+},
+{
+"id": "a1_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "a1_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected the organizational chart to determine whether organizational structures and reporting lines are documented."
+}
+]
+},
+{
+"id": "a1_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "a1_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc1.0"
+}
+],
+"prose": "CC1.0 Control Environment: CC1.3 COSO Principle 3: Management establishes, with board oversight, structures, reporting lines, and appropriate authorities and responsibilities in the pursuit of objectives."
+}
+]
+}
+]
+},
+{
+"id": "a2",
+"title": "Job Descriptions",
+"props": [
+{
+"name": "label",
+"value": "A2"
+}
+],
+"parts": [
+{
+"id": "a2_smt",
+"name": "statement",
+"prose": "Individual job descriptions and applicant qualification requirements are documented, and approved within job requisitions prior to posting on the IBM Global Opportunity Marketplace (GOM). The job requisitions are consistent with the actual job positions."
+},
+{
+"id": "a2_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "a2_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Observed evidence to determine whether job requisitions require a job description and approval prior to posting on the IBM Global Opportunity Marketplace (GOM)."
+},
+{
+"id": "a2_tp.2",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "2"
+}
+],
+"prose": "Inspected evidence for a sample of new employees to determine whether job descriptions and applicant qualification requirements were documented in job requisitions, were approved, and are consistent with the actual job positions."
+}
+]
+},
+{
+"id": "a2_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "a2_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc1.0"
+}
+],
+"prose": "CC1.0 Control Environment: CC1.4 COSO Principle 4: The entity demonstrates a commitment to attract, develop, and retain competent individuals in alignment with objectives."
+}
+]
+}
+]
+},
+{
+"id": "a3",
+"title": "Employment Verification Process",
+"props": [
+{
+"name": "label",
+"value": "A3"
+}
+],
+"parts": [
+{
+"id": "a3_smt",
+"name": "statement",
+"prose": "New employees are subject to employment verification (criminal background and proof of identity) checks in consideration of and subject to local law and standard practices as defined in the Global Employment Verification Standard."
+},
+{
+"id": "a3_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "a3_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected the Global Employment Verification Standard to determine whether background checks are required in consideration of and subject to local law and standard practices."
+},
+{
+"id": "a3_tp.2",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "2"
+}
+],
+"prose": "Inspected evidence for a sample of new employees to determine whether criminal background checks and proof of identity were completed in accordance with local law and standard practices."
+}
+]
+},
+{
+"id": "a3_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "a3_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc1.0"
+}
+],
+"prose": "CC1.0 Control Environment: CC1.4 COSO Principle 4: The entity demonstrates a commitment to attract, develop, and retain competent individuals in alignment with objectives."
+}
+]
+}
+]
+},
+{
+"id": "a4",
+"title": "Skills Development Opportunities",
+"props": [
+{
+"name": "label",
+"value": "A4"
+}
+],
+"parts": [
+{
+"id": "a4_smt",
+"name": "statement",
+"prose": "Skills development and training opportunities are made available to employees via a centrally accessible learning portal."
+},
+{
+"id": "a4_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "a4_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Observed evidence to determine whether skills development and training opportunities are made available via a centrally accessible learning portal."
+}
+]
+},
+{
+"id": "a4_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "a4_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc1.0"
+}
+],
+"prose": "CC1.0 Control Environment: CC1.4 COSO Principle 4: The entity demonstrates a commitment to attract, develop, and retain competent individuals in alignment with objectives."
+}
+]
+}
+]
+},
+{
+"id": "a5",
+"title": "Business Goals and Objectives",
+"props": [
+{
+"name": "label",
+"value": "A5"
+}
+],
+"parts": [
+{
+"id": "a5_smt",
+"name": "statement",
+"prose": "Employee business goals are established, communicated to management, and updated throughout the year."
+},
+{
+"id": "a5_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "a5_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Observed evidence to determine whether employee business goals are established, communicated to management and updated throughout the year."
+}
+]
+},
+{
+"id": "a5_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "a5_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc1.0"
+}
+],
+"prose": "CC1.0 Control Environment: CC1.4 COSO Principle 4: The entity demonstrates a commitment to attract, develop, and retain competent individuals in alignment with objectives."
+},
+{
+"id": "a5_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc1.0"
+}
+],
+"prose": "CC1.0 Control Environment: CC1.5 COSO Principle 5: The entity holds individuals accountable for their internal control responsibilities in the pursuit of objectives."
+}
+]
+}
+]
+},
+{
+"id": "a6",
+"title": "Code of Conduct",
+"props": [
+{
+"name": "label",
+"value": "A6"
+}
+],
+"parts": [
+{
+"id": "a6_smt",
+"name": "statement",
+"prose": "IBM validates that code of conduct and ethical integrity guidelines are communicated and monitored for its business partners and suppliers."
+},
+{
+"id": "a6_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "a6_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected evidence to determine whether IBM communicated and monitored code of conduct and ethical integrity guidelines for its business partners and suppliers."
+}
+]
+},
+{
+"id": "a6_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "a6_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc1.0"
+}
+],
+"prose": "CC1.0 Control Environment: CC1.1 COSO Principle 1: The entity demonstrates a commitment to integrity and ethical values."
+}
+]
+}
+]
+},
+{
+"id": "a7",
+"title": "Business Conduct Guidelines (BCG)",
+"props": [
+{
+"name": "label",
+"value": "A7"
+}
+],
+"parts": [
+{
+"id": "a7_smt",
+"name": "statement",
+"prose": "Employees are required to certify their understanding of the Business Conduct Guidelines (BCG) on an annual basis. Management monitors the annual BCG certification process for completion."
+},
+{
+"id": "a7_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "a7_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected evidence to determine whether management monitors the annual completion status of BCG."
+},
+{
+"id": "a7_tp.2",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "2"
+}
+],
+"prose": "Inspected evidence for a sample of IBM employees to determine whether the employees certified their understanding of the Business Conduct Guidelines (BCG) on an annual basis."
+}
+]
+},
+{
+"id": "a7_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "a7_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc1.0"
+}
+],
+"prose": "CC1.0 Control Environment: CC1.1 COSO Principle 1: The entity demonstrates a commitment to integrity and ethical values."
+},
+{
+"id": "a7_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc2.0"
+}
+],
+"prose": "CC2.0 Communication and Information: CC2.2 COSO Principle 14: The entity internally communicates information, including objectives and responsibilities for internal control, necessary to support the functioning of internal control."
+}
+]
+}
+]
+},
+{
+"id": "a8",
+"title": "BCG Violations",
+"props": [
+{
+"name": "label",
+"value": "A8"
+}
+],
+"parts": [
+{
+"id": "a8_smt",
+"name": "statement",
+"prose": "Investigations of alleged BCG violations related to financial recording and reporting, business processes and inappropriate use of assets are performed by Internal Audit and reported to the Board of Directors through the Audit Committee quarterly."
+},
+{
+"id": "a8_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "a8_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected evidence for a sample of quarters to determine whether alleged BCG violations related to financial recording and reporting, business processes and inappropriate use of assets were investigated by Internal Audit and reported to the Board of Directors through the Audit Committee."
+}
+]
+},
+{
+"id": "a8_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "a8_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc1.0"
+}
+],
+"prose": "CC1.0 Control Environment: CC1.1 COSO Principle 1: The entity demonstrates a commitment to integrity and ethical values."
+},
+{
+"id": "a8_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc1.0"
+}
+],
+"prose": "CC1.0 Control Environment: CC1.5 COSO Principle 5: The entity holds individuals accountable for their internal control responsibilities in the pursuit of objectives."
+},
+{
+"id": "a8_cp.3",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc2.0"
+}
+],
+"prose": "CC2.0 Communication and Information: CC2.2 COSO Principle 14: The entity internally communicates information, including objectives and responsibilities for internal control, necessary to support the functioning of internal control."
+},
+{
+"id": "a8_cp.4",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc7.0"
+}
+],
+"prose": "CC7.0 System Operations: CC7.4 The entity responds to identified security incidents by executing a defined incident response program to understand, contain, remediate, and communicate security incidents, as appropriate."
+}
+]
+}
+]
+},
+{
+"id": "a9",
+"title": "Board of Directors Corporate Governance Guidelines",
+"props": [
+{
+"name": "label",
+"value": "A9"
+}
+],
+"parts": [
+{
+"id": "a9_smt",
+"name": "statement",
+"prose": "IBM’s Board of Directors adheres to governance principles, as specified in a set of Corporate Governance Guidelines, including independence from management. The Board has delegated certain authority to three (3) committees: (1) Audit Committee, (2) Directors and Corporate Governance Committee, and (3) Executive Compensation and Management Resources Committee. Each committee has a written charter and reports regularly to the Board."
+},
+{
+"id": "a9_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "a9_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected Board of Directors and Board Committee meeting minutes to determine whether committees regularly report to the Board and discuss internal control posture."
+},
+{
+"id": "a9_tp.2",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "2"
+}
+],
+"prose": "Inspected charters for the Audit Committee, the Directors and Corporate Governance Committee, and the Executive Compensation and Management Resource Committee to determine whether the Board is independent from management and the written charters are reviewed on a regular basis."
+}
+]
+},
+{
+"id": "a9_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "a9_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc1.0"
+}
+],
+"prose": "CC1.0 Control Environment: CC1.1 COSO Principle 1: The entity demonstrates a commitment to integrity and ethical values."
+},
+{
+"id": "a9_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc1.0"
+}
+],
+"prose": "CC1.0 Control Environment: CC1.2 COSO Principle 2: The board of directors demonstrates independence from management and exercises oversight of the development and performance of internal control."
+}
+]
+}
+]
+},
+{
+"id": "a10",
+"title": "Vendor Management",
+"props": [
+{
+"name": "label",
+"value": "A10"
+}
+],
+"parts": [
+{
+"id": "a10_smt",
+"name": "statement",
+"prose": "IBM assesses and manages risks associated with vendors and business partners through the following activities: \n* Establishing formal, documented agreements with vendors and business partners; \n* Assigning internal responsibility and accountability for managing vendors and business partner relationships including communications and issues management; \n* Periodic, documented vendor or business partner assessments and the resolution of any issues identified; and \n* Procedures for terminating vendor and business partner relationships."
+},
+{
+"id": "a10_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "a10_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected evidence for a sample of IT vendor or business partner relationships to determine whether the following activities were performed: \n* A formal, documented agreement is established with the vendor or business partner; \n* An internal individual is formally assigned responsibility and accountability for managing the vendor or business partner relationship, including any necessary communications or issues management responsibilities; \n* A periodic, documented vendor or business partner assessment was performed and issues identified were tracked to resolution, in accordance with the defined policy; and \n* A procedure is documented for terminating vendor and business partner relationships."
+}
+]
+},
+{
+"id": "a10_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "a10_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc3.0"
+}
+],
+"prose": "CC3.0 Risk Assessment: CC3.2 COSO Principle 7: The entity identifies risks to the achievement of its objectives across the entity and analyzes risks as a basis for determining how the risks should be managed."
+},
+{
+"id": "a10_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc9.0"
+}
+],
+"prose": "CC9.0 Risk Mitigation: CC9.2 The entity assesses and manages risks associated with vendors and business partners."
+}
+]
+}
+]
+}
+]
+},
+{
+"id": "B",
+"title": "Communication and Information Controls",
+"controls": [
+{
+"id": "b1",
+"title": "Customer Contracts (or Terms of Use)",
+"props": [
+{
+"name": "label",
+"value": "B1"
+}
+],
+"parts": [
+{
+"id": "b1_smt",
+"name": "statement",
+"prose": "IBM maintains a formal service agreement (or terms of use) with customers that defines the design and operation of the system and its boundaries. The customer evidences understanding and agreement of the design, operation and system boundaries through acceptance of the service agreement (or terms of use)."
+},
+{
+"id": "b1_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "b1_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected evidence of a service agreement to determine whether the service agreement (or terms of use) is accepted."
+},
+{
+"id": "b1_tp.2",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "2"
+}
+],
+"prose": "Inspected evidence of a service agreement to determine whether the service agreement (or terms of use) include details regarding the design and operation of the system and its boundaries."
+}
+]
+},
+{
+"id": "b1_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "b1_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc2.0"
+}
+],
+"prose": "CC2.0 Communication and Information: CC2.3 COSO Principle 15: The entity communicates with external parties regarding matters affecting the functioning of internal control."
+}
+]
+}
+]
+},
+{
+"id": "b2",
+"title": "System Description",
+"props": [
+{
+"name": "label",
+"value": "B2"
+}
+],
+"parts": [
+{
+"id": "b2_smt",
+"name": "statement",
+"prose": "IBM maintains a description of the system, system boundaries, system processes and descriptions of the infrastructure, software, people, procedures, and data for the relevant technology and locations. The description of the system and related documentation is communicated to authorized users."
+},
+{
+"id": "b2_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "b2_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected evidence to determine whether a description of IBM’s system, system boundaries, and system processes is made available to authorized users, and the description addresses infrastructure, software, people, procedures, and data for the relevant technology and locations."
+}
+]
+},
+{
+"id": "b2_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "b2_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc2.0"
+}
+],
+"prose": "CC2.0 Communication and Information: CC2.2 COSO Principle 14: The entity internally communicates information, including objectives and responsibilities for internal control, necessary to support the functioning of internal control."
+},
+{
+"id": "b2_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc2.0"
+}
+],
+"prose": "CC2.0 Communication and Information: CC2.3 COSO Principle 15: The entity communicates with external parties regarding matters affecting the functioning of internal control."
+}
+]
+}
+]
+},
+{
+"id": "b3",
+"title": "Policies and Procedures",
+"props": [
+{
+"name": "label",
+"value": "B3"
+}
+],
+"parts": [
+{
+"id": "b3_smt",
+"name": "statement",
+"prose": "Policies related to security and availability requirements are periodically reviewed in accordance with the required review timeframe and communicated to authorized users."
+},
+{
+"id": "b3_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "b3_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected the current security and availability policies to determine whether periodic review and approval was performed."
+},
+{
+"id": "b3_tp.2",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "2"
+}
+],
+"prose": "Inspected the current security and availability policies to determine whether the policies have been communicated / made available to authorized users."
+}
+]
+},
+{
+"id": "b3_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "b3_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc1.0"
+}
+],
+"prose": "CC1.0 Control Environment: CC1.3 COSO Principle 3: Management establishes, with board oversight, structures, reporting lines, and appropriate authorities and responsibilities in the pursuit of objectives."
+},
+{
+"id": "b3_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc2.0"
+}
+],
+"prose": "CC2.0 Communication and Information: CC2.2 COSO Principle 14: The entity internally communicates information, including objectives and responsibilities for internal control, necessary to support the functioning of internal control."
+},
+{
+"id": "b3_cp.3",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc3.0"
+}
+],
+"prose": "CC3.0 Risk Assessment: CC3.1 COSO Principle 6: The entity specifies objectives with sufficient clarity to enable the identification and assessment of risks relating to objectives."
+},
+{
+"id": "b3_cp.4",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc5.0"
+}
+],
+"prose": "CC5.0 Control Activities: CC5.1 COSO Principle 10: The entity selects and develops control activities that contribute to the mitigation of risks to the achievement of objectives to acceptable levels."
+},
+{
+"id": "b3_cp.5",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc5.0"
+}
+],
+"prose": "CC5.0 Control Activities: CC5.2 COSO Principle 11: The entity also selects and develops general control activities over technology to support the achievement of objectives."
+},
+{
+"id": "b3_cp.6",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc5.0"
+}
+],
+"prose": "CC5.0 Control Activities: CC5.3 COSO Principle 12: The entity deploys control activities through policies that establish what is expected and in procedures that put policies into action."
+}
+]
+}
+]
+}
+]
+},
+{
+"id": "C",
+"title": "Risk Assessment Controls",
+"controls": [
+{
+"id": "c1",
+"title": "IT Risk Assessment",
+"props": [
+{
+"name": "label",
+"value": "C1"
+}
+],
+"parts": [
+{
+"id": "c1_smt",
+"name": "statement",
+"prose": "An IT risk assessment is documented, reviewed, and approved on a periodic basis. The IT risk assessment includes the following: \n* Determining business objectives including security commitments; \n* Evaluating the effect of internal and external factors related to environmental, regulatory, and technological changes on IBM's system security; \n* Identifying threats to operations, including security threats, using information technology asset records; \n* Analyzing risks associated with the threats; \n* Determining a risk mitigation strategy that contemplates the risk of fraud, including the incentives, opportunities and potential rationalizations; and \n* Developing or modifying and deploying controls consistent with the risk mitigation strategy."
+},
+{
+"id": "c1_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "c1_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected evidence for a sample of IT risk assessments to determine whether periodic review and approval was performed."
+},
+{
+"id": "c1_tp.2",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "2"
+}
+],
+"prose": "Inspected evidence for a sample of IT risk assessments to determine whether the following activities were performed: \n* Determining business objectives including security commitments; \n* Evaluating the effect of internal and external factors related to environmental, regulatory, and technological changes on IBM's system security; \n* Identifying threats to operations, including security threats, using information technology asset records; \n* Analyzing risks associated with the threats; \n* Determining a risk mitigation strategy that contemplates the risk of fraud, including the incentives, opportunities and potential rationalizations; and \n* Developing or modifying and deploying controls consistent with the risk mitigation strategy."
+}
+]
+},
+{
+"id": "c1_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "c1_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc3.0"
+}
+],
+"prose": "CC3.0 Risk Assessment: CC3.1 COSO Principle 6: The entity specifies objectives with sufficient clarity to enable the identification and assessment of risks relating to objectives."
+},
+{
+"id": "c1_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc3.0"
+}
+],
+"prose": "CC3.0 Risk Assessment: CC3.2 COSO Principle 7: The entity identifies risks to the achievement of its objectives across the entity and analyzes risks as a basis for determining how the risks should be managed."
+},
+{
+"id": "c1_cp.3",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc5.0"
+}
+],
+"prose": "CC5.0 Control Activities: CC5.1 COSO Principle 10: The entity selects and develops control activities that contribute to the mitigation of risks to the achievement of objectives to acceptable levels."
+},
+{
+"id": "c1_cp.4",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc5.0"
+}
+],
+"prose": "CC5.0 Control Activities: CC5.2 COSO Principle 11: The entity also selects and develops general control activities over technology to support the achievement of objectives."
+},
+{
+"id": "c1_cp.5",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc9.0"
+}
+],
+"prose": "CC9.0 Risk Mitigation: CC9.1 The entity identifies, selects, and develops risk mitigation activities for risks arising from potential business disruptions."
+}
+]
+}
+]
+}
+]
+},
+{
+"id": "D",
+"title": "Monitoring Controls",
+"controls": [
+{
+"id": "d1",
+"title": "Compliance Monitoring",
+"props": [
+{
+"name": "label",
+"value": "D1"
+}
+],
+"parts": [
+{
+"id": "d1_smt",
+"name": "statement",
+"prose": "Management monitors the internal control environment through periodic compliance tests performed throughout the year. Results of compliance testing are compiled and a report is communicated and made available to key stakeholders, including, when necessary, the Board of Directors and Audit Committee. Deficiencies are tracked to resolution."
+},
+{
+"id": "d1_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "d1_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected evidence for a sample of periodic compliance testing reports to determine whether the reports included evidence of controls testing performed by management. Where identified, inspected evidence to determine whether deficiencies were tracked to resolution, as defined by management."
+},
+{
+"id": "d1_tp.2",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "2"
+}
+],
+"prose": "Inspected evidence for a sample of periodic compliance testing reports to determine whether the reports were communicated to key stakeholders, including the Board of Directors and Audit Committee, as defined by management."
+}
+]
+},
+{
+"id": "d1_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "d1_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc1.0"
+}
+],
+"prose": "CC1.0 Control Environment: CC1.5 COSO Principle 5: The entity holds individuals accountable for their internal control responsibilities in the pursuit of objectives."
+},
+{
+"id": "d1_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc2.0"
+}
+],
+"prose": "CC2.0 Communication and Information: CC2.1 COSO Principle 13: The entity obtains or generates and uses relevant, quality information to support the functioning of internal control."
+},
+{
+"id": "d1_cp.3",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc2.0"
+}
+],
+"prose": "CC2.0 Communication and Information: CC2.3 COSO Principle 15: The entity communicates with external parties regarding matters affecting the functioning of internal control."
+},
+{
+"id": "d1_cp.4",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc3.0"
+}
+],
+"prose": "CC3.0 Risk Assessment: CC3.1 COSO Principle 6: The entity specifies objectives with sufficient clarity to enable the identification and assessment of risks relating to objectives."
+},
+{
+"id": "d1_cp.5",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc4.0"
+}
+],
+"prose": "CC4.0 Monitoring Activities: CC4.1 COSO Principle 16: The entity selects, develops, and performs ongoing and/or separate evaluations to ascertain whether the components of internal control are present and functioning."
+},
+{
+"id": "d1_cp.6",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc4.0"
+}
+],
+"prose": "CC4.0 Monitoring Activities: CC4.2 COSO Principle 17: The entity evaluates and communicates internal control deficiencies in a timely manner to those parties responsible for taking corrective action, including senior management and the board of directors, as appropriate."
+}
+]
+}
+]
+},
+{
+"id": "d2",
+"title": "Network Event Monitoring",
+"props": [
+{
+"name": "label",
+"value": "D2"
+}
+],
+"parts": [
+{
+"id": "d2_smt",
+"name": "statement",
+"prose": "Network traffic monitoring is performed over critical network components (i.e., service endpoints, load balancers, firewalls, switches, and other network components as appropriate). Alerts are generated and reviewed upon identification of unusual events and responded to in accordance with the defined policy."
+},
+{
+"id": "d2_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "d2_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Observed evidence at multiple points during the period to determine whether network monitoring tools were configured to review network activity and identify, log, and report unusual events."
+},
+{
+"id": "d2_tp.2",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "2"
+}
+],
+"prose": "Inspected evidence for a sample of network devices to determine whether monitoring agents were installed and active."
+},
+{
+"id": "d2_tp.3",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "3"
+}
+],
+"prose": "Inspected a sample of activity alerts for evidence that identified deviations were documented, tracked and responded to in accordance with the defined policy."
+}
+]
+},
+{
+"id": "d2_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "d2_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.6 The entity implements logical access security measures to protect against threats from sources outside its system boundaries."
+},
+{
+"id": "d2_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc7.0"
+}
+],
+"prose": "CC7.0 System Operations: CC7.2 The entity monitors system components and the operation of those components for anomalies that are indicative of malicious acts, natural disasters, and errors affecting the entity's ability to meet its objectives; anomalies are analyzed to determine whether they represent security events."
+}
+]
+}
+]
+},
+{
+"id": "d3",
+"title": "IDS (Security Event) Monitoring",
+"props": [
+{
+"name": "label",
+"value": "D3"
+}
+],
+"parts": [
+{
+"id": "d3_smt",
+"name": "statement",
+"prose": "Intrusion detection tools are used to identify, log, and report potential security breaches and other incidents. Any deviations identified are tracked and responded to in accordance with the defined policy."
+},
+{
+"id": "d3_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "d3_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Observed evidence at multiple points during the period that intrusion detection tools are configured to review device activity and identify, log, and report potential security breaches."
+},
+{
+"id": "d3_tp.2",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "2"
+}
+],
+"prose": "Inspected a sample of devices for evidence that monitoring agents were installed and active."
+},
+{
+"id": "d3_tp.3",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "3"
+}
+],
+"prose": "Inspected a sample of activity alerts for evidence that identified deviations were documented, tracked and responded to in accordance with the defined policy."
+}
+]
+},
+{
+"id": "d3_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "d3_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.6 The entity implements logical access security measures to protect against threats from sources outside its system boundaries."
+},
+{
+"id": "d3_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc7.0"
+}
+],
+"prose": "CC7.0 System Operations: CC7.2 The entity monitors system components and the operation of those components for anomalies that are indicative of malicious acts, natural disasters, and errors affecting the entity's ability to meet its objectives; anomalies are analyzed to determine whether they represent security events."
+}
+]
+}
+]
+},
+{
+"id": "d4",
+"title": "Vulnerability Scanning",
+"props": [
+{
+"name": "label",
+"value": "D4"
+}
+],
+"parts": [
+{
+"id": "d4_smt",
+"name": "statement",
+"prose": "Vulnerability scans are performed in accordance with the defined policy. Any vulnerabilities identified are tracked and remediated in accordance with the defined policy."
+},
+{
+"id": "d4_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "d4_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected evidence for a sample of vulnerability scans to determine whether the vulnerability scans were executed in accordance with the defined policy. Where identified, inspected evidence to determine whether deviations were documented, tracked and remediated in accordance with the defined policy."
+}
+]
+},
+{
+"id": "d4_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "d4_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc7.0"
+}
+],
+"prose": "CC7.0 System Operations: CC7.1 To meet its objectives, the entity uses detection and monitoring procedures to identify (1) changes to configurations that result in the introduction of new vulnerabilities, and (2) susceptibilities to newly discovered vulnerabilities."
+}
+]
+}
+]
+},
+{
+"id": "d5",
+"title": "Remote Access Monitoring",
+"props": [
+{
+"name": "label",
+"value": "D5"
+}
+],
+"parts": [
+{
+"id": "d5_smt",
+"name": "statement",
+"prose": "Security software is used to permit remote access by authorized users to protected information assets. Monitoring tools are used to review remote access activity logs and generate alerts upon identification of unusual events. Any deviations identified are tracked and remediated in accordance with the defined policy."
+},
+{
+"id": "d5_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "d5_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Observed evidence at multiple points during the period to determine whether monitoring tools are configured to review remote access activity and generate alerts upon identification of unusual events."
+},
+{
+"id": "d5_tp.2",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "2"
+}
+],
+"prose": "Inspected evidence for a sample of devices to determine whether monitoring agents were installed and active."
+},
+{
+"id": "d5_tp.3",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "3"
+}
+],
+"prose": "Inspected evidence for a sample of activity alerts to determine whether identified deviations were documented, tracked and responded to in accordance with the defined policy."
+}
+]
+},
+{
+"id": "d5_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "d5_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.1 The entity implements logical access security software, infrastructure, and architectures over protected information assets to protect them from security events to meet the entity's objectives."
+},
+{
+"id": "d5_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc7.0"
+}
+],
+"prose": "CC7.0 System Operations: CC7.2 The entity monitors system components and the operation of those components for anomalies that are indicative of malicious acts, natural disasters, and errors affecting the entity's ability to meet its objectives; anomalies are analyzed to determine whether they represent security events."
+}
+]
+}
+]
+},
+{
+"id": "d6",
+"title": "Workstation Security",
+"props": [
+{
+"name": "label",
+"value": "D6"
+}
+],
+"parts": [
+{
+"id": "d6_smt",
+"name": "statement",
+"prose": "Employee workstations are required to comply with security requirements outlined in the workstation security policy. Employees are alerted when their workstations are not compliant with the defined policy. Actions plans are documented to track remediation and non-compliance is escalated to management, when required, per the security policy."
+},
+{
+"id": "d6_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "d6_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected the IBM workstation security policy for evidence of guidelines related to workstation security compliance requirements."
+},
+{
+"id": "d6_tp.2",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "2"
+}
+],
+"prose": "Inspected evidence for a sample of workstations to determine whether they were included in the workstation monitoring compliance report. For instances of non-compliance, inspected evidence of employee alert, that non-compliance has been remediated or an action plan exists, and was escalated to management, when required, per the security policy."
+}
+]
+},
+{
+"id": "d6_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "d6_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.7 The entity restricts the transmission, movement, and removal of information to authorized internal and external users and processes, and protects it during transmission, movement, or removal to meet the entity’s objectives."
+},
+{
+"id": "d6_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.8 The entity implements controls to prevent or detect and act upon the introduction of unauthorized or malicious software to meet the entity’s objectives."
+}
+]
+}
+]
+},
+{
+"id": "d7",
+"title": "Penetration Testing",
+"props": [
+{
+"name": "label",
+"value": "D7"
+}
+],
+"parts": [
+{
+"id": "d7_smt",
+"name": "statement",
+"prose": "Penetration testing is performed on at least an annual basis. If vulnerabilities were identified, a remediation plan is developed and changes are implemented to remediate vulnerabilities in accordance with the defined policy."
+},
+{
+"id": "d7_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "d7_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected evidence for a sample of penetration tests to determine whether the tests were performed on at least an annual basis. Where vulnerabilities were identified, inspected evidence to determine whether a remediation plan was developed and implemented to resolve vulnerabilities in accordance with the defined policy."
+}
+]
+},
+{
+"id": "d7_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "d7_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc4.0"
+}
+],
+"prose": "CC4.0 Monitoring Activities: CC4.1 COSO Principle 16: The entity selects, develops, and performs ongoing and/or separate evaluations to ascertain whether the components of internal control are present and functioning."
+},
+{
+"id": "d7_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc4.0"
+}
+],
+"prose": "CC4.0 Monitoring Activities: CC4.2 COSO Principle 17: The entity evaluates and communicates internal control deficiencies in a timely manner to those parties responsible for taking corrective action, including senior management and the board of directors, as appropriate."
+}
+]
+}
+]
+},
+{
+"id": "d8",
+"title": "Restoration Testing",
+"props": [
+{
+"name": "label",
+"value": "D8"
+}
+],
+"parts": [
+{
+"id": "d8_smt",
+"name": "statement",
+"prose": "Restoration processes exist such that critical systems and data can be recovered. Restore testing is performed by IBM at least annually. Failed restore events are remediated and re-run until successful."
+},
+{
+"id": "d8_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "d8_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected evidence for a sample of restore tests to determine whether the restore tests were performed by IBM at least annually. Where a restore test failure was identified, inspected evidence to determine whether issues were remediated and the restore test was re-run successfully."
+}
+]
+},
+{
+"id": "d8_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "d8_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc7.0"
+}
+],
+"prose": "CC7.0 System Operations Additional Criteria for Availability: CC7.4 The entity responds to identified security incidents by executing a defined incident response program to understand, contain, remediate, and communicate security incidents, as appropriate."
+},
+{
+"id": "d8_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc7.0"
+}
+],
+"prose": "CC7.0 System Operations Additional Criteria for Availability: CC7.5 The entity identifies, develops, and implements activities to recover from identified security incidents."
+},
+{
+"id": "d8_cp.3",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "a1.0"
+}
+],
+"prose": "A1.0 Additional Criteria for Availability: A1.3 The entity tests recovery plan procedures supporting system recovery to meet its objectives."
+}
+]
+}
+]
+},
+{
+"id": "d9",
+"title": "Disaster Recovery Plan",
+"props": [
+{
+"name": "label",
+"value": "D9"
+}
+],
+"parts": [
+{
+"id": "d9_smt",
+"name": "statement",
+"prose": "A formal, documented disaster recovery plan exists. The disaster recovery plan is reviewed periodically and changes to the procedures are approved. The disaster recovery plan includes an identification of the risks, corresponding risk mitigation strategies and procedures to test the feasibility of the plan. The disaster recovery plan is tested at least annually."
+},
+{
+"id": "d9_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "d9_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected evidence for a sample of disaster recovery plans to determine whether periodic review and approval was performed."
+},
+{
+"id": "d9_tp.2",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "2"
+}
+],
+"prose": "Inspected evidence for a sample of disaster recovery plans to determine whether the disaster recovery plans include an identification of the risks, corresponding risk mitigation strategies and procedures to test the feasibility of the plan."
+},
+{
+"id": "d9_tp.3",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "3"
+}
+],
+"prose": "Inspected evidence for a sample of disaster recovery plans to determine whether the disaster recovery plans were tested at least annually."
+}
+]
+},
+{
+"id": "d9_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "d9_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc7.0"
+}
+],
+"prose": "CC7.0 System Operations Additional Criteria for Availability: CC7.5 The entity identifies, develops, and implements activities to recover from identified security incidents."
+},
+{
+"id": "d9_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc"
+}
+],
+"prose": "CC 9.0 Risk Mitigation: CC9.1 The entity identifies, selects, and develops risk mitigation activities for risks arising from potential business disruptions."
+},
+{
+"id": "d9_cp.3",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "a1.0"
+}
+],
+"prose": "A1.0 Additional Criteria for Availability: A1.2 The entity authorizes, designs, develops or acquires, implements, operates, approves, maintains, and monitors environmental protections, software, data back-up processes, and recovery infrastructure to meet its objectives."
+},
+{
+"id": "d9_cp.4",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "a1.0"
+}
+],
+"prose": "A1.0 Additional Criteria for Availability: A1.3 The entity tests recovery plan procedures supporting system recovery to meet its objectives."
+}
+]
+}
+]
+}
+]
+},
+{
+"id": "E",
+"title": "Logical and Physical Access Controls",
+"controls": [
+{
+"id": "e1",
+"title": "Physical Security and New Users",
+"props": [
+{
+"name": "label",
+"value": "E1"
+}
+],
+"parts": [
+{
+"id": "e1_smt",
+"name": "statement",
+"prose": "Physical access to server rooms where customer systems reside is restricted (e.g., through the use of a card access or biometric systems) to authorized personnel only and requires documented approval from management. Individuals without authorized access to the server rooms must sign in and be escorted by an individual with approved controlled area access."
+},
+{
+"id": "e1_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "e1_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Observed the server rooms where customer systems reside for a sample of data centers to determine whether access to server rooms is restricted through an access system."
+},
+{
+"id": "e1_tp.2",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "2"
+}
+],
+"prose": "Observed evidence for a sample of data centers to determine whether visitors and contractors to the data centers are signed in and escorted by authorized personnel."
+},
+{
+"id": "e1_tp.3",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "3"
+}
+],
+"prose": "Inspected evidence for a sample of new access to server rooms where customer systems reside to determine whether new access requests were documented and approved in accordance with the defined policy."
+}
+]
+},
+{
+"id": "e1_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "e1_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.4 The entity restricts physical access to facilities and protected information assets (for example, data center facilities, back-up media storage, and other sensitive locations) to authorized personnel to meet the entity’s objectives."
+}
+]
+}
+]
+},
+{
+"id": "e2",
+"title": "Physical User Revalidations",
+"props": [
+{
+"name": "label",
+"value": "E2"
+}
+],
+"parts": [
+{
+"id": "e2_smt",
+"name": "statement",
+"prose": "Access rights to server rooms where customer systems reside are revalidated on a quarterly basis. A quarterly revalidation is performed to determine that a business need for access still exists. Exceptions identified during the revalidation process are remediated in accordance with the defined policy."
+},
+{
+"id": "e2_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "e2_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected evidence for a sample of data centers to determine whether access revalidations were performed on a quarterly basis. Where identified, inspected evidence to determine whether corrective action was performed in accordance with the defined policy."
+},
+{
+"id": "e2_tp.2",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "2"
+}
+],
+"prose": "Inspected evidence for a sample of data centers to determine whether all active access was included in an access revalidation performed on a quarterly basis."
+}
+]
+},
+{
+"id": "e2_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "e2_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.4 The entity restricts physical access to facilities and protected information assets (for example, data center facilities, back-up media storage, and other sensitive locations) to authorized personnel to meet the entity’s objectives."
+}
+]
+}
+]
+},
+{
+"id": "e3",
+"title": "Physical User Terminations",
+"props": [
+{
+"name": "label",
+"value": "E3"
+}
+],
+"parts": [
+{
+"id": "e3_smt",
+"name": "statement",
+"prose": "Terminated access to server rooms where customer systems reside is revoked within five business days of termination."
+},
+{
+"id": "e3_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "e3_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected the current active access list for a sample of data centers and the list of terminations during the period to determine whether terminated access was deleted or re-assigned to a new owner in accordance with the defined policy."
+}
+]
+},
+{
+"id": "e3_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "e3_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.4 The entity restricts physical access to facilities and protected information assets (for example, data center facilities, back-up media storage, and other sensitive locations) to authorized personnel to meet the entity’s objectives."
+}
+]
+}
+]
+},
+{
+"id": "e4",
+"title": "Logical New Users",
+"props": [
+{
+"name": "label",
+"value": "E4"
+}
+],
+"parts": [
+{
+"id": "e4_smt",
+"name": "statement",
+"prose": "Access to systems is granted based upon a documented, approved request, in accordance with the defined policy."
+},
+{
+"id": "e4_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "e4_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected evidence for a sample of new user IDs to determine whether the new user access request was documented and approved in accordance with the defined policy."
+}
+]
+},
+{
+"id": "e4_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "e4_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.2 Prior to issuing system credentials and granting system access, the entity registers and authorizes new internal and external users whose access is administered by the entity. For those users whose access is administered by the entity, user system credentials are removed when user access is no longer authorized."
+},
+{
+"id": "e4_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.3 The entity authorizes, modifies, or removes access to data, software, functions, and other protected information assets based on roles, responsibilities, or the system design and changes, giving consideration to the concepts of least privilege and segregation of duties, to meet the entity’s objectives."
+}
+]
+}
+]
+},
+{
+"id": "e5",
+"title": "Logical Employment Verifications",
+"props": [
+{
+"name": "label",
+"value": "E5"
+}
+],
+"parts": [
+{
+"id": "e5_smt",
+"name": "statement",
+"prose": "A periodic employment verification is performed in accordance with the defined policy to determine that the owner of an IBM user ID is still employed. Exceptions identified during the verification process are remediated in accordance with the defined policy."
+},
+{
+"id": "e5_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "e5_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected evidence for a sample of periodic employment verifications to determine whether the verifications were performed in accordance with the defined policy. Where identified, inspected evidence to determine whether corrective action was performed in accordance with the defined policy."
+},
+{
+"id": "e5_tp.2",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "2"
+}
+],
+"prose": "Inspected evidence for a sample of devices to determine whether all active user IDs were included in a periodic employment verification."
+}
+]
+},
+{
+"id": "e5_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "e5_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.2 Prior to issuing system credentials and granting system access, the entity registers and authorizes new internal and external users whose access is administered by the entity. For those users whose access is administered by the entity, user system credentials are removed when user access is no longer authorized."
+},
+{
+"id": "e5_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.3 The entity authorizes, modifies, or removes access to data, software, functions, and other protected information assets based on roles, responsibilities, or the system design and changes, giving consideration to the concepts of least privilege and segregation of duties, to meet the entity’s objectives."
+}
+]
+}
+]
+},
+{
+"id": "e6",
+"title": "Logical Continued Business Need",
+"props": [
+{
+"name": "label",
+"value": "E6"
+}
+],
+"parts": [
+{
+"id": "e6_smt",
+"name": "statement",
+"prose": "A periodic continued business need revalidation is performed in accordance with the defined policy to determine that continued access is still required. Exceptions identified during the revalidation process are remediated in accordance with the defined policy."
+},
+{
+"id": "e6_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "e6_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected evidence for a sample of periodic continued business need revalidations to determine whether the revalidations were performed in accordance with the defined policy. Where identified, inspected evidence to determine whether corrective action was performed in accordance with the defined policy."
+},
+{
+"id": "e6_tp.2",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "2"
+}
+],
+"prose": "Inspected evidence for a sample of devices to determine whether all active user IDs were included in a periodic continued business need revalidation."
+}
+]
+},
+{
+"id": "e6_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "e6_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.2 Prior to issuing system credentials and granting system access, the entity registers and authorizes new internal and external users whose access is administered by the entity. For those users whose access is administered by the entity, user system credentials are removed when user access is no longer authorized."
+},
+{
+"id": "e6_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.3 The entity authorizes, modifies, or removes access to data, software, functions, and other protected information assets based on roles, responsibilities, or the system design and changes, giving consideration to the concepts of least privilege and segregation of duties, to meet the entity’s objectives."
+}
+]
+}
+]
+},
+{
+"id": "e7",
+"title": "Logical Terminations",
+"props": [
+{
+"name": "label",
+"value": "E7"
+}
+],
+"parts": [
+{
+"id": "e7_smt",
+"name": "statement",
+"prose": "IBM user access is revoked in accordance with the defined policy. In the absence of documented timeframe requirements, IBM user access is revoked within five business days of termination."
+},
+{
+"id": "e7_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "e7_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected the current active user ID list for a sample of devices and the list of terminations during the period to determine whether terminated access was deleted or re-assigned to a new owner in accordance with the defined policy. Where user IDs were not deleted or re-assigned in accordance with the defined policy, inspected evidence to determine whether network or both remote and physical access was removed timely, in accordance with the defined policy."
+}
+]
+},
+{
+"id": "e7_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "e7_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.2 Prior to issuing system credentials and granting system access, the entity registers and authorizes new internal and external users whose access is administered by the entity. For those users whose access is administered by the entity, user system credentials are removed when user access is no longer authorized."
+},
+{
+"id": "e7_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.3 The entity authorizes, modifies, or removes access to data, software, functions, and other protected information assets based on roles, responsibilities, or the system design and changes, giving consideration to the concepts of least privilege and segregation of duties, to meet the entity’s objectives."
+}
+]
+}
+]
+},
+{
+"id": "e8",
+"title": "Security Patch Management",
+"props": [
+{
+"name": "label",
+"value": "E8"
+}
+],
+"parts": [
+{
+"id": "e8_smt",
+"name": "statement",
+"prose": "Security patches are reviewed for necessity and implemented, if applicable, in accordance with the defined policy."
+},
+{
+"id": "e8_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "e8_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected evidence for a sample of security patches to determine whether the security patches were implemented, if applicable, in accordance with the defined policy. Where the change was not applied in accordance with the defined policy, inspected evidence to determine whether a business justification was documented."
+}
+]
+},
+{
+"id": "e8_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "e8_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.6 The entity implements logical access security measures to protect against threats from sources outside its system boundaries."
+},
+{
+"id": "e8_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.8 The entity implements controls to prevent or detect and act upon the introduction of unauthorized or malicious software to meet the entity’s objectives."
+},
+{
+"id": "e8_cp.3",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc7.0"
+}
+],
+"prose": "CC7.0 System Operations Additional Criteria for Availability: CC7.1 To meet its objectives, the entity uses detection and monitoring procedures to identify (1) changes to configurations that result in the introduction of new vulnerabilities, and (2) susceptibilities to newly discovered vulnerabilities."
+}
+]
+}
+]
+},
+{
+"id": "e9",
+"title": "Container Patch Management",
+"props": [
+{
+"name": "label",
+"value": "E9"
+}
+],
+"parts": [
+{
+"id": "e9_smt",
+"name": "statement",
+"prose": "Container vulnerability scans are performed in accordance with the defined policy. Where vulnerabilities are identified, as applicable, container images are updated and redeployed in accordance with the defined policy."
+},
+{
+"id": "e9_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "e9_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected evidence for a sample of periodic container vulnerability scans to determine whether the scans were executed in accordance with the defined policy. Where identified, inspected evidence to determine whether vulnerabilities were documented, tracked and remediated in accordance with the defined policy."
+},
+{
+"id": "e9_tp.2",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "2"
+}
+],
+"prose": "Inspected evidence for a sample of container vulnerability scans to determine whether the scans were identifying and assessing container patches in accordance with the defined policy."
+}
+]
+},
+{
+"id": "e9_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "e9_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.6 The entity implements logical access security measures to protect against threats from sources outside its system boundaries."
+},
+{
+"id": "e9_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.8 The entity implements controls to prevent or detect and act upon the introduction of unauthorized or malicious software to meet the entity’s objectives."
+},
+{
+"id": "e9_cp.3",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc7.0"
+}
+],
+"prose": "CC7.0 System Operations Additional Criteria for Availability: CC7.1 To meet its objectives, the entity uses detection and monitoring procedures to identify (1) changes to configurations that result in the introduction of new vulnerabilities, and (2) susceptibilities to newly discovered vulnerabilities."
+}
+]
+}
+]
+},
+{
+"id": "e10",
+"title": "System Health Checks",
+"props": [
+{
+"name": "label",
+"value": "E10"
+}
+],
+"parts": [
+{
+"id": "e10_smt",
+"name": "statement",
+"prose": "Health checks are defined for each device type and performed in accordance with the defined policy, which includes: \n* Mandatory access control configuration options are set correctly, including authentication controls such as minimum password length, detection/prevention of an unlimited number of invalid logon password attempts, prevention of password re-use until after a specified number of iterations; \n* The required harmful code detection programs are installed and operational; and \n* The required access and activity logs exist. Any deviations identified are tracked and remediated in accordance with the defined policy."
+},
+{
+"id": "e10_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "e10_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected evidence for a sample of periodic health checks to determine whether the health checks were executed in accordance with the defined policy. Where identified, inspected evidence to determine whether deviations were documented, tracked and remediated in accordance with the defined policy."
+},
+{
+"id": "e10_tp.2",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "2"
+}
+],
+"prose": "Inspected evidence for a sample of health checks to determine whether the health checks were configured in accordance with the defined policy, which includes: \n* Mandatory access control configuration options are set correctly, including authentication controls such as minimum password length, detection/prevention of an unlimited number of invalid logon password attempts, prevention of password re-use until after a specified number of iterations; \n* The required harmful code detection programs are installed and operational; and \n* The required access and activity logs exist."
+}
+]
+},
+{
+"id": "e10_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "e10_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.1 The entity implements logical access security software, infrastructure, and architectures over protected information assets to protect them from security events to meet the entity's objectives."
+},
+{
+"id": "e10_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.6 The entity implements logical access security measures to protect against threats from sources outside its system boundaries."
+},
+{
+"id": "e10_cp.3",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.8 The entity implements controls to prevent or detect and act upon the introduction of unauthorized or malicious software to meet the entity’s objectives."
+},
+{
+"id": "e10_cp.4",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc7.0"
+}
+],
+"prose": "CC7.0 System Operations Additional Criteria for Availability: CC7.1 To meet its objectives, the entity uses detection and monitoring procedures to identify (1) changes to configurations that result in the introduction of new vulnerabilities, and (2) susceptibilities to newly discovered vulnerabilities."
+}
+]
+}
+]
+},
+{
+"id": "e11",
+"title": "Containers Health Checks",
+"props": [
+{
+"name": "label",
+"value": "E11"
+}
+],
+"parts": [
+{
+"id": "e11_smt",
+"name": "statement",
+"prose": "Container image health checks are defined and performed in accordance with the defined policy. Where deviations are identified, as applicable, container images are updated and redeployed in accordance with the defined policy."
+},
+{
+"id": "e11_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "e11_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected evidence for a sample of periodic container image health checks to determine whether the health checks were executed in accordance with the defined policy. Where identified, inspected evidence to determine whether deviations were documented, tracked and remediated in accordance with the defined policy."
+},
+{
+"id": "e11_tp.2",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "2"
+}
+],
+"prose": "Inspected evidence for a sample of container image health checks to determine whether the health checks were configured in accordance with the defined policy."
+}
+]
+},
+{
+"id": "e11_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "e11_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.1 The entity implements logical access security software, infrastructure, and architectures over protected information assets to protect them from security events to meet the entity's objectives."
+},
+{
+"id": "e11_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.6 The entity implements logical access security measures to protect against threats from sources outside its system boundaries."
+},
+{
+"id": "e11_cp.3",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.8 The entity implements controls to prevent or detect and act upon the introduction of unauthorized or malicious software to meet the entity’s objectives."
+},
+{
+"id": "e11_cp.4",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc7.0"
+}
+],
+"prose": "CC7.0 System Operations Additional Criteria for Availability: CC7.1 To meet its objectives, the entity uses detection and monitoring procedures to identify (1) changes to configurations that result in the introduction of new vulnerabilities, and (2) susceptibilities to newly discovered vulnerabilities."
+}
+]
+}
+]
+},
+{
+"id": "e12",
+"title": "Firewall/Network Rule Revalidations",
+"props": [
+{
+"name": "label",
+"value": "E12"
+}
+],
+"parts": [
+{
+"id": "e12_smt",
+"name": "statement",
+"prose": "A periodic revalidation of the rules managing network traffic is performed in accordance with the defined policy. Any deviations identified are tracked and remediated in accordance with the defined policy."
+},
+{
+"id": "e12_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "e12_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected evidence for a sample of network traffic rule revalidations to determine whether the revalidations were performed in accordance with the defined policy. Where identified, inspected evidence to determine whether corrective action was performed in accordance with the defined policy."
+}
+]
+},
+{
+"id": "e12_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "e12_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.6 The entity implements logical access security measures to protect against threats from sources outside its system boundaries."
+},
+{
+"id": "e12_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc7.0"
+}
+],
+"prose": "CC7.0 System Operations Additional Criteria for Availability: CC7.1 To meet its objectives, the entity uses detection and monitoring procedures to identify (1) changes to configurations that result in the introduction of new vulnerabilities, and (2) susceptibilities to newly discovered vulnerabilities."
+}
+]
+}
+]
+},
+{
+"id": "e13",
+"title": "Encryption",
+"props": [
+{
+"name": "label",
+"value": "E13"
+}
+],
+"parts": [
+{
+"id": "e13_smt",
+"name": "statement",
+"prose": "Customer data transmissions traveling over the public Internet and data at rest are encrypted."
+},
+{
+"id": "e13_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "e13_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected configuration settings for a sample of devices to determine whether customer data transmissions traveling over the public Internet are encrypted."
+},
+{
+"id": "e13_tp.2",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "2"
+}
+],
+"prose": "Inspected configuration settings for a sample of databases to determine whether data at rest is encrypted, if required, based on the defined policy."
+}
+]
+},
+{
+"id": "e13_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "e13_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.1 The entity implements logical access security software, infrastructure, and architectures over protected information assets to protect them from security events to meet the entity's objectives."
+},
+{
+"id": "e13_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.7 The entity restricts the transmission, movement, and removal of information to authorized internal and external users and processes, and protects it during transmission, movement, or removal to meet the entity’s objectives."
+}
+]
+}
+]
+},
+{
+"id": "e14",
+"title": "Physical Device Destruction",
+"props": [
+{
+"name": "label",
+"value": "E14"
+}
+],
+"parts": [
+{
+"id": "e14_smt",
+"name": "statement",
+"prose": "Physical destruction of devices is performed and evidence, via certificate of destruction or other documentation, is retained in accordance with the defined policy."
+},
+{
+"id": "e14_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "e14_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected supporting device destruction certificates for a sample of devices identified for physical destruction to determine whether the devices were destroyed in accordance with defined policy. Where a certificate does not exist, inspected additional documented evidence to determine whether the devices were destroyed in accordance with the defined policy."
+}
+]
+},
+{
+"id": "e14_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "e14_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.5 The entity discontinues logical and physical protections over physical assets only after the ability to read or recover data and software from those assets has been diminished and is no longer required to meet the entity’s objectives."
+},
+{
+"id": "e14_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.7 The entity restricts the transmission, movement, and removal of information to authorized internal and external users and processes, and protects it during transmission, movement, or removal to meet the entity’s objectives."
+}
+]
+}
+]
+},
+{
+"id": "e15",
+"title": "Customer Segmentation",
+"props": [
+{
+"name": "label",
+"value": "E15"
+}
+],
+"parts": [
+{
+"id": "e15_smt",
+"name": "statement",
+"prose": "Customers can only access their data. Logical access between customers is configured, via network or software segmentation, to restrict access to only that customer’s data."
+},
+{
+"id": "e15_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "e15_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected evidence for a sample of customers to determine whether the network or software was configured to restrict access and enforce segregation of customer data in accordance with the defined policy."
+}
+]
+},
+{
+"id": "e15_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "e15_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.1 The entity implements logical access security software, infrastructure, and architectures over protected information assets to protect them from security events to meet the entity's objectives."
+}
+]
+}
+]
+}
+]
+},
+{
+"id": "F",
+"title": "System Operations Controls",
+"controls": [
+{
+"id": "f1",
+"title": "Customer Incident Management",
+"props": [
+{
+"name": "label",
+"value": "F1"
+}
+],
+"parts": [
+{
+"id": "f1_smt",
+"name": "statement",
+"prose": "A formal, documented incident management process exists. The incident management process document is reviewed and approved on a periodic basis. IBM provides customers with a reporting channel to notify IBM management of incidents identified. Incidents are tracked through an incident management tool and are responded to in accordance with the published incident response times. The following information is populated in the incident tickets: \n* Incident severity; \n* Date and time the incident was identified; and \n* Date and time of first response to the incident."
+},
+{
+"id": "f1_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "f1_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Observed the incident management procedures to determine whether periodic review and approval was performed."
+},
+{
+"id": "f1_tp.2",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "2"
+}
+],
+"prose": "Observed the tool / system used for customer incident reporting to determine whether customers are provided a channel for reporting incidents."
+},
+{
+"id": "f1_tp.3",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "3"
+}
+],
+"prose": "Inspected incident tickets for a sample of incidents to determine whether the following was populated: \n* Incident severity; \n* Date and time the incident was identified; and\n* Date and time of first response to the incident."
+},
+{
+"id": "f1_tp.4",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "4"
+}
+],
+"prose": "Inspected incident tickets for a sample of incidents to determine whether the incidents were responded to in accordance with the published incident response times."
+}
+]
+},
+{
+"id": "f1_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "f1_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc2.3"
+}
+],
+"prose": "CC2.3 COSO Principle 15: The entity communicates with external parties regarding matters affecting the functioning of internal control."
+},
+{
+"id": "f1_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc7.0"
+}
+],
+"prose": "CC7.0 System Operations Additional Criteria for Availability: CC7.4 The entity responds to identified security incidents by executing a defined incident response program to understand, contain, remediate, and communicate security incidents, as appropriate."
+},
+{
+"id": "f1_cp.3",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "a1.0"
+}
+],
+"prose": "A1.0 Additional Criteria for Availability: A1.2 The entity authorizes, designs, develops or acquires, implements, operates, approves, maintains, and monitors environmental protections, software, data back-up processes, and recovery infrastructure to meet its objectives."
+}
+]
+}
+]
+},
+{
+"id": "f2",
+"title": "Security Incident Management (PSIRT)",
+"props": [
+{
+"name": "label",
+"value": "F2"
+}
+],
+"parts": [
+{
+"id": "f2_smt",
+"name": "statement",
+"prose": "A formal, documented Product Security Incident Response Team (PSIRT) incident management process exists. The PSIRT incident management process document is reviewed and approved on a periodic basis. PSIRT incidents are tracked through a PSIRT incident management tool and are resolved in accordance with the documented PSIRT incident management process. The following information is populated in the incident tickets: \n* PSIRT incident severity; \n* Date and time the PSIRT incident was created;\n* Actions taken to resolve the PSIRT incident; and \n* Length of time to resolution, if resolved."
+},
+{
+"id": "f2_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "f2_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Observed the PSIRT incident management procedures to determine whether periodic review and approval was performed."
+},
+{
+"id": "f2_tp.2",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "2"
+}
+],
+"prose": "Inspected PSIRT incident tickets for a sample of PSIRT incidents to determine whether the following was populated: \n* PSIRT incident severity; \n* Date and time the PSIRT incident was created;\n* Actions taken to resolve the PSIRT incident; and \n* Length of time to resolution, if resolved."
+},
+{
+"id": "f2_tp.3",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "3"
+}
+],
+"prose": "Inspected PSIRT incident tickets for a sample of PSIRT incidents to determine whether the PSIRT incidents were resolved, or in the process of being resolved, in accordance with the documented PSIRT incident management process."
+}
+]
+},
+{
+"id": "f2_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "f2_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc7.0"
+}
+],
+"prose": "CC7.0 System Operations Additional Criteria for Availability: CC7.3 The entity evaluates security events to determine whether they could or have resulted in a failure of the entity to meet its objectives (security incidents) and, if so, takes actions to prevent or address such failures."
+},
+{
+"id": "f2_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc7.0"
+}
+],
+"prose": "CC7.0 System Operations Additional Criteria for Availability: CC7.4 The entity responds to identified security incidents by executing a defined incident response program to understand, contain, remediate, and communicate security incidents, as appropriate."
+},
+{
+"id": "f2_cp.3",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc7.0"
+}
+],
+"prose": "CC7.0 System Operations Additional Criteria for Availability: CC7.5 The entity identifies, develops, and implements activities to recover from identified security incidents."
+}
+]
+}
+]
+},
+{
+"id": "f3",
+"title": "Customer Security Incident Management (CSIRT)",
+"props": [
+{
+"name": "label",
+"value": "F3"
+}
+],
+"parts": [
+{
+"id": "f3_smt",
+"name": "statement",
+"prose": "Reporting channels exist to notify the cybersecurity incident response team (CSIRT) of potential cybersecurity breaches or other incidents. Cybersecurity incidents are tracked through a cybersecurity incident management tool and are responded to in accordance with the documented cybersecurity incident management process. The following information is populated in the incident tickets: \n* Cybersecurity incident severity; \n* Date and time the cybersecurity incident was created; and \n* Response with actions to resolve the cybersecurity incident."
+},
+{
+"id": "f3_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "f3_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Observed evidence to determine whether customers and employees are provided with reporting channels to notify the cybersecurity incident response team (CSIRT) of potential cybersecurity breaches or other incidents."
+},
+{
+"id": "f3_tp.2",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "2"
+}
+],
+"prose": "Inspected cybersecurity incident tickets for a sample of cybersecurity incident to determine whether the following was populated: \n* Cybersecurity incident severity; \n* Date and time the cybersecurity incident was created; and\n* Response with actions to resolve the cybersecurity incident."
+},
+{
+"id": "f3_tp.3",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "3"
+}
+],
+"prose": "Inspected cybersecurity incident tickets for a sample of cybersecurity incidents to determine whether the cybersecurity incidents were responded to in accordance with the documented cybersecurity incident response management process."
+}
+]
+},
+{
+"id": "f3_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "f3_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc2.0"
+}
+],
+"prose": "CC2.0 Communication and Information: CC2.3 COSO Principle 15: The entity communicates with external parties regarding matters affecting the functioning of internal control."
+},
+{
+"id": "f3_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc7.0"
+}
+],
+"prose": "CC7.0 System Operations Additional Criteria for Availability: CC7.3 The entity evaluates security events to determine whether they could or have resulted in a failure of the entity to meet its objectives (security incidents) and, if so, takes actions to prevent or address such failures."
+},
+{
+"id": "f3_cp.3",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc7.0"
+}
+],
+"prose": "CC7.0 System Operations Additional Criteria for Availability: CC7.4 The entity responds to identified security incidents by executing a defined incident response program to understand, contain, remediate, and communicate security incidents, as appropriate."
+},
+{
+"id": "f3_cp.4",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc7.0"
+}
+],
+"prose": "CC7.0 System Operations Additional Criteria for Availability: CC7.5 The entity identifies, develops, and implements activities to recover from identified security incidents."
+}
+]
+}
+]
+}
+]
+},
+{
+"id": "G",
+"title": "Change Management Controls",
+"controls": [
+{
+"id": "g1",
+"title": "Change Management Approvals",
+"props": [
+{
+"name": "label",
+"value": "G1"
+}
+],
+"parts": [
+{
+"id": "g1_smt",
+"name": "statement",
+"prose": "Change approvals are obtained prior to implementation into the production environment, if applicable. Verbal approval from management prior to implementation is acceptable for emergency changes. However, documented approval must be provided after implementation."
+},
+{
+"id": "g1_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "g1_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected change tickets for a sample of system changes to determine whether the following was performed: \n* Required approvals, if applicable, based on the risk categorization, were obtained prior to implementation, in accordance with the defined change management procedures; or \n* Verbal approvals, for emergency/expedited changes, were obtained prior to implementation with documented approvals provided after implementation, in accordance with the defined change management procedures."
+}
+]
+},
+{
+"id": "g1_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "g1_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.8 The entity implements controls to prevent or detect and act upon the introduction of unauthorized or malicious software to meet the entity’s objectives."
+},
+{
+"id": "g1_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc8.0"
+}
+],
+"prose": "CC8.0 Change Management: CC8.1 The entity authorizes, designs, develops or acquires, configures, documents, tests, approves, and implements changes to infrastructure, data, software, and procedures to meet its objectives."
+}
+]
+}
+]
+},
+{
+"id": "g2",
+"title": "Change Management Testing",
+"props": [
+{
+"name": "label",
+"value": "G2"
+}
+],
+"parts": [
+{
+"id": "g2_smt",
+"name": "statement",
+"prose": "Changes are tested successfully, when applicable, prior to implementation into the production environment."
+},
+{
+"id": "g2_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "g2_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected change tickets for a sample of system changes to determine whether the following was performed: \n* Testing, when applicable, is completed successfully prior to implementation into the production environment."
+}
+]
+},
+{
+"id": "g2_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "g2_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.8 The entity implements controls to prevent or detect and act upon the introduction of unauthorized or malicious software to meet the entity’s objectives."
+},
+{
+"id": "g2_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc8.0"
+}
+],
+"prose": "CC8.0 Change Management: CC8.1 The entity authorizes, designs, develops or acquires, configures, documents, tests, approves, and implements changes to infrastructure, data, software, and procedures to meet its objectives."
+}
+]
+}
+]
+},
+{
+"id": "g3",
+"title": "Change Management Process",
+"props": [
+{
+"name": "label",
+"value": "G3"
+}
+],
+"parts": [
+{
+"id": "g3_smt",
+"name": "statement",
+"prose": "A formal, documented change management process exists, including the change approval process and procedures to handle routine, expedited, emergency, and business as usual changes. The change management process is reviewed periodically and changes to the procedure are approved. Changes are documented prior to implementation into the production environment and documentation includes the following: \n* Categorization of the change risk. Change risk categories are used to determine approval requirements in accordance with the defined change management process. Changes which have been categorized as ‘Minor’ or ‘Business as Usual’ in accordance with the defined change management procedures may not require approval prior to implementation; \n* A back out plan, as applicable; and \n* Communication to the affected users in accordance with the defined change management procedures, as applicable."
+},
+{
+"id": "g3_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "g3_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Observed the IBM change management procedures to determine whether periodic review and approval was performed."
+},
+{
+"id": "g3_tp.2",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "2"
+}
+],
+"prose": "Observed the IBM change management procedures to determine whether it includes procedures to handle routine, expedited, emergency, and business as usual changes."
+},
+{
+"id": "g3_tp.3",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "3"
+}
+],
+"prose": "Inspected a sample of system changes for the following: \n* Categorization of change risk; \n* A back out plan was documented, as applicable; and \n* Communication to affected users, as applicable."
+}
+]
+},
+{
+"id": "g3_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "g3_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc6.0"
+}
+],
+"prose": "CC6.0 Logical and Physical Access Controls: CC6.8 The entity implements controls to prevent or detect and act upon the introduction of unauthorized or malicious software to meet the entity’s objectives. "
+},
+{
+"id": "g3_cp.2",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "cc8.0"
+}
+],
+"prose": "CC8.0 Change Management: CC8.1 The entity authorizes, designs, develops or acquires, configures, documents, tests, approves, and implements changes to infrastructure, data, software, and procedures to meet its objectives."
+}
+]
+}
+]
+}
+]
+},
+{
+"id": "General",
+"title": "In-Scope Production Inventory",
+"controls": [
+{
+"id": "gen1",
+"title": "Inventory",
+"props": [
+{
+"name": "label",
+"value": "Gen1"
+}
+],
+"parts": [
+{
+"id": "gen1_smt",
+"name": "statement",
+"prose": "provide a system generated list of ALL in-scope systems"
+},
+{
+"id": "gen1_tp",
+"name": "test-procedures",
+"prose": "Please provide a system generated list of ALL in-scope systems. The following information should be included (where applicable): - System ID, Name, Type (firewall, router, switch, storage, etc.), Location, Operating System, Operating In-Scope Production Inventory Internet Facing/Non-internet Facing, Customer Facing/Non-Customer Facing"
+}
+]
+}
+]
+},
+{
+"id": "H",
+"title": "Availability Controls",
+"controls": [
+{
+"id": "h1",
+"title": "Availability Monitoring",
+"props": [
+{
+"name": "label",
+"value": "H1"
+}
+],
+"parts": [
+{
+"id": "h1_smt",
+"name": "statement",
+"prose": "IBM monitors system processing capacity and usage and corrective actions to address changing requirements, if applicable, are documented, tracked and responded to in accordance with the defined policy."
+},
+{
+"id": "h1_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "h1_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Observed evidence at multiple points during the period to determine whether monitoring tools are configured to review system processing capacity and usage and identify, log, and report potential corrective action to address changing requirements."
+},
+{
+"id": "h1_tp.2",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "2"
+}
+],
+"prose": "Inspected evidence for a sample of devices to determine whether monitoring agents were installed and active."
+},
+{
+"id": "h1_tp.3",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "3"
+}
+],
+"prose": "Inspected evidence for a sample of activity alerts to determine whether identified deviations, if applicable, were documented, tracked and responded to in accordance with the defined policy."
+}
+]
+},
+{
+"id": "h1_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "h1_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "a1.0"
+}
+],
+"prose": "A1.0 Additional Criteria for Availability: A1.1 The entity maintains, monitors, and evaluates current processing capacity and use of system components (infrastructure, data, and software) to manage capacity demand and to enable the implementation of additional capacity to help meet its objectives."
+}
+]
+}
+]
+},
+{
+"id": "h2",
+"title": "Business Continuity Plan",
+"props": [
+{
+"name": "label",
+"value": "H2"
+}
+],
+"parts": [
+{
+"id": "h2_smt",
+"name": "statement",
+"prose": "A formal, documented business continuity plan exists. The business continuity plan is reviewed periodically and changes to the procedures are approved. The business continuity plan includes an identification of the risks, corresponding risk mitigation strategies and procedures to test the feasibility of the plan. The business continuity plan is tested at least annually."
+},
+{
+"id": "h2_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "h2_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected evidence for a sample of business continuity plans to determine whether periodic review and approval was performed."
+},
+{
+"id": "h2_tp.2",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "2"
+}
+],
+"prose": "Inspected evidence for a sample of business continuity plans to determine whether the business continuity plans include an identification of the risks, corresponding risk mitigation strategies and procedures to test the feasibility of the plan."
+},
+{
+"id": "h2_tp.3",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "3"
+}
+],
+"prose": "Inspected evidence for a sample of business continuity plans to determine whether the business continuity plans were tested at least annually."
+}
+]
+},
+{
+"id": "h2_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "h2_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "a1.0"
+}
+],
+"prose": "A1.0 Additional Criteria for Availability: A1.3 The entity tests recovery plan procedures supporting system recovery to meet its objectives."
+}
+]
+}
+]
+},
+{
+"id": "h3",
+"title": "Data Center Environmental Controls",
+"props": [
+{
+"name": "label",
+"value": "H3"
+}
+],
+"parts": [
+{
+"id": "h3_smt",
+"name": "statement",
+"prose": "Data center facilities are protected against environmental factors such as fire, water, and heat through the following: \n* Fire alarms; \n* Fire extinguishers; \n* Smoke alarms; and \n* Fire suppression or extinguishing systems. Maintenance is performed on a periodic basis."
+},
+{
+"id": "h3_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "h3_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Observed the facilities for a sample of data centers to determine whether the following exists: \n* Fire alarms; \n* Fire extinguishers; \n* Smoke alarms; and \n* Fire suppression or extinguishing systems."
+},
+{
+"id": "h3_tp.2",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "2"
+}
+],
+"prose": "Inspected maintenance documents for a sample of data centers to determine whether maintenance of fire detection and suppression systems was performed on a periodic basis."
+}
+]
+},
+{
+"id": "h3_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "h3_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "a1.0"
+}
+],
+"prose": "A1.0 Additional Criteria for Availability: A1.2 The entity authorizes, designs, develops or acquires, implements, operates, approves, maintains, and monitors environmental protections, software, data back-up processes, and recovery infrastructure to meet its objectives."
+}
+]
+}
+]
+},
+{
+"id": "h4",
+"title": "Data Center UPS and EPS Controls",
+"props": [
+{
+"name": "label",
+"value": "H4"
+}
+],
+"parts": [
+{
+"id": "h4_smt",
+"name": "statement",
+"prose": "Power Distribution Units (PDU) and electrical panels exist in the data centers. Data center facilities are protected against power disruptions or failures through generators and Uninterruptible Power Supply (UPS) or Emergency Power Supply (EPS) systems. Maintenance is performed on a periodic basis."
+},
+{
+"id": "h4_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "h4_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Observed the facilities for a sample of data centers to determine whether the following exists: \n* Generators; and \n* Uninterruptible Power Supply (UPS) or Emergency Power Supply (EPS) systems."
+},
+{
+"id": "h4_tp.2",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "2"
+}
+],
+"prose": "Inspected maintenance documents for a sample of data centers to determine whether maintenance of generators and UPS/EPS was performed on a periodic basis."
+}
+]
+},
+{
+"id": "h4_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "h4_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "a1.0"
+}
+],
+"prose": "A1.0 Additional Criteria for Availability: A1.2 The entity authorizes, designs, develops or acquires, implements, operates, approves, maintains, and monitors environmental protections, software, data back-up processes, and recovery infrastructure to meet its objectives."
+}
+]
+}
+]
+},
+{
+"id": "h5",
+"title": "Data Center HVAC Controls",
+"props": [
+{
+"name": "label",
+"value": "H5"
+}
+],
+"parts": [
+{
+"id": "h5_smt",
+"name": "statement",
+"prose": "Heating and cooling (HVAC) mechanisms exist, such as CRAC/CRAH units, air handlers and chillers, in the data center to monitor and control temperature and humidity. Maintenance is performed on a periodic basis."
+},
+{
+"id": "h5_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "h5_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Observed the facilities for a sample of data centers to determine whether the following exists: \n* HVAC mechanisms."
+},
+{
+"id": "h5_tp.2",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "2"
+}
+],
+"prose": "Inspected maintenance documents for a sample of data centers to determine whether maintenance of HVAC mechanisms was performed on a periodic basis."
+}
+]
+},
+{
+"id": "h5_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "h5_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "a1.0"
+}
+],
+"prose": "A1.0 Additional Criteria for Availability: A1.2 The entity authorizes, designs, develops or acquires, implements, operates, approves, maintains, and monitors environmental protections, software, data back-up processes, and recovery infrastructure to meet its objectives."
+}
+]
+}
+]
+},
+{
+"id": "h6",
+"title": "Backups",
+"props": [
+{
+"name": "label",
+"value": "H6"
+}
+],
+"parts": [
+{
+"id": "h6_smt",
+"name": "statement",
+"prose": "Backup logs associated with system level backups are generated and remedial action, if applicable, is taken for unsuccessful backups."
+},
+{
+"id": "h6_tp",
+"name": "test-procedures",
+"parts": [
+{
+"id": "h6_tp.1",
+"name": "test-procedures",
+"props": [
+{
+"name": "label",
+"value": "1"
+}
+],
+"prose": "Inspected backup logs for a sample of system level backups to determine whether backups were executed successfully or remedial action was taken in accordance with the defined policy."
+}
+]
+},
+{
+"id": "h6_cp",
+"name": "coso-principles",
+"parts": [
+{
+"id": "h6_cp.1",
+"name": "coso-principle",
+"props": [
+{
+"name": "coso-principle-reference",
+"value": "a1.0"
+}
+],
+"prose": "A1.0 Additional Criteria for Availability: A1.2 The entity authorizes, designs, develops or acquires, implements, operates, approves, maintains, and monitors environmental protections, software, data back-up processes, and recovery infrastructure to meet its objectives."
+}
+]
+}
+]
+}
+]
+}
+]
+}
+}

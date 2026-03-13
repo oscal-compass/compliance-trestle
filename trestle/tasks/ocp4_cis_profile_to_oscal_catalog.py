@@ -30,7 +30,8 @@ from trestle.common import const
 from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.catalog import Catalog
 from trestle.oscal.catalog import Control
-from trestle.oscal.catalog import Group
+from trestle.oscal.catalog import Group1 as CatalogGroup1
+from trestle.oscal.catalog import Group2 as CatalogGroup2
 from trestle.oscal.common import Link
 from trestle.oscal.common import Metadata
 from trestle.tasks.base_task import TaskBase
@@ -136,11 +137,15 @@ class Ocp4CisProfileToOscalCatalog(TaskBase):
         # get root nodes
         root_nodes = self._get_root_nodes()
         # groups and controls
-        root = Group(title='root', groups=[])
+        root = CatalogGroup1(title='root', groups=[])
         for node in root_nodes:
-            group = Group(title=f'{node.name} {node.description}')
-            root.groups.append(group)
             depth = self._depth(node.name)
+            # Use Group2 for groups that will have controls, Group1 for groups that will have subgroups
+            if depth == 2:
+                group = CatalogGroup2(title=f'{node.name} {node.description}')
+            else:
+                group = CatalogGroup1(title=f'{node.name} {node.description}')
+            root.groups.append(group)
             if depth == 3:
                 self._add_groups(group, node.name, depth)
             if depth == 2:
@@ -232,7 +237,7 @@ class Ocp4CisProfileToOscalCatalog(TaskBase):
             depth = len(dots)
         return depth
 
-    def _add_controls(self, group: Group, prefix: str, depth: int):
+    def _add_controls(self, group: CatalogGroup1, prefix: str, depth: int):
         """Add controls to group."""
         controls = []
         for key in sorted(self._node_map.keys()):
@@ -248,7 +253,7 @@ class Ocp4CisProfileToOscalCatalog(TaskBase):
         if len(controls) > 0:
             group.controls = controls
 
-    def _add_groups(self, group: Group, prefix: str, depth: int):
+    def _add_groups(self, group: CatalogGroup1, prefix: str, depth: int):
         """Add sub-groups to group."""
         groups = []
         for key in sorted(self._node_map.keys()):
@@ -262,7 +267,7 @@ class Ocp4CisProfileToOscalCatalog(TaskBase):
             if len(dots) != depth - 1:
                 continue
             title = f'{node.name} {node.description}'
-            sub_group = Group(title=title)
+            sub_group = CatalogGroup2(title=title)
             groups.append(sub_group)
             sub_prefix = node.name
             self._add_controls(sub_group, sub_prefix, depth)
