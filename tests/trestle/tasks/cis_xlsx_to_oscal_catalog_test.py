@@ -272,9 +272,13 @@ def _validate_rhel(tmp_path: pathlib.Path):
     g0 = catalog.groups[0]
     assert g0.id == 'CIS-1'
     assert g0.title == 'Initial Setup'
-    assert len(g0.groups) == 1
+    # In OSCAL 1.2.0, group with both subgroups and controls has 2 subgroups:
+    # - The original subgroup (CIS-1.1)
+    # - A controls subgroup (CIS-1-controls) containing the controls
+    assert len(g0.groups) == 2
     assert len(g0.parts) == 1
-    assert len(g0.controls) == 2
+    # Group0 no longer has controls directly - they're in a subgroup
+    assert not hasattr(g0, 'controls') or g0.controls is None
     p00 = g0.parts[0]
     assert p00.id == 'CIS-1_smt'
     assert p00.name == 'statement'
@@ -282,7 +286,13 @@ def _validate_rhel(tmp_path: pathlib.Path):
     g00 = g0.groups[0]
     assert g00.id == 'CIS-1.1'
     assert g00.title == 'Filesystem Configuration'
-    c00 = g0.controls[0]
+    # Controls are now in the second subgroup (controls subgroup)
+    g01 = g0.groups[1]
+    assert g01.id == 'CIS-1-controls'
+    assert g01.title == 'Initial Setup Controls'
+    assert hasattr(g01, 'controls')
+    assert len(g01.controls) == 2
+    c00 = g01.controls[0]
     assert c00.id == 'CIS-1.9'
     assert c00.title == 'Ensure updates, patches, and additional security software are installed'
     assert len(c00.props) == 9
