@@ -27,18 +27,22 @@ from trestle.transforms.results import Results
 class TransformerBase(ABC):
     """Abstract base interface for all transformers."""
 
-    # the current time for consistent timestamping
-    _timestamp = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat()
-
+     # the current time for consistent timestamping
+    _timestamp: str = ''
+ 
     @staticmethod
     def set_timestamp(value: str) -> None:
         """Set the default timestamp value."""
         datetime.datetime.strptime(value, '%Y-%m-%dT%H:%M:%S%z')
         TransformerBase._timestamp = value
-
+ 
     @staticmethod
     def get_timestamp() -> str:
-        """Get the default timestamp value."""
+        """Get the default timestamp value, computing it on first call if not explicitly set."""
+        if not TransformerBase._timestamp:
+            TransformerBase._timestamp = (
+                datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat()
+            )
         return TransformerBase._timestamp
 
     @abstractmethod
