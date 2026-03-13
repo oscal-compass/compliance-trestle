@@ -21,9 +21,9 @@ jobs:
       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
     - name: Install dependencies
-      run: npm install @commitlint/cli @commitlint/config-conventional
+      run: npm ci  # Requires package-lock.json; fails fast if lockfile is out of sync
 
     - name: Validate PR title
       run: |
         PR_TITLE=$(jq -r '.pull_request.title' "$GITHUB_EVENT_PATH")
-        echo "$PR_TITLE" | npx commitlint --config commitlint.config.js
+        echo "$PR_TITLE" | npx --no-install commitlint --config commitlint.config.js

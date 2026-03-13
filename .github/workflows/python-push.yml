@@ -65,8 +65,6 @@ jobs:
           ${{ matrix.hatch-cache }}
           ${{ matrix.hatch-data }}
         key: ${{ matrix.os }}-${{ matrix.python-version }}-hatch-${{ hashFiles('pyproject.toml') }}
-        restore-keys: |
-          ${{ matrix.os }}-${{ matrix.python-version }}-hatch-
     - name: Is core test version
       id: core-version
       run: echo "core=${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.set-versions.outputs.max ) }}" >> $GITHUB_OUTPUT
@@ -143,8 +141,6 @@ jobs:
           ${{ matrix.hatch-cache }}
           ${{ matrix.hatch-data }}
         key: ${{ matrix.os }}-${{ matrix.python-version }}-hatch-${{ hashFiles('pyproject.toml') }}
-        restore-keys: |
-          ${{ matrix.os }}-${{ matrix.python-version }}-hatch-
     - name: Install hatch
       run: |
         make develop
