@@ -36,15 +36,12 @@ jobs:
         - os: ubuntu-latest
           pip-cache: ~/.cache/pip
           hatch-cache: ~/.cache/hatch
-          hatch-data: ~/.local/share/hatch
         - os: macos-latest
           pip-cache: ~/Library/Caches/pip
           hatch-cache: ~/Library/Caches/hatch
-          hatch-data: ~/Library/Application Support/hatch
         - os: windows-latest
           pip-cache: ~\AppData\Local\pip\Cache
           hatch-cache: ~\AppData\Local\hatch\Cache
-          hatch-data: ~\AppData\Local\hatch
         python-version: [ '${{ needs.set-versions.outputs.min }}', '${{ needs.set-versions.outputs.max }}']
 
     steps:
@@ -63,10 +60,9 @@ jobs:
         path: |
           ${{ matrix.pip-cache }}
           ${{ matrix.hatch-cache }}
-          ${{ matrix.hatch-data }}
-        key: ${{ matrix.os }}-${{ matrix.python-version }}-hatch-${{ hashFiles('pyproject.toml') }}
+        key: ${{ matrix.os }}-${{ matrix.python-version }}-${{ github.job }}-hatch-cache-v2-${{ hashFiles('pyproject.toml') }}
         restore-keys: |
-          ${{ matrix.os }}-${{ matrix.python-version }}-hatch-
+          ${{ matrix.os }}-${{ matrix.python-version }}-${{ github.job }}-hatch-cache-v2-
     - name: Is core test version
       id: core-version
       run: echo "core=${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.set-versions.outputs.max ) }}" >> $GITHUB_OUTPUT
@@ -74,6 +70,9 @@ jobs:
     - name: Install build tools
       run: |
         make develop
+    - name: Create hatch test environment
+      run: |
+        hatch env create hatch-test.py${{ matrix.python-version }}
     - name: Setup pre-commit
       if: steps.core-version.outputs.core == 'true'
       run: |
@@ -123,7 +122,6 @@ jobs:
         - os: ubuntu-latest
           pip-cache: ~/.cache/pip
           hatch-cache: ~/.cache/hatch
-          hatch-data: ~/.local/share/hatch
     steps:
     - name: Don't mess with line endings
       run: |
@@ -141,13 +139,15 @@ jobs:
         path: |
           ${{ matrix.pip-cache }}
           ${{ matrix.hatch-cache }}
-          ${{ matrix.hatch-data }}
-        key: ${{ matrix.os }}-${{ matrix.python-version }}-hatch-${{ hashFiles('pyproject.toml') }}
+        key: ${{ matrix.os }}-${{ matrix.python-version }}-${{ github.job }}-hatch-cache-v2-${{ hashFiles('pyproject.toml') }}
         restore-keys: |
-          ${{ matrix.os }}-${{ matrix.python-version }}-hatch-
+          ${{ matrix.os }}-${{ matrix.python-version }}-${{ github.job }}-hatch-cache-v2-
     - name: Install hatch
       run: |
         make develop
+    - name: Create hatch test environment
+      run: |
+        hatch env create hatch-test.py${{ matrix.python-version }}
     - name: gen OSCAL models
       run: |
         make gen-oscal

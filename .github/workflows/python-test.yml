@@ -40,10 +40,9 @@ jobs:
         path: |
           ~/.cache/pip
           ~/.cache/hatch
-          ~/.local/share/hatch
-        key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-${{ hashFiles('pyproject.toml') }}
+        key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-${{ github.job }}-hatch-cache-v2-${{ hashFiles('pyproject.toml') }}
         restore-keys: |
-          ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-
+          ubuntu-latest-${{ needs.set-versions.outputs.max }}-${{ github.job }}-hatch-cache-v2-
     - name: Install tools
       run: |
         make develop
@@ -94,10 +93,9 @@ jobs:
         path: |
           ~/.cache/pip
           ~/.cache/hatch
-          ~/.local/share/hatch
-        key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-${{ hashFiles('pyproject.toml') }}
+        key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-${{ github.job }}-hatch-cache-v2-${{ hashFiles('pyproject.toml') }}
         restore-keys: |
-          ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-
+          ubuntu-latest-${{ needs.set-versions.outputs.max }}-${{ github.job }}-hatch-cache-v2-
     - name: Install hatch
       run: |
         pip install hatch "virtualenv>=20.26.6,<21"  # Pin until hatch supports virtualenv 21.x
@@ -116,7 +114,6 @@ jobs:
         - os: ubuntu-latest
           pip-cache: ~/.cache/pip
           hatch-cache: ~/.cache/hatch
-          hatch-data: ~/.local/share/hatch
     steps:
     - name: Don't mess with line endings
       run: |
@@ -134,13 +131,15 @@ jobs:
         path: |
           ${{ matrix.pip-cache }}
           ${{ matrix.hatch-cache }}
-          ${{ matrix.hatch-data }}
-        key: ${{ matrix.os }}-${{ matrix.python-version }}-hatch-${{ hashFiles('pyproject.toml') }}
+        key: ${{ matrix.os }}-${{ matrix.python-version }}-${{ github.job }}-hatch-cache-v2-${{ hashFiles('pyproject.toml') }}
         restore-keys: |
-          ${{ matrix.os }}-${{ matrix.python-version }}-hatch-
+          ${{ matrix.os }}-${{ matrix.python-version }}-${{ github.job }}-hatch-cache-v2-
     - name: Install hatch
       run: |
         make develop
+    - name: Create hatch test environment
+      run: |
+        hatch env create hatch-test.py${{ matrix.python-version }}
     - name: gen OSCAL models
       run: |
         make gen-oscal
@@ -159,15 +158,12 @@ jobs:
         - os: ubuntu-latest
           pip-cache: ~/.cache/pip
           hatch-cache: ~/.cache/hatch
-          hatch-data: ~/.local/share/hatch
         - os: macos-latest
           pip-cache: ~/Library/Caches/pip
           hatch-cache: ~/Library/Caches/hatch
-          hatch-data: ~/Library/Application Support/hatch
         - os: windows-latest
           pip-cache: ~\AppData\Local\pip\Cache
           hatch-cache: ~\AppData\Local\hatch\Cache
-          hatch-data: ~\AppData\Local\hatch
     steps:
     - name: Don't mess with line endings
       run: |
@@ -185,16 +181,18 @@ jobs:
         path: |
           ${{ matrix.pip-cache }}
           ${{ matrix.hatch-cache }}
-          ${{ matrix.hatch-data }}
-        key: ${{ matrix.os }}-${{ matrix.python-version }}-hatch-${{ hashFiles('pyproject.toml') }}
+        key: ${{ matrix.os }}-${{ matrix.python-version }}-${{ github.job }}-hatch-cache-v2-${{ hashFiles('pyproject.toml') }}
         restore-keys: |
-          ${{ matrix.os }}-${{ matrix.python-version }}-hatch-
+          ${{ matrix.os }}-${{ matrix.python-version }}-${{ github.job }}-hatch-cache-v2-
     - name: Is core test version
       id: core-version
       run: echo "core=${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.set-versions.outputs.max ) }}" >> $GITHUB_OUTPUT
     - name: Install hatch
       run: |
         pip install hatch "virtualenv>=20.26.6,<21"  # Pin until hatch supports virtualenv 21.x
+    - name: Create hatch test environment
+      run: |
+        hatch env create hatch-test.py${{ matrix.python-version }}
     - name: Run tests
       if: steps.core-version.outputs.core != 'true'
       run: |
@@ -236,10 +234,9 @@ jobs:
         path: |
           ~/.cache/pip
           ~/.cache/hatch
-          ~/.local/share/hatch
-        key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-${{ hashFiles('pyproject.toml') }}
+        key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-${{ github.job }}-hatch-cache-v2-${{ hashFiles('pyproject.toml') }}
         restore-keys: |
-          ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-
+          ubuntu-latest-${{ needs.set-versions.outputs.max }}-${{ github.job }}-hatch-cache-v2-
     - name: Get coverage
       uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
       with:
@@ -286,10 +283,9 @@ jobs:
           path: |
             ~/.cache/pip
             ~/.cache/hatch
-            ~/.local/share/hatch
-          key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-${{ hashFiles('pyproject.toml') }}
+          key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-${{ github.job }}-hatch-cache-v2-${{ hashFiles('pyproject.toml') }}
           restore-keys: |
-            ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-
+            ubuntu-latest-${{ needs.set-versions.outputs.max }}-${{ github.job }}-hatch-cache-v2-
       - uses: ./.github/actions/snyk-test
         with:
           token: ${{ secrets.SNYK_TOKEN }}
