@@ -28,7 +28,14 @@ class TransformerBase(ABC):
     """Abstract base interface for all transformers."""
 
     # the current time for consistent timestamping
-    _timestamp = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat()
+    _timestamp = None
+
+    def __init__(self) -> None:
+        """Initialize the transformer and set timestamp if not already set."""
+        if TransformerBase._timestamp is None:
+            TransformerBase._timestamp = datetime.datetime.now(datetime.timezone.utc).replace(
+                microsecond=0
+            ).isoformat()
 
     @staticmethod
     def set_timestamp(value: str) -> None:
