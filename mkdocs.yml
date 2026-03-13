@@ -34,7 +34,7 @@ plugins:
     enabled: !ENV [ENABLED_HTMLPROOFER, true]
     validate_rendered_template: false
     validate_external_urls: !ENV [HTMLPROOFER_VALIDATE_EXTERNAL_URLS, true]
-    raise_error_after_finish: false
+    raise_error_after_finish: !ENV [HTMLPROOFER_RAISE_ERROR_AFTER_FINISH, false]
     retry_max_times: 3
     raise_error_excludes:
       # This is to remove some false positives for links which work.

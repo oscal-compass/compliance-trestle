@@ -114,7 +114,7 @@ release: ## Create a release (CI only)
 # Documentation
 # ============================================================================
 
-.PHONY: docs-osx-deps docs-ubuntu-deps docs-build docs-serve docs-validate
+.PHONY: docs-osx-deps docs-ubuntu-deps docs-build docs-serve docs-validate docs-link-check
 
 docs-osx-deps: ## Install docs dependencies on macOS
 	brew install cairo freetype libffi libjpeg libpng zlib
@@ -131,6 +131,9 @@ docs-serve: docs-clean ## Serve documentation locally
 
 docs-validate: docs-clean ## Validate documentation (build + link check)
 	hatch run docs:validate
+
+docs-link-check: docs-clean ## Run full htmlproofer link check (all URLs, raises on failure)
+	ENABLED_HTMLPROOFER=true HTMLPROOFER_VALIDATE_EXTERNAL_URLS=true HTMLPROOFER_RAISE_ERROR_AFTER_FINISH=true hatch run docs:validate
 
 docs-clean: clean-tmp
 

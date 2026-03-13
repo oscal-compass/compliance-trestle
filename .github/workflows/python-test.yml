@@ -68,8 +68,7 @@ jobs:
         make docs-ubuntu-deps
     - name: Validate website content (mkdocs)
       env:
-        ENABLED_HTMLPROOFER: true
-        HTMLPROOFER_VALIDATE_EXTERNAL_URLS: true
+        ENABLED_HTMLPROOFER: false
       run: |
         make docs-validate
     - name: Check if dirty (mkdocs)

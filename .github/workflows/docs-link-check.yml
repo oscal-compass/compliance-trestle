@@ -1,0 +1,174 @@
+# Runs htmlproofer as an informational check on every PR.
+# Never blocks merging — failures are reported as a PR comment for author/reviewer consideration.
+# Re-running the workflow replaces the previous comment (no duplicates).
+name: Docs Link Check
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  set-versions:
+    runs-on: ubuntu-latest
+    outputs:
+      max: ${{ steps.versions.outputs.max }}
+    steps:
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+    - id: versions
+      run: |
+        max_version=$(jq '.PYTHON_MAX' -r version.json)
+        echo "max=$max_version" >> "$GITHUB_OUTPUT"
+
+  link-check:
+    needs: set-versions
+    runs-on: ubuntu-latest
+    steps:
+    - name: Don't mess with line endings
+      run: git config --global core.autocrlf false
+
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      with:
+        submodules: true
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+      with:
+        python-version: ${{ needs.set-versions.outputs.max }}
+
+    - uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+      with:
+        path: |
+          ~/.cache/pip
+          ~/.cache/hatch
+          ~/.local/share/hatch
+        key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-${{ hashFiles('pyproject.toml') }}
+        restore-keys: |
+          ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-
+
+    - name: Install tools
+      run: make develop
+
+    - name: Install documentation dependencies
+      run: make docs-ubuntu-deps
+
+    - name: Run htmlproofer link check
+      id: link-check
+      continue-on-error: true
+      env:
+        ENABLED_HTMLPROOFER: true
+        HTMLPROOFER_VALIDATE_EXTERNAL_URLS: true
+        HTMLPROOFER_RAISE_ERROR_AFTER_FINISH: true
+      run: |
+        make docs-validate 2>&1 | tee htmlproofer-output.txt
+        echo "exit_code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+
+    - name: Parse link check results
+      if: always()
+      run: |
+        python3 - << 'PYEOF'
+        import re, json
+
+        with open('htmlproofer-output.txt', 'r') as f:
+            content = f.read()
+
+        failures = []
+        seen = set()
+
+        for line in content.splitlines():
+            urls = re.findall(r'https?://[^\s\'"<>\)\]]+', line)
+            if not urls:
+                continue
+            is_error_line = bool(re.search(r'(?:ERROR|WARNING|error|failed|failure)', line, re.IGNORECASE))
+            if not is_error_line:
+                continue
+            status_match = re.search(r'\b([345]\d{2})\b', line)
+            for url in urls:
+                url = url.rstrip('.,;:)')
+                if url not in seen:
+                    seen.add(url)
+                    failures.append({
+                        'url': url,
+                        'status': status_match.group(1) if status_match else 'error',
+                    })
+
+        with open('link-check-results.json', 'w') as f:
+            json.dump(failures, f)
+
+        print(f"Found {len(failures)} unique URL failure(s)")
+        PYEOF
+
+    - name: Post PR comment with link check report
+      if: always() && github.event_name == 'pull_request'
+      uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+      with:
+        script: |
+          const fs = require('fs');
+          const MARKER = '<!-- htmlproofer-link-check-report -->';
+
+          let failures = [];
+          try {
+            failures = JSON.parse(fs.readFileSync('link-check-results.json', 'utf8'));
+          } catch (e) {
+            console.log('Could not read results file:', e.message);
+          }
+
+          const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+          const timestamp = new Date().toISOString();
+
+          let body;
+          if (failures.length === 0) {
+            body = [
+              MARKER,
+              '## :white_check_mark: Link Check Results',
+              '',
+              `> Last checked: ${timestamp} — [View run](${runUrl})`,
+              '',
+              'All links passed validation.',
+            ].join('\n');
+          } else {
+            const rows = failures.map(f => `| \`${f.url}\` | ${f.status} |`).join('\n');
+            body = [
+              MARKER,
+              '## :warning: Link Check Results',
+              '',
+              `> Last checked: ${timestamp} — [View run](${runUrl})`,
+              '',
+              `Found **${failures.length}** failing link(s). Review and determine if any are blocking.`,
+              '',
+              '| URL | Status |',
+              '|-----|--------|',
+              rows,
+              '',
+              '> This check is informational only and does not block merging.',
+            ].join('\n');
+          }
+
+          const { data: comments } = await github.rest.issues.listComments({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+          });
+
+          const existing = comments.find(c => c.body && c.body.includes(MARKER));
+          if (existing) {
+            await github.rest.issues.updateComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: existing.id,
+              body,
+            });
+            console.log('Updated existing link check comment');
+          } else {
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
+            console.log('Created new link check comment');
+          }
