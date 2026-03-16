@@ -141,6 +141,11 @@ jobs:
     - name: Install hatch
       run: |
         make develop
+    - name: Recreate hatch test environment
+      shell: bash
+      run: |
+        hatch env remove hatch-test.py${{ matrix.python-version }} 2>/dev/null || true
+        hatch env create hatch-test.py${{ matrix.python-version }}
     - name: gen OSCAL models
       run: |
         make gen-oscal
@@ -195,6 +200,11 @@ jobs:
     - name: Install hatch
       run: |
         pip install hatch "virtualenv>=20.26.6,<21"  # Pin until hatch supports virtualenv 21.x
+    - name: Recreate hatch test environment
+      shell: bash
+      run: |
+        hatch env remove hatch-test.py${{ matrix.python-version }} 2>/dev/null || true
+        hatch env create hatch-test.py${{ matrix.python-version }}
     - name: Run tests
       if: steps.core-version.outputs.core != 'true'
       run: |
