@@ -107,7 +107,9 @@
       },
       "reviewed-controls": {
         "control-selections": [
-          {}
+          {
+            "include-controls": []
+          }
         ]
       },
       "observations": [
