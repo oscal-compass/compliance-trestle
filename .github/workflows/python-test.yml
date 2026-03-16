@@ -42,6 +42,8 @@ jobs:
           ~/.cache/hatch
           ~/.local/share/hatch
         key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-${{ hashFiles('pyproject.toml') }}
+        restore-keys: |
+          ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-
     - name: Install tools
       run: |
         make develop
@@ -65,8 +67,15 @@ jobs:
       run: |
         make docs-ubuntu-deps
     - name: Validate website content (mkdocs)
+      continue-on-error: true
+      id: docs-validate
       run: |
         make docs-validate
+    - name: Report docs validation status
+      if: steps.docs-validate.outcome == 'failure'
+      run: |
+        echo "⚠️ Documentation validation had issues. Check the separate Link Checker workflow for details."
+        echo "This won't block the PR - see the link-checker.yml workflow for a detailed report."
     - name: Check if dirty (mkdocs)
       run: |
         make check-for-changes
@@ -94,6 +103,8 @@ jobs:
           ~/.cache/hatch
           ~/.local/share/hatch
         key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-${{ hashFiles('pyproject.toml') }}
+        restore-keys: |
+          ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-
     - name: Install hatch
       run: |
         pip install hatch "virtualenv>=20.26.6,<21"  # Pin until hatch supports virtualenv 21.x
@@ -132,9 +143,15 @@ jobs:
           ${{ matrix.hatch-cache }}
           ${{ matrix.hatch-data }}
         key: ${{ matrix.os }}-${{ matrix.python-version }}-hatch-${{ hashFiles('pyproject.toml') }}
+        restore-keys: |
+          ${{ matrix.os }}-${{ matrix.python-version }}-hatch-
     - name: Install hatch
       run: |
         make develop
+    - name: Recreate hatch test environment
+      run: |
+        hatch env remove hatch-test.py${{ matrix.python-version }} 2>/dev/null || true
+        hatch env create hatch-test.py${{ matrix.python-version }}
     - name: gen OSCAL models
       run: |
         make gen-oscal
@@ -181,15 +198,17 @@ jobs:
           ${{ matrix.hatch-cache }}
           ${{ matrix.hatch-data }}
         key: ${{ matrix.os }}-${{ matrix.python-version }}-hatch-${{ hashFiles('pyproject.toml') }}
+        restore-keys: |
+          ${{ matrix.os }}-${{ matrix.python-version }}-hatch-
     - name: Is core test version
       id: core-version
       run: echo "core=${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.set-versions.outputs.max ) }}" >> $GITHUB_OUTPUT
     - name: Install hatch
       run: |
         pip install hatch "virtualenv>=20.26.6,<21"  # Pin until hatch supports virtualenv 21.x
-        hatch --version
-    - name: Create hatch test environment
+    - name: Recreate hatch test environment
       run: |
+        hatch env remove hatch-test.py${{ matrix.python-version }} 2>/dev/null || true
         hatch env create hatch-test.py${{ matrix.python-version }}
     - name: Run tests
       if: steps.core-version.outputs.core != 'true'
@@ -234,6 +253,8 @@ jobs:
           ~/.cache/hatch
           ~/.local/share/hatch
         key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-${{ hashFiles('pyproject.toml') }}
+        restore-keys: |
+          ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-
     - name: Get coverage
       uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
       with:
@@ -282,6 +303,8 @@ jobs:
             ~/.cache/hatch
             ~/.local/share/hatch
           key: ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-
       - uses: ./.github/actions/snyk-test
         with:
           token: ${{ secrets.SNYK_TOKEN }}
