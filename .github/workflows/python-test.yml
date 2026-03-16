@@ -67,15 +67,8 @@ jobs:
       run: |
         make docs-ubuntu-deps
     - name: Validate website content (mkdocs)
-      continue-on-error: true
-      id: docs-validate
       run: |
         make docs-validate
-    - name: Report docs validation status
-      if: steps.docs-validate.outcome == 'failure'
-      run: |
-        echo "⚠️ Documentation validation had issues. Check the separate Link Checker workflow for details."
-        echo "This won't block the PR - see the link-checker.yml workflow for a detailed report."
     - name: Check if dirty (mkdocs)
       run: |
         make check-for-changes
@@ -149,6 +142,7 @@ jobs:
       run: |
         make develop
     - name: Recreate hatch test environment
+      shell: bash
       run: |
         hatch env remove hatch-test.py${{ matrix.python-version }} 2>/dev/null || true
         hatch env create hatch-test.py${{ matrix.python-version }}
@@ -207,6 +201,7 @@ jobs:
       run: |
         pip install hatch "virtualenv>=20.26.6,<21"  # Pin until hatch supports virtualenv 21.x
     - name: Recreate hatch test environment
+      shell: bash
       run: |
         hatch env remove hatch-test.py${{ matrix.python-version }} 2>/dev/null || true
         hatch env create hatch-test.py${{ matrix.python-version }}
