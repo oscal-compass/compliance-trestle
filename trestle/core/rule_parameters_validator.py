@@ -76,7 +76,9 @@ class RuleParametersValidator(Validator):
             # validates if current param_id is or not associated with a control so we can assume it´s a rule param
             control = cat_int.get_control_by_param_id(set_param.param_id)
             if not control:
-                deep_set(self._rule_param_values_dict, [set_param.param_id, comp_uuid, control_id], set_param.values)
+                # SetParameter is a Union type - check for values field before accessing
+                values = set_param.values if hasattr(set_param, 'values') else None
+                deep_set(self._rule_param_values_dict, [set_param.param_id, comp_uuid, control_id], values)
 
     def model_is_valid(
         self, model: TopLevelOscalModel, quiet: bool, trestle_root: Optional[pathlib.Path] = None
