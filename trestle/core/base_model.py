@@ -265,17 +265,12 @@ class OscalBaseModel(TrestleBaseModel):
         # The output will have \r\n newlines on windows and \n newlines elsewhere
 
         if content_type == FileContentType.YAML:
-            write_file = pathlib.Path(path).open('w', encoding=const.FILE_ENCODING)
-            yaml = YAML(typ='safe')
-            yaml.dump(yaml.load(self.oscal_serialize_json()), write_file)
-            write_file.flush()
-            write_file.close()
+            with pathlib.Path(path).open('w', encoding=const.FILE_ENCODING) as write_file:
+                yaml = YAML(typ='safe')
+                yaml.dump(yaml.load(self.oscal_serialize_json()), write_file)
         elif content_type == FileContentType.JSON:
-            write_file = pathlib.Path(path).open('wb')
-            write_file.write(self.oscal_serialize_json_bytes(pretty=True))
-            # Flush / close required (by experience) due to flushing issues in tests.
-            write_file.flush()
-            write_file.close()
+            with pathlib.Path(path).open('wb') as write_file:
+                write_file.write(self.oscal_serialize_json_bytes(pretty=True))
 
     @classmethod
     def oscal_read(cls, path: pathlib.Path) -> Optional['OscalBaseModel']:
@@ -303,9 +298,8 @@ class OscalBaseModel(TrestleBaseModel):
         try:
             if content_type == FileContentType.YAML:
                 yaml = YAML(typ='safe')
-                fh = path.open('r', encoding=const.FILE_ENCODING)
-                obj = yaml.load(fh)
-                fh.close()
+                with path.open('r', encoding=const.FILE_ENCODING) as fh:
+                    obj = yaml.load(fh)
             elif content_type == FileContentType.JSON:
                 obj = load_file(path, json_loads=cls.__config__.json_loads)
         except Exception as e:

@@ -100,7 +100,7 @@ jobs:
           ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-
     - name: Install hatch
       run: |
-        pip install hatch
+        pip install hatch "virtualenv>=20.26.6,<21"  # Pin until hatch supports virtualenv 21.x
     - name: Run binary tests
       run: |
         make test-bdist
@@ -141,12 +141,17 @@ jobs:
     - name: Install hatch
       run: |
         make develop
+    - name: Recreate hatch test environment
+      shell: bash
+      run: |
+        hatch env remove hatch-test.py${{ matrix.python-version }} 2>/dev/null || true
+        hatch env create hatch-test.py${{ matrix.python-version }}
     - name: gen OSCAL models
       run: |
         make gen-oscal
     - name: Run tests
       run: |
-        hatch test -py ${{ matrix.python-version }}
+        make test
   test:
     # This test
     needs: set-versions
@@ -194,7 +199,12 @@ jobs:
       run: echo "core=${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == needs.set-versions.outputs.max ) }}" >> $GITHUB_OUTPUT
     - name: Install hatch
       run: |
-        pip install hatch
+        pip install hatch "virtualenv>=20.26.6,<21"  # Pin until hatch supports virtualenv 21.x
+    - name: Recreate hatch test environment
+      shell: bash
+      run: |
+        hatch env remove hatch-test.py${{ matrix.python-version }} 2>/dev/null || true
+        hatch env create hatch-test.py${{ matrix.python-version }}
     - name: Run tests
       if: steps.core-version.outputs.core != 'true'
       run: |
@@ -211,7 +221,7 @@ jobs:
 
     - name: Upload artifact
       if: steps.core-version.outputs.core == 'true'
-      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
       with:
         name: coverage
         path: coverage.xml
@@ -241,7 +251,7 @@ jobs:
         restore-keys: |
           ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-
     - name: Get coverage
-      uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
       with:
         name: coverage
     - name: SonarCloud Scan

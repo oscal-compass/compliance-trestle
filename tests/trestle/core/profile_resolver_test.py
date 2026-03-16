@@ -172,8 +172,9 @@ def test_profile_resolver_merge(sample_catalog_rich_controls: cat.Catalog) -> No
     """Test profile resolver merge."""
     profile = gens.generate_sample_model(prof.Profile)
     method = 'merge'
-    combine = prof.Combine(method=method)
-    profile.merge = prof.Merge(combine=combine)
+    # In OSCAL 1.2.0, combine is a dict, not a Combine object
+    # Merge1 has combine as dict and flat as required dict
+    profile.merge = prof.Merge1(combine={'method': method}, flat={})
     merge = Merge(profile)
 
     # merge into empty catalog
@@ -188,10 +189,24 @@ def test_profile_resolver_merge(sample_catalog_rich_controls: cat.Catalog) -> No
     cat_with_added_part = copy.deepcopy(sample_catalog_rich_controls)
     cat_with_added_part.controls[0].parts.append(part)
     # add extra control in group and make sure it is handled properly
-    n_controls = len(cat_with_added_part.groups[0].controls)
-    new_control = copy.deepcopy(cat_with_added_part.groups[0].controls[n_controls - 1])
-    new_control.id = new_control.id + 'b'
-    cat_with_added_part.groups[0].controls.append(new_control)
+    # Group is Union[Group1, Group2]
+    # Group1 has .groups field (contains Group2 objects)
+    # Group2 has .controls field
+    first_group = cat_with_added_part.groups[0]
+    if hasattr(first_group, 'groups') and first_group.groups:
+        # Group1 - need to access subgroup (Group2) to add control
+        subgroup = first_group.groups[0]
+        if hasattr(subgroup, 'controls') and subgroup.controls:
+            n_controls = len(subgroup.controls)
+            new_control = copy.deepcopy(subgroup.controls[n_controls - 1])
+            new_control.id = new_control.id + 'b'
+            subgroup.controls.append(new_control)
+    elif hasattr(first_group, 'controls') and first_group.controls:
+        # Group2 - can add control directly
+        n_controls = len(first_group.controls)
+        new_control = copy.deepcopy(first_group.controls[n_controls - 1])
+        new_control.id = new_control.id + 'b'
+        first_group.controls.append(new_control)
     final_merged = merge._merge_catalog(sample_catalog_rich_controls, cat_with_added_part)
     catalog_interface = CatalogInterface(final_merged)
     assert catalog_interface.get_count_of_controls_in_catalog(True) == 7
@@ -199,8 +214,8 @@ def test_profile_resolver_merge(sample_catalog_rich_controls: cat.Catalog) -> No
 
     # add part to first control and merge but with use-first.  The part should not be there at end.
     method = prof.CombinationMethodValidValues.use_first.value
-    combine = prof.Combine(method=method)
-    profile.merge = prof.Merge(combine=combine)
+    # In OSCAL 1.2.0, combine is a dict, not a Combine object
+    profile.merge = prof.Merge1(combine={'method': method}, flat={})
     merge = Merge(profile)
     final_merged = merge._merge_catalog(sample_catalog_rich_controls, cat_with_added_part)
     catalog_interface = CatalogInterface(final_merged)
@@ -229,8 +244,8 @@ def test_profile_resolver_merge(sample_catalog_rich_controls: cat.Catalog) -> No
 )
 def test_replace_params(param_id, param_text, prose, result) -> None:
     """Test cases of replacing param in string."""
-    param = com.Parameter(id=param_id, values=[param_text])
-    param_10 = com.Parameter(id='ac-2_smt.10', values=['my 10 str'])
+    param = com.Parameter1(id=param_id, values=[param_text])
+    param_10 = com.Parameter1(id='ac-2_smt.10', values=['my 10 str'])
     param_dict = {param_id: param, 'ac-1_smt.10': param_10}
     assert ControlInterface._replace_ids_with_text(prose, ParameterRep.VALUE_OR_STRING_NONE, param_dict) == result
 
@@ -250,7 +265,22 @@ def test_replace_params_assignment_mode(simplified_nist_catalog: cat.Catalog) ->
         == 'Prevent encrypted information from bypassing [Assignment: organization-defined information flow control mechanisms] by [Selection (one or more): decrypting the information; blocking the flow of the encrypted information; terminating communications sessions attempting to pass encrypted information;  [IBM Assignment: my procedure] ].'
     )  # noqa E501
     value = 'blocking the flow of the encrypted information'
-    param_dict['ac-4.4_prm_2'].values = [value]
+    # Replace Parameter2 (with select) with Parameter1 (with values)
+    old_param = param_dict['ac-4.4_prm_2']
+    new_param = com.Parameter1(
+        id=old_param.id,
+        class_=old_param.class_,
+        depends_on=old_param.depends_on,
+        props=old_param.props,
+        links=old_param.links,
+        label=old_param.label,
+        usage=old_param.usage,
+        constraints=old_param.constraints,
+        guidelines=old_param.guidelines,
+        values=[value],
+        remarks=old_param.remarks,
+    )
+    param_dict['ac-4.4_prm_2'] = new_param
     ac_44.parts[0].prose = orig_prose
     # test the case where values for choices are assigned
     ControlInterface.replace_control_prose(
@@ -272,9 +302,9 @@ def test_replace_params_assignment_mode(simplified_nist_catalog: cat.Catalog) ->
 def test_profile_resolver_param_sub() -> None:
     """Test profile resolver param sub via regex."""
     id_1 = 'ac-2_smt.1'
-    param_1 = com.Parameter(id=id_1, values=['the cat'])
+    param_1 = com.Parameter1(id=id_1, values=['the cat'])
     id_10 = 'ac-2_smt.10'
-    param_10 = com.Parameter(id=id_10, values=['well fed'])
+    param_10 = com.Parameter1(id=id_10, values=['well fed'])
 
     param_text = 'Make sure that {{insert: param, ac-2_smt.1}} is very {{ac-2_smt.10}} today.  Very {{ac-2_smt.10}}!'
     param_dict = {id_1: param_1, id_10: param_10}
@@ -330,9 +360,9 @@ def test_merge_two_catalogs() -> None:
     cat_2 = test_utils.generate_complex_catalog('bar')
     cat_2.controls[0].id = cat_1.controls[0].id
     method = 'merge'
-    combine = prof.Combine(method=method)
+    # In OSCAL 1.2.0, combine is a dict, not a Combine object
     profile = gens.generate_sample_model(prof.Profile)
-    profile.merge = prof.Merge(combine=combine)
+    profile.merge = prof.Merge1(combine={'method': method}, flat={})
     merge = Merge(profile)
     merge._merge_two_catalogs(cat_1, cat_2, method, True)
     assert cat_1
@@ -416,11 +446,73 @@ def test_profile_resolver_circular_ref(tmp_trestle_dir: pathlib.Path) -> None:
     # add new import to profile_c so it reloads prof_a in circular manner
     prof_c: prof.Profile
     prof_c, prof_c_path = ModelUtils.load_model_for_class(tmp_trestle_dir, 'test_profile_c', prof.Profile)
-    imp = prof.Import(href='trestle://profiles/test_profile_a/profile.json')
+    imp = prof.Import1(href='trestle://profiles/test_profile_a/profile.json', include_all={})
     prof_c.imports.append(imp)
     prof_c.oscal_write(prof_c_path)
     with pytest.raises(TrestleError):
         _ = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
+
+
+def test_profile_resolver_diamond_dependency(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test that valid diamond profile dependencies resolve correctly.
+
+    This tests the pattern where:
+    - Profile A imports [B, C]
+    - Both B and C import the same profile D
+
+    This is a valid OSCAL pattern (diamond dependency) and should NOT be
+    rejected as a circular reference.
+    """
+    # Setup catalog
+    cat_name = 'nist_cat'
+    cat_path = test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME
+    repo = Repository(tmp_trestle_dir)
+    repo.load_and_import_model(cat_path, cat_name)
+
+    # Create profile D (base profile) that imports the catalog
+    prof_d = gens.generate_sample_model(prof.Profile)
+    prof_d.imports = [prof.Import1(href=f'trestle://catalogs/{cat_name}/catalog.json', include_all={})]
+    prof_d.metadata.title = 'Profile D - Base'
+    prof_d_path = tmp_trestle_dir / 'profiles/prof_d/profile.json'
+    prof_d_path.parent.mkdir(parents=True, exist_ok=True)
+    prof_d.oscal_write(prof_d_path)
+
+    # Create profile B that imports profile D
+    prof_b = gens.generate_sample_model(prof.Profile)
+    prof_b.imports = [prof.Import1(href='trestle://profiles/prof_d/profile.json', include_all={})]
+    prof_b.metadata.title = 'Profile B'
+    prof_b_path = tmp_trestle_dir / 'profiles/prof_b/profile.json'
+    prof_b_path.parent.mkdir(parents=True, exist_ok=True)
+    prof_b.oscal_write(prof_b_path)
+
+    # Create profile C that also imports profile D (diamond pattern)
+    prof_c = gens.generate_sample_model(prof.Profile)
+    prof_c.imports = [prof.Import1(href='trestle://profiles/prof_d/profile.json', include_all={})]
+    prof_c.metadata.title = 'Profile C'
+    prof_c_path = tmp_trestle_dir / 'profiles/prof_c/profile.json'
+    prof_c_path.parent.mkdir(parents=True, exist_ok=True)
+    prof_c.oscal_write(prof_c_path)
+
+    # Create profile A that imports both B and C (creates diamond)
+    prof_a = gens.generate_sample_model(prof.Profile)
+    prof_a.imports = [
+        prof.Import1(href='trestle://profiles/prof_b/profile.json', include_all={}),
+        prof.Import1(href='trestle://profiles/prof_c/profile.json', include_all={}),
+    ]
+    prof_a.metadata.title = 'Profile A - Diamond Top'
+    prof_a_path = tmp_trestle_dir / 'profiles/prof_a/profile.json'
+    prof_a_path.parent.mkdir(parents=True, exist_ok=True)
+    prof_a.oscal_write(prof_a_path)
+
+    # This should resolve successfully - diamond dependencies are valid
+    resolved_catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
+
+    # Verify resolution succeeded and produced a valid catalog
+    assert resolved_catalog is not None
+    assert resolved_catalog.metadata.title == 'Profile A - Diamond Top'
+    # Should have controls from the catalog (via either B->D or C->D path)
+    cat_interface = CatalogInterface(resolved_catalog)
+    assert cat_interface.get_count_of_controls_in_dict() > 0
 
 
 def test_profile_resolver_no_params(tmp_trestle_dir: pathlib.Path) -> None:
