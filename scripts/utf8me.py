@@ -48,15 +48,10 @@ class Utf8me(ilcli.Command):
         input_path = pathlib.Path(args.input[0])
         if not input_path.is_file():
             logger.error('Input file does not exist or is a directory.')
-        fh = codecs.open(str(input_path.resolve()), mode='r', encoding='utf8', errors='replace')
-        content = fh.read()
-        # Force flushing incase we are writing over the file)
-        fh.flush()
-        fh.close()
-        output_file = pathlib.Path(outfile).resolve().open('w', encoding='utf8')
-        output_file.write(content)
-        output_file.flush()
-        output_file.close()
+        with codecs.open(str(input_path.resolve()), mode='r', encoding='utf8', errors='replace') as fh:
+            content = fh.read()
+        with pathlib.Path(outfile).resolve().open('w', encoding='utf8') as output_file:
+            output_file.write(content)
         return CmdReturnCodes.SUCCESS.value
 
 
