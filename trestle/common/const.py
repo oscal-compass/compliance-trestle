@@ -258,7 +258,7 @@ MATCH_ALL_EXCEPT_LETTERS_UNDERSCORE_SPACE_REGEX = '[^a-zA-Z0-9-_ \n]'
 MARKDOWN_URL_REGEX = r'\[([^\]]+)\]\(([^)]+)\)'
 
 # Governed header template version
-TEMPLATE_VERSION_REGEX = r'[0-9]+.[0-9]+.[0-9]+'
+TEMPLATE_VERSION_REGEX = r'^[0-9]+\.[0-9]+\.[0-9]+$'
 
 OBJECTIVE_PART = 'objective'
 ASSESMENT_OBJECTIVE_PART = 'assessment-objective'
