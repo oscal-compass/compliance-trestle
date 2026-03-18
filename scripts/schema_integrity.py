@@ -41,9 +41,8 @@ class IntegrityCmd(Command):
             dir_of_schemas = pathlib.Path(args.directory)
             for path_of_schema in dir_of_schemas.glob('oscal_*_schema.json'):
                 self.out(f'Examinining: {path_of_schema.name}')
-                fp = path_of_schema.open('r', encoding='utf8')
-                json_schema_raw = json.load(fp)
-                fp.close()
+                with path_of_schema.open('r', encoding='utf8') as fp:
+                    json_schema_raw = json.load(fp)
                 # get list of ID's
                 # Cannot use this technique using latest OSCAL code drop
                 # ids = list(set(self.recursive_ref('$id', json_schema_raw))) # noqa: E800
