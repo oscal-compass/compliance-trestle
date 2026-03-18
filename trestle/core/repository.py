@@ -238,8 +238,8 @@ class Repository:
                 errmsg = f'Validation of model {name} did not pass'
                 logger.error(errmsg)
         except Exception as err:
-            logger.error(errmsg)
             errmsg = f'Import of model {name} failed. Validation failed with error: {err}'
+            logger.error(errmsg)
 
         if not success:
             # rollback in case of validation error or failure
