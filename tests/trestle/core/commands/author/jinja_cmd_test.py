@@ -71,9 +71,8 @@ def test_jinja_lookup_table(
     luk_table = 'lookup_table.yaml'
     setup_ssp(testdata_dir, tmp_trestle_dir, monkeypatch)
     command_import = (
-        f'trestle author jinja -i {input_template} -o output_file.md '
-        f'-lut {luk_table} -ssp ssp_json -p comp_prof'
-    )  # noqa: N400
+        f'trestle author jinja -i {input_template} -o output_file.md -lut {luk_table} -ssp ssp_json -p comp_prof'  # noqa: N400
+    )
     execute_command_and_assert(command_import, 0, monkeypatch)
 
     with open('output_file.md') as test_output:
