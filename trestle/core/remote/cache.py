@@ -112,11 +112,8 @@ class FetcherBase(ABC):
         # Return results in the cache, whether yaml or json, or whatever is supported by fs.load_file().
         try:
             raw_data = file_utils.load_file(self._cached_object_path)
-        except Exception:
-            try:
-                raw_data = file_utils.load_file(self._cached_object_path)
-            except Exception as e:
-                raise TrestleError(f'Cache get failure for {self._uri}: {e}.') from e
+        except Exception as e:
+            raise TrestleError(f'Cache get failure for {self._uri}: {e}.') from e
         return raw_data
 
     def get_oscal_with_model_type(
