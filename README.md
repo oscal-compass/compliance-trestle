@@ -93,14 +93,17 @@ A collection of demos utilizing trestle can be found in the related project [com
 ### v4: stable (actively developed)
 
 - supports NIST OSCAL 1.2.1 as well as previous versions
+- supports newly released Mapping Model
 
 ### v3: stable (maintenance mode)
 
 - supports NIST OSCAL 1.1.3 as well as previous versions
+- limited support until June 30, 2026
 
 ### v2: stable (deprecated)
 
 - supports NIST OSCAL 1.0.4 as well as previous versions
+- no longer supported
 
 ## Community meetings and communications
 
