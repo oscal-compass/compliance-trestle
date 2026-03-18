@@ -143,7 +143,7 @@ docs-clean: clean-tmp
 
 .PHONY: gen-oscal simplified-catalog check-for-changes clean clean-env
 
-gen-oscal: ## Generate OSCAL Python models from JSON schemas
+gen-oscal: clean-tmp ## Generate OSCAL Python models from JSON schemas
 	hatch run python ./scripts/gen_oscal.py
 
 simplified-catalog: ## Generate simplified NIST catalog for testing

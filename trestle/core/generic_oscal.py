@@ -86,8 +86,10 @@ class GenericByComponent(TrestleBaseModel):
         """Convert to ssp format."""
         set_params = []
         for set_param in as_list(self.set_parameters):
+            # SetParameter may be a Union type - check for values field
+            values = set_param.values if hasattr(set_param, 'values') else None
             new_set_param = ossp.SetParameter(
-                **{'param-id': set_param.param_id, 'values': set_param.values, 'remarks': set_param.remarks}
+                **{'param-id': set_param.param_id, 'values': values, 'remarks': set_param.remarks}
             )
             set_params.append(new_set_param)
         set_params = none_if_empty(set_params)
@@ -190,7 +192,7 @@ class GenericComponent(TrestleBaseModel):
     control_implementations: Optional[List[GenericControlImplementation]] = Field(None, alias='control-implementations')
     remarks: Optional[str] = None
     # ssp has
-    status: common.ImplementationStatus
+    status: Optional[common.ImplementationStatus] = None
 
     def as_defined_component(self) -> comp.DefinedComponent:
         """Convert to DefinedComponent."""
@@ -206,6 +208,9 @@ class GenericComponent(TrestleBaseModel):
         """Convert defined component to generic."""
         status = ControlInterface.get_status_from_props(def_comp)  # type: ignore[type-var]
         class_dict = copy.deepcopy(def_comp.__dict__)
+        # Ensure type is a plain string - Pydantic may store it as a constrained type
+        if 'type' in class_dict:
+            class_dict['type'] = str(class_dict['type'])
         if 'control_implementations' in class_dict:
             new_cis = []
             for ci in class_dict['control_implementations']:
@@ -219,6 +224,9 @@ class GenericComponent(TrestleBaseModel):
         """Convert to SystemComponent."""
         class_dict = copy.deepcopy(self.__dict__)
         class_dict.pop('control_implementations', None)
+        # Ensure type is a string - Pydantic may store it as a constrained type
+        if 'type' in class_dict:
+            class_dict['type'] = str(class_dict['type'])
         status_str = self.status.state if self.status else const.STATUS_OPERATIONAL
         status_str = status_override if status_override else status_str
         if status_str not in ['under-development', 'operational', 'disposition', 'other']:
@@ -238,8 +246,8 @@ class GenericComponent(TrestleBaseModel):
             **{
                 'uuid': uuid,
                 'type': const.REPLACE_ME,
-                'title': '',
-                'description': '',
+                'title': const.REPLACE_ME,
+                'description': const.REPLACE_ME,
                 'status': status,
                 'purpose': None,
                 'props': None,
@@ -382,7 +390,7 @@ class GenericControlImplementation(TrestleBaseModel):
             'uuid': uuid,
             'control-id': const.REPLACE_ME,
             'source': const.REPLACE_ME,
-            'description': '',
+            'description': const.REPLACE_ME,
             'implemented-requirements': imp_reqs,
         }
         return GenericControlImplementation(**class_dict)
