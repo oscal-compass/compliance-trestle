@@ -473,6 +473,10 @@
          <lastmod>2026-03-18</lastmod>
     </url>
     <url>
+         <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/oscal/mapping/</loc>
+         <lastmod>2026-03-18</lastmod>
+    </url>
+    <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/oscal/poam/</loc>
          <lastmod>2026-03-18</lastmod>
     </url>
@@ -498,6 +502,14 @@
     </url>
     <url>
          <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/tasks/csv_to_oscal_cd/</loc>
+         <lastmod>2026-03-18</lastmod>
+    </url>
+    <url>
+         <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/tasks/csv_to_oscal_mc/</loc>
+         <lastmod>2026-03-18</lastmod>
+    </url>
+    <url>
+         <loc>https://oscal-compass.github.io/compliance-trestle/latest/reference/API/trestle/tasks/csv_to_oscal_mc_utilities/</loc>
          <lastmod>2026-03-18</lastmod>
     </url>
     <url>
