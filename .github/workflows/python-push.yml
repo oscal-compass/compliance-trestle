@@ -103,6 +103,11 @@ jobs:
       if: steps.core-version.outputs.core == 'true'
       run: |
         make docs-validate
+    - name: Recreate hatch test environment
+      shell: bash
+      run: |
+        hatch env remove hatch-test.py${{ matrix.python-version }} 2>/dev/null || true
+        hatch env create hatch-test.py${{ matrix.python-version }}
     - name: Pytest Fast
       if: steps.core-version.outputs.core != 'true'
       run: |
@@ -151,6 +156,11 @@ jobs:
     - name: gen OSCAL models
       run: |
         make gen-oscal
+    - name: Recreate hatch test environment
+      shell: bash
+      run: |
+        hatch env remove hatch-test.py${{ matrix.python-version }} 2>/dev/null || true
+        hatch env create hatch-test.py${{ matrix.python-version }}
     - name: Run tests
       run: |
         make test
