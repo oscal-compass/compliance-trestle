@@ -17,11 +17,14 @@ import os
 import pathlib
 import shutil
 
+from ruamel.yaml import YAML
+
 from _pytest.monkeypatch import MonkeyPatch
 
 from tests.test_utils import execute_command_and_assert, setup_for_ssp
 
 from trestle.core.commands.author.jinja import _number_captions
+from trestle.core.commands.author.jinja import JinjaCmd
 from trestle.core.commands.author.ssp import SSPGenerate
 from trestle.core.markdown.docs_markdown_node import DocsMarkdownNode
 
@@ -69,7 +72,7 @@ def test_jinja_lookup_table(
     setup_ssp(testdata_dir, tmp_trestle_dir, monkeypatch)
     command_import = (
         f'trestle author jinja -i {input_template} -o output_file.md '
-        f'-lut {luk_table} -ssp ssp_json -p comp_prof -elp lut.prefix'
+        f'-lut {luk_table} -ssp ssp_json -p comp_prof'
     )  # noqa: N400
     execute_command_and_assert(command_import, 0, monkeypatch)
 
@@ -81,6 +84,19 @@ def test_jinja_lookup_table(
         node2 = tree.get_node_for_key('# B')
         assert node1.content.text[1] == 'This word: compliance-trestle, was substituted.'
         assert node2.content.text
+
+
+def test_jinja_lookup_table_prefix_nesting(tmp_path: pathlib.Path) -> None:
+    """Test lookup table prefix wraps LUT into nested dictionaries as documented."""
+    lut_path = tmp_path / 'lut.yaml'
+    yaml = YAML()
+    input_lut = {'banana': 'yellow', 'apple': 'green'}
+    with lut_path.open('w', encoding='utf8') as lut_file:
+        yaml.dump(input_lut, lut_file)
+
+    lut = JinjaCmd.load_LUT(lut_path, 'fruit.tropical')
+
+    assert lut == {'fruit': {'tropical': input_lut}}
 
 
 def test_number_captions(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
