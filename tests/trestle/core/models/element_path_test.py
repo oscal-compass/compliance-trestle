@@ -196,7 +196,7 @@ def test_make_relative():
         ('catalog.controls.*', catalog.Control, None, False),
         ('catalog.controls.0', catalog.Control, None, False),
         ('catalog.controls.1', catalog.Control, None, False),
-        ('group.controls.*.parts.part', common.Part, catalog.Group, False),
+        ('group.controls.*.parts.part', common.Part, catalog.Group2, False),
         ('catalog.*.roles.role', common.Role, None, True),
         ('metadata.roles.role', common.Role, None, True),
         ('catalog.controls', List[catalog.Control], None, False),
@@ -220,7 +220,16 @@ def test_get_type_from_element_path(
         apparent_type = my_element_path.get_type(provided_type)
     else:
         apparent_type = my_element_path.get_type()
-    assert leaf_type == apparent_type
+
+    # Newer datamodel-code-generator versions generate 'list[X]' instead of 'typing.List[X]'
+    # Direct type equality fails because list[X] != typing.List[X], so we compare by:
+    # 1. Origin type (both are 'list')
+    # 2. Inner type (both have same X)
+    if utils.get_origin(leaf_type) == list and utils.get_origin(apparent_type) == list:
+        # Both are list types, compare inner types
+        assert utils.get_inner_type(leaf_type) == utils.get_inner_type(apparent_type)
+    else:
+        assert leaf_type == apparent_type
 
 
 @pytest.mark.parametrize(

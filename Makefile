@@ -39,7 +39,7 @@ submodules: ## Initialize git submodules (nist-content, oscal)
 	git submodule update --init
 
 develop: submodules ## Set up development environment
-	pip install hatch "virtualenv>=20.26.6,<21"  # Pin until hatch supports virtualenv 21.x
+	pip install hatch
 	pip install -e .[dev]
 
 pre-commit: ## Install pre-commit hooks
@@ -140,7 +140,7 @@ docs-clean: clean-tmp
 
 .PHONY: gen-oscal simplified-catalog check-for-changes clean clean-env
 
-gen-oscal: ## Generate OSCAL Python models from JSON schemas
+gen-oscal: clean-tmp ## Generate OSCAL Python models from JSON schemas
 	hatch run python ./scripts/gen_oscal.py
 
 simplified-catalog: ## Generate simplified NIST catalog for testing

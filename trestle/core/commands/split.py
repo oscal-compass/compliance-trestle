@@ -167,6 +167,14 @@ class SplitCmd(CommandPlusDocs):
 
             model: OscalBaseModel = model_type.oscal_read(file_path)
 
+            # If the model has __root__ containing a Union type (not a list), unwrap it
+            # This happens when we wrap Union types for reading (e.g., Group1|Group2)
+            if hasattr(model, '__root__'):
+                root_val = model.__root__
+                # Only unwrap if it's a single OscalBaseModel, not a list
+                if isinstance(root_val, OscalBaseModel):
+                    model = root_val
+
             if cmd_utils.split_is_too_fine(element_path, model):
                 raise TrestleError('Cannot split the model to the level of uuids, strings, etc.')
 
