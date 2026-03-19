@@ -76,7 +76,6 @@ def test_time_since_modification_uses_utc(monkeypatch: MonkeyPatch) -> None:
         st_mtime = 1234.5
 
     class _FakePath:
-
         def stat(self) -> _StatResult:
             return _StatResult()
 
@@ -84,7 +83,6 @@ def test_time_since_modification_uses_utc(monkeypatch: MonkeyPatch) -> None:
     expected_now = datetime.datetime(2026, 3, 15, 12, 30, 0, tzinfo=datetime.timezone.utc)
 
     class _FakeDateTime:
-
         @classmethod
         def fromtimestamp(cls, ts: float, tz: datetime.tzinfo | None = None) -> datetime.datetime:
             assert ts == _StatResult.st_mtime
