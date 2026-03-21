@@ -233,7 +233,7 @@ def test_catalog_assemble_version(sample_catalog_rich_controls: cat.Catalog, tmp
 
     assert creation_time < assembled_cat_path.stat().st_mtime
 
-    control_text = """# control_q - \[The xy controls\] this is control q
+    control_text = r"""# control_q - \[The xy controls\] this is control q
 
 ## Control Statement
 """
@@ -251,7 +251,7 @@ def test_catalog_assemble_version(sample_catalog_rich_controls: cat.Catalog, tmp
     assert interface.get_count_of_controls_in_catalog(True) == 7
 
     # make additions to a sub control and confirm they end up in the assembled catalog
-    control_d1_text = """---
+    control_d1_text = r"""---
 x-trestle-set-params:
   param_new:
     values: new param value
@@ -719,7 +719,7 @@ def test_catalog_duplicate_parts_statement(tmp_trestle_dir: pathlib.Path, monkey
     md_path = tmp_trestle_dir / 'md_catalog/ac/ac-2.md'
     assert md_path.exists()
 
-    control_statement_prose_with_parts = """The organization:
+    control_statement_prose_with_parts = r"""The organization:
 
 - \[a\] Part A
 - \[a\] Part A Duplicate.
@@ -755,13 +755,13 @@ def test_catalog_tab_in_statement(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
 \t
 \t
 \t
-- \[m\] Part M
-- \[n\] Part N
-\t- \[n.1\] Documents 1
-\t- \[n.2\] Documents 2
-\t\t- \[n.2.1\] SubDocuments 1
-\t\t- \[n.2.2\] SubDocuments 2
-- \[o\] Part O.
+- \\[m\\] Part M
+- \\[n\\] Part N
+\t- \\[n.1\\] Documents 1
+\t- \\[n.2\\] Documents 2
+\t\t- \\[n.2.1\\] SubDocuments 1
+\t\t- \\[n.2.2\\] SubDocuments 2
+- \\[o\\] Part O.
 \t
 \t
 \t
