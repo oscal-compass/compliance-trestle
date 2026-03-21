@@ -25,11 +25,11 @@ from typing import List, Optional, Tuple
 
 from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.common import Metadata
-from trestle.oscal.profile import Import
+from trestle.oscal.profile import Import2
 from trestle.oscal.profile import Modify
 from trestle.oscal.profile import Profile
 from trestle.oscal.profile import SelectControl as SelectControlById
-from trestle.oscal.profile import SetParameter
+from trestle.oscal.profile import SetParameters
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
 from trestle.tasks.xlsx_helper import XlsxHelper
@@ -123,31 +123,31 @@ class XlsxToOscalProfile(TaskBase):
         self._report_issues()
         return TaskOutcome('success')
 
-    def _get_imports_by_goal(self) -> List[Import]:
+    def _get_imports_by_goal(self) -> List[Import2]:
         """Get imports by goal."""
         return self._get_imports_by_check()
 
-    def _get_imports_by_control(self) -> List[Import]:
+    def _get_imports_by_control(self) -> List[Import2]:
         """Get imports by control."""
-        import_ = Import(
+        import_ = Import2(
             href=self._get_spread_sheet_url(),
             include_controls=[SelectControlById(with_ids=self._get_with_ids_by_control())],
         )
         imports = [import_]
         return imports
 
-    def _get_imports_by_rule(self) -> List[Import]:
+    def _get_imports_by_rule(self) -> List[Import2]:
         """Get imports by rule."""
-        import_ = Import(
+        import_ = Import2(
             href=self._get_spread_sheet_url(),
             include_controls=[SelectControlById(with_ids=self._get_with_ids_by_rule())],
         )
         imports = [import_]
         return imports
 
-    def _get_imports_by_check(self) -> List[Import]:
+    def _get_imports_by_check(self) -> List[Import2]:
         """Get imports by check."""
-        import_ = Import(
+        import_ = Import2(
             href=self._get_spread_sheet_url(),
             include_controls=[SelectControlById(with_ids=self._get_with_ids_by_check())],
         )
@@ -208,7 +208,7 @@ class XlsxToOscalProfile(TaskBase):
         control = control.replace(')', '')
         return control
 
-    def _get_set_parameters(self) -> List[SetParameter]:
+    def _get_set_parameters(self) -> List[SetParameters]:
         """Get set parameters from spread sheet."""
         set_parameters = []
         for row in self.xlsx_helper.row_generator():
@@ -218,9 +218,8 @@ class XlsxToOscalProfile(TaskBase):
             values = self.xlsx_helper.get_parameter_values(row)
             if param_id is None:
                 continue
-            set_parameter = SetParameter(param_id=param_id, label=label, usage=usage)
-            if values is not None:
-                set_parameter.values = values
+            # get_parameter_values already returns a list
+            set_parameter = SetParameters(param_id=param_id, label=label, usage=usage, values=values)
             set_parameters.append(set_parameter)
         return set_parameters
 

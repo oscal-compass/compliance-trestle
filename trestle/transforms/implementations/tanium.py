@@ -29,7 +29,7 @@ from trestle.oscal.assessment_results import LocalDefinitions1
 from trestle.oscal.assessment_results import Observation
 from trestle.oscal.assessment_results import Result
 from trestle.oscal.assessment_results import SystemComponent
-from trestle.oscal.common import ControlSelection
+from trestle.oscal.common import ControlSelections
 from trestle.oscal.common import ImplementedComponent
 from trestle.oscal.common import InventoryItem
 from trestle.oscal.common import Property
@@ -42,6 +42,8 @@ from trestle.transforms.transformer_helper import PropertyAccounting
 from trestle.transforms.transformer_helper import PropertyManager
 
 logger = logging.getLogger(__name__)
+
+debuggable = False
 
 
 class TaniumResultToOscalARTransformer(ResultsTransformer):
@@ -123,7 +125,8 @@ class RuleUse:
 
     def __init__(self, tanium_row: Dict[str, Any], comply: Dict[str, str], default_timestamp: str) -> None:
         """Initialize given specified args."""
-        logger.debug(f'tanium-row: {tanium_row}')
+        if debuggable:
+            logger.debug(f'tanium-row: {tanium_row}')
         try:
             # level 1 keys
             self.computer_name = tanium_row['Computer Name']
@@ -161,9 +164,10 @@ class RuleUse:
             # collected
             self.collected = default_timestamp
         except Exception as e:
-            logger.debug(f'tanium-row: {tanium_row}')
-            logger.debug(e)
-            logger.debug(traceback.format_exc())
+            if debuggable:
+                logger.debug(f'tanium-row: {tanium_row}')
+                logger.debug(e)
+                logger.debug(traceback.format_exc())
             raise e
 
 
@@ -197,12 +201,15 @@ class RuleUseFactory:
                 jdata = json.loads(line)
                 if type(jdata) is list:
                     for item in jdata:
-                        logger.debug(f'item: {item}')
+                        if debuggable:
+                            logger.debug(f'item: {item}')
                         retval += self._make_sublist(item)
                 else:
-                    logger.debug(f'jdata: {jdata}')
+                    if debuggable:
+                        logger.debug(f'jdata: {jdata}')
                     retval += self._make_sublist(jdata)
-        logger.debug(f'ru_list: {len(retval)}')
+        if debuggable:
+            logger.debug(f'ru_list: {len(retval)}')
         return retval
 
 
@@ -450,7 +457,8 @@ class TaniumOscalFactory:
         start = index * batch_size
         end = (index + 1) * batch_size
         end = min(end, len(self._rule_use_list))
-        logger.debug(f'start: {start} end: {end - 1}')
+        if debuggable:
+            logger.debug(f'start: {start} end: {end - 1}')
         # process just the one chunk
         for i in range(start, end):
             rule_use = self._rule_use_list[i]
@@ -473,7 +481,8 @@ class TaniumOscalFactory:
         if self._cpus is None:
             cpus_estimate = len(self._rule_use_list) // self._blocksize
             self._cpus = max(min(cpus_estimate, self._cpus_max), self._cpus_min)
-            logger.debug(f'CPUs estimate: {cpus_estimate} available: {os.cpu_count()} selection: {self._cpus}')
+            if debuggable:
+                logger.debug(f'CPUs estimate: {cpus_estimate} available: {os.cpu_count()} selection: {self._cpus}')
         return self._cpus
 
     def _derive_observations(self) -> None:
@@ -512,10 +521,10 @@ class TaniumOscalFactory:
         return rval
 
     @property
-    def control_selections(self) -> List[ControlSelection]:
+    def control_selections(self) -> List[ControlSelections]:
         """OSCAL control selections."""
         rval = []
-        rval.append(ControlSelection())
+        rval.append(ControlSelections(include_controls=[]))
         return rval
 
     @property
