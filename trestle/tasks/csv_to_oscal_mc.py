@@ -66,7 +66,6 @@ logger = logging.getLogger(__name__)
 timestamp = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat()
 
 
-
 class CsvToOscalMappingCollection(TaskBase):
     """
     Task to create OSCAL mc.json.
@@ -124,10 +123,7 @@ class CsvToOscalMappingCollection(TaskBase):
 
     def configure(self) -> bool:
         """Configure."""
-        self._timestamp = (
-            datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat()
-
-        )
+        self._timestamp = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat()
         # config verbosity
         self._quiet = self._config.get('quiet', False)
         self._verbose = not self._quiet
