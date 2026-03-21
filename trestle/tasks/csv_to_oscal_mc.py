@@ -63,7 +63,8 @@ L_MAP_COVERAGE = MAP_COVERAGE.lower()
 
 logger = logging.getLogger(__name__)
 
-timestamp = datetime.datetime.utcnow().replace(microsecond=0).replace(tzinfo=datetime.timezone.utc).isoformat()
+timestamp = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat()
+
 
 
 class CsvToOscalMappingCollection(TaskBase):
@@ -124,7 +125,8 @@ class CsvToOscalMappingCollection(TaskBase):
     def configure(self) -> bool:
         """Configure."""
         self._timestamp = (
-            datetime.datetime.utcnow().replace(microsecond=0).replace(tzinfo=datetime.timezone.utc).isoformat()
+            datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat()
+
         )
         # config verbosity
         self._quiet = self._config.get('quiet', False)
