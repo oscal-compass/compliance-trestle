@@ -27,7 +27,8 @@ logger.addHandler(logging.StreamHandler())
 sample_data_f = pathlib.Path('small_sample_tanium.json')
 
 if __name__ == '__main__':
-    stringed = sample_data_f.open('r', encoding=const.FILE_ENCODING).read()
+    with sample_data_f.open('r', encoding=const.FILE_ENCODING) as f:
+        stringed = f.read()
     tanium_tf = transformer_factory.get('tanium')
     output_oscal = tanium_tf.transform(stringed)
     json_str = output_oscal.oscal_serialize_json()

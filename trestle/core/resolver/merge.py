@@ -14,6 +14,7 @@
 """Create resolved catalog from profile."""
 
 import logging
+from enum import Enum
 from typing import Iterator, List, Optional, Tuple, Union
 
 import trestle.oscal.catalog as cat
@@ -25,6 +26,21 @@ from trestle.common.list_utils import as_list, none_if_empty
 from trestle.core.pipeline import Pipeline
 
 logger = logging.getLogger(__name__)
+
+
+# Backward compatibility for combination method values
+# In OSCAL 1.2.0, CombinationMethodValidValues was removed from the generated profile module
+# These string constants are used for profile merge operations
+class CombinationMethodValidValues(Enum):
+    """Combination method values for profile merge operations."""
+
+    keep = 'keep'
+    merge = 'merge'
+    use_first = 'use-first'
+
+
+# Make it available as prof.CombinationMethodValidValues for backward compatibility
+prof.CombinationMethodValidValues = CombinationMethodValidValues
 
 ID = 'id'
 
@@ -129,13 +145,13 @@ class Merge(Pipeline.Filter):
         for field in src.__fields_set__:
             self._merge_attrs(dest, src, field, merge_method)
 
-    def _group_contents(self, group: cat.Group) -> Tuple[List[cat.Control], List[com.Parameter]]:
+    def _group_contents(self, group: cat.Group1 | cat.Group2) -> Tuple[List[cat.Control], List[com.Parameter]]:
         """Get flattened content of group and its groups recursively."""
         controls = []
         params = []
-        controls.extend(as_list(group.controls))
+        controls.extend(as_list(getattr(group, 'controls', None)))
         params.extend(as_list(group.params))
-        if group.groups is not None:
+        if hasattr(group, 'groups') and group.groups is not None:
             for sub_group in group.groups:
                 new_controls, new_params = self._group_contents(sub_group)
                 controls.extend(new_controls)
@@ -191,20 +207,31 @@ class Merge(Pipeline.Filter):
         merge_method = prof.CombinationMethodValidValues.keep.value
         as_is = False
         if self._profile.merge is not None:
-            if self._profile.merge.custom is not None:
+            # Check which Merge variant we have (Merge1, Merge2, or Merge3)
+            if hasattr(self._profile.merge, 'custom') and self._profile.merge.custom is not None:
                 raise TrestleError('Profile with custom merge is not supported.')
-            if self._profile.merge.as_is is not None:
+            if hasattr(self._profile.merge, 'as_is') and self._profile.merge.as_is is not None:
                 as_is = self._profile.merge.as_is
             if self._profile.merge.combine is None:
                 logger.debug('Profile has merge but no combine so defaulting to combine/merge.')
                 merge_method = prof.CombinationMethodValidValues.merge.value
             else:
                 merge_combine = self._profile.merge.combine
-                if merge_combine.method.value is None:
-                    logger.debug('Profile has merge combine but no method.  Defaulting to merge.')
-                    merge_method = prof.CombinationMethodValidValues.merge.value
+                # In OSCAL 1.2.0, combine is a dict, not an object with a method attribute
+                if isinstance(merge_combine, dict):
+                    method_value = merge_combine.get('method')
+                    if method_value is None:
+                        logger.debug('Profile has merge combine but no method.  Defaulting to merge.')
+                        merge_method = prof.CombinationMethodValidValues.merge.value
+                    else:
+                        merge_method = method_value
                 else:
-                    merge_method = merge_combine.method.value
+                    # Fallback for older OSCAL versions
+                    if merge_combine.method.value is None:
+                        logger.debug('Profile has merge combine but no method.  Defaulting to merge.')
+                        merge_method = prof.CombinationMethodValidValues.merge.value
+                    else:
+                        merge_method = merge_combine.method.value
 
         if local_merged is None:
             return self._flatten_catalog(local_cat, as_is)
