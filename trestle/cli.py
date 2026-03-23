@@ -16,6 +16,7 @@
 
 import logging
 import pathlib
+import sys
 
 from trestle.common import const, log
 from trestle.core.commands.assemble import AssembleCmd
@@ -82,4 +83,4 @@ def run() -> None:
     log.set_global_logging_levels()
     logger.debug('Main entry point.')
 
-    exit(Trestle().run())
+    sys.exit(Trestle().run())

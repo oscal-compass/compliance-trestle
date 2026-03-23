@@ -184,7 +184,7 @@ class MDDatestamp(TrestleJinjaExtension):
                 continue
 
         if kwargs is not None:
-            if 'format' in kwargs and type(kwargs['format'] is str):
+            if 'format' in kwargs and isinstance(kwargs['format'], str):
                 date_string = date.today().strftime(kwargs['format'])
             else:
                 date_string = date.today().strftime(markdown_const.JINJA_DATESTAMP_FORMAT)
