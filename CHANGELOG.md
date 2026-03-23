@@ -2,6 +2,31 @@
 
 <!-- version list -->
 
+## v4.0.1 (2026-03-18)
+
+### Bug Fixes
+
+- Hatch caused release pipeline failure
+  ([#2168](https://github.com/oscal-compass/compliance-trestle/pull/2168),
+  [`a430c69`](https://github.com/oscal-compass/compliance-trestle/commit/a430c6962fd721034a27ee073ef0aa519730fc0c))
+
+- Support for OSCAL 1.2.1 Mapping Model
+  ([#2167](https://github.com/oscal-compass/compliance-trestle/pull/2167),
+  [`de1e463`](https://github.com/oscal-compass/compliance-trestle/commit/de1e463d23bdd3da9c38ddbf73788a5628349646))
+
+### Documentation
+
+- Update mapping docs ([#2169](https://github.com/oscal-compass/compliance-trestle/pull/2169),
+  [`288a17f`](https://github.com/oscal-compass/compliance-trestle/commit/288a17fa7082fcf7c0a86a9c27fd3a1ed977c947))
+
+- Update trestle version in docs
+  ([#2169](https://github.com/oscal-compass/compliance-trestle/pull/2169),
+  [`288a17f`](https://github.com/oscal-compass/compliance-trestle/commit/288a17fa7082fcf7c0a86a9c27fd3a1ed977c947))
+
+- Updates for 4.0.0 ([#2169](https://github.com/oscal-compass/compliance-trestle/pull/2169),
+  [`288a17f`](https://github.com/oscal-compass/compliance-trestle/commit/288a17fa7082fcf7c0a86a9c27fd3a1ed977c947))
+
+
 ## v4.0.0 (2026-03-16)
 
 ### Bug Fixes
