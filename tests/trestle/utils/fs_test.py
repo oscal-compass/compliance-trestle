@@ -441,8 +441,12 @@ def test_get_singular_alias() -> None:
     assert 'control-implementation' == ModelUtils.get_singular_alias(
         alias_path='component-definition.components.0.control-implementations'
     )
-    # FIXME ideally this should report error
-    assert '0' == ModelUtils.get_singular_alias(alias_path='component-definition.components.0')
+    # Test indexed terminal paths resolve correctly
+    assert 'defined-component' == ModelUtils.get_singular_alias(alias_path='component-definition.components.0')
+
+    # Test indexed nested paths
+    assert 'control' == ModelUtils.get_singular_alias(alias_path='catalog.groups.0.controls.0')
+    assert 'control' == ModelUtils.get_singular_alias(alias_path='catalog.groups.0.controls')
 
     assert 'control' == ModelUtils.get_singular_alias(alias_path='catalog.groups.*.controls.*.controls')
 
@@ -478,6 +482,7 @@ def test_contextual_get_singular_alias(tmp_path: pathlib.Path, keep_cwd: pathlib
 
     rel_dir = group_dir.relative_to(tmp_path)
     assert 'control' == ModelUtils.get_singular_alias('group.controls.*.controls', rel_dir)
+    assert 'control' == ModelUtils.get_singular_alias('group.controls.0', rel_dir)
 
 
 def test_get_contextual_file_type(tmp_path: pathlib.Path) -> None:
