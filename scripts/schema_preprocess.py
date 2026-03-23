@@ -102,6 +102,8 @@ def fixup_models(input_dir_name: str) -> Path:
     fixup_copy_schemas(input_dir_path, fixup_dir_path)
     # schema reorder entries
     fixup_json(fixup_dir_path)
+    # extract inline array items to create proper definitions
+    extract_inline_array_items(fixup_dir_path)
     # schema patching
     patch_schemas(fixup_dir_path)
     patch_allof(fixup_dir_path)
@@ -141,9 +143,566 @@ def patch_allof(fixup_dir_path: Path) -> None:
         json_data_put(model_name, data)
 
 
+def extract_inline_array_items(fixup_dir_path: Path) -> None:
+    """Extract inline array item definitions and create proper class definitions.
+
+    In OSCAL 1.2.0, many array items are defined inline rather than as separate definitions.
+    This function extracts them and creates proper definitions to maintain backward compatibility.
+    Specifically handles 'related-observations' to start.
+    """
+    for full_name in fixup_dir_path.glob(schema_file_name_search_template):
+        model_name = str(full_name)
+        data = json_data_get(model_name)
+
+        # Track the single definition name we create per schema for related-observation
+        related_observation_def_name = None
+
+        # Iterate through all definitions
+        for def_name, def_content in list(data['definitions'].items()):
+            if 'properties' not in def_content:
+                continue
+
+            # Look specifically for related-observations property
+            if 'related-observations' not in def_content['properties']:
+                continue
+
+            prop_content = def_content['properties']['related-observations']
+
+            # Check if this is an array with inline items definition
+            if prop_content.get('type') != 'array':
+                continue
+
+            if 'items' not in prop_content:
+                continue
+
+            items = prop_content['items']
+
+            # Skip if items already has a $ref
+            if '$ref' in items:
+                continue
+
+            # Check if items has the structure we expect (title "Related Observation")
+            if items.get('title') != 'Related Observation':
+                continue
+
+            # If we haven't created the definition yet, create it now
+            if related_observation_def_name is None:
+                # Use the assessment-common prefix if available, otherwise use the first one we find
+                prefix = def_name.split(':')[0]
+                # Prefer assessment-common for consistency
+                if 'assessment-common' in prefix:
+                    new_def_name = f'{prefix}:related-observation'
+                else:
+                    # Find if there's an assessment-common definition in this schema
+                    assessment_common_prefix = None
+                    for dn in data['definitions'].keys():
+                        if 'assessment-common' in dn:
+                            assessment_common_prefix = dn.split(':')[0]
+                            break
+                    if assessment_common_prefix:
+                        new_def_name = f'{assessment_common_prefix}:related-observation'
+                    else:
+                        new_def_name = f'{prefix}:related-observation'
+
+                # Extract the inline definition
+                inline_def = dict(items)
+
+                # Add it as a new definition
+                data['definitions'][new_def_name] = inline_def
+                related_observation_def_name = new_def_name
+
+            # Replace the inline definition with a reference to the single definition
+            prop_content['items'] = {'$ref': f'#/definitions/{related_observation_def_name}'}
+
+        json_data_put(model_name, data)
+
+
+def patch_mapping_select_control(model_name: str) -> None:
+    """Rename mapping SelectControlById to SelectControlByIdForMapping.
+
+    The mapping schema has a SelectControlById with different fields than the assessment models.
+    Rename it to SelectControlByIdForMapping to avoid conflicts and allow the assessment
+    version to remain in common.py.
+    """
+    if not model_name.endswith('oscal_mapping_schema.json'):
+        return
+
+    data = json_data_get(model_name)
+
+    # Find the select-control-by-id definition in mapping schema
+    select_key = None
+    for key in data['definitions'].keys():
+        if key.endswith(':select-control-by-id'):
+            select_key = key
+            break
+
+    if not select_key:
+        logger.debug(f'patch: {model_name} no select-control-by-id found')
+        return
+
+    # Verify this is the mapping variant with 'with-ids' or 'matching' fields
+    defn = data['definitions'][select_key]
+    if 'properties' not in defn:
+        return
+
+    # Check for mapping-specific fields
+    has_mapping_fields = (
+        'with-ids' in defn['properties']
+        or 'matching' in defn['properties']
+        or 'with-child-controls' in defn['properties']
+    )
+
+    if not has_mapping_fields:
+        logger.debug(f'patch: {model_name} select-control-by-id does not have mapping-specific fields')
+        return
+
+    # Create new key name
+    new_key = select_key.replace(':select-control-by-id', ':select-control-by-id-for-mapping')
+
+    # Copy the definition to the new name
+    data['definitions'][new_key] = data['definitions'][select_key]
+
+    # Update all references from old key to new key
+    data_str = json.dumps(data)
+    data_str = data_str.replace(f'"$ref": "#/definitions/{select_key}"', f'"$ref": "#/definitions/{new_key}"')
+    data = json.loads(data_str)
+
+    # Remove the old definition
+    del data['definitions'][select_key]
+
+    logger.info(f'patch: {model_name} renamed {select_key} -> {new_key}')
+    json_data_put(model_name, data)
+
+
+def patch_assessment_select_control(model_name: str) -> None:
+    """Rename assessment SelectControlById variants to avoid duplicates.
+
+    The assessment schemas (assessment-plan, assessment-results, poam) have two different
+    SelectControlById definitions:
+    1. One with 'with-child-controls', 'with-ids', 'matching' fields (for profile selection)
+    2. One with 'control-id', 'statement-ids' fields (for assessment selection)
+
+    Rename the first variant to SelectControlByIdForProfile to avoid conflicts.
+    """
+    if not any(
+        model_name.endswith(schema)
+        for schema in [
+            'oscal_assessment-plan_schema.json',
+            'oscal_assessment-results_schema.json',
+            'oscal_poam_schema.json',
+        ]
+    ):
+        return
+
+    data = json_data_get(model_name)
+
+    # Find all select-control-by-id definitions
+    select_keys = []
+    for key in data['definitions'].keys():
+        if key.endswith(':select-control-by-id'):
+            select_keys.append(key)
+
+    if len(select_keys) < 2:
+        logger.debug(f'patch: {model_name} found {len(select_keys)} select-control-by-id definitions, expected 2')
+        return
+
+    # Find the profile variant (has with-child-controls, with-ids, or matching)
+    profile_variant_key = None
+    for key in select_keys:
+        defn = data['definitions'][key]
+        if 'properties' in defn:
+            has_profile_fields = (
+                'with-child-controls' in defn['properties']
+                or 'with-ids' in defn['properties']
+                or 'matching' in defn['properties']
+            )
+            if has_profile_fields:
+                profile_variant_key = key
+                break
+
+    if not profile_variant_key:
+        logger.debug(f'patch: {model_name} could not identify profile variant')
+        return
+
+    # Create new key name for profile variant
+    new_key = profile_variant_key.replace(':select-control-by-id', ':select-control-by-id-for-profile')
+
+    # Copy the definition to the new name
+    data['definitions'][new_key] = data['definitions'][profile_variant_key]
+
+    # Update all references from old key to new key
+    data_str = json.dumps(data)
+    data_str = data_str.replace(f'"$ref": "#/definitions/{profile_variant_key}"', f'"$ref": "#/definitions/{new_key}"')
+    data = json.loads(data_str)
+
+    # Remove the old definition
+    del data['definitions'][profile_variant_key]
+
+    logger.info(f'patch: {model_name} renamed {profile_variant_key} -> {new_key}')
+    json_data_put(model_name, data)
+
+
+def patch_mapping_confidence_score(model_name: str) -> None:
+    """Make STRVALUE optional in mapping confidence-score.
+
+    The confidence-score in mapping schema should allow optional STRVALUE and category fields,
+    with only percentage being populated by the csv-to-oscal-mc task.
+    """
+    if not model_name.endswith('oscal_mapping_schema.json'):
+        return
+
+    data = json_data_get(model_name)
+
+    # Find the confidence-score definition in mapping schema
+    confidence_key = None
+    for key in data['definitions'].keys():
+        if key.endswith(':confidence-score'):
+            confidence_key = key
+            break
+
+    if not confidence_key:
+        logger.debug(f'patch: {model_name} no confidence-score found')
+        return
+
+    # Get the confidence-score definition
+    defn = data['definitions'][confidence_key]
+
+    # Remove STRVALUE from required fields if present
+    if 'required' in defn and 'STRVALUE' in defn['required']:
+        defn['required'].remove('STRVALUE')
+        logger.info(f'patch: {model_name} removed STRVALUE from required fields in {confidence_key}')
+        json_data_put(model_name, data)
+
+
+def patch_control_selections(model_name: str) -> None:
+    """Extract control-selections anyOf variants into named definitions.
+
+    Schemas may have inline anyOf for control-selections and
+    control-objective-selections items. Extract each variant into a separate
+    named definition so DMCG generates descriptive class names like
+    ControlSelectionsAll and ControlSelections instead of ControlSelections
+    and ControlSelections1.
+
+    This processes all schemas so that classes appearing in multiple files
+    will be identified as common during normalization and moved to common.py.
+    """
+    data = json_data_get(model_name)
+    modified = False
+
+    # Process each definition
+    for def_key in list(data['definitions'].keys()):
+        defn = data['definitions'][def_key]
+        if 'properties' not in defn:
+            continue
+
+        # Check for control-selections or control-objective-selections properties
+        for prop_name in ['control-selections', 'control-objective-selections']:
+            if prop_name not in defn['properties']:
+                continue
+
+            prop_defn = defn['properties'][prop_name]
+            if 'items' not in prop_defn or 'anyOf' not in prop_defn['items']:
+                continue
+
+            items = prop_defn['items']
+            if len(items['anyOf']) != 2:
+                continue
+
+            # Use assessment-common namespace so classes go to common.py
+            # The parent might be oscal-ap-oscal-assessment-common or oscal-ar-oscal-assessment-common
+            # but we want just oscal-assessment-common for shared classes
+            namespace_parts = def_key.split(':')
+            if len(namespace_parts) >= 2 and 'assessment-common' in def_key:
+                # Use the common assessment namespace
+                namespace = 'oscal-assessment-common'
+            else:
+                namespace = def_key.rsplit(':', 1)[0]
+
+            # Create new definition keys for each variant
+            new_refs = []
+
+            for variant in items['anyOf']:
+                if 'required' not in variant:
+                    continue
+
+                required = variant['required']
+
+                # Determine the new definition name based on required fields
+                if 'include-all' in required:
+                    new_def_name = f'{prop_name}-all'
+                elif 'include-controls' in required or 'include-objectives' in required:
+                    new_def_name = prop_name
+                else:
+                    continue
+
+                new_def_key = f'{namespace}:{new_def_name}'
+
+                # Determine title based on variant type
+                base_title = items.get('title', '')
+                if 'include-all' in required:
+                    # Add 'All' suffix to title for include-all variant
+                    variant_title = f'{base_title} All' if base_title else 'All'
+                else:
+                    # Keep base title for include-controls/objectives variant
+                    variant_title = base_title
+
+                # Create new definition with variant content
+                new_def = {
+                    'title': variant_title,
+                    'description': items.get('description', ''),
+                    'type': 'object',
+                    **variant,
+                }
+
+                # Add to definitions if not already present
+                if new_def_key not in data['definitions']:
+                    data['definitions'][new_def_key] = new_def
+                    logger.info(f'patch: {model_name} created {new_def_key}')
+                    modified = True
+
+                new_refs.append(new_def_key)
+
+            # Replace inline anyOf with references
+            if len(new_refs) == 2:
+                prop_defn['items'] = {
+                    'anyOf': [{'$ref': f'#/definitions/{new_refs[0]}'}, {'$ref': f'#/definitions/{new_refs[1]}'}]
+                }
+                logger.info(f'patch: {model_name} replaced inline anyOf in {def_key}.{prop_name} with refs')
+                modified = True
+
+    if modified:
+        json_data_put(model_name, data)
+
+
 # patch_schemas introduced for migrating from OSCAL 1.0.4 to 1.1.2 due to missing/broken
 # support in datamodel-codegen tool. See issue(s):
 # - https://github.com/koxudaxi/datamodel-code-generator/issues/1901
+def patch_external_ids(model_name: str) -> None:
+    """Extract inline external-ids item definitions into a named definition.
+
+    The metadata schemas have inline definitions for external-ids items within
+    the anyOf variants of parties items. Extract into a single named definition
+    so DMCG generates one ExternalId class that will be moved to common.py.
+    """
+    data = json_data_get(model_name)
+    modified = False
+
+    # Look for metadata definitions with parties
+    for def_key in list(data['definitions'].keys()):
+        defn = data['definitions'][def_key]
+
+        # Navigate to parties -> items
+        if 'properties' not in defn:
+            continue
+        if 'parties' not in defn['properties']:
+            continue
+
+        parties = defn['properties']['parties']
+        if 'items' not in parties:
+            continue
+
+        party_items = parties['items']
+
+        # Parties items have anyOf with variants
+        if 'anyOf' not in party_items:
+            continue
+
+        # Process each variant in the anyOf
+        for variant in party_items['anyOf']:
+            if 'properties' not in variant:
+                continue
+            if 'external-ids' not in variant['properties']:
+                continue
+
+            ext_ids_prop = variant['properties']['external-ids']
+            if 'items' not in ext_ids_prop:
+                continue
+
+            # Check if items is an inline definition (not a $ref)
+            items = ext_ids_prop['items']
+            if '$ref' in items:
+                continue
+
+            # Extract the inline definition
+            # Use oscal-metadata namespace so it goes to common
+            new_def_key = 'oscal-metadata:external-id'
+
+            # Only create the definition once (first time we encounter it)
+            if new_def_key not in data['definitions']:
+                # Create the named definition with the inline content
+                data['definitions'][new_def_key] = items.copy()
+                logger.info(f'patch: {model_name} created {new_def_key}')
+                modified = True
+
+            # Replace inline definition with reference
+            ext_ids_prop['items'] = {'$ref': f'#/definitions/{new_def_key}'}
+            logger.info(
+                f'patch: {model_name} replaced inline external-ids items in {def_key} anyOf variant with ref to {new_def_key}'
+            )
+            modified = True
+
+    if modified:
+        json_data_put(model_name, data)
+
+
+def patch_timing(model_name: str) -> None:
+    """Extract timing anyOf variants into named definitions with descriptive names.
+
+    Similar to control-selections, timing has anyOf variants that should have
+    descriptive names like TimingOnDate, TimingWithinDateRange, TimingAtFrequency
+    instead of Timing, Timing1, Timing2.
+    """
+    data = json_data_get(model_name)
+    modified = False
+
+    # Process each definition looking for timing properties with anyOf
+    for def_key in list(data['definitions'].keys()):
+        defn = data['definitions'][def_key]
+        if 'properties' not in defn:
+            continue
+
+        # Look for timing property with anyOf
+        if 'timing' not in defn['properties']:
+            continue
+
+        timing_prop = defn['properties']['timing']
+        if 'anyOf' not in timing_prop:
+            continue
+
+        anyof_variants = timing_prop['anyOf']
+        if len(anyof_variants) != 3:
+            continue
+
+        # Use assessment-common namespace so classes go to common.py
+        namespace = 'oscal-assessment-common'
+
+        # Create new definition keys for each variant based on required field
+        new_refs = []
+
+        for variant in anyof_variants:
+            if 'required' not in variant:
+                continue
+
+            required = variant['required']
+
+            # Determine the new definition name based on required field
+            if 'on-date' in required:
+                new_def_name = 'timing-on-date'
+                variant_title = 'Timing On Date'
+            elif 'within-date-range' in required:
+                new_def_name = 'timing-within-date-range'
+                variant_title = 'Timing Within Date Range'
+            elif 'at-frequency' in required:
+                new_def_name = 'timing-at-frequency'
+                variant_title = 'Timing At Frequency'
+            else:
+                continue
+
+            new_def_key = f'{namespace}:{new_def_name}'
+
+            # Create new definition with variant content
+            base_desc = timing_prop.get('description', 'The timing under which the task is intended to occur.')
+
+            new_def = {'title': variant_title, 'description': base_desc, 'type': 'object', **variant}
+
+            # Add to definitions if not already present
+            if new_def_key not in data['definitions']:
+                data['definitions'][new_def_key] = new_def
+                logger.info(f'patch: {model_name} created {new_def_key}')
+                modified = True
+
+            new_refs.append(new_def_key)
+
+        # Replace inline anyOf with references
+        if len(new_refs) == 3:
+            defn['properties']['timing'] = {
+                'anyOf': [
+                    {'$ref': f'#/definitions/{new_refs[0]}'},
+                    {'$ref': f'#/definitions/{new_refs[1]}'},
+                    {'$ref': f'#/definitions/{new_refs[2]}'},
+                ]
+            }
+            logger.info(f'patch: {model_name} replaced inline anyOf in {def_key}.timing with refs')
+            modified = True
+
+    if modified:
+        json_data_put(model_name, data)
+
+
+def patch_assessment_subject(model_name: str) -> None:
+    """Extract assessment-subject anyOf variants into named definitions with descriptive names.
+
+    Similar to timing, assessment-subject has anyOf variants that should have
+    descriptive names like AssessmentSubjectAll and AssessmentSubjectSpecific
+    instead of AssessmentSubject1 and AssessmentSubject2.
+    """
+    data = json_data_get(model_name)
+    modified = False
+
+    # Process each definition looking for assessment-subject with anyOf
+    for def_key in list(data['definitions'].keys()):
+        defn = data['definitions'][def_key]
+
+        # Look for assessment-subject definition with anyOf
+        if not def_key.endswith(':assessment-subject'):
+            continue
+
+        if 'anyOf' not in defn:
+            continue
+
+        anyof_variants = defn['anyOf']
+        if len(anyof_variants) != 2:
+            continue
+
+        # Use assessment-common namespace so classes go to common.py
+        namespace = 'oscal-assessment-common'
+
+        # Create new definition keys for each variant based on required field
+        new_refs = []
+
+        for variant in anyof_variants:
+            if 'required' not in variant:
+                continue
+
+            required = variant['required']
+
+            # Determine the new definition name based on required field
+            if 'include-all' in required:
+                new_def_name = 'assessment-subject-all'
+                variant_title = 'Assessment Subject All'
+            elif 'include-subjects' in required:
+                new_def_name = 'assessment-subject-specific'
+                variant_title = 'Assessment Subject Specific'
+            else:
+                continue
+
+            new_def_key = f'{namespace}:{new_def_name}'
+
+            # Create new definition with variant content
+            base_desc = defn.get('description', 'Identifies system elements being assessed.')
+
+            new_def = {'title': variant_title, 'description': base_desc, 'type': 'object', **variant}
+
+            # Add to definitions if not already present
+            if new_def_key not in data['definitions']:
+                data['definitions'][new_def_key] = new_def
+                logger.info(f'patch: {model_name} created {new_def_key}')
+                modified = True
+
+            new_refs.append(new_def_key)
+
+        # Replace inline anyOf with references
+        if len(new_refs) == 2:
+            data['definitions'][def_key] = {
+                'anyOf': [{'$ref': f'#/definitions/{new_refs[0]}'}, {'$ref': f'#/definitions/{new_refs[1]}'}]
+            }
+            logger.info(f'patch: {model_name} replaced inline anyOf in {def_key} with refs')
+            modified = True
+
+    if modified:
+        json_data_put(model_name, data)
+
+
 def patch_schemas(fixup_dir_path: Path) -> None:
     """Patch json schemas."""
     for full_name in fixup_dir_path.glob(schema_file_name_search_template):
@@ -153,6 +712,14 @@ def patch_schemas(fixup_dir_path: Path) -> None:
         patch_poam_item(model_name, 'related-findings')
         patch_poam_item(model_name, 'related-observations')
         patch_profile(model_name)
+        patch_profile_group_description(model_name)
+        patch_assessment_select_control(model_name)
+        patch_mapping_select_control(model_name)
+        patch_mapping_confidence_score(model_name)
+        patch_control_selections(model_name)
+        patch_timing(model_name)
+        patch_assessment_subject(model_name)
+        patch_external_ids(model_name)
         create_refs(model_name)
 
 
@@ -163,6 +730,7 @@ def calculate_patch_key(key: str) -> str:
     patch_key = patch_key.replace('oscal-ar-', '')
     patch_key = patch_key.replace('oscal-catalog-', '')
     patch_key = patch_key.replace('oscal-component-definition-', '')
+    patch_key = patch_key.replace('oscal-mapping-', '')
     patch_key = patch_key.replace('oscal-poam-', '')
     patch_key = patch_key.replace('oscal-profile-', '')
     patch_key = patch_key.replace('oscal-ssp-', '')
@@ -199,6 +767,86 @@ def patch_finding_target(model_name: str) -> None:
         u3 = 'objective_status'
         data['definitions'][k1][k2][u3] = value
         logger.debug(f'patch: {model_name} {k1}.{k2}.{k3} -> {k1}.{k2}.{u3}')
+        json_data_put(model_name, data)
+
+
+def patch_profile_group_description(model_name: str) -> None:
+    """Normalize profile Group descriptions to match catalog.
+
+    The profile and catalog schemas have trivial differences in Group descriptions.
+    We normalize the profile descriptions to match catalog so the classes can be merged.
+
+    Expected differences:
+    1. Main description: profile has "(selected)" that catalog doesn't
+    2. id field: profile has shorter description
+    3. title field: profile has different wording
+
+    Raises exception if unexpected values are found.
+    """
+    if 'profile' not in model_name:
+        return
+
+    data = json_data_get(model_name)
+    modified = False
+
+    # Expected catalog values (what we want to match)
+    catalog_main_desc = 'A group of controls, or of groups of controls.'
+    catalog_id_desc = 'Identifies the group for the purpose of cross-linking within the defining instance or from other instances that reference the catalog.'
+    catalog_title_desc = 'A name given to the group, which may be used by a tool for display and navigation.'
+
+    # Expected profile values (what we're replacing)
+    profile_main_desc = 'A group of (selected) controls or of groups of controls.'
+    profile_id_desc = 'Identifies the group.'
+    profile_title_desc = 'A name to be given to the group for use in display.'
+
+    for key in data['definitions'].keys():
+        if not key.endswith(':group'):
+            continue
+
+        # 1. Check and normalize main Group description
+        if 'description' in data['definitions'][key]:
+            current_desc = data['definitions'][key]['description']
+            if current_desc == profile_main_desc:
+                data['definitions'][key]['description'] = catalog_main_desc
+                logger.info(f'patch: {model_name} {key} main description: profile -> catalog')
+                modified = True
+            elif current_desc != catalog_main_desc:
+                raise ValueError(f'Unexpected main description in {key}: {current_desc}')
+
+        # 2 & 3. Check and normalize property descriptions within anyOf variants
+        if 'anyOf' in data['definitions'][key]:
+            for variant_idx, variant in enumerate(data['definitions'][key]['anyOf']):
+                if 'properties' not in variant:
+                    continue
+
+                # Check and normalize 'id' field description
+                if 'id' in variant['properties'] and 'description' in variant['properties']['id']:
+                    current_id_desc = variant['properties']['id']['description']
+                    if current_id_desc == profile_id_desc:
+                        variant['properties']['id']['description'] = catalog_id_desc
+                        logger.info(
+                            f'patch: {model_name} {key} variant[{variant_idx}] id description: profile -> catalog'
+                        )
+                        modified = True
+                    elif current_id_desc != catalog_id_desc:
+                        raise ValueError(
+                            f'Unexpected id description in {key} variant[{variant_idx}]: {current_id_desc}'
+                        )
+
+                # Check and normalize 'title' field description
+                if 'title' in variant['properties'] and 'description' in variant['properties']['title']:
+                    current_title_desc = variant['properties']['title']['description']
+                    if current_title_desc == profile_title_desc:
+                        variant['properties']['title']['description'] = catalog_title_desc
+                        logger.info(
+                            f'patch: {model_name} {key} variant[{variant_idx}] title description: profile -> catalog'
+                        )
+                        modified = True
+                    elif current_title_desc != catalog_title_desc:
+                        raise ValueError(
+                            f'Unexpected title description in {key} variant[{variant_idx}]: {current_title_desc}'
+                        )
+    if modified:
         json_data_put(model_name, data)
 
 
@@ -409,6 +1057,7 @@ def create_refs(model_name: str) -> None:
         'oscal-ar-oscal-control-common:parameter-selection',
         'oscal-catalog-oscal-control-common:parameter-selection',
         'oscal-component-definition-oscal-control-common:parameter-selection',
+        'oscal-mapping-oscal-control-common:parameter-selection',
         'oscal-poam-oscal-control-common:parameter-selection',
         'oscal-profile-oscal-control-common:parameter-selection',
         'oscal-ssp-oscal-control-common:parameter-selection',
@@ -423,6 +1072,7 @@ def create_refs(model_name: str) -> None:
         'oscal-ar-oscal-metadata:telephone-number',
         'oscal-catalog-oscal-metadata:telephone-number',
         'oscal-component-definition-oscal-metadata:telephone-number',
+        'oscal-mapping-oscal-metadata:telephone-number',
         'oscal-poam-oscal-metadata:telephone-number',
         'oscal-profile-oscal-metadata:telephone-number',
         'oscal-ssp-oscal-metadata:telephone-number',
@@ -437,6 +1087,7 @@ def create_refs(model_name: str) -> None:
         'oscal-ar-oscal-metadata:address',
         'oscal-catalog-oscal-metadata:address',
         'oscal-component-definition-oscal-metadata:address',
+        'oscal-mapping-oscal-metadata:address',
         'oscal-poam-oscal-metadata:address',
         'oscal-profile-oscal-metadata:address',
         'oscal-ssp-oscal-metadata:address',
@@ -451,6 +1102,7 @@ def create_refs(model_name: str) -> None:
         'oscal-ar-oscal-metadata:metadata',
         'oscal-catalog-oscal-metadata:metadata',
         'oscal-component-definition-oscal-metadata:metadata',
+        'oscal-mapping-oscal-metadata:metadata',
         'oscal-poam-oscal-metadata:metadata',
         'oscal-profile-oscal-metadata:metadata',
         'oscal-ssp-oscal-metadata:metadata',
@@ -475,6 +1127,7 @@ def create_refs(model_name: str) -> None:
         'oscal-ar-oscal-metadata:metadata',
         'oscal-catalog-oscal-metadata:metadata',
         'oscal-component-definition-oscal-metadata:metadata',
+        'oscal-mapping-oscal-metadata:metadata',
         'oscal-poam-oscal-metadata:metadata',
         'oscal-profile-oscal-metadata:metadata',
         'oscal-ssp-oscal-metadata:metadata',
@@ -489,6 +1142,7 @@ def create_refs(model_name: str) -> None:
         'oscal-ar-oscal-metadata:document-id',
         'oscal-catalog-oscal-metadata:document-id',
         'oscal-component-definition-oscal-metadata:document-id',
+        'oscal-mapping-oscal-metadata:document-id',
         'oscal-poam-oscal-metadata:document-id',
         'oscal-profile-oscal-metadata:document-id',
         'oscal-ssp-oscal-metadata:document-id',
@@ -509,6 +1163,7 @@ def create_refs(model_name: str) -> None:
         'oscal-ar-oscal-implementation-common:system-component',
         'oscal-catalog-oscal-implementation-common:system-component',
         'oscal-component-definition-oscal-implementation-common:system-component',
+        'oscal-mapping-oscal-implementation-common:system-component',
         'oscal-poam-oscal-implementation-common:system-component',
         'oscal-profile-oscal-implementation-common:system-component',
         'oscal-ssp-oscal-implementation-common:system-component',
@@ -523,6 +1178,7 @@ def create_refs(model_name: str) -> None:
         'oscal-ar-oscal-implementation-common:system-component',
         'oscal-catalog-oscal-implementation-common:system-component',
         'oscal-component-definition-oscal-implementation-common:system-component',
+        'oscal-mapping-oscal-implementation-common:system-component',
         'oscal-poam-oscal-implementation-common:system-component',
         'oscal-profile-oscal-implementation-common:system-component',
         'oscal-ssp-oscal-implementation-common:system-component',
@@ -546,6 +1202,7 @@ def create_refs(model_name: str) -> None:
         'oscal-ap-oscal-implementation-common:port-range',
         'oscal-ar-oscal-implementation-common:port-range',
         'oscal-component-definition-oscal-implementation-common:port-range',
+        'oscal-mapping-oscal-implementation-common:port-range',
         'oscal-poam-oscal-implementation-common:port-range',
         'oscal-ssp-oscal-implementation-common:port-range',
     ]
@@ -599,6 +1256,12 @@ def create_refs(model_name: str) -> None:
     ref_name = 'CombinationMethodValidValues'
     for root in list_:
         create_ref(model_name, root, navigation, ref_name)
+    # Resource Type Valid Values (Mapping)
+    list_ = ['oscal-mapping-oscal-mapping-common:mapping-resource-reference']
+    navigation = ['properties', 'type', 'anyOf']
+    ref_name = 'ResourceTypeValidValues'
+    for root in list_:
+        create_ref(model_name, root, navigation, ref_name)
 
 
 def _fetch(tgt: Any, key: str) -> Any:
@@ -616,11 +1279,13 @@ def _get_title(model_name: str, root: str, navigation: List[str]) -> str:
     tgt = data['definitions']
     tgt = tgt.get(root)
     if not tgt:
-        return
+        return ''
     for leaf in navigation:
         tgt = _fetch(tgt, leaf)
+        if tgt is None:
+            return ''
     title = tgt
-    return title
+    return title if title else ''
 
 
 def create_ref(model_name: str, root: str, navigation: List[str], ref_name: str) -> None:
@@ -630,20 +1295,27 @@ def create_ref(model_name: str, root: str, navigation: List[str], ref_name: str)
     tgt = tgt.get(root)
     if not tgt:
         return
-    for leaf in navigation:
-        tgt = _fetch(tgt, leaf)
-    item = tgt[1]
-    replacement = {'$ref': f'#/definitions/{ref_name}'}
-    tgt[1] = replacement
-    tgt = data['definitions']
-    tgt[ref_name] = item
-    logger.debug(f'patch: {model_name} {replacement}')
-    # title
-    title_navigation = navigation
-    title_navigation[-1] = 'title'
-    title = _get_title(model_name, root, navigation)
-    body_identical_check(root, title, replacement)
-    json_data_put(model_name, data)
+    try:
+        for leaf in navigation:
+            tgt = _fetch(tgt, leaf)
+            if tgt is None:
+                logger.debug(f'Navigation path not found in {model_name} for {root} -> {ref_name}, skipping')
+                return
+        item = tgt[1]
+        replacement = {'$ref': f'#/definitions/{ref_name}'}
+        tgt[1] = replacement
+        tgt = data['definitions']
+        tgt[ref_name] = item
+        logger.debug(f'patch: {model_name} {replacement}')
+        # title
+        title_navigation = navigation
+        title_navigation[-1] = 'title'
+        title = _get_title(model_name, root, navigation)
+        body_identical_check(root, title, replacement)
+        json_data_put(model_name, data)
+    except (TypeError, KeyError, IndexError) as e:
+        logger.debug(f'Could not create ref {ref_name} in {model_name} for {root}: {e}, skipping')
+        return
 
 
 def data_get(model_name: str) -> List:
@@ -697,6 +1369,8 @@ def get_order(key: str) -> int:
         if key.endswith('catalog:catalog'):
             return 1
         if key.endswith('component-definition:component-definition'):
+            return 1
+        if key.endswith('mapping:mapping-collection'):
             return 1
         if key.endswith('poam:plan-of-action-and-milestones'):
             return 1

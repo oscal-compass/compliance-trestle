@@ -58,7 +58,7 @@ jobs:
       uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
       with:
         python-version: ${{ matrix.python-version }}
-    - uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+    - uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
       with:
         path: |
           ${{ matrix.pip-cache }}
@@ -103,6 +103,11 @@ jobs:
       if: steps.core-version.outputs.core == 'true'
       run: |
         make docs-validate
+    - name: Recreate hatch test environment
+      shell: bash
+      run: |
+        hatch env remove hatch-test.py${{ matrix.python-version }} 2>/dev/null || true
+        hatch env create hatch-test.py${{ matrix.python-version }}
     - name: Pytest Fast
       if: steps.core-version.outputs.core != 'true'
       run: |
@@ -136,7 +141,7 @@ jobs:
       uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
       with:
         python-version: ${{ matrix.python-version }}
-    - uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+    - uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
       with:
         path: |
           ${{ matrix.pip-cache }}
@@ -151,6 +156,11 @@ jobs:
     - name: gen OSCAL models
       run: |
         make gen-oscal
+    - name: Recreate hatch test environment
+      shell: bash
+      run: |
+        hatch env remove hatch-test.py${{ matrix.python-version }} 2>/dev/null || true
+        hatch env create hatch-test.py${{ matrix.python-version }}
     - name: Run tests
       run: |
         make test
