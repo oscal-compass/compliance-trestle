@@ -15,6 +15,7 @@
 # limitations under the License.
 """Testing for cache functionality."""
 
+import datetime
 import getpass
 import pathlib
 import random
@@ -66,6 +67,35 @@ def get_catalog_fetcher(
         catalog_str = str(catalog_file)
     fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, catalog_str)
     return fetcher, catalog_data
+
+
+def test_time_since_modification_uses_utc(monkeypatch: MonkeyPatch) -> None:
+    """Test cache age calculation uses UTC-aware datetimes."""
+
+    class _StatResult:
+        st_mtime = 1234.5
+
+    class _FakePath:
+        def stat(self) -> _StatResult:
+            return _StatResult()
+
+    expected_last_mod = datetime.datetime(2026, 3, 15, 11, 0, 0, tzinfo=datetime.timezone.utc)
+    expected_now = datetime.datetime(2026, 3, 15, 12, 30, 0, tzinfo=datetime.timezone.utc)
+
+    class _FakeDateTime:
+        @classmethod
+        def fromtimestamp(cls, ts: float, tz: datetime.tzinfo | None = None) -> datetime.datetime:
+            assert ts == _StatResult.st_mtime
+            assert tz == datetime.timezone.utc
+            return expected_last_mod
+
+        @classmethod
+        def now(cls, tz: datetime.tzinfo | None = None) -> datetime.datetime:
+            assert tz == datetime.timezone.utc
+            return expected_now
+
+    monkeypatch.setattr(cache.datetime, 'datetime', _FakeDateTime)
+    assert cache.FetcherBase._time_since_modification(_FakePath()) == datetime.timedelta(hours=1, minutes=30)
 
 
 def test_fetcher_oscal(tmp_trestle_dir: pathlib.Path) -> None:
