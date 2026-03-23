@@ -158,14 +158,18 @@ def sample_catalog_rich_controls():
     """Return a catalog with controls in groups and in the catalog itself."""
     catalog_obj = gens.generate_sample_model(cat.Catalog)
 
-    param_0 = common.Parameter(id='param_0', values=['param_0_val'])
-    param_1 = common.Parameter(id='param_1', values=['param_1_val'])
+    param_0 = common.Parameter1(id='param_0', values=['param_0_val'])
+    param_1 = common.Parameter1(id='param_1', values=['param_1_val'])
     control_a = cat.Control(id='control_a', title='this is control a', params=[param_0, param_1])
     control_b = cat.Control(id='control_b', title='this is control b')
-    group = cat.Group(id='xy', title='The xy control group', controls=[control_a, control_b])
     control_s = cat.Control(id='control_s', title='this is control s')
-    sub_group = cat.Group(id='sub', title='The sub group', controls=[control_s])
-    group.groups = [sub_group]
+
+    # Group2 objects with controls
+    group_controls = cat.Group2(id='xy-controls', title='The xy controls', controls=[control_a, control_b])
+    sub_group = cat.Group2(id='sub', title='The sub group', controls=[control_s])
+
+    # Group1 can now contain Group2 directly (Group1.groups: list[Group1|Group2])
+    group = cat.Group1(id='xy', title='The xy control group', groups=[group_controls, sub_group])
     catalog_obj.groups = [group]
 
     part = common.Part(id='cpart', name='name.c.part')
@@ -183,11 +187,14 @@ def sample_catalog_rich_controls():
 def sample_catalog_subgroups():
     """Return a catalog with groups of groups."""
     catalog_obj = gens.generate_sample_model(cat.Catalog)
-    group = cat.Group(id='a', title='The a group')
     control_c = cat.Control(id='control_c', title='this is control c')
-    sub_sub_group = cat.Group(id='bb', title='The bb sub sub group', controls=[control_c])
-    sub_group = cat.Group(id='b', title='The b sub group', groups=[sub_sub_group])
-    group.groups = [sub_group]
+
+    # Group2 with control (leaf node)
+    sub_sub_group = cat.Group2(id='bb', title='The bb sub sub group', controls=[control_c])
+    # Group1 can contain Group2 directly now
+    sub_group = cat.Group1(id='b', title='The b sub group', groups=[sub_sub_group])
+    # Top level Group1 contains Group1
+    group = cat.Group1(id='a', title='The a group', groups=[sub_group])
     catalog_obj.groups = [group]
 
     return catalog_obj
