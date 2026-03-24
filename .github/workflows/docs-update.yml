@@ -9,12 +9,11 @@ on:
     - v*
 permissions: read-all
 concurrency:
-  group: docs-deploy-global  # Don't double up when tags are on develop
+  group: docs-deploy-global  
   cancel-in-progress: false
 jobs:
   set-versions:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     outputs:
       min: ${{ steps.versions.outputs.min }}
       max: ${{ steps.versions.outputs.max }}
@@ -84,7 +83,7 @@ jobs:
         git config --global user.email '${{ env.ID }}+${{ env.SLUG }}[bot]@users.noreply.github.com'
       env:
         SLUG: ${{ steps.app-token.outputs.app-slug }}
-        ID: ${{ steps.get-user-id.outputs.user-id }}    
+        ID: ${{ steps.get-user-id.outputs.user-id }}
     - name: Create release
       shell: bash
       run: |
