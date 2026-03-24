@@ -247,7 +247,7 @@ def test_managed_invalid_root(tmp_path: pathlib.Path) -> None:
 def test_managed_invalid_top_model(tmp_trestle_dir: pathlib.Path) -> None:
     """Invalid top model while creating Managed OSCAL object."""
     with pytest.raises(TrestleError, match='not a top level model'):
-        ManagedOSCAL(tmp_trestle_dir, oscal.catalog.Group, 'anything')
+        ManagedOSCAL(tmp_trestle_dir, oscal.catalog.Group2, 'anything')
 
 
 def test_managed_invalid_model(tmp_trestle_dir: pathlib.Path) -> None:
@@ -300,7 +300,7 @@ def test_managed_write_invalid_top_model(tmp_trestle_dir: pathlib.Path) -> None:
     managed = repo.import_model(catalog_data, 'imported')
 
     # generate another catalog data for writing
-    catalog_data = generators.generate_sample_model(oscal.catalog.Group)
+    catalog_data = generators.generate_sample_model(oscal.catalog.Group2)
 
     with pytest.raises(TrestleError, match='not a top level model'):
         managed.write(catalog_data)
