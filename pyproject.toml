@@ -29,8 +29,7 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.12"
 ]
 dependencies = [
     "attrs",
@@ -84,7 +83,7 @@ dev = [
     "pre-commit>=2.4.0",
     "python-semantic-release>=10.4.0",
     "pylint",
-    "datamodel-code-generator[http] == 0.36.0",
+    "datamodel-code-generator[http]<0.55.0",
     "gitpython",
 ]
 
@@ -113,15 +112,6 @@ packages = ["trestle"]
 [tool.hatch.envs.default]
 dependencies = [
   "coverage[toml]~=7.4",
-  "virtualenv>=20.26.6,<21",  # Pin until hatch supports virtualenv 21.x
-]
-
-# Constrains the internal environment hatch uses to run build hooks.
-# Without this, hatch resolves the latest virtualenv (21.x+) which breaks
-# the hatch-build env due to removed `propose_interpreters` API.
-[tool.hatch.envs.hatch-build]
-dependencies = [
-  "virtualenv>=20.26.6,<21",  # Pin until hatch supports virtualenv 21.x
 ]
 
 [tool.hatch.envs.hatch-test]
@@ -134,11 +124,10 @@ dependencies = [
     "pytest-xdist[psutil]>=3.5",
     "pytest-randomly>=3.15",
     "mypy",
-    "virtualenv>=20.26.6,<21",  # Pin until hatch supports virtualenv 21.x
 ]
 
 [[tool.hatch.envs.hatch-test.matrix]]
-python = ["3.10", "3.11", "3.12", "3.13"]
+python = ["3.10", "3.11", "3.12"]
 
 [tool.hatch.envs.docs]
 features = ["docs"]
