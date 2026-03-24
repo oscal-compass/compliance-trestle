@@ -9,12 +9,11 @@ on:
     - v*
 permissions: read-all
 concurrency:
-  group: docs-deploy-global  # Don't double up when tags are on develop
+  group: docs-${{ github.sha }}  # Don't double up when tags are on develop
   cancel-in-progress: false
 jobs:
   set-versions:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     outputs:
       min: ${{ steps.versions.outputs.min }}
       max: ${{ steps.versions.outputs.max }}
@@ -50,7 +49,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ mike-version, set-versions ]
     steps:
-    - uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
+    - uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3.0.0
       id: app-token
       with:
         app-id: ${{ secrets.APP_ID }}
@@ -84,7 +83,7 @@ jobs:
         git config --global user.email '${{ env.ID }}+${{ env.SLUG }}[bot]@users.noreply.github.com'
       env:
         SLUG: ${{ steps.app-token.outputs.app-slug }}
-        ID: ${{ steps.get-user-id.outputs.user-id }}    
+        ID: ${{ steps.get-user-id.outputs.user-id }}
     - name: Create release
       shell: bash
       run: |

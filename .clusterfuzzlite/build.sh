@@ -1,10 +1,13 @@
 #!/bin/bash -eu
 
-# Install project and fuzzing dependency
 pip3 install atheris
 pip3 install "$SRC/compliance-trestle"
 
-# compile_python_fuzzer is provided by base-builder-python.
-# It handles $LIB_FUZZING_ENGINE linking, output to $OUT, and
-# generates the correct wrapper script automatically.
+# Download the real NIST SP800-53 rev5 catalog as the fuzz seed corpus.
+# Using the pinned commit from usnistgov/oscal-content for reproducibility.
+SEED_URL="https://github.com/usnistgov/oscal-content/blob/941c978d14c57379fbf6f7fb388f675067d5bff7/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog-min.json"
+CORPUS_DIR="$OUT/fuzz_catalog_seed_corpus"
+mkdir -p "$CORPUS_DIR"
+curl -fsSL "$SEED_URL" -o "$CORPUS_DIR/nist_sp800_53_rev5.json"
+
 compile_python_fuzzer "$SRC/compliance-trestle/tests/fuzz/fuzz_catalog.py"
