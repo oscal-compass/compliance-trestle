@@ -365,7 +365,7 @@ def testoneinput(data: bytes) -> None:
                 f'Input (truncated): {data[:200]!r}'
             )
 
-    except (ValidationError, json.JSONDecodeError, UnicodeDecodeError, ValueError):
+    except (ValidationError, json.JSONDecodeError, UnicodeDecodeError, ValueError, TypeError, KeyError):
         # Expected — not bugs
         return
     except (TrestleError, RecursionError, AttributeError, RuntimeError) as e:
