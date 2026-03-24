@@ -66,12 +66,18 @@ def _load_seed() -> bytes:
       1. The real NIST SP800-53 rev5 catalog placed by build.sh.
       2. A minimal catalog for local development.
     """
-    out_dir = os.environ.get('OUT', '/out')
-    corpus_path = os.path.join(out_dir, 'fuzz_catalog_seed_corpus', 'nist_sp800_53_rev5.json')
+    exe_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
+    
+    # In ClusterFuzzLite, the seed corpus dir is in the same folder as the fuzzer
+    corpus_path = os.path.join(exe_dir, 'fuzz_catalog_seed_corpus', 'nist_sp800_53_rev5.json')
+
     if os.path.exists(corpus_path):
-        logger.info('Using NIST catalog: %s', corpus_path)
+        logger.info('SUCCESS: Found NIST seed at %s', corpus_path)
         with open(corpus_path, 'rb') as fh:
             return fh.read()
+
+    # Log the failure so you can see where it looked in the CI logs
+    logger.warning('SEED NOT FOUND at %s. Using minimal fallback.', corpus_path)
 
     # --- local-development fallback ---
     # Minimal catalog for local development: includes params, parts, props and
@@ -376,6 +382,9 @@ def main() -> None:
 
     Flags are inserted *before* the corpus directory so libFuzzer actually sees them.
     """
+    exe_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
+    seed_corpus_dir = os.path.join(exe_dir, 'fuzz_catalog_seed_corpus')
+
     flags = [
         "-max_len=10000000",        # allow the full ~4.8 MB NIST catalog
         "-len_control=0",    # disable automatic input shrinking
@@ -384,7 +393,9 @@ def main() -> None:
     ]
 
     # Script name + flags first + everything else (including corpus path)
-    fuzz_args = [sys.argv[0]] + flags + sys.argv[1:]
+    fuzz_args = [sys.argv[0]] + flags
+    if os.path.exists(seed_corpus_dir):
+        fuzz_args.append(seed_corpus_dir)
 
     atheris.Setup(fuzz_args, testoneinput, custom_mutator=custom_mutator)
     atheris.Fuzz()
