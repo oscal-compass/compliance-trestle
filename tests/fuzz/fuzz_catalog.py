@@ -66,9 +66,10 @@ def _load_seed() -> bytes:
       1. The real NIST SP800-53 rev5 catalog placed by build.sh.
       2. A minimal catalog for local development.
     """
-    corpus_path = os.path.join(out_dir, 'fuzz_catalog_seed_corpus', 'nist_sp800_53_rev5.json')
     out_dir = os.environ.get('OUT', '/out')
+    corpus_path = os.path.join(out_dir, 'fuzz_catalog_seed_corpus', 'nist_sp800_53_rev5.json')
     if os.path.exists(corpus_path):
+        logger.info('Using NIST catalog: %s', corpus_path)
         with open(corpus_path, 'rb') as fh:
             return fh.read()
 
