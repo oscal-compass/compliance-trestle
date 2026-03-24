@@ -7,12 +7,11 @@ In CI (ClusterFuzzLite), build.sh downloads the real NIST SP800-53 rev5
 catalog-min.json into $OUT/fuzz_catalog_seed_corpus/ before this file is
 compiled.  Atheris/libFuzzer automatically loads every file in that directory
 as an initial corpus entry, so the fuzzer starts from ~1000 real controls with
-genuine params, parts, links, back-matter and UUID cross-references rather than
-a toy structure.
+genuine params, parts, links, back-matter and UUID cross-references.
 
-For local runs without build.sh, _load_seed() falls back to a richer minimal
-catalog that still exercises params, parts and props paths.
+For local runs without build.sh, see the README for the curl command to download the seed manually.
 
+features in this version
 -----------------------------
 1. Seed deletion mutations  (Q3) — mutator can *remove* required keys, not
    just corrupt values.  This exercises Pydantic's missing-field validation
@@ -55,131 +54,39 @@ with atheris.instrument_imports():
     from trestle.common.err import TrestleError
 
 
-# 32 dept is well enough for the catalog nesting max - 10 , and also didnot give false positives from RecursionError in local testing.  We want to be able to explore deep nesting paths but not crash on them.
+# ---------------------------------------------------------------------------
+# Constants
+# ---------------------------------------------------------------------------
+
+# this will stop _mut() from recursing into deeper and deeper nested structures until it hits Python's RecursionError limit.  The NIST catalog has some very deep nesting (e.g. control enhancements inside controls inside groups inside catalog) that can easily exceed the default limit of 1000 with aggressive mutations.
 MAX_DEPTH = 32
 
 
 def _load_seed() -> bytes:
-    """Return the fuzz seed as UTF-8 encoded JSON bytes.
-
-    Priority:
-      1. The real NIST SP800-53 rev5 catalog placed by build.sh.
-      2. A minimal catalog for local development.
-    """
+    """Return the NIST SP800-53 rev5 catalog as UTF-8 encoded JSON bytes."""
     exe_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
-    
-    # In ClusterFuzzLite, the seed corpus dir is in the same folder as the fuzzer
-    corpus_path = os.path.join(exe_dir, 'fuzz_catalog_seed_corpus', 'nist_sp800_53_rev5.json')
+    corpus_path = os.path.join(
+        exe_dir, 'fuzz_catalog_seed_corpus', 'nist_sp800_53_rev5.json'
+    )
 
     if os.path.exists(corpus_path):
-        logger.info('SUCCESS: Found NIST seed at %s', corpus_path)
+        logger.info('Using NIST SP800-53 rev5 catalog as fuzz seed: %s', corpus_path)
         with open(corpus_path, 'rb') as fh:
             return fh.read()
 
-    # Log the failure so you can see where it looked in the CI logs
-    logger.warning('SEED NOT FOUND at %s. Using minimal fallback.', corpus_path)
-
-    # --- local-development fallback ---
-    # Minimal catalog for local development: includes params, parts, props and
-    # a control enhancement so that the mutator walks more OSCAL paths even
-    # without the full NIST file.
-    logger.warning(
-        'NIST seed corpus not found at %s — using minimal fallback seed. '
-        'Run build.sh to download the full seed for CI-equivalent coverage.',
-        corpus_path,
+    raise FileNotFoundError(
+        f'NIST seed not found at {corpus_path}.\n'
+        'Run build.sh or download the seed manually — see tests/fuzz/README.md.'
     )
-    fallback = {
-        'catalog': {
-            'uuid': '550e8400-e29b-41d4-a716-446655440000',
-            'metadata': {
-                'title': 'Fuzz Fallback Catalog',
-                'last-modified': '2026-02-10T14:58:41Z',
-                'version': '1.0.0',
-                'oscal-version': '1.1.3',
-                'roles': [{'id': 'creator', 'title': 'Document Creator'}],
-                'parties': [{'uuid': '11111111-0000-4000-8000-000000000001',
-                              'type': 'organization', 'name': 'Fuzz Org'}],
-            },
-            'groups': [
-                {
-                    'id': 'ac',
-                    'title': 'Access Control',
-                    'props': [{'name': 'label', 'value': 'AC'}],
-                    'controls': [
-                        {
-                            'id': 'ac-1',
-                            'title': 'Policy and Procedures',
-                            'params': [
-                                {
-                                    'id': 'ac-1_prm_1',
-                                    'label': 'organization-defined roles',
-                                    'select': {
-                                        'how-many': 'one-or-more',
-                                        'choice': ['role A', 'role B'],
-                                    },
-                                },
-                            ],
-                            'props': [
-                                {'name': 'label', 'value': 'AC-1'},
-                                {'name': 'sort-id', 'value': 'ac-01'},
-                            ],
-                            'links': [
-                                {'href': '#ref-1', 'rel': 'reference'},
-                            ],
-                            'parts': [
-                                {
-                                    'id': 'ac-1_smt',
-                                    'name': 'statement',
-                                    'prose': 'Develop, document, and disseminate...',
-                                    'parts': [
-                                        {
-                                            'id': 'ac-1_smt.a',
-                                            'name': 'item',
-                                            'prose': 'Sub-statement a.',
-                                        }
-                                    ],
-                                },
-                                {'id': 'ac-1_gdn', 'name': 'guidance',
-                                 'prose': 'Guidance text.'},
-                            ],
-                            # Control enhancement (nested control)
-                            'controls': [
-                                {
-                                    'id': 'ac-1.1',
-                                    'title': 'AC-1 Enhancement',
-                                    'props': [{'name': 'label', 'value': 'AC-1(1)'}],
-                                    'parts': [
-                                        {'id': 'ac-1.1_smt', 'name': 'statement',
-                                         'prose': 'Enhancement statement.'}
-                                    ],
-                                }
-                            ],
-                        }
-                    ],
-                }
-            ],
-            'back-matter': {
-                'resources': [
-                    {
-                        'uuid': 'aaaaaaaa-0000-4000-8000-000000000001',
-                        'title': 'Reference 1',
-                        'rlinks': [{'href': 'https://example.com/ref1'}],
-                    }
-                ]
-            },
-        }
-    }
-    return json.dumps(fallback).encode('utf-8')
 
 
 _SEED: bytes = _load_seed()
-
 
 def _mut(data, fdp, depth: int = 0):
     """Recursively mutate a JSON-compatible Python object.
 
     Three kinds of mutation are applied at random:
-      - Value mutation   : corrupt a leaf value (string, int/float) 
+      - Value mutation   : corrupt a leaf value (string, int/float)
       - Element mutation : descend into a dict value or list element
       - Key deletion     : remove a key from a dict entirely (NEW)
                            This exercises Pydantic's required-field paths and
@@ -191,7 +98,7 @@ def _mut(data, fdp, depth: int = 0):
         depth: Current recursion depth — stops at MAX_DEPTH to avoid
                RecursionError on deeply nested NIST catalog structures.
     """
-
+    # Q4 — depth guard
     if depth >= MAX_DEPTH:
         return data
 
@@ -210,6 +117,7 @@ def _mut(data, fdp, depth: int = 0):
         if data:
             idx = fdp.ConsumeIntInRange(0, len(data) - 1)
             # 3-way choice mirrors dict behaviour: mutate element / skip / pop.
+            # A straight 50/50 mutate-or-pop was too destructive — it collapsed
             # list structure faster than the fuzzer could explore it.
             action = fdp.ConsumeIntInRange(0, 2)
             if action == 0:
@@ -230,11 +138,6 @@ def _mut(data, fdp, depth: int = 0):
         return data + fdp.ConsumeIntInRange(-100, 100)
 
     return data
-
-
-# ---------------------------------------------------------------------------
-# Q5 — Normalised comparison helpers
-# ---------------------------------------------------------------------------
 
 def _normalise(obj):
     """Recursively normalise a JSON-compatible object for stable comparison.
@@ -286,46 +189,34 @@ def _idempotency_violation(obj1: Catalog, obj2: Catalog) -> bool:
         # If we can't serialise for comparison, treat as a violation
         return True
 
-
-# ---------------------------------------------------------------------------
-# Custom mutator entry point
-# ---------------------------------------------------------------------------
-
 def custom_mutator(data: bytes, max_size: int, seed: int) -> bytes:  # noqa: ARG001
     """Structure-aware mutator anchored to real OSCAL catalog structure.
 
-    Falls back to the NIST seed when input bytes are not valid JSON so that
-    every output stays in the valid OSCAL input space and the fuzzer spends
-    its cycles exercising parsing logic rather than bouncing off json.loads().
-
     FuzzedDataProvider note
     -----------------------
-    We pass `data` (the current corpus entry) — not `seed.to_bytes(8, 'little')`
-    — as the entropy source for the FuzzedDataProvider.  The `seed` integer is
-    only 8 bytes; when _mut() walks the NIST catalog it calls ConsumeIntInRange
-    thousands of times and exhausts those 8 bytes almost immediately, causing
-    every remaining call to return 0 (the silent default).  The result is a
-    nearly deterministic mutator that barely mutates anything.  Using `data`
-    gives the FDP the full corpus entry as entropy — variable and abundant on
-    every libFuzzer iteration.
+   We pass data (the current corpus entry) as the entropy source for the FuzzedDataProvider. 
+   This ensures the provider has sufficient and variable input to drive mutations
+   across the catalog structure during each fuzzing iteration.
+
+    JSON decode failure
+    -------------------
+    If `data` is not valid JSON (e.g. libFuzzer injected raw bytes from its own
+    splicing mutations), we fall back to the NIST seed so the mutator always
+    outputs structurally valid OSCAL rather than garbage that bounces off
+    json.loads() in testoneinput.
     """
     try:
         js = json.loads(data)
     except Exception:
-        # Corrupt bytes — re-anchor to the known-good seed
+        # Raw bytes from libFuzzer's own mutations — re-anchor to the NIST seed
+        # so the output stays in the valid OSCAL input space.
         js = json.loads(_SEED)
 
-    # data is the correct entropy source (see docstring above)
     fdp = atheris.FuzzedDataProvider(data)
     mutated = _mut(js, fdp)
 
     result = json.dumps(mutated, ensure_ascii=False).encode('utf-8')
     return result[:max_size]
-
-
-# ---------------------------------------------------------------------------
-# Fuzzer entry point
-# ---------------------------------------------------------------------------
 
 def testoneinput(data: bytes) -> None:
     """Fuzz target: round-trip idempotency test for the OSCAL Catalog model.
@@ -338,64 +229,73 @@ def testoneinput(data: bytes) -> None:
        drops data during a load-save cycle — the class of bug that unit tests
        never catch because they only exercise known-good inputs.
 
-    Exception handling
-    ------------------
-    Expected/safe:
-      ValidationError, JSONDecodeError, UnicodeDecodeError, ValueError
-      → schema rejections are expected for mutated inputs; return silently.
+    Exception handling — two-stage
+    ------------------------------
+    Stage 1 (input parsing):
+      ValidationError, JSONDecodeError, UnicodeDecodeError, ValueError,
+      TrestleError ("extra fields not permitted", unknown field, etc.)
+      → all expected schema/validator rejections on mutated inputs.
+        Return silently so the fuzzer accumulates these as corpus and
+        keeps mutating forward rather than halting.
 
-    Bugs we want to catch (re-raise so libFuzzer records a crash):
-      TrestleError, RecursionError, AttributeError
-      → unexpected internal failures in trestle's parsing or serialisation.
-      RuntimeError (idempotency violation)
-      → data-corruption bug discovered by the round-trip assertion.
+      TrestleError is intentionally caught HERE and nowhere else.
+      The mutator's key-deletion mutations will frequently produce inputs
+      that trestle's strict Pydantic models reject with TrestleError.
+      That is the validator doing its job — not a bug.
+
+    Stage 2 (round-trip):
+      We have a successfully parsed Catalog object.  Any error from this
+      point is a genuine defect because trestle is now failing to handle
+      data it just accepted:
+        TrestleError    → trestle rejected its own serialised output on
+                          re-parse, or failed to serialise at all.
+        RecursionError  → unbounded nesting in the serialiser.
+        AttributeError  → code assumed a field exists that does not.
+        RuntimeError    → idempotency violation: round-trip data loss.
     """
     if not data:
         return
 
+    # ── Stage 1: input parsing ───────────────────────────────────────────────
+    # TrestleError here = validator correctly rejected an invalid mutation.
     try:
         obj1 = Catalog.parse_raw(data)
+    except (ValidationError, json.JSONDecodeError, UnicodeDecodeError,
+            ValueError, TrestleError):
+        return  # expected rejection — not a bug
+
+    # ── Stage 2: round-trip ──────────────────────────────────────────────────
+    # obj1 is a valid Catalog.  Any error from here is a real defect.
+    try:
         exported = obj1.json(by_alias=True, exclude_none=True)
         obj2 = Catalog.parse_raw(exported)
 
-        # Q5 — use normalised comparison to avoid Pydantic v1 false positives
+        # Q5 — normalised comparison avoids Pydantic v1 ordering false positives
         if _idempotency_violation(obj1, obj2):
             raise RuntimeError(
                 f'Idempotency violation: round-trip produced a different object.\n'
                 f'Input (truncated): {data[:200]!r}'
             )
 
-    except (ValidationError, json.JSONDecodeError, UnicodeDecodeError, ValueError, TypeError, KeyError):
-        # Expected — not bugs
-        return
     except (TrestleError, RecursionError, AttributeError, RuntimeError) as e:
         logger.error('CRASH DETECTED: %s: %s', type(e).__name__, e)
         raise
 
-
-# ---------------------------------------------------------------------------
-# Entry point
-# ---------------------------------------------------------------------------
-
 def main() -> None:
-    """Start the fuzzer with settings optimized for the large NIST catalog.
-
-    Flags are inserted *before* the corpus directory so libFuzzer actually sees them.
-    """
     exe_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
     seed_corpus_dir = os.path.join(exe_dir, 'fuzz_catalog_seed_corpus')
 
     flags = [
-        "-max_len=10000000",        # allow the full ~4.8 MB NIST catalog
-        "-len_control=0",    # disable automatic input shrinking
-        "-mutate_depth=20",  # deeper exploration of nested controls
-        "-timeout=60",       # safety timeout
+        '-max_len=10000000',  # allow the full ~4.65 MB NIST catalog
+        '-len_control=0', 
+        '-mutate_depth=20',   # deeper exploration of nested control paths
+        '-timeout=60',        # kill any single input that hangs for 60 s
     ]
 
-    # Script name + flags first + everything else (including corpus path)
     fuzz_args = [sys.argv[0]] + flags
-    if os.path.exists(seed_corpus_dir):
+    if os.path.isdir(seed_corpus_dir):
         fuzz_args.append(seed_corpus_dir)
+    fuzz_args += sys.argv[1:]  # pass through any args ClusterFuzzLite appends
 
     atheris.Setup(fuzz_args, testoneinput, custom_mutator=custom_mutator)
     atheris.Fuzz()
