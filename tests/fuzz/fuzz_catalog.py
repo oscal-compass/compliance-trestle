@@ -281,10 +281,44 @@ def testoneinput(data: bytes) -> None:
         logger.error('CRASH DETECTED: %s: %s', type(e).__name__, e)
         raise
 
+def _validate_seed_on_startup(seed_path: str) -> None:
+    """Fail loudly at startup if the NIST seed can't be parsed.
+    
+    A silent Stage-1 failure means the fuzzer runs entirely on the tiny
+    hand-crafted seed, producing near-zero coverage and a bad_build_check
+    failure.  This surfaces that problem immediately rather than after 10
+    minutes of wasted fuzzing.
+    """
+    with open(seed_path, "rb") as f:
+        raw = f.read()
+    try:
+        obj = Catalog.parse_raw(raw)
+        # Also exercise the round-trip so we know Stage 2 works too
+        obj2 = Catalog.parse_raw(obj.json(by_alias=True, exclude_none=True))
+        print(
+            f"INFO: NIST seed validated — {len(raw):,} bytes, "
+            f"round-trip OK ({len(obj.groups or [])} groups)"
+        )
+    except Exception as exc:
+        raise RuntimeError(
+            f"NIST seed failed Stage-1 validation: {exc}\n"
+            f"Re-pin the seed or fix the trestle model before fuzzing."
+        ) from exc
+
+
 def main() -> None:
     exe_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
-    seed_corpus_dir = os.path.join(exe_dir, 'fuzz_catalog_seed_corpus')
+    seed_corpus_dir = os.path.join(exe_dir, "fuzz_catalog_seed_corpus")
+    nist_seed = os.path.join(
+        seed_corpus_dir, "nist_sp800_53_rev5.json"   # adjust name if different
+    )
 
+    if not os.path.isfile(nist_seed):
+        raise FileNotFoundError(
+            f"NIST seed not found at {nist_seed}. See README for download instructions."
+        )
+
+    _validate_seed_on_startup(nist_seed)   # ← add this
     flags = [
         '-max_len=10000000', # allow the full ~4.65 MB NIST catalog
         '-len_control=0', 
@@ -300,6 +334,6 @@ def main() -> None:
     atheris.Setup(fuzz_args, testoneinput, custom_mutator=custom_mutator)
     atheris.Fuzz()
     os._exit(0)  # bypass atexit() — see docstring
-
+    
 if __name__ == '__main__':
     main()
