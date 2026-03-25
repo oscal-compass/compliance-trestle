@@ -255,15 +255,25 @@ def testoneinput(data: bytes) -> None:
     """
     if not data:
         return
-
-    # ── Stage 1: input parsing ───────────────────────────────────────────────
-    # TrestleError here = validator correctly rejected an invalid mutation.
+    
+    fdp = atheris.FuzzedDataProvider(data)
+    raw = fdp.ConsumeBytes(fdp.ConsumeIntInRange(0, len(data)))
     try:
-        obj1 = Catalog.parse_raw(data)
+        # The NIST corpus files wrap the catalog under a top-level "catalog"
+        # key (OSCAL document envelope format). Strip it before parsing so
+        # the fuzzer operates on both enveloped and bare inputs.
+        try:
+            parsed_json = json.loads(raw)
+            if isinstance(parsed_json, dict) and "catalog" in parsed_json and len(parsed_json) == 1:
+                raw = json.dumps(parsed_json["catalog"]).encode()
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            pass  # let parse_raw handle the invalid JSON in Stage 1
+
+        obj1 = Catalog.parse_raw(raw)
     except (ValidationError, json.JSONDecodeError, UnicodeDecodeError,
             ValueError, TrestleError):
-        return  # expected rejection — not a bug
-
+        return  # Stage 1 — bad input, expected
+    
     # ── Stage 2: round-trip ──────────────────────────────────────────────────
     # obj1 is a valid Catalog.  Any error from here is a real defect.
     try:
@@ -291,9 +301,15 @@ def _validate_seed_on_startup(seed_path: str) -> None:
     """
     with open(seed_path, "rb") as f:
         raw = f.read()
+
+    try:
+        parsed = json.loads(raw)
+        if isinstance(parsed, dict) and "catalog" in parsed and len(parsed) == 1:
+            raw = json.dumps(parsed["catalog"]).encode()
+    except (json.JSONDecodeError, UnicodeDecodeError) as exc:
+        raise RuntimeError(f"NIST seed is not valid JSON: {exc}") from exc    
     try:
         obj = Catalog.parse_raw(raw)
-        # Also exercise the round-trip so we know Stage 2 works too
         obj2 = Catalog.parse_raw(obj.json(by_alias=True, exclude_none=True))
         print(
             f"INFO: NIST seed validated — {len(raw):,} bytes, "
