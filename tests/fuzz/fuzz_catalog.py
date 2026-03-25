@@ -257,7 +257,19 @@ def testoneinput(data: bytes) -> None:
         return
     
     fdp = atheris.FuzzedDataProvider(data)
-    raw = fdp.ConsumeBytes(fdp.ConsumeIntInRange(0, len(data)))
+    raw = data
+
+    # Unwrap OSCAL document envelope if present
+    try:
+        parsed_json = json.loads(raw)
+        if (
+            isinstance(parsed_json, dict)
+            and "catalog" in parsed_json
+            and len(parsed_json) == 1
+        ):
+            raw = json.dumps(parsed_json["catalog"]).encode()
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        pass  # invalid JSON — let Stage 1 handle it
     try:
         # The NIST corpus files wrap the catalog under a top-level "catalog"
         # key (OSCAL document envelope format). Strip it before parsing so
