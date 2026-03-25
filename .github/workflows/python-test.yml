@@ -236,6 +236,7 @@ jobs:
         git config --global core.autocrlf false
     - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
+        fetch-depth: 0
         submodules: true
     - name: Set up Python
       uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
@@ -269,6 +270,7 @@ jobs:
           -Dsonar.organization=compliance-trestle
           -Dsonar.cpd.exclusions=trestle/oscal/*.py
           -Dsonar.exclusions=trestle/oscal/*.py
+          -Dsonar.test.exclusions=tests/data/**/*.xlsx
     - name: SonarQube Quality Gate check
       uses: sonarsource/sonarqube-quality-gate-action@df914238f99aa5d81f4490aeea80f205c7ed9600 # master
       # Force to fail step after specific time
