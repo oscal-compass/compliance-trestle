@@ -189,7 +189,7 @@ def _idempotency_violation(obj1: Catalog, obj2: Catalog) -> bool:
         # If we can't serialise for comparison, treat as a violation
         return True
 
-def custom_mutator(data: bytes, max_size: int, seed: int) -> bytes:  # noqa: ARG001
+def custom_mutator(data: bytes, max_size: int, seed: int) -> bytes:  
     """Structure-aware mutator anchored to real OSCAL catalog structure.
 
     FuzzedDataProvider note
@@ -286,7 +286,7 @@ def main() -> None:
     seed_corpus_dir = os.path.join(exe_dir, 'fuzz_catalog_seed_corpus')
 
     flags = [
-        '-max_len=10000000',  # allow the full ~4.65 MB NIST catalog
+        '-max_len=10000000', # allow the full ~4.65 MB NIST catalog
         '-len_control=0', 
         '-mutate_depth=20',   # deeper exploration of nested control paths
         '-timeout=60',        # kill any single input that hangs for 60 s
@@ -299,6 +299,7 @@ def main() -> None:
 
     atheris.Setup(fuzz_args, testoneinput, custom_mutator=custom_mutator)
     atheris.Fuzz()
+    os._exit(0)  # bypass atexit() — see docstring
 
 if __name__ == '__main__':
     main()
