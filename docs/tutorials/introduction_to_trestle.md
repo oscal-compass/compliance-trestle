@@ -9,7 +9,7 @@ Here are step-by-step instructions to manipulate a [NIST](https://www.nist.gov/)
 
 ## *Objective*
 
-Learn how to split and merge an OSCAL catalog json file using trestle commands and its command line interface (CLI).  Trestle simplifies the manipulation and management of large OSCAL documents by allowing controlled deconstruction into smaller components, and later reconstruction after editing those components.  And all operations guarantee that the individual files conform to the corresponding OSCAL schema to maintain integrity of the document in the process.
+Learn how to split and merge an OSCAL catalog json file using trestle commands and its command line interface (CLI). Trestle simplifies the manipulation and management of large OSCAL documents by allowing controlled deconstruction into smaller components, and later reconstruction after editing those components. And all operations guarantee that the individual files conform to the corresponding OSCAL schema to maintain integrity of the document in the process.
 
 This tutorial assumes you have installed Python and installed trestle in a virtual environment per the directions found [here](../installation.md).
 
@@ -22,11 +22,11 @@ The examples shown will work for linux and mac, but Windows will require the fol
 <li>quotes (') are often not needed unless the text includes spaces, but if quotes are needed they should be double quotes (")
 </ul>
 
-Commands are shown without prompts so they are easy to cut and paste, and responses by trestle are shown with >>> at the start of the line.  In actual usage the >>> would not appear.
+Commands are shown without prompts so they are easy to cut and paste, and responses by trestle are shown with >>> at the start of the line. In actual usage the >>> would not appear.
 
 Be sure to include the quotes (' ') as shown in the examples, e.g. `merge -e 'catalog.*'` \[On windows you should probably use double quotes (") as needed.\]
 
-In this tutorial you will see sections that contain dropdown that is revealed when you click on them.  Below is an example ("Like this").  Be sure to click on those sections to see their contents - and then close them if you like.
+In this tutorial you will see sections that contain dropdown that is revealed when you click on them. Below is an example ("Like this"). Be sure to click on those sections to see their contents - and then close them if you like.
 
 <br>
 <details markdown>
@@ -56,9 +56,9 @@ trestle init
 
 ## Step 2: Import a catalog from the trestle sample data directory into your trestle workspace
 
-For this tutorial we will use a catalog file from NIST, but we first must `import` it into the trestle workspace.  This can be done either by first downloading the file locally and then importing it, or you can download it directly using its url address.
+For this tutorial we will use a catalog file from NIST, but we first must `import` it into the trestle workspace. This can be done either by first downloading the file locally and then importing it, or you can download it directly using its url address.
 
-We will import the file directly from the [NIST OSCAL github site](https://github.com/usnistgov/OSCAL).  The specific catalog is [NIST_SP-800-53_rev5_catalog.json](https://raw.githubusercontent.com/usnistgov/oscal-content/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json)
+We will import the file directly from the [NIST OSCAL github site](https://github.com/usnistgov/OSCAL). The specific catalog is [NIST_SP-800-53_rev5_catalog.json](https://raw.githubusercontent.com/usnistgov/oscal-content/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json)
 
 Import the file from the url with the following command:
 
@@ -66,10 +66,10 @@ Import the file from the url with the following command:
 trestle import -f https://raw.githubusercontent.com/usnistgov/oscal-content/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json -o mycatalog
 ```
 
-As a reminder, you could also have imported the file from a local directory on your file system, or an sftp:// address.  But the file must first be imported to the trestle workspace in order for it to be directly manipulated by trestle as in this tutorial.
+As a reminder, you could also have imported the file from a local directory on your file system, or an sftp:// address. But the file must first be imported to the trestle workspace in order for it to be directly manipulated by trestle as in this tutorial.
 
 The `import` command will also check the
-validity of the file including the presence of any duplicate uuid's.  If the file is manually created
+validity of the file including the presence of any duplicate uuid's. If the file is manually created
 please be sure it conforms with the current OSCAL schema (OSCAL version 1.0.4) and has no defined uuid's that are duplicates.
 If there are any errors the Import will fail and the file must be corrected.
 
@@ -123,11 +123,11 @@ my_workspace
 </details>
 <br>
 
-You will see that the directory now shows your catalog file in `my_workspace/catalogs/mycatalog/catalog.json`.  Note that the `.keep` files are simply to make sure git does not remove the directories - and can be ignored.  Also note that the json file itself is *singular* (catalog) while the directory above is plural (catalogs).  This convention is used throughout trestle because a given model directory like catalogs may contain several individual models - each of which is singular.  The imported catalog file size may be larger than the original due to a change in formatting, but the contents should be the same.
+You will see that the directory now shows your catalog file in `my_workspace/catalogs/mycatalog/catalog.json`. Note that the `.keep` files are simply to make sure git does not remove the directories - and can be ignored. Also note that the json file itself is *singular* (catalog) while the directory above is plural (catalogs). This convention is used throughout trestle because a given model directory like catalogs may contain several individual models - each of which is singular. The imported catalog file size may be larger than the original due to a change in formatting, but the contents should be the same.
 
 From here on in this tutorial we will just focus on the catalogs directory since the others are not directly involved.
 
-You have now populated your trestle workspace with an OSCAL catalog that you can manipulate.  Let's start.
+You have now populated your trestle workspace with an OSCAL catalog that you can manipulate. Let's start.
 
 ## Step 3: Split the file into smaller parts
 
@@ -140,7 +140,7 @@ cd catalogs/mycatalog
 trestle split -f ./catalog.json -e 'catalog.metadata,catalog.groups,catalog.back-matter'
 ```
 
-Here the `-f` refers to the filename of the json catalog file, and `-e` refers to the comma-separated list of `elements` you would like to split from the file.  This list does not represent the full file contents of the source `catalog.json` file, so some contents will be left behind in a much smaller `catalog.json` file after the split.  The elements that were split off will be placed in separate json files next to the new and smaller `catalog.json` file.
+Here the `-f` refers to the filename of the json catalog file, and `-e` refers to the comma-separated list of `elements` you would like to split from the file. This list does not represent the full file contents of the source `catalog.json` file, so some contents will be left behind in a much smaller `catalog.json` file after the split. The elements that were split off will be placed in separate json files next to the new and smaller `catalog.json` file.
 
 <br>
 <details markdown>
@@ -162,7 +162,7 @@ catalogs
 
 Note there still remains a catalog.json file, but it is much smaller since the bulk of its contents have been split off.
 
-Any split step can be reversed by a corresponding `merge` operation.  In this case we can go backwards with:
+Any split step can be reversed by a corresponding `merge` operation. In this case we can go backwards with:
 
 ```bash
 trestle merge -e 'catalog.metadata,catalog.groups,catalog.back-matter'
@@ -257,7 +257,7 @@ catalogs
 </details>
 <br>
 
-Note that the presence of wildcards caused new directories to be created containing the full lists of roles and responsible parties.  You can read the wildcard as *split off **all** roles* from `roles.json`.
+Note that the presence of wildcards caused new directories to be created containing the full lists of roles and responsible parties. You can read the wildcard as *split off **all** roles* from `roles.json`.
 
 This split can be reversed with
 
@@ -267,7 +267,7 @@ trestle merge -e 'roles.*,responsible-parties.*'
 
 ## Step 6: Split groups and controls with two wildcards
 
-This single command will split off *all* controls in *all* groups.  To do it you need to go back up into the catalog directory where the `groups.json` file is found:
+This single command will split off *all* controls in *all* groups. To do it you need to go back up into the catalog directory where the `groups.json` file is found:
 
 ```bash
 cd ..
@@ -719,4 +719,4 @@ catalogs
 
 ## Conclusion
 
-This completes the tutorial on using `trestle` to split and merge an OSCAL catalog file.  Not shown here are modifications of the individual files that would be done in an actual use case, but note that if any changes are made that violate the OSCAL schema, `trestle` will notice them and flag them in the merge.  This way not only does `trestle` allow user-driven decomposition and aggregation of these large, complex files; it also does constant checks on the contents against the required schema to make sure no errors are introduced in the process.
+This completes the tutorial on using `trestle` to split and merge an OSCAL catalog file. Not shown here are modifications of the individual files that would be done in an actual use case, but note that if any changes are made that violate the OSCAL schema, `trestle` will notice them and flag them in the merge. This way not only does `trestle` allow user-driven decomposition and aggregation of these large, complex files; it also does constant checks on the contents against the required schema to make sure no errors are introduced in the process.

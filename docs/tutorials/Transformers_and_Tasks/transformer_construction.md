@@ -21,7 +21,7 @@ Standardizing to OSCAL facilitates data interchange and understandability.
 The objective here is to transform your compliance data into valid OSCAL, in particular System Assessment Results
 [SAR](https://pages.nist.gov/OSCAL/documentation/schema/assessment-results-layer/).
 
-Examples of existing transformers  included with trestle are for the
+Examples of existing transformers included with trestle are for the
 OpenShift Compliance Operator [OSCO](https://github.com/oscal-compass/compliance-trestle/blob/develop/trestle/tasks/xccdf_result_to_oscal_ar.py) and
 [Tanium](https://github.com/oscal-compass/compliance-trestle/blob/develop/trestle/tasks/tanium_result_to_oscal_ar.py).
 

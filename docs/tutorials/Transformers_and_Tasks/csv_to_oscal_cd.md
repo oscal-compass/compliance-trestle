@@ -281,7 +281,7 @@ version = 1.0
 - Perform and validate the transform.
 
 ```
-(venv.trestle)$ trestle task csv-to-oscal-cd -c demo-csv-to-oscal-cd.config 
+(venv.trestle)$ trestle task csv-to-oscal-cd -c demo-csv-to-oscal-cd.config
 input: adjunct-data/ocp4-sample-input.csv
 output: component-definitions/ocp4-sample/component-definition.json
 Task: csv-to-oscal-cd executed successfully.
