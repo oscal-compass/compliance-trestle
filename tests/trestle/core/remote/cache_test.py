@@ -122,6 +122,24 @@ def test_fetcher_oscal_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyP
         fetcher.get_oscal_with_model_type(Catalog)
 
 
+def test_fetcher_get_raw_fails_single_read_attempt(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Ensure get_raw does not attempt duplicate reads when file loading fails."""
+    fetcher, _ = get_catalog_fetcher(tmp_trestle_dir)
+    call_count = 0
+
+    def load_file_mock(*args, **kwargs):
+        nonlocal call_count
+        call_count += 1
+        raise RuntimeError('simulated load failure')
+
+    monkeypatch.setattr(file_utils, 'load_file', load_file_mock)
+
+    with pytest.raises(err.TrestleError, match='Cache get failure'):
+        fetcher.get_raw()
+
+    assert call_count == 1
+
+
 def test_local_fetcher_relative(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the local fetcher for an object with an aboslute path."""
     fetcher, catalog_data = get_catalog_fetcher(tmp_trestle_dir, False, True)
