@@ -111,11 +111,7 @@
 <span class=normal>141</span>
 <span class=normal>142</span>
 <span class=normal>143</span>
-<span class=normal>144</span>
-<span class=normal>145</span>
-<span class=normal>146</span>
-<span class=normal>147</span>
-<span class=normal>148</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>FetcherBase</span><span class=p>(</span><span class=n>ABC</span><span class=p>):</span>
+<span class=normal>144</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>FetcherBase</span><span class=p>(</span><span class=n>ABC</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;FetcherBase - base class for caching and fetching remote oscal objects.&quot;&quot;&quot;</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>uri</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
@@ -179,15 +175,11 @@
     <span class=k>def</span><span class=w> </span><span class=nf>get_raw</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>force_update</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Any</span><span class=p>]:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;Retrieve the raw dictionary representing the underlying object.&quot;&quot;&quot;</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>_update_cache</span><span class=p>(</span><span class=n>force_update</span><span class=p>)</span>
-        <span class=c1># Return results in the cache, whether yaml or json, or whatever is supported by fs.load_file().</span>
+        <span class=c1># Return cached data; fs.load_file handles format-specific parsing (JSON/YAML).</span>
         <span class=k>try</span><span class=p>:</span>
-            <span class=n>raw_data</span> <span class=o>=</span> <span class=n>file_utils</span><span class=o>.</span><span class=n>load_file</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_cached_object_path</span><span class=p>)</span>
-        <span class=k>except</span> <span class=ne>Exception</span><span class=p>:</span>
-            <span class=k>try</span><span class=p>:</span>
-                <span class=n>raw_data</span> <span class=o>=</span> <span class=n>file_utils</span><span class=o>.</span><span class=n>load_file</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_cached_object_path</span><span class=p>)</span>
-            <span class=k>except</span> <span class=ne>Exception</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
-                <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Cache get failure for </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_uri</span><span class=si>}</span><span class=s1>: </span><span class=si>{</span><span class=n>e</span><span class=si>}</span><span class=s1>.&#39;</span><span class=p>)</span> <span class=kn>from</span><span class=w> </span><span class=nn>e</span>
-        <span class=k>return</span> <span class=n>raw_data</span>
+            <span class=k>return</span> <span class=n>file_utils</span><span class=o>.</span><span class=n>load_file</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_cached_object_path</span><span class=p>)</span>
+        <span class=k>except</span> <span class=ne>Exception</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
+            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Cache get failure for </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_uri</span><span class=si>}</span><span class=s1>: </span><span class=si>{</span><span class=n>e</span><span class=si>}</span><span class=s1>.&#39;</span><span class=p>)</span> <span class=kn>from</span><span class=w> </span><span class=nn>e</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>get_oscal_with_model_type</span><span class=p>(</span>
         <span class=bp>self</span><span class=p>,</span> <span class=n>model_type</span><span class=p>:</span> <span class=n>Type</span><span class=p>[</span><span class=n>OscalBaseModel</span><span class=p>],</span> <span class=n>force_update</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span>
@@ -245,14 +237,14 @@
     <span class=c1># ensure trestle cache directory exists.</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_trestle_cache_path</span><span class=o>.</span><span class=n>mkdir</span><span class=p>(</span><span class=n>exist_ok</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_expiration_seconds</span> <span class=o>=</span> <span class=n>const</span><span class=o>.</span><span class=n>DAY_SECONDS</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.remote.cache.FetcherBase.get_oscal class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_oscal</span><span class=p>(</span><span class=n>force_update</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span></code> <a href=#trestle.core.remote.cache.FetcherBase.get_oscal class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Retrieve the cached file and model name without knowing its model type.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/remote/cache.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>141</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.remote.cache.FetcherBase.get_oscal class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_oscal</span><span class=p>(</span><span class=n>force_update</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span></code> <a href=#trestle.core.remote.cache.FetcherBase.get_oscal class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Retrieve the cached file and model name without knowing its model type.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/remote/cache.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>137</span>
+<span class=normal>138</span>
+<span class=normal>139</span>
+<span class=normal>140</span>
+<span class=normal>141</span>
 <span class=normal>142</span>
 <span class=normal>143</span>
-<span class=normal>144</span>
-<span class=normal>145</span>
-<span class=normal>146</span>
-<span class=normal>147</span>
-<span class=normal>148</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>get_oscal</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>force_update</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Tuple</span><span class=p>[</span><span class=n>OscalBaseModel</span><span class=p>,</span> <span class=nb>str</span><span class=p>]:</span>
+<span class=normal>144</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>get_oscal</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>force_update</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Tuple</span><span class=p>[</span><span class=n>OscalBaseModel</span><span class=p>,</span> <span class=nb>str</span><span class=p>]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Retrieve the cached file and model name without knowing its model type.&quot;&quot;&quot;</span>
     <span class=n>model_dict</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>get_raw</span><span class=p>(</span><span class=n>force_update</span><span class=p>)</span>
     <span class=n>root_key</span> <span class=o>=</span> <span class=n>parser</span><span class=o>.</span><span class=n>root_key</span><span class=p>(</span><span class=n>model_dict</span><span class=p>)</span>
@@ -260,7 +252,11 @@
     <span class=k>if</span> <span class=n>model_name</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
         <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Failed cache read of non top level model with root_key </span><span class=si>{</span><span class=n>root_key</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>parser</span><span class=o>.</span><span class=n>parse_dict</span><span class=p>(</span><span class=n>model_dict</span><span class=p>[</span><span class=n>root_key</span><span class=p>],</span> <span class=n>model_name</span><span class=p>),</span> <span class=n>root_key</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.remote.cache.FetcherBase.get_oscal_with_model_type class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_oscal_with_model_type</span><span class=p>(</span><span class=n>model_type</span><span class=p>,</span> <span class=n>force_update</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span></code> <a href=#trestle.core.remote.cache.FetcherBase.get_oscal_with_model_type class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Retrieve the cached file as a particular OSCAL model.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>model_type</code> </td> <td> <code><span title=typing.Type>Type</span>[<a class="autorefs autorefs-internal" title="OscalBaseModel (trestle.core.base_model.OscalBaseModel)" href=../../base_model/#trestle.core.base_model.OscalBaseModel>OscalBaseModel</a>]</code> </td> <td> <div class=doc-md-description> <p>Type[OscalBaseModel] Specifies the OSCAL model type of the fetched object.</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/remote/cache.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>122</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.remote.cache.FetcherBase.get_oscal_with_model_type class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_oscal_with_model_type</span><span class=p>(</span><span class=n>model_type</span><span class=p>,</span> <span class=n>force_update</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span></code> <a href=#trestle.core.remote.cache.FetcherBase.get_oscal_with_model_type class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Retrieve the cached file as a particular OSCAL model.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>model_type</code> </td> <td> <code><span title=typing.Type>Type</span>[<a class="autorefs autorefs-internal" title="OscalBaseModel (trestle.core.base_model.OscalBaseModel)" href=../../base_model/#trestle.core.base_model.OscalBaseModel>OscalBaseModel</a>]</code> </td> <td> <div class=doc-md-description> <p>Type[OscalBaseModel] Specifies the OSCAL model type of the fetched object.</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/remote/cache.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>118</span>
+<span class=normal>119</span>
+<span class=normal>120</span>
+<span class=normal>121</span>
+<span class=normal>122</span>
 <span class=normal>123</span>
 <span class=normal>124</span>
 <span class=normal>125</span>
@@ -273,11 +269,7 @@
 <span class=normal>132</span>
 <span class=normal>133</span>
 <span class=normal>134</span>
-<span class=normal>135</span>
-<span class=normal>136</span>
-<span class=normal>137</span>
-<span class=normal>138</span>
-<span class=normal>139</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>get_oscal_with_model_type</span><span class=p>(</span>
+<span class=normal>135</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>get_oscal_with_model_type</span><span class=p>(</span>
     <span class=bp>self</span><span class=p>,</span> <span class=n>model_type</span><span class=p>:</span> <span class=n>Type</span><span class=p>[</span><span class=n>OscalBaseModel</span><span class=p>],</span> <span class=n>force_update</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span>
 <span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Optional</span><span class=p>[</span><span class=n>OscalBaseModel</span><span class=p>]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Retrieve the cached file as a particular OSCAL model.</span>
@@ -302,23 +294,19 @@
 <span class=normal>113</span>
 <span class=normal>114</span>
 <span class=normal>115</span>
-<span class=normal>116</span>
-<span class=normal>117</span>
-<span class=normal>118</span>
-<span class=normal>119</span>
-<span class=normal>120</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>get_raw</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>force_update</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Any</span><span class=p>]:</span>
+<span class=normal>116</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=nf>get_raw</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>force_update</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Dict</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Any</span><span class=p>]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Retrieve the raw dictionary representing the underlying object.&quot;&quot;&quot;</span>
     <span class=bp>self</span><span class=o>.</span><span class=n>_update_cache</span><span class=p>(</span><span class=n>force_update</span><span class=p>)</span>
-    <span class=c1># Return results in the cache, whether yaml or json, or whatever is supported by fs.load_file().</span>
+    <span class=c1># Return cached data; fs.load_file handles format-specific parsing (JSON/YAML).</span>
     <span class=k>try</span><span class=p>:</span>
-        <span class=n>raw_data</span> <span class=o>=</span> <span class=n>file_utils</span><span class=o>.</span><span class=n>load_file</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_cached_object_path</span><span class=p>)</span>
-    <span class=k>except</span> <span class=ne>Exception</span><span class=p>:</span>
-        <span class=k>try</span><span class=p>:</span>
-            <span class=n>raw_data</span> <span class=o>=</span> <span class=n>file_utils</span><span class=o>.</span><span class=n>load_file</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_cached_object_path</span><span class=p>)</span>
-        <span class=k>except</span> <span class=ne>Exception</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
-            <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Cache get failure for </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_uri</span><span class=si>}</span><span class=s1>: </span><span class=si>{</span><span class=n>e</span><span class=si>}</span><span class=s1>.&#39;</span><span class=p>)</span> <span class=kn>from</span><span class=w> </span><span class=nn>e</span>
-    <span class=k>return</span> <span class=n>raw_data</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> </div> </div> </div> <div class="doc doc-object doc-class"> <h4 id=trestle.core.remote.cache.FetcherFactory class="doc doc-heading"> <code>FetcherFactory</code> <a href=#trestle.core.remote.cache.FetcherFactory class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Factory method for creating a fetcher.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/remote/cache.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>389</span>
+        <span class=k>return</span> <span class=n>file_utils</span><span class=o>.</span><span class=n>load_file</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_cached_object_path</span><span class=p>)</span>
+    <span class=k>except</span> <span class=ne>Exception</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
+        <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Cache get failure for </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_uri</span><span class=si>}</span><span class=s1>: </span><span class=si>{</span><span class=n>e</span><span class=si>}</span><span class=s1>.&#39;</span><span class=p>)</span> <span class=kn>from</span><span class=w> </span><span class=nn>e</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> </div> </div> </div> <div class="doc doc-object doc-class"> <h4 id=trestle.core.remote.cache.FetcherFactory class="doc doc-heading"> <code>FetcherFactory</code> <a href=#trestle.core.remote.cache.FetcherFactory class=headerlink title="Permanent link">¤</a></h4> <div class="doc doc-contents "> <p>Factory method for creating a fetcher.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/remote/cache.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>385</span>
+<span class=normal>386</span>
+<span class=normal>387</span>
+<span class=normal>388</span>
+<span class=normal>389</span>
 <span class=normal>390</span>
 <span class=normal>391</span>
 <span class=normal>392</span>
@@ -386,11 +374,7 @@
 <span class=normal>454</span>
 <span class=normal>455</span>
 <span class=normal>456</span>
-<span class=normal>457</span>
-<span class=normal>458</span>
-<span class=normal>459</span>
-<span class=normal>460</span>
-<span class=normal>461</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>FetcherFactory</span><span class=p>:</span>
+<span class=normal>457</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>FetcherFactory</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Factory method for creating a fetcher.&quot;&quot;&quot;</span>
 
     <span class=k>class</span><span class=w> </span><span class=nc>UriType</span><span class=p>(</span><span class=n>Enum</span><span class=p>):</span>
@@ -480,16 +464,16 @@
                   return '';
                 }
               });
-            </script> <p>Specify types of URI.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/remote/cache.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>392</span>
+            </script> <p>Specify types of URI.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/remote/cache.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>388</span>
+<span class=normal>389</span>
+<span class=normal>390</span>
+<span class=normal>391</span>
+<span class=normal>392</span>
 <span class=normal>393</span>
 <span class=normal>394</span>
 <span class=normal>395</span>
 <span class=normal>396</span>
-<span class=normal>397</span>
-<span class=normal>398</span>
-<span class=normal>399</span>
-<span class=normal>400</span>
-<span class=normal>401</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>UriType</span><span class=p>(</span><span class=n>Enum</span><span class=p>):</span>
+<span class=normal>397</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>UriType</span><span class=p>(</span><span class=n>Enum</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Specify types of URI.&quot;&quot;&quot;</span>
 
     <span class=n>LOCAL_FILE</span> <span class=o>=</span> <span class=mi>1</span>
@@ -499,7 +483,11 @@
     <span class=n>HTTPS</span> <span class=o>=</span> <span class=mi>3</span>
 
     <span class=n>TRESTLE</span> <span class=o>=</span> <span class=mi>4</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h7 id=trestle.core.remote.cache.FetcherFactory.UriType-attributes>Attributes<a href=#trestle.core.remote.cache.FetcherFactory.UriType-attributes class=headerlink title="Permanent link">¤</a></h7> <div class="doc doc-object doc-attribute"> <h8 id=trestle.core.remote.cache.FetcherFactory.UriType.HTTPS class="doc doc-heading"> <code class="highlight language-python"><span class=n>HTTPS</span> <span class=o>=</span> <span class=mi>3</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.remote.cache.FetcherFactory.UriType.HTTPS class=headerlink title="Permanent link">¤</a></h8> <div class="doc doc-contents "> </div> </div> <div class="doc doc-object doc-attribute"> <h8 id=trestle.core.remote.cache.FetcherFactory.UriType.LOCAL_FILE class="doc doc-heading"> <code class="highlight language-python"><span class=n>LOCAL_FILE</span> <span class=o>=</span> <span class=mi>1</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.remote.cache.FetcherFactory.UriType.LOCAL_FILE class=headerlink title="Permanent link">¤</a></h8> <div class="doc doc-contents "> </div> </div> <div class="doc doc-object doc-attribute"> <h8 id=trestle.core.remote.cache.FetcherFactory.UriType.SFTP class="doc doc-heading"> <code class="highlight language-python"><span class=n>SFTP</span> <span class=o>=</span> <span class=mi>2</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.remote.cache.FetcherFactory.UriType.SFTP class=headerlink title="Permanent link">¤</a></h8> <div class="doc doc-contents "> </div> </div> <div class="doc doc-object doc-attribute"> <h8 id=trestle.core.remote.cache.FetcherFactory.UriType.TRESTLE class="doc doc-heading"> <code class="highlight language-python"><span class=n>TRESTLE</span> <span class=o>=</span> <span class=mi>4</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.remote.cache.FetcherFactory.UriType.TRESTLE class=headerlink title="Permanent link">¤</a></h8> <div class="doc doc-contents "> </div> </div> </div> </div> </div> <h5 id=trestle.core.remote.cache.FetcherFactory-functions>Functions<a href=#trestle.core.remote.cache.FetcherFactory-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.remote.cache.FetcherFactory.get_fetcher class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_fetcher</span><span class=p>(</span><span class=n>trestle_root</span><span class=p>,</span> <span class=n>uri</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small> </span> <a href=#trestle.core.remote.cache.FetcherFactory.get_fetcher class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Return an instantiated fetcher object based on the type of URI.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>trestle_root</code> </td> <td> <code><span title=pathlib.Path>Path</span></code> </td> <td> <div class=doc-md-description> <p>Path of the trestle workspace, i.e., within which .trestle is to be found.</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>uri</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>Reference to the remote object to cache.</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code><span title=typing.Union>Union</span>[<a class="autorefs autorefs-internal" title="LocalFetcher (trestle.core.remote.cache.LocalFetcher)" href=#trestle.core.remote.cache.LocalFetcher>LocalFetcher</a>, <a class="autorefs autorefs-internal" title="SFTPFetcher (trestle.core.remote.cache.SFTPFetcher)" href=#trestle.core.remote.cache.SFTPFetcher>SFTPFetcher</a>, <a class="autorefs autorefs-internal" title="HTTPSFetcher (trestle.core.remote.cache.HTTPSFetcher)" href=#trestle.core.remote.cache.HTTPSFetcher>HTTPSFetcher</a>]</code> </td> <td> <div class=doc-md-description> <p>fetcher object for the given URI.</p> </div> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/remote/cache.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>443</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h7 id=trestle.core.remote.cache.FetcherFactory.UriType-attributes>Attributes<a href=#trestle.core.remote.cache.FetcherFactory.UriType-attributes class=headerlink title="Permanent link">¤</a></h7> <div class="doc doc-object doc-attribute"> <h8 id=trestle.core.remote.cache.FetcherFactory.UriType.HTTPS class="doc doc-heading"> <code class="highlight language-python"><span class=n>HTTPS</span> <span class=o>=</span> <span class=mi>3</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.remote.cache.FetcherFactory.UriType.HTTPS class=headerlink title="Permanent link">¤</a></h8> <div class="doc doc-contents "> </div> </div> <div class="doc doc-object doc-attribute"> <h8 id=trestle.core.remote.cache.FetcherFactory.UriType.LOCAL_FILE class="doc doc-heading"> <code class="highlight language-python"><span class=n>LOCAL_FILE</span> <span class=o>=</span> <span class=mi>1</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.remote.cache.FetcherFactory.UriType.LOCAL_FILE class=headerlink title="Permanent link">¤</a></h8> <div class="doc doc-contents "> </div> </div> <div class="doc doc-object doc-attribute"> <h8 id=trestle.core.remote.cache.FetcherFactory.UriType.SFTP class="doc doc-heading"> <code class="highlight language-python"><span class=n>SFTP</span> <span class=o>=</span> <span class=mi>2</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.remote.cache.FetcherFactory.UriType.SFTP class=headerlink title="Permanent link">¤</a></h8> <div class="doc doc-contents "> </div> </div> <div class="doc doc-object doc-attribute"> <h8 id=trestle.core.remote.cache.FetcherFactory.UriType.TRESTLE class="doc doc-heading"> <code class="highlight language-python"><span class=n>TRESTLE</span> <span class=o>=</span> <span class=mi>4</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small> <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small> </span> <a href=#trestle.core.remote.cache.FetcherFactory.UriType.TRESTLE class=headerlink title="Permanent link">¤</a></h8> <div class="doc doc-contents "> </div> </div> </div> </div> </div> <h5 id=trestle.core.remote.cache.FetcherFactory-functions>Functions<a href=#trestle.core.remote.cache.FetcherFactory-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.remote.cache.FetcherFactory.get_fetcher class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_fetcher</span><span class=p>(</span><span class=n>trestle_root</span><span class=p>,</span> <span class=n>uri</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small> </span> <a href=#trestle.core.remote.cache.FetcherFactory.get_fetcher class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Return an instantiated fetcher object based on the type of URI.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>trestle_root</code> </td> <td> <code><span title=pathlib.Path>Path</span></code> </td> <td> <div class=doc-md-description> <p>Path of the trestle workspace, i.e., within which .trestle is to be found.</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>uri</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>Reference to the remote object to cache.</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <p><span class=doc-section-title>Returns:</span></p> <table> <thead> <tr> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code><span title=typing.Union>Union</span>[<a class="autorefs autorefs-internal" title="LocalFetcher (trestle.core.remote.cache.LocalFetcher)" href=#trestle.core.remote.cache.LocalFetcher>LocalFetcher</a>, <a class="autorefs autorefs-internal" title="SFTPFetcher (trestle.core.remote.cache.SFTPFetcher)" href=#trestle.core.remote.cache.SFTPFetcher>SFTPFetcher</a>, <a class="autorefs autorefs-internal" title="HTTPSFetcher (trestle.core.remote.cache.HTTPSFetcher)" href=#trestle.core.remote.cache.HTTPSFetcher>HTTPSFetcher</a>]</code> </td> <td> <div class=doc-md-description> <p>fetcher object for the given URI.</p> </div> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/remote/cache.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>439</span>
+<span class=normal>440</span>
+<span class=normal>441</span>
+<span class=normal>442</span>
+<span class=normal>443</span>
 <span class=normal>444</span>
 <span class=normal>445</span>
 <span class=normal>446</span>
@@ -513,11 +501,7 @@
 <span class=normal>454</span>
 <span class=normal>455</span>
 <span class=normal>456</span>
-<span class=normal>457</span>
-<span class=normal>458</span>
-<span class=normal>459</span>
-<span class=normal>460</span>
-<span class=normal>461</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@classmethod</span>
+<span class=normal>457</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@classmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>get_fetcher</span><span class=p>(</span><span class=bp>cls</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>uri</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>Union</span><span class=p>[</span><span class=n>LocalFetcher</span><span class=p>,</span> <span class=n>SFTPFetcher</span><span class=p>,</span> <span class=n>HTTPSFetcher</span><span class=p>]:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Return an instantiated fetcher object based on the type of URI.</span>
 
@@ -536,7 +520,11 @@
     <span class=p>}</span>
     <span class=n>uri_type</span> <span class=o>=</span> <span class=bp>cls</span><span class=o>.</span><span class=n>get_uri_type</span><span class=p>(</span><span class=n>uri</span><span class=p>)</span>
     <span class=k>return</span> <span class=n>fetcher_dict</span><span class=p>[</span><span class=n>uri_type</span><span class=p>](</span><span class=n>trestle_root</span><span class=p>,</span> <span class=n>uri</span><span class=p>)</span>  <span class=c1># type: ignore</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.remote.cache.FetcherFactory.get_uri_type class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_uri_type</span><span class=p>(</span><span class=n>uri</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.remote.cache.FetcherFactory.get_uri_type class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Determine the type of uri.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/remote/cache.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>408</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.remote.cache.FetcherFactory.get_uri_type class="doc doc-heading"> <code class="highlight language-python"><span class=n>get_uri_type</span><span class=p>(</span><span class=n>uri</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.remote.cache.FetcherFactory.get_uri_type class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Determine the type of uri.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/remote/cache.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>404</span>
+<span class=normal>405</span>
+<span class=normal>406</span>
+<span class=normal>407</span>
+<span class=normal>408</span>
 <span class=normal>409</span>
 <span class=normal>410</span>
 <span class=normal>411</span>
@@ -551,11 +539,7 @@
 <span class=normal>420</span>
 <span class=normal>421</span>
 <span class=normal>422</span>
-<span class=normal>423</span>
-<span class=normal>424</span>
-<span class=normal>425</span>
-<span class=normal>426</span>
-<span class=normal>427</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+<span class=normal>423</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>get_uri_type</span><span class=p>(</span><span class=n>uri</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=n>UriType</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Determine the type of uri.&quot;&quot;&quot;</span>
     <span class=k>if</span> <span class=n>uri</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=n>const</span><span class=o>.</span><span class=n>SFTP_URI</span><span class=p>):</span>
@@ -575,7 +559,11 @@
     <span class=k>if</span> <span class=n>uri_len</span> <span class=o>&gt;</span> <span class=mi>4</span> <span class=ow>and</span> <span class=mi>0</span> <span class=o>&lt;</span> <span class=n>uri_clean</span><span class=o>.</span><span class=n>rfind</span><span class=p>(</span><span class=s1>&#39;.&#39;</span><span class=p>)</span> <span class=o>&lt;</span> <span class=n>uri_len</span> <span class=o>-</span> <span class=mi>3</span><span class=p>:</span>
         <span class=k>return</span> <span class=n>FetcherFactory</span><span class=o>.</span><span class=n>UriType</span><span class=o>.</span><span class=n>LOCAL_FILE</span>
     <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Invalid uri not recognized as a readable file path with extension: </span><span class=si>{</span><span class=n>uri</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.remote.cache.FetcherFactory.in_trestle_directory class="doc doc-heading"> <code class="highlight language-python"><span class=n>in_trestle_directory</span><span class=p>(</span><span class=n>trestle_root</span><span class=p>,</span> <span class=n>uri</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.remote.cache.FetcherFactory.in_trestle_directory class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Check if in trestle directory when uri may not be a file path.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/remote/cache.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>429</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.remote.cache.FetcherFactory.in_trestle_directory class="doc doc-heading"> <code class="highlight language-python"><span class=n>in_trestle_directory</span><span class=p>(</span><span class=n>trestle_root</span><span class=p>,</span> <span class=n>uri</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.remote.cache.FetcherFactory.in_trestle_directory class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Check if in trestle directory when uri may not be a file path.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/remote/cache.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>425</span>
+<span class=normal>426</span>
+<span class=normal>427</span>
+<span class=normal>428</span>
+<span class=normal>429</span>
 <span class=normal>430</span>
 <span class=normal>431</span>
 <span class=normal>432</span>
@@ -583,11 +571,7 @@
 <span class=normal>434</span>
 <span class=normal>435</span>
 <span class=normal>436</span>
-<span class=normal>437</span>
-<span class=normal>438</span>
-<span class=normal>439</span>
-<span class=normal>440</span>
-<span class=normal>441</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+<span class=normal>437</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>in_trestle_directory</span><span class=p>(</span><span class=n>trestle_root</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>uri</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Check if in trestle directory when uri may not be a file path.&quot;&quot;&quot;</span>
     <span class=n>uri_type</span> <span class=o>=</span> <span class=n>FetcherFactory</span><span class=o>.</span><span class=n>get_uri_type</span><span class=p>(</span><span class=n>uri</span><span class=p>)</span>
@@ -600,10 +584,10 @@
     <span class=k>except</span> <span class=ne>Exception</span><span class=p>:</span>
         <span class=k>return</span> <span class=kc>False</span>
     <span class=k>return</span> <span class=kc>True</span>
-</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.remote.cache.FetcherFactory.uri_type_is_not_local class="doc doc-heading"> <code class="highlight language-python"><span class=n>uri_type_is_not_local</span><span class=p>(</span><span class=n>uri_type</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.remote.cache.FetcherFactory.uri_type_is_not_local class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Determine if the uri type is not local.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/remote/cache.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>403</span>
-<span class=normal>404</span>
-<span class=normal>405</span>
-<span class=normal>406</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
+</code></pre></div></td></tr></table></div> </details> </div> </div> <div class="doc doc-object doc-function"> <h6 id=trestle.core.remote.cache.FetcherFactory.uri_type_is_not_local class="doc doc-heading"> <code class="highlight language-python"><span class=n>uri_type_is_not_local</span><span class=p>(</span><span class=n>uri_type</span><span class=p>)</span></code> <span class="doc doc-labels"> <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small> </span> <a href=#trestle.core.remote.cache.FetcherFactory.uri_type_is_not_local class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Determine if the uri type is not local.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/remote/cache.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>399</span>
+<span class=normal>400</span>
+<span class=normal>401</span>
+<span class=normal>402</span></pre></div></td><td class=code><div><pre><span></span><code><span class=nd>@staticmethod</span>
 <span class=k>def</span><span class=w> </span><span class=nf>uri_type_is_not_local</span><span class=p>(</span><span class=n>uri_type</span><span class=p>:</span> <span class=n>UriType</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Determine if the uri type is not local.&quot;&quot;&quot;</span>
     <span class=k>return</span> <span class=n>uri_type</span> <span class=ow>in</span> <span class=p>[</span><span class=n>FetcherFactory</span><span class=o>.</span><span class=n>UriType</span><span class=o>.</span><span class=n>SFTP</span><span class=p>,</span> <span class=n>FetcherFactory</span><span class=o>.</span><span class=n>UriType</span><span class=o>.</span><span class=n>HTTPS</span><span class=p>]</span>
@@ -628,7 +612,11 @@
                   return '';
                 }
               });
-            </script> <p>Fetcher for https content.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/remote/cache.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>214</span>
+            </script> <p>Fetcher for https content.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/remote/cache.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>210</span>
+<span class=normal>211</span>
+<span class=normal>212</span>
+<span class=normal>213</span>
+<span class=normal>214</span>
 <span class=normal>215</span>
 <span class=normal>216</span>
 <span class=normal>217</span>
@@ -711,11 +699,7 @@
 <span class=normal>294</span>
 <span class=normal>295</span>
 <span class=normal>296</span>
-<span class=normal>297</span>
-<span class=normal>298</span>
-<span class=normal>299</span>
-<span class=normal>300</span>
-<span class=normal>301</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>HTTPSFetcher</span><span class=p>(</span><span class=n>FetcherBase</span><span class=p>):</span>
+<span class=normal>297</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>HTTPSFetcher</span><span class=p>(</span><span class=n>FetcherBase</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Fetcher for https content.&quot;&quot;&quot;</span>
 
     <span class=c1># Use request: https://requests.readthedocs.io/en/master/</span>
@@ -803,7 +787,11 @@
                 <span class=bp>self</span><span class=o>.</span><span class=n>_cached_object_path</span><span class=o>.</span><span class=n>write_text</span><span class=p>(</span><span class=n>result</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>const</span><span class=o>.</span><span class=n>FILE_ENCODING</span><span class=p>)</span>
         <span class=k>else</span><span class=p>:</span>
             <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;GET returned code </span><span class=si>{</span><span class=n>response</span><span class=o>.</span><span class=n>status_code</span><span class=si>}</span><span class=s1>: </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_uri</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.remote.cache.HTTPSFetcher-functions>Functions<a href=#trestle.core.remote.cache.HTTPSFetcher-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.remote.cache.HTTPSFetcher.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>trestle_root</span><span class=p>,</span> <span class=n>uri</span><span class=p>)</span></code> <a href=#trestle.core.remote.cache.HTTPSFetcher.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize HTTPS fetcher.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/remote/cache.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>218</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.remote.cache.HTTPSFetcher-functions>Functions<a href=#trestle.core.remote.cache.HTTPSFetcher-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.remote.cache.HTTPSFetcher.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>trestle_root</span><span class=p>,</span> <span class=n>uri</span><span class=p>)</span></code> <a href=#trestle.core.remote.cache.HTTPSFetcher.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize HTTPS fetcher.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/remote/cache.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>214</span>
+<span class=normal>215</span>
+<span class=normal>216</span>
+<span class=normal>217</span>
+<span class=normal>218</span>
 <span class=normal>219</span>
 <span class=normal>220</span>
 <span class=normal>221</span>
@@ -851,11 +839,7 @@
 <span class=normal>263</span>
 <span class=normal>264</span>
 <span class=normal>265</span>
-<span class=normal>266</span>
-<span class=normal>267</span>
-<span class=normal>268</span>
-<span class=normal>269</span>
-<span class=normal>270</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>uri</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+<span class=normal>266</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>uri</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Initialize HTTPS fetcher.&quot;&quot;&quot;</span>
     <span class=n>logger</span><span class=o>.</span><span class=n>debug</span><span class=p>(</span><span class=s1>&#39;Initializing HTTPSFetcher&#39;</span><span class=p>)</span>
     <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>trestle_root</span><span class=p>,</span> <span class=n>uri</span><span class=p>)</span>
@@ -929,7 +913,11 @@
                   return '';
                 }
               });
-            </script> <p>Fetcher for local content.</p> <p>Used for both file:/// and C:\ or C:/ type paths, but the path must be absolute. Also used for trestle:// files present in the current trestle root.</p> <p>If file:/// is used on a Windows system, it must be followed by C:/ or other drive letter to be sure it is an absolute path, e.g. file:///C:/Users/Default/Documents/profile.json. The drive letter may be lowercase. LocalFetcher does not do any caching and assumes the file is quickly accessible.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/remote/cache.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>151</span>
+            </script> <p>Fetcher for local content.</p> <p>Used for both file:/// and C:\ or C:/ type paths, but the path must be absolute. Also used for trestle:// files present in the current trestle root.</p> <p>If file:/// is used on a Windows system, it must be followed by C:/ or other drive letter to be sure it is an absolute path, e.g. file:///C:/Users/Default/Documents/profile.json. The drive letter may be lowercase. LocalFetcher does not do any caching and assumes the file is quickly accessible.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/remote/cache.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>147</span>
+<span class=normal>148</span>
+<span class=normal>149</span>
+<span class=normal>150</span>
+<span class=normal>151</span>
 <span class=normal>152</span>
 <span class=normal>153</span>
 <span class=normal>154</span>
@@ -985,11 +973,7 @@
 <span class=normal>204</span>
 <span class=normal>205</span>
 <span class=normal>206</span>
-<span class=normal>207</span>
-<span class=normal>208</span>
-<span class=normal>209</span>
-<span class=normal>210</span>
-<span class=normal>211</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>LocalFetcher</span><span class=p>(</span><span class=n>FetcherBase</span><span class=p>):</span>
+<span class=normal>207</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>LocalFetcher</span><span class=p>(</span><span class=n>FetcherBase</span><span class=p>):</span>
 <span class=w>    </span><span class=sa>r</span><span class=sd>&quot;&quot;&quot;Fetcher for local content.</span>
 
 <span class=sd>    Used for both file:/// and C:\\ or C:/ type paths, but the path must be absolute.</span>
@@ -1050,7 +1034,11 @@
     <span class=k>def</span><span class=w> </span><span class=nf>_do_fetch</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>        </span><span class=sd>&quot;&quot;&quot;No need to fetch since using actual file path.&quot;&quot;&quot;</span>
         <span class=k>pass</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.remote.cache.LocalFetcher-functions>Functions<a href=#trestle.core.remote.cache.LocalFetcher-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.remote.cache.LocalFetcher.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>trestle_root</span><span class=p>,</span> <span class=n>uri</span><span class=p>)</span></code> <a href=#trestle.core.remote.cache.LocalFetcher.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize local fetcher.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>trestle_root</code> </td> <td> <code><span title=pathlib.Path>Path</span></code> </td> <td> <div class=doc-md-description> <p>trestle root path</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>uri</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>Reference to the file in the local filesystem to cache, which must be outside trestle_root.</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/remote/cache.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>163</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.remote.cache.LocalFetcher-functions>Functions<a href=#trestle.core.remote.cache.LocalFetcher-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.remote.cache.LocalFetcher.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>trestle_root</span><span class=p>,</span> <span class=n>uri</span><span class=p>)</span></code> <a href=#trestle.core.remote.cache.LocalFetcher.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize local fetcher.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>trestle_root</code> </td> <td> <code><span title=pathlib.Path>Path</span></code> </td> <td> <div class=doc-md-description> <p>trestle root path</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>uri</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>Reference to the file in the local filesystem to cache, which must be outside trestle_root.</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/remote/cache.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>159</span>
+<span class=normal>160</span>
+<span class=normal>161</span>
+<span class=normal>162</span>
+<span class=normal>163</span>
 <span class=normal>164</span>
 <span class=normal>165</span>
 <span class=normal>166</span>
@@ -1086,11 +1074,7 @@
 <span class=normal>196</span>
 <span class=normal>197</span>
 <span class=normal>198</span>
-<span class=normal>199</span>
-<span class=normal>200</span>
-<span class=normal>201</span>
-<span class=normal>202</span>
-<span class=normal>203</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>uri</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+<span class=normal>199</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>uri</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Initialize local fetcher.</span>
 
 <span class=sd>    Args:</span>
@@ -1152,7 +1136,11 @@
                   return '';
                 }
               });
-            </script> <p>Fetcher for SFTP content.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/remote/cache.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>304</span>
+            </script> <p>Fetcher for SFTP content.</p> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/remote/cache.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>300</span>
+<span class=normal>301</span>
+<span class=normal>302</span>
+<span class=normal>303</span>
+<span class=normal>304</span>
 <span class=normal>305</span>
 <span class=normal>306</span>
 <span class=normal>307</span>
@@ -1226,11 +1214,7 @@
 <span class=normal>375</span>
 <span class=normal>376</span>
 <span class=normal>377</span>
-<span class=normal>378</span>
-<span class=normal>379</span>
-<span class=normal>380</span>
-<span class=normal>381</span>
-<span class=normal>382</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>SFTPFetcher</span><span class=p>(</span><span class=n>FetcherBase</span><span class=p>):</span>
+<span class=normal>378</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>SFTPFetcher</span><span class=p>(</span><span class=n>FetcherBase</span><span class=p>):</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Fetcher for SFTP content.&quot;&quot;&quot;</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>uri</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
@@ -1309,7 +1293,11 @@
             <span class=n>sftp_client</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=n>remotepath</span><span class=o>=</span><span class=n>u</span><span class=o>.</span><span class=n>path</span><span class=p>[</span><span class=mi>1</span><span class=p>:],</span> <span class=n>localpath</span><span class=o>=</span><span class=p>(</span><span class=n>localpath</span><span class=o>.</span><span class=fm>__str__</span><span class=p>()))</span>
         <span class=k>except</span> <span class=ne>Exception</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
             <span class=k>raise</span> <span class=n>TrestleError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Error getting remote resource </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>_uri</span><span class=si>}</span><span class=s1> into cache </span><span class=si>{</span><span class=n>localpath</span><span class=si>}</span><span class=s1>: </span><span class=si>{</span><span class=n>e</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
-</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.remote.cache.SFTPFetcher-functions>Functions<a href=#trestle.core.remote.cache.SFTPFetcher-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.remote.cache.SFTPFetcher.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>trestle_root</span><span class=p>,</span> <span class=n>uri</span><span class=p>)</span></code> <a href=#trestle.core.remote.cache.SFTPFetcher.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize SFTP fetcher. Update the expected cache path as per caching specs.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>trestle_root</code> </td> <td> <code><span title=pathlib.Path>Path</span></code> </td> <td> <div class=doc-md-description> <p>Path of the trestle workspace, i.e., within which .trestle is to be found.</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>uri</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>Reference to the remote file to cache that can be fetched using the sftp:// scheme.</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/remote/cache.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>307</span>
+</code></pre></div></td></tr></table></div> </details> <div class="doc doc-children"> <h5 id=trestle.core.remote.cache.SFTPFetcher-functions>Functions<a href=#trestle.core.remote.cache.SFTPFetcher-functions class=headerlink title="Permanent link">¤</a></h5> <div class="doc doc-object doc-function"> <h6 id=trestle.core.remote.cache.SFTPFetcher.__init__ class="doc doc-heading"> <code class="highlight language-python"><span class=fm>__init__</span><span class=p>(</span><span class=n>trestle_root</span><span class=p>,</span> <span class=n>uri</span><span class=p>)</span></code> <a href=#trestle.core.remote.cache.SFTPFetcher.__init__ class=headerlink title="Permanent link">¤</a></h6> <div class="doc doc-contents "> <p>Initialize SFTP fetcher. Update the expected cache path as per caching specs.</p> <p><span class=doc-section-title>Parameters:</span></p> <table> <thead> <tr> <th>Name</th> <th>Type</th> <th>Description</th> <th>Default</th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <code>trestle_root</code> </td> <td> <code><span title=pathlib.Path>Path</span></code> </td> <td> <div class=doc-md-description> <p>Path of the trestle workspace, i.e., within which .trestle is to be found.</p> </div> </td> <td> <em>required</em> </td> </tr> <tr class=doc-section-item> <td> <code>uri</code> </td> <td> <code><span title=str>str</span></code> </td> <td> <div class=doc-md-description> <p>Reference to the remote file to cache that can be fetched using the sftp:// scheme.</p> </div> </td> <td> <em>required</em> </td> </tr> </tbody> </table> <details class=mkdocstrings-source> <summary>Source code in <code>trestle/core/remote/cache.py</code></summary> <div class=highlight><table class=highlighttable><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal>303</span>
+<span class=normal>304</span>
+<span class=normal>305</span>
+<span class=normal>306</span>
+<span class=normal>307</span>
 <span class=normal>308</span>
 <span class=normal>309</span>
 <span class=normal>310</span>
@@ -1335,11 +1323,7 @@
 <span class=normal>330</span>
 <span class=normal>331</span>
 <span class=normal>332</span>
-<span class=normal>333</span>
-<span class=normal>334</span>
-<span class=normal>335</span>
-<span class=normal>336</span>
-<span class=normal>337</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>uri</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+<span class=normal>333</span></pre></div></td><td class=code><div><pre><span></span><code><span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>trestle_root</span><span class=p>:</span> <span class=n>pathlib</span><span class=o>.</span><span class=n>Path</span><span class=p>,</span> <span class=n>uri</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
 <span class=w>    </span><span class=sd>&quot;&quot;&quot;Initialize SFTP fetcher. Update the expected cache path as per caching specs.</span>
 
 <span class=sd>    Args:</span>
