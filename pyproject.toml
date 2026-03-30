@@ -34,7 +34,7 @@ classifiers = [
 dependencies = [
     "attrs",
     "ilcli",
-    "cryptography==46.0.5",
+    "cryptography==46.0.6",
     "paramiko==4.0.0",
     "ruamel.yaml",
     "furl",
