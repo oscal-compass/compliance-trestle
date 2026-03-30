@@ -70,7 +70,7 @@ As a reminder, you could also have imported the file from a local directory on y
 
 The `import` command will also check the
 validity of the file including the presence of any duplicate uuid's.  If the file is manually created
-please be sure it conforms with the current OSCAL schema (OSCAL version 1.1.3) and has no defined uuid's that are duplicates.
+please be sure it conforms with the current OSCAL schema (OSCAL version 1.2.1) and has no defined uuid's that are duplicates.
 If there are any errors the Import will fail and the file must be corrected.
 
 <br>
