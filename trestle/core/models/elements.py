@@ -17,6 +17,8 @@ import logging
 import pathlib
 from typing import Any, List, Optional, Type, Union, cast
 
+import typing_extensions
+
 from pydantic.v1 import Field, create_model
 from pydantic.v1.error_wrappers import ValidationError
 
@@ -24,7 +26,9 @@ from ruamel.yaml import YAML
 
 import trestle.common.const as const
 from trestle.common import common_types, str_utils, type_utils as utils
+import trestle.common.err as err
 from trestle.common.err import TrestleError, TrestleNotFoundError
+from trestle.common.model_utils import _get_model_type_from_union
 from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import AliasMode, classname_to_alias
 from trestle.core.base_model import OscalBaseModel
@@ -115,7 +119,18 @@ class ElementPath:
             # Determine if the parent model is a collection.
             if utils.is_collection_field_type(prev_model):
                 inner_model = utils.get_inner_type(prev_model)
-                inner_class_name = classname_to_alias(inner_model.__name__, AliasMode.JSON)
+                # Handle Union types (e.g., Group1|Group2 from catalog or profile)
+                # Both variants in a Union typically map to the same JSON alias
+                if hasattr(inner_model, '__name__'):
+                    inner_class_name = classname_to_alias(inner_model.__name__, AliasMode.JSON)
+                else:
+                    # For Union types, use the first variant's name
+                    # e.g., for Group1|Group2, both map to JSON alias "group"
+                    union_args = typing_extensions.get_args(inner_model)
+                    if union_args:
+                        inner_class_name = classname_to_alias(union_args[0].__name__, AliasMode.JSON)
+                    else:
+                        raise err.TrestleError(f'Unable to determine class name for type {inner_model}')
                 # Assert that the current name fits an expected form.
                 # Valid choices here are *, integer (for arrays) and the inner model alias
                 if (
@@ -135,7 +150,9 @@ class ElementPath:
                         'Wild card in unexpected position when trying to find class type.'
                         + ' Element path type lookup can only occur where a single type can be identified.'
                     )
-                prev_model = prev_model.alias_to_field_map()[current_element_str].outer_type_
+                # Resolve Union types before accessing alias_to_field_map
+                resolved_model = _get_model_type_from_union(prev_model, field_name=current_element_str)
+                prev_model = resolved_model.alias_to_field_map()[current_element_str].outer_type_
         return prev_model
 
     def get_obm_wrapped_type(
@@ -171,7 +188,10 @@ class ElementPath:
                 __root__=(base_type, ...),
             )
             return new_base_type
-        return base_type
+        # Resolve Union types before returning
+        # This handles cases like Group1|Group2 or Parameter1|Parameter2
+        resolved_type = _get_model_type_from_union(base_type)
+        return resolved_type
 
     def _top_level_type_lookup(self, element_str: str) -> Type[common_types.TopLevelOscalModel]:
         """From an individual element tag, induce the type of the model.

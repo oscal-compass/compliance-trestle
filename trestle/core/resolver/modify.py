@@ -181,9 +181,11 @@ class Modify(Pipeline.Filter):
             param.label = set_param.label
         if set_param.usage:
             param.usage = set_param.usage
-        if set_param.values:
+        # Handle Union type: SetParameters has values, SetParameters1 has select
+        # Also check destination param has the field before setting
+        if hasattr(set_param, 'values') and set_param.values and hasattr(param, 'values'):
             param.values = set_param.values
-        if set_param.select:
+        if hasattr(set_param, 'select') and set_param.select and hasattr(param, 'select'):
             param.select = set_param.select
 
     @staticmethod
