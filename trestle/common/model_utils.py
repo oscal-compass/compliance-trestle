@@ -465,17 +465,15 @@ class ModelUtils:
         root_model_dir = trestle_root / model_dir_name
         model_list = []
         for f in root_model_dir.glob('*/'):
-            # Use f.name for directories to preserve full directory name including dots
-            # f.stem is for files and incorrectly treats dots as file extensions
-            dir_name = f.name
-            if not ModelUtils._should_ignore(dir_name):
+            # Use the full directory name; Path.stem would incorrectly strip dotted model names.
+            if not ModelUtils._should_ignore(f.name):
                 if not f.is_dir():
                     logger.warning(
-                        f'Ignoring validation of misplaced file {dir_name} '
+                        f'Ignoring validation of misplaced file {f.name} '
                         + f'found in the model directory, {model_dir_name}.'
                     )
                 else:
-                    model_list.append(dir_name)
+                    model_list.append(f.name)
         return model_list
 
     @staticmethod

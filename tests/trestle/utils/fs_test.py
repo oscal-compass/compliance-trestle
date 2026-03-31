@@ -546,6 +546,18 @@ def test_get_models_of_type(tmp_trestle_dir) -> None:
         ModelUtils.get_models_of_type('foo', tmp_trestle_dir)
 
 
+def test_get_models_of_type_preserves_dots(tmp_trestle_dir) -> None:
+    """Test model discovery preserves dots in top-level model directory names."""
+    catalogs_dir = tmp_trestle_dir.resolve() / 'catalogs'
+    (catalogs_dir / 'foo.bar').mkdir()
+
+    models = ModelUtils.get_models_of_type('catalog', tmp_trestle_dir)
+    all_models = ModelUtils.get_all_models(tmp_trestle_dir)
+
+    assert 'foo.bar' in models
+    assert ('catalog', 'foo.bar') in all_models
+
+
 def test_get_models_of_type_bad_cwd(tmp_path) -> None:
     """Test fs.get_models_of_type() from outside trestle dir."""
     with pytest.raises(TrestleError):
