@@ -750,7 +750,7 @@ def test_catalog_tab_in_statement(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
     test_utils.execute_command_and_assert(catalog_generate, 0, monkeypatch)
     md_path = tmp_trestle_dir / 'md_catalog/ac/ac-2.md'
     assert md_path.exists()
-
+    # Cannot use r-string here: \t must remain as tab charcters for markdown parsing
     control_statement_prose_with_parts = """The organization:
 \t
 \t
