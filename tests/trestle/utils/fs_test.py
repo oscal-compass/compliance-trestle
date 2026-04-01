@@ -223,16 +223,17 @@ def test_get_relative_model_type(tmp_path: pathlib.Path) -> None:
     )
     assert ModelUtils.get_relative_model_type(catalog_dir / 'metadata.yaml') == (common.Metadata, 'catalog.metadata')
     assert ModelUtils.get_relative_model_type(metadata_dir) == (common.Metadata, 'catalog.metadata')
-    assert ModelUtils.get_relative_model_type(roles_dir) == (List[common.Role], 'catalog.metadata.roles')
     (type_, element) = ModelUtils.get_relative_model_type(roles_dir)
     assert cutils.get_origin(type_) == list
+    assert cutils.get_inner_type(type_) == common.Role
     assert element == 'catalog.metadata.roles'
     assert ModelUtils.get_relative_model_type(roles_dir / '00000__role.json') == (
         common.Role,
         'catalog.metadata.roles.role',
     )
     model_type, full_alias = ModelUtils.get_relative_model_type(rps_dir)
-    assert model_type == List[common.ResponsibleParty]
+    assert cutils.get_origin(model_type) == list
+    assert cutils.get_inner_type(model_type) == common.ResponsibleParty
     assert full_alias == 'catalog.metadata.responsible-parties'
     assert ModelUtils.get_relative_model_type(rps_dir / 'creator__responsible-party.json') == (
         common.ResponsibleParty,
@@ -248,11 +249,19 @@ def test_get_relative_model_type(tmp_path: pathlib.Path) -> None:
     assert expected_type == common.Property
     assert expected_json_path == 'catalog.metadata.props.property'
     assert cutils.get_origin(type_) == list
-    assert ModelUtils.get_relative_model_type(groups_dir / f'00000{const.IDX_SEP}group.json') == (
-        catalog.Group,
-        'catalog.groups.group',
-    )
-    assert ModelUtils.get_relative_model_type(group_dir) == (catalog.Group, 'catalog.groups.group')
+    # Group can be either Group1 or Group2, so we get the Union type
+    group_type, group_alias = ModelUtils.get_relative_model_type(groups_dir / f'00000{const.IDX_SEP}group.json')
+    assert group_alias == 'catalog.groups.group'
+    # The type should be the Union Group1|Group2
+    import typing_extensions
+
+    union_args = typing_extensions.get_args(group_type)
+    assert catalog.Group1 in union_args and catalog.Group2 in union_args
+
+    group_dir_type, group_dir_alias = ModelUtils.get_relative_model_type(group_dir)
+    assert group_dir_alias == 'catalog.groups.group'
+    union_args = typing_extensions.get_args(group_dir_type)
+    assert catalog.Group1 in union_args and catalog.Group2 in union_args
     assert ModelUtils.get_relative_model_type(controls_dir / f'00000{const.IDX_SEP}control.json') == (
         catalog.Control,
         'catalog.groups.group.controls.control',
@@ -387,8 +396,10 @@ def test_get_stripped_model_type(tmp_path: pathlib.Path) -> None:
         assert 'props' in alias_to_field_map
         assert 'links' in alias_to_field_map
         assert 'parts' in alias_to_field_map
-        assert 'groups' in alias_to_field_map
-        assert 'controls' not in alias_to_field_map
+        # In OSCAL 1.2.0, Group is a Union of Group1 (has groups) and Group2 (has controls)
+        # Since test setup creates a controls subdirectory, this is Group2 with controls stripped out
+        assert 'controls' not in alias_to_field_map  # Stripped because split into subdirectory
+        assert 'groups' not in alias_to_field_map  # Not present in Group2
 
     stripped_catalog = ModelUtils.get_stripped_model_type(groups_dir / f'00000{const.IDX_SEP}group', tmp_path)
     alias_to_field_map = stripped_catalog[0].alias_to_field_map()
@@ -704,3 +715,12 @@ def test_update_last_modified(sample_catalog_rich_controls: catalog.Catalog) -> 
     assert sample_catalog_rich_controls.metadata.last_modified == hour_ago
     ModelUtils.update_last_modified(sample_catalog_rich_controls)
     assert ModelUtils.model_age(sample_catalog_rich_controls) < test_utils.NEW_MODEL_AGE_SECONDS
+
+
+def test_model_age_multiday(sample_catalog_rich_controls: catalog.Catalog) -> None:
+    """Test that model_age returns correct age for models older than 24 hours."""
+    two_days_ago = datetime.now().astimezone() - timedelta(days=2)
+    ModelUtils.update_last_modified(sample_catalog_rich_controls, two_days_ago)
+    age = ModelUtils.model_age(sample_catalog_rich_controls)
+    # Two days is 172800 seconds; timedelta.seconds (old bug) would return 0, not 172800
+    assert age >= 2 * const.DAY_SECONDS

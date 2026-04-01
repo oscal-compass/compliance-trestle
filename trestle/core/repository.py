@@ -58,7 +58,7 @@ class ManagedOSCAL:
         self.model_type = model_type
         self.model_name = name
 
-        # set model alais and dir
+        # set model alias and dir
         self.model_alias = classname_to_alias(self.model_type.__name__, AliasMode.JSON)
         if parser.to_full_model_name(self.model_alias) is None:
             raise TrestleError(f'Given model {self.model_alias} is not a top level model.')
@@ -145,13 +145,13 @@ class ManagedOSCAL:
         except Exception as e:
             raise TrestleError(f'Error in splitting model: {e}')
 
-        logger.debug(f'Model {self.model_name}, file {model_file} splitted successfully.')
+        logger.debug(f'Model {self.model_name}, file {model_file} split successfully.')
         return success
 
     def merge(self, elements: List[str], parent_model_dir: Optional[pathlib.Path] = None) -> bool:
         """Merge OSCAL elements in repository.
 
-        The parent_model_dir specifies the parent model direcotry in which to merge relative to main model dir.
+        The parent_model_dir specifies the parent model directory in which to merge relative to main model dir.
         For example, if we have to merge 'metadata.*' into 'metadata' then parent_model_dir should be the 'catalog'
         dir that contains the 'metadata.json' file or the 'metadata' directory
         """
@@ -238,8 +238,8 @@ class Repository:
                 errmsg = f'Validation of model {name} did not pass'
                 logger.error(errmsg)
         except Exception as err:
-            logger.error(errmsg)
             errmsg = f'Import of model {name} failed. Validation failed with error: {err}'
+            logger.error(errmsg)
 
         if not success:
             # rollback in case of validation error or failure
