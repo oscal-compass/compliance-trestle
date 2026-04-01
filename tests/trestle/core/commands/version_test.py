@@ -16,13 +16,18 @@
 """Test for cli module command version."""
 
 import pathlib
+from types import SimpleNamespace
 
+import pytest
 from _pytest.monkeypatch import MonkeyPatch
 
 from tests import test_utils
 from tests.test_utils import execute_command_and_assert
 
 from trestle import __version__
+from trestle.common.err import TrestleError
+from trestle.common.model_utils import ModelUtils
+from trestle.core.commands.version import VersionCmd
 from trestle.oscal import OSCAL_VERSION
 
 
@@ -61,3 +66,16 @@ def test_oscal_obj_version(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPat
     execute_command_and_assert(testcmd, 0, monkeypatch)
     output, _ = capsys.readouterr()
     assert f'Version of OSCAL object of {comp_name} component-definition is: 0.21.0' in output
+
+
+def test_oscal_obj_version_missing_metadata_raises_trestle_error(monkeypatch: MonkeyPatch) -> None:
+    """Test OSCAL object version reports a friendly error when metadata is missing."""
+    cmd = VersionCmd()
+
+    def _mock_load_model_for_type(*args, **kwargs):
+        return SimpleNamespace(metadata=None), pathlib.Path('/tmp/missing-metadata.json')
+
+    monkeypatch.setattr(ModelUtils, 'load_model_for_type', _mock_load_model_for_type)
+
+    with pytest.raises(TrestleError, match='Metadata version is missing'):
+        cmd._get_version('catalog', 'missing-metadata', pathlib.Path('/tmp'))
