@@ -295,3 +295,21 @@ def test_trash_recover(tmp_path) -> None:
     trash.recover(data_dir)
     assert data_dir.exists()
     assert readme_file.exists()
+
+
+def test_trash_recover_dotted_directory_name(tmp_path: pathlib.Path) -> None:
+    """Test recover handles directory names containing dots."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    dotted_dir: pathlib.Path = tmp_path / 'policy.v1'
+    dotted_dir.mkdir(exist_ok=True, parents=True)
+    readme_file: pathlib.Path = dotted_dir / 'readme.md'
+    readme_file.touch()
+
+    trash.store(dotted_dir, True)
+    assert dotted_dir.exists() is False
+    assert readme_file.exists() is False
+    assert trash.to_trash_dir_path(dotted_dir).exists()
+
+    trash.recover(dotted_dir)
+    assert dotted_dir.exists()
+    assert readme_file.exists()
