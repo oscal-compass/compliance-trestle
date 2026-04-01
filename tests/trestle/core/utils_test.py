@@ -214,29 +214,40 @@ def test_parameter_to_dict() -> None:
     test1 = common.Test(expression='not too big', remarks='test for 1')
     test2 = common.Test(expression='keep it small', remarks='test for 2')
     constraints = [common.ParameterConstraint(description='my constraints', tests=[test1, test2])]
-    sel = common.ParameterSelection(how_many=const.ONE_OR_MORE_HYPHENED, choice=['one', 'two', 'three'])
     values = ['one', 'two']
     prop1 = common.Property(name='prop1', value='value1')
     prop2 = common.Property(name='prop2', value='value2', remarks='remark2')
-    param = common.Parameter(
-        id='param1',
-        label='label1',
-        values=values,
-        props=[prop1, prop2],
-        select=sel,
-        remarks='remarks1',
-        constraints=constraints,
+
+    # Test Parameter1 with values
+    param1 = common.Parameter1(
+        id='param1', label='label1', values=values, props=[prop1, prop2], remarks='remarks1', constraints=constraints
     )
-    param_dict = ModelUtils.parameter_to_dict(param, False)
+    param_dict = ModelUtils.parameter_to_dict(param1, False)
     dict_copy = copy.deepcopy(param_dict)
     new_param = ModelUtils.dict_to_parameter(dict_copy)
-    assert param == new_param
+    assert param1 == new_param
 
     # confirm it strips items properly to partial form
-    partial_dict = ModelUtils.parameter_to_dict(param, True)
+    partial_dict = ModelUtils.parameter_to_dict(param1, True)
     new_partial_param = ModelUtils.dict_to_parameter(partial_dict)
-    partial_param = common.Parameter(id='param1', label='label1', values=values, select=sel)
+    partial_param = common.Parameter1(id='param1', label='label1', values=values)
     assert new_partial_param == partial_param
+
+    # Test Parameter2 with select
+    sel = common.ParameterSelection(how_many=const.ONE_OR_MORE_HYPHENED, choice=['one', 'two', 'three'])
+    param2 = common.Parameter2(
+        id='param2', label='label2', select=sel, props=[prop1, prop2], remarks='remarks2', constraints=constraints
+    )
+    param_dict2 = ModelUtils.parameter_to_dict(param2, False)
+    dict_copy2 = copy.deepcopy(param_dict2)
+    new_param2 = ModelUtils.dict_to_parameter(dict_copy2)
+    assert param2 == new_param2
+
+    # confirm it strips items properly to partial form
+    partial_dict2 = ModelUtils.parameter_to_dict(param2, True)
+    new_partial_param2 = ModelUtils.dict_to_parameter(partial_dict2)
+    partial_param2 = common.Parameter2(id='param2', label='label2', select=sel)
+    assert new_partial_param2 == partial_param2
 
     # confirm that disallowed attributes raise exception
     dict_copy = copy.deepcopy(param_dict)
@@ -245,30 +256,21 @@ def test_parameter_to_dict() -> None:
         _ = ModelUtils.dict_to_parameter(dict_copy)
 
     # confirm that bad string for how-many raises exception
-    dict_copy = copy.deepcopy(param_dict)
-    dict_copy['select']['how_many'] = 'seven'
+    dict_copy2 = copy.deepcopy(param_dict2)
+    dict_copy2['select']['how_many'] = 'seven'
     with pytest.raises(err.TrestleError):
-        _ = ModelUtils.dict_to_parameter(dict_copy)
+        _ = ModelUtils.dict_to_parameter(dict_copy2)
 
-    # confirm values must be among allowed choices or give warning
-    sel = common.ParameterSelection(how_many=const.ONE_OR_MORE_HYPHENED, choice=['one', 'two', 'three'])
-    param = common.Parameter(id='param1', label='label1', select=sel, values=['two', 'five'])
-    param_dict = ModelUtils.parameter_to_dict(param, False)
-    new_param = ModelUtils.dict_to_parameter(param_dict)
-    assert param == new_param
+    # Test Parameter1 with values only (no select)
+    param_values_only = common.Parameter1(id='param1', label='label1', values=['two', 'five'])
+    param_dict_values = ModelUtils.parameter_to_dict(param_values_only, False)
+    new_param_values = ModelUtils.dict_to_parameter(param_dict_values)
+    assert param_values_only == new_param_values
 
-    # confirm only one item if HowMany is one or give warning
-    sel = common.ParameterSelection(how_many='one', choice=['one', 'two', 'three'])
-    param = common.Parameter(id='param1', label='label1', select=sel, values=['two', 'three'])
-    param_dict = ModelUtils.parameter_to_dict(param, False)
-    new_param = ModelUtils.dict_to_parameter(param_dict)
-    assert param == new_param
-
-    # confirm special handling for one value works
-    sel = common.ParameterSelection(how_many='one', choice=['one', 'two', 'three'])
-    param = common.Parameter(id='param1', label='label1', select=sel, values=['two'])
-    param_dict = ModelUtils.parameter_to_dict(param, False)
-    assert param == ModelUtils.dict_to_parameter(param_dict)
+    # Test Parameter1 with single value
+    param_single = common.Parameter1(id='param1', label='label1', values=['two'])
+    param_dict_single = ModelUtils.parameter_to_dict(param_single, False)
+    assert param_single == ModelUtils.dict_to_parameter(param_dict_single)
 
 
 def test_find_all_prose(simplified_nist_catalog: catalog.Catalog) -> None:
