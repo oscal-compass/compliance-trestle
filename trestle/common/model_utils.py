@@ -96,7 +96,7 @@ def _get_model_type_from_union(model_type: Type[Any], field_name: Optional[str] 
 
 
 def _resolve_collection_item_alias(parent_model_type: Type[Any], field_alias: str, alias_path: str) -> str:
-    """Resolve the singular alias for an item in a collection field."""
+    """Resolve the singular alias for a collection item field."""
     try:
         parent_model_type = _get_model_type_from_union(parent_model_type, field_alias)
         field_map = parent_model_type.alias_to_field_map()
@@ -104,8 +104,7 @@ def _resolve_collection_item_alias(parent_model_type: Type[Any], field_alias: st
         outer_type = field.outer_type_
         inner_type = utils.get_inner_type(outer_type)
         inner_type = _get_model_type_from_union(inner_type)
-        inner_type_name = inner_type.__name__
-        return str_utils.classname_to_alias(inner_type_name, AliasMode.JSON)
+        return str_utils.classname_to_alias(inner_type.__name__, AliasMode.JSON)
     except Exception as e:
         raise err.TrestleError(f'Error in json path {alias_path}: {e}') from e
 
@@ -601,8 +600,8 @@ class ModelUtils:
         if last_alias == '*':
             last_alias = path_parts[-2]
 
-        # Terminal numeric indexes (e.g. "component-definition.components.0")
-        # refer to an item in the preceding collection; resolve to that item's alias.
+        # Terminal numeric indexes (e.g. "component-definition.components.0") refer to an item in the
+        # preceding collection; resolve to that item's alias.
         if path_parts[-1].isdigit():
             if len(path_parts) < 2:
                 raise err.TrestleError(f'Error in json path {alias_path}: unable to resolve indexed collection alias')

@@ -438,17 +438,16 @@ def test_get_singular_alias() -> None:
     assert 'control-implementation' == ModelUtils.get_singular_alias(
         alias_path='component-definition.components.*.control-implementations'
     )
-    assert 'control-implementation' == ModelUtils.get_singular_alias(
-        alias_path='component-definition.components.0.control-implementations'
-    )
-    # Test indexed terminal paths resolve correctly
     assert 'defined-component' == ModelUtils.get_singular_alias(alias_path='component-definition.components.0')
 
     # Test indexed nested paths
+    assert 'control-implementation' == ModelUtils.get_singular_alias(
+        alias_path='component-definition.components.0.control-implementations'
+    )
     assert 'control' == ModelUtils.get_singular_alias(alias_path='catalog.groups.0.controls.0')
     assert 'control' == ModelUtils.get_singular_alias(alias_path='catalog.groups.0.controls')
 
-    # Cover indexed terminal error branch for short path depth
+    # Test that a too-shallow indexed path raises TrestleError (covers len(model_types) < 3 guard)
     with pytest.raises(TrestleError, match='unable to resolve indexed collection alias'):
         ModelUtils.get_singular_alias(alias_path='catalog.0')
 
