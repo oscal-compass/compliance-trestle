@@ -441,8 +441,8 @@ def test_get_singular_alias() -> None:
     assert 'control-implementation' == ModelUtils.get_singular_alias(
         alias_path='component-definition.components.0.control-implementations'
     )
-    # FIXME ideally this should report error
-    assert '0' == ModelUtils.get_singular_alias(alias_path='component-definition.components.0')
+    with pytest.raises(TrestleError):
+        ModelUtils.get_singular_alias(alias_path='component-definition.components.0')
 
     assert 'control' == ModelUtils.get_singular_alias(alias_path='catalog.groups.*.controls.*.controls')
 
