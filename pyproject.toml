@@ -294,6 +294,10 @@ warn_untyped_fields = true
 
 [tool.coverage.run]
 relative_files = true
+omit = [
+    "/tmp/*",
+    "*/pytest-*/*",
+]
 
 [tool.semantic_release]
 build_command = """
