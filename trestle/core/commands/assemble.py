@@ -44,6 +44,13 @@ class AssembleCmd(CommandPlusDocs):
         self.add_argument(
             '-x', '--extension', help='Type of file output.', choices=['json', 'yaml', 'yml'], default='json'
         )
+        self.add_argument(
+            '-j',
+            '--jcs',
+            action='store_true',
+            help='Write the assembled output as RFC 8785 canonical JSON (JCS). '
+                 'Implies --extension json.',
+        )
 
     def _run(self, args: argparse.Namespace) -> int:
         try:
@@ -103,5 +110,11 @@ class AssembleCmd(CommandPlusDocs):
             )
 
             plan.execute()
+
+            if getattr(args, 'jcs', False):
+                if args.extension not in ('json',):
+                    raise TrestleError('--jcs flag is only valid with --extension json.')
+                assembled_model_filepath.write_bytes(assembled_model.oscal_serialize_jcs())
+                logger.debug(f'Overwrote assembled output with RFC 8785 canonical JSON: {assembled_model_filepath}')
 
         return CmdReturnCodes.SUCCESS.value
