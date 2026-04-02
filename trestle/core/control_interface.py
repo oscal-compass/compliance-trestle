@@ -367,7 +367,7 @@ class ControlInterface:
         return prose.strip()
 
     @staticmethod
-    def setparam_to_param(param_id: str, set_param: prof.SetParameter) -> common.Parameter:
+    def setparam_to_param(param_id: str, set_param: prof.SetParameters | prof.SetParameters1) -> common.Parameter:
         """
         Convert setparameter to parameter.
 
@@ -378,21 +378,53 @@ class ControlInterface:
         Returns:
             a Parameter with param_id and content from the SetParameter
         """
-        return common.Parameter(
-            id=param_id,
-            values=set_param.values,
-            select=set_param.select,
-            label=set_param.label,
-            props=set_param.props,
-            **{
-                'class': None,
-                'depends-on': None,
-                'links': None,
-                'usage': None,
-                'constraints': None,
-                'guidelines': None,
-            },
-        )
+        # Choose Parameter1 (with values) or Parameter2 (with select) based on which field is populated
+        if hasattr(set_param, 'values') and set_param.values is not None:
+            return common.Parameter1(
+                id=param_id,
+                values=set_param.values,
+                label=set_param.label,
+                props=set_param.props,
+                **{
+                    'class': None,
+                    'depends-on': None,
+                    'links': None,
+                    'usage': None,
+                    'constraints': None,
+                    'guidelines': None,
+                },
+            )
+        elif hasattr(set_param, 'select') and set_param.select is not None:
+            return common.Parameter2(
+                id=param_id,
+                select=set_param.select,
+                label=set_param.label,
+                props=set_param.props,
+                **{
+                    'class': None,
+                    'depends-on': None,
+                    'links': None,
+                    'usage': None,
+                    'constraints': None,
+                    'guidelines': None,
+                },
+            )
+        else:
+            # If neither values nor select is present, return Parameter1 with empty values
+            return common.Parameter1(
+                id=param_id,
+                values=[],
+                label=set_param.label,
+                props=set_param.props,
+                **{
+                    'class': None,
+                    'depends-on': None,
+                    'links': None,
+                    'usage': None,
+                    'constraints': None,
+                    'guidelines': None,
+                },
+            )
 
     @staticmethod
     def uniquify_set_params(set_params: Optional[List[TypeWithParamId]]) -> List[TypeWithParamId]:
@@ -647,23 +679,29 @@ class ControlInterface:
     def _setparam_values_as_str(set_param: comp.SetParameter) -> str:
         """Convert values to string."""
         out_str = ''
-        for value in as_list(set_param.values):
-            value_str = string_from_root(value)
-            if value_str:
-                if out_str:
-                    out_str += ', '
-                out_str += value_str
+        # SetParameter may be a Union type - check for values field
+        if hasattr(set_param, 'values') and set_param.values:
+            for value in as_list(set_param.values):
+                value_str = string_from_root(value)
+                if value_str:
+                    if out_str:
+                        out_str += ', '
+                    out_str += value_str
         return out_str
 
     @staticmethod
     def _param_values_as_str_list(param: common.Parameter) -> List[str]:
         """Convert param values to list of strings."""
-        return as_list(param.values)
+        # Parameter is a Union type - check for values field before accessing
+        if hasattr(param, 'values'):
+            return as_list(param.values)
+        return []
 
     @staticmethod
     def _param_values_as_str(param: common.Parameter, brackets: bool = False) -> Optional[str]:
         """Convert param values to string with optional brackets."""
-        if not param.values:
+        # Parameter is a Union type - check for values field before accessing
+        if not hasattr(param, 'values') or not param.values:
             return None
         values_str = ', '.join(ControlInterface._param_values_as_str_list(param))
         return f'[{values_str}]' if brackets else values_str
@@ -671,7 +709,8 @@ class ControlInterface:
     @staticmethod
     def _param_selection_as_str(param: common.Parameter, verbose: bool = False, brackets: bool = False) -> str:
         """Convert parameter selection to str."""
-        if param.select and param.select.choice:
+        # Parameter = Union[Parameter1, Parameter2] - check for select field before accessing
+        if hasattr(param, 'select') and param.select and param.select.choice:
             how_many_str = ''
             # if all values are specified there is no how_many string and parens are dropped.  See ac-2.2
             if param.select.how_many:
@@ -814,7 +853,9 @@ class ControlInterface:
         for param in as_list(control.params):
             if not param.id:
                 logger.warning(f'Control {control.id} has parameter with no id.  Ignoring.')
-            if param.values or not values_only:
+            # Parameter = Union[Parameter1, Parameter2] - check for values field before accessing
+            has_values = hasattr(param, 'values') and param.values
+            if has_values or not values_only:
                 param_dict[param.id] = param
         return param_dict
 
@@ -897,7 +938,9 @@ class ControlInterface:
                     param_dict,
                 )
                 text = text.replace(staches[i], param_str, 1).strip()
-                if show_value_warnings and param_rep != ParameterRep.LABEL_OR_CHOICES and not param.values:
+                # Parameter = Union[Parameter1, Parameter2] - check for values field before accessing
+                param_has_no_values = not (hasattr(param, 'values') and param.values)
+                if show_value_warnings and param_rep != ParameterRep.LABEL_OR_CHOICES and param_has_no_values:
                     # verifies the current parameter is not an aggregated parameter to throw a warning
                     if const.AGGREGATES not in [prop.name for prop in as_list(param.props)]:
                         logger.warning(f'Parameter {param_id} has no values and was referenced by prose.')
@@ -979,7 +1022,8 @@ class ControlInterface:
         value_not_assigned_prefix: Optional[str] = None,
     ) -> None:
         """Set values for all choices param that refer to params with values."""
-        if param.select:
+        # Parameter = Union[Parameter1, Parameter2] - check for select field before accessing
+        if hasattr(param, 'select') and param.select:
             new_choices: List[str] = []
             for choice in as_list(param.select.choice):
                 new_choice = ControlInterface._replace_params(
@@ -1195,7 +1239,9 @@ class ControlInterface:
                     for dest_param in as_list(imp_req.set_parameters):
                         if dest_param.param_id != set_param.param_id:
                             continue
-                        dest_param.values = set_param.values
+                        # SetParameter should have values, but check both source and dest to be safe
+                        if hasattr(set_param, 'values') and hasattr(dest_param, 'values'):
+                            dest_param.values = set_param.values
                         found = True
                         break
                     # if rule parameter val was not already set by a set_param, make new set_param for it
@@ -1206,15 +1252,18 @@ class ControlInterface:
                     for dest_param in as_list(control_imp.set_parameters):
                         if dest_param.param_id != set_param.param_id:
                             continue
-                        if dest_param.values == set_param.values:
+                        # Both should have values, but check to be safe
+                        dest_values = dest_param.values if hasattr(dest_param, 'values') else None
+                        set_values = set_param.values if hasattr(set_param, 'values') else None
+                        if dest_values == set_values:
                             found = True
                             break
                     if found:
                         continue
                     imp_req.set_parameters = as_list(imp_req.set_parameters)
-                    imp_req.set_parameters.append(
-                        comp.SetParameter(**{'param_id': set_param.param_id}, values=set_param.values)
-                    )
+                    # SetParameter should have values, but provide empty list if not
+                    values = set_param.values if hasattr(set_param, 'values') else []
+                    imp_req.set_parameters.append(comp.SetParameter(**{'param_id': set_param.param_id}, values=values))
                 new_statements: List[comp.Statement] = []
                 for statement in as_list(new_imp_req.statements):
                     # get the original version of the statement if available, or use new one

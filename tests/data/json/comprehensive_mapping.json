@@ -1,0 +1,261 @@
+{
+  "mapping-collection": {
+    "uuid": "B0000000-0000-4000-8000-000000000050",
+    "metadata": {
+      "title": "Comprehensive Mapping Collection Test",
+      "last-modified": "2024-01-01T00:00:00.000+00:00",
+      "version": "1.0.0",
+      "oscal-version": "1.0.4",
+      "roles": [
+        {
+          "id": "mapper",
+          "title": "Control Mapper"
+        }
+      ],
+      "parties": [
+        {
+          "uuid": "C0000000-0000-4000-8000-000000000001",
+          "type": "organization",
+          "name": "Test Organization"
+        }
+      ],
+      "responsible-parties": [
+        {
+          "role-id": "mapper",
+          "party-uuids": ["C0000000-0000-4000-8000-000000000001"]
+        }
+      ]
+    },
+    "provenance": {
+      "method": "hybrid",
+      "matching-rationale": "functional",
+      "status": "complete",
+      "mapping-description": "Comprehensive test mapping with all optional fields",
+      "confidence-score": {
+        "percentage": 0.95
+      },
+      "coverage": {
+        "target-coverage": 0.90,
+        "generation-method": "hybrid"
+      },
+      "responsible-parties": [
+        {
+          "role-id": "mapper",
+          "party-uuids": ["C0000000-0000-4000-8000-000000000001"]
+        }
+      ],
+      "props": [
+        {
+          "name": "mapping-version",
+          "value": "1.0"
+        }
+      ],
+      "links": [
+        {
+          "href": "https://example.com/mapping-methodology",
+          "rel": "reference"
+        }
+      ],
+      "remarks": "This is a comprehensive test of all mapping features"
+    },
+    "mappings": [
+      {
+        "uuid": "B0000000-0000-4000-8000-000000000060",
+        "method": "automation",
+        "matching-rationale": "semantic",
+        "status": "complete",
+        "source-resource": {
+          "type": "catalog",
+          "href": "catalogs/source/catalog.json",
+          "props": [
+            {
+              "name": "version",
+              "value": "1.0"
+            }
+          ],
+          "links": [
+            {
+              "href": "https://example.com/source-catalog",
+              "rel": "reference"
+            }
+          ]
+        },
+        "target-resource": {
+          "type": "profile",
+          "href": "profiles/target/profile.json",
+          "props": [
+            {
+              "name": "version",
+              "value": "2.0"
+            }
+          ]
+        },
+        "maps": [
+          {
+            "uuid": "B0000000-0000-4000-8000-000000000070",
+            "ns": "https://example.com/ns/mapping",
+            "matching-rationale": "syntactic",
+            "relationship": "equal-to",
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "ac-1",
+                "props": [
+                  {
+                    "name": "source-version",
+                    "value": "1.0"
+                  }
+                ],
+                "links": [
+                  {
+                    "href": "#ac-1-details",
+                    "rel": "reference"
+                  }
+                ],
+                "remarks": "Access Control Policy"
+              }
+            ],
+            "targets": [
+              {
+                "type": "control",
+                "id-ref": "ac-1",
+                "props": [
+                  {
+                    "name": "target-version",
+                    "value": "2.0"
+                  }
+                ]
+              }
+            ],
+            "qualifiers": [
+              {
+                "subject": "implementation",
+                "predicate": "requires",
+                "category": "requirement",
+                "description": "Target requires additional implementation details",
+                "remarks": "See implementation guide"
+              }
+            ],
+            "confidence-score": {
+              "percentage": 0.98
+            },
+            "coverage": {
+              "target-coverage": 0.95,
+              "generation-method": "arbitrary"
+            },
+            "props": [
+              {
+                "name": "mapping-strength",
+                "value": "strong"
+              }
+            ],
+            "links": [
+              {
+                "href": "https://example.com/mapping-details",
+                "rel": "reference"
+              }
+            ],
+            "remarks": "Direct one-to-one mapping"
+          },
+          {
+            "uuid": "B0000000-0000-4000-8000-000000000071",
+            "relationship": "subset-of",
+            "sources": [
+              {
+                "type": "statement",
+                "id-ref": "ac-2_smt.a"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ac-2_smt.b"
+              }
+            ],
+            "targets": [
+              {
+                "type": "control",
+                "id-ref": "ac-3"
+              }
+            ],
+            "confidence-score": {
+              "category": "medium"
+            }
+          },
+          {
+            "uuid": "B0000000-0000-4000-8000-000000000072",
+            "relationship": "intersects-with",
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "ac-4"
+              }
+            ],
+            "targets": [
+              {
+                "type": "statement",
+                "id-ref": "ac-5_smt.a"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ac-5_smt.b"
+              },
+              {
+                "type": "statement",
+                "id-ref": "ac-5_smt.c"
+              }
+            ]
+          }
+        ],
+        "mapping-description": "Detailed mapping between source catalog and target profile",
+        "source-gap-summary": {
+          "uuid": "B0000000-0000-4000-8000-000000000080",
+          "unmapped-controls": [
+            {
+              "with-ids": ["ac-10", "ac-11"]
+            }
+          ]
+        },
+        "target-gap-summary": {
+          "uuid": "B0000000-0000-4000-8000-000000000081",
+          "unmapped-controls": [
+            {
+              "with-ids": ["ac-20", "ac-21"]
+            }
+          ]
+        },
+        "confidence-score": {
+          "percentage": 0.92
+        },
+        "coverage": {
+          "target-coverage": 0.88,
+          "generation-method": "manual"
+        },
+        "props": [
+          {
+            "name": "mapping-type",
+            "value": "automated"
+          }
+        ],
+        "links": [
+          {
+            "href": "https://example.com/mapping-report",
+            "rel": "related"
+          }
+        ],
+        "remarks": "Comprehensive mapping with gap analysis"
+      }
+    ],
+    "back-matter": {
+      "resources": [
+        {
+          "uuid": "B0000000-0000-4000-8000-000000000090",
+          "title": "Mapping Methodology Document",
+          "rlinks": [
+            {
+              "href": "https://example.com/methodology.pdf"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
