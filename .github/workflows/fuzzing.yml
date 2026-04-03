@@ -1,0 +1,37 @@
+name: ClusterFuzzLite PR Fuzzing
+on:
+  workflow_dispatch:  
+  pull_request:
+
+permissions:
+  contents: read
+  actions: write
+  security-events: write
+  
+jobs:
+  Fuzzing:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ matrix.sanitizer }}-${{ github.ref }}
+      cancel-in-progress: true
+    strategy:
+      fail-fast: false
+      matrix:
+        sanitizer: [address]
+    steps:
+      - name: Build Fuzzers
+        id: build
+        uses: google/clusterfuzzlite/actions/build_fuzzers@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          language: python
+          bad-build-check: false
+          sanitizer: ${{ matrix.sanitizer }}
+      - name: Run Fuzzers
+        id: run
+        uses: google/clusterfuzzlite/actions/run_fuzzers@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          fuzz-seconds: 100 
+          mode: 'batch'
+          sanitizer: ${{ matrix.sanitizer }}
