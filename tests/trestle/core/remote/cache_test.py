@@ -15,6 +15,7 @@
 # limitations under the License.
 """Testing for cache functionality."""
 
+import datetime
 import getpass
 import pathlib
 import random
@@ -68,6 +69,35 @@ def get_catalog_fetcher(
     return fetcher, catalog_data
 
 
+def test_time_since_modification_uses_utc(monkeypatch: MonkeyPatch) -> None:
+    """Test cache age calculation uses UTC-aware datetimes."""
+
+    class _StatResult:
+        st_mtime = 1234.5
+
+    class _FakePath:
+        def stat(self) -> _StatResult:
+            return _StatResult()
+
+    expected_last_mod = datetime.datetime(2026, 3, 15, 11, 0, 0, tzinfo=datetime.timezone.utc)
+    expected_now = datetime.datetime(2026, 3, 15, 12, 30, 0, tzinfo=datetime.timezone.utc)
+
+    class _FakeDateTime:
+        @classmethod
+        def fromtimestamp(cls, ts: float, tz: datetime.tzinfo | None = None) -> datetime.datetime:
+            assert ts == _StatResult.st_mtime
+            assert tz == datetime.timezone.utc
+            return expected_last_mod
+
+        @classmethod
+        def now(cls, tz: datetime.tzinfo | None = None) -> datetime.datetime:
+            assert tz == datetime.timezone.utc
+            return expected_now
+
+    monkeypatch.setattr(cache.datetime, 'datetime', _FakeDateTime)
+    assert cache.FetcherBase._time_since_modification(_FakePath()) == datetime.timedelta(hours=1, minutes=30)
+
+
 def test_fetcher_oscal(tmp_trestle_dir: pathlib.Path) -> None:
     """Test whether fetcher can get an object from the cache as an oscal model."""
     fetcher, catalog_data = get_catalog_fetcher(tmp_trestle_dir)
@@ -90,6 +120,24 @@ def test_fetcher_oscal_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyP
     monkeypatch.setattr(Catalog, 'oscal_read', oscal_read_mock)
     with pytest.raises(err.TrestleError, match='get_oscal failure'):
         fetcher.get_oscal_with_model_type(Catalog)
+
+
+def test_fetcher_get_raw_fails_single_read_attempt(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Ensure get_raw does not attempt duplicate reads when file loading fails."""
+    fetcher, _ = get_catalog_fetcher(tmp_trestle_dir)
+    call_count = 0
+
+    def load_file_mock(*args, **kwargs):
+        nonlocal call_count
+        call_count += 1
+        raise RuntimeError('simulated load failure')
+
+    monkeypatch.setattr(file_utils, 'load_file', load_file_mock)
+
+    with pytest.raises(err.TrestleError, match='Cache get failure'):
+        fetcher.get_raw()
+
+    assert call_count == 1
 
 
 def test_local_fetcher_relative(tmp_trestle_dir: pathlib.Path) -> None:

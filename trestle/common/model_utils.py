@@ -95,6 +95,20 @@ def _get_model_type_from_union(model_type: Type[Any], field_name: Optional[str] 
     return model_type
 
 
+def _resolve_collection_item_alias(parent_model_type: Type[Any], field_alias: str, alias_path: str) -> str:
+    """Resolve the singular alias for a collection item field."""
+    try:
+        parent_model_type = _get_model_type_from_union(parent_model_type, field_alias)
+        field_map = parent_model_type.alias_to_field_map()
+        field = field_map[field_alias]
+        outer_type = field.outer_type_
+        inner_type = utils.get_inner_type(outer_type)
+        inner_type = _get_model_type_from_union(inner_type)
+        return str_utils.classname_to_alias(inner_type.__name__, AliasMode.JSON)
+    except Exception as e:
+        raise err.TrestleError(f'Error in json path {alias_path}: {e}') from e
+
+
 class ModelUtils:
     """Utilities for the OSCAL models input and output."""
 
@@ -582,35 +596,27 @@ class ModelUtils:
             model_types.append(model_type)
 
         last_alias = path_parts[-1]
+
         if last_alias == '*':
             last_alias = path_parts[-2]
+
+        # Terminal numeric indexes (e.g. "component-definition.components.0") refer to an item in the
+        # preceding collection; resolve to that item's alias.
+        if path_parts[-1].isdigit():
+            if len(path_parts) < 2:
+                raise err.TrestleError(f'Error in json path {alias_path}: unable to resolve indexed collection alias')
+            indexed_collection_alias = path_parts[-2]
+            if len(model_types) < 3:
+                raise err.TrestleError(f'Error in json path {alias_path}: unable to resolve indexed collection alias')
+            parent_model_type = model_types[-3]
+            return _resolve_collection_item_alias(parent_model_type, indexed_collection_alias, alias_path)
 
         # generic model and not list, so return itself fixme doc
         if not utils.is_collection_field_type(model_type):
             return last_alias
 
         parent_model_type = model_types[-2]
-        try:
-            parent_model_type = _get_model_type_from_union(parent_model_type, last_alias)
-            field_map = parent_model_type.alias_to_field_map()
-            field = field_map[last_alias]
-            outer_type = field.outer_type_
-            inner_type = utils.get_inner_type(outer_type)
-
-            # Handle Union types - if inner_type is a Union, get the first non-None type
-            origin = utils.get_origin(inner_type)
-            if origin == Union or str(origin) == "<class 'types.UnionType'>":
-                union_args = get_args(inner_type)
-                # Find first non-None type in the union
-                for arg in union_args:
-                    if arg is not type(None):
-                        inner_type = arg
-                        break
-
-            inner_type_name = inner_type.__name__
-            singular_alias = str_utils.classname_to_alias(inner_type_name, AliasMode.JSON)
-        except Exception as e:
-            raise err.TrestleError(f'Error in json path {alias_path}: {e}')
+        singular_alias = _resolve_collection_item_alias(parent_model_type, last_alias, alias_path)
 
         return singular_alias
 
