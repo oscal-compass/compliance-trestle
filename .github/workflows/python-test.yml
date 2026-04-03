@@ -67,6 +67,8 @@ jobs:
       run: |
         make docs-ubuntu-deps
     - name: Validate website content (mkdocs)
+      env:
+        ENABLED_HTMLPROOFER: false
       run: |
         make docs-validate
     - name: Check if dirty (mkdocs)
@@ -100,7 +102,7 @@ jobs:
           ubuntu-latest-${{ needs.set-versions.outputs.max }}-hatch-
     - name: Install hatch
       run: |
-        pip install hatch "virtualenv>=20.26.6,<21"  # Pin until hatch supports virtualenv 21.x
+        pip install hatch
     - name: Run binary tests
       run: |
         make test-bdist
