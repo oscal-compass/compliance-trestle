@@ -146,3 +146,49 @@ def test_deep_update() -> None:
         list_utils.deep_update(d, [], {'x': 'y'})
     list_utils.deep_update(d, ['foo'], {'x': 'y'})
     assert d['foo'] == {'bar': {'a': 'b', 'c': 'd'}, 'x': 'y'}
+
+
+def test_deep_set_falsy_values() -> None:
+    """Test deep_set preserves falsy values that are not None."""
+    d: dict = {}
+    list_utils.deep_set(d, ['count'], 0)
+    assert d['count'] == 0
+
+    list_utils.deep_set(d, ['enabled'], False)
+    assert d['enabled'] is False
+
+    list_utils.deep_set(d, ['name'], '')
+    assert d['name'] == ''
+
+    list_utils.deep_set(d, ['items'], [])
+    assert d['items'] == []
+
+    list_utils.deep_set(d, ['meta'], {})
+    assert d['meta'] == {}
+
+    # None should still pop the key
+    list_utils.deep_set(d, ['count'], None)
+    assert 'count' not in d
+
+
+def test_set_or_pop_falsy_values() -> None:
+    """Test set_or_pop preserves falsy values that are not None."""
+    d: dict = {}
+
+    list_utils.set_or_pop(d, 'enabled', False)
+    assert d['enabled'] is False
+
+    list_utils.set_or_pop(d, 'name', '')
+    assert d['name'] == ''
+
+    list_utils.set_or_pop(d, 'count', 0)
+    assert d['count'] == 0
+
+    list_utils.set_or_pop(d, 'items', [])
+    assert d['items'] == []
+
+    # None should still remove the key
+    list_utils.set_or_pop(d, 'key', 'value')
+    assert d['key'] == 'value'
+    list_utils.set_or_pop(d, 'key', None)
+    assert 'key' not in d
