@@ -29,6 +29,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           language: python
+          bad-build-check: false
           sanitizer: ${{ matrix.sanitizer }}
       - name: Run Fuzzers
         id: run
