@@ -1437,6 +1437,22 @@ def kill_roots(file_classes):
     return file_classes
 
 
+def relax_optional_parameter_labels(file_classes):
+    """Allow blank optional parameter labels while keeping other single-line fields strict."""
+    strict_label = r"constr(regex=r'^[^\n]+$')"
+    relaxed_label = r"constr(regex=r'^[^\n]*\Z')"
+    parameter_label_classes = {'Parameter1', 'Parameter2', 'SetParameters', 'SetParameters1'}
+    for classes in file_classes.values():
+        for c in classes:
+            if c.name not in parameter_label_classes:
+                continue
+            for ii in range(1, len(c.lines)):
+                line = c.lines[ii]
+                if line.lstrip().startswith('label:') and strict_label in line:
+                    c.lines[ii] = line.replace(strict_label, relaxed_label, 1)
+    return file_classes
+
+
 def normalize_files():
     """Clean up classes to minimise cross reference."""
     all_classes = load_all_classes()
@@ -1493,6 +1509,9 @@ def normalize_files():
 
     # kill the __root__ classes
     file_classes = kill_roots(file_classes)
+
+    # Official OSCAL catalogs may emit blank optional parameter labels.
+    file_classes = relax_optional_parameter_labels(file_classes)
 
     # re-order them in each file and dump
     reorder_and_dump_as_python(file_classes)
