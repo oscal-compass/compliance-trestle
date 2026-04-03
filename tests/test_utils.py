@@ -41,6 +41,7 @@ from trestle.core.commands.author.ssp import SSPGenerate
 from trestle.core.commands.href import HrefCmd
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.models.file_content_type import FileContentType
+from trestle.core.validator_factory import validator_factory
 from trestle.core.repository import Repository
 from trestle.oscal import catalog as cat
 from trestle.oscal import common
@@ -432,10 +433,10 @@ def setup_for_component_definition(tmp_trestle_dir: pathlib.Path, monkeypatch: M
 
 def setup_component_generate(tmp_trestle_dir: pathlib.Path, comp_name='comp_def_a') -> str:
     """Create the compdef, profile and catalog content component-generate."""
-    load_from_json(tmp_trestle_dir, comp_name, comp_name, comp.ComponentDefinition)
+    load_valid_model_from_json(tmp_trestle_dir, comp_name, comp_name, comp.ComponentDefinition)
     for prof_name in ['comp_prof', 'comp_prof_aa', 'comp_prof_ab', 'comp_prof_ba', 'comp_prof_bb']:
-        load_from_json(tmp_trestle_dir, prof_name, prof_name, prof.Profile)
-    load_from_json(tmp_trestle_dir, 'simplified_nist_catalog', 'simplified_nist_catalog', cat.Catalog)
+        load_valid_model_from_json(tmp_trestle_dir, prof_name, prof_name, prof.Profile)
+    load_valid_model_from_json(tmp_trestle_dir, 'simplified_nist_catalog', 'simplified_nist_catalog', cat.Catalog)
 
     return comp_name
 
@@ -486,11 +487,11 @@ def setup_for_inherit(
     tmp_trestle_dir: pathlib.Path, prof_name: str, output_name: str, ssp_name: str
 ) -> argparse.Namespace:
     """Create the ssp and parent profile for inherit commands."""
-    load_from_json(tmp_trestle_dir, 'simplified_nist_catalog', 'nist_cat', cat.Catalog)
+    load_valid_model_from_json(tmp_trestle_dir, 'simplified_nist_catalog', 'nist_cat', cat.Catalog)
     if prof_name:
-        load_from_json(tmp_trestle_dir, prof_name, prof_name, prof.Profile)
+        load_valid_model_from_json(tmp_trestle_dir, prof_name, prof_name, prof.Profile)
     if ssp_name:
-        load_from_json(tmp_trestle_dir, ssp_name, ssp_name, ssp.SystemSecurityPlan)
+        load_valid_model_from_json(tmp_trestle_dir, ssp_name, ssp_name, ssp.SystemSecurityPlan)
 
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir, profile=prof_name, output=output_name, ssp=ssp_name, version=None, verbose=0
@@ -499,16 +500,32 @@ def setup_for_inherit(
     return args
 
 
-def load_from_json(
+def load_from_json_without_check(
     tmp_trestle_dir: pathlib.Path, file_prefix: str, model_name: str, model_type: OscalBaseModel
 ) -> None:
-    """Load model from JSON test dir."""
+    """Load model from JSON test dir without any check if the oscal model is valid or not."""
     src_path = JSON_TEST_DATA_PATH / f'{file_prefix}.json'
     dst_path = ModelUtils.get_model_path_for_name_and_class(
         tmp_trestle_dir, model_name, model_type, FileContentType.JSON
     )
     dst_path.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(src_path, dst_path)
+
+
+def load_valid_model_from_json(
+    tmp_trestle_dir: pathlib.Path, file_prefix: str, model_name: str, model_type: OscalBaseModel
+) -> None:
+    """Load model from JSON test dir with a check if the oscal model is valid or not."""
+    args = argparse.Namespace(mode=const.VAL_MODE_ALL, quiet=True)
+    validator = validator_factory.get(args)
+    src_path = JSON_TEST_DATA_PATH / f'{file_prefix}.json'
+    dst_path = ModelUtils.get_model_path_for_name_and_class(
+        tmp_trestle_dir, model_name, model_type, FileContentType.JSON
+    )
+    dst_path.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(src_path, dst_path)
+    model_obj = model_type.oscal_read(dst_path)
+    assert validator.model_is_valid(model_obj, True, tmp_trestle_dir)
 
 
 def setup_for_ssp(
@@ -522,16 +539,16 @@ def setup_for_ssp(
 ) -> Tuple[argparse.Namespace, pathlib.Path]:
     """Create the comp_def, profile and catalog content needed for ssp-generate."""
     for comp_name in comp_names.split(','):
-        load_from_json(tmp_trestle_dir, comp_name, comp_name, comp.ComponentDefinition)
+        load_valid_model_from_json(tmp_trestle_dir, comp_name, comp_name, comp.ComponentDefinition)
     prof_name_list = [prof_name]
     prof_name_list.extend(['comp_prof_aa', 'comp_prof_ab', 'comp_prof_ba', 'comp_prof_bb'])
     for local_prof_name in prof_name_list:
-        load_from_json(tmp_trestle_dir, local_prof_name, local_prof_name, prof.Profile)
-    load_from_json(tmp_trestle_dir, 'simplified_nist_catalog', 'simplified_nist_catalog', cat.Catalog)
+        load_valid_model_from_json(tmp_trestle_dir, local_prof_name, local_prof_name, prof.Profile)
+    load_valid_model_from_json(tmp_trestle_dir, 'simplified_nist_catalog', 'simplified_nist_catalog', cat.Catalog)
     yaml_path = YAML_TEST_DATA_PATH / 'good_simple.yaml' if use_yaml else None
 
     if leveraged_ssp_name:
-        load_from_json(tmp_trestle_dir, leveraged_ssp_name, leveraged_ssp_name, ssp.SystemSecurityPlan)
+        load_from_json_without_check(tmp_trestle_dir, leveraged_ssp_name, leveraged_ssp_name, ssp.SystemSecurityPlan)
 
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
@@ -554,8 +571,8 @@ def setup_for_ssp_fedramp(tmp_trestle_dir: pathlib.Path, output_name: str) -> ar
     """Load profile and component needed for ssp-generate with FedRAMP profile."""
     prof_name = 'full_profile_rev5'
     comp_name = 'test_compdef_rev5'
-    load_from_json(tmp_trestle_dir, prof_name, prof_name, prof.Profile)
-    load_from_json(tmp_trestle_dir, comp_name, comp_name, comp.ComponentDefinition)
+    load_valid_model_from_json(tmp_trestle_dir, prof_name, prof_name, prof.Profile)
+    load_valid_model_from_json(tmp_trestle_dir, comp_name, comp_name, comp.ComponentDefinition)
 
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,

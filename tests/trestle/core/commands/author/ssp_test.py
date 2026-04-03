@@ -764,7 +764,7 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
 
     # now filter the ssp through comp_prof_bad to force error because it references a control not in the ssp
     bad_prof = 'comp_prof_bad'
-    test_utils.load_from_json(tmp_trestle_dir, bad_prof, bad_prof, prof.Profile)
+    test_utils.load_from_json_without_check(tmp_trestle_dir, bad_prof, bad_prof, prof.Profile)
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
         name=ssp_name,
@@ -1375,9 +1375,11 @@ def test_ssp_generate_includes_all_imp_reqs(tmp_trestle_dir: pathlib.Path) -> No
     """Test component prose is included for all implemented-requirements regardless of rules."""
 
     # Testing for the case where none of the controls have rules
-    test_utils.load_from_json(tmp_trestle_dir, 'simplified_nist_catalog', 'simplified_nist_catalog', cat.Catalog)
-    test_utils.load_from_json(tmp_trestle_dir, 'comp_prof_aa', 'comp_prof_aa', prof.Profile)
-    test_utils.load_from_json(tmp_trestle_dir, 'comp_def_c', 'comp_def_c', comp.ComponentDefinition)
+    test_utils.load_valid_model_from_json(
+        tmp_trestle_dir, 'simplified_nist_catalog', 'simplified_nist_catalog', cat.Catalog
+    )
+    test_utils.load_valid_model_from_json(tmp_trestle_dir, 'comp_prof_aa', 'comp_prof_aa', prof.Profile)
+    test_utils.load_valid_model_from_json(tmp_trestle_dir, 'comp_def_c', 'comp_def_c', comp.ComponentDefinition)
 
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
@@ -1409,7 +1411,7 @@ def test_ssp_generate_includes_all_imp_reqs(tmp_trestle_dir: pathlib.Path) -> No
     assert 'comp_cc' in ac3_content_1 and 'imp req prose for ac-3 from comp cc' in ac3_content_1
 
     # Testing for the case where all of the controls have rules
-    test_utils.load_from_json(tmp_trestle_dir, 'comp_def_a', 'comp_def_a', comp.ComponentDefinition)
+    test_utils.load_valid_model_from_json(tmp_trestle_dir, 'comp_def_a', 'comp_def_a', comp.ComponentDefinition)
 
     args.compdefs = 'comp_def_a'
     args.output = 'my_ssp_2'
@@ -1430,7 +1432,7 @@ def test_ssp_generate_includes_all_imp_reqs(tmp_trestle_dir: pathlib.Path) -> No
     assert 'comp_aa' in ac3_content_2 and 'imp req prose for ac-3 from comp aa' in ac3_content_2
 
     # Testing for the case where some of the controls have rules
-    test_utils.load_from_json(tmp_trestle_dir, 'comp_def', 'comp_def', comp.ComponentDefinition)
+    test_utils.load_valid_model_from_json(tmp_trestle_dir, 'comp_def', 'comp_def', comp.ComponentDefinition)
     args.compdefs = 'comp_def'
     args.output = 'my_ssp_3'
     assert ssp_cmd._run(args) == 0
