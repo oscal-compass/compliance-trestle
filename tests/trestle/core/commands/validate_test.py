@@ -210,6 +210,22 @@ def test_oscal_version_validator(
     assert pytest_wrapped_e.value.code == CmdReturnCodes.SUCCESS.value
 
 
+def test_validate_all_with_dotted_catalog_name(
+    tmp_trestle_dir: pathlib.Path, sample_catalog_minimal: Catalog, monkeypatch: MonkeyPatch
+) -> None:
+    """Test validate -a succeeds when a top-level model directory name contains dots."""
+    mycat_dir = tmp_trestle_dir / 'catalogs/foo.bar'
+    mycat_dir.mkdir()
+    mycat_path = mycat_dir / 'catalog.json'
+    sample_catalog_minimal.oscal_write(mycat_path)
+    testcmd = 'trestle validate -a'
+    monkeypatch.setattr(sys, 'argv', testcmd.split())
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        cli.run()
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == CmdReturnCodes.SUCCESS.value
+
+
 def test_oscal_version_incorrect_validator(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test validation fails for bad oscal version. Short pydantic message should be printed."""
     catalog_path = test_utils.JSON_TEST_DATA_PATH / 'minimal_catalog_bad_oscal_version.json'
