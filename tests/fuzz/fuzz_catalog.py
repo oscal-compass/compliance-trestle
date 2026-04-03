@@ -352,10 +352,10 @@ def main() -> None:
         '-timeout=120',       # kill any single input that hangs for 120 s
     ]
 
-    fuzz_args = [sys.argv[0]] + flags
+    # Make sure our flags (like -timeout=120) appear AFTER sys.argv so they win
+    fuzz_args = [sys.argv[0]] + sys.argv[1:] + flags
     if os.path.isdir(seed_corpus_dir):
         fuzz_args.append(seed_corpus_dir)
-    fuzz_args += sys.argv[1:]  # pass through any args ClusterFuzzLite appends
 
     atheris.Setup(fuzz_args, testoneinput, custom_mutator=custom_mutator)
     atheris.Fuzz()
