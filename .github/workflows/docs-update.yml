@@ -86,6 +86,8 @@ jobs:
         ID: ${{ steps.get-user-id.outputs.user-id }}
     - name: Create release
       shell: bash
+      env:
+        NO_MKDOCS_2_WARNING: '1'
       run: |
         mike deploy --push ${{ needs.mike-version.outputs.mver }}
     - name: Ensure latest is latest
