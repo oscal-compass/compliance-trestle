@@ -83,7 +83,7 @@ class AssembleCmd(CommandPlusDocs):
             root_model_filepath = root_model_dir / model_name / model_file_name
 
             if not root_model_filepath.exists():
-                raise TrestleError(f'No top level model file at {root_model_dir}')
+                raise TrestleError(f'No top level model file at {root_model_filepath}')
 
             assembled_model = load_validate_model_path(args.trestle_root, root_model_filepath)
             plural_alias = ModelUtils.model_type_to_model_dir(model_alias)
