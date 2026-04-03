@@ -49,9 +49,8 @@ from pydantic import ValidationError
 
 logger = logging.getLogger(__name__)
 
-with atheris.instrument_imports():
-    from trestle.oscal.catalog import Catalog
-    from trestle.common.err import TrestleError
+from trestle.oscal.catalog import Catalog
+from trestle.common.err import TrestleError
 
 
 # ---------------------------------------------------------------------------
