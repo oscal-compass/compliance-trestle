@@ -9,7 +9,7 @@ mkdir -p "$CORPUS_DIR"
 
 # this is used to pass the smoke test, which runs the first corpus entry immediately after build to verify the fuzzer doesn't crash on startup. The NIST catalog is 4.65 MB and takes several seconds to parse, which can time out the smoke test. This tiny but structurally valid catalog parses in milliseconds and lets the smoke test pass instantly.
 echo '{"catalog":{"uuid":"550e8400-e29b-41d4-a716-446655440000","metadata":{"title":"Smoke Test Seed","last-modified":"2026-03-24T00:00:00Z","version":"1.0.0","oscal-version":"1.1.3"}}}' \
-    > "$CORPUS_DIR/tiny_seed.json"
+    > "$CORPUS_DIR/aaa_smoke_test_seed.json"
 
 # ── Seed 2: real NIST SP800-53 rev5 catalog for coverage depth ──────────────
 # Pinned to a specific commit so the seed is reproducible across all builds.

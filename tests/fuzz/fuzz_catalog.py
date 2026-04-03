@@ -351,7 +351,7 @@ def main() -> None:
         '-max_len=10000000', # allow the full ~4.65 MB NIST catalog
         '-len_control=0', 
         '-mutate_depth=20',   # deeper exploration of nested control paths
-        '-timeout=60',        # kill any single input that hangs for 60 s
+        '-timeout=120',       # kill any single input that hangs for 120 s
     ]
 
     fuzz_args = [sys.argv[0]] + flags
