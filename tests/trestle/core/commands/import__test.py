@@ -40,8 +40,9 @@ from trestle.common.model_utils import ModelUtils
 from trestle.core import generators
 from trestle.core.commands import create
 from trestle.core.models.plans import Plan
-from trestle.oscal.catalog import Catalog, Group
-from trestle.oscal.profile import Modify, Profile, SetParameter
+from trestle.oscal.catalog import Catalog, Group2
+from trestle.oscal.mapping import MappingCollection
+from trestle.oscal.profile import Modify, Profile, SetParameters
 
 
 def test_import_cmd(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
@@ -75,7 +76,7 @@ def test_import_profile_with_optional_added(tmp_trestle_dir: pathlib.Path, monke
     # create generic profile
     profile_data = generators.generate_sample_model(trestle.oscal.profile.Profile)
     # create special parameter and add it to profile
-    set_parameter = SetParameter(param_id='my_param', depends_on='my_depends')
+    set_parameter = SetParameters(param_id='my_param', depends_on='my_depends')
     modify = Modify(set_parameters=[set_parameter])
     profile_data.modify = modify
     # write it to place outside trestle directory
@@ -108,6 +109,59 @@ def test_import_run(tmp_trestle_dir: pathlib.Path, regen: bool) -> None:
     )
     rc = i._run(args)
     assert rc == 0
+
+
+def test_import_run_with_empty_optional_param_label(tmp_trestle_dir: pathlib.Path) -> None:
+    """Import should accept official catalogs that use blank optional parameter labels."""
+    catalog_dict = {
+        'catalog': {
+            'uuid': '525f94af-8007-4376-8069-aa40179e0f6e',
+            'metadata': {
+                'title': 'Catalog with blank parameter label',
+                'last-modified': '2026-03-23T00:00:00Z',
+                'version': '1.0.0',
+                'oscal-version': 'v1.1.3',
+            },
+            'groups': [
+                {
+                    'id': 'g1',
+                    'title': 'Group',
+                    'controls': [
+                        {
+                            'id': 'c1',
+                            'title': 'Control',
+                            'params': [
+                                {
+                                    'id': 'A.03.01.08.ODP.04',
+                                    'label': '',
+                                    'usage': 'organization-defined time period',
+                                    'guidelines': [
+                                        {'prose': 'the time period for an account or node to be locked is defined.'}
+                                    ],
+                                }
+                            ],
+                        }
+                    ],
+                }
+            ],
+        }
+    }
+    rand_str = ''.join(secrets.choice(string.ascii_letters) for x in range(16))
+    catalog_file = pathlib.Path(f'{tmp_trestle_dir.parent}/{rand_str}.json')
+    catalog_file.write_text(json.dumps(catalog_dict), encoding=const.FILE_ENCODING)
+
+    i = importcmd.ImportCmd()
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, file=str(catalog_file), output='imported-empty-label', verbose=1, regenerate=False
+    )
+    rc = i._run(args)
+    assert rc == 0
+
+    imported_path = tmp_trestle_dir / 'catalogs/imported-empty-label/catalog.json'
+    imported_catalog = Catalog.oscal_read(imported_path)
+    imported_param = imported_catalog.groups[0].controls[0].params[0]
+    assert imported_param.label == ''
+    assert '"label": ""' in imported_path.read_text(encoding=const.FILE_ENCODING)
 
 
 def test_import_run_rollback(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
@@ -170,7 +224,7 @@ def test_import_non_top_level_element(tmp_trestle_dir: pathlib.Path) -> None:
     # Input file, catalog:
     rand_str = ''.join(secrets.choice(string.ascii_letters) for x in range(16))
     groups_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
-    groups_data = generators.generate_sample_model(Group)
+    groups_data = generators.generate_sample_model(Group2)
     groups_data.oscal_write(pathlib.Path(groups_file))
     args = argparse.Namespace(trestle_root=tmp_trestle_dir, file=groups_file, output='imported', verbose=1)
     i = importcmd.ImportCmd()
@@ -360,3 +414,26 @@ def test_import_wrong_oscal_version(tmp_trestle_dir: pathlib.Path) -> None:
     )
     i = importcmd.ImportCmd()
     assert i._run(args) == 1
+
+
+def test_import_mapping_collection(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test import of mapping-collection model."""
+    # Use the simple_mapping.json test file
+    mapping_file = test_utils.JSON_TEST_DATA_PATH / 'simple_mapping.json'
+
+    # Test import via CLI
+    test_args = f'trestle import -f {mapping_file} -o imported_mapping'.split()
+    monkeypatch.setattr(sys, 'argv', test_args)
+    rc = Trestle().run()
+    assert rc == 0
+
+    # Verify the imported file exists in the correct location
+    imported_path = tmp_trestle_dir / 'mapping-collections' / 'imported_mapping' / 'mapping-collection.json'
+    assert imported_path.exists()
+
+    # Verify we can read it back as a MappingCollection
+    mapping: MappingCollection = MappingCollection.oscal_read(imported_path)
+    assert mapping.uuid == 'A0000000-0000-4000-8000-000000000050'
+    assert mapping.metadata.title == 'Trestle test mapping-collection'
+    assert mapping.provenance is not None
+    assert len(mapping.mappings) == 1

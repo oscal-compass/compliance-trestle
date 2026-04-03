@@ -15,7 +15,7 @@
 
 import pathlib
 from datetime import datetime, timedelta
-from typing import List
+from typing import List, Union
 
 import pytest
 
@@ -25,7 +25,7 @@ import trestle.common.const as const
 import trestle.oscal.common as common
 from trestle.common import file_utils, trash
 from trestle.common.err import TrestleError
-from trestle.common.model_utils import ModelUtils
+from trestle.common.model_utils import ModelUtils, _get_model_type_from_union
 from trestle.core.models.file_content_type import FileContentType
 from trestle.oscal import catalog
 
@@ -223,16 +223,17 @@ def test_get_relative_model_type(tmp_path: pathlib.Path) -> None:
     )
     assert ModelUtils.get_relative_model_type(catalog_dir / 'metadata.yaml') == (common.Metadata, 'catalog.metadata')
     assert ModelUtils.get_relative_model_type(metadata_dir) == (common.Metadata, 'catalog.metadata')
-    assert ModelUtils.get_relative_model_type(roles_dir) == (List[common.Role], 'catalog.metadata.roles')
     (type_, element) = ModelUtils.get_relative_model_type(roles_dir)
     assert cutils.get_origin(type_) == list
+    assert cutils.get_inner_type(type_) == common.Role
     assert element == 'catalog.metadata.roles'
     assert ModelUtils.get_relative_model_type(roles_dir / '00000__role.json') == (
         common.Role,
         'catalog.metadata.roles.role',
     )
     model_type, full_alias = ModelUtils.get_relative_model_type(rps_dir)
-    assert model_type == List[common.ResponsibleParty]
+    assert cutils.get_origin(model_type) == list
+    assert cutils.get_inner_type(model_type) == common.ResponsibleParty
     assert full_alias == 'catalog.metadata.responsible-parties'
     assert ModelUtils.get_relative_model_type(rps_dir / 'creator__responsible-party.json') == (
         common.ResponsibleParty,
@@ -248,11 +249,19 @@ def test_get_relative_model_type(tmp_path: pathlib.Path) -> None:
     assert expected_type == common.Property
     assert expected_json_path == 'catalog.metadata.props.property'
     assert cutils.get_origin(type_) == list
-    assert ModelUtils.get_relative_model_type(groups_dir / f'00000{const.IDX_SEP}group.json') == (
-        catalog.Group,
-        'catalog.groups.group',
-    )
-    assert ModelUtils.get_relative_model_type(group_dir) == (catalog.Group, 'catalog.groups.group')
+    # Group can be either Group1 or Group2, so we get the Union type
+    group_type, group_alias = ModelUtils.get_relative_model_type(groups_dir / f'00000{const.IDX_SEP}group.json')
+    assert group_alias == 'catalog.groups.group'
+    # The type should be the Union Group1|Group2
+    import typing_extensions
+
+    union_args = typing_extensions.get_args(group_type)
+    assert catalog.Group1 in union_args and catalog.Group2 in union_args
+
+    group_dir_type, group_dir_alias = ModelUtils.get_relative_model_type(group_dir)
+    assert group_dir_alias == 'catalog.groups.group'
+    union_args = typing_extensions.get_args(group_dir_type)
+    assert catalog.Group1 in union_args and catalog.Group2 in union_args
     assert ModelUtils.get_relative_model_type(controls_dir / f'00000{const.IDX_SEP}control.json') == (
         catalog.Control,
         'catalog.groups.group.controls.control',
@@ -387,8 +396,10 @@ def test_get_stripped_model_type(tmp_path: pathlib.Path) -> None:
         assert 'props' in alias_to_field_map
         assert 'links' in alias_to_field_map
         assert 'parts' in alias_to_field_map
-        assert 'groups' in alias_to_field_map
-        assert 'controls' not in alias_to_field_map
+        # In OSCAL 1.2.0, Group is a Union of Group1 (has groups) and Group2 (has controls)
+        # Since test setup creates a controls subdirectory, this is Group2 with controls stripped out
+        assert 'controls' not in alias_to_field_map  # Stripped because split into subdirectory
+        assert 'groups' not in alias_to_field_map  # Not present in Group2
 
     stripped_catalog = ModelUtils.get_stripped_model_type(groups_dir / f'00000{const.IDX_SEP}group', tmp_path)
     alias_to_field_map = stripped_catalog[0].alias_to_field_map()
@@ -427,11 +438,18 @@ def test_get_singular_alias() -> None:
     assert 'control-implementation' == ModelUtils.get_singular_alias(
         alias_path='component-definition.components.*.control-implementations'
     )
+    assert 'defined-component' == ModelUtils.get_singular_alias(alias_path='component-definition.components.0')
+
+    # Test indexed nested paths
     assert 'control-implementation' == ModelUtils.get_singular_alias(
         alias_path='component-definition.components.0.control-implementations'
     )
-    # FIXME ideally this should report error
-    assert '0' == ModelUtils.get_singular_alias(alias_path='component-definition.components.0')
+    assert 'control' == ModelUtils.get_singular_alias(alias_path='catalog.groups.0.controls.0')
+    assert 'control' == ModelUtils.get_singular_alias(alias_path='catalog.groups.0.controls')
+
+    # Test that a too-shallow indexed path raises TrestleError (covers len(model_types) < 3 guard)
+    with pytest.raises(TrestleError, match='unable to resolve indexed collection alias'):
+        ModelUtils.get_singular_alias(alias_path='catalog.0')
 
     assert 'control' == ModelUtils.get_singular_alias(alias_path='catalog.groups.*.controls.*.controls')
 
@@ -467,6 +485,7 @@ def test_contextual_get_singular_alias(tmp_path: pathlib.Path, keep_cwd: pathlib
 
     rel_dir = group_dir.relative_to(tmp_path)
     assert 'control' == ModelUtils.get_singular_alias('group.controls.*.controls', rel_dir)
+    assert 'control' == ModelUtils.get_singular_alias('group.controls.0', rel_dir)
 
 
 def test_get_contextual_file_type(tmp_path: pathlib.Path) -> None:
@@ -713,3 +732,166 @@ def test_model_age_multiday(sample_catalog_rich_controls: catalog.Catalog) -> No
     age = ModelUtils.model_age(sample_catalog_rich_controls)
     # Two days is 172800 seconds; timedelta.seconds (old bug) would return 0, not 172800
     assert age >= 2 * const.DAY_SECONDS
+
+
+def test_get_model_type_from_union_with_exception() -> None:
+    """Test _get_model_type_from_union when alias_to_field_map raises an exception."""
+
+    class MockTypeWithFieldMap:
+        """Mock type that has alias_to_field_map method."""
+
+        @classmethod
+        def alias_to_field_map(cls):
+            return {'field1': 'value1', 'field2': 'value2'}
+
+    class MockTypeWithBrokenFieldMap:
+        """Mock type that has alias_to_field_map but raises an exception."""
+
+        @classmethod
+        def alias_to_field_map(cls):
+            raise RuntimeError('alias_to_field_map is broken')
+
+    class MockTypeWithoutFieldMap:
+        """Mock type without alias_to_field_map method."""
+
+        pass
+
+    union_type = Union[MockTypeWithBrokenFieldMap, MockTypeWithFieldMap]
+    result = _get_model_type_from_union(union_type, 'field1')
+    assert result == MockTypeWithFieldMap
+
+    union_type_no_map = Union[MockTypeWithoutFieldMap, int, str]
+    result_no_map = _get_model_type_from_union(union_type_no_map, 'field1')
+    assert result_no_map == MockTypeWithoutFieldMap
+
+    union_type_all_broken = Union[MockTypeWithBrokenFieldMap, MockTypeWithoutFieldMap]
+    result_fallback = _get_model_type_from_union(union_type_all_broken, 'field1')
+    assert result_fallback == MockTypeWithBrokenFieldMap
+
+    union_type_no_field = Union[MockTypeWithFieldMap, MockTypeWithoutFieldMap]
+    result_no_field = _get_model_type_from_union(union_type_no_field, None)
+    assert result_no_field == MockTypeWithFieldMap
+
+    result_non_union = _get_model_type_from_union(MockTypeWithFieldMap, 'field1')
+    assert result_non_union == MockTypeWithFieldMap
+
+
+def test_resolve_collection_item_alias_error() -> None:
+    """Test _resolve_collection_item_alias exception handling."""
+    from trestle.common.model_utils import _resolve_collection_item_alias
+
+    with pytest.raises(TrestleError, match='Error in json path'):
+        _resolve_collection_item_alias(str, 'invalid_field', 'test.path.invalid_field')
+
+    class MockTypeNoMap:
+        pass
+
+    with pytest.raises(TrestleError, match='Error in json path'):
+        _resolve_collection_item_alias(MockTypeNoMap, 'field1', 'test.path.field1')
+
+
+def test_dict_to_parameter_value_not_in_choices() -> None:
+    """Test dict_to_parameter when a value is not in the select choices."""
+    param_dict = {
+        'id': 'test_param',
+        'label': 'Test Parameter',
+        'values': ['invalid_value', 'choice1'],
+        'select': {'how_many': 'one-or-more', 'choice': ['choice1', 'choice2', 'choice3']},
+    }
+
+    param = ModelUtils.dict_to_parameter(param_dict)
+    assert param.id == 'test_param'
+    assert param.select is not None
+    assert param.select.choice == ['choice1', 'choice2', 'choice3']
+
+
+def test_objects_differ_enum_and_root_comparisons() -> None:
+    """Test _objects_differ with enum and __root__ wrapper comparisons."""
+    from enum import Enum
+
+    class TestEnum(Enum):
+        VALUE1 = 'value1'
+        VALUE2 = 'value2'
+
+    class MockRootWrapper:
+        def __init__(self, value):
+            self.__root__ = value
+
+    enum_val = TestEnum.VALUE1
+    assert not ModelUtils._objects_differ(enum_val, 'value1', [], [], False)
+    assert ModelUtils._objects_differ(enum_val, 'value2', [], [], False)
+
+    assert not ModelUtils._objects_differ('value1', enum_val, [], [], False)
+    assert ModelUtils._objects_differ('value2', enum_val, [], [], False)
+
+    root_wrapper = MockRootWrapper('value1')
+    assert not ModelUtils._objects_differ(enum_val, root_wrapper, [], [], False)
+
+    root_wrapper_diff = MockRootWrapper('value2')
+    assert ModelUtils._objects_differ(enum_val, root_wrapper_diff, [], [], False)
+
+    from pydantic.v1 import BaseModel as PydanticBaseModel
+
+    class TestModel(PydanticBaseModel):
+        value: str
+
+    def create_test_model_class():
+        class TestModel(PydanticBaseModel):
+            value: str
+
+        return TestModel
+
+    test_model2 = create_test_model_class()
+
+    obj1 = TestModel(value='test1')
+    obj2 = test_model2(value='test2')
+    assert ModelUtils._objects_differ(obj1, obj2, [], [], False)
+
+    prop1 = common.Property(name='test', value='val1')
+    prop2 = common.Property(name='test', value='val2')
+    assert ModelUtils._objects_differ(prop1, prop2, [], [], False)
+
+    role = common.Role(id='role1', title='Test Role')
+    assert ModelUtils._objects_differ(prop1, role, [], [], False)
+
+    assert ModelUtils._objects_differ(123, 'string', [], [], False)
+    assert not ModelUtils._objects_differ('', '', [], [], False)
+    assert not ModelUtils._objects_differ(0, 0, [], [], False)
+
+    prop3 = common.Property(name='test3', value='val3')
+    prop4 = common.Property(name='test4', value='val4')
+    assert not ModelUtils._objects_differ(prop3, prop4, [common.Property], [], False)
+
+
+def test_last_modified_at_time() -> None:
+    """Test last_modified_at_time with and without timestamp."""
+    from datetime import timezone
+
+    test_timestamp = datetime(2024, 1, 15, 10, 30, 0, tzinfo=timezone.utc)
+    result = ModelUtils.last_modified_at_time(test_timestamp)
+    assert result == test_timestamp
+
+    result_now = ModelUtils.last_modified_at_time(None)
+    assert result_now is not None
+    assert isinstance(result_now, datetime)
+    assert result_now.tzinfo is not None
+
+
+def test_objects_differ_dict_comparisons() -> None:
+    """Test _objects_differ with dict comparisons."""
+    dict_a = {'key1': 'value1', 'key2': 'value2'}
+    dict_b = {'key1': 'value1', 'key3': 'value3'}
+    assert ModelUtils._objects_differ(dict_a, dict_b, [], [], False)
+
+    dict_with_uuid_a = {'uuid': 'uuid-123', 'name': 'test'}
+    dict_with_uuid_b = {'uuid': 'uuid-456', 'name': 'test'}
+    assert not ModelUtils._objects_differ(dict_with_uuid_a, dict_with_uuid_b, [], [], True)
+    assert ModelUtils._objects_differ(dict_with_uuid_a, dict_with_uuid_b, [], [], False)
+
+    dict_diff_val_a = {'key1': 'value1', 'key2': 'value2'}
+    dict_diff_val_b = {'key1': 'value1', 'key2': 'different'}
+    assert ModelUtils._objects_differ(dict_diff_val_a, dict_diff_val_b, [], [], False)
+
+    dict_ignore_a = {'key1': 'value1', 'ignored_key': 'value2'}
+    dict_ignore_b = {'key1': 'value1', 'ignored_key': 'different'}
+    assert not ModelUtils._objects_differ(dict_ignore_a, dict_ignore_b, [], ['ignored_key'], False)

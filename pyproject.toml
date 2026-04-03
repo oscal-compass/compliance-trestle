@@ -29,13 +29,12 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.12"
 ]
 dependencies = [
     "attrs",
     "ilcli",
-    "cryptography==46.0.5",
+    "cryptography==46.0.6",
     "paramiko==4.0.0",
     "ruamel.yaml",
     "furl",
@@ -84,7 +83,7 @@ dev = [
     "pre-commit>=2.4.0",
     "python-semantic-release>=10.4.0",
     "pylint",
-    "datamodel-code-generator[http] == 0.36.0",
+    "datamodel-code-generator[http]<0.55.0",
     "gitpython",
 ]
 
@@ -128,7 +127,7 @@ dependencies = [
 ]
 
 [[tool.hatch.envs.hatch-test.matrix]]
-python = ["3.10", "3.11", "3.12", "3.13"]
+python = ["3.10", "3.11", "3.12"]
 
 [tool.hatch.envs.docs]
 features = ["docs"]
