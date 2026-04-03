@@ -191,8 +191,6 @@ class MergeCmd(CommandPlusDocs):
         write_destination_action = WriteFileAction(
             destination_model_path, merged_destination_element, content_type=file_type
         )
-        # FIXME this will delete metadata.json but it will leave metadata/roles/roles.*
-        # need to clean up all lower dirs
         trace.log(f'remove path action {target_model_filename}')
         delete_target_action = RemovePathAction(target_model_filename)
 
@@ -201,6 +199,13 @@ class MergeCmd(CommandPlusDocs):
         plan.add_action(write_destination_action)
         plan.add_action(delete_target_action)
 
-        # TODO: Destination model directory is empty or already merged? Then clean up.
+        # When target is a non-collection element, target_model_filename is the .json file
+        # (e.g. metadata.json) and target_model_path is the sibling directory (e.g. metadata/).
+        # The sibling directory may exist because the element was split further after the initial
+        # split, leaving nested artifacts (roles/, responsible-parties/, etc.) inside it.
+        # Remove that directory so the workspace is left in a clean state.
+        if target_model_path != target_model_filename and target_model_path.is_dir():
+            trace.log(f'remove nested split directory {target_model_path}')
+            plan.add_action(RemovePathAction(target_model_path))
 
         return plan
