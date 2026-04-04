@@ -101,6 +101,8 @@ jobs:
         make docs-ubuntu-deps
     - name: Validate website content (mkdocs)
       if: steps.core-version.outputs.core == 'true'
+      env:
+        NO_MKDOCS_2_WARNING: 1
       run: |
         make docs-validate
     - name: Recreate hatch test environment

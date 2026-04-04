@@ -67,6 +67,8 @@ jobs:
       run: |
         make docs-ubuntu-deps
     - name: Validate website content (mkdocs)
+      env:
+        NO_MKDOCS_2_WARNING: 1
       run: |
         make docs-validate
     - name: Check if dirty (mkdocs)
