@@ -82,6 +82,12 @@ statement prose for part a. from comp aa
 ______________________________________________________________________"""
 
 
+def _run_ssp_assemble(monkeypatch: MonkeyPatch, model_name: str, compdefs: str) -> None:
+    """Run ssp-assemble for the given model and component definitions."""
+    cmd = f'trestle author ssp-assemble -m {model_name} -o {model_name} -cd {compdefs}'
+    test_utils.execute_command_and_assert(cmd, 0, monkeypatch)
+
+
 def test_ssp_generate(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator."""
     args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
@@ -496,9 +502,7 @@ def test_ssp_assemble_fedramp_profile(tmp_trestle_dir: pathlib.Path, monkeypatch
     ssp_gen = SSPGenerate()
     assert ssp_gen._run(gen_args) == 0
 
-    # first assemble
-    ssp_assemble = f'trestle author ssp-assemble -m {ssp_name} -o {ssp_name} -cd {gen_args.compdefs}'
-    test_utils.execute_command_and_assert(ssp_assemble, 0, monkeypatch)
+    _run_ssp_assemble(monkeypatch, ssp_name, gen_args.compdefs)
 
 
 def test_ssp_assemble_remove_comp_defs(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
@@ -508,9 +512,7 @@ def test_ssp_assemble_remove_comp_defs(tmp_trestle_dir: pathlib.Path, monkeypatc
     ssp_gen = SSPGenerate()
     assert ssp_gen._run(gen_args) == 0
 
-    # first assemble
-    ssp_assemble = f'trestle author ssp-assemble -m {ssp_name} -o {ssp_name} -cd {gen_args.compdefs}'
-    test_utils.execute_command_and_assert(ssp_assemble, 0, monkeypatch)
+    _run_ssp_assemble(monkeypatch, ssp_name, gen_args.compdefs)
     # modify component uuids for testing removal
     orig_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     imp_reqs = orig_ssp.control_implementation.implemented_requirements
@@ -526,8 +528,7 @@ def test_ssp_assemble_remove_comp_defs(tmp_trestle_dir: pathlib.Path, monkeypatc
 
     ModelUtils.save_top_level_model(orig_ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
     # reassemble with changes
-    ssp_assemble = f'trestle author ssp-assemble -m {ssp_name} -o {ssp_name} -cd {gen_args.compdefs}'
-    test_utils.execute_command_and_assert(ssp_assemble, 0, monkeypatch)
+    _run_ssp_assemble(monkeypatch, ssp_name, gen_args.compdefs)
 
     # loads edited ssp again
     edited_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
@@ -535,6 +536,90 @@ def test_ssp_assemble_remove_comp_defs(tmp_trestle_dir: pathlib.Path, monkeypatc
     imp_reqs = edited_ssp.control_implementation.implemented_requirements
     assert not [x for x in components if x.uuid == generic_uuid]
     assert not [x for x in imp_reqs[0].by_components if x.component_uuid == generic_uuid]
+
+
+def test_ssp_assemble_handles_none_by_components(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Ensure assemble does not crash when an existing imp_req has by_components set to None."""
+    gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
+    ssp_gen = SSPGenerate()
+    assert ssp_gen._run(gen_args) == 0
+
+    # Build the initial SSP so the second run takes the merge path for existing requirements.
+    _run_ssp_assemble(monkeypatch, ssp_name, gen_args.compdefs)
+
+    ssp_obj, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+    assert ssp_obj.control_implementation.implemented_requirements
+    ssp_obj.control_implementation.implemented_requirements[0].by_components = None
+    ModelUtils.save_top_level_model(ssp_obj, tmp_trestle_dir, ssp_name, FileContentType.JSON)
+
+    # Regression check for #2181: this previously crashed with TypeError.
+    _run_ssp_assemble(monkeypatch, ssp_name, gen_args.compdefs)
+
+
+def test_ssp_assemble_mixed_none_and_stale_by_components(
+    tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """Handle mixed imp_reqs where one has None and another has stale by_components."""
+    gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
+    ssp_gen = SSPGenerate()
+    assert ssp_gen._run(gen_args) == 0
+    _run_ssp_assemble(monkeypatch, ssp_name, gen_args.compdefs)
+
+    ssp_obj, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+    imp_reqs = ssp_obj.control_implementation.implemented_requirements
+    assert imp_reqs
+    assert len(imp_reqs) >= 2
+
+    imp_reqs[0].by_components = None
+
+    stale_uuid = '46b7a556-72bb-4281-b805-a8f4030ca0e3'
+    target_req = None
+    for imp_req in imp_reqs:
+        if imp_req.by_components:
+            target_req = imp_req
+            break
+    assert target_req is not None
+    stale_by_comp = gens.generate_sample_model(ossp.ByComponent)
+    stale_by_comp.component_uuid = stale_uuid
+    target_req.by_components.append(stale_by_comp)
+
+    ModelUtils.save_top_level_model(ssp_obj, tmp_trestle_dir, ssp_name, FileContentType.JSON)
+    _run_ssp_assemble(monkeypatch, ssp_name, gen_args.compdefs)
+
+    edited_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+    edited_imp_reqs = edited_ssp.control_implementation.implemented_requirements
+    all_by_comps = [by_comp for imp_req in edited_imp_reqs for by_comp in (imp_req.by_components or [])]
+    assert not [x for x in all_by_comps if x.component_uuid == stale_uuid]
+
+
+def test_ssp_assemble_empty_by_components_is_none(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Ensure stale cleanup preserves optional semantics by converting empty by_components back to None."""
+    gen_args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
+    ssp_gen = SSPGenerate()
+    assert ssp_gen._run(gen_args) == 0
+    _run_ssp_assemble(monkeypatch, ssp_name, gen_args.compdefs)
+
+    ssp_obj, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+    imp_reqs = ssp_obj.control_implementation.implemented_requirements
+    assert imp_reqs
+
+    stale_uuid = '46b7a556-72bb-4281-b805-a8f4030ca0e3'
+    stale_by_comp = gens.generate_sample_model(ossp.ByComponent)
+    stale_by_comp.component_uuid = stale_uuid
+
+    imp_reqs[0].by_components = None
+    synthetic_imp_req = gens.generate_sample_model(ossp.ImplementedRequirement)
+    synthetic_imp_req.control_id = 'zz-0'
+    synthetic_imp_req.by_components = [stale_by_comp]
+    imp_reqs.append(synthetic_imp_req)
+    ModelUtils.save_top_level_model(ssp_obj, tmp_trestle_dir, ssp_name, FileContentType.JSON)
+
+    _run_ssp_assemble(monkeypatch, ssp_name, gen_args.compdefs)
+
+    edited_ssp, _ = ModelUtils.load_model_for_class(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+    edited_imp_reqs = edited_ssp.control_implementation.implemented_requirements
+    assert edited_imp_reqs[-1].control_id == 'zz-0'
+    assert edited_imp_reqs[-1].by_components is None
 
 
 def test_ssp_generate_bad_name(tmp_trestle_dir: pathlib.Path) -> None:
