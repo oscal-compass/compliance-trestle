@@ -121,6 +121,7 @@ randomize = true
 dependencies = [
     "coverage[toml]~=7.4",
     "pytest>=8.1",
+    "pytest-cov>=5.0",
     "pytest-xdist[psutil]>=3.5",
     "pytest-randomly>=3.15",
     "mypy",
@@ -146,6 +147,7 @@ minversion = "6.2"
 testpaths = [
     "tests",
 ]
+addopts = "--cov=trestle --cov-report=xml --cov-config=pyproject.toml"
 
 [tool.ruff]
 line-length = 120
@@ -294,10 +296,16 @@ warn_untyped_fields = true
 
 [tool.coverage.run]
 relative_files = true
+source = ["trestle"]
 omit = [
-    "/tmp/*",
     "*/pytest-*/*",
+    "*.jinja",
+    "tests/*",
+    "trestle/oscal/*",
 ]
+
+[tool.coverage.xml]
+output = "coverage.xml"
 
 [tool.semantic_release]
 build_command = """
