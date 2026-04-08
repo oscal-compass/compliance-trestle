@@ -471,8 +471,7 @@ def test_validate_component_definition(
     test_utils.execute_command_and_assert(validate_command, 0, monkeypatch)
 
 
-@pytest.mark.skip()
-def xest_validate_component_definition_ports(
+def test_validate_component_definition_ports(
     tmp_trestle_dir: pathlib.Path, testdata_dir: pathlib.Path, monkeypatch: MonkeyPatch
 ) -> None:
     """Test validation of ports in Component Definition."""
@@ -491,7 +490,6 @@ def xest_validate_component_definition_ports(
     test_utils.execute_command_and_assert(validate_command, 0, monkeypatch)
 
 
-@pytest.mark.skip()
 def test_validate_component_definition_ports_invalid(
     tmp_trestle_dir: pathlib.Path, testdata_dir: pathlib.Path, monkeypatch: MonkeyPatch
 ) -> None:
