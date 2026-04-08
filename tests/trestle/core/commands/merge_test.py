@@ -176,6 +176,8 @@ def test_merge_expanded_metadata_into_catalog(testdata_dir, tmp_trestle_dir, kee
     expected_plan.add_action(write_destination_action)
     delete_element_action = RemovePathAction(metadata_file)
     expected_plan.add_action(delete_element_action)
+    delete_metadata_dir_action = RemovePathAction(metadata_dir.resolve())
+    expected_plan.add_action(delete_metadata_dir_action)
 
     # Call merge()
     generated_plan = MergeCmd.merge(Path.cwd(), ElementPath('catalog.metadata'), tmp_trestle_dir)
