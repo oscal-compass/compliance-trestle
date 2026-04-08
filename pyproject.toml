@@ -298,14 +298,10 @@ warn_untyped_fields = true
 relative_files = true
 source = ["trestle"]
 omit = [
-    "*/pytest-*/*",
-    "*.jinja",
+    "/tmp/*",
+    "*/tmp/*",
     "tests/*",
-    "trestle/oscal/*",
 ]
-
-[tool.coverage.xml]
-output = "coverage.xml"
 
 [tool.semantic_release]
 build_command = """
