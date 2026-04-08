@@ -891,7 +891,7 @@ def test_profile_generate_updates_statement(tmp_trestle_dir: pathlib.Path, monke
     test_utils.execute_command_and_assert(prof_generate, 0, monkeypatch)
 
     # confirm that disallowed edits to the control statement are overwritten on next generate
-    bad_text = '  - \[3.\] Count kangaroos.'
+    bad_text = r'  - \[3.\] Count kangaroos.'
     ac1_path = tmp_trestle_dir / md_name / 'ac/ac-1.md'
     tag = 'param, ac-1_prm_7'
     file_utils.insert_text_in_file(ac1_path, tag, bad_text)
