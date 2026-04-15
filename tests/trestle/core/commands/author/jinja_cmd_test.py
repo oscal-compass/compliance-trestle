@@ -38,9 +38,15 @@ def setup_ssp(
     execute_command_and_assert(command_ssp_gen, 0, monkeypatch)
 
     for file_name in os.listdir(testdata_dir / 'jinja'):
-        full_file_name = os.path.join(testdata_dir / 'jinja', file_name)
-        if os.path.isfile(full_file_name):
-            shutil.copy(full_file_name, tmp_trestle_dir)
+        source_file = testdata_dir / 'jinja' / file_name
+        target_file = tmp_trestle_dir / file_name
+        if source_file.is_file():
+            # Keep template execution paths anchored in the repository so coverage.xml
+            # does not contain pytest temp paths that Sonar cannot resolve.
+            if source_file.suffix == '.jinja' or source_file.name.endswith('.md.jinja'):
+                target_file.symlink_to(source_file)
+            else:
+                shutil.copy(source_file, target_file)
 
 
 def test_jinja_ssp_output(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
