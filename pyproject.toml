@@ -296,21 +296,16 @@ warn_untyped_fields = true
 relative_files = true
 omit = [
     "/tmp/pytest-of-*/**",
-    "*/tmp/pytest-of-*/**",
-    "*/.pytest_cache/*",
 ]
+# Only track coverage for the trestle package to avoid temp file paths
+source_pkgs = ["trestle"]
 
-[tool.coverage.report]
-# Exclude temporary test files from coverage reports
-exclude_lines = [
-    "pragma: no cover",
-    "def __repr__",
-    "raise AssertionError",
-    "raise NotImplementedError",
-    "if __name__ == .__main__.:",
-    "if TYPE_CHECKING:",
-    "class .*\\bProtocol\\):",
-    "@(abc\\.)?abstractmethod",
+[tool.coverage.paths]
+# Map any path variations back to the source package
+source = [
+    "trestle/",
+    "*/trestle/",
+    "*/site-packages/trestle/",
 ]
 
 [tool.semantic_release]
