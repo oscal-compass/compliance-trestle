@@ -240,8 +240,10 @@ jobs:
         git config --global core.autocrlf false
     - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
-        fetch-depth: 0
+        fetch-depth: 0  # Fetch full git history for SonarCloud analysis
         submodules: true
+        # For PRs, fetch both source and target branch history
+        ref: ${{ github.event.pull_request.head.sha || github.sha }}
     - name: Set up Python
       uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
       with:

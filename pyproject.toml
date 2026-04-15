@@ -295,17 +295,8 @@ warn_untyped_fields = true
 [tool.coverage.run]
 relative_files = true
 omit = [
-    "/tmp/pytest-of-*/**",
-]
-# Only track coverage for the trestle package to avoid temp file paths
-source_pkgs = ["trestle"]
-
-[tool.coverage.paths]
-# Map any path variations back to the source package
-source = [
-    "trestle/",
-    "*/trestle/",
-    "*/site-packages/trestle/",
+    "*.jinja",
+    "*.md.jinja",
 ]
 
 [tool.semantic_release]
