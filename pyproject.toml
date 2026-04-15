@@ -296,6 +296,21 @@ warn_untyped_fields = true
 relative_files = true
 omit = [
     "/tmp/pytest-of-*/**",
+    "*/tmp/pytest-of-*/**",
+    "*/.pytest_cache/*",
+]
+
+[tool.coverage.report]
+# Exclude temporary test files from coverage reports
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
 ]
 
 [tool.semantic_release]
