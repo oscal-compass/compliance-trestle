@@ -9,6 +9,7 @@ on:
     branches:
       - 'main'
       - 'develop'
+      - 'v[0-9]*'
 permissions:
   contents: read
 
@@ -27,3 +28,12 @@ jobs:
       run: |
         PR_TITLE=$(jq -r '.pull_request.title' "$GITHUB_EVENT_PATH")
         echo "$PR_TITLE" | npx commitlint --config commitlint.config.js
+
+    - name: Block feature commits on maintenance branches
+      if: startsWith(github.base_ref, 'v')
+      run: |
+        PR_TITLE=$(jq -r '.pull_request.title' "$GITHUB_EVENT_PATH" | head -1 | sed 's/^[[:space:]]*//')
+        if echo "$PR_TITLE" | grep -qiE '^feat(\(.*\))?!?:'; then
+          echo "::error::Feature commits (feat:) are not allowed on maintenance branches. Only fix: and perf: are permitted."
+          exit 1
+        fi

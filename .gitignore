@@ -54,3 +54,6 @@ tmp_bin_test
 # mkdocs
 .cache/
 /.ruff_cache/
+
+# Local-only configuration docs
+manual-steps.md

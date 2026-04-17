@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - main
+      - 'v[0-9]*'
 
 permissions: {}
 
@@ -166,6 +167,9 @@ jobs:
         make test
   deploy:
     runs-on: ubuntu-latest
+    concurrency:
+      group: deploy-${{ github.ref }}
+      cancel-in-progress: false
     needs: [ build, test-with-codegen, set-versions ]
     permissions:
       id-token: write
@@ -174,8 +178,17 @@ jobs:
     environment:
       name: release
       url: https://pypi.org/p/compliance-trestle
-    if: github.ref == 'refs/heads/main' && github.repository == 'oscal-compass/compliance-trestle'
+    if: >-
+      github.repository == 'oscal-compass/compliance-trestle'
+      && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/v'))
     steps:
+    - name: Validate branch name
+      if: github.ref != 'refs/heads/main'
+      run: |
+        if [[ ! "$GITHUB_REF_NAME" =~ ^v[0-9]+$ ]]; then
+          echo "::error::Branch '$GITHUB_REF_NAME' does not match required pattern ^v[0-9]+$"
+          exit 1
+        fi
     - uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3.1.1
       id: app-token
       with:
@@ -194,6 +207,58 @@ jobs:
       run: |
         make develop
 
+    - name: Validate build command
+      if: github.ref != 'refs/heads/main'
+      run: |
+        BUILD_CMD=$(python -c "
+        import tomllib, sys
+        with open('pyproject.toml', 'rb') as f:
+            cfg = tomllib.load(f)
+        cmd = cfg.get('tool', {}).get('semantic_release', {}).get('build_command', '')
+        sys.stdout.write(cmd)
+        ")
+        ALLOWED='
+            python -m pip install build --upgrade
+            python -m build
+        '
+        NORM_BUILD=$(echo "$BUILD_CMD" | tr -s '[:space:]' ' ' | sed 's/^ *//;s/ *$//')
+        NORM_ALLOW=$(echo "$ALLOWED" | tr -s '[:space:]' ' ' | sed 's/^ *//;s/ *$//')
+        if [ "$NORM_BUILD" != "$NORM_ALLOW" ]; then
+          echo "::error::build_command in pyproject.toml has been modified from the expected value."
+          echo "::error::Expected: $NORM_ALLOW"
+          echo "::error::Got: $NORM_BUILD"
+          exit 1
+        fi
+
+    - name: Validate version matches branch
+      if: github.ref != 'refs/heads/main'
+      run: |
+        BRANCH_MAJOR="${GITHUB_REF_NAME#v}"
+        FILE_VERSION=$(python -c "
+        import re
+        with open('trestle/__init__.py') as f:
+            m = re.search(r\"__version__\s*=\s*['\\\"]([^'\\\"]+)\", f.read())
+            print(m.group(1) if m else '')
+        ")
+        FILE_MAJOR="${FILE_VERSION%%.*}"
+        if [ "$BRANCH_MAJOR" != "$FILE_MAJOR" ]; then
+          echo "::error::Version mismatch: branch $GITHUB_REF_NAME expects major version $BRANCH_MAJOR but trestle/__init__.py has $FILE_VERSION (major: $FILE_MAJOR)"
+          exit 1
+        fi
+
+    - name: Block feature commits on maintenance branch
+      if: github.ref != 'refs/heads/main'
+      run: |
+        LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+        if [ -n "$LAST_TAG" ]; then
+          FEAT_COMMITS=$(git log "$LAST_TAG"..HEAD --oneline --format='%s' | grep -iE '^feat(\(.*\))?!?:' || true)
+          if [ -n "$FEAT_COMMITS" ]; then
+            echo "::error::Feature commits found on maintenance branch. Only fix: and perf: are allowed."
+            echo "$FEAT_COMMITS"
+            exit 1
+          fi
+        fi
+
     - name: Python Semantic Release
       id: release
       uses: python-semantic-release/python-semantic-release@350c48fcb3ffcdfd2e0a235206bc2ecea6b69df0 # v10.5.3
@@ -209,7 +274,7 @@ jobs:
       if: steps.release.outputs.released == 'true'
 
     # Sign artifacts to be uploaded to github releases after pypi. Pypi signs it's own
-    - uses: sigstore/gh-action-sigstore-python@v3.3.0
+    - uses: sigstore/gh-action-sigstore-python@04cffa1d795717b140764e8b640de88853c92acc # v3.3.0
       if: steps.release.outputs.released == 'true'
       with:
         inputs: "dist/*"
