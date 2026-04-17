@@ -246,15 +246,17 @@ jobs:
           exit 1
         fi
 
-    - name: Block feature commits on maintenance branch
+    - name: Validate commit types on maintenance branch
       if: github.ref != 'refs/heads/main'
       run: |
         LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
         if [ -n "$LAST_TAG" ]; then
-          FEAT_COMMITS=$(git log "$LAST_TAG"..HEAD --oneline --format='%s' | grep -iE '^feat(\(.*\))?!?:' || true)
-          if [ -n "$FEAT_COMMITS" ]; then
-            echo "::error::Feature commits found on maintenance branch. Only fix: and perf: are allowed."
-            echo "$FEAT_COMMITS"
+          ALLOWED_TYPES='^(fix|perf|chore|ci|docs|build|refactor|style|test|revert)(\(.*\))?:'
+          BAD_COMMITS=$(git log "$LAST_TAG"..HEAD --format='%s' | grep -iEvx "$ALLOWED_TYPES.*" || true)
+          if [ -n "$BAD_COMMITS" ]; then
+            echo "::error::All commits on maintenance branches must use an allowed type: fix, perf, chore, ci, docs, build, refactor, style, test, revert."
+            echo "::error::The following commits do not match:"
+            echo "$BAD_COMMITS"
             exit 1
           fi
         fi

@@ -29,11 +29,13 @@ jobs:
         PR_TITLE=$(jq -r '.pull_request.title' "$GITHUB_EVENT_PATH")
         echo "$PR_TITLE" | npx commitlint --config commitlint.config.js
 
-    - name: Block feature commits on maintenance branches
+    - name: Validate commit type for maintenance branch
       if: startsWith(github.base_ref, 'v')
       run: |
         PR_TITLE=$(jq -r '.pull_request.title' "$GITHUB_EVENT_PATH" | head -1 | sed 's/^[[:space:]]*//')
-        if echo "$PR_TITLE" | grep -qiE '^feat(\(.*\))?!?:'; then
-          echo "::error::Feature commits (feat:) are not allowed on maintenance branches. Only fix: and perf: are permitted."
+        ALLOWED_TYPES='^(fix|perf|chore|ci|docs|build|refactor|style|test|revert)(\(.*\))?:'
+        if ! echo "$PR_TITLE" | grep -qiE "$ALLOWED_TYPES"; then
+          echo "::error::PR title must use an allowed type for maintenance branches: fix, perf, chore, ci, docs, build, refactor, style, test, revert."
+          echo "::error::Got: $PR_TITLE"
           exit 1
         fi
