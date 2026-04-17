@@ -111,6 +111,59 @@ def test_import_run(tmp_trestle_dir: pathlib.Path, regen: bool) -> None:
     assert rc == 0
 
 
+def test_import_run_with_empty_optional_param_label(tmp_trestle_dir: pathlib.Path) -> None:
+    """Import should accept official catalogs that use blank optional parameter labels."""
+    catalog_dict = {
+        'catalog': {
+            'uuid': '525f94af-8007-4376-8069-aa40179e0f6e',
+            'metadata': {
+                'title': 'Catalog with blank parameter label',
+                'last-modified': '2026-03-23T00:00:00Z',
+                'version': '1.0.0',
+                'oscal-version': 'v1.1.3',
+            },
+            'groups': [
+                {
+                    'id': 'g1',
+                    'title': 'Group',
+                    'controls': [
+                        {
+                            'id': 'c1',
+                            'title': 'Control',
+                            'params': [
+                                {
+                                    'id': 'A.03.01.08.ODP.04',
+                                    'label': '',
+                                    'usage': 'organization-defined time period',
+                                    'guidelines': [
+                                        {'prose': 'the time period for an account or node to be locked is defined.'}
+                                    ],
+                                }
+                            ],
+                        }
+                    ],
+                }
+            ],
+        }
+    }
+    rand_str = ''.join(secrets.choice(string.ascii_letters) for x in range(16))
+    catalog_file = pathlib.Path(f'{tmp_trestle_dir.parent}/{rand_str}.json')
+    catalog_file.write_text(json.dumps(catalog_dict), encoding=const.FILE_ENCODING)
+
+    i = importcmd.ImportCmd()
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, file=str(catalog_file), output='imported-empty-label', verbose=1, regenerate=False
+    )
+    rc = i._run(args)
+    assert rc == 0
+
+    imported_path = tmp_trestle_dir / 'catalogs/imported-empty-label/catalog.json'
+    imported_catalog = Catalog.oscal_read(imported_path)
+    imported_param = imported_catalog.groups[0].controls[0].params[0]
+    assert imported_param.label == ''
+    assert '"label": ""' in imported_path.read_text(encoding=const.FILE_ENCODING)
+
+
 def test_import_run_rollback(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test successful _run() on invalid input with good or failed rollback."""
     # rollback tests are deprecated because import validates the file in memory prior to writing out
