@@ -18,30 +18,32 @@ Trestle supports releasing security and bug fixes for older major versions throu
 
 1. **Branch from the maintenance branch**, not from `develop`:
 
-    ```bash
-    git checkout v3
-    git pull origin v3
-    git checkout -b fix/cve-2026-xxxx
-    ```
+   ```bash
+   git checkout v3
+   git pull origin v3
+   git checkout -b fix/cve-2026-xxxx
+   ```
 
-2. **Make the fix and commit** using conventional commits:
+1. **Make the fix and commit** using conventional commits:
 
-    ```bash
-    git commit --signoff -m "fix: address CVE-2026-XXXX in authentication module"
-    ```
+   ```bash
+   git commit --signoff -m "fix: address CVE-2026-XXXX in authentication module"
+   ```
 
-3. **Open a PR targeting the maintenance branch** (e.g., `v3`, not `develop`)
+1. **Open a PR targeting the maintenance branch** (e.g., `v3`, not `develop`)
 
-4. **CI runs automatically**:
-    - Full test suite via `python-test.yml`
-    - PR title validation -- `feat:` titles are rejected on maintenance branches
-    - Standard code quality checks
+1. **CI runs automatically**:
 
-5. **After merge** (squash merge required), the deploy pipeline:
-    - Validates the branch name and version consistency
-    - Runs semantic-release to bump the patch version (e.g., `3.12.0` -> `3.12.1`)
-    - Publishes to PyPI, signs with sigstore, creates a GitHub Release
-    - Updates versioned documentation
+   - Full test suite via `python-test.yml`
+   - PR title validation -- `feat:` titles are rejected on maintenance branches
+   - Standard code quality checks
+
+1. **After merge** (squash merge required), the deploy pipeline:
+
+   - Validates the branch name and version consistency
+   - Runs semantic-release to bump the patch version (e.g., `3.12.0` -> `3.12.1`)
+   - Publishes to PyPI, signs with sigstore, creates a GitHub Release
+   - Updates versioned documentation
 
 ## Security fix propagation
 
@@ -49,23 +51,23 @@ When a security fix is applied to a maintenance branch, it **must** also be appl
 
 1. After merging the fix to the maintenance branch, cherry-pick to `develop`:
 
-    ```bash
-    git checkout develop
-    git pull origin develop
-    git checkout -b fix/cve-2026-xxxx-develop
-    git cherry-pick <commit-sha-from-maintenance-branch>
-    ```
+   ```bash
+   git checkout develop
+   git pull origin develop
+   git checkout -b fix/cve-2026-xxxx-develop
+   git cherry-pick <commit-sha-from-maintenance-branch>
+   ```
 
-2. Open a PR targeting `develop` with the cherry-picked fix
+1. Open a PR targeting `develop` with the cherry-picked fix
 
-3. Track progress in the original security issue with a cross-train checklist:
+1. Track progress in the original security issue with a cross-train checklist:
 
-    ```markdown
-    - [x] v3 (v3.12.1)
-    - [ ] v4 (pending PR #NNN)
-    ```
+   ```markdown
+   - [x] v3 (v3.12.1)
+   - [ ] v4 (pending PR #NNN)
+   ```
 
-4. A security fix is **not considered complete** until all affected trains are patched
+1. A security fix is **not considered complete** until all affected trains are patched
 
 ## Creating a new maintenance branch
 
@@ -73,34 +75,35 @@ When a new major version is released (e.g., v5.0.0), create a maintenance branch
 
 1. **Create the branch** from `main` at the last release tag before the breaking change:
 
-    ```bash
-    git checkout v4.x.y  # last v4 tag
-    git checkout -b v4
-    git push origin v4
-    ```
+   ```bash
+   git checkout v4.x.y  # last v4 tag
+   git checkout -b v4
+   git push origin v4
+   ```
 
-2. **The CI pipeline automatically supports the new branch** -- the `v[0-9]*` glob patterns in workflow triggers match any `v<number>` branch without code changes.
+1. **The CI pipeline automatically supports the new branch** -- the `v[0-9]*` glob patterns in workflow triggers match any `v<number>` branch without code changes.
 
-3. **Configure branch protection** (see [GitHub actions setup](github_actions_setup.md)):
-    - Require pull requests with at least one CODEOWNER review
-    - Require status checks to pass
-    - Require squash merges only
-    - Restrict push access to maintainers
-    - Disallow force pushes and deletions
+1. **Configure branch protection** (see [GitHub actions setup](github_actions_setup.md)):
 
-4. **Update the GitHub `release` environment** if it uses an explicit branch list (add the new branch)
+   - Require pull requests with at least one CODEOWNER review
+   - Require status checks to pass
+   - Require squash merges only
+   - Restrict push access to maintainers
+   - Disallow force pushes and deletions
 
-5. **Consider enabling Dependabot** for security updates on the new maintenance branch
+1. **Update the GitHub `release` environment** if it uses an explicit branch list (add the new branch)
+
+1. **Consider enabling Dependabot** for security updates on the new maintenance branch
 
 ## CI/CD behavior on maintenance branches
 
-| Pipeline | Behavior |
-|----------|----------|
-| `python-test.yml` | Runs on PRs targeting maintenance branches (same as `develop`) |
-| `python-push.yml` | Triggers on push to maintenance branches; validates branch name, build command, version consistency, and commit types before running semantic-release |
-| `conventional-pr.yml` | Validates PR titles; blocks `feat:` commits on maintenance branches |
-| `docs-update.yml` | Automatically triggered by version tags (e.g., `v3.12.1`) |
-| `merge-main-to-develop` | Does **not** run -- maintenance releases are isolated |
+| Pipeline                | Behavior                                                                                                                                              |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `python-test.yml`       | Runs on PRs targeting maintenance branches (same as `develop`)                                                                                        |
+| `python-push.yml`       | Triggers on push to maintenance branches; validates branch name, build command, version consistency, and commit types before running semantic-release |
+| `conventional-pr.yml`   | Validates PR titles; blocks `feat:` commits on maintenance branches                                                                                   |
+| `docs-update.yml`       | Automatically triggered by version tags (e.g., `v3.12.1`)                                                                                             |
+| `merge-main-to-develop` | Does **not** run -- maintenance releases are isolated                                                                                                 |
 
 ## Restrictions on maintenance branches
 
