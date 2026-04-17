@@ -135,6 +135,25 @@ docs-validate: docs-clean ## Validate documentation (build + link check)
 docs-clean: clean-tmp
 
 # ============================================================================
+# Workflow Testing (via act + podman)
+# ============================================================================
+
+.PHONY: act-lint act-actionlint act-test-dry act-deploy-dry
+
+ACT_FLAGS := --container-architecture linux/amd64
+
+act-lint: ## Run the actionlint workflow locally with act
+	act -W .github/workflows/actionlint.yml $(ACT_FLAGS)
+
+act-actionlint: act-lint ## Alias for act-lint
+
+act-test-dry: ## Dry-run the PR test pipeline locally with act
+	act -n -W .github/workflows/python-test.yml $(ACT_FLAGS)
+
+act-deploy-dry: ## Dry-run the deploy pipeline locally with act
+	act -n -W .github/workflows/python-push.yml $(ACT_FLAGS)
+
+# ============================================================================
 # Utilities
 # ============================================================================
 
