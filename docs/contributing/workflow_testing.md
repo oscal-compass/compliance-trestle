@@ -65,15 +65,15 @@ act -W .github/workflows/actionlint.yml --container-architecture linux/amd64
 
 ## What can and cannot be tested locally
 
-| What | Testable locally? | Notes |
-| --- | --- | --- |
-| Workflow YAML syntax | Yes | `act --list` or `act -n` catches parse errors |
-| Job dependencies and ordering | Yes | Dry-run validates the DAG |
-| Step conditionals (`if:` expressions) | Partial | Dry-run shows which steps would run, but context variables like `github.ref` need to be simulated via event files |
-| Shell scripts in `run:` steps | Yes (with full run) | Requires container runtime; secrets won't be available |
-| Actions that require secrets | No | GitHub App tokens, SonarCloud, Snyk, PyPI publishing cannot be tested locally |
-| Matrix strategies | Yes | Dry-run expands the matrix |
-| Platform-specific jobs (Windows) | No | Act only supports Linux containers |
+| What                                  | Testable locally?   | Notes                                                                                                             |
+| ------------------------------------- | ------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Workflow YAML syntax                  | Yes                 | `act --list` or `act -n` catches parse errors                                                                     |
+| Job dependencies and ordering         | Yes                 | Dry-run validates the DAG                                                                                         |
+| Step conditionals (`if:` expressions) | Partial             | Dry-run shows which steps would run, but context variables like `github.ref` need to be simulated via event files |
+| Shell scripts in `run:` steps         | Yes (with full run) | Requires container runtime; secrets won't be available                                                            |
+| Actions that require secrets          | No                  | GitHub App tokens, SonarCloud, Snyk, PyPI publishing cannot be tested locally                                     |
+| Matrix strategies                     | Yes                 | Dry-run expands the matrix                                                                                        |
+| Platform-specific jobs (Windows)      | No                  | Act only supports Linux containers                                                                                |
 
 ## Simulating different contexts
 

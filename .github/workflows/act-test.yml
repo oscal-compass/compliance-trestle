@@ -19,7 +19,7 @@ jobs:
 
     - name: Install act
       run: |
-        curl -s https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash -s -- -b /usr/local/bin
+        curl -fsSL https://raw.githubusercontent.com/nektos/act/6ee387ebd0426e57223315c47b0299a721041df8/install.sh | sudo bash -s -- -b /usr/local/bin v0.2.87
 
     - name: Dry-run actionlint workflow
       run: |
