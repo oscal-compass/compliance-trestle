@@ -27,6 +27,7 @@ from trestle.core.control_interface import ControlInterface
 from trestle.core.docs_control_writer import DocsControlWriter
 from trestle.core.markdown.docs_markdown_node import DocsMarkdownNode
 from trestle.core.markdown.md_writer import MDWriter
+from trestle.core.rules import RulesInterface
 from trestle.oscal import ssp
 from trestle.oscal.catalog import Catalog
 
@@ -334,7 +335,7 @@ class SSPMarkdownWriter:
                 prose = by_comp.description
             if by_comp.implementation_status:
                 status = by_comp.implementation_status.state
-            rules, _ = ControlInterface.get_rule_list_for_item(by_comp)
+            rules, _ = RulesInterface.get_rule_list_for_item(by_comp)
 
             if prose or write_empty_responses:
                 if subheader:

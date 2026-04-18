@@ -47,6 +47,7 @@ from trestle.core.crm.ssp_inheritance_api import SSPInheritanceAPI
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.remote.cache import FetcherFactory
+from trestle.core.rules import RulesInterface
 from trestle.core.validator import Validator
 from trestle.core.validator_factory import validator_factory
 
@@ -369,7 +370,7 @@ class SSPAssemble(AuthorCommonCommand):
         local_set_params.extend(as_list(imp_req.set_parameters))
         local_set_params = ControlInterface.uniquify_set_params(local_set_params)
         # get any rules set at control level, if present
-        rules_list, _ = ControlInterface.get_rule_list_for_item(gen_imp_req)  # type: ignore
+        rules_list, _ = RulesInterface.get_rule_list_for_item(gen_imp_req)  # type: ignore
         # There should be no rule content at top level of imp_req in ssp so strip them out
         imp_req.props = none_if_empty(
             ControlInterface.clean_props(gen_imp_req.props, remove_imp_status=True, remove_all_rule_info=True)
@@ -389,12 +390,12 @@ class SSPAssemble(AuthorCommonCommand):
         # so insert the new by_comp directly into the ssp, generating parts as needed
         imp_req.statements = as_list(imp_req.statements)
         for statement in as_list(gen_imp_req.statements):
-            if ControlInterface.item_has_rules(statement):  # type: ignore
+            if RulesInterface.item_has_rules(statement):  # type: ignore
                 imp_req = CatalogReader._get_imp_req_for_statement(ssp, gen_imp_req.control_id, statement.statement_id)
                 by_comp = CatalogReader._get_by_comp_from_imp_req(imp_req, statement.statement_id, gen_comp.uuid)
                 by_comp.description = statement.description
                 by_comp.props = none_if_empty(ControlInterface.clean_props(statement.props))
-                rules_list, _ = ControlInterface.get_rule_list_for_item(statement)  # type: ignore
+                rules_list, _ = RulesInterface.get_rule_list_for_item(statement)  # type: ignore
                 by_comp.set_parameters = none_if_empty(
                     SSPAssemble._get_params_for_rules(context, rules_list, local_set_params)
                 )
