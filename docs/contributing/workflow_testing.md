@@ -9,24 +9,50 @@ When modifying GitHub Actions workflows, you can validate changes locally before
 
 ## Prerequisites
 
-- **act**: Install via `brew install act` (macOS) or see [act installation](https://nektosact.com/installation/)
+- **act**: See installation options below
 - **Container runtime**: Either [podman](https://podman.io/) or [Docker](https://www.docker.com/)
+
+### Installing act
+
+- **macOS**: `brew install act`
+
+- **Linux**: Download from [GitHub releases](https://github.com/nektos/act/releases) or use the install script:
+
+  ```bash
+  curl -fsSL https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash -s -- -b /usr/local/bin
+  ```
+
+- **Windows**: act requires Linux containers and is not supported for local workflow testing. Use the CI-based validation instead (see [CI integration](#ci-integration)).
+
+For other installation methods, see [act installation](https://nektosact.com/installation/).
 
 ### Configuring act with podman
 
-On macOS with podman, set the `DOCKER_HOST` environment variable so act can find the podman socket:
+Act needs the `DOCKER_HOST` environment variable to find the podman socket. The setup differs by platform.
+
+**macOS** (podman runs in a VM via `podman machine`):
 
 ```bash
 export DOCKER_HOST="unix://$(podman machine inspect --format '{{.ConnectionInfo.PodmanSocket.Path}}')"
 ```
-
-Add this to your shell profile (`.zshrc`, `.bashrc`) to make it persistent.
 
 Ensure the podman machine is running:
 
 ```bash
 podman machine start
 ```
+
+**Linux** (podman runs natively):
+
+```bash
+# For rootless podman (recommended)
+export DOCKER_HOST="unix://$XDG_RUNTIME_DIR/podman/podman.sock"
+
+# Ensure the podman socket is active
+systemctl --user start podman.socket
+```
+
+Add the appropriate `DOCKER_HOST` export to your shell profile (`.zshrc`, `.bashrc`) to make it persistent.
 
 ## Makefile targets
 
@@ -41,6 +67,9 @@ make act-test-dry
 
 # Dry-run the deploy pipeline (validates structure without executing)
 make act-deploy-dry
+
+# Dry-run the conventional PR pipeline (validates structure without executing)
+make act-conventional-dry
 ```
 
 All targets use `--container-architecture linux/amd64` automatically for Apple Silicon compatibility.
