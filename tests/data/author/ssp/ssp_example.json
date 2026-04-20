@@ -28,7 +28,7 @@
       ]
     },
     "import-profile": {
-      "href": "../../../nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_LOW-baseline_profile.json"
+      "href": "../../../nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_LOW-baseline_profile.json"
     },
     "system-characteristics": {
       "system-ids": [

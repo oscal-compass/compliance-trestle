@@ -9,7 +9,7 @@ on:
     - v*
 permissions: read-all
 concurrency:
-  group: docs-${{ github.sha }}  # Don't double up when tags are on develop
+  group: docs-deploy-global  
   cancel-in-progress: false
 jobs:
   set-versions:
