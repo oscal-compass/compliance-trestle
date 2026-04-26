@@ -358,11 +358,13 @@ class RemovePathAction(Action):
 
         trash.store(self._sub_path, True)
 
-        # check if parent folder is empty and if so delete
-        parent_dir = pathlib.Path(os.path.dirname(self._sub_path))
-        files = list(parent_dir.iterdir())
-        if not files:
+        # check if parent folders are empty and if so delete them recursively up to the project root
+        parent_dir = self._sub_path.parent
+        while parent_dir != self._trestle_project_root:
+            if list(parent_dir.iterdir()):
+                break
             trash.store(parent_dir, True)
+            parent_dir = parent_dir.parent
         self._mark_executed()
 
     def rollback(self) -> None:
