@@ -42,7 +42,7 @@ Below shows trestle versions correspondence with OSCAL versions:
 
 ```
 trestle 4.x => OSCAL 1.2.1
-trestle 3.x => OSCAL 1.1.2
+trestle 3.x => OSCAL 1.1.3
 trestle 2.x => OSCAL 1.0.4
 trestle 1.x => OSCAL 1.0.2
 trestle 0.37.x => OSCAL 1.0.0
@@ -73,7 +73,7 @@ python3.11 -m venv venv.trestle
 source venv.trestle/bin/activate
 pip install compliance-trestle==3.6.0
 trestle version
-Trestle version v3.6.0 based on OSCAL version 1.1.2
+Trestle version v3.6.0 based on OSCAL version 1.1.3
 ```
 
 ## Why Trestle
@@ -112,7 +112,7 @@ Trestle runs on most all python platforms (e.g. Linux, Mac, Windows) and is avai
 
 ## Development status
 
-Compliance trestle is currently stable and is based on NIST OSCAL version 1.1.2, with active development continuing.
+Compliance trestle is currently stable and is based on NIST OSCAL version 1.2.1, with active development continuing.
 
 ## Contributing to Trestle
 
