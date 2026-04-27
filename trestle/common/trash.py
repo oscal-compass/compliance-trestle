@@ -54,6 +54,11 @@ def to_trash_file_path(file_path: pathlib.Path) -> pathlib.Path:
 
 def to_trash_path(path: pathlib.Path) -> pathlib.Path:
     """Convert the dir or file path to apporpriate trash file or dir path."""
+    if path.is_dir():
+        return to_trash_dir_path(path)
+    if path.is_file():
+        return to_trash_file_path(path)
+    # Fallback for non-existent paths: preserve legacy behavior for file-like names.
     if path.suffix != '':
         return to_trash_file_path(path)
     return to_trash_dir_path(path)

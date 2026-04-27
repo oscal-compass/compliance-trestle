@@ -80,6 +80,15 @@ def test_to_trash_path(tmp_path: pathlib.Path) -> None:
     assert trash.to_trash_dir_path(readme_file.parent) == trash.to_trash_path(readme_file.parent)
 
 
+def test_to_trash_path_dotted_directory_name(tmp_path: pathlib.Path) -> None:
+    """Test to_trash_path handles directory names containing dots."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    dotted_dir = tmp_path / 'policy.v1'
+    dotted_dir.mkdir(exist_ok=True, parents=True)
+
+    assert trash.to_trash_dir_path(dotted_dir) == trash.to_trash_path(dotted_dir)
+
+
 def test_get_trash_root(tmp_path: pathlib.Path) -> None:
     """Test get trash root function."""
     assert trash.get_trash_root(pathlib.Path('')) is None
