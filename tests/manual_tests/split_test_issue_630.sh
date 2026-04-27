@@ -20,7 +20,7 @@ mkdir test_trestle
 cd test_trestle
 trestle init
 #UPDATE HERE!!!!!!
-trestle import -f path_to/NIST_SP-800-53_rev4_catalog.json -o mycatalog
+trestle import -f path_to/NIST_SP-800-53_rev5_catalog.json -o mycatalog
 #UPDATE HERE!!!!!!
 cd catalogs
 cd mycatalog
