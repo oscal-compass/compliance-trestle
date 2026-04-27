@@ -209,7 +209,8 @@ def recover(dest_content_path: pathlib.Path, delete_trash: bool = False) -> None
     """Recover the specified file or directory from the trash directory.
 
     dest_content_path: destination content path that needs to be recovered from trash
-    It recovers the latest path content from trash if exists
+    It recovers the latest path content from trash if exists.
+    Dispatches to file or directory recovery based on which trash layout exists.
     """
     trash_dir_path = to_trash_dir_path(dest_content_path)
     if trash_dir_path.exists() and trash_dir_path.is_dir():
