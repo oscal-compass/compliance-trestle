@@ -79,3 +79,16 @@ def test_oscal_obj_version_missing_metadata_raises_trestle_error(monkeypatch: Mo
 
     with pytest.raises(TrestleError, match='Metadata version is missing'):
         cmd._get_version('catalog', 'missing-metadata', pathlib.Path('/tmp'))
+
+
+def test_oscal_obj_version_missing_metadata_version_raises_trestle_error(monkeypatch: MonkeyPatch) -> None:
+    """Test OSCAL object version reports a friendly error when metadata version is missing."""
+    cmd = VersionCmd()
+
+    def _mock_load_model_for_type(*args, **kwargs):
+        return SimpleNamespace(metadata=SimpleNamespace(version=None)), pathlib.Path('/tmp/missing-version.json')
+
+    monkeypatch.setattr(ModelUtils, 'load_model_for_type', _mock_load_model_for_type)
+
+    with pytest.raises(TrestleError, match='Metadata version is missing'):
+        cmd._get_version('catalog', 'missing-version', pathlib.Path('/tmp'))
