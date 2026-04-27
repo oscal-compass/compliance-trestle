@@ -16,13 +16,18 @@
 """Test for cli module command version."""
 
 import pathlib
+from unittest.mock import MagicMock
 
+import pytest
 from _pytest.monkeypatch import MonkeyPatch
 
 from tests import test_utils
 from tests.test_utils import execute_command_and_assert
 
 from trestle import __version__
+from trestle.common.err import TrestleError
+from trestle.common.model_utils import ModelUtils
+from trestle.core.commands.version import VersionCmd
 from trestle.oscal import OSCAL_VERSION
 
 
@@ -61,3 +66,14 @@ def test_oscal_obj_version(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPat
     execute_command_and_assert(testcmd, 0, monkeypatch)
     output, _ = capsys.readouterr()
     assert f'Version of OSCAL object of {comp_name} component-definition is: 0.21.0' in output
+
+
+def test_get_version_metadata_none(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test that _get_version raises TrestleError (not AttributeError) when metadata is None."""
+    mock_oscal_object = MagicMock()
+    mock_oscal_object.metadata = None
+    monkeypatch.setattr(ModelUtils, 'load_model_for_type', lambda *a, **kw: (mock_oscal_object, pathlib.Path('fake/path')))
+
+    cmd = VersionCmd()
+    with pytest.raises(TrestleError):
+        cmd._get_version('catalog', 'mycat', tmp_trestle_dir)
