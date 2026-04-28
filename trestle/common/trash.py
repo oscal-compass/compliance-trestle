@@ -94,8 +94,10 @@ def to_origin_dir_path(trash_dir_path: pathlib.Path) -> pathlib.Path:
 
     origin_path_parts: List[str] = []
     for item in relative_path.parts:
-        parts = item.split(TRESTLE_TRASH_DIR_EXT)
-        origin_path_parts.append(parts[0])
+        if item.endswith(TRESTLE_TRASH_DIR_EXT):
+            origin_path_parts.append(item[: -len(TRESTLE_TRASH_DIR_EXT)])
+        else:
+            origin_path_parts.append(item)
 
     origin_relative_path = pathlib.Path('/'.join(origin_path_parts))
     origin_path = trestle_root / origin_relative_path
