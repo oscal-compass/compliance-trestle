@@ -138,10 +138,16 @@ docs-clean: clean-tmp
 # Utilities
 # ============================================================================
 
-.PHONY: gen-oscal simplified-catalog check-for-changes clean clean-env
+.PHONY: download-oscal gen-oscal gen-oscal-namespace simplified-catalog check-for-changes clean clean-env
+
+download-oscal: ## Download latest OSCAL release schemas and metaschemas
+	python3 scripts/download_oscal.py
 
 gen-oscal: clean-tmp ## Generate OSCAL Python models from JSON schemas
 	hatch run python ./scripts/gen_oscal.py
+
+gen-oscal-namespace: ## Generate OSCAL namespace YAML from metaschemas
+	hatch run python ./scripts/extract_oscal_namespace.py
 
 simplified-catalog: ## Generate simplified NIST catalog for testing
 	hatch run python ./scripts/simplify_retain_ac.py ./nist-content/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json ./tests/data/json/simplified_nist_catalog.json

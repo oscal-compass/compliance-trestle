@@ -1,0 +1,1747 @@
+oscal_namespace:
+  version: 1.2.2
+  description: OSCAL default namespace vocabulary extracted from metaschemas
+  namespaces:
+    http://csrc.nist.gov/ns/oscal:
+      oscal-ap:
+        assessment-plan/part:
+          assessment-plan/part[@name]:
+            allowed_values:
+            - rules-of-engagement
+            - disclosures
+            - assessment-inclusions
+            - assessment-exclusions
+            - results-delivery
+            - assumptions
+            - methodology
+            allow_other: false
+            definitions:
+            - value: rules-of-engagement
+              description: Defines the circumstances, conditions, degree, and manner in which the use of cyber-attack techniques
+                or actions may be applied to the assessment.
+            - value: disclosures
+              description: Any information the assessor should make known to the system owner or authorizing official. Has
+                child 'item' parts for each individual disclosure.
+            - value: assessment-inclusions
+              description: Defines any assessment activities which the system owner or authorizing official wishes to ensure
+                are performed as part of the assessment.
+            - value: assessment-exclusions
+              description: Defines any assessment activities which the system owner or authorizing official explicitly prohibits
+                from being performed as part of the assessment.
+            - value: results-delivery
+              description: Defines conditions related to the delivery of the assessment results, such as when to deliver,
+                how, and to whom.
+            - value: assumptions
+              description: Defines any supposition made by the assessor. Has child 'item' parts for each assumption.
+            - value: methodology
+              description: An explanation of practices, procedures, and rules used in the course of the assessment.
+            constraint_ids:
+            - oscal-terms-and-conditions-part-name
+            source_files:
+            - oscal_assessment-plan_metaschema_RESOLVED.xml
+      oscal-assessment-common:
+        '@name=''objective'']/prop':
+          '@name=''objective'']/prop[@name]':
+            allowed_values:
+            - method
+            allow_other: false
+            definitions:
+            - value: method
+              description: The assessment method to use. This typically appears on parts with the name "objective".
+            constraint_ids:
+            - oscal-assesment-part-objective-name
+            source_files:
+            - oscal_assessment-common_metaschema_RESOLVED.xml
+          '@name=''objective'']/prop[@value] where name=method':
+            allowed_values:
+            - INTERVIEW
+            - EXAMINE
+            - TEST
+            allow_other: false
+            definitions:
+            - value: INTERVIEW
+              description: The process of holding discussions with individuals or groups of individuals within an organization
+                to once again, facilitate assessor understanding, achieve clarification, or obtain evidence.
+            - value: EXAMINE
+              description: The process of reviewing, inspecting, observing, studying, or analyzing one or more assessment
+                objects (i.e., specifications, mechanisms, or activities).
+            - value: TEST
+              description: The process of exercising one or more assessment objects (i.e., activities or mechanisms) under
+                specified conditions to compare actual with expected behavior.
+            constraint_ids:
+            - oscal-assesment-part-objective-method-value
+            source_files:
+            - oscal_assessment-common_metaschema_RESOLVED.xml
+            conditions:
+              name: method
+        activity/prop:
+          activity/prop[@name]:
+            allowed_values:
+            - method
+            allow_other: false
+            definitions:
+            - value: method
+              description: The assessment method to use. This typically appears on parts with the name "assessment".
+            constraint_ids:
+            - oscal-activity-values
+            source_files:
+            - oscal_assessment-common_metaschema_RESOLVED.xml
+          activity/prop[@value] where name=method:
+            allowed_values:
+            - INTERVIEW
+            - EXAMINE
+            - TEST
+            allow_other: false
+            definitions:
+            - value: INTERVIEW
+              description: The process of holding discussions with individuals or groups of individuals within an organization
+                to once again, facilitate assessor understanding, achieve clarification, or obtain evidence.
+            - value: EXAMINE
+              description: The process of reviewing, inspecting, observing, studying, or analyzing one or more assessment
+                objects (i.e., specifications, mechanisms, or activities).
+            - value: TEST
+              description: The process of exercising one or more assessment objects (i.e., activities or mechanisms) under
+                specified conditions to compare actual with expected behavior.
+            constraint_ids:
+            - oscal-activity-type-values
+            source_files:
+            - oscal_assessment-common_metaschema_RESOLVED.xml
+            conditions:
+              name: method
+        characterization/prop:
+          characterization/prop[@name]:
+            allowed_values:
+            - state
+            allow_other: false
+            definitions:
+            - value: state
+              description: Indicates if the facet is 'initial' as first identified, or 'adjusted' indicating that the value
+                has be changed after some adjustments have been made (e.g., to identify residual risk).
+            constraint_ids:
+            - oscal-facet-prop-name-values
+            source_files:
+            - oscal_assessment-common_metaschema_RESOLVED.xml
+          characterization/prop[@value] where name=state:
+            allowed_values:
+            - initial
+            - adjusted
+            allow_other: false
+            definitions:
+            - value: initial
+              description: As first identified.
+            - value: adjusted
+              description: Indicates that residual risk remains after some adjustments have been made.
+            constraint_ids:
+            - oscal-facet-prop-state-values
+            source_files:
+            - oscal_assessment-common_metaschema_RESOLVED.xml
+            conditions:
+              name: state
+        local-objective/part:
+          local-objective/part[@name]:
+            allowed_values:
+            - objective
+            - assessment
+            - assessment-objective
+            - assessment-method
+            allow_other: false
+            definitions:
+            - value: objective
+              description: '**(deprecated)** Use ''assessment-objective'' instead.'
+              deprecated: 1.0.1
+            - value: assessment
+              description: '**(deprecated)** Use ''assessment-method'' instead.'
+              deprecated: 1.0.1
+            - value: assessment-objective
+              description: The part defines an assessment objective.
+            - value: assessment-method
+              description: The part defines an assessment method.
+            constraint_ids:
+            - oscal-assessment-objective-types
+            source_files:
+            - oscal_assessment-common_metaschema_RESOLVED.xml
+        response/prop:
+          response/prop[@name]:
+            allowed_values:
+            - type
+            allow_other: false
+            definitions:
+            - value: type
+              description: Risk Response Type
+            constraint_ids:
+            - oscal-response-prop-name
+            source_files:
+            - oscal_assessment-common_metaschema_RESOLVED.xml
+          response/prop[@value] where name=type:
+            allowed_values:
+            - avoid
+            - mitigate
+            - transfer
+            - accept
+            - share
+            - contingency
+            - none
+            allow_other: false
+            definitions:
+            - value: avoid
+              description: The risk will be eliminated.
+            - value: mitigate
+              description: The risk will be reduced.
+            - value: transfer
+              description: The risk will be transferred to another organization or entity.
+            - value: accept
+              description: The risk will continue to exist without further efforts to address it. (Sometimes referred to as
+                "Operationally required")
+            - value: share
+              description: The risk will be partially transferred to another organization or entity.
+            - value: contingency
+              description: Plans will be made to address the risk impact if the risk occurs. (This is a form of mitigation.)
+            - value: none
+              description: No response, such as when the identified risk is found to be a false positive.
+            constraint_ids:
+            - oscal-response-prop-type-value
+            source_files:
+            - oscal_assessment-common_metaschema_RESOLVED.xml
+            conditions:
+              name: type
+        risk/prop:
+          risk/prop[@name]:
+            allowed_values:
+            - type
+            - false-positive
+            - accepted
+            - risk-adjusted
+            - priority
+            allow_other: false
+            definitions:
+            - value: type
+              description: The type of remediation tracking entry. Can be multi-valued.
+            - value: false-positive
+              description: The risk has been confirmed to be a false positive.
+            - value: accepted
+              description: The risk has been accepted. No further action will be taken.
+            - value: risk-adjusted
+              description: The risk has been adjusted.
+            - value: priority
+              description: A numeric value indicating the sequence in which risks should be addressed. (Lower numbers are
+                higher priority)
+            constraint_ids:
+            - oscal-risk-prop-name-values
+            - oscal-risk-prop-name-values
+            source_files:
+            - oscal_assessment-common_metaschema_RESOLVED.xml
+          risk/prop[@value] where name=type:
+            allowed_values:
+            - vendor-check-in
+            - status-update
+            - milestone-complete
+            - mitigation
+            - remediated
+            - closed
+            - dr-submission
+            - dr-updated
+            - dr-approved
+            - dr-rejected
+            allow_other: true
+            definitions:
+            - value: vendor-check-in
+              description: Contacted vendor to determine the status of a pending fix to a known vulnerability.
+            - value: status-update
+              description: Information related to the current state of response to this risk.
+            - value: milestone-complete
+              description: A significant step in the response plan has been achieved.
+            - value: mitigation
+              description: An activity was completed that reduces the likelihood or impact of this risk.
+            - value: remediated
+              description: An activity was completed that eliminates the likelihood or impact of this risk.
+            - value: closed
+              description: The risk is no longer applicable to the system.
+            - value: dr-submission
+              description: A deviation request was made to the authorizing official.
+            - value: dr-updated
+              description: A previously submitted deviation request has been modified.
+            - value: dr-approved
+              description: The authorizing official approved the deviation.
+            - value: dr-rejected
+              description: The authorizing official rejected the deviation.
+            constraint_ids:
+            - oscal-risk-prop-type-values
+            source_files:
+            - oscal_assessment-common_metaschema_RESOLVED.xml
+            conditions:
+              name: type
+      oscal-catalog:
+        .//part:
+          .//part[@name]:
+            allowed_values:
+            - objective
+            - assessment-objective
+            allow_other: false
+            definitions:
+            - value: objective
+              description: "**(deprecated)** Use\n                              'assessment-objective' instead."
+              deprecated: 1.0.1
+            - value: assessment-objective
+              description: "The part describes a set of assessment\n                              objectives."
+            constraint_ids:
+            - oscal-control-statement-part-name
+            source_files:
+            - oscal_catalog_metaschema_RESOLVED.xml
+        control/part:
+          control/part[@name]:
+            allowed_values:
+            - overview
+            - statement
+            - guidance
+            - example
+            - assessment
+            - assessment-method
+            allow_other: false
+            definitions:
+            - value: overview
+              description: "An introduction to a control or a group of\n                              controls."
+            - value: statement
+              description: A set of implementation requirements or recommendations.
+            - value: guidance
+              description: "Additional information to consider when selecting,\n                              implementing,\
+                \ assessing, and monitoring a control."
+            - value: example
+              description: An example of an implemented requirement or control statement.
+            - value: assessment
+              description: "**(deprecated)** Use\n                              'assessment-method' instead."
+              deprecated: 1.0.1
+            - value: assessment-method
+              description: "The part describes a method-based assessment\n                              over a set of assessment\
+                \ objects."
+            constraint_ids:
+            - oscal-control-part-name
+            source_files:
+            - oscal_catalog_metaschema_RESOLVED.xml
+        control/prop:
+          control/prop[@name]:
+            allowed_values:
+            - label
+            - sort-id
+            - alt-identifier
+            - status
+            allow_other: false
+            definitions:
+            - value: label
+              description: A human-readable label for the parent context, which may be rendered in place of the actual identifier
+                for some use cases.
+            - value: sort-id
+              description: An alternative identifier, whose value is easily sortable among other such values in the document.
+            - value: alt-identifier
+              description: An alternate or aliased identifier for the parent context.
+            - value: status
+              description: "The status of a control. For example, a\n                              value of 'withdrawn' can\
+                \ indicate that the control has\n                              been withdrawn and should no longer be used."
+            constraint_ids:
+            - oscal-control-prop-name
+            source_files:
+            - oscal_catalog_metaschema_RESOLVED.xml
+          control/prop[@value] where name=status:
+            allowed_values:
+            - withdrawn
+            - Withdrawn
+            allow_other: false
+            definitions:
+            - value: withdrawn
+              description: The control is no longer used.
+            - value: Withdrawn
+              description: "**(deprecated)*** Use 'withdrawn'\n                              instead."
+              deprecated: 1.0.0
+            constraint_ids:
+            - oscal-control-prop-status-value
+            source_files:
+            - oscal_catalog_metaschema_RESOLVED.xml
+            conditions:
+              name: status
+        group/part:
+          group/part[@name]:
+            allowed_values:
+            - overview
+            - instruction
+            allow_other: false
+            definitions:
+            - value: overview
+              description: An introduction to a control or a group of controls.
+            - value: instruction
+              description: Information providing directions for a control or a group of controls.
+            constraint_ids:
+            - oscal-group-part-name
+            source_files:
+            - oscal_catalog_metaschema_RESOLVED.xml
+        group/prop:
+          group/prop[@name]:
+            allowed_values:
+            - label
+            - sort-id
+            - alt-identifier
+            allow_other: false
+            definitions:
+            - value: label
+              description: A human-readable label for the parent context, which may be rendered in place of the actual identifier
+                for some use cases.
+            - value: sort-id
+              description: An alternative identifier, whose value is easily sortable among other such values in the document.
+            - value: alt-identifier
+              description: An alternate or aliased identifier for the parent context.
+            constraint_ids:
+            - oscal-group-prop-name
+            source_files:
+            - oscal_catalog_metaschema_RESOLVED.xml
+        has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='statement']//part:
+          has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name='statement']//part[@name]:
+            allowed_values:
+            - item
+            allow_other: false
+            definitions:
+            - value: item
+              description: An individual item within a control statement.
+            constraint_ids:
+            - oscal-control-statement-part-subpart-name
+            source_files:
+            - oscal_catalog_metaschema_RESOLVED.xml
+        has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name=('assessment','assessment-method')]/part:
+          has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name=('assessment','assessment-method')]/part[@name]:
+            allowed_values:
+            - objects
+            - assessment-objects
+            allow_other: false
+            definitions:
+            - value: objects
+              description: "**(deprecated)** Use\n                              'assessment-objects' instead."
+              deprecated: 1.0.1
+            - value: assessment-objects
+              description: "Provides a listing of assessment\n                              objects."
+            constraint_ids:
+            - oscal-control-objective-part-subpart-name
+            source_files:
+            - oscal_catalog_metaschema_RESOLVED.xml
+        has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name=('assessment','assessment-method')]/prop:
+          has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name=('assessment','assessment-method')]/prop[@name]:
+            allowed_values:
+            - method
+            allow_other: false
+            definitions:
+            - value: method
+              description: '**(deprecated)** Use ''method'' in the ''http://csrc.nist.gov/ns/rmf'' namespace. The assessment
+                method to use. This typically appears on parts with the name "assessment-method".'
+              deprecated: 1.0.1
+            constraint_ids:
+            - oscal-control-statement-part-prop-name
+            - oscal-control-statement-part-rmf-prop-name
+            source_files:
+            - oscal_catalog_metaschema_RESOLVED.xml
+          ? has-oscal-namespace('http://csrc.nist.gov/ns/oscal') and @name=('assessment','assessment-method')]/prop[@value]
+            where name=method
+          : allowed_values:
+            - INTERVIEW
+            - EXAMINE
+            - TEST
+            allow_other: false
+            definitions:
+            - value: INTERVIEW
+              description: The process of holding discussions with individuals or groups of individuals within an organization
+                to once again, facilitate assessor understanding, achieve clarification, or obtain evidence.
+            - value: EXAMINE
+              description: The process of reviewing, inspecting, observing, studying, or analyzing one or more assessment
+                objects (i.e., specifications, mechanisms, or activities).
+            - value: TEST
+              description: The process of exercising one or more assessment objects (i.e., activities or mechanisms) under
+                specified conditions to compare actual with expected behavior.
+            constraint_ids:
+            - oscal-control-objective-part-method-prop-value
+            source_files:
+            - oscal_catalog_metaschema_RESOLVED.xml
+            conditions:
+              name: method
+        metadata/prop:
+          metadata/prop[@name]:
+            allowed_values:
+            - resolution-tool
+            - source-profile-uuid
+            allow_other: false
+            definitions:
+            - value: resolution-tool
+              description: The tool used to produce a resolved profile.
+            - value: source-profile-uuid
+              description: The document-level uuid of the source profile from which the catalog was produced by profile resolution.
+            constraint_ids:
+            - oscal-catalog-metadata-prop-name
+            source_files:
+            - oscal_catalog_metaschema_RESOLVED.xml
+      oscal-component-definition:
+        '@type=''software'']/prop':
+          '@type=''software'']/prop[@name]':
+            allowed_values:
+            - software-identifier
+            allow_other: false
+            definitions:
+            - value: software-identifier
+              description: If a "software" component-type, the identifier, such as a SWID tag, for the software component.
+            constraint_ids:
+            - oscal-software-component-prop-name
+            source_files:
+            - oscal_component_metaschema_RESOLVED.xml
+        defined-component/prop:
+          defined-component/prop[@name]:
+            allowed_values:
+            - version
+            - patch-level
+            - model
+            - release-date
+            - validation-type
+            - validation-reference
+            - asset-type
+            - asset-id
+            - asset-tag
+            - public
+            - virtual
+            - vlan-id
+            - network-id
+            - label
+            - sort-id
+            - baseline-configuration-name
+            - allows-authenticated-scan
+            - function
+            - hardware-model
+            - os-name
+            - os-version
+            - software-name
+            - software-version
+            - software-patch-level
+            allow_other: false
+            definitions:
+            - value: version
+              description: The version of the component.
+            - value: patch-level
+              description: The specific patch level of the component.
+            - value: model
+              description: The model of the component.
+            - value: release-date
+              description: The date the component was released, such as a software release date or policy publication date.
+            - value: validation-type
+              description: Used with component-type='validation' to provide a well-known name for a kind of validation.
+            - value: validation-reference
+              description: Used with component-type='validation' to indicate the validating body's assigned identifier for
+                their validation of this component.
+            - value: asset-type
+              description: Simple indication of the asset's function, such as Router, Storage Array, DNS Server.
+            - value: asset-id
+              description: An organizationally specific identifier that is used to uniquely identify a logical or tangible
+                item by the organization that owns the item.
+            - value: asset-tag
+              description: An asset tag assigned by the organization responsible for maintaining the logical or tangible item.
+            - value: public
+              description: Identifies whether the asset is publicly accessible (yes/no)
+            - value: virtual
+              description: Identifies whether the asset is virtualized (yes/no)
+            - value: vlan-id
+              description: Virtual LAN identifier of the asset.
+            - value: network-id
+              description: The network identifier of the asset.
+            - value: label
+              description: A human-readable label for the parent context.
+            - value: sort-id
+              description: An alternative identifier, whose value is easily sortable among other such values in the document.
+            - value: baseline-configuration-name
+              description: The name of the baseline configuration for the asset.
+            - value: allows-authenticated-scan
+              description: Can the asset be check with an authenticated scan? (yes/no)
+            - value: function
+              description: The function provided by the asset for the system.
+            - value: hardware-model
+              description: '**(deprecated)** Use ''model'' instead.'
+              deprecated: 1.2.0
+            - value: os-name
+              description: The name of the operating system used by the asset.
+            - value: os-version
+              description: The version of the operating system used by the asset.
+            - value: software-name
+              description: The software product name used by the asset.
+            - value: software-version
+              description: The software product version used by the asset.
+            - value: software-patch-level
+              description: The software product patch level used by the asset.
+            constraint_ids:
+            - oscal-component-prop-name
+            source_files:
+            - oscal_component_metaschema_RESOLVED.xml
+          defined-component/prop[@value] where name=allows-authenticated-scan:
+            allowed_values:
+            - 'yes'
+            - 'no'
+            allow_other: false
+            definitions:
+            - value: 'yes'
+              description: The component allows an authenticated scan.
+            - value: 'no'
+              description: The component does not allow an authenticated scan.
+            constraint_ids:
+            - oscal-component-allows-authenticated-scan-value
+            source_files:
+            - oscal_component_metaschema_RESOLVED.xml
+            conditions:
+              name: allows-authenticated-scan
+          defined-component/prop[@value] where name=asset-type:
+            allowed_values:
+            - operating-system
+            - database
+            - web-server
+            - dns-server
+            - email-server
+            - directory-server
+            - pbx
+            - firewall
+            - router
+            - switch
+            - storage-array
+            - appliance
+            allow_other: true
+            definitions:
+            - value: operating-system
+              description: System software that manages computer hardware, software resources, and provides common services
+                for computer programs.
+            - value: database
+              description: An electronic collection of data, or information, that is specially organized for rapid search
+                and retrieval.
+            - value: web-server
+              description: A system that delivers content or services to end users over the Internet or an intranet.
+            - value: dns-server
+              description: A system that resolves domain names to internet protocol (IP) addresses.
+            - value: email-server
+              description: A computer system that sends and receives electronic mail messages.
+            - value: directory-server
+              description: A  system that stores, organizes and provides access to directory information in order to unify
+                network resources.
+            - value: pbx
+              description: A private branch exchange (PBX) provides a a private telephone switchboard.
+            - value: firewall
+              description: A network security system that monitors and controls incoming and outgoing network traffic based
+                on predetermined security rules.
+            - value: router
+              description: A physical or virtual networking device that forwards data packets between computer networks.
+            - value: switch
+              description: A physical or virtual networking device that connects devices within a computer network by using
+                packet switching to receive and forward data to the destination device.
+            - value: storage-array
+              description: A consolidated, block-level data storage capability.
+            - value: appliance
+              description: A physical or virtual machine that centralizes hardware, software, or services for a specific purpose.
+            constraint_ids:
+            - oscal-component-asset-type-value
+            source_files:
+            - oscal_component_metaschema_RESOLVED.xml
+            conditions:
+              name: asset-type
+          defined-component/prop[@value] where name=implementation-point:
+            allowed_values:
+            - internal
+            - external
+            allow_other: false
+            definitions:
+            - value: internal
+              description: The component is implemented within the system boundary.
+            - value: external
+              description: The component is implemented outside the system boundary.
+            constraint_ids:
+            - oscal-component-implementation-point-value
+            source_files:
+            - oscal_component_metaschema_RESOLVED.xml
+            conditions:
+              name: implementation-point
+          defined-component/prop[@value] where name=public:
+            allowed_values:
+            - 'yes'
+            - 'no'
+            allow_other: false
+            definitions:
+            - value: 'yes'
+              description: The component is publicly accessible.
+            - value: 'no'
+              description: The component is not publicly accessible.
+            constraint_ids:
+            - oscal-component-public-value
+            source_files:
+            - oscal_component_metaschema_RESOLVED.xml
+            conditions:
+              name: public
+          defined-component/prop[@value] where name=virtual:
+            allowed_values:
+            - 'yes'
+            - 'no'
+            allow_other: false
+            definitions:
+            - value: 'yes'
+              description: The component is virtualized.
+            - value: 'no'
+              description: The component is not virtualized.
+            constraint_ids:
+            - oscal-component-virtual-value
+            source_files:
+            - oscal_component_metaschema_RESOLVED.xml
+            conditions:
+              name: virtual
+      oscal-control-common:
+        parameter/prop:
+          parameter/prop[@name]:
+            allowed_values:
+            - label
+            - sort-id
+            - alt-identifier
+            - alt-label
+            allow_other: false
+            definitions:
+            - value: label
+              description: A human-readable label for the parent context, which may be rendered in place of the actual identifier
+                for some use cases.
+            - value: sort-id
+              description: An alternative identifier, whose value is easily sortable among other such values in the document.
+            - value: alt-identifier
+              description: An alternate or aliased identifier for the parent context.
+            - value: alt-label
+              description: An alternate to the value provided by the parameter's label. This will typically be qualified by
+                a class.
+            constraint_ids:
+            - oscal-parameter-prop-name
+            source_files:
+            - oscal_control-common_metaschema_RESOLVED.xml
+        part/prop:
+          part/prop[@name]:
+            allowed_values:
+            - label
+            - sort-id
+            - alt-identifier
+            allow_other: false
+            definitions:
+            - value: label
+              description: A human-readable label for the parent context, which may be rendered in place of the actual identifier
+                for some use cases.
+            - value: sort-id
+              description: An alternative identifier, whose value is easily sortable among other such values in the document.
+            - value: alt-identifier
+              description: An alternate or aliased identifier for the parent context.
+            constraint_ids:
+            - oscal-part-prop-name
+            source_files:
+            - oscal_control-common_metaschema_RESOLVED.xml
+      oscal-implementation-common:
+        '@type=''interconnection'']/prop':
+          '@type=''interconnection'']/prop[@name]':
+            allowed_values:
+            - isa-title
+            - isa-date
+            - isa-remote-system-name
+            - ipv4-address
+            - ipv6-address
+            - direction
+            - uri
+            - fqdn
+            allow_other: false
+            definitions:
+            - value: isa-title
+              description: Title of the Interconnection Security Agreement (ISA).
+            - value: isa-date
+              description: Date of the Interconnection Security Agreement (ISA).
+            - value: isa-remote-system-name
+              description: The name of the remote interconnected system.
+            - value: ipv4-address
+              description: The Internet Protocol Version 4 address is for an interconnection, service, or software component.
+            - value: ipv6-address
+              description: The Internet Protocol Version 6 address is for an interconnection, service, or software component.
+            - value: direction
+              description: The direction categorizes the network connectivity of an interconnection, service, or software
+                component.
+            - value: uri
+              description: A Uniform Resource Identifier (URI) is for an interconnection, service, or software component.
+            - value: fqdn
+              description: The full-qualified domain name (FQDN) of the asset.
+            constraint_ids:
+            - oscal-component-interconnection-prop-name-values
+            source_files:
+            - oscal_implementation-common_metaschema_RESOLVED.xml
+        '@type=''software'']/prop':
+          '@type=''software'']/prop[@name]':
+            allowed_values:
+            - software-identifier
+            allow_other: false
+            definitions:
+            - value: software-identifier
+              description: If a "software" component-type, the identifier, such as a SWID tag, for the software component.
+            constraint_ids:
+            - oscal-component-software-prop-name-values
+            source_files:
+            - oscal_implementation-common_metaschema_RESOLVED.xml
+        '@type=(''interconnection'', ''service'', ''software'', ''system'')]/prop':
+          '@type=(''interconnection'', ''service'', ''software'', ''system'')]/prop[@name]':
+            allowed_values:
+            - ipv4-address
+            - ipv6-address
+            - direction
+            - uri
+            - fqdn
+            allow_other: false
+            definitions:
+            - value: ipv4-address
+              description: The Internet Protocol Version 4 address is for an interconnection, service, or software component.
+            - value: ipv6-address
+              description: The Internet Protocol Version 6 address is for an interconnection, service, or software component.
+            - value: direction
+              description: The direction categorizes the network connectivity of an interconnection, service, or software
+                component.
+            - value: uri
+              description: A Uniform Resource Identifier (URI) is for an interconnection, service, or software component.
+            - value: fqdn
+              description: The full-qualified domain name (FQDN) of the asset.
+            constraint_ids:
+            - oscal-component-interconnection-service-software-system-prop-name-values
+            source_files:
+            - oscal_implementation-common_metaschema_RESOLVED.xml
+        '@type=(''software'', ''hardware'', ''service'')]/prop':
+          '@type=(''software'', ''hardware'', ''service'')]/prop[@name]':
+            allowed_values:
+            - vendor-name
+            allow_other: false
+            definitions:
+            - value: vendor-name
+              description: The name of the company or organization
+            constraint_ids:
+            - oscal-component-hardware-service-software-prop-name-values
+            - oscal-inventory-item-hardware-service-software-prop-name-values
+            source_files:
+            - oscal_implementation-common_metaschema_RESOLVED.xml
+        inventory-item/prop:
+          inventory-item/prop[@name]:
+            allowed_values:
+            - version
+            - patch-level
+            - model
+            - release-date
+            - validation-type
+            - validation-reference
+            - asset-type
+            - asset-id
+            - asset-tag
+            - public
+            - virtual
+            - vlan-id
+            - network-id
+            - label
+            - sort-id
+            - baseline-configuration-name
+            - allows-authenticated-scan
+            - function
+            - hardware-model
+            - os-name
+            - os-version
+            - software-name
+            - software-version
+            - software-patch-level
+            - ipv4-address
+            - ipv6-address
+            - fqdn
+            - uri
+            - serial-number
+            - netbios-name
+            - mac-address
+            - physical-location
+            - is-scanned
+            allow_other: false
+            definitions:
+            - value: version
+              description: The version of the component.
+            - value: patch-level
+              description: The specific patch level of the component.
+            - value: model
+              description: The model of the component.
+            - value: release-date
+              description: The date the component was released, such as a software release date or policy publication date.
+            - value: validation-type
+              description: Used with component-type='validation' to provide a well-known name for a kind of validation.
+            - value: validation-reference
+              description: Used with component-type='validation' to indicate the validating body's assigned identifier for
+                their validation of this component.
+            - value: asset-type
+              description: Simple indication of the asset's function, such as Router, Storage Array, DNS Server.
+            - value: asset-id
+              description: An organizationally specific identifier that is used to uniquely identify a logical or tangible
+                item by the organization that owns the item.
+            - value: asset-tag
+              description: An asset tag assigned by the organization responsible for maintaining the logical or tangible item.
+            - value: public
+              description: Identifies whether the asset is publicly accessible (yes/no)
+            - value: virtual
+              description: Identifies whether the asset is virtualized (yes/no)
+            - value: vlan-id
+              description: Virtual LAN identifier of the asset.
+            - value: network-id
+              description: The network identifier of the asset.
+            - value: label
+              description: A human-readable label for the parent context.
+            - value: sort-id
+              description: An alternative identifier, whose value is easily sortable among other such values in the document.
+            - value: baseline-configuration-name
+              description: The name of the baseline configuration for the asset.
+            - value: allows-authenticated-scan
+              description: Can the asset be check with an authenticated scan? (yes/no)
+            - value: function
+              description: The function provided by the asset for the system.
+            - value: hardware-model
+              description: '**(deprecated)** Use ''model'' instead.'
+              deprecated: 1.2.0
+            - value: os-name
+              description: The name of the operating system used by the asset.
+            - value: os-version
+              description: The version of the operating system used by the asset.
+            - value: software-name
+              description: The software product name used by the asset.
+            - value: software-version
+              description: The software product version used by the asset.
+            - value: software-patch-level
+              description: The software product patch level used by the asset.
+            - value: ipv4-address
+              description: The Internet Protocol v4 Address of the asset.
+            - value: ipv6-address
+              description: The Internet Protocol v6 Address of the asset.
+            - value: fqdn
+              description: The full-qualified domain name (FQDN) of the asset.
+            - value: uri
+              description: A Uniform Resource Identifier (URI) for the asset.
+            - value: serial-number
+              description: A serial number for the asset.
+            - value: netbios-name
+              description: The NetBIOS name for the asset.
+            - value: mac-address
+              description: The media access control (MAC) address for the asset.
+            - value: physical-location
+              description: The physical location of the asset's hardware (e.g., Data Center ID, Cage#, Rack#, or other meaningful
+                location identifiers).
+            - value: is-scanned
+              description: is the asset subjected to network scans? (yes/no)
+            constraint_ids:
+            - oscal-implemented-component-prop-name-values
+            - oscal-inventory-item-prop-name-values
+            source_files:
+            - oscal_implementation-common_metaschema_RESOLVED.xml
+          inventory-item/prop[@value] where name=asset-type:
+            allowed_values:
+            - operating-system
+            - database
+            - web-server
+            - dns-server
+            - email-server
+            - directory-server
+            - pbx
+            - firewall
+            - router
+            - switch
+            - storage-array
+            - appliance
+            allow_other: true
+            definitions:
+            - value: operating-system
+              description: System software that manages computer hardware, software resources, and provides common services
+                for computer programs.
+            - value: database
+              description: An electronic collection of data, or information, that is specially organized for rapid search
+                and retrieval.
+            - value: web-server
+              description: A system that delivers content or services to end users over the Internet or an intranet.
+            - value: dns-server
+              description: A system that resolves domain names to internet protocol (IP) addresses.
+            - value: email-server
+              description: A computer system that sends and receives electronic mail messages.
+            - value: directory-server
+              description: A  system that stores, organizes and provides access to directory information in order to unify
+                network resources.
+            - value: pbx
+              description: A private branch exchange (PBX) provides a a private telephone switchboard.
+            - value: firewall
+              description: A network security system that monitors and controls incoming and outgoing network traffic based
+                on predetermined security rules.
+            - value: router
+              description: A physical or virtual networking device that forwards data packets between computer networks.
+            - value: switch
+              description: A physical or virtual networking device that connects devices within a computer network by using
+                packet switching to receive and forward data to the destination device.
+            - value: storage-array
+              description: A consolidated, block-level data storage capability.
+            - value: appliance
+              description: A physical or virtual machine that centralizes hardware, software, or services for a specific purpose.
+            constraint_ids:
+            - oscal-inventory-item-prop-asset-type-values
+            source_files:
+            - oscal_implementation-common_metaschema_RESOLVED.xml
+            conditions:
+              name: asset-type
+          inventory-item/prop[@value] where name=is-scanned:
+            allowed_values:
+            - 'yes'
+            - 'no'
+            allow_other: false
+            definitions:
+            - value: 'yes'
+              description: The asset is included in periodic vulnerability scanning.
+            - value: 'no'
+              description: The asset is not included in periodic vulnerability scanning.
+            constraint_ids:
+            - oscal-inventory-item-prop-is-scanned-values
+            source_files:
+            - oscal_implementation-common_metaschema_RESOLVED.xml
+            conditions:
+              name: is-scanned
+        system-component/prop:
+          system-component/prop[@class]:
+            allowed_values:
+            - local
+            - remote
+            allow_other: false
+            definitions:
+            - value: local
+              description: The identified IP address is for this system.
+            - value: remote
+              description: The identified IP address is for the remote system to which this system is connected.
+            constraint_ids:
+            - oscal-component-prop-ipaddress-class-values
+            source_files:
+            - oscal_implementation-common_metaschema_RESOLVED.xml
+          system-component/prop[@name]:
+            allowed_values:
+            - implementation-point
+            - leveraged-authorization-uuid
+            - inherited-uuid
+            - asset-type
+            - asset-id
+            - asset-tag
+            - public
+            - virtual
+            - vlan-id
+            - network-id
+            - label
+            - sort-id
+            - baseline-configuration-name
+            - allows-authenticated-scan
+            - function
+            - hardware-model
+            - model
+            - os-name
+            - os-version
+            - software-name
+            - software-version
+            - software-patch-level
+            - version
+            - patch-level
+            - release-date
+            - validation-type
+            - validation-reference
+            allow_other: false
+            definitions:
+            - value: implementation-point
+              description: Relative placement of component ('internal' or 'external') to the system.
+            - value: leveraged-authorization-uuid
+              description: UUID of the related leveraged-authorization assembly in this SSP.
+            - value: inherited-uuid
+              description: UUID of the component as it was assigned in the leveraged system's SSP.
+            - value: asset-type
+              description: Simple indication of the asset's function, such as Router, Storage Array, DNS Server.
+            - value: asset-id
+              description: An organizationally specific identifier that is used to uniquely identify a logical or tangible
+                item by the organization that owns the item.
+            - value: asset-tag
+              description: An asset tag assigned by the organization responsible for maintaining the logical or tangible item.
+            - value: public
+              description: Identifies whether the asset is publicly accessible (yes/no)
+            - value: virtual
+              description: Identifies whether the asset is virtualized (yes/no)
+            - value: vlan-id
+              description: Virtual LAN identifier of the asset.
+            - value: network-id
+              description: The network identifier of the asset.
+            - value: label
+              description: A human-readable label for the parent context.
+            - value: sort-id
+              description: An alternative identifier, whose value is easily sortable among other such values in the document.
+            - value: baseline-configuration-name
+              description: The name of the baseline configuration for the asset.
+            - value: allows-authenticated-scan
+              description: Can the asset be check with an authenticated scan? (yes/no)
+            - value: function
+              description: The function provided by the asset for the system.
+            - value: hardware-model
+              description: '**(deprecated)** Use ''model'' instead.'
+              deprecated: 1.2.0
+            - value: model
+              description: The model of system used by the asset.
+            - value: os-name
+              description: The name of the operating system used by the asset.
+            - value: os-version
+              description: The version of the operating system used by the asset.
+            - value: software-name
+              description: The software product name used by the asset.
+            - value: software-version
+              description: The software product version used by the asset.
+            - value: software-patch-level
+              description: The software product patch level used by the asset.
+            - value: version
+              description: The version of the component.
+            - value: patch-level
+              description: The specific patch level of the component.
+            - value: release-date
+              description: The date the component was released, such as a software release date or policy publication date.
+            - value: validation-type
+              description: Used with component-type='validation' to provide a well-known name for a kind of validation.
+            - value: validation-reference
+              description: Used with component-type='validation' to indicate the validating body's assigned identifier for
+                their validation of this component.
+            constraint_ids:
+            - oscal-component-prop-name-values
+            source_files:
+            - oscal_implementation-common_metaschema_RESOLVED.xml
+          system-component/prop[@value] where name=allows-authenticated-scan:
+            allowed_values:
+            - 'yes'
+            - 'no'
+            allow_other: false
+            definitions:
+            - value: 'yes'
+              description: The component allows an authenticated scan.
+            - value: 'no'
+              description: The component does not allow an authenticated scan.
+            constraint_ids:
+            - oscal-component-prop-allows-authenticated-scan-values
+            source_files:
+            - oscal_implementation-common_metaschema_RESOLVED.xml
+            conditions:
+              name: allows-authenticated-scan
+          system-component/prop[@value] where name=asset-type:
+            allowed_values:
+            - operating-system
+            - database
+            - web-server
+            - dns-server
+            - email-server
+            - directory-server
+            - pbx
+            - firewall
+            - router
+            - switch
+            - storage-array
+            - appliance
+            allow_other: true
+            definitions:
+            - value: operating-system
+              description: System software that manages computer hardware, software resources, and provides common services
+                for computer programs.
+            - value: database
+              description: An electronic collection of data, or information, that is specially organized for rapid search
+                and retrieval.
+            - value: web-server
+              description: A system that delivers content or services to end users over the Internet or an intranet.
+            - value: dns-server
+              description: A system that resolves domain names to internet protocol (IP) addresses.
+            - value: email-server
+              description: A computer system that sends and receives electronic mail messages.
+            - value: directory-server
+              description: A  system that stores, organizes and provides access to directory information in order to unify
+                network resources.
+            - value: pbx
+              description: A private branch exchange (PBX) provides a a private telephone switchboard.
+            - value: firewall
+              description: A network security system that monitors and controls incoming and outgoing network traffic based
+                on predetermined security rules.
+            - value: router
+              description: A physical or virtual networking device that forwards data packets between computer networks.
+            - value: switch
+              description: A physical or virtual networking device that connects devices within a computer network by using
+                packet switching to receive and forward data to the destination device.
+            - value: storage-array
+              description: A consolidated, block-level data storage capability.
+            - value: appliance
+              description: A physical or virtual machine that centralizes hardware, software, or services for a specific purpose.
+            constraint_ids:
+            - oscal-component-prop-asset-type-values
+            source_files:
+            - oscal_implementation-common_metaschema_RESOLVED.xml
+            conditions:
+              name: asset-type
+          system-component/prop[@value] where name=direction:
+            allowed_values:
+            - incoming
+            - outgoing
+            allow_other: false
+            definitions:
+            - value: incoming
+              description: Data from the remote system flows into this system.
+            - value: outgoing
+              description: Data from this system flows to the remote system.
+            constraint_ids:
+            - oscal-component-prop-direction-values
+            source_files:
+            - oscal_implementation-common_metaschema_RESOLVED.xml
+            conditions:
+              name: direction
+          system-component/prop[@value] where name=implementation-point:
+            allowed_values:
+            - internal
+            - external
+            allow_other: false
+            definitions:
+            - value: internal
+              description: The component is implemented within the system boundary.
+            - value: external
+              description: The component is implemented outside the system boundary.
+            constraint_ids:
+            - oscal-component-prop-implementation-point-values
+            source_files:
+            - oscal_implementation-common_metaschema_RESOLVED.xml
+            conditions:
+              name: implementation-point
+          system-component/prop[@value] where name=public:
+            allowed_values:
+            - 'yes'
+            - 'no'
+            allow_other: false
+            definitions:
+            - value: 'yes'
+              description: The component is publicly accessible.
+            - value: 'no'
+              description: The component is not publicly accessible.
+            constraint_ids:
+            - oscal-component-prop-is-public-values
+            source_files:
+            - oscal_implementation-common_metaschema_RESOLVED.xml
+            conditions:
+              name: public
+          system-component/prop[@value] where name=virtual:
+            allowed_values:
+            - 'yes'
+            - 'no'
+            allow_other: false
+            definitions:
+            - value: 'yes'
+              description: The component is virtualized.
+            - value: 'no'
+              description: The component is not virtualized.
+            constraint_ids:
+            - oscal-component-prop-is-virtual-values
+            source_files:
+            - oscal_implementation-common_metaschema_RESOLVED.xml
+            conditions:
+              name: virtual
+        system-user/prop:
+          system-user/prop[@name]:
+            allowed_values:
+            - type
+            - privilege-level
+            allow_other: false
+            definitions:
+            - value: type
+              description: The type of user, such as internal, external, or general-public.
+            - value: privilege-level
+              description: The user's privilege level within the system, such as privileged, non-privileged, no-logical-access.
+            constraint_ids:
+            - oscal-user-prop-name-values
+            source_files:
+            - oscal_implementation-common_metaschema_RESOLVED.xml
+          system-user/prop[@value] where name=privilege-level:
+            allowed_values:
+            - privileged
+            - non-privileged
+            - no-logical-access
+            allow_other: false
+            definitions:
+            - value: privileged
+              description: This role has elevated access to the system, such as a group or system administrator.
+            - value: non-privileged
+              description: This role has typical user-level access to the system without elevated access.
+            - value: no-logical-access
+              description: This role has no access to the system, such as a manager who approves access as part of a process.
+            constraint_ids:
+            - oscal-user-prop-privilege-level-values
+            source_files:
+            - oscal_implementation-common_metaschema_RESOLVED.xml
+            conditions:
+              name: privilege-level
+          system-user/prop[@value] where name=type:
+            allowed_values:
+            - internal
+            - external
+            - general-public
+            allow_other: false
+            definitions:
+            - value: internal
+              description: A user account for a person or entity that is part of the organization who owns or operates the
+                system.
+            - value: external
+              description: A user account for a person or entity that is not part of the organization who owns or operates
+                the system.
+            - value: general-public
+              description: A user of the system considered to be outside
+            constraint_ids:
+            - oscal-user-prop-type-values
+            source_files:
+            - oscal_implementation-common_metaschema_RESOLVED.xml
+            conditions:
+              name: type
+      oscal-mapping-common:
+        confidence-score/category:
+          confidence-score/category:
+            allowed_values:
+            - unspecified
+            - high
+            - medium
+            - low
+            allow_other: true
+            definitions:
+            - value: unspecified
+              description: No category is specified for the confidence score.
+            - value: high
+              description: High confidence in the mapping.
+            - value: medium
+              description: Medium confidence in the mapping.
+            - value: low
+              description: Low confidence in the mapping.
+            constraint_ids:
+            - ''
+            source_files:
+            - oscal_mapping-common_metaschema_RESOLVED.xml
+        map/relationship:
+          map/relationship:
+            allowed_values:
+            - equivalent-to
+            - equal-to
+            - subset-of
+            - superset-of
+            - intersects-with
+            - no-relationship
+            allow_other: false
+            definitions:
+            - value: equivalent-to
+              description: "The source and target\n                            requirements are similar, although not necessarily\
+                \ identical. The words\n                            may differ, but both mapped sets convey similar information\
+                \ with the\n                            same effective meaning. This relationship may be reversed, since `A\n\
+                \                            equivalent-to B` also means that `B equivalent-to A`. This relationship\n   \
+                \                         is less suitable for a syntactic\n                     matching-rationale\n    \
+                \                        ."
+            - value: equal-to
+              description: "The source and target\n                            requirements are the same. Differences in capitalization,\
+                \ spelling, and\n                            grammar can be ignored, if these differences do not change the\
+                \ meaning.\n                            This relationship may be reversed, since `A equal-to B` also means\
+                \ that\n                            `B equal-to A`."
+            - value: subset-of
+              description: "The source requirements are a subset of \n                            target requirements. In\
+                \ other words, target contains\n                            all sourcerequirements and aditional others. This\n\
+                \                            relationship may be reversed as a `superset-of`, since `A subset-of B`\n    \
+                \                        also means that `B superset-of A`."
+            - value: superset-of
+              description: "The source requirements are a\n                            superset of target requirements. In\
+                \ other words, \n                            source contains all targetrequirements and aditional\n      \
+                \                      others. This relationship may be reversed as a `subset-of`, since `A\n            \
+                \                superset-of B` also means that `B subset-of A`."
+            - value: intersects-with
+              description: "The source and target\n                            requirements have some overlap, but each includes\
+                \ content that the other\n                            does not. This relationship may be reversed, since `A\
+                \ intersects-with B`\n                            also means that `B intersects-with A`. A mapping at statement\
+                \ level\n                            could result on relationships mapping that allows for more\n        \
+                \                    inference than using this relationship type."
+            - value: no-relationship
+              description: "The source and target\n                            requirements are not related; their content\
+                \ does not overlap. This\n                            relation is introduced not with the intention to support\
+                \ exhaustiv\n                            mapping of all requirements and statements that have no overlap,\
+                \ but\n                            rather to support edge cases such is the need to tailor a \n          \
+                \                  relationship in the context of a component or system to better\n                      \
+                \      align with the implementation and configuration of the respective\n                            component\
+                \ or system. Also, this relationship is provided in\n                            support of the NIST IR\n\
+                \                            8477."
+            constraint_ids:
+            - ''
+            source_files:
+            - oscal_mapping-common_metaschema_RESOLVED.xml
+      oscal-metadata:
+        .:
+          .[@name]:
+            allowed_values:
+            - marking
+            allow_other: false
+            definitions:
+            - value: marking
+              description: A label or descriptor that is tied to a sensitivity or classification marking system. An optional
+                class can be used to define the specific marking system used for the associated value.
+            constraint_ids:
+            - oscal-metadata-prop-name-values
+            source_files:
+            - oscal_metadata_metaschema_RESOLVED.xml
+        ./type:
+          ./type[@value]:
+            allowed_values:
+            - approval
+            - request-changes
+            allow_other: false
+            definitions:
+            - value: approval
+              description: An approval of a document instance's content.
+            - value: request-changes
+              description: A request from the responsible party or parties to change the content.
+            constraint_ids:
+            - oscal-metadata-action-type-values
+            source_files:
+            - oscal_metadata_metaschema_RESOLVED.xml
+        back-matter/prop:
+          back-matter/prop[@name]:
+            allowed_values:
+            - type
+            - version
+            - published
+            allow_other: false
+            definitions:
+            - value: type
+              description: Identifies the type of resource represented. The most specific appropriate type value SHOULD be
+                used.
+            - value: version
+              description: For resources representing a published document, this represents the version number of that document.
+            - value: published
+              description: For resources representing a published document, this represents the publication date of that document.
+            constraint_ids:
+            - oscal-back-matter-resource-prop-name-values
+            source_files:
+            - oscal_metadata_metaschema_RESOLVED.xml
+          back-matter/prop[@value] where name=type:
+            allowed_values:
+            - logo
+            - image
+            - screen-shot
+            - law
+            - regulation
+            - standard
+            - external-guidance
+            - acronyms
+            - citation
+            - policy
+            - procedure
+            - system-guide
+            - users-guide
+            - administrators-guide
+            - rules-of-behavior
+            - plan
+            - artifact
+            - evidence
+            - tool-output
+            - raw-data
+            - interview-notes
+            - questionnaire
+            - report
+            - agreement
+            allow_other: false
+            definitions:
+            - value: logo
+              description: Indicates the resource is an organization's logo.
+            - value: image
+              description: Indicates the resource represents an image.
+            - value: screen-shot
+              description: Indicates the resource represents an image of screen content.
+            - value: law
+              description: Indicates the resource represents an applicable law.
+            - value: regulation
+              description: Indicates the resource represents an applicable regulation.
+            - value: standard
+              description: Indicates the resource represents an applicable standard.
+            - value: external-guidance
+              description: Indicates the resource represents applicable guidance.
+            - value: acronyms
+              description: Indicates the resource provides a list of relevant acronyms.
+            - value: citation
+              description: Indicates the resource cites relevant information.
+            - value: policy
+              description: Indicates the resource is a policy.
+            - value: procedure
+              description: Indicates the resource is a procedure.
+            - value: system-guide
+              description: Indicates the resource is guidance document related to the subject system of an SSP.
+            - value: users-guide
+              description: Indicates the resource is guidance document a user's guide or administrator's guide.
+            - value: administrators-guide
+              description: Indicates the resource is guidance document a administrator's guide.
+            - value: rules-of-behavior
+              description: Indicates the resource represents rules of behavior content.
+            - value: plan
+              description: Indicates the resource represents a plan.
+            - value: artifact
+              description: Indicates the resource represents an artifact, such as may be reviewed by an assessor.
+            - value: evidence
+              description: Indicates the resource represents evidence, such as to support an assessment finding.
+            - value: tool-output
+              description: Indicates the resource represents output from a tool.
+            - value: raw-data
+              description: Indicates the resource represents machine data, which may require a tool or analysis for interpretation
+                or presentation.
+            - value: interview-notes
+              description: Indicates the resource represents notes from an interview, such as may be collected during an assessment.
+            - value: questionnaire
+              description: Indicates the resource is a set of questions, possibly with responses.
+            - value: report
+              description: Indicates the resource is a report.
+            - value: agreement
+              description: Indicates the resource is a formal agreement between two or more parties.
+            constraint_ids:
+            - oscal-back-matter-resource-prop-type-values
+            source_files:
+            - oscal_metadata_metaschema_RESOLVED.xml
+            conditions:
+              name: type
+        metadata/prop:
+          metadata/prop[@class] where name=type, value=data-center:
+            allowed_values:
+            - primary
+            - alternate
+            allow_other: true
+            definitions:
+            - value: primary
+              description: The location is a data-center used for normal operations.
+            - value: alternate
+              description: The location is a data-center used for fail-over or backup operations.
+            constraint_ids:
+            - oscal-metadata-location-prop-type-data-center-values
+            source_files:
+            - oscal_metadata_metaschema_RESOLVED.xml
+            conditions:
+              name: type
+              value: data-center
+          metadata/prop[@name]:
+            allowed_values:
+            - type
+            - mail-stop
+            - office
+            - job-title
+            - keywords
+            allow_other: false
+            definitions:
+            - value: type
+              description: Characterizes the kind of location.
+            - value: mail-stop
+              description: A mail stop associated with the party.
+            - value: office
+              description: The name or number of the party's office.
+            - value: job-title
+              description: The formal job title of a person.
+            - value: keywords
+              description: The value identifies a comma-seperated listing of keywords associated with this content. These
+                keywords may be used as search terms for indexing and other applications.
+            constraint_ids:
+            - oscal-metadata-location-prop-name-values
+            - oscal-metadata-party-prop-name-values
+            - oscal-metadata-prop-name-values
+            source_files:
+            - oscal_metadata_metaschema_RESOLVED.xml
+          metadata/prop[@value] where name=type:
+            allowed_values:
+            - data-center
+            allow_other: true
+            definitions:
+            - value: data-center
+              description: A location that contains computing assets. A class can be used to indicate the sub-type of data-center
+                as primary or alternate.
+            constraint_ids:
+            - oscal-metadata-location-prop-type-values
+            source_files:
+            - oscal_metadata_metaschema_RESOLVED.xml
+            conditions:
+              name: type
+      oscal-profile:
+        modify/prop:
+          modify/prop[@name]:
+            allowed_values:
+            - label
+            - sort-id
+            - alt-identifier
+            allow_other: false
+            definitions:
+            - value: label
+              description: A human-readable label for the parent context, which may be rendered in place of the actual identifier
+                for some use cases.
+            - value: sort-id
+              description: An alternative identifier, whose value is easily sortable among other such values in the document.
+            - value: alt-identifier
+              description: An alternate or aliased identifier for the parent context.
+            constraint_ids:
+            - oscal-profile-modify-alter-prop-name-values
+            source_files:
+            - oscal_profile_metaschema_RESOLVED.xml
+      oscal-ssp:
+        (.|statement|.//by-component)/prop:
+          (.|statement|.//by-component)/prop[@name]:
+            allowed_values:
+            - control-origination
+            allow_other: false
+            definitions:
+            - value: control-origination
+              description: Identifies the source of the implemented control.  Any control-origination prop defined in a child
+                context will override the parent value.
+            constraint_ids:
+            - oscal-implemented-requirement-statement-by-component-prop-name-values
+            source_files:
+            - oscal_ssp_metaschema_RESOLVED.xml
+          (.|statement|.//by-component)/prop[@value] where name=control-origination:
+            allowed_values:
+            - organization
+            - system-specific
+            - customer-configured
+            - customer-provided
+            - inherited
+            allow_other: false
+            definitions:
+            - value: organization
+              description: The control is implemented by the organization owning the system, but is not specific to the system
+                itself.
+            - value: system-specific
+              description: The control is implemented specifically to this system.
+            - value: customer-configured
+              description: The control is provided by the system, but must be configured by the customer.
+            - value: customer-provided
+              description: The control must be implemented by the customer.
+            - value: inherited
+              description: This control is inherited from an underlying system.
+            constraint_ids:
+            - oscal-implemented-requirement-statement-by-component-prop-control-origination-values
+            source_files:
+            - oscal_ssp_metaschema_RESOLVED.xml
+            conditions:
+              name: control-origination
+        (component | inventory-item)/prop:
+          (component | inventory-item)/prop[@value] where name=allows-authenticated-scan:
+            allowed_values:
+            - 'yes'
+            - 'no'
+            allow_other: false
+            definitions:
+            - value: 'yes'
+              description: The component allows an authenticated scan.
+            - value: 'no'
+              description: The component does not allow an authenticated scan.
+            constraint_ids:
+            - oscal-component-inventory-item-allows-authenticated-scan-values
+            source_files:
+            - oscal_ssp_metaschema_RESOLVED.xml
+            conditions:
+              name: allows-authenticated-scan
+        system-characteristics/prop:
+          system-characteristics/prop[@name]:
+            allowed_values:
+            - identity-assurance-level
+            - authenticator-assurance-level
+            - federation-assurance-level
+            - cloud-deployment-model
+            - cloud-service-model
+            allow_other: false
+            definitions:
+            - value: identity-assurance-level
+              description: A value of 1, 2, or 3 as defined by SP 800-63-3.
+            - value: authenticator-assurance-level
+              description: A value of 1, 2, or 3 as defined by SP 800-63-3.
+            - value: federation-assurance-level
+              description: A value of 1, 2, or 3 as defined by SP 800-63-3.
+            - value: cloud-deployment-model
+              description: 'The associated value is one of: public-cloud, private-cloud, community-cloud, government-only-cloud,
+                hybrid-cloud, or other.'
+            - value: cloud-service-model
+              description: 'The associated value is one of: saas, paas, iaas, or other.'
+            constraint_ids:
+            - oscal-system-characteristics-prop-name-values
+            - oscal-system-characteristics-prop-name-values
+            source_files:
+            - oscal_ssp_metaschema_RESOLVED.xml
+          system-characteristics/prop[@value] where name=cloud-deployment-model:
+            allowed_values:
+            - public-cloud
+            - private-cloud
+            - community-cloud
+            - hybrid-cloud
+            - government-only-cloud
+            - other
+            allow_other: false
+            definitions:
+            - value: public-cloud
+              description: The public cloud deployment model as defined by The NIST Definition of Cloud Computing.
+            - value: private-cloud
+              description: The private cloud deployment model as defined by The NIST Definition of Cloud Computing.
+            - value: community-cloud
+              description: The community cloud deployment model as defined by The NIST Definition of Cloud Computing.
+            - value: hybrid-cloud
+              description: The hybrid cloud deployment model as defined by The NIST Definition of Cloud Computing.
+            - value: government-only-cloud
+              description: A specific type of community-cloud for use only by government services.
+            - value: other
+              description: Any other type of cloud deployment model that is exclusive to the other choices.
+            constraint_ids:
+            - oscal-system-characteristics-prop-cloud-deployment-model-values
+            source_files:
+            - oscal_ssp_metaschema_RESOLVED.xml
+            conditions:
+              name: cloud-deployment-model
+          system-characteristics/prop[@value] where name=cloud-service-model:
+            allowed_values:
+            - saas
+            - paas
+            - iaas
+            - other
+            allow_other: false
+            definitions:
+            - value: saas
+              description: Software as a service (SaaS) cloud service model as defined by The NIST Definition of Cloud Computing.
+            - value: paas
+              description: Platform as a service (PaaS) cloud service model as defined by The NIST Definition of Cloud Computing.
+            - value: iaas
+              description: Infrastructure as a service (IaaS) cloud service model as defined by The NIST Definition of Cloud
+                Computing.
+            - value: other
+              description: Any other type of cloud service model that is exclusive to the other choices.
+            constraint_ids:
+            - oscal-system-characteristics-prop-cloud-service-model-values
+            source_files:
+            - oscal_ssp_metaschema_RESOLVED.xml
+            conditions:
+              name: cloud-service-model
+        system-information/prop:
+          system-information/prop[@name]:
+            allowed_values:
+            - privacy-designation
+            allow_other: false
+            definitions:
+            - value: privacy-designation
+              description: Is this a privacy sensitive system? yes or no
+            constraint_ids:
+            - oscal-system-information-prop-name-values
+            source_files:
+            - oscal_ssp_metaschema_RESOLVED.xml
+          system-information/prop[@value] where name=privacy-designation:
+            allowed_values:
+            - 'yes'
+            - 'no'
+            allow_other: false
+            definitions:
+            - value: 'yes'
+              description: The system is privacy sensitive.
+            - value: 'no'
+              description: The system is not privacy sensitive.
+            constraint_ids:
+            - oscal-system-information-prop-privacy-designation-values
+            source_files:
+            - oscal_ssp_metaschema_RESOLVED.xml
+            conditions:
+              name: privacy-designation
+    http://csrc.nist.gov/ns/rmf:
+      oscal-control-common:
+        parameter/prop:
+          parameter/prop[@name]:
+            allowed_values:
+            - aggregates
+            allow_other: false
+            definitions:
+            - value: aggregates
+              description: "The parent parameter provides an\n                                        aggregation of two or\
+                \ more other parameters, each described\n                                        by this property."
+            constraint_ids:
+            - oscal-rmf-parameter-prop-name
+            source_files:
+            - oscal_control-common_metaschema_RESOLVED.xml
