@@ -121,7 +121,7 @@ Our project welcomes external contributions. Please consult [contributing](contr
 ## License & Authors
 
 If you would like to see the detailed LICENSE click [here](license.md).
-Consult [contributors](https://github.com/oscal-compass/compliance-trestle/graphs/contributors) for a list of authors and [maintainers](contributing/maintainers.md) for the core team.
+Consult [contributors](https://github.com/oscal-compass/compliance-trestle/contributors) for a list of authors and [maintainers](contributing/maintainers.md) for the core team.
 
 ```text
 # Copyright (c) 2024 The OSCAL Compass Authors. All rights reserved.

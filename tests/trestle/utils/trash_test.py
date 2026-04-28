@@ -129,6 +129,28 @@ def test_to_origin_dir_path(tmp_path: pathlib.Path) -> None:
         trash.to_origin_dir_path(trash_file_path)
 
 
+def test_to_origin_dir_path_preserves_embedded_trash_marker(tmp_path: pathlib.Path) -> None:
+    """Test that origin path conversion preserves names containing __bk."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    (tmp_path / trash.TRESTLE_TRASH_DIR).mkdir(exist_ok=True, parents=True)
+
+    original_dir = tmp_path / 'catalogs' / f'alpha{trash.TRESTLE_TRASH_DIR_EXT}beta'
+    trash_dir_path = trash.to_trash_dir_path(original_dir)
+    recovered_dir = trash.to_origin_dir_path(trash_dir_path)
+    assert recovered_dir.resolve() == original_dir.resolve()
+
+
+def test_to_origin_dir_path_preserves_trailing_trash_marker(tmp_path: pathlib.Path) -> None:
+    """Test that origin path conversion preserves names ending with __bk."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    (tmp_path / trash.TRESTLE_TRASH_DIR).mkdir(exist_ok=True, parents=True)
+
+    original_dir = tmp_path / 'catalogs' / f'alpha{trash.TRESTLE_TRASH_DIR_EXT}'
+    trash_dir_path = trash.to_trash_dir_path(original_dir)
+    recovered_dir = trash.to_origin_dir_path(trash_dir_path)
+    assert recovered_dir.resolve() == original_dir.resolve()
+
+
 def test_to_origin_file_path(tmp_path: pathlib.Path) -> None:
     """Test to origin file path function."""
     test_utils.ensure_trestle_config_dir(tmp_path)
