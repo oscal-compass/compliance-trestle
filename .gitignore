@@ -53,3 +53,4 @@ tmp_bin_test
 
 # mkdocs
 .cache/
+/.ruff_cache/

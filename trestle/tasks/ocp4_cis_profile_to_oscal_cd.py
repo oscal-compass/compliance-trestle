@@ -29,7 +29,7 @@ import trestle
 from trestle.common import const
 from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.common import Metadata
-from trestle.oscal.common import Party
+from trestle.oscal.common import Parties
 from trestle.oscal.common import Property
 from trestle.oscal.common import ResponsibleParty
 from trestle.oscal.common import ResponsibleRole
@@ -323,10 +323,8 @@ class Ocp4CisProfileToOscalCD(TaskBase):
         """Get parameters map."""
         try:
             fp = pathlib.Path(self._config[config_key])
-            f = fp.open('r', encoding=const.FILE_ENCODING)
-            jdata = json.load(f)
-            parameters_map = jdata
-            f.close()
+            with fp.open('r', encoding=const.FILE_ENCODING) as f:
+                parameters_map = json.load(f)
         except KeyError as e:
             logger.debug(f'key {e.args[0]} missing')
             parameters_map = {}
@@ -340,13 +338,12 @@ class Ocp4CisProfileToOscalCD(TaskBase):
         """Get filter rules."""
         try:
             fp = pathlib.Path(self._config[config_key])
-            f = fp.open('r', encoding=const.FILE_ENCODING)
-            jdata = json.load(f)
+            with fp.open('r', encoding=const.FILE_ENCODING) as f:
+                jdata = json.load(f)
             try:
                 filter_rules = jdata[file_key]
             except Exception:
                 filter_rules = jdata
-            f.close()
         except KeyError as e:
             logger.debug(f'key {e.args[0]} missing')
             filter_rules = []
@@ -362,10 +359,9 @@ class Ocp4CisProfileToOscalCD(TaskBase):
         """Get CIS rules."""
         try:
             fp = pathlib.Path(filename)
-            f = fp.open('r', encoding=const.FILE_ENCODING)
-            content = f.readlines()
+            with fp.open('r', encoding=const.FILE_ENCODING) as f:
+                content = f.readlines()
             rules = self._parse_cis_rules(content)
-            f.close()
         except Exception:
             logger.warning(f'unable to process {filename}')
             rules = {}
@@ -470,9 +466,8 @@ class Ocp4CisProfileToOscalCD(TaskBase):
                 folder = os.path.join(path, dir_name)
                 tpath = pathlib.Path(folder) / 'rule.yml'
                 fp = pathlib.Path(tpath)
-                f = fp.open('r', encoding=const.FILE_ENCODING)
-                content = f.readlines()
-                f.close()
+                with fp.open('r', encoding=const.FILE_ENCODING) as f:
+                    content = f.readlines()
                 for line in content:
                     if line.startswith('title:'):
                         title = line.split('title:')[1]
@@ -532,17 +527,17 @@ class Ocp4CisProfileToOscalCD(TaskBase):
 
     def _build_parties(
         self, org_name: str, org_remarks: str, party_uuid_01: str, party_uuid_02: str, party_uuid_03: str
-    ) -> List[Party]:
+    ) -> List[Parties]:
         """Build parties."""
         value = [
-            Party(uuid=party_uuid_01, type='organization', name=org_name, remarks=org_remarks),
-            Party(
+            Parties(uuid=party_uuid_01, type='organization', name=org_name, remarks=org_remarks),
+            Parties(
                 uuid=party_uuid_02,
                 type='organization',
                 name='Customer',
                 remarks='organization to be customized at account creation only for their Component Definition',
             ),
-            Party(
+            Parties(
                 uuid=party_uuid_03,
                 type='organization',
                 name='ISV',

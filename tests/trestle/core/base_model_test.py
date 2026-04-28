@@ -21,6 +21,8 @@ from uuid import uuid4
 
 import pytest
 
+from pydantic.v1 import ValidationError
+
 import tests.test_utils as test_utils
 
 import trestle.common.const as const
@@ -31,6 +33,7 @@ import trestle.oscal.assessment_plan as ap
 import trestle.oscal.catalog as oscatalog
 import trestle.oscal.common as common
 import trestle.oscal.component as component
+import trestle.oscal.profile as profile
 import trestle.oscal.ssp as ssp
 from trestle.core.base_model import OscalBaseModel
 
@@ -88,6 +91,66 @@ def test_is_oscal_base() -> None:
     catalog = simple_catalog()
 
     assert isinstance(catalog, ospydantic.OscalBaseModel)
+
+
+def test_optional_parameter_label_allows_empty_string() -> None:
+    """Optional parameter labels should preserve blank values."""
+    param = common.Parameter1(id='param1', label='', values=['one'])
+
+    assert param.label == ''
+
+
+def test_parameter_selection_label_allows_empty_string() -> None:
+    """Selection-based parameters should also preserve blank labels."""
+    param = common.Parameter2(id='param1', label='', select=common.ParameterSelection(choice=['one']))
+
+    assert param.label == ''
+
+
+def test_required_single_line_title_still_rejects_empty_string() -> None:
+    """Required constrained strings should remain strict."""
+    with pytest.raises(ValidationError):
+        common.Role(id='role1', title='')
+
+
+def test_parameter_label_assignment_allows_empty_string() -> None:
+    """Assignment should behave the same as initialization for parameter labels."""
+    param = common.Parameter1(id='param1', label='label1', values=['one'])
+    param.label = ''
+
+    assert param.label == ''
+
+
+def test_profile_parameter_label_allows_empty_string() -> None:
+    """Profile parameter settings should allow blank labels consistently."""
+    param = profile.SetParameters(param_id='param1', label='', values=['one'])
+
+    assert param.label == ''
+
+
+def test_profile_selection_parameter_label_allows_empty_string() -> None:
+    """Selection-based profile parameter settings should preserve blank labels."""
+    param = profile.SetParameters1(param_id='param1', label='', select=common.ParameterSelection(choice=['one']))
+
+    assert param.label == ''
+
+
+def test_parameter_label_still_rejects_newlines() -> None:
+    """Blank labels are allowed, but newline-containing values remain invalid."""
+    with pytest.raises(ValidationError):
+        common.Parameter1(id='param1', label='\n', values=['one'])
+
+    with pytest.raises(ValidationError):
+        common.Parameter1(id='param1', label='hello\n', values=['one'])
+
+    with pytest.raises(ValidationError):
+        common.Parameter2(id='param1', label='hello\n', select=common.ParameterSelection(choice=['one']))
+
+    with pytest.raises(ValidationError):
+        profile.SetParameters(param_id='param1', label='hello\n', values=['one'])
+
+    with pytest.raises(ValidationError):
+        profile.SetParameters1(param_id='param1', label='hello\n', select=common.ParameterSelection(choice=['one']))
 
 
 def test_no_timezone_exception() -> None:

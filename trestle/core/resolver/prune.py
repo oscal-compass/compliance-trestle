@@ -58,9 +58,8 @@ class Prune(Pipeline.Filter):
                     raise TrestleError('Profiles with SelectControl based on matching are not supported.')
                 include_children = select_control.with_child_controls == 'yes'
                 if select_control.with_ids:
-                    new_ids = select_control.with_ids
-                    for withid_ in new_ids:
-                        id_ = withid_.__root__
+                    # In OSCAL 1.2.0, with_ids is a list of strings directly
+                    for id_ in select_control.with_ids:
                         control_ids.append(id_)
                         if include_children:
                             control_ids.extend(self._catalog_interface.get_dependent_control_ids(id_))
@@ -68,10 +67,11 @@ class Prune(Pipeline.Filter):
 
     def _find_needed_control_ids(self) -> List[str]:
         """Get list of control_ids needed by profile and corresponding groups."""
-        if self._import.include_controls is not None:
+        # Handle Union type: Import1 has include_all, Import2 has include_controls
+        if hasattr(self._import, 'include_controls') and self._import.include_controls is not None:
             include_ids = self._controls_selected(self._import.include_controls)
         else:
-            if self._import.include_all is None:
+            if not hasattr(self._import, 'include_all') or self._import.include_all is None:
                 logger.warning('Profile does not specify include-controls, so including all.')
             include_ids = self._catalog_interface.get_control_ids()
 
@@ -146,7 +146,7 @@ class Prune(Pipeline.Filter):
         cat_controls = []
 
         # build the needed groups of controls
-        group_dict: Dict[str, cat.Group] = {}
+        group_dict: Dict[str, cat.Group2] = {}
         for control_id in final_control_ids:
             control = self._catalog_interface.get_control(control_id)
             group_id, group_title, group_class = self._catalog_interface.get_group_info_by_control(control_id)
@@ -155,12 +155,12 @@ class Prune(Pipeline.Filter):
                 continue
             group = group_dict.get(group_id)
             if group is None:
-                group = cat.Group(id=group_id, title=group_title, class_=group_class, controls=[control])
+                group = cat.Group2(id=group_id, title=group_title, class_=group_class, controls=[control])
                 group_dict[group_id] = group
             else:
                 group_dict[group_id].controls.append(control)
 
-        new_groups: Optional[List[cat.Group]] = list(group_dict.values())
+        new_groups: Optional[List[cat.Group2]] = list(group_dict.values())
 
         # should avoid empty lists so set to None if empty
         new_groups = none_if_empty(new_groups)

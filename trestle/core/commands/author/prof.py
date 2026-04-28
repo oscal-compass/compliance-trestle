@@ -18,6 +18,7 @@ import copy
 import logging
 import pathlib
 import shutil
+import uuid
 from typing import Any, Dict, List, Optional, Set
 
 from ruamel.yaml import YAML
@@ -26,6 +27,7 @@ from ruamel.yaml.error import YAMLError
 import trestle.common.const as const
 import trestle.common.log as log
 import trestle.core.generators as gens
+import trestle.oscal.common as common
 import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ssp
 from trestle.common import file_utils
@@ -276,11 +278,21 @@ class ProfileAssemble(AuthorCommonCommand):
                 if sub_param_dict:
                     sub_param_dict['id'] = key
                     param = ModelUtils.dict_to_parameter(sub_param_dict)
-                    new_set_params.append(
-                        prof.SetParameter(
-                            param_id=key, label=param.label, values=param.values, select=param.select, props=param.props
-                        )
-                    )
+                    # SetParameter is a Union: SetParameters has values, SetParameters1 has select
+                    # Create the appropriate variant based on which fields are present
+                    set_param_dict = {'param_id': key}
+                    if param.label:
+                        set_param_dict['label'] = param.label
+                    if param.props:
+                        set_param_dict['props'] = param.props
+                    # Add either values or select, not both
+                    if hasattr(param, 'select') and param.select:
+                        set_param_dict['select'] = param.select
+                        new_set_params.append(prof.SetParameters1(**set_param_dict))
+                    else:
+                        if hasattr(param, 'values') and param.values:
+                            set_param_dict['values'] = param.values
+                        new_set_params.append(prof.SetParameters(**set_param_dict))
             if profile.modify.set_parameters != new_set_params:
                 changed = True
             # sort the params first by control sorting then by param_id
@@ -687,14 +699,19 @@ class ProfileInherit(AuthorCommonCommand):
             )
 
             # If a profile exists at the output path, use that as a starting point for a new profile.
-            # else create a new sample profile.
+            # else create a new profile with minimal structure to avoid Import1 generation
             if existing_profile_path is not None:
                 existing_profile, _ = load_validate_model_name(
                     trestle_root, output_prof_name, prof.Profile, FileContentType.JSON
                 )
                 result_profile = copy.deepcopy(existing_profile)
             else:
-                result_profile = gens.generate_sample_model(prof.Profile)
+                # Create a minimal profile with Import2 structure to avoid generate_sample_model creating Import1
+                result_profile = prof.Profile(
+                    uuid=str(uuid.uuid4()),
+                    metadata=gens.generate_sample_model(common.Metadata),
+                    imports=[],  # Will be set below with Import2
+                )
 
             parent_prof_path = ModelUtils.get_model_path_for_name_and_class(
                 trestle_root, parent_prof_name, prof.Profile
@@ -705,8 +722,6 @@ class ProfileInherit(AuthorCommonCommand):
                 )
 
             local_path = f'profiles/{parent_prof_name}/profile.json'
-            profile_import: prof.Import = gens.generate_sample_model(prof.Import)
-            profile_import.href = const.TRESTLE_HREF_HEADING + local_path
 
             leveraged_ssp: ssp.SystemSecurityPlan
             try:
@@ -722,11 +737,28 @@ class ProfileInherit(AuthorCommonCommand):
             )
             catalog_api = CatalogAPI(catalog=catalog)
 
-            # Sort controls based on what controls in the SSP have exported provided information with no
-            # customer responsibility
-            ProfileInherit.update_profile_import(profile_import, leveraged_ssp, catalog_api)
+            # Determine which controls to include and exclude based on the SSP
+            exclude_with_ids: Set[str] = set()
+            components_by_id: Dict[str, List[ssp.ByComponent]] = ProfileInherit._create_components_by_id(leveraged_ssp)
+            catalog_control_ids: Set[str] = set(catalog_api._catalog_interface.get_control_ids())
 
-            result_profile.imports[0] = profile_import
+            for control_id in catalog_control_ids:
+                if control_id not in components_by_id:
+                    continue
+                by_comps: Optional[List[ssp.ByComponent]] = components_by_id[control_id]
+                if by_comps is not None and ProfileInherit._is_inherited(by_comps):
+                    exclude_with_ids.add(control_id)
+
+            include_with_ids: Set[str] = catalog_control_ids - exclude_with_ids
+
+            # Create Import2 variant with the computed control lists
+            profile_import: prof.Import = prof.Import2(
+                href=const.TRESTLE_HREF_HEADING + local_path,
+                include_controls=[prof.SelectControl(with_ids=sorted(include_with_ids))],
+                exclude_controls=[prof.SelectControl(with_ids=sorted(exclude_with_ids))] if exclude_with_ids else None,
+            )
+
+            result_profile.imports = [profile_import]
 
             if version:
                 result_profile.metadata.version = version
