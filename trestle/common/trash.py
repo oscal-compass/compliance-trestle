@@ -58,10 +58,18 @@ def to_trash_path(path: pathlib.Path) -> pathlib.Path:
         return to_trash_dir_path(path)
     if path.is_file():
         return to_trash_file_path(path)
-    # Fallback for non-existent paths: preserve legacy behavior for file-like names.
-    if path.suffix != '':
-        return to_trash_file_path(path)
-    return to_trash_dir_path(path)
+
+    # For non-existent paths, prefer whichever trash layout already exists.
+    trash_dir_path = to_trash_dir_path(path)
+    if trash_dir_path.exists() and trash_dir_path.is_dir():
+        return trash_dir_path
+
+    trash_file_path = to_trash_file_path(path)
+    if trash_file_path.exists() and trash_file_path.is_file():
+        return trash_file_path
+
+    # Default to directory-style path to avoid misrouting dotted directory names.
+    return trash_dir_path
 
 
 def get_trash_root(path: pathlib.Path) -> Optional[pathlib.Path]:

@@ -89,6 +89,30 @@ def test_to_trash_path_dotted_directory_name(tmp_path: pathlib.Path) -> None:
     assert trash.to_trash_dir_path(dotted_dir) == trash.to_trash_path(dotted_dir)
 
 
+def test_to_trash_path_nonexistent_dotted_directory_name(tmp_path: pathlib.Path) -> None:
+    """Test non-existent dotted names default to directory-style trash path."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    dotted_dir = tmp_path / 'policy.v2'
+    assert not dotted_dir.exists()
+
+    assert trash.to_trash_dir_path(dotted_dir) == trash.to_trash_path(dotted_dir)
+
+
+def test_to_trash_path_nonexistent_dotted_file_with_existing_trash(tmp_path: pathlib.Path) -> None:
+    """Test non-existent dotted file resolves to existing file-style trash path."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    data_dir = tmp_path / 'data'
+    data_dir.mkdir(exist_ok=True, parents=True)
+    dotted_file = data_dir / 'readme.v1.md'
+    dotted_file.touch()
+
+    trash.store_file(dotted_file, True)
+    assert not dotted_file.exists()
+    assert trash.to_trash_file_path(dotted_file).exists()
+
+    assert trash.to_trash_file_path(dotted_file) == trash.to_trash_path(dotted_file)
+
+
 def test_get_trash_root(tmp_path: pathlib.Path) -> None:
     """Test get trash root function."""
     assert trash.get_trash_root(pathlib.Path('')) is None
