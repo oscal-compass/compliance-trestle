@@ -167,12 +167,14 @@ class JinjaCmd(CommandPlusDocs):
     def load_LUT(path: pathlib.Path, prefix: Optional[str]) -> Dict[str, Any]:  # noqa: N802
         """Load a Yaml lookup table from file."""
         yaml = YAML()
-        lut = yaml.load(path.open('r', encoding=const.FILE_ENCODING))
+        with path.open('r', encoding=const.FILE_ENCODING) as lut_file:
+            lut = yaml.load(lut_file)
         if prefix:
             prefixes = prefix.split('.')
+            wrapped_lut = lut
             while prefixes:
-                old_lut = lut
-                lut[prefixes.pop(-1)] = old_lut
+                wrapped_lut = {prefixes.pop(-1): wrapped_lut}
+            lut = wrapped_lut
 
         return lut
 
