@@ -39,6 +39,12 @@ plugins:
       # This is to remove some false positives for links which work.
       # Anchors are validated again by core mkdocs
       404: [ '*#trestle.*' ]
+      # External sites can intermittently return transient gateway/network errors.
+      # Keep docs validation strict for deterministic failures (e.g. 404), but
+      # don't fail CI on temporary upstream outages.
+      502: [ '*' ]
+      504: [ '*' ]
+      -1: [ '*' ]
     # These URLs work from the browser but fail when accesssed via htmlproofer:
     ignore_urls:
         - 'https://www.fedramp.gov/documents-templates/'
