@@ -42,7 +42,7 @@ Below shows trestle versions correspondence with OSCAL versions:
 
 ```
 trestle 4.x => OSCAL 1.2.1
-trestle 3.x => OSCAL 1.1.2
+trestle 3.x => OSCAL 1.1.3
 trestle 2.x => OSCAL 1.0.4
 trestle 1.x => OSCAL 1.0.2
 trestle 0.37.x => OSCAL 1.0.0
@@ -73,7 +73,7 @@ python3.11 -m venv venv.trestle
 source venv.trestle/bin/activate
 pip install compliance-trestle==3.6.0
 trestle version
-Trestle version v3.6.0 based on OSCAL version 1.1.2
+Trestle version v3.6.0 based on OSCAL version 1.1.3
 ```
 
 ## Why Trestle
@@ -101,7 +101,7 @@ By building human managed artifacts into OSCAL, Trestle is not only able to vali
 OSCAL supports `xml`, `json` and `yaml` with their [metaschema](https://github.com/usnistgov/metaschema) tooling. Trestle
 natively supports only `json` and `yaml` formats at this time.
 
-Future roadmap anticipates that support for xml [import](https://github.com/oscal-compass/compliance-trestle/issues/177) and [upstream references](https://github.com/oscal-compass/compliance-trestle/issues/178) will be enabled. However, it is expected
+Future roadmap anticipates that support for xml import and upstream references will be enabled (tracked in the [issue tracker](https://github.com/oscal-compass/compliance-trestle/issues)). However, it is expected
 that full support will remain only for `json` and  `yaml`.
 
 Users needing to import XML OSCAL artifacts are recommended to look at NIST's OSCAL converters page [here](https://github.com/usnistgov/OSCAL/blob/main/build/README.md#converters).
@@ -112,7 +112,7 @@ Trestle runs on most all python platforms (e.g. Linux, Mac, Windows) and is avai
 
 ## Development status
 
-Compliance trestle is currently stable and is based on NIST OSCAL version 1.1.2, with active development continuing.
+Compliance trestle is currently stable and is based on NIST OSCAL version 1.2.1, with active development continuing.
 
 ## Contributing to Trestle
 

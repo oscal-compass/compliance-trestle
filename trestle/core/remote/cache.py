@@ -109,15 +109,11 @@ class FetcherBase(ABC):
     def get_raw(self, force_update: bool = False) -> Dict[str, Any]:
         """Retrieve the raw dictionary representing the underlying object."""
         self._update_cache(force_update)
-        # Return results in the cache, whether yaml or json, or whatever is supported by fs.load_file().
+        # Return cached data; fs.load_file handles format-specific parsing (JSON/YAML).
         try:
-            raw_data = file_utils.load_file(self._cached_object_path)
-        except Exception:
-            try:
-                raw_data = file_utils.load_file(self._cached_object_path)
-            except Exception as e:
-                raise TrestleError(f'Cache get failure for {self._uri}: {e}.') from e
-        return raw_data
+            return file_utils.load_file(self._cached_object_path)
+        except Exception as e:
+            raise TrestleError(f'Cache get failure for {self._uri}: {e}.') from e
 
     def get_oscal_with_model_type(
         self, model_type: Type[OscalBaseModel], force_update: bool = False
