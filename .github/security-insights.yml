@@ -1,7 +1,7 @@
 header:
   schema-version: 2.0.0
-  last-updated: '2025-03-20'
-  last-reviewed: '2025-03-20'
+  last-updated: '2026-04-17'
+  last-reviewed: '2026-04-17'
   url: https://github.com/oscal-compass/compliance-trestle/blob/develop/.github/security-insights.yml
   project-si-source: https://raw.githubusercontent.com/oscal-compass/.github/refs/heads/main/.github/security-insights.yml
   comment: |
@@ -17,21 +17,16 @@ repository:
   # From the complaince-trestle MAINTAINER.md file
   # https://github.com/oscal-compass/compliance-trestle/blob/develop/MAINTAINERS.md
   core-team:
-  - name:        Alejandro Jose Leiva Palomo
-    primary:     true
   - name:        Christopher Butler
     primary:     true
   - name:        Lou Degenaro
-    primary:     true
-  - name:        Jennifer Power
-    primary:     true
-  - name:        Manjiree Gadgil
     primary:     true
   - name:        Vikas Agarwal
     primary:     true
   documentation:
     contributing-guide: https://github.com/oscal-compass/compliance-trestle/blob/develop/CONTRIBUTING.md
     security-policy: https://github.com/oscal-compass/community/blob/main/SECURITY.md
+    review-policy: https://github.com/oscal-compass/compliance-trestle/blob/develop/docs/code-review-policy.md
   license:
     url: https://github.com/oscal-compass/compliance-trestle/blob/develop/LICENSE
     expression: Apache-2.0
