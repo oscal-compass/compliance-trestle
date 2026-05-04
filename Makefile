@@ -138,7 +138,10 @@ docs-clean: clean-tmp
 # Utilities
 # ============================================================================
 
-.PHONY: gen-oscal simplified-catalog check-for-changes clean clean-env
+.PHONY: download-oscal gen-oscal gen-oscal-namespace simplified-catalog check-for-changes clean clean-env
+
+download-oscal: ## Download latest OSCAL release schemas
+	python3 scripts/download_oscal.py
 
 gen-oscal: clean-tmp ## Generate OSCAL Python models from JSON schemas
 	hatch run python ./scripts/gen_oscal.py
