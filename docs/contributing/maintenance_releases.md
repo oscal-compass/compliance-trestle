@@ -10,7 +10,7 @@ Trestle supports releasing security and bug fixes for older major versions throu
 ## Overview
 
 - Maintenance branches are named `v<major>` (e.g., `v3`, `v4`)
-- Only `fix:` and `perf:` commits are allowed -- `feat:` commits are blocked by CI
+- Patch-safe commit types are allowed (`fix:`, `perf:`, `chore:`, `ci:`, `docs:`, `build:`, `refactor:`, `style:`, `test:`, `revert:`) — `feat:` and breaking changes (`!`) are blocked by CI
 - Releases are automated via the same semantic-release pipeline as `main`
 - Documentation is automatically updated when a maintenance release is tagged
 
