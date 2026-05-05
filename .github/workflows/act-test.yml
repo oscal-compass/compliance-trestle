@@ -20,6 +20,8 @@ jobs:
     - name: Install act
       run: |
         curl -fsSL https://raw.githubusercontent.com/nektos/act/36add66f6520c77c15dfce4715ba6c689d427981/install.sh | sudo bash -s -- -b /usr/local/bin v0.2.87
+        mkdir -p ~/.config/act
+        printf -- '-P ubuntu-latest=ghcr.io/catthehacker/ubuntu:act-latest\n' > ~/.config/act/actrc
 
     - name: Dry-run actionlint workflow
       run: |
