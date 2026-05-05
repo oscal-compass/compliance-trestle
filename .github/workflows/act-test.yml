@@ -1,0 +1,38 @@
+name: Test workflows with act
+
+on:
+  pull_request:
+    types: [labeled, synchronize, opened]
+    paths:
+      - '.github/**'
+
+permissions: read-all
+
+jobs:
+  act-dry-run:
+    if: contains(github.event.pull_request.labels.*.name, 'github_actions')
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      with:
+        submodules: true
+
+    - name: Install act
+      run: |
+        curl -fsSL https://raw.githubusercontent.com/nektos/act/6ee387ebd0426e57223315c47b0299a721041df8/install.sh | sudo bash -s -- -b /usr/local/bin v0.2.87
+
+    - name: Dry-run actionlint workflow
+      run: |
+        act -n -W .github/workflows/actionlint.yml --container-architecture linux/amd64
+
+    - name: Dry-run PR test pipeline
+      run: |
+        act -n -W .github/workflows/python-test.yml --container-architecture linux/amd64
+
+    - name: Dry-run deploy pipeline
+      run: |
+        act -n -W .github/workflows/python-push.yml --container-architecture linux/amd64
+
+    - name: Dry-run conventional PR pipeline
+      run: |
+        act -n -W .github/workflows/conventional-pr.yml --container-architecture linux/amd64
