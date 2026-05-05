@@ -35,7 +35,7 @@ classifiers = [
 dependencies = [
     "attrs",
     "ilcli",
-    "cryptography==46.0.5",
+    "cryptography==46.0.7",
     "paramiko==4.0.0",
     "ruamel.yaml",
     "furl",
@@ -319,6 +319,10 @@ default_bump_level = 0
 [tool.semantic_release.branches.main]
 match = "(main)"
 prerelease_token = "rc"
+prerelease = false
+
+[tool.semantic_release.branches.maintenance]
+match = "^v\\d+$"
 prerelease = false
 
 [tool.semantic_release.remote]
