@@ -8,4 +8,5 @@ nav:
 - Maintainers: maintainers.md
 - Developer Certificate of Originality: DCO.md
 - GitHub actions: github_actions_setup.md
+- Maintenance releases: maintenance_releases.md
 - Testing workflows locally: workflow_testing.md

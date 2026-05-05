@@ -321,6 +321,10 @@ match = "(main)"
 prerelease_token = "rc"
 prerelease = false
 
+[tool.semantic_release.branches.maintenance]
+match = "^v\\d+$"
+prerelease = false
+
 [tool.semantic_release.remote]
 name = "origin"
 type = "github"
