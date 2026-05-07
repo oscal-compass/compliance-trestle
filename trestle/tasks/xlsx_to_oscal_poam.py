@@ -476,7 +476,9 @@ class PoamBuilder:
             props=props or None,
             links=None,
             origins=None,
-            **{'related-findings': None, 'related-observations': None, 'related-risks': None},
+            **{
+                'related-findings': None, 'related-observations': None, 'related-risks': None
+            },
         )
 
         # Add remarks if present
@@ -654,9 +656,8 @@ class PoamBuilder:
 
         return risk
 
-    def _create_milestone_tasks(
-        self, poam_id: str, milestones: List[Dict[str, Any]], helper: PoamXlsxHelper
-    ) -> List[OscalTask]:
+    def _create_milestone_tasks(self, poam_id: str, milestones: List[Dict[str, Any]],
+                                helper: PoamXlsxHelper) -> List[OscalTask]:
         """
         Create OSCAL Task objects from milestone data.
 
@@ -697,7 +698,9 @@ class PoamBuilder:
                 links=None,
                 dependencies=None,
                 subjects=None,
-                **{'associated-activities': None, 'responsible-roles': None},
+                **{
+                    'associated-activities': None, 'responsible-roles': None
+                },
             )
             tasks.append(task)
 
@@ -1004,7 +1007,9 @@ class XlsxToOscalPoam(TaskBase):
         metadata = Metadata(
             title=self._title,
             version=self._version,
-            **{'last-modified': self._timestamp, 'oscal-version': OSCAL_VERSION},
+            **{
+                'last-modified': self._timestamp, 'oscal-version': OSCAL_VERSION
+            },
         )
 
         # Optional system-id
@@ -1018,7 +1023,9 @@ class XlsxToOscalPoam(TaskBase):
             metadata=metadata,
             observations=observations or None,
             risks=risks or None,
-            **{'system-id': system_id, 'poam-items': poam_items},
+            **{
+                'system-id': system_id, 'poam-items': poam_items
+            },
         )
 
         return poam

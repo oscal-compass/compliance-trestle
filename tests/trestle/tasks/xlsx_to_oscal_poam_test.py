@@ -16,11 +16,8 @@
 
 import configparser
 import datetime
-import os
 import pathlib
 import uuid
-
-from tests.test_utils import text_files_similar
 
 from trestle.oscal.poam import PlanOfActionAndMilestones
 from trestle.tasks.base_task import TaskOutcome
