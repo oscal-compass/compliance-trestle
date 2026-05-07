@@ -255,7 +255,7 @@ jobs:
           echo "No tag found; scanning commits since merge-base with main ($LAST_TAG)"
         fi
         ALLOWED_TYPES='^(fix|perf|chore|ci|docs|build|refactor|style|test|revert)(\(.*\))?:'
-        BAD_COMMITS=$(git log "$LAST_TAG"..HEAD --format='%s' | grep -iEvx "$ALLOWED_TYPES.*" || true)
+        BAD_COMMITS=$(git log "$LAST_TAG"..HEAD --no-merges --format='%s' | grep -iEvx "$ALLOWED_TYPES.*" || true)
         if [ -n "$BAD_COMMITS" ]; then
           echo "::error::All commits on maintenance branches must use an allowed type: fix, perf, chore, ci, docs, build, refactor, style, test, revert."
           echo "::error::The following commits do not match:"
