@@ -91,7 +91,7 @@ When a new major version is released (e.g., v5.0.0), create a maintenance branch
    - Restrict push access to maintainers
    - Disallow force pushes and deletions
 
-1. **Update the GitHub `release` environment** if it uses an explicit branch list (add the new branch)
+1. **Add the new branch to the `release` environment** — each maintenance branch must be explicitly allowed for deployments. Follow the step-by-step instructions in [GitHub actions setup → Adding a branch to the release environment](github_actions_setup.md#adding-a-branch-to-the-release-environment).
 
 1. **Consider enabling Dependabot** for security updates on the new maintenance branch
 
