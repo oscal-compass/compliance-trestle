@@ -1456,6 +1456,27 @@ def test_ssp_generate_aggregates_no_param_value_orig(tmp_trestle_dir: pathlib.Pa
     assert const.PARAM_VALUE_ORIGIN not in si_7_prm_1.keys()
 
 
+def test_ssp_generate_missing_profile_param_value_origin(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test ssp-generate succeeds when profile set-parameter has no profile-param-value-origin.
+
+    Regression test for KeyError raised in catalog_writer._construct_set_parameters_dict
+    when profile-param-value-origin key is absent from parameter dict.
+    """
+    args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
+    args.compdefs = None
+    ssp_cmd = SSPGenerate()
+    # This should not raise KeyError: 'profile-param-value-origin'
+    assert ssp_cmd._run(args) == 0
+    md_dir = tmp_trestle_dir / ssp_name
+    ac_1 = md_dir / 'ac' / 'ac-1.md'
+    assert ac_1.exists()
+    md_api = MarkdownAPI()
+    header, _ = md_api.processor.process_markdown(ac_1)
+    # Verify ssp-generate completed without KeyError on missing profile-param-value-origin
+    # The header should be populated correctly
+    assert 'x-trestle-set-params' in header
+
+
 def test_ssp_generate_includes_all_imp_reqs(tmp_trestle_dir: pathlib.Path) -> None:
     """Test component prose is included for all implemented-requirements regardless of rules."""
 
