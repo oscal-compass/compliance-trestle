@@ -35,7 +35,7 @@ dependencies = [
     "attrs",
     "ilcli",
     "cryptography>=46.0.7",
-    "paramiko==4.0.0",
+    "paramiko==5.0.0",
     "ruamel.yaml",
     "furl",
     "pydantic[email]>=2.0.0",
@@ -317,6 +317,10 @@ default_bump_level = 0
 [tool.semantic_release.branches.main]
 match = "(main)"
 prerelease_token = "rc"
+prerelease = false
+
+[tool.semantic_release.branches.maintenance]
+match = "^v\\d+$"
 prerelease = false
 
 [tool.semantic_release.remote]

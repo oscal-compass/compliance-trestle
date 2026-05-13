@@ -5,7 +5,7 @@ description: Tutorial on how to use compliance trestle to convert Tanium results
 
 # Tutorial: Setup for and use of Tanium to OSCAL transformer
 
-Here are step by step instructions for setup and transformation of [Tanium](https://www.tanium.com/) compliance data files into [NIST](https://www.nist.gov/) standard [OSCAL](https://pages.nist.gov/OSCAL/) using the [compliance-trestle](https://oscal-compass.github.io/compliance-trestle/) tool.
+Here are step by step instructions for setup and transformation of [Tanium](https://www.tanium.com/) compliance data files into [NIST](https://www.nist.gov/) standard [OSCAL](https://github.com/usnistgov/OSCAL) using the [compliance-trestle](https://oscal-compass.github.io/compliance-trestle/) tool.
 
 ## Objective
 
