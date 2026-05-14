@@ -197,7 +197,7 @@ class BaseMarkdownNode:
         """Determine if the line matches regex."""
         if len(line) == 0 and reg != r'':
             return False
-        regexp = re.compile(reg)
+        regexp = re.compile(reg, re.DOTALL)
         return regexp.search(line) is not None
 
     def _read_code_lines(self, lines: List[str], line: str, i: int) -> tuple[list[str], int]:
