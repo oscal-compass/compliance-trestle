@@ -1,0 +1,155 @@
+Metadata-Version: 2.4
+Name: cmarkgfm
+Version: 2025.10.22
+Summary: Minimal bindings to GitHub's fork of cmark
+Author-email: The Python Packaging Authority <me@thea.codes>, pypa-dev@googlegroups.com
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/theacodes/cmarkgfm
+Project-URL: Bug Reports, https://github.com/theacodes/cmarkgfm/issues
+Project-URL: Funding, https://donate.pypi.org
+Project-URL: Source, https://github.com/theacodes/cmarkgfm
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
+Requires-Python: >=3.9
+Description-Content-Type: text/x-rst
+License-File: LICENSE.txt
+Requires-Dist: cffi>=2.0.0
+Dynamic: license-file
+
+cmarkgfm - Python bindings to GitHub's cmark
+============================================
+
+Minimalist Python bindings to GitHub's fork of cmark.
+
+Installation
+------------
+
+This package is published on PyPI as `cmarkgfm <https://pypi.org/project/cmarkgfm/>`__
+and can be installed with `pip` or `pipenv`::
+
+    pip install --user cmarkgfm
+    pipenv install cmarkgfm
+
+Wheels are provided for macOS, Linux, and Windows for Python 3.9, 3.10, 3.11, 3.12, 3.13, and 3.14.
+
+
+Usage
+-----
+
+High-level usage is really straightforward. To render normal CommonMark
+markdown:
+
+.. code-block:: python
+
+    import cmarkgfm
+
+    html = cmarkgfm.markdown_to_html(markdown_text)
+
+
+To render GitHub-flavored markdown:
+
+.. code-block:: python
+
+    import cmarkgfm
+
+    html = cmarkgfm.github_flavored_markdown_to_html(markdown_text)
+
+
+Advanced Usage
+--------------
+
+**Options**
+
+Both rendering methods ``markdown_to_html`` and ``github_flavored_markdown_to_html`` have
+an optional ``options`` argument that can be used to activate `options of cmark <https://manpages.debian.org/stretch/cmark/cmark.1.en.html>`_.
+For example:
+
+.. code-block:: python
+
+    import cmarkgfm
+    from cmarkgfm.cmark import Options as cmarkgfmOptions
+
+    options = (
+        cmarkgfmOptions.CMARK_OPT_GITHUB_PRE_LANG
+        | cmarkgfmOptions.CMARK_OPT_SMART
+    )
+    html = cmarkgfm.markdown_to_html(markdown_text, options)
+
+The options are:
+
++-----------------------------------------+----------------------------------------------------+
+|                  Option                 |                       Effect                       |
++=========================================+====================================================+
+| CMARK_OPT_UNSAFE (>=0.5.0)              | Allows rendering unsafe HTML and links.            |
++-----------------------------------------+----------------------------------------------------+
+| CMARK_OPT_SAFE (<0.5.0)                 | Prevents rendering unsafe HTML and links.          |
++-----------------------------------------+----------------------------------------------------+
+| CMARK_OPT_SMART                         | Render curly quotes, en/em-dashes, ellipses        |
++-----------------------------------------+----------------------------------------------------+
+| CMARK_OPT_NORMALIZE                     | Consolidate adjacent text nodes.                   |
++-----------------------------------------+----------------------------------------------------+
+| CMARK_OPT_HARDBREAKS                    | Renders line breaks within paragraphs as ``<br>``  |
++-----------------------------------------+----------------------------------------------------+
+| CMARK_OPT_NOBREAKS                      | Render soft line breaks as spaces.                 |
++-----------------------------------------+----------------------------------------------------+
+| CMARK_OPT_SOURCEPOS                     | Adds ``data-sourcepos`` to HTML tags indicating    |
+|                                         | the corresponding line/col ranges in the input     |
++-----------------------------------------+----------------------------------------------------+
+| CMARK_OPT_FOOTNOTES                     | Parse footnotes.                                   |
++-----------------------------------------+----------------------------------------------------+
+| CMARK_OPT_VALIDATE_UTF8                 | Validate UTF\-8 in the input before parsing,       |
+|                                         | replacing illegal sequenceswith the replacement    |
+|                                         | character U+FFFD.                                  |
++-----------------------------------------+----------------------------------------------------+
+| CMARK_OPT_GITHUB_PRE_LANG               | Use GitHub\-style  tags for code blocks.           |
++-----------------------------------------+----------------------------------------------------+
+| CMARK_OPT_LIBERAL_HTML_TAG              | Be liberal in interpreting inline HTML tags.       |
++-----------------------------------------+----------------------------------------------------+
+| CMARK_OPT_STRIKETHROUGH_DOUBLE_TILDE    | Only parse strikethroughs if surrounded by exactly |
+|                                         | 2 tildes. Gives some compatibility with redcarpet. |
++-----------------------------------------+----------------------------------------------------+
+| CMARK_OPT_TABLE_PREFER_STYLE_ATTRIBUTES | Use style attributes to align table cells instead  |
+|                                         | of align attributes.                               |
++-----------------------------------------+----------------------------------------------------+
+
+
+**Unsafe rendering**
+
+Since version 0.5.0, the default behavior is safe. In earlier versions, the default behavior is unsafe, as described below. To render potentially unsafe HTML since 0.5.0 pass the ``CMARK_OPT_UNSAFE`` option.
+
+CommonMark can render potentially unsafe HTML, including raw HTML, raw Javascript, and potentially unsafe links (including links that run scripts). Although ``github_flavored_markdown_to_html`` prevents some raw HTML tags (including ``script``) from being rendered, it does not block unsafe URLs in links.
+
+Therefore it is recommend to call the rendering method with the SAFE option turned on. The safe option does not render raw HTML or potentially dangerous URLs. (Raw HTML is replaced by a placeholder comment; potentially dangerous URLs are replaced by empty strings.) Dangerous URLs are those that begin with ``javascript:``, ``vbscript:``, ``file:``, or ``data:`` (except for ``image/png``, ``image/gif``, ``image/jpeg``, or ``image/webp`` mime types) To do this, use:
+
+.. code-block:: python
+
+    # cmarkgfm<0.5.0
+    import cmarkgfm
+    from cmarkgfm.cmark import Options as cmarkgfmOptions
+
+    html = cmarkgfm.markdown_to_html(markdown_text, options=cmarkgfmOptions.CMARK_OPT_SAFE)
+    # or
+    html = cmarkgfm.github_flavored_markdown_to_html(markdown_text, options=cmarkgfmOptions.CMARK_OPT_SAFE)
+
+If you trust the markdown text to not include any unsafe tags and links, then you may skip this.
+
+
+Contributing
+------------
+
+Pull requests are welcome. :)
+
+
+License
+-------
+
+This project is under the MIT License. It includes components under differing
+copyright under the ``third_party`` directory in this source tree.

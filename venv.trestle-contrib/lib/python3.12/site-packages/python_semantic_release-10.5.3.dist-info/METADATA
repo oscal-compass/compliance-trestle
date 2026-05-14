@@ -1,0 +1,94 @@
+Metadata-Version: 2.4
+Name: python-semantic-release
+Version: 10.5.3
+Summary: Automatic Semantic Versioning for Python projects
+Author-email: Rolf Erik Lekang <me@rolflekang.com>, codejedi365 <codejedi365@gmail.com>
+License: MIT
+Project-URL: changelog, https://github.com/python-semantic-release/python-semantic-release/blob/master/CHANGELOG.md
+Project-URL: documentation, https://python-semantic-release.readthedocs.io
+Project-URL: homepage, https://python-semantic-release.readthedocs.io
+Project-URL: issues, https://github.com/python-semantic-release/python-semantic-release/issues
+Project-URL: repository, http://github.com/python-semantic-release/python-semantic-release.git
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
+Requires-Python: ~=3.8
+Description-Content-Type: text/x-rst
+License-File: LICENSE
+Requires-Dist: click~=8.1.0
+Requires-Dist: click-option-group~=0.5
+Requires-Dist: gitpython~=3.0
+Requires-Dist: requests~=2.25
+Requires-Dist: jinja2~=3.1
+Requires-Dist: python-gitlab<7.0.0,>=4.0.0
+Requires-Dist: tomlkit~=0.13.0
+Requires-Dist: dotty-dict~=1.3
+Requires-Dist: importlib-resources~=6.0
+Requires-Dist: pydantic~=2.0
+Requires-Dist: rich~=14.0
+Requires-Dist: shellingham~=1.5
+Requires-Dist: Deprecated~=1.2
+Provides-Extra: build
+Requires-Dist: build~=1.2; extra == "build"
+Requires-Dist: tomlkit~=0.13.0; extra == "build"
+Provides-Extra: docs
+Requires-Dist: Sphinx~=7.4; extra == "docs"
+Requires-Dist: sphinxcontrib-apidoc==0.6.0; extra == "docs"
+Requires-Dist: sphinx-autobuild==2024.2.4; extra == "docs"
+Requires-Dist: furo~=2025.9; extra == "docs"
+Provides-Extra: test
+Requires-Dist: coverage[toml]~=7.0; extra == "test"
+Requires-Dist: filelock~=3.15; extra == "test"
+Requires-Dist: flatdict~=4.0; extra == "test"
+Requires-Dist: freezegun~=1.5; extra == "test"
+Requires-Dist: pyyaml~=6.0; extra == "test"
+Requires-Dist: pytest~=8.3; extra == "test"
+Requires-Dist: pytest-clarity~=1.0; extra == "test"
+Requires-Dist: pytest-cov<8.0.0,>=5.0.0; extra == "test"
+Requires-Dist: pytest-env~=1.0; extra == "test"
+Requires-Dist: pytest-lazy-fixtures~=1.4; extra == "test"
+Requires-Dist: pytest-mock~=3.0; extra == "test"
+Requires-Dist: pytest-order~=1.3; extra == "test"
+Requires-Dist: pytest-pretty~=1.2; extra == "test"
+Requires-Dist: pytest-xdist~=3.0; extra == "test"
+Requires-Dist: responses~=0.25.0; extra == "test"
+Requires-Dist: requests-mock~=1.10; extra == "test"
+Provides-Extra: dev
+Requires-Dist: pre-commit~=4.3; extra == "dev"
+Requires-Dist: tox~=4.11; extra == "dev"
+Requires-Dist: ruff==0.6.1; extra == "dev"
+Provides-Extra: mypy
+Requires-Dist: mypy==1.16.1; extra == "mypy"
+Requires-Dist: types-Deprecated~=1.2; extra == "mypy"
+Requires-Dist: types-requests~=2.32.0; extra == "mypy"
+Requires-Dist: types-pyyaml~=6.0; extra == "mypy"
+Dynamic: license-file
+
+Python Semantic Release
+***********************
+
+*Automating Releases via SemVer and Commit Message Conventions*
+
+----
+
+The official documentation for Python Semantic Release can be found at
+`python-semantic-release.readthedocs.io`_.
+
+GitHub Action
+=============
+
+When using the Python Semantic Release GitHub Action, it executes the command
+``semantic-release version`` using `python-semantic-release`_.
+
+The usage information and examples for this GitHub Action is available under
+the `GitHub Actions section`_ of `python-semantic-release.readthedocs.io`_.
+
+.. _python-semantic-release: https://pypi.org/project/python-semantic-release/
+.. _python-semantic-release.readthedocs.io: https://python-semantic-release.readthedocs.io/en/stable/
+.. _GitHub Actions section: https://python-semantic-release.readthedocs.io/en/stable/configuration/automatic-releases/github-actions.html

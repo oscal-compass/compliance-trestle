@@ -1,0 +1,2 @@
+[mkdocs.plugins]
+minify = mkdocs_minify_plugin.plugin:MinifyPlugin

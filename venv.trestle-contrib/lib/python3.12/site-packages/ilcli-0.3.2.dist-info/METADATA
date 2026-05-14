@@ -1,0 +1,29 @@
+Metadata-Version: 2.1
+Name: ilcli
+Version: 0.3.2
+Summary: i like command-line interfaces
+Home-page: https://github.com/cloudant/ilcli
+Author: Cloudant Infrastructure
+Author-email: cloudant-infrateam@wwpdl.vnet.ibm.com
+License: Apache License 2.0
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Provides-Extra: dev
+Requires-Dist: pytest (>=5.4.3) ; extra == 'dev'
+Requires-Dist: pytest-cov (>=2.10.0) ; extra == 'dev'
+Requires-Dist: bandit (>=1.5.0) ; extra == 'dev'
+Requires-Dist: Sphinx (>=1.7.2) ; extra == 'dev'
+Requires-Dist: sphinxcontrib-programoutput (>=0.11) ; extra == 'dev'
+Requires-Dist: flake8 (>=3.5.0) ; extra == 'dev'
+Requires-Dist: flake8-import-order (>=0.0.11) ; extra == 'dev'
+Requires-Dist: setuptools ; extra == 'dev'
+Requires-Dist: wheel ; extra == 'dev'
+Requires-Dist: twine ; extra == 'dev'
+
+https://cloudant.github.io/ilcli
+
+
