@@ -31,7 +31,9 @@ import trestle.oscal.component as comp
 from trestle.common import const, file_utils, list_utils
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.author.ssp import SSPAssemble, SSPFilter, SSPGenerate
+from trestle.core.catalog.catalog_writer import CatalogWriter
 from trestle.core.control_context import ContextPurpose, ControlContext
+from trestle.oscal.common import Parameter1, Property
 from trestle.core.control_reader import ControlReader
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.models.file_content_type import FileContentType
@@ -1461,6 +1463,11 @@ def test_ssp_generate_missing_profile_param_value_origin(tmp_trestle_dir: pathli
 
     Regression test for KeyError raised in catalog_writer._construct_set_parameters_dict
     when profile-param-value-origin key is absent from parameter dict.
+
+    NOTE: This test uses the standard profile fixture which does NOT exercise
+    the AGGREGATES branch — it would pass even on unpatched code. Kept as a
+    smoke test only. See test_ssp_generate_missing_profile_param_value_origin_regression
+    for the true regression guard that fails deterministically on unpatched code.
     """
     args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
     args.compdefs = None
@@ -1617,10 +1624,6 @@ def test_construct_set_parameters_dict_aggregates_no_origin_unit(tmp_path: pathl
     This test does NOT rely on fixture data and will fail
     deterministically against the unpatched code.
     """
-    from trestle.oscal.common import Parameter1, Property
-    from trestle.common import const
-    from trestle.core.catalog.catalog_writer import CatalogWriter
-    from trestle.core.control_context import ContextPurpose, ControlContext
 
     param_id = 'ac-1_prm_1'
 
@@ -1667,10 +1670,6 @@ def test_construct_set_parameters_dict_aggregates_with_prof_origin_ssp(tmp_path:
       - PROFILE_PARAM_VALUE_ORIGIN never added to new_dict
       - AGGREGATES in control param → pop → KeyError on unpatched code
     """
-    from trestle.oscal.common import Parameter1, Property
-    from trestle.common import const
-    from trestle.core.catalog.catalog_writer import CatalogWriter
-    from trestle.core.control_context import ContextPurpose, ControlContext
 
     param_id = 'ac-1_prm_1'
 
@@ -1719,10 +1718,6 @@ def test_construct_set_parameters_dict_aggregates_with_prof_origin_profile_purpo
       - AGGREGATES in profile param.props → skip adding PROFILE_PARAM_VALUE_ORIGIN
       - AGGREGATES in control param → pop → KeyError on unpatched code
     """
-    from trestle.oscal.common import Parameter1, Property
-    from trestle.common import const
-    from trestle.core.catalog.catalog_writer import CatalogWriter
-    from trestle.core.control_context import ContextPurpose, ControlContext
 
     param_id = 'ac-1_prm_1'
 
