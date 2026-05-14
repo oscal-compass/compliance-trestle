@@ -1604,7 +1604,6 @@ def test_ssp_generate_missing_profile_param_value_origin_regression(tmp_trestle_
     )
 
 
-
 def test_construct_set_parameters_dict_aggregates_no_origin_unit(tmp_path: pathlib.Path) -> None:
     """Direct unit test for _construct_set_parameters_dict regression (#2221).
 
@@ -1628,37 +1627,25 @@ def test_construct_set_parameters_dict_aggregates_no_origin_unit(tmp_path: pathl
     # profile set-parameter: AGGREGATES prop, no param-value-origin
     # → prof_param_value_origin == '' → enters else branch
     # → AGGREGATES in param.props → PROFILE_PARAM_VALUE_ORIGIN skipped
-    profile_param = Parameter1(
-        id=param_id,
-        props=[Property(name=const.AGGREGATES, value=const.AGGREGATES)]
-    )
+    profile_param = Parameter1(id=param_id, props=[Property(name=const.AGGREGATES, value=const.AGGREGATES)])
     profile_set_param_dict = {param_id: profile_param}
 
     # control parameter: AGGREGATES prop + values
     # → AGGREGATES in orig_param.props → pop(PROFILE_PARAM_VALUE_ORIGIN) called
     # → KeyError on unpatched code (no default), clean on patched (None default)
     control_param = Parameter1(
-        id=param_id,
-        props=[Property(name=const.AGGREGATES, value=const.AGGREGATES)],
-        values=['some-value']
+        id=param_id, props=[Property(name=const.AGGREGATES, value=const.AGGREGATES)], values=['some-value']
     )
     control_param_dict = {param_id: control_param}
 
     context = ControlContext.generate(
-        purpose=ContextPurpose.SSP,
-        to_markdown=True,
-        trestle_root=tmp_path,
-        md_root=tmp_path,
+        purpose=ContextPurpose.SSP, to_markdown=True, trestle_root=tmp_path, md_root=tmp_path
     )
 
     writer = CatalogWriter.__new__(CatalogWriter)
 
     try:
-        result = writer._construct_set_parameters_dict(
-            profile_set_param_dict,
-            control_param_dict,
-            context
-        )
+        result = writer._construct_set_parameters_dict(profile_set_param_dict, control_param_dict, context)
     except KeyError as e:
         raise AssertionError(
             f'KeyError raised for key {e} — regression: unpatched code path hit. '
@@ -1696,33 +1683,24 @@ def test_construct_set_parameters_dict_aggregates_with_prof_origin_ssp(tmp_path:
         props=[
             Property(name=const.AGGREGATES, value=const.AGGREGATES),
             Property(name='param-value-origin', value='OCISO'),
-        ]
+        ],
     )
     profile_set_param_dict = {param_id: profile_param}
 
     # control param: AGGREGATES prop → pop(PROFILE_PARAM_VALUE_ORIGIN) called
     control_param = Parameter1(
-        id=param_id,
-        props=[Property(name=const.AGGREGATES, value=const.AGGREGATES)],
-        values=['some-value']
+        id=param_id, props=[Property(name=const.AGGREGATES, value=const.AGGREGATES)], values=['some-value']
     )
     control_param_dict = {param_id: control_param}
 
     context = ControlContext.generate(
-        purpose=ContextPurpose.SSP,
-        to_markdown=True,
-        trestle_root=tmp_path,
-        md_root=tmp_path,
+        purpose=ContextPurpose.SSP, to_markdown=True, trestle_root=tmp_path, md_root=tmp_path
     )
 
     writer = CatalogWriter.__new__(CatalogWriter)
 
     try:
-        result = writer._construct_set_parameters_dict(
-            profile_set_param_dict,
-            control_param_dict,
-            context
-        )
+        result = writer._construct_set_parameters_dict(profile_set_param_dict, control_param_dict, context)
     except KeyError as e:
         raise AssertionError(
             f'KeyError raised for {e}: prof_param_value_origin set + SSP purpose + AGGREGATES path not handled.'
@@ -1756,33 +1734,24 @@ def test_construct_set_parameters_dict_aggregates_with_prof_origin_profile_purpo
         props=[
             Property(name=const.AGGREGATES, value=const.AGGREGATES),
             Property(name='param-value-origin', value='OCISO'),
-        ]
+        ],
     )
     profile_set_param_dict = {param_id: profile_param}
 
     # control param: AGGREGATES → pop called
     control_param = Parameter1(
-        id=param_id,
-        props=[Property(name=const.AGGREGATES, value=const.AGGREGATES)],
-        values=['some-value']
+        id=param_id, props=[Property(name=const.AGGREGATES, value=const.AGGREGATES)], values=['some-value']
     )
     control_param_dict = {param_id: control_param}
 
     context = ControlContext.generate(
-        purpose=ContextPurpose.PROFILE,
-        to_markdown=True,
-        trestle_root=tmp_path,
-        md_root=tmp_path,
+        purpose=ContextPurpose.PROFILE, to_markdown=True, trestle_root=tmp_path, md_root=tmp_path
     )
 
     writer = CatalogWriter.__new__(CatalogWriter)
 
     try:
-        result = writer._construct_set_parameters_dict(
-            profile_set_param_dict,
-            control_param_dict,
-            context
-        )
+        result = writer._construct_set_parameters_dict(profile_set_param_dict, control_param_dict, context)
     except KeyError as e:
         raise AssertionError(
             f'KeyError raised for {e}: prof_param_value_origin set + PROFILE purpose + AGGREGATES path not handled.'
