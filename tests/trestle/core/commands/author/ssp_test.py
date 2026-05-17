@@ -32,12 +32,14 @@ from trestle.common import const, file_utils, list_utils
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.author.ssp import SSPAssemble, SSPFilter, SSPGenerate
 from trestle.core.catalog.catalog_writer import CatalogWriter
+from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.oscal.common import Parameter1, Property
 from trestle.core.control_reader import ControlReader
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
+from unittest.mock import Mock
 
 
 prof_name = 'comp_prof'
@@ -1645,7 +1647,7 @@ def test_construct_set_parameters_dict_aggregates_no_origin_unit(tmp_path: pathl
         purpose=ContextPurpose.SSP, to_markdown=True, trestle_root=tmp_path, md_root=tmp_path
     )
 
-    writer = CatalogWriter.__new__(CatalogWriter)
+    writer = CatalogWriter(Mock(spec=CatalogInterface))
 
     try:
         result = writer._construct_set_parameters_dict(profile_set_param_dict, control_param_dict, context)
@@ -1696,7 +1698,7 @@ def test_construct_set_parameters_dict_aggregates_with_prof_origin_ssp(tmp_path:
         purpose=ContextPurpose.SSP, to_markdown=True, trestle_root=tmp_path, md_root=tmp_path
     )
 
-    writer = CatalogWriter.__new__(CatalogWriter)
+    writer = CatalogWriter(Mock(spec=CatalogInterface))
 
     try:
         result = writer._construct_set_parameters_dict(profile_set_param_dict, control_param_dict, context)
@@ -1743,7 +1745,7 @@ def test_construct_set_parameters_dict_aggregates_with_prof_origin_profile_purpo
         purpose=ContextPurpose.PROFILE, to_markdown=True, trestle_root=tmp_path, md_root=tmp_path
     )
 
-    writer = CatalogWriter.__new__(CatalogWriter)
+    writer = CatalogWriter(Mock(spec=CatalogInterface))
 
     try:
         result = writer._construct_set_parameters_dict(profile_set_param_dict, control_param_dict, context)
