@@ -41,6 +41,7 @@ from trestle.common import const, file_utils
 from trestle.common.err import TrestleError
 from trestle.core import parser
 from trestle.core.base_model import OscalBaseModel
+from trestle.core.remote.security import PathSecurityValidator
 
 logger = logging.getLogger(__name__)
 
@@ -258,12 +259,25 @@ class HTTPSFetcher(FetcherBase):
             )
         if u.hostname is None:
             raise TrestleError(f'Cache request for {self._uri} requires hostname')
+
+        # Validate the URL path to prevent path traversal attacks
+        PathSecurityValidator.validate_url_path_for_cache(u.path)
+
         https_cached_dir = self._trestle_cache_path / u.hostname
-        # Skip any number of back- or forward slashes preceding the URI path (u.path)
-        path_parent = pathlib.Path(u.path[re.search('[^/\\\\]', u.path).span()[0] :]).parent
+
+        # Skip any number of back- or forward slashes preceding the URI path
+        match = re.search('[^/\\\\]', u.path)
+        if match:
+            path_parent = pathlib.Path(u.path[match.span()[0] :]).parent
+        else:
+            path_parent = pathlib.Path('.')
+
         https_cached_dir = https_cached_dir / path_parent
         https_cached_dir.mkdir(parents=True, exist_ok=True)
         self._cached_object_path = https_cached_dir / pathlib.Path(pathlib.Path(u.path).name)
+
+        # Validate that the resolved cache path stays within the cache directory (defense in depth)
+        PathSecurityValidator.validate_cache_path(self._cached_object_path, self._trestle_cache_path)
 
     def _do_fetch(self) -> None:
         auth = None
@@ -325,12 +339,24 @@ class SFTPFetcher(FetcherBase):
             logger.warning(f'Malformed URI, cannot parse path in URL {self._uri}')
             raise TrestleError(f'Cache request for invalid input URI: missing file path {self._uri}')
 
+        # Validate the URL path to prevent path traversal attacks
+        PathSecurityValidator.validate_url_path_for_cache(u.path)
+
         sftp_cached_dir = self._trestle_cache_path / u.hostname
-        # Skip any number of back- or forward slashes preceding the URL path (u.path)
-        path_parent = pathlib.Path(u.path[re.search('[^/\\\\]', u.path).span()[0] :]).parent
+
+        # Skip any number of back- or forward slashes preceding the URL path
+        match = re.search('[^/\\\\]', u.path)
+        if match:
+            path_parent = pathlib.Path(u.path[match.span()[0] :]).parent
+        else:
+            path_parent = pathlib.Path('.')
+
         sftp_cached_dir = sftp_cached_dir / path_parent
         sftp_cached_dir.mkdir(parents=True, exist_ok=True)
         self._cached_object_path = sftp_cached_dir / pathlib.Path(pathlib.Path(u.path).name)
+
+        # Validate that the resolved cache path stays within the cache directory (defense in depth)
+        PathSecurityValidator.validate_cache_path(self._cached_object_path, self._trestle_cache_path)
 
     def _do_fetch(self) -> None:
         """Fetch remote object and update the cache if appropriate and possible to do so.
