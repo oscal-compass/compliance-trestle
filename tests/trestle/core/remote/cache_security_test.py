@@ -25,7 +25,7 @@ import tests.test_utils as test_utils
 
 from trestle.common.err import TrestleError
 from trestle.core.remote.cache import HTTPSFetcher, SFTPFetcher
-from trestle.core.remote.security import PathSecurityValidator
+from trestle.core.remote.security import PathSecurityValidator, URLSecurityValidator
 
 
 class TestPathValidation:
@@ -675,6 +675,36 @@ def test_url_validator_handles_dns_resolution_failure(tmp_path: pathlib.Path, mo
     validator = URLSecurityValidator()
     with pytest.raises(TrestleError, match='No IP addresses resolved for hostname'):
         validator.validate_url('https://nonexistent.example.com/data.json')
+
+
+def test_url_validator_with_allowed_domains() -> None:
+    """Test URL validation with domain allowlist."""
+    # Test with allowed domain - should pass
+    validator = URLSecurityValidator(allowed_domains={'example.com', 'test.com'})
+    # This will fail DNS resolution but that's OK - we're testing the domain check happens first
+    try:
+        validator.validate_url('https://example.com/path')
+    except TrestleError as e:
+        # Should fail on DNS resolution, not domain check
+        assert 'not in the allowed domains list' not in str(e)
+    
+    # Test with disallowed domain - should fail on domain check
+    validator = URLSecurityValidator(allowed_domains={'example.com'})
+    with pytest.raises(TrestleError, match='not in the allowed domains list'):
+        validator.validate_url('https://other.com/path')
+
+
+def test_url_validator_invalid_ip_address(monkeypatch) -> None:
+    """Test handling of invalid IP address from getaddrinfo."""
+    def mock_getaddrinfo(hostname, port):
+        # Return a malformed IP that will trigger ValueError in ipaddress.ip_address()
+        return [(socket.AF_INET, socket.SOCK_STREAM, 6, '', ('not-an-ip', 0))]
+    
+    monkeypatch.setattr(socket, 'getaddrinfo', mock_getaddrinfo)
+    
+    validator = URLSecurityValidator()
+    with pytest.raises(TrestleError, match='Invalid IP address'):
+        validator.validate_url('https://example.com/path')
 
 
 # Made with Bob
