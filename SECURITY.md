@@ -23,6 +23,7 @@ The following address ranges and endpoints are **always blocked** regardless of 
   - `100.100.100.200` (Alibaba Cloud)
 
 These ranges are blocked to prevent:
+
 - Access to localhost services
 - Exploitation of cloud metadata endpoints to steal credentials
 - Access to link-local services
@@ -37,6 +38,7 @@ RFC 1918 private IP ranges are **allowed by default** to support legitimate use 
 - `fc00::/7` (IPv6 unique local)
 
 **To block private IP ranges**, set the environment variable:
+
 ```bash
 export TRESTLE_BLOCK_PRIVATE_IPS=true
 ```
@@ -52,9 +54,9 @@ For additional security, you can restrict fetching to specific domains by config
 Trestle implements multiple layers of path traversal protection:
 
 1. **URL Path Validation**: Blocks `..` sequences in URL paths to prevent directory traversal
-2. **Cache Path Validation**: Ensures cached files remain within the designated cache directory
-3. **Workspace Boundary Enforcement**: Validates that local file operations stay within the trestle workspace
-4. **Sensitive File Protection**: Blocks access to sensitive system files even when outside-workspace access is allowed:
+1. **Cache Path Validation**: Ensures cached files remain within the designated cache directory
+1. **Workspace Boundary Enforcement**: Validates that local file operations stay within the trestle workspace
+1. **Sensitive File Protection**: Blocks access to sensitive system files even when outside-workspace access is allowed:
    - `/etc/passwd`, `/etc/shadow`, `/etc/group`, `/etc/sudoers`
    - SSH keys (`.ssh/`)
    - Cloud credentials (`.aws/`, `.docker/`, `.kube/`)
@@ -70,6 +72,7 @@ Only HTTPS and SFTP schemes are allowed for remote URLs. HTTP, FTP, and other pr
 ### Port Restrictions
 
 By default, only standard ports are allowed:
+
 - HTTPS: port 443
 - SFTP: port 22
 
@@ -80,11 +83,11 @@ Non-standard ports are blocked unless explicitly configured.
 When using compliance-trestle to fetch remote OSCAL content:
 
 1. **Use HTTPS URLs** from trusted sources
-2. **Enable private IP blocking** (`TRESTLE_BLOCK_PRIVATE_IPS=true`) in production environments unless you specifically need to access private repositories
-3. **Configure domain allowlists** when fetching from a known set of trusted domains
-4. **Monitor logs** for warnings about private IP access
-5. **Keep trestle updated** to receive the latest security fixes
-6. **Review fetched content** before using it in production compliance workflows
+1. **Enable private IP blocking** (`TRESTLE_BLOCK_PRIVATE_IPS=true`) in production environments unless you specifically need to access private repositories
+1. **Configure domain allowlists** when fetching from a known set of trusted domains
+1. **Monitor logs** for warnings about private IP access
+1. **Keep trestle updated** to receive the latest security fixes
+1. **Review fetched content** before using it in production compliance workflows
 
 ## Security Testing
 
