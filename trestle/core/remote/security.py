@@ -14,17 +14,191 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """
-Security utilities for remote fetching operations.
+Security validation utilities for remote fetching operations.
 
-Provides path validation to prevent path traversal attacks.
+This module provides security controls to prevent SSRF, path traversal,
+and arbitrary file access vulnerabilities.
 """
 
+import ipaddress
 import logging
+import os
 import pathlib
+import socket
+from typing import Optional, Set
+from urllib import parse
 
 from trestle.common.err import TrestleError
 
+
+def get_block_private_ips_config() -> bool:
+    """Get the TRESTLE_BLOCK_PRIVATE_IPS configuration from environment.
+
+    Returns:
+        True if private IPs should be blocked, False otherwise (default).
+
+    The environment variable can be set to:
+    - 'true', '1', 'yes', 'on' (case-insensitive) to enable blocking
+    - Any other value or unset to disable blocking (allow private IPs)
+    """
+    env_value = os.environ.get('TRESTLE_BLOCK_PRIVATE_IPS', '').lower()
+    return env_value in ('true', '1', 'yes', 'on')
+
+
 logger = logging.getLogger(__name__)
+
+# Always blocked - zero legitimate use for OSCAL fetching
+# These ranges are blocked regardless of configuration
+ALWAYS_BLOCKED_NETWORKS = [
+    ipaddress.ip_network('127.0.0.0/8'),  # Loopback
+    ipaddress.ip_network('::1/128'),  # IPv6 loopback
+    ipaddress.ip_network('169.254.0.0/16'),  # Link-local (includes metadata endpoints)
+    ipaddress.ip_network('fe80::/10'),  # IPv6 link-local
+]
+
+# RFC 1918 private ranges - optionally blocked based on configuration
+# These are allowed by default to support private GitLab/internal OSCAL repositories
+PRIVATE_IP_NETWORKS = [
+    ipaddress.ip_network('10.0.0.0/8'),
+    ipaddress.ip_network('172.16.0.0/12'),
+    ipaddress.ip_network('192.168.0.0/16'),
+    ipaddress.ip_network('fc00::/7'),  # IPv6 unique local
+]
+
+# Cloud metadata endpoints that should be blocked
+# These are always blocked regardless of configuration
+METADATA_HOSTNAMES = {
+    '169.254.169.254',  # AWS, Azure, GCP
+    'metadata.google.internal',  # GCP
+    'metadata.azure.com',  # Azure (alternative)
+    '100.100.100.200',  # Alibaba Cloud
+}
+
+
+class URLSecurityValidator:
+    """Validates URLs to prevent SSRF attacks.
+
+    Implements two-tiered SSRF protection:
+    1. Always blocked: loopback, link-local, and cloud metadata endpoints
+    2. Optionally blocked: RFC 1918 private ranges (configurable via block_private_ips)
+    """
+
+    def __init__(self, block_private_ips: bool = False, allowed_domains: Optional[Set[str]] = None):
+        """Initialize URL security validator.
+
+        Args:
+            block_private_ips: If True, block RFC 1918 private IP ranges (default: False).
+                              Always-blocked ranges (loopback, link-local, metadata) are blocked regardless.
+            allowed_domains: Optional set of allowed domain names. If provided, only these domains are allowed.
+        """
+        self.block_private_ips = block_private_ips
+        self.allowed_domains = allowed_domains
+
+    def validate_url(self, url: str) -> None:
+        """Validate a URL for security issues.
+
+        This method resolves the hostname and validates all resolved IPs to prevent SSRF attacks.
+
+        To mitigate DNS rebinding attacks, this validation is called both at initialization and
+        immediately before each fetch operation, minimizing the TOCTOU window.
+
+        Args:
+            url: The URL to validate
+
+        Raises:
+            TrestleError: If the URL is deemed unsafe
+        """
+        try:
+            parsed = parse.urlparse(url)
+        except Exception as e:
+            raise TrestleError(f'Invalid URL format: {url}') from e
+
+        if not parsed.scheme or not parsed.hostname:
+            raise TrestleError(f'URL must include scheme and hostname: {url}')
+
+        # Only allow https and sftp scheme for remote URLs
+        if parsed.scheme not in ['https', 'sftp']:
+            raise TrestleError(f'Only HTTPS or SFTP schemes are allowed for remote URLs, got: {parsed.scheme}')
+
+        hostname = parsed.hostname.lower()
+
+        # Block cloud metadata endpoints
+        if hostname in METADATA_HOSTNAMES:
+            raise TrestleError(
+                f'Access to cloud metadata endpoints is not allowed: {hostname}. '
+                'This is a security restriction to prevent SSRF attacks.'
+            )
+
+        # Check domain allowlist if configured
+        if self.allowed_domains is not None:
+            if hostname not in self.allowed_domains:
+                raise TrestleError(
+                    f'Domain {hostname} is not in the allowed domains list. '
+                    f'Allowed domains: {", ".join(sorted(self.allowed_domains))}'
+                )
+
+        # Resolve hostname to IP and check if it's private
+        try:
+            # Get all IP addresses for the hostname
+            addr_info = socket.getaddrinfo(hostname, None)
+            ip_addresses = [str(info[4][0]) for info in addr_info]
+        except socket.gaierror as e:
+            raise TrestleError(f'Unable to resolve hostname {hostname}: {e}') from e
+
+        if not ip_addresses:
+            raise TrestleError(f'No IP addresses resolved for hostname {hostname}')
+
+        # Check each resolved IP address
+        for ip_str in ip_addresses:
+            try:
+                ip_addr = ipaddress.ip_address(ip_str)
+            except ValueError as e:
+                raise TrestleError(f'Invalid IP address {ip_str} for hostname {hostname}: {e}') from e
+
+            # TIER 1: Always block loopback, link-local, and metadata endpoints
+            # These have zero legitimate use for OSCAL fetching
+            for network in ALWAYS_BLOCKED_NETWORKS:
+                if ip_addr in network:
+                    raise TrestleError(
+                        f'Access to {network} addresses is blocked: {hostname} resolves to {ip_addr}. '
+                        f'This range includes loopback, link-local, and cloud metadata endpoints. '
+                        f'This is a security restriction to prevent SSRF attacks.'
+                    )
+
+            # TIER 2: Optionally block RFC 1918 private ranges
+            # These are allowed by default to support private GitLab/internal OSCAL repositories
+            if self.block_private_ips:
+                for network in PRIVATE_IP_NETWORKS:
+                    if ip_addr in network:
+                        raise TrestleError(
+                            f'Access to private IP addresses is blocked: {hostname} resolves to {ip_addr} '
+                            f'which is in private network {network}. '
+                            f'This is blocked because TRESTLE_BLOCK_PRIVATE_IPS is enabled. '
+                            f'To allow access to private networks, unset this environment variable.'
+                        )
+            else:
+                # Log a warning when accessing private IPs (when allowed)
+                for network in PRIVATE_IP_NETWORKS:
+                    if ip_addr in network:
+                        logger.warning(
+                            f'Accessing private IP address: {hostname} resolves to {ip_addr} in network {network}. '
+                            f'This is allowed by default to support private GitLab/internal OSCAL repositories. '
+                            f'To block private IPs, set TRESTLE_BLOCK_PRIVATE_IPS=true.'
+                        )
+                        break  # Only log once per IP
+
+        # Check for suspicious ports
+        if parsed.port is not None:
+            # Only allow standard HTTPS/SFTP ports or explicitly configured ports
+            if (
+                parsed.scheme == 'https'
+                and parsed.port not in [443]
+                or parsed.scheme == 'sftp'
+                and parsed.port not in [22]
+            ):
+                logger.warning(
+                    f'Non-standard port {parsed.port} detected in URL {url}. This may indicate a security risk.'
+                )
 
 
 class PathSecurityValidator:

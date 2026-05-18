@@ -112,6 +112,10 @@ Please refer to the community [README](https://github.com/oscal-compass/communit
 ## Contributing to Trestle
 
 Our project welcomes external contributions. Please consult [contributing](https://oscal-compass.github.io/compliance-trestle/latest/contributing/mkdocs_contributing/) to get started.
+## Security
+
+For information about security features, best practices, and how to report security vulnerabilities, please see our [Security Policy](SECURITY.md).
+
 
 ## Code of Conduct
 
