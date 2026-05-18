@@ -687,7 +687,7 @@ def test_url_validator_with_allowed_domains() -> None:
     except TrestleError as e:
         # Should fail on DNS resolution, not domain check
         assert 'not in the allowed domains list' not in str(e)
-    
+
     # Test with disallowed domain - should fail on domain check
     validator = URLSecurityValidator(allowed_domains={'example.com'})
     with pytest.raises(TrestleError, match='not in the allowed domains list'):
@@ -696,12 +696,13 @@ def test_url_validator_with_allowed_domains() -> None:
 
 def test_url_validator_invalid_ip_address(monkeypatch) -> None:
     """Test handling of invalid IP address from getaddrinfo."""
+
     def mock_getaddrinfo(hostname, port):
         # Return a malformed IP that will trigger ValueError in ipaddress.ip_address()
         return [(socket.AF_INET, socket.SOCK_STREAM, 6, '', ('not-an-ip', 0))]
-    
+
     monkeypatch.setattr(socket, 'getaddrinfo', mock_getaddrinfo)
-    
+
     validator = URLSecurityValidator()
     with pytest.raises(TrestleError, match='Invalid IP address'):
         validator.validate_url('https://example.com/path')
