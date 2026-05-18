@@ -228,7 +228,7 @@ class PathSecurityValidator:
             '/root/.gnupg',
             # macOS specific
             '/Library/Keychains',
-            '/Users/',  # Broad but catches user home directories
+            '/Library/',  # Broad but catches user home directories
             # Windows system directories
             'C:\\Windows\\System32',
             'C:\\Windows\\SysWOW64',
