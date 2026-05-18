@@ -151,11 +151,11 @@ def test_https_fetcher_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyP
     """Test the HTTPS fetcher failing."""
     monkeypatch.setenv('myusername', 'user123')
     monkeypatch.setenv('mypassword', 'somep4ss')
-    # This syntactically valid uri points to localhost which is now blocked for security
-    # The security validator should reject this before any connection attempt
+    # This syntactically valid uri points to nothing and should ConnectTimeout.
     uri = 'https://{{myusername}}:{{mypassword}}@127.0.0.1/path/to/file.json'
-    with pytest.raises(TrestleError, match='127.0.0.0/8'):
-        cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
+    fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
+    with pytest.raises(TrestleError, match='retries exceeded'):
+        fetcher._update_cache()
 
 
 def test_https_fetcher(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
@@ -252,10 +252,10 @@ def test_sftp_fetcher_connect_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: 
     fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
     with pytest.raises(err.TrestleError, match='connect via SSH'):
         fetcher._update_cache()
-    # malformed uri - security validator now catches urlparse errors first
+    # malformed uri
     monkeypatch.setattr(SSHClient, 'connect', ssh_connect_mock)
     monkeypatch.setattr(parse, 'urlparse', ssh_urlparse_mock)
-    with pytest.raises(err.TrestleError, match='Invalid URL format'):
+    with pytest.raises(err.TrestleError, match='malformed'):
         _ = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
 
 
@@ -343,15 +343,6 @@ def test_fetcher_factory(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
     monkeypatch.setenv('mypassword', 'somep4ss')
     fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, https_uri)
     assert isinstance(fetcher, cache.HTTPSFetcher)
-
-    # Mock DNS resolution for SFTP tests to avoid "Unable to resolve hostname" errors
-    import socket
-
-    def mock_getaddrinfo(host, port, *args, **kwargs):
-        # Return a fake IP address for any hostname
-        return [(socket.AF_INET, socket.SOCK_STREAM, 6, '', ('192.0.2.1', 22))]
-
-    monkeypatch.setattr(socket, 'getaddrinfo', mock_getaddrinfo)
 
     sftp_uri = 'sftp://user@hostname:/path/to/file.json'
     fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, sftp_uri)
