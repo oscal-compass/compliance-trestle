@@ -41,7 +41,11 @@ from trestle.common import const, file_utils
 from trestle.common.err import TrestleError
 from trestle.core import parser
 from trestle.core.base_model import OscalBaseModel
-from trestle.core.remote.security import PathSecurityValidator
+<<<<<<< HEAD
+from trestle.core.remote.security import PathSecurityValidator, URLSecurityValidator
+=======
+from trestle.core.remote.security import PathSecurityValidator, URLSecurityValidator, get_block_private_ips_config
+>>>>>>> branch 'develop' of https://github.com/oscal-compass/compliance-trestle-ghsa-w76h-q7c6-jpjp.git
 
 logger = logging.getLogger(__name__)
 
@@ -236,6 +240,14 @@ class HTTPSFetcher(FetcherBase):
         """Initialize HTTPS fetcher."""
         logger.debug('Initializing HTTPSFetcher')
         super().__init__(trestle_root, uri)
+
+        # Security validation: Check URL for SSRF vulnerabilities
+        # Always blocks: loopback, link-local, cloud metadata endpoints
+        # Optionally blocks: RFC 1918 private ranges (based on TRESTLE_BLOCK_PRIVATE_IPS env var)
+        block_private = get_block_private_ips_config()
+        self._url_validator = URLSecurityValidator(block_private_ips=block_private)
+        self._url_validator.validate_url(uri)
+
         self._username = None
         self._password = None
         u = parse.urlparse(self._uri)
@@ -296,10 +308,25 @@ class HTTPSFetcher(FetcherBase):
         https_cached_dir.mkdir(parents=True, exist_ok=True)
         self._cached_object_path = https_cached_dir / pathlib.Path(pathlib.Path(u.path).name)
 
+<<<<<<< HEAD
+        # Construct the final cache path
+        filename = pathlib.Path(u.path).name if u.path else 'index.json'
+        self._cached_object_path = https_cached_dir / filename
+
+        # Validate that the constructed cache path stays within the cache directory
+        PathSecurityValidator.validate_cache_path(self._cached_object_path, self._trestle_cache_path)
+
+        # Validate that the resolved cache path stays within the cache directory (defense in depth)
+=======
+>>>>>>> branch 'develop' of https://github.com/oscal-compass/compliance-trestle-ghsa-w76h-q7c6-jpjp.git
         # Validate that the resolved cache path stays within the cache directory (defense in depth)
         PathSecurityValidator.validate_cache_path(self._cached_object_path, self._trestle_cache_path)
 
     def _do_fetch(self) -> None:
+        # Re-validate URL before fetch to prevent DNS rebinding attacks
+        # This closes the TOCTOU window between init and actual request
+        self._url_validator.validate_url(self._url)
+
         auth = None
         verify = None
         # This order reflects requests library behavior: REQUESTS_CA_BUNDLE comes first.
@@ -343,6 +370,14 @@ class SFTPFetcher(FetcherBase):
         """
         logger.debug(f'initialize SFTPFetcher for uri {uri}')
         super().__init__(trestle_root, uri)
+
+        # Security validation: Check URL for SSRF vulnerabilities
+        # Always blocks: loopback, link-local, cloud metadata endpoints
+        # Optionally blocks: RFC 1918 private ranges (based on TRESTLE_BLOCK_PRIVATE_IPS env var)
+        block_private = get_block_private_ips_config()
+        self._url_validator = URLSecurityValidator(block_private_ips=block_private)
+        self._url_validator.validate_url(uri)
+
         # Is this a valid URI, however? Username and password are optional, of course.
         try:
             u = parse.urlparse(self._uri)
@@ -375,6 +410,17 @@ class SFTPFetcher(FetcherBase):
         sftp_cached_dir.mkdir(parents=True, exist_ok=True)
         self._cached_object_path = sftp_cached_dir / pathlib.Path(pathlib.Path(u.path).name)
 
+<<<<<<< HEAD
+        # Construct the final cache path
+        filename = pathlib.Path(u.path).name if u.path else 'index.json'
+        self._cached_object_path = sftp_cached_dir / filename
+
+        # Validate that the constructed cache path stays within the cache directory
+        PathSecurityValidator.validate_cache_path(self._cached_object_path, self._trestle_cache_path)
+
+        # Validate that the resolved cache path stays within the cache directory (defense in depth)
+=======
+>>>>>>> branch 'develop' of https://github.com/oscal-compass/compliance-trestle-ghsa-w76h-q7c6-jpjp.git
         # Validate that the resolved cache path stays within the cache directory (defense in depth)
         PathSecurityValidator.validate_cache_path(self._cached_object_path, self._trestle_cache_path)
 
@@ -384,6 +430,10 @@ class SFTPFetcher(FetcherBase):
         Authentication relies on the user's private key being either active via ssh-agent or
         supplied via environment variable SSH_KEY. In the latter case, it must not require a passphrase prompt.
         """
+        # Re-validate URL before fetch to prevent DNS rebinding attacks
+        # This closes the TOCTOU window between init and actual request
+        self._url_validator.validate_url(self._uri)
+
         u = parse.urlparse(self._uri)
         client = paramiko.SSHClient()
         # Must pick up host keys from the default known_hosts on this environment:
@@ -400,9 +450,11 @@ class SFTPFetcher(FetcherBase):
             look_for_keys = True
 
         username = getpass.getuser() if not u.username else u.username
+        # u.hostname is guaranteed to be non-None due to earlier validation
+        hostname = u.hostname if u.hostname else 'localhost'
         try:
             client.connect(
-                u.hostname,
+                hostname,
                 username=username,
                 password=u.password,
                 pkey=pkey,
@@ -410,7 +462,7 @@ class SFTPFetcher(FetcherBase):
                 port=22 if not u.port else u.port,
             )
         except Exception as e:
-            raise TrestleError(f'Cache update failure to connect via SSH: {u.hostname}: {e}.')
+            raise TrestleError(f'Cache update failure to connect via SSH: {hostname}: {e}.')
 
         try:
             sftp_client = client.open_sftp()
