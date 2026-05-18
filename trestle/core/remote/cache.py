@@ -166,16 +166,29 @@ class LocalFetcher(FetcherBase):
         """
         super().__init__(trestle_root, uri)
 
+        original_uri = uri
+        is_file_uri = uri.startswith(const.FILE_URI)
+
         # Handle as file:/// form
-        if uri.startswith(const.FILE_URI):
+        if is_file_uri:
             # strip off entire header including /
             uri = uri[len(const.FILE_URI) :]
 
             # if it has a drive letter don't add / to front
             uri = uri if re.match(const.WINDOWS_DRIVE_LETTER_REGEX, uri) else '/' + uri
         elif uri.startswith(const.TRESTLE_HREF_HEADING):
-            uri = str(trestle_root / uri[len(const.TRESTLE_HREF_HEADING) :])
+            # Extract the path after 'trestle://'
+            trestle_path = uri[len(const.TRESTLE_HREF_HEADING) :]
+
+            # Layer 1: Validate the trestle:// URI path for traversal sequences
+            PathSecurityValidator.validate_trestle_uri_path(trestle_path)
+
+            uri = str(trestle_root / trestle_path)
             self._abs_path = pathlib.Path(uri).resolve()
+
+            # Layer 2: Validate resolved path stays within trestle workspace
+            PathSecurityValidator.validate_local_path(self._abs_path, self._trestle_root)
+
             self._cached_object_path = self._abs_path
             return
 
@@ -195,6 +208,13 @@ class LocalFetcher(FetcherBase):
             self._abs_path = pathlib.Path(uri).resolve()
         except Exception:
             raise TrestleError(f'The uri provided is invalid or unresolvable as a file path: {uri}')
+
+        # Security validation for file:// URIs and relative paths
+        # LocalFetcher is designed to access files outside workspace (e.g., test data, external catalogs)
+        # Security is provided by blocking sensitive system files, not workspace boundaries
+        # This prevents arbitrary file read vulnerabilities (PT-002) while allowing legitimate use
+        logger.info(f'Validating local file access: {original_uri}')
+        PathSecurityValidator.validate_local_file_path(self._trestle_root, self._abs_path, allow_outside_workspace=True)
 
         # set the cached path to be the actual file path
         self._cached_object_path = self._abs_path
