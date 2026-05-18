@@ -108,6 +108,24 @@ class URLSecurityValidator:
         Raises:
             TrestleError: If the URL is deemed unsafe
         """
+        parsed = self._parse_and_validate_url(url)
+        # hostname is guaranteed to be non-None by _parse_and_validate_url
+        hostname = parsed.hostname.lower()  # type: ignore
+
+        self._check_metadata_endpoints(hostname)
+        self._check_domain_allowlist(hostname)
+
+        ip_addresses = self._resolve_hostname(hostname)
+
+        for ip_str in ip_addresses:
+            ip_addr = self._parse_ip_address(ip_str, hostname)
+            self._check_blocked_networks(ip_addr, hostname)
+            self._check_private_networks(ip_addr, hostname)
+
+        self._check_suspicious_ports(parsed, url)
+
+    def _parse_and_validate_url(self, url: str) -> parse.ParseResult:
+        """Parse and validate basic URL structure."""
         try:
             parsed = parse.urlparse(url)
         except Exception as e:
@@ -116,20 +134,21 @@ class URLSecurityValidator:
         if not parsed.scheme or not parsed.hostname:
             raise TrestleError(f'URL must include scheme and hostname: {url}')
 
-        # Only allow https and sftp scheme for remote URLs
         if parsed.scheme not in ['https', 'sftp']:
             raise TrestleError(f'Only HTTPS or SFTP schemes are allowed for remote URLs, got: {parsed.scheme}')
 
-        hostname = parsed.hostname.lower()
+        return parsed
 
-        # Block cloud metadata endpoints
+    def _check_metadata_endpoints(self, hostname: str) -> None:
+        """Check if hostname is a blocked metadata endpoint."""
         if hostname in METADATA_HOSTNAMES:
             raise TrestleError(
                 f'Access to cloud metadata endpoints is not allowed: {hostname}. '
                 'This is a security restriction to prevent SSRF attacks.'
             )
 
-        # Check domain allowlist if configured
+    def _check_domain_allowlist(self, hostname: str) -> None:
+        """Check if hostname is in the allowed domains list."""
         if self.allowed_domains is not None:
             if hostname not in self.allowed_domains:
                 raise TrestleError(
@@ -137,9 +156,9 @@ class URLSecurityValidator:
                     f'Allowed domains: {", ".join(sorted(self.allowed_domains))}'
                 )
 
-        # Resolve hostname to IP and check if it's private
+    def _resolve_hostname(self, hostname: str) -> list:
+        """Resolve hostname to IP addresses."""
         try:
-            # Get all IP addresses for the hostname
             addr_info = socket.getaddrinfo(hostname, None)
             ip_addresses = [str(info[4][0]) for info in addr_info]
         except socket.gaierror as e:
@@ -148,48 +167,57 @@ class URLSecurityValidator:
         if not ip_addresses:
             raise TrestleError(f'No IP addresses resolved for hostname {hostname}')
 
-        # Check each resolved IP address
-        for ip_str in ip_addresses:
-            try:
-                ip_addr = ipaddress.ip_address(ip_str)
-            except ValueError as e:
-                raise TrestleError(f'Invalid IP address {ip_str} for hostname {hostname}: {e}') from e
+        return ip_addresses
 
-            # TIER 1: Always block loopback, link-local, and metadata endpoints
-            # These have zero legitimate use for OSCAL fetching
-            for network in ALWAYS_BLOCKED_NETWORKS:
-                if ip_addr in network:
-                    raise TrestleError(
-                        f'Access to {network} addresses is blocked: {hostname} resolves to {ip_addr}. '
-                        f'This range includes loopback, link-local, and cloud metadata endpoints. '
-                        f'This is a security restriction to prevent SSRF attacks.'
-                    )
+    def _parse_ip_address(self, ip_str: str, hostname: str) -> ipaddress.IPv4Address | ipaddress.IPv6Address:
+        """Parse IP address string."""
+        try:
+            return ipaddress.ip_address(ip_str)
+        except ValueError as e:
+            raise TrestleError(f'Invalid IP address {ip_str} for hostname {hostname}: {e}') from e
 
-            # TIER 2: Optionally block RFC 1918 private ranges
-            # These are allowed by default to support private GitLab/internal OSCAL repositories
-            if self.block_private_ips:
-                for network in PRIVATE_IP_NETWORKS:
-                    if ip_addr in network:
-                        raise TrestleError(
-                            f'Access to private IP addresses is blocked: {hostname} resolves to {ip_addr} '
-                            f'which is in private network {network}. '
-                            f'This is blocked because TRESTLE_BLOCK_PRIVATE_IPS is enabled. '
-                            f'To allow access to private networks, unset this environment variable.'
-                        )
-            else:
-                # Log a warning when accessing private IPs (when allowed)
-                for network in PRIVATE_IP_NETWORKS:
-                    if ip_addr in network:
-                        logger.warning(
-                            f'Accessing private IP address: {hostname} resolves to {ip_addr} in network {network}. '
-                            f'This is allowed by default to support private GitLab/internal OSCAL repositories. '
-                            f'To block private IPs, set TRESTLE_BLOCK_PRIVATE_IPS=true.'
-                        )
-                        break  # Only log once per IP
+    def _check_blocked_networks(self, ip_addr: ipaddress.IPv4Address | ipaddress.IPv6Address, hostname: str) -> None:
+        """Check if IP is in always-blocked networks (Tier 1)."""
+        for network in ALWAYS_BLOCKED_NETWORKS:
+            if ip_addr in network:
+                raise TrestleError(
+                    f'Access to {network} addresses is blocked: {hostname} resolves to {ip_addr}. '
+                    f'This range includes loopback, link-local, and cloud metadata endpoints. '
+                    f'This is a security restriction to prevent SSRF attacks.'
+                )
 
-        # Check for suspicious ports
+    def _check_private_networks(self, ip_addr: ipaddress.IPv4Address | ipaddress.IPv6Address, hostname: str) -> None:
+        """Check if IP is in private networks (Tier 2)."""
+        if self.block_private_ips:
+            self._block_private_ip(ip_addr, hostname)
+        else:
+            self._warn_private_ip(ip_addr, hostname)
+
+    def _block_private_ip(self, ip_addr: ipaddress.IPv4Address | ipaddress.IPv6Address, hostname: str) -> None:
+        """Block access to private IP addresses when configured."""
+        for network in PRIVATE_IP_NETWORKS:
+            if ip_addr in network:
+                raise TrestleError(
+                    f'Access to private IP addresses is blocked: {hostname} resolves to {ip_addr} '
+                    f'which is in private network {network}. '
+                    f'This is blocked because TRESTLE_BLOCK_PRIVATE_IPS is enabled. '
+                    f'To allow access to private networks, unset this environment variable.'
+                )
+
+    def _warn_private_ip(self, ip_addr: ipaddress.IPv4Address | ipaddress.IPv6Address, hostname: str) -> None:
+        """Log warning when accessing private IP addresses."""
+        for network in PRIVATE_IP_NETWORKS:
+            if ip_addr in network:
+                logger.warning(
+                    f'Accessing private IP address: {hostname} resolves to {ip_addr} in network {network}. '
+                    f'This is allowed by default to support private GitLab/internal OSCAL repositories. '
+                    f'To block private IPs, set TRESTLE_BLOCK_PRIVATE_IPS=true.'
+                )
+                break  # Only log once per IP
+
+    def _check_suspicious_ports(self, parsed: parse.ParseResult, url: str) -> None:
+        """Check for non-standard ports."""
         if parsed.port is not None:
-            # Only allow standard HTTPS/SFTP ports or explicitly configured ports
             if (
                 parsed.scheme == 'https'
                 and parsed.port not in [443]
