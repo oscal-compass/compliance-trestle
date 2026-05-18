@@ -17,7 +17,6 @@
 
 import pathlib
 <<<<<<< HEAD
-<<<<<<< HEAD
 import sys
 
 import pytest
@@ -510,9 +509,6 @@ class TestRealWorldAttackVectors:
 def test_get_block_private_ips_config_default(monkeypatch):
 =======
 import socket
-=======
-import sys
->>>>>>> branch 'develop' of https://github.com/oscal-compass/compliance-trestle.git
 
 import pytest
 
@@ -704,7 +700,6 @@ class TestLocalFilePathValidation:
         # Should not raise
         PathSecurityValidator.validate_local_file_path(workspace, outside_file, allow_outside_workspace=True)
 
-    @pytest.mark.skipif(sys.platform == 'win32', reason='Unix-specific sensitive paths')
     def test_validate_local_file_path_blocks_etc_passwd(self, tmp_path: pathlib.Path) -> None:
         """Test that /etc/passwd is blocked even with allow_outside_workspace=True."""
         workspace = tmp_path / 'workspace'
@@ -715,7 +710,6 @@ class TestLocalFilePathValidation:
         with pytest.raises(TrestleError, match='Attempt to access potentially sensitive system file'):
             PathSecurityValidator.validate_local_file_path(workspace, passwd_path, allow_outside_workspace=True)
 
-    @pytest.mark.skipif(sys.platform == 'win32', reason='Unix-specific sensitive paths')
     def test_validate_local_file_path_blocks_etc_shadow(self, tmp_path: pathlib.Path) -> None:
         """Test that /etc/shadow is blocked."""
         workspace = tmp_path / 'workspace'
@@ -726,7 +720,6 @@ class TestLocalFilePathValidation:
         with pytest.raises(TrestleError, match='Attempt to access potentially sensitive system file'):
             PathSecurityValidator.validate_local_file_path(workspace, shadow_path, allow_outside_workspace=True)
 
-    @pytest.mark.skipif(sys.platform == 'win32', reason='Unix-specific sensitive paths')
     def test_validate_local_file_path_blocks_etc_group(self, tmp_path: pathlib.Path) -> None:
         """Test that /etc/group is blocked."""
         workspace = tmp_path / 'workspace'
@@ -737,7 +730,6 @@ class TestLocalFilePathValidation:
         with pytest.raises(TrestleError, match='Attempt to access potentially sensitive system file'):
             PathSecurityValidator.validate_local_file_path(workspace, group_path, allow_outside_workspace=True)
 
-    @pytest.mark.skipif(sys.platform == 'win32', reason='Unix-specific sensitive paths')
     def test_validate_local_file_path_blocks_etc_sudoers(self, tmp_path: pathlib.Path) -> None:
         """Test that /etc/sudoers is blocked."""
         workspace = tmp_path / 'workspace'
@@ -748,7 +740,6 @@ class TestLocalFilePathValidation:
         with pytest.raises(TrestleError, match='Attempt to access potentially sensitive system file'):
             PathSecurityValidator.validate_local_file_path(workspace, sudoers_path, allow_outside_workspace=True)
 
-    @pytest.mark.skipif(sys.platform == 'win32', reason='Unix-specific sensitive paths')
     def test_validate_local_file_path_blocks_ssh_directory(self, tmp_path: pathlib.Path) -> None:
         """Test that .ssh directory is blocked."""
         workspace = tmp_path / 'workspace'
@@ -759,7 +750,6 @@ class TestLocalFilePathValidation:
         with pytest.raises(TrestleError, match='Attempt to access potentially sensitive system file'):
             PathSecurityValidator.validate_local_file_path(workspace, ssh_path, allow_outside_workspace=True)
 
-    @pytest.mark.skipif(sys.platform == 'win32', reason='Unix-specific sensitive paths')
     def test_validate_local_file_path_blocks_aws_credentials(self, tmp_path: pathlib.Path) -> None:
         """Test that .aws credentials are blocked."""
         workspace = tmp_path / 'workspace'
@@ -770,7 +760,6 @@ class TestLocalFilePathValidation:
         with pytest.raises(TrestleError, match='Attempt to access potentially sensitive system file'):
             PathSecurityValidator.validate_local_file_path(workspace, aws_path, allow_outside_workspace=True)
 
-    @pytest.mark.skipif(sys.platform == 'win32', reason='Unix-specific sensitive paths')
     def test_validate_local_file_path_blocks_docker_config(self, tmp_path: pathlib.Path) -> None:
         """Test that .docker config is blocked."""
         workspace = tmp_path / 'workspace'
@@ -781,7 +770,6 @@ class TestLocalFilePathValidation:
         with pytest.raises(TrestleError, match='Attempt to access potentially sensitive system file'):
             PathSecurityValidator.validate_local_file_path(workspace, docker_path, allow_outside_workspace=True)
 
-    @pytest.mark.skipif(sys.platform == 'win32', reason='Unix-specific sensitive paths')
     def test_validate_local_file_path_blocks_kube_config(self, tmp_path: pathlib.Path) -> None:
         """Test that .kube config is blocked."""
         workspace = tmp_path / 'workspace'
@@ -792,7 +780,6 @@ class TestLocalFilePathValidation:
         with pytest.raises(TrestleError, match='Attempt to access potentially sensitive system file'):
             PathSecurityValidator.validate_local_file_path(workspace, kube_path, allow_outside_workspace=True)
 
-    @pytest.mark.skipif(sys.platform == 'win32', reason='Unix-specific sensitive paths')
     def test_validate_local_file_path_blocks_proc_environ(self, tmp_path: pathlib.Path) -> None:
         """Test that /proc/self/environ is blocked."""
         workspace = tmp_path / 'workspace'
@@ -823,7 +810,6 @@ class TestLocalFilePathValidation:
         with pytest.raises(TrestleError, match='Attempt to access potentially sensitive system file'):
             PathSecurityValidator.validate_local_file_path(workspace, cred_path, allow_outside_workspace=True)
 
-    @pytest.mark.skipif(sys.platform == 'win32', reason='Unix-specific sensitive paths')
     def test_validate_local_file_path_blocks_var_log(self, tmp_path: pathlib.Path) -> None:
         """Test that /var/log is blocked."""
         workspace = tmp_path / 'workspace'
@@ -834,7 +820,6 @@ class TestLocalFilePathValidation:
         with pytest.raises(TrestleError, match='Attempt to access potentially sensitive system file'):
             PathSecurityValidator.validate_local_file_path(workspace, log_path, allow_outside_workspace=True)
 
-    @pytest.mark.skipif(sys.platform == 'win32', reason='Unix-specific sensitive paths')
     def test_validate_local_file_path_blocks_mysql_data(self, tmp_path: pathlib.Path) -> None:
         """Test that MySQL data directory is blocked."""
         workspace = tmp_path / 'workspace'
@@ -845,7 +830,6 @@ class TestLocalFilePathValidation:
         with pytest.raises(TrestleError, match='Attempt to access potentially sensitive system file'):
             PathSecurityValidator.validate_local_file_path(workspace, mysql_path, allow_outside_workspace=True)
 
-    @pytest.mark.skipif(sys.platform == 'win32', reason='Unix-specific sensitive paths')
     def test_validate_local_file_path_case_insensitive(self, tmp_path: pathlib.Path) -> None:
         """Test that sensitive path checking is case-insensitive."""
         workspace = tmp_path / 'workspace'
@@ -857,7 +841,6 @@ class TestLocalFilePathValidation:
         with pytest.raises(TrestleError, match='Attempt to access potentially sensitive system file'):
             PathSecurityValidator.validate_local_file_path(workspace, passwd_upper, allow_outside_workspace=True)
 
-    @pytest.mark.skipif(sys.platform == 'win32', reason='Unix-specific sensitive paths')
     def test_validate_local_file_path_checks_original_and_resolved(self, tmp_path: pathlib.Path) -> None:
         """Test that both original and resolved paths are checked for sensitive patterns."""
         workspace = tmp_path / 'workspace'

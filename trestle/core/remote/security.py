@@ -403,14 +403,10 @@ class PathSecurityValidator:
             # macOS specific
             '/Library/Keychains',
 <<<<<<< HEAD
-<<<<<<< HEAD
             '/Library/',  # Broad but catches user home directories
 =======
             '/Users/',  # Broad but catches user home directories
 >>>>>>> branch 'develop' of https://github.com/oscal-compass/compliance-trestle-ghsa-w76h-q7c6-jpjp.git
-=======
-            '/Library/',  # Broad but catches user home directories
->>>>>>> branch 'develop' of https://github.com/oscal-compass/compliance-trestle.git
             # Windows system directories
             'C:\\Windows\\System32',
             'C:\\Windows\\SysWOW64',
