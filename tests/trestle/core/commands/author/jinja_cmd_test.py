@@ -17,10 +17,13 @@ import os
 import pathlib
 import shutil
 
+import pytest
+
 from _pytest.monkeypatch import MonkeyPatch
 
 from tests.test_utils import execute_command_and_assert, setup_for_ssp
 
+from trestle.common.err import TrestleError
 from trestle.core.commands.author.jinja import _number_captions
 from trestle.core.commands.author.ssp import SSPGenerate
 from trestle.core.markdown.docs_markdown_node import DocsMarkdownNode
@@ -295,3 +298,63 @@ def test_jinja_with_template_only(
         node1 = tree.get_node_for_key('# A')
         node2 = tree.get_node_for_key('# C')
         assert node1.subnodes[0].key == node2.subnodes[0].key
+
+
+def test_jinja_path_traversal_protection(
+    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """Test that path traversal attacks are blocked in jinja command."""
+    from trestle.core.remote.security import PathSecurityValidator
+
+    # Test path validation directly to ensure 100% coverage of the validation code
+    # Test 1: Path traversal with ../ should fail
+    with pytest.raises(TrestleError) as exc_info:
+        output_file = tmp_trestle_dir / '../../../etc/passwd'
+        PathSecurityValidator.validate_local_path(output_file, tmp_trestle_dir)
+    assert 'Security violation' in str(exc_info.value)
+    assert 'Path traversal blocked' in str(exc_info.value)
+
+    # Test 2: Path traversal with multiple ../ should fail
+    with pytest.raises(TrestleError) as exc_info:
+        output_file = tmp_trestle_dir / 'subdir/../../poc.txt'
+        PathSecurityValidator.validate_local_path(output_file, tmp_trestle_dir)
+    assert 'Security violation' in str(exc_info.value)
+
+    # Test 3: Absolute path should fail
+    with pytest.raises(TrestleError) as exc_info:
+        output_file = pathlib.Path('/tmp/attack.md')
+        PathSecurityValidator.validate_local_path(output_file, tmp_trestle_dir)
+    assert 'Security violation' in str(exc_info.value)
+
+    # Test 4: Complex traversal should fail
+    with pytest.raises(TrestleError) as exc_info:
+        output_file = tmp_trestle_dir / 'a/b/c/../../../../etc/passwd'
+        PathSecurityValidator.validate_local_path(output_file, tmp_trestle_dir)
+    assert 'Security violation' in str(exc_info.value)
+
+    # Test 5: Valid relative path should succeed
+    output_file = tmp_trestle_dir / 'output/valid.md'
+    PathSecurityValidator.validate_local_path(output_file, tmp_trestle_dir)  # Should not raise
+
+
+def test_jinja_docs_profile_path_traversal_protection(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test that path traversal attacks are blocked in jinja docs-profile mode."""
+    from trestle.core.remote.security import PathSecurityValidator
+
+    # Test validation for multi-file output paths
+    # Test 1: Path traversal in output directory should fail
+    with pytest.raises(TrestleError) as exc_info:
+        output_file = tmp_trestle_dir / '../../../etc/ac-1.md'
+        PathSecurityValidator.validate_local_path(output_file, tmp_trestle_dir)
+    assert 'Security violation' in str(exc_info.value)
+    assert 'Path traversal blocked' in str(exc_info.value)
+
+    # Test 2: Complex path traversal should fail
+    with pytest.raises(TrestleError) as exc_info:
+        output_file = tmp_trestle_dir / 'controls/../../tmp/ac-1.md'
+        PathSecurityValidator.validate_local_path(output_file, tmp_trestle_dir)
+    assert 'Security violation' in str(exc_info.value)
+
+    # Test 3: Valid relative path should succeed
+    output_file = tmp_trestle_dir / 'controls_output/ac/ac-1.md'
+    PathSecurityValidator.validate_local_path(output_file, tmp_trestle_dir)  # Should not raise

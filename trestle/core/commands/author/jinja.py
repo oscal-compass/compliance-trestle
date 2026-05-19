@@ -30,6 +30,7 @@ from ruamel.yaml import YAML
 from trestle.common import const, log
 from trestle.common.err import TrestleIncorrectArgsError, handle_generic_command_exception
 from trestle.common.load_validate import load_validate_model_name
+from trestle.core.remote.security import PathSecurityValidator
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.commands.command_docs import CommandPlusDocs
@@ -228,7 +229,10 @@ class JinjaCmd(CommandPlusDocs):
 
         output = JinjaCmd.render_template(template, lut, template_folder)
 
+        # Validate output path to prevent path traversal
         output_file = trestle_root / r_output_file
+        PathSecurityValidator.validate_local_path(output_file, trestle_root)
+
         if number_captions:
             output_file.open('w', encoding=const.FILE_ENCODING).write(_number_captions(output))
         else:
@@ -291,7 +295,11 @@ class JinjaCmd(CommandPlusDocs):
                 lut['group_title'] = group_title
                 output = JinjaCmd.render_template(template, lut, template_folder)
 
-                output_file = trestle_root / group_dir / pathlib.Path(control.id + const.MARKDOWN_FILE_EXT)
+                # Validate output path to prevent path traversal
+                relative_output_path = group_dir / pathlib.Path(control.id + const.MARKDOWN_FILE_EXT)
+                output_file = trestle_root / relative_output_path
+                PathSecurityValidator.validate_local_path(output_file, trestle_root)
+
                 output_file.open('w', encoding=const.FILE_ENCODING).write(output)
 
         return CmdReturnCodes.SUCCESS.value
