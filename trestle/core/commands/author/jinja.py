@@ -20,10 +20,9 @@ import logging
 import operator
 import pathlib
 import re
-import uuid
 from typing import Any, Dict, Optional
 
-from jinja2 import ChoiceLoader, DictLoader, Environment, FileSystemLoader, Template
+from jinja2 import Environment, FileSystemLoader, Template
 
 from ruamel.yaml import YAML
 
@@ -48,8 +47,6 @@ logger = logging.getLogger(__name__)
 
 class JinjaCmd(CommandPlusDocs):
     """Transform an input template to an output document using jinja templating."""
-
-    max_recursion_depth = 2
 
     name = 'jinja'
 
@@ -192,9 +189,7 @@ class JinjaCmd(CommandPlusDocs):
     ) -> int:
         """Run jinja over an input file with additional booleans."""
         template_folder = pathlib.Path.cwd()
-        jinja_env = Environment(
-            loader=FileSystemLoader(template_folder), extensions=extensions(), trim_blocks=True, autoescape=True
-        )
+        jinja_env = JinjaCmd._create_jinja_environment(template_folder)
         template = jinja_env.get_template(str(r_input_file))
         # create boolean dict
         if operator.xor(bool(ssp), bool(profile)):
@@ -286,9 +281,7 @@ class JinjaCmd(CommandPlusDocs):
 
                 control_writer = DocsControlWriter()
 
-                jinja_env = Environment(
-                    loader=FileSystemLoader(template_folder), extensions=extensions(), trim_blocks=True, autoescape=True
-                )
+                jinja_env = JinjaCmd._create_jinja_environment(template_folder)
                 template = jinja_env.get_template(str(r_input_file))
                 lut['catalog_interface'] = catalog_interface
                 lut['control_interface'] = ControlInterface()
@@ -308,27 +301,16 @@ class JinjaCmd(CommandPlusDocs):
         return CmdReturnCodes.SUCCESS.value
 
     @staticmethod
-    def render_template(template: Template, lut: Dict[str, Any], template_folder: pathlib.Path) -> str:
-        """Render template."""
-        new_output = template.render(**lut)
-        output = ''
-        # This recursion allows nesting within expressions (e.g. an expression can contain jinja templates).
-        error_countdown = JinjaCmd.max_recursion_depth
-        while new_output != output and error_countdown > 0:
-            error_countdown = error_countdown - 1
-            output = new_output
-            random_name = uuid.uuid4()  # Should be random and not used.
-            dict_loader = DictLoader({str(random_name): new_output})
-            jinja_env = Environment(
-                loader=ChoiceLoader([dict_loader, FileSystemLoader(template_folder)]),
-                extensions=extensions(),
-                autoescape=True,
-                trim_blocks=True,
-            )
-            template = jinja_env.get_template(str(random_name))
-            new_output = template.render(**lut)
+    def _create_jinja_environment(template_folder: pathlib.Path) -> Environment:
+        """Create the trusted Jinja environment used for loading template files."""
+        return Environment(
+            loader=FileSystemLoader(template_folder), extensions=extensions(), trim_blocks=True, autoescape=True
+        )
 
-        return output
+    @staticmethod
+    def render_template(template: Template, lut: Dict[str, Any], template_folder: pathlib.Path) -> str:
+        """Render a trusted template exactly once to avoid recursive SSTI of untrusted data."""
+        return template.render(**lut)
 
 
 def _number_captions(md_body: str) -> str:

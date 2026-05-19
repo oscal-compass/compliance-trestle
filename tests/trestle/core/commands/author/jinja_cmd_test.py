@@ -16,6 +16,7 @@
 import os
 import pathlib
 import shutil
+from types import SimpleNamespace
 
 import pytest
 
@@ -24,7 +25,7 @@ from _pytest.monkeypatch import MonkeyPatch
 from tests.test_utils import execute_command_and_assert, setup_for_ssp
 
 from trestle.common.err import TrestleError
-from trestle.core.commands.author.jinja import _number_captions
+from trestle.core.commands.author.jinja import JinjaCmd, _number_captions
 from trestle.core.commands.author.ssp import SSPGenerate
 from trestle.core.markdown.docs_markdown_node import DocsMarkdownNode
 
@@ -364,3 +365,43 @@ def test_jinja_docs_profile_path_traversal_protection(tmp_trestle_dir: pathlib.P
     # Test 4: Valid relative path should succeed
     output_file = tmp_trestle_dir / 'controls_output/ac/ac-1.md'
     PathSecurityValidator.validate_local_path(output_file, tmp_trestle_dir)  # Should not raise
+
+
+def test_render_template_does_not_recursively_evaluate_untrusted_data(tmp_path: pathlib.Path) -> None:
+    """Test that rendered attacker-controlled data is not re-evaluated as Jinja."""
+    template_path = tmp_path / 'template.j2'
+    template_path.write_text('Title: {{ ssp.metadata.title }}', encoding='utf-8')
+
+    jinja_env = JinjaCmd._create_jinja_environment(tmp_path)
+    template = jinja_env.get_template(template_path.name)
+
+    lut = {
+        'ssp': SimpleNamespace(
+            metadata=SimpleNamespace(title="{{ namespace.__init__.__globals__.os.system('touch poc.txt') }}")
+        )
+    }
+
+    output = JinjaCmd.render_template(template, lut, tmp_path)
+
+    assert output.startswith('Title: {{ namespace.__init__.__globals__.os.system(')
+    assert 'touch poc.txt' in output
+    assert '{{' in output
+    assert '}}' in output
+    assert '&' in output
+    assert not (tmp_path / 'poc.txt').exists()
+
+
+def test_render_template_supports_trusted_include(tmp_path: pathlib.Path) -> None:
+    """Test that trusted template includes continue to work."""
+    include_path = tmp_path / 'partial.j2'
+    include_path.write_text('World', encoding='utf-8')
+
+    template_path = tmp_path / 'template.j2'
+    template_path.write_text("Hello {% include 'partial.j2' %}", encoding='utf-8')
+
+    jinja_env = JinjaCmd._create_jinja_environment(tmp_path)
+    template = jinja_env.get_template(template_path.name)
+
+    output = JinjaCmd.render_template(template, {}, tmp_path)
+
+    assert output == 'Hello World'
