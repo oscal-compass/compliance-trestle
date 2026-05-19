@@ -278,8 +278,11 @@ class JinjaCmd(CommandPlusDocs):
                 control_path = catalog_interface.get_control_path(control.id)
                 for sub_dir in control_path:
                     group_dir = group_dir / sub_dir
-                    if not group_dir.exists():
-                        group_dir.mkdir(parents=True, exist_ok=True)
+                    # Validate directory path to prevent path traversal before creating directories
+                    full_group_dir = trestle_root / group_dir
+                    PathSecurityValidator.validate_local_path(full_group_dir, trestle_root)
+                    if not full_group_dir.exists():
+                        full_group_dir.mkdir(parents=True, exist_ok=True)
 
                 control_writer = DocsControlWriter()
 

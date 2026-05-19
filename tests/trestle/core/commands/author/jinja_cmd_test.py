@@ -355,6 +355,12 @@ def test_jinja_docs_profile_path_traversal_protection(tmp_trestle_dir: pathlib.P
         PathSecurityValidator.validate_local_path(output_file, tmp_trestle_dir)
     assert 'Security violation' in str(exc_info.value)
 
-    # Test 3: Valid relative path should succeed
+    # Test 3: Directory creation path traversal should fail
+    with pytest.raises(TrestleError) as exc_info:
+        group_dir = tmp_trestle_dir / '../../../etc/malicious'
+        PathSecurityValidator.validate_local_path(group_dir, tmp_trestle_dir)
+    assert 'Security violation' in str(exc_info.value)
+
+    # Test 4: Valid relative path should succeed
     output_file = tmp_trestle_dir / 'controls_output/ac/ac-1.md'
     PathSecurityValidator.validate_local_path(output_file, tmp_trestle_dir)  # Should not raise
