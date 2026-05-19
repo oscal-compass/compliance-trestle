@@ -16,6 +16,7 @@
 """Security tests for cache path traversal vulnerabilities."""
 
 import pathlib
+import socket
 import sys
 
 import pytest
@@ -24,7 +25,7 @@ import tests.test_utils as test_utils
 
 from trestle.common.err import TrestleError
 from trestle.core.remote.cache import HTTPSFetcher, SFTPFetcher
-from trestle.core.remote.security import PathSecurityValidator
+from trestle.core.remote.security import PathSecurityValidator, URLSecurityValidator
 
 
 class TestPathValidation:
@@ -503,6 +504,208 @@ class TestRealWorldAttackVectors:
 
         with pytest.raises(TrestleError, match='Security violation:.*[Pp]ath traversal blocked'):
             SFTPFetcher(tmp_path, evil_url)
+
+
+def test_https_fetcher_blocks_ssrf_aws_metadata(tmp_path: pathlib.Path) -> None:
+    """Test that HTTPSFetcher blocks AWS metadata endpoint."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    with pytest.raises(TrestleError, match='cloud metadata endpoints'):
+        HTTPSFetcher(tmp_path, 'https://169.254.169.254/latest/meta-data/')
+
+
+def test_https_fetcher_blocks_ssrf_gcp_metadata(tmp_path: pathlib.Path) -> None:
+    """Test that HTTPSFetcher blocks GCP metadata endpoint."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    with pytest.raises(TrestleError, match='cloud metadata endpoints'):
+        HTTPSFetcher(tmp_path, 'https://metadata.google.internal/computeMetadata/v1/')
+
+
+def test_https_fetcher_blocks_ssrf_localhost(tmp_path: pathlib.Path) -> None:
+    """Test that HTTPSFetcher always blocks localhost (loopback)."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    # Loopback is always blocked regardless of TRESTLE_BLOCK_PRIVATE_IPS
+    with pytest.raises(TrestleError, match='127.0.0.0/8'):
+        HTTPSFetcher(tmp_path, 'https://127.0.0.1:8080/')
+
+
+def test_https_fetcher_blocks_ssrf_ipv6_loopback(tmp_path: pathlib.Path) -> None:
+    """Test that HTTPSFetcher always blocks IPv6 loopback."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    # IPv6 loopback is always blocked regardless of TRESTLE_BLOCK_PRIVATE_IPS
+    with pytest.raises(TrestleError, match='::1/128'):
+        HTTPSFetcher(tmp_path, 'https://[::1]:8080/')
+
+
+def test_https_fetcher_blocks_link_local_169_254(tmp_path: pathlib.Path) -> None:
+    """Test that HTTPSFetcher always blocks link-local 169.254.x.x addresses."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    # Link-local is always blocked (includes metadata endpoints)
+    with pytest.raises(TrestleError, match='169.254.0.0/16'):
+        HTTPSFetcher(tmp_path, 'https://169.254.1.1/some/path')
+
+
+def test_https_fetcher_allows_private_network_10_by_default(tmp_path: pathlib.Path) -> None:
+    """Test that HTTPSFetcher allows 10.x.x.x private network IPs by default."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    # RFC 1918 ranges are allowed by default to support private GitLab/internal OSCAL repos
+    # This should not raise an error (though it will fail to connect in tests)
+    try:
+        fetcher = HTTPSFetcher(tmp_path, 'https://10.0.0.1:8500/v1/agent/self')
+        # If we get here, the security validation passed (connection will fail but that's expected)
+        assert fetcher is not None
+    except TrestleError as e:
+        # Should not be a security error about private IPs
+        assert '10.0.0.0/8' not in str(e) or 'TRESTLE_BLOCK_PRIVATE_IPS' in str(e)
+
+
+def test_https_fetcher_blocks_private_network_10_when_configured(tmp_path: pathlib.Path, monkeypatch) -> None:
+    """Test that HTTPSFetcher blocks 10.x.x.x when TRESTLE_BLOCK_PRIVATE_IPS is set."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    monkeypatch.setenv('TRESTLE_BLOCK_PRIVATE_IPS', 'true')
+    with pytest.raises(TrestleError, match='10.0.0.0/8'):
+        HTTPSFetcher(tmp_path, 'https://10.0.0.1:8500/v1/agent/self')
+
+
+def test_https_fetcher_allows_private_network_192_by_default(tmp_path: pathlib.Path) -> None:
+    """Test that HTTPSFetcher allows 192.168.x.x private network IPs by default."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    try:
+        fetcher = HTTPSFetcher(tmp_path, 'https://192.168.1.1/admin')
+        assert fetcher is not None
+    except TrestleError as e:
+        assert '192.168.0.0/16' not in str(e) or 'TRESTLE_BLOCK_PRIVATE_IPS' in str(e)
+
+
+def test_https_fetcher_blocks_private_network_192_when_configured(tmp_path: pathlib.Path, monkeypatch) -> None:
+    """Test that HTTPSFetcher blocks 192.168.x.x when TRESTLE_BLOCK_PRIVATE_IPS is set."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    monkeypatch.setenv('TRESTLE_BLOCK_PRIVATE_IPS', 'true')
+    with pytest.raises(TrestleError, match='192.168.0.0/16'):
+        HTTPSFetcher(tmp_path, 'https://192.168.1.1/admin')
+
+
+def test_https_fetcher_allows_private_network_172_by_default(tmp_path: pathlib.Path) -> None:
+    """Test that HTTPSFetcher allows 172.16-31.x.x private network IPs by default."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    try:
+        fetcher = HTTPSFetcher(tmp_path, 'https://172.16.0.1/admin')
+        assert fetcher is not None
+    except TrestleError as e:
+        assert '172.16.0.0/12' not in str(e) or 'TRESTLE_BLOCK_PRIVATE_IPS' in str(e)
+
+
+def test_https_fetcher_blocks_private_network_172_when_configured(tmp_path: pathlib.Path, monkeypatch) -> None:
+    """Test that HTTPSFetcher blocks 172.16-31.x.x when TRESTLE_BLOCK_PRIVATE_IPS is set."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    monkeypatch.setenv('TRESTLE_BLOCK_PRIVATE_IPS', 'true')
+    with pytest.raises(TrestleError, match='172.16.0.0/12'):
+        HTTPSFetcher(tmp_path, 'https://172.16.0.1/admin')
+
+
+def test_sftp_fetcher_blocks_ssrf_aws_metadata(tmp_path: pathlib.Path) -> None:
+    """Test that SFTPFetcher blocks AWS metadata endpoint."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    with pytest.raises(TrestleError, match='cloud metadata endpoints'):
+        SFTPFetcher(tmp_path, 'sftp://169.254.169.254/latest/meta-data/')
+
+
+def test_sftp_fetcher_blocks_ssrf_localhost(tmp_path: pathlib.Path) -> None:
+    """Test that SFTPFetcher always blocks localhost (loopback)."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    # Loopback is always blocked regardless of TRESTLE_BLOCK_PRIVATE_IPS
+    with pytest.raises(TrestleError, match='127.0.0.0/8'):
+        SFTPFetcher(tmp_path, 'sftp://127.0.0.1:22/data/file.json')
+
+
+def test_sftp_fetcher_blocks_link_local_169_254(tmp_path: pathlib.Path) -> None:
+    """Test that SFTPFetcher always blocks link-local 169.254.x.x addresses."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    # Link-local is always blocked (includes metadata endpoints)
+    with pytest.raises(TrestleError, match='169.254.0.0/16'):
+        SFTPFetcher(tmp_path, 'sftp://169.254.1.1:22/some/path')
+
+
+def test_https_fetcher_blocks_invalid_scheme_http(tmp_path: pathlib.Path) -> None:
+    """Test that HTTPSFetcher blocks HTTP scheme (only HTTPS allowed)."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    with pytest.raises(TrestleError, match='Only HTTPS or SFTP schemes are allowed for remote URLs'):
+        HTTPSFetcher(tmp_path, 'http://example.com/data.json')
+
+
+def test_https_fetcher_blocks_invalid_scheme_ftp(tmp_path: pathlib.Path) -> None:
+    """Test that HTTPSFetcher blocks FTP scheme."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    with pytest.raises(TrestleError, match='Only HTTPS or SFTP schemes are allowed for remote URLs'):
+        HTTPSFetcher(tmp_path, 'ftp://example.com/data.json')
+
+
+def test_sftp_fetcher_blocks_invalid_scheme_http(tmp_path: pathlib.Path) -> None:
+    """Test that SFTPFetcher blocks HTTP scheme (only SFTP allowed)."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    with pytest.raises(TrestleError, match='Only HTTPS or SFTP schemes are allowed for remote URLs'):
+        SFTPFetcher(tmp_path, 'http://example.com/data.json')
+
+
+def test_url_validator_blocks_invalid_scheme(tmp_path: pathlib.Path) -> None:
+    """Test that URLSecurityValidator blocks invalid schemes."""
+    from trestle.core.remote.security import URLSecurityValidator
+
+    validator = URLSecurityValidator()
+
+    with pytest.raises(TrestleError, match='Only HTTPS or SFTP schemes are allowed for remote URLs'):
+        validator.validate_url('http://example.com/data.json')
+
+    with pytest.raises(TrestleError, match='Only HTTPS or SFTP schemes are allowed for remote URLs'):
+        validator.validate_url('ftp://example.com/data.json')
+
+    with pytest.raises(TrestleError, match='Only HTTPS or SFTP schemes are allowed for remote URLs'):
+        validator.validate_url('gopher://example.com/data')
+
+
+def test_url_validator_handles_dns_resolution_failure(tmp_path: pathlib.Path, monkeypatch) -> None:
+    """Test that URLSecurityValidator handles DNS resolution failures gracefully."""
+    from trestle.core.remote.security import URLSecurityValidator
+
+    # Mock socket.getaddrinfo to return empty list (no IPs resolved)
+    def mock_getaddrinfo(hostname, port):
+        return []  # Empty list - no IPs resolved
+
+    monkeypatch.setattr(socket, 'getaddrinfo', mock_getaddrinfo)
+
+    validator = URLSecurityValidator()
+    with pytest.raises(TrestleError, match='No IP addresses resolved for hostname'):
+        validator.validate_url('https://nonexistent.example.com/data.json')
+
+
+def test_url_validator_with_allowed_domains() -> None:
+    """Test URL validation with domain allowlist."""
+    # Test with allowed domain - should pass
+    validator = URLSecurityValidator(allowed_domains={'example.com', 'test.com'})
+    # This will fail DNS resolution but that's OK - we're testing the domain check happens first
+    try:
+        validator.validate_url('https://example.com/path')
+    except TrestleError as e:
+        # Should fail on DNS resolution, not domain check
+        assert 'not in the allowed domains list' not in str(e)
+
+    # Test with disallowed domain - should fail on domain check
+    validator = URLSecurityValidator(allowed_domains={'example.com'})
+    with pytest.raises(TrestleError, match='not in the allowed domains list'):
+        validator.validate_url('https://other.com/path')
+
+
+def test_url_validator_invalid_ip_address(monkeypatch) -> None:
+    """Test handling of invalid IP address from getaddrinfo."""
+
+    def mock_getaddrinfo(hostname, port):
+        # Return a malformed IP that will trigger ValueError in ipaddress.ip_address()
+        return [(socket.AF_INET, socket.SOCK_STREAM, 6, '', ('not-an-ip', 0))]
+
+    monkeypatch.setattr(socket, 'getaddrinfo', mock_getaddrinfo)
+
+    validator = URLSecurityValidator()
+    with pytest.raises(TrestleError, match='Invalid IP address'):
+        validator.validate_url('https://example.com/path')
 
 
 # Made with Bob
