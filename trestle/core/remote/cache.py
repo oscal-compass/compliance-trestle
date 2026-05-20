@@ -41,6 +41,7 @@ from trestle.common import const, file_utils
 from trestle.common.err import TrestleError
 from trestle.core import parser
 from trestle.core.base_model import OscalBaseModel
+from trestle.core.remote.security import PathSecurityValidator, URLSecurityValidator, get_block_private_ips_config
 
 logger = logging.getLogger(__name__)
 
@@ -165,16 +166,29 @@ class LocalFetcher(FetcherBase):
         """
         super().__init__(trestle_root, uri)
 
+        original_uri = uri
+        is_file_uri = uri.startswith(const.FILE_URI)
+
         # Handle as file:/// form
-        if uri.startswith(const.FILE_URI):
+        if is_file_uri:
             # strip off entire header including /
             uri = uri[len(const.FILE_URI) :]
 
             # if it has a drive letter don't add / to front
             uri = uri if re.match(const.WINDOWS_DRIVE_LETTER_REGEX, uri) else '/' + uri
         elif uri.startswith(const.TRESTLE_HREF_HEADING):
-            uri = str(trestle_root / uri[len(const.TRESTLE_HREF_HEADING) :])
+            # Extract the path after 'trestle://'
+            trestle_path = uri[len(const.TRESTLE_HREF_HEADING) :]
+
+            # Layer 1: Validate the trestle:// URI path for traversal sequences
+            PathSecurityValidator.validate_trestle_uri_path(trestle_path)
+
+            uri = str(trestle_root / trestle_path)
             self._abs_path = pathlib.Path(uri).resolve()
+
+            # Layer 2: Validate resolved path stays within trestle workspace
+            PathSecurityValidator.validate_local_path(self._abs_path, self._trestle_root)
+
             self._cached_object_path = self._abs_path
             return
 
@@ -194,6 +208,13 @@ class LocalFetcher(FetcherBase):
             self._abs_path = pathlib.Path(uri).resolve()
         except Exception:
             raise TrestleError(f'The uri provided is invalid or unresolvable as a file path: {uri}')
+
+        # Security validation for file:// URIs and relative paths
+        # LocalFetcher is designed to access files outside workspace (e.g., test data, external catalogs)
+        # Security is provided by blocking sensitive system files, not workspace boundaries
+        # This prevents arbitrary file read vulnerabilities (PT-002) while allowing legitimate use
+        logger.info(f'Validating local file access: {original_uri}')
+        PathSecurityValidator.validate_local_file_path(self._trestle_root, self._abs_path, allow_outside_workspace=True)
 
         # set the cached path to be the actual file path
         self._cached_object_path = self._abs_path
@@ -215,6 +236,14 @@ class HTTPSFetcher(FetcherBase):
         """Initialize HTTPS fetcher."""
         logger.debug('Initializing HTTPSFetcher')
         super().__init__(trestle_root, uri)
+
+        # Security validation: Check URL for SSRF vulnerabilities
+        # Always blocks: loopback, link-local, cloud metadata endpoints
+        # Optionally blocks: RFC 1918 private ranges (based on TRESTLE_BLOCK_PRIVATE_IPS env var)
+        block_private = get_block_private_ips_config()
+        self._url_validator = URLSecurityValidator(block_private_ips=block_private)
+        self._url_validator.validate_url(uri)
+
         self._username = None
         self._password = None
         u = parse.urlparse(self._uri)
@@ -258,14 +287,31 @@ class HTTPSFetcher(FetcherBase):
             )
         if u.hostname is None:
             raise TrestleError(f'Cache request for {self._uri} requires hostname')
+
+        # Validate the URL path to prevent path traversal attacks
+        PathSecurityValidator.validate_url_path_for_cache(u.path)
+
         https_cached_dir = self._trestle_cache_path / u.hostname
-        # Skip any number of back- or forward slashes preceding the URI path (u.path)
-        path_parent = pathlib.Path(u.path[re.search('[^/\\\\]', u.path).span()[0] :]).parent
+
+        # Skip any number of back- or forward slashes preceding the URI path
+        match = re.search('[^/\\\\]', u.path)
+        if match:
+            path_parent = pathlib.Path(u.path[match.span()[0] :]).parent
+        else:
+            path_parent = pathlib.Path('.')
+
         https_cached_dir = https_cached_dir / path_parent
         https_cached_dir.mkdir(parents=True, exist_ok=True)
         self._cached_object_path = https_cached_dir / pathlib.Path(pathlib.Path(u.path).name)
 
+        # Validate that the resolved cache path stays within the cache directory (defense in depth)
+        PathSecurityValidator.validate_cache_path(self._cached_object_path, self._trestle_cache_path)
+
     def _do_fetch(self) -> None:
+        # Re-validate URL before fetch to prevent DNS rebinding attacks
+        # This closes the TOCTOU window between init and actual request
+        self._url_validator.validate_url(self._url)
+
         auth = None
         verify = None
         # This order reflects requests library behavior: REQUESTS_CA_BUNDLE comes first.
@@ -309,6 +355,14 @@ class SFTPFetcher(FetcherBase):
         """
         logger.debug(f'initialize SFTPFetcher for uri {uri}')
         super().__init__(trestle_root, uri)
+
+        # Security validation: Check URL for SSRF vulnerabilities
+        # Always blocks: loopback, link-local, cloud metadata endpoints
+        # Optionally blocks: RFC 1918 private ranges (based on TRESTLE_BLOCK_PRIVATE_IPS env var)
+        block_private = get_block_private_ips_config()
+        self._url_validator = URLSecurityValidator(block_private_ips=block_private)
+        self._url_validator.validate_url(uri)
+
         # Is this a valid URI, however? Username and password are optional, of course.
         try:
             u = parse.urlparse(self._uri)
@@ -325,12 +379,24 @@ class SFTPFetcher(FetcherBase):
             logger.warning(f'Malformed URI, cannot parse path in URL {self._uri}')
             raise TrestleError(f'Cache request for invalid input URI: missing file path {self._uri}')
 
+        # Validate the URL path to prevent path traversal attacks
+        PathSecurityValidator.validate_url_path_for_cache(u.path)
+
         sftp_cached_dir = self._trestle_cache_path / u.hostname
-        # Skip any number of back- or forward slashes preceding the URL path (u.path)
-        path_parent = pathlib.Path(u.path[re.search('[^/\\\\]', u.path).span()[0] :]).parent
+
+        # Skip any number of back- or forward slashes preceding the URL path
+        match = re.search('[^/\\\\]', u.path)
+        if match:
+            path_parent = pathlib.Path(u.path[match.span()[0] :]).parent
+        else:
+            path_parent = pathlib.Path('.')
+
         sftp_cached_dir = sftp_cached_dir / path_parent
         sftp_cached_dir.mkdir(parents=True, exist_ok=True)
         self._cached_object_path = sftp_cached_dir / pathlib.Path(pathlib.Path(u.path).name)
+
+        # Validate that the resolved cache path stays within the cache directory (defense in depth)
+        PathSecurityValidator.validate_cache_path(self._cached_object_path, self._trestle_cache_path)
 
     def _do_fetch(self) -> None:
         """Fetch remote object and update the cache if appropriate and possible to do so.
@@ -338,6 +404,10 @@ class SFTPFetcher(FetcherBase):
         Authentication relies on the user's private key being either active via ssh-agent or
         supplied via environment variable SSH_KEY. In the latter case, it must not require a passphrase prompt.
         """
+        # Re-validate URL before fetch to prevent DNS rebinding attacks
+        # This closes the TOCTOU window between init and actual request
+        self._url_validator.validate_url(self._uri)
+
         u = parse.urlparse(self._uri)
         client = paramiko.SSHClient()
         # Must pick up host keys from the default known_hosts on this environment:
@@ -354,9 +424,11 @@ class SFTPFetcher(FetcherBase):
             look_for_keys = True
 
         username = getpass.getuser() if not u.username else u.username
+        # u.hostname is guaranteed to be non-None due to earlier validation
+        hostname = u.hostname if u.hostname else 'localhost'
         try:
             client.connect(
-                u.hostname,
+                hostname,
                 username=username,
                 password=u.password,
                 pkey=pkey,
