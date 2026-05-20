@@ -21,7 +21,7 @@ from uuid import uuid4
 
 import pytest
 
-from pydantic.v1 import ValidationError
+from pydantic import ValidationError
 
 import tests.test_utils as test_utils
 
@@ -49,7 +49,7 @@ def simple_catalog() -> oscatalog.Catalog:
     m = common.Metadata(
         **{
             'title': 'My simple catalog',
-            'last-modified': datetime.now(),
+            'last-modified': datetime.now().astimezone(),
             'version': '0.0.0',
             'oscal-version': trestle.oscal.OSCAL_VERSION,
         }
@@ -196,18 +196,17 @@ def test_broken_tz() -> None:
 
     taz = BrokenTimezone()
 
-    m = common.Metadata(
-        **{
-            'title': 'My simple catalog',
-            'last-modified': datetime.now(tz=taz),
-            'version': '0.0.0',
-            'oscal-version': trestle.oscal.OSCAL_VERSION,
-        }
-    )
-    catalog = oscatalog.Catalog(metadata=m, uuid=str(uuid4()))
+    # In Pydantic v2, timezone-aware validation happens at model creation
+    # A datetime with a timezone that returns None for utcoffset is considered timezone-naive
     with pytest.raises(Exception):
-        jsoned_catalog = catalog.json(exclude_none=True, by_alias=True, indent=2)
-        type(jsoned_catalog)
+        common.Metadata(
+            **{
+                'title': 'My simple catalog',
+                'last-modified': datetime.now(tz=taz),
+                'version': '0.0.0',
+                'oscal-version': trestle.oscal.OSCAL_VERSION,
+            }
+        )
 
 
 def test_stripped_model() -> None:

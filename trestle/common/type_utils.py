@@ -15,9 +15,11 @@
 """Utilities for dealing with models."""
 
 import logging
-from typing import Any, Dict, List, Optional, Tuple, Type, Union
+from typing import Any, Dict, List, Optional, Tuple, Type, Union, get_args, get_origin as typing_get_origin
 
 import trestle.common.err as err
+from pydantic import BaseModel
+from pydantic.fields import FieldInfo
 
 import typing_extensions
 
@@ -34,20 +36,32 @@ def get_origin(field_type: Type[Any]) -> Optional[Type[Any]]:
     return typing_extensions.get_origin(field_type) or getattr(field_type, '__origin__', None)
 
 
-def _get_model_field_info(field_type: Type[Any]) -> Tuple[Optional[Type[Any]], Optional[str], Optional[Type[Any]]]:
-    """Need special handling for pydantic wrapped __root__ objects."""
-    # oscal_read of roles.json yields pydantic.Roles model with __root__ containing list of Role
-    root: Optional[Type[Any]] = None
+def _get_model_field_info(field_type: Type[Any]) -> Tuple[Optional[FieldInfo], Optional[str], Optional[Type[Any]]]:
+    """Need special handling for pydantic RootModel objects.
+
+    In Pydantic v2, RootModel has a 'root' field instead of '__root__'.
+    """
+    root_field: Optional[FieldInfo] = None
     root_type: Optional[str] = None
     singular_type: Optional[Type[Any]] = None
     try:
-        fields = field_type.__fields__  # @IgnoreException
-        root = fields['__root__']  # @IgnoreException
-        singular_type = root.type_
-        root_type = root.outer_type_._name
+        # Check if this is a BaseModel with model_fields
+        if isinstance(field_type, type) and issubclass(field_type, BaseModel):
+            model_fields = field_type.model_fields
+            # Check for RootModel (has 'root' field)
+            if 'root' in model_fields:
+                root_field = model_fields['root']
+                singular_type = root_field.annotation
+                # Get the origin type name (e.g., 'list', 'dict')
+                origin = typing_get_origin(singular_type)
+                if origin is not None:
+                    root_type = origin.__name__.capitalize()
+                elif singular_type is not None:
+                    # For non-generic types, get the type name
+                    root_type = getattr(singular_type, '__name__', None)
     except Exception:  # noqa S110
         pass
-    return root, root_type, singular_type
+    return root_field, root_type, singular_type
 
 
 def is_collection_field_type(field_type: Type[Any]) -> bool:

@@ -96,7 +96,12 @@ def test_element_set_at(sample_nist_component_def: component.ComponentDefinition
     element = Element(sample_nist_component_def)
 
     metadata = common.Metadata(
-        **{'title': 'My simple catalog', 'last-modified': datetime.now(), 'version': '0.0.0', 'oscal-version': '1.0.0'}
+        **{
+            'title': 'My simple catalog',
+            'last-modified': datetime.now().astimezone(),
+            'version': '0.0.0',
+            'oscal-version': '1.0.0',
+        }
     )
 
     parties: List[common.Party] = []

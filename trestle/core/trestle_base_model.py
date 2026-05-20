@@ -17,7 +17,7 @@
 
 from typing import Any, Type, TypeVar
 
-from pydantic.v1 import BaseModel, ValidationError
+from pydantic import BaseModel, ValidationError
 
 from trestle.common.err import TrestleError
 
@@ -28,13 +28,21 @@ class TrestleBaseModel(BaseModel):
     """Trestle Base Model. Serves as wrapper around BaseModel for overriding methods."""
 
     @classmethod
-    def parse_obj(cls: Type['Model'], obj: Any) -> 'Model':
-        """Parse object to the given class."""
+    def model_validate(
+        cls: Type['Model'],
+        obj: Any,
+        *,
+        strict: bool | None = None,
+        from_attributes: bool | None = None,
+        context: dict[str, Any] | None = None,
+    ) -> 'Model':
+        """Validate object to the given class."""
         try:
-            return super().parse_obj(obj)
+            return super().model_validate(obj, strict=strict, from_attributes=from_attributes, context=context)
         except ValidationError as e:
             # check if failed due to the wrong OSCAL version:
             oscal_version_error = False
+            message = ''
             for err in e.errors():
                 for field in err['loc']:
                     if field == 'oscal-version':
@@ -46,6 +54,11 @@ class TrestleBaseModel(BaseModel):
             else:
                 raise
 
+    @classmethod
+    def parse_obj(cls: Type['Model'], obj: Any) -> 'Model':
+        """Parse object to the given class. Deprecated: use model_validate instead."""
+        return cls.model_validate(obj)
+
     def __str__(self) -> str:
         """Return string representation, unwrapping __root__ if present."""
         if hasattr(self, '__root__'):
@@ -55,7 +68,7 @@ class TrestleBaseModel(BaseModel):
     def __eq__(self, other: Any) -> bool:
         """Compare with unwrapped __root__ value if present."""
         # Only use custom comparison for __root__ models
-        if hasattr(self, '__root__') and '__root__' in self.__fields__:
+        if hasattr(self, '__root__') and '__root__' in self.model_fields:
             if isinstance(other, type(self)):
                 return self.__root__ == other.__root__
             return self.__root__ == other
@@ -68,9 +81,10 @@ class TrestleBaseModel(BaseModel):
             try:
                 return hash(self.__root__)
             except TypeError:
-                # If __root__ is unhashable, fall back to object hash
-                return super().__hash__()
-        return super().__hash__()
+                # If __root__ is unhashable, fall back to id-based hash
+                return hash(id(self))
+        # For Pydantic v2, use id-based hash for non-frozen models
+        return hash(id(self))
 
     def __getattr__(self, name: str) -> Any:
         """Delegate attribute access to __root__ if present and attribute not found."""

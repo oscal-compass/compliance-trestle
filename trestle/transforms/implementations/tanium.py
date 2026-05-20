@@ -96,7 +96,7 @@ class TaniumResultToOscalARTransformer(ResultsTransformer):
     def transform(self, blob: str) -> Results:
         """Transform the blob into a Results."""
         ts0 = datetime.datetime.now()
-        results = Results()
+        results = Results(root=[])
         ru_factory = RuleUseFactory(self.get_timestamp())
         ru_list = ru_factory.make_list(blob)
         tanium_oscal_factory = TaniumOscalFactory(
@@ -109,7 +109,7 @@ class TaniumResultToOscalARTransformer(ResultsTransformer):
             self.caching,
             self.aggregate,
         )
-        results.__root__ = tanium_oscal_factory.results
+        results.root = tanium_oscal_factory.results
         ts1 = datetime.datetime.now()
         self._analysis = tanium_oscal_factory.analysis
         self._analysis.append(f'transform time: {ts1 - ts0}')

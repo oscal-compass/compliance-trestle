@@ -83,7 +83,7 @@ dev = [
     "pre-commit>=2.4.0",
     "python-semantic-release>=10.4.0",
     "pylint",
-    "datamodel-code-generator[http]<0.55.0",
+    "datamodel-code-generator[http]",
     "gitpython",
 ]
 
@@ -290,7 +290,6 @@ ignore_errors = true
 init_forbid_extra = true
 init_typed = true
 warn_required_dynamic_aliases = true
-warn_untyped_fields = true
 
 [tool.coverage.run]
 relative_files = true

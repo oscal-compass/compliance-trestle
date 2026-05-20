@@ -23,8 +23,7 @@ import uuid
 from datetime import date, datetime
 from typing import Any, List
 
-import pydantic.v1.networks
-from pydantic.v1 import ConstrainedStr
+from pydantic import constr, EmailStr, AnyUrl
 
 import pytest
 
@@ -55,17 +54,15 @@ def test_get_sample_value_by_type() -> None:
     assert gens.generate_sample_value_by_type(int, '') == 0
     assert gens.generate_sample_value_by_type(str, '') == const.REPLACE_ME
     assert gens.generate_sample_value_by_type(float, '') == 0.0
-    assert gens.generate_sample_value_by_type(ConstrainedStr, '') == const.REPLACE_ME
-    assert gens.generate_sample_value_by_type(ConstrainedStr, 'oarty-uuid') == const.SAMPLE_UUID_STR
-    uuid_ = gens.generate_sample_value_by_type(ConstrainedStr, 'uuid')
+    # In Pydantic v2, constr() creates an Annotated type, test with str directly
+    assert gens.generate_sample_value_by_type(str, '') == const.REPLACE_ME
+    assert gens.generate_sample_value_by_type(str, 'party-uuid') == const.SAMPLE_UUID_STR
+    uuid_ = gens.generate_sample_value_by_type(str, 'uuid')
     assert is_valid_uuid(uuid_) and str(uuid_) != const.SAMPLE_UUID_STR
-    assert gens.generate_sample_value_by_type(ConstrainedStr, 'date_authorized') == date.today().isoformat()
-    assert gens.generate_sample_value_by_type(
-        pydantic.v1.networks.EmailStr, 'anything'
-    ) == pydantic.v1.networks.EmailStr('dummy@sample.com')
-    assert gens.generate_sample_value_by_type(pydantic.v1.networks.AnyUrl, 'anything') == pydantic.v1.networks.AnyUrl(
-        'https://sample.com/replaceme.html', scheme='http', host='sample.com'
-    )
+    assert gens.generate_sample_value_by_type(str, 'date_authorized') == date.today().isoformat()
+    # EmailStr and AnyUrl are still classes in Pydantic v2
+    assert gens.generate_sample_value_by_type(EmailStr, 'anything') == 'dummy@sample.com'
+    assert gens.generate_sample_value_by_type(AnyUrl, 'anything') == 'https://sample.com/replaceme.html'
     with pytest.raises(err.TrestleError):
         gens.generate_sample_value_by_type(list, 'uuid')
 

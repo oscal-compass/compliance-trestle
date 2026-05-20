@@ -17,11 +17,12 @@
 
 from typing import List
 
-from trestle.core.base_model import OscalBaseModel
+from pydantic import RootModel
+
 from trestle.oscal.assessment_results import Result
 
 
-class Results(OscalBaseModel):
+class Results(RootModel[List[Result]]):
     """Transformer results as a list."""
 
-    __root__: List[Result] = []
+    root: List[Result] = []

@@ -842,7 +842,7 @@ def test_objects_differ_enum_and_root_comparisons() -> None:
     root_wrapper_diff = MockRootWrapper('value2')
     assert ModelUtils._objects_differ(enum_val, root_wrapper_diff, [], [], False)
 
-    from pydantic.v1 import BaseModel as PydanticBaseModel
+    from pydantic import BaseModel as PydanticBaseModel
 
     class TestModel(PydanticBaseModel):
         value: str

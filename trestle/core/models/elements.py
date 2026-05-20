@@ -19,8 +19,7 @@ from typing import Any, List, Optional, Type, Union, cast
 
 import typing_extensions
 
-from pydantic.v1 import Field, create_model
-from pydantic.v1.error_wrappers import ValidationError
+from pydantic import Field, ValidationError, create_model
 
 from ruamel.yaml import YAML
 
@@ -152,7 +151,7 @@ class ElementPath:
                     )
                 # Resolve Union types before accessing alias_to_field_map
                 resolved_model = _get_model_type_from_union(prev_model, field_name=current_element_str)
-                prev_model = resolved_model.alias_to_field_map()[current_element_str].outer_type_
+                prev_model = resolved_model.alias_to_field_map()[current_element_str].annotation
         return prev_model
 
     def get_obm_wrapped_type(
@@ -610,7 +609,7 @@ class Element:
     @classmethod
     def get_sub_element_class(cls, parent_elm: OscalBaseModel, sub_element_name: str):
         """Get the class of the sub-element."""
-        sub_element_class = parent_elm.__fields__[sub_element_name].outer_type_
+        sub_element_class = parent_elm.model_fields[sub_element_name].annotation
         return sub_element_class
 
     @classmethod

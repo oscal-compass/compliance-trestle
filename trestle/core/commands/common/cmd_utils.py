@@ -32,10 +32,10 @@ def model_type_is_too_granular(model_type: Type[Any]) -> bool:
     """Is an model_type too fine to split."""
     if type_utils.is_collection_field_type(model_type):
         return False
-    if hasattr(model_type, '__fields__') and '__root__' in model_type.__fields__:
-        # Check if __root__ contains a collection type (list)
-        root_field = model_type.__fields__['__root__']
-        root_type = root_field.outer_type_ if hasattr(root_field, 'outer_type_') else root_field.type_
+    if hasattr(model_type, 'model_fields') and 'root' in model_type.model_fields:
+        # Check if 'root' contains a collection type (list) - this is a RootModel
+        root_field = model_type.model_fields['root']
+        root_type = root_field.annotation
         if type_utils.is_collection_field_type(root_type):
             return False
         # Check if __root__ contains a Union type of OscalBaseModel variants
@@ -204,7 +204,7 @@ def parse_chain(
                         raise TrestleError(
                             f'Cannot split beyond * when the wildcard does not refer to a list.  Path: {path_parts}'
                         )
-                    for key in sub_model.__fields__.keys():
+                    for key in sub_model.model_fields.keys():
                         # only create element path is item is present in the sub_model
                         if getattr(sub_model, key, None) is None:
                             continue

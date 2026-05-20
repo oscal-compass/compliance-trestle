@@ -23,8 +23,8 @@ from datetime import date, datetime
 from enum import Enum
 from typing import Any, Dict, ForwardRef, List, Type, TypeVar, Union, cast
 
-import pydantic.v1.networks
-from pydantic.v1 import ConstrainedStr
+from pydantic import constr, EmailStr, AnyUrl, AwareDatetime
+from pydantic_core import PydanticUndefined
 
 import trestle.common.const as const
 import trestle.common.err as err
@@ -39,13 +39,13 @@ from trestle.oscal.common import Methods
 from trestle.oscal.common import ObservationTypeValidValues
 from trestle.oscal.common import OscalVersion
 from trestle.oscal.common import TaskValidValues
-from trestle.oscal.ssp import DateDatatype
+from trestle.oscal.ssp import DateDatatype, DateAuthorized
 
 logger = logging.getLogger(__name__)
 
 TG = TypeVar('TG', bound=OscalBaseModel)
 
-sample_base64_value = 0
+sample_base64_value = '00000000'
 sample_base64 = Base64(filename=const.REPLACE_ME, **{'media-type': const.REPLACE_ME}, value=sample_base64_value)
 type_base64 = type(sample_base64)
 
@@ -104,7 +104,7 @@ def is_enum_observation_type_valid_value(type_: type) -> bool:
     return rval
 
 
-def generate_sample_value_by_type(type_: type, field_name: str) -> Union[datetime, bool, int, str, float, Enum, Base64]:
+def generate_sample_value_by_type(type_: Any, field_name: str) -> Union[datetime, bool, int, str, float, Enum, Base64]:
     """Given a type, return sample value.
 
     Includes the Optional use of passing down a parent_model
@@ -118,7 +118,7 @@ def generate_sample_value_by_type(type_: type, field_name: str) -> Union[datetim
         return sample_observation_type_valid_value
     if type_ is Base64:
         return sample_base64
-    if type_ is datetime:
+    if type_ is datetime or type_ is AwareDatetime:
         return datetime.now().astimezone()
     if type_ is bool:
         return False
@@ -126,14 +126,69 @@ def generate_sample_value_by_type(type_: type, field_name: str) -> Union[datetim
         return 0
     if type_ is float:
         return 0.00
-    if safe_is_sub(type_, ConstrainedStr) or (hasattr(type_, '__name__') and 'ConstrainedStr' in type_.__name__):
+
+    # In Pydantic v2, check for Annotated types with int origin (conint)
+    # These are Annotated[int, ...] with Interval and MultipleOf metadata
+    origin = utils.get_origin(type_)
+    if origin is not None:
+        # Check if this is Annotated[int, ...]
+        from typing import Annotated
+
+        if origin is Annotated:
+            args = typing.get_args(type_)
+            if args and args[0] is int:
+                # This is a constrained int (conint)
+                # Extract constraints from metadata
+                metadata = getattr(type_, '__metadata__', ())
+                ge_val = None
+                gt_val = None
+                multiple_of = 1
+
+                for constraint in metadata:
+                    # Check for Interval constraint (from annotated_types)
+                    if hasattr(constraint, 'ge') and constraint.ge is not None:
+                        ge_val = constraint.ge
+                    if hasattr(constraint, 'gt') and constraint.gt is not None:
+                        gt_val = constraint.gt
+                    # Check for MultipleOf constraint
+                    if hasattr(constraint, 'multiple_of') and constraint.multiple_of is not None:
+                        multiple_of = constraint.multiple_of
+
+                # Calculate floor value
+                floor = ge_val if ge_val is not None else 0
+                floor = gt_val + 1 if gt_val is not None else floor
+
+                # Return value that satisfies constraints
+                if math.remainder(floor, multiple_of) == 0:
+                    return int(floor)
+                return int((floor + 1) * multiple_of)
+
+    # In Pydantic v2, constrained strings are created with constr() and have metadata
+    # Check if it's a string type with constraints (pattern, min_length, max_length, etc.)
+    is_constrained_str = (
+        type_ is str
+        or (hasattr(type_, '__name__') and 'constr' in str(type_).lower())
+        or (
+            hasattr(type_, '__metadata__')
+            and any('pattern' in str(m).lower() for m in getattr(type_, '__metadata__', []))
+        )
+    )
+
+    if is_constrained_str:
         # This code here is messy. we need to meet a set of constraints. If we do
         # TODO: handle regex directly
         if 'uuid' == field_name:
             return str(uuid.uuid4())
         # some things like location_uuid in lists arrive here with field_name=''
-        if type_.regex and type_.regex.pattern.startswith('^[0-9A-Fa-f]{8}'):
-            return const.SAMPLE_UUID_STR
+        # In Pydantic v2, pattern is in metadata, not as .regex attribute
+        if hasattr(type_, '__metadata__'):
+            for constraint in type_.__metadata__:
+                if (
+                    hasattr(constraint, 'pattern')
+                    and constraint.pattern
+                    and constraint.pattern.startswith('^[0-9A-Fa-f]{8}')
+                ):
+                    return const.SAMPLE_UUID_STR
         if field_name == 'date_authorized':
             return str(date.today().isoformat())
         if field_name == 'oscal_version':
@@ -146,6 +201,7 @@ def generate_sample_value_by_type(type_: type, field_name: str) -> Union[datetim
         return const.REPLACE_ME
     if hasattr(type_, '__name__') and 'ConstrainedIntValue' in type_.__name__:
         # create an int value as close to the floor as possible does not test upper bound
+        # This is for Pydantic v1 compatibility
         multiple = type_.multiple_of if type_.multiple_of else 1  # default to every integer
         # this command is a bit of a problem
         floor = type_.ge if type_.ge else 0
@@ -160,11 +216,14 @@ def generate_sample_value_by_type(type_: type, field_name: str) -> Union[datetim
         if field_name == 'oscal_version':
             return OSCAL_VERSION
         return const.REPLACE_ME
-    if type_ is pydantic.v1.networks.EmailStr:
-        return pydantic.v1.networks.EmailStr('dummy@sample.com')
-    if type_ is pydantic.v1.networks.AnyUrl:
+    # In Pydantic v2, EmailStr and AnyUrl are still classes but may be wrapped in Annotated
+    # Check the type name to handle both direct and annotated cases
+    type_name = getattr(type_, '__name__', str(type_))
+    if type_ is EmailStr or 'EmailStr' in type_name:
+        return 'dummy@sample.com'
+    if type_ is AnyUrl or 'AnyUrl' in type_name:
         # TODO: Cleanup: this should be usable from a url.. but it's not inuitive.
-        return pydantic.v1.networks.AnyUrl('https://sample.com/replaceme.html', scheme='http', host='sample.com')
+        return 'https://sample.com/replaceme.html'
     if type_ is list:
         raise err.TrestleError(f'Unable to generate sample for type {type_}')
     # default to empty dict for dict types, string for anything else
@@ -229,26 +288,27 @@ def generate_sample_model(
     # the only time dict ever appears is with include_all, which is handled specially
     # the only type of collection possible after OSCAL 1.0.0 is list
     if safe_is_sub(model, OscalBaseModel):
-        for field in model.__fields__:
+        for field in model.model_fields:
             if model_type in [OscalVersion]:
                 model_dict[field] = OSCAL_VERSION
                 break
             # Special handling for include_all field - only skip if it's optional
+            field_info = model.model_fields[field]
             if field == 'include_all':
-                if model.__fields__[field].required:  # type: ignore
+                if field_info.is_required():  # type: ignore
                     # Field is required, generate it
                     model_dict[field] = {}
                 elif include_optional:
                     # Field is optional and we want to include optional fields
                     model_dict[field] = {}
                 continue
-            outer_type = model.__fields__[field].outer_type_  # type: ignore
+            outer_type = field_info.annotation  # type: ignore
 
             # Skip fields with unresolved ForwardRefs, but if required, provide empty list
             if isinstance(outer_type, (str, ForwardRef)):
                 # If it's a required field, we need to provide something
                 # Assume it's a list type and provide an empty list
-                if model.__fields__[field].required:  # type: ignore
+                if field_info.is_required():  # type: ignore
                     model_dict[field] = []
                 continue
 
@@ -279,7 +339,7 @@ def generate_sample_model(
                     if outer_type is None:
                         # If all types are ForwardRefs or None, skip this field
                         continue
-            if model.__fields__[field].required or effective_optional:  # type: ignore
+            if field_info.is_required() or effective_optional:  # type: ignore
                 # FIXME could be ForwardRef('SystemComponentStatus')
                 if utils.is_collection_field_type(outer_type):
                     inner_type = utils.get_inner_type(outer_type)
@@ -294,8 +354,25 @@ def generate_sample_model(
                         if model in union_args:
                             continue  # Circular reference detected
                     # Skip recursion if depth is 0 (but allow -1 for unlimited)
+                    # However, if field is required and has min_length constraint, generate at least that many items
                     if depth == 0:
-                        model_dict[field] = []
+                        # Check if field has min_length constraint
+                        min_items = 0
+                        if field_info.is_required():  # type: ignore
+                            # Check field constraints for min_length
+                            constraints = field_info.metadata  # type: ignore
+                            for constraint in constraints:
+                                if hasattr(constraint, 'min_length') and constraint.min_length is not None:
+                                    min_items = constraint.min_length
+                                    break
+
+                        if min_items > 0:
+                            # Generate required minimum items
+                            model_dict[field] = generate_sample_model(
+                                outer_type, include_optional=include_optional, depth=depth - 1
+                            )
+                        else:
+                            model_dict[field] = []
                     else:
                         model_dict[field] = generate_sample_model(
                             outer_type, include_optional=include_optional, depth=depth - 1
@@ -305,7 +382,7 @@ def generate_sample_model(
                 elif safe_is_sub(outer_type, OscalBaseModel):
                     # Skip recursion if depth is 0 (but allow -1 for unlimited)
                     # But always generate required fields even at depth 0
-                    if depth == 0 and not model.__fields__[field].required:  # type: ignore
+                    if depth == 0 and not field_info.is_required():  # type: ignore
                         continue  # Skip optional nested models at depth 0
                     else:
                         model_dict[field] = generate_sample_model(
@@ -323,6 +400,15 @@ def generate_sample_model(
                         elif field == 'value':
                             model_dict[field] = sample_base64.value
                     elif model_type in [DateDatatype]:
+                        model_dict[field] = sample_date_value
+                    elif outer_type in [DateAuthorized] or (
+                        utils.get_origin(outer_type) == Union and DateAuthorized in typing.get_args(outer_type)
+                    ):
+                        # Handle DateAuthorized type (which is a RootModel wrapping DateDatatype)
+                        # DateAuthorized expects a date string that matches the DateDatatype pattern
+                        model_dict[field] = DateAuthorized(root=sample_date_value)
+                    elif model_type in [DateAuthorized]:
+                        # When generating DateAuthorized itself, populate its root field
                         model_dict[field] = sample_date_value
                     # Hacking here:
                     # Root models should ideally not exist, however, sometimes we are stuck with them.

@@ -25,7 +25,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple, Type, Union, get_args, get_origin
 import types
 
-from pydantic.v1 import BaseModel, create_model
+from pydantic import BaseModel, create_model
 
 import trestle.common
 import trestle.common.common_types
@@ -101,7 +101,8 @@ def _resolve_collection_item_alias(parent_model_type: Type[Any], field_alias: st
         parent_model_type = _get_model_type_from_union(parent_model_type, field_alias)
         field_map = parent_model_type.alias_to_field_map()
         field = field_map[field_alias]
-        outer_type = field.outer_type_
+        # In Pydantic v2, use annotation instead of outer_type_
+        outer_type = field.annotation
         inner_type = utils.get_inner_type(outer_type)
         inner_type = _get_model_type_from_union(inner_type)
         return str_utils.classname_to_alias(inner_type.__name__, AliasMode.JSON)
@@ -232,13 +233,13 @@ class ModelUtils:
                 else:
                     primary_model_dict[alias] = instance
 
-            # If merged_model_type is a wrapped Union (has __root__), we need to unwrap it
+            # If merged_model_type is a wrapped Union (has 'root' field in RootModel), we need to unwrap it
             # to get the actual model type for instantiation
             actual_model_type = merged_model_type
-            if hasattr(merged_model_type, '__fields__') and '__root__' in merged_model_type.__fields__:
-                # This is a wrapped Union model - extract the Union type from __root__
-                root_field = merged_model_type.__fields__['__root__']
-                root_type = root_field.outer_type_ if hasattr(root_field, 'outer_type_') else root_field.type_
+            if hasattr(merged_model_type, 'model_fields') and 'root' in merged_model_type.model_fields:
+                # This is a RootModel with Union - extract the Union type from 'root'
+                root_field = merged_model_type.model_fields['root']
+                root_type = root_field.annotation
                 # Inspect primary_model_dict to determine which Union variant to use
                 # Look for distinctive fields that indicate which variant
                 # For Group1|Group2: 'groups' -> Group1, 'controls' -> Group2
@@ -348,7 +349,7 @@ class ModelUtils:
                     model_type = utils.get_inner_type(model_type)
                 else:
                     model_type = _get_model_type_from_union(model_type, alias)
-                    model_type = model_type.alias_to_field_map()[alias].outer_type_
+                    model_type = model_type.alias_to_field_map()[alias].annotation
 
         return model_type, full_alias
 
@@ -590,7 +591,7 @@ class ModelUtils:
                 if path_part not in field_map:
                     continue
                 field = field_map[path_part]
-                model_type = field.outer_type_
+                model_type = field.annotation
             model_types.append(model_type)
 
         last_alias = path_parts[-1]
@@ -627,8 +628,8 @@ class ModelUtils:
             raise err.TrestleError(str(e))
 
         if hasattr(module, 'Model'):
-            model_metadata = next(iter(module.Model.__fields__.values()))
-            return model_metadata.type_, model_metadata.alias
+            model_metadata = next(iter(module.Model.model_fields.values()))
+            return model_metadata.annotation, model_metadata.alias
         raise err.TrestleError('Invalid module')
 
     @staticmethod
