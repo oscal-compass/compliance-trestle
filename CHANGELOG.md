@@ -2,6 +2,65 @@
 
 <!-- version list -->
 
+## v3.12.1 (2026-05-11)
+
+### Bug Fixes
+
+- Add cross-platform install docs and conventional-pr make target
+  ([#2202](https://github.com/oscal-compass/compliance-trestle/pull/2202),
+  [`4444dc2`](https://github.com/oscal-compass/compliance-trestle/commit/4444dc29c1598b4096d74129f1c740757905d999))
+
+- Address PR review comments on multi-train release support
+  ([#2201](https://github.com/oscal-compass/compliance-trestle/pull/2201),
+  [`47ecd1d`](https://github.com/oscal-compass/compliance-trestle/commit/47ecd1d9a8bea3801dca4b2b6b89ef0cf39175e2))
+
+- Apply mdformat to maintenance_releases.md
+  ([#2201](https://github.com/oscal-compass/compliance-trestle/pull/2201),
+  [`47ecd1d`](https://github.com/oscal-compass/compliance-trestle/commit/47ecd1d9a8bea3801dca4b2b6b89ef0cf39175e2))
+
+- Convert negative security checks to positive allowlists
+  ([#2201](https://github.com/oscal-compass/compliance-trestle/pull/2201),
+  [`47ecd1d`](https://github.com/oscal-compass/compliance-trestle/commit/47ecd1d9a8bea3801dca4b2b6b89ef0cf39175e2))
+
+- Correct act install SHA to commit SHA (not tag object SHA)
+  ([#2201](https://github.com/oscal-compass/compliance-trestle/pull/2201),
+  [`47ecd1d`](https://github.com/oscal-compass/compliance-trestle/commit/47ecd1d9a8bea3801dca4b2b6b89ef0cf39175e2))
+
+- Pin act install to v0.2.87 and fix mdformat table padding
+  ([#2202](https://github.com/oscal-compass/compliance-trestle/pull/2202),
+  [`4444dc2`](https://github.com/oscal-compass/compliance-trestle/commit/4444dc29c1598b4096d74129f1c740757905d999))
+
+- Pre-configure act image to avoid interactive prompt in CI
+  ([#2201](https://github.com/oscal-compass/compliance-trestle/pull/2201),
+  [`47ecd1d`](https://github.com/oscal-compass/compliance-trestle/commit/47ecd1d9a8bea3801dca4b2b6b89ef0cf39175e2))
+
+- Upgrade cryptography to 46.0.7 (SNYK-PYTHON-CRYPTOGRAPHY-15809188,
+  SNYK-PYTHON-CRYPTOGRAPHY-15953315)
+  ([`e14ffd0`](https://github.com/oscal-compass/compliance-trestle/commit/e14ffd023bfa2f2dc91bf79827a999762d45690f))
+
+### Continuous Integration
+
+- Add act-based local workflow testing
+  ([#2202](https://github.com/oscal-compass/compliance-trestle/pull/2202),
+  [`4444dc2`](https://github.com/oscal-compass/compliance-trestle/commit/4444dc29c1598b4096d74129f1c740757905d999))
+
+- Add act-based local workflow testing and CI validation
+  ([#2202](https://github.com/oscal-compass/compliance-trestle/pull/2202),
+  [`4444dc2`](https://github.com/oscal-compass/compliance-trestle/commit/4444dc29c1598b4096d74129f1c740757905d999))
+
+- Add multi-train release support for maintenance branches
+  ([#2201](https://github.com/oscal-compass/compliance-trestle/pull/2201),
+  [`47ecd1d`](https://github.com/oscal-compass/compliance-trestle/commit/47ecd1d9a8bea3801dca4b2b6b89ef0cf39175e2))
+
+- Add Snyk exception for paramiko cryptographic algorithm issue
+  ([#2218](https://github.com/oscal-compass/compliance-trestle/pull/2218),
+  [`b4c9d94`](https://github.com/oscal-compass/compliance-trestle/commit/b4c9d94cfead66176ea475c39b20925b4340398b))
+
+- Fix merge commit validation and document release environment setup
+  ([#2218](https://github.com/oscal-compass/compliance-trestle/pull/2218),
+  [`b4c9d94`](https://github.com/oscal-compass/compliance-trestle/commit/b4c9d94cfead66176ea475c39b20925b4340398b))
+
+
 ## v3.12.0 (2026-02-13)
 
 ### Bug Fixes
