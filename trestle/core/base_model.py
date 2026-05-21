@@ -33,7 +33,7 @@ from typing import Any, Dict, List, Optional, Type, cast
 
 import orjson
 
-from pydantic import ConfigDict, Field, create_model
+from pydantic import ConfigDict, Field, create_model, field_serializer
 from pydantic.fields import FieldInfo
 from pydantic_core import from_json
 

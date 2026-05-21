@@ -115,12 +115,16 @@ def get_inner_type(collection_field_type: Union[Type[List[Any]], Type[Dict[str, 
             args = get_args(collection_field_type)
 
         # Handle bare list or dict types without type arguments (e.g., list instead of List[str])
+        # But only if they come from type annotations, not runtime instances
         if not args:
-            # If it's a bare list or dict, return Any as the inner type
-            if collection_field_type is list or origin_type is list:
+            # Check if this is actually a type annotation (has __origin__ or is a typing construct)
+            # vs a runtime instance type (which would just be 'list' or 'dict')
+            if origin_type is list:
                 return Any  # type: ignore
-            if collection_field_type is dict or origin_type is dict:
+            if origin_type is dict:
                 return Any  # type: ignore
+            # If no origin_type and no args, this is likely a runtime instance type, not a type annotation
+            raise err.TrestleError('Model type is not a Dict or List type annotation')
 
         return args[-1]
     except Exception as e:

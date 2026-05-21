@@ -283,7 +283,8 @@ class ProfileAssemble(AuthorCommonCommand):
                     set_param_dict = {'param_id': key}
                     if param.label:
                         set_param_dict['label'] = param.label
-                    if param.props:
+                    # Pydantic v2: Only add props if not empty (props has min_length=1)
+                    if param.props and len(param.props) > 0:
                         set_param_dict['props'] = param.props
                     # Add either values or select, not both
                     if hasattr(param, 'select') and param.select:
@@ -295,10 +296,14 @@ class ProfileAssemble(AuthorCommonCommand):
                         new_set_params.append(prof.SetParameters(**set_param_dict))
             if profile.modify.set_parameters != new_set_params:
                 changed = True
-            # sort the params first by control sorting then by param_id
-            profile.modify.set_parameters = sorted(
-                new_set_params, key=lambda param: (param_map[param.param_id], param.param_id)
-            )
+            # Pydantic v2: Only assign set_parameters if not empty (has min_length=1)
+            if new_set_params:
+                # sort the params first by control sorting then by param_id
+                profile.modify.set_parameters = sorted(
+                    new_set_params, key=lambda param: (param_map[param.param_id], param.param_id)
+                )
+            else:
+                profile.modify.set_parameters = None
         if profile.modify:
             profile.modify.set_parameters = none_if_empty(profile.modify.set_parameters)
         return changed

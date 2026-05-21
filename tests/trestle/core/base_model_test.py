@@ -155,10 +155,17 @@ def test_parameter_label_still_rejects_newlines() -> None:
 
 def test_no_timezone_exception() -> None:
     """Test that an exception occurs when no timezone is passed in datetime."""
-    no_tz_catalog = simple_catalog()
-    with pytest.raises(Exception):
-        jsoned_catalog = no_tz_catalog.model_dump_json(exclude_none=True, by_alias=True, indent=2)
-        type(jsoned_catalog)
+    # In Pydantic v2 with AwareDatetime, naive datetimes are rejected at validation time
+    with pytest.raises(ValidationError):
+        m = common.Metadata(
+            **{
+                'title': 'My simple catalog',
+                'last-modified': datetime.now(),  # No timezone - should fail validation
+                'version': '0.0.0',
+                'oscal-version': trestle.oscal.OSCAL_VERSION,
+            }
+        )
+        _ = oscatalog.Catalog(metadata=m, uuid=str(uuid4()))
 
 
 def test_with_timezone() -> None:

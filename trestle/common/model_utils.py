@@ -89,8 +89,16 @@ def _get_model_type_from_union(model_type: Type[Any], field_name: Optional[str] 
                 logger.debug(f'Using {union_type} from Union (no field match)')
                 return union_type
 
-        # Last resort: return the first one
-        logger.debug(f'No suitable type found in Union, using first: {union_args[0]}')
+        # Last resort: return the first non-list type
+        # Skip list types as they don't have model methods
+        for union_type in union_args:
+            origin = get_origin(union_type)
+            if origin not in (list, List):
+                logger.debug(f'No suitable type found in Union, using first non-list: {union_type}')
+                return union_type
+
+        # If all types are lists, return the first one (shouldn't happen in practice)
+        logger.warning(f'All Union types are lists, using first: {union_args[0]}')
         return union_args[0]
     return model_type
 
@@ -374,6 +382,18 @@ class ModelUtils:
                         raise TrestleError(
                             f'Model type {model_type} does not support alias_to_field_map for alias {alias}'
                         )
+
+        # Unwrap Optional types (Union[X, None] -> X)
+        origin = get_origin(model_type)
+        if origin is Union or (hasattr(types, 'UnionType') and origin is types.UnionType):
+            args = get_args(model_type)
+            # Filter out NoneType to get the actual type
+            non_none_args = [arg for arg in args if arg is not type(None)]
+            if len(non_none_args) == 1:
+                model_type = non_none_args[0]
+            elif len(non_none_args) > 1:
+                # Multiple non-None types in Union - resolve using field hint
+                model_type = _get_model_type_from_union(model_type, alias)
 
         return model_type, full_alias
 

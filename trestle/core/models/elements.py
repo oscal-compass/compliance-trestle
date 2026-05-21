@@ -19,7 +19,7 @@ from typing import Any, List, Optional, Type, Union, cast
 
 import typing_extensions
 
-from pydantic import Field, RootModel, ValidationError, create_model
+from pydantic import ConfigDict, Field, RootModel, ValidationError, create_model
 
 from ruamel.yaml import YAML
 
@@ -187,7 +187,8 @@ class ElementPath:
             class DynamicRootModel(RootModel):  # type: ignore
                 root: base_type  # type: ignore
 
-                model_config = OscalBaseModel.model_config
+                # RootModel doesn't support extra='forbid', so we create a custom config
+                model_config = ConfigDict(populate_by_name=True, validate_assignment=True)
 
                 @classmethod
                 def oscal_read(cls, path: pathlib.Path):

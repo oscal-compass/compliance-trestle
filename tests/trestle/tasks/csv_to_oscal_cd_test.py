@@ -64,7 +64,10 @@ def _validate_ocp(tmp_path: pathlib.Path) -> None:
     assert len(cd.components) == 1
     component = cd.components[0]
     assert len(component.props) == 429
-    assert component.type == 'Service'
+    # Pydantic v2: component.type is StringDatatype RootModel
+    from trestle.oscal.common import StringDatatype
+
+    assert isinstance(component.type, StringDatatype) and component.type.root == 'service'
     assert component.title == 'OSCO'
     assert component.props[0].name == 'Rule_Id'
     # Pydantic v2: Compare AnyUrl objects directly
@@ -123,7 +126,10 @@ def _validate_bp(tmp_path: pathlib.Path) -> None:
     assert len(cd.components) == 1
     component = cd.components[0]
     assert len(component.props) == 62
-    assert component.type == 'Service'
+    # Pydantic v2: component.type is StringDatatype RootModel
+    from trestle.oscal.common import StringDatatype
+
+    assert isinstance(component.type, StringDatatype) and component.type.root == 'service'
     assert component.title == 'IAM'
     assert len(component.control_implementations) == 1
     assert (
@@ -1404,7 +1410,10 @@ def test_execute_with_ignored_risk_properties(tmp_path: pathlib.Path) -> None:
     cd = ComponentDefinition.oscal_read(fp)
     # spot check
     component = cd.components[0]
-    assert component.type == 'Validation'
+    # Pydantic v2: component.type is StringDatatype RootModel
+    from trestle.oscal.common import StringDatatype
+
+    assert isinstance(component.type, StringDatatype) and component.type.root == 'validation'
     # there are 4 component validation props: Rule_Id, Check_Id, Check_Description, Reference_Id
     assert len(component.props) == 4
     for prop in component.props:
@@ -1504,7 +1513,10 @@ def test_execute_validation(tmp_path: pathlib.Path) -> None:
     cd = ComponentDefinition.oscal_read(fp)
     # spot check
     component = cd.components[1]
-    assert component.type == 'Validation'
+    # Pydantic v2: component.type is StringDatatype RootModel
+    from trestle.oscal.common import StringDatatype
+
+    assert isinstance(component.type, StringDatatype) and component.type.root == 'validation'
     assert component.title == 'IAM'
     assert component.description == 'IAM'
     assert len(component.props) == 6

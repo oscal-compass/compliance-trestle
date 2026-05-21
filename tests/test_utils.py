@@ -747,8 +747,6 @@ def generate_test_by_comp() -> ssp.ByComponent:
     """Generate a by-component assembly for testing."""
     by_comp = generators.generate_sample_model(ssp.ByComponent)
     by_comp.export = generators.generate_sample_model(ssp.Export)
-    by_comp.export.provided = []
-    by_comp.export.responsibilities = []
 
     isolated_provided = generators.generate_sample_model(ssp.Provided)
     isolated_responsibility = generators.generate_sample_model(ssp.Responsibility)
@@ -758,10 +756,9 @@ def generate_test_by_comp() -> ssp.ByComponent:
 
     set_responsibility.provided_uuid = set_provided.uuid
 
-    by_comp.export.provided.append(isolated_provided)
-    by_comp.export.provided.append(set_provided)
-    by_comp.export.responsibilities.append(isolated_responsibility)
-    by_comp.export.responsibilities.append(set_responsibility)
+    # Pydantic v2: Can't assign empty list to fields with min_length=1, create lists directly
+    by_comp.export.provided = [isolated_provided, set_provided]
+    by_comp.export.responsibilities = [isolated_responsibility, set_responsibility]
 
     return by_comp
 
