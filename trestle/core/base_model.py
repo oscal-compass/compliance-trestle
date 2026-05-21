@@ -202,7 +202,7 @@ class OscalBaseModel(TrestleBaseModel):
 
         # remaining values
         remaining_values = {}
-        for field_name in self.model_fields.keys():
+        for field_name in self.__class__.model_fields.keys():
             if field_name in stripped_class.model_fields:
                 remaining_values[field_name] = self.__dict__[field_name]
 
@@ -356,8 +356,8 @@ class OscalBaseModel(TrestleBaseModel):
             return new_oscal_type.model_validate_json(self.oscal_serialize_json(pretty=False, wrapped=False))
 
         if (
-            'root' in self.model_fields
-            and len(self.model_fields) == 1
+            'root' in self.__class__.model_fields
+            and len(self.__class__.model_fields) == 1
             and 'root' in new_oscal_type.model_fields
             and len(new_oscal_type.model_fields) == 1
         ):

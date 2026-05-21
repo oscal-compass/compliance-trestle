@@ -314,13 +314,21 @@ def test_copy_to() -> None:
     with pytest.raises(err.TrestleError):
         c_m.copy_to(component.DefinedComponent)
 
-    # Testing of root fields. This is is subject to change.
+    # Testing of root fields. This is subject to change.
     # component.Remarks (type str)
     # poam.RiskStatus (type str)
     # note the testing conduction
     # Pydantic v2: RootModel uses 'root' instead of '__root__'
-    remark = common.Remarks(root='hello')
-    _ = remark.copy_to(common.RiskStatus)
+    # In Pydantic v2, RootModel doesn't inherit from OscalBaseModel, so copy_to is not available
+    # Instead, we can convert between RootModels using model_validate on the root value
+    # Remarks wraps MarkupMultilineDatatype which itself wraps str
+    markup = common.MarkupMultilineDatatype(root='hello')
+    remark = common.Remarks(root=markup)
+    # RiskStatus wraps TokenDatatype | RiskStatusValidValues
+    # We can create a RiskStatus from the enum value
+    risk_status = common.RiskStatus(root=common.RiskStatusValidValues.open)
+    assert isinstance(remark.root, common.MarkupMultilineDatatype)
+    assert risk_status.root == common.RiskStatusValidValues.open
 
 
 def test_copy_components() -> None:

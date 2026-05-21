@@ -399,7 +399,9 @@ class SplitCmd(CommandPlusDocs):
             if last_one and use_alias_dict:
                 aliases_to_strip[path].mark_written()
             # If it's an empty model after stripping the fields, don't create path and don't write
-            field_list = [x for x in model_obj.model_fields.keys() if model_obj.model_fields[x] is not None]
+            # Access model_fields from class to avoid deprecation warning in Pydantic v2.11+
+            model_fields = model_obj.__class__.model_fields
+            field_list = [x for x in model_fields.keys() if model_fields[x] is not None]
             if set(field_list) == set(stripped_field_alias):
                 return path_chain_end
 
@@ -467,7 +469,8 @@ class SplitCmd(CommandPlusDocs):
         # strip the root model object and add a WriteAction
         stripped_root = model_obj.stripped_instance(stripped_fields_aliases=stripped_field_alias)
         # If it's an empty model after stripping the fields, don't create path and don't write
-        if set(model_obj.model_fields.keys()) == set(stripped_field_alias):
+        # Access model_fields from class to avoid deprecation warning in Pydantic v2.11+
+        if set(model_obj.__class__.model_fields.keys()) == set(stripped_field_alias):
             return split_plan
         if root_file_name != '':
             root_file = base_dir / root_file_name

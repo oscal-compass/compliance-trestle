@@ -68,7 +68,8 @@ class TrestleBaseModel(BaseModel):
     def __eq__(self, other: Any) -> bool:
         """Compare with unwrapped root value if present (Pydantic v2 RootModel)."""
         # Only use custom comparison for root models
-        if hasattr(self, 'root') and 'root' in self.model_fields:
+        # Access model_fields from class to avoid deprecation warning in Pydantic v2.11+
+        if hasattr(self, 'root') and 'root' in self.__class__.model_fields:
             if isinstance(other, type(self)):
                 return self.root == other.root
             return self.root == other

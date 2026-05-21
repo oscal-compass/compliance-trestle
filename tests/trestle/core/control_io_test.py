@@ -117,20 +117,28 @@ def test_read_write_controls(
     dummy_title = 'dummy title'
     control = cat.Control(id='ac-1', title=dummy_title, props=[common.Property(name=const.SORT_ID, value='ac-01')])
     statement_part = common.Part(id='ac-1_smt', name=const.STATEMENT)
-    prop = common.Property(name='label', value='a')
-    part_a = common.Part(id='ac-1_smt.a', name='item', prose='a prose', props=[prop])
-    prop.value = 'b'
-    part_b = common.Part(id='ac-1_smt.b', name='item', prose='b prose', props=[prop])
-    prop.value = '1'
-    part_b1 = common.Part(id='ac-1_smt.b.1', name='item', prose='b.1 prose', props=[prop])
-    prop.value = '2'
-    part_b2 = common.Part(id='ac-1_smt.b.2', name='item', prose='b.2 prose', props=[prop])
-    prop.value = 'i'
-    part_b2i = common.Part(id='ac-1_smt.b.2.i', name='item', prose='b.2.i prose', props=[prop])
-    prop.value = '3'
-    part_b3 = common.Part(id='ac-1_smt.b.3', name='item', prose='b.3 prose', props=[prop])
-    prop.value = 'c'
-    part_c = common.Part(id='ac-1_smt.c', name='item', prose='c prose', props=[prop])
+    # Pydantic v2: Create separate Property objects instead of mutating a single one
+    part_a = common.Part(
+        id='ac-1_smt.a', name='item', prose='a prose', props=[common.Property(name='label', value='a')]
+    )
+    part_b = common.Part(
+        id='ac-1_smt.b', name='item', prose='b prose', props=[common.Property(name='label', value='b')]
+    )
+    part_b1 = common.Part(
+        id='ac-1_smt.b.1', name='item', prose='b.1 prose', props=[common.Property(name='label', value='1')]
+    )
+    part_b2 = common.Part(
+        id='ac-1_smt.b.2', name='item', prose='b.2 prose', props=[common.Property(name='label', value='2')]
+    )
+    part_b2i = common.Part(
+        id='ac-1_smt.b.2.i', name='item', prose='b.2.i prose', props=[common.Property(name='label', value='i')]
+    )
+    part_b3 = common.Part(
+        id='ac-1_smt.b.3', name='item', prose='b.3 prose', props=[common.Property(name='label', value='3')]
+    )
+    part_c = common.Part(
+        id='ac-1_smt.c', name='item', prose='c prose', props=[common.Property(name='label', value='c')]
+    )
     sec_1_text = r"""
 General comment
 on separate lines

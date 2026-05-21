@@ -484,13 +484,15 @@ class ControlReader:
         if set_parameters_flag:
             params: Dict[str, str] = yaml_header.get(const.SET_PARAMS_TAG, [])
             if params:
-                control.params = []
+                # Pydantic v2: Build the complete list before assignment to avoid validation on empty list
+                param_list = []
                 for id_, param_dict in params.items():
                     param_dict['id'] = id_
                     param = ModelUtils.dict_to_parameter(param_dict)
                     # if display_name is in list of properties, set its namespace
                     ControlReader._update_display_prop_namespace(param)
-                    control.params.append(param)
+                    param_list.append(param)
+                control.params = param_list
         sort_id = deep_get(yaml_header, [const.TRESTLE_GLOBAL_TAG, const.SORT_ID], None)
         if sort_id:
             # Build props list to avoid Pydantic v2 validation on empty list
