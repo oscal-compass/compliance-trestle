@@ -612,7 +612,8 @@ class SSPAssemble(AuthorCommonCommand):
                 ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
                 ssp.control_implementation.implemented_requirements = []
                 ssp.control_implementation.description = const.SSP_SYSTEM_CONTROL_IMPLEMENTATION_TEXT
-                ssp.system_implementation.components = []
+                # Don't set components to empty list - let _merge_comp_defs handle it
+                # to avoid Pydantic v2 validation on empty list
                 self._merge_comp_defs(ssp, comp_dict, context, catalog_interface)
                 CatalogReader.read_ssp_md_content(md_path, ssp, comp_dict, part_id_map_by_label, context)
 

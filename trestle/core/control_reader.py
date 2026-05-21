@@ -493,6 +493,10 @@ class ControlReader:
                     control.params.append(param)
         sort_id = deep_get(yaml_header, [const.TRESTLE_GLOBAL_TAG, const.SORT_ID], None)
         if sort_id:
-            control.props = control.props if control.props else []
-            control.props.append(common.Property(name=const.SORT_ID, value=sort_id))
+            # Build props list to avoid Pydantic v2 validation on empty list
+            new_prop = common.Property(name=const.SORT_ID, value=sort_id)
+            if control.props:
+                control.props.append(new_prop)
+            else:
+                control.props = [new_prop]
         return control, group_title

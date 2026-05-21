@@ -60,38 +60,38 @@ class TrestleBaseModel(BaseModel):
         return cls.model_validate(obj)
 
     def __str__(self) -> str:
-        """Return string representation, unwrapping __root__ if present."""
-        if hasattr(self, '__root__'):
-            return str(self.__root__)
+        """Return string representation, unwrapping root if present (Pydantic v2 RootModel)."""
+        if hasattr(self, 'root'):
+            return str(self.root)
         return super().__str__()
 
     def __eq__(self, other: Any) -> bool:
-        """Compare with unwrapped __root__ value if present."""
-        # Only use custom comparison for __root__ models
-        if hasattr(self, '__root__') and '__root__' in self.model_fields:
+        """Compare with unwrapped root value if present (Pydantic v2 RootModel)."""
+        # Only use custom comparison for root models
+        if hasattr(self, 'root') and 'root' in self.model_fields:
             if isinstance(other, type(self)):
-                return self.__root__ == other.__root__
-            return self.__root__ == other
-        # For non-__root__ models, use default Pydantic comparison
+                return self.root == other.root
+            return self.root == other
+        # For non-root models, use default Pydantic comparison
         return super().__eq__(other)
 
     def __hash__(self) -> int:
-        """Hash the __root__ value if present."""
-        if hasattr(self, '__root__'):
+        """Hash the root value if present (Pydantic v2 RootModel)."""
+        if hasattr(self, 'root'):
             try:
-                return hash(self.__root__)
+                return hash(self.root)
             except TypeError:
-                # If __root__ is unhashable, fall back to id-based hash
+                # If root is unhashable, fall back to id-based hash
                 return hash(id(self))
         # For Pydantic v2, use id-based hash for non-frozen models
         return hash(id(self))
 
     def __getattr__(self, name: str) -> Any:
-        """Delegate attribute access to __root__ if present and attribute not found."""
-        # Avoid infinite recursion by checking if __root__ exists via __dict__
-        if '__root__' in self.__dict__ and name != '__root__':
+        """Delegate attribute access to root if present and attribute not found (Pydantic v2 RootModel)."""
+        # Avoid infinite recursion by checking if root exists via __dict__
+        if 'root' in self.__dict__ and name != 'root':
             try:
-                return getattr(self.__root__, name)
+                return getattr(self.root, name)
             except AttributeError:
                 pass
         raise AttributeError(f"'{type(self).__name__}' object has no attribute '{name}'")

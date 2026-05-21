@@ -137,21 +137,33 @@ class Modify(Pipeline.Filter):
             trestle_part = get_item_from_list(control.parts, TRESTLE_INHERITED_PROPS_TRACKER, lambda p: p.name)
             if trestle_part is None:
                 trestle_part = common.Part(
-                    id=TRESTLE_INHERITED_PROPS_TRACKER, name=TRESTLE_INHERITED_PROPS_TRACKER, props=[], parts=[]
+                    id=TRESTLE_INHERITED_PROPS_TRACKER, name=TRESTLE_INHERITED_PROPS_TRACKER, props=add.props
                 )
                 control.parts = as_list(control.parts)
                 control.parts.append(trestle_part)
                 trestle_part = control.parts[-1]
             if add.by_id is None or add.by_id == control.id:
+                # Ensure props is a list before extending
+                if trestle_part.props is None:
+                    trestle_part.props = []
                 trestle_part.props.extend(add.props)
             else:
                 by_id_part = get_item_from_list(trestle_part.parts, add.by_id, lambda p: p.title)
                 if by_id_part is None:
+                    # Ensure parts is a list before appending
+                    if trestle_part.parts is None:
+                        trestle_part.parts = []
                     trestle_part.parts.append(
-                        common.Part(name=TRESTLE_INHERITED_PROPS_TRACKER + '_' + add.by_id, title=add.by_id, props=[])
+                        common.Part(
+                            name=TRESTLE_INHERITED_PROPS_TRACKER + '_' + add.by_id, title=add.by_id, props=add.props
+                        )
                     )
                     by_id_part = trestle_part.parts[-1]
-                by_id_part.props.extend(add.props)
+                else:
+                    # Ensure props is a list before extending
+                    if by_id_part.props is None:
+                        by_id_part.props = []
+                    by_id_part.props.extend(add.props)
 
     @staticmethod
     def _add_to_control(control: cat.Control, add: prof.Add) -> None:

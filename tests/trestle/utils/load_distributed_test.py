@@ -80,8 +80,9 @@ def test_load_list_group(testdata_dir, tmp_trestle_dir):
     # load_list is expected to return a list of array, instead of an instance of Groups class
     expected_groups = actual_model_type.oscal_read(testdata_dir / 'split_merge/load_distributed/groups.json')
 
-    # FIXME confirm this is correct.  __root__ was not needed prior to updating oscal to dev branch
-    assert actual_groups == expected_groups.__root__
+    # Pydantic v2: RootModel uses 'root' instead of '__root__'
+    # FIXME confirm this is correct.  root was not needed prior to updating oscal to dev branch
+    assert actual_groups == expected_groups.root
 
 
 def test_load_distributed(testdata_dir, tmp_trestle_dir):

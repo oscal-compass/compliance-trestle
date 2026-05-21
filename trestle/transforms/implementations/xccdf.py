@@ -433,11 +433,14 @@ class _OscalResultsFactory:
             status=_status,
         )
         if self.assessment_asset_properties:
-            component.props = []
+            # Build the props list first, then assign to avoid Pydantic v2 validation on empty list
+            props_list = []
             for prop in self.assessment_asset_properties:
                 if prop.name == 'time':
                     continue
-                component.props.append(prop)
+                props_list.append(prop)
+            if props_list:
+                component.props = props_list
         components = [component]
         assessment_platform = AssessmentPlatform(uuid=str(uuid.uuid4()))
         assessment_platforms = [assessment_platform]
@@ -561,10 +564,11 @@ class _OscalResultsFactory:
             elif ns:
                 prop = Property(name=name, value=value, ns=ns)
         else:
+            # Pydantic v2: construct() → model_construct()
             if ns and class_:
-                prop = Property.construct(name=name, value=value, ns=ns, class_=class_)
+                prop = Property.model_construct(name=name, value=value, ns=ns, class_=class_)
             elif ns:
-                prop = Property.construct(name=name, value=value, ns=ns)
+                prop = Property.model_construct(name=name, value=value, ns=ns)
         return prop
 
     def _get_inventory_ref(self, rule_use: RuleUse) -> str:

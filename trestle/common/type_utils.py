@@ -39,7 +39,7 @@ def get_origin(field_type: Type[Any]) -> Optional[Type[Any]]:
 def _get_model_field_info(field_type: Type[Any]) -> Tuple[Optional[FieldInfo], Optional[str], Optional[Type[Any]]]:
     """Need special handling for pydantic RootModel objects.
 
-    In Pydantic v2, RootModel has a 'root' field instead of '__root__'.
+    In Pydantic v2, RootModel has a 'root' field instead of the v1 '__root__' field.
     """
     root_field: Optional[FieldInfo] = None
     root_type: Optional[str] = None
@@ -75,7 +75,7 @@ def is_collection_field_type(field_type: Type[Any]) -> bool:
     Returns:
         True if it is a collection type list.
     """
-    # first check if it is a pydantic __root__ object
+    # first check if it is a pydantic root object (RootModel in v2)
     _, root_type, _ = _get_model_field_info(field_type)
     if root_type == 'List':
         return True

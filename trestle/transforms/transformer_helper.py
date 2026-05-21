@@ -173,7 +173,8 @@ class PropertyManager:
         """Create new property."""
         if self._checking:
             return Property(name=name, value=value, class_=class_, ns=ns)  # type: ignore
-        return Property.construct(name=name, value=value, class_=class_, ns=ns)  # type: ignore
+        # Pydantic v2: construct() → model_construct()
+        return Property.model_construct(name=name, value=value, class_=class_, ns=ns)  # type: ignore
 
 
 class TransformerHelper:

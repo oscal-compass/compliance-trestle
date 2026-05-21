@@ -440,7 +440,8 @@ def generate_sample_model(
                     # Root models should ideally not exist, however, sometimes we are stuck with them.
                     # If that is the case we need sufficient information on the type in order to generate a model.
                     # E.g. we need the type of the container.
-                    elif field == '__root__' and hasattr(model, '__name__'):
+                    # In Pydantic v2, RootModel uses 'root' field instead of v1's '__root__' field
+                    elif field == 'root' and hasattr(model, '__name__'):
                         model_dict[field] = generate_sample_value_by_type(
                             outer_type, str_utils.classname_to_alias(model.__name__, AliasMode.FIELD)
                         )

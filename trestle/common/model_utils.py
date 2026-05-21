@@ -25,7 +25,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple, Type, Union, get_args, get_origin
 import types
 
-from pydantic import BaseModel, create_model
+from pydantic import BaseModel, RootModel, create_model
 
 import trestle.common
 import trestle.common.common_types
@@ -183,9 +183,9 @@ class ModelUtils:
             # Use the model type as-is (may be wrapped Union) for reading
             # The smart validators in generated models will choose the correct variant
             primary_model_instance = primary_model_type.oscal_read(abs_path)
-            # If the instance has __root__, unwrap it to get the actual model
-            if hasattr(primary_model_instance, '__root__'):
-                root_val = primary_model_instance.__root__
+            # If the instance has root (Pydantic v2 RootModel), unwrap it to get the actual model
+            if hasattr(primary_model_instance, 'root'):
+                root_val = primary_model_instance.root
                 # Only unwrap if it's a single OscalBaseModel, not a list
                 if isinstance(root_val, OscalBaseModel):
                     primary_model_instance = root_val
@@ -209,19 +209,22 @@ class ModelUtils:
 
                     # If a model is just a container for a list e.g.
                     # class Foo(OscalBaseModel):  noqa: E800
-                    #      __root__: List[Bar]    noqa: E800
+                    #      root: List[Bar]    noqa: E800  # Pydantic v2 RootModel
                     # You need to test whether first a root key exists
                     # then whether the outer_type of root is a collection.
                     # Alternative is to do a try except to avoid the error for an unknown key.
 
-                    if model_type.is_collection_container():
-                        # This directory is a decomposed List or Dict
-                        collection_type = model_type.get_collection_type()
-                        model_type, model_alias, model_instance = ModelUtils.load_distributed(
-                            local_path, abs_trestle_root, collection_type
-                        )
-                        aliases_not_to_be_stripped.append(model_alias.split('.')[-1])
-                        instances_to_be_merged.append(model_instance)
+                    # Check if model_type is actually a BaseModel before calling model methods
+                    # It could be a raw list type like list[Role]
+                    if isinstance(model_type, type) and issubclass(model_type, OscalBaseModel):
+                        if model_type.is_collection_container():
+                            # This directory is a decomposed List or Dict
+                            collection_type = model_type.get_collection_type()
+                            model_type, model_alias, model_instance = ModelUtils.load_distributed(
+                                local_path, abs_trestle_root, collection_type
+                            )
+                            aliases_not_to_be_stripped.append(model_alias.split('.')[-1])
+                            instances_to_be_merged.append(model_instance)
             primary_model_dict = {}
             if primary_model_instance is not None:
                 primary_model_dict = primary_model_instance.__dict__
@@ -239,10 +242,10 @@ class ModelUtils:
                 instance = instances_to_be_merged[i]
                 if (
                     hasattr(instance, '__dict__')
-                    and '__root__' in instance.__dict__
+                    and 'root' in instance.__dict__
                     and isinstance(instance, OscalBaseModel)
                 ):
-                    instance = instance.__dict__['__root__']
+                    instance = instance.__dict__['root']
                 if top_level and not primary_model_dict:
                     primary_model_dict = instance.__dict__
                 else:
@@ -364,7 +367,13 @@ class ModelUtils:
                     model_type = utils.get_inner_type(model_type)
                 else:
                     model_type = _get_model_type_from_union(model_type, alias)
-                    model_type = model_type.alias_to_field_map()[alias].annotation
+                    # Add type guard to ensure model_type is a class with alias_to_field_map
+                    if isinstance(model_type, type) and issubclass(model_type, OscalBaseModel):
+                        model_type = model_type.alias_to_field_map()[alias].annotation
+                    else:
+                        raise TrestleError(
+                            f'Model type {model_type} does not support alias_to_field_map for alias {alias}'
+                        )
 
         return model_type, full_alias
 
@@ -392,7 +401,37 @@ class ModelUtils:
             malias = model_alias.split('.')[-1]
             class_name = alias_to_classname(malias, AliasMode.JSON)
             logger.debug(f'collection field type class name {class_name} and alias {malias}')
-            model_type = create_model(class_name, __base__=OscalBaseModel, __root__=(singular_model_type, ...))
+            # In Pydantic v2, must use RootModel instead of v1's __root__ field
+            # Create RootModel[singular_model_type] dynamically
+            # We need to use type() to create the class dynamically with proper generic parameter
+            from typing import get_args as typing_get_args
+
+            # Create a RootModel subclass for the collection type
+            # RootModel in v2 uses 'root' field instead of v1's '__root__' field
+            class DynamicRootModel(RootModel):  # type: ignore
+                root: singular_model_type  # type: ignore
+
+                # Inherit OscalBaseModel methods by copying them
+                # This is a workaround since we can't use multiple inheritance with RootModel
+                model_config = OscalBaseModel.model_config
+
+                @classmethod
+                def oscal_read(cls, path: pathlib.Path):
+                    """Read from OSCAL JSON/YAML file."""
+                    return OscalBaseModel.oscal_read.__func__(cls, path)
+
+                def oscal_write(self, path: pathlib.Path):
+                    """Write to OSCAL JSON/YAML file."""
+                    return OscalBaseModel.oscal_write(self, path)
+
+                @classmethod
+                def alias_to_field_map(cls):
+                    """Get alias to field mapping."""
+                    return OscalBaseModel.alias_to_field_map.__func__(cls)
+
+            DynamicRootModel.__name__ = class_name
+            DynamicRootModel.__qualname__ = class_name
+            model_type = DynamicRootModel
             logger.debug(f'model_type created: {model_type}')
             return model_type, model_alias
 
@@ -424,18 +463,30 @@ class ModelUtils:
             logger.debug(f'Union type: using field hint "{field_hint}" to select variant')
             singular_model_type = _get_model_type_from_union(singular_model_type, field_hint)
             # Now proceed with stripping for the selected variant
-            model_type = singular_model_type.create_stripped_model_type(
-                stripped_fields_aliases=list(aliases_to_be_stripped)
-            )
-            logger.debug(f'model_type: {model_type}')
-            return model_type, model_alias
+            # Ensure it's a model class before calling create_stripped_model_type
+            if isinstance(singular_model_type, type) and issubclass(singular_model_type, OscalBaseModel):
+                model_type = singular_model_type.create_stripped_model_type(
+                    stripped_fields_aliases=list(aliases_to_be_stripped)
+                )
+                logger.debug(f'model_type: {model_type}')
+                return model_type, model_alias
+            else:
+                logger.warning(
+                    f'Resolved Union type {singular_model_type} is not an OscalBaseModel, cannot strip fields'
+                )
+                return singular_model_type, model_alias
         elif len(aliases_to_be_stripped) > 0:
             # Non-Union type: normal stripping logic
-            model_type = singular_model_type.create_stripped_model_type(
-                stripped_fields_aliases=list(aliases_to_be_stripped)
-            )
-            logger.debug(f'model_type: {model_type}')
-            return model_type, model_alias
+            # Ensure it's a model class before calling create_stripped_model_type
+            if isinstance(singular_model_type, type) and issubclass(singular_model_type, OscalBaseModel):
+                model_type = singular_model_type.create_stripped_model_type(
+                    stripped_fields_aliases=list(aliases_to_be_stripped)
+                )
+                logger.debug(f'model_type: {model_type}')
+                return model_type, model_alias
+            else:
+                logger.warning(f'Model type {singular_model_type} is not an OscalBaseModel, cannot strip fields')
+                return singular_model_type, model_alias
         # Handle Union types even when no stripping is needed
         origin = get_origin(singular_model_type)
         if origin is Union or (hasattr(types, 'UnionType') and origin is types.UnionType):
@@ -465,8 +516,31 @@ class ModelUtils:
                 # This allows smart validators to choose the correct variant at deserialization time
                 malias = model_alias.split('.')[-1]
                 class_name = alias_to_classname(malias, AliasMode.JSON)
-                logger.debug(f'Wrapping Union type {singular_model_type} in __root__ model')
-                model_type = create_model(class_name, __base__=OscalBaseModel, __root__=(singular_model_type, ...))
+                logger.debug(f'Wrapping Union type {singular_model_type} in RootModel')
+
+                # In Pydantic v2, must use RootModel instead of v1's __root__ field
+                class DynamicRootModel(RootModel):  # type: ignore
+                    root: singular_model_type  # type: ignore
+
+                    model_config = OscalBaseModel.model_config
+
+                    @classmethod
+                    def oscal_read(cls, path: pathlib.Path):
+                        """Read from OSCAL JSON/YAML file."""
+                        return OscalBaseModel.oscal_read.__func__(cls, path)
+
+                    def oscal_write(self, path: pathlib.Path):
+                        """Write to OSCAL JSON/YAML file."""
+                        return OscalBaseModel.oscal_write(self, path)
+
+                    @classmethod
+                    def alias_to_field_map(cls):
+                        """Get alias to field mapping."""
+                        return OscalBaseModel.alias_to_field_map.__func__(cls)
+
+                DynamicRootModel.__name__ = class_name
+                DynamicRootModel.__qualname__ = class_name
+                model_type = DynamicRootModel
                 return model_type, model_alias
         else:
             singular_model_type = _get_model_type_from_union(singular_model_type)
@@ -607,6 +681,12 @@ class ModelUtils:
 
             if path_part == '*':
                 model_types.append(model_type)
+                continue
+
+            # Check if model_type is actually a BaseModel before calling alias_to_field_map
+            # It could be a raw list type like list[Role]
+            if not (isinstance(model_type, type) and issubclass(model_type, OscalBaseModel)):
+                # If it's not a model, we can't traverse further
                 continue
 
             field_map = model_type.alias_to_field_map()
@@ -763,7 +843,7 @@ class ModelUtils:
         """
         main_fields = ['id', 'label', 'values', 'select', 'choice', 'how_many', 'guidelines', 'prose']
         if isinstance(obj, common.Remarks):
-            return obj.__root__
+            return obj.root
         if isinstance(obj, common.HowMany):
             return obj.value
         # it is either a string already or we cast it to string
@@ -771,7 +851,8 @@ class ModelUtils:
             return str(obj)
         # it is an oscal object and we need to recurse within its attributes
         res = {}
-        for field in obj.__fields_set__:
+        # Pydantic v2: __fields_set__ → model_fields_set
+        for field in obj.model_fields_set:
             if partial and field not in main_fields:
                 continue
             attr = getattr(obj, field)
@@ -1095,7 +1176,8 @@ class ModelUtils:
     @staticmethod
     def fields_set_non_none(obj: BaseModel) -> Set[str]:
         """Find the fields set with Nones and empty items removed."""
-        return set(as_filtered_list(list(obj.__fields_set__), lambda f: getattr(obj, f)))
+        # Pydantic v2: __fields_set__ → model_fields_set
+        return set(as_filtered_list(list(obj.model_fields_set), lambda f: getattr(obj, f)))
 
     @staticmethod
     def _objects_differ(
@@ -1125,11 +1207,11 @@ class ModelUtils:
             elif isinstance(obj_b, Enum) and obj_a_type is str:
                 # Compare string with enum value
                 return obj_a != obj_b.value
-            # Handle __root__ wrapper vs enum comparison
-            elif hasattr(obj_a, '__root__') and isinstance(obj_b, Enum):
-                return obj_a.__root__ != obj_b.value
-            elif hasattr(obj_b, '__root__') and isinstance(obj_a, Enum):
-                return obj_a.value != obj_b.__root__
+            # Handle root wrapper vs enum comparison (Pydantic v2 RootModel)
+            elif hasattr(obj_a, 'root') and isinstance(obj_b, Enum):
+                return obj_a.root != obj_b.value
+            elif hasattr(obj_b, 'root') and isinstance(obj_a, Enum):
+                return obj_a.value != obj_b.root
             # If both are BaseModel instances with same class name, treat as equivalent
             elif isinstance(obj_a, BaseModel) and isinstance(obj_b, BaseModel):
                 if obj_a_type.__name__ == obj_b_type.__name__:

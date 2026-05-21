@@ -142,7 +142,8 @@ class Merge(Pipeline.Filter):
 
     def _merge_items(self, dest: OBT, src: OBT, merge_method: Optional[str]) -> None:
         """Merge two items recursively."""
-        for field in src.__fields_set__:
+        # Pydantic v2: __fields_set__ → model_fields_set
+        for field in src.model_fields_set:
             self._merge_attrs(dest, src, field, merge_method)
 
     def _group_contents(self, group: cat.Group1 | cat.Group2) -> Tuple[List[cat.Control], List[com.Parameter]]:
@@ -201,8 +202,9 @@ class Merge(Pipeline.Filter):
         # unstructured controls should appear after any loose params
 
         # make copies to avoid changing input objects
-        local_cat = catalog.copy(deep=True)
-        local_merged = merged.copy(deep=True) if merged else None
+        # Pydantic v2: copy() → model_copy()
+        local_cat = catalog.model_copy(deep=True)
+        local_merged = merged.model_copy(deep=True) if merged else None
 
         merge_method = prof.CombinationMethodValidValues.keep.value
         as_is = False

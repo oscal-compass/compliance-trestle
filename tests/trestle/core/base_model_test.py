@@ -318,7 +318,8 @@ def test_copy_to() -> None:
     # component.Remarks (type str)
     # poam.RiskStatus (type str)
     # note the testing conduction
-    remark = common.Remarks(__root__='hello')
+    # Pydantic v2: RootModel uses 'root' instead of '__root__'
+    remark = common.Remarks(root='hello')
     _ = remark.copy_to(common.RiskStatus)
 
 

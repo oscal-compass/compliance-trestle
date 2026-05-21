@@ -1125,12 +1125,15 @@ class _CdMgr:
         """Remove empty components."""
         component_definition = self._component_definition
         components = component_definition.components
-        component_definition.components = []
+        # Build new components list to avoid Pydantic v2 validation on empty list
+        new_components = []
         for component in components:
             if component.props is None or len(component.props) == 0:
                 if component.control_implementations is None or len(component.control_implementations) == 0:
                     continue
-            component_definition.components.append(component)
+            new_components.append(component)
+        if new_components:
+            component_definition.components = new_components
 
     def get_max_rule_set_number(self) -> int:
         """Get max rule set number."""

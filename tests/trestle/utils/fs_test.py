@@ -818,7 +818,7 @@ def test_dict_to_parameter_value_not_in_choices() -> None:
 
 
 def test_objects_differ_enum_and_root_comparisons() -> None:
-    """Test _objects_differ with enum and __root__ wrapper comparisons."""
+    """Test _objects_differ with enum and root wrapper comparisons."""
     from enum import Enum
 
     class TestEnum(Enum):
@@ -827,7 +827,8 @@ def test_objects_differ_enum_and_root_comparisons() -> None:
 
     class MockRootWrapper:
         def __init__(self, value):
-            self.__root__ = value
+            # Pydantic v2: RootModel uses 'root' instead of '__root__'
+            self.root = value
 
     enum_val = TestEnum.VALUE1
     assert not ModelUtils._objects_differ(enum_val, 'value1', [], [], False)

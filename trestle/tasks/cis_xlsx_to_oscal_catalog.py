@@ -165,15 +165,20 @@ class CatalogHelper:
     def _add_prop(self, control: Control, prop: Property) -> None:
         """Add property to control."""
         control_props = control.props
-        control.props = []
+        if control_props is None:
+            control.props = [prop]
+            return
+        # Build new props list to avoid Pydantic v2 validation on empty list
+        new_props = []
         last = 0
         for i, control_prop in enumerate(control_props):
             if control_prop.name == prop.name:
                 last = i
         for i, control_prop in enumerate(control_props):
-            control.props.append(control_prop)
+            new_props.append(control_prop)
             if i == last:
-                control.props.append(prop)
+                new_props.append(prop)
+        control.props = new_props
 
     def add_control(
         self, section: str, recommendation: str, title: str, props: List[Property], parts: List[Part], links: List[Link]

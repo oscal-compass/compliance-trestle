@@ -430,4 +430,5 @@ class GenericControlImplementation(TrestleBaseModel):
         return ossp.ControlImplementation(**class_dict)
 
 
-GenericComponent.update_forward_refs()
+# Pydantic v2: update_forward_refs() → model_rebuild()
+GenericComponent.model_rebuild()

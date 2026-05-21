@@ -215,8 +215,10 @@ class ControlInterface:
         if new_prop.name in names:
             index = names.index(new_prop.name)
             del part_control.props[index]
-        part_control.props = as_list(part_control.props)
-        part_control.props.append(new_prop)
+        # Build props list to avoid Pydantic v2 validation on empty list
+        props_list = as_list(part_control.props)
+        props_list.append(new_prop)
+        part_control.props = props_list
 
     @staticmethod
     def _apply_params_format(param_str: Optional[str], params_format: Optional[str]) -> Optional[str]:

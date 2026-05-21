@@ -87,8 +87,8 @@ class OscalBaseModel(TrestleBaseModel):
         # Use orjson for JSON parsing
         # Note: In Pydantic v2, json_loads is not directly configurable in ConfigDict
         # We'll handle this in the serialization methods
-        # Custom JSON encoders
-        json_encoders={datetime.datetime: lambda x: robust_datetime_serialization(x)},
+        # Pydantic v2: json_encoders is deprecated, use model_serializer or mode='json' in model_dump
+        # Custom datetime serialization is handled in oscal_serialize_json_bytes method
         # Allow population by field name (populate_by_name in v2)
         populate_by_name=True,
         # Enforce strict schema (extra='forbid' in v2)
@@ -217,9 +217,9 @@ class OscalBaseModel(TrestleBaseModel):
         class_name = self.__class__.__name__
         result = {}
         raw_dict = self.model_dump(by_alias=True, exclude_none=True)
-        # Additional check to avoid root serialization
-        if '__root__' in raw_dict.keys():
-            result[classname_to_alias(class_name, AliasMode.JSON)] = raw_dict['__root__']
+        # Additional check to avoid root serialization (Pydantic v2 RootModel uses 'root')
+        if 'root' in raw_dict.keys():
+            result[classname_to_alias(class_name, AliasMode.JSON)] = raw_dict['root']
         else:
             result[classname_to_alias(class_name, AliasMode.JSON)] = raw_dict
         return result
@@ -236,9 +236,16 @@ class OscalBaseModel(TrestleBaseModel):
         if wrapped:
             odict = self.oscal_dict()
         else:
-            odict = self.model_dump(by_alias=True, exclude_none=True)
-        json_encoders = self.model_config.get('json_encoders') or {}
-        default_encoder = json_encoders.get(datetime.datetime)
+            odict = self.model_dump(by_alias=True, exclude_none=True, mode='json')
+
+        # Pydantic v2: json_encoders in ConfigDict is deprecated
+        # Use model_dump with mode='json' which handles serialization automatically
+        # For custom datetime handling, define a default encoder
+        def default_encoder(obj):
+            if isinstance(obj, datetime.datetime):
+                return robust_datetime_serialization(obj)
+            # Let orjson handle other types
+            raise TypeError(f'Type {type(obj)} not serializable')
 
         if pretty:
             return orjson.dumps(odict, default=default_encoder, option=orjson.OPT_INDENT_2)
@@ -349,13 +356,13 @@ class OscalBaseModel(TrestleBaseModel):
             return new_oscal_type.model_validate_json(self.oscal_serialize_json(pretty=False, wrapped=False))
 
         if (
-            '__root__' in self.model_fields
+            'root' in self.model_fields
             and len(self.model_fields) == 1
-            and '__root__' in new_oscal_type.model_fields
+            and 'root' in new_oscal_type.model_fields
             and len(new_oscal_type.model_fields) == 1
         ):
-            logger.debug('Root element based copy too')
-            return new_oscal_type.model_validate(self.__root__)
+            logger.debug('Root element based copy too (Pydantic v2 RootModel)')
+            return new_oscal_type.model_validate(self.root)
 
         # bad place here.
         raise err.TrestleError('Provided inconsistent classes to copy to methodology.')
@@ -410,17 +417,17 @@ class OscalBaseModel(TrestleBaseModel):
         which looks like
 
         class Foo(OscalBaseModel):
-            __root__: List[Bar]
+            root: List[Bar]  # Pydantic v2 RootModel uses 'root' field
 
         Returns:
             Boolean on if it meets the above criteria
 
         When these cases exist we need special handling of the type information.
         """
-        # Additional sanity check on field length
-        if len(cls.model_fields) == 1 and '__root__' in cls.model_fields:
-            # This is now a __root__ key only model
-            annotation = cls.model_fields['__root__'].annotation
+        # Additional sanity check on field length (Pydantic v2 RootModel uses 'root')
+        if len(cls.model_fields) == 1 and 'root' in cls.model_fields:
+            # This is now a root key only model (RootModel in Pydantic v2)
+            annotation = cls.model_fields['root'].annotation
             if annotation is not None and is_collection_field_type(annotation):
                 return True
         return False
@@ -438,7 +445,7 @@ class OscalBaseModel(TrestleBaseModel):
         """
         if not cls.is_collection_container():
             raise err.TrestleError('OscalBaseModel is not wrapping a collection type')
-        annotation = cls.model_fields['__root__'].annotation
+        annotation = cls.model_fields['root'].annotation
         if annotation is None:
-            raise err.TrestleError('__root__ field has no annotation')
+            raise err.TrestleError('root field has no annotation (Pydantic v2 RootModel)')
         return get_origin(annotation)

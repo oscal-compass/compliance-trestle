@@ -167,10 +167,10 @@ class SplitCmd(CommandPlusDocs):
 
             model: OscalBaseModel = model_type.oscal_read(file_path)
 
-            # If the model has __root__ containing a Union type (not a list), unwrap it
+            # If the model has root containing a Union type (not a list), unwrap it (Pydantic v2 RootModel)
             # This happens when we wrap Union types for reading (e.g., Group1|Group2)
-            if hasattr(model, '__root__'):
-                root_val = model.__root__
+            if hasattr(model, 'root'):
+                root_val = model.root
                 # Only unwrap if it's a single OscalBaseModel, not a list
                 if isinstance(root_val, OscalBaseModel):
                     model = root_val
@@ -443,7 +443,8 @@ class SplitCmd(CommandPlusDocs):
             if element_path.get_parent() is None and len(element_path.get()) > 1:
                 stripped_part = element_path.get()[1]
                 if stripped_part == ElementPath.WILDCARD:
-                    stripped_field_alias.append('__root__')
+                    # In Pydantic v2, RootModel uses 'root' field
+                    stripped_field_alias.append('root')
                 else:
                     if stripped_part not in stripped_field_alias:
                         stripped_field_alias.append(stripped_part)

@@ -475,17 +475,20 @@ class _OscalResultsFactory:
 
     def _get_inventory_properties_unchecked(self, rule_use):
         """Get observation properties, without checking."""
+        # Pydantic v2: construct() → model_construct()
         props = []
         if rule_use.host_name is None:
             props.append(
-                Property.construct(name='target', value=rule_use.target, ns=self._ns, class_='scc_inventory_item_id')
+                Property.model_construct(
+                    name='target', value=rule_use.target, ns=self._ns, class_='scc_inventory_item_id'
+                )
             )
-            props.append(Property.construct(name='target_type', value=rule_use.target_type, ns=self._ns))
+            props.append(Property.model_construct(name='target_type', value=rule_use.target_type, ns=self._ns))
         else:
-            props.append(Property.construct(name='target', value=rule_use.target, ns=self._ns))
-            props.append(Property.construct(name='target_type', value=rule_use.target_type, ns=self._ns))
+            props.append(Property.model_construct(name='target', value=rule_use.target, ns=self._ns))
+            props.append(Property.model_construct(name='target_type', value=rule_use.target_type, ns=self._ns))
             props.append(
-                Property.construct(
+                Property.model_construct(
                     name='host_name', value=rule_use.host_name, ns=self._ns, class_='scc_inventory_item_id'
                 )
             )
@@ -531,22 +534,27 @@ class _OscalResultsFactory:
 
     def _get_observation_properties_unchecked(self, rule_use):
         """Get observation properties, without checking."""
+        # Pydantic v2: construct() → model_construct()
         props = []
-        props.append(Property.construct(name='scanner_name', value=rule_use.scanner_name, ns=self._ns))
-        props.append(Property.construct(name='scanner_version', value=rule_use.scanner_version, ns=self._ns))
-        props.append(Property.construct(name='idref', value=rule_use.idref, ns=self._ns, class_='scc_check_name_id'))
+        props.append(Property.model_construct(name='scanner_name', value=rule_use.scanner_name, ns=self._ns))
+        props.append(Property.model_construct(name='scanner_version', value=rule_use.scanner_version, ns=self._ns))
         props.append(
-            Property.construct(name='version', value=rule_use.version, ns=self._ns, class_='scc_check_version')
+            Property.model_construct(name='idref', value=rule_use.idref, ns=self._ns, class_='scc_check_name_id')
         )
-        props.append(Property.construct(name='result', value=rule_use.result, ns=self._ns, class_='scc_result'))
-        props.append(Property.construct(name='time', value=rule_use.time, ns=self._ns, class_='scc_timestamp'))
         props.append(
-            Property.construct(name='severity', value=rule_use.severity, ns=self._ns, class_='scc_check_severity')
+            Property.model_construct(name='version', value=rule_use.version, ns=self._ns, class_='scc_check_version')
         )
-        props.append(Property.construct(name='weight', value=rule_use.weight, ns=self._ns))
-        props.append(Property.construct(name='benchmark_id', value=rule_use.benchmark_id, ns=self._ns))
-        props.append(Property.construct(name='benchmark_href', value=rule_use.benchmark_href, ns=self._ns))
-        props.append(Property.construct(name='id', value=rule_use.id_, ns=self._ns, class_='scc_predefined_profile'))
+        props.append(Property.model_construct(name='result', value=rule_use.result, ns=self._ns, class_='scc_result'))
+        props.append(Property.model_construct(name='time', value=rule_use.time, ns=self._ns, class_='scc_timestamp'))
+        props.append(
+            Property.model_construct(name='severity', value=rule_use.severity, ns=self._ns, class_='scc_check_severity')
+        )
+        props.append(Property.model_construct(name='weight', value=rule_use.weight, ns=self._ns))
+        props.append(Property.model_construct(name='benchmark_id', value=rule_use.benchmark_id, ns=self._ns))
+        props.append(Property.model_construct(name='benchmark_href', value=rule_use.benchmark_href, ns=self._ns))
+        props.append(
+            Property.model_construct(name='id', value=rule_use.id_, ns=self._ns, class_='scc_predefined_profile')
+        )
         return props
 
     def _process(self, co_result: _ComplianceOperatorResult) -> None:

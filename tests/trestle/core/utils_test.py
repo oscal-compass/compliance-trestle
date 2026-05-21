@@ -64,21 +64,25 @@ def test_is_collection_field_type() -> None:
 
     assert mutils.is_collection_field_type(type(good_catalog)) is False  # Catalog
     catalog_field = catalog.Model.alias_to_field_map()['catalog']
-    assert mutils.is_collection_field_type(catalog_field.outer_type_) is False  # Catalog
+    assert mutils.is_collection_field_type(catalog_field.annotation) is False  # Catalog
 
     assert mutils.is_collection_field_type(type(good_catalog.metadata)) is False  # Metadata
     metadata_field = catalog.Catalog.alias_to_field_map()['metadata']
-    assert mutils.is_collection_field_type(metadata_field.outer_type_) is False  # Metadata
+    assert mutils.is_collection_field_type(metadata_field.annotation) is False  # Metadata
 
     assert mutils.is_collection_field_type(type(good_catalog.metadata.roles)) is False  # list
     roles_field = common.Metadata.alias_to_field_map()['roles']
-    assert mutils.is_collection_field_type(roles_field.outer_type_) is True  # List[Role]
-    assert mutils.is_collection_field_type(roles_field.type_) is False  # Role
+    assert mutils.is_collection_field_type(roles_field.annotation) is True  # List[Role]
+    # Get inner type from annotation for comparison
+    inner_type = mutils.get_inner_type(roles_field.annotation)
+    assert mutils.is_collection_field_type(inner_type) is False  # Role
 
     assert mutils.is_collection_field_type(type(good_catalog.metadata.responsible_parties)) is False  # list
     responsible_parties_field = common.Metadata.alias_to_field_map()['responsible-parties']
-    assert mutils.is_collection_field_type(responsible_parties_field.outer_type_) is True  # List[ResponsibleParty]
-    assert mutils.is_collection_field_type(responsible_parties_field.type_) is False  # ResponsibleParty
+    assert mutils.is_collection_field_type(responsible_parties_field.annotation) is True  # List[ResponsibleParty]
+    # Get inner type from annotation for comparison
+    inner_type = mutils.get_inner_type(responsible_parties_field.annotation)
+    assert mutils.is_collection_field_type(inner_type) is False  # ResponsibleParty
 
     dct = {'foo': responsible_parties_field}
     assert mutils.is_collection_field_type(dct) is False  # hand-created dict is not collection field type
@@ -87,8 +91,10 @@ def test_is_collection_field_type() -> None:
         mutils.is_collection_field_type(type(good_catalog.metadata.parties[0].addresses[0].addr_lines)) is False
     )  # list
     postal_address_field = common.Address.alias_to_field_map()['addr-lines']
-    assert mutils.is_collection_field_type(postal_address_field.outer_type_) is True  # List[AddrLine]
-    assert mutils.is_collection_field_type(postal_address_field.type_) is False  # AddrLine
+    assert mutils.is_collection_field_type(postal_address_field.annotation) is True  # List[AddrLine]
+    # Get inner type from annotation for comparison
+    inner_type = mutils.get_inner_type(postal_address_field.annotation)
+    assert mutils.is_collection_field_type(inner_type) is False  # AddrLine
 
 
 def test_get_inner_type() -> None:
@@ -102,7 +108,7 @@ def test_get_inner_type() -> None:
     with pytest.raises(err.TrestleError):
         # Type of field catalog is not a collection field type
         catalog_field = catalog.Model.alias_to_field_map()['catalog']
-        mutils.get_inner_type(catalog_field.outer_type_)
+        mutils.get_inner_type(catalog_field.annotation)
 
     with pytest.raises(err.TrestleError):
         # Type of roles object is not a collection field type
@@ -110,7 +116,7 @@ def test_get_inner_type() -> None:
 
     # Type of field roles is a collection field type
     roles_field = common.Metadata.alias_to_field_map()['roles']
-    role_type = mutils.get_inner_type(roles_field.outer_type_)
+    role_type = mutils.get_inner_type(roles_field.annotation)
     assert role_type == common.Role
 
     with pytest.raises(err.TrestleError):
@@ -119,7 +125,7 @@ def test_get_inner_type() -> None:
 
     # Type of field responsible-parties is a collection field type
     responsible_parties_field = common.Metadata.alias_to_field_map()['responsible-parties']
-    responsible_party_type = mutils.get_inner_type(responsible_parties_field.outer_type_)
+    responsible_party_type = mutils.get_inner_type(responsible_parties_field.annotation)
     assert responsible_party_type == common.ResponsibleParty
 
 

@@ -19,7 +19,7 @@ from typing import Any, List, Optional, Type, Union, cast
 
 import typing_extensions
 
-from pydantic import Field, ValidationError, create_model
+from pydantic import Field, RootModel, ValidationError, create_model
 
 from ruamel.yaml import YAML
 
@@ -157,7 +157,7 @@ class ElementPath:
     def get_obm_wrapped_type(
         self, root_model: Optional[Type[Any]] = None, use_parent: bool = False
     ) -> Type[OscalBaseModel]:
-        """Get the type of the element. Wraps the collection type in an OscalBaseModel as a __root__ element.
+        """Get the type of the element. Wraps the collection type in an OscalBaseModel as a root element (Pydantic v2 RootModel).
 
         This should principally be used for validating content.
 
@@ -181,12 +181,31 @@ class ElementPath:
                 raise TrestleError('Unknown error inferring type from element path.')
             # Final path must be the alias
 
-            new_base_type = create_model(
-                str_utils.alias_to_classname(collection_name, AliasMode.JSON),
-                __base__=OscalBaseModel,
-                __root__=(base_type, ...),
-            )
-            return new_base_type
+            # In Pydantic v2, must use RootModel instead of v1's __root__ field
+            class_name = str_utils.alias_to_classname(collection_name, AliasMode.JSON)
+
+            class DynamicRootModel(RootModel):  # type: ignore
+                root: base_type  # type: ignore
+
+                model_config = OscalBaseModel.model_config
+
+                @classmethod
+                def oscal_read(cls, path: pathlib.Path):
+                    """Read from OSCAL JSON/YAML file."""
+                    return OscalBaseModel.oscal_read.__func__(cls, path)
+
+                def oscal_write(self, path: pathlib.Path):
+                    """Write to OSCAL JSON/YAML file."""
+                    return OscalBaseModel.oscal_write(self, path)
+
+                @classmethod
+                def alias_to_field_map(cls):
+                    """Get alias to field mapping."""
+                    return OscalBaseModel.alias_to_field_map.__func__(cls)
+
+            DynamicRootModel.__name__ = class_name
+            DynamicRootModel.__qualname__ = class_name
+            return DynamicRootModel
         # Resolve Union types before returning
         # This handles cases like Group1|Group2 or Parameter1|Parameter2
         resolved_type = _get_model_type_from_union(base_type)
@@ -422,16 +441,16 @@ class Element:
         self._wrapper_alias: str = wrapper_alias
 
     def _get_singular_classname(self) -> str:
-        """Get the inner class name for list or dict objects."""
+        """Get the inner class name for list or dict objects (Pydantic v2 RootModel)."""
         # this assumes all items in list and all values in dict are same type
         class_name = None
-        root = getattr(self._elem, '__root__', None)
+        root = getattr(self._elem, 'root', None)
         if root is not None:
             type_str = root.__class__.__name__
             if type_str == 'list':
-                class_name = self._elem.__root__[0].__class__.__name__
+                class_name = self._elem.root[0].__class__.__name__
             elif type_str == 'dict':
-                class_name = list(self._elem.__root__.values())[0].__class__.__name__
+                class_name = list(self._elem.root.values())[0].__class__.__name__
         return class_name
 
     def get(self) -> OscalBaseModel:
@@ -462,10 +481,10 @@ class Element:
 
         # TODO validate that self._elem is of same type as root_model
 
-        # initialize the starting element for search
+        # initialize the starting element for search (Pydantic v2 RootModel)
         elm = self._elem
-        if hasattr(elm, '__root__') and (isinstance(elm.__root__, dict) or isinstance(elm.__root__, list)):
-            elm = elm.__root__
+        if hasattr(elm, 'root') and (isinstance(elm.root, dict) or isinstance(elm.root, list)):
+            elm = elm.root
 
         # if parent exists and does not end with wildcard, use the parent as the starting element for search
         if (
@@ -602,7 +621,8 @@ class Element:
                 dynamic_passer = {}
                 dynamic_passer['TransientField'] = (self._elem.__class__, Field(self, alias=self._wrapper_alias))
                 wrapper_model = create_model('TransientModel', __base__=OscalBaseModel, **dynamic_passer)
-                wrapped_model = wrapper_model.construct(**{self._wrapper_alias: self._elem})
+                # Pydantic v2: construct() → model_construct()
+                wrapped_model = wrapper_model.model_construct(**{self._wrapper_alias: self._elem})
                 json_data = wrapped_model.oscal_serialize_json(pretty=pretty, wrapped=False)
         return json_data
 
