@@ -571,9 +571,9 @@ class CsvToOscalComponentDefinition(TaskBase):
             component_description = self._csv_mgr.get_value(rule_key, COMPONENT_DESCRIPTION)
             # component
             component = self._cd_mgr.get_component(component_title, component_type, component_description)
-            # props
-            component.props = as_list(component.props)
-            component.props = component.props + self._create_rule_props(rule_key)
+            # props - build list before assignment to avoid empty list validation error
+            props_list = as_list(component.props) + self._create_rule_props(rule_key)
+            component.props = props_list
             # additional props, when not validation component
             if not self._is_validation(rule_key):
                 # control implementation
@@ -583,8 +583,9 @@ class CsvToOscalComponentDefinition(TaskBase):
                 # set-parameters
                 set_parameters = self._create_set_parameters(rule_key)
                 if set_parameters:
-                    control_implementation.set_parameters = as_list(control_implementation.set_parameters)
-                    _OscalHelper.add_set_parameters(control_implementation.set_parameters, set_parameters)
+                    set_params_list = as_list(control_implementation.set_parameters)
+                    _OscalHelper.add_set_parameters(set_params_list, set_parameters)
+                    control_implementation.set_parameters = set_params_list
                 # control-mappings
                 control_mappings = self._csv_mgr.get_value(rule_key, CONTROL_ID_LIST).split()
                 self._add_rule_prop(control_implementation, control_mappings, rule_key)
@@ -609,8 +610,8 @@ class CsvToOscalComponentDefinition(TaskBase):
             )
             part_id = derive_part_id(control_mapping)
             if part_id is None:
-                implemented_requirement.props = as_list(implemented_requirement.props)
-                implemented_requirement.props.append(prop)
+                props = as_list(implemented_requirement.props) + [prop]
+                implemented_requirement.props = props
             else:
                 statement = self._get_statement(implemented_requirement, part_id)
                 statement.props.append(prop)
@@ -651,14 +652,16 @@ class CsvToOscalComponentDefinition(TaskBase):
         self, component: DefinedComponent, source: str, description: str
     ) -> ControlImplementation:
         """Find or create control implementation."""
-        component.control_implementations = as_list(component.control_implementations)
-        for control_implementation in component.control_implementations:
+        control_implementations = as_list(component.control_implementations)
+        for control_implementation in control_implementations:
             if control_implementation.source == source and control_implementation.description == description:
                 return control_implementation
-        control_implementation = ControlImplementation(
+        # Use model_construct to bypass validation for empty implemented_requirements list
+        control_implementation = ControlImplementation.model_construct(
             uuid=str(uuid.uuid4()), source=source, description=description, implemented_requirements=[]
         )
-        component.control_implementations.append(control_implementation)
+        control_implementations.append(control_implementation)
+        component.control_implementations = control_implementations
         return control_implementation
 
     def _str_to_list(self, value: str) -> List[str]:
@@ -716,12 +719,14 @@ class CsvToOscalComponentDefinition(TaskBase):
 
     def _get_statement(self, implemented_requirement: ImplementedRequirement, part_id: str) -> Statement:
         """Find or create statement."""
-        implemented_requirement.statements = as_list(implemented_requirement.statements)
-        for statement in implemented_requirement.statements:
+        statements = as_list(implemented_requirement.statements)
+        for statement in statements:
             if statement.statement_id == part_id:
                 return statement
-        statement = Statement(uuid=str(uuid.uuid4()), statement_id=part_id, description='', props=[])
-        implemented_requirement.statements.append(statement)
+        # Use model_construct to bypass validation for empty props list
+        statement = Statement.model_construct(uuid=str(uuid.uuid4()), statement_id=part_id, description='', props=[])
+        statements.append(statement)
+        implemented_requirement.statements = statements
         return statement
 
     def rules_mod(self, mod_rules: List[str]) -> None:
@@ -794,12 +799,13 @@ class CsvToOscalComponentDefinition(TaskBase):
             control_implementation = self._cd_mgr.find_control_implementation(
                 component_title, component_type, source, description
             )
-            control_implementation.set_parameters = as_list(control_implementation.set_parameters)
             # add
+            set_params_list = as_list(control_implementation.set_parameters)
             rule_key = synthesize_rule_key(component_title, component_type, rule_id, None, None)
             values = [self._csv_mgr.get_default_value_by_id(rule_key, param_id)]
             set_parameter = SetParameter(param_id=param_id, values=values)
-            _OscalHelper.add_set_parameter(control_implementation.set_parameters, set_parameter)
+            _OscalHelper.add_set_parameter(set_params_list, set_parameter)
+            control_implementation.set_parameters = set_params_list
 
     def set_params_mod(self, mod_set_params: List[str]) -> None:
         """Set parameters modify."""
@@ -1063,7 +1069,10 @@ class _CdMgr:
             metadata.version = version
         else:
             metadata = Metadata(title=title, last_modified=timestamp, oscal_version=OSCAL_VERSION, version=version)
-            self._component_definition = ComponentDefinition(uuid=str(uuid.uuid4()), metadata=metadata, components=[])
+            # Use model_construct to bypass validation for empty components list
+            self._component_definition = ComponentDefinition.model_construct(
+                uuid=str(uuid.uuid4()), metadata=metadata, components=[]
+            )
         #
         self._max_rule_set_number = -1
         self._cd_rules_map = {}
@@ -1082,7 +1091,8 @@ class _CdMgr:
             if component.title == component_title and component.type == component_type:
                 logger.debug(f'located component: title={component.title} type={component.type}')
                 return component
-        component = DefinedComponent(
+        # Use model_construct to bypass validation for empty control_implementations list
+        component = DefinedComponent.model_construct(
             uuid=str(uuid.uuid4()),
             type=component_type,
             title=component_title,
