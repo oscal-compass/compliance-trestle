@@ -403,8 +403,15 @@ class _OscalResultsFactory:
     @property
     def control_selections(self) -> List[ControlSelections]:
         """OSCAL control selections."""
+        from trestle.oscal.common import SelectControlById
+
         prop = []
-        prop.append(ControlSelections(include_controls=[]))
+        # Create placeholder control selection with a dummy control ID
+        # to satisfy Pydantic v2 min_length=1 requirement
+        placeholder_data = {'control-id': 'placeholder'}
+        placeholder = SelectControlById.model_validate(placeholder_data)
+        control_sel_data = {'include-controls': [placeholder]}
+        prop.append(ControlSelections.model_validate(control_sel_data))
         return prop
 
     @property

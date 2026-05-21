@@ -216,7 +216,7 @@ class OscalBaseModel(TrestleBaseModel):
         """Return a dictionary including the root wrapping object key."""
         class_name = self.__class__.__name__
         result = {}
-        raw_dict = self.model_dump(by_alias=True, exclude_none=True)
+        raw_dict = self.model_dump(by_alias=True, exclude_none=True, mode='json')
         # Additional check to avoid root serialization (Pydantic v2 RootModel uses 'root')
         if 'root' in raw_dict.keys():
             result[classname_to_alias(class_name, AliasMode.JSON)] = raw_dict['root']
