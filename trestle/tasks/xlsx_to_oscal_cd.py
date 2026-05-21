@@ -147,7 +147,10 @@ class XlsxToOscalComponentDefinition(TaskBase):
                 continue
             # component
             component_name = self.xlsx_helper.get_component_name(row)
-            component_type = 'Service'
+            # Use enum member for Pydantic v2
+            from trestle.oscal.component import DefinedComponentTypeValidValues
+
+            component_type = DefinedComponentTypeValidValues.service
             defined_component = self._get_defined_component(component_name, component_type)
             # parameter
             parameter_name, parameter_description = self.xlsx_helper.get_parameter_name_and_description(row)
@@ -280,16 +283,26 @@ class XlsxToOscalComponentDefinition(TaskBase):
                 # set_parameters is a list
                 implemented_requirement.set_parameters.extend(set_parameters)
 
-    def _get_defined_component(self, component_name: str, component_type: str) -> DefinedComponent:
+    def _get_defined_component(self, component_name: str, component_type) -> DefinedComponent:
         """Get defined component."""
-        key = component_name + key_sep + component_type
+        # Handle both string and enum types
+        from trestle.oscal.component import DefinedComponentTypeValidValues
+
+        if isinstance(component_type, DefinedComponentTypeValidValues):
+            type_value = component_type.value
+            type_enum = component_type
+        else:
+            type_value = component_type
+            type_enum = component_type
+
+        key = component_name + key_sep + type_value
         defined_component = self.defined_components.get(key)
         if not defined_component:
             # create new component
             component_title = component_name
             component_description = component_name
             defined_component = DefinedComponent(
-                uuid=str(uuid.uuid4()), description=component_description, title=component_title, type=component_type
+                uuid=str(uuid.uuid4()), description=component_description, title=component_title, type=type_enum
             )
             self.defined_components[key] = defined_component
         return defined_component

@@ -1287,7 +1287,11 @@ def test_profile_generate_assesment_objectives(tmp_trestle_dir: pathlib.Path, mo
     }
 
     at_2 = nist_cat.groups[1].controls[1]
-    at_2.parts.append(assesment_objectives)
+    # Convert dict to Part object for Pydantic v2
+    from trestle.oscal.catalog import Part
+
+    assessment_part = Part.model_validate(assesment_objectives)
+    at_2.parts.append(assessment_part)
     ModelUtils.save_top_level_model(nist_cat, tmp_trestle_dir, 'nist_cat', FileContentType.JSON)
 
     # convert resolved profile catalog to markdown then assemble it after adding an item to a control

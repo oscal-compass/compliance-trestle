@@ -204,7 +204,7 @@ def parse_chain(
                         raise TrestleError(
                             f'Cannot split beyond * when the wildcard does not refer to a list.  Path: {path_parts}'
                         )
-                    for key in sub_model.model_fields.keys():
+                    for key in sub_model.__class__.model_fields.keys():
                         # only create element path is item is present in the sub_model
                         if getattr(sub_model, key, None) is None:
                             continue

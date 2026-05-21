@@ -629,7 +629,7 @@ class Element:
     @classmethod
     def get_sub_element_class(cls, parent_elm: OscalBaseModel, sub_element_name: str):
         """Get the class of the sub-element."""
-        sub_element_class = parent_elm.model_fields[sub_element_name].annotation
+        sub_element_class = parent_elm.__class__.model_fields[sub_element_name].annotation
         return sub_element_class
 
     @classmethod

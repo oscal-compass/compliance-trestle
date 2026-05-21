@@ -157,14 +157,14 @@ def test_no_timezone_exception() -> None:
     """Test that an exception occurs when no timezone is passed in datetime."""
     no_tz_catalog = simple_catalog()
     with pytest.raises(Exception):
-        jsoned_catalog = no_tz_catalog.json(exclude_none=True, by_alias=True, indent=2)
+        jsoned_catalog = no_tz_catalog.model_dump_json(exclude_none=True, by_alias=True, indent=2)
         type(jsoned_catalog)
 
 
 def test_with_timezone() -> None:
     """Test where serialzation should work."""
     tz_catalog = simple_catalog_with_tz()
-    jsoned_catalog = tz_catalog.json(exclude_none=True, by_alias=True, indent=2)
+    jsoned_catalog = tz_catalog.model_dump_json(exclude_none=True, by_alias=True, indent=2)
 
     popo_json = json.loads(jsoned_catalog)
     time = popo_json['metadata']['last-modified']
@@ -216,30 +216,30 @@ def test_stripped_model() -> None:
     stripped_catalog_object = catalog.create_stripped_model_type(stripped_fields=['metadata'])
 
     # TODO: Need to check best practice here
-    if 'metadata' in stripped_catalog_object.__fields__.keys():
+    if 'metadata' in stripped_catalog_object.model_fields.keys():
         raise Exception('Test failure')
 
-    if 'controls' not in stripped_catalog_object.__fields__.keys():
+    if 'controls' not in stripped_catalog_object.model_fields.keys():
         raise Exception('Test failure')
 
     # Create instance.
     sc_instance = stripped_catalog_object(uuid=str(uuid4()))
-    if 'metadata' in sc_instance.__fields__.keys():
+    if 'metadata' in sc_instance.__class__.model_fields.keys():
         raise Exception('Test failure')
 
 
 def test_stripping_model_class() -> None:
     """Test as a class variable."""
     stripped_catalog_object = oscatalog.Catalog.create_stripped_model_type(stripped_fields=['metadata'])
-    if 'metadata' in stripped_catalog_object.__fields__.keys():
+    if 'metadata' in stripped_catalog_object.model_fields.keys():
         raise Exception('Test failure')
 
-    if 'controls' not in stripped_catalog_object.__fields__.keys():
+    if 'controls' not in stripped_catalog_object.model_fields.keys():
         raise Exception('Test failure')
 
     # Create instance.
     sc_instance = stripped_catalog_object(uuid=str(uuid4()))
-    if 'metadata' in sc_instance.__fields__.keys():
+    if 'metadata' in sc_instance.__class__.model_fields.keys():
         raise Exception('Test failure')
 
 
@@ -284,12 +284,12 @@ def test_stripped_instance(sample_nist_component_def: OscalBaseModel) -> None:
 def test_multiple_variable_strip() -> None:
     """Test mutliple fields can be stripped and checking strict schema enforcement."""
     stripped_catalog_object = oscatalog.Catalog.create_stripped_model_type(['metadata', 'uuid'])
-    if 'metadata' in stripped_catalog_object.__fields__.keys():
+    if 'metadata' in stripped_catalog_object.model_fields.keys():
         raise Exception('Test failure')
-    if 'uuid' in stripped_catalog_object.__fields__.keys():
+    if 'uuid' in stripped_catalog_object.model_fields.keys():
         raise Exception('Test failure')
 
-    if 'controls' not in stripped_catalog_object.__fields__.keys():
+    if 'controls' not in stripped_catalog_object.model_fields.keys():
         raise Exception('Test failure')
 
     with pytest.raises(Exception):

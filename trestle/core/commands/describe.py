@@ -146,7 +146,7 @@ class DescribeCmd(CommandPlusDocs):
             text += f'{cls._clean_type_string(str(type(sub_model)))} and contains:'
             text_out.append(text)
             logger.info(text)
-            for key in sub_model.model_fields.keys():
+            for key in sub_model.__class__.model_fields.keys():
                 value = getattr(sub_model, key, None)
                 text = f'    {key}: {cls._description_text(value)}'
                 text_out.append(text)

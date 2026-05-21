@@ -1087,14 +1087,25 @@ class _CdMgr:
 
     def get_component(self, component_title: str, component_type: str, component_description: str) -> DefinedComponent:
         """Get component."""
+        # Normalize component_type to lowercase to match enum values
+        normalized_type = component_type.lower().strip()
+        # Convert string to enum member for Pydantic v2
+        from trestle.oscal.component import DefinedComponentTypeValidValues
+
+        try:
+            type_enum = DefinedComponentTypeValidValues(normalized_type)
+        except ValueError:
+            # If not a valid enum value, use the string as-is
+            type_enum = normalized_type
+
         for component in self._component_definition.components:
-            if component.title == component_title and component.type == component_type:
+            if component.title == component_title and component.type == type_enum:
                 logger.debug(f'located component: title={component.title} type={component.type}')
                 return component
         # Use model_construct to bypass validation for empty control_implementations list
         component = DefinedComponent.model_construct(
             uuid=str(uuid.uuid4()),
-            type=component_type,
+            type=type_enum,
             title=component_title,
             description=component_description,
             control_implementations=[],
@@ -1105,9 +1116,20 @@ class _CdMgr:
 
     def find_component(self, component_title: str, component_type: str) -> DefinedComponent:
         """Find component."""
+        # Normalize component_type to lowercase to match enum values
+        normalized_type = component_type.lower().strip()
+        # Convert string to enum member for Pydantic v2
+        from trestle.oscal.component import DefinedComponentTypeValidValues
+
+        try:
+            type_enum = DefinedComponentTypeValidValues(normalized_type)
+        except ValueError:
+            # If not a valid enum value, use the string as-is
+            type_enum = normalized_type
+
         rval = None
         for component in self._component_definition.components:
-            if component.title == component_title and component.type == component_type:
+            if component.title == component_title and component.type == type_enum:
                 logger.debug(f'located component: title={component.title} type={component.type}')
                 rval = component
                 break

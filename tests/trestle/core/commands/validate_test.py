@@ -297,7 +297,7 @@ def test_validate_dup_uuids(
 
     # add extra set_param with duplicate param_id and confirm it is not valid
     # only profile has this additional test
-    set_param = sample_trestle_profile.modify.set_parameters[0].copy()
+    set_param = sample_trestle_profile.modify.set_parameters[0].model_copy()
     set_param.values = ['foo']
     sample_trestle_profile.modify.set_parameters.append(set_param)
     assert not validator.model_is_valid(sample_trestle_profile, True)

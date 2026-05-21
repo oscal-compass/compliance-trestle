@@ -318,10 +318,10 @@ def test_objects_differ(simplified_nist_catalog: catalog.Catalog) -> None:
 def test_fields_set_non_none() -> None:
     """Confirm that using fields_set can be bad."""
     prop = common.Property(name='foo', value='bar')
-    assert prop.__fields_set__ == {'name', 'value'}
+    assert prop.model_fields_set == {'name', 'value'}
     prop.ns = None
     # fields_set lists value even though it was set as None
-    assert prop.__fields_set__ == {'name', 'value', 'ns'}
+    assert prop.model_fields_set == {'name', 'value', 'ns'}
     assert ModelUtils.fields_set_non_none(prop) == {'name', 'value'}
 
 

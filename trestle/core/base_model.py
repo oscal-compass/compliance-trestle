@@ -49,6 +49,19 @@ from trestle.core.trestle_base_model import TrestleBaseModel
 logger = logging.getLogger(__name__)
 
 
+class FieldWrapper:
+    """Wrapper for FieldInfo that includes the field name for Pydantic v2 compatibility."""
+
+    def __init__(self, name: str, field_info: FieldInfo):
+        """Initialize with field name and FieldInfo."""
+        self.name = name
+        self.field_info = field_info
+
+    def __getattr__(self, item: str) -> Any:
+        """Delegate attribute access to the wrapped FieldInfo."""
+        return getattr(self.field_info, item)
+
+
 def robust_datetime_serialization(input_dt: datetime.datetime) -> str:
     """Return a nicely formatted string for in a format compatible with OSCAL specifications.
 
@@ -171,7 +184,7 @@ class OscalBaseModel(TrestleBaseModel):
         """Get attribute value by field alias."""
         # TODO: can this be restricted beyond Any easily.
         attr_field = self.get_field_by_alias(attr_alias)
-        if isinstance(attr_field, FieldInfo):
+        if isinstance(attr_field, FieldWrapper):
             # In Pydantic v2, aliases may be None when the field name itself is used.
             for field_name, field_info in self.__class__.model_fields.items():
                 resolved_alias = field_info.alias or field_name
@@ -393,18 +406,19 @@ class OscalBaseModel(TrestleBaseModel):
             self.__dict__[raw_field] = recast_object.__dict__[raw_field]
 
     @classmethod
-    def alias_to_field_map(cls) -> Dict[str, FieldInfo]:
+    def alias_to_field_map(cls) -> Dict[str, FieldWrapper]:
         """Create a map from field alias to field.
 
         Returns:
-            A dict which has key's of aliases and FieldInfo as values.
+            A dict which has key's of aliases and FieldWrapper as values.
         """
-        alias_to_field: Dict[str, FieldInfo] = {}
+        alias_to_field: Dict[str, FieldWrapper] = {}
         for field_name, field_info in cls.model_fields.items():
+            wrapper = FieldWrapper(field_name, field_info)
             if field_info.alias:
-                alias_to_field[field_info.alias] = field_info
+                alias_to_field[field_info.alias] = wrapper
             else:
-                alias_to_field[field_name] = field_info
+                alias_to_field[field_name] = wrapper
 
         return alias_to_field
 
