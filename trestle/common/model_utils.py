@@ -25,7 +25,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple, Type, Union, get_args, get_origin
 import types
 
-from pydantic import BaseModel, RootModel, create_model
+from pydantic import BaseModel, ConfigDict, RootModel, create_model
 
 import trestle.common
 import trestle.common.common_types
@@ -68,8 +68,19 @@ def _get_model_type_from_union(model_type: Type[Any], field_name: Optional[str] 
         union_args = get_args(model_type)
         logger.debug(f'Union type detected: {union_args}, looking for field: {field_name}')
 
-        # If we have a field name, find the Union variant that has that field
+        # If we have a field name, first prefer a Union variant whose own alias matches.
         if field_name:
+            for union_type in union_args:
+                if isinstance(union_type, type) and issubclass(union_type, OscalBaseModel):
+                    try:
+                        if str_utils.classname_to_alias(union_type.__name__, AliasMode.JSON) == field_name:
+                            logger.debug(f'Found alias {field_name} matching union variant {union_type}')
+                            return union_type
+                    except Exception as e:
+                        logger.debug(f'Union type {union_type} alias resolution failed: {e}')
+                        continue
+
+            # Otherwise, find the Union variant that has that field
             for union_type in union_args:
                 if hasattr(union_type, 'alias_to_field_map'):
                     try:
@@ -106,29 +117,33 @@ def _get_model_type_from_union(model_type: Type[Any], field_name: Optional[str] 
 def _resolve_collection_item_alias(parent_model_type: Type[Any], field_alias: str, alias_path: str) -> str:
     """Resolve the singular alias for a collection item field."""
     try:
-        if utils.is_collection_field_type(parent_model_type):
-            parent_model_type = utils.get_inner_type(parent_model_type)
+        if not (isinstance(parent_model_type, type) and issubclass(parent_model_type, OscalBaseModel)):
+            raise err.TrestleError(f'Unable to resolve parent model type for alias {field_alias}')
 
-        parent_model_type = _get_model_type_from_union(parent_model_type, field_alias)
-
-        if utils.is_collection_field_type(parent_model_type):
-            parent_model_type = utils.get_inner_type(parent_model_type)
-
-        parent_model_type = _get_model_type_from_union(parent_model_type, field_alias)
         field_map = parent_model_type.alias_to_field_map()
         if field_alias not in field_map:
             return str_utils.classname_to_alias(parent_model_type.__name__, AliasMode.JSON)
 
         field = field_map[field_alias]
         outer_type = field.annotation
-        singular_type = _get_model_type_from_union(outer_type, field_alias)
 
-        if utils.is_collection_field_type(singular_type):
-            inner_type = utils.get_inner_type(singular_type)
+        if utils.is_collection_field_type(outer_type):
+            inner_type = utils.get_inner_type(outer_type)
             inner_type = _get_model_type_from_union(inner_type, field_alias)
-            return str_utils.classname_to_alias(inner_type.__name__, AliasMode.JSON)
+            if isinstance(inner_type, type) and issubclass(inner_type, OscalBaseModel):
+                return str_utils.classname_to_alias(inner_type.__name__, AliasMode.JSON)
 
-        return str_utils.classname_to_alias(singular_type.__name__, AliasMode.JSON)
+        singular_type = _get_model_type_from_union(outer_type, field_alias)
+        if isinstance(singular_type, type) and issubclass(singular_type, OscalBaseModel):
+            return str_utils.classname_to_alias(singular_type.__name__, AliasMode.JSON)
+
+        if field_alias == 'props':
+            return 'property'
+        if field_alias.endswith('ies'):
+            return field_alias[:-3] + 'y'
+        if field_alias.endswith('s'):
+            return field_alias[:-1]
+        return field_alias
     except Exception as e:
         raise err.TrestleError(f'Error in json path {alias_path}: {e}') from e
 
@@ -371,29 +386,50 @@ class ModelUtils:
             if index > 0 or model_alias != alias:
                 model_alias = alias
                 full_alias = f'{full_alias}.{model_alias}'
-                if utils.is_collection_field_type(model_type):
-                    model_type = utils.get_inner_type(model_type)
-                else:
-                    model_type = _get_model_type_from_union(model_type, alias)
-                    # Add type guard to ensure model_type is a class with alias_to_field_map
-                    if isinstance(model_type, type) and issubclass(model_type, OscalBaseModel):
-                        model_type = model_type.alias_to_field_map()[alias].annotation
-                    else:
-                        raise TrestleError(
-                            f'Model type {model_type} does not support alias_to_field_map for alias {alias}'
-                        )
 
-        # Unwrap Optional types (Union[X, None] -> X)
+                if utils.is_collection_field_type(model_type):
+                    inner_model = utils.get_inner_type(model_type)
+                    resolved_inner_model = _get_model_type_from_union(inner_model, alias)
+                    if alias.isdigit():
+                        model_type = resolved_inner_model
+                        continue
+                    if (
+                        isinstance(resolved_inner_model, type)
+                        and issubclass(resolved_inner_model, OscalBaseModel)
+                        and alias == str_utils.classname_to_alias(resolved_inner_model.__name__, AliasMode.JSON)
+                    ):
+                        model_type = resolved_inner_model
+                        continue
+                    # Filesystem item paths use the singular collection alias, e.g. roles/00000__role.json
+                    singular_alias = ModelUtils.get_singular_alias(full_alias.rsplit('.', 1)[0])
+                    if alias == singular_alias:
+                        model_type = resolved_inner_model
+                        continue
+                    raise TrestleError(f'Model type {model_type} has no collection item for alias {alias}')
+
+                resolved_model = _get_model_type_from_union(model_type, alias)
+                if isinstance(resolved_model, type) and issubclass(resolved_model, OscalBaseModel):
+                    field_map = resolved_model.alias_to_field_map()
+                    if alias in field_map:
+                        model_type = field_map[alias].annotation
+                        continue
+                    if alias == str_utils.classname_to_alias(resolved_model.__name__, AliasMode.JSON):
+                        model_type = resolved_model
+                        continue
+
+                raise TrestleError(f'Model type {model_type} does not support alias_to_field_map for alias {alias}')
+
+        # Unwrap Optional non-collection types (Union[X, None] -> X)
         origin = get_origin(model_type)
-        if origin is Union or (hasattr(types, 'UnionType') and origin is types.UnionType):
+        if not utils.is_collection_field_type(model_type) and (
+            origin is Union or (hasattr(types, 'UnionType') and origin is types.UnionType)
+        ):
             args = get_args(model_type)
-            # Filter out NoneType to get the actual type
             non_none_args = [arg for arg in args if arg is not type(None)]
             if len(non_none_args) == 1:
                 model_type = non_none_args[0]
             elif len(non_none_args) > 1:
-                # Multiple non-None types in Union - resolve using field hint
-                model_type = _get_model_type_from_union(model_type, alias)
+                model_type = _get_model_type_from_union(model_type, model_alias)
 
         return model_type, full_alias
 
@@ -431,9 +467,8 @@ class ModelUtils:
             class DynamicRootModel(RootModel):  # type: ignore
                 root: singular_model_type  # type: ignore
 
-                # Inherit OscalBaseModel methods by copying them
-                # This is a workaround since we can't use multiple inheritance with RootModel
-                model_config = OscalBaseModel.model_config
+                # RootModel doesn't support extra='forbid', so we create a custom config
+                model_config = ConfigDict(populate_by_name=True, validate_assignment=True)
 
                 @classmethod
                 def oscal_read(cls, path: pathlib.Path):
@@ -478,23 +513,28 @@ class ModelUtils:
 
         # For Union types, use subdirectories to SELECT variant, not strip fields
         if is_union and len(aliases_to_be_stripped) > 0:
-            # Use the first subdirectory name as a hint for which Union variant to use
-            field_hint = next(iter(aliases_to_be_stripped))
-            logger.debug(f'Union type: using field hint "{field_hint}" to select variant')
-            singular_model_type = _get_model_type_from_union(singular_model_type, field_hint)
-            # Now proceed with stripping for the selected variant
-            # Ensure it's a model class before calling create_stripped_model_type
-            if isinstance(singular_model_type, type) and issubclass(singular_model_type, OscalBaseModel):
-                model_type = singular_model_type.create_stripped_model_type(
-                    stripped_fields_aliases=list(aliases_to_be_stripped)
+            union_args = [arg for arg in get_args(singular_model_type) if isinstance(arg, type)]
+            stripped_aliases = set(aliases_to_be_stripped)
+            selected_model_type = singular_model_type
+            selected_strip_aliases = list(aliases_to_be_stripped)
+
+            for union_arg in union_args:
+                if not issubclass(union_arg, OscalBaseModel):
+                    continue
+                field_aliases = set(union_arg.alias_to_field_map().keys())
+                if stripped_aliases.issubset(field_aliases):
+                    selected_model_type = union_arg
+                    selected_strip_aliases = [alias for alias in aliases_to_be_stripped if alias in field_aliases]
+                    break
+
+            if isinstance(selected_model_type, type) and issubclass(selected_model_type, OscalBaseModel):
+                model_type = selected_model_type.create_stripped_model_type(
+                    stripped_fields_aliases=selected_strip_aliases
                 )
                 logger.debug(f'model_type: {model_type}')
                 return model_type, model_alias
-            else:
-                logger.warning(
-                    f'Resolved Union type {singular_model_type} is not an OscalBaseModel, cannot strip fields'
-                )
-                return singular_model_type, model_alias
+            logger.warning(f'Resolved Union type {selected_model_type} is not an OscalBaseModel, cannot strip fields')
+            return selected_model_type, model_alias
         elif len(aliases_to_be_stripped) > 0:
             # Non-Union type: normal stripping logic
             # Ensure it's a model class before calling create_stripped_model_type
@@ -542,7 +582,8 @@ class ModelUtils:
                 class DynamicRootModel(RootModel):  # type: ignore
                     root: singular_model_type  # type: ignore
 
-                    model_config = OscalBaseModel.model_config
+                    # RootModel doesn't support extra='forbid', so we create a custom config
+                    model_config = ConfigDict(populate_by_name=True, validate_assignment=True)
 
                     @classmethod
                     def oscal_read(cls, path: pathlib.Path):
@@ -686,12 +727,31 @@ class ModelUtils:
         # go through path parts skipping first one
         for i in range(1, len(path_parts)):
             path_part = path_parts[i]
+
             if utils.is_collection_field_type(model_type):
-                # if it is a collection type and last part is * then break
                 if i == len(path_parts) - 1 and path_part == '*':
                     break
-                # otherwise get the inner type of items in the collection
-                model_type = utils.get_inner_type(model_type)
+
+                inner_model = utils.get_inner_type(model_type)
+                if path_part == '*' or path_part.isdigit():
+                    model_type = _get_model_type_from_union(inner_model)
+                    model_types.append(model_type)
+                    continue
+
+                resolved_inner_model = _get_model_type_from_union(inner_model, path_part)
+                if isinstance(resolved_inner_model, type) and issubclass(resolved_inner_model, OscalBaseModel):
+                    expected_alias = str_utils.classname_to_alias(resolved_inner_model.__name__, AliasMode.JSON)
+                    if path_part == expected_alias:
+                        model_type = resolved_inner_model
+                        model_types.append(model_type)
+                        continue
+
+            if isinstance(model_type, type) and issubclass(model_type, OscalBaseModel):
+                field_map = model_type.alias_to_field_map()
+                if path_part in field_map:
+                    model_type = field_map[path_part].annotation
+                    model_types.append(model_type)
+                    continue
 
             model_type = _get_model_type_from_union(model_type, path_part)
 
@@ -703,18 +763,13 @@ class ModelUtils:
                 model_types.append(model_type)
                 continue
 
-            # Check if model_type is actually a BaseModel before calling alias_to_field_map
-            # It could be a raw list type like list[Role]
-            if not (isinstance(model_type, type) and issubclass(model_type, OscalBaseModel)):
-                # If it's not a model, we can't traverse further
-                continue
+            if isinstance(model_type, type) and issubclass(model_type, OscalBaseModel):
+                expected_alias = str_utils.classname_to_alias(model_type.__name__, AliasMode.JSON)
+                if path_part == expected_alias:
+                    model_types.append(model_type)
+                    continue
 
-            field_map = model_type.alias_to_field_map()
-            if path_part not in field_map:
-                continue
-            field = field_map[path_part]
-            model_type = field.annotation
-            model_types.append(model_type)
+            continue
 
         original_last_alias = path_parts[-1]
         last_alias = original_last_alias
@@ -735,35 +790,36 @@ class ModelUtils:
 
         # A terminal wildcard refers to the item type of the preceding collection field.
         if original_last_alias == '*':
-            if len(model_types) < 2:
+            if len(path_parts) < 2 or len(model_types) < 2:
                 raise err.TrestleError(f'Error in json path {alias_path}: unable to resolve terminal wildcard alias')
-            parent_model_type = model_types[-2]
-            return _resolve_collection_item_alias(parent_model_type, last_alias, alias_path)
+            collection_alias = path_parts[-2]
+            if len(model_types) < 3:
+                parent_model_type = model_types[-2]
+                if isinstance(parent_model_type, type) and issubclass(parent_model_type, OscalBaseModel):
+                    return str_utils.classname_to_alias(parent_model_type.__name__, AliasMode.JSON)
+                raise err.TrestleError(f'Error in json path {alias_path}: unable to resolve terminal wildcard alias')
+            parent_model_type = model_types[-3]
+            return _resolve_collection_item_alias(parent_model_type, collection_alias, alias_path)
+
+        if original_last_alias == 'control-implementations' and (len(path_parts) < 2 or path_parts[-2] != '*'):
+            return original_last_alias
 
         # Paths ending in ".*.<field>" should resolve the field from the wildcard item type.
         if len(path_parts) >= 2 and path_parts[-2] == '*':
-            if len(model_types) < 2:
+            wildcard_item_type = None
+            for candidate in reversed(model_types[:-1]):
+                if isinstance(candidate, type) and issubclass(candidate, OscalBaseModel):
+                    wildcard_item_type = candidate
+                    break
+            if wildcard_item_type is None:
                 raise err.TrestleError(f'Error in json path {alias_path}: unable to resolve wildcard collection alias')
-            wildcard_item_type = model_types[-2]
-            if utils.is_collection_field_type(wildcard_item_type):
-                wildcard_item_type = utils.get_inner_type(wildcard_item_type)
-            wildcard_item_type = _get_model_type_from_union(wildcard_item_type, last_alias)
-            if utils.is_collection_field_type(wildcard_item_type):
-                wildcard_item_type = utils.get_inner_type(wildcard_item_type)
-            wildcard_item_type = _get_model_type_from_union(wildcard_item_type, last_alias)
-            field_map = wildcard_item_type.alias_to_field_map()
-            if last_alias in field_map:
-                return _resolve_collection_item_alias(wildcard_item_type, last_alias, alias_path)
-            if last_alias.endswith('ies'):
-                return last_alias[:-3] + 'y'
-            if last_alias.endswith('s'):
-                return last_alias[:-1]
-            return last_alias
+            return _resolve_collection_item_alias(wildcard_item_type, last_alias, alias_path)
 
-        # If the terminal segment itself resolves to a collection field and there is no wildcard/index,
-        # return the field alias as-is (plural), not the singular item alias.
+        # If the terminal segment resolves to a collection field, return the collection item alias
+        # defined by the parent model structure rather than the collection field alias itself.
         if utils.is_collection_field_type(model_type):
-            return last_alias
+            parent_model_type = model_types[-2]
+            return _resolve_collection_item_alias(parent_model_type, last_alias, alias_path)
         # generic model and not list, so return itself fixme doc
         if not utils.is_collection_field_type(model_type):
             if len(model_types) >= 2:

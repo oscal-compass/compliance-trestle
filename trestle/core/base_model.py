@@ -177,19 +177,14 @@ class OscalBaseModel(TrestleBaseModel):
 
     def get_field_by_alias(self, field_alias: str) -> Any:
         """Convert field alias to a field."""
-        attr_field = self.alias_to_field_map().get(field_alias, None)
-        return attr_field
+        return self.alias_to_field_map().get(field_alias, None)
 
     def get_field_value_by_alias(self, attr_alias: str) -> Optional[Any]:
         """Get attribute value by field alias."""
         # TODO: can this be restricted beyond Any easily.
         attr_field = self.get_field_by_alias(attr_alias)
         if isinstance(attr_field, FieldWrapper):
-            # In Pydantic v2, aliases may be None when the field name itself is used.
-            for field_name, field_info in self.__class__.model_fields.items():
-                resolved_alias = field_info.alias or field_name
-                if resolved_alias == attr_alias:
-                    return getattr(self, field_name, None)
+            return getattr(self, attr_field.name, None)
         return None
 
     def stripped_instance(

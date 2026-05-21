@@ -115,43 +115,49 @@ class ElementPath:
         # variables
         # for current_element_str in effective_path[1:]:
         for current_element_str in effective_path[1:]:
-            # Determine if the parent model is a collection.
+            # Determine if the current model is a collection first so Optional[List[T]] paths
+            # like catalog.controls.control and catalog.controls.* resolve to the item type.
             if utils.is_collection_field_type(prev_model):
                 inner_model = utils.get_inner_type(prev_model)
-                # Handle Union types (e.g., Group1|Group2 from catalog or profile)
-                # Both variants in a Union typically map to the same JSON alias
-                if hasattr(inner_model, '__name__'):
-                    inner_class_name = classname_to_alias(inner_model.__name__, AliasMode.JSON)
-                else:
-                    # For Union types, use the first variant's name
-                    # e.g., for Group1|Group2, both map to JSON alias "group"
-                    union_args = typing_extensions.get_args(inner_model)
-                    if union_args:
-                        inner_class_name = classname_to_alias(union_args[0].__name__, AliasMode.JSON)
-                    else:
-                        raise err.TrestleError(f'Unable to determine class name for type {inner_model}')
-                # Assert that the current name fits an expected form.
-                # Valid choices here are *, integer (for arrays) and the inner model alias
-                if (
-                    inner_class_name == current_element_str
-                    or current_element_str == self.WILDCARD
-                    or current_element_str.isnumeric()
-                ):
-                    prev_model = inner_model
 
-                else:
-                    raise TrestleError('Unexpected key in element path when finding type.')
+                if current_element_str == self.WILDCARD or current_element_str.isnumeric():
+                    prev_model = _get_model_type_from_union(inner_model)
+                    continue
 
-            else:
-                # Indices, * are not allowed on non-collection types
-                if current_element_str == self.WILDCARD:
-                    raise TrestleError(
-                        'Wild card in unexpected position when trying to find class type.'
-                        + ' Element path type lookup can only occur where a single type can be identified.'
-                    )
-                # Resolve Union types before accessing alias_to_field_map
+                resolved_inner_model = _get_model_type_from_union(inner_model, field_name=current_element_str)
+                if isinstance(resolved_inner_model, type) and issubclass(resolved_inner_model, OscalBaseModel):
+                    inner_class_name = classname_to_alias(resolved_inner_model.__name__, AliasMode.JSON)
+                    if inner_class_name == current_element_str:
+                        prev_model = resolved_inner_model
+                        continue
+
+                raise TrestleError('Unexpected key in element path when finding type.')
+
+            # Prefer field traversal on the current model before treating the segment as a direct union alias.
+            if isinstance(prev_model, type) and issubclass(prev_model, OscalBaseModel):
+                field_map = prev_model.alias_to_field_map()
+                if current_element_str in field_map:
+                    prev_model = field_map[current_element_str].annotation
+                    continue
+
                 resolved_model = _get_model_type_from_union(prev_model, field_name=current_element_str)
-                prev_model = resolved_model.alias_to_field_map()[current_element_str].annotation
+                if isinstance(resolved_model, type) and issubclass(resolved_model, OscalBaseModel):
+                    resolved_model_alias = classname_to_alias(resolved_model.__name__, AliasMode.JSON)
+                    if current_element_str == resolved_model_alias:
+                        prev_model = resolved_model
+                        continue
+
+            if current_element_str == self.WILDCARD or current_element_str.isnumeric():
+                raise TrestleError(
+                    'Wild card in unexpected position when trying to find class type.'
+                    + ' Element path type lookup can only occur where a single type can be identified.'
+                )
+
+            raise TrestleError(f'Unable to resolve model type for element path segment "{current_element_str}"')
+        if utils.is_collection_field_type(prev_model):
+            origin = utils.get_origin(prev_model)
+            if str(origin) == "<class 'types.UnionType'>" or str(origin) == 'typing.Union':
+                return utils.get_inner_type(prev_model)  # type: ignore
         return prev_model
 
     def get_obm_wrapped_type(
@@ -169,10 +175,7 @@ class ElementPath:
             The type of the model whether wrapped or not as an OscalBaseModel.
         """
         base_type = self.get_type(root_model, use_parent)
-        # Get an outer model type.
-        origin_type = utils.get_origin(base_type)
-
-        if origin_type in [list, dict]:
+        if utils.is_collection_field_type(base_type):
             # OSCAL does not support collections of collections directly. We should not hit this scenario
             collection_name = self.get_last()
             if collection_name == self.WILDCARD:

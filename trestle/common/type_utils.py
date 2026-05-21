@@ -79,9 +79,17 @@ def is_collection_field_type(field_type: Type[Any]) -> bool:
     _, root_type, _ = _get_model_field_info(field_type)
     if root_type == 'List':
         return True
-    # Retrieves type from a type annotation
+
     origin_type = get_origin(field_type)
-    return origin_type == list
+    if origin_type == list:
+        return True
+
+    # Optional[list[T]] / Union[list[T], None] in Pydantic v2 annotations
+    if str(origin_type) == "<class 'types.UnionType'>" or origin_type == Union:
+        union_args = [arg for arg in typing_extensions.get_args(field_type) if arg is not type(None)]
+        return len(union_args) == 1 and is_collection_field_type(union_args[0])
+
+    return False
 
 
 def get_inner_type(collection_field_type: Union[Type[List[Any]], Type[Dict[str, Any]]]) -> Type[Any]:
@@ -96,16 +104,16 @@ def get_inner_type(collection_field_type: Union[Type[List[Any]], Type[Dict[str, 
         The desired type.
     """
     try:
-        # Pydantic special cases must be dealt with here:
-        _, _, singular_type = _get_model_field_info(collection_field_type)
-        if singular_type is not None:
-            return singular_type
-
         origin_type = get_origin(collection_field_type)
         if str(origin_type) == "<class 'types.UnionType'>" or origin_type == Union:
             union_args = [arg for arg in typing_extensions.get_args(collection_field_type) if arg is not type(None)]
             if len(union_args) == 1:
                 return get_inner_type(union_args[0])
+
+        # Pydantic RootModel special cases must only unwrap collection roots.
+        _, root_type, singular_type = _get_model_field_info(collection_field_type)
+        if root_type in ('List', 'Dict') and singular_type is not None:
+            return get_inner_type(singular_type)
 
         # Get type arguments - try both typing_extensions and typing.get_args
         # In Python 3.9+, list[...] creates types.GenericAlias which needs typing.get_args
