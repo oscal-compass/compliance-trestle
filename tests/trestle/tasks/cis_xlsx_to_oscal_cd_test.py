@@ -231,7 +231,14 @@ def _validate_db2(tmp_path: pathlib.Path):
     assert component_definition.metadata.title == 'CIS IBM Db2 11 Benchmark'
     assert component_definition.metadata.version == '1.1.0'
     component = component_definition.components[0]
-    assert component.type == 'software'
+    # Pydantic v2: component.type can be StringDatatype or DefinedComponentTypeValidValues
+    from trestle.oscal.common import StringDatatype
+    from trestle.oscal.component import DefinedComponentTypeValidValues
+
+    if isinstance(component.type, StringDatatype):
+        assert component.type.root == 'software'
+    else:
+        assert component.type == DefinedComponentTypeValidValues.software
     assert len(component.props) == 552
     prop = component.props[0]
     assert prop.name == 'Rule_Id'
