@@ -23,6 +23,7 @@ from _pytest.monkeypatch import MonkeyPatch
 
 import pytest
 
+from pydantic import AnyUrl
 from ruamel.yaml import YAML
 
 from tests import test_utils
@@ -301,9 +302,11 @@ def test_profile_generate_assemble(
     assert ModelUtils.model_age(profile) < test_utils.NEW_MODEL_AGE_SECONDS
     # get the set_params from the assembled profile
     set_params = profile.modify.set_parameters
+
     if set_parameters_flag:
         assert set_params[2].values[0] == 'new value'
-        assert set_params[1].props[0].ns == const.TRESTLE_GENERIC_NS
+        # Pydantic v2: Compare AnyUrl objects directly
+        assert set_params[1].props[0].ns == AnyUrl(const.TRESTLE_GENERIC_NS)
         assert len(set_params) == 14
     else:
         # the original profile did not have ns set for this display name
@@ -316,15 +319,18 @@ def test_profile_generate_assemble(
     assert set_params[0].values[0] == 'all personnel'
     assert set_params[0].props[0].name == const.DISPLAY_NAME
     assert set_params[0].props[0].value.startswith('Pretty')
-    assert set_params[0].props[0].ns == const.TRESTLE_GENERIC_NS
+    # Pydantic v2: Compare AnyUrl objects directly
+    assert set_params[0].props[0].ns == AnyUrl(const.TRESTLE_GENERIC_NS)
     assert set_params[1].param_id == 'ac-1_prm_2'
     assert set_params[1].values[0] == 'Organization-level'
     assert set_params[1].values[1] == 'System-level'
     assert set_params[1].props[0].name == const.DISPLAY_NAME
     assert set_params[2].param_id == 'ac-1_prm_3'
+
     add = profile.modify.alters[0].adds[0]
-    assert add.props[0].ns == 'https://my_new_namespace'
-    assert add.props[1].ns == 'https://my_added_namespace'
+    # Pydantic v2: Compare AnyUrl objects directly
+    assert add.props[0].ns == AnyUrl('https://my_new_namespace')
+    assert add.props[1].ns == AnyUrl('https://my_added_namespace')
 
     # now create the resolved profile catalog from the assembled json profile and confirm the addition is there
 

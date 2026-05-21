@@ -19,6 +19,8 @@ from typing import Dict, List
 
 from _pytest.monkeypatch import MonkeyPatch
 
+from pydantic import AnyUrl
+
 from tests import test_utils
 from tests.test_utils import FileChecker, setup_for_ssp, setup_for_ssp_fedramp
 
@@ -1236,7 +1238,8 @@ def test_ssp_gen_and_assemble_add_props(tmp_trestle_dir: pathlib.Path) -> None:
     assert len(impl_req.props) == 1
     assert impl_req.props[0].name == 'prop_with_ns'  # type: ignore
     assert impl_req.props[0].value == 'prop with ns'  # type: ignore
-    assert impl_req.props[0].ns == 'https://my_new_namespace'  # type: ignore
+    # Pydantic v2: Compare AnyUrl objects directly
+    assert impl_req.props[0].ns == AnyUrl('https://my_new_namespace')  # type: ignore
 
     smt_a = next((smt for smt in impl_req.statements if smt.statement_id == 'ac-1_smt.a'), None)
     assert len(smt_a.props) == 1

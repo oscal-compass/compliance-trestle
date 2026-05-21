@@ -1441,8 +1441,9 @@ def kill_roots(file_classes):
 
 def relax_optional_parameter_labels(file_classes):
     """Allow blank optional parameter labels while keeping other single-line fields strict."""
-    strict_label = r"constr(regex=r'^[^\n]+$')"
-    relaxed_label = r"constr(regex=r'^[^\n]*\Z')"
+    # Pydantic v2 uses 'pattern=' instead of 'regex='
+    strict_label = r"constr(pattern=r'^[^\n]+$')"
+    relaxed_label = r"constr(pattern=r'^[^\n]*$')"
     parameter_label_classes = {'Parameter1', 'Parameter2', 'SetParameters', 'SetParameters1'}
     for classes in file_classes.values():
         for c in classes:

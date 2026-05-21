@@ -25,6 +25,8 @@ from _pytest.monkeypatch import MonkeyPatch
 
 import pytest
 
+from pydantic import AnyUrl
+
 from tests import test_utils
 from tests.test_utils import set_cwd_unsafe
 
@@ -65,7 +67,8 @@ def _validate_ocp(tmp_path: pathlib.Path) -> None:
     assert component.type == 'Service'
     assert component.title == 'OSCO'
     assert component.props[0].name == 'Rule_Id'
-    assert component.props[0].ns == 'http://oscal-compass.github.io/compliance-trestle/schemas/oscal/cd'
+    # Pydantic v2: Compare AnyUrl objects directly
+    assert component.props[0].ns == AnyUrl('http://oscal-compass.github.io/compliance-trestle/schemas/oscal/cd')
     assert component.props[0].value == 'xccdf_org.ssgproject.content_rule_api_server_anonymous_auth'
     assert component.props[0].class_ == 'scc_class'
     assert component.props[0].remarks == 'rule_set_000'
@@ -735,7 +738,8 @@ def test_execute_delete_rule(tmp_path: pathlib.Path) -> None:
     component = cd.components[0]
     assert len(component.props) == 57
     assert component.props[0].name == 'Rule_Id'
-    assert component.props[0].ns == 'http://abc.github.io/compliance-trestle/schemas/oscal/cd'
+    # Pydantic v2: Compare AnyUrl objects directly
+    assert component.props[0].ns == AnyUrl('http://abc.github.io/compliance-trestle/schemas/oscal/cd')
     assert component.props[0].value == 'iam_admin_role_users_per_account_maxcount'
     assert component.props[0].class_ == 'scc_class'
     assert component.props[0].remarks == 'rule_set_01'
@@ -1036,7 +1040,8 @@ def test_execute_delete_param(tmp_path: pathlib.Path) -> None:
     component = cd.components[0]
     assert len(component.props) == 59
     assert component.props[22].name == 'Parameter_Id'
-    assert component.props[22].ns == 'http://abc.github.io/compliance-trestle/schemas/oscal/cd'
+    # Pydantic v2: Compare AnyUrl objects directly
+    assert component.props[22].ns == AnyUrl('http://abc.github.io/compliance-trestle/schemas/oscal/cd')
     assert component.props[22].value == 'api_keys_rotated_days'
     assert component.props[22].class_ == 'scc_class'
     assert component.props[22].remarks == 'rule_set_04'
