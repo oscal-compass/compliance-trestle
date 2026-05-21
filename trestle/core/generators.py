@@ -261,6 +261,7 @@ def generate_sample_model(
     effective_optional = include_optional and not depth == 0
 
     model_type = model
+    original_model = model  # Preserve the original parameterized type
     # This block normalizes model type down to
     if utils.is_collection_field_type(model):
         model_type = utils.get_origin(model)
@@ -282,6 +283,12 @@ def generate_sample_model(
             model = next((arg for arg in union_args if arg is not type(None)), union_args[0])
 
     model = cast(TG, model)
+
+    # Special handling for DateAuthorized RootModel
+    if model_type in [DateAuthorized]:
+        # DateAuthorized is a RootModel that wraps DateDatatype
+        # We need to create it with the root field set to a valid date string
+        return DateAuthorized(root=sample_date_value)  # type: ignore
 
     model_dict = {}
     # this block is needed to avoid situations where an inbuilt is inside a list / dict.
@@ -324,25 +331,44 @@ def generate_sample_model(
                     if arg is not type(None) and safe_is_sub(arg, Enum):
                         enum_type = arg
                         break
-                # Use the enum type if found, otherwise fall back to first non-None, non-ForwardRef type
+                # Use the enum type if found, otherwise fall back to first non-None, non-ForwardRef type.
                 if enum_type:
                     outer_type = enum_type
                 else:
-                    # Get first non-None, non-ForwardRef type
-                    # Skip ForwardRef types as they haven't been resolved yet
-                    outer_type = None
-                    for arg in union_args:
-                        # Check if arg is not None and not a ForwardRef
-                        if arg is not type(None) and not isinstance(arg, (str, ForwardRef)):
-                            outer_type = arg
-                            break
-                    if outer_type is None:
-                        # If all types are ForwardRefs or None, skip this field
-                        continue
+                    # Preserve a collection member if present; otherwise choose the first usable non-None member.
+                    collection_member = next(
+                        (arg for arg in union_args if arg is not type(None) and utils.is_collection_field_type(arg)),
+                        None,
+                    )
+                    if collection_member is not None:
+                        outer_type = collection_member
+                    else:
+                        outer_type = next(
+                            (
+                                arg
+                                for arg in union_args
+                                if arg is not type(None) and not isinstance(arg, (str, ForwardRef))
+                            ),
+                            None,
+                        )
+                        if outer_type is None:
+                            # If all types are ForwardRefs or None, skip this field
+                            continue
             if field_info.is_required() or effective_optional:  # type: ignore
                 # FIXME could be ForwardRef('SystemComponentStatus')
-                if utils.is_collection_field_type(outer_type):
-                    inner_type = utils.get_inner_type(outer_type)
+                outer_origin = utils.get_origin(outer_type)
+                is_outer_union = outer_origin == Union or str(outer_origin) == "<class 'types.UnionType'>"
+                union_collection_args = []
+                if is_outer_union:
+                    union_collection_args = [
+                        arg
+                        for arg in typing.get_args(outer_type)
+                        if arg is not type(None) and utils.is_collection_field_type(arg)
+                    ]
+
+                if utils.is_collection_field_type(outer_type) or union_collection_args:
+                    collection_outer_type = union_collection_args[0] if union_collection_args else outer_type
+                    inner_type = utils.get_inner_type(collection_outer_type)
                     # Check for circular reference: inner_type might be a Union containing model
                     if inner_type == model:
                         continue
@@ -369,13 +395,13 @@ def generate_sample_model(
                         if min_items > 0:
                             # Generate required minimum items
                             model_dict[field] = generate_sample_model(
-                                outer_type, include_optional=include_optional, depth=depth - 1
+                                collection_outer_type, include_optional=include_optional, depth=depth - 1
                             )
                         else:
                             model_dict[field] = []
                     else:
                         model_dict[field] = generate_sample_model(
-                            outer_type, include_optional=include_optional, depth=depth - 1
+                            collection_outer_type, include_optional=include_optional, depth=depth - 1
                         )
                 elif is_by_type(outer_type):
                     model_dict[field] = generate_sample_value_by_type(outer_type, field)
@@ -422,11 +448,51 @@ def generate_sample_model(
                         model_dict[field] = generate_sample_value_by_type(outer_type, field)
         # Note: this assumes list constrains in oscal are always 1 as a minimum size. if two this may still fail.
     else:
-        if model_type is list:
-            return [generate_sample_value_by_type(model, '')]  # type: ignore
-        if model_type is dict:
-            return {const.REPLACE_ME: generate_sample_value_by_type(model, '')}  # type: ignore
-        raise err.TrestleError('Unhandled collection type.')
+        # Use original_model to preserve parameterized type info (e.g., list[str] not just list)
+        collection_type = original_model if 'original_model' in locals() else model_type
+        collection_origin = utils.get_origin(collection_type)
+        if collection_origin in (Union,) or str(collection_origin) == "<class 'types.UnionType'>":
+            union_args = [arg for arg in typing.get_args(collection_type) if arg is not type(None)]
+            if len(union_args) == 1:
+                collection_type = union_args[0]
+
+        collection_origin = utils.get_origin(collection_type)
+        if collection_origin is list or collection_type is list:
+            inner_type = utils.get_inner_type(collection_type)
+            # Handle bare list without type parameters (inner_type will be Any)
+            if inner_type is Any:
+                return [const.REPLACE_ME]  # type: ignore
+            return [generate_sample_model(inner_type, include_optional=include_optional, depth=depth - 1)]  # type: ignore
+        if collection_origin is dict or collection_type is dict:
+            inner_type = utils.get_inner_type(collection_type)
+            # Handle bare dict without type parameters (inner_type will be Any)
+            if inner_type is Any:
+                return {const.REPLACE_ME: const.REPLACE_ME}  # type: ignore
+            return {const.REPLACE_ME: generate_sample_value_by_type(inner_type, '')}  # type: ignore
+
+        # Check if this is a basic type or Annotated type that should use generate_sample_value_by_type
+        # This handles cases like Annotated[str, StringConstraints(...)]
+        from typing import Annotated
+
+        if collection_origin is Annotated:
+            # Get the base type from Annotated
+            args = typing.get_args(collection_type)
+            if args:
+                base_type = args[0]
+                # Check if base type is a simple type (str, int, float, bool, etc.)
+                if base_type in (str, int, float, bool, datetime):
+                    return generate_sample_value_by_type(collection_type, '')
+
+        # If it's a simple type directly
+        if collection_type in (str, int, float, bool, datetime):
+            return generate_sample_value_by_type(collection_type, '')
+
+        # Check if it's a Pydantic special type (EmailStr, HttpUrl, etc.)
+        # These have __get_pydantic_core_schema__ method
+        if hasattr(collection_type, '__get_pydantic_core_schema__'):
+            return generate_sample_value_by_type(collection_type, '')
+
+        raise err.TrestleError(f'Unhandled collection type: {collection_type}')
     if model_type is list:
         return [model(**model_dict)]  # type: ignore
     if model_type is dict:

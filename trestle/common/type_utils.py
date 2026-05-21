@@ -100,7 +100,29 @@ def get_inner_type(collection_field_type: Union[Type[List[Any]], Type[Dict[str, 
         _, _, singular_type = _get_model_field_info(collection_field_type)
         if singular_type is not None:
             return singular_type
-        return typing_extensions.get_args(collection_field_type)[-1]
+
+        origin_type = get_origin(collection_field_type)
+        if str(origin_type) == "<class 'types.UnionType'>" or origin_type == Union:
+            union_args = [arg for arg in typing_extensions.get_args(collection_field_type) if arg is not type(None)]
+            if len(union_args) == 1:
+                return get_inner_type(union_args[0])
+
+        # Get type arguments - try both typing_extensions and typing.get_args
+        # In Python 3.9+, list[...] creates types.GenericAlias which needs typing.get_args
+        args = typing_extensions.get_args(collection_field_type)
+        if not args:
+            # Try with standard typing.get_args for types.GenericAlias
+            args = get_args(collection_field_type)
+
+        # Handle bare list or dict types without type arguments (e.g., list instead of List[str])
+        if not args:
+            # If it's a bare list or dict, return Any as the inner type
+            if collection_field_type is list or origin_type is list:
+                return Any  # type: ignore
+            if collection_field_type is dict or origin_type is dict:
+                return Any  # type: ignore
+
+        return args[-1]
     except Exception as e:
         logger.debug(e)
         raise err.TrestleError('Model type is not a Dict or List') from e

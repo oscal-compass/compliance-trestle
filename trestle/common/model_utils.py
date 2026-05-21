@@ -98,14 +98,29 @@ def _get_model_type_from_union(model_type: Type[Any], field_name: Optional[str] 
 def _resolve_collection_item_alias(parent_model_type: Type[Any], field_alias: str, alias_path: str) -> str:
     """Resolve the singular alias for a collection item field."""
     try:
+        if utils.is_collection_field_type(parent_model_type):
+            parent_model_type = utils.get_inner_type(parent_model_type)
+
+        parent_model_type = _get_model_type_from_union(parent_model_type, field_alias)
+
+        if utils.is_collection_field_type(parent_model_type):
+            parent_model_type = utils.get_inner_type(parent_model_type)
+
         parent_model_type = _get_model_type_from_union(parent_model_type, field_alias)
         field_map = parent_model_type.alias_to_field_map()
+        if field_alias not in field_map:
+            return str_utils.classname_to_alias(parent_model_type.__name__, AliasMode.JSON)
+
         field = field_map[field_alias]
-        # In Pydantic v2, use annotation instead of outer_type_
         outer_type = field.annotation
-        inner_type = utils.get_inner_type(outer_type)
-        inner_type = _get_model_type_from_union(inner_type)
-        return str_utils.classname_to_alias(inner_type.__name__, AliasMode.JSON)
+        singular_type = _get_model_type_from_union(outer_type, field_alias)
+
+        if utils.is_collection_field_type(singular_type):
+            inner_type = utils.get_inner_type(singular_type)
+            inner_type = _get_model_type_from_union(inner_type, field_alias)
+            return str_utils.classname_to_alias(inner_type.__name__, AliasMode.JSON)
+
+        return str_utils.classname_to_alias(singular_type.__name__, AliasMode.JSON)
     except Exception as e:
         raise err.TrestleError(f'Error in json path {alias_path}: {e}') from e
 
@@ -576,32 +591,40 @@ class ModelUtils:
         model_type = model_types[0]
         # go through path parts skipping first one
         for i in range(1, len(path_parts)):
+            path_part = path_parts[i]
             if utils.is_collection_field_type(model_type):
                 # if it is a collection type and last part is * then break
-                if i == len(path_parts) - 1 and path_parts[i] == '*':
+                if i == len(path_parts) - 1 and path_part == '*':
                     break
                 # otherwise get the inner type of items in the collection
                 model_type = utils.get_inner_type(model_type)
-                # and bump i
-                i = i + 1
-            else:
-                path_part = path_parts[i]
-                model_type = _get_model_type_from_union(model_type, path_part)
-                field_map = model_type.alias_to_field_map()
-                if path_part not in field_map:
-                    continue
-                field = field_map[path_part]
-                model_type = field.annotation
+
+            model_type = _get_model_type_from_union(model_type, path_part)
+
+            if utils.is_collection_field_type(model_type) and path_part != '*':
+                model_types.append(model_type)
+                continue
+
+            if path_part == '*':
+                model_types.append(model_type)
+                continue
+
+            field_map = model_type.alias_to_field_map()
+            if path_part not in field_map:
+                continue
+            field = field_map[path_part]
+            model_type = field.annotation
             model_types.append(model_type)
 
-        last_alias = path_parts[-1]
+        original_last_alias = path_parts[-1]
+        last_alias = original_last_alias
 
         if last_alias == '*':
             last_alias = path_parts[-2]
 
         # Terminal numeric indexes (e.g. "component-definition.components.0") refer to an item in the
         # preceding collection; resolve to that item's alias.
-        if path_parts[-1].isdigit():
+        if original_last_alias.isdigit():
             if len(path_parts) < 2:
                 raise err.TrestleError(f'Error in json path {alias_path}: unable to resolve indexed collection alias')
             indexed_collection_alias = path_parts[-2]
@@ -610,8 +633,51 @@ class ModelUtils:
             parent_model_type = model_types[-3]
             return _resolve_collection_item_alias(parent_model_type, indexed_collection_alias, alias_path)
 
+        # A terminal wildcard refers to the item type of the preceding collection field.
+        if original_last_alias == '*':
+            if len(model_types) < 2:
+                raise err.TrestleError(f'Error in json path {alias_path}: unable to resolve terminal wildcard alias')
+            parent_model_type = model_types[-2]
+            return _resolve_collection_item_alias(parent_model_type, last_alias, alias_path)
+
+        # Paths ending in ".*.<field>" should resolve the field from the wildcard item type.
+        if len(path_parts) >= 2 and path_parts[-2] == '*':
+            if len(model_types) < 2:
+                raise err.TrestleError(f'Error in json path {alias_path}: unable to resolve wildcard collection alias')
+            wildcard_item_type = model_types[-2]
+            if utils.is_collection_field_type(wildcard_item_type):
+                wildcard_item_type = utils.get_inner_type(wildcard_item_type)
+            wildcard_item_type = _get_model_type_from_union(wildcard_item_type, last_alias)
+            if utils.is_collection_field_type(wildcard_item_type):
+                wildcard_item_type = utils.get_inner_type(wildcard_item_type)
+            wildcard_item_type = _get_model_type_from_union(wildcard_item_type, last_alias)
+            field_map = wildcard_item_type.alias_to_field_map()
+            if last_alias in field_map:
+                return _resolve_collection_item_alias(wildcard_item_type, last_alias, alias_path)
+            if last_alias.endswith('ies'):
+                return last_alias[:-3] + 'y'
+            if last_alias.endswith('s'):
+                return last_alias[:-1]
+            return last_alias
+
+        # If the terminal segment itself resolves to a collection field and there is no wildcard/index,
+        # return the field alias as-is (plural), not the singular item alias.
+        if utils.is_collection_field_type(model_type):
+            return last_alias
         # generic model and not list, so return itself fixme doc
         if not utils.is_collection_field_type(model_type):
+            if len(model_types) >= 2:
+                parent_model_type = model_types[-2]
+                try:
+                    field_map = parent_model_type.alias_to_field_map()
+                    if last_alias in field_map:
+                        return _resolve_collection_item_alias(parent_model_type, last_alias, alias_path)
+                except Exception:
+                    pass
+            if last_alias.endswith('ies'):
+                return last_alias[:-3] + 'y'
+            if last_alias.endswith('s'):
+                return last_alias[:-1]
             return last_alias
 
         parent_model_type = model_types[-2]
@@ -628,8 +694,9 @@ class ModelUtils:
             raise err.TrestleError(str(e))
 
         if hasattr(module, 'Model'):
-            model_metadata = next(iter(module.Model.model_fields.values()))
-            return model_metadata.annotation, model_metadata.alias
+            model_field_name, model_metadata = next(iter(module.Model.model_fields.items()))
+            model_alias = model_metadata.alias or str_utils.underscore_to_dash(model_field_name)
+            return model_metadata.annotation, model_alias
         raise err.TrestleError('Invalid module')
 
     @staticmethod

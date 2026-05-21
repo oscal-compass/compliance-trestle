@@ -172,9 +172,10 @@ class OscalBaseModel(TrestleBaseModel):
         # TODO: can this be restricted beyond Any easily.
         attr_field = self.get_field_by_alias(attr_alias)
         if isinstance(attr_field, FieldInfo):
-            # In Pydantic v2, we need to get the field name from model_fields
-            for field_name, field_info in self.model_fields.items():
-                if field_info.alias == attr_alias:
+            # In Pydantic v2, aliases may be None when the field name itself is used.
+            for field_name, field_info in self.__class__.model_fields.items():
+                resolved_alias = field_info.alias or field_name
+                if resolved_alias == attr_alias:
                     return getattr(self, field_name, None)
         return None
 
@@ -236,9 +237,12 @@ class OscalBaseModel(TrestleBaseModel):
             odict = self.oscal_dict()
         else:
             odict = self.model_dump(by_alias=True, exclude_none=True)
+        json_encoders = self.model_config.get('json_encoders') or {}
+        default_encoder = json_encoders.get(datetime.datetime)
+
         if pretty:
-            return orjson.dumps(odict, default=self.__json_encoder__, option=orjson.OPT_INDENT_2)
-        return orjson.dumps(odict, default=self.__json_encoder__)
+            return orjson.dumps(odict, default=default_encoder, option=orjson.OPT_INDENT_2)
+        return orjson.dumps(odict, default=default_encoder)
 
     def oscal_serialize_json(self, pretty: bool = False, wrapped: bool = True) -> str:
         """
