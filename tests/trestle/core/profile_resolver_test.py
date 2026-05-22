@@ -86,8 +86,8 @@ def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
     assert control.parts[0].parts[0].prose == 'Extra added part in subpart'
 
     assert cat.metadata.title == test_prof.metadata.title
-    # Pydantic v2: RootModel uses 'root' instead of '__root__'
-    assert cat.metadata.oscal_version.root == OSCAL_VERSION
+    # Pydantic v2: OscalVersion is RootModel[StringDatatype], so need .root.root to get string value
+    assert cat.metadata.oscal_version.root.root == OSCAL_VERSION
     assert cat.metadata.links[0].href == 'trestle://catalogs/nist_cat/catalog.json'
     assert cat.metadata.links[0].rel == RESOLUTION_SOURCE
     assert cat.metadata.links[1].href == 'trestle://profiles/test_profile_b/profile.json'
