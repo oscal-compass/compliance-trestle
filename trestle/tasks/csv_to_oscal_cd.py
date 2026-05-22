@@ -477,19 +477,28 @@ class CsvToOscalComponentDefinition(TaskBase):
             # component
             component = self._cd_mgr.get_component(component_title, component_type, description)
             # props
-            component.props = self._delete_rule_props(component, rule_id)
+            deleted_props = self._delete_rule_props(component, rule_id)
+            # In Pydantic v2, props with min_length=1 cannot be empty list, must be None
+            component.props = deleted_props if deleted_props else None
 
     def _delete_rule_props(self, component: DefinedComponent, rule_id: str) -> List[Property]:
         """Delete rule props."""
         props = []
+        # In Pydantic v2, props with min_length=1 becomes None when empty, not []
+        if component.props is None:
+            return props
         rule_set = _RuleSetHelper.get_rule_set(component.props, rule_id)
         for prop in component.props:
             if prop.remarks != rule_set:
                 props.append(prop)
             elif prop.name in self._csv_mgr.get_parameter_id_column_names():
-                self._delete_rule_set_parameter(component, prop.value)
+                # In Pydantic v2, prop.value is StringDatatype (RootModel)
+                prop_value = prop.value.root if hasattr(prop.value, 'root') else prop.value
+                self._delete_rule_set_parameter(component, prop_value)
             elif prop.name == RULE_ID:
-                self._delete_rule_implemented_requirement(component, prop.value)
+                # In Pydantic v2, prop.value is StringDatatype (RootModel)
+                prop_value = prop.value.root if hasattr(prop.value, 'root') else prop.value
+                self._delete_rule_implemented_requirement(component, prop_value)
         return props
 
     def _control_implementation_generator(
@@ -1118,12 +1127,13 @@ class _CdMgr:
         normalized_type = component_type.lower().strip()
         # Convert string to enum member for Pydantic v2
         from trestle.oscal.component import DefinedComponentTypeValidValues
+        from trestle.oscal.common import StringDatatype
 
         try:
             type_enum = DefinedComponentTypeValidValues(normalized_type)
         except ValueError:
-            # If not a valid enum value, use the string as-is
-            type_enum = normalized_type
+            # If not a valid enum value, wrap in StringDatatype for Pydantic v2
+            type_enum = StringDatatype(normalized_type)
 
         for component in self._component_definition.components:
             if component.title == component_title and component.type == type_enum:
@@ -1144,12 +1154,13 @@ class _CdMgr:
         normalized_type = component_type.lower().strip()
         # Convert string to enum member for Pydantic v2
         from trestle.oscal.component import DefinedComponentTypeValidValues
+        from trestle.oscal.common import StringDatatype
 
         try:
             type_enum = DefinedComponentTypeValidValues(normalized_type)
         except ValueError:
-            # If not a valid enum value, use the string as-is
-            type_enum = normalized_type
+            # If not a valid enum value, wrap in StringDatatype for Pydantic v2
+            type_enum = StringDatatype(normalized_type)
 
         rval = None
         for component in self._component_definition.components:
@@ -1224,7 +1235,9 @@ class _CdMgr:
         if component.props:
             for prop in component.props:
                 if prop.name == RULE_ID:
-                    key = synthesize_rule_key(component.title, component.type, prop.value, None, None)
+                    # In Pydantic v2, prop.value is StringDatatype (RootModel), need to unwrap it
+                    prop_value = prop.value.root if hasattr(prop.value, 'root') else prop.value
+                    key = synthesize_rule_key(component.title, component.type, prop_value, None, None)
                     value = prop.remarks
                     self._cd_rules_map[key] = value
                     logger.debug(f'cd: {key} {self._cd_rules_map[key]}')
@@ -1239,9 +1252,11 @@ class _CdMgr:
         if control_implementation.set_parameters:
             for set_parameter in control_implementation.set_parameters:
                 rule_id = self._get_rule_id(component, set_parameter.param_id)
+                # In Pydantic v2, component.type is StringDatatype (RootModel), need to unwrap it
+                component_type_str = _get_component_type_string(component.type)
                 key = (
                     component.title,
-                    component.type,
+                    component_type_str,
                     rule_id,
                     control_implementation.source,
                     control_implementation.description,
@@ -1269,10 +1284,12 @@ class _CdMgr:
         if implemented_requirement.props:
             for prop in implemented_requirement.props:
                 if prop.name == RULE_ID:
-                    rule_id = prop.value
+                    # In Pydantic v2, prop.value and component.type are StringDatatype (RootModel)
+                    rule_id = prop.value.root if hasattr(prop.value, 'root') else prop.value
+                    component_type_str = _get_component_type_string(component.type)
                     key = (
                         component.title,
-                        component.type,
+                        component_type_str,
                         rule_id,
                         control_implementation.source,
                         control_implementation.description,
@@ -1292,10 +1309,12 @@ class _CdMgr:
                 if statement.props:
                     for prop in statement.props:
                         if prop.name == RULE_ID:
-                            rule_id = prop.value
+                            # In Pydantic v2, prop.value and component.type are StringDatatype (RootModel)
+                            rule_id = prop.value.root if hasattr(prop.value, 'root') else prop.value
+                            component_type_str = _get_component_type_string(component.type)
                             key = (
                                 component.title,
-                                component.type,
+                                component_type_str,
                                 rule_id,
                                 control_implementation.source,
                                 control_implementation.description,
@@ -1310,9 +1329,11 @@ class _CdMgr:
             map_ = {}
             rule_set = None
             for prop in component.props:
+                # In Pydantic v2, prop.value is StringDatatype (RootModel), need to unwrap it
+                prop_value = prop.value.root if hasattr(prop.value, 'root') else prop.value
                 if prop.name == 'Rule_Id':
-                    map_[prop.remarks] = prop.value
-                elif prop.name == 'Parameter_Id' and prop.value == param_id:
+                    map_[prop.remarks] = prop_value
+                elif prop.name == 'Parameter_Id' and prop_value == param_id:
                     rule_set = prop.remarks
             if rule_set:
                 rule_id = map_[rule_set]

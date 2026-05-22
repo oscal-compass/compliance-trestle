@@ -102,8 +102,9 @@ def test_generate_sample_model() -> None:
     # Check if last-modified datetime is of type datetime, and then equate in actual and expected
     assert type(actual_ctlg.metadata) is common.Metadata
     actual_ctlg.metadata.last_modified = expected_ctlg.metadata.last_modified
-    # Check that expected generated catalog is now same a actual catalog
-    assert expected_ctlg == actual_ctlg
+    # Check that expected generated catalog is now same as actual catalog
+    # In Pydantic v2, use model_dump for comparison to handle nested models correctly
+    assert expected_ctlg.model_dump() == actual_ctlg.model_dump()
 
     # Test list type models
     expected_role = common.Role(**{'id': const.REPLACE_ME, 'title': const.REPLACE_ME})
