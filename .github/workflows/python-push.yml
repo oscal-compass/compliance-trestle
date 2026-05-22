@@ -269,6 +269,14 @@ jobs:
       with:
         github_token: ${{ steps.app-token.outputs.token }}
 
+    - name: Ensure non-main releases are not marked latest
+      if: github.ref != 'refs/heads/main' && steps.release.outputs.released == 'true'
+      env:
+        GH_TOKEN: ${{ steps.app-token.outputs.token }}
+      run: |
+        echo "Un-marking release ${{ steps.release.outputs.tag }} as latest"
+        gh release edit "${{ steps.release.outputs.tag }}" --latest=false
+
     # --- Generate provenance for the ACTUAL RELEASE ARTIFACTS ---
 
     - name: Publish package distributions to PyPI
@@ -288,6 +296,7 @@ jobs:
       if: steps.release.outputs.released == 'true'
       with:
         github_token: ${{ steps.app-token.outputs.token }}
+        tag: ${{ steps.release.outputs.tag }}
 
   merge-main-to-develop:
     name: Merge main -> develop
