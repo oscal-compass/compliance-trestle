@@ -52,8 +52,13 @@ def _get_model_field_info(field_type: Type[Any]) -> Tuple[Optional[FieldInfo], O
             if 'root' in model_fields:
                 root_field = model_fields['root']
                 singular_type = root_field.annotation
-                # Get the origin type name (e.g., 'list', 'dict')
+                # Get the origin type name (e.g., 'list', 'dict'), including Optional[list[T]]
                 origin = typing_get_origin(singular_type)
+                if str(origin) == "<class 'types.UnionType'>" or origin == Union:
+                    union_args = [arg for arg in typing_extensions.get_args(singular_type) if arg is not type(None)]
+                    if len(union_args) == 1:
+                        singular_type = union_args[0]
+                        origin = typing_get_origin(singular_type)
                 if origin is not None:
                     root_type = origin.__name__.capitalize()
                 elif singular_type is not None:

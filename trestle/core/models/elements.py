@@ -157,7 +157,11 @@ class ElementPath:
         if utils.is_collection_field_type(prev_model):
             origin = utils.get_origin(prev_model)
             if str(origin) == "<class 'types.UnionType'>" or str(origin) == 'typing.Union':
-                return utils.get_inner_type(prev_model)  # type: ignore
+                import typing_extensions
+
+                non_none_args = [arg for arg in typing_extensions.get_args(prev_model) if arg is not type(None)]
+                if len(non_none_args) == 1:
+                    return non_none_args[0]
         return prev_model
 
     def get_obm_wrapped_type(

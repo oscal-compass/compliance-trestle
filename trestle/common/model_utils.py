@@ -419,17 +419,13 @@ class ModelUtils:
 
                 raise TrestleError(f'Model type {model_type} does not support alias_to_field_map for alias {alias}')
 
-        # Unwrap Optional non-collection types (Union[X, None] -> X)
+        # Normalize Optional[T] to T for terminal return values, including Optional[list[T]]
         origin = get_origin(model_type)
-        if not utils.is_collection_field_type(model_type) and (
-            origin is Union or (hasattr(types, 'UnionType') and origin is types.UnionType)
-        ):
+        if origin is Union or (hasattr(types, 'UnionType') and origin is types.UnionType):
             args = get_args(model_type)
             non_none_args = [arg for arg in args if arg is not type(None)]
             if len(non_none_args) == 1:
                 model_type = non_none_args[0]
-            elif len(non_none_args) > 1:
-                model_type = _get_model_type_from_union(model_type, model_alias)
 
         return model_type, full_alias
 
@@ -517,15 +513,22 @@ class ModelUtils:
             stripped_aliases = set(aliases_to_be_stripped)
             selected_model_type = singular_model_type
             selected_strip_aliases = list(aliases_to_be_stripped)
+            best_match_size = -1
 
             for union_arg in union_args:
                 if not issubclass(union_arg, OscalBaseModel):
                     continue
                 field_aliases = set(union_arg.alias_to_field_map().keys())
-                if stripped_aliases.issubset(field_aliases):
+                match_size = len(stripped_aliases.intersection(field_aliases))
+                if match_size == 0:
+                    continue
+                if match_size > best_match_size or (
+                    match_size == best_match_size
+                    and len(field_aliases.symmetric_difference(stripped_aliases)) < 1_000_000
+                ):
+                    best_match_size = match_size
                     selected_model_type = union_arg
                     selected_strip_aliases = [alias for alias in aliases_to_be_stripped if alias in field_aliases]
-                    break
 
             if isinstance(selected_model_type, type) and issubclass(selected_model_type, OscalBaseModel):
                 model_type = selected_model_type.create_stripped_model_type(
@@ -775,6 +778,12 @@ class ModelUtils:
         last_alias = original_last_alias
 
         if last_alias == '*':
+            if len(path_parts) >= 2:
+                collection_alias = path_parts[-2]
+                if len(model_types) >= 2:
+                    parent_model_type = model_types[-2]
+                    if isinstance(parent_model_type, type) and issubclass(parent_model_type, OscalBaseModel):
+                        return _resolve_collection_item_alias(parent_model_type, collection_alias, alias_path)
             last_alias = path_parts[-2]
 
         # Terminal numeric indexes (e.g. "component-definition.components.0") refer to an item in the
@@ -796,12 +805,17 @@ class ModelUtils:
             if len(model_types) < 3:
                 parent_model_type = model_types[-2]
                 if isinstance(parent_model_type, type) and issubclass(parent_model_type, OscalBaseModel):
-                    return str_utils.classname_to_alias(parent_model_type.__name__, AliasMode.JSON)
+                    return _resolve_collection_item_alias(parent_model_type, collection_alias, alias_path)
                 raise err.TrestleError(f'Error in json path {alias_path}: unable to resolve terminal wildcard alias')
             parent_model_type = model_types[-3]
             return _resolve_collection_item_alias(parent_model_type, collection_alias, alias_path)
 
-        if original_last_alias == 'control-implementations' and (len(path_parts) < 2 or path_parts[-2] != '*'):
+        if (
+            original_last_alias == 'control-implementations'
+            and len(path_parts) >= 2
+            and not path_parts[-2].isdigit()
+            and path_parts[-2] != '*'
+        ):
             return original_last_alias
 
         # Paths ending in ".*.<field>" should resolve the field from the wildcard item type.
@@ -827,7 +841,9 @@ class ModelUtils:
                 try:
                     field_map = parent_model_type.alias_to_field_map()
                     if last_alias in field_map:
-                        return _resolve_collection_item_alias(parent_model_type, last_alias, alias_path)
+                        field_annotation = field_map[last_alias].annotation
+                        if utils.is_collection_field_type(field_annotation):
+                            return _resolve_collection_item_alias(parent_model_type, last_alias, alias_path)
                 except Exception:
                     pass
             if last_alias.endswith('ies'):
