@@ -1287,7 +1287,7 @@ def test_profile_generate_assesment_objectives(tmp_trestle_dir: pathlib.Path, mo
 
     at_2 = nist_cat.groups[1].controls[1]
     # Convert dict to Part object for Pydantic v2
-    from trestle.oscal.catalog import Part
+    from trestle.oscal.common import Part
 
     assessment_part = Part.model_validate(assesment_objectives)
     at_2.parts.append(assessment_part)
