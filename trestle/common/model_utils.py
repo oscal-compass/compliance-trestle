@@ -263,14 +263,23 @@ class ModelUtils:
             for i in range(len(aliases_not_to_be_stripped)):
                 alias = aliases_not_to_be_stripped[i]
                 instance = instances_to_be_merged[i]
+                # Unwrap RootModel instances to get the actual data
+                # Check for RootModel (dynamically created wrappers) OR OscalBaseModel with root field
                 if (
                     hasattr(instance, '__dict__')
                     and 'root' in instance.__dict__
-                    and isinstance(instance, OscalBaseModel)
+                    and (isinstance(instance, (OscalBaseModel, RootModel)))
                 ):
                     instance = instance.__dict__['root']
+                # For top-level models, merge the instance's dict into primary_model_dict
+                # But only if instance is an OscalBaseModel with __dict__
                 if top_level and not primary_model_dict:
-                    primary_model_dict = instance.__dict__
+                    if hasattr(instance, '__dict__'):
+                        primary_model_dict = instance.__dict__
+                    else:
+                        # If instance is not a model (e.g., a list or primitive), we can't use it as top-level
+                        # This shouldn't happen in normal usage, but handle it gracefully
+                        primary_model_dict[alias] = instance
                 else:
                     primary_model_dict[alias] = instance
 
