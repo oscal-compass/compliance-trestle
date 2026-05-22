@@ -402,22 +402,22 @@ def test_rule_param_values_validator_unhappy(tmp_trestle_dir: pathlib.Path, monk
     imp_reqs = new_ssp.control_implementation.implemented_requirements
     imp_req_ac = next((i_req for i_req in imp_reqs if i_req.control_id == 'ac-1'), None)
     by_components = imp_req_ac.statements[0].by_components
-    by_components[1].set_parameters = []
 
     new_set_parameter_a = gens.generate_sample_model(ossp.SetParameter)
     new_set_parameter_a.values = ['shared_param_1_ab_opt_3']
     new_set_parameter_a.param_id = 'shared_param_1'
     # addes new value to current set parameter values
     # adds a new set parameter to set parameters array for current by component in statement
-    by_components[1].set_parameters.append(new_set_parameter_a)
+    # In Pydantic v2, cannot set list with min_length=1 to empty list, initialize with item instead
+    by_components[1].set_parameters = [new_set_parameter_a]
     imp_reqs = new_ssp.control_implementation.implemented_requirements
     imp_req_at = next((i_req for i_req in imp_reqs if i_req.control_id == 'at-1'), None)
     by_components = imp_req_at.statements[0].by_components
-    by_components[0].set_parameters = []
     new_set_parameter_b = gens.generate_sample_model(ossp.SetParameter)
     new_set_parameter_b.values = ['shared_param_1_ab_opt_1']
     new_set_parameter_b.param_id = 'shared_param_1'
-    by_components[0].set_parameters.append(new_set_parameter_b)
+    # In Pydantic v2, cannot set list with min_length=1 to empty list, initialize with item instead
+    by_components[0].set_parameters = [new_set_parameter_b]
 
     ModelUtils.save_top_level_model(new_ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
     assert not validator.model_is_valid(new_ssp, True, tmp_trestle_dir)
