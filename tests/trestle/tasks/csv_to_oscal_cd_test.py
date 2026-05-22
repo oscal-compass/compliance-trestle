@@ -1437,7 +1437,8 @@ def test_execute_rule_name_overlap(tmp_path: pathlib.Path) -> None:
     cd = ComponentDefinition.oscal_read(fp)
     # spot check
     component = cd.components[0]
-    assert component.type.lower() == 'validation'
+    # In Pydantic v2, component.type is a StringDatatype RootModel, need .root to get string
+    assert component.type.root.lower() == 'validation'
     assert len(component.props) == 20
     assert component.props[0].name == 'Rule_Id'
     assert component.props[0].value == 'RULE-1.1'
