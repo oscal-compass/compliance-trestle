@@ -608,7 +608,8 @@ class CsvToOscalComponentDefinition(TaskBase):
             # component
             component = self._cd_mgr.get_component(component_title, component_type, component_description)
             # props - build list before assignment to avoid empty list validation error
-            props_list = as_list(component.props) + self._create_rule_props(rule_key)
+            new_props = self._create_rule_props(rule_key)
+            props_list = as_list(component.props) + new_props
             component.props = props_list
             # additional props, when not validation component
             if not self._is_validation(rule_key):
@@ -1136,7 +1137,22 @@ class _CdMgr:
             type_enum = StringDatatype(normalized_type)
 
         for component in self._component_definition.components:
-            if component.title == component_title and component.type == type_enum:
+            # Compare types: handle both enum and StringDatatype cases
+            # Pydantic v2: component.type can be either enum or StringDatatype
+            type_matches = False
+            if isinstance(component.type, DefinedComponentTypeValidValues):
+                # Component type is enum, compare directly
+                type_matches = component.type == type_enum
+            elif isinstance(component.type, StringDatatype):
+                # Component type is StringDatatype, unwrap and compare
+                if isinstance(type_enum, DefinedComponentTypeValidValues):
+                    # Comparing StringDatatype to enum: compare string values
+                    type_matches = component.type.root.lower() == type_enum.value.lower()
+                else:
+                    # Both are StringDatatype: compare root values
+                    type_matches = component.type.root.lower() == type_enum.root.lower()
+
+            if component.title == component_title and type_matches:
                 logger.debug(f'located component: title={component.title} type={component.type}')
                 return component
         # Pydantic v2: Use model_construct without control_implementations
@@ -1164,7 +1180,22 @@ class _CdMgr:
 
         rval = None
         for component in self._component_definition.components:
-            if component.title == component_title and component.type == type_enum:
+            # Compare types: handle both enum and StringDatatype cases
+            # Pydantic v2: component.type can be either enum or StringDatatype
+            type_matches = False
+            if isinstance(component.type, DefinedComponentTypeValidValues):
+                # Component type is enum, compare directly
+                type_matches = component.type == type_enum
+            elif isinstance(component.type, StringDatatype):
+                # Component type is StringDatatype, unwrap and compare
+                if isinstance(type_enum, DefinedComponentTypeValidValues):
+                    # Comparing StringDatatype to enum: compare string values
+                    type_matches = component.type.root.lower() == type_enum.value.lower()
+                else:
+                    # Both are StringDatatype: compare root values
+                    type_matches = component.type.root.lower() == type_enum.root.lower()
+
+            if component.title == component_title and type_matches:
                 logger.debug(f'located component: title={component.title} type={component.type}')
                 rval = component
                 break
