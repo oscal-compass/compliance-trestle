@@ -1,7 +1,7 @@
 header:
   schema-version: 2.0.0
-  last-updated: '2025-03-20'
-  last-reviewed: '2025-03-20'
+  last-updated: '2026-05-23'
+  last-reviewed: '2026-05-23'
   url: https://github.com/oscal-compass/compliance-trestle/blob/develop/.github/security-insights.yml
   project-si-source: https://raw.githubusercontent.com/oscal-compass/.github/refs/heads/main/.github/security-insights.yml
   comment: |
@@ -45,6 +45,12 @@ repository:
         comment: |
           This attestation communicates the Trusted Publisher identity
           used to publish the project.
+      - name: SLSA Build Provenance
+        location: https://github.com/oscal-compass/compliance-trestle/releases
+        predicate-uri: https://slsa.dev/provenance/v1
+        comment: |
+          SLSA build provenance attestation generated automatically
+          for all release distribution artifacts via actions/attest.
     distribution-points:
       - uri: https://github.com/oscal-compass/compliance-trestle/releases
         comment: GitHub Release Page
