@@ -17,7 +17,7 @@ jobs:
         STALE_WARNING_DAYS: 90
         STALE_CLOSURE_DAYS: 30
     steps:
-    - uses: actions/stale@b5d41d4e1d5dceea10e7104786b73624c18a190f # v9
+    - uses: actions/stale@eb5cf3af3ac0a1aa4c9c45633dd1ae542a27a899 # v9
       with:
         stale-issue-label: stale
         exempt-issue-labels: good-first-issue, help-wanted, exempt-from-stale
