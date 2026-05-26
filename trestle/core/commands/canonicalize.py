@@ -31,13 +31,18 @@ logger = logging.getLogger(__name__)
 
 
 class CanonicalizeCmd(CommandBase):
-    """Canonicalize an OSCAL JSON file using RFC 8785."""
+    """Canonicalize a JSON document using RFC 8785.
+
+    This command reads the raw JSON input directly and writes canonical JSON
+    bytes. It is designed for OSCAL artifacts, but it does not load the input
+    through OSCAL models and can canonicalize any valid JSON document.
+    """
 
     name = 'canonicalize'
 
     def _init_arguments(self) -> None:
         self.add_argument(
-            '-f', '--file', help='Path to the OSCAL JSON file to canonicalize.', required=True, type=pathlib.Path
+            '-f', '--file', help='Path to the JSON document to canonicalize.', required=True, type=pathlib.Path
         )
         self.add_argument(
             '-o',
@@ -48,13 +53,13 @@ class CanonicalizeCmd(CommandBase):
         )
 
     def _run(self, args: argparse.Namespace) -> int:
-        """Canonicalize an OSCAL JSON file."""
+        """Canonicalize a JSON document."""
         try:
             log.set_log_level_from_args(args)
             self.canonicalize(args.file, args.output)
             return CmdReturnCodes.SUCCESS.value
         except Exception as e:  # pragma: no cover
-            return handle_generic_command_exception(e, logger, 'Error while canonicalizing OSCAL JSON')
+            return handle_generic_command_exception(e, logger, 'Error while canonicalizing JSON')
 
     @classmethod
     def canonicalize(cls, input_path: pathlib.Path, output_path: Optional[pathlib.Path] = None) -> None:

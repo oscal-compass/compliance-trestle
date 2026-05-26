@@ -416,3 +416,16 @@ def test_oscal_serialize_json() -> None:
     new_catalog = oscatalog.Catalog.parse_obj(jsoned['catalog'])
 
     assert simple_catalog_obj.metadata.title == new_catalog.metadata.title
+
+
+def test_oscal_serialize_canonical_json() -> None:
+    """Test Oscal canonical json serialization."""
+    simple_catalog_obj = simple_catalog_utc()
+
+    serialized = simple_catalog_obj.oscal_serialize_json(canonical=True)
+    jsoned = json.loads(serialized)
+    new_catalog = oscatalog.Catalog.parse_obj(jsoned['catalog'])
+
+    assert serialized == simple_catalog_obj.oscal_serialize_json_bytes(canonical=True).decode(const.FILE_ENCODING)
+    assert '\n' not in serialized
+    assert simple_catalog_obj.metadata.title == new_catalog.metadata.title

@@ -36,6 +36,7 @@ def test_to_content_type() -> None:
 def test_to_file_extension() -> None:
     """Test to_file_extension method."""
     assert FileContentType.to_file_extension(FileContentType.JSON) == '.json'
+    assert FileContentType.to_file_extension(FileContentType.CANONICAL_JSON) == '.json'
     assert FileContentType.to_file_extension(FileContentType.YAML) == '.yaml'
 
     with pytest.raises(TrestleError):
@@ -47,6 +48,12 @@ def test_path_to_file_content_type(tmp_trestle_dir: Path) -> None:
     tmp_stem = tmp_trestle_dir / 'content_type_test'
 
     tmp_file = tmp_stem.with_suffix('.json')
+    tmp_file.touch()
+    assert FileContentType.JSON == FileContentType.path_to_content_type(tmp_file)
+    assert FileContentType.path_to_file_extension(tmp_file) == '.json'
+    tmp_file.unlink()
+
+    tmp_file = tmp_stem.with_suffix('.canonical.json')
     tmp_file.touch()
     assert FileContentType.JSON == FileContentType.path_to_content_type(tmp_file)
     assert FileContentType.path_to_file_extension(tmp_file) == '.json'
@@ -71,3 +78,19 @@ def test_path_to_file_content_type(tmp_trestle_dir: Path) -> None:
 def test_dir_to_content_type(tmp_path: Path) -> None:
     """Test failure of dir to file content type."""
     assert FileContentType.UNKNOWN == FileContentType.dir_to_content_type(tmp_path)
+
+    canonical_json_path = tmp_path / 'catalog.canonical.json'
+    canonical_json_path.touch()
+    assert FileContentType.JSON == FileContentType.dir_to_content_type(tmp_path)
+
+    json_path = tmp_path / 'catalog.json'
+    json_path.touch()
+    assert FileContentType.JSON == FileContentType.dir_to_content_type(tmp_path)
+
+
+def test_is_readable_file() -> None:
+    """Test readable file content types."""
+    assert FileContentType.is_readable_file(FileContentType.JSON)
+    assert FileContentType.is_readable_file(FileContentType.YAML)
+    assert FileContentType.is_readable_file(FileContentType.CANONICAL_JSON)
+    assert not FileContentType.is_readable_file(FileContentType.UNKNOWN)
