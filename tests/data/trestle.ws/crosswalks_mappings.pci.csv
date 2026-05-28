@@ -1,0 +1,12 @@
+$$Source_Resource,$$Target_Resource,$$Map_Source_ID_Ref_list,$$Map_Target_ID_Ref_list,$$Map_Relationship,$Map_Confidence_Score,$Map_Coverage
+A reference to a resource that has the source controls of a mapping.,A reference to a resource that has the target controls of a mapping.,A list of source reference IDs.,A list of target reference IDs.,The relationship type for the mapping entry.,An estimation of the confidence that this mapping is correct and accurate expressed as percentage.,An estimation of the percentage coverage of the targets by the sources.
+catalogs/PCI/catalog.json,catalogs/FedRAMP_rev5_HIGH/catalog.json,PCI-6.3.1,ra-5_smt.a,intersects-with,50%,50%
+catalogs/PCI/catalog.json,catalogs/FedRAMP_rev5_HIGH/catalog.json,PCI-6.3.3,ra-5_smt.d si-2_smt.a si-2_smt.c,subset-of,90%,90%
+catalogs/PCI/catalog.json,catalogs/FedRAMP_rev5_HIGH/catalog.json,PCI-6.4.1,ra-5_smt.a ra-5_smt.b ra-5_smt.c ra-5_smt.d,subset-of,10%,10%
+catalogs/PCI/catalog.json,catalogs/FedRAMP_rev5_HIGH/catalog.json,PCI-11.3.1,ra-5_smt.a ra-5_smt.b ra-5_smt.c ra-5_smt.d ra-5_smt.f si-2_smt.a,subset-of,10%,10%
+catalogs/PCI/catalog.json,catalogs/FedRAMP_rev5_HIGH/catalog.json,PCI-11.3.1.1,ra-5_smt.a ra-5_smt.b ra-5_smt.c ra-5_smt.d,subset-of,10%,10%
+catalogs/PCI/catalog.json,catalogs/FedRAMP_rev5_HIGH/catalog.json,PCI-11.3.1.2,ra-5.5_smt,subset-of,10%,10%
+catalogs/PCI/catalog.json,catalogs/FedRAMP_rev5_HIGH/catalog.json,PCI-11.3.1.3,ra-5_smt.a ra-5_smt.b ra-5_smt.c ra-5_smt.d,subset-of,10%,10%
+catalogs/PCI/catalog.json,catalogs/FedRAMP_rev5_HIGH/catalog.json,PCI-11.3.2,,gap,0%,0%
+catalogs/PCI/catalog.json,catalogs/FedRAMP_rev5_HIGH/catalog.json,PCI-11.3.2.1,,gap,0%,0%
+catalogs/PCI/catalog.json,catalogs/FedRAMP_rev5_HIGH/catalog.json,PCI-a1.2.3,ra-5_smt.d si-2_smt.a,subset-of,90%,90%

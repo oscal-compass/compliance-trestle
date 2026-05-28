@@ -8,7 +8,9 @@
       "end": "2021-02-24T19:31:13+00:00",
       "reviewed-controls": {
         "control-selections": [
-          {}
+          {
+            "include-controls": []
+          }
         ]
       }
     }

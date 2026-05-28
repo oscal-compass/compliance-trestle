@@ -94,7 +94,7 @@ class ProfileResolver:
             The resolved profile catalog and a control dict of inherited props
         """
         logger.debug(f'get resolved profile catalog and inherited props for {profile_path} via generated Import.')
-        import_ = prof.Import(href=str(profile_path), include_all={})
+        import_ = prof.Import1(href=str(profile_path), include_all={})
         # The final Import has change_prose=True to force parameter substitution in the prose only at the last stage.
         import_filter = Import(
             trestle_root,

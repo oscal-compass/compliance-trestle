@@ -255,7 +255,7 @@ class CatalogHelper:
                     continue
                 if param.label:
                     rval = f'[Assignment: {param.label}]'
-                elif param.select:
+                elif hasattr(param, 'select') and param.select:
                     choices = self._get_parm_choices(control, param)
                     if param.select.how_many == HowMany.one:
                         rval = f'[Selection (one): {choices}]'
@@ -267,12 +267,13 @@ class CatalogHelper:
     def _get_parm_choices(self, control: Control, param: Parameter) -> str:
         """Get parm choices."""
         choices = ''
-        for choice in param.select.choice:
-            rchoice = self._resolve_parms(control, choice)
-            if choices:
-                choices += f'; {rchoice}'
-            else:
-                choices += f'{rchoice}'
+        if hasattr(param, 'select') and param.select and param.select.choice:
+            for choice in param.select.choice:
+                rchoice = self._resolve_parms(control, choice)
+                if choices:
+                    choices += f'; {rchoice}'
+                else:
+                    choices += f'{rchoice}'
         return choices
 
 

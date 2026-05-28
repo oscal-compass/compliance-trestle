@@ -66,7 +66,12 @@ class Validator(ABC):
                 models = ModelUtils.get_models_of_type(args.type, trestle_root)
             models_path = trestle_root / ModelUtils.model_type_to_model_dir(args.type)
             for m in models:
-                model_path = models_path / m
+                model_dir = models_path / m
+                if not model_dir.exists():
+                    logger.warning(f'File load error File {model_dir} not found for load.')
+                    return CmdReturnCodes.OSCAL_VALIDATION_ERROR.value
+                extension_type = trestle.common.file_utils.get_contextual_file_type(model_dir)
+                model_path = model_dir / f'{args.type}{FileContentType.to_file_extension(extension_type)}'
                 try:
                     _, _, model = ModelUtils.load_distributed(model_path, trestle_root)
                 except TrestleError as e:

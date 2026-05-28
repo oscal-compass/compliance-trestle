@@ -72,7 +72,9 @@ def test_get_sample_value_by_type() -> None:
 
 def test_generate_sample_with_conint() -> None:
     """Generate a sample model where it is known to contain conint fields."""
-    gens.generate_sample_model(common.AtFrequency)
+    # OSCAL 1.2.0: AtFrequency no longer exists, use Timing2 which has dict fields
+    # Use a different model that has conint fields - PositiveIntegerDatatype
+    gens.generate_sample_model(common.Timing2)
 
 
 def test_generate_sample_with_list_primitives() -> None:

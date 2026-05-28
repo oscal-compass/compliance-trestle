@@ -20,16 +20,16 @@ import logging
 import operator
 import pathlib
 import re
-import uuid
 from typing import Any, Dict, Optional
 
-from jinja2 import ChoiceLoader, DictLoader, Environment, FileSystemLoader, Template
+from jinja2 import Environment, FileSystemLoader, Template
 
 from ruamel.yaml import YAML
 
 from trestle.common import const, log
 from trestle.common.err import TrestleIncorrectArgsError, handle_generic_command_exception
 from trestle.common.load_validate import load_validate_model_name
+from trestle.core.remote.security import PathSecurityValidator
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.commands.command_docs import CommandPlusDocs
@@ -47,8 +47,6 @@ logger = logging.getLogger(__name__)
 
 class JinjaCmd(CommandPlusDocs):
     """Transform an input template to an output document using jinja templating."""
-
-    max_recursion_depth = 2
 
     name = 'jinja'
 
@@ -191,9 +189,7 @@ class JinjaCmd(CommandPlusDocs):
     ) -> int:
         """Run jinja over an input file with additional booleans."""
         template_folder = pathlib.Path.cwd()
-        jinja_env = Environment(
-            loader=FileSystemLoader(template_folder), extensions=extensions(), trim_blocks=True, autoescape=True
-        )
+        jinja_env = JinjaCmd._create_jinja_environment(template_folder)
         template = jinja_env.get_template(str(r_input_file))
         # create boolean dict
         if operator.xor(bool(ssp), bool(profile)):
@@ -228,7 +224,10 @@ class JinjaCmd(CommandPlusDocs):
 
         output = JinjaCmd.render_template(template, lut, template_folder)
 
+        # Validate output path to prevent path traversal
         output_file = trestle_root / r_output_file
+        PathSecurityValidator.validate_local_path(output_file, trestle_root)
+
         if number_captions:
             output_file.open('w', encoding=const.FILE_ENCODING).write(_number_captions(output))
         else:
@@ -274,14 +273,15 @@ class JinjaCmd(CommandPlusDocs):
                 control_path = catalog_interface.get_control_path(control.id)
                 for sub_dir in control_path:
                     group_dir = group_dir / sub_dir
-                    if not group_dir.exists():
-                        group_dir.mkdir(parents=True, exist_ok=True)
+                    # Validate directory path to prevent path traversal before creating directories
+                    full_group_dir = trestle_root / group_dir
+                    PathSecurityValidator.validate_local_path(full_group_dir, trestle_root)
+                    if not full_group_dir.exists():
+                        full_group_dir.mkdir(parents=True, exist_ok=True)
 
                 control_writer = DocsControlWriter()
 
-                jinja_env = Environment(
-                    loader=FileSystemLoader(template_folder), extensions=extensions(), trim_blocks=True, autoescape=True
-                )
+                jinja_env = JinjaCmd._create_jinja_environment(template_folder)
                 template = jinja_env.get_template(str(r_input_file))
                 lut['catalog_interface'] = catalog_interface
                 lut['control_interface'] = ControlInterface()
@@ -291,33 +291,26 @@ class JinjaCmd(CommandPlusDocs):
                 lut['group_title'] = group_title
                 output = JinjaCmd.render_template(template, lut, template_folder)
 
-                output_file = trestle_root / group_dir / pathlib.Path(control.id + const.MARKDOWN_FILE_EXT)
+                # Validate output path to prevent path traversal
+                relative_output_path = group_dir / pathlib.Path(control.id + const.MARKDOWN_FILE_EXT)
+                output_file = trestle_root / relative_output_path
+                PathSecurityValidator.validate_local_path(output_file, trestle_root)
+
                 output_file.open('w', encoding=const.FILE_ENCODING).write(output)
 
         return CmdReturnCodes.SUCCESS.value
 
     @staticmethod
-    def render_template(template: Template, lut: Dict[str, Any], template_folder: pathlib.Path) -> str:
-        """Render template."""
-        new_output = template.render(**lut)
-        output = ''
-        # This recursion allows nesting within expressions (e.g. an expression can contain jinja templates).
-        error_countdown = JinjaCmd.max_recursion_depth
-        while new_output != output and error_countdown > 0:
-            error_countdown = error_countdown - 1
-            output = new_output
-            random_name = uuid.uuid4()  # Should be random and not used.
-            dict_loader = DictLoader({str(random_name): new_output})
-            jinja_env = Environment(
-                loader=ChoiceLoader([dict_loader, FileSystemLoader(template_folder)]),
-                extensions=extensions(),
-                autoescape=True,
-                trim_blocks=True,
-            )
-            template = jinja_env.get_template(str(random_name))
-            new_output = template.render(**lut)
+    def _create_jinja_environment(template_folder: pathlib.Path) -> Environment:
+        """Create the trusted Jinja environment used for loading template files."""
+        return Environment(
+            loader=FileSystemLoader(template_folder), extensions=extensions(), trim_blocks=True, autoescape=True
+        )
 
-        return output
+    @staticmethod
+    def render_template(template: Template, lut: Dict[str, Any], template_folder: pathlib.Path) -> str:
+        """Render a trusted template exactly once to avoid recursive SSTI of untrusted data."""
+        return template.render(**lut)
 
 
 def _number_captions(md_body: str) -> str:

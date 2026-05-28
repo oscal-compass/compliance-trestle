@@ -267,7 +267,7 @@ def test_one_choice(tmp_path: pathlib.Path):
         for control in catalog_helper.get_controls():
             if control.params:
                 for param in control.params:
-                    if param.select:
+                    if hasattr(param, 'select') and param.select:
                         param.select.how_many = HowMany.one
                         catalog_helper._get_parm_value(control, param.id)
                         return
