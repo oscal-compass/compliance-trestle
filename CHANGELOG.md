@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v3.12.3 (2026-05-28)
+
+### Bug Fixes
+
+- **ci**: Prevent maintenance branch releases from being marked latest
+  ([`d52d24a`](https://github.com/oscal-compass/compliance-trestle/commit/d52d24ad29db3b2d7bb23959f0eecb3529f59b41))
+
+
 ## v3.12.2 (2026-05-21)
 
 
