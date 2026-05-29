@@ -241,7 +241,7 @@ class ModelUtils:
 
                     # Check if model_type is a collection type (either a RootModel container or a raw list/dict)
                     collection_type = None
-                    
+
                     # Check if it's a raw list or dict type (e.g., list[Control], dict[str, Role])
                     origin = get_origin(model_type)
                     if origin is list:
@@ -262,7 +262,7 @@ class ModelUtils:
                     elif isinstance(model_type, type) and issubclass(model_type, OscalBaseModel):
                         if model_type.is_collection_container():
                             collection_type = model_type.get_collection_type()
-                    
+
                     if collection_type is not None:
                         # This directory is a decomposed List or Dict
                         model_type, model_alias, model_instance = ModelUtils.load_distributed(
@@ -423,12 +423,12 @@ class ModelUtils:
                     # Check if inner_model is a Union type
                     origin = get_origin(inner_model)
                     is_union = origin is Union or (hasattr(types, 'UnionType') and origin is types.UnionType)
-                    
+
                     if alias.isdigit():
                         # For numeric indices, keep Union types as-is for deserialization
                         model_type = inner_model if is_union else _get_model_type_from_union(inner_model, alias)
                         continue
-                    
+
                     # Try to match alias against Union variants
                     resolved_inner_model = _get_model_type_from_union(inner_model, alias)
                     if (
@@ -787,14 +787,14 @@ class ModelUtils:
                 # Check if inner_model is a Union - if so, look ahead to determine which variant
                 origin = get_origin(inner_model)
                 is_union = origin is Union or (hasattr(types, 'UnionType') and origin is types.UnionType)
-                
+
                 if is_union:
                     # Look ahead to next segment to resolve Union
                     next_segment = path_parts[i + 1] if i + 1 < len(path_parts) else None
                     resolved_inner_model = _get_model_type_from_union(inner_model, next_segment)
                 else:
                     resolved_inner_model = _get_model_type_from_union(inner_model, path_part)
-                    
+
                 if isinstance(resolved_inner_model, type) and issubclass(resolved_inner_model, OscalBaseModel):
                     expected_alias = str_utils.classname_to_alias(resolved_inner_model.__name__, AliasMode.JSON)
                     if path_part == expected_alias:
