@@ -416,7 +416,11 @@ class _McMgr:
         if key not in self._map.keys():
             source_item = MappingResourceReference(type=src_resource_type, href=src_resource_href)
             target_item = MappingResourceReference(type=tgt_resource_type, href=tgt_resource_href)
-            mapping = Mapping(uuid=str(uuid.uuid4()), source_resource=source_item, target_resource=target_item, maps=[])
+            # Use model_construct to bypass validation for empty maps list
+            # Maps will be added later via append, and validation will occur when serializing
+            mapping = Mapping.model_construct(
+                uuid=str(uuid.uuid4()), source_resource=source_item, target_resource=target_item, maps=[]
+            )
             self._map[key] = mapping
         return self._map[key]
 

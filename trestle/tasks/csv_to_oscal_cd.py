@@ -566,7 +566,7 @@ class CsvToOscalComponentDefinition(TaskBase):
         """Delete implemented-requirement statements."""
         if implemented_requirement.statements:
             statements = implemented_requirement.statements
-            implemented_requirement.statements = []
+            new_statements = []
             for statement in statements:
                 # Pydantic v2: Check if result is empty before assigning to avoid validation error
                 deleted_props = self._delete_props(statement.props, rule_id)
@@ -575,8 +575,11 @@ class CsvToOscalComponentDefinition(TaskBase):
                 else:
                     statement.props = None
                 if statement.props:
-                    implemented_requirement.statements.append(statement)
-            if not len(implemented_requirement.statements):
+                    new_statements.append(statement)
+            # Only set if not empty to avoid Pydantic v2 validation error
+            if new_statements:
+                implemented_requirement.statements = new_statements
+            else:
                 implemented_requirement.statements = None
 
     def _delete_ir_props(self, implemented_requirement: ImplementedRequirement, rule_id: str) -> None:
@@ -909,6 +912,7 @@ class CsvToOscalComponentDefinition(TaskBase):
                         control_implementation.implemented_requirements.append(implemented_requirement)
                 else:
                     control_implementation.implemented_requirements.append(implemented_requirement)
+            # If we end up with no implemented_requirements, that's a real error - the field is required
 
     def control_mappings_add(self, add_control_mappings: List[str]) -> None:
         """Control mappings add."""

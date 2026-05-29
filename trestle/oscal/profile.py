@@ -218,18 +218,6 @@ class Group2(OscalBaseModel):
     insert_controls: list[InsertControls] | None = Field(None, alias='insert-controls', min_length=1)
 
 
-class Custom(OscalBaseModel):
-    """
-    Provides an alternate grouping structure that selected controls will be placed in.
-    """
-
-    model_config = ConfigDict(
-        extra='forbid',
-    )
-    groups: list[Group] | None = Field(None, min_length=1)
-    insert_controls: list[InsertControls] | None = Field(None, alias='insert-controls', min_length=1)
-
-
 class Group1(OscalBaseModel):
     """
     A group of controls, or of groups of controls.
@@ -250,6 +238,18 @@ class Group1(OscalBaseModel):
 
 # Union alias for Group variants
 Group = Union[Group1, Group2]
+
+
+class Custom(OscalBaseModel):
+    """
+    Provides an alternate grouping structure that selected controls will be placed in.
+    """
+
+    model_config = ConfigDict(
+        extra='forbid',
+    )
+    groups: list[Group] | None = Field(None, min_length=1)
+    insert_controls: list[InsertControls] | None = Field(None, alias='insert-controls', min_length=1)
 
 
 class Merge2(OscalBaseModel):
@@ -280,6 +280,34 @@ class Merge3(OscalBaseModel):
 Merge = Union[Merge1, Merge2, Merge3]
 
 
+class Modify(OscalBaseModel):
+    """
+    Set parameters or amend controls in resolution.
+    """
+
+    model_config = ConfigDict(
+        extra='forbid',
+    )
+    set_parameters: list[SetParameters | SetParameters1] | None = Field(None, alias='set-parameters', min_length=1)
+    alters: list[Alter] | None = Field(None, min_length=1)
+
+
+class Profile(OscalBaseModel):
+    """
+    Each OSCAL profile is defined by a profile element.
+    """
+
+    model_config = ConfigDict(
+        extra='forbid',
+    )
+    uuid: constr(pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(..., description='Provides a globally unique means to identify a given profile instance.', title='Profile Universally Unique Identifier')
+    metadata: common.Metadata
+    imports: list[Import] = Field(..., min_length=1)
+    merge: Merge | None = None
+    modify: Modify | None = None
+    back_matter: common.BackMatter | None = Field(None, alias='back-matter')
+
+
 class Remove(OscalBaseModel):
     """
     Specifies objects to be removed from a control based on specific aspects of the object that must all match.
@@ -307,34 +335,6 @@ class Alter(OscalBaseModel):
     control_id: constr(pattern=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$') = Field(..., alias='control-id', description='A reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).', title='Control Identifier Reference')
     removes: list[Remove] | None = Field(None, min_length=1)
     adds: list[Add] | None = Field(None, min_length=1)
-
-
-class Modify(OscalBaseModel):
-    """
-    Set parameters or amend controls in resolution.
-    """
-
-    model_config = ConfigDict(
-        extra='forbid',
-    )
-    set_parameters: list[SetParameters | SetParameters1] | None = Field(None, alias='set-parameters', min_length=1)
-    alters: list[Alter] | None = Field(None, min_length=1)
-
-
-class Profile(OscalBaseModel):
-    """
-    Each OSCAL profile is defined by a profile element.
-    """
-
-    model_config = ConfigDict(
-        extra='forbid',
-    )
-    uuid: constr(pattern=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$') = Field(..., description='Provides a globally unique means to identify a given profile instance.', title='Profile Universally Unique Identifier')
-    metadata: common.Metadata
-    imports: list[Import] = Field(..., min_length=1)
-    merge: Merge | None = None
-    modify: Modify | None = None
-    back_matter: common.BackMatter | None = Field(None, alias='back-matter')
 
 
 # Backward compatibility alias for OSCAL 1.2.0

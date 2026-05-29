@@ -156,10 +156,13 @@ class Ocp4CisProfileToOscalCatalog(TaskBase):
         )
         # metadata links
         if metadata_links is not None:
-            metadata.links = []
+            links = []
             for item in metadata_links.split():
                 link = Link(href=item)
-                metadata.links.append(link)
+                links.append(link)
+            # Only set if not empty to avoid Pydantic v2 validation error
+            if links:
+                metadata.links = links
         # catalog
         catalog = Catalog(uuid=_uuid(), metadata=metadata, groups=root.groups)
         # write OSCAL ComponentDefinition to file

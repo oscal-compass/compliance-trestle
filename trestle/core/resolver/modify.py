@@ -143,27 +143,31 @@ class Modify(Pipeline.Filter):
                 control.parts.append(trestle_part)
                 trestle_part = control.parts[-1]
             if add.by_id is None or add.by_id == control.id:
-                # Ensure props is a list before extending
-                if trestle_part.props is None:
-                    trestle_part.props = []
-                trestle_part.props.extend(add.props)
+                # Ensure props is a list before extending, only if we have props to add
+                if add.props:
+                    if trestle_part.props is None:
+                        trestle_part.props = []
+                    trestle_part.props.extend(add.props)
             else:
                 by_id_part = get_item_from_list(trestle_part.parts, add.by_id, lambda p: p.title)
                 if by_id_part is None:
-                    # Ensure parts is a list before appending
-                    if trestle_part.parts is None:
-                        trestle_part.parts = []
-                    trestle_part.parts.append(
-                        common.Part(
-                            name=TRESTLE_INHERITED_PROPS_TRACKER + '_' + add.by_id, title=add.by_id, props=add.props
+                    # Only create new part if we have props to add
+                    if add.props:
+                        # Ensure parts is a list before appending
+                        if trestle_part.parts is None:
+                            trestle_part.parts = []
+                        trestle_part.parts.append(
+                            common.Part(
+                                name=TRESTLE_INHERITED_PROPS_TRACKER + '_' + add.by_id, title=add.by_id, props=add.props
+                            )
                         )
-                    )
-                    by_id_part = trestle_part.parts[-1]
+                        by_id_part = trestle_part.parts[-1]
                 else:
-                    # Ensure props is a list before extending
-                    if by_id_part.props is None:
-                        by_id_part.props = []
-                    by_id_part.props.extend(add.props)
+                    # Ensure props is a list before extending, only if we have props to add
+                    if add.props:
+                        if by_id_part.props is None:
+                            by_id_part.props = []
+                        by_id_part.props.extend(add.props)
 
     @staticmethod
     def _add_to_control(control: cat.Control, add: prof.Add) -> None:

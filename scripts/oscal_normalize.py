@@ -1163,7 +1163,7 @@ def apply_eligible(line):
     """Apply eligible for token replacement.
 
     We want to replace class names in type annotations but not in string literals.
-    For __root__ lines with Field(...), we need to replace class names in the type
+    For __root__/root lines with Field(...), we need to replace class names in the type
     annotation (before = Field) but not in the description/title strings.
     """
     # If no title= or description=, always eligible
@@ -1174,9 +1174,10 @@ def apply_eligible(line):
     if 'CommonRiskStatus' in line:
         return True
 
-    # For __root__ lines with type annotations, we want to replace class names
+    # For __root__/root lines with type annotations, we want to replace class names
     # in the type annotation part only (before ' = Field(')
-    if '__root__:' in line and ' = Field(' in line:
+    # Support both Pydantic v1 (__root__:) and v2 (root:) syntax
+    if ('__root__:' in line or ' root:' in line) and ' = Field(' in line:
         return True
 
     # Otherwise, skip lines with title=/description= to avoid changing strings

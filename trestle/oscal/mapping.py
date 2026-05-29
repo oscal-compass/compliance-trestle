@@ -175,7 +175,7 @@ class ConfidenceScore2(OscalBaseModel):
 
 
 class ConfidenceScore(RootModel[ConfidenceScore1 | ConfidenceScore2]):
-    root: OscalMappingOscalMappingCommonConfidenceScore1 | OscalMappingOscalMappingCommonConfidenceScore2 = Field(..., description="This records either a string category or a decimal value from 0-1 representing a percentage. Both of these values describe an estimation of the author's confidence that this mapping is correct and accurate.", title='Confidence Score')
+    root: ConfidenceScore1 | ConfidenceScore2 = Field(..., description="This records either a string category or a decimal value from 0-1 representing a percentage. Both of these values describe an estimation of the author's confidence that this mapping is correct and accurate.", title='Confidence Score')
 
 
 class MappingProvenance(OscalBaseModel):

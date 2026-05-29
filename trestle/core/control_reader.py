@@ -283,7 +283,6 @@ class ControlReader:
         imp_req = gens.generate_sample_model(comp.ImplementedRequirement)
         imp_req.control_id = control_id
 
-        imp_req.statements = []
         comp_dict = md_comp_dict[comp_name]
         for label, comp_info in comp_dict.items():
             # if no label it applies to the imp_req itself rather than a statement
@@ -307,7 +306,12 @@ class ControlReader:
             statement.props = none_if_empty(ControlInterface.clean_props(comp_info.props))
             ControlInterface.insert_status_in_props(statement, comp_info.status)
 
-        imp_req.statements = list(statement_map.values())
+        # Only set statements if not empty to avoid Pydantic v2 validation error
+        statement_list = list(statement_map.values())
+        if statement_list:
+            imp_req.statements = statement_list
+        else:
+            imp_req.statements = None
         imp_req.set_parameters = []
 
         for _, param_dict_list in md_header.get(const.COMP_DEF_RULES_PARAM_VALS_TAG, {}).items():
