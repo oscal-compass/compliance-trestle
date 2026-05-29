@@ -528,12 +528,15 @@ class CsvToOscalComponentDefinition(TaskBase):
         control_implementations = component.control_implementations
         for control_implementation in self._control_implementation_generator(control_implementations):
             if control_implementation.set_parameters:
-                set_parameters = control_implementation.set_parameters
-                control_implementation.set_parameters = []
-                for set_parameter in set_parameters:
+                # Build new list with parameters that don't match parameter_id
+                new_set_parameters = []
+                for set_parameter in control_implementation.set_parameters:
                     if set_parameter.param_id != parameter_id:
-                        _OscalHelper.add_set_parameter(control_implementation.set_parameters, set_parameter)
-                if not len(control_implementation.set_parameters):
+                        _OscalHelper.add_set_parameter(new_set_parameters, set_parameter)
+                # Only update if we have parameters, otherwise set to None
+                if new_set_parameters:
+                    control_implementation.set_parameters = new_set_parameters
+                else:
                     control_implementation.set_parameters = None
 
     def _delete_rule_implemented_requirement(self, component: DefinedComponent, rule_id: str) -> None:

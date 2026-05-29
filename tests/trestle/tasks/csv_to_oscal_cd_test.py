@@ -873,43 +873,43 @@ def test_execute_add_rule(tmp_path: pathlib.Path) -> None:
     pc = 72
     assert len(component.props) == 72
     assert component.props[pc - 1].name == 'Fetcher_Description'
-    assert component.props[pc - 1].ns == 'https://abc.com/add-namespace'
+    assert component.props[pc - 1].ns == AnyUrl('https://abc.com/add-namespace')
     assert component.props[pc - 1].value == 'add-fetcher-description'
     assert component.props[pc - 1].remarks == 'rule_set_10'
     assert component.props[pc - 2].name == 'Fetcher'
-    assert component.props[pc - 2].ns == 'https://abc.com/add-namespace'
+    assert component.props[pc - 2].ns == AnyUrl('https://abc.com/add-namespace')
     assert component.props[pc - 2].value == 'add-fetcher'
     assert component.props[pc - 2].remarks == 'rule_set_10'
     assert component.props[pc - 3].name == 'Reference_Id'
-    assert component.props[pc - 3].ns == 'https://abc.com/add-namespace'
+    assert component.props[pc - 3].ns == AnyUrl('https://abc.com/add-namespace')
     assert component.props[pc - 3].value == 'add-reference-id'
     assert component.props[pc - 3].remarks == 'rule_set_10'
     assert component.props[pc - 4].name == 'Check_Description'
-    assert component.props[pc - 4].ns == 'https://abc.com/add-namespace'
+    assert component.props[pc - 4].ns == AnyUrl('https://abc.com/add-namespace')
     assert component.props[pc - 4].value == 'add-check-description'
     assert component.props[pc - 4].remarks == 'rule_set_10'
     assert component.props[pc - 5].name == 'Check_Id'
-    assert component.props[pc - 5].ns == 'https://abc.com/add-namespace'
+    assert component.props[pc - 5].ns == AnyUrl('https://abc.com/add-namespace')
     assert component.props[pc - 5].value == 'add-check-id'
     assert component.props[pc - 5].remarks == 'rule_set_10'
     assert component.props[pc - 6].name == 'Parameter_Value_Alternatives'
-    assert component.props[pc - 6].ns == 'https://abc.com/add-namespace'
+    assert component.props[pc - 6].ns == AnyUrl('https://abc.com/add-namespace')
     assert component.props[pc - 6].value == 'add-parameter-value-alternatives'
     assert component.props[pc - 6].remarks == 'rule_set_10'
     assert component.props[pc - 7].name == 'Parameter_Description'
-    assert component.props[pc - 7].ns == 'https://abc.com/add-namespace'
+    assert component.props[pc - 7].ns == AnyUrl('https://abc.com/add-namespace')
     assert component.props[pc - 7].value == 'add-parameter-description'
     assert component.props[pc - 7].remarks == 'rule_set_10'
     assert component.props[pc - 8].name == 'Parameter_Id'
-    assert component.props[pc - 8].ns == 'https://abc.com/add-namespace'
+    assert component.props[pc - 8].ns == AnyUrl('https://abc.com/add-namespace')
     assert component.props[pc - 8].value == 'add-parameter-id'
     assert component.props[pc - 8].remarks == 'rule_set_10'
     assert component.props[pc - 9].name == 'Rule_Description'
-    assert component.props[pc - 9].ns == 'https://abc.com/add-namespace'
+    assert component.props[pc - 9].ns == AnyUrl('https://abc.com/add-namespace')
     assert component.props[pc - 9].value == 'add-rule-description'
     assert component.props[pc - 9].remarks == 'rule_set_10'
     assert component.props[pc - 10].name == 'Rule_Id'
-    assert component.props[pc - 10].ns == 'https://abc.com/add-namespace'
+    assert component.props[pc - 10].ns == AnyUrl('https://abc.com/add-namespace')
     assert component.props[pc - 10].value == 'add-rule-id'
     assert component.props[pc - 10].remarks == 'rule_set_10'
     assert len(component.control_implementations) == 2
