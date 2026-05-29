@@ -17,7 +17,7 @@
 
 from typing import Any, Type, TypeVar
 
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel, ValidationError, model_validator
 
 from trestle.common.err import TrestleError
 
