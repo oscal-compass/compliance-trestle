@@ -15,9 +15,13 @@ on:
   push:
     branches: [ "develop", "main" ]
   pull_request:
-    branches: [ "develop" ]
+    # Run on all PRs to catch security issues early
+    branches: [ "develop", "main" ]
   schedule:
+    # Run weekly security scan every Thursday at 21:39 UTC
     - cron: '39 21 * * 4'
+  workflow_dispatch:
+    # Allow manual triggering for on-demand security scans
 
 permissions:
   contents: read
@@ -67,12 +71,10 @@ jobs:
       with:
         languages: ${{ matrix.language }}
         build-mode: ${{ matrix.build-mode }}
-        # If you wish to specify custom queries, you can do so here or in a config file.
-        # By default, queries listed here will override any specified in a config file.
-        # Prefix the list here with "+" to use these queries and those in the config file.
-
-        # For more details on CodeQL's query packs, refer to: https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
-        # queries: security-extended,security-and-quality
+        # Use custom configuration file for enhanced security scanning
+        config-file: ./.github/codeql/codeql-config.yml
+        # Enable additional query packs for comprehensive security analysis
+        queries: +security-extended,security-and-quality
 
     # If the analyze step fails for one of the languages you are analyzing with
     # "We were unable to automatically build your code", modify the matrix above
@@ -94,3 +96,18 @@ jobs:
       uses: github/codeql-action/analyze@7211b7c8077ea37d8641b6271f6a365a22a5fbfa # v4.36.0
       with:
         category: "/language:${{matrix.language}}"
+        # Upload results even if there are findings (don't fail the build)
+        upload: true
+        # Add SARIF output for better integration
+        output: sarif-results
+        # Wait for processing to complete
+        wait-for-processing: true
+    
+    # Upload SARIF file as artifact for review
+    - name: Upload SARIF as artifact
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: codeql-sarif-${{ matrix.language }}
+        path: sarif-results
+        retention-days: 30

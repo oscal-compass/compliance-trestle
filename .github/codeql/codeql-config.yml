@@ -1,0 +1,61 @@
+# CodeQL Configuration for Enhanced Security Scanning
+# This configuration enables comprehensive security analysis for the trestle project
+
+name: "Security-Enhanced CodeQL Config"
+
+# Disable default queries to use only our custom query suites
+disable-default-queries: false
+
+# Query suites to run
+queries:
+  # Security and quality queries (most comprehensive)
+  - uses: security-and-quality
+  
+  # Additional security-extended queries
+  - uses: security-extended
+
+# Paths to exclude from analysis
+paths-ignore:
+  - '**/test/**'
+  - '**/tests/**'
+  - '**/node_modules/**'
+  - '**/dist/**'
+  - '**/build/**'
+  - '**/__pycache__/**'
+  - '**/venv/**'
+  - '**/.venv/**'
+  - '**/release-schemas/**'
+  - '**/nist-content/**'
+
+# Paths to include (focus on source code)
+paths:
+  - 'trestle/**'
+  - 'scripts/**'
+
+# Python-specific configuration
+packs:
+  # Use the latest Python security queries
+  python:
+    - codeql/python-queries:codeql-suites/python-security-and-quality.qls
+    - codeql/python-queries:codeql-suites/python-security-extended.qls
+    # Custom security query suite for trestle-specific concerns
+    - ./.github/codeql/python-security-queries.qls
+
+# Query filters to focus on high-severity issues
+query-filters:
+  - exclude:
+      # Exclude informational/note-level findings
+      problem.severity: note
+  - include:
+      # Include all security-related queries
+      tags contain: security
+  - include:
+      # Include all high and critical severity issues
+      problem.severity:
+        - error
+        - warning
+
+# Additional configuration for better results
+trap-caching: true
+
+# Made with Bob

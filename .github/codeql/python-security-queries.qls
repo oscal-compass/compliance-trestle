@@ -1,0 +1,66 @@
+# Custom Python Security Query Suite for Trestle
+# Focuses on security vulnerabilities relevant to OSCAL compliance tooling
+
+- description: "Python security queries for compliance-trestle"
+
+# Import all security queries from the standard Python pack
+- import: codeql-suites/python-security-extended.qls
+  from: codeql/python-queries
+
+# Additional specific security queries for our use case
+- queries: .
+  from: codeql/python-queries
+
+# Focus on high-priority security issues
+- include:
+    kind:
+      - problem
+      - path-problem
+    tags contain:
+      - security
+      - external/cwe
+
+# Specific CWE categories relevant to trestle
+- include:
+    tags contain:
+      - external/cwe/cwe-022  # Path Traversal
+      - external/cwe/cwe-078  # OS Command Injection
+      - external/cwe/cwe-079  # Cross-site Scripting
+      - external/cwe/cwe-089  # SQL Injection
+      - external/cwe/cwe-094  # Code Injection
+      - external/cwe/cwe-095  # Eval Injection
+      - external/cwe/cwe-117  # Log Injection
+      - external/cwe/cwe-200  # Information Exposure
+      - external/cwe/cwe-295  # Certificate Validation
+      - external/cwe/cwe-327  # Broken Crypto
+      - external/cwe/cwe-338  # Weak PRNG
+      - external/cwe/cwe-502  # Deserialization
+      - external/cwe/cwe-611  # XXE
+      - external/cwe/cwe-776  # XML Entity Expansion
+      - external/cwe/cwe-798  # Hard-coded Credentials
+      - external/cwe/cwe-918  # SSRF
+      - external/cwe/cwe-943  # NoSQL Injection
+
+# Include queries for common Python security issues
+- include:
+    tags contain:
+      - security/external/cwe
+      - security/injection
+      - security/path-traversal
+      - security/ssrf
+      - security/deserialization
+      - security/crypto
+      - security/credentials
+
+# Exclude low-severity or noisy queries
+- exclude:
+    tags contain:
+      - security/audit
+    precision:
+      - low
+
+# Include all error and warning level findings
+- include:
+    problem.severity:
+      - error
+      - warning
