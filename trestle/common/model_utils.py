@@ -239,17 +239,37 @@ class ModelUtils:
                     # then whether the outer_type of root is a collection.
                     # Alternative is to do a try except to avoid the error for an unknown key.
 
-                    # Check if model_type is actually a BaseModel before calling model methods
-                    # It could be a raw list type like list[Role]
-                    if isinstance(model_type, type) and issubclass(model_type, OscalBaseModel):
+                    # Check if model_type is a collection type (either a RootModel container or a raw list/dict)
+                    collection_type = None
+                    
+                    # Check if it's a raw list or dict type (e.g., list[Control], dict[str, Role])
+                    origin = get_origin(model_type)
+                    if origin is list:
+                        collection_type = list
+                    elif origin is dict:
+                        collection_type = dict
+                    # Check if it's a RootModel (dynamically created wrapper)
+                    elif isinstance(model_type, type) and issubclass(model_type, RootModel):
+                        # Check the root field's type to determine collection type
+                        if hasattr(model_type, 'model_fields') and 'root' in model_type.model_fields:
+                            root_field = model_type.model_fields['root']
+                            root_origin = get_origin(root_field.annotation)
+                            if root_origin is list:
+                                collection_type = list
+                            elif root_origin is dict:
+                                collection_type = dict
+                    # Check if it's a BaseModel with collection container
+                    elif isinstance(model_type, type) and issubclass(model_type, OscalBaseModel):
                         if model_type.is_collection_container():
-                            # This directory is a decomposed List or Dict
                             collection_type = model_type.get_collection_type()
-                            model_type, model_alias, model_instance = ModelUtils.load_distributed(
-                                local_path, abs_trestle_root, collection_type
-                            )
-                            aliases_not_to_be_stripped.append(model_alias.split('.')[-1])
-                            instances_to_be_merged.append(model_instance)
+                    
+                    if collection_type is not None:
+                        # This directory is a decomposed List or Dict
+                        model_type, model_alias, model_instance = ModelUtils.load_distributed(
+                            local_path, abs_trestle_root, collection_type
+                        )
+                        aliases_not_to_be_stripped.append(model_alias.split('.')[-1])
+                        instances_to_be_merged.append(model_instance)
             primary_model_dict = {}
             if primary_model_instance is not None:
                 primary_model_dict = primary_model_instance.__dict__
@@ -944,10 +964,22 @@ class ModelUtils:
         instances_to_be_merged: List[OscalBaseModel] = []
         collection_model_type, collection_model_alias = ModelUtils.get_stripped_model_type(abs_path, abs_trestle_root)
         for path in sorted(trestle.common.file_utils.iterdir_without_hidden_files(abs_path)):
-            # ASSUMPTION HERE: if it is a directory, there's a file that can not be decomposed further.
+            # For directories in a list, we need to check if there's a corresponding file
+            # If not, load the directory itself as a decomposed model
             if path.is_dir():
-                continue
-            _, model_alias, model_instance = ModelUtils.load_distributed(path, abs_trestle_root)
+                # Check if there's a file with the same base name
+                file_path = path.parent / f'{path.name}.json'
+                if not file_path.exists():
+                    file_path = path.parent / f'{path.name}.yaml'
+                if not file_path.exists():
+                    file_path = path.parent / f'{path.name}.yml'
+                if file_path.exists():
+                    # There's a file, skip the directory (it will be loaded when we process the file)
+                    continue
+                # No file found, this directory contains the decomposed model
+                _, model_alias, model_instance = ModelUtils.load_distributed(path, abs_trestle_root)
+            else:
+                _, model_alias, model_instance = ModelUtils.load_distributed(path, abs_trestle_root)
 
             instances_to_be_merged.append(model_instance)
             aliases_not_to_be_stripped.append(model_alias.split('.')[-1])
