@@ -122,12 +122,8 @@ def generate_sample_value_by_type(type_: Any, field_name: str) -> Union[datetime
         return datetime.now().astimezone()
     if type_ is bool:
         return False
-    if type_ is int:
-        return 0
-    if type_ is float:
-        return 0.00
 
-    # In Pydantic v2, check for Annotated types with int origin (conint)
+    # In Pydantic v2, check for Annotated types with int origin (conint) BEFORE checking plain int
     # These are Annotated[int, ...] with Interval and MultipleOf metadata
     origin = utils.get_origin(type_)
     if origin is not None:
@@ -162,6 +158,12 @@ def generate_sample_value_by_type(type_: Any, field_name: str) -> Union[datetime
                 if math.remainder(floor, multiple_of) == 0:
                     return int(floor)
                 return int((floor + 1) * multiple_of)
+
+    # Check plain types after checking for Annotated types
+    if type_ is int:
+        return 0
+    if type_ is float:
+        return 0.00
 
     # In Pydantic v2, constrained strings are created with constr() and have metadata
     # Check if it's a string type with constraints (pattern, min_length, max_length, etc.)
@@ -231,6 +233,39 @@ def generate_sample_value_by_type(type_: Any, field_name: str) -> Union[datetime
     if type_ is dict or (hasattr(type_, '__origin__') and type_.__origin__ is dict):
         return {}  # type: ignore[return-value]
     return const.REPLACE_ME
+
+
+def _get_constrained_int_value(metadata: list) -> int:
+    """Extract constraints from field metadata and return a valid int value.
+
+    Args:
+        metadata: List of constraint objects from field_info.metadata
+
+    Returns:
+        An integer value that satisfies all constraints (ge, gt, multiple_of)
+    """
+    import math
+
+    ge_val = None
+    gt_val = None
+    multiple_of = 1
+
+    for constraint in metadata:
+        if hasattr(constraint, 'ge') and constraint.ge is not None:
+            ge_val = constraint.ge
+        if hasattr(constraint, 'gt') and constraint.gt is not None:
+            gt_val = constraint.gt
+        if hasattr(constraint, 'multiple_of') and constraint.multiple_of is not None:
+            multiple_of = constraint.multiple_of
+
+    # Calculate floor value
+    floor = ge_val if ge_val is not None else 0
+    floor = gt_val + 1 if gt_val is not None else floor
+
+    # Return value that satisfies constraints
+    if math.remainder(floor, multiple_of) == 0:
+        return int(floor)
+    return int((floor + 1) * multiple_of)
 
 
 def is_by_type(model_type: Union[Type[TG], List[TG], Dict[str, TG]]) -> bool:
@@ -404,7 +439,11 @@ def generate_sample_model(
                             collection_outer_type, include_optional=include_optional, depth=depth - 1
                         )
                 elif is_by_type(outer_type):
-                    model_dict[field] = generate_sample_value_by_type(outer_type, field)
+                    # For int types, check if there are constraints in field metadata
+                    if outer_type is int and field_info.metadata:  # type: ignore
+                        model_dict[field] = _get_constrained_int_value(field_info.metadata)  # type: ignore
+                    else:
+                        model_dict[field] = generate_sample_value_by_type(outer_type, field)
                 elif safe_is_sub(outer_type, OscalBaseModel):
                     # Skip recursion if depth is 0 (but allow -1 for unlimited)
                     # But always generate required fields even at depth 0
@@ -446,7 +485,11 @@ def generate_sample_model(
                             outer_type, str_utils.classname_to_alias(model.__name__, AliasMode.FIELD)
                         )
                     else:
-                        model_dict[field] = generate_sample_value_by_type(outer_type, field)
+                        # For int types, check if there are constraints in field metadata
+                        if outer_type is int and field_info.metadata:  # type: ignore
+                            model_dict[field] = _get_constrained_int_value(field_info.metadata)  # type: ignore
+                        else:
+                            model_dict[field] = generate_sample_value_by_type(outer_type, field)
         # Note: this assumes list constrains in oscal are always 1 as a minimum size. if two this may still fail.
     else:
         # Use original_model to preserve parameterized type info (e.g., list[str] not just list)
