@@ -15,6 +15,7 @@
 # limitations under the License.
 """Tests for trestle canonicalize command."""
 
+import argparse
 import pathlib
 import sys
 
@@ -22,10 +23,15 @@ from _pytest.monkeypatch import MonkeyPatch
 
 import pytest
 
+from tests import test_utils
+
 import trestle.common.const as const
+import trestle.core.commands.import_ as importcmd
 from trestle.cli import Trestle
+from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.canonicalize import CanonicalizeCmd
 from trestle.core.commands.common.return_codes import CmdReturnCodes
+from trestle.oscal.catalog import Catalog
 
 
 class StdoutWithoutBuffer:
@@ -50,6 +56,28 @@ def test_canonicalize_writes_output_file(tmp_path: pathlib.Path, monkeypatch: Mo
 
     assert Trestle().run() == CmdReturnCodes.SUCCESS.value
     assert output_path.read_bytes() == b'{"a":1,"b":2}'
+
+
+def test_canonicalize_imported_nist_800_53_catalog_remains_oscal_readable(tmp_trestle_dir: pathlib.Path) -> None:
+    """A real imported NIST 800-53 catalog should still load after canonicalization."""
+    source_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
+    import_args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, file=str(source_path), output='nist_800_53', verbose=1, regenerate=False
+    )
+
+    assert importcmd.ImportCmd()._run(import_args) == CmdReturnCodes.SUCCESS.value
+
+    imported_path = tmp_trestle_dir / 'catalogs/nist_800_53/catalog.json'
+    imported_catalog = Catalog.oscal_read(imported_path)
+    assert imported_catalog is not None
+
+    canonical_path = tmp_trestle_dir / 'catalogs/nist_800_53/catalog.canonical.json'
+    CanonicalizeCmd.canonicalize(imported_path, canonical_path)
+
+    canonical_catalog = Catalog.oscal_read(canonical_path)
+    assert canonical_catalog is not None
+    assert ModelUtils.models_are_equivalent(imported_catalog, canonical_catalog)
+    assert b'\n' not in canonical_path.read_bytes()
 
 
 def test_canonicalize_writes_stdout(

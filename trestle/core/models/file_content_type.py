@@ -50,6 +50,8 @@ class FileContentType(Enum):
     @classmethod
     def to_content_type(cls, file_extension: str) -> 'FileContentType':
         """Get content type form file extension, including the dot."""
+        if file_extension == '.canonical.json':
+            return FileContentType.CANONICAL_JSON
         if file_extension == '.json':
             return FileContentType.JSON
         if file_extension == '.yaml' or file_extension == '.yml':
@@ -58,6 +60,18 @@ class FileContentType(Enum):
             return FileContentType.DIRLIKE
 
         raise TrestleError(f'Unsupported file extension {file_extension}')
+
+    @classmethod
+    def path_suffix_to_content_type(cls, file_path: Path) -> 'FileContentType':
+        """Get content type from an explicit file path's suffixes without checking existence."""
+        if cls._has_canonical_json_suffix(file_path):
+            return FileContentType.CANONICAL_JSON
+        return FileContentType.to_content_type(file_path.suffix)
+
+    @classmethod
+    def _has_canonical_json_suffix(cls, file_path: Path) -> bool:
+        """Return True if the path ends with the canonical JSON double extension."""
+        return ''.join(file_path.suffixes[-2:]) == '.canonical.json'
 
     @classmethod
     def path_to_content_type(cls, file_path: Path) -> 'FileContentType':

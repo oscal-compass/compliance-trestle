@@ -268,7 +268,7 @@ class OscalBaseModel(TrestleBaseModel):
         Raises:
             err.TrestleError: If a unknown file extension is provided.
         """
-        content_type = FileContentType.to_content_type(path.suffix)
+        content_type = FileContentType.path_suffix_to_content_type(path)
         # The output will have \r\n newlines on windows and \n newlines elsewhere
 
         if content_type == FileContentType.YAML:
@@ -278,6 +278,9 @@ class OscalBaseModel(TrestleBaseModel):
         elif content_type == FileContentType.JSON:
             with pathlib.Path(path).open('wb') as write_file:
                 write_file.write(self.oscal_serialize_json_bytes(pretty=True))
+        elif content_type == FileContentType.CANONICAL_JSON:
+            with pathlib.Path(path).open('wb') as write_file:
+                write_file.write(self.oscal_serialize_json_bytes(canonical=True))
 
     @classmethod
     def oscal_read(cls, path: pathlib.Path) -> Optional['OscalBaseModel']:
@@ -294,7 +297,7 @@ class OscalBaseModel(TrestleBaseModel):
         # Create the wrapper model.
         alias = classname_to_alias(cls.__name__, AliasMode.JSON)
 
-        content_type = FileContentType.to_content_type(path.suffix)
+        content_type = FileContentType.path_suffix_to_content_type(path)
         logger.debug(f'oscal_read content type {content_type} and alias {alias} from {path}')
 
         if not path.exists():
@@ -307,7 +310,7 @@ class OscalBaseModel(TrestleBaseModel):
                 yaml = YAML(typ='safe')
                 with path.open('r', encoding=const.FILE_ENCODING) as fh:
                     obj = yaml.load(fh)
-            elif content_type == FileContentType.JSON:
+            elif content_type in [FileContentType.JSON, FileContentType.CANONICAL_JSON]:
                 obj = load_file(path, json_loads=cls.__config__.json_loads)
         except Exception as e:
             raise err.TrestleError(f'Error loading file {path} {str(e)}')

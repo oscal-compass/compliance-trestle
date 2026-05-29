@@ -388,6 +388,14 @@ def test_oscal_write(tmp_path: pathlib.Path) -> None:
     component2.oscal_write(temp_cd_yaml)
 
     component.ComponentDefinition.oscal_read(temp_cd_yaml)
+
+    temp_cd_canonical_json = pathlib.Path(tmp_path) / 'component_test.canonical.json'
+    component2.oscal_write(temp_cd_canonical_json)
+    canonical_json = temp_cd_canonical_json.read_text(encoding=const.FILE_ENCODING)
+    assert canonical_json == component2.oscal_serialize_json(canonical=True)
+    assert '\n' not in canonical_json
+    component.ComponentDefinition.oscal_read(temp_cd_canonical_json)
+
     # test failure
     with pytest.raises(err.TrestleError):
         component2.oscal_write(tmp_path / 'target.borked')

@@ -26,6 +26,7 @@ from trestle.core.models.file_content_type import FileContentType
 def test_to_content_type() -> None:
     """Test to_content_type method."""
     assert FileContentType.to_content_type('.json') == FileContentType.JSON
+    assert FileContentType.to_content_type('.canonical.json') == FileContentType.CANONICAL_JSON
     assert FileContentType.to_content_type('.yaml') == FileContentType.YAML
     assert FileContentType.to_content_type('') == FileContentType.DIRLIKE
 
@@ -50,12 +51,14 @@ def test_path_to_file_content_type(tmp_trestle_dir: Path) -> None:
     tmp_file = tmp_stem.with_suffix('.json')
     tmp_file.touch()
     assert FileContentType.JSON == FileContentType.path_to_content_type(tmp_file)
+    assert FileContentType.JSON == FileContentType.path_suffix_to_content_type(tmp_file)
     assert FileContentType.path_to_file_extension(tmp_file) == '.json'
     tmp_file.unlink()
 
     tmp_file = tmp_stem.with_suffix('.canonical.json')
     tmp_file.touch()
     assert FileContentType.JSON == FileContentType.path_to_content_type(tmp_file)
+    assert FileContentType.CANONICAL_JSON == FileContentType.path_suffix_to_content_type(tmp_file)
     assert FileContentType.path_to_file_extension(tmp_file) == '.json'
     tmp_file.unlink()
 
