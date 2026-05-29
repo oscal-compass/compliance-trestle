@@ -22,7 +22,7 @@ jobs:
       run: |
         min_version=$(jq '.PYTHON_MIN' -r version.json)
         max_version=$(jq '.PYTHON_MAX' -r version.json)
-        echo "min=$min_version" 
+        echo "min=$min_version"
         echo "max=$max_version"
         echo "min=$min_version" >> $GITHUB_OUTPUT
         echo "max=$max_version" >> $GITHUB_OUTPUT
@@ -278,6 +278,12 @@ jobs:
         gh release edit "${{ steps.release.outputs.tag }}" --latest=false
 
     # --- Generate provenance for the ACTUAL RELEASE ARTIFACTS ---
+
+    - name: Generate SLSA build provenance
+      if: steps.release.outputs.released == 'true'
+      uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26 # v4.1.0
+      with:
+        subject-path: "dist/*"
 
     - name: Publish package distributions to PyPI
       uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # release/v1
