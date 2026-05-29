@@ -31,11 +31,15 @@ import trestle.oscal.component as comp
 from trestle.common import const, file_utils, list_utils
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.author.ssp import SSPAssemble, SSPFilter, SSPGenerate
+from trestle.core.catalog.catalog_writer import CatalogWriter
+from trestle.core.catalog.catalog_interface import CatalogInterface
 from trestle.core.control_context import ContextPurpose, ControlContext
+from trestle.oscal.common import Parameter1, Property
 from trestle.core.control_reader import ControlReader
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
+from unittest.mock import Mock
 
 
 prof_name = 'comp_prof'
@@ -1456,6 +1460,32 @@ def test_ssp_generate_aggregates_no_param_value_orig(tmp_trestle_dir: pathlib.Pa
     assert const.PARAM_VALUE_ORIGIN not in si_7_prm_1.keys()
 
 
+def test_ssp_generate_missing_profile_param_value_origin(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test ssp-generate succeeds when profile set-parameter has no profile-param-value-origin.
+
+    Regression test for KeyError raised in catalog_writer._construct_set_parameters_dict
+    when profile-param-value-origin key is absent from parameter dict.
+
+    NOTE: This test uses the standard profile fixture which does NOT exercise
+    the AGGREGATES branch — it would pass even on unpatched code. Kept as a
+    smoke test only. See test_ssp_generate_missing_profile_param_value_origin_regression
+    for the true regression guard that fails deterministically on unpatched code.
+    """
+    args, _ = setup_for_ssp(tmp_trestle_dir, prof_name, ssp_name)
+    args.compdefs = None
+    ssp_cmd = SSPGenerate()
+    # This should not raise KeyError: 'profile-param-value-origin'
+    assert ssp_cmd._run(args) == 0
+    md_dir = tmp_trestle_dir / ssp_name
+    ac_1 = md_dir / 'ac' / 'ac-1.md'
+    assert ac_1.exists()
+    md_api = MarkdownAPI()
+    header, _ = md_api.processor.process_markdown(ac_1)
+    # Verify ssp-generate completed without KeyError on missing profile-param-value-origin
+    # The header should be populated correctly
+    assert 'x-trestle-set-params' in header
+
+
 def test_ssp_generate_includes_all_imp_reqs(tmp_trestle_dir: pathlib.Path) -> None:
     """Test component prose is included for all implemented-requirements regardless of rules."""
 
@@ -1543,3 +1573,186 @@ def test_ssp_generate_includes_all_imp_reqs(tmp_trestle_dir: pathlib.Path) -> No
         'OSCO' in ac3_content_3
         and 'Ensure that the Container Network Interface file ownership is set to root:root' in ac3_content_3
     )
+
+
+def test_ssp_generate_missing_profile_param_value_origin_regression(tmp_trestle_dir: pathlib.Path) -> None:
+    """Strengthened regression test for #2221.
+
+    Verifies that _construct_set_parameters_dict does NOT raise KeyError when:
+      - profile set-parameter has AGGREGATES prop (so PROFILE_PARAM_VALUE_ORIGIN
+        is intentionally never written into new_dict), AND
+      - control parameter also carries AGGREGATES (so pop is called on new_dict)
+
+    This test uses profile_aggregation fixture which exercises that exact code path.
+    The previous test (test_ssp_generate_missing_profile_param_value_origin) used
+    a standard profile and did NOT exercise the AGGREGATES branch — meaning it
+    would pass even against the unpatched code. This test would fail on unpatched code.
+    """
+    args, _ = setup_for_ssp(tmp_trestle_dir, 'profile_aggregation', ssp_name)
+    args.compdefs = None
+    ssp_cmd = SSPGenerate()
+
+    # On unpatched code this raises:
+    #   KeyError: 'profile-param-value-origin'
+    # inside _construct_set_parameters_dict at the line:
+    #   new_dict.pop(const.PROFILE_PARAM_VALUE_ORIGIN)   # no default
+    assert ssp_cmd._run(args) == 0
+
+    md_dir = tmp_trestle_dir / ssp_name
+    si_7 = md_dir / 'si-7.md'
+    assert si_7.exists()
+
+    md_api = MarkdownAPI()
+    header, _ = md_api.processor.process_markdown(si_7)
+
+    # si-7_prm_1 exercises the AGGREGATES path.
+    # After the fix, profile-param-value-origin must be absent (popped cleanly).
+    si_7_prm_1 = header['x-trestle-set-params']['si-7_prm_1']
+    assert const.PROFILE_PARAM_VALUE_ORIGIN not in si_7_prm_1, (
+        'profile-param-value-origin should be absent for AGGREGATES params'
+    )
+
+
+def test_construct_set_parameters_dict_aggregates_no_origin_unit(tmp_path: pathlib.Path) -> None:
+    """Direct unit test for _construct_set_parameters_dict regression (#2221).
+
+    Constructs the exact scenario that caused KeyError:
+      - profile set-parameter has 'aggregates' prop and NO param-value-origin
+        → PROFILE_PARAM_VALUE_ORIGIN is never written into new_dict
+      - control parameter also has 'aggregates' prop
+        → pop(PROFILE_PARAM_VALUE_ORIGIN) is called on new_dict
+        → KeyError on unpatched code, clean exit on patched code
+
+    This test does NOT rely on fixture data and will fail
+    deterministically against the unpatched code.
+    """
+
+    param_id = 'ac-1_prm_1'
+
+    # profile set-parameter: AGGREGATES prop, no param-value-origin
+    # → prof_param_value_origin == '' → enters else branch
+    # → AGGREGATES in param.props → PROFILE_PARAM_VALUE_ORIGIN skipped
+    profile_param = Parameter1(id=param_id, props=[Property(name=const.AGGREGATES, value=const.AGGREGATES)])
+    profile_set_param_dict = {param_id: profile_param}
+
+    # control parameter: AGGREGATES prop + values
+    # → AGGREGATES in orig_param.props → pop(PROFILE_PARAM_VALUE_ORIGIN) called
+    # → KeyError on unpatched code (no default), clean on patched (None default)
+    control_param = Parameter1(
+        id=param_id, props=[Property(name=const.AGGREGATES, value=const.AGGREGATES)], values=['some-value']
+    )
+    control_param_dict = {param_id: control_param}
+
+    context = ControlContext.generate(
+        purpose=ContextPurpose.SSP, to_markdown=True, trestle_root=tmp_path, md_root=tmp_path
+    )
+
+    writer = CatalogWriter(Mock(spec=CatalogInterface))
+
+    try:
+        result = writer._construct_set_parameters_dict(profile_set_param_dict, control_param_dict, context)
+    except KeyError as e:
+        raise AssertionError(
+            f'KeyError raised for key {e} — regression: unpatched code path hit. '
+            f'Ensure dict.pop(const.PROFILE_PARAM_VALUE_ORIGIN, None) is applied.'
+        ) from e
+
+    param_result = result.get(param_id, {})
+    assert const.PROFILE_PARAM_VALUE_ORIGIN not in param_result, (
+        'profile-param-value-origin must be absent for params with aggregates prop'
+    )
+
+
+def test_construct_set_parameters_dict_aggregates_with_prof_origin_ssp(tmp_path: pathlib.Path) -> None:
+    """Regression test: KeyError when prof_param_value_origin is set + purpose=SSP + AGGREGATES.
+
+    Unpatched code path:
+      - prof_param_value_origin != '' → enters first if branch
+      - purpose == SSP (not PROFILE) → inner if skipped
+      - PROFILE_PARAM_VALUE_ORIGIN never added to new_dict
+      - AGGREGATES in control param → pop → KeyError on unpatched code
+    """
+
+    param_id = 'ac-1_prm_1'
+
+    # profile param: has param-value-origin (not empty) + AGGREGATES prop
+    # → prof_param_value_origin != '' → first branch
+    # → purpose=SSP → inner if (purpose==PROFILE) skipped
+    # → PROFILE_PARAM_VALUE_ORIGIN not added
+    profile_param = Parameter1(
+        id=param_id,
+        props=[
+            Property(name=const.AGGREGATES, value=const.AGGREGATES),
+            Property(name='param-value-origin', value='OCISO'),
+        ],
+    )
+    profile_set_param_dict = {param_id: profile_param}
+
+    # control param: AGGREGATES prop → pop(PROFILE_PARAM_VALUE_ORIGIN) called
+    control_param = Parameter1(
+        id=param_id, props=[Property(name=const.AGGREGATES, value=const.AGGREGATES)], values=['some-value']
+    )
+    control_param_dict = {param_id: control_param}
+
+    context = ControlContext.generate(
+        purpose=ContextPurpose.SSP, to_markdown=True, trestle_root=tmp_path, md_root=tmp_path
+    )
+
+    writer = CatalogWriter(Mock(spec=CatalogInterface))
+
+    try:
+        result = writer._construct_set_parameters_dict(profile_set_param_dict, control_param_dict, context)
+    except KeyError as e:
+        raise AssertionError(
+            f'KeyError raised for {e}: prof_param_value_origin set + SSP purpose + AGGREGATES path not handled.'
+        ) from e
+
+    param_result = result.get(param_id, {})
+    assert const.PROFILE_PARAM_VALUE_ORIGIN not in param_result
+
+
+def test_construct_set_parameters_dict_aggregates_with_prof_origin_profile_purpose(tmp_path: pathlib.Path) -> None:
+    """Regression test: KeyError when prof_param_value_origin set + purpose=PROFILE + AGGREGATES in both.
+
+    Unpatched code path:
+      - prof_param_value_origin != '' → enters first if branch
+      - purpose == PROFILE → inner if entered
+      - AGGREGATES in profile param.props → skip adding PROFILE_PARAM_VALUE_ORIGIN
+      - AGGREGATES in control param → pop → KeyError on unpatched code
+    """
+
+    param_id = 'ac-1_prm_1'
+
+    # profile param: has param-value-origin + AGGREGATES
+    # → prof_param_value_origin != '' + purpose==PROFILE + AGGREGATES in props
+    # → PROFILE_PARAM_VALUE_ORIGIN not added
+    profile_param = Parameter1(
+        id=param_id,
+        props=[
+            Property(name=const.AGGREGATES, value=const.AGGREGATES),
+            Property(name='param-value-origin', value='OCISO'),
+        ],
+    )
+    profile_set_param_dict = {param_id: profile_param}
+
+    # control param: AGGREGATES → pop called
+    control_param = Parameter1(
+        id=param_id, props=[Property(name=const.AGGREGATES, value=const.AGGREGATES)], values=['some-value']
+    )
+    control_param_dict = {param_id: control_param}
+
+    context = ControlContext.generate(
+        purpose=ContextPurpose.PROFILE, to_markdown=True, trestle_root=tmp_path, md_root=tmp_path
+    )
+
+    writer = CatalogWriter(Mock(spec=CatalogInterface))
+
+    try:
+        result = writer._construct_set_parameters_dict(profile_set_param_dict, control_param_dict, context)
+    except KeyError as e:
+        raise AssertionError(
+            f'KeyError raised for {e}: prof_param_value_origin set + PROFILE purpose + AGGREGATES path not handled.'
+        ) from e
+
+    param_result = result.get(param_id, {})
+    assert const.PROFILE_PARAM_VALUE_ORIGIN not in param_result
