@@ -23,7 +23,7 @@ from datetime import date, datetime
 from enum import Enum
 from typing import Any, Dict, ForwardRef, List, Type, TypeVar, Union, cast
 
-from pydantic import constr, EmailStr, AnyUrl, AwareDatetime
+from pydantic import constr, EmailStr, AnyUrl, AwareDatetime, RootModel
 from pydantic_core import PydanticUndefined
 
 import trestle.common.const as const
@@ -319,11 +319,52 @@ def generate_sample_model(
 
     model = cast(TG, model)
 
-    # Special handling for DateAuthorized RootModel
-    if model_type in [DateAuthorized]:
-        # DateAuthorized is a RootModel that wraps DateDatatype
-        # We need to create it with the root field set to a valid date string
-        return DateAuthorized(root=sample_date_value)  # type: ignore
+    # Special handling for RootModel types
+    # Check if model is a RootModel subclass by checking if it has 'root' field and RootModel in MRO
+    # Only handle RootModel directly if we're not in a collection context (model_type is not list/dict)
+    if hasattr(model, 'model_fields') and 'root' in model.model_fields and model_type not in [list, dict]:
+        # Check if it's actually a RootModel by checking the base classes
+        is_root_model = any(base.__name__ == 'RootModel' for base in model.__mro__)
+        if is_root_model:
+            # Get the root field type
+            root_field_info = model.model_fields['root']
+            root_type = root_field_info.annotation
+
+            # Special handling for DateAuthorized RootModel
+            if model_type in [DateAuthorized]:
+                return DateAuthorized(root=sample_date_value)  # type: ignore
+
+            # Handle Union types in root field
+            root_origin = utils.get_origin(root_type)
+            is_root_union = root_origin == Union or str(root_origin) == "<class 'types.UnionType'>"
+            if is_root_union:
+                union_args = typing.get_args(root_type)
+                # Find first non-None OscalBaseModel type in the union
+                for arg in union_args:
+                    if arg is not type(None) and safe_is_sub(arg, OscalBaseModel):
+                        # Generate sample for this variant and wrap in RootModel
+                        sample_value = generate_sample_model(arg, include_optional=include_optional, depth=depth - 1)
+                        return model(root=sample_value)  # type: ignore
+                # If no OscalBaseModel found, use first non-None type
+                first_type = next((arg for arg in union_args if arg is not type(None)), union_args[0])
+                sample_value = generate_sample_model(first_type, include_optional=include_optional, depth=depth - 1)
+                return model(root=sample_value)  # type: ignore
+            else:
+                # Non-union root type
+                # Check if root_type is a simple type (int, float, str, bool, datetime)
+                if root_type in (int, float, str, bool, datetime):
+                    sample_value = generate_sample_value_by_type(root_type, '')
+                    return model(root=sample_value)  # type: ignore
+                # Check if it's another RootModel or OscalBaseModel
+                elif safe_is_sub(root_type, OscalBaseModel) or (
+                    hasattr(root_type, 'model_fields') and 'root' in root_type.model_fields
+                ):
+                    sample_value = generate_sample_model(root_type, include_optional=include_optional, depth=depth - 1)
+                    return model(root=sample_value)  # type: ignore
+                else:
+                    # For other types, try to generate a sample value
+                    sample_value = generate_sample_value_by_type(root_type, '')
+                    return model(root=sample_value)  # type: ignore
 
     model_dict = {}
     # this block is needed to avoid situations where an inbuilt is inside a list / dict.
@@ -453,6 +494,52 @@ def generate_sample_model(
                         model_dict[field] = generate_sample_model(
                             outer_type, include_optional=include_optional, depth=depth - 1
                         )
+                # Check if outer_type is a RootModel (has 'root' field and RootModel in MRO)
+                elif hasattr(outer_type, 'model_fields') and 'root' in outer_type.model_fields:
+                    is_root_model = any(base.__name__ == 'RootModel' for base in outer_type.__mro__)
+                    if is_root_model:
+                        # Generate the RootModel using generate_sample_model
+                        model_dict[field] = generate_sample_model(
+                            outer_type, include_optional=include_optional, depth=depth - 1
+                        )
+                    else:
+                        # Not a RootModel, fall through to default handling
+                        # Handle special cases (hacking)
+                        if model_type in [Base64Datatype]:
+                            model_dict[field] = sample_base64_value
+                        elif model_type in [Base64]:
+                            if field == 'filename':
+                                model_dict[field] = sample_base64.filename
+                            elif field == 'media_type':
+                                model_dict[field] = sample_base64.media_type
+                            elif field == 'value':
+                                model_dict[field] = sample_base64.value
+                        elif model_type in [DateDatatype]:
+                            model_dict[field] = sample_date_value
+                        elif outer_type in [DateAuthorized] or (
+                            utils.get_origin(outer_type) == Union and DateAuthorized in typing.get_args(outer_type)
+                        ):
+                            # Handle DateAuthorized type (which is a RootModel wrapping DateDatatype)
+                            # DateAuthorized expects a date string that matches the DateDatatype pattern
+                            model_dict[field] = DateAuthorized(root=sample_date_value)
+                        elif model_type in [DateAuthorized]:
+                            # When generating DateAuthorized itself, populate its root field
+                            model_dict[field] = sample_date_value
+                        # Hacking here:
+                        # Root models should ideally not exist, however, sometimes we are stuck with them.
+                        # If that is the case we need sufficient information on the type in order to generate a model.
+                        # E.g. we need the type of the container.
+                        # In Pydantic v2, RootModel uses 'root' field instead of v1's '__root__' field
+                        elif field == 'root' and hasattr(model, '__name__'):
+                            model_dict[field] = generate_sample_value_by_type(
+                                outer_type, str_utils.classname_to_alias(model.__name__, AliasMode.FIELD)
+                            )
+                        else:
+                            # For int types, check if there are constraints in field metadata
+                            if outer_type is int and field_info.metadata:  # type: ignore
+                                model_dict[field] = _get_constrained_int_value(field_info.metadata)  # type: ignore
+                            else:
+                                model_dict[field] = generate_sample_value_by_type(outer_type, field)
                 else:
                     # Handle special cases (hacking)
                     if model_type in [Base64Datatype]:
