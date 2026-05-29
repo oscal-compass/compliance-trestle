@@ -820,13 +820,16 @@ class CsvToOscalComponentDefinition(TaskBase):
                 component_title, component_type, source, description
             )
             if control_implementation:
-                set_parameters = control_implementation.set_parameters
-                control_implementation.set_parameters = []
-                for set_parameter in self._set_parameter_generator(set_parameters):
+                # Build new list with parameters that don't match param_id
+                new_set_parameters = []
+                for set_parameter in self._set_parameter_generator(control_implementation.set_parameters):
                     if set_parameter.param_id == param_id:
                         continue
-                    _OscalHelper.add_set_parameter(control_implementation.set_parameters, set_parameter)
-                if control_implementation.set_parameters == []:
+                    _OscalHelper.add_set_parameter(new_set_parameters, set_parameter)
+                # Only update if we have parameters, otherwise set to None
+                if new_set_parameters:
+                    control_implementation.set_parameters = new_set_parameters
+                else:
                     control_implementation.set_parameters = None
 
     def set_params_add(self, add_set_params: List[str]) -> None:
@@ -903,19 +906,46 @@ class CsvToOscalComponentDefinition(TaskBase):
             control_implementation = self._cd_mgr.find_control_implementation(
                 component_title, component_type, source, description
             )
-            implemented_requirements = control_implementation.implemented_requirements
-            control_implementation.implemented_requirements = []
-            for implemented_requirement in self._implemented_requirement_generator(implemented_requirements):
+            # Build new list of implemented requirements
+            new_implemented_requirements = []
+            for implemented_requirement in self._implemented_requirement_generator(
+                control_implementation.implemented_requirements
+            ):
                 if implemented_requirement.control_id == control_id:
                     implemented_requirement.statements = _OscalHelper.remove_rule_statement(
                         implemented_requirement.statements, rule_id, smt_id
                     )
-                    implemented_requirement.props = _OscalHelper.remove_rule(implemented_requirement.props, rule_id)
-                    if len(as_list(implemented_requirement.props)) or len(as_list(implemented_requirement.statements)):
-                        control_implementation.implemented_requirements.append(implemented_requirement)
+                    # Get new props list after removing rule (handle None case)
+                    new_props = (
+                        _OscalHelper.remove_rule(implemented_requirement.props, rule_id)
+                        if implemented_requirement.props
+                        else []
+                    )
+                    # Only keep this requirement if it has props or statements
+                    if new_props or implemented_requirement.statements:
+                        # Only assign if new_props is not empty (Pydantic v2 requires min_length=1)
+                        if new_props:
+                            implemented_requirement.props = new_props
+                        new_implemented_requirements.append(implemented_requirement)
                 else:
-                    control_implementation.implemented_requirements.append(implemented_requirement)
-            # If we end up with no implemented_requirements, that's a real error - the field is required
+                    new_implemented_requirements.append(implemented_requirement)
+            # Update the list - it must have at least 1 item per OSCAL schema
+            if new_implemented_requirements:
+                control_implementation.implemented_requirements = new_implemented_requirements
+            else:
+                # If no implemented requirements left, remove the control_implementation from component
+                component = self._cd_mgr.get_component(component_title, component_type, None)
+                if component.control_implementations:
+                    new_control_implementations = [
+                        ci
+                        for ci in component.control_implementations
+                        if not (ci.source == source and ci.description == description)
+                    ]
+                    # Only assign if list is not empty (Pydantic v2 requires min_length=1)
+                    if new_control_implementations:
+                        component.control_implementations = new_control_implementations
+                    else:
+                        component.control_implementations = None
 
     def control_mappings_add(self, add_control_mappings: List[str]) -> None:
         """Control mappings add."""
@@ -939,11 +969,18 @@ class CsvToOscalComponentDefinition(TaskBase):
             name = RULE_ID
             prop = Property(name=name, value=rule_id, ns=ns, class_=self.get_class(name))
             if smt_id == control_id:
-                implemented_requirement.props = as_list(implemented_requirement.props)
-                implemented_requirement.props.append(prop)
+                # Initialize props if None, or use existing list
+                if implemented_requirement.props is None:
+                    implemented_requirement.props = [prop]
+                else:
+                    implemented_requirement.props.append(prop)
             else:
                 statement = self._get_statement(implemented_requirement, smt_id)
-                statement.props.append(prop)
+                # Initialize props if None, or use existing list
+                if statement.props is None:
+                    statement.props = [prop]
+                else:
+                    statement.props.append(prop)
 
 
 class _OscalHelper:
@@ -978,8 +1015,14 @@ class _OscalHelper:
             rval = []
             for statement in statements:
                 if statement.statement_id == smt_id:
-                    statement.props = _OscalHelper.remove_rule(statement.props, rule_id)
-                if statement.props is not None and len(statement.props):
+                    # Get new props after removing rule (handle None case)
+                    new_props = _OscalHelper.remove_rule(statement.props, rule_id) if statement.props else []
+                    # Only assign if new_props is not empty (Pydantic v2 requires min_length=1)
+                    if new_props:
+                        statement.props = new_props
+                        rval.append(statement)
+                    # If props becomes empty, don't add this statement
+                elif statement.props is not None and len(statement.props):
                     rval.append(statement)
         return rval
 
@@ -1233,12 +1276,22 @@ class _CdMgr:
         # Build new components list to avoid Pydantic v2 validation on empty list
         new_components = []
         for component in components:
-            if component.props is None or len(component.props) == 0:
-                if component.control_implementations is None or len(component.control_implementations) == 0:
-                    continue
+            # Check if component has no props (None or empty list)
+            has_no_props = component.props is None or len(component.props) == 0
+            # Check if component has no control_implementations (None or empty list)
+            has_no_control_impls = (
+                component.control_implementations is None or len(component.control_implementations) == 0
+            )
+            # Skip component if it has neither props nor control_implementations
+            if has_no_props and has_no_control_impls:
+                continue
             new_components.append(component)
+        # Update components list (could be empty, which sets it to None, or non-empty list)
         if new_components:
             component_definition.components = new_components
+        else:
+            # If all components were removed, set to None (can't set to empty list due to min_length=1)
+            component_definition.components = None
 
     def get_max_rule_set_number(self) -> int:
         """Get max rule set number."""

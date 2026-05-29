@@ -1398,8 +1398,8 @@ def test_execute_with_ignored_risk_properties(tmp_path: pathlib.Path) -> None:
         row.append('')
     # set validation component type
     assert rows[0][9] == 'Component_Type'
-    assert rows[2][9] == 'Service'
-    rows[2][9] = 'Validation'
+    assert rows[2][9] == 'service'
+    rows[2][9] = 'validation'
     with mock.patch('trestle.tasks.csv_to_oscal_cd.csv.reader') as mock_csv_reader:
         mock_csv_reader.return_value = rows
         tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
@@ -1528,7 +1528,7 @@ def test_execute_validation(tmp_path: pathlib.Path) -> None:
     assert component.props[1].value == 'validation-check-id'
     assert component.props[2].name == 'Check_Description'
     assert component.props[2].value == 'validation-check-description'
-    assert len(component.control_implementations) == 0
+    assert component.control_implementations is None or len(component.control_implementations) == 0
 
 
 @set_cwd_unsafe(root_dir)
