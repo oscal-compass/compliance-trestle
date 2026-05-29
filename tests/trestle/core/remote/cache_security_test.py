@@ -764,7 +764,7 @@ class TestSSRFBypassVulnerabilities:
 
         # Mock DNS resolution to return 0.0.0.0
         def mock_getaddrinfo(hostname, port):
-            return [(socket.AF_INET, socket.SOCK_STREAM, 6, '', ('0.0.0.0', 443))]  # noqa: S104
+            return [(socket.AF_INET, socket.SOCK_STREAM, 6, '', ('0.0.0.0', 443))]  # noqa: S104 - intentional test for blocked address
 
         monkeypatch.setattr(socket, 'getaddrinfo', mock_getaddrinfo)
 
@@ -787,7 +787,13 @@ class TestSSRFBypassVulnerabilities:
             HTTPSFetcher(tmp_path, 'https://[::]/admin')
 
     def test_metadata_endpoint_canonicalization(self) -> None:
-        """Test that metadata endpoint check canonicalizes IPv4-mapped IPv6 addresses."""
+        """Test that metadata endpoint check canonicalizes IPv4-mapped IPv6 addresses.
+        
+        Note: This test directly calls a private method (_check_metadata_endpoints) to verify
+        the canonicalization logic in isolation. While this creates coupling to implementation
+        details, it's necessary to test this specific security-critical path without requiring
+        full DNS resolution setup.
+        """
         from trestle.core.remote.security import URLSecurityValidator
 
         validator = URLSecurityValidator()
@@ -860,7 +866,7 @@ class TestSSRFBypassVulnerabilities:
 
         # Mock DNS resolution to return 0.0.0.0
         def mock_getaddrinfo(hostname, port):
-            return [(socket.AF_INET, socket.SOCK_STREAM, 6, '', ('0.0.0.0', 22))]  # noqa: S104
+            return [(socket.AF_INET, socket.SOCK_STREAM, 6, '', ('0.0.0.0', 22))]  # noqa: S104 - intentional test for blocked address
 
         monkeypatch.setattr(socket, 'getaddrinfo', mock_getaddrinfo)
 
@@ -881,7 +887,8 @@ class TestSSRFBypassVulnerabilities:
 
         monkeypatch.setattr(socket, 'getaddrinfo', mock_getaddrinfo)
 
-        # Should block on first blocked address
+        # Should block on first blocked address (169.254.0.0/16)
+        # Using | pattern for robustness - either network match indicates proper blocking
         with pytest.raises(TrestleError, match='169.254.0.0/16|127.0.0.0/8'):
             HTTPSFetcher(tmp_path, 'https://evil.example.com/data')
 

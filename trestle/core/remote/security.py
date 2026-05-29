@@ -166,6 +166,10 @@ class URLSecurityValidator:
 
         Canonicalizes bracketed IPv6 literal hostnames to handle IPv4-mapped
         IPv6 addresses (e.g., [::ffff:169.254.169.254]) before checking.
+        
+        Note: This method is for URL-literal hostnames only (i.e., when the hostname
+        in the URL itself is an IPv6 literal). DNS-resolved IPs are canonicalized
+        upstream in validate_url via _canonicalize_ip before hostname-level checks.
         """
         # Canonicalize bracketed IPv6 literal hostnames
         canonical = hostname.strip('[]')
@@ -217,6 +221,14 @@ class URLSecurityValidator:
 
         Note: ip_addr should already be canonicalized by validate_url before calling this method.
         """
+        # Defensive check: ensure IPv4-mapped IPv6 addresses are canonicalized
+        # This protects against future refactoring that might skip canonicalization
+        if isinstance(ip_addr, ipaddress.IPv6Address) and ip_addr.ipv4_mapped is not None:
+            raise TrestleError(
+                f'Internal error: IP address {ip_addr} should have been canonicalized before network checks. '
+                'IPv4-mapped IPv6 addresses must be converted to IPv4 form.'
+            )
+        
         for network in ALWAYS_BLOCKED_NETWORKS:
             # Only check if IP version matches network version to avoid TypeError
             if ip_addr.version == network.version and ip_addr in network:
@@ -238,6 +250,13 @@ class URLSecurityValidator:
 
         Note: ip_addr should already be canonicalized by validate_url before calling this method.
         """
+        # Defensive check: ensure IPv4-mapped IPv6 addresses are canonicalized
+        if isinstance(ip_addr, ipaddress.IPv6Address) and ip_addr.ipv4_mapped is not None:
+            raise TrestleError(
+                f'Internal error: IP address {ip_addr} should have been canonicalized before network checks. '
+                'IPv4-mapped IPv6 addresses must be converted to IPv4 form.'
+            )
+        
         for network in PRIVATE_IP_NETWORKS:
             # Only check if IP version matches network version to avoid TypeError
             if ip_addr.version == network.version and ip_addr in network:
@@ -253,6 +272,13 @@ class URLSecurityValidator:
 
         Note: ip_addr should already be canonicalized by validate_url before calling this method.
         """
+        # Defensive check: ensure IPv4-mapped IPv6 addresses are canonicalized
+        if isinstance(ip_addr, ipaddress.IPv6Address) and ip_addr.ipv4_mapped is not None:
+            raise TrestleError(
+                f'Internal error: IP address {ip_addr} should have been canonicalized before network checks. '
+                'IPv4-mapped IPv6 addresses must be converted to IPv4 form.'
+            )
+        
         for network in PRIVATE_IP_NETWORKS:
             # Only check if IP version matches network version to avoid TypeError
             if ip_addr.version == network.version and ip_addr in network:
