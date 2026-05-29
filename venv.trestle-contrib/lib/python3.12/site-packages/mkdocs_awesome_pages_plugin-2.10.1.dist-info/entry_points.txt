@@ -1,3 +1,0 @@
-[mkdocs.plugins]
-awesome-pages=mkdocs_awesome_pages_plugin.plugin:AwesomePagesPlugin
-

@@ -1,2 +1,0 @@
-[console_scripts]
-gitlab = gitlab.cli:main
