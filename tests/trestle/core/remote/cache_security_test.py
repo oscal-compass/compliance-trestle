@@ -788,7 +788,7 @@ class TestSSRFBypassVulnerabilities:
 
     def test_metadata_endpoint_canonicalization(self) -> None:
         """Test that metadata endpoint check canonicalizes IPv4-mapped IPv6 addresses.
-        
+
         Note: This test directly calls a private method (_check_metadata_endpoints) to verify
         the canonicalization logic in isolation. While this creates coupling to implementation
         details, it's necessary to test this specific security-critical path without requiring
