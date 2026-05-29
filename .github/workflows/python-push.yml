@@ -22,7 +22,7 @@ jobs:
       run: |
         min_version=$(jq '.PYTHON_MIN' -r version.json)
         max_version=$(jq '.PYTHON_MAX' -r version.json)
-        echo "min=$min_version" 
+        echo "min=$min_version"
         echo "max=$max_version"
         echo "min=$min_version" >> $GITHUB_OUTPUT
         echo "max=$max_version" >> $GITHUB_OUTPUT
@@ -269,7 +269,21 @@ jobs:
       with:
         github_token: ${{ steps.app-token.outputs.token }}
 
+    - name: Ensure non-main releases are not marked latest
+      if: github.ref != 'refs/heads/main' && steps.release.outputs.released == 'true'
+      env:
+        GH_TOKEN: ${{ steps.app-token.outputs.token }}
+      run: |
+        echo "Un-marking release ${{ steps.release.outputs.tag }} as latest"
+        gh release edit "${{ steps.release.outputs.tag }}" --latest=false
+
     # --- Generate provenance for the ACTUAL RELEASE ARTIFACTS ---
+
+    - name: Generate SLSA build provenance
+      if: steps.release.outputs.released == 'true'
+      uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26 # v4.1.0
+      with:
+        subject-path: "dist/*"
 
     - name: Publish package distributions to PyPI
       uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # release/v1
@@ -288,6 +302,7 @@ jobs:
       if: steps.release.outputs.released == 'true'
       with:
         github_token: ${{ steps.app-token.outputs.token }}
+        tag: ${{ steps.release.outputs.tag }}
 
   merge-main-to-develop:
     name: Merge main -> develop
