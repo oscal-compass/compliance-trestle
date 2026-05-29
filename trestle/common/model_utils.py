@@ -129,7 +129,9 @@ def _resolve_collection_item_alias(parent_model_type: Type[Any], field_alias: st
 
         if utils.is_collection_field_type(outer_type):
             inner_type = utils.get_inner_type(outer_type)
-            inner_type = _get_model_type_from_union(inner_type, field_alias)
+            # For Union types, just pick the first variant - they all have the same base alias
+            # e.g., Group1 and Group2 both become 'group' after stripping digits
+            inner_type = _get_model_type_from_union(inner_type, None)
             if isinstance(inner_type, type) and issubclass(inner_type, OscalBaseModel):
                 return str_utils.classname_to_alias(inner_type.__name__, AliasMode.JSON)
 
@@ -398,21 +400,31 @@ class ModelUtils:
 
                 if utils.is_collection_field_type(model_type):
                     inner_model = utils.get_inner_type(model_type)
-                    resolved_inner_model = _get_model_type_from_union(inner_model, alias)
+                    # Check if inner_model is a Union type
+                    origin = get_origin(inner_model)
+                    is_union = origin is Union or (hasattr(types, 'UnionType') and origin is types.UnionType)
+                    
                     if alias.isdigit():
-                        model_type = resolved_inner_model
+                        # For numeric indices, keep Union types as-is for deserialization
+                        model_type = inner_model if is_union else _get_model_type_from_union(inner_model, alias)
                         continue
+                    
+                    # Try to match alias against Union variants
+                    resolved_inner_model = _get_model_type_from_union(inner_model, alias)
                     if (
                         isinstance(resolved_inner_model, type)
                         and issubclass(resolved_inner_model, OscalBaseModel)
                         and alias == str_utils.classname_to_alias(resolved_inner_model.__name__, AliasMode.JSON)
                     ):
-                        model_type = resolved_inner_model
+                        # If alias matches a variant's class name, keep the Union for deserialization
+                        # e.g., 'group' matches both Group1 and Group2 after stripping digits
+                        model_type = inner_model if is_union else resolved_inner_model
                         continue
                     # Filesystem item paths use the singular collection alias, e.g. roles/00000__role.json
                     singular_alias = ModelUtils.get_singular_alias(full_alias.rsplit('.', 1)[0])
                     if alias == singular_alias:
-                        model_type = resolved_inner_model
+                        # Keep Union type for file paths that match the singular alias
+                        model_type = inner_model if is_union else resolved_inner_model
                         continue
                     raise TrestleError(f'Model type {model_type} has no collection item for alias {alias}')
 
@@ -746,11 +758,23 @@ class ModelUtils:
 
                 inner_model = utils.get_inner_type(model_type)
                 if path_part == '*' or path_part.isdigit():
-                    model_type = _get_model_type_from_union(inner_model)
+                    # Look ahead to next path segment to help resolve Union types
+                    next_segment = path_parts[i + 1] if i + 1 < len(path_parts) else None
+                    model_type = _get_model_type_from_union(inner_model, next_segment)
                     model_types.append(model_type)
                     continue
 
-                resolved_inner_model = _get_model_type_from_union(inner_model, path_part)
+                # Check if inner_model is a Union - if so, look ahead to determine which variant
+                origin = get_origin(inner_model)
+                is_union = origin is Union or (hasattr(types, 'UnionType') and origin is types.UnionType)
+                
+                if is_union:
+                    # Look ahead to next segment to resolve Union
+                    next_segment = path_parts[i + 1] if i + 1 < len(path_parts) else None
+                    resolved_inner_model = _get_model_type_from_union(inner_model, next_segment)
+                else:
+                    resolved_inner_model = _get_model_type_from_union(inner_model, path_part)
+                    
                 if isinstance(resolved_inner_model, type) and issubclass(resolved_inner_model, OscalBaseModel):
                     expected_alias = str_utils.classname_to_alias(resolved_inner_model.__name__, AliasMode.JSON)
                     if path_part == expected_alias:
