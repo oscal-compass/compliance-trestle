@@ -869,10 +869,13 @@ class OscalVersion(RootModel[StringDatatype]):
         strict_version = False
         if not strict_version:
             return v
+        # In Pydantic v2, v is a StringDatatype (RootModel), so we need to extract the actual string
+        # StringDatatype itself is RootModel[constr(...)], so we need v.root to get the string
+        actual_value = v.root if hasattr(v, 'root') else v
         p = re.compile(OSCAL_VERSION_REGEX)
-        matched = p.match(v)
+        matched = p.match(actual_value)
         if matched is None:
-            raise ValueError(f'OSCAL version: {v} is not supported, use {OSCAL_VERSION} instead.')
+            raise ValueError(f'OSCAL version: {actual_value} is not supported, use {OSCAL_VERSION} instead.')
         return v
 
 class ParameterConstraint(OscalBaseModel):

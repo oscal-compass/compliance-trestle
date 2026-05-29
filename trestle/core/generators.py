@@ -514,6 +514,18 @@ def generate_sample_model(
                 return {const.REPLACE_ME: const.REPLACE_ME}  # type: ignore
             return {const.REPLACE_ME: generate_sample_value_by_type(inner_type, '')}  # type: ignore
 
+        # Handle Union types that aren't collections (e.g., Union[Annotated[str, ...], None])
+        # This must come before checking for Annotated types
+        if collection_origin == Union or str(collection_origin) == "<class 'types.UnionType'>":
+            union_args = typing.get_args(collection_type)
+            # Filter out None and get first non-None type
+            non_none_args = [arg for arg in union_args if arg is not type(None)]
+            if non_none_args:
+                # Recursively handle the first non-None type
+                return generate_sample_model(non_none_args[0], include_optional=include_optional, depth=depth - 1)
+            # If all args are None, return None (shouldn't happen in practice)
+            return None  # type: ignore
+
         # Check if this is a basic type or Annotated type that should use generate_sample_value_by_type
         # This handles cases like Annotated[str, StringConstraints(...)]
         from typing import Annotated
