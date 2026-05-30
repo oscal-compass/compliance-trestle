@@ -152,9 +152,9 @@ def edit_files(control_path: pathlib.Path, change_parameters: bool, guid_dict: D
         assert file_utils.insert_text_in_file(control_path, None, guid_dict['text'])
     if control_path.stem == 'ac-1':
         assert test_utils.replace_line_in_file_after_tag(
-            control_path, 'prop with ns', '    ns: https://my_new_namespace\n'
+            control_path, 'prop with ns', '    ns: https://my_new_namespace/\n'
         )
-        assert file_utils.insert_text_in_file(control_path, 'prop with no ns', '    ns: https://my_added_namespace\n')
+        assert file_utils.insert_text_in_file(control_path, 'prop with no ns', '    ns: https://my_added_namespace/\n')
     if change_parameters:
         # delete profile values for 4, then replace value for 3 with new value
         assert test_utils.substitute_text_in_file(control_path, 'officer', 'new value')
@@ -328,9 +328,9 @@ def test_profile_generate_assemble(
     assert set_params[2].param_id == 'ac-1_prm_3'
 
     add = profile.modify.alters[0].adds[0]
-    # Pydantic v2: Compare AnyUrl objects directly
-    assert add.props[0].ns == AnyUrl('https://my_new_namespace')
-    assert add.props[1].ns == AnyUrl('https://my_added_namespace')
+    # Pydantic v2: Compare AnyUrl objects directly (with trailing slashes as Pydantic normalizes URLs)
+    assert add.props[0].ns == AnyUrl('https://my_new_namespace/')
+    assert add.props[1].ns == AnyUrl('https://my_added_namespace/')
 
     # now create the resolved profile catalog from the assembled json profile and confirm the addition is there
 

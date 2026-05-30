@@ -1212,7 +1212,7 @@ def test_ssp_gen_and_assemble_add_props(tmp_trestle_dir: pathlib.Path) -> None:
     ac_1_properties: Dict[str, str] = {
         'name': 'prop_with_ns',
         'value': 'prop with ns',
-        'ns': 'https://my_new_namespace',
+        'ns': 'https://my_new_namespace/',
     }
     ac_1_smt_properties: Dict[str, str] = {'name': 'smt_prop', 'value': 'smt prop', 'smt-part': 'a.'}
     # Verify the add props header value is present
