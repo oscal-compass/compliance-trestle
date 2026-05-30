@@ -110,6 +110,30 @@ class OscalBaseModel(TrestleBaseModel):
         validate_assignment=True,
     )
 
+    def __eq__(self, other: object) -> bool:
+        """Override equality to compare model content for dynamically created models.
+
+        Pydantic v2 changed equality behavior to be stricter - it checks isinstance(other, self.__class__)
+        which fails for dynamically created models from different create_model() calls.
+
+        This override restores Pydantic v1 behavior: compare by class name and content,
+        allowing dynamically created models with identical structure to be equal.
+        """
+        # Check if other is a Pydantic model
+        if not hasattr(other, 'model_dump'):
+            return False
+
+        # Compare by class name (not class object identity) and content
+        if self.__class__.__name__ != other.__class__.__name__:
+            return False
+
+        # Compare the actual content using model_dump
+        try:
+            return self.model_dump() == other.model_dump()
+        except Exception:
+            # Fallback to default comparison if model_dump fails
+            return super().__eq__(other)
+
     @classmethod
     def create_stripped_model_type(
         cls, stripped_fields: Optional[List[str]] = None, stripped_fields_aliases: Optional[List[str]] = None

@@ -22,7 +22,9 @@ import multiprocessing
 import os
 import traceback
 import uuid
-from typing import Any, Dict, List, Optional, ValuesView
+from typing import Any, Dict, List, Optional, Union, ValuesView
+
+from pydantic import AnyUrl
 
 from trestle.common.list_utils import join_key_to_list_dicts
 from trestle.oscal.assessment_results import LocalDefinitions1
@@ -258,7 +260,7 @@ class TaniumOscalFactory:
         self._component_map: Dict[str, SystemComponent] = {}
         self._inventory_map: Dict[str, InventoryItem] = {}
         self._observation_list: List[Observation] = []
-        self._ns = 'https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium'
+        self._ns = AnyUrl('https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/tanium')
         self._cpus = None
         self._checking = checking
         self._caching = caching
@@ -362,7 +364,7 @@ class TaniumOscalFactory:
         group: str = None,
         name: str = None,
         value: str = None,
-        ns: str = None,
+        ns: Optional[AnyUrl] = None,
         class_: str = None,
     ) -> None:
         """Add non-aggregated property or remember common property."""

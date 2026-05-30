@@ -16,7 +16,9 @@
 """Transformer helper functions."""
 
 # mypy: ignore-errors  # noqa E800
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
+
+from pydantic import AnyUrl
 
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list
@@ -60,7 +62,7 @@ class PropertyAccounting:
         name: Optional[str] = None,
         value: Optional[str] = None,
         class_: Optional[str] = None,
-        ns: Optional[str] = None,
+        ns: Optional[AnyUrl] = None,
     ) -> None:
         """Property accounting."""
         key = _segment_separator.join([str(name), str(value), str(class_), str(ns)])
@@ -76,7 +78,7 @@ class PropertyAccounting:
         name: Optional[str] = None,
         value: Optional[str] = None,
         class_: Optional[str] = None,
-        ns: Optional[str] = None,
+        ns: Optional[AnyUrl] = None,
     ) -> bool:
         """Check for common property."""
         rval = False
@@ -121,7 +123,7 @@ class PropertyManager:
         name: Optional[str] = None,
         value: Optional[str] = None,
         class_: Optional[str] = None,
-        ns: Optional[str] = None,
+        ns: Optional[AnyUrl] = None,
     ) -> Property:
         """Get property from cache or create new property."""
         self._requests += 1
@@ -142,7 +144,7 @@ class PropertyManager:
         name: Optional[str] = None,
         value: Optional[str] = None,
         class_: Optional[str] = None,
-        ns: Optional[str] = None,
+        ns: Optional[AnyUrl] = None,
     ) -> None:
         """Remember common property."""
         if not group:
@@ -168,7 +170,7 @@ class PropertyManager:
         name: Optional[str] = None,
         value: Optional[str] = None,
         class_: Optional[str] = None,
-        ns: Optional[str] = None,
+        ns: Optional[AnyUrl] = None,
     ) -> Property:
         """Create new property."""
         if self._checking:

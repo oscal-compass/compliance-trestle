@@ -25,6 +25,8 @@ from xml.etree.ElementTree import Element  # noqa: S405 - used for typing only
 
 from defusedxml import ElementTree
 
+from pydantic import AnyUrl
+
 from ruamel.yaml import YAML
 
 from trestle.common.list_utils import as_list
@@ -347,7 +349,7 @@ class _OscalResultsFactory:
         self._result_properties_list: List[Property] = []
         self._component_map: Dict[str, SystemComponent] = {}
         self._inventory_map: Dict[str, InventoryItem] = {}
-        self._ns = 'https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/osco'
+        self._ns = AnyUrl('https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/osco')
         self._checking = checking
 
     @property

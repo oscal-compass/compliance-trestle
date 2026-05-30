@@ -25,6 +25,8 @@ from defusedxml import ElementTree
 
 from ruamel.yaml import YAML
 
+from pydantic import AnyUrl
+
 from trestle.oscal.assessment_results import AssessmentAssets, LocalDefinitions1, Observation, Result, SystemComponent
 from trestle.oscal.common import (
     AssessmentPlatform,
@@ -201,7 +203,7 @@ class RuleUse:
     @property
     def ns(self):
         """Derive namespace."""
-        return f'https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/{self.scanner_name}'  # noqa: E231
+        return AnyUrl(f'https://oscal-compass.github.io/compliance-trestle/schemas/oscal/ar/{self.scanner_name}')
 
 
 class _XccdfResult:
