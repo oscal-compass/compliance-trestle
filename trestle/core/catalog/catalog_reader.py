@@ -235,8 +235,10 @@ class CatalogReader:
             by_comp = gens.generate_sample_model(ossp.ByComponent)
             by_comp.component_uuid = comp_uuid
             by_comp.implementation_status = com.ImplementationStatus(state=const.STATUS_PLANNED)
-            found_statement.by_components = as_list(found_statement.by_components)
-            found_statement.by_components.append(by_comp)
+            # Work with list without triggering Pydantic v2 validation on empty list assignment
+            by_comps = as_list(found_statement.by_components)
+            by_comps.append(by_comp)
+            found_statement.by_components = by_comps  # This will always have at least one item now
             return by_comp
         else:
             for by_comp in as_list(imp_req.by_components):
@@ -245,8 +247,10 @@ class CatalogReader:
             by_comp = gens.generate_sample_model(ossp.ByComponent)
             by_comp.component_uuid = comp_uuid
             by_comp.implementation_status = com.ImplementationStatus(state=const.STATUS_PLANNED)
-            imp_req.by_components = as_list(imp_req.by_components)
-            imp_req.by_components.append(by_comp)
+            # Work with list without triggering Pydantic v2 validation on empty list assignment
+            by_comps = as_list(imp_req.by_components)
+            by_comps.append(by_comp)
+            imp_req.by_components = by_comps  # This will always have at least one item now
             return by_comp
 
     @staticmethod

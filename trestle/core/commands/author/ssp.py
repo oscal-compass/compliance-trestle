@@ -292,15 +292,15 @@ class SSPAssemble(AuthorCommonCommand):
 
     @staticmethod
     def _merge_statement(
-        imp_req: ossp.ImplementedRequirement, statement: generic.GenericStatement, set_params: List[ossp.SetParameter]
+        imp_req: ossp.ImplementedRequirement, statement: ossp.Statement, set_params: List[ossp.SetParameter]
     ) -> None:
-        """Merge the generic statement into the statements of the imp_req."""
+        """Merge the statement into the statements of the imp_req."""
         # if the statement id is already in the imp_req, merge its by_comps into the existing statement
         for stat in as_list(imp_req.statements):
             if stat.statement_id == statement.statement_id:
                 SSPAssemble._merge_by_comps(stat, statement, set_params)
                 return
-        # otherwise just ad the statement - but only if it has by_comps
+        # otherwise just add the statement - but only if it has by_comps
         if statement.by_components:
             imp_req.statements = as_list(imp_req.statements)
             imp_req.statements.append(statement)
@@ -385,6 +385,8 @@ class SSPAssemble(AuthorCommonCommand):
             by_comp.props = none_if_empty(ControlInterface.clean_props(gen_imp_req.props))
             imp_req.by_components = as_list(imp_req.by_components)
             imp_req.by_components.append(by_comp)
+        # Convert empty by_components list back to None to satisfy min_length constraint
+        imp_req.by_components = none_if_empty(imp_req.by_components)
         # each statement in ci corresponds to by_comp in an ssp imp req
         # so insert the new by_comp directly into the ssp, generating parts as needed
         imp_req.statements = as_list(imp_req.statements)
@@ -452,9 +454,10 @@ class SSPAssemble(AuthorCommonCommand):
                         # compile all new uuids for new component definitions
                         comp_uuids = [x.uuid for x in comp_dict.values()]
                         for imp_requirement in as_list(ssp.control_implementation.implemented_requirements):
-                            imp_requirement.by_components = as_list(imp_requirement.by_components)
+                            # Work with by_components list without triggering Pydantic validation on empty list
+                            by_comps = as_list(imp_requirement.by_components)
                             to_delete = []
-                            for i, by_comp in enumerate(imp_requirement.by_components):
+                            for i, by_comp in enumerate(by_comps):
                                 if by_comp.component_uuid not in comp_uuids:
                                     logger.warning(
                                         f'By_component {by_comp.component_uuid} removed from implemented requirement '
@@ -464,12 +467,16 @@ class SSPAssemble(AuthorCommonCommand):
                                     )
                                     to_delete.append(i)
                             if to_delete:
-                                delete_list_from_list(imp_requirement.by_components, to_delete)
-                            imp_requirement.by_components = none_if_empty(imp_requirement.by_components)
+                                delete_list_from_list(by_comps, to_delete)
+                            # Only assign back if the list is non-empty or was originally non-None
+                            # This avoids Pydantic v2 validation error when assigning empty list with min_length=1
+                            if by_comps or imp_requirement.by_components is not None:
+                                imp_requirement.by_components = none_if_empty(by_comps)
                         SSPAssemble._merge_imp_req_into_ssp(ssp, imp_req, set_params)
-            ssp_comp.props = as_list(gen_comp.props)
-            ssp_comp.props.extend(all_ci_props)
-            ssp_comp.props = none_if_empty(ControlInterface.clean_props(ssp_comp.props))
+            # Build props list without triggering Pydantic validation on empty list
+            props_list = as_list(gen_comp.props)
+            props_list.extend(all_ci_props)
+            ssp_comp.props = none_if_empty(ControlInterface.clean_props(props_list))
             all_comps.append(ssp_comp)
 
         ssp.system_implementation.components = none_if_empty(all_comps)
@@ -477,18 +484,18 @@ class SSPAssemble(AuthorCommonCommand):
     def _generate_roles_in_metadata(self, ssp: ossp.SystemSecurityPlan) -> bool:
         """Find all roles referenced by imp reqs and create role in metadata as needed."""
         metadata = ssp.metadata
-        metadata.roles = as_list(metadata.roles)
-        known_role_ids = [role.id for role in metadata.roles]
+        roles_list = as_list(metadata.roles)
+        known_role_ids = [role.id for role in roles_list]
         changed = False
         for imp_req in ssp.control_implementation.implemented_requirements:
             role_ids = [resp_role.role_id for resp_role in as_list(imp_req.responsible_roles)]
             for role_id in role_ids:
                 if role_id not in known_role_ids:
                     role = com.Role(id=role_id, title=role_id)
-                    metadata.roles.append(role)
+                    roles_list.append(role)
                     known_role_ids.append(role_id)
                     changed = True
-        metadata.roles = none_if_empty(metadata.roles)
+        metadata.roles = none_if_empty(roles_list)
         return changed
 
     @staticmethod
@@ -610,7 +617,8 @@ class SSPAssemble(AuthorCommonCommand):
             else:
                 # create a sample ssp to hold all the parts
                 ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
-                ssp.control_implementation.implemented_requirements = []
+                # Don't set implemented_requirements to empty list - let merge methods populate it
+                # to avoid Pydantic v2 validation on empty list with min_length=1
                 ssp.control_implementation.description = const.SSP_SYSTEM_CONTROL_IMPLEMENTATION_TEXT
                 # Don't set components to empty list - let _merge_comp_defs handle it
                 # to avoid Pydantic v2 validation on empty list

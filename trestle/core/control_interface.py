@@ -1183,14 +1183,15 @@ class ControlInterface:
     @staticmethod
     def reconcile_props(item: TypeWithProps, props: List[common.Property]) -> None:
         """Add properties to an item with properties while replacing existing."""
-        names = [prop.name for prop in as_list(item.props)]
-        item.props = as_list(item.props)
+        props_list = as_list(item.props)
+        names = [prop.name for prop in props_list]
         for prop in props:
             if prop.name in names:
                 index = names.index(prop.name)
-                item.props[index] = prop
+                props_list[index] = prop
             else:
-                item.props.append(prop)
+                props_list.append(prop)
+        item.props = none_if_empty(props_list)
 
     @staticmethod
     def _copy_status_in_props(dest: TypeWithProps, src: TypeWithProps) -> None:
@@ -1262,10 +1263,11 @@ class ControlInterface:
                             break
                     if found:
                         continue
-                    imp_req.set_parameters = as_list(imp_req.set_parameters)
+                    set_params_list = as_list(imp_req.set_parameters)
                     # SetParameter should have values, but provide empty list if not
                     values = set_param.values if hasattr(set_param, 'values') else []
-                    imp_req.set_parameters.append(comp.SetParameter(**{'param_id': set_param.param_id}, values=values))
+                    set_params_list.append(comp.SetParameter(**{'param_id': set_param.param_id}, values=values))
+                    imp_req.set_parameters = none_if_empty(set_params_list)
                 new_statements: List[comp.Statement] = []
                 for statement in as_list(new_imp_req.statements):
                     # get the original version of the statement if available, or use new one

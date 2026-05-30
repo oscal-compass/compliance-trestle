@@ -148,6 +148,8 @@ class GenericStatement(TrestleBaseModel):
         for by_comp in as_list(self.by_components):
             new_by_comp = by_comp.as_ssp()
             by_comps.append(new_by_comp)
+        # Convert empty list to None to satisfy Pydantic v2 min_length constraints
+        by_comps = none_if_empty(by_comps)
         return ossp.Statement(
             **{
                 'statement-id': self.statement_id,
@@ -335,6 +337,14 @@ class GenericImplementedRequirement(TrestleBaseModel):
         """Convert component form of imp req to generic."""
         class_dict = copy.deepcopy(imp_req.__dict__)
         class_dict['control-id'] = class_dict.pop('control_id', None)
+        # Convert comp.Statement objects to GenericStatement objects
+        if 'statements' in class_dict and class_dict['statements']:
+            generic_statements = []
+            for stmt in class_dict['statements']:
+                # comp.Statement and GenericStatement have the same fields, so we can convert directly
+                generic_stmt = GenericStatement(**stmt.__dict__)
+                generic_statements.append(generic_stmt)
+            class_dict['statements'] = generic_statements
         return cls(**class_dict)
 
     def as_ssp(self) -> ossp.ImplementedRequirement:
@@ -346,6 +356,11 @@ class GenericImplementedRequirement(TrestleBaseModel):
             new_stat_list.append(statement.as_ssp())
         if new_stat_list:
             class_dict['statements'] = new_stat_list
+        # Clean up empty lists to avoid Pydantic v2 validation errors with min_length constraints
+        # Convert empty lists to None for optional fields
+        for key in list(class_dict.keys()):
+            if isinstance(class_dict[key], list) and len(class_dict[key]) == 0:
+                class_dict[key] = None
         return ossp.ImplementedRequirement(**class_dict)
 
 
