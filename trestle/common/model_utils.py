@@ -154,6 +154,54 @@ class ModelUtils:
     """Utilities for the OSCAL models input and output."""
 
     @staticmethod
+    def _get_primary_model_instance(
+        primary_model_type: Type[Any], abs_path: pathlib.Path
+    ) -> Optional[Union[OscalBaseModel, List[OscalBaseModel], Dict[str, OscalBaseModel], Any]]:
+        """
+        Load primary model instance from file, handling both OscalBaseModel and Pydantic built-in types.
+
+        Args:
+            primary_model_type: The model type to load
+            abs_path: Path to the file to load
+
+        Returns:
+            The loaded model instance, or None if file doesn't exist or can't be loaded
+        """
+        # Check if primary_model_type has oscal_read (is OscalBaseModel or RootModel)
+        # Pydantic built-in types like AwareDatetime don't have oscal_read
+        if hasattr(primary_model_type, 'oscal_read'):
+            # Use the model type as-is (may be wrapped Union) for reading
+            # The smart validators in generated models will choose the correct variant
+            primary_model_instance = primary_model_type.oscal_read(abs_path)
+            # If the instance has root (Pydantic v2 RootModel), unwrap it to get the actual model
+            if hasattr(primary_model_instance, 'root'):
+                root_val = primary_model_instance.root
+                # Only unwrap if it's a single OscalBaseModel, not a list
+                if isinstance(root_val, OscalBaseModel):
+                    return root_val
+            return primary_model_instance
+        else:
+            # For Pydantic built-in types (e.g., AwareDatetime), read the JSON/YAML file directly
+            # Split files store fields as {"field-name": value}, so extract just the value
+            import json
+            import yaml
+
+            content_type = FileContentType.path_to_content_type(abs_path)
+            data = None
+            if content_type == FileContentType.JSON:
+                with abs_path.open('r', encoding='utf8') as f:
+                    data = json.load(f)
+            elif content_type == FileContentType.YAML:
+                with abs_path.open('r', encoding='utf8') as f:
+                    data = yaml.safe_load(f)
+
+            # Split files for simple fields are stored as {"field-name": value}
+            # Extract just the value for Pydantic built-in types
+            if isinstance(data, dict) and len(data) == 1:
+                return list(data.values())[0]
+            return data
+
+    @staticmethod
     def load_distributed(
         abs_path: Path, abs_trestle_root: Path, collection_type: Optional[Type[Any]] = None
     ) -> Tuple[
@@ -205,15 +253,7 @@ class ModelUtils:
         content_type = FileContentType.path_to_content_type(abs_path)
         # if file is sought but it doesn't exist, ignore and load as decomposed model
         if FileContentType.is_readable_file(content_type) and abs_path.exists():
-            # Use the model type as-is (may be wrapped Union) for reading
-            # The smart validators in generated models will choose the correct variant
-            primary_model_instance = primary_model_type.oscal_read(abs_path)
-            # If the instance has root (Pydantic v2 RootModel), unwrap it to get the actual model
-            if hasattr(primary_model_instance, 'root'):
-                root_val = primary_model_instance.root
-                # Only unwrap if it's a single OscalBaseModel, not a list
-                if isinstance(root_val, OscalBaseModel):
-                    primary_model_instance = root_val
+            primary_model_instance = ModelUtils._get_primary_model_instance(primary_model_type, abs_path)
         # Is model decomposed?
         decomposed_dir = abs_path.with_name(abs_path.stem)
 
