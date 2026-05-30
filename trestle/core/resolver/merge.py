@@ -165,14 +165,15 @@ class Merge(Pipeline.Filter):
             return catalog
 
         # as_is is False so flatten the controls into a single list
-        catalog.controls = as_list(catalog.controls)
-        catalog.params = as_list(catalog.params)
+        # Pydantic v2: Use temp variables to avoid assigning empty lists (min_length validation)
+        temp_controls = as_list(catalog.controls)
+        temp_params = as_list(catalog.params)
         for group in catalog.groups:
             new_controls, new_params = self._group_contents(group)
-            catalog.controls.extend(new_controls)
-            catalog.params.extend(new_params)
-        catalog.controls = none_if_empty(catalog.controls)
-        catalog.params = none_if_empty(catalog.params)
+            temp_controls.extend(new_controls)
+            temp_params.extend(new_params)
+        catalog.controls = none_if_empty(temp_controls)
+        catalog.params = none_if_empty(temp_params)
         catalog.groups = None
         return catalog
 

@@ -208,13 +208,19 @@ class Modify(Pipeline.Filter):
     def _set_appended_items(param: common.Parameter, set_param: prof.SetParameter) -> None:
         # these append
         if set_param.constraints:
-            if not param.constraints:
-                param.constraints = []
-            param.constraints.extend(set_param.constraints)
+            # Pydantic v2: Avoid setting empty list (min_length=1 validation)
+            # Build new list and only assign if non-empty
+            new_constraints = list(param.constraints) if param.constraints else []
+            new_constraints.extend(set_param.constraints)
+            if new_constraints:
+                param.constraints = new_constraints
         if set_param.guidelines:
-            if not param.guidelines:
-                param.guidelines = []
-            param.guidelines.extend(set_param.guidelines)
+            # Pydantic v2: Avoid setting empty list (min_length=1 validation)
+            # Build new list and only assign if non-empty
+            new_guidelines = list(param.guidelines) if param.guidelines else []
+            new_guidelines.extend(set_param.guidelines)
+            if new_guidelines:
+                param.guidelines = new_guidelines
 
     @staticmethod
     def _set_replaced_or_appended_items(param: common.Parameter, set_param: prof.SetParameter) -> None:

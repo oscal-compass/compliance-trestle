@@ -33,7 +33,7 @@ from typing import Any, Dict, List, Optional, Type, cast
 
 import orjson
 
-from pydantic import ConfigDict, Field, create_model, field_serializer
+from pydantic import ConfigDict, Field, RootModel, create_model, field_serializer
 from pydantic.fields import FieldInfo
 from pydantic_core import from_json
 
@@ -482,3 +482,46 @@ class OscalBaseModel(TrestleBaseModel):
         if annotation is None:
             raise err.TrestleError('root field has no annotation (Pydantic v2 RootModel)')
         return get_origin(annotation)
+
+
+class OscalRootModel(RootModel, TrestleBaseModel):
+    """
+    Trestle defined pydantic RootModel for wrapping collection types.
+
+    This is used for dynamically created models that wrap List or Dict types.
+    It inherits from RootModel for the collection wrapping behavior and TrestleBaseModel
+    for validation behavior, but cannot use OscalBaseModel's config due to RootModel restrictions.
+    """
+
+    model_config = ConfigDict(
+        populate_by_name=True,
+        validate_assignment=True,
+        # Note: RootModel does not support extra='forbid'
+    )
+
+    @classmethod
+    def oscal_read(cls, path: pathlib.Path):
+        """Read from OSCAL JSON/YAML file."""
+        return OscalBaseModel.oscal_read.__func__(cls, path)
+
+    def oscal_write(self, path: pathlib.Path):
+        """Write to OSCAL JSON/YAML file."""
+        return OscalBaseModel.oscal_write(self, path)
+
+    @classmethod
+    def alias_to_field_map(cls):
+        """Get alias to field mapping."""
+        return OscalBaseModel.alias_to_field_map.__func__(cls)
+
+    def stripped_instance(
+        self, stripped_fields: Optional[List[str]] = None, stripped_fields_aliases: Optional[List[str]] = None
+    ):
+        """Return a new model instance with the specified fields being stripped."""
+        return OscalBaseModel.stripped_instance(self, stripped_fields, stripped_fields_aliases)
+
+    @classmethod
+    def create_stripped_model_type(
+        cls, stripped_fields: Optional[List[str]] = None, stripped_fields_aliases: Optional[List[str]] = None
+    ):
+        """Create a stripped model type."""
+        return OscalBaseModel.create_stripped_model_type.__func__(cls, stripped_fields, stripped_fields_aliases)

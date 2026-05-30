@@ -500,26 +500,11 @@ class ModelUtils:
             from typing import get_args as typing_get_args
 
             # Create a RootModel subclass for the collection type
-            # RootModel in v2 uses 'root' field instead of v1's '__root__' field
-            class DynamicRootModel(RootModel):  # type: ignore
+            # Use OscalRootModel which provides all necessary methods including stripped_instance
+            from trestle.core.base_model import OscalRootModel
+
+            class DynamicRootModel(OscalRootModel):  # type: ignore
                 root: singular_model_type  # type: ignore
-
-                # RootModel doesn't support extra='forbid', so we create a custom config
-                model_config = ConfigDict(populate_by_name=True, validate_assignment=True)
-
-                @classmethod
-                def oscal_read(cls, path: pathlib.Path):
-                    """Read from OSCAL JSON/YAML file."""
-                    return OscalBaseModel.oscal_read.__func__(cls, path)
-
-                def oscal_write(self, path: pathlib.Path):
-                    """Write to OSCAL JSON/YAML file."""
-                    return OscalBaseModel.oscal_write(self, path)
-
-                @classmethod
-                def alias_to_field_map(cls):
-                    """Get alias to field mapping."""
-                    return OscalBaseModel.alias_to_field_map.__func__(cls)
 
             DynamicRootModel.__name__ = class_name
             DynamicRootModel.__qualname__ = class_name
