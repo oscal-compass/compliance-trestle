@@ -312,17 +312,19 @@ class ControlReader:
             imp_req.statements = statement_list
         else:
             imp_req.statements = None
-        imp_req.set_parameters = []
 
+        # Build set_parameters list before assigning to avoid Pydantic v2 validation error
+        # on empty list with min_length=1 constraint
+        set_params_list = []
         for _, param_dict_list in md_header.get(const.COMP_DEF_RULES_PARAM_VALS_TAG, {}).items():
             for param_dict in param_dict_list:
                 values = param_dict.get(const.VALUES, [])
                 comp_values = param_dict.get(const.COMPONENT_VALUES, [])
                 values = comp_values if comp_values else values
                 set_param = ossp.SetParameter(param_id=param_dict['name'], values=values)
-                imp_req.set_parameters.append(set_param)
+                set_params_list.append(set_param)
         imp_req.statements = none_if_empty(list(statement_map.values()))
-        imp_req.set_parameters = none_if_empty(imp_req.set_parameters)
+        imp_req.set_parameters = none_if_empty(set_params_list)
 
         ControlReader._insert_header_content(imp_req, md_header, control_id)
         sort_id = md_header.get(const.SORT_ID, control_id)

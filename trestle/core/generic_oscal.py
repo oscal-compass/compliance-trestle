@@ -201,6 +201,11 @@ class GenericComponent(TrestleBaseModel):
         status = self.status
         class_dict = copy.deepcopy(self.__dict__)
         class_dict.pop('status', None)
+        # Clean up empty lists to avoid Pydantic v2 validation errors with min_length constraints
+        # Convert empty lists to None for optional fields
+        for key in list(class_dict.keys()):
+            if isinstance(class_dict[key], list) and len(class_dict[key]) == 0:
+                class_dict[key] = None
         def_comp = comp.DefinedComponent(**class_dict)
         ControlInterface.insert_status_in_props(def_comp, status)  # type: ignore[type-var]
         return def_comp

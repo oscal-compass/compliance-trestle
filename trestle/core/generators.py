@@ -473,8 +473,10 @@ def generate_sample_model(
                             model_dict[field] = generate_sample_model(
                                 collection_outer_type, include_optional=include_optional, depth=depth - 1
                             )
-                        else:
+                        elif field_info.is_required():  # type: ignore
+                            # Required field with no min_length or min_length=0, assign empty list
                             model_dict[field] = []
+                        # else: optional field, don't assign anything (skip it)
                     else:
                         model_dict[field] = generate_sample_model(
                             collection_outer_type, include_optional=include_optional, depth=depth - 1

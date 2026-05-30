@@ -301,8 +301,11 @@ class CatalogReader:
                                 break
                         if not found:
                             sp = ossp.SetParameter(param_id=param_name, values=param_values)
-                            by_comp.set_parameters = as_list(by_comp.set_parameters)
-                            by_comp.set_parameters.append(sp)
+                            # Build the list first, then assign to avoid Pydantic v2 validation error
+                            # on empty list with min_length=1 constraint
+                            new_set_params = as_list(by_comp.set_parameters)
+                            new_set_params.append(sp)
+                            by_comp.set_parameters = new_set_params
 
     @staticmethod
     def _insert_param_dict_in_imp_req(
@@ -336,8 +339,10 @@ class CatalogReader:
         for sp in as_list(item.set_parameters):
             if sp.param_id != param_id:
                 new_sp_list.append(sp)
+        # Add the new SetParameter to the list before assigning to avoid Pydantic v2 validation error
+        # on empty list with min_length=1 constraint
+        new_sp_list.append(ossp.SetParameter(param_id=param_id, values=param_values))
         item.set_parameters = new_sp_list
-        item.set_parameters.append(ossp.SetParameter(param_id=param_id, values=param_values))
 
     @staticmethod
     def _add_props_to_imp_req(
