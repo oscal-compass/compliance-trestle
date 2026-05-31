@@ -280,6 +280,8 @@ class CatalogReader:
             by_comp = CatalogReader._get_by_comp_from_imp_req(imp_req, part_id, gen_comp.uuid)
             by_comp.description = comp_info.prose
             by_comp.implementation_status = comp_info.status
+            # Set props from comp_info - this includes rule-id props needed for parameter matching
+            by_comp.props = none_if_empty(comp_info.props)
 
     @staticmethod
     def _insert_set_param_into_by_comps(

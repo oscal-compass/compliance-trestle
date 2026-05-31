@@ -88,7 +88,7 @@ def test_generate_sample_model() -> None:
             'title': const.REPLACE_ME,
             'last-modified': '2020-10-21T06:52:10.387+00:00',
             'version': const.REPLACE_ME,
-            'oscal-version': oscal.OSCAL_VERSION,
+            'oscal-version': const.REPLACE_ME,
         },
     }
     expected_ctlg = catalog.Catalog(**expected_ctlg_dict)

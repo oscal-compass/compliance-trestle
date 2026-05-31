@@ -1092,6 +1092,8 @@ def test_profile_inherit(tmp_trestle_dir: pathlib.Path):
     )
 
     assert result_prof.imports[0].href == 'trestle://profiles/simple_test_profile/profile.json'
+    # When there are controls to include, Import2 is used
+    assert isinstance(result_prof.imports[0], prof.Import2)
     assert len(result_prof.imports[0].include_controls[0].with_ids) == 2
     assert len(result_prof.imports[0].exclude_controls[0].with_ids) == 1
     assert result_prof.imports[0].exclude_controls[0].with_ids[0] == excluded
@@ -1106,6 +1108,7 @@ def test_profile_inherit(tmp_trestle_dir: pathlib.Path):
     )
 
     assert result_prof.imports[0].href == 'trestle://profiles/simple_test_profile_more/profile.json'
+    assert isinstance(result_prof.imports[0], prof.Import2)
     assert len(result_prof.imports[0].include_controls[0].with_ids) == 3
     assert len(result_prof.imports[0].exclude_controls[0].with_ids) == 1
     assert result_prof.imports[0].exclude_controls[0].with_ids[0] == excluded
@@ -1120,6 +1123,7 @@ def test_profile_inherit(tmp_trestle_dir: pathlib.Path):
     )
 
     assert result_prof.imports[0].href == 'trestle://profiles/simple_test_profile_less/profile.json'
+    assert isinstance(result_prof.imports[0], prof.Import2)
     assert len(result_prof.imports[0].include_controls[0].with_ids) == 1
     assert len(result_prof.imports[0].exclude_controls[0].with_ids) == 1
     assert result_prof.imports[0].exclude_controls[0].with_ids[0] == excluded
@@ -1134,7 +1138,10 @@ def test_profile_inherit(tmp_trestle_dir: pathlib.Path):
     )
 
     assert result_prof.imports[0].href == 'trestle://profiles/simple_test_profile_single/profile.json'
-    assert len(result_prof.imports[0].include_controls[0].with_ids) == 0
+    # When all controls are excluded (include_with_ids is empty), Import1 with include_all is used
+    # In Pydantic v2, we can't have empty with_ids list (min_length=1)
+    assert isinstance(result_prof.imports[0], prof.Import1)
+    assert result_prof.imports[0].include_all is not None
     assert len(result_prof.imports[0].exclude_controls[0].with_ids) == 1
     assert result_prof.imports[0].exclude_controls[0].with_ids[0] == excluded
 

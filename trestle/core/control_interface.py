@@ -412,10 +412,11 @@ class ControlInterface:
                 },
             )
         else:
-            # If neither values nor select is present, return Parameter1 with empty values
+            # If neither values nor select is present, return Parameter1 with None values
+            # In Pydantic v2, values field has min_length=1, so we must use None instead of []
             return common.Parameter1(
                 id=param_id,
-                values=[],
+                values=None,
                 label=set_param.label,
                 props=set_param.props,
                 **{

@@ -235,11 +235,13 @@ class ProfileAssemble(AuthorCommonCommand):
         """Replace the alter adds in the orig_profile with the new ones and return True if changed."""
         changed = False
         if not profile.modify:
-            profile.modify = prof.Modify(alters=alters)
+            # In Pydantic v2, Modify.alters has min_length=1, so use None for empty list
+            profile.modify = prof.Modify(alters=alters if alters else None)
             if alters:
                 changed = True
         elif not profile.modify.alters:
-            profile.modify.alters = alters
+            # In Pydantic v2, only set alters if not empty (min_length=1)
+            profile.modify.alters = alters if alters else None
             if alters:
                 changed = True
         else:
@@ -665,8 +667,24 @@ class ProfileInherit(AuthorCommonCommand):
 
         include_with_ids: Set[str] = catalog_control_ids - exclude_with_ids
 
-        orig_prof_import.include_controls = [prof.SelectControl(with_ids=sorted(include_with_ids))]
-        orig_prof_import.exclude_controls = [prof.SelectControl(with_ids=sorted(exclude_with_ids))]
+        # In Pydantic v2, SelectControl.with_ids has min_length=1, so we must check for empty sets
+        # Import1 has include_all, Import2 has include_controls
+        # We need to handle both types appropriately
+        if hasattr(orig_prof_import, 'include_controls'):
+            # This is Import2
+            if include_with_ids:
+                orig_prof_import.include_controls = [prof.SelectControl(with_ids=sorted(include_with_ids))]
+            # If include_with_ids is empty, we can't set include_controls (min_length=1)
+            # This shouldn't happen in practice for Import2, but if it does, we skip setting it
+        elif hasattr(orig_prof_import, 'include_all'):
+            # This is Import1 - it already has include_all, no need to modify it
+            pass
+
+        # Set exclude_controls if there are any to exclude
+        if exclude_with_ids:
+            orig_prof_import.exclude_controls = [prof.SelectControl(with_ids=sorted(exclude_with_ids))]
+        else:
+            orig_prof_import.exclude_controls = None
 
     def initialize_profile(
         self,
@@ -710,14 +728,6 @@ class ProfileInherit(AuthorCommonCommand):
                     trestle_root, output_prof_name, prof.Profile, FileContentType.JSON
                 )
                 result_profile = copy.deepcopy(existing_profile)
-            else:
-                # Create a minimal profile with Import2 structure to avoid generate_sample_model creating Import1
-                result_profile = prof.Profile(
-                    uuid=str(uuid.uuid4()),
-                    metadata=gens.generate_sample_model(common.Metadata),
-                    imports=[],  # Will be set below with Import2
-                )
-
             parent_prof_path = ModelUtils.get_model_path_for_name_and_class(
                 trestle_root, parent_prof_name, prof.Profile
             )
@@ -756,14 +766,38 @@ class ProfileInherit(AuthorCommonCommand):
 
             include_with_ids: Set[str] = catalog_control_ids - exclude_with_ids
 
-            # Create Import2 variant with the computed control lists
-            profile_import: prof.Import = prof.Import2(
-                href=const.TRESTLE_HREF_HEADING + local_path,
-                include_controls=[prof.SelectControl(with_ids=sorted(include_with_ids))],
-                exclude_controls=[prof.SelectControl(with_ids=sorted(exclude_with_ids))] if exclude_with_ids else None,
-            )
+            # Create Import variant with the computed control lists
+            # In Pydantic v2, SelectControl.with_ids and Import2.include_controls have min_length=1
+            # If include_with_ids is empty, use Import1 with include_all and exclude_controls
+            # Otherwise use Import2 with include_controls
+            if include_with_ids:
+                profile_import: prof.Import = prof.Import2(
+                    href=const.TRESTLE_HREF_HEADING + local_path,
+                    include_controls=[prof.SelectControl(with_ids=sorted(include_with_ids))],
+                    exclude_controls=[prof.SelectControl(with_ids=sorted(exclude_with_ids))]
+                    if exclude_with_ids
+                    else None,
+                )
+            else:
+                # All controls are excluded, use Import1 with include_all
+                profile_import = prof.Import1(
+                    href=const.TRESTLE_HREF_HEADING + local_path,
+                    include_all=common.IncludeAll(),
+                    exclude_controls=[prof.SelectControl(with_ids=sorted(exclude_with_ids))]
+                    if exclude_with_ids
+                    else None,
+                )
 
-            result_profile.imports = [profile_import]
+            if not existing_profile:
+                # Create a minimal profile with Import2 structure
+                # In Pydantic v2, imports field has min_length=1, so we must provide at least one import
+                result_profile = prof.Profile(
+                    uuid=str(uuid.uuid4()),
+                    metadata=gens.generate_sample_model(common.Metadata),
+                    imports=[profile_import],
+                )
+            else:
+                result_profile.imports = [profile_import]
 
             if version:
                 result_profile.metadata.version = version
