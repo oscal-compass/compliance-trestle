@@ -166,11 +166,13 @@ class ControlReader:
             else:
                 logger.warning(f'Role in header for control {control_id} not recognized: {role}')
         if props:
-            imp_req.props = as_list(imp_req.props)
-            imp_req.props.extend(props)
+            props_list = as_list(imp_req.props)
+            props_list.extend(props)
+            imp_req.props = none_if_empty(props_list)
         if responsible_roles:
-            imp_req.responsible_roles = as_list(imp_req.responsible_roles)
-            imp_req.responsible_roles.extend(responsible_roles)
+            roles_list = as_list(imp_req.responsible_roles)
+            roles_list.extend(responsible_roles)
+            imp_req.responsible_roles = none_if_empty(roles_list)
             imp_req.responsible_roles = none_if_empty(imp_req.responsible_roles)
             # enforce single list of resp. roles for control and each by_comp
             for by_comp in as_list(imp_req.by_components):

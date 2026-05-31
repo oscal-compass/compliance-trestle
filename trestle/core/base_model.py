@@ -248,7 +248,8 @@ class OscalBaseModel(TrestleBaseModel):
         """Return a dictionary including the root wrapping object key."""
         class_name = self.__class__.__name__
         result = {}
-        raw_dict = self.model_dump(by_alias=True, exclude_none=True, mode='json')
+        # Use mode='python' to get Python objects (including datetime), not JSON-serialized strings
+        raw_dict = self.model_dump(by_alias=True, exclude_none=True, mode='python')
         # Additional check to avoid root serialization (Pydantic v2 RootModel uses 'root')
         if 'root' in raw_dict.keys():
             result[classname_to_alias(class_name, AliasMode.JSON)] = raw_dict['root']
@@ -268,14 +269,19 @@ class OscalBaseModel(TrestleBaseModel):
         if wrapped:
             odict = self.oscal_dict()
         else:
-            odict = self.model_dump(by_alias=True, exclude_none=True, mode='json')
+            # Use mode='python' to get Python objects (including datetime), not JSON-serialized strings
+            odict = self.model_dump(by_alias=True, exclude_none=True, mode='python')
 
         # Pydantic v2: json_encoders in ConfigDict is deprecated
-        # Use model_dump with mode='json' which handles serialization automatically
-        # For custom datetime handling, define a default encoder
+        # Use model_dump with mode='python' to get Python objects, then serialize with custom encoder
+        # This allows us to control datetime serialization format
         def default_encoder(obj):
             if isinstance(obj, datetime.datetime):
                 return robust_datetime_serialization(obj)
+            # Handle Pydantic v2 types
+            if hasattr(obj, '__str__'):
+                # This handles AnyUrl and other Pydantic types that have string representation
+                return str(obj)
             # Let orjson handle other types
             raise TypeError(f'Type {type(obj)} not serializable')
 

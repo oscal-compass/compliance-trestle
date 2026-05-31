@@ -208,8 +208,10 @@ class CatalogReader:
         statement = gens.generate_sample_model(ossp.Statement)
         statement.statement_id = statement_id
         statement.by_components = None
-        impl_req.statements = as_list(impl_req.statements)
-        impl_req.statements.append(statement)
+        # Work with list without triggering Pydantic v2 validation on empty list assignment
+        statements_list = as_list(impl_req.statements)
+        statements_list.append(statement)
+        impl_req.statements = statements_list  # This will always have at least one item now
         return statement
 
     @staticmethod
@@ -358,8 +360,13 @@ class CatalogReader:
         props, props_by_id = ControlReader.get_props_list(control_id, control_part_id_map, yaml_header)
         # add the props at control level
         if props:
-            imp_req.props = as_list(imp_req.props)
-            ControlInterface.reconcile_props(imp_req, props)
+            # Only assign if we have existing props, otherwise reconcile_props will handle it
+            if imp_req.props:
+                ControlInterface.reconcile_props(imp_req, props)
+            else:
+                # If no existing props, reconcile_props will create the list
+                ControlInterface.reconcile_props(imp_req, props)
+            imp_req.props = none_if_empty(imp_req.props)
 
         # add the props at the part level
         for label, part_id in control_part_id_map.items():
@@ -368,8 +375,9 @@ class CatalogReader:
                 continue
             for statement in as_list(imp_req.statements):
                 if statement.statement_id == part_id:
-                    statement.props = as_list(statement.props)
+                    # reconcile_props handles the list internally
                     ControlInterface.reconcile_props(statement, props)
+                    statement.props = none_if_empty(statement.props)
 
     @staticmethod
     def _update_ssp_with_md_header(

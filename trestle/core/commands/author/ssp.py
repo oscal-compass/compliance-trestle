@@ -278,17 +278,19 @@ class SSPAssemble(AuthorCommonCommand):
             for dest_by_comp in as_list(stat.by_components):
                 if dest_by_comp.component_uuid == by_comp.component_uuid:
                     dest_by_comp.description = by_comp.description
-                    dest_by_comp.props = as_list(dest_by_comp.props)
-                    dest_by_comp.props.extend(as_list(statement.props))
+                    props_list = as_list(dest_by_comp.props)
+                    props_list.extend(as_list(statement.props))
+                    dest_by_comp.props = none_if_empty(props_list)
                     dest_by_comp.props = none_if_empty(ControlInterface.clean_props(by_comp.props))
                     dest_by_comp.implementation_status = by_comp.implementation_status
                     dest_by_comp.set_parameters = none_if_empty(set_params)
                     found = True
                     break
             if not found:
-                stat.by_components = as_list(stat.by_components)
+                by_comps_list = as_list(stat.by_components)
+                by_comps_list.append(by_comp)
                 by_comp.set_parameters = none_if_empty(set_params)
-                stat.by_components.append(by_comp)
+                stat.by_components = none_if_empty(by_comps_list)
 
     @staticmethod
     def _merge_statement(
@@ -302,8 +304,9 @@ class SSPAssemble(AuthorCommonCommand):
                 return
         # otherwise just add the statement - but only if it has by_comps
         if statement.by_components:
-            imp_req.statements = as_list(imp_req.statements)
-            imp_req.statements.append(statement)
+            statements_list = as_list(imp_req.statements)
+            statements_list.append(statement)
+            imp_req.statements = none_if_empty(statements_list)
 
     @staticmethod
     def _merge_imp_req_into_imp_req(
@@ -383,13 +386,15 @@ class SSPAssemble(AuthorCommonCommand):
             by_comp.set_parameters = none_if_empty(control_set_params)
             by_comp.implementation_status = ControlInterface.get_status_from_props(gen_imp_req)  # type: ignore
             by_comp.props = none_if_empty(ControlInterface.clean_props(gen_imp_req.props))
-            imp_req.by_components = as_list(imp_req.by_components)
-            imp_req.by_components.append(by_comp)
-        # Convert empty by_components list back to None to satisfy min_length constraint
-        imp_req.by_components = none_if_empty(imp_req.by_components)
+            by_comps_list = as_list(imp_req.by_components)
+            by_comps_list.append(by_comp)
+            imp_req.by_components = none_if_empty(by_comps_list)
+        else:
+            # Convert empty by_components list back to None to satisfy min_length constraint
+            imp_req.by_components = none_if_empty(imp_req.by_components)
         # each statement in ci corresponds to by_comp in an ssp imp req
         # so insert the new by_comp directly into the ssp, generating parts as needed
-        imp_req.statements = as_list(imp_req.statements)
+        statements_list = as_list(imp_req.statements)
         for statement in as_list(gen_imp_req.statements):
             if ControlInterface.item_has_rules(statement):  # type: ignore
                 imp_req = CatalogReader._get_imp_req_for_statement(ssp, gen_imp_req.control_id, statement.statement_id)
@@ -400,7 +405,7 @@ class SSPAssemble(AuthorCommonCommand):
                 by_comp.set_parameters = none_if_empty(
                     SSPAssemble._get_params_for_rules(context, rules_list, local_set_params)
                 )
-        imp_req.statements = none_if_empty(imp_req.statements)
+        imp_req.statements = none_if_empty(statements_list)
         ssp.control_implementation.implemented_requirements = as_list(
             ssp.control_implementation.implemented_requirements
         )
@@ -825,7 +830,7 @@ class SSPFilter(AuthorCommonCommand):
                         if by_comp.component_uuid in comp_uuids:
                             new_by_comps.append(by_comp)
                     imp_req.by_components = none_if_empty(new_by_comps)
-                    new_imp_reqs.append(imp_req)
+
                     new_statements: List[ossp.Statement] = []
                     for statement in as_list(imp_req.statements):
                         new_by_comps: List[ossp.ByComponent] = []
@@ -835,6 +840,10 @@ class SSPFilter(AuthorCommonCommand):
                         statement.by_components = none_if_empty(new_by_comps)
                         new_statements.append(statement)
                     imp_req.statements = none_if_empty(new_statements)
+
+                    # Only add imp_req if it has valid content
+                    if imp_req.by_components is not None or imp_req.statements is not None:
+                        new_imp_reqs.append(imp_req)
                 ssp.control_implementation.implemented_requirements = new_imp_reqs
                 # now remove any unused components from the ssp
                 new_comp_list: List[ossp.SystemComponent] = []
