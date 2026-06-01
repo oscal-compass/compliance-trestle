@@ -69,7 +69,9 @@ def robust_datetime_serialization(input_dt: datetime.datetime) -> str:
         input_dt: Input datetime to convert to a string.
 
     Returns:
-        String in isoformat to the millisecond enforcing that timezone offset is provided.
+        String in isoformat enforcing that timezone offset is provided.
+        If datetime has microseconds of 0, they are omitted from the output.
+        Otherwise, milliseconds are included.
 
     Raises:
         TrestleError: Error is raised if datetime object does not contain sufficient timezone information.
@@ -84,7 +86,14 @@ def robust_datetime_serialization(input_dt: datetime.datetime) -> str:
     # return input_dt.astimezone().isoformat(timespec='milliseconds')  noqa: E800
 
     # force it to be utc
-    return input_dt.astimezone(datetime.timezone.utc).isoformat(timespec='milliseconds')
+    dt_utc = input_dt.astimezone(datetime.timezone.utc)
+
+    # If microseconds are 0, use 'seconds' timespec to omit them
+    # Otherwise use 'milliseconds' to include fractional seconds
+    if dt_utc.microsecond == 0:
+        return dt_utc.isoformat(timespec='seconds')
+    else:
+        return dt_utc.isoformat(timespec='milliseconds')
 
 
 class OscalBaseModel(TrestleBaseModel):
@@ -108,7 +117,28 @@ class OscalBaseModel(TrestleBaseModel):
         extra='forbid',
         # Validate on assignment of variables to ensure no escapes
         validate_assignment=True,
+        # Configure datetime serialization to use +00:00 instead of Z
+        ser_json_timedelta='iso8601',
     )
+
+    @field_serializer('*', mode='wrap', when_used='json')
+    def serialize_datetime_fields(self, value, handler, _info):
+        """Custom serializer for datetime fields to use +00:00 format instead of Z."""
+        from pydantic import AnyUrl
+
+        # Handle AnyUrl types - convert to string before default handler
+        if isinstance(value, AnyUrl):
+            return str(value)
+
+        # Let the default handler process the value first
+        result = handler(value)
+
+        # If it's a datetime that was serialized to a string ending with 'Z', convert it
+        if isinstance(result, str) and result.endswith('Z'):
+            # Replace Z with +00:00
+            result = result[:-1] + '+00:00'
+
+        return result
 
     def __eq__(self, other: object) -> bool:
         """Override equality to compare model content for dynamically created models.
@@ -248,8 +278,9 @@ class OscalBaseModel(TrestleBaseModel):
         """Return a dictionary including the root wrapping object key."""
         class_name = self.__class__.__name__
         result = {}
-        # Use mode='python' to get Python objects (including datetime), not JSON-serialized strings
-        raw_dict = self.model_dump(by_alias=True, exclude_none=True, mode='python')
+        # Use mode='json' to properly serialize all types including AnyUrl
+        # The field_serializer handles datetime formatting
+        raw_dict = self.model_dump(by_alias=True, exclude_none=True, mode='json')
         # Additional check to avoid root serialization (Pydantic v2 RootModel uses 'root')
         if 'root' in raw_dict.keys():
             result[classname_to_alias(class_name, AliasMode.JSON)] = raw_dict['root']
@@ -269,25 +300,15 @@ class OscalBaseModel(TrestleBaseModel):
         if wrapped:
             odict = self.oscal_dict()
         else:
-            # Use mode='python' to get Python objects (including datetime), not JSON-serialized strings
-            odict = self.model_dump(by_alias=True, exclude_none=True, mode='python')
+            # Use mode='json' to properly serialize all types including AnyUrl
+            # The field_serializer handles datetime formatting
+            odict = self.model_dump(by_alias=True, exclude_none=True, mode='json')
 
-        # Pydantic v2: json_encoders in ConfigDict is deprecated
-        # Use model_dump with mode='python' to get Python objects, then serialize with custom encoder
-        # This allows us to control datetime serialization format
-        def default_encoder(obj):
-            if isinstance(obj, datetime.datetime):
-                return robust_datetime_serialization(obj)
-            # Handle Pydantic v2 types
-            if hasattr(obj, '__str__'):
-                # This handles AnyUrl and other Pydantic types that have string representation
-                return str(obj)
-            # Let orjson handle other types
-            raise TypeError(f'Type {type(obj)} not serializable')
-
+        # With mode='json', all types are already properly serialized to JSON-compatible types
+        # We just need orjson to convert the dict to bytes
         if pretty:
-            return orjson.dumps(odict, default=default_encoder, option=orjson.OPT_INDENT_2)
-        return orjson.dumps(odict, default=default_encoder)
+            return orjson.dumps(odict, option=orjson.OPT_INDENT_2)
+        return orjson.dumps(odict)
 
     def oscal_serialize_json(self, pretty: bool = False, wrapped: bool = True) -> str:
         """

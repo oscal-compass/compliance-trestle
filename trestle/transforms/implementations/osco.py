@@ -39,6 +39,7 @@ from trestle.oscal.common import (
     ReviewedControls,
     Status,
     SubjectReference,
+    SystemComponentOperationalStateValidValues,
 )
 from trestle.oscal.profile import Profile
 from trestle.transforms.results import Results
@@ -360,15 +361,14 @@ class _OscalResultsFactory:
     @property
     def control_selections(self) -> List[ControlSelections]:
         """OSCAL control selections."""
-        from trestle.oscal.common import SelectControlById
+        from trestle.oscal.common import ControlSelectionsAll
+        from trestle.oscal.common import IncludeAll
 
         prop = []
-        # Create placeholder control selection with a dummy control ID
-        # to satisfy Pydantic v2 min_length=1 requirement
-        placeholder_data = {'control-id': 'placeholder'}
-        placeholder = SelectControlById.model_validate(placeholder_data)
-        control_sel_data = {'include-controls': [placeholder]}
-        prop.append(ControlSelections.model_validate(control_sel_data))
+        # Use ControlSelectionsAll with include-all to indicate all controls
+        include_all = IncludeAll()
+        control_sel_all = ControlSelectionsAll.model_validate({'include-all': include_all})
+        prop.append(control_sel_all)
         return prop
 
     @property
@@ -379,9 +379,9 @@ class _OscalResultsFactory:
     @property
     def local_definitions(self) -> LocalDefinitions1:
         """OSCAL local definitions."""
-        prop = LocalDefinitions1()
-        prop.components = self.components
-        prop.inventory_items = list(self.inventory)
+        # Use model_validate with aliased field names for Pydantic v2
+        local_def_data = {'components': self.components, 'inventory-items': list(self.inventory)}
+        prop = LocalDefinitions1.model_validate(local_def_data)
         return prop
 
     @property
@@ -397,7 +397,9 @@ class _OscalResultsFactory:
     @property
     def reviewed_controls(self) -> ReviewedControls:
         """OSCAL reviewed controls."""
-        prop = ReviewedControls(control_selections=self.control_selections)
+        # Use model_validate with aliased field names for Pydantic v2
+        reviewed_controls_data = {'control-selections': self.control_selections}
+        prop = ReviewedControls.model_validate(reviewed_controls_data)
         return prop
 
     @property
@@ -406,21 +408,22 @@ class _OscalResultsFactory:
         # perform result properties aggregation
         if self.observations:
             self._result_properties_list = TransformerHelper().remove_common_observation_properties(self.observations)
-        # produce result
-        prop = Result(
-            uuid=str(uuid.uuid4()),
-            title='OpenShift Compliance Operator',
-            description='OpenShift Compliance Operator Scan Results',
-            start=self._timestamp,
-            end=self._timestamp,
-            reviewed_controls=self.reviewed_controls,
-        )
+        # produce result using model_validate with aliased field names for Pydantic v2
+        result_data = {
+            'uuid': str(uuid.uuid4()),
+            'title': 'OpenShift Compliance Operator',
+            'description': 'OpenShift Compliance Operator Scan Results',
+            'start': self._timestamp,
+            'end': self._timestamp,
+            'reviewed-controls': self.reviewed_controls,
+        }
         if self.result_properties:
-            prop.props = self.result_properties
+            result_data['props'] = self.result_properties
         if self.inventory:
-            prop.local_definitions = self.local_definitions
+            result_data['local-definitions'] = self.local_definitions
         if self.observations:
-            prop.observations = self.observations
+            result_data['observations'] = self.observations
+        prop = Result.model_validate(result_data)
         return prop
 
     @property
@@ -440,7 +443,8 @@ class _OscalResultsFactory:
             if component.type == _type and component.title == _title and component.description == _desc:
                 return
         component_ref = str(uuid.uuid4())
-        status = Status(state='operational')
+        # Use enum value for state in Pydantic v2
+        status = Status(state=SystemComponentOperationalStateValidValues.operational)
         component = SystemComponent(uuid=component_ref, type=_type, title=_title, description=_desc, status=status)
         self._component_map[component_ref] = component
 
@@ -456,9 +460,16 @@ class _OscalResultsFactory:
         """Extract inventory from RuleUse."""
         if rule_use.inventory_key in self._inventory_map:
             return
-        inventory = InventoryItem(uuid=str(uuid.uuid4()), description='inventory')
-        inventory.props = self._get_inventory_properties(rule_use)
-        inventory.implemented_components = [ImplementedComponent(component_uuid=self._get_component_ref(rule_use))]
+        # Use model_validate with aliased field names for Pydantic v2
+        inventory_data = {
+            'uuid': str(uuid.uuid4()),
+            'description': 'inventory',
+            'props': self._get_inventory_properties(rule_use),
+            'implemented-components': [
+                ImplementedComponent.model_validate({'component-uuid': self._get_component_ref(rule_use)})
+            ],
+        }
+        inventory = InventoryItem.model_validate(inventory_data)
         self._inventory_map[rule_use.inventory_key] = inventory
 
     def _get_inventory_properties(self, rule_use):
@@ -472,13 +483,23 @@ class _OscalResultsFactory:
         """Get inventory properties, with checking."""
         props = []
         if rule_use.host_name is None:
-            props.append(Property(name='target', value=rule_use.target, ns=self._ns, class_='scc_inventory_item_id'))
-            props.append(Property(name='target_type', value=rule_use.target_type, ns=self._ns))
-        else:
-            props.append(Property(name='target', value=rule_use.target, ns=self._ns))
-            props.append(Property(name='target_type', value=rule_use.target_type, ns=self._ns))
             props.append(
-                Property(name='host_name', value=rule_use.host_name, ns=self._ns, class_='scc_inventory_item_id')
+                Property.model_validate(
+                    {'name': 'target', 'value': rule_use.target, 'ns': self._ns, 'class': 'scc_inventory_item_id'}
+                )
+            )
+            props.append(
+                Property.model_validate({'name': 'target_type', 'value': rule_use.target_type, 'ns': self._ns})
+            )
+        else:
+            props.append(Property.model_validate({'name': 'target', 'value': rule_use.target, 'ns': self._ns}))
+            props.append(
+                Property.model_validate({'name': 'target_type', 'value': rule_use.target_type, 'ns': self._ns})
+            )
+            props.append(
+                Property.model_validate(
+                    {'name': 'host_name', 'value': rule_use.host_name, 'ns': self._ns, 'class': 'scc_inventory_item_id'}
+                )
             )
         return props
 
@@ -509,14 +530,20 @@ class _OscalResultsFactory:
 
     def _observation_extract(self, rule_use: RuleUse) -> None:
         """Extract observation from RuleUse."""
-        observation = Observation(
-            uuid=str(uuid.uuid4()), description=rule_use.idref, methods=['TEST-AUTOMATED'], collected=self._timestamp
+        # Use model_validate with aliased field names for Pydantic v2
+        subject_reference = SubjectReference.model_validate(
+            {'subject-uuid': self._get_inventory_ref(rule_use), 'type': 'inventory-item'}
         )
-        subject_reference = SubjectReference(subject_uuid=self._get_inventory_ref(rule_use), type='inventory-item')
-        observation.subjects = [subject_reference]
-        observation.props = self._get_observation_properties(rule_use)
+        observation_data = {
+            'uuid': str(uuid.uuid4()),
+            'description': rule_use.idref,
+            'methods': ['TEST-AUTOMATED'],
+            'collected': self._timestamp,
+            'subjects': [subject_reference],
+            'props': self._get_observation_properties(rule_use),
+        }
+        observation = Observation.model_validate(observation_data)
         self._observation_list.append(observation)
-        rule_use.observation = observation
 
     def _get_observation_properties(self, rule_use):
         """Get observation properties."""
@@ -528,17 +555,41 @@ class _OscalResultsFactory:
     def _get_observation_properties_checked(self, rule_use):
         """Get observation properties, with checking."""
         props = []
-        props.append(Property(name='scanner_name', value=rule_use.scanner_name, ns=self._ns))
-        props.append(Property(name='scanner_version', value=rule_use.scanner_version, ns=self._ns))
-        props.append(Property(name='idref', value=rule_use.idref, ns=self._ns, class_='scc_check_name_id'))
-        props.append(Property(name='version', value=rule_use.version, ns=self._ns, class_='scc_check_version'))
-        props.append(Property(name='result', value=rule_use.result, ns=self._ns, class_='scc_result'))
-        props.append(Property(name='time', value=rule_use.time, ns=self._ns, class_='scc_timestamp'))
-        props.append(Property(name='severity', value=rule_use.severity, ns=self._ns, class_='scc_check_severity'))
-        props.append(Property(name='weight', value=rule_use.weight, ns=self._ns))
-        props.append(Property(name='benchmark_id', value=rule_use.benchmark_id, ns=self._ns))
-        props.append(Property(name='benchmark_href', value=rule_use.benchmark_href, ns=self._ns))
-        props.append(Property(name='id', value=rule_use.id_, ns=self._ns, class_='scc_predefined_profile'))
+        props.append(Property.model_validate({'name': 'scanner_name', 'value': rule_use.scanner_name, 'ns': self._ns}))
+        props.append(
+            Property.model_validate({'name': 'scanner_version', 'value': rule_use.scanner_version, 'ns': self._ns})
+        )
+        props.append(
+            Property.model_validate(
+                {'name': 'idref', 'value': rule_use.idref, 'ns': self._ns, 'class': 'scc_check_name_id'}
+            )
+        )
+        props.append(
+            Property.model_validate(
+                {'name': 'version', 'value': rule_use.version, 'ns': self._ns, 'class': 'scc_check_version'}
+            )
+        )
+        props.append(
+            Property.model_validate({'name': 'result', 'value': rule_use.result, 'ns': self._ns, 'class': 'scc_result'})
+        )
+        props.append(
+            Property.model_validate({'name': 'time', 'value': rule_use.time, 'ns': self._ns, 'class': 'scc_timestamp'})
+        )
+        props.append(
+            Property.model_validate(
+                {'name': 'severity', 'value': rule_use.severity, 'ns': self._ns, 'class': 'scc_check_severity'}
+            )
+        )
+        props.append(Property.model_validate({'name': 'weight', 'value': rule_use.weight, 'ns': self._ns}))
+        props.append(Property.model_validate({'name': 'benchmark_id', 'value': rule_use.benchmark_id, 'ns': self._ns}))
+        props.append(
+            Property.model_validate({'name': 'benchmark_href', 'value': rule_use.benchmark_href, 'ns': self._ns})
+        )
+        props.append(
+            Property.model_validate(
+                {'name': 'id', 'value': rule_use.id_, 'ns': self._ns, 'class': 'scc_predefined_profile'}
+            )
+        )
         return props
 
     def _get_observation_properties_unchecked(self, rule_use):

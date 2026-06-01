@@ -405,16 +405,9 @@ class _OscalResultsFactory:
     @property
     def control_selections(self) -> List[ControlSelections]:
         """OSCAL control selections."""
-        from trestle.oscal.common import SelectControlById
-
-        prop = []
-        # Create placeholder control selection with a dummy control ID
-        # to satisfy Pydantic v2 min_length=1 requirement
-        placeholder_data = {'control-id': 'placeholder'}
-        placeholder = SelectControlById.model_validate(placeholder_data)
-        control_sel_data = {'include-controls': [placeholder]}
-        prop.append(ControlSelections.model_validate(control_sel_data))
-        return prop
+        # Return empty list - reviewed_controls is now optional in Result
+        # so we don't need to provide control_selections
+        return []
 
     @property
     def inventory(self) -> ValuesView[InventoryItem]:
@@ -487,10 +480,10 @@ class _OscalResultsFactory:
         return self._assessment_asset_properties_list
 
     @property
-    def reviewed_controls(self) -> ReviewedControls:
+    def reviewed_controls(self) -> Optional[ReviewedControls]:
         """OSCAL reviewed controls."""
-        prop = ReviewedControls(control_selections=self.control_selections)
-        return prop
+        # Return None since control_selections is empty and reviewed_controls is now optional
+        return None
 
     @property
     def result(self) -> Result:
@@ -507,8 +500,10 @@ class _OscalResultsFactory:
             description=f'{self._description}',
             start=self.time,
             end=self.time,
-            reviewed_controls=self.reviewed_controls,
         )
+        # Only set reviewed_controls if it's not None
+        if self.reviewed_controls is not None:
+            prop.reviewed_controls = self.reviewed_controls
         if self.inventory:
             prop.local_definitions = self.local_definitions
         if self.observations:
@@ -525,7 +520,7 @@ class _OscalResultsFactory:
 
     def _component_extract(self, rule_use: RuleUse) -> None:
         """Extract component from RuleUse."""
-        _type = 'Service'
+        _type = 'service'
         _title = f'{rule_use.target_type}'
         _desc = _title
         for component in self._component_map.values():
