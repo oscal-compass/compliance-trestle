@@ -129,7 +129,7 @@
       "reviewed-controls": {
         "control-selections": [
           {
-            "include-controls": []
+            "include-all": {}
           }
         ]
       },

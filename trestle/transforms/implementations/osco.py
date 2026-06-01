@@ -436,7 +436,7 @@ class _OscalResultsFactory:
 
     def _component_extract(self, rule_use: RuleUse) -> None:
         """Extract component from RuleUse."""
-        _type = 'Service'
+        _type = 'service'
         _title = f'Red Hat OpenShift Kubernetes Service Compliance Operator for {rule_use.target_type}'
         _desc = _title
         for component in self._component_map.values():
