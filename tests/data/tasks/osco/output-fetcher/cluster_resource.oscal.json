@@ -49,7 +49,7 @@
         "components": [
           {
             "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-            "type": "Service",
+            "type": "service",
             "title": "Red Hat OpenShift Kubernetes Service Compliance Operator for ocp4",
             "description": "Red Hat OpenShift Kubernetes Service Compliance Operator for ocp4",
             "status": {
