@@ -493,17 +493,23 @@ class _OscalResultsFactory:
             self._assessment_asset_properties_list = TransformerHelper().remove_common_observation_properties(
                 self.observations
             )
-        # produce result
+        # produce result - reviewed_controls is required, so provide a default if None
+        reviewed_controls_value = self.reviewed_controls
+        if reviewed_controls_value is None:
+            # Create a minimal ReviewedControls with a control selection that includes all
+            from trestle.oscal.common import ControlSelectionsAll, IncludeAll
+
+            control_selection = ControlSelectionsAll(include_all=IncludeAll())
+            reviewed_controls_value = ReviewedControls(control_selections=[control_selection])
+
         prop = Result(
             uuid=str(uuid.uuid4()),
             title=f'{self._title}',
             description=f'{self._description}',
             start=self.time,
             end=self.time,
+            reviewed_controls=reviewed_controls_value,
         )
-        # Only set reviewed_controls if it's not None
-        if self.reviewed_controls is not None:
-            prop.reviewed_controls = self.reviewed_controls
         if self.inventory:
             prop.local_definitions = self.local_definitions
         if self.observations:
