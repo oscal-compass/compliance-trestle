@@ -84,7 +84,7 @@ class DescribeCmd(CommandPlusDocs):
             text = f'list of {n_items} items of type {type_text}'
             return text
         if type(sub_model) is str:
-            return sub_model if len(sub_model) < clip_string else sub_model[:clip_string] + '[truncated]'  # type: ignore
+            return sub_model if len(sub_model) < clip_string else sub_model[:clip_string] + '[truncated]'
         # In Pydantic v2, check for annotation attribute instead of type_
         if hasattr(sub_model, '__class__') and hasattr(sub_model.__class__, 'model_fields'):
             # This is a Pydantic model, get its type

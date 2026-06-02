@@ -133,9 +133,9 @@ def get_inner_type(collection_field_type: Union[Type[List[Any]], Type[Dict[str, 
             # Check if this is actually a type annotation (has __origin__ or is a typing construct)
             # vs a runtime instance type (which would just be 'list' or 'dict')
             if origin_type is list:
-                return Any  # type: ignore
+                return Any
             if origin_type is dict:
-                return Any  # type: ignore
+                return Any
             # If no origin_type and no args, this is likely a runtime instance type, not a type annotation
             raise err.TrestleError('Model type is not a Dict or List type annotation')
 

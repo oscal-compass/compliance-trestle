@@ -384,7 +384,7 @@ class ProfileAssemble(AuthorCommonCommand):
                 part
                 for alter in found_alters
                 for add in as_list(alter.adds)
-                for part in as_filtered_list(add.parts, lambda a: a.name not in allowed_sections)  # type: ignore
+                for part in as_filtered_list(add.parts, lambda a: a.name not in allowed_sections)
             ]:
                 raise TrestleError(f'Profile has alter with name {bad_part.name} not in allowed sections.')
 

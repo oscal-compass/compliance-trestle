@@ -319,7 +319,7 @@ class SSPMarkdownWriter:
         """Get response per component, substitute component id with title if possible."""
         response_per_component: Dict[str, Tuple[str, List[str], str]] = {}
 
-        for by_comp in as_list(has_bycomps.by_components):  # type: ignore
+        for by_comp in as_list(has_bycomps.by_components):
             # look up component title
             subheader = by_comp.component_uuid
             prose = ''

@@ -35,10 +35,21 @@ class TrestleBaseModel(BaseModel):
         strict: bool | None = None,
         from_attributes: bool | None = None,
         context: dict[str, Any] | None = None,
+        extra: Any = None,
+        by_alias: bool | None = None,
+        by_name: bool | None = None,
     ) -> 'Model':
         """Validate object to the given class."""
         try:
-            return super().model_validate(obj, strict=strict, from_attributes=from_attributes, context=context)
+            return super().model_validate(
+                obj,
+                strict=strict,
+                from_attributes=from_attributes,
+                context=context,
+                extra=extra,
+                by_alias=by_alias,
+                by_name=by_name,
+            )
         except ValidationError as e:
             # check if failed due to the wrong OSCAL version:
             oscal_version_error = False

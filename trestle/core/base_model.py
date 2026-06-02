@@ -124,7 +124,7 @@ class OscalBaseModel(TrestleBaseModel):
     )
 
     @field_serializer('*', mode='wrap', when_used='json')
-    def serialize_datetime_fields(self, value, handler, _info):
+    def serialize_datetime_fields(self, value: Any, handler: Any, _info: Any) -> Any:
         """Custom serializer for datetime fields to use +00:00 format instead of Z."""
         from pydantic import AnyUrl
 
@@ -227,9 +227,7 @@ class OscalBaseModel(TrestleBaseModel):
                 )
         new_model = create_model(cls.__name__, __base__=OscalBaseModel, **new_fields_for_model)  # type: ignore
         # TODO: This typing cast should NOT be necessary. Potentially fixable with a fix to pydantic. Issue #175
-        new_model = cast(Type[OscalBaseModel], new_model)
-
-        return new_model
+        return cast(Type[OscalBaseModel], new_model)
 
     def get_field_by_alias(self, field_alias: str) -> Any:
         """Convert field alias to a field."""
@@ -518,7 +516,7 @@ class OscalBaseModel(TrestleBaseModel):
         return get_origin(annotation)
 
 
-class OscalRootModel(RootModel):
+class OscalRootModel(RootModel[Any]):
     """
     Trestle defined pydantic RootModel for wrapping collection types.
 

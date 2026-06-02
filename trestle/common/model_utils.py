@@ -543,7 +543,7 @@ class ModelUtils:
             # Use OscalRootModel which provides all necessary methods including stripped_instance
             from trestle.core.base_model import OscalRootModel
 
-            class DynamicRootModel(OscalRootModel):  # type: ignore
+            class DynamicRootModel(OscalRootModel):
                 root: singular_model_type  # type: ignore
 
             DynamicRootModel.__name__ = class_name
@@ -1117,7 +1117,7 @@ class ModelUtils:
         props = param_dict.get('props', [])
         if const.DISPLAY_NAME in param_dict:
             display_name = param_dict.pop(const.DISPLAY_NAME)
-            props.append(common.Property(name=const.DISPLAY_NAME, value=display_name, ns=const.TRESTLE_GENERIC_NS))  # type: ignore[call-arg]
+            props.append(common.Property(name=const.DISPLAY_NAME, value=display_name, ns=const.TRESTLE_GENERIC_NS))
         if const.AGGREGATES in param_dict:
             # removing aggregates as this is prop just informative in markdown
             param_dict.pop(const.AGGREGATES)
@@ -1125,7 +1125,7 @@ class ModelUtils:
         if const.PARAM_VALUE_ORIGIN in param_dict:
             param_value_origin = param_dict.pop(const.PARAM_VALUE_ORIGIN)
             if param_value_origin is not None:
-                props.append(common.Property(name=const.PARAM_VALUE_ORIGIN, value=param_value_origin))  # type:ignore[call-arg]
+                props.append(common.Property(name=const.PARAM_VALUE_ORIGIN, value=param_value_origin))
             else:
                 raise TrestleError(
                     f'Parameter value origin property for parameter {param_dict["id"]}'

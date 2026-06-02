@@ -378,20 +378,20 @@ def generate_sample_model(
             # Special handling for include_all field - only skip if it's optional
             field_info = model.model_fields[field]
             if field == 'include_all':
-                if field_info.is_required():  # type: ignore
+                if field_info.is_required():
                     # Field is required, generate it
                     model_dict[field] = {}
                 elif include_optional:
                     # Field is optional and we want to include optional fields
                     model_dict[field] = {}
                 continue
-            outer_type = field_info.annotation  # type: ignore
+            outer_type = field_info.annotation
 
             # Skip fields with unresolved ForwardRefs, but if required, provide empty list
             if isinstance(outer_type, (str, ForwardRef)):
                 # If it's a required field, we need to provide something
                 # Assume it's a list type and provide an empty list
-                if field_info.is_required():  # type: ignore
+                if field_info.is_required():
                     model_dict[field] = []
                 continue
 
@@ -430,7 +430,7 @@ def generate_sample_model(
                         if outer_type is None:
                             # If all types are ForwardRefs or None, skip this field
                             continue
-            if field_info.is_required() or effective_optional:  # type: ignore
+            if field_info.is_required() or effective_optional:
                 # FIXME could be ForwardRef('SystemComponentStatus')
                 outer_origin = utils.get_origin(outer_type)
                 is_outer_union = outer_origin == Union or str(outer_origin) == "<class 'types.UnionType'>"
@@ -460,9 +460,9 @@ def generate_sample_model(
                     if depth == 0:
                         # Check if field has min_length constraint
                         min_items = 0
-                        if field_info.is_required():  # type: ignore
+                        if field_info.is_required():
                             # Check field constraints for min_length
-                            constraints = field_info.metadata  # type: ignore
+                            constraints = field_info.metadata
                             for constraint in constraints:
                                 if hasattr(constraint, 'min_length') and constraint.min_length is not None:
                                     min_items = constraint.min_length
@@ -473,7 +473,7 @@ def generate_sample_model(
                             model_dict[field] = generate_sample_model(
                                 collection_outer_type, include_optional=include_optional, depth=depth - 1
                             )
-                        elif field_info.is_required():  # type: ignore
+                        elif field_info.is_required():
                             # Required field with no min_length or min_length=0, assign empty list
                             model_dict[field] = []
                         # else: optional field, don't assign anything (skip it)
@@ -483,14 +483,14 @@ def generate_sample_model(
                         )
                 elif is_by_type(outer_type):
                     # For int types, check if there are constraints in field metadata
-                    if outer_type is int and field_info.metadata:  # type: ignore
-                        model_dict[field] = _get_constrained_int_value(field_info.metadata)  # type: ignore
+                    if outer_type is int and field_info.metadata:
+                        model_dict[field] = _get_constrained_int_value(field_info.metadata)
                     else:
                         model_dict[field] = generate_sample_value_by_type(outer_type, field)
                 elif safe_is_sub(outer_type, OscalBaseModel):
                     # Skip recursion if depth is 0 (but allow -1 for unlimited)
                     # But always generate required fields even at depth 0
-                    if depth == 0 and not field_info.is_required():  # type: ignore
+                    if depth == 0 and not field_info.is_required():
                         continue  # Skip optional nested models at depth 0
                     else:
                         model_dict[field] = generate_sample_model(
@@ -538,8 +538,8 @@ def generate_sample_model(
                             )
                         else:
                             # For int types, check if there are constraints in field metadata
-                            if outer_type is int and field_info.metadata:  # type: ignore
-                                model_dict[field] = _get_constrained_int_value(field_info.metadata)  # type: ignore
+                            if outer_type is int and field_info.metadata:
+                                model_dict[field] = _get_constrained_int_value(field_info.metadata)
                             else:
                                 model_dict[field] = generate_sample_value_by_type(outer_type, field)
                 else:
@@ -575,8 +575,8 @@ def generate_sample_model(
                         )
                     else:
                         # For int types, check if there are constraints in field metadata
-                        if outer_type is int and field_info.metadata:  # type: ignore
-                            model_dict[field] = _get_constrained_int_value(field_info.metadata)  # type: ignore
+                        if outer_type is int and field_info.metadata:
+                            model_dict[field] = _get_constrained_int_value(field_info.metadata)
                         else:
                             model_dict[field] = generate_sample_value_by_type(outer_type, field)
         # Note: this assumes list constrains in oscal are always 1 as a minimum size. if two this may still fail.
