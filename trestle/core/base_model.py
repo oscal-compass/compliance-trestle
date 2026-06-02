@@ -43,6 +43,7 @@ import trestle.common.const as const
 import trestle.common.err as err
 from trestle.common.str_utils import AliasMode, classname_to_alias
 from trestle.common.type_utils import get_origin, is_collection_field_type
+from trestle.core.canonicalization import canonicalize_json_text
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.trestle_base_model import TrestleBaseModel
 
@@ -288,12 +289,13 @@ class OscalBaseModel(TrestleBaseModel):
             result[classname_to_alias(class_name, AliasMode.JSON)] = raw_dict
         return result
 
-    def oscal_serialize_json_bytes(self, pretty: bool = False, wrapped: bool = True) -> bytes:
+    def oscal_serialize_json_bytes(self, pretty: bool = False, wrapped: bool = True, canonical: bool = False) -> bytes:
         """
         Return an 'oscal wrapped' json object serialized in a compressed form as bytes.
 
         Args:
             pretty: Whether or not to pretty-print json output or have in compressed form.
+            canonical: Whether or not to return RFC 8785 canonical JSON bytes.
         Returns:
             Oscal model serialized to a json object including packaging inside of a single top level key.
         """
@@ -306,21 +308,27 @@ class OscalBaseModel(TrestleBaseModel):
 
         # With mode='json', all types are already properly serialized to JSON-compatible types
         # We just need orjson to convert the dict to bytes
+            odict = self.dict(by_alias=True, exclude_none=True)
+        if canonical:
+            json_bytes = orjson.dumps(odict, default=self.__json_encoder__)
+            _, canonical_bytes = canonicalize_json_text(json_bytes.decode(const.FILE_ENCODING))
+            return canonical_bytes
         if pretty:
             return orjson.dumps(odict, option=orjson.OPT_INDENT_2)
         return orjson.dumps(odict)
 
-    def oscal_serialize_json(self, pretty: bool = False, wrapped: bool = True) -> str:
+    def oscal_serialize_json(self, pretty: bool = False, wrapped: bool = True, canonical: bool = False) -> str:
         """
         Return an 'oscal wrapped' json object serialized in a compressed form as bytes.
 
         Args:
             pretty: Whether or not to pretty-print json output or have in compressed form.
+            canonical: Whether or not to return RFC 8785 canonical JSON.
         Returns:
             Oscal model serialized to a json object including packaging inside of a single top level key.
         """
         # This function is provided for backwards compatibility
-        return self.oscal_serialize_json_bytes(pretty, wrapped).decode(const.FILE_ENCODING)
+        return self.oscal_serialize_json_bytes(pretty, wrapped, canonical).decode(const.FILE_ENCODING)
 
     def oscal_write(self, path: pathlib.Path) -> None:
         """
@@ -336,7 +344,7 @@ class OscalBaseModel(TrestleBaseModel):
         Raises:
             err.TrestleError: If a unknown file extension is provided.
         """
-        content_type = FileContentType.to_content_type(path.suffix)
+        content_type = FileContentType.path_suffix_to_content_type(path)
         # The output will have \r\n newlines on windows and \n newlines elsewhere
 
         if content_type == FileContentType.YAML:
@@ -346,6 +354,9 @@ class OscalBaseModel(TrestleBaseModel):
         elif content_type == FileContentType.JSON:
             with pathlib.Path(path).open('wb') as write_file:
                 write_file.write(self.oscal_serialize_json_bytes(pretty=True))
+        elif content_type == FileContentType.CANONICAL_JSON:
+            with pathlib.Path(path).open('wb') as write_file:
+                write_file.write(self.oscal_serialize_json_bytes(canonical=True))
 
     @classmethod
     def oscal_read(cls, path: pathlib.Path) -> Optional['OscalBaseModel']:
@@ -362,7 +373,7 @@ class OscalBaseModel(TrestleBaseModel):
         # Create the wrapper model.
         alias = classname_to_alias(cls.__name__, AliasMode.JSON)
 
-        content_type = FileContentType.to_content_type(path.suffix)
+        content_type = FileContentType.path_suffix_to_content_type(path)
         logger.debug(f'oscal_read content type {content_type} and alias {alias} from {path}')
 
         if not path.exists():
@@ -375,9 +386,8 @@ class OscalBaseModel(TrestleBaseModel):
                 yaml = YAML(typ='safe')
                 with path.open('r', encoding=const.FILE_ENCODING) as fh:
                     obj = yaml.load(fh)
-            elif content_type == FileContentType.JSON:
-                with path.open('rb') as fh:
-                    obj = from_json(fh.read(), allow_partial=False)
+            elif content_type in [FileContentType.JSON, FileContentType.CANONICAL_JSON]:
+                obj = load_file(path, json_loads=cls.__config__.json_loads)
         except Exception as e:
             raise err.TrestleError(f'Error loading file {path} {str(e)}')
         try:

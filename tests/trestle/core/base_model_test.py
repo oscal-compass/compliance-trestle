@@ -403,6 +403,14 @@ def test_oscal_write(tmp_path: pathlib.Path) -> None:
     component2.oscal_write(temp_cd_yaml)
 
     component.ComponentDefinition.oscal_read(temp_cd_yaml)
+
+    temp_cd_canonical_json = pathlib.Path(tmp_path) / 'component_test.canonical.json'
+    component2.oscal_write(temp_cd_canonical_json)
+    canonical_json = temp_cd_canonical_json.read_text(encoding=const.FILE_ENCODING)
+    assert canonical_json == component2.oscal_serialize_json(canonical=True)
+    assert '\n' not in canonical_json
+    component.ComponentDefinition.oscal_read(temp_cd_canonical_json)
+
     # test failure
     with pytest.raises(err.TrestleError):
         component2.oscal_write(tmp_path / 'target.borked')
@@ -430,4 +438,17 @@ def test_oscal_serialize_json() -> None:
     jsoned = json.loads(serialized)
     new_catalog = oscatalog.Catalog.parse_obj(jsoned['catalog'])
 
+    assert simple_catalog_obj.metadata.title == new_catalog.metadata.title
+
+
+def test_oscal_serialize_canonical_json() -> None:
+    """Test Oscal canonical json serialization."""
+    simple_catalog_obj = simple_catalog_utc()
+
+    serialized = simple_catalog_obj.oscal_serialize_json(canonical=True)
+    jsoned = json.loads(serialized)
+    new_catalog = oscatalog.Catalog.parse_obj(jsoned['catalog'])
+
+    assert serialized == simple_catalog_obj.oscal_serialize_json_bytes(canonical=True).decode(const.FILE_ENCODING)
+    assert '\n' not in serialized
     assert simple_catalog_obj.metadata.title == new_catalog.metadata.title
