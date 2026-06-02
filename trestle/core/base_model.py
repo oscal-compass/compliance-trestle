@@ -41,6 +41,7 @@ from ruamel.yaml import YAML
 
 import trestle.common.const as const
 import trestle.common.err as err
+from trestle.common.file_utils import load_file
 from trestle.common.str_utils import AliasMode, classname_to_alias
 from trestle.common.type_utils import get_origin, is_collection_field_type
 from trestle.core.canonicalization import canonicalize_json_text
@@ -305,12 +306,8 @@ class OscalBaseModel(TrestleBaseModel):
             # Use mode='json' to properly serialize all types including AnyUrl
             # The field_serializer handles datetime formatting
             odict = self.model_dump(by_alias=True, exclude_none=True, mode='json')
-
-        # With mode='json', all types are already properly serialized to JSON-compatible types
-        # We just need orjson to convert the dict to bytes
-            odict = self.dict(by_alias=True, exclude_none=True)
         if canonical:
-            json_bytes = orjson.dumps(odict, default=self.__json_encoder__)
+            json_bytes = orjson.dumps(odict)
             _, canonical_bytes = canonicalize_json_text(json_bytes.decode(const.FILE_ENCODING))
             return canonical_bytes
         if pretty:
@@ -387,7 +384,7 @@ class OscalBaseModel(TrestleBaseModel):
                 with path.open('r', encoding=const.FILE_ENCODING) as fh:
                     obj = yaml.load(fh)
             elif content_type in [FileContentType.JSON, FileContentType.CANONICAL_JSON]:
-                obj = load_file(path, json_loads=cls.__config__.json_loads)
+                obj = load_file(path)
         except Exception as e:
             raise err.TrestleError(f'Error loading file {path} {str(e)}')
         try:

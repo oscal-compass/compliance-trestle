@@ -412,8 +412,9 @@ class SplitCmd(CommandPlusDocs):
                     root_file = base_dir / element_path.to_root_path(content_type)
 
                 split_plan.add_action(CreatePathAction(root_file))
-                wrapper_alias = classname_to_alias(stripped_model.__class__.__name__, AliasMode.JSON)
-                split_plan.add_action(WriteFileAction(root_file, Element(stripped_model, wrapper_alias), content_type))
+                split_plan.add_action(
+                    WriteFileAction(root_file, Element(stripped_model, element_path.get_first()), content_type)
+                )
 
         # return the end of the current path chain
         return path_chain_end
@@ -477,8 +478,9 @@ class SplitCmd(CommandPlusDocs):
         else:
             root_file = base_dir / element_paths[0].to_root_path(content_type)
         split_plan.add_action(CreatePathAction(root_file, True))
-        wrapper_alias = classname_to_alias(stripped_root.__class__.__name__, AliasMode.JSON)
-        split_plan.add_action(WriteFileAction(root_file, Element(stripped_root, wrapper_alias), content_type))
+        split_plan.add_action(
+            WriteFileAction(root_file, Element(stripped_root, element_paths[0].get_first()), content_type)
+        )
 
         return split_plan
 
