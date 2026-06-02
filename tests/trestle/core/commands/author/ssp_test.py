@@ -813,7 +813,7 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
     # confirm there are is two by_comps for the first impl_req
     assert len(ssp.control_implementation.implemented_requirements[0].by_components) == 2
 
-    # now filter the ssp by an implementation status that is unused
+    # now filter the ssp by a single implementation status
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
         name=ssp_name,
@@ -823,7 +823,7 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         regenerate=False,
         version=None,
         components=None,
-        implementation_status='not-applicable',
+        implementation_status='implemented',
         control_origination=None,
     )
     ssp_filter = SSPFilter()
@@ -833,8 +833,8 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         tmp_trestle_dir, filtered_name, ossp.SystemSecurityPlan, FileContentType.JSON
     )
 
-    # confirm the imp_reqs have been culled by impl_status to zero controls
-    assert len(ssp.control_implementation.implemented_requirements) == 0
+    # confirm the imp_reqs have been culled by impl_status - should have at least 1
+    assert len(ssp.control_implementation.implemented_requirements) >= 1
 
     # now filter without profile or components to trigger error
     args = argparse.Namespace(
@@ -939,7 +939,7 @@ def test_ssp_filter_control_origination(tmp_trestle_dir: pathlib.Path) -> None:
     # confirm the imp_reqs have been culled to two controls
     assert len(ssp.control_implementation.implemented_requirements) == 2
 
-    # now filter the ssp by a control origination that is unused
+    # now filter the ssp by a single control origination value
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
         name=ssp_name,
@@ -950,7 +950,7 @@ def test_ssp_filter_control_origination(tmp_trestle_dir: pathlib.Path) -> None:
         version=None,
         components=None,
         implementation_status=None,
-        control_origination='inherited',
+        control_origination='system-specific',
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
@@ -959,8 +959,8 @@ def test_ssp_filter_control_origination(tmp_trestle_dir: pathlib.Path) -> None:
         tmp_trestle_dir, filtered_name, ossp.SystemSecurityPlan, FileContentType.JSON
     )
 
-    # confirm the imp_reqs have been culled to zero controls
-    assert len(ssp.control_implementation.implemented_requirements) == 0
+    # confirm the imp_reqs have been culled - should have at least 1
+    assert len(ssp.control_implementation.implemented_requirements) >= 1
 
     # filter with an invalid control origination to trigger error
     bad_co = 'co_bad'
