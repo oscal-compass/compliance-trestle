@@ -268,6 +268,55 @@ def _get_constrained_int_value(metadata: list) -> int:
     return int((floor + 1) * multiple_of)
 
 
+def _handle_special_field_types(model_type: Type, outer_type: Type, field: str, field_info: Any, model: Type) -> Any:
+    """Handle special field types (Base64, DateDatatype, DateAuthorized, etc.).
+
+    Args:
+        model_type: The type of the model being generated
+        outer_type: The type of the field
+        field: The field name
+        field_info: Field information from model_fields
+        model: The model class
+
+    Returns:
+        The generated value for the special field type
+    """
+    if model_type in [Base64Datatype]:
+        return sample_base64_value
+    elif model_type in [Base64]:
+        # Use dictionary lookup for Base64 field mapping
+        base64_fields = {
+            'filename': sample_base64.filename,
+            'media_type': sample_base64.media_type,
+            'value': sample_base64.value,
+        }
+        return base64_fields.get(field)
+    elif model_type in [DateDatatype]:
+        return sample_date_value
+    elif outer_type in [DateAuthorized] or (
+        utils.get_origin(outer_type) == Union and DateAuthorized in typing.get_args(outer_type)
+    ):
+        # Handle DateAuthorized type (which is a RootModel wrapping DateDatatype)
+        # DateAuthorized expects a date string that matches the DateDatatype pattern
+        return DateAuthorized(root=sample_date_value)
+    elif model_type in [DateAuthorized]:
+        # When generating DateAuthorized itself, populate its root field
+        return sample_date_value
+    # Hacking here:
+    # Root models should ideally not exist, however, sometimes we are stuck with them.
+    # If that is the case we need sufficient information on the type in order to generate a model.
+    # E.g. we need the type of the container.
+    # In Pydantic v2, RootModel uses 'root' field instead of v1's '__root__' field
+    elif field == 'root' and hasattr(model, '__name__'):
+        return generate_sample_value_by_type(outer_type, str_utils.classname_to_alias(model.__name__, AliasMode.FIELD))
+    else:
+        # For int types, check if there are constraints in field metadata
+        if outer_type is int and field_info.metadata:
+            return _get_constrained_int_value(field_info.metadata)
+        else:
+            return generate_sample_value_by_type(outer_type, field)
+
+
 def is_by_type(model_type: Union[Type[TG], List[TG], Dict[str, TG]]) -> bool:
     """Check for by type."""
     rval = False
@@ -507,78 +556,12 @@ def generate_sample_model(
                     else:
                         # Not a RootModel, fall through to default handling
                         # Handle special cases (hacking)
-                        if model_type in [Base64Datatype]:
-                            model_dict[field] = sample_base64_value
-                        elif model_type in [Base64]:
-                            if field == 'filename':
-                                model_dict[field] = sample_base64.filename
-                            elif field == 'media_type':
-                                model_dict[field] = sample_base64.media_type
-                            elif field == 'value':
-                                model_dict[field] = sample_base64.value
-                        elif model_type in [DateDatatype]:
-                            model_dict[field] = sample_date_value
-                        elif outer_type in [DateAuthorized] or (
-                            utils.get_origin(outer_type) == Union and DateAuthorized in typing.get_args(outer_type)
-                        ):
-                            # Handle DateAuthorized type (which is a RootModel wrapping DateDatatype)
-                            # DateAuthorized expects a date string that matches the DateDatatype pattern
-                            model_dict[field] = DateAuthorized(root=sample_date_value)
-                        elif model_type in [DateAuthorized]:
-                            # When generating DateAuthorized itself, populate its root field
-                            model_dict[field] = sample_date_value
-                        # Hacking here:
-                        # Root models should ideally not exist, however, sometimes we are stuck with them.
-                        # If that is the case we need sufficient information on the type in order to generate a model.
-                        # E.g. we need the type of the container.
-                        # In Pydantic v2, RootModel uses 'root' field instead of v1's '__root__' field
-                        elif field == 'root' and hasattr(model, '__name__'):
-                            model_dict[field] = generate_sample_value_by_type(
-                                outer_type, str_utils.classname_to_alias(model.__name__, AliasMode.FIELD)
-                            )
-                        else:
-                            # For int types, check if there are constraints in field metadata
-                            if outer_type is int and field_info.metadata:
-                                model_dict[field] = _get_constrained_int_value(field_info.metadata)
-                            else:
-                                model_dict[field] = generate_sample_value_by_type(outer_type, field)
+                        model_dict[field] = _handle_special_field_types(
+                            model_type, outer_type, field, field_info, model
+                        )
                 else:
                     # Handle special cases (hacking)
-                    if model_type in [Base64Datatype]:
-                        model_dict[field] = sample_base64_value
-                    elif model_type in [Base64]:
-                        if field == 'filename':
-                            model_dict[field] = sample_base64.filename
-                        elif field == 'media_type':
-                            model_dict[field] = sample_base64.media_type
-                        elif field == 'value':
-                            model_dict[field] = sample_base64.value
-                    elif model_type in [DateDatatype]:
-                        model_dict[field] = sample_date_value
-                    elif outer_type in [DateAuthorized] or (
-                        utils.get_origin(outer_type) == Union and DateAuthorized in typing.get_args(outer_type)
-                    ):
-                        # Handle DateAuthorized type (which is a RootModel wrapping DateDatatype)
-                        # DateAuthorized expects a date string that matches the DateDatatype pattern
-                        model_dict[field] = DateAuthorized(root=sample_date_value)
-                    elif model_type in [DateAuthorized]:
-                        # When generating DateAuthorized itself, populate its root field
-                        model_dict[field] = sample_date_value
-                    # Hacking here:
-                    # Root models should ideally not exist, however, sometimes we are stuck with them.
-                    # If that is the case we need sufficient information on the type in order to generate a model.
-                    # E.g. we need the type of the container.
-                    # In Pydantic v2, RootModel uses 'root' field instead of v1's '__root__' field
-                    elif field == 'root' and hasattr(model, '__name__'):
-                        model_dict[field] = generate_sample_value_by_type(
-                            outer_type, str_utils.classname_to_alias(model.__name__, AliasMode.FIELD)
-                        )
-                    else:
-                        # For int types, check if there are constraints in field metadata
-                        if outer_type is int and field_info.metadata:
-                            model_dict[field] = _get_constrained_int_value(field_info.metadata)
-                        else:
-                            model_dict[field] = generate_sample_value_by_type(outer_type, field)
+                    model_dict[field] = _handle_special_field_types(model_type, outer_type, field, field_info, model)
         # Note: this assumes list constrains in oscal are always 1 as a minimum size. if two this may still fail.
     else:
         # Use original_model to preserve parameterized type info (e.g., list[str] not just list)

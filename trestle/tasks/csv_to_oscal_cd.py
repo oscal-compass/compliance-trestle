@@ -1559,32 +1559,36 @@ class CsvColumn:
         return any(name.startswith(cname) for cname in CsvColumn._columns_parameter)
 
     @staticmethod
+    def _get_column_names(column_list: List[str]) -> List[str]:
+        """Generic method to get column names from a list.
+
+        Args:
+            column_list: The list of column names to return
+
+        Returns:
+            A copy of the column list
+        """
+        return list(column_list)
+
+    @staticmethod
     def get_required_column_names() -> List[str]:
         """Get required column names."""
-        rval = []
-        rval += CsvColumn._columns_required
-        return rval
+        return CsvColumn._get_column_names(CsvColumn._columns_required)
 
     @staticmethod
     def get_optional_column_names() -> List[str]:
         """Get optional column names."""
-        rval = []
-        rval += CsvColumn._columns_optional
-        return rval
+        return CsvColumn._get_column_names(CsvColumn._columns_optional)
 
     @staticmethod
     def get_parameter_column_names() -> List[str]:
         """Get parameter column names."""
-        rval = []
-        rval += CsvColumn._columns_parameters
-        return rval
+        return CsvColumn._get_column_names(CsvColumn._columns_parameters)
 
     @staticmethod
     def get_required_column_names_validation() -> List[str]:
         """Get required column names validation."""
-        rval = []
-        rval += CsvColumn._columns_required_validation
-        return rval
+        return CsvColumn._get_column_names(CsvColumn._columns_required_validation)
 
     _rule_property_column_names = [
         f'{RULE_ID}',
@@ -1622,22 +1626,26 @@ class CsvColumn:
     _columns_filtered = _columns_required_filtered + _columns_optional_filtered
 
     @staticmethod
+    def _get_filtered_column_names(column_names: List[str]) -> List[str]:
+        """Get filtered column names excluding predefined filtered columns.
+
+        Args:
+            column_names: The list of column names to filter
+
+        Returns:
+            List of column names that are not in the filtered list
+        """
+        return [name for name in column_names if name not in CsvColumn._columns_filtered]
+
+    @staticmethod
     def get_filtered_required_column_names() -> List[str]:
         """Get filtered required column names."""
-        rval = []
-        for column_name in CsvColumn.get_required_column_names():
-            if column_name not in CsvColumn._columns_filtered:
-                rval.append(column_name)
-        return rval
+        return CsvColumn._get_filtered_column_names(CsvColumn.get_required_column_names())
 
     @staticmethod
     def get_filtered_optional_column_names() -> List[str]:
         """Get filtered optional column names."""
-        rval = []
-        for column_name in CsvColumn.get_optional_column_names():
-            if column_name not in CsvColumn._columns_filtered:
-                rval.append(column_name)
-        return rval
+        return CsvColumn._get_filtered_column_names(CsvColumn.get_optional_column_names())
 
     _check_property_column_names = [f'{RULE_ID}', f'{CHECK_ID}', f'{CHECK_DESCRIPTION}', f'{TARGET_COMPONENT}']
 
