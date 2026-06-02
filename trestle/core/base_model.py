@@ -54,7 +54,7 @@ logger = logging.getLogger(__name__)
 class FieldWrapper:
     """Wrapper for FieldInfo that includes the field name for Pydantic v2 compatibility."""
 
-    def __init__(self, name: str, field_info: FieldInfo):
+    def __init__(self, name: str, field_info: FieldInfo) -> None:
         """Initialize with field name and FieldInfo."""
         self.name = name
         self.field_info = field_info
@@ -152,7 +152,7 @@ class OscalBaseModel(TrestleBaseModel):
         allowing dynamically created models with identical structure to be equal.
         """
         # Check if other is a Pydantic model
-        if not hasattr(other, 'model_dump'):
+        if not isinstance(other, TrestleBaseModel):
             return False
 
         # Compare by class name (not class object identity) and content
@@ -518,13 +518,11 @@ class OscalBaseModel(TrestleBaseModel):
         return get_origin(annotation)
 
 
-class OscalRootModel(RootModel, TrestleBaseModel):
+class OscalRootModel(RootModel):
     """
     Trestle defined pydantic RootModel for wrapping collection types.
 
     This is used for dynamically created models that wrap List or Dict types.
-    It inherits from RootModel for the collection wrapping behavior and TrestleBaseModel
-    for validation behavior, but cannot use OscalBaseModel's config due to RootModel restrictions.
     """
 
     model_config = ConfigDict(
@@ -534,28 +532,28 @@ class OscalRootModel(RootModel, TrestleBaseModel):
     )
 
     @classmethod
-    def oscal_read(cls, path: pathlib.Path):
+    def oscal_read(cls, path: pathlib.Path) -> Optional['OscalRootModel']:
         """Read from OSCAL JSON/YAML file."""
         return OscalBaseModel.oscal_read.__func__(cls, path)
 
-    def oscal_write(self, path: pathlib.Path):
+    def oscal_write(self, path: pathlib.Path) -> None:
         """Write to OSCAL JSON/YAML file."""
-        return OscalBaseModel.oscal_write(self, path)
+        return OscalBaseModel.oscal_write(cast(Any, self), path)
 
     @classmethod
-    def alias_to_field_map(cls):
+    def alias_to_field_map(cls) -> Dict[str, FieldWrapper]:
         """Get alias to field mapping."""
         return OscalBaseModel.alias_to_field_map.__func__(cls)
 
     def stripped_instance(
         self, stripped_fields: Optional[List[str]] = None, stripped_fields_aliases: Optional[List[str]] = None
-    ):
+    ) -> 'OscalBaseModel':
         """Return a new model instance with the specified fields being stripped."""
-        return OscalBaseModel.stripped_instance(self, stripped_fields, stripped_fields_aliases)
+        return OscalBaseModel.stripped_instance(cast(Any, self), stripped_fields, stripped_fields_aliases)
 
     @classmethod
     def create_stripped_model_type(
         cls, stripped_fields: Optional[List[str]] = None, stripped_fields_aliases: Optional[List[str]] = None
-    ):
+    ) -> Type['OscalBaseModel']:
         """Create a stripped model type."""
         return OscalBaseModel.create_stripped_model_type.__func__(cls, stripped_fields, stripped_fields_aliases)
