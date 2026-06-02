@@ -74,13 +74,107 @@ def test_plan_execution(tmp_path, sample_nist_component_def: component.Component
         target_file.exists()
 
 
-def test_plan_execution_failure():
+def test_plan_execution_failure(tmp_path):
     """Test unsuccessful execution of a valid plan."""
+    from io import UnsupportedOperation
+    import pytest
+    from trestle.core.models.actions import Action, ActionType
+
+    class FailingAction(Action):
+        """Action that fails on execute."""
+
+        def __init__(self):
+            super().__init__(ActionType.UPDATE, True)
+
+        def execute(self) -> None:
+            self._mark_executed()
+            raise RuntimeError('Intentional failure')
+
+        def rollback(self) -> None:
+            self._mark_rollback()
+
+    plan = Plan()
+    plan.add_action(FailingAction())
+
+    # Should raise the exception and trigger rollback
+    with pytest.raises(RuntimeError, match='Intentional failure'):
+        plan.execute()
 
 
 def test_plan_rollback():
     """Test successful rollback of a valid plan."""
+    # Already tested in test_plan_execution
 
 
-def test_plan_rollback_failure():
+def test_plan_rollback_failure(tmp_path):
     """Test unsuccessful rollback of a valid plan."""
+    from io import UnsupportedOperation
+    import pytest
+    from trestle.core.models.actions import Action, ActionType
+
+    class NoRollbackAction(Action):
+        """Action that doesn't support rollback."""
+
+        def __init__(self):
+            super().__init__(ActionType.UPDATE, False)
+
+        def execute(self) -> None:
+            self._mark_executed()
+
+        def rollback(self) -> None:
+            raise NotImplementedError('No rollback')
+
+    plan = Plan()
+    plan.add_action(NoRollbackAction())
+
+    # Should raise UnsupportedOperation when trying to rollback
+    with pytest.raises(UnsupportedOperation):
+        plan.rollback()
+
+
+def test_plan_clear_actions(tmp_path):
+    """Test clear_actions method."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    test_file = tmp_path / 'test.txt'
+
+    plan = Plan()
+    plan.add_action(CreatePathAction(test_file))
+    assert len(plan.get_actions()) == 1
+
+    plan.clear_actions()
+    assert len(plan.get_actions()) == 0
+
+
+def test_plan_equality(tmp_path):
+    """Test plan equality comparison."""
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    test_file = tmp_path / 'test.txt'
+
+    plan1 = Plan()
+    plan2 = Plan()
+
+    # Empty plans should be equal
+    assert plan1 == plan2
+
+    # Plan should not equal non-Plan object
+    assert plan1 != 'not a plan'
+    assert plan1 != 123
+    assert plan1 is not None
+
+    # Plans with same actions should be equal
+    action1 = CreatePathAction(test_file)
+    plan1.add_action(action1)
+    plan2.add_action(CreatePathAction(test_file))
+    assert plan1 == plan2
+
+    # Plans with different number of actions should not be equal
+    plan3 = Plan()
+    assert plan1 != plan3
+
+
+def test_plan_repr():
+    """Test plan __repr__ method."""
+    plan = Plan()
+    repr_str = repr(plan)
+    assert 'Plan' in repr_str
+    assert 'actions=' in repr_str
