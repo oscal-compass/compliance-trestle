@@ -282,8 +282,17 @@ class CatalogReader:
             by_comp = CatalogReader._get_by_comp_from_imp_req(imp_req, part_id, gen_comp.uuid)
             by_comp.description = comp_info.prose
             by_comp.implementation_status = comp_info.status
-            # Set props from comp_info - this includes rule-id props needed for parameter matching
-            by_comp.props = none_if_empty(comp_info.props)
+            # Merge props from comp_info with existing props (e.g., Rule_Id from component definition)
+            # Don't overwrite existing props, just add new ones from markdown
+            existing_props = as_list(by_comp.props)
+            new_props = as_list(comp_info.props)
+            # Create a set of existing prop names to avoid duplicates
+            existing_prop_names = {(prop.name, prop.value) for prop in existing_props}
+            # Add new props that don't already exist
+            for prop in new_props:
+                if (prop.name, prop.value) not in existing_prop_names:
+                    existing_props.append(prop)
+            by_comp.props = none_if_empty(existing_props)
 
     @staticmethod
     def _insert_set_param_into_by_comps(

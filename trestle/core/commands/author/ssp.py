@@ -17,6 +17,7 @@ import argparse
 import logging
 import os
 import pathlib
+import sys
 from typing import Any, Dict, List, Optional, Set
 
 from ruamel.yaml import YAML
@@ -394,21 +395,29 @@ class SSPAssemble(AuthorCommonCommand):
             imp_req.by_components = none_if_empty(imp_req.by_components)
         # each statement in ci corresponds to by_comp in an ssp imp req
         # so insert the new by_comp directly into the ssp, generating parts as needed
-        statements_list = as_list(imp_req.statements)
         for statement in as_list(gen_imp_req.statements):
             if ControlInterface.item_has_rules(statement):  # type: ignore
-                imp_req = CatalogReader._get_imp_req_for_statement(ssp, gen_imp_req.control_id, statement.statement_id)
-                by_comp = CatalogReader._get_by_comp_from_imp_req(imp_req, statement.statement_id, gen_comp.uuid)
+                stmt_imp_req = CatalogReader._get_imp_req_for_statement(
+                    ssp, gen_imp_req.control_id, statement.statement_id
+                )
+                by_comp = CatalogReader._get_by_comp_from_imp_req(stmt_imp_req, statement.statement_id, gen_comp.uuid)
                 by_comp.description = statement.description
                 by_comp.props = none_if_empty(ControlInterface.clean_props(statement.props))
                 rules_list, _ = ControlInterface.get_rule_list_for_item(statement)  # type: ignore
                 by_comp.set_parameters = none_if_empty(
                     SSPAssemble._get_params_for_rules(context, rules_list, local_set_params)
                 )
-        imp_req.statements = none_if_empty(statements_list)
-        ssp.control_implementation.implemented_requirements = as_list(
-            ssp.control_implementation.implemented_requirements
-        )
+                # In Pydantic v2, modifications to objects in lists don't persist unless the list is reassigned
+                # Find the statement and reassign its by_components list to trigger Pydantic validation
+                for stmt in as_list(stmt_imp_req.statements):
+                    if stmt.statement_id == statement.statement_id:
+                        # Reassign the by_components list to ensure changes persist in Pydantic v2
+                        stmt.by_components = none_if_empty(as_list(stmt.by_components))
+                # Reassign the statements list to ensure changes persist in Pydantic v2
+                stmt_imp_req.statements = none_if_empty(as_list(stmt_imp_req.statements))
+        # In Pydantic v2, we need to create a new list to trigger validation and ensure changes persist
+        impl_reqs_list = list(ssp.control_implementation.implemented_requirements)
+        ssp.control_implementation.implemented_requirements = impl_reqs_list
 
     @staticmethod
     def _merge_imp_req_into_ssp(
@@ -437,7 +446,10 @@ class SSPAssemble(AuthorCommonCommand):
         """Merge the original generic comp defs into the ssp."""
         all_comps: List[ossp.SystemComponent] = []
         # determine if this is a new and empty ssp
-        new_ssp = not ssp.control_implementation.implemented_requirements
+        # Treat SSP as new if it has no implemented_requirements or only has placeholder REPLACE_ME entries
+        new_ssp = not ssp.control_implementation.implemented_requirements or all(
+            imp_req.control_id == const.REPLACE_ME for imp_req in ssp.control_implementation.implemented_requirements
+        )
         for _, gen_comp in comp_dict.items():
             context.comp_name = gen_comp.title
             all_ci_props: List[com.Property] = []
@@ -622,13 +634,19 @@ class SSPAssemble(AuthorCommonCommand):
             else:
                 # create a sample ssp to hold all the parts
                 ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
-                # Don't set implemented_requirements to empty list - let merge methods populate it
-                # to avoid Pydantic v2 validation on empty list with min_length=1
                 ssp.control_implementation.description = const.SSP_SYSTEM_CONTROL_IMPLEMENTATION_TEXT
                 # Don't set components to empty list - let _merge_comp_defs handle it
                 # to avoid Pydantic v2 validation on empty list
                 self._merge_comp_defs(ssp, comp_dict, context, catalog_interface)
                 CatalogReader.read_ssp_md_content(md_path, ssp, comp_dict, part_id_map_by_label, context)
+
+                # Remove any placeholder implemented_requirements with control_id='REPLACE_ME'
+                # that were created by generate_sample_model
+                ssp.control_implementation.implemented_requirements = [
+                    imp_req
+                    for imp_req in ssp.control_implementation.implemented_requirements
+                    if imp_req.control_id != const.REPLACE_ME
+                ]
 
                 import_profile: ossp.ImportProfile = gens.generate_sample_model(ossp.ImportProfile)
                 import_profile.href = const.REPLACE_ME
