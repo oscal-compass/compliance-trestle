@@ -104,70 +104,104 @@ def is_enum_observation_type_valid_value(type_: type) -> bool:
     return rval
 
 
-def generate_sample_value_by_type(type_: Any, field_name: str) -> Union[datetime, bool, int, str, float, Enum, Base64]:
-    """Given a type, return sample value.
-
-    Includes the Optional use of passing down a parent_model
-    """
-    # FIXME: Should be in separate generator module as it inherits EVERYTHING
+def _handle_enum_types(type_: Any) -> Union[Methods, TaskValidValues, ObservationTypeValidValues, None]:
+    """Check and return sample value for enum types."""
     if is_enum_method(type_):
         return sample_method
     if is_enum_task_valid_value(type_):
         return sample_task_valid_value
     if is_enum_observation_type_valid_value(type_):
         return sample_observation_type_valid_value
+    return None
+
+
+def _handle_simple_types(type_: Any) -> Union[Base64, datetime, bool, None]:
+    """Check and return sample value for simple types."""
     if type_ is Base64:
         return sample_base64
     if type_ is datetime or type_ is AwareDatetime:
         return datetime.now().astimezone()
     if type_ is bool:
         return False
+    return None
 
-    # In Pydantic v2, check for Annotated types with int origin (conint) BEFORE checking plain int
-    # These are Annotated[int, ...] with Interval and MultipleOf metadata
+
+def _extract_int_constraints(metadata: tuple) -> tuple[int, int]:
+    """Extract constraints from int metadata and return floor and multiple_of."""
+    ge_val = None
+    gt_val = None
+    multiple_of = 1
+
+    for constraint in metadata:
+        if hasattr(constraint, 'ge') and constraint.ge is not None:
+            ge_val = constraint.ge
+        if hasattr(constraint, 'gt') and constraint.gt is not None:
+            gt_val = constraint.gt
+        if hasattr(constraint, 'multiple_of') and constraint.multiple_of is not None:
+            multiple_of = constraint.multiple_of
+
+    floor = ge_val if ge_val is not None else 0
+    floor = gt_val + 1 if gt_val is not None else floor
+    return floor, multiple_of
+
+
+def _handle_annotated_int(type_: Any) -> Union[int, None]:
+    """Handle Annotated[int, ...] types with constraints."""
+    from typing import Annotated
+
     origin = utils.get_origin(type_)
-    if origin is not None:
-        # Check if this is Annotated[int, ...]
-        from typing import Annotated
+    if origin is not Annotated:
+        return None
 
-        if origin is Annotated:
-            args = typing.get_args(type_)
-            if args and args[0] is int:
-                # This is a constrained int (conint)
-                # Extract constraints from metadata
-                metadata = getattr(type_, '__metadata__', ())
-                ge_val = None
-                gt_val = None
-                multiple_of = 1
+    args = typing.get_args(type_)
+    if not args or args[0] is not int:
+        return None
 
-                for constraint in metadata:
-                    # Check for Interval constraint (from annotated_types)
-                    if hasattr(constraint, 'ge') and constraint.ge is not None:
-                        ge_val = constraint.ge
-                    if hasattr(constraint, 'gt') and constraint.gt is not None:
-                        gt_val = constraint.gt
-                    # Check for MultipleOf constraint
-                    if hasattr(constraint, 'multiple_of') and constraint.multiple_of is not None:
-                        multiple_of = constraint.multiple_of
+    metadata = getattr(type_, '__metadata__', ())
+    floor, multiple_of = _extract_int_constraints(metadata)
 
-                # Calculate floor value
-                floor = ge_val if ge_val is not None else 0
-                floor = gt_val + 1 if gt_val is not None else floor
+    if math.remainder(floor, multiple_of) == 0:
+        return int(floor)
+    return int((floor + 1) * multiple_of)
 
-                # Return value that satisfies constraints
-                if math.remainder(floor, multiple_of) == 0:
-                    return int(floor)
-                return int((floor + 1) * multiple_of)
 
-    # Check plain types after checking for Annotated types
-    if type_ is int:
-        return 0
-    if type_ is float:
-        return 0.00
+def _check_uuid_pattern(type_: Any) -> bool:
+    """Check if type has UUID pattern in metadata."""
+    if not hasattr(type_, '__metadata__'):
+        return False
 
-    # In Pydantic v2, constrained strings are created with constr() and have metadata
-    # Check if it's a string type with constraints (pattern, min_length, max_length, etc.)
-    is_constrained_str = (
+    for constraint in type_.__metadata__:
+        if hasattr(constraint, 'pattern') and constraint.pattern and constraint.pattern.startswith('^[0-9A-Fa-f]{8}'):
+            return True
+    return False
+
+
+def _handle_constrained_string(type_: Any, field_name: str) -> str:
+    """Handle constrained string types and return appropriate sample value."""
+    if 'uuid' == field_name:
+        return str(uuid.uuid4())
+
+    if _check_uuid_pattern(type_):
+        return const.SAMPLE_UUID_STR
+
+    if field_name == 'date_authorized':
+        return str(date.today().isoformat())
+
+    if field_name == 'oscal_version':
+        return OSCAL_VERSION
+
+    if 'uuid' in field_name:
+        return const.SAMPLE_UUID_STR
+
+    if field_name.rstrip('s') == 'member_of_organization':
+        return const.SAMPLE_UUID_STR
+
+    return const.REPLACE_ME
+
+
+def _is_constrained_string(type_: Any) -> bool:
+    """Check if type is a constrained string."""
+    return (
         type_ is str
         or (hasattr(type_, '__name__') and 'constr' in str(type_).lower())
         or (
@@ -176,62 +210,90 @@ def generate_sample_value_by_type(type_: Any, field_name: str) -> Union[datetime
         )
     )
 
-    if is_constrained_str:
-        # This code here is messy. we need to meet a set of constraints. If we do
-        # TODO: handle regex directly
-        if 'uuid' == field_name:
-            return str(uuid.uuid4())
-        # some things like location_uuid in lists arrive here with field_name=''
-        # In Pydantic v2, pattern is in metadata, not as .regex attribute
-        if hasattr(type_, '__metadata__'):
-            for constraint in type_.__metadata__:
-                if (
-                    hasattr(constraint, 'pattern')
-                    and constraint.pattern
-                    and constraint.pattern.startswith('^[0-9A-Fa-f]{8}')
-                ):
-                    return const.SAMPLE_UUID_STR
-        if field_name == 'date_authorized':
-            return str(date.today().isoformat())
-        if field_name == 'oscal_version':
-            return OSCAL_VERSION
-        if 'uuid' in field_name:
-            return const.SAMPLE_UUID_STR
-        # Only case where are UUID is required but not in name.
-        if field_name.rstrip('s') == 'member_of_organization':
-            return const.SAMPLE_UUID_STR
-        return const.REPLACE_ME
-    if hasattr(type_, '__name__') and 'ConstrainedIntValue' in type_.__name__:
-        # create an int value as close to the floor as possible does not test upper bound
-        # This is for Pydantic v1 compatibility
-        multiple = type_.multiple_of if type_.multiple_of else 1  # default to every integer
-        # this command is a bit of a problem
-        floor = type_.ge if type_.ge else 0
-        floor = type_.gt + 1 if type_.gt else floor
-        if math.remainder(floor, multiple) == 0:
-            return floor
-        return (floor + 1) * multiple
+
+def _handle_constrained_int_v1(type_: Any) -> Union[int, None]:
+    """Handle Pydantic v1 ConstrainedIntValue types."""
+    if not (hasattr(type_, '__name__') and 'ConstrainedIntValue' in type_.__name__):
+        return None
+
+    multiple = type_.multiple_of if type_.multiple_of else 1
+    floor = type_.ge if type_.ge else 0
+    floor = type_.gt + 1 if type_.gt else floor
+
+    if math.remainder(floor, multiple) == 0:
+        return floor
+    return (floor + 1) * multiple
+
+
+def _handle_special_types(type_: Any, field_name: str) -> Union[str, dict, None]:
+    """Handle special types like EmailStr, AnyUrl, dict."""
+    type_name = getattr(type_, '__name__', str(type_))
+
+    if type_ is EmailStr or 'EmailStr' in type_name:
+        return 'dummy@sample.com'
+
+    if type_ is AnyUrl or 'AnyUrl' in type_name:
+        return 'https://sample.com/replaceme.html'
+
+    if type_ is dict or (hasattr(type_, '__origin__') and type_.__origin__ is dict):
+        return {}  # type: ignore[return-value]
+
+    return None
+
+
+def generate_sample_value_by_type(type_: Any, field_name: str) -> Union[datetime, bool, int, str, float, Enum, Base64]:
+    """Given a type, return sample value."""
+    # Check enum types
+    enum_result = _handle_enum_types(type_)
+    if enum_result is not None:
+        return enum_result
+
+    # Check simple types
+    simple_result = _handle_simple_types(type_)
+    if simple_result is not None:
+        return simple_result
+
+    # Check annotated int types
+    origin = utils.get_origin(type_)
+    if origin is not None:
+        annotated_int = _handle_annotated_int(type_)
+        if annotated_int is not None:
+            return annotated_int
+
+    # Check plain numeric types
+    if type_ is int:
+        return 0
+    if type_ is float:
+        return 0.00
+
+    # Check constrained strings
+    if _is_constrained_string(type_):
+        return _handle_constrained_string(type_, field_name)
+
+    # Check Pydantic v1 constrained int
+    constrained_int = _handle_constrained_int_v1(type_)
+    if constrained_int is not None:
+        return constrained_int
+
+    # Check enum subclasses
     if safe_is_sub(type_, Enum):
-        # keys and values diverge due to hypens in oscal names
         return type_(list(type_.__members__.values())[0])
+
+    # Check plain string
     if type_ is str:
         if field_name == 'oscal_version':
             return OSCAL_VERSION
         return const.REPLACE_ME
-    # In Pydantic v2, EmailStr and AnyUrl are still classes but may be wrapped in Annotated
-    # Check the type name to handle both direct and annotated cases
-    type_name = getattr(type_, '__name__', str(type_))
-    if type_ is EmailStr or 'EmailStr' in type_name:
-        return 'dummy@sample.com'
-    if type_ is AnyUrl or 'AnyUrl' in type_name:
-        # TODO: Cleanup: this should be usable from a url.. but it's not inuitive.
-        return 'https://sample.com/replaceme.html'
+
+    # Check special types
+    special_result = _handle_special_types(type_, field_name)
+    if special_result is not None:
+        return special_result
+
+    # Check list type
     if type_ is list:
         raise err.TrestleError(f'Unable to generate sample for type {type_}')
-    # default to empty dict for dict types, string for anything else
-    # Check for both dict and generic dict types like dict[str, Any]
-    if type_ is dict or (hasattr(type_, '__origin__') and type_.__origin__ is dict):
-        return {}  # type: ignore[return-value]
+
     return const.REPLACE_ME
 
 

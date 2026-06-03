@@ -576,43 +576,12 @@ class OscalRootModel(RootModel[Any]):
         cls, stripped_fields: Optional[List[str]] = None, stripped_fields_aliases: Optional[List[str]] = None
     ) -> Type['OscalBaseModel']:
         """Create a stripped model type."""
-        # Validate parameters
-        if stripped_fields is not None and stripped_fields_aliases is not None:
-            raise err.TrestleError('Either "stripped_fields" or "stripped_fields_aliases" need to be passed, not both.')
-        if stripped_fields is None and stripped_fields_aliases is None:
-            raise err.TrestleError('Exactly one of "stripped_fields" or "stripped_fields_aliases" must be provided')
-
-        # Resolve excluded fields using cls (which could be OscalRootModel)
-        if stripped_fields is not None:
-            excluded_fields = stripped_fields
-        elif stripped_fields_aliases is not None:
-            # Map aliases to field names
-            alias_to_name = {}
-            for field_name, field_info in cls.model_fields.items():
-                alias = field_info.alias if field_info.alias else field_name
-                alias_to_name[alias] = field_name
-
-            try:
-                excluded_fields = [alias_to_name[key] for key in stripped_fields_aliases]
-            except KeyError as e:
-                raise err.TrestleError(f'Field {str(e)} does not exist in the model')
-        else:
-            excluded_fields = []
-
-        # Build field list
-        new_fields_for_model = {}
-        for field_name, field_info in cls.model_fields.items():
-            if field_name not in excluded_fields:
-                if field_info.is_required():
-                    new_fields_for_model[field_name] = (
-                        field_info.annotation,
-                        Field(..., title=field_name, alias=field_info.alias),
-                    )
-                else:
-                    new_fields_for_model[field_name] = (
-                        Optional[field_info.annotation],
-                        Field(None, title=field_name, alias=field_info.alias),
-                    )
+        # Use the helper methods from OscalBaseModel to reduce complexity
+        OscalBaseModel._validate_stripped_fields_params(stripped_fields, stripped_fields_aliases)
+        excluded_fields = OscalBaseModel._resolve_excluded_fields.__func__(
+            cls, stripped_fields, stripped_fields_aliases
+        )
+        new_fields_for_model = OscalBaseModel._build_fields_dict.__func__(cls, excluded_fields)
 
         new_model = create_model(cls.__name__, __base__=OscalBaseModel, **new_fields_for_model)  # type: ignore
         return cast(Type[OscalBaseModel], new_model)
