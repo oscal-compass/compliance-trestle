@@ -25,6 +25,9 @@ import typing_extensions
 
 logger = logging.getLogger(__name__)
 
+# Constant for Python 3.10+ union type string representation
+_UNION_TYPE_STR = "<class 'types.UnionType'>"
+
 
 def get_origin(field_type: Type[Any]) -> Optional[Type[Any]]:
     """Generalized and robust get_origin function.
@@ -36,37 +39,53 @@ def get_origin(field_type: Type[Any]) -> Optional[Type[Any]]:
     return typing_extensions.get_origin(field_type) or getattr(field_type, '__origin__', None)
 
 
+def _unwrap_optional_type(singular_type: Type[Any]) -> Type[Any]:
+    """Unwrap Optional[T] to get T."""
+    origin = typing_get_origin(singular_type)
+    if str(origin) == _UNION_TYPE_STR or origin == Union:
+        union_args = [arg for arg in typing_extensions.get_args(singular_type) if arg is not type(None)]
+        if len(union_args) == 1:
+            return union_args[0]
+    return singular_type
+
+
+def _get_root_type_name(singular_type: Type[Any]) -> Optional[str]:
+    """Get the root type name from a singular type."""
+    origin = typing_get_origin(singular_type)
+    if origin is not None:
+        return origin.__name__.capitalize()
+    # For non-generic types, get the type name
+    return getattr(singular_type, '__name__', None)
+
+
+def _extract_root_model_info(field_type: Type[Any]) -> Tuple[Optional[FieldInfo], Optional[str], Optional[Type[Any]]]:
+    """Extract root model information from a BaseModel type."""
+    model_fields = field_type.model_fields
+    # Check for RootModel (has 'root' field)
+    if 'root' not in model_fields:
+        return None, None, None
+
+    root_field = model_fields['root']
+    singular_type = root_field.annotation
+    # Unwrap Optional[T] to get T
+    singular_type = _unwrap_optional_type(singular_type)
+    root_type = _get_root_type_name(singular_type)
+
+    return root_field, root_type, singular_type
+
+
 def _get_model_field_info(field_type: Type[Any]) -> Tuple[Optional[FieldInfo], Optional[str], Optional[Type[Any]]]:
     """Need special handling for pydantic RootModel objects.
 
     In Pydantic v2, RootModel has a 'root' field instead of the v1 '__root__' field.
     """
-    root_field: Optional[FieldInfo] = None
-    root_type: Optional[str] = None
-    singular_type: Optional[Type[Any]] = None
     try:
         # Check if this is a BaseModel with model_fields
         if isinstance(field_type, type) and issubclass(field_type, BaseModel):
-            model_fields = field_type.model_fields
-            # Check for RootModel (has 'root' field)
-            if 'root' in model_fields:
-                root_field = model_fields['root']
-                singular_type = root_field.annotation
-                # Get the origin type name (e.g., 'list', 'dict'), including Optional[list[T]]
-                origin = typing_get_origin(singular_type)
-                if str(origin) == "<class 'types.UnionType'>" or origin == Union:
-                    union_args = [arg for arg in typing_extensions.get_args(singular_type) if arg is not type(None)]
-                    if len(union_args) == 1:
-                        singular_type = union_args[0]
-                        origin = typing_get_origin(singular_type)
-                if origin is not None:
-                    root_type = origin.__name__.capitalize()
-                elif singular_type is not None:
-                    # For non-generic types, get the type name
-                    root_type = getattr(singular_type, '__name__', None)
+            return _extract_root_model_info(field_type)
     except Exception:  # noqa S110
         pass
-    return root_field, root_type, singular_type
+    return None, None, None
 
 
 def is_collection_field_type(field_type: Type[Any]) -> bool:
@@ -90,7 +109,7 @@ def is_collection_field_type(field_type: Type[Any]) -> bool:
         return True
 
     # Optional[list[T]] / Union[list[T], None] in Pydantic v2 annotations
-    if str(origin_type) == "<class 'types.UnionType'>" or origin_type == Union:
+    if str(origin_type) == _UNION_TYPE_STR or origin_type == Union:
         union_args = [arg for arg in typing_extensions.get_args(field_type) if arg is not type(None)]
         return len(union_args) == 1 and is_collection_field_type(union_args[0])
 
@@ -110,7 +129,7 @@ def get_inner_type(collection_field_type: Union[Type[List[Any]], Type[Dict[str, 
     """
     try:
         origin_type = get_origin(collection_field_type)
-        if str(origin_type) == "<class 'types.UnionType'>" or origin_type == Union:
+        if str(origin_type) == _UNION_TYPE_STR or origin_type == Union:
             union_args = [arg for arg in typing_extensions.get_args(collection_field_type) if arg is not type(None)]
             if len(union_args) == 1:
                 return get_inner_type(union_args[0])
