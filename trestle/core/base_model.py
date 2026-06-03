@@ -200,7 +200,7 @@ class OscalBaseModel(TrestleBaseModel):
             raise err.TrestleError(f'Field {str(e)} does not exist in the model')
 
     @classmethod
-    def _build_new_field_definition(cls, field_name: str, field_info: FieldInfo) -> tuple:
+    def _build_new_field_definition(cls, field_name: str, field_info: FieldInfo) -> tuple[Any, Any]:
         """Build a field definition tuple for create_model."""
         if field_info.is_required():
             return (field_info.annotation, Field(..., title=field_name, alias=field_info.alias))
