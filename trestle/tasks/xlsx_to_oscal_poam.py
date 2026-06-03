@@ -1,5 +1,5 @@
 # -*- mode:python; coding:utf-8 -*-
-# Copyright (c) 2024 IBM Corp. All rights reserved.
+# Copyright (c) 2026 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -50,6 +50,11 @@ from trestle.tasks.base_task import TaskBase, TaskOutcome
 logger = logging.getLogger(__name__)
 
 
+def _safe_strip(value: Optional[str]) -> str:
+    """Return stripped value or empty string if value is None/empty."""
+    return value.strip() if value else ''
+
+
 class UUIDManager:
     """Manage deterministic UUID generation for POAM objects."""
 
@@ -81,11 +86,16 @@ class UUIDManager:
         """Generate deterministic UUID for Origin Actor."""
         return str(uuid.uuid5(UUIDManager.NAMESPACE, f'actor-{actor_name}'))
 
+    @staticmethod
+    def remediation_uuid(poam_id: str) -> str:
+        """Generate deterministic UUID for Response (remediation) from POAM ID."""
+        return str(uuid.uuid5(UUIDManager.NAMESPACE, f'remediation-{poam_id}'))
+
 
 class PoamValidator:
     """Validate POAM spreadsheet data before transformation."""
 
-    VALID_RISK_RATINGS = ['Low', 'Moderate', 'High', 'N/A', '']
+    VALID_RISK_RATINGS = ['Low', 'Moderate', 'High', 'N/A']
     VALID_YES_NO_PENDING = ['Yes', 'No', 'Pending', '']
     CONTROL_PATTERN = re.compile(r'^[A-Z]{2}-\d+(\(\d+\))?$')
 
@@ -129,7 +139,7 @@ class PoamValidator:
             if value and value not in self.VALID_RISK_RATINGS:
                 errors.append(
                     f'Row {row_num}: Invalid {rating_field}: "{value}". '
-                    f'Must be one of: {", ".join(self.VALID_RISK_RATINGS[:-1])}'
+                    f'Must be one of: {", ".join(self.VALID_RISK_RATINGS)}'
                 )
 
         # Yes/No/Pending field validation
@@ -141,6 +151,7 @@ class PoamValidator:
                     f'Must be one of: {", ".join(self.VALID_YES_NO_PENDING[:-1])}'
                 )
 
+        self.errors.extend(errors)
         return errors
 
     def parse_controls(self, controls_str: str) -> List[str]:
@@ -277,6 +288,11 @@ class PoamXlsxHelper:
                     self._column_map[col_name] = cell.column
 
         logger.debug(f'Mapped {len(self._column_map)} columns')
+        if not self._column_map:
+            logger.warning(
+                f'No columns mapped from row {self._header_row}. '
+                'Verify the spreadsheet uses the expected FedRAMP POAM template format.'
+            )
 
     def row_generator(self) -> Iterator[Tuple[int, Dict[str, Any]]]:
         """
@@ -439,21 +455,19 @@ class PoamBuilder:
             PoamItem object
         """
         # Required fields
-        weakness_name = row_data.get(PoamXlsxHelper.WEAKNESS_NAME, '')
-        title = weakness_name.strip() if weakness_name else ''
-        weakness_desc = row_data.get(PoamXlsxHelper.WEAKNESS_DESCRIPTION, '')
-        description = weakness_desc.strip() if weakness_desc else ''
+        title = _safe_strip(row_data.get(PoamXlsxHelper.WEAKNESS_NAME, ''))
+        description = _safe_strip(row_data.get(PoamXlsxHelper.WEAKNESS_DESCRIPTION, ''))
 
         # Optional fields
         comments = row_data.get(PoamXlsxHelper.COMMENTS)
         if comments and isinstance(comments, str):
-            comments = comments.strip() if comments.strip() else None
+            comments = comments.strip() or None
 
         # Build properties
         props = []
 
         # Add POAM ID as property (clean it first)
-        clean_poam_id = poam_id.strip() if poam_id else poam_id
+        clean_poam_id = _safe_strip(poam_id) if poam_id else poam_id
         if clean_poam_id:
             props.append(
                 Property(name='poam-id', value=clean_poam_id, uuid=None, ns=None, **{'class': None}, group=None)
@@ -497,8 +511,7 @@ class PoamBuilder:
         Returns:
             Observation object
         """
-        weakness_name_raw = row_data.get(PoamXlsxHelper.WEAKNESS_NAME, '')
-        weakness_name = weakness_name_raw.strip() if weakness_name_raw else ''
+        weakness_name = _safe_strip(row_data.get(PoamXlsxHelper.WEAKNESS_NAME, ''))
 
         # Description is required
         description = f'Weakness detected: {weakness_name}'
@@ -563,10 +576,8 @@ class PoamBuilder:
             Risk object
         """
         # Required fields - clean all text fields
-        weakness_name = row_data.get(PoamXlsxHelper.WEAKNESS_NAME, '')
-        title = weakness_name.strip() if weakness_name else ''
-        weakness_desc = row_data.get(PoamXlsxHelper.WEAKNESS_DESCRIPTION, '')
-        description = weakness_desc.strip() if weakness_desc else ''
+        title = _safe_strip(row_data.get(PoamXlsxHelper.WEAKNESS_NAME, ''))
+        description = _safe_strip(row_data.get(PoamXlsxHelper.WEAKNESS_DESCRIPTION, ''))
         statement_raw = row_data.get(PoamXlsxHelper.OVERALL_REMEDIATION_PLAN, description)
         if statement_raw and isinstance(statement_raw, str):
             statement = statement_raw.strip()
@@ -620,7 +631,7 @@ class PoamBuilder:
             if milestones:
                 tasks = self._create_milestone_tasks(poam_id, milestones, helper)
                 remediation = Response(
-                    uuid=str(uuid.uuid4()),
+                    uuid=UUIDManager.remediation_uuid(poam_id),
                     lifecycle='planned',
                     title=f'Remediation for {poam_id}',
                     description=statement,
@@ -939,10 +950,8 @@ class XlsxToOscalPoam(TaskBase):
         for row_num, row_data in helper.row_generator():
             # Validate row
             errors = validator.validate_row(row_num, row_data)
-            if errors:
-                validator.errors.extend(errors)
-                if self._validate_mode == 'on':
-                    continue  # Skip invalid rows in strict mode
+            if errors and self._validate_mode == 'on':
+                continue  # Skip invalid rows in strict mode; errors already stored in validator
 
             # Extract POAM ID
             poam_id = row_data.get(PoamXlsxHelper.POAM_ID, '')

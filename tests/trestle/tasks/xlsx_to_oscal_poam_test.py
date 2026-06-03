@@ -332,7 +332,7 @@ def test_builder_create_risk():
     assert risk.title == 'Test Weakness'
     assert risk.description == 'Test Description'
     assert risk.statement == 'Test remediation'
-    assert risk.status.__root__.__root__ == 'open'
+    assert risk.status.__root__ == 'open'
     assert risk.props is not None
     assert risk.deadline is not None
 
@@ -582,7 +582,7 @@ def test_execute_with_milestones(tmp_path: pathlib.Path):
 
     # At least some risks should have remediations if test data includes milestones
     # This tests the milestone parsing and task creation code paths
-    assert len(risks_with_remediations) >= 0  # Will be > 0 if test data has milestones
+    assert len(risks_with_remediations) >= 1
 
 
 def test_execute_quiet_mode(tmp_path: pathlib.Path):
